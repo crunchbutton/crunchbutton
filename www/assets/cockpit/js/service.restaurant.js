@@ -42,77 +42,87 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 
 	service.calcTotal = function( order, restaurant ){
 
-			var fee = function( total ){
+			var _fee = function( total ){
 				if ( restaurant.fee_customer ) {
 					return App.ceil( total * ( parseFloat( restaurant.fee_customer ) / 100 ) );
 				}
 				return 0;
 			}
 
-			var tax = function( total ){
+			var _tax = function( total ){
 				return ( total * ( restaurant.tax / 100 ) );
 			}
 
-			var markup = function( total ){
+			var _markup = function( total ){
 				if( restaurant.delivery_service_markup ){
 					return App.ceil( ( total * ( restaurant.delivery_service_markup / 100 ) ) );
 				}
 				return 0;
 			}
 
-			var delivery = function(){
+			var _delivery = function(){
 				return App.ceil( parseFloat( restaurant.delivery_fee ) );
 			}
 
-			var tip = function( total ){
-				// calc tip % of total or real value
+			var _tip = function( total ){
+				if( order.tip_type == 'percent' ){
+					if( order.tip ){
+						return App.ceil( ( total * ( order.tip / 100 ) ) );
+					} else {
+						return 0;
+					}
+
+				}
 				return order.tip;
 			}
 
-			var breakdown = {};
-			var total = order.subtotal + markup();
+			var total = order.subtotal + _markup( order.subtotal );
 			var totalWithoutMarkup = order.subtotal;
-			var feeTotal = total;
-			breakdown['subtotal'] = order.subtotal;
-			breakdown['subtotalWithoutMarkup'] = totalWithoutMarkup;
-			breakdown['delivery'] = delivery();
-			feeTotal += breakdown['delivery'];
-			breakdown['fee'] = fee( feeTotal );
-			feeTotal += breakdown['fee'];
-
+			var delivery = _delivery();
+			total += delivery;
+			var fee = _fee( total );
+			total += fee;
 			if( parseInt( restaurant.delivery_service ) ==  0 ){
-				totalWithoutMarkup += breakdown[ 'delivery' ];
+				totalWithoutMarkup += delivery;
 			}
-
-			breakdown['taxes'] = tax( totalWithoutMarkup );
-
-			breakdown['tip'] = tip( total );
-
-			total = breakdown.subtotal;
-			feeTotal = total;
-			feeTotal += breakdown.delivery;
-			feeTotal += breakdown.fee;
-			finalAmount = feeTotal + breakdown.taxes;
-			finalAmount += tip( total );
-
-			return App.ceil( finalAmount ).toFixed( 2 );
+			total += _tax( totalWithoutMarkup );
+			total += _tip( total );
+			return App.ceil( total ).toFixed( 2 );
 	}
 
 
 	service.process = function( order, card, callback ){
 
-		App.tokenizeCard( { name: order.name, number: card.number, expiration_month: card.month, expiration_year: card.year, security_code: null },
-											function( status ) {
-												if ( !status.status ) {
-													callback( { error: status.error } );
-													return;
-												}
-												order.card = status;
-												orders.process( order, function( data ){
-													callback( data );
-												} );
-											} );
+		var process = function(){
+			orders.process( order, function( data ){ callback( data ); } );
+		}
 
+		if( order.pay_type == 'card' ){
+			App.tokenizeCard( { name: order.name, number: card.number, expiration_month: card.month, expiration_year: card.year, security_code: null },
+												function( status ) {
+													if ( !status.status ) {
+														callback( { error: status.error } );
+														return;
+													}
+													order.card = status;
+													process();
+												} );
+
+		} else {
+			process();
+		}
+	}
+
+	service.tipPercents = function(){
+		var tips = [];
+		tips.push( { value: 0, label: '0%' } );
+		tips.push( { value: 10, label: '10%' } );
+		tips.push( { value: 15, label: '15%' } );
+		tips.push( { value: 18, label: '18%' } );
+		tips.push( { value: 20, label: '20%' } );
+		tips.push( { value: 25, label: '25%' } );
+		tips.push( { value: 30, label: '30%' } );
+		return tips;
 	}
 
 	service.cardYears = function(){

@@ -6,7 +6,8 @@ NGApp.controller('RestaurantOrderView', function ($scope, $http, $routeParams) {
 
 NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, RestaurantOrderService, PositionService ) {
 
-	$scope.order = {};
+	$scope.order = { 'tip_type': 'dollar', 'pay_type': 'card' };
+	$scope.tip = { 'dollar' : '', 'percent': '10' };
 	$scope.card = {};
 	$scope.map = {};
 
@@ -14,13 +15,13 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 
 		$scope.card._months = RestaurantOrderService.cardMonths();
 		$scope.card._years = RestaurantOrderService.cardYears();
+		$scope.tip._percents = RestaurantOrderService.tipPercents();
 
 		// get info about the restaurant
 		RestaurantService.order_placement( function( json ){
 			if( json.id_restaurant ){
 				$scope.restaurant = json;
 				App.config.processor = { type: 'balanced' };
-				$scope.test();
 			}
 			$scope.ready = true;
 		} );
@@ -30,13 +31,20 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		calcTotal();
 	} );
 
+	$scope.$watch( 'order.tip_type', function( newValue, oldValue, scope ) {
+		if( oldValue == 'dollar' ){
+			$scope.tip.dollar = $scope.order.tip;
+			$scope.order.tip = $scope.tip.percent;
+		} else {
+			$scope.tip.percent = $scope.order.tip;
+			$scope.order.tip = $scope.tip.dollar;
+		}
+	} );
+
 	var calcTotal = function(){
 		$scope.finalAmount = 0;
-		console.log('$scope.restaurant',$scope.restaurant);
 		if( $scope.order && $scope.restaurant ){
-			console.log('calcule essa bosta!');
 			$scope.finalAmount = RestaurantOrderService.calcTotal( $scope.order, $scope.restaurant );
-			console.log('$scope.finalAmount',$scope.finalAmount);
 		}
 	}
 
@@ -73,7 +81,6 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 	}
 
 	$scope.processOrder = function(){
-
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
@@ -117,4 +124,4 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		start();
 	}
 
-});
+} );
