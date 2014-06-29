@@ -39,10 +39,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone( new DateTimeZone($this->restaurant()->timezone) );
-		
+
 		$out['_date_tz'] = $date->format('Y-m-d H:i:s');
+		$out['_date_formatted'] = $date->format( 'M jS Y g:i:s A' );
 		$out['_tz'] = $date->format('T');
-		
+
 		$out['_tip'] = $this->tip();
 		$out['_tax'] = $this->tax();
 
@@ -53,15 +54,15 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['summary'] = $this->orderMessage('summary');
 
 		if( $this->restaurant()->delivery_estimated_time ){
-			$out[ '_delivery_estimated_time' ] = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes')->format('h:i A');	
+			$out[ '_delivery_estimated_time' ] = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes')->format('h:i A');
 		} else {
 			$out[ '_delivery_estimated_time' ] = false;
 		}
 		$out[ '_instructions_payment' ] = $this->driverInstructionsPaymentStatus();
 		$out[ '_instructions_food' ] = $this->driverInstructionsFoodStatus();
 		$out[ '_stealth_notification' ] = $this->restaurant()->hasNotification( 'stealth' );
-		
-		
+
+
 		$out[ '_dishes' ] = [];
 
 		$delivery_service_markup = ( $this->delivery_service_markup ) ? $this->delivery_service_markup : 0;
@@ -74,7 +75,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$price = $dish->dish()->price;
 			$regular_price = $dish->dish()->price;
 
-			// add the delivery markup 
+			// add the delivery markup
 			if( $delivery_service_markup > 0 && $price > 0 ){
 				$price = $price + number_format( ( $dish->dish()->price * $delivery_service_markup / 100 ), 2 );
 				$price = number_format( $price, 2 );
@@ -90,10 +91,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$withOptions = '';
 			$selectOptions = '';
 
-			if ($options->count()) {					
+			if ($options->count()) {
 
 				foreach ($dish->options() as $option) {
-					
+
 					if ($option->option()->type == 'select') {
 						continue;
 					}
@@ -101,9 +102,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 					$price += $option->option()->price;
 					$regular_price += $option->option()->price;
 
-					// add the delivery markup 
+					// add the delivery markup
 					if( $delivery_service_markup > 0 && $price > 0 ){
-						$option_price = number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );	
+						$option_price = number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
 						$price = $price + $option_price;
 					}
 
@@ -120,15 +121,15 @@ class Cockpit_Order extends Crunchbutton_Order {
 					$regular_price = number_format( $regular_price, 2 );
 				}
 				if( $withOptions != '' ){
-					$withOptions = substr($withOptions, 0, -2);	
+					$withOptions = substr($withOptions, 0, -2);
 				}
 				if( $selectOptions != '' ){
-					$selectOptions = substr($selectOptions, 0, -2);	
+					$selectOptions = substr($selectOptions, 0, -2);
 				}
 			}
 
 			$withoutDefaultOptions = '';
-			if( $dish->id_order_dish && $dish->id_dish ){ 
+			if( $dish->id_order_dish && $dish->id_dish ){
 				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
 				$commas = '';
 				if( $optionsNotChoosen->count() ){
