@@ -127,7 +127,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 					$scope.navigation.link( '/restaurant/order/' + data.id_order );
 					$scope.isProcessing = false;
 				} else {
-					Alert.alert( data.errors );
+					App.alert( data.errors );
 				}
 			}
 		} );
