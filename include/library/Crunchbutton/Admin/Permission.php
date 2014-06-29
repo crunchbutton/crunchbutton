@@ -3,36 +3,42 @@
 class Crunchbutton_Admin_Permission extends Cana_Table {
 
 	public function __construct($id = null) {
-		
+
 		parent::__construct();
 
-		$_elements = array( 
+		$_elements = array(
 												'Restaurant' => c::db()->get( 'SELECT id_restaurant AS id, CONCAT( name, " (", community, ")" ) AS name FROM restaurant WHERE name IS NOT NULL ORDER BY name ASC' ),
 												'Community' => c::db()->get( "SELECT DISTINCT( REPLACE( LOWER( community ), ' ', '-' ) ) AS id, community AS name FROM restaurant WHERE community IS NOT NULL ORDER BY community ASC" ),
 											);
-			
+
 		$_permissions = array();
 
 
-		// Global's permissions 
+		// Global's permissions
 		$_permissions[ 'global' ] = array( 'description' => 'Global' );
 		$_permissions[ 'global' ][ 'permissions' ] = array( 'global' => array( 'description' => 'Can perform any action in cockpit' ) );
 
-		// Restaurants's permissions 
+		// Restaurants's permissions
 		$_permissions[ 'restaurant' ] = array( 'description' => 'Restaurant\'s permissions' );
 		$_permissions[ 'restaurant' ][ 'doAllPermission' ] = 'restaurants-all';
-		$_permissions[ 'restaurant' ][ 'permissions' ] = array( 
+		$_permissions[ 'restaurant' ][ 'permissions' ] = array(
+																											'restaurant' => array( 'description' => 'RESTAURANT' ),
 																											'restaurants-all' => array( 'description' => 'Can perform any action with ALL restaurants' ),
 																											'restaurants-list-page' => array( 'description' => 'View restaurants he has access to' ),
 																											'restaurants-crud' => array( 'description' => 'Create, update, retrieve and delete ALL restaurants' ),
 																											'restaurants-create' => array( 'description' => 'Create restaurants and edit the restaurants created by the user', 'dependency' => array( 'restaurants-list-page' ) ),
-																											// 'restaurant-ID-all' => array( 'description' => 'Can perform any action with ONLY these restaurants', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ), 
-																											'restaurant-ID-edit' => array( 
-																																					'description' => 'Edit the info about the restaurant ID, it does not include payment and send fax', 
-																																					'type' => 'combo', 
-																																					'element' => 'Restaurant', 
-																																					'dependency' => array( 'restaurants-list-page' ), 
-																																					'additional' => array( 
+																											// 'restaurant-ID-all' => array( 'description' => 'Can perform any action with ONLY these restaurants', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ),
+																											'restaurant-order-placement-ID' => array(
+																																					'description' => 'Order food at cockpit.la from this restaurant <br/> ADD JUST ONE RESTAURANT',
+																																					'type' => 'combo',
+																																					'element' => 'Restaurant',
+																																					'dependency' => array( 'restaurant' ) ),
+																											'restaurant-ID-edit' => array(
+																																					'description' => 'Edit the info about the restaurant ID, it does not include payment and send fax',
+																																					'type' => 'combo',
+																																					'element' => 'Restaurant',
+																																					'dependency' => array( 'restaurants-list-page' ),
+																																					'additional' => array(
 																																							'label' => 'Additional restaurant permissions:',
 																																							'permissions' => array(
 																																								'restaurants-weight-adj-page' => array( 'description' => 'View the adjustment weight page, the user will be able to edit just the restaurant he has the permission', 'dependency' => array( 'restaurants-list-page' ) ),
@@ -44,10 +50,10 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											 ),
 																										);
 
-		// Orders's permissions 
+		// Orders's permissions
 		$_permissions[ 'order' ] = array( 'description' => 'Orders Page permissions' );
 		$_permissions[ 'order' ][ 'doAllPermission' ] = 'orders-all';
-		$_permissions[ 'order' ][ 'permissions' ] = array( 
+		$_permissions[ 'order' ][ 'permissions' ] = array(
 																											'orders-all' => array( 'description' => 'Can perform any action with orders' ),
 																											'orders-list-page' => array( 'description' => 'View main orders page' ),
 																											'orders-list-restaurant-ID' => array( 'description' => 'View the orders only from these restaurants:', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'orders-list-page' ), 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
@@ -57,23 +63,23 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'orders-export' => array( 'description' => 'Export orders', 'dependency' => array( 'orders-list-page' ) ),
 																										);
 
-		// Gift card's permissions 
+		// Gift card's permissions
 		$_permissions[ 'giftcard' ] = array( 'description' => 'Gift card\'s permissions' );
 		$_permissions[ 'giftcard' ][ 'doAllPermission' ] = 'gift-card-all';
-		$_permissions[ 'giftcard' ][ 'permissions' ] = array( 
+		$_permissions[ 'giftcard' ][ 'permissions' ] = array(
 																											'gift-card-all' => array( 'description' => 'Can perform any action with gift cards' ),
 																											'gift-card-list-page' => array( 'description' => 'View main gift card page' ),
 																											'gift-card-create' => array( 'description' => 'Ability to create gift cards' ),
 																											'gift-card-list-all' => array( 'description' => 'View gift cards from ALL the restaurants' ),
 																											'gift-card-list-restaurant-ID' => array( 'description' => 'View the gift cards from ONLY these restaurants:', 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																											'gift-card-create-all' => array( 'description' => 'Ability to create gift cards to ALL restaurants' ),
-																											
-																											'gift-card-create-restaurant-ID' => array( 
-																																												'description' => 'Create gift cards to these restaurants', 
-																																												'dependency' => array( 'gift-card-create' ), 
+
+																											'gift-card-create-restaurant-ID' => array(
+																																												'description' => 'Create gift cards to these restaurants',
+																																												'dependency' => array( 'gift-card-create' ),
 																																												'type' => 'combo', 'element' => 'Restaurant',
 																																												'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ),
-																																												'additional' => array( 
+																																												'additional' => array(
 																																														'label' => 'Additional gift card:',
 																																														'permissions' => array(
 																																															'gift-card-restaurant-ID' => array( 'description' => 'View gift cards he has access to', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'gift-card-create' ) ),
@@ -85,10 +91,10 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'gift-card-anti-cheat' => array( 'description' => 'Ability to view the gift card anti cheat page' ),
 																										);
 
-		// Metric's permissions 
+		// Metric's permissions
 		$_permissions[ 'metrics' ] = array( 'description' => 'Metric\'s permissions' );
 		$_permissions[ 'metrics' ][ 'doAllPermission' ] = 'metrics-all';
-		$_permissions[ 'metrics' ][ 'permissions' ] = array( 
+		$_permissions[ 'metrics' ][ 'permissions' ] = array(
 																											'metrics-all' => array( 'description' => 'View all metrics' ),
 																											'metrics-main' => array( 'description' => 'View the `Main` charts' ),
 																											'metrics-investors' => array( 'description' => 'View the `For Investor` charts' ),
@@ -102,10 +108,10 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'metrics-manage-cohort' => array( 'description' => 'Manage the cohorts' ),
 																										);
 
-		// Support's permissions 
+		// Support's permissions
 		$_permissions[ 'support' ] = array( 'description' => 'Support\'s permissions' );
 		$_permissions[ 'support' ][ 'doAllPermission' ] = 'support-all';
-		$_permissions[ 'support' ][ 'permissions' ] = array( 
+		$_permissions[ 'support' ][ 'permissions' ] = array(
 																											'support-all' => array( 'description' => 'Can perform ALL support related actions' ),
 																											'support-crud' => array( 'description' => 'Create, update and delete any support ticket' ),
 																											'support-create' => array( 'description' => 'Create support ticket', 'dependency' => array( 'support-view' ) ),
@@ -115,19 +121,19 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'support-settings' => array( 'description' => 'Change support settings' ),
 																										);
 
-		// Suggestions's permissions 
+		// Suggestions's permissions
 		$_permissions[ 'suggestion' ] = array( 'description' => 'Suggestions\'s permissions' );
 		$_permissions[ 'suggestion' ][ 'doAllPermission' ] = 'suggestions-all';
-		$_permissions[ 'suggestion' ][ 'permissions' ] = array( 
+		$_permissions[ 'suggestion' ][ 'permissions' ] = array(
 																											'suggestions-all' => array( 'description' => 'Can perform any action with suggestions' ),
 																											'suggestions-list-page' => array( 'description' => 'View suggestions page' ),
 																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for these restaurants:', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																										);
 
-		// User/Groups's permissions 
+		// User/Groups's permissions
 		$_permissions[ 'permissions' ] = array( 'description' => 'Admin user\'s permissions' );
 		$_permissions[ 'permissions' ][ 'doAllPermission' ] = 'permission-all';
-		$_permissions[ 'permissions' ][ 'permissions' ] = array( 
+		$_permissions[ 'permissions' ][ 'permissions' ] = array(
 																										'permission-all' => array( 'description' => 'Can perform ALL actions with admin users and groups (create, update, delete, assign permissions)' ),
 																										'permission-users' => array( 'description' => 'Can perform actions with ONLY admin users (create, update, delete, assign permissions) ' ),
 																										'permission-groups' => array( 'description' => 'Can perform actions with ONLY admin groups (create, update, delete, assign permissions) ' ),
@@ -136,7 +142,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		// Drivers permissions
 		$_permissions[ 'drivers' ] = array( 'description' => 'Manage driver\'s stuff' );
 		$_permissions[ 'drivers' ][ 'doAllPermission' ] = 'drivers-all';
-		$_permissions[ 'drivers' ][ 'permissions' ] = array( 
+		$_permissions[ 'drivers' ][ 'permissions' ] = array(
 																										'drivers-all' => array( 'description' => 'Can perform ALL actions about drivers', 'dependency' => array( 'drivers-page' ) ),
 																										'drivers-orders-view' => array( 'description' => 'View and export orders by drivers', 'dependency' => array( 'drivers-page' ) ),
 																										'drivers-assign' => array( 'description' => 'Can assign drivers to community/restaurant', 'dependency' => array( 'drivers-page' ) ),
@@ -146,9 +152,9 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																										);
 
 
-		// Communities permissions */ 
+		// Communities permissions */
 		$_permissions[ 'communities' ] = array( 'description' => 'Community stuff' );
-		$_permissions[ 'communities' ][ 'permissions' ] = array( 
+		$_permissions[ 'communities' ][ 'permissions' ] = array(
 																										'community-all' => array( 'description' => 'See all the community\'s page', 'dependency' => array( 'community-page' ) ),
 																										'community-communities-ID' => array( 'description' => 'See the page of these communities', 'dependency' => array( 'community-page' ), 'type' => 'combo', 'element' => 'Community' ),
 																										'community-restaurants' => array( 'description' => 'See the restaurants tab at community page', 'dependency' => array( 'community-page' ) ),
@@ -156,9 +162,9 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																										'community-page' => array( 'description' => 'Can see the drivers manage page ' ),
 																										);
 /*
-		// Other's permissions  
+		// Other's permissions
 		$_permissions[ 'other' ] = array( 'description' => 'Other\'s permissions' );
-		$_permissions[ 'other' ][ 'permissions' ] = array( 
+		$_permissions[ 'other' ][ 'permissions' ] = array(
 																											'github' => array( 'description' => 'View github page and issues' ),
 																											'customers-all' => array( 'description' => 'Do all about customers' ),
 																											'curation' => array( 'description' => 'View curation page--only for restaurants user has access to' ),
@@ -211,7 +217,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permission = new Crunchbutton_Admin_Permission;
 		$_permissions = [];
 		foreach( $permissions as $permission ){
-			$info = $_permission->getPermissionInfo( $permission->permission ); 
+			$info = $_permission->getPermissionInfo( $permission->permission );
 			if( $info ){
 				// echo '<pre>';var_dump( $info );exit();
 				if( strstr( $info[ 'permission' ], 'ID' ) ){
@@ -221,7 +227,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 					if( count( $matches ) > 0 ){
 						$id = $matches[ 1 ];
 						if( !$_permissions[ $info[ 'permission' ] ] ){
-							$_permissions[ $info[ 'permission' ] ] = array( 'description' => $info[ 'description' ], 'elements' => [] );	
+							$_permissions[ $info[ 'permission' ] ] = array( 'description' => $info[ 'description' ], 'elements' => [] );
 						}
 						$_permissions[ $info[ 'permission' ] ][ 'elements' ][] = $_permission->getElement( $info[ 'element' ], $id );
 					}
