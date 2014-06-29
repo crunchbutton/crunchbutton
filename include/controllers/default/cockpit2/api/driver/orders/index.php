@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 
 		$lastHours = 12; // last 12 hours
@@ -11,7 +11,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			switch ( c::getPagePiece( 3 ) ) {
 				case 'count':
 					$count = 0;
-					$orders = Order::deliveryOrders( $lastHours ); 
+					$orders = Order::deliveryOrders( $lastHours );
 					foreach ( $orders as $order ) {
 						$status = $order->deliveryLastStatus();
 						if( $status[ 'status' ] == 'new' ){
@@ -20,7 +20,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					}
 					echo json_encode( [ 'total' => $count ] );
 					break;
-				
+
 				default:
 
 					$order = Order::o(c::getPagePiece( 3 ) );
@@ -32,7 +32,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 							c::db()->query( 'DELETE FROM order_action WHERE id_order = "' . $order->id_order . '"' );
 						}
 					}
-					
+
 
 					if ( $this->method() == 'post' ) {
 
@@ -56,9 +56,9 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$res['status'] = true;
 								break;
 						}
-						
+
 						if ( $order->deliveryStatus() ){
-							$ret = $order->deliveryExports();	
+							$ret = $order->deliveryExports();
 						}
 						$ret[ 'status' ] = $res[ 'status' ];
 
@@ -79,7 +79,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			$exports = [];
 
 			$orders = Order::deliveryOrders( $lastHours );
-			
+
 			foreach ( $orders as $order ) {
 				$exports[] = Model::toModel( [
 					'id_order' => $order->id_order,

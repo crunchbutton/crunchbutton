@@ -29,7 +29,7 @@
 			</tr>
 		</thead>
 
-<?php 
+<?php
 $permissionRefund = c::admin()->permission()->check(['global','orders-all','orders-refund']);
 $permissionNotification = c::admin()->permission()->check(['global','orders-all','orders-notification']);
 $permissionGiftCard = c::admin()->permission()->check(['global','orders-all','gift-card-all','gift-card-crud']);
@@ -61,34 +61,34 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							<? endif ; ?>
 						<?php } ?>
 
-							<?php 
+							<?php
 							$credit = $order->hasCredit();
 							if( $credit > 0 ){
 								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $credit, 2 ) . '</strong> credit.</div>';
 							}
 							?>
-							<?php 
+							<?php
 							$giftcard = $order->hasGiftCard();
 							if( $giftcard > 0 ){
 								echo '<br/><br/><i class="icon-gift"></i> Received <b>$' . number_format( $giftcard, 2 ) . '</b> gift card.';
 							}
 							?>
 							<br />
-							<br /> 
-							
+							<br />
+
 								<?php if( $permissionRefund ) { ?>
 									<div style="<?php if( !$order->refunded ) { echo 'display:none;';} ?>" class="pointer refunded-<?php echo $order->uuid; ?> pay_if_refunded" data-value="<?php if( $order->pay_if_refunded ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
 										<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay restaurant despite refund (e.g. this refund was our fault)
 									</div>
-								
-				
+
+
 							<div style="<?php if( !$order->refunded ) { echo 'display:none;';} ?>" class="pointer  refunded-<?php echo $order->uuid; ?> do_not_reimburse_driver" data-value="<?php if( $order->do_not_reimburse_driver ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
-								<span><?php if( $order->do_not_reimburse_driver ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> 
+								<span><?php if( $order->do_not_reimburse_driver ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span>
 								Do Not Reimburse Driver?
 							</div>
-							
-						<?php } ?>					
-							
+
+						<?php } ?>
+
 					<br/>
 
 					<?
@@ -96,9 +96,9 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						if($suppor ) {
 
 							if( $permissionSupportCreate ){
-								echo '<i class="icon-comments"></i> <a href="/support/' . $support->id . '">View support ticket</a>';	
+								echo '<i class="icon-comments"></i> <a href="/support/' . $support->id . '">View support ticket</a>';
 							}
-							
+
 						}
 						else {
 							if( $permissionSupportView ){
@@ -125,7 +125,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<strong>Notification Sent to Restaurant</strong><br/><br/>
 					<?php } ?>
 					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
-						if( $order->confirmed ) { 
+						if( $order->confirmed ) {
 							echo '<i class="icon-thumbs-up"></i> Confirmed!';
 						} else {
 							echo '<i class="icon-thumbs-down"></i> NOT confirmed.';
@@ -154,10 +154,10 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 								<? foreach ($dish->options() as $option) : ?>
 									<li><?=$option->option()->name?></li>
 								<? endforeach ; ?>
-								<? if( $dish->id_order_dish && $dish->id_dish ){ 
+								<? if( $dish->id_order_dish && $dish->id_dish ){
 										foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
 										?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
-									} 
+									}
 								}?>
 								</ul>
 							<? endif ; ?>
@@ -184,15 +184,15 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<tr>
 							<td nowrap="nowrap">Delivery service percent <br/>(included in subtotal) <br/>
 								(+<?=$order->delivery_service_markup ? $order->delivery_service_markup : '0'?>% of $
-								<?php 
+								<?php
 								if( $order->price_plus_delivery_markup ) {
 									echo number_format( $order->price, 2 );
-								} else { 
+								} else {
 									number_format( $order->price - $order->delivery_service_markup_value, 2 );
 								} ?>)
 							</td>
 							<td>
-								$<?=number_format( $order->delivery_service_markup_value, 2 )?> 
+								$<?=number_format( $order->delivery_service_markup_value, 2 )?>
 								<br/>
 								(+<?=$order->delivery_service_markup ? $order->delivery_service_markup : '0'?>%)
 							</td>
@@ -209,17 +209,17 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<tr>
 							<td nowrap="">
 							Tax <br/>
-								<?php 
+								<?php
 								if( $order->tax ){
 									if( $order->price_plus_delivery_markup && $order->delivery_service_markup_value ) {
 										if( $order->delivery_service ){
-											echo $order->tax . '% of ' . number_format( ( $order->price ), 2 ) . '<br/>(subtotal without markup)';	
+											echo $order->tax . '% of ' . number_format( ( $order->price ), 2 ) . '<br/>(subtotal without markup)';
 										} else {
 											echo $order->tax . '% of ' . number_format( ( $order->price + $order->deliveryFee() ), 2 ) . '<br/>(subtotal without markup)';
 										}
-									} else { 
+									} else {
 										echo $order->tax . '% of ' . number_format( $order->price, 2 ) ;
-									} 
+									}
 								}
 								?>
 							</td>
@@ -292,7 +292,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							<tr>
 								<td><i class="icon-desktop"></i> <?php echo $order->agent()->os . ' ' . $order->agent()->browser ?></td>
 							</tr>
-								<?php 
+								<?php
 							} ?>
 					</table>
 				</td>

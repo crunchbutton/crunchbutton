@@ -1,7 +1,30 @@
-NGApp.controller('RestaurantOrderView', function ($scope, $http, $routeParams) {
-	$http.get('/api/order/' + $routeParams.id).success(function(data){
-		$scope.order = data;
-	});
+NGApp.controller('RestaurantOrderView', function ( $scope, RestaurantOrderService ) {
+	RestaurantOrderService.get( function( json ){
+		if( json.id_order ){
+			$scope.order = json;
+		} else {
+			$scope.error = true;
+		}
+		$scope.ready = true;
+	} );
+	$scope.list = function(){
+		$scope.navigation.link( '/restaurant/order/list' );
+	}
+});
+
+NGApp.controller('RestaurantOrderList', function ( $scope, RestaurantOrderService ) {
+	RestaurantOrderService.list( function( json ){
+		if( !json.error ){
+			$scope.orders = json;
+		}
+		$scope.ready = true;
+	} );
+	$scope.new = function(){
+		$scope.navigation.link( '/restaurant/order/new' );
+	}
+	$scope.open = function( id_order ){
+		$scope.navigation.link( '/restaurant/order/' + id_order );
+	}
 });
 
 NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, RestaurantOrderService, PositionService ) {
@@ -101,14 +124,17 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 				return;
 			} else {
 				if( data.id_order ) {
-					// $scope.navigation.link( '/restaurant/order/' + data.id_order );
-					console.log('data',data);
+					$scope.navigation.link( '/restaurant/order/' + data.id_order );
 					$scope.isProcessing = false;
 				} else {
 					Alert.alert( data.errors );
 				}
 			}
 		} );
+	}
+
+	$scope.list = function(){
+		$scope.navigation.link( '/restaurant/order/list' );
 	}
 
 	$scope.test = function (){
