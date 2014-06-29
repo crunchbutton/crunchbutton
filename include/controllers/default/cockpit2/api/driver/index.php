@@ -22,7 +22,7 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 						'accuracy' => $this->request()['accuracy']
 					]))->save();
 				}
-				if ($driver->location()->id_admin_location) {
+				if ( method_exists( $driver, 'location' ) && $driver->location()->id_admin_location) {
 					echo $driver->location()->json();
 				} else {
 					echo json_encode(null);

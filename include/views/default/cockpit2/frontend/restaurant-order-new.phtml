@@ -1,97 +1,159 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-show="ready">
 
-	<h1 class="title"><i class="fa fa-credit-card"></i><span>New Order</span></h1>
-	
-	<div ng-if="!account.restaurant">
-		<p>select a restaurant</p>
+	<h1 class="title left"><i class="fa fa-credit-card"></i><span>New Order</span></h1>
+
+	<div class="divider"></div>
+
+
+	<h2 class="title" ng-show="!restaurant.id_restaurant">
+		Select a restaurant
+	</h2>
+
+	<div ng-show="restaurant.id_restaurant">
+
+		<h2 class="title">{{restaurant.name}}</h2>
+		<h3 class="title">Please fill out all of the customer's information. Their name and phone number will be sent to the delivery drivers.</h3>
+
+		<form name="form" novalidate>
+
+			<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+
+				<li class="li-input" ng-class="{'error':form.orderName.$invalid}">
+					<div class="label">Name:</div>
+					<div class="input"><input type="text" name="orderName" ng-model="order.name" required placeholder="Name" ng-minlength="5" ng-maxlength="250"></div>
+					<div class="box-error">
+						<small ng-show="form.orderName.$error.required">Required.</small>
+						<small ng-show="form.orderName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
+						<small ng-show="form.orderName.$error.maxlength">Name cannot be longer than 250 characters.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderPhone.$invalid}">
+					<div class="label">Phone:</div>
+					<div class="input"><input type="text" name="orderPhone" ng-model="order.phone" placeholder="646-783-1444" required phone-validate placeholder="Phone"></div>
+					<div class="box-error">
+						<small ng-show="form.orderPhone.$error.required">Required.</small>
+						<small ng-show="form.orderPhone.$error.phoneValidate">Enter a valid phone.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderAddress.$invalid}">
+					<div class="label">Address:</div>
+					<div class="input"><input type="text" name="orderAddress" ng-blur="checkAddress()" ng-model="order.address" required placeholder="1120 Princeton Drive, Marina del Rey CA 90292"></div>
+					<div class="box-error">
+						<small ng-show="form.orderAddress.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-map" ng-show="map.link">
+
+					<div>
+						<a href="{{map.link}}" target="_blank">Get directions</a>
+					</div>
+
+					<div ng-show="!map.out_of_range && map.distance > 0" class="delivery-range">
+						<span>This address is {{map.distance}} miles from your restaurant</span>
+					</div>
+					<div ng-show="map.out_of_range && map.distance > 0" class="delivery-out-of-range">
+						<span><strong>Out of range! </strong><br>This address is {{map.distance}} miles from your restaurant</span>
+					</div>
+					<div ng-show="map.distance == -1" class="delivery-out-of-range">
+						<span>Unable to measure distance</span>
+					</div>
+
+					<a href="{{map.link}}" target="_blank" ng-show="map.img">
+						<span ng-bind-html-unsafe="map.img"></span>
+					</a>
+
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderNotes.$invalid}">
+					<div class="label">Notes:</div>
+					<div class="input"><input type="text" Address="orderNotes" ng-model="order.notes" required placeholder="Building name, or dial code"></div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderSubtotal.$invalid}">
+					<div class="label">Subtotal:</div>
+					<div class="input"><input type="number" name="orderSubtotal" ng-model="order.subtotal" required placeholder="0.00"></div>
+					<div class="box-error">
+						<small ng-show="form.orderSubtotal.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input">
+					<div class="label">Tip Type</div>
+					<div class="input">
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'percent' }" ng-click="order.tip_type = 'dollar'">$</button>
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'dollar' }" ng-click="order.tip_type = 'percent'">%</button>
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="input" ng-show="order.tip_type == 'dollar'">
+						<input type="number" name="orderTip" ng-model="order.tip" placeholder="0.00">
+					</div>
+					<div class="input" ng-show="order.tip_type == 'percent'">
+						<select ng-model="order.tip" name="orderTip" ng-options="tip.value as tip.label for tip in tip._percents"></select>
+					</div>
+				</li>
+
+				<li class="li-input">
+					<div class="label">Payment Type</div>
+					<div class="input">
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.pay_type == 'cash' }" ng-click="order.pay_type = 'card'">Card</button>
+							<button class="button green" ng-class="{ 'inactive': order.pay_type == 'card' }" ng-click="order.pay_type = 'cash'">Cash</button>
+							<div class="divider"></div>
+						</div>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.cardNumber.$invalid}" ng-show="order.pay_type=='card'">
+					<div class="label">Card Number:</div>
+					<div class="input"><input type="text" name="cardNumber" ng-model="card.number" ng-required="order.pay_type=='card'" placeholder="0000-0000-0000-0000"></div>
+					<div class="box-error">
+						<small ng-show="form.cardNumber.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.cardMonth.$invalid, 'error':form.cardYear.$invalid}" ng-show="order.pay_type=='card'">
+					<div class="label">Card Expiration</div>
+					<div class="input">
+						<select ng-model="card.month" ng-required="order.pay_type=='card'" name="cardMonth" ng-options="month.value as month.label for month in card._months"></select>
+						<select ng-model="card.year" ng-required="order.pay_type=='card'" name="cardYear" ng-options="year.value as year.label for year in card._years"></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.cardMonth.$error.required">Card month is required.</small>
+						<small ng-show="form.cardYear.$error.required">Card year is required.</small>
+					</div>
+				</li>
+
+				<li ng-show="finalAmount > 0">
+					<div class="final-amount">
+						<div class="final-amount-padding">
+							<sup>$</sup><span class="total">{{finalAmount}}</span>
+							<span class="description">Total Price</span>
+						</div>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="!isProcessing">
+					<!-- <button class="button orange" ng-click="test();">SEND TEST</button> -->
+					<button class="button orange" ng-click="processOrder();">Process Order</button>
+				</li>
+
+				<li class="li-input" ng-show="isProcessing">
+					<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
+				</li>
+
+			</ul>
+
+		</form>
+
 	</div>
-	
-	<div ng-if="account.restaurant">
-		
-		
-		<p>Please fill out all of the customer's information. Their name and phone number will be sent to the delivery drivers.</p>
-		
-		<br><br>
-		<ul class="ul-inputs box-content">
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Name</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="order.name" required="" placeholder="Customer Name" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-				<div class="box-error">
-					<small ng-show="form.driverName.$error.required" class="ng-hide">Required.</small>
-					<small ng-show="form.driverName.$error.minlength" class="ng-hide">Name is too short. Name is required to be at least 5 characters.</small>
-					<small ng-show="form.driverName.$error.maxlength" class="ng-hide">Name cannot be longer than 40 characters.</small>
-				</div>
-			</li>
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Phone</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="order.phone" required="" placeholder="646-783-1444" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-			</li>
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Address</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="order.address" required="" placeholder="1120 Princeton Drive, Marina del Rey CA 90292" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-			</li>
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Notes</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="order.notes" required="" placeholder="Building name, or dial code" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-			</li>
-			
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Subtotal</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="order.subtotal" required="" placeholder="0.00" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-			</li>
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Tip</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="order.tip" required="" placeholder="0.00" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-			</li>
-	
-	
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
-				<div class="label">Payment Type</div>
-				<div class="input">
-	
-					<select ng-model="order.pay_type">
-						<option value="card">Card</option>
-						<option value="cash">Cash</option>
-					</select>
-				</div>
-			</li>
-	
-	
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}" ng-show="order.pay_type=='card'">
-				<div class="label">Card Number</div>
-				<div class="input">
-					<input type="text" name="name" ng-model="card.number" required="" placeholder="0000-0000-0000-0000" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
-				</div>
-			</li>
-			
-	
-	
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}" ng-show="order.pay_type=='card'">
-				<div class="label">Card Expiration</div>
-				<div class="input">
-	
-					<select ng-model="card.month" ng-options="month.value as month.label for month in card._months()" class=""></select>
-					<select ng-model="card.year" ng-options="year.value as year.label for year in card._years()" class=""></select>
-				</div>
-			</li>
-			<li class="li-input" ng-show="!isSubmitting"><button class="button orange" ng-click="submit();">Submit New Order</button></li>
-		</ul>
-	</div>
-	
 </div>
 
-
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
