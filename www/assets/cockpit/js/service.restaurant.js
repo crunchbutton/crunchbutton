@@ -37,8 +37,23 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 	var service = {};
 
 	var orders = $resource( App.service + 'order/:action', { action: '@action' }, {
-				'process' : { 'method': 'POST', params : { 'action' : '' } } }
+				'process' : { 'method': 'POST' },
+				'get' : { 'method': 'GET' },
+				'list' : { 'method': 'GET' , params : { 'action' : 'list' }, isArray: true },
+			}
 		);
+
+	service.get = function( callback ){
+		orders.get( { 'action': $routeParams.id }, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.list = function( callback ){
+		orders.list( function( data ){
+			callback( data );
+		} );
+	}
 
 	service.calcTotal = function( order, restaurant ){
 
