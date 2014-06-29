@@ -82,37 +82,31 @@
 					</div>
 				</li>
 
-				<li class="li-input" ng-class="{'error':form.orderTipType.$invalid}">
+				<li class="li-input">
 					<div class="label">Tip Type</div>
 					<div class="input">
-						<select ng-model="order.tip_type" name="orderTipType" required>
-							<option value="dollar">Dollar</option>
-							<option value="percent">Percent</option>
-						</select>
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'percent' }" ng-click="order.tip_type = 'dollar'">$</button>
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'dollar' }" ng-click="order.tip_type = 'percent'">%</button>
+							<div class="divider"></div>
+						</div>
 					</div>
-					<div class="box-error">
-						<small ng-show="form.orderTipType.$error.required">Required.</small>
+					<div class="input" ng-show="order.tip_type == 'dollar'">
+						<input type="number" name="orderTip" ng-model="order.tip" placeholder="0.00">
 					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.orderTip.$invalid}">
-					<div class="label">Tip:</div>
-					<div class="input"><input type="number" name="orderTip" ng-model="order.tip" required placeholder="0.00"></div>
-					<div class="box-error">
-						<small ng-show="form.orderTip.$error.required">Required.</small>
+					<div class="input" ng-show="order.tip_type == 'percent'">
+						<select ng-model="order.tip" name="orderTip" ng-options="tip.value as tip.label for tip in tip._percents"></select>
 					</div>
 				</li>
 
-				<li class="li-input" ng-class="{'error':form.orderPayType.$invalid}">
+				<li class="li-input">
 					<div class="label">Payment Type</div>
 					<div class="input">
-						<select ng-model="order.pay_type" name="orderPayType" required>
-							<option value="card">Card</option>
-							<option value="cash">Cash</option>
-						</select>
-					</div>
-					<div class="box-error">
-						<small ng-show="form.orderPayType.$error.required">Required.</small>
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.pay_type == 'cash' }" ng-click="order.pay_type = 'card'">Card</button>
+							<button class="button green" ng-class="{ 'inactive': order.pay_type == 'card' }" ng-click="order.pay_type = 'cash'">Cash</button>
+							<div class="divider"></div>
+						</div>
 					</div>
 				</li>
 
@@ -136,12 +130,17 @@
 					</div>
 				</li>
 
-				<li>
-					$scope.finalAmount::{{finalAmount}}
+				<li ng-show="finalAmount > 0">
+					<div class="final-amount">
+						<div class="final-amount-padding">
+							<sup>$</sup><span class="total">{{finalAmount}}</span>
+							<span class="description">Total Price</span>
+						</div>
+					</div>
 				</li>
 
 				<li class="li-input" ng-show="!isProcessing">
-					<button class="button orange" ng-click="test();">SEND TEST</button>
+					<!-- <button class="button orange" ng-click="test();">SEND TEST</button> -->
 					<button class="button orange" ng-click="processOrder();">Process Order</button>
 				</li>
 

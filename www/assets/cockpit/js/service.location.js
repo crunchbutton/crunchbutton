@@ -85,6 +85,10 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 			return;
 		}
 
+		if( $rootScope.account.restaurant ){
+			return;
+		}
+
 		// if we dont have a location
 		if (!location.lat) {
 			return;
@@ -121,7 +125,15 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 
 	var interval = setInterval(track, 60000);
 
-	watch();
+	var starToWatch = true;
+
+	if( $rootScope && $rootScope.account && $rootScope.account.restaurant ){
+		starToWatch = false;
+	}
+
+	if( starToWatch ){
+		watch();
+	}
 
 	return service;
 });
