@@ -44,7 +44,7 @@
 					</div>
 				</li>
 
-				<li class="li-input" ng-class="{'error':form.orderAddress.$invalid, 'error': map.out_of_range}">
+				<li class="li-input" ng-class="{'error':form.orderAddress.$invalid}">
 					<div class="label">Address:</div>
 					<div class="input"><input type="text" name="orderAddress" ng-blur="checkAddress()" ng-model="order.address" required placeholder="1120 Princeton Drive, Marina del Rey CA 90292"></div>
 					<div class="box-error">
@@ -78,7 +78,7 @@
 
 				<li class="li-input" ng-class="{'error':form.orderNotes.$invalid}">
 					<div class="label">Notes:</div>
-					<div class="input"><input type="text" Address="orderNotes" ng-model="order.notes" required placeholder="Building name, or dial code"></div>
+					<div class="input"><input type="text" Address="orderNotes" ng-model="order.notes" placeholder="Building name, or dial code"></div>
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.orderSubtotal.$invalid}">
