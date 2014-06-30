@@ -105,13 +105,13 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $pay[ 'customer_fee' ], 0 );
 		$this->assertEquals( $pay[ 'markup' ], 0 );
 		$this->assertEquals( $pay[ 'credit_charge' ], -2.68 );
-		$this->assertEquals( $pay[ 'restaurant_fee' ], -5.74 );
+		$this->assertEquals( $pay[ 'restaurant_fee' ], -5.75 );
 		$this->assertEquals( $pay[ 'promo_gift_card' ], 0 );
 		$this->assertEquals( $pay[ 'apology_gift_card' ], 0 );
 		$this->assertEquals( $pay[ 'order_payment' ], 51.14 );
 		$this->assertEquals( $pay[ 'cash_subtotal' ], 9.56 );
 		$this->assertEquals( $pay[ 'formal_relationship' ], 1 );
-		$this->assertEquals( $pay[ 'total_due' ], 42.72 );
+		$this->assertEquals( $pay[ 'total_due' ], 42.71 );
 	}
 
 	public function testRestaurantIndividualMathsCashOrderNoFormalRelationship() {
@@ -155,7 +155,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $pay[ 'tip' ], 0 );
 		$this->assertEquals( $pay[ 'customer_fee' ], 0 );
 		$this->assertEquals( $pay[ 'markup' ], 0 );
-		$this->assertEquals( $pay[ 'credit_charge' ], -1.4 );
+		$this->assertEquals( $pay[ 'credit_charge' ], -1.41 );
 		$this->assertEquals( $pay[ 'restaurant_fee' ], 0 );
 		$this->assertEquals( $pay[ 'promo_gift_card' ], 0 );
 		$this->assertEquals( $pay[ 'apology_gift_card' ], 0 );
