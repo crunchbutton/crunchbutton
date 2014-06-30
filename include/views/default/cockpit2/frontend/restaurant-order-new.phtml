@@ -58,11 +58,11 @@
 						<a href="{{map.link}}" target="_blank">Get directions</a>
 					</div>
 
-					<div ng-show="!map.out_of_range && map.distance > 0" class="delivery-range">
+					<div ng-show="!map.out_of_range && map.distance > -1" class="delivery-range">
 						<span>This address is {{map.distance}} miles from your restaurant</span>
 					</div>
 
-					<div ng-show="map.out_of_range && map.distance > 0" class="delivery-out-of-range">
+					<div ng-show="map.out_of_range && map.distance > -1" class="delivery-out-of-range">
 						<span><strong>Out of range! </strong><br>This address is {{map.distance}} miles from your restaurant</span>
 					</div>
 

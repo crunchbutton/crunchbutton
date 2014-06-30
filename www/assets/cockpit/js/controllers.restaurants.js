@@ -81,6 +81,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		$scope.map.link = false;
 		$scope.map.distance = false;
 		$scope.map.img = false;
+		$scope.map.out_of_range = false;
 
 		if( $scope.order.address ){
 			PositionService.find( $scope.order.address,
@@ -92,12 +93,17 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 							$scope.map.distance = parseFloat( distance );
 							$scope.restaurant.range = parseFloat( $scope.restaurant.range );
 							$scope.map.out_of_range = ( $scope.map.distance > $scope.restaurant.range );
-							$scope.$safeApply();
+							console.log('$scope.map.out_of_range',$scope.map.out_of_range);
+							$scope.$safeApply( function(){
+								$scope.map.out_of_range = ( $scope.map.distance > $scope.restaurant.range );
+							} );
 							setTimeout( function(){
-								var zoom = 13;
-								$scope.map.img = PositionService.getMapImageSource( { 'lat': pos.lat, 'lon': pos.lon }, { 'lat': $scope.restaurant.lat, 'lon': $scope.restaurant.lon }, zoom );
+								$scope.$safeApply( function(){
+									var zoom = 13;
+									$scope.map.img = PositionService.getMapImageSource( { 'lat': pos.lat, 'lon': pos.lon }, { 'lat': $scope.restaurant.lat, 'lon': $scope.restaurant.lon }, zoom );
+								} );
 							}, 1 );
-							$scope.$safeApply();
+
 						} else {
 							// error
 							$scope.map.distance = -1;
