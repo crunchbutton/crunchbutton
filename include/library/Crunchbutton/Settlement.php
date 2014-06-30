@@ -112,10 +112,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 		}
 		foreach ( $pay as $key => $val ) {
-			$pay[ $key ] = Util::round_up( number_format( $val, 3 ), 2 );
+			$pay[ $key ] = round( $val, 2 );
 		}
 		// sum
-		$pay[ 'total_due' ] = Util::round_up( number_format( $this->orderCalculateTotalDue( $pay ), 3 ), 2 );;
+		$pay[ 'total_due' ] = round( $this->orderCalculateTotalDue( $pay ), 2 );
 
 		$this->log( 'restaurantsProcessOrders', array_merge( $restaurant, $pay ) );
 		return $pay;
