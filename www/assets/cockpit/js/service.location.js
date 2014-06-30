@@ -172,7 +172,7 @@ NGApp.factory( 'PositionService', function( $rootScope, $resource, $routeParams 
 
 		if ( bounding.lat && bounding.lon && google && google.maps && google.maps.LatLng ) {
 			var latLong = new google.maps.LatLng( bounding.lat, bounding.lon );
-			var circle = new google.maps.Circle( { center: latLong, radius: boundingRadius } );
+			var circle = new google.maps.Circle( { center: latLong } );
 			var bounds = circle.getBounds();
 			params.bounds = bounds;
 		}
@@ -189,7 +189,7 @@ NGApp.factory( 'PositionService', function( $rootScope, $resource, $routeParams 
 	}
 
 	service.getMapImageSource = function( from, to, zoom ){
-		return '<img src="http://maps.googleapis.com/maps/api/staticmap?center=' + to.lat + ',' + to.lon + '&zoom=' + zoom + '&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:R%7C' + from.lat + ',' + from.lon + '&markers=color:green%7Clabel:C%7C' + to.lat + ',' + to.lon + '&scale=2" class="map-image">'
+		return '<img src="http://maps.googleapis.com/maps/api/staticmap?center=' + to.lat + ',' + to.lon + '&zoom=' + zoom + '&size=200x100&maptype=roadmap&markers=color:blue%7Clabel:R%7C' + from.lat + ',' + from.lon + '&markers=color:green%7Clabel:C%7C' + to.lat + ',' + to.lon + '&scale=2" class="map-image">';
 	}
 
 	service.getDirectionsLink = function( from, to ){
