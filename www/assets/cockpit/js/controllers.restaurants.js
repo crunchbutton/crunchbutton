@@ -127,6 +127,8 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 			return;
 		}
 
+		console.log('$scope.form',$scope.form);
+
 		if( $scope.form.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.submitted = true;
