@@ -81,12 +81,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						}
 
-						// Legacy - lets keep it here for while						
+						// Legacy - lets keep it here for while
 						$community = $order->restaurant()->community;
 						if( $community ){
 							$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
 							if( $group->id_group ){
-								$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
+								$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 								foreach( $drivers as $driver ){
 									$driversToNotify[ $driver->id_admin ] = $driver;
 								}
@@ -102,22 +102,22 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 								foreach( $driver->activeNotifications() as $adminNotification ){
 									// first notification
 									if( $attempts == 0 ){
-										$adminNotification->send( $order );	
+										$adminNotification->send( $order );
 										$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value . ' attempt: ' .  $attempts;
 										Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 										echo $message."\n";
 									} else {
 										// next notifications
 										if( !$driversAlreadyReminded[ $driver->id_admin ] ){
-											$adminNotification->send( $order );	
+											$adminNotification->send( $order );
 											$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' - attempt: ' .  $attempts;
 											Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 											echo $message."\n";
 										}
 									}
 									$driversAlreadyReminded[ $driver->id_admin ] = true;
-									$hasDriversWorking = true;									
-								}	
+									$hasDriversWorking = true;
+								}
 							}
 						}
 
@@ -135,14 +135,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 									foreach( $driver->activeNotifications() as $adminNotification ){
 										// first notification
 										if( $attempts == 0 ){
-											$adminNotification->send( $order );	
+											$adminNotification->send( $order );
 											$message = '#'.$order->id_order.' sending notification to ' . $driver->name . ' # ' . $adminNotification->value . '  attempt: ' .  $attempts;
 											Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 											echo $message."\n";
 										} else {
 											// next notifications
 											if( !$driversAlreadyReminded[ $driver->id_admin ] ){
-												$adminNotification->send( $order );	
+												$adminNotification->send( $order );
 												$message = '#'.$order->id_order.' sending warning notification to ' . $driver->name . ' attempt: ' .  $attempts;
 												Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 												echo $message."\n";
@@ -150,7 +150,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 										}
 										$driversAlreadyReminded[ $driver->id_admin ] = true;
 										$hasDriversWorking = true;
-									}	
+									}
 								}
 							}
 						}
@@ -161,7 +161,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							$community = $order->restaurant()->communityNames();
 							if( $community != '' ){
 								$restaurant .= ' (' . $order->restaurant()->community . ')';
-							} 
+							}
 							$message = '#'.$order->id_order.' there is no drivers to get the order - ' . $restaurant;
 							Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 							echo $message."\n";
@@ -190,7 +190,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$group = Crunchbutton_Group::byName(Config::getVal('rep-fail-group-name'));
 
 		if ($group->id_group) {
-			
+
 			$ags = Crunchbutton_Admin::q('SELECT admin.* FROM admin LEFT JOIN admin_group using(id_admin) WHERE id_group="'.$group->id_group.'"');
 
 			$env = c::getEnv();
@@ -203,7 +203,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				foreach( $drivers as $driver ){
 					foreach( $driver->activeNotifications() as $adminNotification ){
 						$driversToNotify[ $driver->id_admin ] = $driver->name . ': ' . $driver->phone();
-					}	
+					}
 				}
 			}
 			$drivers_list = "";
@@ -218,7 +218,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$sms_message .= "R: " . $order->restaurant()->name;
 			if( $order->restaurant()->community && $order->restaurant()->community != '' ){
 				$sms_message .= ' (' . $order->restaurant()->community . ')';
-			} 
+			}
 			$sms_message .= "\n";
 			$sms_message .= "C: " . $order->name;
 
@@ -243,7 +243,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					continue;
 				}
 
-				/* 
+				/*
 				Removed the phone call for while - asked by David 2/23/2014
 				$num = $a->getPhoneNumber();
 				if( $num ){
@@ -254,7 +254,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					$message .= $order->restaurant()->name;
 					if( $order->restaurant()->community && $order->restaurant()->community != '' ){
 						$message .= ' (' . $order->restaurant()->community . ')';
-					} 
+					}
 
 					echo $message."\n";
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
@@ -278,7 +278,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
-			return;
+			// return;
 		}
 
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
@@ -373,7 +373,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function warningAboutNoRepsWorking( $order ){
-		
+
 		$env = c::getEnv();
 
 		if( $env != 'live' ){
@@ -469,7 +469,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$sms = $this->value;
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-		
+
 		$message .= $order->message( 'sms-driver' );
 
 		$message = str_split( $message , 160 );
@@ -494,7 +494,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$sms = $this->value;
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-		
+
 		$message = static::REPS_COCKPIT . $order->id_order;
 		$message .= "\n";
 		$message .= $order->message( 'sms-admin' );
@@ -521,9 +521,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 
-		$mail = new Email_Order( [	'order' => $order, 
+		$mail = new Email_Order( [	'order' => $order,
 																'email' => $mail,
-																'cockpit_url' => $cockpit_url 
+																'cockpit_url' => $cockpit_url
 															] );
 		$mail->send();
 	}
