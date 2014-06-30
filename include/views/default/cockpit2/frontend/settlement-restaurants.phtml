@@ -87,83 +87,92 @@
 					</tr>
 				</tbody>
 			</table>
+		</div>
+
+		<div>
+			<span class="link orange" ng-show="!total_amounts" ng-click="total_amounts = true">Show details</span>
+			<span class="link orange" ng-show="total_amounts" ng-click="total_amounts = false">Hide details</span>
+			<br/><br/>
+			<br/><br/>
+
+			<div ng-show="total_amounts">
+
+				<h2 id="totals" class="title">
+					<span>Total Amounts</span>
+				</h2>
+
+				<table class="tb-grid tb-zebra">
+					<tr positive-or-negative-color="{{sum.card_subtotal}}">
+						<td>Credit Card Subtotal</td>
+						<td>$ {{sum.card_subtotal | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.tax}}">
+						<td>Tax</td>
+						<td>$ {{sum.tax | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.delivery_fee}}">
+						<td>Delivery Fee</td>
+						<td>$ {{sum.delivery_fee | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.tip}}">
+						<td>Tip</td>
+						<td>$ {{sum.tip | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.promo_gift_card}}">
+						<td>Promo Gift Card</td>
+						<td>$ {{sum.promo_gift_card | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.apology_gift_card}}">
+						<td>Apology Gift Card</td>
+						<td>$ {{sum.apology_gift_card | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.cash_reimburse}}">
+						<td>Cash Reimburse</td>
+						<td>$ {{sum.cash_reimburse | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.cash_subtotal}}">
+						<td>Cash Subtotal</td>
+						<td>$ {{sum.cash_subtotal | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.credit_charge}}">
+						<td>Credit Card Charge</td>
+						<td>$ {{sum.credit_charge | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.restaurant_fee}}">
+						<td>Crunchbutton Fees</td>
+						<td>$ {{sum.restaurant_fee | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{sum.adjustment}}">
+						<td>Adjustments</td>
+						<td>$ {{sum.adjustment | formatPrice}}</td>
+					</tr>
+					<tr class="total-due" positive-or-negative-color="{{sum.total_due}}">
+						<td class="td-medium">Total due</td>
+						<td class="td-medium">$ {{sum.total_due | formatPrice}}</td>
+					</tr>
+				</table>
+			</div>
 
 		</div>
 
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
+					<td></td>
 					<td class="td-medium">Restaurant</td>
 					<td class="td-medium">Total Due</td>
-					<td></td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="restaurant in result.restaurants" ng-class="{ 'excluded': !restaurant.pay }">
+					<td><span class="link" ng-click="show_details(restaurant)"><i class="fa fa-pencil-square-o"></i></span></td>
 					<td>{{restaurant.name}}</td>
 					<td>$ {{restaurant.total_due | formatPrice}}</td>
-					<td><span class="link details orange" ng-click="show_details(restaurant)">
-						<span ng-show="!restaurant.show_details">Show</span> <span ng-show="restaurant.show_details">Hide</span> Details</span></td>
 				</tr>
 			</tbody>
 		</table>
 
 		<br/><br/>
-
-		<h2 class="title">
-			<span>Total Amounts</span>
-		</h2>
-
-		<table class="tb-grid tb-zebra">
-			<tr positive-or-negative-color="{{sum.card_subtotal}}">
-				<td>Credit Card Subtotal</td>
-				<td>$ {{sum.card_subtotal | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.tax}}">
-				<td>Tax</td>
-				<td>$ {{sum.tax | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.delivery_fee}}">
-				<td>Delivery Fee</td>
-				<td>$ {{sum.delivery_fee | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.tip}}">
-				<td>Tip</td>
-				<td>$ {{sum.tip | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.promo_gift_card}}">
-				<td>Promo Gift Card</td>
-				<td>$ {{sum.promo_gift_card | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.apology_gift_card}}">
-				<td>Apology Gift Card</td>
-				<td>$ {{sum.apology_gift_card | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.cash_reimburse}}">
-				<td>Cash Reimburse</td>
-				<td>$ {{sum.cash_reimburse | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.cash_subtotal}}">
-				<td>Cash Subtotal</td>
-				<td>$ {{sum.cash_subtotal | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.credit_charge}}">
-				<td>Credit Card Charge</td>
-				<td>$ {{sum.credit_charge | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.restaurant_fee}}">
-				<td>Crunchbutton Fees</td>
-				<td>$ {{sum.restaurant_fee | formatPrice}}</td>
-			</tr>
-			<tr positive-or-negative-color="{{sum.adjustment}}">
-				<td>Adjustments</td>
-				<td>$ {{sum.adjustment | formatPrice}}</td>
-			</tr>
-			<tr class="total-due" positive-or-negative-color="{{sum.total_due}}">
-				<td class="td-medium">Total due</td>
-				<td class="td-medium">$ {{sum.total_due | formatPrice}}</td>
-			</tr>
-		</table>
 
 		<ul class="ul-inputs box-content">
 			<li class="li-input">
