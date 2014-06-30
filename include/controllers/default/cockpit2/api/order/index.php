@@ -14,7 +14,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 						$restaurant = Admin::restaurantOrderPlacement();
 						if( $restaurant->id_restaurant ){
 							$out = [];
-							$orders = Order::q( 'SELECT * FROM `order` o WHERE id_restaurant = "' . $restaurant->id_restaurant . '" AND o.date BETWEEN CURDATE() - INTERVAL 7 DAY AND CURDATE() ORDER BY id_order DESC' );
+							$orders = Order::q( 'SELECT * FROM `order` o WHERE id_restaurant = "' . $restaurant->id_restaurant . '" AND o.date BETWEEN NOW() - INTERVAL 7 DAY AND NOW() ORDER BY id_order DESC' );
 							foreach( $orders as $order ) {
 								$out[]	= array( 	'id_order' => $order->id_order,
 																	'lastStatus' => $order->deliveryLastStatus(),
