@@ -200,8 +200,23 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		console.log('$scope.sum',$scope.sum);
 	}
 
-	$scope.show_details = function( id_restaurant ){
-		$scope.walkTo( '#restaurant-' + id_restaurant, -80 );
+	$scope.show_details = function( restaurant ){
+
+		if( !restaurant.show_details ){
+			$scope.showing_details = true;
+			restaurant.show_details = true;
+			setTimeout( function(){
+				$scope.walkTo( '#restaurant-' + restaurant.id_restaurant, -80 );
+			} );
+		} else {
+			restaurant.show_details = false;
+			$scope.showing_details = false;
+			for( x in $scope.result.restaurants ){
+				if( $scope.result.restaurants[ x ].show_details ){
+					$scope.showing_details = true;
+				}
+			}
+		}
 	}
 
 	// Just run if the user is loggedin
