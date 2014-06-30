@@ -81,26 +81,9 @@
 
 				<li class="li-input" ng-class="{'error':form.orderSubtotal.$invalid}">
 					<div class="label">Subtotal:</div>
-					<div class="input"><input type="number" name="orderSubtotal" ng-model="order.subtotal" required placeholder="0.00"></div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="orderSubtotal" ng-model="order.subtotal" required placeholder="0.00"></div>
 					<div class="box-error">
 						<small ng-show="form.orderSubtotal.$error.required">Required.</small>
-					</div>
-				</li>
-
-				<li class="li-input">
-					<div class="label">Tip Type</div>
-					<div class="input">
-						<div class="box-filter">
-							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'percent' }" ng-click="order.tip_type = 'dollar'">$</button>
-							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'dollar' }" ng-click="order.tip_type = 'percent'">%</button>
-							<div class="divider"></div>
-						</div>
-					</div>
-					<div class="input" ng-show="order.tip_type == 'dollar'">
-						<input type="number" name="orderTip" ng-model="order.tip" placeholder="0.00">
-					</div>
-					<div class="input" ng-show="order.tip_type == 'percent'">
-						<select ng-model="order.tip" name="orderTip" ng-options="tip.value as tip.label for tip in tip._percents"></select>
 					</div>
 				</li>
 
@@ -126,12 +109,29 @@
 				<li class="li-input" ng-class="{'error':form.cardMonth.$invalid, 'error':form.cardYear.$invalid}" ng-show="order.pay_type=='card'">
 					<div class="label">Card Expiration</div>
 					<div class="input">
-						<select ng-model="card.month" ng-required="order.pay_type=='card'" name="cardMonth" ng-options="month.value as month.label for month in card._months"></select>
-						<select ng-model="card.year" ng-required="order.pay_type=='card'" name="cardYear" ng-options="year.value as year.label for year in card._years"></select>
+						<select ng-model="card.month" is-bigger-than-zero="{{order.pay_type=='card'}}" ng-required="order.pay_type=='card'" name="cardMonth" ng-options="month.value as month.label for month in card._months"></select>
+						<select ng-model="card.year" is-bigger-than-zero="{{order.pay_type=='card'}}" ng-required="order.pay_type=='card'" name="cardYear" ng-options="year.value as year.label for year in card._years"></select>
 					</div>
 					<div class="box-error">
-						<small ng-show="form.cardMonth.$error.required">Card month is required.</small>
-						<small ng-show="form.cardYear.$error.required">Card year is required.</small>
+						<small ng-show="form.cardMonth.$error.required || form.cardMonth.$error.isBiggerThanZero">Card month is required.</small>
+						<small ng-show="form.cardYear.$error.required || form.cardYear.$error.isBiggerThanZero">Card year is required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="order.pay_type=='card'">
+					<div class="label">Tip Type</div>
+					<div class="input">
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'percent' }" ng-click="order.tip_type = 'dollar'">$</button>
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'dollar' }" ng-click="order.tip_type = 'percent'">%</button>
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="input" ng-show="order.tip_type == 'dollar'">
+						<input type="number" ignore-mouse-wheel name="orderTip" ng-model="order.tip" placeholder="0.00">
+					</div>
+					<div class="input" ng-show="order.tip_type == 'percent'">
+						<select ng-model="order.tip" name="orderTip" ng-options="tip.value as tip.label for tip in tip._percents"></select>
 					</div>
 				</li>
 
@@ -139,7 +139,7 @@
 					<div class="final-amount">
 						<div class="final-amount-padding">
 							<sup>$</sup><span class="total">{{finalAmount}}</span>
-							<span class="description">Total Price</span>
+							<span class="description">Customer's Total Price</span>
 						</div>
 					</div>
 				</li>

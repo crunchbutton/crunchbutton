@@ -18,16 +18,15 @@
 
 		<div ng-if="orders.length">
 
-		<h3 class="title">Showing last {{orders.length}} orders.</h3>
+		<h3 class="title">Showing orders from last 7 days. Total {{orders.length}} orders. </h3>
 
 			<table class="tb-grid">
 				<thead>
 					<tr>
 						<td>#</td>
-						<td class="td-medium">Name</td>
-						<td class="td-medium">Phone</td>
+						<td class="td-medium">Customer</td>
 						<td>Date</td>
-						<td>Driver / Status</td>
+						<td class="td-medium">Driver / Status</td>
 					</tr>
 				</thead>
 				<tbody>
@@ -36,10 +35,7 @@
 							{{order.id_order}}
 						</td>
 						<td>
-							{{order.name}}
-						</td>
-						<td>
-							{{order.phone}}
+							{{order.name}} / {{order.phone}}
 						</td>
 						<td>
 							{{order.date}}

@@ -31,7 +31,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 
 	$scope.order = { 'tip_type': 'dollar', 'pay_type': 'card' };
 	$scope.tip = { 'dollar' : '', 'percent': '10' };
-	$scope.card = {};
+	$scope.card = { 'month': 0, 'year': 0 };
 	$scope.map = {};
 
 	var start = function(){
@@ -105,9 +105,11 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 
 	$scope.processOrder = function(){
 		if( $scope.form.$invalid ){
+			App.alert( 'Please fill in all required fields' );
 			$scope.submitted = true;
 			return;
 		}
+
 		$scope.isProcessing = true;
 		var order = angular.copy( $scope.order );
 		if( $scope.order.tip_type == 'dollar' ){

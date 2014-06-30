@@ -513,6 +513,34 @@ NGApp.directive( 'phoneValidate', function () {
 	};
 });
 
+NGApp.directive('isBiggerThanZero', function() {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function(scope, elem, attrs, ngModel) {
+
+			// observe the other value and re-validate on change
+			attrs.$observe( 'isBiggerThanZero', function () {
+				validate();
+			});
+
+			scope.$watch(attrs.ngModel, function() { validate(); } );
+
+			var validate = function() {
+				var isValid = false;
+				// if it is false it means it should not be validated
+				if( attrs.isBiggerThanZero === 'true' || attrs.isBiggerThanZero === true ){
+					if( parseInt( ngModel.$viewValue ) > 0 ){
+						isValid = true;
+					}
+				} else {
+					isValid = true;
+				}
+				ngModel.$setValidity('isBiggerThanZero', isValid );
+			};
+		}
+	}
+});
 
 NGApp.directive('equals', function() {
 	return {
@@ -676,6 +704,17 @@ NGApp.directive('splashPositionFix', function() {
 		}
 	}
 });
+
+NGApp.directive( 'ignoreMouseWheel', function( $rootScope ) {
+	return {
+		restrict: 'A',
+		link: function( scope, element, attrs ){
+			element.bind('mousewheel', function ( event ) {
+				element.blur();
+			} );
+		}
+	}
+} );
 
 NGApp.directive( 'positiveOrNegativeColor', function( $rootScope ) {
 	return {
