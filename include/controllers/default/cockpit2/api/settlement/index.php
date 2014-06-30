@@ -4,6 +4,21 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		$set = new Settlement;
+
+		$order = Order::o( 24464 );
+		$order = Order::o( 24462 );
+
+		$vars = [ $set->orderExtractVariables( $order ) ];
+
+
+echo '<pre>';var_dump(  $set->driversProcessOrders( $vars )  );exit();
+		// $this->_driverBegin();
+
+
+
+		exit;
+
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -369,7 +384,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$id_driver = $this->request()['id_driver'];
 
 		if( !$start || !$end ){
-			$this->_error();
+			// $this->_error();
 		}
 
 		$settlement = new Settlement( [ 'start' => $start, 'end' => $end ] );

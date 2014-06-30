@@ -50,7 +50,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND NAME NOT LIKE "%test%"
 									ORDER BY `date` ASC ';
 		// todo: do not commit with this line
-		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
+		$query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
 		return Order::q( $query );
 	}
 
@@ -138,7 +138,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $driver ][ 'id_admin' ] = $driver;
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 				}
-				$pay[ $driver ][ 'orders' ][] = $order;
+				$pay[ $driver ][ 'orders' ][] = 1;//$order;
 
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					continue;
@@ -153,6 +153,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'credit_charge' ] += $this->orderCreditChargeDriverPay( $order );
 				$pay[ $driver ][ 'restaurant_fee' ] += $this->orderRestaurantFeeDriverPay( $order );
 				$pay[ $driver ][ 'gift_card' ] += $this->orderGiftCardDriverPay( $order );
+				$pay[ $driver ][ 'reimburse' ] += $this->orderReimburseDriver( $order );
 			}
 		}
 
@@ -176,7 +177,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 									$pay[ 'markup' ] +
 									$pay[ 'credit_charge' ] +
 									$pay[ 'restaurant_fee' ] +
-									$pay[ 'gift_card' ];
+									$pay[ 'gift_card' ] -
+									$pay[ 'reimburse' ];
 		return $total_due;
 	}
 
@@ -287,6 +289,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// Drivers are paid the whole delivery fee from credit orders.
 	public function orderDeliveryFeeDriverPay( $arr ){
 		return $arr[ 'delivery_fee' ] * $arr[ 'credit' ] * $arr[ 'delivery_service' ];
+	}
+
+	// Reimburse: To quote above, drivers are only reimbursed (that is, reimbursed for subtotal + tax)
+	// on orders where they front the money (i.e. on credit orders to non-formal-relationship stores)
+	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47254475
+	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47283481
+	public function orderReimburseDriver( $arr ){
+		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'credit' ] * $arr[ 'delivery_service' ];
 	}
 
 	// Drivers are paid the whole tip from credit orders.
