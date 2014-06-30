@@ -1778,26 +1778,49 @@ class Crunchbutton_Order extends Cana_Table {
 
 				break;
 			case 'sms-admin':
-				$spacer = ' / ';
-				$payment =
-				$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
 
-				if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
-					$msg .= $this->address . $spacer;
+				if( $this->type == 'restaurant' ){
+					$spacer = ' / ';
+					$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
+						$msg .= $this->address . $spacer;
+					}
+					$msg .= $this->restaurant()->name . $spacer ;
+					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
+						$msg .= strtoupper( 'Charge Customer $' . $this->final_price_plus_delivery_markup );
+						$msg .= $spacer;
+						$msg .= strtoupper( 'Pay Restaurant $' . $this->final_price );
+					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ){
+						$msg .= strtoupper( 'Customer Paid $' . $this->final_price_plus_delivery_markup );
+						$msg .= $spacer;
+						if( $this->tip ){
+							$msg .= 'TIP ' . $this->tip();
+						} else {
+							$msg .= 'TIP BY CASH';
+						}
+					}
+				} else {
+					$spacer = ' / ';
+					$payment =
+					$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+
+					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
+						$msg .= $this->address . $spacer;
+					}
+
+					$msg .= $this->restaurant()->name . $spacer ;
+
+					// Payment is card and user tipped
+					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
+						$msg .= 'TIP ' . $this->tip();
+					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
+						$msg .= 'TIP BY CASH';
+					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
+						$msg .= 'TOTAL ' . $this->final_price;
+					}
+
+					$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 				}
-
-				$msg .= $this->restaurant()->name . $spacer ;
-
-				// Payment is card and user tipped
-				if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
-					$msg .= 'TIP ' . $this->tip();
-				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
-					$msg .= 'TIP BY CASH';
-				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
-					$msg .= 'TOTAL ' . $this->final_price;
-				}
-
-				$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 
 				break;
 
