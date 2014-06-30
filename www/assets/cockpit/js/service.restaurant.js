@@ -39,7 +39,7 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 	var orders = $resource( App.service + 'order/:action', { action: '@action' }, {
 				'process' : { 'method': 'POST' },
 				'get' : { 'method': 'GET' },
-				'list' : { 'method': 'GET' , params : { 'action' : 'list' }, isArray: true },
+				'list' : { 'method': 'GET' , params : { 'action' : 'restaurant-list-last' }, isArray: true },
 			}
 		);
 
@@ -142,7 +142,7 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 
 	service.cardYears = function(){
 		var years = [];
-		years.push( { value: '', label: 'Year' } );
+		years.push( { value: 0, label: 'Year' } );
 		var date = new Date().getFullYear();
 		for ( var x = date; x <= date + 20; x++ ) {
 			years.push( { value: x.toString(), label: x.toString() } );
@@ -152,7 +152,7 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 
 	service.cardMonths = function(){
 		var months = [];
-		months.push( { value: '', label: 'Month' } );
+		months.push( { value: 0, label: 'Month' } );
 		for ( var x = 1; x <= 12; x++ ) {
 			months.push( { value: x.toString(), label: x.toString() } );
 		}
