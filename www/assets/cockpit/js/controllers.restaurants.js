@@ -173,8 +173,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		$scope.card.year = '2015';
 		$scope.card.month = '2';
 		$scope.order = { name: 'MR TEST', phone: '646-783-1444', pay_type: 'card', delivery_type: 'delivery', address: '1120 Princeton Drive, Marina del Rey CA 90292', notes: 'Second floor', subtotal:10, tip:1.50, tip_type:'dollar' };
-		// setTimeout( function(){ $scope.processOrder(); }, 1000 );
-		setTimeout( function(){ calcTotal() }, 1000 );
+		setTimeout( function(){ calcTotal(); $scope.checkAddress() }, 1000 );
 	}
 
 	if( $scope.account.isLoggedIn() ){
