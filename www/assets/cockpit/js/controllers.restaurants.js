@@ -10,7 +10,7 @@ NGApp.controller('RestaurantOrderView', function ( $scope, RestaurantOrderServic
 	$scope.list = function(){
 		$scope.navigation.link( '/restaurant/order/list' );
 	}
-});
+} );
 
 NGApp.controller('RestaurantOrderList', function ( $scope, RestaurantOrderService ) {
 	RestaurantOrderService.list( function( json ){
@@ -25,7 +25,7 @@ NGApp.controller('RestaurantOrderList', function ( $scope, RestaurantOrderServic
 	$scope.open = function( id_order ){
 		$scope.navigation.link( '/restaurant/order/' + id_order );
 	}
-});
+} );
 
 NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, RestaurantOrderService, PositionService ) {
 
@@ -44,6 +44,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		RestaurantService.order_placement( function( json ){
 			if( json.id_restaurant ){
 				$scope.restaurant = json;
+				PositionService.bounding( $scope.restaurant.lat, $scope.restaurant.lon );
 				App.config.processor = { type: 'balanced' };
 			}
 			$scope.ready = true;
@@ -52,6 +53,10 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 
 	$scope.$watchCollection('[order.subtotal, order.tip]', function(newValues, oldValues){
 		calcTotal();
+	} );
+
+	$scope.$watch( 'order.pay_type', function( newValue, oldValue, scope ) {
+		$scope.order.tip = 0;
 	} );
 
 	$scope.$watch( 'order.tip_type', function( newValue, oldValue, scope ) {
@@ -75,6 +80,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 
 		$scope.map.link = false;
 		$scope.map.distance = false;
+		$scope.map.img = false;
 
 		if( $scope.order.address ){
 			PositionService.find( $scope.order.address,
@@ -83,11 +89,15 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 					if( pos ){
 						var distance = PositionService.checkDistance( pos.lat, pos.lon );
 						if( distance ){
-							$scope.map.out_of_range = ( distance > $scope.restaurant.range );
-							var zoom = ( distance < 2 ) ? 14 : 13;
-							zoom = ( distance < 4 ) ? 15 : zoom;
-							$scope.map.distance = distance;
-							$scope.map.img = PositionService.getMapImageSource( { 'lat': pos.lat, 'lon': pos.lon }, { 'lat': $scope.restaurant.lat, 'lon': $scope.restaurant.lon }, zoom );
+							$scope.map.distance = parseFloat( distance );
+							$scope.restaurant.range = parseFloat( $scope.restaurant.range );
+							$scope.map.out_of_range = ( $scope.map.distance > $scope.restaurant.range );
+							$scope.$safeApply();
+							setTimeout( function(){
+								var zoom = 13;
+								$scope.map.img = PositionService.getMapImageSource( { 'lat': pos.lat, 'lon': pos.lon }, { 'lat': $scope.restaurant.lat, 'lon': $scope.restaurant.lon }, zoom );
+							}, 1 );
+							$scope.$safeApply();
 						} else {
 							// error
 							$scope.map.distance = -1;
@@ -104,6 +114,13 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 	}
 
 	$scope.processOrder = function(){
+
+		if( $scope.map.out_of_range ){
+			App.alert( 'The address: ' + $scope.order.address + '\nis out of the range.' );
+			$scope.submitted = true;
+			return;
+		}
+
 		if( $scope.form.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.submitted = true;

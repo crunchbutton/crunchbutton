@@ -44,7 +44,7 @@
 					</div>
 				</li>
 
-				<li class="li-input" ng-class="{'error':form.orderAddress.$invalid}">
+				<li class="li-input" ng-class="{'error':form.orderAddress.$invalid, 'error': map.out_of_range}">
 					<div class="label">Address:</div>
 					<div class="input"><input type="text" name="orderAddress" ng-blur="checkAddress()" ng-model="order.address" required placeholder="1120 Princeton Drive, Marina del Rey CA 90292"></div>
 					<div class="box-error">
@@ -61,9 +61,11 @@
 					<div ng-show="!map.out_of_range && map.distance > 0" class="delivery-range">
 						<span>This address is {{map.distance}} miles from your restaurant</span>
 					</div>
+
 					<div ng-show="map.out_of_range && map.distance > 0" class="delivery-out-of-range">
 						<span><strong>Out of range! </strong><br>This address is {{map.distance}} miles from your restaurant</span>
 					</div>
+
 					<div ng-show="map.distance == -1" class="delivery-out-of-range">
 						<span>Unable to measure distance</span>
 					</div>
