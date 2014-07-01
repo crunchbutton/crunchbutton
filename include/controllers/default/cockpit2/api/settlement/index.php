@@ -3,22 +3,29 @@
 class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-
+/*
 		$set = new Settlement;
 
-		$order = Order::o( 24464 );
+
 		$order = Order::o( 24462 );
+		$order = Order::o( 24463 );
+		$order = Order::o( 24464 );
 
-		$vars = [ $set->orderExtractVariables( $order ) ];
+		$vars = [
+							$set->orderExtractVariables( Order::o( 24464 ) ),
+							$set->orderExtractVariables( Order::o( 24463 ) ),
+							$set->orderExtractVariables( Order::o( 24462 ) ),
+						];
 
 
-echo '<pre>';var_dump(  $set->driversProcessOrders( $vars )  );exit();
-		// $this->_driverBegin();
+echo json_encode( $set->driversProcessOrders( $vars ) );exit;
+
+		$this->_driverBegin();
 
 
 
 		exit;
-
+*/
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -409,6 +416,8 @@ echo '<pre>';var_dump(  $set->driversProcessOrders( $vars )  );exit();
 				$_order[ 'restaurant' ] = $order[ 'restaurant' ];
 				$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
 				$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
+				$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
+				$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
 				$_order[ 'date' ] = $order[ 'date' ];
 				$_order[ 'included' ] = !$order[ 'do_not_pay_driver' ];
 				if( !$_order[ 'included' ] ){
@@ -417,7 +426,7 @@ echo '<pre>';var_dump(  $set->driversProcessOrders( $vars )  );exit();
 				$driver[ 'orders' ][] = $_order;
 				$total_orders++;
 			}
-			$driver[ 'total_due_without_adjustment' ] = $driver[ 'total_due' ];
+			$driver[ 'total_payment_without_adjustment' ] = $driver[ 'total_payment' ];
 			$driver[ 'adjustment' ] = 0;
 			$driver[ 'pay' ] = true;
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
@@ -428,7 +437,6 @@ echo '<pre>';var_dump(  $set->driversProcessOrders( $vars )  );exit();
 			} else {
 				$out[ 'drivers' ][] = $driver;
 			}
-			$total_payments += $driver[ 'total_due' ];
 		}
 		echo json_encode( $out );
 	}
