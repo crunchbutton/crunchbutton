@@ -1,6 +1,10 @@
 <?php
 
 class Crunchbutton_Payment extends Cana_Table {
+
+	const PAY_TYPE_PAYMENT = 'payment';
+	const PAY_TYPE_REIMBURSEMENT = 'reimbursement';
+
 	public static function credit($params = null) {
 
 		$payment = new Payment((object)$params);

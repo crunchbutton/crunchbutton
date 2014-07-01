@@ -7,6 +7,7 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 
 	const TYPE_PAID_TO_RESTAURANT = 'paid-to-restaurant';
 	const TYPE_PAID_TO_DRIVER = 'paid-to-driver';
+	const TYPE_REIMBURSED_TO_DRIVER = 'reimbursed-driver';
 	const PAYMENT_TYPE_GIFT = 'gift';
 	const PAYMENT_TYPE_CARD = 'card';
 
@@ -14,9 +15,27 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 	const SOURCE_RESTAURANT = 'restaurant';
 
 	public function checkOrderWasPaidRestaurant( $id_order ){
-		$query = 'SELECT * FROM order_transaction ot WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT . '" LIMIT 1';
-		$order = Cockpit_Payment_Schedule_Order::q( $query );
-		if( $order->id_payment_schedule_order ){
+		$query = 'SELECT * FROM order_transaction ot WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT . '" AND id_order = "' . $id_order . '" LIMIT 1';
+		$order = Crunchbutton_Order_Transaction::q( $query );
+		if( $order->id_order_transaction ){
+			return true;
+		}
+		return false;
+	}
+
+	public function checkOrderWasReimbursedDriver( $id_order ){
+		$query = 'SELECT * FROM order_transaction ot WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_REIMBURSED_TO_DRIVER . '" AND id_order = "' . $id_order . '" LIMIT 1';
+		$order = Crunchbutton_Order_Transaction::q( $query );
+		if( $order->id_order_transaction ){
+			return true;
+		}
+		return false;
+	}
+
+	public function checkOrderWasPaidDriver( $id_order ){
+		$query = 'SELECT * FROM order_transaction ot WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER . '" AND id_order = "' . $id_order . '" LIMIT 1';
+		$order = Crunchbutton_Order_Transaction::q( $query );
+		if( $order->id_order_transaction ){
 			return true;
 		}
 		return false;

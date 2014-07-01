@@ -135,6 +135,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversCtrl',
 			templateUrl: 'assets/view/settlement-drivers.html'
 		})
+		.when('/settlement/drivers/scheduled', {
+			action: 'settlement',
+			controller: 'SettlementDriversScheduledCtrl',
+			templateUrl: 'assets/view/settlement-drivers-scheduled.html'
+		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',

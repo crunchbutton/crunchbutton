@@ -1,5 +1,5 @@
 NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routeParams ) {
-	
+
 	var service = {};
 
 	// Create a private resource 'orders'
@@ -11,21 +11,21 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
 				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } }
-			}	
+			}
 		);
 
 	service.list = function( callback ){
-		orders.query( {}, function( data ){ 
+		orders.query( {}, function( data ){
 			var orders = [];
 			for( var x in data ){
 				var order = data[ x ];
 				if( order && order.date && order.date.date ){
-					order._date = new Date( order.date.date );	
+					order._date = new Date( order.date.date );
 					orders.push( order );
 				}
 			}
 			service.newOrdersBadge();
-			callback( orders ); 
+			callback( orders );
 		} );
 	}
 
@@ -51,9 +51,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 
 	service.get = function( callback ){
 		var id_order = $routeParams.id;
-		orders.get( { 'id_order': id_order }, function( order ){ 
+		orders.get( { 'id_order': id_order }, function( order ){
 			order._date = new Date( order.date );
-			callback( order ); 
+			callback( order );
 		} );
 	}
 
