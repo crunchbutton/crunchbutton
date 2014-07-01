@@ -3,29 +3,19 @@
 class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-/*
-		$set = new Settlement;
 
+		// $this->_driverBegin();
+		// exit;
 
-		$order = Order::o( 24462 );
-		$order = Order::o( 24463 );
-		$order = Order::o( 24464 );
+		// $set = new Settlement;
 
-		$vars = [
-							$set->orderExtractVariables( Order::o( 24464 ) ),
-							$set->orderExtractVariables( Order::o( 24463 ) ),
-							$set->orderExtractVariables( Order::o( 24462 ) ),
-						];
+		// echo json_encode( $set->driversProcessOrders( [ $set->orderExtractVariables( Order::o( c::getPagePiece( 2 ) ) ) ] ) );exit();;
 
+		// $set->scheduleDriverPayment( [], Crunchbutton_Payment::PAY_TYPE_PAYMENT );
+		// $set->scheduleDriverPayment( [], Crunchbutton_Payment::PAY_TYPE_REIMBURSEMENT );
 
-echo json_encode( $set->driversProcessOrders( $vars ) );exit;
+		// exit;
 
-		$this->_driverBegin();
-
-
-
-		exit;
-*/
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -113,6 +103,9 @@ echo json_encode( $set->driversProcessOrders( $vars ) );exit;
 								break;
 							case 'transfer-driver':
 								$this->_driverTransferDeliveryDriver();
+								break;
+							case 'schedule':
+								$this->_driverSchedule();
 								break;
 							default:
 								$this->_error();
@@ -396,8 +389,10 @@ echo json_encode( $set->driversProcessOrders( $vars ) );exit;
 
 		$settlement = new Settlement( [ 'start' => $start, 'end' => $end ] );
 		$orders = $settlement->startDriver();
-		$out = [ 'drivers' => [] ];
-		$out = [ 'notes' => Crunchbutton_Settlement::DEFAULT_NOTES ];
+		$out = [ 	'drivers' => [],
+							'notes' => Crunchbutton_Settlement::DEFAULT_NOTES,
+							'payment' => Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT,
+							'reimbursement' => Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ];
 		foreach ( $orders as $key => $val ) {
 			if( !$orders[ $key ][ 'name' ] ){
 				continue;
@@ -455,6 +450,25 @@ echo json_encode( $set->driversProcessOrders( $vars ) );exit;
 		$id_order = $this->request()['id_order'];
 		$id_driver = $this->request()['id_driver'];
 		Crunchbutton_Order_Action::changeTransferDeliveryDriver( $id_order, $id_driver );
+		echo json_encode( [ 'success' => true ] );
+	}
+
+	private function _driverSchedule(){
+		$start = $this->request()['start'];
+		$end = $this->request()['end'];
+		$pay_type = $this->request()['pay_type'];
+		$_id_drivers = explode( ',', $this->request()['id_drivers'] );
+		$id_drivers = [];
+		foreach ( $_id_drivers as $key => $val ) {
+			$id_driver = trim( $val );
+			$notes = $this->request()[ 'notes_' . $id_driver ];
+			$adjustment = $this->request()[ 'adjustments_' . $id_driver ];
+			$id_drivers[ $id_driver ] = [];
+			$id_drivers[ $id_driver ][ 'notes' ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
+			$id_drivers[ $id_driver ][ 'adjustment' ] = $adjustment;
+		}
+		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
+		$settlement->scheduleDriverPayment( $id_drivers, $pay_type );
 		echo json_encode( [ 'success' => true ] );
 	}
 

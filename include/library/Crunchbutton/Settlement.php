@@ -52,7 +52,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		// todo: do not commit with this line
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24462, 24463, 24464 ) order by id_order desc';
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
-		// $query = 'SELECT * FROM `order` WHERE id_order IN( 13809,13808,13806,13803,13802,13800,13794,13793,13791,13789,13784,13782,13781,13780,13778,13774,13772,13771,13770,13768,13762,13761,13748,13747,13731,13728,13727,13726,13708,13707,13705,13704,13703,13699,13698,13690,13689,13688,13687,13685,13684,13683,13681,13679,13678,13675,13673,13672,13671,13667,13662,13660,13658,13657,13656,13653,13652,13651,13637,13632,13619,13618,13617,13613,13612,13611,13608,13607,13606,13604,13603,13601,13599,13598,13596,13594,13592,13588,13585,13584,13583,13582,13581,13579,13578,13577,13576,13572,13569,13562,13557,13548,13546,13538,13534,13532,13530,13527,13522,13521,13519,13517,13515,13511,13510,13508,13504,13493,13491,13483,13477,13468,13467,13465,13464,13463,13462,13461,13459,13457,13456,13455,13454,13443,13442,13440,13439,13438,13436,13435,13424,13419,13407,13404,13396,13395,13385,13384,13383,13381,13380,13377,13374,13370,13369,13367,13360,13357,13356,13355,13353,13345,13344,13328,13325,13324,13323,13322,13321,13320,13316,13315,13314,13311,13306,13304,13301,13299,13296,13293,13278,13262,13717,13674,13641,13610,13609,13597,13529,13526,13525,13466,13362,13655,13744,13494,13414,13409,13408,13399,13388,13359,13350,13297,13289,13732,13670,13458,13452,13718,13600,13595,13512,13444,13441,13400,13317,13308,13280,13276,13779,13752,13722,13713,13697,13605,13482,13413,13264,13661,13633,13496,13365,13757,13733,13724,13723,13715,13627,13621,13574,13567,13566,13555,13553,13543,13535,13503,13498,13427,13393,13624,13623,13550,13263,13734,13725,13415,13351,13268,13736,13634,13475,13417,13544,13397,13285,13284,13735,13341,13799,13785,13766,13730,13702,13696,13692,13686,13682,13677,13665,13590,13589,13568,13565,13536,13518,13516,13513,13433,13411,13405,13368,13319,13291,13265,13797,13788,13783,13769,13746,13745,13738,13729,13720,13719,13711,13691,13676,13669,13663,13650,13645,13644,13642,13636,13626,13602,13586,13552,13545,13542,13540,13514,13500,13499,13481,13476,13449,13448,13447,13445,13437,13434,13432,13430,13428,13426,13423,13416,13392,13387,13376,13373,13366,13364,13361,13336,13335,13318,13313,13312,13303,13302,13290,13269,13710,13292,13750,13286,13382,13267,13739,13716,13469,13271,13334,13547,13497,13480,13394,13391,13277,13807,13764,13554,13531,13528,13472,13406,13330,13307,13638,13635,13741,13495,13283,13714,13375,13629,13622,13420,13616,13506,13777,13759,13668,13580,13573,13502,13484,13473,13421,13352,13343,13282,13709,13706,13620,13470,13332,13509,13649,13765,13763,13666,13628,13570,13563,13541,13489,13487,13471,13425,13422,13418,13333,13273,13614,13533,13524,13460,13776,13694,13680,13615,13520,13453,13331,13281,13275,13558,13485,13310,13551,13753,13295,13266,13279,13805,13804,13801,13796,13756,13754,13751,13701,13700,13695,13693,13664,13654,13593,13587,13575,13571,13564,13556,13523,13507,13505,13501,13492,13450,13446,13431,13429,13372,13363,13358,13309,13305,13379,13272,13591,13486,13340,13537,13560,13410,13354,13755,13749,13740,13647,13561,13559,13288,13287,13625,13398,13339,13338,13294,13742,13640,13630,13349,13347,13346,13737,13643,13639,13490,13479,13478,13386,13270,13760,13659,13648 ) order by id_order desc';
 		return Order::q( $query );
 	}
 
@@ -141,10 +140,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 				}
 
-
-				if( $order[ 'do_not_pay_driver' ] == 1 ){
-					continue;
-				}
 				$order[ 'pay_info' ] = [];
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
@@ -158,8 +153,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
 
+				if( $order[ 'driver_reimbursed' ] ){
+					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
+				}
+				if( $order[ 'driver_paid' ] ){
+					$order[ 'pay_info' ][ 'total_payment' ] = 0;
+				}
+
 				$pay[ $driver ][ 'orders' ][] = $order;
-				// echo json_encode( $order_info );exit;
+
+				if( $order[ 'do_not_pay_driver' ] == 1 ){
+					continue;
+				}
+
 				$pay[ $driver ][ 'subtotal' ] += $order[ 'pay_info' ][ 'subtotal' ];
 				$pay[ $driver ][ 'tax' ] += $order[ 'pay_info' ][ 'tax' ];
 				$pay[ $driver ][ 'delivery_fee' ] += $order[ 'pay_info' ][ 'delivery_fee' ];
@@ -170,12 +176,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'restaurant_fee' ] += $order[ 'pay_info' ][ 'restaurant_fee' ];
 				$pay[ $driver ][ 'gift_card' ] += $order[ 'pay_info' ][ 'gift_card' ];
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
-
+				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
 			}
-		}
-
-		foreach( $pay as $key => $val ){
-			$pay[ $key ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $pay[ $key ] );
 		}
 
 		usort( $pay, function( $a, $b ) {
@@ -313,7 +315,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47254475
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47283481
 	public function orderReimburseDriver( $arr ){
-		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'credit' ] * $arr[ 'delivery_service' ];
+		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'credit' ] * $arr[ 'delivery_service' ] * ( 1 - $arr[ 'formal_relationship' ] );
 	}
 
 	// Drivers are paid the whole tip from credit orders.
@@ -412,14 +414,24 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
+		// convert all to float -> mysql returns some values as string
+		foreach( $values as $key => $val ){
+			$values[ $key ] = floatval( $val );
+		}
+
 		$values[ 'restaurant_paid' ] = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
 		if( !$values[ 'restaurant_paid' ] ){
 			$values[ 'restaurant_paid' ] = Crunchbutton_Order_Transaction::checkOrderWasPaidRestaurant( $order->id_order );
 		}
 
-		// convert all to float -> mysql returns some values as string
-		foreach( $values as $key => $val ){
-			$values[ $key ] = floatval( $val );
+		$values[ 'driver_reimbursed' ] = Cockpit_Payment_Schedule_Order::checkOrderWasReimbursedDriver( $order->id_order );
+		if( !$values[ 'driver_reimbursed' ] ){
+			$values[ 'driver_reimbursed' ] = Crunchbutton_Order_Transaction::checkOrderWasReimbursedDriver( $order->id_order );
+		}
+
+		$values[ 'driver_paid' ] = Cockpit_Payment_Schedule_Order::checkOrderWasPaidDriver( $order->id_order );
+		if( !$values[ 'driver_paid' ] ){
+			$values[ 'driver_paid' ] = Crunchbutton_Order_Transaction::checkOrderWasPaidDriver( $order->id_order );
 		}
 
 		if( $values[ 'id_admin' ] ){
@@ -442,7 +454,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$this->log( 'scheduleRestaurantPayment', $id_restaurants );
 		$restaurants = $this->startRestaurant();
 		foreach ( $restaurants as $_restaurant ) {
-			// todo: build a better way to filter - this way is very ugly
 			if( !$id_restaurants[ $_restaurant->id_restaurant ] ){
 				continue;
 			}
@@ -472,6 +483,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->date = date( 'Y-m-d H:i:s' );
 				$schedule->amount = max( $payment_data[ 'total_due' ], 0 );
 				$schedule->adjustment = $adjustment;
+				$schedule->pay_type = Cockpit_Payment_Schedule::PAYMENT_TYPE_PAYMENT;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 				$schedule->note = $notes;
@@ -491,8 +503,87 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 		}
 		$settlement = new Crunchbutton_Settlement;
-		// Cana::timeout(function() use( $settlement ) {
+		Cana::timeout(function() use( $settlement ) {
 			$settlement->doRestaurantPayments();
+		} );
+	}
+
+	public function scheduleDriverPayment( $id_drivers, $type ){
+
+		$this->log( 'scheduleDriversPayment', $id_drivers );
+
+		$drivers = $this->startDriver();
+
+		foreach ( $drivers as $_driver ) {
+
+			if( !$id_drivers[ $_driver[ 'id_admin' ] ] ){
+				continue;
+			}
+
+			$notes = $id_drivers[ $_driver[ 'id_admin' ] ][ 'notes' ];
+			$adjustment = $id_drivers[ $_driver[ 'id_admin' ] ][ 'adjustment' ];
+			$id_driver = $_driver[ 'id_admin' ];
+
+			$shouldSchedule = false;
+			if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+				$shouldSchedule = ( $_driver[ 'total_reimburse' ] != 0 ) ? true : false;
+			} else {
+				$shouldSchedule = ( $_driver[ 'total_payment' ] != 0 ) ? true : false;
+			}
+
+			foreach ( $_driver[ 'orders' ] as $order ) {
+				if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+					if( !$order[ 'driver_reimbursed' ] ){
+						$shouldSchedule = true;
+					}
+				} else {
+					if( !$order[ 'driver_paid' ] ){
+						$shouldSchedule = true;
+					}
+				}
+			}
+
+			if( $shouldSchedule ){
+
+				// schedule it
+				$schedule = new Cockpit_Payment_Schedule;
+				$schedule->id_driver = $id_driver;
+				$schedule->date = date( 'Y-m-d H:i:s' );
+
+				if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+					$amount = $_driver[ 'total_reimburse' ];
+				} else {
+					$amount = $_driver[ 'total_payment' ] + $adjustment;
+				}
+
+				$schedule->amount = max( $amount, 0 );
+				$schedule->adjustment = $adjustment;
+				$schedule->pay_type = $type;
+				$schedule->type = Cockpit_Payment_Schedule::TYPE_DRIVER;
+				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+				$schedule->note = $notes;
+				$schedule->id_admin = c::user()->id_admin;
+				$schedule->save();
+				$id_payment_schedule = $schedule->id_payment_schedule;
+
+				foreach ( $_driver[ 'orders' ] as $order ) {
+					if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+						$order_amount = $order[ 'pay_info' ][ 'total_reimburse' ];
+					} else {
+						$order_amount = $order[ 'pay_info' ][ 'total_payment' ];
+					}
+					$schedule_order = new Cockpit_Payment_Schedule_Order;
+					$schedule_order->id_payment_schedule = $id_payment_schedule;
+					$schedule_order->id_order = $order[ 'id_order' ];
+					$schedule_order->amount = $order_amount;
+					$schedule_order->save();
+				}
+				$this->log( 'scheduleDriverPayment', $schedule->properties() );
+			}
+		}
+		// $settlement = new Crunchbutton_Settlement;
+		// Cana::timeout(function() use( $settlement ) {
+			// $settlement->dodriverPayments();
 		// } );
 	}
 

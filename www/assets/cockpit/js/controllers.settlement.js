@@ -201,7 +201,6 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 	}
 
 	$scope.show_details = function( restaurant ){
-
 		if( !restaurant.show_details ){
 			$scope.showing_details = true;
 			restaurant.show_details = true;
@@ -408,7 +407,7 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
-				// setTimeout( function() { $scope.begin() }, 100 );
+				setTimeout( function() { $scope.begin() }, 100 );
 			}
 		} );
 	}
@@ -464,20 +463,22 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 
 	$scope.summary = function(){
 
-		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_due': 0, 'adjustment' : 0 };
+		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0 };
 
 		var total_drivers = 0;
 		var total_payments = 0;
+		var total_reimbursements = 0;
 		var total_orders = 0;
 		var total_not_included = 0;
 		var total_adjustments = 0;
 		var total_refunded = 0;
 		for( x in $scope.result.drivers ){
-			$scope.result.drivers[ x ].total_due = ( $scope.result.drivers[ x ].total_due_without_adjustment + $scope.result.drivers[ x ].adjustment );
+			$scope.result.drivers[ x ].total_payments = ( $scope.result.drivers[ x ].total_payment_without_adjustment + $scope.result.drivers[ x ].adjustment );
 			if( $scope.result.drivers[ x ].pay ){
 				total_drivers++;
 				// include the adjustment at total_due
-				total_payments += $scope.result.drivers[ x ].total_due;
+				total_payments += $scope.result.drivers[ x ].total_payments;
+				total_reimbursements += $scope.result.drivers[ x ].total_reimburse;
 				total_orders += $scope.result.drivers[ x ].orders_count;
 				total_not_included += $scope.result.drivers[ x ].not_included;
 
@@ -492,6 +493,7 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 		}
 		$scope.total_drivers = total_drivers;
 		$scope.total_payments = total_payments;
+		$scope.total_reimbursements = total_reimbursements;
 		$scope.total_orders = total_orders;
 		$scope.total_not_included = total_not_included;
 		$scope.total_refunded = total_refunded;
@@ -535,8 +537,55 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 		}
 	}
 
-	$scope.show_details = function( id_driver ){
-		$scope.walkTo( '#driver-' + id_driver, -80 );
+	$scope.schedule_reimbursement = function(){
+		schedule( $scope.result.reimbursement );
+	}
+
+	$scope.schedule_payment = function(){
+		schedule( $scope.result.payment );
+	}
+
+	var schedule = function( pay_type ){
+
+		$scope.makeBusy();
+
+		var params = { 'start': $filter( 'date' )( $scope.range.start, 'yyyy-MM-dd' ),
+										'end': $filter( 'date' )( $scope.range.end, 'yyyy-MM-dd' ),
+										'pay_type': pay_type }
+
+		var id_drivers = new Array();
+		for( x in $scope.result.drivers ){
+			if( $scope.result.drivers[ x ].pay ){
+				id_drivers.push( $scope.result.drivers[ x ].id_admin );
+				params[ 'notes_' + $scope.result.drivers[ x ].id_admin ] = $scope.result.drivers[ x ].notes;
+				params[ 'adjustments_' + $scope.result.drivers[ x ].id_admin ] = $scope.result.drivers[ x ].adjustment;
+			}
+		}
+		id_drivers = id_drivers.join( ',' );
+		params[ 'id_drivers' ] = id_drivers;
+		SettlementService.drivers.schedule( params, function( json ){
+			$scope.unBusy();
+			$scope.navigation.link( '/settlement/drivers/scheduled' );
+		} );
+	}
+
+
+	$scope.show_details = function( driver ){
+		if( !driver.show_details ){
+			$scope.showing_details = true;
+			driver.show_details = true;
+			setTimeout( function(){
+				$scope.walkTo( '#driver-' + driver.id_admin, -80 );
+			} );
+		} else {
+			driver.show_details = false;
+			$scope.showing_details = false;
+			for( x in $scope.result.drivers ){
+				if( $scope.result.drivers[ x ].show_details ){
+					$scope.showing_details = true;
+				}
+			}
+		}
 	}
 
 	// Just run if the user is loggedin

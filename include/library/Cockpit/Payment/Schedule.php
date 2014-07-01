@@ -5,6 +5,9 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	const TYPE_RESTAURANT = 'restaurant';
 	const TYPE_DRIVER = 'driver';
 
+	const PAY_TYPE_PAYMENT = 'payment';
+	const PAY_TYPE_REIMBURSEMENT = 'reimbursement';
+
 	const STATUS_SCHEDULED = 'scheduled';
 	const STATUS_PROCESSING = 'processing';
 	const STATUS_DONE = 'done';

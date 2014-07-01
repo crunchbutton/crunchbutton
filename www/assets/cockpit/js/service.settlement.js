@@ -26,6 +26,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
 		'do_not_pay_driver' : { 'method': 'POST', params : { action: 'do-not-pay-driver' } },
 		'transfer_driver' : { 'method': 'POST', params : { action: 'transfer-driver' } },
+		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } }
 	}	);
 
@@ -132,6 +133,12 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	service.drivers.transfer_driver = function( params, callback ){
 		settlement.drivers.transfer_driver( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.schedule = function( params, callback ){
+		settlement.drivers.schedule( params, function( json ){
 			callback( json );
 		} );
 	}
