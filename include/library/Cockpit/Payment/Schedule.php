@@ -44,6 +44,10 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return Admin::o( $this->id_admin );
 	}
 
+	public function driver() {
+		return Admin::o( $this->id_driver );
+	}
+
 	public function restaurant() {
 		return Restaurant::o( $this->id_restaurant );
 	}
@@ -51,7 +55,11 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
-			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			if( $this->id_restaurant ){
+				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			} else if( $this->id_driver ){
+				$this->_date->setTimezone(new DateTimeZone($this->driver()->timezone));
+			}
 		}
 		return $this->_date;
 	}
@@ -59,7 +67,11 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	public function status_date() {
 		if (!isset($this->_status_date)) {
 			$this->_status_date = new DateTime($this->status_date, new DateTimeZone(c::config()->timezone));
-			$this->_status_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			if( $this->id_restaurant ){
+				$this->_status_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			} else if( $this->id_driver ){
+				$this->_status_date->setTimezone(new DateTimeZone($this->driver()->timezone));
+			}
 		}
 		return $this->_status_date;
 	}
@@ -75,6 +87,13 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
 								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule DESC';
+		return Cockpit_Payment_Schedule::q( $query );
+	}
+
+	public function driverNotCompletedSchedules(){
+		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+								INNER JOIN admin a ON a.id_admin = ps.id_driver
+								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" AND amount > 0 ORDER BY ps.id_payment_schedule DESC';
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 

@@ -3,6 +3,10 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	var service = { restaurants : {}, drivers : {} };
 	var settlement = { restaurants : {}, drivers : {} };
 
+	// constants
+	service.PAY_TYPE_PAYMENT = 'payment';
+	service.PAY_TYPE_REIMBURSEMENT = 'reimbursement';
+
 	service.pay_type_options = [ { 'name': 'All', 'value' : 'all' }, { 'name': 'Check', 'value' : 'check' }, { 'name': 'Deposit', 'value' : 'deposit' } ];
 	service.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
@@ -22,11 +26,16 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } }
 	}	);
 
-	settlement.drivers = $resource( App.service + 'settlement/drivers/:action/', { action: '@action' }, {
+	settlement.drivers = $resource( App.service + 'settlement/drivers/:action/:id_payment_schedule/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
 		'do_not_pay_driver' : { 'method': 'POST', params : { action: 'do-not-pay-driver' } },
 		'transfer_driver' : { 'method': 'POST', params : { action: 'transfer-driver' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
+		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } },
+		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
+		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
+		'payment' : { 'method': 'POST', params : { action: 'payment' } },
+		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } }
 	}	);
 
@@ -141,6 +150,44 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		settlement.drivers.schedule( params, function( json ){
 			callback( json );
 		} );
+	}
+
+	service.drivers.scheduled = function( params, callback ){
+		settlement.drivers.scheduled( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.do_payment = function( id_payment_schedule, callback ){
+		settlement.drivers.do_payment( { 'id_payment_schedule' : id_payment_schedule  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.scheduled_payment = function( callback ){
+		settlement.drivers.scheduled_payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.payments = function( params, callback ){
+		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.payment = function( callback ){
+		settlement.drivers.payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.pay_types = function(){
+		var tips = [];
+		tips.push( { type: 0, label: 'All' } );
+		tips.push( { type: service.PAY_TYPE_PAYMENT, label: 'Payment' } );
+		tips.push( { type: service.PAY_TYPE_REIMBURSEMENT, label: 'Reimbursement' } );
+		return tips;
 	}
 
 	service.drivers.range = function( callback ){

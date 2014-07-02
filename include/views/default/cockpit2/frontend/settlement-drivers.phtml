@@ -62,11 +62,9 @@
 	</div>
 
 	<div ng-if="result">
-
 		<h2 class="title">
 			<span>Summary</span>
 		</h2>
-
 		<div>
 			<table class="tb-grid tb-zebra summary">
 				<tbody>
@@ -92,9 +90,7 @@
 					</tr>
 				</tbody>
 			</table>
-
 		</div>
-
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
@@ -174,7 +170,6 @@
 				<td class="td-medium">$ {{sum.total_payment | formatPrice}}</td>
 			</tr>
 		</table>
-
 
 		<ul class="ul-inputs box-content">
 			<li class="li-input">
@@ -270,10 +265,6 @@
 								<tr positive-or-negative-color="{{driver.credit_charge}}">
 									<td>Credit Card Charge</td>
 									<td>$ {{driver.credit_charge | formatPrice}}</td>
-								</tr>
-								<tr positive-or-negative-color="{{driver.restaurant_fee}}">
-									<td>Crunchbutton Fees</td>
-									<td>$ {{driver.restaurant_fee | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{driver.gift_card}}">
 									<td>Gift Card</td>

@@ -123,7 +123,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	// this method receives the restaurant orders and run the math
-	public function driversProcessOrders( $orders ){
+	public function driversProcessOrders( $orders, $recalculatePaidOrders = false ){
 		$pay = [];
 		foreach ( $orders as $order ) {
 
@@ -153,10 +153,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
 
-				if( $order[ 'driver_reimbursed' ] ){
+				if( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
 				}
-				if( $order[ 'driver_paid' ] ){
+				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
 
@@ -581,10 +581,23 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$this->log( 'scheduleDriverPayment', $schedule->properties() );
 			}
 		}
-		// $settlement = new Crunchbutton_Settlement;
+		$settlement = new Crunchbutton_Settlement;
 		// Cana::timeout(function() use( $settlement ) {
-			// $settlement->dodriverPayments();
+			$settlement->doDriverPayments();
 		// } );
+	}
+
+	public function doDriverPayments( $id_payment_schedule = false ){
+		if( $id_payment_schedule ){
+			return $this->payDriver( $id_payment_schedule );
+		} else {
+			// $schedule = new Cockpit_Payment_Schedule;
+			// $lastDate = $schedule->lastRestaurantStatusDate();
+			// $schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
+			// foreach( $schedules as $_schedule ){
+			// 	$this->payRestaurant( $_schedule->id_payment_schedule );
+			// }
+		}
 	}
 
 	public function doRestaurantPayments( $id_payment_schedule = false ){
@@ -618,7 +631,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'summary_method' ] = $schedule->restaurant()->payment_type()->summary_method;
 			$summary[ 'summary_email' ] = $schedule->restaurant()->payment_type()->summary_email;
 			$summary[ 'summary_fax' ] = $schedule->restaurant()->payment_type()->summary_fax;
-			$summary[ 'restaurant' ] = $schedule->restaurant()->name;
 			$summary[ 'payment_method' ] = $schedule->restaurant()->payment_type()->payment_method;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
@@ -878,6 +890,193 @@ class Crunchbutton_Settlement extends Cana_Model {
 			} else {
 				return false;
 			}
+		} else {
+			return false;
+		}
+	}
+
+	public function payDriver( $id_payment_schedule ){
+
+		$env = c::getEnv();
+
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		$this->log( 'payDriver', $schedule->properties() );
+		if( $schedule->id_payment_schedule ){
+
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
+					$schedule->status == Cockpit_Payment_Schedule::STATUS_ERROR ){
+
+				// Save the processing date
+				$schedule->status = Cockpit_Payment_Schedule::STATUS_PROCESSING;
+				$schedule->status_date = date( 'Y-m-d H:i:s' );
+				$schedule->save();
+
+				$amount = floatval( $schedule->amount );
+
+				$payment_method = $schedule->driver()->payment_type()->payment_method;
+
+				// Deposit payment method
+				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
+					try {
+						$p = Payment::credit_driver( [ 'id_driver' => $schedule->id_driver,
+																		'amount' => $amount,
+																		'note' => $schedule->note,
+																		'pay_type' => $schedule->pay_type,
+																		'type' => 'balanced' ] );
+					} catch ( Exception $e ) {
+						$schedule->log = $e->getMessage();
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						$this->log( 'payDriver: Error', $schedule->properties() );
+						return false;
+					}
+					if( $p ){
+
+						$payment = Crunchbutton_Payment::o( $p );
+
+						// save the adjustment
+						if( floatval( $schedule->adjustment ) != 0  ){
+							$payment->adjustment = $schedule->adjustment;
+							$payment->save();
+						}
+
+						$schedule->id_payment = $payment->id_payment;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
+						$schedule->log = 'Payment finished';
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						$this->log( 'payDriver: Success', $schedule->properties() );
+						$orders = $schedule->orders();
+
+						if( $schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
+							$order_transaction_type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER;
+						} else {
+							$order_transaction_type = Crunchbutton_Order_Transaction::TYPE_REIMBURSED_TO_DRIVER;
+						}
+
+						foreach (  $orders as $order ) {
+
+							$order_transaction = new Crunchbutton_Order_Transaction;
+							$order_transaction->id_order = $order->id_order;
+							$order_transaction->amt = $order->amount;
+							$order_transaction->date = date( 'Y-m-d H:i:s' );
+							$order_transaction->type = $order_transaction_type;
+							$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+							$order_transaction->id_admin = $payment->id_admin;
+							$order_transaction->save();
+
+							$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
+							$payment_order_transaction->id_payment = $payment->id_payment;
+							$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
+							$payment_order_transaction->save();
+						}
+
+						// $this->sendDriverPaymentNotification( $payment->id_payment );
+						return true;
+					} else {
+						$message = 'Driver Payment error! Driver: ' . $schedule->driver()->name;
+						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+						$message .= "\n". 'amount: ' . $schedule->amount;
+						$message .= "\n". $schedule->log;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						return false;
+					}
+				} else {
+					$schedule->log = 'Driver doesn\'t have a payment method.';
+					$message = 'Driver Payment error! Driver: ' . $schedule->driver()->name;
+					$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+					$message .= "\n". 'amount: ' . $schedule->amount;
+					$message .= "\n". $schedule->log;
+					$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+					$schedule->status_date = date( 'Y-m-d H:i:s' );
+					$schedule->save();
+					$this->log( 'payDriver: Error', $schedule->properties() );
+					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+				}
+
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	public function driverSummaryByIdPayment( $id_payment ){
+		$schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment = "' . $id_payment . '"' );
+		if( $schedule->id_payment_schedule ){
+			return $this->driverSummary( $schedule->id_payment_schedule );
+		} else {
+			return false;
+		}
+	}
+
+	public function driverSummary( $id_payment_schedule ){
+
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_DRIVER ){
+			$settlement = new Settlement;
+			$summary = $schedule->exports();
+			$summary[ 'driver' ] = $schedule->driver()->name;
+			$summary[ 'summary_method' ] = $schedule->driver()->payment_type()->summary_method;
+			$summary[ 'summary_email' ] = $schedule->driver()->payment_type()->summary_email;
+			$summary[ 'summary_fax' ] = $schedule->driver()->payment_type()->summary_fax;
+			$summary[ 'driver' ] = $schedule->driver()->name;
+			$summary[ 'payment_method' ] = $schedule->driver()->payment_type()->payment_method;
+			$payment = $schedule->payment();
+			if( $payment->id_payment ){
+				$summary[ 'balanced_id' ] = $payment->balanced_id;
+				$summary[ 'stripe_id' ] = $payment->stripe_id;
+				$summary[ 'check_id' ] = $payment->check_id;
+				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
+				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
+			}
+			if( $schedule->status_date ){
+				$summary[ 'status_date' ] = $schedule->status_date()->format( 'M jS Y g:i:s A T' );
+			}
+			$orders = $schedule->orders();
+			$_orders = [];
+			$summary[ 'orders_count' ] = 0;
+			$summary[ 'orders_not_included' ] = 0;
+			$summary[ 'orders' ] = [ 'included' => [], 'not_included' => [] ];
+			foreach( $orders as $order ){
+				$_order = $order->order();
+				if( $_order->id_order ){
+					$variables = $settlement->orderExtractVariables( $_order );
+					$pay_info = $settlement->driversProcessOrders( [ $variables ], true );
+					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
+					$summary[ 'orders_count' ]++;
+					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
+																										'name' => $variables[ 'name' ],
+																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
+																										'date' => $variables[ 'short_date' ],
+																										'tip' => $variables[ 'tip' ],
+																										'pay_type' => $type,
+																										'total_reimburse' => $pay_info[ 0 ][ 'total_reimburse' ],
+																										'total_payment' => $pay_info[ 0 ][ 'total_payment' ]
+																									];
+					$_orders[] = $variables;
+				}
+			}
+			$calcs = $settlement->driversProcessOrders( $_orders, true );
+			$summary[ 'calcs' ] = [ 'total_reimburse' => $calcs[ 0 ][ 'total_reimburse' ],
+															'total_payment' => $calcs[ 0 ][ 'total_payment' ],
+															'tax' => $calcs[ 0 ][ 'tax' ],
+															'delivery_fee' => $calcs[ 0 ][ 'delivery_fee' ],
+															'tip' => $calcs[ 0 ][ 'tip' ],
+															'customer_fee' => $calcs[ 0 ][ 'customer_fee' ],
+															'markup' => $calcs[ 0 ][ 'markup' ],
+															'credit_charge' => $calcs[ 0 ][ 'credit_charge' ],
+															'restaurant_fee' => $calcs[ 0 ][ 'restaurant_fee' ],
+															'gift_card' => $calcs[ 0 ][ 'gift_card' ],
+															'subtotal' => $calcs[ 0 ][ 'subtotal' ],
+														];
+			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
+			return $summary;
 		} else {
 			return false;
 		}
