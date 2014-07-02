@@ -4,29 +4,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		$this->resultsPerPage = 20;
-
-		// $this->_driverPayments();
-		// exit;
-
-		// $this->_driverDoPayment();
-		// exit;
-
-		// $this->_driverBegin();
-		// exit;
-
-		// $set = new Settlement;
-
-		// echo json_encode( $set->driversProcessOrders( [ $set->orderExtractVariables( Order::o( c::getPagePiece( 2 ) ) ) ] ) );exit();;
-
-		// $set->scheduleDriverPayment( [], Crunchbutton_Payment::PAY_TYPE_PAYMENT );
-		// $set->scheduleDriverPayment( [], Crunchbutton_Payment::PAY_TYPE_REIMBURSEMENT );
-
-		// exit;
-
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
+
+		$this->resultsPerPage = 20;
 
 		switch ($this->method()) {
 			case 'get':
@@ -126,6 +108,12 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 								break;
 							case 'payment':
 								$this->_driverPayment();
+								break;
+							case 'view-summary':
+								$this->_driverViewSummary();
+								break;
+							case 'send-summary':
+								$this->_driverSendSummary();
 								break;
 							default:
 								$this->_error();
@@ -339,9 +327,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _restaurantSendSummary(){
-		$id_payment_schedule = c::getPagePiece( 4 );
+		$id_payment = c::getPagePiece( 4 );
 		$settlement = new Settlement;
-		if( $settlement->sendRestaurantPaymentNotification( $id_payment_schedule ) ){
+		if( $settlement->sendRestaurantPaymentNotification( $id_payment ) ){
 			echo json_encode( [ 'success' => true ] );
 		} else {
 			echo json_encode( [ 'error' => true ] );
@@ -598,6 +586,25 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		} else {
 			echo json_encode( [ 'error' => 'Payment schedule not found!' ] );
 		}
+	}
+
+	private function _driverSendSummary(){
+		$id_payment = c::getPagePiece( 4 );
+		$settlement = new Settlement;
+		if( $settlement->sendDriverPaymentNotification( $id_payment ) ){
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => true ] );
+		}
+	}
+
+
+	public function _driverViewSummary(){
+		$id_payment =  c::getPagePiece( 4 );
+		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->driverSummaryByIdPayment( $id_payment );
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		echo $mail->message();
 	}
 
 	private function _range(){

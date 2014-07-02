@@ -415,7 +415,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
-				setTimeout( function() { $scope.begin() }, 100 );
+				// setTimeout( function() { $scope.begin() }, 100 );
 			}
 		} );
 	}
@@ -759,6 +759,28 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 				App.alert( 'Oops, something bad happened!' );
 			}
 		} )
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversSummaryCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+
+	var load = function(){
+		SettlementService.drivers.view_summary( function( data ){
+			$scope.summary = data;
+			$scope.ready = true;
+		} );
+	}
+
+	$scope.payment = function(){
+		$scope.navigation.link( '/settlement/drivers/payment/' + $routeParams.id );
 	}
 
 	// Just run if the user is loggedin

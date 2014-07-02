@@ -123,7 +123,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/settlement/restaurants/summary/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsSummaryCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-summary.html'
+			templateUrl: 'assets/view/settlement-summary.html'
 		})
 		.when('/settlement/restaurants/payments', {
 			action: 'settlement',
@@ -158,7 +158,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/settlement/drivers/summary/:id', {
 			action: 'settlement',
 			controller: 'SettlementDriversSummaryCtrl',
-			templateUrl: 'assets/view/settlement-drivers-summary.html'
+			templateUrl: 'assets/view/settlement-summary.html'
 		})
 		/* Driver shifts */
 		.when('/drivers/orders', {

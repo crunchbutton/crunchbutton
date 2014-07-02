@@ -483,7 +483,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->date = date( 'Y-m-d H:i:s' );
 				$schedule->amount = max( $payment_data[ 'total_due' ], 0 );
 				$schedule->adjustment = $adjustment;
-				$schedule->pay_type = Cockpit_Payment_Schedule::PAYMENT_TYPE_PAYMENT;
+				$schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 				$schedule->note = $notes;
@@ -632,6 +632,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'summary_email' ] = $schedule->restaurant()->payment_type()->summary_email;
 			$summary[ 'summary_fax' ] = $schedule->restaurant()->payment_type()->summary_fax;
 			$summary[ 'payment_method' ] = $schedule->restaurant()->payment_type()->payment_method;
+			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
@@ -972,7 +973,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$payment_order_transaction->save();
 						}
 
-						// $this->sendDriverPaymentNotification( $payment->id_payment );
+						$this->sendDriverPaymentNotification( $payment->id_payment );
 						return true;
 					} else {
 						$message = 'Driver Payment error! Driver: ' . $schedule->driver()->name;
@@ -1022,11 +1023,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$settlement = new Settlement;
 			$summary = $schedule->exports();
 			$summary[ 'driver' ] = $schedule->driver()->name;
-			$summary[ 'summary_method' ] = $schedule->driver()->payment_type()->summary_method;
 			$summary[ 'summary_email' ] = $schedule->driver()->payment_type()->summary_email;
-			$summary[ 'summary_fax' ] = $schedule->driver()->payment_type()->summary_fax;
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'payment_method' ] = $schedule->driver()->payment_type()->payment_method;
+			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_DRIVER;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
@@ -1055,6 +1055,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
 																										'date' => $variables[ 'short_date' ],
 																										'tip' => $variables[ 'tip' ],
+																										'restaurant' => $variables[ 'restaurant' ],
+																										'delivery_fee' => $variables[ 'delivery_fee' ],
 																										'pay_type' => $type,
 																										'total_reimburse' => $pay_info[ 0 ][ 'total_reimburse' ],
 																										'total_payment' => $pay_info[ 0 ][ 'total_payment' ]
@@ -1130,6 +1132,33 @@ class Crunchbutton_Settlement extends Cana_Model {
 				return false;
 				break;
 		}
+		return false;
+	}
+
+	public function sendDriverPaymentNotification( $id_payment ){
+
+		$summary = $this->driverSummaryByIdPayment( $id_payment );
+
+		if( !$summary ){
+			return false;
+		}
+
+		$this->log( 'sendDriverPaymentNotification', $summary );
+
+		$env = c::getEnv();
+
+		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
+		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );
+
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+
+		if ( $mail->send() ) {
+			$payment = Crunchbutton_Payment::o( $id_payment );
+			$payment->summary_sent_date = date('Y-m-d H:i:s');
+			$payment->save();
+			return true;
+		}
+
 		return false;
 	}
 
