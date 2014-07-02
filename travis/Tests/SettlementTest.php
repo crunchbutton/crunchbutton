@@ -61,7 +61,8 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $calc[ 'restaurant_fee' ], 0 );
 		$this->assertEquals( $calc[ 'gift_card' ], 0 );
 		$this->assertEquals( count( $calc[ 'orders' ] ), 10 );
-		$this->assertEquals( $calc[ 'total_due' ], 64.8 );
+		$this->assertEquals( $calc[ 'total_reimburse' ], 32.16 );
+		$this->assertEquals( $calc[ 'total_payment' ], 32.64 );
 	}
 
 	public function testRestaurantIndividualMathsCashOrderFormalRelationship() {
