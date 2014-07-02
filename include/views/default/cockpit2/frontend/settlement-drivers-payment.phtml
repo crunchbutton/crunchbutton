@@ -3,13 +3,13 @@
 <div class="content-padding" ng-if="ready">
 
 	<h1 class="title left"><i class="fa fa-bank"></i>
-		<span ng-if="payment">Payment #{{result.id_payment}} - {{result.restaurant}}</span>
-		<span ng-if="schedule">Payment Schedule #{{result.id_payment_schedule}} - {{result.restaurant}}</span>
+		<span ng-if="payment">Payment #{{result.id_payment}} - {{result.driver}}</span>
+		<span ng-if="schedule">Payment Schedule #{{result.id_payment_schedule}} - {{result.driver}}</span>
 	</h1>
 
 	<div class="divider"></div>
 
-	<h2 class="title">{{result.restaurant}}</h2>
+	<h2 class="title">{{result.driver}}</h2>
 
 		<table class="tb-grid tb-zebra">
 			<tbody>
@@ -25,6 +25,14 @@
 					<td>
 						# {{result.id_payment_schedule}}
 					</td>
+				</tr>
+				<tr ng-if="pay_type_reimbursement">
+					<td><strong>Type</strong></td>
+					<td>Reimbursement</td>
+				</tr>
+				<tr ng-if="pay_type_payment">
+					<td><strong>Type</strong></td>
+					<td>Payment</td>
 				</tr>
 				<tr>
 					<td><strong>Payment Status</strong></td>
@@ -74,14 +82,6 @@
 					<td>Stripe</td>
 					<td>{{result.stripe_id}}</td>
 				</tr>
-				<tr ng-if="result.check_id">
-					<td>Lob (Check)</td>
-					<td>{{result.check_id}}</td>
-				</tr>
-				<tr positive-or-negative-color="{{result.calcs.credit_charge}}">
-					<td>Credit Card Charge</td>
-					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
-				</tr>
 				<tr positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
@@ -94,33 +94,33 @@
 					<td>Tip</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.promo_gift_card}}">
-					<td>Promo Gift Card</td>
-					<td>$ {{result.calcs.promo_gift_card | formatPrice}}</td>
+				<tr positive-or-negative-color="{{result.calcs.customer_fee}}">
+					<td>Customer Fee</td>
+					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.apology_gift_card}}">
-					<td>Apology Gift Card</td>
-					<td>$ {{result.calcs.apology_gift_card | formatPrice}}</td>
+				<tr positive-or-negative-color="{{result.calcs.markup}}">
+					<td>Markup</td>
+					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.card_subtotal}}">
-					<td>Credit Card Subtotal</td>
-					<td>$ {{result.calcs.card_subtotal | formatPrice}}</td>
+				<tr positive-or-negative-color="{{result.calcs.credit_charge}}">
+					<td>Credit Card Charge</td>
+					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.cash_reimburse}}">
-					<td>Cash Reimburse</td>
-					<td>$ {{result.calcs.cash_reimburse | formatPrice}}</td>
-				</tr>
-				<tr positive-or-negative-color="{{result.calcs.cash_subtotal}}">
-					<td>Cash Subtotal</td>
-					<td>$ {{result.calcs.cash_subtotal | formatPrice}}</td>
+				<tr positive-or-negative-color="{{result.calcs.gift_card}}">
+					<td>Gift Card</td>
+					<td>$ {{result.calcs.gift_card | formatPrice}}</td>
 				</tr>
 				<tr positive-or-negative-color="{{result.adjustment}}">
-					<td>Adjustment</td>
+					<td>Adjustments</td>
 					<td>$ {{result.adjustment | formatPrice}}</td>
 				</tr>
-				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_due}}">
-					<td class="td-medium">Total due</td>
-					<td class="td-medium">$ {{result.calcs.total_due | formatPrice}}</td>
+				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
+					<td class="td-medium">Reimbursement</td>
+					<td class="td-medium">$ {{result.calcs.total_reimburse | formatPrice}}</td>
+				</tr>
+				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
+					<td class="td-medium">Payment</td>
+					<td class="td-medium">$ {{result.calcs.total_payment | formatPrice}}</td>
 				</tr>
 				<tr>
 					<td>Payment Notes</td>
@@ -134,42 +134,52 @@
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
-					<td colspan="5" class="title">Card Orders</td>
+					<td colspan="7" class="title">Orders</td>
 				</tr>
 			</thead>
-			<thead ng-if="!result.orders_card">
+			<thead ng-if="!result.orders">
 				<td>
-					<td>-</td>
+					<td></td>
+					<td></td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
 				</td>
 			</thead>
-			<thead ng-if="result.orders_card">
+			<thead ng-if="result.orders">
 				<tr>
 					<td>#</td>
 					<td class="td-medium">Curstomer name</td>
 					<td>Date</td>
 					<td>Total</td>
 					<td>Tip</td>
+					<td>Type</td>
+					<td ng-if="pay_type_reimbursement">Reimbursement</td>
+					<td ng-if="pay_type_payment">Payment</td>
 				</tr>
 			</thead>
-			<tbody ng-if="result.orders_card">
-				<tr ng-repeat="order in result.orders.card">
+			<tbody ng-if="result.orders.included">
+				<tr ng-repeat="order in result.orders.included">
 					<td>{{order.id_order}}</td>
 					<td>{{order.name}}</td>
 					<td>{{order.date}}</td>
-					<td>$ {{order.total | formatPrice}}</td>
 					<td>$ {{order.tip | formatPrice}}</td>
+					<td>$ {{order.total | formatPrice}}</td>
+					<td>{{order.pay_type}}</td>
+					<td ng-if="pay_type_reimbursement">$ {{order.total_reimburse | formatPrice}}</td>
+					<td ng-if="pay_type_payment">$ {{order.total_payment | formatPrice}}</td>
 				</tr>
 			</tbody>
-
 			<tbody>
 				<tr class="transparent">
 					<td></td>
-					<td>Subtotal</td>
-					<td>$ {{result.calcs.order_payment | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 					<td></td>
 				</tr>
 				<tr class="transparent">
@@ -177,60 +187,17 @@
 					<td>Tips by Card</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
 					<td>Visa/Mastercard/Amex Charges</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 					<td></td>
-				</tr>
-				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
-			</tbody>
-
-			<thead>
-				<tr>
-					<td colspan="5" class="title">Cash Orders</td>
-				</tr>
-			</thead>
-			<thead ng-if="!result.orders_cash">
-				<td>
-					<td>-</td>
 					<td></td>
 					<td></td>
-					<td></td>
-					<td></td>
-				</td>
-			</thead>
-			<thead ng-if="result.orders_cash">
-				<tr>
-					<td>#</td>
-					<td class="td-medium">Curstomer name</td>
-					<td>Date</td>
-					<td>Total</td>
-					<td></td>
-				</tr>
-			</thead>
-			<tbody ng-if="result.orders_cash">
-				<tr ng-repeat="order in result.orders.cash">
-					<td>{{order.id_order}}</td>
-					<td>{{order.name}}</td>
-					<td>{{order.date}}</td>
-					<td>$ {{order.total | formatPrice}}</td>
-					<td></td>
-				</tr>
-			</tbody>
-
-			<tbody>
-				<tr class="transparent">
-					<td></td>
-					<td>Subtotal</td>
-					<td>$ {{result.calcs.cash_subtotal | formatPrice}}</td>
-					<td></td>
-				</tr>
-				<tr class="transparent">
-					<td></td>
-					<td>Fees</td>
-					<td>$ {{result.calcs.restaurant_fee | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent" ng-if="result.adjustment">
@@ -238,41 +205,38 @@
 					<td>Adjustment</td>
 					<td>$ {{result.adjustment | formatPrice}}</td>
 					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_reimbursement">
+					<td></td>
+					<td><strong>Total Reimburse</strong></td>
+					<td><strong>$ {{result.calcs.total_reimburse | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment">
+					<td></td>
+					<td><strong>Total Payment</strong></td>
+					<td><strong>$ {{result.calcs.total_payment | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
-					<td><strong>Total Payment (minus fees)</strong></td>
-					<td><strong>$ {{result.calcs.total_due | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
 			</tbody>
-
-			<thead ng-if="result.orders_not_included">
-				<tr>
-					<td colspan="5" class="title">Not Paid Orders</td>
-				</tr>
-			</thead>
-			<thead ng-if="result.orders_not_included">
-				<tr>
-					<td>#</td>
-					<td class="td-medium">Curstomer name</td>
-					<td>Date</td>
-					<td>Total</td>
-					<td>Tip</td>
-				</tr>
-			</thead>
-			<tbody ng-if="result.orders_not_included">
-				<tr ng-repeat="order in result.orders.not_included">
-					<td>{{order.id_order}}</td>
-					<td>{{order.name}}</td>
-					<td>{{order.date}}</td>
-					<td>$ {{order.total | formatPrice}}</td>
-					<td>$ {{order.tip | formatPrice}}</td>
-				</tr>
-			</tbody>
-
-
 		</table>
 </div>
 

@@ -140,6 +140,27 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversScheduledCtrl',
 			templateUrl: 'assets/view/settlement-drivers-scheduled.html'
 		})
+		.when('/settlement/drivers/scheduled/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payment.html'
+		})
+		.when('/settlement/drivers/payments', {
+			action: 'settlement',
+			controller: 'SettlementDriversPaymentsCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payments.html'
+		})
+		.when('/settlement/drivers/payment/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversPaymentCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payment.html'
+		})
+		.when('/settlement/drivers/summary/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversSummaryCtrl',
+			templateUrl: 'assets/view/settlement-drivers-summary.html'
+		})
+		/* Driver shifts */
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',

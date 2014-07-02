@@ -27,7 +27,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 
 	function byRestaurant( $id_restaurant ){
 		if( $id_restaurant ){
-			$payment = Crunchbutton_User_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ' . $id_restaurant . ' LIMIT 1' );
+			$payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ' . $id_restaurant . ' LIMIT 1' );
 			if( $payment->id_restaurant_payment_type ){
 				return Crunchbutton_Restaurant_Payment_Type::o( $payment->id_restaurant_payment_type );
 			} else{

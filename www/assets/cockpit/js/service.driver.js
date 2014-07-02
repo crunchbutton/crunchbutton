@@ -6,8 +6,15 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 	var drivers = $resource( App.service + 'driver/:action', { action: '@action' }, {
 				// list methods
 				'listSimple' : { 'method': 'GET', params : { 'action' : 'all' }, isArray: true },
+				'paid' : { 'method': 'GET', params : { 'action' : 'paid' }, isArray: true },
 			}
 		);
+
+	service.paid = function( callback ){
+		drivers.paid( function( data ){
+			callback( data );
+		} );
+	}
 
 	service.listSimple = function( callback ){
 		drivers.listSimple( function( data ){

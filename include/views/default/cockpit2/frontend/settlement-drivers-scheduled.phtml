@@ -1,0 +1,85 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Scheduled Payments - Drivers</span></h1>
+
+	<div class="divider"></div>
+
+	<div ng-if="result">
+
+		<h2 class="title">
+			<span>Summary</span>
+		</h2>
+		<h3 class="title">
+			Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
+		</h3>
+
+		<table class="tb-grid tb-zebra summary">
+			<tbody>
+				<tr>
+					<td>Total of Payments</td>
+					<td>{{result.total_payments}}</td>
+				</tr>
+				<tr>
+					<td>Total of Reimbursements</td>
+					<td>{{result.total_reimbursements}}</td>
+				</tr>
+				<tr>
+					<td>Scheduled</td>
+					<td>{{result.scheduled}}</td>
+				</tr>
+				<tr>
+					<td>Processing</td>
+					<td>{{result.processing}}</td>
+				</tr>
+				<tr ng-class="{'orange' : result.error > 0 }">
+					<td>Error</td>
+					<td>{{result.error}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div ng-show="result.drivers">
+
+			<h2 class="title">
+				<span>Scheduled Payments</span>
+			</h2>
+
+			<div class="box-filter">
+				<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
+				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'reimbursement' }" ng-click="filter = 'reimbursement'">Reimbursement</button>
+				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'payment' }" ng-click="filter = 'payment'">Payments</button>
+				<div class="divider"></div>
+			</div>
+
+			<table class="tb-grid tb-zebra">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td class="td-medium">Driver</td>
+						<td>Scheduled at</td>
+						<td>Type</td>
+						<td>Amount</td>
+						<td>Status</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="driver in result.drivers" ng-show="!filter || filter == driver.pay_type">
+						<td>{{driver.id_payment_schedule}}</td>
+						<td>{{driver.driver}}</td>
+						<td>{{driver.date}}</td>
+						<td>{{driver.pay_type}}</td>
+						<td>$ {{driver.amount | formatPrice}}</td>
+						<td>
+							<span class="link orange" ng-click="payment( driver.id_payment_schedule )">{{driver.status}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

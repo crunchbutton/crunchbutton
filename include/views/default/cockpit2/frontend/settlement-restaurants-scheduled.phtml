@@ -2,7 +2,7 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Payments - Scheduled</span></h1>
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Scheduled Payments - Restaurants</span></h1>
 
 	<div class="divider"></div>
 
@@ -36,32 +36,35 @@
 			</tbody>
 		</table>
 
-		<h2 class="title">
-			<span>Scheduled Payments</span>
-		</h2>
+		<div ng-if="result.restaurants">
 
-		<table class="tb-grid tb-zebra">
-			<thead>
-				<tr>
-					<td>#</td>
-					<td class="td-medium">Restaurant</td>
-					<td>Scheduled at</td>
-					<td>Amount</td>
-					<td>Status</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="restaurant in result.restaurants">
-					<td>{{restaurant.id_payment_schedule}}</td>
-					<td>{{restaurant.restaurant}}</td>
-					<td>{{restaurant.date}}</td>
-					<td>$ {{restaurant.amount | formatPrice}}</td>
-					<td>
-						<span class="link orange" ng-click="payment( restaurant.id_payment_schedule )">{{restaurant.status}}</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+			<h2 class="title">
+				<span>Scheduled Payments</span>
+			</h2>
+
+			<table class="tb-grid tb-zebra">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td class="td-medium">Restaurant</td>
+						<td>Scheduled at</td>
+						<td>Amount</td>
+						<td>Status</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="restaurant in result.restaurants">
+						<td>{{restaurant.id_payment_schedule}}</td>
+						<td>{{restaurant.restaurant}}</td>
+						<td>{{restaurant.date}}</td>
+						<td>$ {{restaurant.amount | formatPrice}}</td>
+						<td>
+							<span class="link orange" ng-click="payment( restaurant.id_payment_schedule )">{{restaurant.status}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 

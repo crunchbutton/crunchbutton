@@ -45,6 +45,38 @@ class Crunchbutton_Payment extends Cana_Table {
 			}
 		}
 		$payment->env = c::getEnv(false);
+		$payment->id_admin = c::user()->id_admin;
+		$payment->save();
+
+		if( $payment->balanced_id || $payment->stripe_id ){
+			return $payment->id_payment;
+		} else {
+			return false;
+		}
+
+	}
+
+	public static function credit_driver($params = null) {
+
+		$payment = new Payment((object)$params);
+		$payment->date = date('Y-m-d H:i:s');
+		$payment_type = Crunchbutton_Admin_Payment_Type::byAdmin( $payment->id_driver );
+
+		// if( $payment->type == 'balanced' ){
+		// 	try {
+		// 		$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
+		// 	} catch ( Exception $e ) {
+		// 			throw new Exception( $e->getMessage() );
+		// 			exit;
+		// 	}
+		// 	if( $credit && $credit->id ){
+		// 		$payment->balanced_id = $credit->id;
+		// 	}
+		// }
+
+		$payment->env = c::getEnv(false);
+		$payment->id_admin = c::user()->id_admin;
+		$payment->balanced_id = 123;
 		$payment->save();
 
 		if( $payment->balanced_id || $payment->stripe_id ){
@@ -69,17 +101,43 @@ class Crunchbutton_Payment extends Cana_Table {
 	}
 
 	public function listPayments( $search = [] ){
+		$query = '';
 		$where = ' WHERE 1=1 ';
-		if( $search[ 'id_restaurant' ] ){
-			$where .= ' AND p.id_restaurant = ' . $search[ 'id_restaurant' ];
-		}
-		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
-		$query = 'SELECT p.*, r.name AS restaurant, ps.id_payment_schedule FROM payment p
+		if( $search[ 'type' ] ){
+			if( $search[ 'type' ] == 'restaurant' ){
+
+				if( $search[ 'id_restaurant' ] ){
+					$where .= ' AND p.id_restaurant = ' . $search[ 'id_restaurant' ];
+				}
+
+				$query = 'SELECT p.*, r.name AS restaurant, ps.id_payment_schedule FROM payment p
 								LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
 								INNER JOIN restaurant r ON r.id_restaurant = p.id_restaurant
 								' . $where . '
 								ORDER BY p.id_payment DESC ' . $limit;
-		return Crunchbutton_Payment::q( $query );
+
+			}
+			if( $search[ 'type' ] == 'driver' ){
+
+				if( $search[ 'id_driver' ] ){
+					$where .= ' AND p.id_driver = ' . $search[ 'id_driver' ];
+				}
+
+				if( $search[ 'pay_type' ] ){
+					$where .= ' AND p.pay_type = "' . $search[ 'pay_type' ] . '"';
+				}
+
+				$query = 'SELECT p.*, a.name AS driver, ps.id_payment_schedule FROM payment p
+								LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
+								INNER JOIN admin a ON a.id_admin = p.id_driver
+								' . $where . '
+								ORDER BY p.id_payment DESC ' . $limit;
+			}
+		}
+		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
+		if( $query != '' ){
+			return Crunchbutton_Payment::q( $query );
+		}
 	}
 
 	public function date() {

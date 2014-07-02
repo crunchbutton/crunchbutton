@@ -1,4 +1,4 @@
-NGApp.controller('SettlementCtrl', function ( $scope ) {
+NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 
 	$scope.ready = true;
 
@@ -18,9 +18,17 @@ NGApp.controller('SettlementCtrl', function ( $scope ) {
 		$scope.navigation.link( '/settlement/drivers' );
 	}
 
+	$scope.drivers_payments = function(){
+		$scope.navigation.link( '/settlement/drivers/payments' );
+	}
+
+	$scope.drivers_scheduled_payments = function(){
+		$scope.navigation.link( '/settlement/drivers/scheduled' );
+	}
+
 } );
 
-NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, SettlementService ) {
+NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, SettlementService ) {
 
 	$scope.ready = false;
 	$scope.pay_type = 'all';
@@ -197,7 +205,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		$scope.total_reimburse_cash_orders = total_reimburse_cash_orders;
 		$scope.total_refunded = total_refunded;
 		$scope.sum = sum;
-		console.log('$scope.sum',$scope.sum);
+		console.log( '$scope.sum',$scope.sum);
 	}
 
 	$scope.show_details = function( restaurant ){
@@ -225,7 +233,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 });
 
-NGApp.controller('SettlementRestaurantsScheduledCtrl', function ( $scope, SettlementService ) {
+NGApp.controller( 'SettlementRestaurantsScheduledCtrl', function ( $scope, SettlementService ) {
 
 	$scope.ready = false;
 
@@ -247,7 +255,7 @@ NGApp.controller('SettlementRestaurantsScheduledCtrl', function ( $scope, Settle
 
 });
 
-NGApp.controller('SettlementRestaurantsSummaryCtrl', function ( $scope, $routeParams, SettlementService ) {
+NGApp.controller( 'SettlementRestaurantsSummaryCtrl', function ( $scope, $routeParams, SettlementService ) {
 
 	$scope.ready = false;
 
@@ -269,7 +277,7 @@ NGApp.controller('SettlementRestaurantsSummaryCtrl', function ( $scope, $routePa
 
 });
 
-NGApp.controller('SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootScope, SettlementService, RestaurantService ) {
+NGApp.controller( 'SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootScope, SettlementService, RestaurantService ) {
 
 	$scope.ready = false;
 	$scope.id_restaurant = 0;
@@ -319,7 +327,7 @@ NGApp.controller('SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootSc
 
 });
 
-NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
+NGApp.controller( 'SettlementRestaurantsScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
 
 	$scope.ready = false;
 	$scope.schedule = true;
@@ -356,7 +364,7 @@ NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $r
 
 });
 
-NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $routeParams, SettlementService ) {
+NGApp.controller( 'SettlementRestaurantsPaymentCtrl', function ( $scope, $routeParams, SettlementService ) {
 
 	$scope.ready = false;
 
@@ -393,7 +401,7 @@ NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $routePa
 
 });
 
-NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService, DriverService ) {
+NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, SettlementService, DriverService ) {
 
 	$scope.ready = false;
 
@@ -538,11 +546,11 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 	}
 
 	$scope.schedule_reimbursement = function(){
-		schedule( $scope.result.reimbursement );
+		schedule( SettlementService.PAY_TYPE_REIMBURSEMENT );
 	}
 
 	$scope.schedule_payment = function(){
-		schedule( $scope.result.payment );
+		schedule( SettlementService.PAY_TYPE_PAYMENT );
 	}
 
 	var schedule = function( pay_type ){
@@ -569,7 +577,6 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 		} );
 	}
 
-
 	$scope.show_details = function( driver ){
 		if( !driver.show_details ){
 			$scope.showing_details = true;
@@ -593,6 +600,170 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 		range();
 		// Load the drivers list
 		DriverService.listSimple( function( json ){ $scope.drivers = json; } )
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, SettlementService ) {
+
+	$scope.ready = false;
+	$scope.filter = false;
+
+	$scope.update = function(){
+		SettlementService.drivers.scheduled( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+		} );
+	}
+
+	$scope.payment = function( id_payment ){
+		$scope.navigation.link( '/settlement/drivers/scheduled/' + id_payment );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		$scope.update();
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+	$scope.schedule = true;
+
+	load = function(){
+		SettlementService.drivers.scheduled_payment( function( json ){
+			$scope.result = json;
+			if( json.pay_type == SettlementService.PAY_TYPE_REIMBURSEMENT ){
+				$scope.pay_type_reimbursement = true;
+			} else {
+				$scope.pay_type_payment = true;
+			}
+			$scope.ready = true;
+			$scope.unBusy();
+		} );
+	}
+
+	$scope.do_payment = function(){
+		$scope.makeBusy();
+		SettlementService.drivers.do_payment( $routeParams.id, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+				load();
+				$scope.unBusy();
+			} else {
+				load();
+			}
+		} );
+	}
+
+	$scope.view_payment = function( id_payment ){
+		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+});
+
+NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, SettlementService, DriverService) {
+
+	$scope.ready = false;
+	$scope.id_driver = 0;
+	$scope.page = 1;
+
+	var list = function(){
+		SettlementService.drivers.payments( { 'page': $scope.page, 'id_driver': $scope.id_driver, 'pay_type': $scope.pay_type }, function( data ){
+			$scope.pages = data.pages;
+			$scope.next = data.next;
+			$scope.prev = data.prev;
+			$scope.payments = data.results;
+			$scope.count = data.count;
+			$scope.ready = true;
+		} );
+	}
+
+	var drivers = function(){
+		DriverService.paid( function( data ){
+			$scope.drivers = data;
+		} );
+	}
+
+	$scope.open = function( id_payment ){
+		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
+	}
+
+	$scope.$watch( 'id_driver', function( newValue, oldValue, scope ) {
+		$scope.page = 1;
+		list();
+	} );
+
+	$scope.$watch( 'pay_type', function( newValue, oldValue, scope ) {
+		$scope.page = 1;
+		list();
+	} );
+
+
+	$scope.nextPage = function(){
+		$scope.page = $scope.next;
+		list();
+	}
+
+	$scope.prevPage = function(){
+		$scope.page = $scope.prev;
+		list();
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		$scope.pay_type = 0;
+		$scope.pay_types = SettlementService.pay_types();
+		drivers();
+		list();
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+
+	$scope.payment = true;
+
+	load = function(){
+		SettlementService.drivers.payment( function( json ){
+			$scope.result = json;
+			if( json.pay_type == SettlementService.PAY_TYPE_REIMBURSEMENT ){
+				$scope.pay_type_reimbursement = true;
+			} else {
+				$scope.pay_type_payment = true;
+			}
+			$scope.ready = true;
+			$scope.unBusy();
+		} );
+	}
+
+	$scope.view_summary = function(){
+		$scope.navigation.link( '/settlement/drivers/summary/' + $routeParams.id );
+	}
+
+	$scope.send_summary = function(){
+		$scope.makeBusy();
+		SettlementService.drivers.send_summary( function( json ){
+			if( json.success ){
+				load();
+			} else {
+				$scope.unBusy();
+				App.alert( 'Oops, something bad happened!' );
+			}
+		} )
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
 	}
 
 });
