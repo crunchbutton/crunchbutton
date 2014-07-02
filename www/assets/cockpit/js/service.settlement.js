@@ -34,6 +34,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
+		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } }
@@ -90,12 +91,12 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	service.restaurants.view_summary = function( callback ){
 		var url = App.service + 'settlement/restaurants/view-summary/' + $routeParams.id;
 		$http( { method: 'POST', url: url } ).
-    success( function( data, status, headers, config ) {
-    	callback( data );
-    }).
-    error( function(data, status, headers, config ) {
-    	callback( false );
-    } );
+			success( function( data, status, headers, config ) {
+				callback( data );
+			}).
+			error( function(data, status, headers, config ) {
+				callback( false );
+			} );
 	}
 
 	service.restaurants.payments = function( params, callback ){
@@ -180,6 +181,23 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		settlement.drivers.payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
 			callback( json );
 		} );
+	}
+
+	service.drivers.send_summary = function( callback ){
+		settlement.drivers.send_summary( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.view_summary = function( callback ){
+		var url = App.service + 'settlement/drivers/view-summary/' + $routeParams.id;
+		$http( { method: 'POST', url: url } ).
+			success( function( data, status, headers, config ) {
+				callback( data );
+			}).
+			error( function(data, status, headers, config ) {
+				callback( false );
+			} );
 	}
 
 	service.pay_types = function(){
