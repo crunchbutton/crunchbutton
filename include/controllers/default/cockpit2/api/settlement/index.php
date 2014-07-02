@@ -419,6 +419,8 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$_order[ 'restaurant' ] = $order[ 'restaurant' ];
 				$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
 				$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
+				$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
+				$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
 				$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
 				$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
 				$_order[ 'date' ] = $order[ 'date' ];

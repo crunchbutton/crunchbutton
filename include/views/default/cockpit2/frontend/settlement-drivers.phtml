@@ -295,13 +295,14 @@
 								<tr>
 									<td></td>
 									<td>#</td>
-									<td class="td-medium">Restaurant</td>
-									<td class="td-medium">Name</td>
-									<td>Amount</td>
+									<td>Restaurant</td>
+									<td>Name</td>
+									<td>Type</td>
+									<td>Tip</td>
+									<td>Delivery Fee</td>
 									<td>Reimburse</td>
 									<td>Payment</td>
-									<td>Type</td>
-									<td class="td-medium">Date</td>
+									<td>Date</td>
 									<td></td>
 									<td></td>
 									<td></td>
@@ -314,10 +315,11 @@
 									<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.restaurant}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
-									<td ng-class="{ 'excluded': !order.included }">$ {{order.total | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_reimburse | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_payment | formatPrice}}</td>
-									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
 									<td>
 										<span class="pointer orange" ng-click="do_not_pay_driver( order.id_order, driver.id_admin, 1 )" ng-if="order.included">
