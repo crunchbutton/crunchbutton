@@ -47,7 +47,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT * FROM `order`
 									WHERE DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
 										AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
-										AND NAME NOT LIKE "%test%"
+										AND name NOT LIKE "%test%"
 									ORDER BY `date` ASC ';
 		// todo: do not commit with this line
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24462, 24463, 24464 ) order by id_order desc';
@@ -1065,8 +1065,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 			$calcs = $settlement->driversProcessOrders( $_orders, true );
-			$summary[ 'calcs' ] = [ 'total_reimburse' => $calcs[ 0 ][ 'total_reimburse' ],
-															'total_payment' => $calcs[ 0 ][ 'total_payment' ],
+
+			$total_reimburse = $calcs[ 0 ][ 'total_reimburse' ];
+			$total_payment = $calcs[ 0 ][ 'total_payment' ];
+
+			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
+				$total_payment += $summary[ 'adjustment' ];
+			} else {
+				$total_reimburse += $summary[ 'adjustment' ];
+			}
+
+
+			$summary[ 'calcs' ] = [ 'total_reimburse' => $total_reimburse,
+															'total_payment' => $total_payment,
 															'tax' => $calcs[ 0 ][ 'tax' ],
 															'delivery_fee' => $calcs[ 0 ][ 'delivery_fee' ],
 															'tip' => $calcs[ 0 ][ 'tip' ],
