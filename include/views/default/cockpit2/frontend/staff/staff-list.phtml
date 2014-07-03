@@ -18,7 +18,7 @@
 		<ul class="ul-inputs box-content">
 
 			<li class="li-input">
-				<div class="label">Search:</div>
+				<div class="label">Search by name:</div>
 				<div class="input"><input type="text" name="searchName" ng-model="search.name"></div>
 			</li>
 
@@ -85,7 +85,7 @@
 		</table>
 	</div>
 
-	<div ng-if="!count && !isSearching" class="box-content">
+	<div ng-if="!count && !isSearching && searched" class="box-content">
 		No workers.
 	</div>
 
