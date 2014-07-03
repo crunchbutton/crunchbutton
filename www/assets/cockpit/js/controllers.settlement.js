@@ -26,6 +26,10 @@ NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 		$scope.navigation.link( '/settlement/drivers/scheduled' );
 	}
 
+	$scope.drivers_payment_info = function(){
+		$scope.navigation.link( '/staff/list' );
+	}
+
 } );
 
 NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, SettlementService ) {
@@ -631,6 +635,10 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 
 	$scope.ready = false;
 	$scope.schedule = true;
+
+	$scope.payment_info = function( id_driver ){
+		$scope.navigation.link( '/staff/payinfo/' + id_driver );
+	}
 
 	load = function(){
 		SettlementService.drivers.scheduled_payment( function( json ){

@@ -79,7 +79,7 @@ App.tokenizeCard_stripe = function( card, complete ) {
 };
 
 App.tokenizeCard_balanced = function(card, completed) {
-console.log('card',card);
+
 	var handleResponse = function(response) {
 		var res = {
 			status: false

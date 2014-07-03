@@ -62,21 +62,21 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->date = date('Y-m-d H:i:s');
 		$payment_type = Crunchbutton_Admin_Payment_Type::byAdmin( $payment->id_driver );
 
-		// if( $payment->type == 'balanced' ){
-		// 	try {
-		// 		$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
-		// 	} catch ( Exception $e ) {
-		// 			throw new Exception( $e->getMessage() );
-		// 			exit;
-		// 	}
-		// 	if( $credit && $credit->id ){
-		// 		$payment->balanced_id = $credit->id;
-		// 	}
-		// }
+		if( $payment->type == 'balanced' ){
+			try {
+				$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
+			} catch ( Exception $e ) {
+				echo '<pre>';var_dump( $e );exit();
+					throw new Exception( $e->getMessage() );
+					exit;
+			}
+			if( $credit && $credit->id ){
+				$payment->balanced_id = $credit->id;
+			}
+		}
 
 		$payment->env = c::getEnv(false);
 		$payment->id_admin = c::user()->id_admin;
-		$payment->balanced_id = 123;
 		$payment->save();
 
 		if( $payment->balanced_id || $payment->stripe_id ){
