@@ -13,6 +13,7 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 	$scope.page = 1;
 
 	var list = function(){
+		$scope.searched = true;
 		$scope.isSearching = true;
 		var search = { 'type': $scope.search.type, 'name': $scope.search.name, 'status': $scope.search.status, 'page': $scope.page }
 		StaffService.list( search, function( data ){
