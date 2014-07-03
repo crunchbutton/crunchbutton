@@ -1,7 +1,7 @@
 <?php
 
 class Crunchbutton_Util extends Cana_Model {
-	public function frontendTemplates($export = false) {
+	public function frontendTemplates($export = false, $subFolders = false) {
 		$files = [];
 
 		$themes = c::view()->theme();
@@ -15,14 +15,38 @@ class Crunchbutton_Util extends Cana_Model {
 			}
 		}
 
-		foreach (new DirectoryIterator(c::config()->dirs->view.$frontendDir.'/frontend') as $fileInfo) {
-			if (!$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
-				$files[] = $fileInfo->getBasename('.phtml');
+		if( $subFolders ){
+			$path = c::config()->dirs->view.$theme.'/frontend';
+			$files = array_merge( $files, Crunchbutton_Util::directoryReader( $path ) );
+		} else {
+			foreach (new DirectoryIterator(c::config()->dirs->view.$frontendDir.'/frontend') as $fileInfo) {
+				if (!$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
+					$files[] = $fileInfo->getBasename('.phtml');
+				}
 			}
 		}
 		if ($export) {
 			$files[] = 'legal';
 		}
+		return $files;
+	}
+
+	public function directoryReader( $path, $subFolder = '' ){
+		$files = [];
+		foreach ( new DirectoryIterator( $path ) as $fileInfo ) {
+				if( !$fileInfo->isDot() && $fileInfo->isDir() ){
+					// echo '<pre>';var_dump( $fileInfo->getPath() );exit();
+
+					if( $fileInfo->getPathname() != $path ){
+						$subPath = $fileInfo->getPathname();
+						$subFolder = $fileInfo->getBasename();
+						$files = array_merge( $files, Crunchbutton_Util::directoryReader( $subPath, $subFolder ) );
+					}
+				} else
+				if ( !$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
+					$files[] = [ 'basename' => $fileInfo->getBasename( '.phtml' ), 'subFolder' => $subFolder ];
+				}
+			}
 		return $files;
 	}
 
