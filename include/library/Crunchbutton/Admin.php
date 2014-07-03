@@ -138,6 +138,31 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN driver_log dl ON dl.id_admin = a.id_admin WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
 	}
 
+	public function search( $search = [] ){
+
+		$where = 'WHERE 1=1 ';
+		if( $search[ 'name' ] && trim( $search[ 'name' ] ) ){
+			$where .= ' AND a.name LIKE "%' . $search[ 'name' ] . '%"';
+		}
+
+		if( $search[ 'status' ] && $search[ 'status' ] != 'all' ){
+			$active = ( $search[ 'status' ] == 'active' ) ? '1' : '0';
+			$where .= ' AND a.active = "' . $active . '"';
+		}
+
+		$query = 'SELECT a.* FROM admin a ' . $where . ' ORDER BY a.name ASC';
+
+		switch ( $search[ 'type' ] ) {
+			case 'drivers':
+				$query = 'SELECT DISTINCT(a.id_admin) AS id, a.* FROM admin a
+											INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+											INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
+											INNER JOIN admin_notification an ON a.id_admin = an.id_admin ' . $where . 'ORDER BY a.name ASC';
+				break;
+		}
+		return Admin::q( $query );
+	}
+
 	public function drivers(){
 		return Admin::q( 'SELECT a.* FROM admin a
 												INNER JOIN (
@@ -565,7 +590,8 @@ class Crunchbutton_Admin extends Cana_Table {
 			'testphone' => $this->testphone,
 			'permissions' => $permissions,
 			'groups' => $groups,
-			'communities' => $communities
+			'communities' => $communities,
+			'active' => ( $this->active == 1 )
 		];
 
 		foreach( $remove as $rem ){
