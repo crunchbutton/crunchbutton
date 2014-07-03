@@ -33,6 +33,10 @@ class Controller_api_staff_list extends Crunchbutton_Controller_RestAccount {
 		foreach( $staff as $worker ){
 			if( $count >= $start && $count < $end ){
 				$data = $worker->exports( [ 'permissions', 'groups' ] );
+				unset( $data[ 'email' ] );
+				unset( $data[ 'timezone' ] );
+				unset( $data[ 'testphone' ] );
+				unset( $data[ 'txt' ] );
 				$list[] = $data;
 			}
 			$count++;

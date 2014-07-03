@@ -55,6 +55,7 @@
 			<thead>
 				<tr>
 					<td class="td-medium">Name</td>
+					<td class="td-medium">Phone</td>
 					<td class="td-medium">Login</td>
 					<td>Community</td>
 					<td></td>
@@ -62,12 +63,9 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="worker in staff">
-					<td>
-						{{worker.name}}
-					</td>
-					<td>
-						<span ng-if="worker.login">{{worker.login}}</span>
-					</td>
+					<td>{{worker.name}}</td>
+					<td>{{worker.phone}}</td>
+					<td>{{worker.login}}</td>
 					<td><span ng-repeat="community in worker.communities">{{community}}</span></td>
 					<td>
 						<span class="link orange" ng-click="payinfo(worker.id_admin)">Pay info</span>
@@ -91,11 +89,9 @@
 		No workers.
 	</div>
 
-
 	<div ng-if="isSearching" class="box-content">
 		<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
 	</div>
-
 
 </div>
 
