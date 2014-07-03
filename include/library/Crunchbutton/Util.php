@@ -35,12 +35,10 @@ class Crunchbutton_Util extends Cana_Model {
 		$files = [];
 		foreach ( new DirectoryIterator( $path ) as $fileInfo ) {
 				if( !$fileInfo->isDot() && $fileInfo->isDir() ){
-					// echo '<pre>';var_dump( $fileInfo->getPath() );exit();
-
 					if( $fileInfo->getPathname() != $path ){
 						$subPath = $fileInfo->getPathname();
-						$subFolder = $fileInfo->getBasename();
-						$files = array_merge( $files, Crunchbutton_Util::directoryReader( $subPath, $subFolder ) );
+						$folder = $fileInfo->getBasename();
+						$files = array_merge( $files, Crunchbutton_Util::directoryReader( $subPath, $folder ) );
 					}
 				} else
 				if ( !$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
