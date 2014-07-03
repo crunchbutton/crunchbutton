@@ -1,19 +1,18 @@
 NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 
-	$scope.ready = false;
+	$scope.showForm = true;
 
 	$scope.search = {};
 
+	$scope.ready = true;
 	$scope.search._types = StaffService.typeSearch();
 	$scope.search._status = StaffService.statusSearch();
-
 	$scope.search.type = 'all';
 	$scope.search.status = 'all';
 	$scope.search.name = '';
 	$scope.page = 1;
 
 	var list = function(){
-		$scope.ready = true;
 		$scope.isSearching = true;
 		var search = { 'type': $scope.search.type, 'name': $scope.search.name, 'status': $scope.search.status, 'page': $scope.page }
 		StaffService.list( search, function( data ){
@@ -23,7 +22,6 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 			$scope.prev = data.prev;
 			$scope.staff = data.results;
 			$scope.count = data.count;
-			$scope.focus( '#search' );
 		} );
 	}
 
@@ -32,7 +30,6 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 	$scope.doSearch = function(){
 		$scope.page = 1;
 		list();
-		$scope.showForm = false;
 	}
 
 	$scope.nextPage = function(){
@@ -47,10 +44,6 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 
 	$scope.payinfo = function( id_admin ){
 		$scope.navigation.link( '/staff/payinfo/' + id_admin );
-	}
-
-	if( $scope.account.isLoggedIn() ){
-		list();
 	}
 
 });
