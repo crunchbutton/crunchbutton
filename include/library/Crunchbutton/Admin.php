@@ -17,6 +17,10 @@ class Crunchbutton_Admin extends Cana_Table {
 		];
 	}
 
+	public function payment_type(){
+		return Crunchbutton_Admin_Payment_Type::byAdmin( $this->id_admin );
+	}
+
 	public function validateLogin( $login, $increment = 0 ){
 		$test = $login . ( $increment > 0 ? $increment : '' );
 		$admin = Crunchbutton_Admin::login( $test, true );
