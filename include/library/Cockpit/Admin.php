@@ -24,8 +24,4 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return false;
 	}
 
-	public function payment_type(){
-		return Crunchbutton_Admin_Payment_Type::byAdmin( $this->id_admin );
-	}
-
 }
