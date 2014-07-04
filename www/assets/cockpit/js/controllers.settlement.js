@@ -767,6 +767,10 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 		} );
 	}
 
+	$scope.payment_info = function( id_driver ){
+		$scope.navigation.link( '/staff/payinfo/' + id_driver );
+	}
+
 	$scope.view_summary = function(){
 		$scope.navigation.link( '/settlement/drivers/summary/' + $routeParams.id );
 	}
