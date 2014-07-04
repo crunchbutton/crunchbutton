@@ -30,6 +30,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 											WHERE o.id_order = ' . $id_order . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = 1 ');
 	}
 
+	public function duration( $timeIn = 'hours' ){
+		$secs = Util::intervalToSeconds( $this->dateEnd()->diff( $this->dateStart() ) );
+		if( $timeIn == 'hours' ){
+			return $secs / 60 / 60;
+		}
+	}
+
 	public function export(){
 		$out = [];
 
@@ -309,6 +316,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->timezone() ) );
 		}
 		return $this->_date_end;
+	}
+
+	public function startEndToStringCommunityTz(  ){
+		return [ 'start' => $this->dateStartFriendly(), 'end' => $this->dateEndFriendly() ];
 	}
 
 	public function startEndToString( $timezone = false ){

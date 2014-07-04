@@ -54,10 +54,12 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$payment_type = new Crunchbutton_Admin_Payment_Type;
 			$payment_type->id_admin = $admin->id_admin;
 		}
+
 		$payment_type->payment_method = $this->request()[ 'payment_method' ];
 		$payment_type->payment_type = $this->request()[ 'payment_type' ];
 		$payment_type->summary_email = $this->request()[ 'summary_email' ];
 		$payment_type->legal_name_payment = $this->request()[ 'legal_name_payment' ];
+		$payment_type->hour_rate = floatval( $this->request()[ 'hour_rate' ] );
 		$payment_type->save();
 		$this->payInfo( $admin );
 	}
@@ -82,6 +84,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		if( $payment_type->id_admin_payment_type ){
 			$out = $payment_type->exports();
 			$out[ 'name' ] = $admin->name;
+			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
 			echo json_encode( $out );
 		} else {
 			echo json_encode( [ 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'legal_name_payment' => $admin->name, 'summary_email' => $admin->email ] );

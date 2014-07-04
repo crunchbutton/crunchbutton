@@ -85,11 +85,15 @@
 					<td>Stripe</td>
 					<td>{{result.stripe_id}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.tax}}">
+				<tr ng-if="result.hourly" positive-or-negative-color="{{result.shifts_hours_amount}}">
+					<td>Worked hours</td>
+					<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
+				</tr>
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.delivery_fee}}">
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.delivery_fee}}">
 					<td>Delivery Fee</td>
 					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
 				</tr>
@@ -97,23 +101,23 @@
 					<td>Tip</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.customer_fee}}">
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.customer_fee}}">
 					<td>Customer Fee</td>
 					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.markup}}">
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.markup}}">
 					<td>Markup</td>
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.credit_charge}}">
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.credit_charge}}">
 					<td>Credit Card Charge</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.gift_card}}">
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.gift_card}}">
 					<td>Gift Card</td>
 					<td>$ {{result.calcs.gift_card | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.adjustment}}">
+				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.adjustment}}">
 					<td>Adjustments</td>
 					<td>$ {{result.adjustment | formatPrice}}</td>
 				</tr>
@@ -128,6 +132,58 @@
 				<tr>
 					<td>Payment Notes</td>
 					<td>{{result.note}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<br/>
+
+		<table class="tb-grid tb-zebra" ng-if="result.shifts">
+			<thead>
+				<tr>
+					<td colspan="4" class="title">Shifts</td>
+				</tr>
+			</thead>
+			<thead>
+				<td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</td>
+			</thead>
+			<thead>
+				<tr>
+					<td>Started at</td>
+					<td>Finished at</td>
+					<td>Hours</td>
+					<td>Amount</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="shift in result.shifts">
+					<td>{{shift.period.start}}</td>
+					<td>{{shift.period.end}}</td>
+					<td>{{shift.hours}}</td>
+					<td>$ {{shift.amount | formatPrice}}</td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr class="transparent">
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent">
+					<td></td>
+					<td>Total By Hours</td>
+					<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
+					<td></td>
 				</tr>
 			</tbody>
 		</table>
@@ -193,7 +249,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="pay_type_payment">
 					<td></td>
 					<td></td>
 					<td>Tips by Card</td>
@@ -223,7 +279,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment">
+				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
 					<td></td>
 					<td></td>
 					<td>Total Delivery Fee</td>
@@ -233,7 +289,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment">
+				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
 					<td></td>
 					<td></td>
 					<td><strong>Markup</strong></td>

@@ -396,6 +396,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$settlement = new Settlement( [ 'start' => $start, 'end' => $end ] );
+
 		$orders = $settlement->startDriver();
 		$out = [ 	'drivers' => [],
 							'notes' => Crunchbutton_Settlement::DEFAULT_NOTES,
@@ -467,6 +468,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
 		$pay_type = $this->request()['pay_type'];
+
 		$_id_drivers = explode( ',', $this->request()['id_drivers'] );
 		$id_drivers = [];
 		foreach ( $_id_drivers as $key => $val ) {
@@ -478,8 +480,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$id_drivers[ $id_driver ][ 'adjustment' ] = $adjustment;
 		}
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
-		$settlement->scheduleDriverPayment( $id_drivers, $pay_type );
-		echo json_encode( [ 'success' => true ] );
+		if( $settlement->scheduleDriverPayment( $id_drivers, $pay_type ) ){
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => true ] );
+		}
 	}
 
 	private function _driverScheduled(){
