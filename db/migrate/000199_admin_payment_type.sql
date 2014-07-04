@@ -13,3 +13,7 @@ CREATE TABLE `admin_payment_type` (
   KEY `admin_payment_type_ibfk1` (`id_admin`),
   CONSTRAINT `admin_payment_type_ibfk1` FOREIGN KEY (`id_admin`) REFERENCES `admin` (`id_admin`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE  `admin_payment_type` ADD  `hour_rate` float DEFAULT NULL;
+
+ALTER TABLE `payment_schedule` ADD `driver_payment_hours` int(1) DEFAULT 0;

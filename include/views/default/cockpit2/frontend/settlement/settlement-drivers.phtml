@@ -121,6 +121,10 @@
 		</h2>
 
 		<table class="tb-grid tb-zebra">
+			<tr positive-or-negative-color="{{sum.worked_hours}}">
+				<td>Hours</td>
+				<td>$ {{sum.worked_hours | formatPrice}}</td>
+			</tr>
 			<tr positive-or-negative-color="{{sum.subtotal}}">
 				<td>Subtotal</td>
 				<td>$ {{sum.subtotal | formatPrice}}</td>
@@ -238,6 +242,10 @@
 										</ul>
 									</td>
 								</tr>
+								<tr ng-if="driver.worked_hours" positive-or-negative-color="{{driver.worked_hours}}">
+									<td>Worked Hours</td>
+									<td>$ {{driver.worked_hours | formatPrice}}</td>
+								</tr>
 								<tr positive-or-negative-color="{{driver.subtotal}}">
 									<td>Subtotal</td>
 									<td>$ {{driver.subtotal | formatPrice}}</td>
@@ -288,7 +296,31 @@
 						<h3 class="title">
 							<span class="link" ng-if="!driver.show_orders" ng-click="driver.show_orders = true">Show orders</span>
 							<span class="link" ng-if="driver.show_orders" ng-click="driver.show_orders = false">Hide orders</span> (total {{driver.orders_count}} orders <span class="orange" ng-if="driver.not_included > 0"><strong> + {{driver.not_included}} </strong>  not included order(s)</span> )
+							<span ng-if="driver.shifts.worked"> | <span class="link" ng-if="!driver.show_shifts" ng-click="driver.show_shifts = true">Show shifts</span>
+								<span class="link" ng-if="driver.show_shifts" ng-click="driver.show_shifts = false">Hide shifts</span> (total {{driver.shifts.worked_total}} shifts)
+							</span>
 						</h3>
+
+						<table class="tb-grid tb-zebra" ng-if="driver.show_shifts">
+							<thead>
+								<tr>
+									<td>Started at</td>
+									<td>Finished at</td>
+									<td>Hours</td>
+									<td>Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="shift in driver.shifts.worked">
+									<td>{{shift.period.start}}</td>
+									<td>{{shift.period.end}}</td>
+									<td>{{shift.hours}}</td>
+									<td>$ {{shift.amount | formatPrice}}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<br/><br/>
 
 						<table class="tb-grid tb-zebra" ng-if="driver.show_orders">
 							<thead>

@@ -60,6 +60,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 				if( json.balanced_bank ){
 					$scope.bank.showForm = false;
 				}
+				console.log('json',json);
 				$scope.ready = true;
 				$scope.payment = {};
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
@@ -83,7 +84,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 				App.alert( data.error);
 				return;
 			} else {
-				load();
+				$scope.payInfo = data;
 				$scope.saved = true;
 				setTimeout( function() { $scope.saved = false; }, 1500 );
 			}

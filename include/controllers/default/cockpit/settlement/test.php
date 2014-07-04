@@ -3,6 +3,13 @@
 class Controller_settlement_test extends Crunchbutton_Controller_Account {
 	public function init() {
 
+		$id_payment = c::getPagePiece( 2 );
+		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->driverSummaryByIdPayment( $id_payment );
+		// echo json_encode( $summary );exit();
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		echo $mail->message();
+exit;
 		if (!c::admin()->permission()->check(['global','settlement'])) {
 			return;
 		}

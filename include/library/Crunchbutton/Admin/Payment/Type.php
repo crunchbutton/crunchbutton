@@ -3,6 +3,8 @@
 class Crunchbutton_Admin_Payment_Type extends Cana_Table {
 
 	const PAYMENT_METHOD_DEPOSIT = 'deposit';
+	const PAYMENT_TYPE_HOURS = 'hours';
+	const PAYMENT_TYPE_ORDERS = 'orders';
 
 	public function __construct($id = null) {
 		parent::__construct();

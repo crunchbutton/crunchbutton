@@ -475,7 +475,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 
 	$scope.summary = function(){
 
-		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0 };
+		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0, 'worked_hours': 0 };
 
 		var total_drivers = 0;
 		var total_payments = 0;
@@ -483,6 +483,8 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		var total_orders = 0;
 		var total_not_included = 0;
 		var total_adjustments = 0;
+		var total_adjustments = 0;
+		var total_worked_hours = 0;
 		var total_refunded = 0;
 		for( x in $scope.result.drivers ){
 			$scope.result.drivers[ x ].total_payments = ( $scope.result.drivers[ x ].total_payment_without_adjustment + $scope.result.drivers[ x ].adjustment );
@@ -493,9 +495,14 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 				total_reimbursements += $scope.result.drivers[ x ].total_reimburse;
 				total_orders += $scope.result.drivers[ x ].orders_count;
 				total_not_included += $scope.result.drivers[ x ].not_included;
-
+				total_not_included += $scope.result.drivers[ x ].not_included;
+				if( $scope.result.drivers[ x ].worked_hours ){
+					total_worked_hours += $scope.result.drivers[ x ].worked_hours;
+				}
 				angular.forEach( sum, function( value, key ) {
-					sum[ key ] += $scope.result.drivers[ x ][ key ];
+					if( $scope.result.drivers[ x ][ key ] ){
+						sum[ key ] += $scope.result.drivers[ x ][ key ];
+					}
 				} );
 
 			}
@@ -503,12 +510,14 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 				$scope.result.drivers[ x ].notes = $scope.result.notes;
 			}
 		}
+
 		$scope.total_drivers = total_drivers;
 		$scope.total_payments = total_payments;
 		$scope.total_reimbursements = total_reimbursements;
 		$scope.total_orders = total_orders;
 		$scope.total_not_included = total_not_included;
 		$scope.total_refunded = total_refunded;
+		$scope.total_worked_hours = total_worked_hours;
 		$scope.sum = sum;
 	}
 
@@ -576,8 +585,13 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		id_drivers = id_drivers.join( ',' );
 		params[ 'id_drivers' ] = id_drivers;
 		SettlementService.drivers.schedule( params, function( json ){
-			$scope.unBusy();
-			$scope.navigation.link( '/settlement/drivers/scheduled' );
+			if( json.success ){
+				$scope.unBusy();
+				$scope.navigation.link( '/settlement/drivers/scheduled' );
+			} else {
+				$scope.unBusy();
+				App.alert( 'Oops, something bad happened!' )
+			}
 		} );
 	}
 
