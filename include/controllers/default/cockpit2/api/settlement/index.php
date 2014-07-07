@@ -4,11 +4,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		$this->resultsPerPage = 20;
+
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
-
-		$this->resultsPerPage = 20;
 
 		switch ($this->method()) {
 			case 'get':
@@ -313,7 +313,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$list[] = $data;
 		}
 
-		$pages = ceil( $payments_total / $resultsPerPage );
+		if( $payments_total > 0 ){
+			$pages = ceil( $payments_total / $resultsPerPage );
+		}
+
 
 		$data = [];
 		$data[ 'count' ] = $payments_total;
@@ -434,6 +437,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 			$driver[ 'total_payment_without_adjustment' ] = $driver[ 'total_payment' ];
 			$driver[ 'adjustment' ] = 0;
+
 			$driver[ 'pay' ] = true;
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
 			if( $id_driver ){
@@ -530,7 +534,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$id_driver = max( $this->request()['id_driver'], 0 );
 		$pay_type = max( $this->request()['pay_type'], 0 );
 		$start = ( ( $page - 1 ) * $resultsPerPage );
-
 		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type ] );
 		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type ] );
 		$payments_total = $payments_total->count();
@@ -545,10 +548,14 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			unset( $data[ 'notes' ] );
 			unset( $data[ 'type' ] );
 			unset( $data[ 'id' ] );
+			$data[ 'amount' ] = !$data[ 'amount' ] ? 0 : $data[ 'amount' ];
 			$list[] = $data;
 		}
 
-		$pages = ceil( $payments_total / $resultsPerPage );
+		if( $payments_total > 0 ){
+			$pages = ceil( $payments_total / $resultsPerPage );
+		}
+
 
 		$data = [];
 		$data[ 'count' ] = $payments_total;

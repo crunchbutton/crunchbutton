@@ -103,6 +103,7 @@ class Crunchbutton_Payment extends Cana_Table {
 	public function listPayments( $search = [] ){
 		$query = '';
 		$where = ' WHERE 1=1 ';
+		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
 		if( $search[ 'type' ] ){
 			if( $search[ 'type' ] == 'restaurant' ){
 
@@ -134,7 +135,7 @@ class Crunchbutton_Payment extends Cana_Table {
 								ORDER BY p.id_payment DESC ' . $limit;
 			}
 		}
-		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
+
 		if( $query != '' ){
 			return Crunchbutton_Payment::q( $query );
 		}

@@ -568,7 +568,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		foreach ( $drivers as $_driver ) {
 
 			if( !$id_drivers[ $_driver[ 'id_admin' ] ] ){
-				// continue;
+				continue;
 			}
 
 			$notes = $id_drivers[ $_driver[ 'id_admin' ] ][ 'notes' ];
@@ -667,7 +667,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$lastDate = $schedule->lastRestaurantStatusDate();
 			$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
 			foreach( $schedules as $_schedule ){
-				$this->payRestaurant( $_schedule->id_payment_schedule );
+				$this->payDriver( $_schedule->id_payment_schedule );
 			}
 		}
 	}
@@ -772,18 +772,33 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
-					try {
-						$p = Payment::credit( [ 'id_restaurant' => $schedule->id_restaurant,
-																		'amount' => $amount,
-																		'note' => $schedule->note,
-																		'type' => 'balanced' ] );
-					} catch ( Exception $e ) {
-						$schedule->log = $e->getMessage();
-						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
-						$schedule->status_date = date( 'Y-m-d H:i:s' );
-						$schedule->save();
-						$this->log( 'payRestaurant: Error', $schedule->properties() );
-						return false;
+
+					if( $amount > 0 ){
+						try {
+							$p = Payment::credit( [ 'id_restaurant' => $schedule->id_restaurant,
+																			'amount' => $amount,
+																			'note' => $schedule->note,
+																			'type' => 'balanced' ] );
+						} catch ( Exception $e ) {
+							$schedule->log = $e->getMessage();
+							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+							$schedule->status_date = date( 'Y-m-d H:i:s' );
+							$schedule->save();
+							$this->log( 'payRestaurant: Error', $schedule->properties() );
+							return false;
+						}
+					} else {
+						$payment = new Crunchbutton_Payment;
+						$payment->date = date( 'Y-m-d H:i:s' );
+						$payment->id_restaurant = $schedule->id_restaurant;
+						$payment->note = $schedule->note;
+						$payment->env = c::getEnv();
+						$payment->id_admin = c::user()->id_admin;
+						$payment->amount = 0;
+						$payment->adjustment = $schedule->adjustment;
+						$payment->save();
+
+						$p = $payment->id_payment;
 					}
 
 					if( $p ){
@@ -871,27 +886,34 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 						$check_name = $schedule->restaurant()->name;
 
-						try{
-							$c = c::lob()->checks()->create( [ 'name' => $check_name,
-																									'to' => [ 'name' => $contact_name,
-																														'address_line1' => $check_address,
-																														'address_city' => $check_address_city,
-																														'address_state' => $check_address_state,
-																														'address_zip' => $check_address_zip,
-																														'address_country' => $check_address_country ],
-																									'bank_account' => c::lob()->defaultAccount(),
-																									'amount' => $amount,
-																									'memo' => $schedule->note,
-																									'message' => $schedule->note ] );
-						} catch( Exception $e ) {
-							$schedule->log = $e->getMessage();
-							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
-							$schedule->status_date = date( 'Y-m-d H:i:s' );
-							$schedule->save();
-							return false;
+						if( $amount > 0 ){
+							try{
+								$c = c::lob()->checks()->create( [ 'name' => $check_name,
+																										'to' => [ 'name' => $contact_name,
+																															'address_line1' => $check_address,
+																															'address_city' => $check_address_city,
+																															'address_state' => $check_address_state,
+																															'address_zip' => $check_address_zip,
+																															'address_country' => $check_address_country ],
+																										'bank_account' => c::lob()->defaultAccount(),
+																										'amount' => $amount,
+																										'memo' => $schedule->note,
+																										'message' => $schedule->note ] );
+								$check_id = $c->id;
+							} catch( Exception $e ) {
+								$schedule->log = $e->getMessage();
+								$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+								$schedule->status_date = date( 'Y-m-d H:i:s' );
+								$schedule->save();
+								return false;
+							}
 						}
 
-						if( $c && $c->id ){
+						if( $check_id ||  $amount == 0 ){
+							$success = true;
+						}
+
+						if( $success ){
 
 							$payment = new Crunchbutton_Payment;
 							$payment->check_id = $c->id;
@@ -899,7 +921,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$payment->id_restaurant = $schedule->id_restaurant;
 							$payment->note = $schedule->note;
 							$payment->env = c::getEnv();
-							$payment->id_admin = $schedule->id_admin;
+							$payment->id_admin = c::user()->id_admin;
 							$payment->amount = $schedule->amount;
 							$payment->adjustment = $schedule->adjustment;
 							$payment->save();
@@ -988,22 +1010,51 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$payment_method = $schedule->driver()->payment_type()->payment_method;
 
+
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
-					try {
-						$p = Payment::credit_driver( [ 'id_driver' => $schedule->id_driver,
-																		'amount' => $amount,
-																		'note' => $schedule->note,
-																		'pay_type' => $schedule->pay_type,
-																		'type' => 'balanced' ] );
-					} catch ( Exception $e ) {
-						$schedule->log = $e->getMessage();
-						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+					if( $amount > 0 ){
+						try {
+							$p = Payment::credit_driver( [ 'id_driver' => $schedule->id_driver,
+																			'amount' => $amount,
+																			'note' => $schedule->note,
+																			'pay_type' => $schedule->pay_type,
+																			'type' => 'balanced' ] );
+						} catch ( Exception $e ) {
+							$schedule->log = $e->getMessage();
+							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+							$schedule->status_date = date( 'Y-m-d H:i:s' );
+							$schedule->save();
+							$this->log( 'payDriver: Error', $schedule->properties() );
+							return false;
+						}
+
+ 					} else {
+
+						// If the payment is 0 just create a payment register and send to the driver the summary
+						$payment = new Crunchbutton_Payment;
+						$payment->date = date( 'Y-m-d H:i:s' );
+						$payment->note = $schedule->note;
+						$payment->env = c::getEnv();
+						$payment->id_driver = $schedule->id_driver;
+						$payment->id_admin = c::user()->id_admin;
+						$payment->amount = 0;
+						$payment->pay_type = $schedule->pay_type;
+						$payment->adjustment = $schedule->adjustment;
+						$payment->save();
+
+						$schedule->id_payment = $payment->id_payment;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
+						$schedule->log = 'Payment finished';
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
-						$this->log( 'payDriver: Error', $schedule->properties() );
-						return false;
-					}
+						$this->log( 'payDriver: Success', $schedule->properties() );
+						$orders = $schedule->orders();
+
+						$p = $payment->id_payment;
+
+ 					}
+
 					if( $p ){
 
 						$payment = Crunchbutton_Payment::o( $p );
@@ -1070,7 +1121,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$this->log( 'payDriver: Error', $schedule->properties() );
 					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 				}
-
 			} else {
 				return false;
 			}
@@ -1187,6 +1237,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 															'subtotal' => $calcs[ 0 ][ 'subtotal' ],
 														];
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
+			$summary[ 'total_payment' ] = max( $summary[ 'total_payment' ], 0 );
+			$summary[ 'total_reimburse' ] = max( $summary[ 'total_reimburse' ], 0 );
+			$summary[ 'calcs' ][ 'total_payment' ] = max( $summary[ 'calcs' ][ 'total_payment' ], 0 );
+			$summary[ 'calcs' ][ 'total_reimburse' ] = max( $summary[ 'calcs' ][ 'total_reimburse' ], 0 );
+
 			return $summary;
 		} else {
 			return false;
