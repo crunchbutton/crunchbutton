@@ -93,7 +93,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	public function driverNotCompletedSchedules(){
 		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
-								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" AND amount > 0 ORDER BY ps.id_payment_schedule DESC';
+								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule DESC';
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
