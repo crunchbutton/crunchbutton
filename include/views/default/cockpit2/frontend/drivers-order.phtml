@@ -14,7 +14,7 @@
 					</div>
 				</div>
 				<div class="buttons">
-					<button ng-click="accept()" class="button green">Yes</button>
+					<button ng-click="accept()" class="button green2">Yes</button>
 					<button ng-click="reject()" class="button orange">No</button>
 				</div>
 				<div class="divider"></div>	
@@ -33,7 +33,7 @@
 
 		<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup">
 			<div class="box-content-accepted"><? //***************BOX CONTENT DESIGN***************** ?>
-				<div class="message">You accepted this order.</div>
+				<div class="message">You accepted this order. {{order.lastStatus.date}}</div>
 				<div class="buttons">
 					<button ng-click="pickedup()" class="button green">Picked up</button>
 					<button ng-click="reject()" class="button orange">Cancel</button>
@@ -46,7 +46,7 @@
 			<div class="box-content-pickedup"><? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">You picked up this order.</div>
 				<div class="buttons" ng-click="delivered()">
-					<button class="button green2">Delivered</button>
+					<button class="button blue">Delivered</button>
 				</div>
 				<div class="divider"></div>	
 			</div>

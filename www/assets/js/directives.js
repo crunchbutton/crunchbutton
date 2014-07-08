@@ -592,7 +592,7 @@ NGApp.directive( 'driverDocsUpload', function ( $fileUploader, $rootScope, $time
 		replace: true,
 		compile: function( elem, attrs ) {
 				var template = '<div>' +
-													'<button class="ladda-button upload" data-color="purple" data-style="expand-right" data-size="l"><span class="ladda-label">Upload</span></button>' +
+													'<button class="ladda-button upload" data-color="mint" data-style="expand-right" data-size="l"><span class="ladda-label">Upload</span></button>' +
 													'<br/>' +
 													'<input ng-file-select class="file file-hidden" name="file" class="file" type="file" />' +
 												'</div>';

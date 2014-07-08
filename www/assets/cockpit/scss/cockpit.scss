@@ -97,12 +97,15 @@ html {
 @media screen and (min-width: 1025px) {
 	.content-padding {
 		padding: 10px 0 10px 0;
+		width: 100%;
 	}
 	.nav .content,
 	.content-padding {
 		/*max-width: 767px;*/
 		margin: 0 auto;
+		width: 100%;
 	}
+	
 }
 
 @media screen and (max-width: 1024px) {
@@ -137,6 +140,9 @@ html {
 @media screen and (min-width: 1025px) {
 	.nav-back {
 		display: none;
+	}
+	.content-padding{
+		width: 100%;
 	}
 }
 
@@ -207,6 +213,7 @@ p {
 
 
 /* GLOBAL */
+
 @media(min-width:769px) {
 	.menu.side {
 		zdisplay: none;
@@ -226,12 +233,101 @@ p {
 }
 @media(min-width:500px) {
 	body {
-		font-size: 12px;
+		font-size: 10px;
 	}
 	.top-pad {
 		height: 67px;
 	}
+	.restaurant-pointer{
+		width: 100%;
+		font-size: 10px;
+		white-space: nowrap;
+		overflow-x: hidden;
+		text-overflow: ellipsis;
+	}
 }
+
+@media(max-width:474px) {
+	.column-info{
+		width: 50%;
+	}
+}
+
+@media(max-width:458px) {
+	.info-name{
+		width: 50%;
+	}
+}
+
+@media(max-width:453px) {
+	.column-info{
+		width: 50%;
+	}
+}
+
+@media(max-width: 385px) {
+	.column-info{
+		width: 40%;
+	}
+}
+
+@media(max-width: 364px) {
+	body{
+		font-size: 10px;
+	}
+	.restaurant-pointer{
+		width: 100%;
+		font-size: 10px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.customer-pointer{
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.column-info{
+		width: 40%;
+	}
+} 
+
+@media(max-width: 328px) {
+	.column-info{
+		width: 35%;
+	}
+}
+
+@media(max-width: 315px) {
+	.restaurant-pointer{
+		display: none;
+	}
+	.customer-pointer{
+		display: none;
+	}
+}
+
+@media(max-width: 318px) {
+	.info-name{
+		width: 25%;
+	}
+}
+
+@media(max-width:307px) {
+	.restaurant-pointer{
+		width: 25%;
+		display: none;
+		font-size: 10px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.customer-pointer{
+		width: 25%;
+		display: none;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
 @media(max-width:499px) {
 	.logo {
 		width: 170px;
@@ -244,7 +340,7 @@ p {
 		margin: 3px 0 0 6px;
 	}
 	.top-pad {
-		height: 58px;
+		height: 67px;
 	}
 }
 .divider {
@@ -264,7 +360,6 @@ p {
 	border-bottom: 1px solid rgba(darken($navColor, 50%), .97);
 	height: 4em;
 }
-
 
 @media(max-width:1024px) {
 	body {
@@ -418,9 +513,15 @@ p {
 	.wrapper {
 		float: left;
 	}
+	
+	.content-padding {
+		width: 100%;
+	}
+	
 	#side-menu-right {
 		display: none;
 	}
+		
 	.snap-drawers {
 		width: 225px;
 		float: left;
@@ -552,7 +653,7 @@ input {
 .button {
 	border: 0;
 	padding: .5em 0 .5em 0;
-	border-radius: 5px;
+	border-radius: 0px;
 	cursor: pointer;
 	color: #fff;
 	text-transform: uppercase;
@@ -580,10 +681,11 @@ input {
 }
 .ladda-progress{
 	display:block;
+	float: right;
 }
 /* colors */
 .button.orange {
-	background: #df4a32;
+	background: #c14641;
 	font-weight: bold;
 }
 .button.lightorange {
@@ -591,11 +693,15 @@ input {
 	font-weight: bold;
 }
 .button.black{
-	background: #3c454e;
+	background: #2a3037;
+	font-weight: bold;
+}
+.button.blue{
+	background: #2F618C;
 	font-weight: bold;
 }
 .button.green {
-	background: #00bea0;
+	background: #307671;
 	font-weight: bold;
 }
 .button.find-restaurants {
@@ -804,7 +910,7 @@ input {
 	.tb-grid .td-medium{
 		width: 50%;
 	}
-
+	
 .tb-grid .schedule-buttons{
 	text-align: right;
 }
@@ -1015,13 +1121,131 @@ h3.title{
 	float: left;
 }
 
+/*driver dashboard page*/
 
+.pending-orders-block {
+	background-color: #e1574c;
+	color: #fff;
+}
+	.pending-orders-wrap{
+		width: 250px;
+		margin: 0 auto 0 auto;
+
+	}
+	.pending-orders-number {
+		font-family: Ruda;
+		font-size: 7em;
+		float: left;
+		padding-left: 5px;
+		padding-right: 10px;
+		padding-top: 10px;
+	}
+	.pending-orders-text {
+		font-family: Ruda;
+		font-size: 2.5em;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.orders-accepted, .orders-pickedup {
+		font-family: Ruda;
+		font-size:  1.5em;
+		color: #a9aaac;
+	}
+
+.outstanding-orders-block{
+	background-color: #d7d8dc;
+	color: #bcbdbf;
+}
+	.outstanding-orders-wrap{
+		width: 300px;
+		margin: 0 auto 0 auto;
+	}
+	.outstanding-orders-number{
+		font-family: Ruda;
+		color: #797979;
+		font-size: 8em;
+		float: left;
+		padding: 10px 10px 0 5px;
+	}
+	.outstanding-orders-text{
+		font-family: Ruda;
+		color: #797979;
+		font-size: 2.5em;
+		padding: 10px 0 10px 0;
+	}
+	.outstanding-orders-subtext{
+		font-family: Ruda;
+		font-size: 1.5em;
+		color: #a9aaac;
+	}
+	
+.revenue-block {
+	background-color: #50c5bc;
+	color: #fff;
+	
+}
+	.revenue-header {
+		background-color: #49aea6;
+		font-size: 2em;
+		font-family: Ruda;
+		padding: 10px 0px 10px 0px;
+		text-align: center;
+	}
+	.revenue-this-shift, .revenue-last-shift {
+		font-size: 4em;
+		font-family: Ruda;
+		color: #d7d8dc;
+	}
+	.revenue-dollar{
+		color: #fff;
+	}
+	.revenue-table {
+		width: 300px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.this-shift-sign, .last-shift-sign {
+		font-size: 2.5em;
+		font-family: Ruda;
+	}
+
+.avg-time-block {
+	background-color: #454b57;
+	color: #fff;
+}
+	.avg-time-header {
+		background-color: #333c43;
+		font-size: 2em;
+		font-family: Ruda;
+		padding: 10px 0 10px 0;
+		text-align: center;
+	}
+	.time-this-shift, .time-last-shift {
+		font-size: 4em;
+		font-family: Ruda;
+	}
+	.minutes-sign {
+		font-size: .5em;
+		vertical-align: super;
+		color: #a9aaac;
+	}
+	.avg-delivery-table{
+		width: 300px;
+		text-align: center;
+		margin: 0 auto 0 auto;
+	}
+	
 
 /* drivers order list page */
 .last-updated{
 	font-size: 1em;
 	font-style: italic;
 	margin: 1em 0;
+}
+
+.drivers-order-list{
+	background-color: #f1f2f7;
 }
 
 .drivers-order-list .column-action{
@@ -1045,6 +1269,10 @@ h3.title{
 	.column-date .hour{
 		text-align: right;
 	}
+	.column-date .num{
+		text-align: right;
+		font-size: 1.5em;
+	}
 	.column-date .ampm{
 		text-align: right;
 		text-transform: uppercase;
@@ -1054,6 +1282,7 @@ h3.title{
 	display: table;
 	float: left;
 	font-family: Ruda;
+	text-overflow: ellipsis;
 }
 	.column-info .restaurant{
 		margin-bottom: .4em;
@@ -1066,66 +1295,107 @@ h3.title{
 
 	.column-info .restaurant-pointer{
 		font-size: 1.6em;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 
 .drivers-order-list .vert-divider{
 	background-color: #bd4743;
 	border-style: none;
-	width: 3px;
+	width: 2px;
 	height: 75px;
 	float: left;
 	margin-right: .3em;
 }
 
+
 .drivers-order-list .delivered{
-	background-color: #4d4d4d;
+	background-color: #454b57;
 	color: #fff;
+	border-style: none;
 }
 
+.drivers-order-list .delivered .notMyOrder{
+	background-color: #fff;
+	border-style: solid;
+	border-width: 2px;
+	border-width: 2px;
+	border-color: #454b57;
+	color: black;
+}
+
+	.delivered .notMyOrder .row-status{
+		background-color: #454b57;
+		color: #fff;
+	}
+
 	.delivered .vert-divider{
-		background-color: #3c454e;
+		background-color: #333c43;
 		border-style: none;
-		width: 3px;
+		width: 2px;
 		height: 75px;
 		float: left;
 		margin-right: .3em;
 	}
 
 .drivers-order-list .pickedup{
-	background-color: #50C5BC;
+	background-color: #4ea2ea;
 	color: #fff;
+	border-style: none;
 }
-
+	
+.drivers-order-list .pickedup .notMyOrder{
+	background-color: #fff;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #4ea2ea;
+	color: black;
+}
+	
+	.pickedup .notMyOrder .row-status{
+		background-color: #4ea2ea;
+	}
+	
 	.pickedup .vert-divider{
-		background-color: #4fadad;
+		background-color: #2F618C;
 		border-style: none;
-		width: 3px;
+		width: 2px;
 		height: 75px;
 		float: left;
 		margin-right: .3em;
 	}
 
+	
 .drivers-order-list .accepted{
-	background-color: #fff;
-	color: #000000;
-	border-style: solid;
-	border-width: 2.5px;
-	border-color: #50C5BC;
-}
-	.accepted .row-status{
 	background-color: #50C5BC;
 	color: #fff;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #50C5BC;
+}
 
+.drivers-order-list .accepted .notMyOrder{
+	background-color: #fff;
+	color: #000;
+}
+
+	.accepted .row-status{
+		background-color: #50C5BC;
+		color: #fff;
+	}
+	
+	.accepted .notMyOrder .column-info .customer-pointer{
+		color: #000;
 	}
 
 	.accepted .column-info .customer-pointer{
-		color: gray;
+		color: #fff;
 	}
 
 	.accepted .vert-divider{
-		background-color: #50C5BC;
+		background-color: #00bea0;
 		border-style: none;
-		width: 3px;
+		width: 2px;
 		height: 75px;
 		float: left;
 		margin-right: .3em;
@@ -1330,7 +1600,7 @@ h3.title{
 	}
 
 	.customer-total-price{
-		font-size: 4em;
+		font-size: 2.5em;
 	}
 
 	.customer-total-text{
@@ -1338,7 +1608,7 @@ h3.title{
 	}
 
 	.tip-total-price{
-		font-size: 4em;
+		font-size: 2.5em;
 	}
 
 	.tip-total-text{
@@ -1639,10 +1909,13 @@ b, strong{ font-weight: bold; }
 	cursor: pointer;
 }
 .box-content {
-	background: #e1574c;
-	color: #fff;
+	background: #fff;
+	color: #000;
 	margin-bottom: 15px;
-	border: 5px;
+	border: 2px;
+	border-color: #e1574c;
+	border-style: solid;
+	
 }
 
 .box-content2{
@@ -1677,12 +1950,9 @@ b, strong{ font-weight: bold; }
 }
 
 .box-content-accepted{
-	background-color: #fff;
-	color: #000000;
+	background-color: #50C5BC;
+	color: #fff;
 	font-family: Ruda;
-	border-style: solid;
-	border-width: 5px;
-	border-color: #50C5BC;
 	font-size: 1.5em;
 	padding: 10px;
 }
@@ -1696,11 +1966,8 @@ b, strong{ font-weight: bold; }
 	}
 
 .box-content-pickedup{
-	background-color: #50C5BC;
+	background-color: #4ea2ea;
 	color: #fff;
-	border-style: solid;
-	border-width: 2.5px;
-	border-color: #fff;
 	font-size: 1.5em;
 	line-height: 1.3em;
 	padding: 10px;

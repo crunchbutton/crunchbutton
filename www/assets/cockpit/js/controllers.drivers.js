@@ -1,3 +1,19 @@
+NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationService, DriverOrdersService ) {
+
+	//This links to orders page for pending orders
+	$scope.showOrderList = function(){
+		MainNavigationService.link('/drivers/order/');
+	}
+
+	DriverOrdersService.acceptedOrders();
+	DriverOrdersService.pickedupOrders();
+	DriverOrdersService.revThisShift();
+	//Yell at driver if there is an outstanding undelivered order.
+
+});
+
+
+
 NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
 	$scope.ready = false;
