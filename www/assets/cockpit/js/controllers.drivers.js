@@ -112,15 +112,27 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
 
 	$scope.ready = false;
 
-	var list = function(){
-		DriverService.summary( function( data ){
+	var drivers = function(){
+		DriverService.listSimple( function( data ){
+			$scope.drivers = data;
+		} );
+	}
+
+	$scope.list = function(){
+		$scope.isLoading = true;
+		DriverService.summary( $scope.id_admin, function( data ){
 			$scope.summary = data;
 			$scope.ready = true;
+			$scope.isLoading = false;
 		} );
 	}
 
 	if( $scope.account.isLoggedIn() ){
-		list();
+		if( $scope.account.isAdmin ){
+			drivers();
+		}
+		$scope.id_admin = parseInt( $scope.account.user.id_admin );
+		$scope.list();
 	}
 
 } );
@@ -318,9 +330,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	}
 
 	var docsPendency = function(){
-		DriverOnboardingService.docs.pendency( $routeParams.id, function( data ){
-			console.log('data',data);
-		} );
+		DriverOnboardingService.docs.pendency( $routeParams.id, function( data ){  } );
 	}
 
 	var logs = function(){
