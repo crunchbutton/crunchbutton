@@ -526,7 +526,7 @@ App.init = function(config) {
 
 	App._init = true;
 
-	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
+	$(document).on('touchmove', '.mfp-wrap', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 	});
