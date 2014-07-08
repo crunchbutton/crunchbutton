@@ -7,6 +7,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				// actions
 				'get' : { 'method': 'GET', params : { 'action' : 'order' } },
 				'count' : { 'method': 'GET', params : { 'action' : 'count' } },
+				'count_accepted' : {'method': 'GET', params : {'action' : 'accepted' } },
+				'count_pickedup' : {'method': 'GET', params : {'action' : 'pickedup' } },
+				'revenue' : {'method': 'GET', params : {'action' : 'revenue' } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
@@ -33,6 +36,18 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		orders.count( {}, function( json ){ $rootScope.newDriverOrders = { count: json.total, time: new Date }; } );
 	}
 
+	service.acceptedOrders = function( callback ){
+		orders.count_accepted( {}, function( json ){ $rootScope.acceptedDriverOrders = { accepted: json.total }; } );
+	}
+
+	service.pickedupOrders = function( callback ){
+		orders.count_pickedup( {}, function( json ){ $rootScope.pickedupDriverOrders = { pickedup: json.total }; } );
+	}
+	
+	service.revThisShift = function( callback ){
+		orders.revenue( {}, function( json ){ $rootScope.driverRevenue = { revenue: json.total }; } );
+	}
+		
 	service.accept = function( id_order, callback ){
 		orders.accept( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}

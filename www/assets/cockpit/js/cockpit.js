@@ -78,6 +78,11 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
+		.when('/drivers/dashboard', {
+			action: 'drivers-dashboard',
+			controller: 'DriversDashboardCtrl',
+			templateUrl: 'assets/view/drivers-dashboard.html'
+		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
@@ -268,6 +273,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		if( $rootScope.account.isLoggedIn() ){
 
 			DriverOrdersService.newOrdersBadge();
+			DriverOrdersService.acceptedOrders();
+			DriverOrdersService.pickedupOrders();
 
 			// run over and over again every 30 secs
 			$timeout( function() { badges() }, 30 * 1000 );
@@ -414,7 +421,7 @@ App.init = function(config) {
 	
 	App._init = true;
 
-	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
+	$(document).on('touchmove', '.mfp-wrap', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 	});

@@ -793,6 +793,26 @@ class Crunchbutton_Order extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
 	}
+	
+	public static function deliveryOrderTimes( $hours = 24, $all = false ){
+		$interval = $hours . ' HOUR';
+		$id_admin = c::admin()->id_admin;
+		if( !$all ){
+			$admin = Admin::o( $id_admin );
+			$deliveryFor = $admin->allPlacesHeDeliveryFor();
+			if( count( $deliveryFor ) == 0 ){
+				$deliveryFor[] = 0;
+			}
+			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
+		} else {
+			$where = 'WHERE 1=1 ';
+		}
+
+		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
+		return Order::q( $query );
+	}
 
 	public static function deliveredByCBDrivers( $search ){
 
@@ -2244,6 +2264,16 @@ class Crunchbutton_Order extends Cana_Table {
 			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1, 'date' => $statuses[ 'accepted_date' ], 'timezone' => $this->restaurant()->timezone );
 		}
 		return array ( 'status' => 'new', 'order' => 0 );
+	}
+	
+	public function deliveryTimes(){
+		$statuses = $this->deliveryStatus();
+		if( $statuses[ 'delivered' ] ){
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date_pickedup' => $statuses[ 'pickedup_date' ], 'date_delivered' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
+		}
+		if( $statuses[ 'pickedup' ] ){
+			return array( 'status' => 'pickedup', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 2, 'date_pickedup' => $statuses[ 'pickedup_date' ], 'date_delivered' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
+		}
 	}
 
 	public function wasAcceptedByRep(){

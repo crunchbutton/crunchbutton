@@ -21,6 +21,77 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					echo json_encode( [ 'total' => $count ] );
 					break;
 				
+				case 'accepted':
+					$count = 0;
+					$orders = Order::deliveryOrders( $lastHours );
+					foreach ( $orders as $order ) {
+						$status = $order->deliveryLastStatus();
+						if( $status[ 'status' ] == 'accepted' ) {
+							$count++;
+						}
+					}
+					echo json_encode( [ 'total' => $count ] );
+					break;
+					
+				case 'pickedup':
+					$count = 0;
+					$orders = Order::deliveryOrders( $lastHours );
+					foreach ( $orders as $order ) {
+						$status = $order->deliveryLastStatus();
+						if( $status[ 'status' ] == 'pickedup' ) {
+							$count++;
+						}
+					}
+					echo json_encode( [ 'total' => $count ] );
+					break;
+					
+				case 'revenue':
+					$tips = 0;
+					$deliveryFee = 0;
+					$totalAmount = 0;
+					$count = 0;
+					$orders = Order::deliveryOrders( $lastHours );
+					foreach ( $orders as $order ) {
+						$totalAmount = $totalAmount + $order->deliveryFee() + $order->tip();
+						$tips = $tips + $order->tip();
+						$deliveryFee = $deliveryFee + $order->deliveryFee();
+						$count++;
+					
+					}
+					echo json_encode( ['total' => $totalAmount,
+									   'delivery' => $deliveryFee,
+									   'tips' => $tips,
+									   'orders' => $count ] );
+					break;
+				
+				case 'undelivered':
+					$count = 0;
+					$orders = Order::deliveryOrders( $lastHours );
+					foreach ( $orders as $order ) {
+						$status = $order->deliveryLastStatus();
+						if( $status[ 'status' ] != 'delivered' ) {
+							$count++;
+						}
+					}
+					echo json_encode( [ 'total' => $count ] );
+				break;
+				
+				//To be continued
+				case 'times':
+				
+					// ID ADMIN
+					$id_admin = 80;
+
+					$total_delivered_orders = Crunchbutton_Order_Action::q( 'SELECT COUNT(*) AS total FROM order_action AS oa WHERE oa.id_admin = ' . $id_admin . ' AND oa.type = "delivery-delivered"' )->total;
+					$total_shifts = Crunchbutton_Admin_Shift_Assign::q( 'SELECT COUNT(*) AS total FROM admin_shift_assign AS asa INNER JOIN community_shift AS cs ON cs.id_community_shift = asa.id_community_shift WHERE asa.id_admin = ' . $id_admin . ' AND cs.date_start < NOW()' )->total;
+					$avg = round( $total_delivered_orders / $total_shifts ) ;
+					
+					echo json_encode( ['average' => $avg,
+									   'totalshifts' => $total_shifts,
+									   'totaldelivered' => $total_delivered_orders ] );
+					break;
+				
+				
 				default:
 
 					$order = Order::o(c::getPagePiece( 3 ) );
