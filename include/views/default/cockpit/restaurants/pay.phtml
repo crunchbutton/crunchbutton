@@ -347,15 +347,39 @@
 										</span>
 									</li>
 									<li class="input">
+										<span>Contact Name</span>
+										<span class="pull-right span9">
+											<input type="text" name="contact_name" maxlength="255" id="contact_name" value="<?php echo $this->payment->contact_name;?>" />
+										</span>
+									</li>
+									<li class="input">
 										<span>Check Address</span>
 										<span class="pull-right span9">
 											<input type="text" class="fill-up" name="check_address" maxlength="255" id="check_address" value="<?php echo $this->payment->check_address;?>" />
 										</span>
 									</li>
 									<li class="input">
-										<span>Contact Name</span>
+										<span>Check Address City</span>
 										<span class="pull-right span9">
-											<input type="text" name="contact_name" maxlength="255" id="contact_name" value="<?php echo $this->payment->contact_name;?>" />
+											<input type="text" class="fill-up" name="check_address_city" maxlength="50" id="check_address_city" value="<?php echo $this->payment->check_address_city;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Check Address State</span>
+										<span class="pull-right span9">
+											<input type="text" class="fill-up" name="check_address_state" maxlength="50" id="check_address_state" value="<?php echo $this->payment->check_address_state;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Check Address Zip</span>
+										<span class="pull-right span9">
+											<input type="text" class="fill-up" name="check_address_zip" maxlength="20" id="check_address_zip" value="<?php echo $this->payment->check_address_zip;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Check Address Country</span>
+										<span class="pull-right span9">
+											<input type="text" class="fill-up" name="check_address_country" maxlength="3" id="check_address_country" value="<?php echo $this->payment->check_address_country;?>" />
 										</span>
 									</li>
 									<li class="input">
@@ -511,6 +535,10 @@
 				payment_method : ( $( '#payment_method' ).val() ),
 				id_restaurant_pay_another_restaurant : ( $( '#id_restaurant_pay_another_restaurant' ).val() ),
 				check_address : ( $( '#check_address' ).val() ),
+				check_address_city : ( $( '#check_address_city' ).val() ),
+				check_address_state : ( $( '#check_address_state' ).val() ),
+				check_address_country : ( $( '#check_address_country' ).val() ),
+				check_address_zip : ( $( '#check_address_zip' ).val() ),
 				contact_name : ( $( '#contact_name' ).val() ),
 				summary_fax : ( $( '#summary_fax' ).val() ),
 				summary_email : ( $( '#summary_email' ).val() ),

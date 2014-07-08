@@ -169,8 +169,9 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							case 'stripe-credit':
 								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
 								break;
-
 							case 'weight-adj':
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page' ]);
+								break;
 							case 'categories':
 							case 'notifications':
 							case 'hours':
@@ -267,6 +268,10 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$payment->payment_method = $this->request()['payment_method'];
 								$payment->id_restaurant_pay_another_restaurant = $this->request()['id_restaurant_pay_another_restaurant'];
 								$payment->check_address = $this->request()['check_address'];
+								$payment->check_address_city = $this->request()['check_address_city'];
+								$payment->check_address_state = $this->request()['check_address_state'];
+								$payment->check_address_zip = $this->request()['check_address_zip'];
+								$payment->check_address_country = $this->request()['check_address_country'];
 								$payment->contact_name = $this->request()['contact_name'];
 								$payment->summary_fax = $this->request()['summary_fax'];
 								$payment->summary_email = $this->request()['summary_email'];
@@ -300,17 +305,22 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 						case 'stripe-credit':
 							if ($r->id_restaurant) {
-								$p = Payment::credit([
-									'id_restaurant' => $r->id_restaurant,
-									'amount' => $this->request()['amount'],
-									'note' => $this->request()['note'],
-									'type' => 'stripe'
-								]);
-								if( $p ){
-									echo json_encode( [ 'success' => 'success' ] );
-								} else {
-									echo json_encode( [ 'error' => 'error' ] );
+								try {
+									$p = Payment::credit([
+										'id_restaurant' => $r->id_restaurant,
+										'amount' => $this->request()['amount'],
+										'note' => $this->request()['note'],
+										'type' => 'stripe'
+									]);
+								} catch ( Exception $e ) {
+										print( $e->getMessage() );
+										exit;
 								}
+								if( $p ){
+										echo json_encode( [ 'success' => 'success' ] );
+									} else {
+										echo json_encode( [ 'error' => 'error' ] );
+									}
 							}
 							break;
 

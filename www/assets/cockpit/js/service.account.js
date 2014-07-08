@@ -5,14 +5,20 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			// actions
 			'login' : { 'method': 'POST', params : { 'action' : 'login' } },
 			'logout' : { 'method': 'GET', params : { 'action' : 'logout' } },
-		}	
+		}
 	);
 
 	var service = {
 		permissions: {},
-		user: null
+		user: null,
+		// used to change how to display the menu
+		isRestaurant: false,
+		isDriver: false,
+		isSupport: false,
+		isAdmin: false,
+		restaurants: []
 	};
-	
+
 	service.isLoggedIn = function(){
 		return ( service.user && service.user.id_admin ) ? true : false;
 	}
@@ -32,16 +38,45 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			}
 		} );
 	};
-	
+
 	service.logout = function() {
 		user.logout( {}, function(){
 			service.user = {};
 			$rootScope.$broadcast('userAuth');
 		} );
 	};
-	
+
 	$rootScope.$on('userAuth', function(e, data) {
+
 		service.user = data;
+
+
+		service.isRestaurant = service.isDriver = service.isSupport = service.isAdmin = false;
+		service.restaurants = [];
+
+		if (service.user && service.user.permissions && service.user.permissions.GLOBAL) {
+			service.isAdmin = true;
+		}
+		if (service.user && service.user.permissions && service.user.permissions.RESTAURANT) {
+			service.isRestaurant = true;
+
+			for (var x in service.user.permissions) {
+				if (x.indexOf('RESTAURANT-') == 0) {
+					service.restaurants.push(x.replace(/[^0-9]/g,''));
+				}
+			}
+
+			// only one restaurant for now
+			service.restaurant = service.restaurants[0];
+		}
+
+		for (var x in service.user.groups) {
+			if (service.user.groups[x].indexOf('drivers-') == 0) {
+				service.isDriver = true;
+				break;
+			}
+		}
+
 
 		if (service.user && service.user.id_admin) {
 			App.snap.enable();

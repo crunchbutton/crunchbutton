@@ -97,9 +97,20 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->max_pay_promotion = 2;
 			$restaurant->pay_apology_credits = 1;
 			$restaurant->promotion_maximum = 2;
+			$restaurant->pay_promotions = 1;
 			$restaurant->max_apology_credit = 5;
 			$restaurant->fee_customer = '0';
+			$restaurant->formal_relationship = 1;
 			$restaurant->save();
+
+			$payment_type = $restaurant->payment_type();
+			$payment_type->charge_credit_fee = 1;
+			$payment_type->max_pay_promotion = 1;
+			$payment_type->pay_apology_credits = 1;
+			$payment_type->pay_promotions = 1;
+			$payment_type->promotion_maximum = 2;
+			$payment_type->max_apology_credit = 5;
+			$payment_type->save();
 
 			// Give the user the permission to edit the created restaurant
 			$permission = array(

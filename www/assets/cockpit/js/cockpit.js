@@ -6,7 +6,7 @@
  * @date: 		2012-06-20
  *
  */
- 
+
 var App = {
 	service: '/api/',
 	logService: 'http://log.crunchbutton.com/api/',
@@ -37,10 +37,10 @@ var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'angularFileUploa
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 	var param = function(obj) {
 		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
-			
+
 		for(name in obj) {
 			value = obj[name];
-				
+
 			if(value instanceof Array) {
 				for(i=0; i<value.length; ++i) {
 					subValue = value[i];
@@ -62,7 +62,7 @@ var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'angularFileUploa
 			else if(value !== undefined && value !== null)
 				query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
 		}
-			
+
 		return query.length ? query.substr(0, query.length - 1) : query;
 	};
 
@@ -78,11 +78,97 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
+<<<<<<< HEAD
 		.when('/drivers/dashboard', {
 			action: 'drivers-dashboard',
 			controller: 'DriversDashboardCtrl',
 			templateUrl: 'assets/view/drivers-dashboard.html'
 		})
+=======
+		/* Restaurants */
+		.when('/restaurant/order/new', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderNew',
+			templateUrl: 'assets/view/restaurant-order-new.html'
+		})
+		.when('/restaurant/order/list', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderList',
+			templateUrl: 'assets/view/restaurant-order-list.html'
+		})
+		.when('/restaurant/order/:id', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderView',
+			templateUrl: 'assets/view/restaurant-order-view.html'
+		})
+		/* Settlement */
+		.when('/settlement', {
+			action: 'settlement',
+			controller: 'SettlementCtrl',
+			templateUrl: 'assets/view/settlement.html'
+		})
+		.when('/settlement/restaurants', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsCtrl',
+			templateUrl: 'assets/view/settlement-restaurants.html'
+		})
+		.when('/settlement/restaurants/scheduled', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsScheduledCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-scheduled.html'
+		})
+		.when('/settlement/restaurants/scheduled/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
+		.when('/settlement/restaurants/payment/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsPaymentCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
+		.when('/settlement/restaurants/summary/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsSummaryCtrl',
+			templateUrl: 'assets/view/settlement-summary.html'
+		})
+		.when('/settlement/restaurants/payments', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsPaymentsCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payments.html'
+		})
+		.when('/settlement/drivers', {
+			action: 'settlement',
+			controller: 'SettlementDriversCtrl',
+			templateUrl: 'assets/view/settlement-drivers.html'
+		})
+		.when('/settlement/drivers/scheduled', {
+			action: 'settlement',
+			controller: 'SettlementDriversScheduledCtrl',
+			templateUrl: 'assets/view/settlement-drivers-scheduled.html'
+		})
+		.when('/settlement/drivers/scheduled/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payment.html'
+		})
+		.when('/settlement/drivers/payments', {
+			action: 'settlement',
+			controller: 'SettlementDriversPaymentsCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payments.html'
+		})
+		.when('/settlement/drivers/payment/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversPaymentCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payment.html'
+		})
+		.when('/settlement/drivers/summary/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversSummaryCtrl',
+			templateUrl: 'assets/view/settlement-summary.html'
+		})
+		/* Driver shifts */
+>>>>>>> master
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
@@ -98,11 +184,15 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsCtrl',
 			templateUrl: 'assets/view/drivers-shifts.html'
 		})
-		/* temp */
 		.when('/drivers/shifts/schedule', {
 			action: 'drivers-shifts',
 			controller: 'DriversShiftsScheduleCtrl',
 			templateUrl: 'assets/view/drivers-shifts-schedule.html'
+		})
+		.when('/drivers/summary', {
+			action: 'drivers-summary',
+			controller: 'DriversSummaryCtrl',
+			templateUrl: 'assets/view/drivers-summary.html'
 		})
 		.when('/login', {
 			action: 'login',
@@ -113,6 +203,22 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'drivers-help',
 			controller: 'DriversHelpCtrl',
 			templateUrl: 'assets/view/drivers-help.html'
+		})
+		.when('/drivers/help/credit-card', {
+			action: 'drivers-help',
+			controller: 'DriversHelpCreditCardCtrl',
+			templateUrl: 'assets/view/drivers-help-credit-card.html'
+		})
+		/* Admins payment info */
+		.when('/staff/list', {
+			action: 'staff',
+			controller: 'StaffListCtrl',
+			templateUrl: 'assets/view/staff-list.html'
+		})
+		.when('/staff/payinfo/:id', {
+			action: 'staff',
+			controller: 'StaffPayInfoCtrl',
+			templateUrl: 'assets/view/staff-payinfo.html'
 		})
 		/* Driver onBoarding Routes */
 		.when('/drivers/onboarding/', {
@@ -183,6 +289,15 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	}
 
+	$rootScope.walkTo = function( selector, adjust ){
+		adjust = adjust ? adjust : 0;
+		var el = angular.element( selector );
+		if( el.length ){
+			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top ) + adjust;
+			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
+		}
+	}
+
 	$rootScope.unBusy = function(){
 		if( $rootScope.isBusy ){
 			setTimeout( function(){
@@ -207,7 +322,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.reload = function() {
 		$route.reload();
 	};
-	
+
 	$rootScope.link = function(link) {
 		App.go.apply(arguments);
 	};
@@ -232,7 +347,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			this.$apply(fn);
 		}
 	};
-	
+
 	$rootScope.hasBack = false;
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
@@ -244,7 +359,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page);
-		
+
 		$('.nav-top').addClass('at-top');
 
 		App.scrollTop($rootScope.scrollTop);
@@ -269,7 +384,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.account.checkUser();
 
 	var badges = function(){
-		// Just run if the user is loggedin 
+		// Just run if the user is loggedin
 		if( $rootScope.account.isLoggedIn() ){
 
 			DriverOrdersService.newOrdersBadge();
@@ -278,8 +393,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 			// run over and over again every 30 secs
 			$timeout( function() { badges() }, 30 * 1000 );
-		}	
-		
+		}
+
 	}
 	// Update the badges
 	badges();
@@ -308,7 +423,7 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 			}
 		}
 		if( $location.url() == '/login' && $rootScope.account.isLoggedIn() ) {
-			MainNavigationService.link( '/' );	
+			MainNavigationService.link( '/' );
 		}
 	});
 });
@@ -348,11 +463,11 @@ App.go = function( url, transition ){
 			// @todo: do some tests to figure out if we need this or not
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
 			App.location.path( url || '/' );
-			App.rootScope.$safeApply();		
-		}, 10 );		
+			App.rootScope.$safeApply();
+		}, 10 );
 	} else {
 		App.location.path( url || '/' );
-		App.rootScope.$safeApply();		
+		App.rootScope.$safeApply();
 	}
 };
 
@@ -418,7 +533,7 @@ App.init = function(config) {
 	if (App._init) {
 		return;
 	}
-	
+
 	App._init = true;
 
 	$(document).on('touchmove', '.mfp-wrap', function(e) {
@@ -428,14 +543,14 @@ App.init = function(config) {
 
 	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
-	
+
 	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && !App.iOS7()) {
 		$('body').removeClass('ios7');
 	}
-	
+
 	$('body').removeClass('no-init');
-	
+
 	// add the side swipe menu for mobile view
 	if (typeof Snap !== 'undefined') {
 
@@ -455,18 +570,18 @@ App.init = function(config) {
 			}
 		};
 		snapperCheck();
-	
+
 		$(window).resize(function() {
 			snapperCheck();
 		});
 
 	}
-	
+
 	App.snap.disable();
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
-	
+
 	// phonegap
 	if (typeof CB !== 'undefined' && CB.config) {
 		App.config = CB.config;
@@ -477,16 +592,16 @@ App.init = function(config) {
 	App.processConfig(config || App.config);
 	App.NGinit();
 
-	window.addEventListener( 'pageshow', function(){ 
+	window.addEventListener( 'pageshow', function(){
 		// the first pageshow should be ignored
 		if( App._firstPageShowHasHappened ){
-			dateTime.reload(); 
+			dateTime.reload();
 		}
 		App._firstPageShowHasHappened = true;
 	}, false );
 
 	$( window ).trigger( 'nginit' );
-	
+
 	/*
 	if (!App.isPhoneGap) {
 		$(document).mousemove(function(e) {
@@ -513,7 +628,7 @@ App.dialog = {
 		} else if ($(arguments[0]).length) {
 			// its a dom selector
 			var src = $(arguments[0]);
-			
+
 			// fix to prevent 2 dialogs from ever appearing. only show the second. #2919
 			if (src.length > 1) {
 				for (var x = 0; x < src.length - 1; x++) {
@@ -567,7 +682,7 @@ App.dialog = {
 NGApp.factory( 'flash', function( $timeout ) {
 
 	var message = [];
-	
+
 	// $rootScope.$on('$routeChangeSuccess', function() {
 	// 	clearMessage();
 	// } );
@@ -589,16 +704,17 @@ NGApp.factory( 'flash', function( $timeout ) {
 
 	service.getLevel = function(){
 		if( service.hasMessage() ){
-			return message.level;	
+			return message.level;
 		}
 	}
 
 	service.getMessage = function(){
 		if( service.hasMessage() ){
-			return message.text;	
+			return message.text;
 		}
 	}
 
 	return service;
 
 } );
+

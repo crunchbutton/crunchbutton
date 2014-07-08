@@ -6,7 +6,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			return ;
-		} 
+		}
 
 		$action = c::getPagePiece(1);
 
@@ -51,10 +51,10 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 				if( $_REQUEST[ 'r' ] && $support->id_support ){
 					$support->id_admin = c::admin()->id_admin;
 					$support->save();
-				} 
+				}
 
 				switch ($action) {
-				
+
 					case 'checkconvo' :
 						$notes = $support->notes('external', $_REQUEST['date']);
 						if ($notes) {
@@ -64,7 +64,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 						}
 						exit;
 						break;
-		
+
 					case 'history':
 						c::view()->layout('layout/ajax');
 						c::view()->support = $support;
@@ -100,7 +100,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 								$support->id_admin = $admin->id_admin;
 								$support->save();
 								$support->addSystemMessage( c::admin()->name . ' linked a new rep ' . $admin->name );
-								echo 'ok';	
+								echo 'ok';
 							} else {
 								echo 'error';
 							}
@@ -116,7 +116,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 								$support->id_order = $order->id_order;
 								$support->save();
 								$support->addSystemMessage( c::admin()->name . ' linked a new order ' . $order->id_order );
-								echo 'ok';	
+								echo 'ok';
 							} else {
 								echo 'error';
 							}
@@ -135,9 +135,9 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 					case 'conversation' :
 						if ( $support->permissionToEdit() ) {
 							if( $_POST['text'] ){
-								$support->addAdminReply( $_POST['text'] );	
+								$support->addAdminReply( $_POST['text'] );
 								if( ( $support->type == Crunchbutton_Support::TYPE_SMS || $support->type == Crunchbutton_Support::TYPE_BOX_NEED_HELP ) && $support->id_session_twilio ){
-									$message = c::admin()->name . ' replied @' . $support->id_session_twilio . ' : ' . $_POST['text']; 
+									$message = c::admin()->firstName() . ' replied @' . $support->id_session_twilio . ' : ' . $_POST['text'];
 									Crunchbutton_Support::tellCustomerService( $message );
 								}
 							}
@@ -187,7 +187,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 				}
 
 				break;
-			
+
 		}
 	}
 
@@ -239,9 +239,9 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 		$changes = join( "\n", $changes );
 		if( trim( $changes ) != '' ){
-			$support->addSystemMessage( $changes );	
+			$support->addSystemMessage( $changes );
 		}
-		
+
 		$support->id_restaurant 					= $args['id_restaurant'			];
 		$support->user_perspective 				= $args['user_perspective'			];
 		$support->user_perspective_other 	= $args['user_perspective_other'];
@@ -258,7 +258,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 	public static function create(&$support, $args = []) {
 		$support = Crunchbutton_Support::createNewTicket(  [ 'id_order' => $args['id_order'], 'body' => 'Ticket created from admin panel.' ] );
 	}
-	
+
 	public static function setRep(&$support) {
 		$support->id_admin = c::admin()->id_admin;
 		$support->save();

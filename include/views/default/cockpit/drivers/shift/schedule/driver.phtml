@@ -44,10 +44,10 @@
 							<strong>Available shifts:</strong>
 							<br/><br/>
 							<ul class="available connected">
-								<?php 
+								<?php
 								$addShiftAsAssigned = [];
 								foreach( $communities as $community ) {
-									foreach( $this->days as $day ){ 
+									foreach( $this->days as $day ){
 										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day->format( 'Y-m-d' ) );
 										foreach ( $segments as $segment ) {
 											$totalShifts++;
@@ -58,11 +58,11 @@
 												$addShiftAsAssigned[] = $segment;
 												continue;
 											}
-											
+
 											?>
 											<li id="<?php echo $segment->id_community_shift; ?>">
 												<span class="position"></span>
-												
+
 												<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 												<br/>
 												<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
@@ -70,7 +70,7 @@
 											<?php
 										}
 									}
-								} 
+								}
 								?>
 							</ul>
 						</div>
@@ -95,10 +95,10 @@
 											<?php } ?>
 										</li>
 										<?php
-										$count++;	
+										$count++;
 									}
 								}
-								
+
 								foreach ( $segments as $segment ) {
 									$locked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift ) ? 'locked' : '' );
 									?>
@@ -148,12 +148,12 @@
 					<div class="span4">
 						<select id="shifts" class="chosen-select">
 							<option value=""></option>
-							<?php for( $i = 12; $i >= 1; $i-- ) { 
+							<?php for( $i = 12; $i >= 1; $i-- ) {
 								$selected = ( $this->status->shifts == $i ) ? 'selected="selected"' : '';
 								?>
 								<option <?php echo $selected; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 							<?php } ?>
-						</select>	
+						</select>
 					</div>
 				</div>
 				<?php } ?>
@@ -162,7 +162,7 @@
 				* If you have any questions, please text us at (646) 783-1444.
 				</div>
 			</div>
-			
+
 			<?php if( $totalShifts > 0 ) { ?>
 				<?php
 				if( $editable ){
@@ -173,7 +173,7 @@
 						<?php if( $this->status->completed == '1' ) { ?>
 							<i class="icon-thumbs-up"></i> Already completed
 						<?php } else { ?>
-							<i class="icon-ok"></i> Complete
+							<i class="icon-ok"></i> Save
 						<?php } ?>
 					</button>
 				</div>
@@ -219,7 +219,7 @@ ul.wantwork {
 	border-color: #add38d;
 }
 ul.dontwantwork{
-	border-color: #999;	
+	border-color: #999;
 }
 .available li, .wantwork li, .dontwantwork li {
 	margin: 5px;
@@ -242,7 +242,7 @@ ul.dontwantwork{
 .dontwantwork li{
 	background-color: #F5F5F5;
 	border: 1px solid #CCC;
-	color: #CCC;	
+	color: #CCC;
 	text-decoration:line-through;
 }
 .locked{

@@ -1,6 +1,7 @@
 App.tokenizeCard = function( card, complete ) {
+console.log('App.tokenizeCard');
 	var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
-
+console.log('processor',processor);
 	var legacy_card = {
 		card_number: card.number,
 		expiration_month: card.expiration_month,

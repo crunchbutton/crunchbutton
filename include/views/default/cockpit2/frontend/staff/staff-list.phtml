@@ -1,0 +1,99 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-users"></i><span>Staff</span></h1>
+
+	<div class="divider"></div>
+
+	<div class="box-filter right">
+
+		<div class="divider"></div>
+	</div>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate ng-show="showForm">
+
+		<ul class="ul-inputs box-content">
+
+			<li class="li-input">
+				<div class="label">Search by name:</div>
+				<div class="input"><input type="text" name="searchName" ng-model="search.name"></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Type:</div>
+				<select ng-model="search.type" name="searchType" ng-options="type.value as type.label for type in search._types"></select>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Status:</div>
+				<select ng-model="search.status" name="searchStatus" ng-options="status.value as status.label for status in search._status"></select>
+			</li>
+
+			<li class="li-input">
+				<button class="button save" ng-click="doSearch();">Search</button>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<div class="box-content" ng-show="!showForm && !isSearching">
+		<p>
+			Found {{count}} workers. Searching: <span ng-if="search.name">Name has <strong>{{search.name}}</strong>,</span> type is <strong>{{search.type}}</strong> and status is <strong>{{search.status}}</strong>.
+			<br>
+			<span class="link" ng-click="showForm = true">Show form</span>
+		</p>
+	</div>
+
+	<div class="divider"></div>
+
+	<div ng-if="count && !isSearching">
+		<table class="tb-grid">
+			<thead>
+				<tr>
+					<td class="td-medium">Name</td>
+					<td class="td-medium">Phone</td>
+					<td class="td-medium">Login</td>
+					<td>Community</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="worker in staff">
+					<td>{{worker.name}}</td>
+					<td>{{worker.phone}}</td>
+					<td>{{worker.login}}</td>
+					<td><span ng-repeat="community in worker.communities">{{community}}</span></td>
+					<td>
+						<span class="link orange" ng-click="payinfo(worker.id_admin)">Pay info</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="tb-pagination" ng-if="pages > 1">
+			<tbody>
+				<tr>
+					<td class="td-prev"><button class="button orange" ng-show="prev" ng-click="prevPage()">prev</button></td>
+					<td class="td-info">Page {{page}} of {{pages}}</td>
+					<td class="td-next"><button class="button orange" ng-show="next" ng-click="nextPage()">next</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div ng-if="!count && !isSearching && searched" class="box-content">
+		No workers.
+	</div>
+
+	<div ng-if="isSearching" class="box-content">
+		<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

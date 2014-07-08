@@ -1,0 +1,44 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement</span></h1>
+
+	<div class="divider"></div>
+	<div class="box-content">
+		<h2 class="title"><i class="fa fa-coffee"></i> Restaurants</h2>
+		<ul class="link-list">
+			<li>
+				<span class="title link" ng-click="restaurants()">New Payment</span>
+			</li>
+			<li>
+				<span class="title link" ng-click="restaurants_payments()">Payments list</span>
+			</li>
+			<li>
+				<span class="title link" ng-click="restaurants_scheduled_payments()">Scheduled Payments (not finished or error)</span>
+			</li>
+		</ul>
+	</div>
+	<div class="box-content">
+		<h2 class="title"><i class="fa fa-automobile"></i> Drivers</h2>
+		<ul class="link-list">
+			<li>
+				<span class="title link" ng-click="drivers()">New Payment</span>
+			</li>
+			<li>
+				<span class="title link" ng-click="drivers_payments()">Payments list</span>
+			</li>
+			<li>
+				<span class="title link" ng-click="drivers_scheduled_payments()">Scheduled Payments (not finished or error)</span>
+			</li>
+			<li>
+				<span class="title link" ng-click="drivers_payment_info()">Edit driver's payment info</span>
+			</li>
+		</ul>
+	</div>
+	<div class="divider"></div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

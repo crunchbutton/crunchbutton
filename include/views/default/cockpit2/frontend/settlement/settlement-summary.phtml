@@ -1,0 +1,14 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<div class="box-content" ng-if="ready">
+		<span ng-bind-html-unsafe="summary"></span>
+	</div>
+
+	<span class="link orange" ng-click="payment()">back</span>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

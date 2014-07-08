@@ -20,7 +20,7 @@ var UTIL = {
 	},
 	slide_swap : function($set1, $set2, duration) {
 		var $set3 = $set2.last().nextAll();
-		
+
 		var mb_prev = UTIL.cssprop($set1.first().prev(), "margin-bottom");
 		if (isNaN(mb_prev)) mb_prev = 0;
 		var mt_next = UTIL.cssprop($set2.last().next(), "margin-top");
@@ -36,17 +36,17 @@ var UTIL = {
 
 		move1 = h2 + Math.max(mb_2, mt_1) + Math.max(mb_prev, mt_2) - Math.max(mb_prev, mt_1);
 		move2 = -h1 - Math.max(mb_1, mt_2) - Math.max(mb_prev, mt_1) + Math.max(mb_prev, mt_2);
-		move3 = move1 + $set1.first().offset().top + h1 - $set2.first().offset().top - h2 + 
+		move3 = move1 + $set1.first().offset().top + h1 - $set2.first().offset().top - h2 +
 				Math.max(mb_1,mt_next) - Math.max(mb_2,mt_next);
-				
+
 		// let's move stuff
 		$set1.css('position', 'relative');
 		$set2.css('position', 'relative');
-		$set3.css('position', 'relative');    
+		$set3.css('position', 'relative');
 		$set1.animate({'top': move1}, {duration: duration});
 		$set3.animate({'top': move3}, {duration: duration/2});
 		$set2.animate({'top': move2}, {duration: duration, complete: function() {
-						// rearrange the DOM and restore positioning when we're done moving          
+						// rearrange the DOM and restore positioning when we're done moving
 						$set1.insertAfter($set2.last())
 						$set1.css({'position': 'static', 'top': 0});
 						$set2.css({'position': 'static', 'top': 0});
@@ -556,7 +556,7 @@ var WIDGET = {
 			});
 
 			$(modal_dom).find('.admin-modal-title').text(dish_name);
-			
+
 			select_element_1 = $(modal_dom)
 					.find('select.move-dish-to-category-select')
 					.html('');
@@ -626,9 +626,9 @@ var WIDGET = {
 				.on(
 					'click.copy-dish-to-category-button',
 					(function() {
-						return function() { 
+						return function() {
 							self.copy_dish_to_category(
-									dish_dom, 
+									dish_dom,
 									$(modal_dom).find('select.copy-dish-to-category-select').val());
 							$(modal_dom).dialog('close');
 						};
@@ -662,7 +662,7 @@ var WIDGET = {
 		};
 
 		this.apply_dish = function(dish_dom, dish ) {
-			
+
 			// 'view' button
 			$(dish_dom).find('.details-button').first().click(function() {
 				UTIL.toggle_visibility(dish_dom.find('.admin-menu-dish-details'));
@@ -677,12 +677,12 @@ var WIDGET = {
 				var remaining = 60 - $( this ).val().length;
 				$( dish_dom ).find( '.description-warning' ).text( remaining );
 			} )
-			
+
 			setTimeout( function(){
 				var remaining = 60 - $( dish_dom ).find( '.admin-menu-dish-description' ).first().val().length;
 				$( dish_dom ).find( '.description-warning' ).text( remaining );
 			}, 100 );
-			
+
 
 			// it means is a new one
 			if( isNaN( dish.id_dish ) ){
@@ -769,8 +769,8 @@ var WIDGET = {
 								type : 'dish',
 							},
 							{duration:100});
-				}     
-			});     
+				}
+			});
 
 			options = dish._options;
 			if(!options) options = [];
@@ -964,7 +964,7 @@ var WIDGET = {
 			});
 			restaurant._categories = categories;
 		};
-		this.validate = function(invalid_list) { 
+		this.validate = function(invalid_list) {
 		};
 		this.remove = function() { self.dom.remove(); }
 		this.reset_dom = function() {
@@ -1002,7 +1002,7 @@ var WIDGET = {
 					active: restaurant.confirmation,
 					id: null,
 					id_notification: null,
-					id_restaurant: restaurant.id, 
+					id_restaurant: restaurant.id,
 					type: 'confirmation',
 					value: restaurant.confirmation_type
 			};
@@ -1026,7 +1026,6 @@ var WIDGET = {
 					restaurant.confirmation_type = data.confirmation_type;
 					continue;
 				}
-				if( ( !data.value || data.value==='' ) && data.type != 'admin' ) continue;
 				restaurant._notifications.push(data);
 			}
 		},
@@ -1160,6 +1159,7 @@ var ADMIN = {
 			w = DOM_MAP.map.data.widget.pop().remove();
 		}
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
+		w = UTIL.create_widget('toggle', $('#restaurant-active-restaurant-order-placement-container'), {text : ['yes', 'no'],field_name:'active_restaurant_order_placement'});
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-service-container'), {text : ['yes', 'no'],field_name:'delivery_service'});
 		w = UTIL.create_widget('toggle', $('#restaurant-formal-relationship-container'), {text : ['yes', 'no'],field_name:'formal_relationship'});
 		w = UTIL.create_widget('toggle', $('#restaurant-order-notifications-sent-container'), {text : ['yes', 'no'],field_name:'order_notifications_sent'});
@@ -1184,7 +1184,7 @@ var ADMIN = {
 				map = new google.maps.Map(
 						$('#restaurant-map')[0],
 						{
-							zoom : 14, 
+							zoom : 14,
 							mapTypeId : google.maps.MapTypeId.ROADMAP
 						});
 				map.setCenter(data[0].geometry.location);
@@ -1279,9 +1279,9 @@ var ADMIN = {
 		}
 		$('#save-button').text('Saving...');
 		ASYNC.req(
-				{ 
+				{
 					type : 'sav',
-					data : { 
+					data : {
 						// uncomment here and in controller to use serialization
 						// serialized_data : $.param(ADMIN.restaurant),
 						data : ADMIN.restaurant,
@@ -1320,8 +1320,8 @@ var DOM_MAP = {
 	flush : function() {
 		for(item in this.map.data.text) {
 			UTIL.setJSONVal(
-					ADMIN.restaurant, 
-					this.map.data.text[item], 
+					ADMIN.restaurant,
+					this.map.data.text[item],
 					$(item).val());
 		}
 		for(item in this.map.data.func) {
@@ -1406,25 +1406,25 @@ var DOM_MAP = {
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {
 				'.button-fax' : {
-					apply : function(restaurant, element) { 
+					apply : function(restaurant, element) {
 						$(element).attr('href', '/restaurants/' + restaurant.id_restaurant + '/fax');
 					},
 					flush : function(restaurant, element) { },
 				},
 				'.button-pay' : {
-					apply : function(restaurant, element) { 
+					apply : function(restaurant, element) {
 						$(element).attr('href', '/restaurants/' + restaurant.id_restaurant + '/pay');
 					},
 					flush : function(restaurant, element) { },
 				},
 				'#view-on-site-button' : {
-					apply : function(restaurant, element) { 
+					apply : function(restaurant, element) {
 						$(element).attr('href', 'https://crunchbutton.com/food-delivery/' + restaurant.id_restaurant);
 					},
 					flush : function(restaurant, element) { },
 				},
 				'#view-on-site-button' : {
-					apply : function(restaurant, element) { 
+					apply : function(restaurant, element) {
 						$(element).attr('href', 'https://crunchbutton.com/food-delivery/' + restaurant.id_restaurant);
 					},
 					flush : function(restaurant, element) { },
@@ -1432,7 +1432,7 @@ var DOM_MAP = {
 				'#restaurant-image' : {
 					apply : function(restaurant, element) {
 						$(element).find('a').attr(
-								'href', 
+								'href',
 								'/restaurants/' + restaurant.id_restaurant + '/image');
 						$(element).find('img').attr('src', restaurant.img);
 					},
@@ -1536,7 +1536,7 @@ var DOM_MAP = {
 								end_m = parseInt(m[5]) || 0;
 								end_ampm = m[6].toLowerCase();
 								if(begin_ampm === 'am' && begin_h === 12) {
-									begin_h = begin_h - 12; 
+									begin_h = begin_h - 12;
 									if(end_h === 12 && end_ampm === 'am' && end_m > begin_m) {
 										end_h = end_h - 12;
 									}

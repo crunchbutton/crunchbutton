@@ -1,0 +1,382 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>New Payment - Drivers</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate ng-show="showForm">
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+
+			<li class="li-input" ng-class="{'error':form.rangeStart.$invalid}">
+				<div class="label">Date start:</div>
+				<div class="input"><input type="date" name="rangeStart" ng-model="range.start" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeStart.$error.required">Required.</small>
+					<small ng-show="form.rangeStart.$error.date">Enter a valid start date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.rangeEnd.$invalid}">
+				<div class="label">Date end:</div>
+				<div class="input"><input type="date" name="rangeEnd" ng-model="range.end" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeEnd.$error.required">Required.</small>
+					<small ng-show="form.rangeEnd.$error.date">Enter a valid end date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isSearching">
+				<button class="button save" ng-click="begin();">Begin</button>
+			</li>
+
+			<li class="li-input" ng-show="isSearching">
+				<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<div class="transfer-driver zoom-anim-dialog mfp-hide dialog">
+		<h1>Transfer the order #{{transfer_id_order}}</h1>
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<div class="label">Transfer to:</div>
+				<select name="driver" required ng-model="transfer_id_driver" ng-options="opt.id_admin as opt.name for opt in drivers" class="cart-customize-select"></select>
+			</li>
+			<li class="li-input" ng-show="!isSearching">
+				<button class="button save" ng-click="transfer_driver();">Ok</button>
+			</li>
+		</ul>
+	</div>
+
+	<div class="box-content" ng-show="!showForm">
+		<p>
+			Listing orders from <strong>{{range.start | date:'MM/dd/yyyy'}}</strong> to <strong>{{range.end | date:'MM/dd/yyyy'}}</strong>.
+			<br>
+			<span class="link" ng-click="showForm = true">Show form</span>
+		</p>
+	</div>
+
+	<div ng-if="result">
+		<h2 class="title">
+			<span>Summary</span>
+		</h2>
+		<div>
+			<table class="tb-grid tb-zebra summary">
+				<tbody>
+					<tr>
+						<td>Total of Drivers</td>
+						<td>{{total_drivers}}</td>
+					</tr>
+					<tr>
+						<td>Total of Orders</td>
+						<td>{{total_orders}}</td>
+					</tr>
+					<tr>
+						<td>Total of Not Included Orders</td>
+						<td>{{total_not_included}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{total_payments}}">
+						<td>Total Reimbursements</td>
+						<td>$ {{total_reimbursements | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{total_payments}}">
+						<td>Total Payments</td>
+						<td>$ {{total_payments | formatPrice}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td></td>
+					<td>#</td>
+					<td class="td-medium">Drivers</td>
+					<td class="td-medium">Reimbursement</td>
+					<td class="td-medium">Payment</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="driver in result.drivers" ng-class="{ 'excluded': !driver.pay }">
+					<td>
+						<span class="link" ng-click="show_details(driver)"><i class="fa fa-pencil-square-o"></i></span></td>
+					<td>{{driver.id_admin}}</td>
+					<td>{{driver.name}}</td>
+					<td>$ {{driver.total_reimburse | formatPrice}}</td>
+					<td>$ {{driver.total_payment | formatPrice}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<br/><br/>
+
+		<h2 class="title">
+			<span>Total Amounts</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<tr positive-or-negative-color="{{sum.worked_hours}}">
+				<td>Hours</td>
+				<td>$ {{sum.worked_hours | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.subtotal}}">
+				<td>Subtotal</td>
+				<td>$ {{sum.subtotal | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.tax}}">
+				<td>Tax</td>
+				<td>$ {{sum.tax | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.delivery_fee}}">
+				<td>Delivery Fee</td>
+				<td>$ {{sum.delivery_fee | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.tip}}">
+				<td>Tip</td>
+				<td>$ {{sum.tip | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.customer_fee}}">
+				<td>Customer Fee</td>
+				<td>$ {{sum.customer_fee | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.markup}}">
+				<td>Markup</td>
+				<td>$ {{sum.markup | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.credit_charge}}">
+				<td>Credit Card Charge</td>
+				<td>$ {{sum.credit_charge | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.restaurant_fee}}">
+				<td>Crunchbutton Fees</td>
+				<td>$ {{sum.restaurant_fee | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.gift_card}}">
+				<td>Gift Card</td>
+				<td>$ {{sum.gift_card | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.adjustment}}">
+				<td>Adjustments</td>
+				<td>$ {{sum.adjustment | formatPrice}}</td>
+			</tr>
+			<tr class="total-due" positive-or-negative-color="{{sum.total_reimburse}}">
+				<td class="td-medium">Total reimbursements</td>
+				<td class="td-medium">$ {{sum.total_reimburse | formatPrice}}</td>
+			</tr>
+			<tr class="total-due" positive-or-negative-color="{{sum.total_payment}}">
+				<td class="td-medium">Total payments</td>
+				<td class="td-medium">$ {{sum.total_payment | formatPrice}}</td>
+			</tr>
+		</table>
+
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<button class="button button-big save" ng-click="schedule_payment();">Pay Drivers</button>
+				<button class="button button-big orange" ng-click="schedule_reimbursement();">Reimburse Drivers</button>
+			</li>
+		</ul>
+
+		<br/><br/>
+
+		<div ng-show="showing_details">
+
+			<h2 class="title" ng-show="result.drivers">
+				<span>Drivers Details</span>
+			</h2>
+
+			<div ng-repeat="driver in result.drivers">
+
+				<div ng-show="driver.show_details" class="box-content">
+
+					<h2 id="driver-{{driver.id_admin}}" class="title" ng-class="{ 'excluded': !driver.pay }">
+						<span>{{driver.name}}</span></strong>
+					</h2>
+
+					<div class="divider"></div>
+
+					<div>
+
+						<h3 class="title" ng-if="driver.last_payment">
+							Last payment #{{driver.last_payment.id_payment}}: <strong positive-or-negative-color="{{driver.last_payment.amount}}">$ {{driver.last_payment.amount | formatPrice}}</strong> on <strong>{{driver.last_payment.date}}</strong>
+						</h3>
+						<table class="tb-grid tb-zebra">
+							<tbody>
+								<tr>
+									<td>
+									<span ng-click="driver.pay = !driver.pay;summary();">
+										<span ng-show="driver.pay">
+											<i class="fa fa-check-square-o"></i> <span class="link"><strong>Include this driver at the payment? </strong></span>
+										</span>
+										<span ng-show="!driver.pay">
+											<i class="fa fa-square-o"></i> <span class="link"><strong>Include this driver at the payment? </strong></span>
+										</span>
+									</span>
+									</td>
+									<td></td>
+								</tr>
+							</tbody>
+							<tbody ng-show="driver.pay">
+								<tr>
+									<td colspan="2">
+										<ul class="ul-inputs">
+											<li class="li-input">
+												<div class="label">Payment notes:</div>
+												<div class="input"><input type="text" ng-model="driver.notes" maxlength="255" placeholder=""></div>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<ul class="ul-inputs">
+											<li class="li-input">
+												<div class="label">Adjustments:</div>
+												<div class="input"><input type="number" ng-model="driver.adjustment" ng-change="summary();" placeholder=""></div>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr ng-if="driver.worked_hours" positive-or-negative-color="{{driver.worked_hours}}">
+									<td>Worked Hours</td>
+									<td>$ {{driver.worked_hours | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.subtotal}}">
+									<td>Subtotal</td>
+									<td>$ {{driver.subtotal | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.tax}}">
+									<td>Tax</td>
+									<td>$ {{driver.tax | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.delivery_fee}}">
+									<td>Delivery Fee</td>
+									<td>$ {{driver.delivery_fee | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.tip}}">
+									<td>Tip</td>
+									<td>$ {{driver.tip | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.customer_fee}}">
+									<td>Customer Fee</td>
+									<td>$ {{driver.customer_fee | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.markup}}">
+									<td>Markup</td>
+									<td>$ {{driver.markup | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.credit_charge}}">
+									<td>Credit Card Charge</td>
+									<td>$ {{driver.credit_charge | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.gift_card}}">
+									<td>Gift Card</td>
+									<td>$ {{driver.gift_card | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.adjustment}}">
+									<td>Adjustments</td>
+									<td>$ {{driver.adjustment | formatPrice}}</td>
+								</tr>
+								<tr class="total-due" positive-or-negative-color="{{driver.total_reimburse}}">
+									<td class="td-medium">Reimbursement</td>
+									<td class="td-medium">$ {{driver.total_reimburse | formatPrice}}</td>
+								</tr>
+								<tr class="total-due" positive-or-negative-color="{{driver.total_payment}}">
+									<td class="td-medium">Payment</td>
+									<td class="td-medium">$ {{driver.total_payment | formatPrice}}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<h3 class="title">
+							<span class="link" ng-if="!driver.show_orders" ng-click="driver.show_orders = true">Show orders</span>
+							<span class="link" ng-if="driver.show_orders" ng-click="driver.show_orders = false">Hide orders</span> (total {{driver.orders_count}} orders <span class="orange" ng-if="driver.not_included > 0"><strong> + {{driver.not_included}} </strong>  not included order(s)</span> )
+							<span ng-if="driver.shifts.worked"> | <span class="link" ng-if="!driver.show_shifts" ng-click="driver.show_shifts = true">Show shifts</span>
+								<span class="link" ng-if="driver.show_shifts" ng-click="driver.show_shifts = false">Hide shifts</span> (total {{driver.shifts.worked_total}} shifts)
+							</span>
+						</h3>
+
+						<table class="tb-grid tb-zebra" ng-if="driver.show_shifts">
+							<thead>
+								<tr>
+									<td>Started at</td>
+									<td>Finished at</td>
+									<td>Hours</td>
+									<td>Amount</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="shift in driver.shifts.worked">
+									<td>{{shift.period.start}}</td>
+									<td>{{shift.period.end}}</td>
+									<td>{{shift.hours}}</td>
+									<td>$ {{shift.amount | formatPrice}}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<br/><br/>
+
+						<table class="tb-grid tb-zebra" ng-if="driver.show_orders">
+							<thead>
+								<tr>
+									<td></td>
+									<td>#</td>
+									<td>Restaurant</td>
+									<td>Name</td>
+									<td>Type</td>
+									<td>Tip</td>
+									<td>Delivery Fee</td>
+									<td>Reimburse</td>
+									<td>Payment</td>
+									<td>Date</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="order in driver.orders">
+									<td></td>
+									<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
+									<td ng-class="{ 'excluded': !order.included }">{{order.restaurant}}</td>
+									<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
+									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_reimburse | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_payment | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
+									<td>
+										<span class="pointer orange" ng-click="do_not_pay_driver( order.id_order, driver.id_admin, 1 )" ng-if="order.included">
+											<i class="fa fa-square-o"></i> Do not pay for it.
+										</span>
+										<span class="pointer" ng-click="do_not_pay_driver( order.id_order, driver.id_admin, 0 )" ng-if="!order.included">
+											<i class="fa fa-check-square-o"></i> Will not be paid!
+										</span>
+									</td>
+									<td>
+										<span title="Transfer this order to another driver" class="link" ng-click="transfer_driver_modal( order.id_order, driver.id_admin );"><i class="fa fa-retweet"></i></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

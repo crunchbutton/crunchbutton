@@ -1,8 +1,8 @@
 <?php
 
 class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
-	
-	public function init() {	
+
+	public function init() {
 
 		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) );
 		if( !$hasPermission ){
@@ -33,14 +33,14 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 				$sentAllDocs = true;
 				foreach( $docs as $doc ){
 					if( $doc->required ){
-						$docStatus = Cockpit_Driver_Document_Status::document( $driver->id_admin, $doc->id_driver_document );	
+						$docStatus = Cockpit_Driver_Document_Status::document( $driver->id_admin, $doc->id_driver_document );
 						if( !$docStatus->id_driver_document_status ){
 							$sentAllDocs = false;
-						}	
+						}
 					}
 				}
 				$data[ 'sent_all_docs' ] = $sentAllDocs;
-				
+
 				$list[] = $data;
 			}
 			$count++;

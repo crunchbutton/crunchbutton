@@ -14,10 +14,11 @@ class Crunchbutton_Balanced_Credit extends Cana_Model {
 			}
 
 		} catch (Exception $e) {
-			print_r($e);
-			exit;
+			throw new Exception( $e->description );
+			// print_r($e);
+			// exit;
 		}
 		return $res;
-		
+
 	}
 }

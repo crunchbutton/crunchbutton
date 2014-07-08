@@ -8,13 +8,17 @@ class Crunchbutton_Admin extends Cana_Table {
 	public static function login($login, $inactive = false) {
 		$status = ( $inactive ? '' : 'and active = 1' );
 		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'"' . $status . ' limit 1')->get(0);
-	}	
+	}
 
 	public function publicExports() {
 		return [
 			'name' => $this->name,
 			'id_admin' => $this->id_admin
 		];
+	}
+
+	public function payment_type(){
+		return Crunchbutton_Admin_Payment_Type::byAdmin( $this->id_admin );
 	}
 
 	public function validateLogin( $login, $increment = 0 ){
@@ -25,6 +29,14 @@ class Crunchbutton_Admin extends Cana_Table {
 			return Crunchbutton_Admin::validateLogin( $login, $increment );
 		}
 		return $test;
+	}
+
+	public function firstName(){
+		$name = explode( ' ', $this->name );
+		if( trim( $name[ 0 ] ) != '' ){
+			return $name[ 0 ];
+		}
+		return $this->name;
 	}
 
 	public function createLogin(){
@@ -56,16 +68,16 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function totalOrdersDelivered(){
-		$query = 'SELECT COUNT( DISTINCT( o.id_order ) ) AS Total FROM `order` o 
+		$query = 'SELECT COUNT( DISTINCT( o.id_order ) ) AS Total FROM `order` o
 								INNER JOIN order_action oa on oa.id_order = o.id_order
-							WHERE oa.id_admin = ' . $this->id_admin . ' AND 
-							( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '" || 
-								oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '" || 
+							WHERE oa.id_admin = ' . $this->id_admin . ' AND
+							( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '" ||
+								oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '" ||
 								oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '" )';
 		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 
+		return $result->_items[0]->Total;
 	}
-	
+
 	public function timezone() {
 		if (!isset($this->_timezone)) {
 			$this->_timezone = new DateTimeZone($this->timezone);
@@ -83,11 +95,11 @@ class Crunchbutton_Admin extends Cana_Table {
 	public function getTxtNumber(){
 		if( $this->txt ){
 			return $this->txt;
-		} 
+		}
 		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_SMS ){
-				return $notification->value;		
+				return $notification->value;
 			}
 		}
 		return false;
@@ -96,11 +108,11 @@ class Crunchbutton_Admin extends Cana_Table {
 	public function getPhoneNumber(){
 		if( $this->phone ){
 			return $this->phone;
-		} 
+		}
 		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_PHONE ){
-				return $notification->value;		
+				return $notification->value;
 			}
 		}
 		return false;
@@ -130,19 +142,44 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN driver_log dl ON dl.id_admin = a.id_admin WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
 	}
 
+	public function search( $search = [] ){
+
+		$where = 'WHERE 1=1 ';
+		if( $search[ 'name' ] && trim( $search[ 'name' ] ) ){
+			$where .= ' AND a.name LIKE "%' . $search[ 'name' ] . '%"';
+		}
+
+		if( $search[ 'status' ] && $search[ 'status' ] != 'all' ){
+			$active = ( $search[ 'status' ] == 'active' ) ? '1' : '0';
+			$where .= ' AND a.active = "' . $active . '"';
+		}
+
+		$query = 'SELECT a.* FROM admin a ' . $where . ' ORDER BY a.name ASC';
+
+		switch ( $search[ 'type' ] ) {
+			case 'drivers':
+				$query = 'SELECT DISTINCT(a.id_admin) AS id, a.* FROM admin a
+											INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+											INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
+											INNER JOIN admin_notification an ON a.id_admin = an.id_admin ' . $where . 'ORDER BY a.name ASC';
+				break;
+		}
+		return Admin::q( $query );
+	}
+
 	public function drivers(){
-		return Admin::q( 'SELECT a.* FROM admin a 
+		return Admin::q( 'SELECT a.* FROM admin a
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
 													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
 													UNION
-													SELECT DISTINCT(a.id_admin) FROM admin a 
-														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%" 
+													SELECT DISTINCT(a.id_admin) FROM admin a
+														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
 														) drivers
-													) 
-											drivers ON drivers.id_admin = a.id_admin ORDER BY name ASC' );
+													)
+											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ORDER BY name ASC' );
 	}
 
 	public function allPlacesHeDeliveryFor(){
@@ -203,9 +240,9 @@ class Crunchbutton_Admin extends Cana_Table {
 	public function isWorking(){
 		$now = new DateTime( 'now', $this->timezone() );
 		$now = $now->format( 'YmdHi' );
-		$hours = Admin_Hour::q( "SELECT * FROM admin_hour WHERE 
+		$hours = Admin_Hour::q( "SELECT * FROM admin_hour WHERE
 															id_admin = {$this->id_admin} AND
- 															DATE_FORMAT( date_start, '%Y%m%d%H%i' ) <= {$now} AND 
+ 															DATE_FORMAT( date_start, '%Y%m%d%H%i' ) <= {$now} AND
   														DATE_FORMAT( date_end, '%Y%m%d%H%i' ) >= {$now} ");
 		return ( $hours->count() > 0 );
 	}
@@ -224,7 +261,7 @@ class Crunchbutton_Admin extends Cana_Table {
 					$hours[ $_hours[ $this->id_admin ][ 'hours' ] ] = [];
 				}
 				$hours[ $_hours[ $this->id_admin ][ 'hours' ] ][] = $weekdays[ $i ];
-			}			
+			}
 		}
 		$weekdays = [];
 		foreach( $hours as $hour => $weekday ){
@@ -246,7 +283,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		/**
 		 why is all this permissions stuff so unorganized!
-		 
+
 		$_permissions = new Crunchbutton_Admin_Permission();
 		$restaurants_ids = Restaurant::restaurantsUserHasPermission();
 		$all = $_permissions->all();
@@ -302,7 +339,7 @@ class Crunchbutton_Admin extends Cana_Table {
 										INNER JOIN admin_group ag ON ap.id_group = ap.id_group and ag.id_admin = {$this->id_admin}
 										INNER JOIN `group` g ON g.id_group = ag.id_group ORDER BY group_name, permission ASC" );
 	}
-	
+
 	public function getPermissionsByUser(){
 		return c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );
 	}
@@ -313,7 +350,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $this->_permission;
 	}
-	
+
 	public function restaurants() {
 		if (!isset($this->_restaurants)) {
 
@@ -359,12 +396,12 @@ class Crunchbutton_Admin extends Cana_Table {
 			} elseif (!c::admin()->permission()->check(['global','restaurants-all'])) {
 				$q = null;
 			}
-			
+
 			if ($q) {
 				$q .= ' GROUP BY community';
 				$communities = c::db()->get($q);
 			}
-			
+
 			$this->_communities = $communities;
 
 		}
@@ -384,7 +421,7 @@ class Crunchbutton_Admin extends Cana_Table {
 			if( !$this->_groups ){
 				$this->_groups = Crunchbutton_Group::q( "SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = {$this->id_admin} ORDER BY name ASC" );
 			}
-			return $this->_groups;			
+			return $this->_groups;
 		}
 		return false;
 	}
@@ -395,11 +432,11 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function removeGroup( $id_group ){
 		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin} AND id_group = {$id_group}" );
-	}	
+	}
 
 	public function permissions(){
 		if( !$this->_permissions ){
-			$this->_permissions = c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );	
+			$this->_permissions = c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );
 		}
 		return $this->_permissions;
 	}
@@ -468,7 +505,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $str;
 	}
-	
+
 	public function makePass($pass) {
 		return sha1(c::crypt()->encrypt($pass));
 	}
@@ -476,7 +513,7 @@ class Crunchbutton_Admin extends Cana_Table {
 	public static function find($search = []) {
 
 		$query = 'SELECT `admin`.* FROM `admin` WHERE id_admin IS NOT NULL ';
-		
+
 		if ( $search[ 'name' ] ) {
 			$query .= " AND name LIKE '%{$search[ 'name' ]}%' ";
 		}
@@ -505,7 +542,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		$config->value = $value;
 		$config->save();
 	}
-	
+
 	public function exports( $remove = [] ) {
 		if (!$this->id_admin) {
 			return ['name' => '', 'id_admin' => ''];
@@ -517,7 +554,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		if( $this->groups() ){
 			foreach ($this->groups() as $group) {
 				$groups[$group->id_group] = $group->name;
-			}	
+			}
 		}
 
 		if( $this->communitiesHeDeliveriesFor() ){
@@ -557,7 +594,8 @@ class Crunchbutton_Admin extends Cana_Table {
 			'testphone' => $this->testphone,
 			'permissions' => $permissions,
 			'groups' => $groups,
-			'communities' => $communities
+			'communities' => $communities,
+			'active' => ( $this->active == 1 )
 		];
 
 		foreach( $remove as $rem ){
@@ -565,6 +603,47 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 
 		return $ex;
+	}
+
+	public function avgDeliveryTimeLastShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		return Admin::avgDeliveryTimeByShift( $id_admin,  $shift );
+	}
+
+	public function numberOfDeliveredOrdersLastShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		return Admin::numberOfDeliveredOrdersByShift( $id_admin,  $shift );
+	}
+
+	public function numberOfDeliveredOrdersByShift( $id_admin, $shift ){
+		if( $shift->id_community_shift ){
+			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$end = $shift->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$orders = Crunchbutton_Order_Action::ordersDeliveryByAdminPeriod( $id_admin, $start, $end );
+			return $orders->count();
+		}
+		return 0;
+	}
+
+	public function avgDeliveryTimeByShift( $id_admin, $shift ){
+		if( $shift->id_community_shift ){
+			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$end = $shift->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$orders = Crunchbutton_Order_Action::ordersDeliveryByAdminPeriod( $id_admin, $start, $end );
+			$delivery_time = 0;
+			$delivered_orders = 0;
+			foreach( $orders as $order ){
+				$minutes = $order->minutesToDelivery();
+				if( $minutes > 0 ){
+					$delivery_time += $minutes;
+					$delivered_orders++;
+				}
+			}
+			if( $delivery_time && $delivered_orders ){
+				return round( $delivery_time / $delivered_orders );
+			}
+		}
+		return 0;
 	}
 
 	public function __construct($id = null) {

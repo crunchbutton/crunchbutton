@@ -1,0 +1,168 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-credit-card"></i><span>New Order</span></h1>
+
+	<div class="box-filter right">
+		<button class="button orange" ng-click="list()">List</button>
+		<div class="divider"></div>
+	</div>
+
+	<div class="divider"></div>
+
+
+	<h2 class="title" ng-show="!restaurant.id_restaurant">
+		Select a restaurant
+	</h2>
+
+	<div ng-show="restaurant.id_restaurant">
+
+		<h2 class="title">{{restaurant.name}}</h2>
+		<h3 class="title">Please fill out all of the customer's information. Their name and phone number will be sent to the delivery drivers.</h3>
+
+		<form name="form" novalidate>
+
+			<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+
+				<li class="li-input" ng-class="{'error':form.orderName.$invalid}">
+					<div class="label">Name:</div>
+					<div class="input"><input type="text" name="orderName" ng-model="order.name" required placeholder="Name" ng-minlength="5" ng-maxlength="250"></div>
+					<div class="box-error">
+						<small ng-show="form.orderName.$error.required">Required.</small>
+						<small ng-show="form.orderName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
+						<small ng-show="form.orderName.$error.maxlength">Name cannot be longer than 250 characters.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderPhone.$invalid}">
+					<div class="label">Phone:</div>
+					<div class="input"><input type="text" name="orderPhone" ng-model="order.phone" placeholder="646-783-1444" required phone-validate placeholder="Phone"></div>
+					<div class="box-error">
+						<small ng-show="form.orderPhone.$error.required">Required.</small>
+						<small ng-show="form.orderPhone.$error.phoneValidate">Enter a valid phone.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderAddress.$invalid}">
+					<div class="label">Address:</div>
+					<div class="input"><input type="text" name="orderAddress" ng-blur="checkAddress()" ng-model="order.address" required placeholder="1120 Princeton Drive, Marina del Rey CA 90292"></div>
+					<div class="box-error">
+						<small ng-show="form.orderAddress.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-map" ng-show="map.link">
+
+					<div>
+						<a href="{{map.link}}" target="_blank">Get directions</a>
+					</div>
+
+					<div ng-show="!map.out_of_range && map.distance > -1" class="delivery-range">
+						<span>This address is {{map.distance}} miles from your restaurant</span>
+					</div>
+
+					<div ng-show="map.out_of_range && map.distance > -1" class="delivery-out-of-range">
+						<span><strong>Out of range! </strong><br>This address is {{map.distance}} miles from your restaurant</span>
+					</div>
+
+					<div ng-show="map.distance == -1" class="delivery-out-of-range">
+						<span>Unable to measure distance</span>
+					</div>
+
+					<a href="{{map.link}}" target="_blank" ng-show="map.img">
+						<span ng-bind-html-unsafe="map.img"></span>
+					</a>
+
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderNotes.$invalid}">
+					<div class="label">Notes:</div>
+					<div class="input"><input type="text" Address="orderNotes" ng-model="order.notes" placeholder="Building name, or dial code"></div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.orderSubtotal.$invalid}">
+					<div class="label">Subtotal:</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="orderSubtotal" ng-model="order.subtotal" required placeholder="0.00"></div>
+					<div class="box-error">
+						<small ng-show="form.orderSubtotal.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input">
+					<div class="label">Payment Type</div>
+					<div class="input">
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.pay_type == 'cash' }" ng-click="order.pay_type = 'card'">Card</button>
+							<button class="button green" ng-class="{ 'inactive': order.pay_type == 'card' }" ng-click="order.pay_type = 'cash'">Cash</button>
+							<div class="divider"></div>
+						</div>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.cardNumber.$invalid}" ng-show="order.pay_type=='card'">
+					<div class="label">Card Number:</div>
+					<div class="input"><input type="text" name="cardNumber" ng-model="card.number" ng-required="order.pay_type=='card'" placeholder="0000-0000-0000-0000"></div>
+					<div class="box-error">
+						<small ng-show="form.cardNumber.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.cardMonth.$invalid, 'error':form.cardYear.$invalid}" ng-show="order.pay_type=='card'">
+					<div class="label">Card Expiration</div>
+					<div class="input">
+						<select ng-model="card.month" is-bigger-than-zero="{{order.pay_type=='card'}}" ng-required="order.pay_type=='card'" name="cardMonth" ng-options="month.value as month.label for month in card._months"></select>
+						<select ng-model="card.year" is-bigger-than-zero="{{order.pay_type=='card'}}" ng-required="order.pay_type=='card'" name="cardYear" ng-options="year.value as year.label for year in card._years"></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.cardMonth.$error.required || form.cardMonth.$error.isBiggerThanZero">Card month is required.</small>
+						<small ng-show="form.cardYear.$error.required || form.cardYear.$error.isBiggerThanZero">Card year is required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="order.pay_type=='card'">
+					<div class="label">Tip Type</div>
+					<div class="input">
+						<div class="box-filter">
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'percent' }" ng-click="order.tip_type = 'dollar'">$</button>
+							<button class="button green" ng-class="{ 'inactive': order.tip_type == 'dollar' }" ng-click="order.tip_type = 'percent'">%</button>
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="input" ng-show="order.tip_type == 'dollar'">
+						<input type="number" ignore-mouse-wheel name="orderTip" ng-model="order.tip" placeholder="0.00">
+					</div>
+					<div class="input" ng-show="order.tip_type == 'percent'">
+						<select ng-model="order.tip" name="orderTip" ng-options="tip.value as tip.label for tip in tip._percents"></select>
+					</div>
+				</li>
+
+				<li ng-show="finalAmount > 0">
+					<div class="final-amount">
+						<div class="final-amount-padding">
+							<sup>$</sup><span class="total">{{finalAmount}}</span>
+							<span class="description">Customer's Total Price</span>
+						</div>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="!isProcessing">
+					<button class="button orange" ng-click="processOrder();">Process Order</button>
+					<!-- <span ng-click="test()">test</span> -->
+				</li>
+
+
+
+				<li class="li-input" ng-show="isProcessing">
+					<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
+				</li>
+
+			</ul>
+
+		</form>
+
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

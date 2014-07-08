@@ -9,6 +9,7 @@
  *
  * @property notes The comments the user set for the order
  */
+
 class Crunchbutton_Order extends Cana_Table {
 
 	const PAY_TYPE_CASH        = 'cash';
@@ -29,7 +30,7 @@ class Crunchbutton_Order extends Cana_Table {
 	 * @todo Add more security here
 	 * @todo It looks like if there are orders not set as delivery nor takeout, we need to log them.
 	 */
-	public function process($params)
+	public function process($params, $processType = 'web')
 	{
 		$this->pay_type = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
 		$this->address  = $params['address'];
@@ -70,10 +71,21 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->id_restaurant = $params['restaurant'];
 
-		// Check if the restaurant is active #2938
-		if( $this->restaurant()->active == 0 ){
-			$errors['inactive'] = 'This restaurant is not accepting orders.';
+		if( $processType == 'web' ){
+			// Check if the restaurant is active #2938
+			if( $this->restaurant()->active == 0 ){
+				$errors['inactive'] = 'This restaurant is not accepting orders.';
+			}
 		}
+
+		if( $processType == 'restaurant' ){
+			// Check if the restaurant is active for restaurant order placement
+			// https://github.com/crunchbutton/crunchbutton/issues/3350#issuecomment-48255149
+			if( $this->restaurant()->active_restaurant_order_placement == 0 ){
+				$errors['inactive'] = 'This restaurant is not accepting orders.';
+			}
+		}
+
 
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
@@ -107,35 +119,48 @@ class Crunchbutton_Order extends Cana_Table {
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
 
-		foreach ($params['cart'] as $d) {
-			$dish = new Order_Dish;
-			$dish->id_dish = $d['id'];
-			$price = $dish->dish()->price;
-			$price_delivery_markup = $price;
-			if( $delivery_service_markup ){
-				$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
-				$price_delivery_markup = number_format( $price_delivery_markup, 2 );
-			}
-			$subtotal += $price;
-			$subtotal_plus_delivery_service_markup += $price_delivery_markup;
-			if ($d['options']) {
-				foreach ($d['options'] as $o) {
-					$option = new Order_Dish_Option;
-					$option->id_option = $o;
-					$price = $option->option()->price;
-					$price_delivery_markup = $price;
-					if( $delivery_service_markup ){
-						$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
-						$price_delivery_markup = number_format( $price_delivery_markup, 2 );
-					}
-					$subtotal_plus_delivery_service_markup += $price_delivery_markup;
-					$subtotal += $price;
-//                    $subtotal += $option->option()->optionPrice($d['options']);
-					$dish->_options[] = $option;
+		if ($processType == 'restaurant') {
+			$subtotal = $params['subtotal'];
+			$delivery_service_markup = $this->restaurant()->delivery_service_markup ? $this->restaurant()->delivery_service_markup : 0;
+			$price_delivery_markup = number_format($subtotal * $delivery_service_markup / 100, 2);
+			$subtotal_plus_delivery_service_markup = $subtotal + $price_delivery_markup;
+			$this->type = 'restaurant';
+
+		} else {
+
+			foreach ($params['cart'] as $d) {
+				$dish = new Order_Dish;
+				$dish->id_dish = $d['id'];
+				$price = $dish->dish()->price;
+				$price_delivery_markup = $price;
+				if( $delivery_service_markup ){
+					$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
+					$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 				}
+				$subtotal += $price;
+				$subtotal_plus_delivery_service_markup += $price_delivery_markup;
+				if ($d['options']) {
+					foreach ($d['options'] as $o) {
+						$option = new Order_Dish_Option;
+						$option->id_option = $o;
+						$price = $option->option()->price;
+						$price_delivery_markup = $price;
+						if( $delivery_service_markup ){
+							$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
+							$price_delivery_markup = number_format( $price_delivery_markup, 2 );
+						}
+						$subtotal_plus_delivery_service_markup += $price_delivery_markup;
+						$subtotal += $price;
+	//                    $subtotal += $option->option()->optionPrice($d['options']);
+						$dish->_options[] = $option;
+					}
+				}
+				$this->_dishes[] = $dish;
 			}
-			$this->_dishes[] = $dish;
+			$this->type = 'web';
 		}
+
+
 
 		// to make sure the value will be 2 decimals
 		$this->delivery_service_markup_value = number_format( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
@@ -439,13 +464,15 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		c::auth()->session()->id_user = $user->id_user;
-		c::auth()->session()->generateAndSaveToken();
+		if ($processType != 'restaurant') {
+			c::auth()->session()->id_user = $user->id_user;
+			c::auth()->session()->generateAndSaveToken();
+		}
 
 		$agent = Crunchbutton_Agent::getAgent();
 		$this->id_agent = $agent->id_agent;
 
-		if( c::auth()->session()->id_session != '' ){
+		if (c::auth()->session()->id_session != '') {
 			$this->id_session = c::auth()->session()->id_session;
 		}
 
@@ -480,16 +507,18 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		foreach ($this->_dishes as $dish) {
-			$dish->id_order = $this->id_order;
-			$dish->save();
-			$_Dish = Dish::o( $dish->id_dish );
-			foreach ($dish->options() as $option) {
-				# Issue 1437 - https://github.com/crunchbutton/crunchbutton/issues/1437#issuecomment-20561023
-				# 1 - When an option is removed, it should NEVER appear in the order or on the fax.
-				if( $_Dish->dish_has_option( $option->id_option ) ){
-					$option->id_order_dish = $dish->id_order_dish;
-					$option->save();
+		if ($this->_dishes) {
+			foreach ($this->_dishes as $dish) {
+				$dish->id_order = $this->id_order;
+				$dish->save();
+				$_Dish = Dish::o( $dish->id_dish );
+				foreach ($dish->options() as $option) {
+					# Issue 1437 - https://github.com/crunchbutton/crunchbutton/issues/1437#issuecomment-20561023
+					# 1 - When an option is removed, it should NEVER appear in the order or on the fax.
+					if( $_Dish->dish_has_option( $option->id_option ) ){
+						$option->id_order_dish = $dish->id_order_dish;
+						$option->save();
+					}
 				}
 			}
 		}
@@ -508,10 +537,12 @@ class Crunchbutton_Order extends Cana_Table {
 			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
 		});
 
-		Cana::timeout(function() use($order) {
-			$rules = new Crunchbutton_Order_Rules();
-			$rules->run( $order );
-		});
+		if ($processType != 'restaurant') {
+			Cana::timeout(function() use($order) {
+				$rules = new Crunchbutton_Order_Rules();
+				$rules->run( $order );
+			});
+		}
 
 
 		if( Crunchbutton_Referral::isReferralEnable() ){
@@ -979,18 +1010,22 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function cbFee() {
-		return ($this->restaurant()->fee_restaurant) * ($this->price) / 100;
+		return ($this->restaurant_fee_percent()) * ($this->price) / 100;
 	}
 
 	public function customer_fee(){
 		return ($this->restaurant()->fee_customer) * ($this->price) / 100;
 	}
 
+	public function restaurant_fee_percent(){
+		return ( !is_null( $this->fee_restaurant ) ) ? $this->fee_restaurant : $this->restaurant()->fee_restaurant;
+	}
+
 	public function fee(){
 		if( $this->restaurant()->fee_on_subtotal ){
 			return $this->cbFee();
 		} else {
-			return ($this->restaurant()->fee_restaurant) * ($this->final_price) / 100;
+			return $this->restaurant_fee_percent() * ($this->final_price) / 100;
 		}
 	}
 
@@ -1774,26 +1809,49 @@ class Crunchbutton_Order extends Cana_Table {
 
 				break;
 			case 'sms-admin':
-				$spacer = ' / ';
-				$payment =
-				$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
 
-				if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
-					$msg .= $this->address . $spacer;
+				if( $this->type == 'restaurant' ){
+					$spacer = ' / ';
+					$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
+						$msg .= $this->address . $spacer;
+					}
+					$msg .= $this->restaurant()->name . $spacer ;
+					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
+						$msg .= strtoupper( 'Charge Customer $' . $this->final_price_plus_delivery_markup );
+						$msg .= $spacer;
+						$msg .= strtoupper( 'Pay Restaurant $' . $this->final_price );
+					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ){
+						$msg .= strtoupper( 'Customer Paid $' . $this->final_price_plus_delivery_markup );
+						$msg .= $spacer;
+						if( $this->tip ){
+							$msg .= 'TIP ' . $this->tip();
+						} else {
+							$msg .= 'TIP BY CASH';
+						}
+					}
+				} else {
+					$spacer = ' / ';
+					$payment =
+					$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+
+					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
+						$msg .= $this->address . $spacer;
+					}
+
+					$msg .= $this->restaurant()->name . $spacer ;
+
+					// Payment is card and user tipped
+					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
+						$msg .= 'TIP ' . $this->tip();
+					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
+						$msg .= 'TIP BY CASH';
+					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
+						$msg .= 'TOTAL ' . $this->final_price;
+					}
+
+					$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 				}
-
-				$msg .= $this->restaurant()->name . $spacer ;
-
-				// Payment is card and user tipped
-				if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
-					$msg .= 'TIP ' . $this->tip();
-				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
-					$msg .= 'TIP BY CASH';
-				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
-					$msg .= 'TOTAL ' . $this->final_price;
-				}
-
-				$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 
 				break;
 
@@ -2306,15 +2364,28 @@ class Crunchbutton_Order extends Cana_Table {
 
 	}
 
-
 	public function getDeliveryDriver(){
-		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND ( type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "') LIMIT 1" );
+
+		// for payment reasons the driver could be changed at payment time #3232
+		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND type = '" . Crunchbutton_Order_Action::DELIVERY_TRANSFERED . "' ORDER BY id_order_action DESC LIMIT 1 " );
 		if( $action->id_admin ){
 			return $action->admin();
+		} else {
+			$actions = $this->deliveryExports();
+			if( $actions[ 'delivery-status' ] ){
+				if( $actions[ 'delivery-status' ][ 'delivered' ][ 'id_admin' ] ){
+					return Admin::o( $actions[ 'delivery-status' ][ 'delivered' ][ 'id_admin' ] );
+				}
+				if( $actions[ 'delivery-status' ][ 'pickedup' ][ 'id_admin' ] ){
+					return Admin::o( $actions[ 'delivery-status' ][ 'pickedup' ][ 'id_admin' ] );
+				}
+				if( $actions[ 'delivery-status' ][ 'accepted' ][ 'id_admin' ] ){
+					return Admin::o( $actions[ 'delivery-status' ][ 'accepted' ][ 'id_admin' ] );
+				}
+			}
 		}
-
+		return false;
 	}
-
 
 	public function deliveryExports() {
 		return [
@@ -2382,6 +2453,11 @@ class Crunchbutton_Order extends Cana_Table {
 			.strlen($rest);
 
 		return $ret;
+	}
+
+	// aliases
+	public function subtotal(){
+		return $this->price;
 	}
 
 	public function __construct($id = null) {

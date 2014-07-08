@@ -369,12 +369,40 @@ class Crunchbutton_Credit extends Cana_Table
 		return $results->get(0);
 	}
 
+	public function totalDebitsByIdUser( $id_user ){
+		$query = "SELECT SUM(value) AS debit
+								 FROM credit c
+								 WHERE TYPE = 'DEBIT'
+									 AND id_user = '{$id_user}'";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
+	public function totalCreditsByIdUser( $id_user ){
+		$query = "SELECT SUM(value) AS credit
+								 FROM credit c
+								 WHERE TYPE = 'CREDIT'
+									 AND id_user = '{$id_user}' AND id_promo IS NOT NULL";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
+
+	public function totalRefundedCreditsByIdUser( $id_user ){
+		$query = "SELECT SUM(value) AS credit
+								 FROM credit c
+								 WHERE TYPE = 'CREDIT'
+									 AND c.id_user = '{$id_user}' AND id_promo IS NULL";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
 	public function totalCreditsByPhone( $phone ){
 		$query = "SELECT SUM(value) AS credit
 								 FROM credit c
 								 INNER JOIN user u ON u.id_user = c.id_user
 								 WHERE TYPE = 'CREDIT'
-									 AND u.phone = '{$phone}' AND id_promo IS NOT NULL";
+									 AND u.phone = '{$phone}' AND c.id_promo IS NOT NULL";
 		$results = c::db()->get( $query );
 		return $results->get(0);
 	}

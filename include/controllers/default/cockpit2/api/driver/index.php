@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 		if (preg_replace('/[^0-9]/','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2)) {
 			$driver = Admin::o(c::getPagePiece(2));
@@ -10,7 +10,7 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			$driver = c::user();
 			$action = c::getPagePiece(2);
 		}
-	
+
 		switch ($action) {
 			case 'location':
 				if ($this->method() == 'post') {
@@ -22,16 +22,25 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 						'accuracy' => $this->request()['accuracy']
 					]))->save();
 				}
-				if ($driver->location()->id_admin_location) {
+				if ( method_exists( $driver, 'location' ) && $driver->location()->id_admin_location) {
 					echo $driver->location()->json();
 				} else {
 					echo json_encode(null);
 				}
 				break;
-				
+
+			case 'all':
+				$out = [];
+				$drivers = Admin::drivers();
+				foreach( $drivers as $driver ){
+					$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name ];
+				}
+				echo json_encode( $out );
+				break;
+
 			default:
 				if ($this->method() == 'post') {
-					// save a setting	
+					// save a setting
 				}
 				echo $driver->json();
 				break;
