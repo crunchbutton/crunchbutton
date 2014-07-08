@@ -2324,16 +2324,26 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function getDeliveryDriver(){
+
 		// for payment reasons the driver could be changed at payment time #3232
 		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND type = '" . Crunchbutton_Order_Action::DELIVERY_TRANSFERED . "' ORDER BY id_order_action DESC LIMIT 1 " );
 		if( $action->id_admin ){
 			return $action->admin();
 		} else {
-			$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND ( type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "') LIMIT 1" );
-			if( $action->id_admin ){
-				return $action->admin();
+			$actions = $this->deliveryExports();
+			if( $actions[ 'delivery-status' ] ){
+				if( $actions[ 'delivery-status' ][ 'delivered' ][ 'id_admin' ] ){
+					return Admin::o( $actions[ 'delivery-status' ][ 'delivered' ][ 'id_admin' ] );
+				}
+				if( $actions[ 'delivery-status' ][ 'pickedup' ][ 'id_admin' ] ){
+					return Admin::o( $actions[ 'delivery-status' ][ 'pickedup' ][ 'id_admin' ] );
+				}
+				if( $actions[ 'delivery-status' ][ 'accepted' ][ 'id_admin' ] ){
+					return Admin::o( $actions[ 'delivery-status' ][ 'accepted' ][ 'id_admin' ] );
+				}
 			}
 		}
+		return false;
 	}
 
 	public function deliveryExports() {

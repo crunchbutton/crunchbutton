@@ -181,6 +181,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsScheduleCtrl',
 			templateUrl: 'assets/view/drivers-shifts-schedule.html'
 		})
+		.when('/drivers/summary', {
+			action: 'drivers-summary',
+			controller: 'DriversSummaryCtrl',
+			templateUrl: 'assets/view/drivers-summary.html'
+		})
 		.when('/login', {
 			action: 'login',
 			controller: 'LoginCtrl',

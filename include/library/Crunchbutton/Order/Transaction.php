@@ -41,6 +41,30 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 		return false;
 	}
 
+	public function orderReimbursementInfoDriver( $id_order ){
+		$query = 'SELECT p.* FROM order_transaction ot
+								INNER JOIN payment_order_transaction pot ON pot.id_order_transaction = ot.id_order_transaction
+								INNER JOIN payment p ON p.id_payment = pot.id_payment
+								WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_REIMBURSED_TO_DRIVER . '" AND id_order = "' . $id_order . '" LIMIT 1';
+		$payment = Crunchbutton_Payment::q( $query );
+		if( $payment->id_payment ){
+			return $payment->get( 0 );
+		}
+		return false;
+	}
+
+	public function orderPaymentInfoDriver( $id_order ){
+		$query = 'SELECT p.* FROM order_transaction ot
+								INNER JOIN payment_order_transaction pot ON pot.id_order_transaction = ot.id_order_transaction
+								INNER JOIN payment p ON p.id_payment = pot.id_payment
+								WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER . '" AND id_order = "' . $id_order . '" LIMIT 1';
+		$payment = Crunchbutton_Payment::q( $query );
+		if( $payment->id_payment ){
+			return $payment->get( 0 );
+		}
+		return false;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

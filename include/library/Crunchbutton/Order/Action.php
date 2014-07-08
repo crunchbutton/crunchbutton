@@ -1,7 +1,6 @@
 <?php
 
 class Crunchbutton_Order_Action extends Cana_Table {
-
 	const DELIVERY_PICKEDUP   = 'delivery-pickedup';
 	const DELIVERY_ACCEPTED   = 'delivery-accepted';
 	const DELIVERY_REJECTED   = 'delivery-rejected';
