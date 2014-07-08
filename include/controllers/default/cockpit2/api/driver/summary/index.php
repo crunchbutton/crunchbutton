@@ -3,11 +3,23 @@
 class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-// test
+
 		if( c::getPagePiece( 3 ) && c::admin()->permission()->check( [ 'global', 'drivers-all' ] ) ){
 			$id_driver = c::getPagePiece( 3 );
 		} else {
 			$id_driver = c::user()->id_admin;
+		}
+
+		$admin = Admin::o( $id_driver );
+		if( !$admin->id_admin ){
+			$this->_error();
+		}
+
+		$pay_type = Admin::o( $driver )->payment_type();
+		if( !$pay_type->id_admin_payment_type  ){
+			$pay_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+		} else {
+			$pay_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 		}
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -15,12 +27,29 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$now->modify( '-2 week' );
 		$range[ 'start' ] = $now->format( 'm/d/Y' );
 
+		// @remove
+		$range = [ 'start' => '05/01/2014', 'end' => '06/01/2014' ];
+
 		$settlement = new Settlement( $range );
-		$driver = $settlement->driverWeeksSummary( $id_driver );
+
+		if( $pay_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+			return $this->_summaryByHours( $id_driver, $settlement );
+		} else {
+			return $this->_summaryByOrders( $id_driver, $settlement );
+		}
+	}
+
+	private function _summaryByHours( $id_driver, $settlement ){
+		$driver = $settlement->driverWeeksSummaryShifts( $id_driver );
+	}
+
+	private function _summaryByOrders( $id_driver, $settlement ){
+
+		$driver = $settlement->driverWeeksSummaryOrders( $id_driver );
 
 		if( $driver[ 0 ] ){
 			$driver = $driver[ 0 ];
-			$out = [ 'weeks' => [] ];
+			$out = [ 'type' => Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS, 'weeks' => [] ];
 
 			foreach( $driver[ 'orders' ] as $order ){
 				$week = $order[ 'week' ];
@@ -69,7 +98,6 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		}
 
 		echo json_encode( $out );exit();
-
 	}
 
 	private function _error( $error = 'invalid request' ){

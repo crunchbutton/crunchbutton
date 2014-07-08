@@ -43,7 +43,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	// https://github.com/crunchbutton/crunchbutton/issues/3234
-	public function driverWeeksSummary( $id_driver ){
+	public function driverWeeksSummaryShifts( $id_driver ){
+		$query = 'SELECT cs.* FROM admin_shift_assign AS asa
+							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+							WHERE asa.id_admin = "' . $id_driver . '"
+								AND DATE( cs.start_date ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
+								AND DATE( cs.start_date ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
+		echo '<pre>';var_dump( $query );exit();
+		$shifts = Crunchbutton_Community_Shift::q( $query );
+		echo '<pre>';var_dump( $shifts );exit();
+
+	}
+
+	public function driverWeeksSummaryOrders( $id_driver ){
 		$query = 'SELECT DISTINCT(o.id_order) AS id, o.* FROM `order` o
 							INNER JOIN order_action oa ON oa.id_order = o.id_order
 							WHERE
