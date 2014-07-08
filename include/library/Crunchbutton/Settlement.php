@@ -42,6 +42,48 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $this->driversProcess( $orders );
 	}
 
+	// https://github.com/crunchbutton/crunchbutton/issues/3234
+	public function driverWeeksSummary( $id_driver ){
+		$query = 'SELECT DISTINCT(o.id_order) AS id, o.* FROM `order` o
+							INNER JOIN order_action oa ON oa.id_order = o.id_order
+							WHERE
+									DATE( o.date ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
+								AND DATE( o.date ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"
+								AND ( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
+											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '"
+											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
+											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_TRANSFERED . '" )
+								AND oa.id_admin = "' . $id_driver . '"
+								AND o.name NOT LIKE "%test%"
+							ORDER BY o.date DESC ';
+		$_orders = [];
+		$orders = Order::q( $query );
+		foreach( $orders as $order ) {
+			if( $order->getDeliveryDriver() && $order->getDeliveryDriver()->id_admin == $id_driver ){
+				$_order = $this->orderExtractVariables( $order );
+				$_order[ 'week' ] = str_pad( $order->date()->format( 'W' ), 2, '0', STR_PAD_LEFT );
+				$_order[ 'year' ] = $order->date()->format( 'Y' );
+				$_order[ 'day' ] = $order->date()->format( 'Ymd' );
+				$_order[ 'date_day' ] = $order->date()->format( 'M jS Y' );
+				$_order[ 'date_time' ] = $order->date()->format( 'g:i:s A' );
+				if( $_order[ 'driver_paid' ] ){
+					$payment_info = Crunchbutton_Order_Transaction::orderPaymentInfoDriver( $_order[ 'id_order' ] );
+					if( $payment_info ){
+						$_order[ 'payment_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $payment_info->date()->format( 'M jS Y g:i:s A' ) ];
+					}
+				}
+				if( $_order[ 'driver_reimbursed' ] ){
+					$payment_info = Crunchbutton_Order_Transaction::orderReimbursementInfoDriver( $_order[ 'id_order' ] );
+					if( $payment_info ){
+						$_order[ 'reimbursed_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $payment_info->date()->format( 'M jS Y g:i:s A' ) ];
+					}
+				}
+				$_orders[] = $_order;
+			}
+		}
+		return $this->driversProcess( $_orders, true );
+	}
+
 	// get orders we have to pay
 	public static function orders( $filters ){
 		$query = 'SELECT * FROM `order`
@@ -49,7 +91,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
 										AND name NOT LIKE "%test%"
 									ORDER BY `date` ASC ';
-		// todo: do not commit with this line
+		// todo: do not commit with this line: for test only
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24462, 24463, 24464 ) order by id_order desc';
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
 		return Order::q( $query );
@@ -150,6 +192,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay_type = Admin::o( $driver )->payment_type();
 					if( $pay_type->id_admin_payment_type ){
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
+
 					} else {
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 					}

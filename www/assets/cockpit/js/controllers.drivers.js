@@ -1,4 +1,3 @@
-
 NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
 	$scope.ready = false;
@@ -107,6 +106,23 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 	if( $scope.account.isLoggedIn() ){
 		$scope.list();
 	}
+} );
+
+NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
+
+	$scope.ready = false;
+
+	var list = function(){
+		DriverService.summary( function( data ){
+			$scope.summary = data;
+			$scope.ready = true;
+		} );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		list();
+	}
+
 } );
 
 NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {

@@ -1,0 +1,79 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-calendar"></i><span>Summary</span></h1>
+
+	<div class="divider"></div>
+
+	<div ng-if="summary.weeks">
+
+	<div ng-repeat="week in summary.weeks">
+		<h3 class="title">{{week.period}}</h3>
+		<div ng-repeat="day in week.days">
+			<h4 class="title">{{day.day}}</h4>
+			<table>
+				<thead>
+					<td>#</td>
+					<td>Date</td>
+					<td>Customer</td>
+					<td>Tip</td>
+					<td>Delivery Fee</td>
+					<td>Cash Markup Owed to CB</td>
+					<td>Pay</td>
+					<td></td>
+					<td>Reimbursement</td>
+					<td></td>
+				</thead>
+				<tbody ng-repeat="order in day.orders">
+					<tr>
+						<td>{{order.id_order}}</td>
+						<td>{{order.time}}</td>
+						<td>{{order.name}}</td>
+						<td>$ {{order.tip | formatPrice}}</td>
+						<td>$ {{order.delivery_fee | formatPrice}}</td>
+						<td>$ {{order.markup | formatPrice}}</td>
+						<td>$ {{order.total_payment | formatPrice}}</td>
+						<td></td>
+						<td>$ {{order.total_reimburse | formatPrice}}</td>
+						<td></td>
+					</tr>
+				</tbody>
+				<tbody>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>Daily Total</td>
+					<td>$ {{day.total_payment | formatPrice}}</td>
+					<td></td>
+					<td>$ {{day.total_reimburse | formatPrice}}</td>
+					<td></td>
+				</tbody>
+			</table>
+
+		</div>
+
+		<div>
+			Weekly total
+			<br>
+			Payment: $ {{week.total_payment | formatPrice}}
+			<br>
+			Reimbursement: $ {{week.total_reimburse | formatPrice}}
+		</div>
+
+
+	</div>
+
+
+	</div>
+
+	<div ng-if="!summary.weeks" class="box-content">
+		Nothing here.
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
