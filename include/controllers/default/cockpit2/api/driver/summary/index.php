@@ -4,14 +4,16 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
-		$id_driver = 197; //54;
+		if( c::getPagePiece( 3 ) && c::admin()->permission()->check( [ 'global', 'drivers-all' ] ) ){
+			$id_driver = c::getPagePiece( 3 );
+		} else {
+			$id_driver = c::user()->id_admin;
+		}
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$range = [ 'end' => $now->format( 'm/d/Y' ) ];
 		$now->modify( '-2 week' );
 		$range[ 'start' ] = $now->format( 'm/d/Y' );
-
-		$range = [ 'start' => '05/01/2014', 'end' => '06/07/2014' ];
 
 		$settlement = new Settlement( $range );
 		$driver = $settlement->driverWeeksSummary( $id_driver );
@@ -63,7 +65,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			echo json_encode( $out );exit();
 
 		} else {
-
+			$out = [ 'weeks' => 0 ];
 		}
 
 		echo json_encode( $out );exit();

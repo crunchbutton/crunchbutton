@@ -6,70 +6,124 @@
 
 	<div class="divider"></div>
 
-	<div ng-if="summary.weeks">
+	<form name="form" ng-show="drivers">
 
-	<div ng-repeat="week in summary.weeks">
-		<h3 class="title">{{week.period}}</h3>
-		<div ng-repeat="day in week.days">
-			<h4 class="title">{{day.day}}</h4>
-			<table>
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<div class="label">Select a driver:</div>
+				<div class="input">
+					<select name="driverSummary" ng-model="id_admin" ng-change="list()" ng-options="opt.id_admin as opt.name for opt in drivers"></select>
+				</div>
+			</li>
+		</ul>
+
+	</form>
+
+	<div ng-show="isLoading">
+		<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
+	</div>
+
+	<div ng-if="summary.weeks" class="driver-summary">
+
+		<p>
+			Summary from the last 2 weeks.
+		</p>
+		<br><br>
+
+		<div ng-repeat="week in summary.weeks">
+
+			<h2 class="title">{{week.period}}</h3>
+			<div ng-repeat="day in week.days">
+				<h2 class="subtitle">{{day.day}}</h4>
+				<table class="tb-grid tb-zebra">
+					<thead>
+						<tr>
+							<td style="100px;">Order Number</td>
+							<td style="85px;">Date</td>
+							<td>Customer</td>
+							<td style="55px;">Tip</td>
+							<td style="80px;">Delivery Fee</td>
+							<td style="160px;">Cash Markup Owed to CB</td>
+							<td style="65px;">Pay</td>
+							<td style="35px;">&nbsp;</td>
+							<td style="105px;">Reimbursement</td>
+							<td style="35px;">&nbsp;</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="order in day.orders">
+							<td>{{order.id_order}}</td>
+							<td>{{order.time}}</td>
+							<td>{{order.name}}</td>
+							<td positive-or-negative-color="{{order.tip}}">
+								$ {{order.tip | formatPrice}}
+							</td>
+							<td positive-or-negative-color="{{order.delivery_fee}}">
+								$ {{order.delivery_fee | formatPrice}}
+							</td>
+							<td positive-or-negative-color="{{order.markup}}">
+								$ {{order.markup | formatPrice}}
+							</td>
+							<td positive-or-negative-color="{{order.total_payment}}">
+								$ {{order.total_payment | formatPrice}}
+							</td>
+							<td class="td-driver-summary-paid">
+								<span ng-if="order.payment.id_payment">Paid!</span>
+							</td>
+							<td positive-or-negative-color="{{order.total_reimburse}}">
+								$ {{order.total_reimburse | formatPrice}}
+							</td>
+							<td class="td-driver-summary-paid">
+								<span ng-if="order.reimburse.id_payment">Paid!</span>
+							</td>
+						</tr>
+						<tr class="tr-driver-summary-daily-total">
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>Daily Total</td>
+							<td positive-or-negative-color="{{day.total_payment}}">
+								$ {{day.total_payment | formatPrice}}
+							</td>
+							<td></td>
+							<td positive-or-negative-color="{{day.total_reimburse}}">
+								$ {{day.total_reimburse | formatPrice}}
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+
+			<table class="tb-grid tb-zebra">
 				<thead>
-					<td>#</td>
-					<td>Date</td>
-					<td>Customer</td>
-					<td>Tip</td>
-					<td>Delivery Fee</td>
-					<td>Cash Markup Owed to CB</td>
-					<td>Pay</td>
-					<td></td>
-					<td>Reimbursement</td>
-					<td></td>
-				</thead>
-				<tbody ng-repeat="order in day.orders">
 					<tr>
-						<td>{{order.id_order}}</td>
-						<td>{{order.time}}</td>
-						<td>{{order.name}}</td>
-						<td>$ {{order.tip | formatPrice}}</td>
-						<td>$ {{order.delivery_fee | formatPrice}}</td>
-						<td>$ {{order.markup | formatPrice}}</td>
-						<td>$ {{order.total_payment | formatPrice}}</td>
-						<td></td>
-						<td>$ {{order.total_reimburse | formatPrice}}</td>
-						<td></td>
+						<td>{{week.period}}</td>
+						<td style="65px;">Payment</td>
+						<td style="105px;">Reimbursement</td>
+						<tr>
+				</thead>
+				<tbody>
+					<tr class="tr-driver-summary-daily-total">
+						<td>Weekly Total</td>
+						<td positive-or-negative-color="{{week.total_payment}}">
+							$ {{week.total_payment | formatPrice}}
+						</td>
+						<td positive-or-negative-color="{{week.total_payment}}">
+							$ {{week.total_reimburse | formatPrice}}
+						</td>
 					</tr>
 				</tbody>
-				<tbody>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td>Daily Total</td>
-					<td>$ {{day.total_payment | formatPrice}}</td>
-					<td></td>
-					<td>$ {{day.total_reimburse | formatPrice}}</td>
-					<td></td>
-				</tbody>
 			</table>
-
+			<br><br><br>
 		</div>
-
-		<div>
-			Weekly total
-			<br>
-			Payment: $ {{week.total_payment | formatPrice}}
-			<br>
-			Reimbursement: $ {{week.total_reimburse | formatPrice}}
-		</div>
-
 
 	</div>
 
-
-	</div>
-
-	<div ng-if="!summary.weeks" class="box-content">
+	<div ng-if="!summary.weeks && !isLoading" class="box-content">
 		Nothing here.
 	</div>
 
