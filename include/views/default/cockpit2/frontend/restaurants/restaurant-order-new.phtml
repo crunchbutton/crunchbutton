@@ -27,10 +27,9 @@
 
 				<li class="li-input" ng-class="{'error':form.orderName.$invalid}">
 					<div class="label">Name:</div>
-					<div class="input"><input type="text" name="orderName" ng-model="order.name" required placeholder="Name" ng-minlength="5" ng-maxlength="250"></div>
+					<div class="input"><input type="text" name="orderName" ng-model="order.name" required placeholder="Name" ng-maxlength="250"></div>
 					<div class="box-error">
 						<small ng-show="form.orderName.$error.required">Required.</small>
-						<small ng-show="form.orderName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
 						<small ng-show="form.orderName.$error.maxlength">Name cannot be longer than 250 characters.</small>
 					</div>
 				</li>
