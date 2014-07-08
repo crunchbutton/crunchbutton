@@ -53,7 +53,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		$date_end = new DateTime( $date_end, new DateTimeZone( c::config()->timezone ) );
 
 		// get orders delivered at this period
-		$query = 'SELECT * FROM `order` o
+		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
 									oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
