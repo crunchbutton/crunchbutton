@@ -1,0 +1,65 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-credit-card"></i><span>Last Orders</span></h1>
+
+	<div class="box-filter right">
+		<button class="button orange" ng-click="new()">New</button>
+		<div class="divider"></div>
+	</div>
+
+	<div class="divider"></div>
+
+
+	<div ng-show="!error">
+
+		<h2 class="title">{{restaurant.name}}</h2>
+
+		<div ng-if="orders.length">
+
+		<h3 class="title">Showing orders from last 7 days. Total {{orders.length}} orders. </h3>
+
+			<table class="tb-grid">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td class="td-medium">Customer</td>
+						<td>Date</td>
+						<td class="td-medium">Driver / Status</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="order in orders">
+						<td class="link orange" ng-click="open( order.id_order )">
+							{{order.id_order}}
+						</td>
+						<td>
+							{{order.name}} / {{order.phone}}
+						</td>
+						<td>
+							{{order.date}}
+						</td>
+						<td>
+							<span ng-show="order.lastStatus.name">
+								{{order.lastStatus.name}} / {{order.lastStatus.status}}
+							</span>
+							<span ng-show="!order.lastStatus.name">
+								new
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+	</div>
+
+	<div ng-if="!orders.length" class="box-content">
+		No orders.
+	</div>
+
+
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

@@ -513,6 +513,34 @@ NGApp.directive( 'phoneValidate', function () {
 	};
 });
 
+NGApp.directive('isBiggerThanZero', function() {
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function(scope, elem, attrs, ngModel) {
+
+			// observe the other value and re-validate on change
+			attrs.$observe( 'isBiggerThanZero', function () {
+				validate();
+			});
+
+			scope.$watch(attrs.ngModel, function() { validate(); } );
+
+			var validate = function() {
+				var isValid = false;
+				// if it is false it means it should not be validated
+				if( attrs.isBiggerThanZero === 'true' || attrs.isBiggerThanZero === true ){
+					if( parseInt( ngModel.$viewValue ) > 0 ){
+						isValid = true;
+					}
+				} else {
+					isValid = true;
+				}
+				ngModel.$setValidity('isBiggerThanZero', isValid );
+			};
+		}
+	}
+});
 
 NGApp.directive('equals', function() {
 	return {
@@ -659,3 +687,125 @@ NGApp.directive( 'driverDocsUpload', function ( $fileUploader, $rootScope, $time
 		}
 	}
 });
+
+NGApp.directive('splashPositionFix', function() {
+	return {
+
+		restrict: 'A',
+		link: function( $scope, elem, attrs, ctrl ) {
+
+			$scope.$watch( 'windowHeight', function( newValue, oldValue, scope ) {
+				if( newValue != oldValue ){
+					setTimeout( function(){
+						App.rootScope.reload();
+					}, 100 );
+				}
+			});
+
+			var bottomText = false;
+			var greenOrange = false;
+
+			var fixPosition = function(){
+
+				var element = function( selector ){
+					var element = angular.element( selector );
+					return {
+						top: function(){
+							var marginTop = parseInt( element.css( 'marginTop' ) );
+							return parseInt( element.offset().top + marginTop );
+						},
+						reset : function(){
+							element.css( { 'marginTop' : 0 } );
+							element.css( { 'top' : element.offset().top } );
+						},
+						height: function(){
+							if ( !element.attr( 'fixed-height' ) ){
+								element.attr( 'fixed-height', element.height() );
+								element._height = element.height();
+							}
+							return parseInt( element.attr( 'fixed-height' ) );
+						},
+						bottom: function(){
+							return parseInt( this.top() ) + parseInt( this.height() );
+						},
+						setTop: function( top ){
+							element.css( { 'marginTop' : top } );
+						}
+					}
+				};
+
+				// initialize objects
+				if( !bottomText && !greenOrange ){
+					bottomText = element( '.splash-bottom' );
+					greenOrange = element( '.about-green-orange-scene' );
+				}
+				bottomText.reset();
+				greenOrange.reset();
+
+				var distance = bottomText.top() - greenOrange.bottom();
+				var maxDistance = 70;
+				var minDistance = 15;
+				var step = 5;
+
+				var windowHeight = $scope.windowHeight - maxDistance;
+
+				var calcPosition = function(){
+					var ok = false;
+					var top = maxDistance;
+					var watchDog = 100;
+					while( !ok ){
+						var test_top = bottomText.bottom() + top + minDistance;
+						if( test_top <= windowHeight ){
+							bottomText.setTop( top );
+							ok = true;
+						}
+						top -= step;
+						watchDog--;
+						if( watchDog <= 0 ){ ok = true; continue; }
+					}
+				}
+				var distance = bottomText.top() - greenOrange.bottom();
+				if( distance < maxDistance ){
+					calcPosition();
+				}
+				// get the distance again
+				var distance = bottomText.top() - greenOrange.bottom();
+				if( distance < minDistance ){
+					greenOrange.setTop( -minDistance );
+				}
+				return;
+			}
+			setTimeout( function(){ fixPosition();}, 10 );
+		}
+	}
+});
+
+NGApp.directive( 'ignoreMouseWheel', function( $rootScope ) {
+	return {
+		restrict: 'A',
+		link: function( scope, element, attrs ){
+			element.bind('mousewheel', function ( event ) {
+				element.blur();
+			} );
+		}
+	}
+} );
+
+NGApp.directive( 'positiveOrNegativeColor', function( $rootScope ) {
+	return {
+		restrict: 'A',
+		link: function( scope, element, attrs ){
+			attrs.$observe( 'positiveOrNegativeColor', function( value ) {
+				element.removeClass( 'positive negative neutral' );
+				var value = parseFloat( attrs.positiveOrNegativeColor );
+				if( value > 0 ){
+					element.addClass( 'positive' );
+				} else if( value < 0 ){
+					element.addClass( 'negative' );
+				} else {
+					element.addClass( 'neutral' );
+				}
+			} );
+		}
+	}
+} );

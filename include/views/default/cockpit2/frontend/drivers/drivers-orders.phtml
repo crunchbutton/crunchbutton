@@ -9,8 +9,6 @@
 	<? /* @todo: make this a diff date. write date diff in js */ ?>
 	
 	<?/*		*/ ?>
-	
-	
 	<div class="box-filter">
 		<h1 class="title left"><i class ="fa fa-truck"></i><span>Orders &nbsp&nbsp</span></h1>
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
@@ -19,9 +17,9 @@
 	</div>
 
 	<div class="drivers-order-list">
-		
+
 		<div ng-if="driverorders.length">
-		
+
 			<div class="box-content item" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
 				<div ng-class="{'notMyOrder': order.lastStatus.id_admin !== account.user.id_admin, 'myOrder': order.lastStatus.id_admin == account.user.id_admin}">
 					<h6 class="row-status" ng-if="order.lastStatus.id_admin !== account.user.id_admin && order.lastStatus.status !== 'new'">
@@ -69,14 +67,14 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div ng-if="!driverorders.length">
 			<h3>You currently have no orders to deliver.</h3>
 		</div>
 		
 		<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>
 
-	</div>	
+	</div>
 
 </div>
 

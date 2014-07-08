@@ -29,8 +29,8 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 	}
 
 	public function shiftsByAdminPeriod( $id_admin, $date_start, $date_end ){
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . 
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin .
 																							' WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $date_start . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $date_end . '"' );
 	}
 
@@ -43,12 +43,12 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 			$assignment->save();
 			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
 			if( $permanently ){
-				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );	
+				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );
 			}
 		} else {
 			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
 			if( $permanently ){
-				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );	
+				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );
 			}
 		}
 

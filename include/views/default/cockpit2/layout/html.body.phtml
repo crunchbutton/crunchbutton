@@ -20,11 +20,40 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/drivers/shifts')" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
+				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/shifts')" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
 							<td class="side-menu-label">Shifts</a></td>
+						</tr>
+					</table>
+				</li>
+
+				<li ng-if="account.user.permissions.GLOBAL || account.isRestaurant" ng-click="navigation.link('/restaurant/order/new')" ng-class="{'nav-active': (navigation.page == 'restaurant-order-new')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-credit-card"></i></td>
+							<td class="side-menu-label">New Order</a></td>
+						</tr>
+					</table>
+				</li>
+
+				<?/* Permission GLOBAL hard coded for while | todo: remove it and apply the correct permission @pererinha */?>
+				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/settlement/')" ng-class="{'nav-active': (navigation.page == 'settlement')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-bank"></i></td>
+							<td class="side-menu-label">Settlement</a></td>
+						</tr>
+					</table>
+				</li>
+
+				<?/* Permission GLOBAL hard coded for while | todo: remove it and apply the correct permission @pererinha */?>
+				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/staff/list')" ng-class="{'nav-active': (navigation.page == 'staff')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-users"></i></td>
+							<td class="side-menu-label">Staff</a></td>
 						</tr>
 					</table>
 				</li>
@@ -39,16 +68,24 @@
 					</table>
 				</li>
 
-				<li ng-click="navigation.link('/drivers/docs/')" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
+				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/docs/')" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
 							<td class="side-menu-label">Documents</a></td>
 						</tr>
 					</table>
-				</li>				
+				</li>
 
-				<li ng-click="navigation.link('/drivers/help')" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
+				<li ng-if="account.isDriver" ng-click="navigation.link('/drivers/help')" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
+							<td class="side-menu-label">Help</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-if="account.isRestaurant" ng-click="navigation.link('/restaurants/help')" ng-class="{'nav-active': (navigation.page == 'restaurants-help')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
@@ -137,12 +174,12 @@
 			<div class="content-padding">
 				<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a></p>
 			</div>
-			
+
 		</div>
 	</div>
 
 	<div class="wrapper static-nav-viewport loggedout-hideable">
-		
+
 		<div id="snap-content" class="snap-content">
 			<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl" ng-show="account.user.id_admin">
 				<div class="nav nav-top">
@@ -150,7 +187,7 @@
 
 						<div title="Menu" class="menu side hide-before-init" ng-click="navigation.menu()" ng-hide="hasBack"></div>
 						<div title="Back" class="nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
-						
+
 						<div class="notifications">
 
 							<div class="flash-message {{flash.getLevel()}}" ng-show="flash.hasMessage()">

@@ -3,7 +3,7 @@
 class Cana_Table_Trackchange extends Cana_Table {
 	public function save() {
 		if ($this->{$this->idVar()}) {
-			$objectName = get_class($this);
+			$objectName = $this->_changeSetName ? $this->_changeSetName : get_class($this);
 			$objectName .= '_Changeset';
 			$this->_changeSet = new $objectName(Cana_Changeset::save($this));
 		}

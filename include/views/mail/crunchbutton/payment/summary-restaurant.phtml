@@ -1,0 +1,144 @@
+<div class="xhatch separator-big"></div>
+
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td style="border: 0; padding: 5px;">
+			<h1>Crunchbutton</h1>
+		</td>
+		<td style="border: 0; padding: 5px; text-align: right;">
+			<span class="order-num">Payment #<?php echo $summary[ 'id_payment' ]; ?></span><br />
+			<?php echo $summary[ 'payment_date' ]; ?>
+		</td>
+	</tr>
+</table>
+
+<div class="xhatch separator-small"></div>
+
+<table width="100%" celpadding="0" cellspacing="0">
+	<tr>
+		<td>
+				<table cellpadding="0" cellspacing="0">
+					<tr>
+					<td style="font-size:22px;" class="text-size-mid"><strong><?php echo $summary[ 'restaurant' ]; ?></strong></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<?php if( $summary[ 'note' ] ) { ?>
+	<table class="notes" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="top"><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/note.png')?>" class="icon-note"></td>
+			<td style="margin: 0; padding: 22px 0 0 0;" valign="top"><div class="arrow-left"></div></td>
+			<td style="width: 100%; padding-right: 0; "><table style="width: 100%"><tr><td class="notes-content"><?=nl2br( $summary[ 'note' ] )?></td></tr></table></td>
+		</tr>
+	</table>
+<?php } ?>
+
+<div class="xhatch separator-small"></div>
+
+<table width="100%" celpadding="0" cellspacing="0" class="detail">
+	<thead style="font-weight:bold">
+		<tr>
+			<td colspan="4" class="topitem" style="font-size:18px;">Card Orders</td>
+		</tr>
+	</thead>
+	<thead style="font-weight:bold">
+		<tr>
+			<td style="width:315px;" class="topitem">Customer</td>
+			<td style="width:215px;" class="topitem">Date</td>
+			<td class="topitem">Total</td>
+			<td class="topitem">Tip</td>
+		</tr>
+	</thead>
+	<?php foreach( $summary[ 'orders' ][ 'card' ] as $order ) { ?>
+		<tr>
+			<td class="fooditem"><?php echo $order[ 'name' ]; ?></td>
+			<td class="fooditem"><?php echo $order[ 'date' ]; ?></td>
+			<td class="fooditem">$<?php echo number_format( $order[ 'total' ], 2 ); ?></td>
+			<td class="fooditem">$<?php echo number_format( $order[ 'tip' ], 2 ); ?></td>
+		</tr>
+	<?php } ?>
+	<tr class="class">
+		<td colspan="2" style="text-align:right">Subtotal</td>
+		<td>$<?php echo number_format( $summary[ 'calcs' ][ 'order_payment' ], 2 ); ?></td>
+		<td></td>
+	</tr>
+	<tr class="class">
+		<td colspan="2" style="text-align:right">Tips by Card</td>
+		<td>$<?php echo number_format( $summary[ 'calcs' ][ 'tip' ], 2 ); ?></td>
+		<td></td>
+	</tr>
+	<tr class="class">
+		<td colspan="2" style="text-align:right">Visa/Mastercard/Amex Charges</td>
+		<td>$<?php echo number_format( $summary[ 'calcs' ][ 'credit_charge' ], 2 ); ?></td>
+		<td></td>
+	</tr>
+</table>
+<br/><br/>
+<table width="100%" celpadding="0" cellspacing="0" class="detail">
+	<thead style="font-weight:bold">
+		<tr>
+			<td colspan="4" class="topitem" style="font-size:18px;">Cash Orders</td>
+		</tr>
+	</thead>
+	<thead style="font-weight:bold">
+		<tr>
+			<td style="width:315px;" class="topitem">Customer</td>
+			<td style="width:215px;" class="topitem">Date</td>
+			<td class="topitem">Total</td>
+			<td class="topitem"></td>
+		</tr>
+	</thead>
+	<?php foreach( $summary[ 'orders' ][ 'cash' ] as $order ) { ?>
+		<tr>
+			<td class="fooditem"><?php echo $order[ 'name' ]; ?></td>
+			<td class="fooditem"><?php echo $order[ 'date' ]; ?></td>
+			<td class="fooditem">$<?php echo number_format( $order[ 'total' ], 2 ); ?></td>
+			<td class="fooditem"></td>
+		</tr>
+	<?php } ?>
+	<tr class="class">
+		<td colspan="2" style="text-align:right">Subtotal</td>
+		<td>$<?php echo number_format( $summary[ 'calcs' ][ 'cash_subtotal' ], 2 ); ?></td>
+		<td></td>
+	</tr>
+	<tr class="class">
+		<td colspan="2" style="text-align:right">Fees</td>
+		<td>$ <?php echo number_format( $summary[ 'calcs' ][ 'restaurant_fee' ], 2 ); ?></td>
+		<td></td>
+	</tr>
+	<?php if( floatval( $summary[ 'adjustment' ] ) != 0 ) { ?>
+		<tr class="class">
+			<td colspan="2" style="text-align:right">Adjustment</td>
+			<td>$ <?php echo number_format( $summary[ 'adjustment' ], 2 ); ?></td>
+			<td></td>
+		</tr>
+	<?php } ?>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr class="class">
+		<td colspan="2" style="text-align:right"><strong>Total Payment (minus fees)</strong></td>
+		<td><strong>$<?php echo number_format( $summary[ 'calcs' ][ 'total_due' ], 2 ); ?></strong></td>
+		<td></td>
+	</tr>
+</table>
+<br/><br/>
+<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
+	<tr>
+		<td style="text-align: left;" class="text-size-small">
+			<?php if( $summary[ 'payment_method' ] == 'deposit' ) { ?>
+				Payment has been deposited into your bank account
+			<?php } else { ?>
+
+			<?php } ?>
+		</td>
+		<td style="text-align: right;" class="text-size-small">Crunchbutton support: call or text <?=c::config()->phone->restaurant?></td>
+	</tr>
+</table>
+
+<div class="xhatch separator-big" style="text-align:right!important;"></div>

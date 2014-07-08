@@ -7,18 +7,18 @@ class Lob {
 		$this->_key = $key;
 		$this->_defaultAccount = $account;
 	}
-	
+
 	public function checks() {
 		if (!$this->_checks) {
 			$this->_checks = new Checks($this);
 		}
 		return $this->_checks;
 	}
-	
+
 	public function key() {
 		return $this->_key;
 	}
-	
+
 	public function defaultAccount() {
 		return $this->_defaultAccount;
 	}
@@ -32,7 +32,7 @@ class Lob {
 
 		$out = json_decode($request->output);
 		if ($out->errors) {
-			throw new \Exception($out->errors[0]);
+			throw new \Cana_Exception( $out->errors[0]->message );
 		}
 		return $out;
 	}

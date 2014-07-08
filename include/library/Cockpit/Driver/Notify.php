@@ -5,7 +5,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 	const TYPE_SETUP = 'setup';
 	const TYPE_WELCOME = 'welcome';
 	const ORDER_TEST = '22890'; // id_order sent to drivers play with - Issue #2969 - step 3
-	
+
 	public function send( $id_admin, $message ){
 
 		$driver = Crunchbutton_Admin::o( $id_admin );
@@ -32,7 +32,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 				$message_type = Cockpit_Driver_Notify::TYPE_WELCOME;
 				$message = "You username is {$username}. Access cockpit.la/setup/{$phone}";
 				break;
-			
+
 			case Cockpit_Driver_Notify::TYPE_SETUP:
 				$message_type = Cockpit_Driver_Notify::TYPE_SETUP;
 				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
@@ -104,7 +104,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 					$mail = new Cockpit_Email_Driver_Welcome( [ 'id_admin' => $id_admin ] );
 					$mail->send();
 					break;
-				
+
 				case Cockpit_Driver_Notify::TYPE_SETUP:
 					$mail = new Cockpit_Email_Driver_Setup( [ 'id_admin' => $id_admin ] );
 					$mail->send();

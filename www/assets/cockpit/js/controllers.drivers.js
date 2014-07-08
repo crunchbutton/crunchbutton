@@ -119,9 +119,42 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 	}
 
 	// Just run if the user is loggedin
+<<<<<<< HEAD
+	if( $scope.account.isLoggedIn() ){
+=======
 	if( $scope.account.isLoggedIn() ){
 		$scope.list();
 	}
+} );
+
+NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
+
+	$scope.ready = false;
+
+	var drivers = function(){
+		DriverService.listSimple( function( data ){
+			$scope.drivers = data;
+		} );
+	}
+
+	$scope.list = function(){
+		$scope.isLoading = true;
+		DriverService.summary( $scope.id_admin, function( data ){
+			$scope.summary = data;
+			$scope.ready = true;
+			$scope.isLoading = false;
+		} );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		if( $scope.account.isAdmin ){
+			drivers();
+		}
+		$scope.id_admin = parseInt( $scope.account.user.id_admin );
+>>>>>>> master
+		$scope.list();
+	}
+
 } );
 
 NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {
@@ -208,7 +241,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.updateShiftsAvailable = function( shifts ){
-		// $scope.makeBusy();
+		$scope.makeBusy();
 		$scope.shiftsAvailableToWork = shifts;
 		DriverShiftScheduleService.shiftsAvailableToWork( shifts, function( data ){
 			process( data );
@@ -317,9 +350,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	}
 
 	var docsPendency = function(){
-		DriverOnboardingService.docs.pendency( $routeParams.id, function( data ){
-			console.log('data',data);
-		} );
+		DriverOnboardingService.docs.pendency( $routeParams.id, function( data ){  } );
 	}
 
 	var logs = function(){
@@ -497,6 +528,13 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 		}
 	});
 
+<<<<<<< HEAD
+=======
+	uploader.bind('error', function (event, xhr, item, response) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	});
+
+>>>>>>> master
 } );
 
 NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService ) {
@@ -529,6 +567,5 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 	}
 } );
 
-NGApp.controller('DriversHelpCtrl', function() {
-
-});
+NGApp.controller('DriversHelpCtrl', function() {});
+NGApp.controller('DriversHelpCreditCardCtrl', function() {});
