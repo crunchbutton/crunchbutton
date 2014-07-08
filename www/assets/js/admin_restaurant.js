@@ -1159,6 +1159,7 @@ var ADMIN = {
 			w = DOM_MAP.map.data.widget.pop().remove();
 		}
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
+		w = UTIL.create_widget('toggle', $('#restaurant-active-restaurant-order-placement-container'), {text : ['yes', 'no'],field_name:'active_restaurant_order_placement'});
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-service-container'), {text : ['yes', 'no'],field_name:'delivery_service'});
 		w = UTIL.create_widget('toggle', $('#restaurant-formal-relationship-container'), {text : ['yes', 'no'],field_name:'formal_relationship'});
 		w = UTIL.create_widget('toggle', $('#restaurant-order-notifications-sent-container'), {text : ['yes', 'no'],field_name:'order_notifications_sent'});
