@@ -1,0 +1,1 @@
+ALTER TABLE  `restaurant` ADD  `active_restaurant_order_placement` TINYINT( 1 ) NOT NULL DEFAULT '0';
