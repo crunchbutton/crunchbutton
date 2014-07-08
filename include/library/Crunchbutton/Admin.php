@@ -605,6 +605,47 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $ex;
 	}
 
+	public function avgDeliveryTimeLastShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		return Admin::avgDeliveryTimeByShift( $id_admin,  $shift );
+	}
+
+	public function numberOfDeliveredOrdersLastShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		return Admin::numberOfDeliveredOrdersByShift( $id_admin,  $shift );
+	}
+
+	public function numberOfDeliveredOrdersByShift( $id_admin, $shift ){
+		if( $shift->id_community_shift ){
+			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$end = $shift->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$orders = Crunchbutton_Order_Action::ordersDeliveryByAdminPeriod( $id_admin, $start, $end );
+			return $orders->count();
+		}
+		return 0;
+	}
+
+	public function avgDeliveryTimeByShift( $id_admin, $shift ){
+		if( $shift->id_community_shift ){
+			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$end = $shift->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$orders = Crunchbutton_Order_Action::ordersDeliveryByAdminPeriod( $id_admin, $start, $end );
+			$delivery_time = 0;
+			$delivered_orders = 0;
+			foreach( $orders as $order ){
+				$minutes = $order->minutesToDelivery();
+				if( $minutes > 0 ){
+					$delivery_time += $minutes;
+					$delivered_orders++;
+				}
+			}
+			if( $delivery_time && $delivered_orders ){
+				return round( $delivery_time / $delivered_orders );
+			}
+		}
+		return 0;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

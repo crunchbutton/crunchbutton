@@ -47,6 +47,33 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function ordersDeliveryByAdminPeriod( $id_admin, $date_start, $date_end ){
+		// convert the shift to LA timezone
+		$date_start = new DateTime( $date_start, new DateTimeZone( c::config()->timezone ) );
+		$date_end = new DateTime( $date_end, new DateTimeZone( c::config()->timezone ) );
+
+		// get orders delivered at this period
+		$query = 'SELECT * FROM `order` o
+								INNER JOIN order_action oa ON oa.id_order = o.id_order
+								WHERE
+									oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
+									AND oa.id_admin = "' . $id_admin . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
+		return Crunchbutton_Order_Action::q( $query );
+	}
+
+	public function minutesToDelivery(){
+		$order = Order::o( $this->id_order );
+		$status = $order->deliveryStatus();
+		if( $status[ 'pickedup_date' ] && $status[ 'delivered_date' ] ){
+			$pickedup_date = new DateTime( $status[ 'pickedup_date' ], new DateTimeZone( c::config()->timezone ) );
+			$delivered_date = new DateTime( $status[ 'delivered_date' ], new DateTimeZone( c::config()->timezone ) );
+			return Util::intervalToSeconds( $delivered_date->diff( $pickedup_date ) ) / 60;
+		}
+		return 0;
+	}
+
 	public function dateAtTz( $timezone ) {
 		$date = new DateTime( $this->timestamp, new DateTimeZone( c::config()->timezone ) );
 		$date->setTimezone( new DateTimeZone( $timezone ) );

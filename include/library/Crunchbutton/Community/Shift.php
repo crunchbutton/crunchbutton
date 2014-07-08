@@ -122,6 +122,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $day;
 	}
 
+	public function getLastWorkedShiftByAdmin( $id_admin ){
+		$query = 'SELECT cs.* FROM admin_shift_assign asa
+							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+							WHERE asa.id_admin = "' . $id_admin .  '" AND cs.date_start < NOW()
+							ORDER BY cs.date_start DESC
+							LIMIT 1';
+		return Crunchbutton_Community_Shift::q( $query );
+	}
+
 	public function isRecurring(){
 		if( $this->recurringId() ){
 			return true;
@@ -145,8 +154,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function createRecurringEvent( $date ){
 		// Search for recurring events
-		$now =  new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$day =  new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$day = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
 		$weekday = $day->format( 'w' );
 		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE recurring = 1 AND DATE_FORMAT( date_start, "%w" ) = "' . $weekday . '"' );
 		// Create the recurring events
@@ -449,20 +458,20 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 
 		// Start week on Thursday #3084
-		$now = new DateTime( 'next sunday', new DateTimeZone( c::config()->timezone  ) );
+		$now = new DateTime( 'next sunday', new DateTimeZone( c::config()->timezone ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
 			$now->modify( '+ 1 week' );
 			$day = $now;
 		} else {
-			$day = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
+			$day = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone ) );
 		}
 
 		$_week = $day->format( 'W' );
 		$_year = $day->format( 'Y' );
 
-		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone ) );
 		$day->modify( '+6 day' );
-		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone ) );
 
 		$log = 'Starting the driver schedule verification period from ' . $from->format( 'Y-m-d' ) . ' to ' . $to->format( 'Y-m-d' ) . ' at ' . date( 'Y-m-d H:i:s l' );
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
