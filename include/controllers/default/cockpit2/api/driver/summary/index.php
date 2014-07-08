@@ -3,7 +3,7 @@
 class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-
+// test
 		if( c::getPagePiece( 3 ) && c::admin()->permission()->check( [ 'global', 'drivers-all' ] ) ){
 			$id_driver = c::getPagePiece( 3 );
 		} else {
