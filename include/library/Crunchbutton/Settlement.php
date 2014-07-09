@@ -47,11 +47,22 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT cs.* FROM admin_shift_assign AS asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 							WHERE asa.id_admin = "' . $id_driver . '"
-								AND DATE( cs.start_date ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
-								AND DATE( cs.start_date ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
-		echo '<pre>';var_dump( $query );exit();
+								AND DATE( cs.date_start ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
+								AND DATE( cs.date_start ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
 		$shifts = Crunchbutton_Community_Shift::q( $query );
-		echo '<pre>';var_dump( $shifts );exit();
+		$_shifts = [];
+		foreach( $shifts as $shift ){
+			$_shift[ 'week' ] = str_pad( $shift->dateStart()->format( 'W' ), 2, '0', STR_PAD_LEFT );
+			$_shift[ 'year' ] = $shift->dateStart()->format( 'Y' );
+			$_shift[ 'day' ] = $shift->dateStart()->format( 'Ymd' );
+			$_shift[ 'day' ] = $shift->dateStart()->format( 'Ymd' );
+			$_shift[ 'date_day' ] = $shift->dateStart()->format( 'M jS Y' );
+			$_shift[ 'date_start' ] = $shift->dateStart()->format( 'M jS Y g:i:s A' );
+			$_shift[ 'date_end' ] = $shift->dateEnd()->format( 'M jS Y g:i:s A' );
+			$_shift[ 'hours' ] = $shift->duration();
+			$_shift[ 'driver_paid' ] = $shift->duration();
+			echo json_encode( $_shift );exit();
+		}
 
 	}
 
