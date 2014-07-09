@@ -816,6 +816,21 @@ class Crunchbutton_Settlement extends Cana_Model {
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
 
+					$payment_type = $schedule->restaurant()->payment_type();
+
+					if( !$payment_type->balanced_id || !$payment_type->balanced_bank ){
+						$schedule->log = 'There is no account info for this restaurant.';
+						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+						$message .= "\n". 'amount: ' . $schedule->amount;
+						$message .= "\n". $schedule->log;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						return false;
+					}
+
 					if( $amount > 0 ){
 						try {
 							$p = Payment::credit( [ 'id_restaurant' => $schedule->id_restaurant,
