@@ -78,13 +78,8 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
-<<<<<<< HEAD
-		.when('/drivers/dashboard', {
-			action: 'drivers-dashboard',
-			controller: 'DriversDashboardCtrl',
-			templateUrl: 'assets/view/drivers-dashboard.html'
-		})
-=======
+		
+
 		/* Restaurants */
 		.when('/restaurant/order/new', {
 			action: 'restaurant-order-new',
@@ -168,7 +163,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
 		/* Driver shifts */
->>>>>>> master
+
+		.when('/drivers/dashboard', {
+			action: 'drivers-dashboard',
+			controller: 'DriversDashboardCtrl',
+			templateUrl: 'assets/view/drivers-dashboard.html'
+		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',

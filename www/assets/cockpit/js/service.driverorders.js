@@ -10,6 +10,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				'count_accepted' : {'method': 'GET', params : {'action' : 'accepted' } },
 				'count_pickedup' : {'method': 'GET', params : {'action' : 'pickedup' } },
 				'revenue' : {'method': 'GET', params : {'action' : 'revenue' } },
+				'revenue_last' : {'method': 'GET', params : {'action' : 'revenue' } },
+				'avg_time_last' : {'method': 'GET', params : {'action' : 'times' } },
+				'avg_time_current' : {'method': 'GET', params : {'action' : 'times' } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
@@ -45,7 +48,20 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	}
 	
 	service.revThisShift = function( callback ){
-		orders.revenue( {}, function( json ){ $rootScope.driverRevenue = { revenue: json.total }; } );
+		orders.revenue( {}, function( json ){ $rootScope.driverRevenue = { revenue: json.totalCurrent }; } );
+	}
+
+	service.revLastShift = function( callback ){
+		orders.revenue_last( {}, function( json ){ $rootScope.driverRevenueLast = { revenue: json.totalLast }; } );
+
+	}
+	
+	service.timeLastShift = function( callback ){
+		orders.avg_time_last( {}, function( json ){ $rootScope.driverTimeLast = { time: json.total_last }; } );
+	}
+
+	service.timeThisShift = function( callback ){
+		orders.avg_time_current( {}, function( json ){ $rootScope.driverTimeCurrent = { time: json.total_current }; } );
 	}
 		
 	service.accept = function( id_order, callback ){
