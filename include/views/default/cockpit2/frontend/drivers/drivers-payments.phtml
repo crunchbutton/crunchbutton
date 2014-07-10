@@ -1,0 +1,78 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Payments</span></h1>
+
+	<div class="divider"></div>
+
+	<navigation-back></navigation-back>
+
+	<form name="form" ng-show="drivers">
+
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<div class="label">Select a driver:</div>
+				<div class="input">
+					<select name="driverSummary" ng-model="id_admin" ng-change="list()" ng-options="opt.id_admin as opt.name for opt in drivers"></select>
+				</div>
+			</li>
+		</ul>
+
+	</form>
+
+	<div class="divider"></div>
+
+	<div ng-if="result">
+
+		<div ng-show="result.payments.length">
+
+			<h2 class="title">
+				<span>Filter</span>
+			</h2>
+
+			<div class="box-filter">
+				<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
+				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Reimbursement' }" ng-click="filter = 'Reimbursement'">Reimbursement</button>
+				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Payment' }" ng-click="filter = 'Payment'">Payments</button>
+				<div class="divider"></div>
+			</div>
+
+			<table class="tb-grid tb-zebra">
+				<thead>
+					<tr>
+						<td>Type</td>
+						<td>Amount</td>
+						<td>Status</td>
+						<td>Payment Expected Date</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="payment in result.payments" ng-show="!filter || filter == payment.type">
+						<td>{{payment.type}}</td>
+						<td positive-or-negative-color="{{payment.amount}}">
+							$ {{payment.amount | formatPrice}}
+						</td>
+						<td ng-class="{ 'td-driver-summary-paid': payment.status == 'Paid', 'td-driver-summary-pending': payment.status == 'Pending' }">
+							{{payment.status}}
+						</td>
+						<td>{{payment.paid_date}}</td>
+						<td style="width:130px;">
+							<span class="link orange" ng-click="show_payment( payment.id_payment_schedule );">More Information</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+
+		<div ng-if="!result.payments.length" class="box-content">
+			Nothing here.
+		</div>
+
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
