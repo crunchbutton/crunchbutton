@@ -63,7 +63,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$_shift[ 'driver_paid' ] = $shift->duration();
 			echo json_encode( $_shift );exit();
 		}
-
 	}
 
 	public function driverWeeksSummaryOrders( $id_driver ){
