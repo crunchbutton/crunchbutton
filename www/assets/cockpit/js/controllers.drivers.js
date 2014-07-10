@@ -108,7 +108,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 	}
 } );
 
-NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
+NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams ) {
 
 	$scope.ready = false;
 
@@ -118,7 +118,31 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
 		} );
 	}
 
-	$scope.list = function(){
+	$scope.show_all_weeks = function(){
+		$scope.showing_all_weeks = true;
+		for( x in $scope.summary.weeks ){
+			$scope.summary.weeks[ x ].show_week = true;
+		}
+	}
+
+	$scope.show_week = function( week, days ){
+		$scope.summary.weeks;
+		$scope.summary.recent.show = false;
+		for( x in $scope.summary.weeks ){
+			if( $scope.summary.weeks[ x ].yearweek == week ){
+				$scope.summary.weeks[ x ].show_week = true;
+				if( days ){
+					$scope.summary.weeks[ x ].show_days = true;
+				}
+			}
+		}
+	}
+
+	$scope.load_driver = function(){
+		$scope.navigation.link( '/drivers/summary/' + $scope.id_admin );
+	}
+
+	list = function(){
 		$scope.isLoading = true;
 		DriverService.summary( $scope.id_admin, function( data ){
 			$scope.summary = data;
@@ -127,15 +151,86 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
 		} );
 	}
 
+	$scope.payments = function (){
+		$scope.navigation.link( '/drivers/payments/' + $scope.id_admin );
+	}
+
+	$scope.show_payment = function( id_payment ){
+		$scope.navigation.link( '/drivers/payment/' + id_payment );
+	}
+
 	if( $scope.account.isLoggedIn() ){
+		$scope.id_admin = parseInt( $scope.account.user.id_admin );
 		if( $scope.account.isAdmin ){
 			drivers();
+			if( $routeParams.id ){
+				$scope.id_admin = parseInt( $routeParams.id );
+			}
 		}
-		$scope.id_admin = parseInt( $scope.account.user.id_admin );
-		$scope.list();
+		list();
 	}
 
 } );
+
+NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $routeParams ) {
+
+	$scope.ready = false;
+	$scope.filter = false;
+
+	var drivers = function(){
+		DriverService.listSimple( function( data ){
+			$scope.drivers = data;
+		} );
+	}
+
+	$scope.list = function(){
+		DriverService.payments( $scope.id_admin, function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+		} );
+	}
+
+	$scope.show_payment = function( id_payment ){
+		$scope.navigation.link( '/drivers/payment/' + id_payment );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		$scope.id_admin = parseInt( $scope.account.user.id_admin );
+		if( $scope.account.isAdmin ){
+			drivers();
+			if( $routeParams.id ){
+				$scope.id_admin = parseInt( $routeParams.id );
+			}
+		}
+		$scope.list();
+	}
+});
+
+NGApp.controller( 'DriversPaymentCtrl', function ( $scope, DriverService, $routeParams ) {
+
+	$scope.ready = false;
+	$scope.schedule = true;
+
+	load = function(){
+		DriverService.payment( function( json ){
+			$scope.result = json;
+			if( json.pay_type == DriverService.PAY_TYPE_REIMBURSEMENT ){
+				$scope.pay_type_reimbursement = true;
+			} else {
+				$scope.pay_type_payment = true;
+			}
+			$scope.ready = true;
+			$scope.unBusy();
+		} );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+});
+
 
 NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {
 

@@ -76,6 +76,25 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $this->_status_date;
 	}
 
+	public function statusToDriver( $schedule ){
+		$out = [];
+		if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE && $schedule->id_payment ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$expected = $schedule->payment()->date();
+			$expected->modify( '+3 Weekday' );
+			$out[ 'paid_date' ] = ( string ) $expected->format( 'M jS Y' );
+			if( $now->format( 'Ymd' ) >= $expected->format( 'Ymd' ) ){
+				$out[ 'status' ] = 'Paid';
+			} else {
+				$out[ 'status' ] = 'Processing';
+			}
+		} else {
+			$out[ 'status' ] = 'Pending';
+			$out[ 'paid_date' ] = '-';
+		}
+		return $out;
+	}
+
 	public function restaurantSchedulesFromDate( $date ){
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
@@ -87,6 +106,16 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
 								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule DESC';
+		return Cockpit_Payment_Schedule::q( $query );
+	}
+
+	public function driverPaymentByIdAdmin( $id_driver, $limit = 10 ){
+		if( $limit === '*' ){
+			$limit = '';
+		} else {
+			$limit = ' LIMIT ' . $limit;
+		}
+		$query = 'SELECT * FROM payment_schedule WHERE id_driver = "' . $id_driver . '" ORDER BY id_payment_schedule DESC ' . $limit;
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 

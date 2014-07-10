@@ -1,6 +1,6 @@
 // MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route){ 
-	
+NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route){
+
 	// This variable will store the animation type.
 	$rootScope.animationClass = '';
 
@@ -11,7 +11,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 			menu: true
 		}
 	};
-	
+
 	service.menu = App.toggleMenu;
 
 	service.getFood = function( cartItems ){
@@ -19,7 +19,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 				cartItems &&
 				service.restaurant && service.restaurant && service.restaurant._open &&
 				!App.rootScope.notificationBarStatus ){
-			angular.element( '.button-bottom-wrapper' ).addClass( 'button-bottom-show' );	
+			angular.element( '.button-bottom-wrapper' ).addClass( 'button-bottom-show' );
 		} else {
 			angular.element( '.button-bottom-wrapper' ).removeClass( 'button-bottom-show' );
 		}
@@ -33,6 +33,10 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		} else {
 			service.link();
 		}
+	}
+
+	service.back = function(){
+		history.go( -1 );
 	}
 
 	/* the transitions type could be push, fade, pop or none */
