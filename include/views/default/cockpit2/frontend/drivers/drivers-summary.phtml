@@ -35,13 +35,13 @@
 							<strong>$ {{summary.earnings.current.total_payment | formatPrice}}</strong>
 						</td>
 					</tr>
-					<tr ng-if="summary.earnings.current">
+					<tr ng-if="summary.earnings.previous.payment_status">
 						<td><strong>Peding for last week (Payment)</strong></td>
 						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.payment}}">
 							<strong>$ {{summary.earnings.previous.payment_status.pending.payment | formatPrice}}</strong>
 						</td>
 					</tr>
-					<tr ng-if="summary.earnings.current">
+					<tr ng-if="summary.earnings.previous.payment_status">
 						<td><strong>Peding for last week (Reimbursements*)</strong></td>
 						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.reimburse}}">
 							<strong>$ {{summary.earnings.previous.payment_status.pending.reimburse | formatPrice}}</strong>

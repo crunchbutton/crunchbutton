@@ -21,7 +21,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$range[ 'start' ] = $now->format( 'm/d/Y' );
 
 		$settlement = new Settlement( $range );
-		$driver = $settlement->driverWeeksSummary( $id_driver );
+		$driver = $settlement->driverWeeksSummaryOrders( $id_driver );
 
 		if( $driver[ 0 ] ){
 
@@ -35,7 +35,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				$_payment = [];
 				$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
 				$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
-				$_payment[ 'amount' ] = max( $payment->amount, 0 );
+				$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
 				$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
 				$out[ 'payments' ][] = $_payment;
 			}
@@ -92,8 +92,6 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $_order[ 'reimburse' ][ 'status' ] ) ][ 'reimburse' ] += $_order[ 'total_reimburse' ];
 			}
 
-			$out[ 'recent' ] = [];
-
 			usort( $out[ 'weeks' ], function( $a, $b ) {
 				return intval( $a[ 'yearweek' ] ) < intval( $b[ 'yearweek' ] );
 			} );
@@ -114,6 +112,8 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				usort( $out[ 'weeks' ][ $weekkey ][ 'days' ], function( $a, $b ) {
 					return intval( $a[ 'date' ] ) < intval( $b[ 'date' ] );
 				} );
+
+				$out[ 'recent' ] = [];
 
 				foreach( $out[ 'weeks' ][ $weekkey ][ 'days' ] as $daykey => $dayval ){
 					$out[ 'recent' ] = $out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ];
