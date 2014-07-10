@@ -130,6 +130,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 							LIMIT 1';
 		return Crunchbutton_Community_Shift::q( $query );
 	}
+	
+	public function getCurrentShiftByAdmin( $id_admin ){
+		$query = "SELECT cs.* FROM admin_shift_assign asa
+							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+							WHERE asa.id_admin = " . $id_admin . " AND cs.date_start <= DATE_FORMAT( NOW(), '%Y-%m-%d' )
+							ORDER BY cs.date_start DESC
+							LIMIT 1";
+		return Crunchbutton_Community_Shift::q( $query );
+	}
 
 	public function isRecurring(){
 		if( $this->recurringId() ){

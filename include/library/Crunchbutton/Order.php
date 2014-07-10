@@ -844,6 +844,21 @@ class Crunchbutton_Order extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
 	}
+	
+	public function revenueByAdminPeriod( $id_admin, $date_start, $date_end ){
+		//convert to La timezone
+		$date_start = new DateTime( $date_start, new DateTimeZone( c::config()->timezone ) );
+		$date_end = new DateTime( $date_end, new DateTimeZone( c::config()->timezone ) );
+		
+		//get orders at this period
+		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o 
+								INNER JOIN order_action oa ON oa.id_order = o.id_order
+								WHERE
+									AND oa.id_admin = "' . $id_admin . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
+		return Crunchbutton_Order_Action::q( $query );
+	}
 
 	public static function deliveredByCBDrivers( $search ){
 

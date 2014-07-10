@@ -46,22 +46,11 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					break;
 					
 				case 'revenue':
-					$tips = 0;
-					$deliveryFee = 0;
-					$totalAmount = 0;
-					$count = 0;
-					$orders = Order::deliveryOrders( $lastHours );
-					foreach ( $orders as $order ) {
-						$totalAmount = $totalAmount + $order->deliveryFee() + $order->tip();
-						$tips = $tips + $order->tip();
-						$deliveryFee = $deliveryFee + $order->deliveryFee();
-						$count++;
-					
-					}
-					echo json_encode( ['total' => $totalAmount,
-									   'delivery' => $deliveryFee,
-									   'tips' => $tips,
-									   'orders' => $count ] );
+					$id_admin = c::admin()->id_admin;
+					$revenueCurrentShift = Admin::revenueCurrentShift( $id_admin );
+					$revenueLastShift = Admin::revenueLastWorkedShift( $id_admin );
+					echo json_encode( ['totalCurrent' => $revenueCurrentShift,
+									   'totalLast' => $revenueLastShift] );
 					break;
 				
 				case 'undelivered':
@@ -78,17 +67,15 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 				
 				//To be continued
 				case 'times':
-				
-					// ID ADMIN
-					$id_admin = 80;
-
-					$total_delivered_orders = Crunchbutton_Order_Action::q( 'SELECT COUNT(*) AS total FROM order_action AS oa WHERE oa.id_admin = ' . $id_admin . ' AND oa.type = "delivery-delivered"' )->total;
-					$total_shifts = Crunchbutton_Admin_Shift_Assign::q( 'SELECT COUNT(*) AS total FROM admin_shift_assign AS asa INNER JOIN community_shift AS cs ON cs.id_community_shift = asa.id_community_shift WHERE asa.id_admin = ' . $id_admin . ' AND cs.date_start < NOW()' )->total;
-					$avg = round( $total_delivered_orders / $total_shifts ) ;
-					
-					echo json_encode( ['average' => $avg,
-									   'totalshifts' => $total_shifts,
-									   'totaldelivered' => $total_delivered_orders ] );
+					$id_admin = c::admin()->id_admin;
+					$avgTimeLastShift = Admin::avgDeliveryTimeLastShift( $id_admin );
+					$avgTimeCurrentShift = Admin::avgDeliveryTimeCurrentShift( $id_admin );
+					$orderCountLastShift = Admin::numberOfDeliveredOrdersLastShift( $id_admin );				
+					$orderCountCurrentShift = Admin::numberOfDeliveredOrdersCurrentShift( $id_admin );
+					echo json_encode( [ 'total_last' => $avgTimeLastShift,
+									'total_current' => $avgTimeCurrentShift,
+									'orderCountLast' => $orderCountLastShift,
+									'orderCountCurrent' => $orderCountCurrentShift ] );
 					break;
 				
 				default:

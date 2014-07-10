@@ -8,6 +8,9 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 	DriverOrdersService.acceptedOrders();
 	DriverOrdersService.pickedupOrders();
 	DriverOrdersService.revThisShift();
+	DriverOrdersService.revLastShift();
+	DriverOrdersService.timeLastShift();
+	DriverOrdersService.timeThisShift();
 	//Yell at driver if there is an outstanding undelivered order.
 
 });
@@ -119,9 +122,6 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 	}
 
 	// Just run if the user is loggedin
-<<<<<<< HEAD
-	if( $scope.account.isLoggedIn() ){
-=======
 	if( $scope.account.isLoggedIn() ){
 		$scope.list();
 	}
@@ -151,7 +151,6 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService ) {
 			drivers();
 		}
 		$scope.id_admin = parseInt( $scope.account.user.id_admin );
->>>>>>> master
 		$scope.list();
 	}
 
@@ -528,13 +527,10 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 		}
 	});
 
-<<<<<<< HEAD
-=======
 	uploader.bind('error', function (event, xhr, item, response) {
 		App.alert( 'Upload error, please try again or send us a message.' );
 	});
 
->>>>>>> master
 } );
 
 NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService ) {
