@@ -65,7 +65,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$_order[ 'year' ] = $order->date()->format( 'Y' );
 				$_order[ 'day' ] = $order->date()->format( 'Ymd' );
 				$_order[ 'date_day' ] = $order->date()->format( 'M jS Y' );
-				$_order[ 'date_time' ] = $order->date()->format( 'g:i:s A' );
 				if( $_order[ 'driver_paid' ] ){
 					$payment_info = Crunchbutton_Order_Transaction::orderPaymentInfoDriver( $_order[ 'id_order' ] );
 					if( $payment_info ){
@@ -1216,6 +1215,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'check_id' ] = $payment->check_id;
 				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
 				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
+				$status = Cockpit_Payment_Schedule::statusToDriver( $schedule );
+				$summary[ 'expected_date' ] = $status[ 'paid_date' ];
 			}
 			if( $schedule->status_date ){
 				$summary[ 'status_date' ] = $schedule->status_date()->format( 'M jS Y g:i:s A T' );

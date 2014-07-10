@@ -809,11 +809,17 @@ input {
 	background: #FFF !important;
 	font-weight: bold;
 }
-	.td-driver-summary-paid{
+	.td-driver-summary-paid, .td-driver-summary-pending, .td-driver-summary-processing{
 		color:#64763d;
-		font-size: .8em !important;
+		font-size: .9em !important;
 		font-weight: bold;
 	}
+		.td-driver-summary-pending{
+			color: #999;
+		}
+		.td-driver-summary-processing{
+			color: #333;
+		}
 .tb-hack tbody {
 	width: 100% !important;
 }
@@ -1065,6 +1071,9 @@ h2.title, h2.subtitle{
 	margin-bottom: 1.2em;
 	margin-top: .2em;
 }
+	h2.title small{
+		font-size: .8em;
+	}
 	h2.subtitle{
 		font-weight: bold;
 		font-size: 1.2em;
@@ -1659,28 +1668,7 @@ b, strong{ font-weight: bold; }
 .driver-summary{}
 .driver-summary{}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.back-button{
+	margin: 5px 0 15px 0;
+	text-decoration: none !important;
+}

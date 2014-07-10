@@ -734,3 +734,14 @@ NGApp.directive( 'positiveOrNegativeColor', function( $rootScope ) {
 		}
 	}
 } );
+
+NGApp.directive( 'navigationBack', function() {
+	return {
+			restrict: 'AE',
+			replace: true,
+			template: '<div ng-click="navigation.back();" class="back-button orange link"><i class="fa fa-chevron-left"></i> Back</div>',
+			link: function (scope, elem, attrs, ctrl) {
+					var navigation = scope.navigation;
+			}
+		}
+} );

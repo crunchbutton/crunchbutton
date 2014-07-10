@@ -1,0 +1,295 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-if="ready">
+
+	<div ng-if="result.id_payment_schedule">
+
+		<h1 class="title left"><i class="fa fa-bank"></i>
+			<span>Payment #{{result.id_payment_schedule}} - {{result.driver}}</span>
+		</h1>
+
+		<div class="divider"></div>
+
+			<navigation-back></navigation-back>
+
+			<table class="tb-grid tb-zebra">
+				<tbody>
+
+					<tr ng-if="result.id_payment">
+						<td><strong>Payment ID</strong></td>
+						<td>
+							# {{result.id_payment}}
+						</td>
+					</tr>
+					<tr ng-if="result.id_payment_schedule">
+						<td><strong>Payment Schecule ID</strong></td>
+						<td>
+							# {{result.id_payment_schedule}}
+						</td>
+					</tr>
+
+					<tr ng-if="pay_type_reimbursement">
+						<td><strong>Type</strong></td>
+						<td>Reimbursement</td>
+					</tr>
+
+					<tr ng-if="pay_type_payment">
+						<td><strong>Type</strong></td>
+						<td>Payment</td>
+					</tr>
+
+					<tr ng-if="result.payment_date">
+						<td><strong>Payment Sent Date</strong></td>
+						<td>{{result.payment_date}}</td>
+					</tr>
+					<tr ng-if="result.expected_date">
+						<td><strong>Payment Expected Date</strong></td>
+						<td>{{result.expected_date}}</td>
+					</tr>
+					<tr>
+						<td><strong>Payment method</strong></td>
+						<td>{{result.payment_method}}</td>
+					</tr>
+					<tr ng-if="result.payment_date">
+						<td>
+							<strong>Summary sent date</strong>
+						</td>
+						<td>
+							<span ng-if="result.summary_sent_date">{{result.summary_sent_date}}</span>
+							<span ng-if="!result.summary_sent_date"><i>Summary not sent</i></span>
+						</td>
+					</tr>
+					<tr ng-if="result.payment_date && payment">
+						<td><span class="link orange" ng-click="view_summary()">View Summary</span></td>
+						<td><span class="link orange" ng-click="send_summary()">Send Summary</span></td>
+					</tr>
+					<tr class="transparent"><td></td><td></td></tr>
+					<tr ng-if="result.balanced_id">
+						<td>Balanced</td>
+						<td>{{result.balanced_id}}</td>
+					</tr>
+					<tr ng-if="result.stripe_id">
+						<td>Stripe</td>
+						<td>{{result.stripe_id}}</td>
+					</tr>
+					<tr ng-if="result.hourly" positive-or-negative-color="{{result.shifts_hours_amount}}">
+						<td>Worked hours</td>
+						<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
+					</tr>
+					<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.delivery_fee}}">
+						<td>Delivery Fee</td>
+						<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{result.calcs.tip}}">
+						<td>Tip</td>
+						<td>$ {{result.calcs.tip | formatPrice}}</td>
+					</tr>
+					<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.markup}}">
+						<td>Cash Markup Owed to CB</td>
+						<td>$ {{result.calcs.markup | formatPrice}}</td>
+					</tr>
+					<tr ng-if="!result.hourly" positive-or-negative-color="{{result.adjustment}}">
+						<td>Adjustments</td>
+						<td>$ {{result.adjustment | formatPrice}}</td>
+					</tr>
+					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
+						<td class="td-medium">Reimbursement</td>
+						<td class="td-medium">$ {{result.calcs.total_reimburse | formatPrice}}</td>
+					</tr>
+					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
+						<td class="td-medium">Payment</td>
+						<td class="td-medium">$ {{result.calcs.total_payment | formatPrice}}</td>
+					</tr>
+					<tr>
+						<td>Payment Notes</td>
+						<td>{{result.note}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<br/>
+
+			<table class="tb-grid tb-zebra" ng-if="result.shifts">
+				<thead>
+					<tr>
+						<td colspan="4" class="title">Shifts</td>
+					</tr>
+				</thead>
+				<thead>
+					<td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</td>
+				</thead>
+				<thead>
+					<tr>
+						<td>Started at</td>
+						<td>Finished at</td>
+						<td>Hours</td>
+						<td>Amount</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="shift in result.shifts">
+						<td>{{shift.period.start}}</td>
+						<td>{{shift.period.end}}</td>
+						<td>{{shift.hours}}</td>
+						<td>$ {{shift.amount | formatPrice}}</td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr class="transparent">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr class="transparent">
+						<td></td>
+						<td>Total By Hours</td>
+						<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<br/>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td colspan="8" class="title">Orders</td>
+				</tr>
+			</thead>
+			<thead ng-if="!result.orders">
+				<td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</td>
+			</thead>
+			<thead ng-if="result.orders">
+				<tr>
+					<td>#</td>
+					<td>Curstomer name</td>
+					<td>Restaurant</td>
+					<td>Date</td>
+					<td>Type</td>
+					<td>
+						<span ng-if="pay_type_payment">Tip</span>
+					</td>
+					<td>
+						<span ng-if="pay_type_payment">Delivery Fee</span>
+					</td>
+					<td ng-if="pay_type_reimbursement">Reimbursement</td>
+					<td ng-if="pay_type_payment">Payment</td>
+				</tr>
+			</thead>
+			<tbody ng-if="result.orders.included">
+				<tr ng-repeat="order in result.orders.included">
+					<td>{{order.id_order}}</td>
+					<td>{{order.name}}</td>
+					<td>{{order.restaurant}}</td>
+					<td>{{order.date}}</td>
+					<td>{{order.pay_type}}</td>
+					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">$ {{order.tip | formatPrice}}</span></td>
+					<td ng-if="pay_type_reimbursement">$ {{order.total_reimburse | formatPrice}}</td>
+					<td ng-if="pay_type_payment">$ {{order.total_payment | formatPrice}}</td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr class="transparent">
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment">
+					<td></td>
+					<td></td>
+					<td>Tips by Card</td>
+					<td>$ {{result.calcs.tip | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="result.adjustment">
+					<td></td>
+					<td></td>
+					<td>Adjustment</td>
+					<td>$ {{result.adjustment | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_reimbursement">
+					<td></td>
+					<td></td>
+					<td><strong>Total Reimburse</strong></td>
+					<td><strong>$ {{result.calcs.total_reimburse | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
+					<td></td>
+					<td></td>
+					<td>Total Delivery Fee</td>
+					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
+					<td></td>
+					<td></td>
+					<td><strong>Markup</strong></td>
+					<td><strong>$ {{result.calcs.markup | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment">
+					<td></td>
+					<td></td>
+					<td><strong>Total Payment</strong></td>
+					<td><strong>$ {{result.calcs.total_payment | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div ng-if="!result.id_payment_schedule" class="box-content">
+			Nothing here.
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
