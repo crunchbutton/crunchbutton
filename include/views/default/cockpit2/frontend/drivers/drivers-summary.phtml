@@ -12,7 +12,7 @@
 			<li class="li-input">
 				<div class="label">Select a driver:</div>
 				<div class="input">
-					<select name="driverSummary" ng-model="id_admin" ng-change="list()" ng-options="opt.id_admin as opt.name for opt in drivers"></select>
+					<select name="driverSummary" ng-model="id_admin" ng-change="load_driver()" ng-options="opt.id_admin as opt.name for opt in drivers"></select>
 				</div>
 			</li>
 		</ul>
@@ -23,103 +23,261 @@
 		<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
 	</div>
 
-	<div ng-if="summary.weeks" class="driver-summary">
+		<br><br><br>
 
-		<p>
-			Summary from the last 2 weeks.
-		</p>
-		<br><br>
-
-		<div ng-repeat="week in summary.weeks">
-
-			<h2 class="title">{{week.period}}</h3>
-			<div ng-repeat="day in week.days">
-				<h2 class="subtitle">{{day.day}}</h4>
-				<table class="tb-grid tb-zebra">
-					<thead>
-						<tr>
-							<td style="100px;">Order Number</td>
-							<td style="85px;">Date</td>
-							<td>Customer</td>
-							<td style="55px;">Tip</td>
-							<td style="80px;">Delivery Fee</td>
-							<td style="160px;">Cash Markup Owed to CB</td>
-							<td style="65px;">Pay</td>
-							<td style="35px;">&nbsp;</td>
-							<td style="105px;">Reimbursement</td>
-							<td style="35px;">&nbsp;</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="order in day.orders">
-							<td>{{order.id_order}}</td>
-							<td>{{order.time}}</td>
-							<td>{{order.name}}</td>
-							<td positive-or-negative-color="{{order.tip}}">
-								$ {{order.tip | formatPrice}}
-							</td>
-							<td positive-or-negative-color="{{order.delivery_fee}}">
-								$ {{order.delivery_fee | formatPrice}}
-							</td>
-							<td positive-or-negative-color="{{order.markup}}">
-								$ {{order.markup | formatPrice}}
-							</td>
-							<td positive-or-negative-color="{{order.total_payment}}">
-								$ {{order.total_payment | formatPrice}}
-							</td>
-							<td class="td-driver-summary-paid">
-								<span ng-if="order.payment.id_payment">Paid!</span>
-							</td>
-							<td positive-or-negative-color="{{order.total_reimburse}}">
-								$ {{order.total_reimburse | formatPrice}}
-							</td>
-							<td class="td-driver-summary-paid">
-								<span ng-if="order.reimburse.id_payment">Paid!</span>
-							</td>
-						</tr>
-						<tr class="tr-driver-summary-daily-total">
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>Daily Total</td>
-							<td positive-or-negative-color="{{day.total_payment}}">
-								$ {{day.total_payment | formatPrice}}
-							</td>
-							<td></td>
-							<td positive-or-negative-color="{{day.total_reimburse}}">
-								$ {{day.total_reimburse | formatPrice}}
-							</td>
-							<td></td>
-						</tr>
-					</tbody>
-				</table>
-
-			</div>
+		<div ng-if="summary.earnings">
 
 			<table class="tb-grid tb-zebra">
-				<thead>
-					<tr>
-						<td>{{week.period}}</td>
-						<td style="65px;">Payment</td>
-						<td style="105px;">Reimbursement</td>
-						<tr>
-				</thead>
 				<tbody>
-					<tr class="tr-driver-summary-daily-total">
-						<td>Weekly Total</td>
-						<td positive-or-negative-color="{{week.total_payment}}">
-							$ {{week.total_payment | formatPrice}}
+					<tr ng-if="summary.earnings.current">
+						<td><strong>Earned so far this week</strong></td>
+						<td positive-or-negative-color="{{summary.earnings.current.total_payment}}">
+							<strong>$ {{summary.earnings.current.total_payment | formatPrice}}</strong>
 						</td>
-						<td positive-or-negative-color="{{week.total_payment}}">
-							$ {{week.total_reimburse | formatPrice}}
+					</tr>
+					<tr ng-if="summary.earnings.current">
+						<td><strong>Peding for last week (Payment)</strong></td>
+						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.payment}}">
+							<strong>$ {{summary.earnings.previous.payment_status.pending.payment | formatPrice}}</strong>
+						</td>
+					</tr>
+					<tr ng-if="summary.earnings.current">
+						<td><strong>Peding for last week (Reimbursements*)</strong></td>
+						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.reimburse}}">
+							<strong>$ {{summary.earnings.previous.payment_status.pending.reimburse | formatPrice}}</strong>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<br><br><br>
+			<br><br>
+
 		</div>
+
+	<div ng-if="summary.payments">
+
+		<h2 class="title">Recent Payments / Reimbursements*</h2>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td>Type</td>
+					<td>Amount</td>
+					<td>Status</td>
+					<td>Payment Expected Date</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="payment in summary.payments">
+					<td>{{payment.type}}</td>
+					<td positive-or-negative-color="{{payment.amount}}">
+						$ {{payment.amount | formatPrice}}
+					</td>
+					<td ng-class="{ 'td-driver-summary-paid': payment.status == 'Paid',
+													'td-driver-summary-pending': payment.status == 'Pending',
+													'td-driver-summary-processing': payment.status == 'Processing' }">
+						{{payment.status}}
+					</td>
+					<td>{{payment.paid_date}}</td>
+					<td style="width:50px;">
+						<span class="link orange" ng-click="show_payment( payment.id_payment_schedule );">More</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p><span ng-click="payments()" class="link orange">All payments</span></p>
+		<br><br><br>
+
+	</div>
+
+	<div ng-if="summary.weeks" class="driver-summary">
+
+		<div ng-if="summary.recent && summary.recent.show">
+
+			<h2 class="title">
+				Your most recent shift: {{summary.recent.day}} &nbsp;<small class="orange link" ng-click="show_week( summary.recent.yearweek, true );" ng-show="!week.show_days">(Show whole week)</small>
+			</h2>
+			<table class="tb-grid tb-zebra">
+				<thead>
+					<tr>
+						<td>Order Number</td>
+						<td>Customer</td>
+						<td>Tip</td>
+						<td>Delivery Fee</td>
+						<td>Cash Markup Owed to CB</td>
+						<td>Pay</td>
+						<td>&nbsp;</td>
+						<td>Reimbursement*</td>
+						<td>&nbsp;</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="order in summary.recent.orders">
+						<td>{{order.id_order}}</td>
+						<td>{{order.name}}</td>
+						<td positive-or-negative-color="{{order.tip}}">
+							<span ng-if="order.tip == 0">
+								paid in cash
+							</span>
+							<span ng-if="order.tip > 0">
+								$ {{order.tip | formatPrice}}
+							</span>
+						</td>
+						<td positive-or-negative-color="{{order.delivery_fee}}">
+							$ {{order.delivery_fee | formatPrice}}
+						</td>
+						<td positive-or-negative-color="{{order.markup}}">
+							$ {{order.markup | formatPrice}}
+						</td>
+						<td positive-or-negative-color="{{order.total_payment}}">
+							$ {{order.total_payment | formatPrice}}
+						</td>
+						<td ng-class="{ 'td-driver-summary-paid': order.payment.status == 'Paid',
+														'td-driver-summary-pending': order.payment.status == 'Pending',
+														'td-driver-summary-processing': order.payment.status == 'Processing' }">
+							{{order.payment.status}}
+						</td>
+						<td positive-or-negative-color="{{order.total_reimburse}}">
+							$ {{order.total_reimburse | formatPrice}}
+						</td>
+						<td ng-class="{ 'td-driver-summary-paid': order.reimburse.status == 'Paid',
+														'td-driver-summary-pending': order.reimburse.status == 'Pending',
+														'td-driver-summary-processing': order.reimburse.status == 'Processing' }">
+							{{order.reimburse.status}}
+						</td>
+					</tr>
+					<tr class="tr-driver-summary-daily-total">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Daily Total</td>
+						<td positive-or-negative-color="{{summary.recent.total_payment}}">
+							$ {{summary.recent.total_payment | formatPrice}}
+						</td>
+						<td></td>
+						<td positive-or-negative-color="{{summary.recent.total_reimburse}}">
+							$ {{summary.recent.total_reimburse | formatPrice}}
+						</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div ng-repeat="week in summary.weeks">
+
+			<div ng-show="week.show_week">
+
+				<h2 class="title">{{week.period}} <?php
+				/*
+				<small class="orange link" ng-click="week.show_days = true" ng-show="!week.show_days">
+						(Show days)
+					</small>
+				*/
+				?></h2>
+
+				<div ng-repeat="day in week.days" <?php /* ng-show="week.show_days" */ ?> -->
+					<h2 class="subtitle">{{day.day}}</h4>
+					<table class="tb-grid tb-zebra">
+						<thead>
+							<tr>
+								<td>Order Number</td>
+								<td>Customer</td>
+								<td>Tip</td>
+								<td>Delivery Fee</td>
+								<td>Cash Markup Owed to CB</td>
+								<td>Pay</td>
+								<td>&nbsp;</td>
+								<td>Reimbursement*</td>
+								<td>&nbsp;</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="order in day.orders">
+								<td>{{order.id_order}}</td>
+								<td>{{order.name}}</td>
+								<td positive-or-negative-color="{{order.tip}}">
+									<span ng-if="order.tip == 0">
+										paid in cash
+									</span>
+									<span ng-if="order.tip > 0">
+										$ {{order.tip | formatPrice}}
+									</span>
+								</td>
+								<td positive-or-negative-color="{{order.delivery_fee}}">
+									$ {{order.delivery_fee | formatPrice}}
+								</td>
+								<td positive-or-negative-color="{{order.markup}}">
+									$ {{order.markup | formatPrice}}
+								</td>
+								<td positive-or-negative-color="{{order.total_payment}}">
+									$ {{order.total_payment | formatPrice}}
+								</td>
+								<td ng-class="{ 'td-driver-summary-paid': order.payment.status == 'Paid',
+																'td-driver-summary-pending': order.payment.status == 'Pending',
+																'td-driver-summary-processing': order.payment.status == 'Processing' }">
+									{{order.payment.status}}
+								</td>
+								<td positive-or-negative-color="{{order.total_reimburse}}">
+									$ {{order.total_reimburse | formatPrice}}
+								</td>
+								<td ng-class="{ 'td-driver-summary-paid': order.reimburse.status == 'Paid',
+																'td-driver-summary-pending': order.reimburse.status == 'Pending',
+																'td-driver-summary-processing': order.reimburse.status == 'Processing' }">
+									{{order.reimburse.status}}
+								</td>
+							</tr>
+							<tr class="tr-driver-summary-daily-total">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>Daily Total</td>
+								<td positive-or-negative-color="{{day.total_payment}}">
+									$ {{day.total_payment | formatPrice}}
+								</td>
+								<td></td>
+								<td positive-or-negative-color="{{day.total_reimburse}}">
+									$ {{day.total_reimburse | formatPrice}}
+								</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+
+				<table class="tb-grid tb-zebra">
+					<thead>
+						<tr>
+							<td>{{week.period}}</td>
+							<td style="65px;">Payment</td>
+							<td style="105px;">Reimbursement *</td>
+							<tr>
+					</thead>
+					<tbody>
+						<tr class="tr-driver-summary-daily-total">
+							<td>Weekly Total</td>
+							<td positive-or-negative-color="{{week.total_payment}}">
+								$ {{week.total_payment | formatPrice}}
+							</td>
+							<td positive-or-negative-color="{{week.total_payment}}">
+								$ {{week.total_reimburse | formatPrice}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<br><br><br>
+
+			</div>
+
+		</div>
+
+		<span ng-show="!showing_all_weeks && !summary.recent.show" ng-click="show_all_weeks()" class="link orange">Show previous week</span>
+
+		<h4 class="title">*Reimbursement is equal to amount paid to restaurant.</h4>
 
 	</div>
 

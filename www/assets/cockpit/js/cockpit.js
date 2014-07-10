@@ -181,11 +181,33 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsScheduleCtrl',
 			templateUrl: 'assets/view/drivers-shifts-schedule.html'
 		})
+		/* Driver summaries and payments information */
 		.when('/drivers/summary', {
 			action: 'drivers-summary',
 			controller: 'DriversSummaryCtrl',
 			templateUrl: 'assets/view/drivers-summary.html'
 		})
+		.when('/drivers/summary/:id', {
+			action: 'drivers-summary',
+			controller: 'DriversSummaryCtrl',
+			templateUrl: 'assets/view/drivers-summary.html'
+		})
+		.when('/drivers/payments', {
+			action: 'drivers-summary',
+			controller: 'DriversPaymentsCtrl',
+			templateUrl: 'assets/view/drivers-payments.html'
+		})
+		.when('/drivers/payments/:id', {
+			action: 'drivers-summary',
+			controller: 'DriversPaymentsCtrl',
+			templateUrl: 'assets/view/drivers-payments.html'
+		})
+		.when('/drivers/payment/:id', {
+			action: 'drivers-summary',
+			controller: 'DriversPaymentCtrl',
+			templateUrl: 'assets/view/drivers-payment.html'
+		})
+		/* other */
 		.when('/login', {
 			action: 'login',
 			controller: 'LoginCtrl',
