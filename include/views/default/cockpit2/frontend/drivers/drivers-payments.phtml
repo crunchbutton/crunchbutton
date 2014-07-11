@@ -45,22 +45,20 @@
 						<td>Amount</td>
 						<td>Status</td>
 						<td>Payment Expected Date</td>
-						<td></td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="payment in result.payments" ng-show="!filter || filter == payment.type">
-						<td>{{payment.type}}</td>
+						<td>
+							<span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span>
+						</td>
 						<td positive-or-negative-color="{{payment.amount}}">
-							$ {{payment.amount | formatPrice}}
+							${{payment.amount | formatPrice}}
 						</td>
 						<td ng-class="{ 'td-driver-summary-paid': payment.status == 'Paid', 'td-driver-summary-pending': payment.status == 'Pending' }">
 							{{payment.status}}
 						</td>
 						<td>{{payment.paid_date}}</td>
-						<td style="width:130px;">
-							<span class="link orange" ng-click="show_payment( payment.id_payment_schedule );">Details</span>
-						</td>
 					</tr>
 				</tbody>
 			</table>
