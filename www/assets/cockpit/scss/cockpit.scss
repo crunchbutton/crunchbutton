@@ -1690,7 +1690,7 @@ b, strong{ font-weight: bold; }
 	display: none;
 }
 
-@media(max-width:499px) {
+@media(max-width:820px) {
 	.hide-tiny-screen{
 		display: none;
 	}
@@ -1698,8 +1698,7 @@ b, strong{ font-weight: bold; }
 		display: block;
 	}
 	.tb-grid{
-		font-size: .9em;
-		max-width: 400px !important;
+		font-size: 1em;
 	}
 	.tb-grid td{
 		white-space: normal !important;
@@ -1708,5 +1707,12 @@ b, strong{ font-weight: bold; }
 	.span-driver-summary-pending,
 	.span-driver-summary-processing{
 		font-size: .8em;
+	}
+}
+
+@media(max-width:499px) {
+	.tb-grid{
+		font-size: .9em;
+		max-width: 400px !important;
 	}
 }
