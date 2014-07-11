@@ -115,9 +115,7 @@
 							<i class="fa fa-minus-square-o" ng-show="week.show_week"></i>
 						</span>
 					</td>
-					<td>
-						<span class="hide-tiny-screen">From</span> {{week.period}}
-					</td>
+					<td>{{week.period}}</td>
 					<td positive-or-negative-color="{{week.total_payment}}">
 						${{week.total_payment | formatPrice}}
 					</td>
@@ -155,8 +153,11 @@
 										<table class="tb-grid tb-zebra tb-zebra-summary">
 											<thead>
 												<tr>
-													<td>Order</td>
-													<td>Customer</td>
+													<td class="hide-tiny-screen">Order</td>
+													<td>
+														<span class="hide-tiny-screen">Customer</span>
+														<span class="show-tiny-screen">Order #/<br>Customer</span>
+													</td>
 													<td>Tip</td>
 													<td>Delivery Fee</td>
 													<td>Cash Markup Owed to CB</td>
@@ -168,8 +169,11 @@
 											</thead>
 											<tbody ng-repeat="order in day.orders">
 												<tr>
-													<td>{{order.id_order}}</td>
-													<td>{{order.name}}</td>
+													<td class="hide-tiny-screen">{{order.id_order}}</td>
+													<td>
+														<span class="hide-tiny-screen">{{order.name}}</span>
+														<span class="show-tiny-screen">#{{order.id_order}}<br>{{order.name}}</span>
+													</td>
 													<td positive-or-negative-color="{{order.tip}}">
 														<span ng-if="order.tip == 0">
 															paid in cash

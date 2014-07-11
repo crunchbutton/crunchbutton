@@ -169,7 +169,7 @@
 			</thead>
 			<thead ng-if="!result.orders">
 				<td>
-					<!-- <td></td> -->
+					<td class="hide-tiny-screen">#</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -183,7 +183,7 @@
 					<td class="hide-tiny-screen">#</td>
 					<td>
 						<span class="hide-tiny-screen">Customer</span>
-						<span class="show-tiny-screen">Order Number / Customer</span>
+						<span class="show-tiny-screen">Order #/<br>Customer</span>
 					</td>
 					<td>Restaurant</td>
 					<td>Date</td>
@@ -202,7 +202,7 @@
 					<td class="hide-tiny-screen">{{order.id_order}}</td>
 					<td>
 						<span class="hide-tiny-screen">{{order.name}}</span>
-						<span class="show-tiny-screen">{{order.id_order}} / {{order.name}}</span>
+						<span class="show-tiny-screen">#{{order.id_order}}<br>{{order.name}}</span>
 					</td>
 					<td>{{order.restaurant}}</td>
 					<td>{{order.date}}</td>
