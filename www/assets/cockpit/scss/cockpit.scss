@@ -804,17 +804,30 @@ input {
 		background: #4db1a7;
 		font-weight: bold;
 	}
+
+.tb-zebra-summary tbody:nth-child(2n), .tb-zebra-summary tr:nth-child(2n){
+	background: #F5F5F5;
+}
+	.tb-zebra-summary table{
+		background: #FFF;
+		border-left: 2px solid #CCC;
+		margin-left: 3px;
+	}
+		.tb-zebra-summary table td{
+			font-size: .95em !important;
+		}
+
 .tr-driver-summary-daily-total{
 	border-top:2px solid #CCC;
 	background: #FFF !important;
 	font-weight: bold;
 }
-	.td-driver-summary-paid, .td-driver-summary-pending, .td-driver-summary-processing{
+	.span-driver-summary-paid, .span-driver-summary-pending, .span-driver-summary-processing{
 		color:#64763d;
-		font-size: .9em !important;
+		font-size: 11px !important;
 		font-weight: bold;
 	}
-		.td-driver-summary-pending{
+		.span-driver-summary-pending{
 			color: #999;
 		}
 		.td-driver-summary-processing{

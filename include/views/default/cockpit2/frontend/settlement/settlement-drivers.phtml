@@ -105,7 +105,8 @@
 			<tbody>
 				<tr ng-repeat="driver in result.drivers" ng-class="{ 'excluded': !driver.pay }">
 					<td>
-						<span class="link" ng-click="show_details(driver)"><i class="fa fa-pencil-square-o"></i></span></td>
+						<span class="link" ng-click="show_details(driver)"><i class="fa fa-pencil-square-o"></i></span>
+					</td>
 					<td>{{driver.id_admin}}</td>
 					<td>{{driver.name}}</td>
 					<td>$ {{driver.total_reimburse | formatPrice}}</td>
