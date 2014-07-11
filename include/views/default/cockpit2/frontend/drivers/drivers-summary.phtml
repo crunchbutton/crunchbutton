@@ -69,13 +69,13 @@
 						</td>
 					</tr>
 					<tr ng-if="summary.earnings.current">
-						<td>Rembursement so far this week</td>
+						<td>Reimbursement so far this week</td>
 						<td positive-or-negative-color="{{summary.earnings.current.total_reimburse}}">
 							${{summary.earnings.current.total_reimburse | formatPrice}}
 						</td>
 					</tr>
 					<tr ng-if="summary.earnings.previous.payment_status">
-						<td>Last week's payment</td>
+						<td>Last week's earnings</td>
 						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.payment}}">
 							${{summary.earnings.previous.payment_status.pending.payment | formatPrice}}
 						</td>
@@ -110,10 +110,10 @@
 			<tbody ng-repeat="week in summary.weeks">
 				<tr>
 					<td>
-						<span class="link" ng-click="week.show_week = !week.show_week">
+						<div class="link expand-collapse" ng-click="week.show_week = !week.show_week">
 							<i class="orange fa fa-plus-square-o" ng-show="!week.show_week"></i>
 							<i class="fa fa-minus-square-o" ng-show="week.show_week"></i>
-						</span>
+						</div>
 					</td>
 					<td>{{week.period}}</td>
 					<td positive-or-negative-color="{{week.total_payment}}">
@@ -135,10 +135,10 @@
 							<tbody ng-repeat="day in week.days">
 								<tr>
 									<td>
-										<span class="link" ng-click="day.show_day = !day.show_day">
+										<div class="link expand-collapse" ng-click="day.show_day = !day.show_day">
 											<i class="orange fa fa-plus-square-o" ng-show="!day.show_day"></i>
 											<i class="fa fa-minus-square-o" ng-show="day.show_day"></i>
-										</span>
+										</div>
 									</td>
 									<td>{{day.day}}</td>
 									<td positive-or-negative-color="{{day.total_payment}}">
@@ -160,7 +160,7 @@
 													</td>
 													<td>Tip</td>
 													<td>Delivery Fee</td>
-													<td>Cash Markup Owed to CB</td>
+													<td>CB Cash Fee</td>
 													<td>Pay</td>
 													<td class="hide-tiny-screen">&nbsp;</td>
 													<td>Reimbursement</td>

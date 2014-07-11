@@ -85,7 +85,7 @@
 						<td>${{result.calcs.tip | formatPrice}}</td>
 					</tr>
 					<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.markup}}">
-						<td>Cash Markup Owed to CB</td>
+						<td>CB Cash Fee</td>
 						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
 					<tr ng-if="!result.hourly" positive-or-negative-color="{{result.adjustment}}">
