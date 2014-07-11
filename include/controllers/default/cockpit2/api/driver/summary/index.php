@@ -62,7 +62,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 					$week = $shift[ 'week' ];
 					if( !$out[ 'weeks' ][ $yearweek ] ){
 						$_day = new DateTime( date( 'Y-m-d', strtotime(  $year . 'W' .  $week . '0' ) ), new DateTimeZone( c::config()->timezone ) );
-						$period = $_day->format( 'm/d/Y' );
+						$period = 'From ' . $_day->format( 'm/d/Y' );
 						$_day->modify( '+ 6 days' );
 						$period .= ' to ' . $_day->format( 'm/d/Y' );
 						$out[ 'weeks' ][ $yearweek ] = [ 'period' => $period, 'total_payment' => 0 ];
@@ -159,7 +159,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 					$week = $order[ 'week' ];
 					if( !$out[ 'weeks' ][ $yearweek ] ){
 						$_day = new DateTime( date( 'Y-m-d', strtotime(  $year . 'W' .  $week . '0' ) ), new DateTimeZone( c::config()->timezone ) );
-						$period = $_day->format( 'm/d/Y' );
+						$period = 'From ' . $_day->format( 'm/d/Y' );
 						$_day->modify( '+ 6 days' );
 						$period .= ' to ' . $_day->format( 'm/d/Y' );
 						$out[ 'weeks' ][ $yearweek ] = [ 'period' => $period, 'total_payment' => 0, 'total_reimburse' => 0 ];
