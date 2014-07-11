@@ -17,7 +17,8 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$range = [ 'end' => $now->format( 'm/d/Y' ) ];
-		$now->modify( '-2 week' );
+		$days = $now->format( 'N' ) + ( 7 * 12 ); // twelve weeks
+		$now->modify( '-' . $days . ' days' );
 		$range[ 'start' ] = $now->format( 'm/d/Y' );
 
 		$settlement = new Settlement( $range );
@@ -27,7 +28,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 			$driver = $driver[ 0 ];
 
-			$out = [ 'earnings' => [],  'payments' => [], 'weeks' => [] ];
+			$out = [ 'payments' => [], 'weeks' => [] ];
 
 			// payments
 			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
