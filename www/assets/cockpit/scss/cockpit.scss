@@ -824,7 +824,7 @@ input {
 }
 	.span-driver-summary-paid, .span-driver-summary-pending, .span-driver-summary-processing{
 		color:#64763d;
-		font-size: 11px !important;
+		font-size: 11px;
 		font-weight: bold;
 	}
 		.span-driver-summary-pending{
@@ -1684,4 +1684,29 @@ b, strong{ font-weight: bold; }
 .back-button{
 	margin: 5px 0 15px 0;
 	text-decoration: none !important;
+}
+
+.show-tiny-screen{
+	display: none;
+}
+
+@media(max-width:499px) {
+	.hide-tiny-screen{
+		display: none;
+	}
+	.show-tiny-screen{
+		display: block;
+	}
+	.tb-grid{
+		font-size: .85em;
+		max-width: 400px !important;
+	}
+	.tb-grid td{
+		white-space: normal !important;
+	}
+	.span-driver-summary-paid,
+	.span-driver-summary-pending,
+	.span-driver-summary-processing{
+		font-size: .8em;
+	}
 }

@@ -44,7 +44,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// https://github.com/crunchbutton/crunchbutton/issues/3234
 	public function driverWeeksSummaryShifts( $id_driver ){
-		$query = 'SELECT cs.* FROM admin_shift_assign AS asa
+		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM admin_shift_assign AS asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 							WHERE asa.id_admin = "' . $id_driver . '"
 								AND DATE( cs.date_start ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
@@ -60,9 +60,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$_shift[ 'date_start' ] = $shift->dateStart()->format( 'M jS Y g:i:s A' );
 			$_shift[ 'date_end' ] = $shift->dateEnd()->format( 'M jS Y g:i:s A' );
 			$_shift[ 'hours' ] = $shift->duration();
+			$_shift[ 'id_admin_shift_assign' ] = $shift->id_admin_shift_assign;
+			$_shift[ 'id_community_shift' ] = $shift->id_community_shift;
 			$_shift[ 'driver_paid' ] = $shift->duration();
-			echo json_encode( $_shift );exit();
+			if( $_shift[ 'driver_paid' ] ){
+				$payment_info = Cockpit_Payment_Schedule_Shift::checkShiftWasPaidDriver( $_shift[ 'id_admin_shift_assign' ] );
+				if( $payment_info ){
+					$_shift[ 'paid_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $payment_info->date()->format( 'M jS Y g:i:s A' ) ];
+				}
+			}
+			$_shifts[] = $_shift;
 		}
+		return $_shifts;
 	}
 
 	public function driverWeeksSummaryOrders( $id_driver ){
@@ -1088,7 +1097,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$amount = floatval( $schedule->amount );
 
 				$payment_method = $schedule->driver()->payment_type()->payment_method;
-
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
