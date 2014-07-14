@@ -1,15 +1,42 @@
-NGApp.controller('RestaurantOrderPlacementDashboard', function ( $scope, RestaurantOrderPlacementService ) {
-	RestaurantOrderPlacementService.get( function( json ){
-		console.log('json',json);
-		if( json.id_order ){
-			$scope.order = json;
-		} else {
-			$scope.error = true;
-		}
-		$scope.ready = true;
-	} );
+NGApp.controller('RestaurantOrderPlacementDashboard', function ( $scope, RestaurantOrderPlacementService, $routeParams ) {
+
+	// Load restaurants that are allowed to place orders
+	var restaurants = function(){
+		RestaurantOrderPlacementService.restaurant.all( function( json ){
+			$scope.restaurants = json;
+		} );
+	}
+
+	var start = function(){
+		RestaurantOrderPlacementService.restaurant.status( $scope.id_restaurant, function( json ){
+			if( !json.error ){
+				$scope.id_restaurant = json.id_restaurant;
+				$scope.status = json;
+				$scope.ready = true;
+			}
+		} );
+	}
+
+	$scope.load_restaurant = function(){
+		$scope.navigation.link( '/restaurant/order/placement/dashboard/' + $scope.id_restaurant );
+	}
+
 	$scope.list = function(){
 		$scope.navigation.link( '/restaurant/order/placement/list' );
+	}
+
+	$scope.new = function(){
+		$scope.navigation.link( '/restaurant/order/placement/new/' + $scope.id_restaurant );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		if( $scope.account.isAdmin ){
+			restaurants();
+			if( $routeParams.id ){
+				$scope.id_restaurant = parseInt( $routeParams.id );
+			}
+		}
+		start();
 	}
 } );
 
@@ -51,6 +78,7 @@ NGApp.controller('RestaurantOrderPlacementList', function ( $scope, RestaurantOr
 	$scope.new = function(){
 		$scope.navigation.link( '/restaurant/order/placement/new/' + $scope.id_restaurant );
 	}
+
 	$scope.open = function( id_order ){
 		$scope.navigation.link( '/restaurant/order/placement/' + id_order );
 	}

@@ -39,13 +39,14 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 	var orders = $resource( App.service + 'order/:action/:id_restaurant', { action: '@action', id_restaurant: '@id_restaurant' }, {
 				'process' : { 'method': 'POST' },
 				'get' : { 'method': 'GET' },
-				'list' : { 'method': 'GET', params : { 'action' : 'restaurant-list-last' }, isArray: true },
+				'list' : { 'method': 'GET', params: { 'action' : 'restaurant-list-last' }, isArray: true },
 			}
 		);
 
 	var restaurant = $resource( App.service + 'restaurant/orderplacement/:action/:id_restaurant', { action: '@action', id_restaurant: '@id_restaurant' }, {
 				'get' : { 'method': 'GET' },
-				'all' : { 'method': 'GET', params : { 'action' : 'all' }, isArray: true },
+				'status' : { 'method': 'GET', params: { 'action': 'status' } },
+				'all' : { 'method': 'GET', params: { 'action' : 'all' }, isArray: true },
 			}
 		);
 
@@ -64,6 +65,11 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 	service.restaurant = {
 		get : function( id_restaurant, callback ){
 			restaurant.get( { id_restaurant: id_restaurant }, function( data ){
+				callback( data );
+			} );
+		},
+		status : function( id_restaurant, callback ){
+			restaurant.status( { id_restaurant: id_restaurant }, function( data ){
 				callback( data );
 			} );
 		},

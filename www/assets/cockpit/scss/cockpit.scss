@@ -1719,3 +1719,55 @@ b, strong{ font-weight: bold; }
 	width:25px;
 	height:25px;
 }
+
+.dashboard-box{
+	font-family: Ruda, Open Sans, Helvetica, Arial, sans-serif;
+	margin-top: 9px;
+	margin-bottom: 9px;
+}
+	.dashboard-count{
+		float: left;
+		font-size: 3em;
+		font-weight: bold;
+		width: 1.5em;
+		text-align: center;
+		padding: 10px;
+	}
+	.dashboard-content{
+		padding: 10px;
+	}
+		.dashboard-content .title{
+			font-size: 1.4em;
+		}
+		.dashboard-content .description{
+			padding-top:7px;
+			font-size: 1em;
+			opacity: .6;
+		}
+	.dashboard-box.pending{
+		background: #50c5bb;
+		color:#FFF;
+	}
+	.dashboard-box.transit{
+		background: #d6d9dc;
+		color:#797979;
+	}
+	.dashboard-box.place-order{
+		background: #df5851;
+		color: #FFF;
+	}
+	.dashboard-box.call-support{
+		background: #353b43;
+		color: #FFF;
+	}
+	.dashboard-box.place-order div, .dashboard-box.call-support div{
+		cursor: pointer;
+		display: block;
+		padding:10px;
+		font-size: 1.3em;
+		text-transform: uppercase;
+		text-align:center;
+	}
+		.dashboard-box.call-support{
+			margin-top: 5em;
+		}

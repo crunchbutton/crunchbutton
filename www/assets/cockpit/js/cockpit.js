@@ -78,28 +78,18 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
-		/* Restaurants */
-		.when('/restaurant/order/placement/dashboard', {
+		/* Restaurants Order Placement */
+		.when('/restaurant/order/placement/dashboard/:id?', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementDashboard',
 			templateUrl: 'assets/view/restaurant-order-placement-dashboard.html'
 		})
-		.when('/restaurant/order/placement/new', {
+		.when('/restaurant/order/placement/new/:id?', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementNew',
 			templateUrl: 'assets/view/restaurant-order-placement-new.html'
 		})
-		.when('/restaurant/order/placement/new/:id', {
-			action: 'restaurant-order-placement',
-			controller: 'RestaurantOrderPlacementNew',
-			templateUrl: 'assets/view/restaurant-order-placement-new.html'
-		})
-		.when('/restaurant/order/placement/list', {
-			action: 'restaurant-order-placement',
-			controller: 'RestaurantOrderPlacementList',
-			templateUrl: 'assets/view/restaurant-order-placement-list.html'
-		})
-		.when('/restaurant/order/placement/list/:id', {
+		.when('/restaurant/order/placement/list/:id?', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementList',
 			templateUrl: 'assets/view/restaurant-order-placement-list.html'
