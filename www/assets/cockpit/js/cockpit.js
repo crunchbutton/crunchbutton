@@ -79,20 +79,25 @@ NGApp.config(function($compileProvider){
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
 		/* Restaurants */
-		.when('/restaurant/order/new', {
-			action: 'restaurant-order-new',
-			controller: 'RestaurantOrderNew',
-			templateUrl: 'assets/view/restaurant-order-new.html'
+		.when('/restaurant/order/placement/dashboard', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementDashboard',
+			templateUrl: 'assets/view/restaurant-order-placement-dashboard.html'
 		})
-		.when('/restaurant/order/list', {
-			action: 'restaurant-order-new',
-			controller: 'RestaurantOrderList',
-			templateUrl: 'assets/view/restaurant-order-list.html'
+		.when('/restaurant/order/placement/new', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementNew',
+			templateUrl: 'assets/view/restaurant-order-placement-new.html'
 		})
-		.when('/restaurant/order/:id', {
-			action: 'restaurant-order-new',
-			controller: 'RestaurantOrderView',
-			templateUrl: 'assets/view/restaurant-order-view.html'
+		.when('/restaurant/order/placement/list', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementList',
+			templateUrl: 'assets/view/restaurant-order-placement-list.html'
+		})
+		.when('/restaurant/order/placement/:id', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementView',
+			templateUrl: 'assets/view/restaurant-order-placement-view.html'
 		})
 		/* Settlement */
 		.when('/settlement', {
@@ -294,6 +299,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.server = App.server;
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
+
+	$rootScope.isLive = ( App.config.env == 'live' );
+	$rootScope.isBeta = !$rootScope.isLive;
 
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){

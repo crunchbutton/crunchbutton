@@ -3,10 +3,10 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 	if( !isNaN( parseInt( id_order ) ) ){
 		MainNavigationService.link('/drivers/order/' + id_order);
 	} else {
-		
-			
+
+
 		if (AccountService.isRestaurant) {
-			MainNavigationService.link('/restaurant/order/new');
+			MainNavigationService.link('/restaurant/order/placement/new');
 		} else if (AccountService.isDriver) {
 			MainNavigationService.link('/drivers/orders');
 		} else {
@@ -54,7 +54,7 @@ NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 				scope.title = title;
 				scope.message = message;
 				App.dialog.show('.notification-alert-container');
-			}); 
-		}			
+			});
+		}
 	});
 });
