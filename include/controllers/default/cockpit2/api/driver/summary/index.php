@@ -177,7 +177,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ];
 				$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ];
 				$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ];
-				$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ];
+				$_order[ 'total_payment' ] = max( $order[ 'pay_info' ][ 'total_payment' ], 0 );
 
 				$_order[ 'payment' ] = $this->_statusByPaymentId( $order[ 'payment_info' ][ 'id_payment' ] );
 				$_order[ 'reimburse' ] = $this->_statusByPaymentId( $order[ 'reimbursed_info' ][ 'id_payment' ] );
