@@ -2,10 +2,54 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-credit-card"></i><span>Last Orders</span></h1>
+	<form name="form" ng-show="restaurants">
 
-	<div>
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<div class="label">Select a restaurant:</div>
+				<div class="input">
+					<select name="restaurantSelect" ng-model="id_restaurant" ng-change="load_restaurant()" ng-options="opt.id_restaurant as opt.name for opt in restaurants"></select>
+				</div>
+			</li>
+		</ul>
+	</form>
 
+	<div class="dashboard-box pending">
+		<div class="dashboard-count">
+			{{status.accepted_orders}}
+		</div>
+		<div class="dashboard-content">
+			<div class="title">
+				order<span ng-if="status.accepted_orders > 1">s</span> pending
+			</div>
+			<div class="description">
+				order<span ng-if="status.accepted_orders > 1">s</span> waiting to be picked up
+			</div>
+		</div>
+		<div class="divider"></div>
+	</div>
+
+	<div class="dashboard-box transit">
+		<div class="dashboard-count">
+			{{status.pickedup_orders}}
+		</div>
+		<div class="dashboard-content">
+			<div class="title">
+				order<span ng-if="status.pickedup_orders > 1">s</span> in transit
+			</div>
+			<div class="description">
+				order<span ng-if="status.pickedup_orders > 1">s</span> waiting to be picked up
+			</div>
+		</div>
+		<div class="divider"></div>
+	</div>
+
+	<div class="dashboard-box place-order" ng-click="new()">
+		<div>Place a new order</div>
+	</div>
+
+	<div class="dashboard-box call-support" ng-click="call()">
+		<div>Call Crunchbutton Support</div>
 	</div>
 
 </div>
