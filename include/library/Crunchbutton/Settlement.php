@@ -229,7 +229,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 
 				$order[ 'pay_info' ] = [];
-				$order[ 'pay_info' ][ 'pay_by_order' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] ? 1 : 0 );
+				$order[ 'pay_info' ][ 'pay_by_order' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
 				$order[ 'pay_info' ][ 'delivery_fee' ] = $this->orderDeliveryFeeDriverPay( $order );
@@ -312,16 +312,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function orderCalculateTotalDueDriver( $pay ){
-		$total_due = 	( $pay[ 'subtotal' ] +
+		$total_due = 	( ( $pay[ 'subtotal' ] +
 										$pay[ 'tax' ] +
 										$pay[ 'delivery_fee' ] +
-										$pay[ 'tip' ] +
 										$pay[ 'customer_fee' ] +
 										$pay[ 'markup' ] +
 										$pay[ 'credit_charge' ] +
 										$pay[ 'restaurant_fee' ] +
 										$pay[ 'gift_card' ] -
-										$pay[ 'total_reimburse' ] ) * $pay[ 'pay_by_order' ];
+										$pay[ 'total_reimburse' ] ) * $pay[ 'pay_by_order' ] ) + $pay[ 'tip' ];
 		return $total_due;
 	}
 
