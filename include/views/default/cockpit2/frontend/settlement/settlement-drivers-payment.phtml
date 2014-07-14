@@ -232,8 +232,8 @@
 					<td>{{order.restaurant}}</td>
 					<td>{{order.date}}</td>
 					<td>{{order.pay_type}}</td>
-					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment">$ {{order.tip | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee | formatPrice}}</span></td>
 					<td ng-if="pay_type_reimbursement">$ {{order.total_reimburse | formatPrice}}</td>
 					<td ng-if="pay_type_payment">$ {{order.total_payment | formatPrice}}</td>
 				</tr>

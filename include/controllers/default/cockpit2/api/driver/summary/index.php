@@ -32,23 +32,26 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 	}
 
 	private function _summaryByHour( $range, $id_driver ){
+
 		$settlement = new Settlement( $range );
 		$shifts = $settlement->driverWeeksSummaryShifts( $id_driver );
+		$driver = Admin::o( $id_driver );
+		$payment_type = $driver->payment_type();
+		$hour_rate = floatval( $payment_type->hour_rate );
 
 		if( $shifts ){
 
 			$out = [ 'type' => 'hour', 'payments' => [], 'weeks' => [] ];
 
-			// // payments
-			// $payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
-			// foreach( $payments as $payment ){
-			// 	$_payment = [];
-			// 	$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
-			// 	$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
-			// 	$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
-			// 	$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
-			// 	$out[ 'payments' ][] = $_payment;
-			// }
+			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
+			foreach( $payments as $payment ){
+				$_payment = [];
+				$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
+				$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
+				$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
+				$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
+				$out[ 'payments' ][] = $_payment;
+			}
 
 			// shifts
 			foreach( $shifts as $shift ){
@@ -65,10 +68,10 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 						$period = 'From ' . $_day->format( 'm/d/Y' );
 						$_day->modify( '+ 6 days' );
 						$period .= ' to ' . $_day->format( 'm/d/Y' );
-						$out[ 'weeks' ][ $yearweek ] = [ 'period' => $period, 'total_payment' => 0 ];
-						$out[ 'weeks' ][ $yearweek ][ 'payment_status' ] = [  'pending' => [ 'payment' => 0 ],
-																					'processing' => [ 'payment' => 0 ],
-																					'paid' => [ 'payment' => 0 ] ];
+						$out[ 'weeks' ][ $yearweek ] = [ 'period' => $period, 'total_payment' => 0, 'total_reimburse' => 0 ];
+						$out[ 'weeks' ][ $yearweek ][ 'payment_status' ] = [  'pending' => [ 'payment' => 0, 'reimburse' => 0 ],
+																					'processing' => [ 'payment' => 0, 'reimburse' => 0 ],
+																					'paid' => [ 'payment' => 0, 'reimburse' => 0 ] ];
 					}
 				}
 
@@ -77,9 +80,10 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				$_shift[ 'id_admin_shift_assign' ] = $shift[ 'id_admin_shift_assign' ];
 				$_shift[ 'date_start' ] = $shift[ 'date_start' ];
 				$_shift[ 'date_end' ] = $shift[ 'date_end' ];
-				$_shift[ 'total_payment' ] = $shift[ 'driver_paid' ];
+				$_shift[ 'hours' ] = $shift[ 'driver_paid' ];
+				$_shift[ 'total_payment' ] = round( $shift[ 'driver_paid' ] * $hour_rate, 2 );
 
-				$_shift[ 'payment' ] = $this->_statusByPaymentId( $shift[ 'payment_info' ][ 'id_payment' ] );
+				$_shift[ 'payment' ] = $this->_statusByPaymentId( $shift[ 'paid_info' ][ 'id_payment' ] );
 
 				if( !$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'shifts' ] ){
 					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'day' ] = $shift[ 'date_day' ];
@@ -90,9 +94,56 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				$out[ 'weeks' ][ $yearweek ][ 'yearweek' ] = $yearweek;
 				$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'shifts' ][] = $_shift;
 				$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_payment' ] += $_shift[ 'total_payment' ];
+				$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_reimburse' ] = 0;
 				$out[ 'weeks' ][ $yearweek ][ 'total_payment' ] += $_shift[ 'total_payment' ];
-
 				$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $_shift[ 'payment' ][ 'status' ] ) ][ 'payment' ] += $_shift[ 'total_payment' ];
+			}
+
+			// Merge the reimbursed and tipped orders
+			$orders = $this->_summaryByOrder( $range, $id_driver, false );
+			$reimbursed_tipped = [];
+			foreach( $orders[ 'weeks' ] as $orderkey => $orderval ){
+				$yearweek = $orderval[ 'yearweek' ];
+				$reimbursed_tipped[ $yearweek ] = [];
+				foreach( $orderval[ 'days' ] as $daykey => $dayvalue ){
+					if( ( floatval( $dayvalue[ 'total_reimburse' ] ) != 0 ) || floatval( $dayvalue[ 'total_payment' ] ) != 0 ){
+						$date = $dayvalue[ 'date' ];
+						$reimbursed_tipped[ $yearweek ][ $date ] = [];
+						$reimbursed_tipped[ $yearweek ][ $date ][ 'total_reimburse' ] = $dayvalue[ 'total_reimburse' ];
+						$reimbursed_tipped[ $yearweek ][ $date ][ 'total_payment' ] = $dayvalue[ 'total_payment' ];
+						$reimbursed_tipped[ $yearweek ][ $date ][ 'orders' ] = [];
+						foreach( $dayvalue[ 'orders' ] as $order ){
+							$order[ 'delivery_fee' ] = 0;
+							if( ( floatval( $order[ 'total_reimburse' ] ) != 0 ) || ( floatval( $order[ 'total_payment' ] ) != 0 ) ){
+								$reimbursed_tipped[ $yearweek ][ $date ][ 'orders' ][] = $order;
+							}
+						}
+					}
+				}
+			}
+
+			foreach( $out[ 'weeks' ] as $weekkey => $weekval ){
+				$yearweek = $weekval[ 'yearweek' ];
+				// it has reimbursed or tipped orders
+				if( $reimbursed_tipped[ $yearweek ] ){
+					$out[ 'weeks' ][ $yearweek ][ 'total_payment' ] = 0;
+					foreach( $weekval[ 'days' ] as $daykey => $dayval ){
+						if( $reimbursed_tipped[ $yearweek ][ $daykey ] ){
+							$out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'total_payment' ] += $reimbursed_tipped[ $yearweek ][ $daykey ][ 'total_payment' ];
+							$out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'total_reimburse' ] += $reimbursed_tipped[ $yearweek ][ $daykey ][ 'total_reimburse' ];
+							foreach( $reimbursed_tipped[ $yearweek ][ $daykey ][ 'orders' ] as $order ){
+								if( !$out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'orders' ] ){
+									$out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'orders' ] = [];
+								}
+								$out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'orders' ][] = $order;
+								$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $order[ 'payment' ][ 'status' ] ) ][ 'payment' ] += $order[ 'total_payment' ];
+								$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $order[ 'reimburse' ][ 'status' ] ) ][ 'reimburse' ] += $order[ 'total_reimburse' ];
+							}
+						}
+						$out[ 'weeks' ][ $yearweek ][ 'total_payment' ] += $out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'total_payment' ];
+						$out[ 'weeks' ][ $yearweek ][ 'total_reimburse' ] += $out[ 'weeks' ][ $weekkey ][ 'days' ][ $daykey ][ 'total_reimburse' ];
+					}
+				}
 			}
 
 			usort( $out[ 'weeks' ], function( $a, $b ) {
@@ -100,20 +151,20 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			} );
 
 			foreach( $out[ 'weeks' ] as $weekkey => $weekval ){
+				usort( $out[ 'weeks' ][ $weekkey ][ 'days' ], function( $a, $b ) {
+					return intval( $a[ 'date' ] ) < intval( $b[ 'date' ] );
+				} );
+			}
+
+			foreach( $out[ 'weeks' ] as $weekkey => $weekval ){
 				if( isset( $out[ 'earnings' ][ 'current' ] ) ){
-					$out[ 'earnings' ][ 'previous' ] = [ 'total_payment' => $weekval[ 'total_payment' ], 'payment_status' => $weekval[ 'payment_status' ] ];
+					$out[ 'earnings' ][ 'previous' ] = [ 'total_payment' => $weekval[ 'total_payment' ], 'total_reimburse' => $weekval[ 'total_reimburse' ], 'payment_status' => $weekval[ 'payment_status' ] ];
 					break;
 				}
 
 				if( !isset( $out[ 'earnings' ][ 'current' ] ) ){
-					$out[ 'earnings' ][ 'current' ] = [ 'total_payment' => $weekval[ 'total_payment' ], 'payment_status' => $weekval[ 'payment_status' ] ];
+					$out[ 'earnings' ][ 'current' ] = [ 'total_payment' => $weekval[ 'total_payment' ], 'total_reimburse' => $weekval[ 'total_reimburse' ], 'payment_status' => $weekval[ 'payment_status' ] ];
 				}
-			}
-
-			foreach( $out[ 'weeks' ] as $weekkey => $weekval ){
-				usort( $out[ 'weeks' ][ $weekkey ][ 'days' ], function( $a, $b ) {
-					return intval( $a[ 'date' ] ) < intval( $b[ 'date' ] );
-				} );
 			}
 
 			echo json_encode( $out );exit();
@@ -126,7 +177,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 	}
 
-	private function _summaryByOrder( $range, $id_driver ){
+	private function _summaryByOrder( $range, $id_driver, $json = true ){
 
 		$settlement = new Settlement( $range );
 		$orders = $settlement->driverWeeksSummaryOrders( $id_driver );
@@ -232,13 +283,16 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				break;
 			}
 
-			echo json_encode( $out );exit();
-
 		} else {
 			$out = [ 'weeks' => 0 ];
 		}
 
-		echo json_encode( $out );exit();
+		if( $json ){
+			echo json_encode( $out );exit();
+		} else {
+			return $out;
+		}
+
 	}
 
 	private function _scheduleByPaymentId( $id_payment ) {

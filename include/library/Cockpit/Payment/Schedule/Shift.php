@@ -5,6 +5,7 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 		parent::__construct();
 		$this->table('payment_schedule_shift')->idVar('id_payment_schedule_shift')->load($id);
 	}
+
 	public function payment_schedule() {
 		return Cockpit_Payment_Schedule::o($this->id_payment_schedule);
 	}
@@ -15,6 +16,14 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 
 	public function shift(){
 		return $this->shift_assign()->shift();
+	}
+
+	public function payment(){
+		$payment = $this->payment_schedule()->payment();
+		if( $payment->id_payment ){
+			return $payment;
+		}
+		return false;
 	}
 
 	public function checkShiftWasPaidDriver( $id_admin_shift_assign ){

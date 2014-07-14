@@ -14,7 +14,7 @@ CREATE TABLE `payment_schedule_shift` (
   `id_payment_schedule_shift` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_payment_schedule` int(11) unsigned DEFAULT NULL,
   `id_admin_shift_assign` int(11) unsigned DEFAULT NULL,
-  `hours` int(11) DEFAULT NULL,
+  `hours` float DEFAULT NULL,
   `amount` float DEFAULT NULL,
   PRIMARY KEY (`id_payment_schedule_shift`),
   KEY `id_payment_schedule` (`id_payment_schedule`),
