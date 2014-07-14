@@ -11,6 +11,17 @@
 
 	<div class="divider"></div>
 
+	<form name="form" ng-show="restaurants">
+
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<div class="label">Select a restaurant:</div>
+				<div class="input">
+					<select name="restaurantSelect" ng-model="id_restaurant" ng-change="load_restaurant()" ng-options="opt.id_restaurant as opt.name for opt in restaurants"></select>
+				</div>
+			</li>
+		</ul>
+	</form>
 
 	<h2 class="title" ng-show="!restaurant.id_restaurant">
 		Select a restaurant
