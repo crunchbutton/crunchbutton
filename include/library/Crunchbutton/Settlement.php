@@ -66,9 +66,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 			if( $_shift[ 'driver_paid' ] ){
 				$schedule_info = Cockpit_Payment_Schedule_Shift::checkShiftWasPaidDriver( $_shift[ 'id_admin_shift_assign' ] );
 				if( $schedule_info ){
-					$payment_info = $schedule_info->payment();
-					$date = $payment_info->date()->get( 0 );
-					$_shift[ 'paid_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $date->format( 'M jS Y g:i:s A' ) ];
+					$payment_info = $schedule_info->payment()->get( 0 );
+					if( $payment_info ){
+						$date = $payment_info->date();
+						$_shift[ 'paid_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $date->format( 'M jS Y g:i:s A' ) ];
+					}
 				}
 			}
 			$_shifts[] = $_shift;
