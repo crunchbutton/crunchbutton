@@ -21,7 +21,7 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 		$query = 'SELECT * FROM payment_schedule_shift WHERE id_admin_shift_assign = "' . $id_admin_shift_assign . '" LIMIT 1';
 		$shift = Cockpit_Payment_Schedule_Shift::q( $query );
 		if( $shift->id_payment_schedule_shift ){
-			return true;
+			return $shift;
 		}
 		return false;
 	}
