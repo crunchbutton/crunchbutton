@@ -9,11 +9,28 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 			case 'get':
 
 				switch ( c::getPagePiece( 3 ) ) {
+
+					case 'all':
+						$out = [];
+						$restaurants = Restaurant::q( 'SELECT * FROM restaurant WHERE active_restaurant_order_placement = 1 ORDER BY name ASC' );
+						foreach( $restaurants as $restaurant ){
+							$out[] = [ 'id_restaurant' => intval( $restaurant->id_restaurant ), 'name' => $restaurant->name ];
+						}
+						echo json_encode( $out );exit;
+						break;
 					default:
-						$restaurant = Admin::restaurantOrderPlacement();
+
+						if( is_numeric( c::getPagePiece( 3 ) ) && c::admin()->permission()->check( [ 'global' ] ) ){
+							$restaurant = Restaurant::o( intval( c::getPagePiece( 3 ) ) );
+						}
+
+						if( !$restaurant->id_restaurant ){
+							$restaurant = Admin::restaurantOrderPlacement();
+						}
+
 						if( $restaurant ){
 							$out = [];
-							$out[ 'id_restaurant' ] = $restaurant->id_restaurant;
+							$out[ 'id_restaurant' ] = intval( $restaurant->id_restaurant );
 							$out[ 'name' ] = $restaurant->name;
 							$out[ 'address' ] = $restaurant->address;
 							$out[ 'lat' ] = $restaurant->loc_lat;

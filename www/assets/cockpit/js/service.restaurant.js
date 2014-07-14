@@ -36,15 +36,16 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 
 	var service = {};
 
-	var orders = $resource( App.service + 'order/:action', { action: '@action' }, {
+	var orders = $resource( App.service + 'order/:action/:id_restaurant', { action: '@action', id_restaurant: '@id_restaurant' }, {
 				'process' : { 'method': 'POST' },
 				'get' : { 'method': 'GET' },
-				'list' : { 'method': 'GET' , params : { 'action' : 'restaurant-list-last' }, isArray: true },
+				'list' : { 'method': 'GET', params : { 'action' : 'restaurant-list-last' }, isArray: true },
 			}
 		);
 
-	var restaurant = $resource( App.service + 'restaurant/orderplacement/:action', { action: '@action' }, {
-				'get' : { 'method': 'GET' }
+	var restaurant = $resource( App.service + 'restaurant/orderplacement/:action/:id_restaurant', { action: '@action', id_restaurant: '@id_restaurant' }, {
+				'get' : { 'method': 'GET' },
+				'all' : { 'method': 'GET', params : { 'action' : 'all' }, isArray: true },
 			}
 		);
 
@@ -54,15 +55,20 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 		} );
 	}
 
-	service.list = function( callback ){
-		orders.list( function( data ){
+	service.list = function( id_restaurant, callback ){
+		orders.list( { id_restaurant: id_restaurant }, function( data ){
 			callback( data );
 		} );
 	}
 
 	service.restaurant = {
-		get : function( callback ){
-			restaurant.get( function( data ){
+		get : function( id_restaurant, callback ){
+			restaurant.get( { id_restaurant: id_restaurant }, function( data ){
+				callback( data );
+			} );
+		},
+		all : function ( callback ){
+			restaurant.all( function( data ){
 				callback( data );
 			} );
 		}

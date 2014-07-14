@@ -11,7 +11,13 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 					case 'restaurant-list-last':
 
-						$restaurant = Admin::restaurantOrderPlacement();
+						if( is_numeric( c::getPagePiece( 3 ) ) && c::admin()->permission()->check( [ 'global' ] ) ){
+							$restaurant = Restaurant::o( intval( c::getPagePiece( 3 ) ) );
+						}
+
+						if( !$restaurant->id_restaurant ){
+							$restaurant = Admin::restaurantOrderPlacement();
+						}
 						if( $restaurant->id_restaurant ){
 							$out = [];
 							$orders = Order::q( 'SELECT * FROM `order` o WHERE id_restaurant = "' . $restaurant->id_restaurant . '" AND o.date BETWEEN NOW() - INTERVAL 7 DAY AND NOW() ORDER BY id_order DESC' );
@@ -57,7 +63,14 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'post':
 
-				$restaurant = Admin::restaurantOrderPlacement();
+				if( is_numeric( $_POST[ 'restaurant' ] ) && c::admin()->permission()->check( [ 'global' ] ) ){
+					$restaurant = Restaurant::o( intval( $_POST[ 'restaurant' ] ) );
+				}
+
+				if( !$restaurant->id_restaurant ){
+					$restaurant = Admin::restaurantOrderPlacement();
+				}
+
 				if( $restaurant && $restaurant->id_restaurant && $_POST[ 'restaurant' ] == $restaurant->id_restaurant ){
 					$order = new Order;
 					// card, subtotal, tip, name, phone, address

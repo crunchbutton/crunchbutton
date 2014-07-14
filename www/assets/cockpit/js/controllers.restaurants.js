@@ -17,48 +17,88 @@ NGApp.controller('RestaurantOrderPlacementView', function ( $scope, RestaurantOr
 	RestaurantOrderPlacementService.get( function( json ){
 		if( json.id_order ){
 			$scope.order = json;
+			if( $scope.account.isAdmin ){
+				$scope.id_restaurant = json.id_restaurant;
+			}
 		} else {
 			$scope.error = true;
 		}
 		$scope.ready = true;
 	} );
 	$scope.list = function(){
-		$scope.navigation.link( '/restaurant/order/placement/list' );
+		$scope.navigation.link( '/restaurant/order/placement/list/' + $scope.id_restaurant );
 	}
 } );
 
-NGApp.controller('RestaurantOrderPlacementList', function ( $scope, RestaurantOrderPlacementService ) {
-	RestaurantOrderPlacementService.list( function( json ){
-		if( !json.error ){
-			$scope.orders = json;
-		}
-		$scope.ready = true;
-	} );
+NGApp.controller('RestaurantOrderPlacementList', function ( $scope, RestaurantOrderPlacementService, $routeParams ) {
+
+	// Load restaurants that are allowed to place orders
+	var restaurants = function(){
+		RestaurantOrderPlacementService.restaurant.all( function( json ){
+			$scope.restaurants = json;
+		} );
+	}
+
+	var start = function(){
+		RestaurantOrderPlacementService.list( $scope.id_restaurant, function( json ){
+			if( !json.error ){
+				$scope.orders = json;
+			}
+			$scope.ready = true;
+		} );
+	}
+
 	$scope.new = function(){
-		$scope.navigation.link( '/restaurant/order/placement/new' );
+		$scope.navigation.link( '/restaurant/order/placement/new/' + $scope.id_restaurant );
 	}
 	$scope.open = function( id_order ){
 		$scope.navigation.link( '/restaurant/order/placement/' + id_order );
 	}
+
+	$scope.load_restaurant = function(){
+		$scope.navigation.link( '/restaurant/order/placement/list/' + $scope.id_restaurant );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		if( $scope.account.isAdmin ){
+			restaurants();
+			if( $routeParams.id ){
+				$scope.id_restaurant = parseInt( $routeParams.id );
+			}
+		}
+		start();
+	}
+
 } );
 
-NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantService, RestaurantOrderPlacementService, PositionService ) {
+NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantService, RestaurantOrderPlacementService, PositionService, $routeParams ) {
 
 	$scope.order = { 'tip_type': 'dollar', 'pay_type': 'card' };
 	$scope.tip = { 'dollar' : '', 'percent': '10' };
 	$scope.card = { 'month': 0, 'year': 0 };
 	$scope.map = {};
 
-	var start = function(){
+	// Load restaurants that are allowed to place orders
+	var restaurants = function(){
+		RestaurantOrderPlacementService.restaurant.all( function( json ){
+			$scope.restaurants = json;
+		} );
+	}
 
+	$scope.load_restaurant = function(){
+		$scope.navigation.link( '/restaurant/order/placement/new/' + $scope.id_restaurant );
+	}
+
+	var start = function(){
 		$scope.card._months = RestaurantOrderPlacementService.cardMonths();
 		$scope.card._years = RestaurantOrderPlacementService.cardYears();
 		$scope.tip._percents = RestaurantOrderPlacementService.tipPercents();
 
 		// get info about the restaurant
-		RestaurantOrderPlacementService.restaurant.get( function( json ){
+		RestaurantOrderPlacementService.restaurant.get( $scope.id_restaurant, function( json ){
 			if( json.id_restaurant ){
 				$scope.restaurant = json;
+				$scope.id_restaurant = $scope.restaurant.id_restaurant;
 				PositionService.bounding( $scope.restaurant.lat, $scope.restaurant.lon );
 				App.config.processor = { type: 'balanced' };
 			}
@@ -180,7 +220,7 @@ NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantSe
 	}
 
 	$scope.list = function(){
-		$scope.navigation.link( '/restaurant/order/placement/list' );
+		$scope.navigation.link( '/restaurant/order/placement/list/' + $scope.id_restaurant );
 	}
 
 	$scope.test = function (){
@@ -192,6 +232,12 @@ NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantSe
 	}
 
 	if( $scope.account.isLoggedIn() ){
+		if( $scope.account.isAdmin ){
+			restaurants();
+			if( $routeParams.id ){
+				$scope.id_restaurant = parseInt( $routeParams.id );
+			}
+		}
 		start();
 	}
 
