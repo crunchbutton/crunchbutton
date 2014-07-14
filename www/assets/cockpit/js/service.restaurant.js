@@ -32,7 +32,7 @@ NGApp.factory( 'RestaurantService', function( $rootScope, $resource, $routeParam
 	return service;
 } );
 
-NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $routeParams ) {
+NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resource, $routeParams ) {
 
 	var service = {};
 
@@ -40,6 +40,11 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 				'process' : { 'method': 'POST' },
 				'get' : { 'method': 'GET' },
 				'list' : { 'method': 'GET' , params : { 'action' : 'restaurant-list-last' }, isArray: true },
+			}
+		);
+
+	var restaurant = $resource( App.service + 'restaurant/orderplacement/:action', { action: '@action' }, {
+				'get' : { 'method': 'GET' }
 			}
 		);
 
@@ -53,6 +58,14 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 		orders.list( function( data ){
 			callback( data );
 		} );
+	}
+
+	service.restaurant = {
+		get : function( callback ){
+			restaurant.get( function( data ){
+				callback( data );
+			} );
+		}
 	}
 
 	service.calcTotal = function( order, restaurant ){

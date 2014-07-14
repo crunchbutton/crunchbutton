@@ -1,5 +1,6 @@
-NGApp.controller('RestaurantOrderView', function ( $scope, RestaurantOrderService ) {
-	RestaurantOrderService.get( function( json ){
+NGApp.controller('RestaurantOrderPlacementDashboard', function ( $scope, RestaurantOrderPlacementService ) {
+	RestaurantOrderPlacementService.get( function( json ){
+		console.log('json',json);
 		if( json.id_order ){
 			$scope.order = json;
 		} else {
@@ -8,26 +9,40 @@ NGApp.controller('RestaurantOrderView', function ( $scope, RestaurantOrderServic
 		$scope.ready = true;
 	} );
 	$scope.list = function(){
-		$scope.navigation.link( '/restaurant/order/list' );
+		$scope.navigation.link( '/restaurant/order/placement/list' );
 	}
 } );
 
-NGApp.controller('RestaurantOrderList', function ( $scope, RestaurantOrderService ) {
-	RestaurantOrderService.list( function( json ){
+NGApp.controller('RestaurantOrderPlacementView', function ( $scope, RestaurantOrderPlacementService ) {
+	RestaurantOrderPlacementService.get( function( json ){
+		if( json.id_order ){
+			$scope.order = json;
+		} else {
+			$scope.error = true;
+		}
+		$scope.ready = true;
+	} );
+	$scope.list = function(){
+		$scope.navigation.link( '/restaurant/order/placement/list' );
+	}
+} );
+
+NGApp.controller('RestaurantOrderPlacementList', function ( $scope, RestaurantOrderPlacementService ) {
+	RestaurantOrderPlacementService.list( function( json ){
 		if( !json.error ){
 			$scope.orders = json;
 		}
 		$scope.ready = true;
 	} );
 	$scope.new = function(){
-		$scope.navigation.link( '/restaurant/order/new' );
+		$scope.navigation.link( '/restaurant/order/placement/new' );
 	}
 	$scope.open = function( id_order ){
-		$scope.navigation.link( '/restaurant/order/' + id_order );
+		$scope.navigation.link( '/restaurant/order/placement/' + id_order );
 	}
 } );
 
-NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, RestaurantOrderService, PositionService ) {
+NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantService, RestaurantOrderPlacementService, PositionService ) {
 
 	$scope.order = { 'tip_type': 'dollar', 'pay_type': 'card' };
 	$scope.tip = { 'dollar' : '', 'percent': '10' };
@@ -36,12 +51,12 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 
 	var start = function(){
 
-		$scope.card._months = RestaurantOrderService.cardMonths();
-		$scope.card._years = RestaurantOrderService.cardYears();
-		$scope.tip._percents = RestaurantOrderService.tipPercents();
+		$scope.card._months = RestaurantOrderPlacementService.cardMonths();
+		$scope.card._years = RestaurantOrderPlacementService.cardYears();
+		$scope.tip._percents = RestaurantOrderPlacementService.tipPercents();
 
 		// get info about the restaurant
-		RestaurantService.order_placement( function( json ){
+		RestaurantOrderPlacementService.restaurant.get( function( json ){
 			if( json.id_restaurant ){
 				$scope.restaurant = json;
 				PositionService.bounding( $scope.restaurant.lat, $scope.restaurant.lon );
@@ -72,7 +87,7 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 	var calcTotal = function(){
 		$scope.finalAmount = 0;
 		if( $scope.order && $scope.restaurant ){
-			$scope.finalAmount = RestaurantOrderService.calcTotal( $scope.order, $scope.restaurant );
+			$scope.finalAmount = RestaurantOrderPlacementService.calcTotal( $scope.order, $scope.restaurant );
 		}
 	}
 
@@ -142,14 +157,14 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 			order.tip = $scope.order.tip;
 		}
 		order.restaurant = $scope.restaurant.id_restaurant;
-		RestaurantOrderService.process( order, $scope.card, function( data ){
+		RestaurantOrderPlacementService.process( order, $scope.card, function( data ){
 			$scope.isProcessing = false;
 			if( data.error ){
 				App.alert( data.error);
 				return;
 			} else {
 				if( data.id_order ) {
-					$scope.navigation.link( '/restaurant/order/' + data.id_order );
+					$scope.navigation.link( '/restaurant/order/placement/' + data.id_order );
 				} else {
 					var errors = '';
 					var error = '';
@@ -165,14 +180,14 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 	}
 
 	$scope.list = function(){
-		$scope.navigation.link( '/restaurant/order/list' );
+		$scope.navigation.link( '/restaurant/order/placement/list' );
 	}
 
 	$scope.test = function (){
 		$scope.card.number = '4111111111111111';
 		$scope.card.year = '2015';
 		$scope.card.month = '2';
-		$scope.order = { name: 'MR TEST', phone: '646-783-1444', pay_type: 'card', delivery_type: 'delivery', address: '1120 Princeton Drive, Marina del Rey CA 90292', notes: 'Second floor', subtotal:10, tip:1.50, tip_type:'dollar' };
+		$scope.order = { name: 'MR TEST', phone: '646-783-1444', pay_type: 'card', delivery_type: 'delivery', address: $scope.restaurant.address, notes: 'Second floor', subtotal:10, tip:1.50, tip_type:'dollar' };
 		setTimeout( function(){ calcTotal(); $scope.checkAddress() }, 1000 );
 	}
 

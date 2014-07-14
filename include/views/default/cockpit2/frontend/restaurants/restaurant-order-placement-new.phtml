@@ -147,10 +147,8 @@
 
 				<li class="li-input" ng-show="!isProcessing">
 					<button class="button orange" ng-click="processOrder();">Process Order</button>
-					<!-- <span ng-click="test()">test</span> -->
+					<span ng-show="isBeta" class="orange link" ng-click="test()">Mr Test</span>
 				</li>
-
-
 
 				<li class="li-input" ng-show="isProcessing">
 					<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
