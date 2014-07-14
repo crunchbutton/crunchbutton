@@ -64,9 +64,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$_shift[ 'id_community_shift' ] = $shift->id_community_shift;
 			$_shift[ 'driver_paid' ] = $shift->duration();
 			if( $_shift[ 'driver_paid' ] ){
-				$payment_info = Cockpit_Payment_Schedule_Shift::checkShiftWasPaidDriver( $_shift[ 'id_admin_shift_assign' ] );
-				if( $payment_info ){
-					$_shift[ 'paid_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $payment_info->date()->format( 'M jS Y g:i:s A' ) ];
+				$schedule_info = Cockpit_Payment_Schedule_Shift::checkShiftWasPaidDriver( $_shift[ 'id_admin_shift_assign' ] );
+				if( $schedule_info ){
+					$payment_info = $schedule_info->payment();
+					$date = $payment_info->date()->get( 0 );
+					$_shift[ 'paid_info' ] = [ 'id_payment' => $payment_info->id_payment, 'date' => $date->format( 'M jS Y g:i:s A' ) ];
 				}
 			}
 			$_shifts[] = $_shift;
@@ -254,7 +256,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					continue;
 				}
-
 				$pay[ $driver ][ 'subtotal' ] += $order[ 'pay_info' ][ 'subtotal' ];
 				$pay[ $driver ][ 'tax' ] += $order[ 'pay_info' ][ 'tax' ];
 				$pay[ $driver ][ 'delivery_fee' ] += $order[ 'pay_info' ][ 'delivery_fee' ];

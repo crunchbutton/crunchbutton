@@ -16,7 +16,6 @@
 				</div>
 			</li>
 		</ul>
-
 	</form>
 
 	<div ng-show="isLoading">
@@ -74,16 +73,16 @@
 							${{summary.earnings.current.total_reimburse | formatPrice}}
 						</td>
 					</tr>
-					<tr ng-if="summary.earnings.previous.payment_status">
+					<tr ng-if="summary.earnings.previous">
 						<td>Last week's earnings</td>
-						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.payment}}">
-							${{summary.earnings.previous.payment_status.pending.payment | formatPrice}}
+						<td positive-or-negative-color="{{summary.earnings.previous.total_payment}}">
+							${{summary.earnings.previous.total_payment | formatPrice}}
 						</td>
 					</tr>
-					<tr ng-if="summary.earnings.previous.payment_status">
+					<tr ng-if="summary.earnings.previous">
 						<td>Last week's reimbursement</td>
-						<td positive-or-negative-color="{{summary.earnings.previous.payment_status.pending.reimburse}}">
-							${{summary.earnings.previous.payment_status.pending.reimburse | formatPrice}}
+						<td positive-or-negative-color="{{summary.earnings.previous.total_reimburse}}">
+							${{summary.earnings.previous.total_reimburse | formatPrice}}
 						</td>
 					</tr>
 				</tbody>
@@ -150,7 +149,41 @@
 								</tr>
 								<tr ng-show="day.show_day">
 									<td colspan="4">
-										<table class="tb-grid tb-zebra tb-zebra-summary">
+										<table class="tb-grid tb-zebra tb-zebra-summary" ng-if="day.shifts">
+											<thead>
+												<tr>
+													<td>Shift Started At</td>
+													<td>Shift Ended At</td>
+													<td>Hours</td>
+													<td>Pay</td>
+													<td></td>
+												</tr>
+											</thead>
+											<tbody ng-repeat="shift in day.shifts">
+												<tr>
+													<td>
+														{{shift.date_start}}
+													</td>
+													<td>
+														{{shift.date_end}}
+													</td>
+													<td>
+														{{shift.hours}}
+													</td>
+													<td positive-or-negative-color="{{shift.total_payment}}">
+														${{shift.total_payment | formatPrice}}
+													</td>
+													<td>
+														<span ng-class="{ 'span-driver-summary-paid': shift.payment.status == 'Paid',
+																							'span-driver-summary-pending': shift.payment.status == 'Pending',
+																							'span-driver-summary-processing': shift.payment.status == 'Processing' }">
+															{{shift.payment.status}}
+														</span>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table class="tb-grid tb-zebra tb-zebra-summary" ng-if="day.orders">
 											<thead>
 												<tr>
 													<td class="hide-tiny-screen">Order</td>
