@@ -134,9 +134,10 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		$week = $thursday->format( 'W' );
 
 		$firstDay = $thursday;
-		$shifts_period = 'From ' . $firstDay->format( 'M jS Y' );
+		// Driver Week: Thurs June 26-Wed July 2
+		$shifts_period = 'Driver Week: ' . $firstDay->format( 'D F d' );
 		$firstDay->modify( '+ 6 days' );
-		$shifts_period .= ' to ' . $firstDay->format( 'M jS Y' );
+		$shifts_period .= '-' . $firstDay->format( 'D F d' );
 
 		$firstDay->modify( '- 6 days' );
 
@@ -174,7 +175,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community, $day->format( 'Y-m-d' ) );
 				foreach ( $segments as $segment ) {
 					$export = $segment->export();
-					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ], 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ] );
+					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ] . ' - ' . $export[ 'period' ][ 'weekday' ] , 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ] );
 					if( $wantToWork[ $segment->id_community_shift ] ){
 						$data[ 'assigned' ] = Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift );
 						$data[ 'ranking' ] = $wantToWork[ $segment->id_community_shift ];

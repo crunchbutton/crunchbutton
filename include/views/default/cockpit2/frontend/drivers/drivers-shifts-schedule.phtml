@@ -11,16 +11,16 @@
 	<div class="divider"></div>
 
 	<div class="drivers-shifts-list">
-		
+
 		<div ng-if="shifts.length">
-			
+
 
 			<div class="drivers-shift drivers-schedule">
 
 			<div>
 				<ul class="ul-inputs box-content">
-					<li class="li-input"> 
-						<div class="label">How many shifts would you like to work this week?</div>
+					<li class="li-input">
+						<div class="label">How many shifts would you like to work?</div>
 						<select name="shiftsAvailableToWork" ng-model="shiftsAvailableToWork" ng-change="updateShiftsAvailable(this.shiftsAvailableToWork)" ng-options="shift as shift for shift in availableToWork"></select>
 					</li>
 				</ul>
@@ -28,7 +28,7 @@
 
 			<div ng-if="available > 0" class="shifts-available">
 
-				<h2 class="title">Available shifts</h2>
+				<h2 class="title">All shifts</h2>
 
 				<div class="box-content">
 					<table class="tb-grid">
@@ -56,11 +56,11 @@
 
 			<div ng-if="yes > 0" class="shifts-yes">
 
-				<h2 class="title">Shifts you want to work</h2>
+				<h2 class="title">Shifts you could work</h2>
 				<h3 class="title">Ranked from most to least preferred</h3>
 
 				<div class="box-content">
-					
+
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking > 0">
 							<td>
@@ -95,7 +95,7 @@
 				<h2 class="title">Shifts you CANNOT work</h2>
 
 				<div class="box-content">
-					
+
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">
 							<td>
@@ -118,12 +118,12 @@
 			</div>
 
 		</div>
-		
+
 		<div ng-if="!shifts.length" class="box-content">
 			You currently have no shifts to this period.
 		</div>
 
-	</div>	
+	</div>
 
 </div>
 

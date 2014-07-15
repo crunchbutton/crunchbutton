@@ -43,6 +43,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$out[ 'community' ] = array( 'id_community' => $this->id_community, 'name' => $this->community()->name );
 
 		$out[ 'period' ] = array( 'toString' => $this->startEndToString(),
+															'weekday' => $this->dateStart()->format( 'l' ),
 															'day_start' => $this->dateStart()->format( 'M jS Y' ),
 															'day_end' => $this->dateEnd()->format( 'M jS Y' ),
 															'date_start' => $this->dateStart()->format( 'Y-m-d H:i:s' ),

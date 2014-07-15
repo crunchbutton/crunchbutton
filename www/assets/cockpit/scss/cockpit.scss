@@ -875,6 +875,9 @@ input {
 		border-radius: 0;
 		margin-left: .2em;
 	}
+		.tb-grid .schedule-buttons .button:active{
+			opacity:.5;
+		}
 		.schedule-action-lock{
 			background: #b8babc;
 			cursor: no-drop;
