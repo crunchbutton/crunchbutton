@@ -35,7 +35,7 @@
 				<div class="padded">
 					<table width="100%">
 						<tr>
-							<?php foreach( $this->days as $day ) { 
+							<?php foreach( $this->days as $day ) {
 								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 							?>
 								<th width="14%" style="background:<?php echo $dark; ?>">
@@ -52,14 +52,14 @@
 						</tr>
 						<?php $dark = ''; ?>
 						<tr>
-							<?php foreach( $this->days as $day ) { 
+							<?php foreach( $this->days as $day ) {
 								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 								$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
 							?>
 								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
 									<div class="row-fluid">
-										<?php 
-										foreach( $segments as $segment ) { 
+										<?php
+										foreach( $segments as $segment ) {
 											$segment = Crunchbutton_Community_Shift::o( $segment->id_community_shift );
 											$_drivers = $segment->getDrivers();
 											$firstDayOfWeek = $segment->firstDayOfWeek()->format( 'Y-m-d' );
@@ -78,9 +78,9 @@
 												$drivers[] = $driver->name . " ({$ranking} of {$highestRanking})";
 											}
 											if( $hasDriver ){
-												$drivers = join( ', ', $drivers ); 	
-											} 
-											
+												$drivers = join( ', ', $drivers );
+											}
+
 											?><div class="row-fluid">
 												<div class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
 													<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
@@ -105,7 +105,7 @@
 									</div>
 								</td>
 						<?php } ?>
-						</tr>	
+						</tr>
 					</table>
 					<div class="divider"></div>
 				</div>
@@ -154,7 +154,7 @@
 		border: 1px solid #eca49f;
 	}
 		.shift.hasntDrivers a{
-			color: #8c3533;	
+			color: #8c3533;
 		}
 	.shift span{
 		display: block;

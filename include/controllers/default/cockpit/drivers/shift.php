@@ -1,13 +1,13 @@
 <?php
 
 class Controller_drivers_shift extends Crunchbutton_Controller_Account {
-	
+
 	public function init() {
 
 		c::view()->page = 'drivers';
 
 		switch ( c::getPagePiece( 2 ) ) {
-			
+
 			case 'community':
 
 				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
@@ -25,7 +25,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 					}
 				}
 				break;
-			
+
 			case 'schedule':
 
 				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) {
@@ -79,7 +79,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
-			$thursday = $now;	
+			$thursday = $now;
 			$thursday->modify( '+ 1 week' );
 		} else {
 			$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
@@ -159,11 +159,12 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$_now = $now->format( 'M jS Y' );
 		if( $now->format( 'l' ) == 'Thursday' ){
-			$thursday = $now;	
+			$thursday = $now;
 		} else {
 			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
-			$thursday->modify( '+ 1 week' );
+			// $thursday->modify( '+ 1 week' );
 		}
 
 		$year = ( c::getPagePiece( 3 ) != '' ? c::getPagePiece( 3 ) : $thursday->format( 'Y' ) );
@@ -178,7 +179,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
-		
+
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
 			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
@@ -195,13 +196,14 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		c::view()->to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		$firstDay->modify( '-6 day' );
 		c::view()->from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-	
+
 		c::view()->link_prev = $link_prev_day;
 		c::view()->link_next = $link_next_day;
 		c::view()->days = $days;
 		c::view()->week = $week;
 		c::view()->year = $year;
 		c::view()->current = $current;
+		c::view()->now = $_now;
 		c::view()->display( 'drivers/shift/summary/index' );
 
 	}
@@ -212,12 +214,12 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		if( $shift->id_community_shift ){
 			c::view()->shift = $shift;
 			c::view()->layout( 'layout/ajax' );
-			c::view()->display( 'drivers/shift/summary/shift' );	
+			c::view()->display( 'drivers/shift/summary/shift' );
 		}
 	}
 
 	public function community(){
-		
+
 		$id_community = c::getPagePiece( 3 );
 		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : false );
 		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : false );
@@ -225,7 +227,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
-			$thursday = $now;	
+			$thursday = $now;
 		} else {
 			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 			$thursday->modify( '+ 1 week' );
@@ -274,7 +276,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			// Start week on Thursday #3084
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 			if( $now->format( 'l' ) == 'Thursday' ){
-				$thursday = $now;	
+				$thursday = $now;
 			} else {
 				$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 				$thursday->modify( '+ 1 week' );
@@ -287,9 +289,9 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		if( $_REQUEST[ 'ajax' ] ){
 			c::view()->ajax = true;
-			c::view()->layout( 'layout/ajax' );	
+			c::view()->layout( 'layout/ajax' );
 		}
-		
+
 		c::view()->display( 'drivers/shift/community/index' );
 	}
 
@@ -298,7 +300,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
-			$thursday = $now;	
+			$thursday = $now;
 		} else {
 			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
@@ -315,7 +317,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
-		
+
 		c::view()->week = $firstDay->format( 'W' );
 		c::view()->year = $firstDay->format( 'Y' );
 
@@ -325,7 +327,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		$firstDay->modify( '- 6 days' );
 
 		$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();
-		
+
 		// prev/next links
 		$firstDay->modify( '- 1 week' );
 		$link_prev_day = $firstDay->format( 'Y/m/d' );
