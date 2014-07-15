@@ -48,8 +48,12 @@
 		<div>Place a new order</div>
 	</div>
 
-	<div class="dashboard-box call-support" ng-click="call()">
-		<div>Call Crunchbutton Support</div>
+	<a class="dashboard-box call-support"  ng-href="tel:{{status.phone}}">
+		<span>Call Crunchbutton Support</span>
+	</a>
+
+	<div class="dashboard-box phone">
+		{{status.phone_formatted}}
 	</div>
 
 </div>

@@ -1759,15 +1759,25 @@ b, strong{ font-weight: bold; }
 	.dashboard-box.call-support{
 		background: #353b43;
 		color: #FFF;
+		display: block;
+		text-decoration: none;
 	}
-	.dashboard-box.place-order div, .dashboard-box.call-support div{
+	.dashboard-box.place-order div, .dashboard-box.call-support span{
 		cursor: pointer;
 		display: block;
 		padding:10px;
 		font-size: 1.3em;
 		text-transform: uppercase;
 		text-align:center;
+		text-decoration: none !important;
+		display: block;
 	}
 		.dashboard-box.call-support{
 			margin-top: 5em;
+		}
+		.dashboard-box.phone{
+			margin-top: 3em;
+			font-weight: bold;
+			font-size: 1.2em;
+			text-align: center;
 		}
