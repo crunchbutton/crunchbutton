@@ -574,34 +574,40 @@ class Crunchbutton_Admin extends Cana_Table {
 		$groups = [];
 		$communities = [];
 
-		if( $this->groups() ){
-			foreach ($this->groups() as $group) {
-				$groups[$group->id_group] = $group->name;
-			}
-		}
-
-		if( $this->communitiesHeDeliveriesFor() ){
-			foreach( $this->communitiesHeDeliveriesFor() as $community ){
-				$communities[ $community->id_community ] = $community->name;
-			}
-		}
-
-		if ($this->permission()->_permissions) {
-			foreach ($this->permission()->_permissions as $group => $perms) {
-				foreach ($perms as $key => $value) {
-					if ($value) {
-						$permissions[$key] = true;
-					}
+		if( !in_array( 'groups', $remove ) ){
+			if( $this->groups() ){
+				foreach ($this->groups() as $group) {
+					$groups[$group->id_group] = $group->name;
 				}
 			}
 		}
 
-		if ($this->permission()->_userPermission) {
-			foreach ($this->permission()->_userPermission as $key => $value) {
-				if ($value) {
-					$permissions[$key] = true;
-				} elseif ($permissions[$key]) {
-					unset($permissions[$key]);
+		if( !in_array( 'communities', $remove ) ){
+			if( $this->communitiesHeDeliveriesFor() ){
+				foreach( $this->communitiesHeDeliveriesFor() as $community ){
+					$communities[ $community->id_community ] = $community->name;
+				}
+			}
+		}
+
+		if( !in_array( 'permissions', $remove ) ){
+			if ($this->permission()->_permissions) {
+				foreach ($this->permission()->_permissions as $group => $perms) {
+					foreach ($perms as $key => $value) {
+						if ($value) {
+							$permissions[$key] = true;
+						}
+					}
+				}
+			}
+
+			if ($this->permission()->_userPermission) {
+				foreach ($this->permission()->_userPermission as $key => $value) {
+					if ($value) {
+						$permissions[$key] = true;
+					} elseif ($permissions[$key]) {
+						unset($permissions[$key]);
+					}
 				}
 			}
 		}

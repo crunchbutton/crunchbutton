@@ -18,8 +18,12 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 		return Util::uploadPath() . '/drivers-doc/';
 	}
 
+	public function url(){
+		return $this->www() . $this->file;
+	}
+
 	public function document( $id_admin, $id_driver_document ){
-		$document = Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status WHERE id_admin = ' . $id_admin . ' AND id_driver_document =' . $id_driver_document )->get( 0 );	
+		$document = Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status WHERE id_admin = ' . $id_admin . ' AND id_driver_document =' . $id_driver_document )->get( 0 );
 		if( $document->id_driver_document ){
 			return $document;
 		}
@@ -31,6 +35,34 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 			$this->_date = new DateTime($this->datetime, new DateTimeZone(c::config()->timezone));
 		}
 		return $this->_date;
+	}
+
+	public function doc(){
+		if( !$this->_doc ){
+			$this->_doc = Cockpit_Driver_Document::o( $this->id_driver_document );
+		}
+		return $this->_doc;
+	}
+
+	public function admin_approved(){
+		if( $this->id_admin_approved ){
+			if( !$this->_admin_approved ){
+				$this->_admin_approved = Admin::o( $this->id_admin_approved );
+			}
+			return $this->_admin_approved;
+		}
+		return false;
+	}
+
+	public function lastUpdatedDocs(){
+		return Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status ORDER BY id_admin_approved ASC, datetime DESC' );
+	}
+
+	public function driver(){
+		if( !$this->_driver ){
+			$this->_driver = Admin::o( $this->id_admin );
+		}
+		return $this->_driver;
 	}
 
 	public function exports(){
