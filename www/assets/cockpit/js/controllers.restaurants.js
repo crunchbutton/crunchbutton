@@ -22,7 +22,7 @@ NGApp.controller('RestaurantOrderPlacementDashboard', function ( $scope, Restaur
 	}
 
 	$scope.list = function(){
-		$scope.navigation.link( '/restaurant/order/placement/list' + $scope.id_restaurant );
+		$scope.navigation.link( '/restaurant/order/placement/list/' + $scope.id_restaurant );
 	}
 
 	$scope.new = function(){
