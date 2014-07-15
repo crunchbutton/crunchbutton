@@ -434,24 +434,27 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		} );
 	}
 
-	DriverOnboardingService.get( $routeParams.id, function( driver ){
-		$scope.driver = driver;
-		if( !$scope.driver.id_admin ){
-			$scope.driver.notify = true;
-		}
-		// logs();
-		docs();
-		DriverOnboardingService.vehicles( function( json ){
-			$scope.vehicles = json.options;
-			if( !$scope.driver.vehicle ){
-				$scope.driver.vehicle = json.default;
+	var start = function(){
+		DriverOnboardingService.get( $routeParams.id, function( driver ){
+			$scope.driver = driver;
+			if( !$scope.driver.id_admin ){
+				$scope.driver.notify = true;
 			}
+			// logs();
+			docs();
+			DriverOnboardingService.vehicles( function( json ){
+				$scope.vehicles = json.options;
+				if( !$scope.driver.vehicle ){
+					$scope.driver.vehicle = json.default;
+				}
+			} );
+			CommunityService.listSimple( function( data ){
+				$scope.communities = data;
+				$scope.ready = true;
+			} );
 		} );
-		CommunityService.listSimple( function( data ){
-			$scope.communities = data;
-			$scope.ready = true;
-		} );
-	} );
+
+	}
 
 	$scope.notify = function(){
 		DriverOnboardingService.notifySetup( $scope.driver.id_admin, function( json ){
@@ -478,7 +481,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 		DriverOnboardingService.save( $scope.driver, function( json ){
 			if( json.success ){
-				$scope.navigation.link( '/drivers/onboarding/' + json.success.id_admin );
+				start();
 				$scope.flash.setMessage( 'Driver saved!' );
 				$scope.driver.pass = '';
 			} else {
@@ -522,6 +525,8 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	uploader.bind('error', function (event, xhr, item, response) {
 		App.alert( 'Upload error, please try again or send us a message.' );
 	});
+
+	start();
 
 } );
 
