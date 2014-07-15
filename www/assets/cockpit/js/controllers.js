@@ -6,7 +6,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 
 
 		if (AccountService.isRestaurant) {
-			MainNavigationService.link('/restaurant/order/placement/new');
+			MainNavigationService.link('/restaurant/order/placement/dashboard');
 		} else if (AccountService.isDriver) {
 			MainNavigationService.link('/drivers/orders');
 		} else {
