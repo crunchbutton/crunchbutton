@@ -182,7 +182,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/drivers-shifts.html'
 		})
 		.when('/drivers/shifts/schedule', {
-			action: 'drivers-shifts',
+			action: 'drivers-shift-preferences',
 			controller: 'DriversShiftsScheduleCtrl',
 			templateUrl: 'assets/view/drivers-shifts-schedule.html'
 		})
