@@ -441,6 +441,12 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		}
 		// logs();
 		docs();
+		DriverOnboardingService.vehicles( function( json ){
+			$scope.vehicles = json.options;
+			if( !$scope.driver.vehicle ){
+				$scope.driver.vehicle = json.default;
+			}
+		} );
 		CommunityService.listSimple( function( data ){
 			$scope.communities = data;
 			$scope.ready = true;
@@ -612,14 +618,20 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 
 } );
 
-NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService ) {
+NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService, DriverOnboardingService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
+	$scope.driver = {};
 
 	CommunityService.listSimple( function( data ){
 		$scope.communities = data;
 		$scope.ready = true;
+	} );
+
+	DriverOnboardingService.vehicles( function( json ){
+		$scope.vehicles = json.options;
+		$scope.driver.vehicle = json.default;
 	} );
 
 	$scope.sending = false;

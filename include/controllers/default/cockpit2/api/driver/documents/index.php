@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 
 		switch ( c::getPagePiece( 3 ) ) {
@@ -39,13 +39,13 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						echo json_encode( ['success' => $name ] );
 						exit;
 					} else {
-						$this->_error( 'invalid extension' );	
+						$this->_error( 'invalid extension' );
 					}
 				} else {
 					$this->_error();
 				}
 				break;
-			
+
 			case 'save':
 
 				// check the permission
@@ -72,7 +72,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$docStatus->datetime = date('Y-m-d H:i:s');
 					$docStatus->file = $this->request()[ 'file' ];
 					$docStatus->save();
-					
+
 					// save driver's log
 					$log = new Cockpit_Driver_Log();
 					$log->id_admin = $id_admin;
@@ -83,7 +83,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 
 					Log::debug( [ 'action' => 'file saved success', 'id_driver_document' => $id_driver_document, 'type' => 'drivers-onboarding'] );
 
-					echo json_encode( ['success' => 'success'] );	
+					echo json_encode( ['success' => 'success'] );
 				} else {
 					$this->_error();
 				}
@@ -96,7 +96,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					}
 
 					$user = c::user();
-					$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) );	
+					$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) );
 					if( !$hasPermission ){
 						echo $this->_error();
 					}
@@ -105,10 +105,10 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$docs = Cockpit_Driver_Document::all();
 					foreach( $docs as $doc ){
 						if( $doc->required ){
-							$docStatus = Cockpit_Driver_Document_Status::document( $admin->id_admin, $doc->id_driver_document );	
+							$docStatus = Cockpit_Driver_Document_Status::document( $admin->id_admin, $doc->id_driver_document );
 							if( $docStatus->id_driver_document_status ){
 								$needToSendDocs = true;
-							}	
+							}
 						}
 					}
 					echo json_encode( [ 'needToSendDocs' => $needToSendDocs ] );
@@ -123,23 +123,29 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						$id_admin = $admin->id_admin;
 					}
 				}
-				
+
 				// Check if the logged user has permission to see the admin's docs
 				$user = c::user();
 				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
-				
+
+				// get driver's vehicle
+				$vehicle = $admin->vehicle();
+
 				// shows the regular list
 				$list = [];
 				$docs = Cockpit_Driver_Document::all();
 				foreach( $docs as $doc ){
+					if( !$doc->showDocument( $vehicle ) ){
+						continue;
+					}
 					$out = $doc->exports();;
 					if( $id_admin && $hasPermission ){
-						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );	
+						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );
 						if( $docStatus->id_driver_document_status ){
 							$out[ 'status' ] = $docStatus->exports();
 						}
 					}
-					
+
 					$list[] = $out;
 				}
 				echo json_encode( $list );

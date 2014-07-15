@@ -1,8 +1,19 @@
 <?php
 
 class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
-	
+
 	public function init() {
+
+		if ( c::getPagePiece( 3 ) && $this->method() == 'get' ) {
+			switch ( c::getPagePiece( 3 ) ) {
+				case 'vehicles':
+					$out = [];
+					$out[ 'options' ] = Cockpit_Admin::vehicleOptions();
+					$out[ 'default' ] = Cockpit_Admin::vehicleDefault();
+					echo json_encode( $out );exit();
+					break;
+			}
+		}
 
 		if( $this->method() != 'post' ){
 			$this->_error();
@@ -31,7 +42,7 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 			}
 		}
 
-		$driver = new Crunchbutton_Admin();
+		$driver = new Cockpit_Admin();
 		$driver->active = 0;
 		$driver->name = $name;
 		$driver->phone = $phone;
@@ -40,11 +51,14 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		}
 		$driver->save();
 
-		$driver = Crunchbutton_Admin::o( $driver->id_admin );
+		$driver = Cockpit_Admin::o( $driver->id_admin );
 
 		// create an username
 		$driver->login = $driver->createLogin();
 		$driver->save();
+
+		// save the vehicle
+		$driver->saveVehicle( $this->request()[ 'vehicle' ] );
 
 		Log::debug( [ 'action' => 'new driver created', 'driver' => $driver->id_admin, 'name' => $name, 'phone' => $phone, 'email' => $email, 'type' => 'drivers-onboarding'] );
 
@@ -62,7 +76,7 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 				$adminGroup->id_admin = $driver->id_admin;
 				$adminGroup->id_group = $group->id_group;
 				$adminGroup->save();
-			}	
+			}
 		}
 
 		// Create phone notification

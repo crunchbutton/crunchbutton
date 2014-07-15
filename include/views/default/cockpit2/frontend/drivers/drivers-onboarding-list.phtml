@@ -11,7 +11,7 @@
 		<button class="button orange" ng-click="add()">New Driver</button>
 		<div class="divider"></div>
 	</div>
-	
+
 	<div class="divider"></div>
 
 	<div ng-if="count">
@@ -20,10 +20,11 @@
 				<tr>
 					<td class="td-medium">Name</td>
 					<td class="td-medium">Login</td>
+					<td>Vehicle</td>
 					<td>Community</td>
 					<td></td>
 				</tr>
-			</thead>		
+			</thead>
 			<tbody>
 				<tr ng-repeat="driver in drivers">
 					<td class="link" ng-click="edit(driver.id_admin)">
@@ -31,6 +32,9 @@
 					</td>
 					<td>
 						<span ng-if="driver.login">{{driver.login}}</span>
+					</td>
+					<td>
+						{{driver.vehicle}}
 					</td>
 					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
 					<td>
