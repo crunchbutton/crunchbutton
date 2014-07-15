@@ -6,6 +6,14 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 
 		switch ( c::getPagePiece( 3 ) ) {
 
+			case 'list':
+				$this->_list();
+				break;
+
+			case 'approve':
+				$this->_approve();
+				break;
+
 			case 'upload':
 
 				if( $_FILES ){
@@ -123,6 +131,9 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						$id_admin = $admin->id_admin;
 					}
 				}
+				if( !$admin->id_admin ){
+					$this->_error();
+				}
 
 				// Check if the logged user has permission to see the admin's docs
 				$user = c::user();
@@ -145,12 +156,78 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 							$out[ 'status' ] = $docStatus->exports();
 						}
 					}
-
 					$list[] = $out;
 				}
 				echo json_encode( $list );
 				break;
 		}
+	}
+
+	private function _approve(){
+		$doc = Cockpit_Driver_Document_Status::o( c::getPagePiece( 4 ) );
+		if( $doc->id_driver_document_status ){
+			$action = c::getPagePiece( 5 );
+			if( $action == 'disapprove' ){
+				$doc->id_admin_approved = null;
+			} else {
+				$doc->id_admin_approved = c::user()->id_admin;
+			}
+			$doc->save();
+			echo json_encode( [ 'success' => true ] );exit();
+		} else {
+			$this->_error();
+		}
+	}
+
+	private function _list(){
+		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) );
+		if( !$hasPermission ){
+			$this->_error();
+			exit;
+		}
+		$resultsPerPage = 20;
+		if ( c::getPagePiece( 4 ) ) {
+			$page = c::getPagePiece( 4 );
+		} else {
+			$page = 1;
+		}
+
+		$docs = Cockpit_Driver_Document_Status::lastUpdatedDocs();
+
+		$start = ( ( $page - 1 ) * $resultsPerPage ) + 1;
+		$end = $start + $resultsPerPage;
+		$count = 1;
+
+		$list = [];
+		foreach( $docs as $doc ){
+			if( $count >= $start && $count < $end ){
+				$admin = $doc->admin_approved();
+				if( $admin ){
+					$admin = $admin->name;
+				}
+				$_doc = [	'id_driver_document_status' => $doc->id_driver_document_status,
+									'update' => $doc->date()->format( 'M jS Y g:i:s A' ),
+									'url' => $doc->url(),
+									'doc' => $doc->doc()->name,
+									'approved' => $admin
+								];
+				$_doc = array_merge( $_doc, $doc->driver()->exports( [ 'phone', 'txt', 'email', 'timezone', 'testphone', 'permissions', 'groups', 'vehicle', 'active' ] ) );
+				$list[] = $_doc;
+			}
+			$count++;
+		}
+
+		$pages = ceil( $docs->count() / $resultsPerPage );
+
+		$data = [];
+		$data[ 'count' ] = $docs->count();
+		$data[ 'pages' ] = $pages;
+		$data[ 'prev' ] = ( $page > 1 ) ? $page - 1 : null;
+		$data[ 'page' ] = intval( $page );
+		$data[ 'next' ] = ( $page < $pages ) ? $page + 1 : null;
+		$data[ 'results' ] = $list;
+
+		echo json_encode( $data );
 	}
 
 	private function _error( $error = 'invalid request' ){
