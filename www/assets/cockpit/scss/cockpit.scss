@@ -549,6 +549,11 @@ input {
 	width: 6em;
 	display: inline-block;
 }
+	.input-wrap select{
+		font-size: 1em;
+		background: transparent;
+		border:none;
+	}
 
 .login-content .info {
 	margin-top: 10em;

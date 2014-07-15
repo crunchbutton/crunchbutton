@@ -35,6 +35,14 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.driverVehicle.$invalid}">
+				<div class="label">Vehicle:</div>
+				<select name="driverVehicle" required ng-model="driver.vehicle" ng-options="opt as opt for opt in vehicles" ></select>
+				<div class="box-error">
+					<small ng-show="form.driverVehicle.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.driverIdCommunity.$invalid}">
 				<div class="label">Community:</div>
 				<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>

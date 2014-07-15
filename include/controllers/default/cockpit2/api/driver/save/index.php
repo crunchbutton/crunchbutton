@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 
 		$id_admin = c::getPagePiece( 3 );
@@ -21,17 +21,17 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		// saves a new driver
 		if( !$id_admin ){
 			$newDriver = true;
-			$driver = new Crunchbutton_Admin();
+			$driver = new Cockpit_Admin();
 			// create the new driver as inactive
 			$driver->active = 0;
 		} else {
-			$driver = Crunchbutton_Admin::o( $id_admin );
+			$driver = Cockpit_Admin::o( $id_admin );
 		}
-			
+
 		$driver->name = $this->request()[ 'name' ];
 		$driver->phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
 		$driver->email = $this->request()[ 'email' ];
-		
+
 		$pass = $this->request()[ 'pass' ];
 		if( $pass && trim( $pass ) != '' ){
 			$driver->pass = $driver->makePass( $pass );
@@ -44,6 +44,8 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver->login = $driver->createLogin();
 			$driver->save();
 		}
+
+		$driver->saveVehicle( $this->request()[ 'vehicle' ] );
 
 		// add the community
 		$id_community = $this->request()[ 'id_community' ];
@@ -67,7 +69,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 				$adminGroup->id_admin = $driver->id_admin;
 				$adminGroup->id_group = $group->id_group;
 				$adminGroup->save();
-			}	
+			}
 		}
 
 		if( $newDriver ){
@@ -103,7 +105,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		if ( $this->request()[ 'notify' ] ) {
 			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
 		}
-		
+
 		echo json_encode( [ 'success' => $driver->exports() ] );
 		return;
 	}

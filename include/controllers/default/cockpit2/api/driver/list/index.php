@@ -30,9 +30,11 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 		foreach( $drivers as $driver ){
 			if( $count >= $start && $count < $end ){
 				$data = $driver->exports( [ 'permissions', 'groups' ] );
+				$data[ 'vehicle' ] = $driver->vehicle();
 				$sentAllDocs = true;
 				foreach( $docs as $doc ){
-					if( $doc->required ){
+					// see: https://github.com/crunchbutton/crunchbutton/issues/3393
+					if( $doc->isRequired( $data[ 'vehicle' ] ) ){
 						$docStatus = Cockpit_Driver_Document_Status::document( $driver->id_admin, $doc->id_driver_document );
 						if( !$docStatus->id_driver_document_status ){
 							$sentAllDocs = false;

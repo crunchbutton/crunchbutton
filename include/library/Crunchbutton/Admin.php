@@ -3,7 +3,30 @@
 class Crunchbutton_Admin extends Cana_Table {
 
 	const CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING = 'schedule-sms';
+	const CONFIG_VEHICLE_KEY = 'vehicle';
 
+	const VEHICLE_BIKE = 'bike';
+	const VEHICLE_CAR = 'car';
+
+	public function vehicle(){
+		$vehicle = $this->getConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY );
+		if( $vehicle ){
+			return $vehicle->value;
+		}
+		return Cockpit_Admin::vehicleDefault();
+	}
+
+	public function vehicleDefault(){
+		return Cockpit_Admin::VEHICLE_CAR;
+	}
+
+	public function vehicleOptions(){
+		return [ Cockpit_Admin::VEHICLE_CAR, Cockpit_Admin::VEHICLE_BIKE ];
+	}
+
+	public function saveVehicle( $vehicle ){
+		$this->setConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY, $vehicle );
+	}
 
 	public static function login($login, $inactive = false) {
 		$status = ( $inactive ? '' : 'and active = 1' );
@@ -594,6 +617,7 @@ class Crunchbutton_Admin extends Cana_Table {
 			'testphone' => $this->testphone,
 			'permissions' => $permissions,
 			'groups' => $groups,
+			'vehicle' => $this->vehicle(),
 			'communities' => $communities,
 			'active' => ( $this->active == 1 )
 		];
