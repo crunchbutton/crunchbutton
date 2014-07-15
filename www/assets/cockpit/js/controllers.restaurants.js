@@ -69,7 +69,8 @@ NGApp.controller('RestaurantOrderPlacementList', function ( $scope, RestaurantOr
 	var start = function(){
 		RestaurantOrderPlacementService.list( $scope.id_restaurant, function( json ){
 			if( !json.error ){
-				$scope.orders = json;
+				$scope.orders = json.orders;
+				$scope.id_restaurant = json.id_restaurant;
 			}
 			$scope.ready = true;
 		} );

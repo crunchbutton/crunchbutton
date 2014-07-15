@@ -14,31 +14,31 @@
 		</ul>
 	</form>
 
-	<div class="dashboard-box pending">
+	<div class="dashboard-box pending pointer" ng-click="list()">
 		<div class="dashboard-count">
-			{{status.accepted_orders}}
+			{{status.peding}}
 		</div>
 		<div class="dashboard-content">
 			<div class="title">
-				order<span ng-if="status.accepted_orders > 1">s</span> pending
+				order<span ng-if="status.peding > 1">s</span> pending
 			</div>
 			<div class="description">
-				order<span ng-if="status.accepted_orders > 1">s</span> waiting to be picked up
+				order<span ng-if="status.peding > 1">s</span> waiting to be picked up
 			</div>
 		</div>
 		<div class="divider"></div>
 	</div>
 
-	<div class="dashboard-box transit">
+	<div class="dashboard-box transit pointer" ng-click="list()">
 		<div class="dashboard-count">
-			{{status.pickedup_orders}}
+			{{status.transit}}
 		</div>
 		<div class="dashboard-content">
 			<div class="title">
-				order<span ng-if="status.pickedup_orders > 1">s</span> in transit
+				order<span ng-if="status.transit > 1">s</span> in transit
 			</div>
 			<div class="description">
-				order<span ng-if="status.pickedup_orders > 1">s</span> waiting to be picked up
+				order<span ng-if="status.transit > 1">s</span> waiting to be picked up
 			</div>
 		</div>
 		<div class="divider"></div>

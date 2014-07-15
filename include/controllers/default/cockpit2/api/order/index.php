@@ -19,15 +19,15 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 							$restaurant = Admin::restaurantOrderPlacement();
 						}
 						if( $restaurant->id_restaurant ){
-							$out = [];
+							$out = [ 'id_restaurant' => intval( $restaurant->id_restaurant ), 'orders' => [] ];
 							$orders = Order::q( 'SELECT * FROM `order` o WHERE id_restaurant = "' . $restaurant->id_restaurant . '" AND o.date BETWEEN NOW() - INTERVAL 7 DAY AND NOW() ORDER BY id_order DESC' );
 							foreach( $orders as $order ) {
-								$out[]	= array( 	'id_order' => $order->id_order,
-																	'lastStatus' => $order->deliveryLastStatus(),
-																	'name' => $order->name,
-																	'phone' => $order->phone,
-																	'date' => $order->date()->format( 'M jS Y g:i:s A' ),
-															);
+								$out[ 'orders' ][]	= array( 	'id_order' => $order->id_order,
+																							'lastStatus' => $order->deliveryLastStatus(),
+																							'name' => $order->name,
+																							'phone' => $order->phone,
+																							'date' => $order->date()->format( 'M jS Y g:i:s A' ),
+																					);
 							}
 							echo json_encode( $out );
 						} else {

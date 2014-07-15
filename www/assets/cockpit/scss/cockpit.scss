@@ -1781,3 +1781,57 @@ b, strong{ font-weight: bold; }
 			font-size: 1.2em;
 			text-align: center;
 		}
+.order-message{
+	margin-bottom: 1.2em;
+	line-height: 1.2em;
+	color: #7b7e88;
+}
+.order-group{
+	font-family: Ruda, Open Sans, Helvetica, Arial, sans-serif;
+	line-height: 1.2em;
+	margin-bottom: 1em;
+	font-size: 1.2em;
+}
+	.order-group .order-label{
+		font-weight: bold;
+	}
+	.order-print{
+		color: #7b7e88;
+		margin-top: 1.5em;
+		margin-right: 5px;
+		display: block;
+		text-decoration: none;
+		font-size: 1.2em;
+		text-align: right;
+	}
+.box-price{
+	font-family: Ruda, Open Sans, Helvetica, Arial, sans-serif;
+	text-align: center;
+	width: 49%;
+}
+	.box-price .title{
+		font-size: 2em;
+		font-weight: 600;
+		padding: 10px;
+		padding-bottom: 6px;
+	}
+	.box-price .description{
+		padding-bottom: 10px;
+	}
+		.box-price .dollar{
+			font-size: .6em;
+			font-weight: normal;
+		}
+		.box-price.price{
+			background: #d6d9dc;
+			color: #8d8d8d;
+			float: left;
+		}
+		.box-price.total-price{
+			background: #df5850;
+			color: #FFF;
+			float: right;
+		}
+.pointer{
+	cursor: pointer;
+}
