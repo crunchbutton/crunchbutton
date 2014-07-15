@@ -25,23 +25,36 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		return $this->_lastPayment;
 	}
 
-	// get number of orders of a given status
+	// get number of orders of a given status for last 7 days
 	public function numberOfOrdersByStatus( $status ){
-		$query = 'SELECT COUNT(*) AS total
-												FROM `order` o
-												INNER JOIN order_action oa ON oa.id_order = o.id_order
-												AND oa.type = "' . $status . '"
-												INNER JOIN
-												  (SELECT MAX(oa.id_order_action) AS id_order_action,
-												          type,
-												          id_order
-												   FROM order_action oa
-												   GROUP BY oa.id_order
-												   ORDER BY oa.id_order_action) actions ON actions.id_order = o.id_order
-												AND actions.id_order_action = oa.id_order_action
-												WHERE o.id_restaurant = "' . $this->id_restaurant . '"';
-			$data = c::db()->get( $query )->get( 0 );
-			return $data->total;
+		$interval = 'AND o.date BETWEEN NOW() - INTERVAL 7 DAY AND NOW()';
+		// orders with no status
+		if( !$status ){
+			$query = 'SELECT COUNT(*) AS total
+									FROM `order` o
+									WHERE o.id_restaurant = "' . $this->id_restaurant . '"
+										' . $interval . '
+										AND o.id_order NOT IN(	SELECT DISTINCT(o.id_order) id
+																							FROM `order` o
+																							INNER JOIN order_action oa ON oa.id_order = o.id_order
+																							WHERE o.id_restaurant = "' . $this->id_restaurant . '" ' . $interval . ' )';
+		} else {
+			$query = 'SELECT COUNT(*) AS total
+								FROM `order` o
+								INNER JOIN order_action oa ON oa.id_order = o.id_order
+								AND oa.type = "' . $status . '"
+								INNER JOIN
+								  (SELECT MAX(oa.id_order_action) AS id_order_action,
+								          type,
+								          id_order
+								   FROM order_action oa
+								   GROUP BY oa.id_order
+								   ORDER BY oa.id_order_action) actions ON actions.id_order = o.id_order
+								AND actions.id_order_action = oa.id_order_action
+								WHERE o.id_restaurant = "' . $this->id_restaurant . '" ' . $interval;
+		}
+		$data = c::db()->get( $query )->get( 0 );
+		return $data->total;
 	}
 
 	// get orders that are payable; not test, within our date range, it just return the order, the calc are made at settlement class

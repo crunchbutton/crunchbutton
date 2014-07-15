@@ -23,8 +23,8 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 						if( $restaurant ){
 							$out = [];
 							$out[ 'id_restaurant' ] = intval( $restaurant->id_restaurant );
-							$out[ 'accepted_orders' ] = $restaurant->numberOfOrdersByStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED );
-							$out[ 'pickedup_orders' ] = $restaurant->numberOfOrdersByStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP );
+							$out[ 'peding' ] = ( $restaurant->numberOfOrdersByStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED ) + $restaurant->numberOfOrdersByStatus( false ) );
+							$out[ 'transit' ] = intval( $restaurant->numberOfOrdersByStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP ) );
 							$phone = c::config()->twilio->live->outgoingCustomer;
 							if( preg_match( '/^\+\d(\d{3})(\d{3})(\d{4})$/', $phone, $matches ) ){
     						$phone = $matches[1] . '-' .$matches[2] . '-' . $matches[3];

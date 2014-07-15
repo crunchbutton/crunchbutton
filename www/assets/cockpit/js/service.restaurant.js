@@ -39,7 +39,7 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 	var orders = $resource( App.service + 'order/:action/:id_restaurant', { action: '@action', id_restaurant: '@id_restaurant' }, {
 				'process' : { 'method': 'POST' },
 				'get' : { 'method': 'GET' },
-				'list' : { 'method': 'GET', params: { 'action' : 'restaurant-list-last' }, isArray: true },
+				'list' : { 'method': 'GET', params: { 'action' : 'restaurant-list-last' } },
 			}
 		);
 
