@@ -1,28 +1,34 @@
 <?php
 
 class Controller_api_unique extends Crunchbutton_Controller_Rest {
-	
+
 	public function init() {
-	
+
 		switch ( $this->method() ) {
 			case 'post':
 				$value = $this->request()[ 'value' ];
+				$name =  $this->request()[ 'name' ];
 				if( trim( $value ) == '' ){
 					$this->_error();
 				}
-				switch ( c::getPagePiece( 2 ) ) {
+				// See: #3392
+				if ( strpos( strtolower( $name ), '[test]' ) !== false ) {
+					echo json_encode( [ 'canIUse' => true ] );
+					exit;
+				} else {
+					switch ( c::getPagePiece( 2 ) ) {
+						case 'email':
+							$admin = Admin::q( 'SELECT * FROM admin WHERE email = "' . $value . '"' );
+							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
+							exit;
+							break;
 
-					case 'email':
-						$admin = Admin::q( 'SELECT * FROM admin WHERE email = "' . $value . '"' );
-						echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
-						exit;
-						break;
-
-					case 'phone':
-						$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $value . '"' );
-						echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
-						exit;
-						break;
+						case 'phone':
+							$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $value . '"' );
+							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
+							exit;
+							break;
+					}
 				}
 				break;
 		}

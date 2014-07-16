@@ -578,7 +578,9 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 			restrict: 'A',
 			require: 'ngModel',
 			link: function ( scope, elem, attrs, ctrl ) {
+
 				elem.on( 'blur', function ( evt ) {
+
 					scope.$apply( function () {
 						var val = elem.val();
 
@@ -599,14 +601,20 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 							return;
 						}
 
+						if( scope.driver && scope.driver.name ){
+							var name = scope.driver.name;
+						} else {
+							var name = null;
+						}
+
 						var unique = $resource( App.service + 'unique/:property/:value', { property: '@property', value: '@value' }, { 'check' : { 'method': 'POST', params : {} } } );
-							unique.check( { property: attrs.isUnique, value: val }, function( json ){
-								if( json && json.canIUse ){
-									ctrl.$setValidity( 'isUnique', true );
-								} else {
-									ctrl.$setValidity( 'isUnique', false );
-								}
-							} );
+						unique.check( { property: attrs.isUnique, value: val, name: name }, function( json ){
+							if( json && json.canIUse ){
+								ctrl.$setValidity( 'isUnique', true );
+							} else {
+								ctrl.$setValidity( 'isUnique', false );
+							}
+						} );
 					} );
 				} );
 			}
