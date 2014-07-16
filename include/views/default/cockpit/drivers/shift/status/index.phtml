@@ -65,10 +65,10 @@
 						</tr>
 					</thead>
 					<tbody>
-				<?php 
-					foreach( $communities as $community ) { 
+				<?php
+					foreach( $communities as $community ) {
 						$drivers = $community->getDriversOfCommunity();
-						foreach( $drivers as $driver ){ 
+						foreach( $drivers as $driver ){
 							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
 							$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
 							$totalShifts = $adminShifts->count();
@@ -95,7 +95,15 @@
 									<?php } ?>
 								</td>
 								<td>
-									<?php echo $status->shifts; ?>
+									<?php
+										if( trim( $status->shifts ) != '' && intval( $status->shifts ) > 0 ){
+											echo $status->shifts;
+										} else {
+											if( $status->completed == 1 ){
+												echo 'left blank';
+											}
+										}
+									?>
 								</td>
 								<td>
 									<?php echo $totalShifts; ?>
@@ -110,7 +118,7 @@
 									<button id_admin="<?php echo $driver->id_admin; ?>" class="make-call-button btn btn-green"><i class="icon-phone"></i>&nbsp;Make a call</button>
 								</td>
 							</tr>
-				<?php 
+				<?php
 						}
 					}
 				?>
@@ -145,8 +153,8 @@
 						</tr>
 					</thead>
 					<tbody>
-				<?php 
-					foreach( $communities as $community ) { 
+				<?php
+					foreach( $communities as $community ) {
 
 						$hasDrivers[ $community->id_community ] = false;
 
@@ -158,8 +166,8 @@
 						$totalDrivers = 0;
 						$totalDriversCompleted = 0;
 						foreach( $shifts as $shift ){ $totalShifts++; }
-						foreach( $drivers as $driver ){ 
-							$totalDrivers++; 
+						foreach( $drivers as $driver ){
+							$totalDrivers++;
 							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
 							if( $status->completed == '1' ){
 								$totalDriversCompleted++;
@@ -195,7 +203,7 @@
 							</span>
 						</td>
 					</tr>
-				<?php 
+				<?php
 					}
 				?>
 					</tbody>

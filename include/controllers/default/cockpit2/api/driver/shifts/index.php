@@ -214,7 +214,8 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
-		if( $_availableShifts == 0 && $status->shifts > 0 ){
+		// See #3395
+		if( $_availableShifts == 0 ){
 			$status->completed = 1;
 		} else {
 			$status->completed = 0;
