@@ -8,8 +8,8 @@ shift.community.init = function(){
 
 	$( '#community-id' ).change( function( event ) {
 		if( $.trim( $( '#community-id' ).val() ) != '' ){
-			document.location.href = '/drivers/shift/community/' + $( '#community-id' ).val() + '/' + shift.community.start_date;	
-		}		
+			document.location.href = '/drivers/shift/community/' + $( '#community-id' ).val() + '/' + shift.community.start_date;
+		}
 	} );
 
 	$( '.modal-hours-edit' ).click( function(e) {
@@ -72,7 +72,7 @@ shift.community.copyAll = function( id_community, week, year ){
 			} else {
 				alert( 'Oops, error! ' + data.error );
 			}
-		} );		
+		} );
 	}
 }
 
@@ -141,7 +141,7 @@ shift.community.edit = function(){
 	if( !shift.validate.segment( hours ) ){
 		alert( 'Unable to figure out what this time means!' );
 		$( '#form-hours' ).focus();
-		return;	
+		return;
 	}
 
 	$.ajax( {
@@ -171,13 +171,13 @@ shift.community.add = function(){
 	if( !shift.validate.segment( hours ) ){
 		alert( 'Unable to figure out what this time means!' );
 		$( '#form-hours' ).focus();
-		return;	
+		return;
 	}
 	var weekdays = [];
 	$( '[name="form-weekdays"]' ).each( function(){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
-			weekdays.push( checkbox.val() );	
+			weekdays.push( checkbox.val() );
 		}
 	} );
 	$.ajax( {
@@ -221,8 +221,8 @@ shift.drivers.init = function(){
 		shift.drivers.update( true );
 	} );
 
-	$( '.available, .wantwork, .dontwantwork' ).sortable( { 
-		'connectWith': '.connected', 
+	$( '.available, .wantwork, .dontwantwork' ).sortable( {
+		'connectWith': '.connected',
 		'forcePlaceholderSize': true,
 		'items': ':not(.locked)',
 		'distance' : 0
@@ -232,7 +232,7 @@ shift.drivers.init = function(){
 					shift.drivers.update();
 				}, 500 );
 			} );
-	
+
 	// sometimes the sortupdate event is not fired!
 	shift.drivers.last_list = { wantWorkItems: [], dontWantWorkItems: [] };
 
@@ -297,13 +297,14 @@ shift.drivers.update = function( completed ){
 			alert( 'Oops, you still have some available shifts to sort!' );
 			return;
 		}
-		if( $.trim( shifts ) == '' ){
-			alert( 'Oops, you need to answer: "How many shifts would you like to work this week?" !' );
-			$( '#shifts' ).focus();
-			return;
-		}
+		// See #3395
+		// if( $.trim( shifts ) == '' ){
+		// 	alert( 'Oops, you need to answer: "How many shifts would you like to work this week?" !' );
+		// 	$( '#shifts' ).focus();
+		// 	return;
+		// }
 	}
-	if( parseInt( shifts ) > 0 && !hasAvailableItem ){
+	if( !hasAvailableItem ){
 		completed = true;
 	}
 
@@ -333,7 +334,7 @@ shift.drivers.update = function( completed ){
 	} ).done( function( data ) {
 		if( data.success ){
 			if( completed > 0 ){
-				location.reload();	
+				location.reload();
 			} else {
 				shift.drivers.order();
 			}
@@ -359,7 +360,7 @@ shift.summary.init = function(){
 	shift.community.toggleTimezone();
 }
 
-shift.summary.assign.init = function(){	
+shift.summary.assign.init = function(){
 	$( '.icheck' ).iCheck( { checkboxClass: "icheckbox_flat-aero", radioClass: "iradio_flat-aero" } );
 	$( '[name="form-id_admin_permanently"]' ).on( 'ifChanged', function( event, obj ){
 		var checkbox = $( this );
@@ -384,13 +385,13 @@ shift.summary.assign.save = function(){
 	$( '[name="form-id_admin"]' ).each( function(){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
-			id_admin.push( checkbox.val() );	
+			id_admin.push( checkbox.val() );
 		}
 	} );
 	$( '[name="form-id_admin_permanently"]' ).each( function(){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
-			id_admin_permanently.push( checkbox.val() );	
+			id_admin_permanently.push( checkbox.val() );
 		}
 	} );
 
@@ -428,11 +429,11 @@ shift.status.init = function(){
 				alert( 'Oops, error! ' + data.error );
 			}
 		} );
-	} );	
+	} );
 	$( '#show-completed' ).on( 'ifChanged', function( event, obj ){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
-			$( '.schedule-completed' ).show();	
+			$( '.schedule-completed' ).show();
 		} else {
 			$( '.schedule-completed' ).hide();
 		}
@@ -441,7 +442,7 @@ shift.status.init = function(){
 	$( '#show-not-completed' ).on( 'ifChanged', function( event, obj ){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
-			$( '.schedule-not-completed' ).show();	
+			$( '.schedule-not-completed' ).show();
 		} else {
 			$( '.schedule-not-completed' ).hide();
 		}

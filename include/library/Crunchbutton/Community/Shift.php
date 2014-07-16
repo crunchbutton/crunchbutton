@@ -492,11 +492,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$drivers = $community->getDriversOfCommunity();
 
-			// echo "\n";
+			echo "\n";
 			$log = $community->name . ' has ' .  $drivers->count() . ' drivers';
 			Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-			// echo $log."\n";
-			// echo "\n";
+			echo $log."\n";
+			echo "\n";
 
 			foreach( $drivers as $driver ){
 
@@ -606,6 +606,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$phone = $driver[ 'phone' ];
 
 				$message = str_replace( '[name]' , $name, $driversMessage );
+
+				$cs_message = 'Driver notificaton: ' . str_replace( '|', '<br>',  $message );
+				Crunchbutton_Support::createNewWarning(  [ 'body' => $cs_message ] );
 
 				if( strpos( $message, '|') > 0 ){
 					$message = explode( '|', $message );
