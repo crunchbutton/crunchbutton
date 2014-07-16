@@ -29,6 +29,8 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 			$this->_error( 'Enter your phone!' );
 		}
 
+		$email = $this->request()[ 'email' ];
+
 		// See: #3392
 		if ( strpos( strtolower( $name ), '[test]' ) === false ) {
 			$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $phone . '"' );
@@ -36,7 +38,6 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 				$this->_error( 'This phone is already registred!' );
 			}
 
-			$email = $this->request()[ 'email' ];
 			if( trim( $email ) ){
 				$admin = Admin::q( 'SELECT * FROM admin WHERE email = "' . $email . '"' );
 				if( $admin->count() != 0 ){
