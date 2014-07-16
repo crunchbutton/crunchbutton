@@ -213,7 +213,8 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$admin = $admin->name;
 				}
 				$_doc = [	'id_driver_document_status' => $doc->id_driver_document_status,
-									'update' => $doc->date()->format( 'M jS Y g:i:s A' ),
+									'date' => $doc->date()->format( 'M jS Y' ),
+									'time' => $doc->date()->format( 'g:i:s A' ),
 									'url' => $doc->url(),
 									'doc' => $doc->doc()->name,
 									'approved' => $admin

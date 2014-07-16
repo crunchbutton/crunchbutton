@@ -373,12 +373,8 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 		} );
 	}
 
-	$scope.all = function(){
-		$scope.navigation.link( '/drivers/onboarding/' );
-	}
-
 	$scope.approve = function( doc ){
-		var approve = ( doc.approve ) ? false : true;
+		var approve = ( doc.approved ) ? false : true;
 		DriverOnboardingService.docs.approve( doc.id_driver_document_status, approve, function( data ){
 			list();
 		} );
@@ -448,6 +444,10 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 		$scope.navigation.link( '/drivers/onboarding/new' );
 	}
 
+	$scope.docs = function(){
+		$scope.navigation.link( '/drivers/onboarding/docs' );
+	}
+
 	$scope.edit = function( id_admin ){
 		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
 	}
@@ -470,7 +470,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	}
 
 	$scope.approve = function( doc ){
-		var approve = ( doc.approve ) ? false : true;
+		var approve = ( doc.approved ) ? false : true;
 		DriverOnboardingService.docs.approve( doc.id_driver_document_status, approve, function( data ){
 			docs();
 		} );
