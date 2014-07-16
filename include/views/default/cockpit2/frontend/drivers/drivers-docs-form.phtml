@@ -48,7 +48,7 @@
 				<td>
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Doc missing
+						Upload missing doc
 					</span>
 				</td>
 			</tr>
@@ -79,15 +79,6 @@
 
 	</form>
 
-	<h2 class="title">
-		<span>Some info</span>
-	</h2>
-
-	<div class="box-content">
-		<p>
-			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>
-		</p>
-	</div>
 </div>
 
 <spinner-loading></spinner-loading>
