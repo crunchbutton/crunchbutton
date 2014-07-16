@@ -19,10 +19,12 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		);
 
 	// documents resource
-	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document', { id_admin: '@id_admin', id_driver_document: '@id_driver_document' }, {
+	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document/:id_driver_document_status/:page/:disapprove', { id_admin: '@id_admin', id_driver_document: '@id_driver_document', id_driver_document_status: '@id_driver_document_status', page: '@page', disapprove:'@disapprove' }, {
 				'status' : { 'method': 'GET', params : { action : null }, isArray: true },
 				'save' : { 'method': 'POST', params : { action : 'save' } },
 				'pendency' : { 'method': 'GET', params : { action : 'pendency' } },
+				'list' : { 'method': 'GET', params : { action : 'list' } },
+				'approve' : { 'method': 'GET', params : { action : 'approve' } },
 			}
 		);
 
@@ -98,8 +100,21 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
-	// returns the driver's docs
+
 	service.docs = {};
+
+	service.docs.listDocs = function( page, callback ){
+		documents.list( { page : page }, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.docs.approve = function( id_driver_document_status, approve, callback ){
+		var disapprove = ( approve ) ? null : 'disapprove';
+		documents.approve( { id_driver_document_status: id_driver_document_status, disapprove: disapprove }, function( data ){
+			callback( data );
+		} );
+	}
 
 	// get docs list
 	service.docs.list = function( id_admin, callback ){

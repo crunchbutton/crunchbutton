@@ -2,19 +2,15 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
+	<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding Documents</span></h1>
 
 	<div class="divider"></div>
 
 	<navigation-back></navigation-back>
 
 	<div class="box-filter right">
-		<input type="text" class="search" id="search" ng-model="search" placeholder="search" />
-		<button class="button orange" ng-click="add()">New Driver</button>
-		<div class="divider"></div>
+		<button class="button orange" ng-click="all()">All Drivers</button>
 	</div>
-
-	<div class="divider"></div>
 
 	<div ng-if="count">
 		<table class="tb-grid">
@@ -22,29 +18,27 @@
 				<tr>
 					<td class="td-medium">Name</td>
 					<td class="td-medium">Login</td>
-					<td>Vehicle</td>
+					<td>Document</td>
 					<td>Community</td>
+					<td>Date</td>
+					<td>Download</td>
 					<td></td>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="driver in drivers">
-					<td class="link" ng-click="edit(driver.id_admin)">
-						{{driver.name}}
-					</td>
-					<td>
-						<span ng-if="driver.login">{{driver.login}}</span>
-					</td>
-					<td>
-						{{driver.vehicle}}
-					</td>
-					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
-					<td>
-						<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
-							Docs ok
+				<tr ng-repeat="doc in documents">
+					<td class="link" ng-click="edit(doc.id_admin)">{{doc.name}}</td>
+					<td>{{doc.login}}</td>
+					<td>{{doc.doc}}</span></td>
+					<td><span ng-repeat="community in doc.communities">{{community}}</span></td>
+					<td>{{doc.update}}</td>
+					<td><a ng-href="{{doc.url}}" target="_blank">Download</a></td>
+					<td class="pointer" ng-click="approve(doc)">
+						<span ng-if="doc.approved">
+							<i class="fa fa-check-square-o"></i> {{doc.approved}}
 						</span>
-						<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
-							Docs missing
+						<span ng-if="!doc.approved">
+							<i class="fa fa-square-o"></i>
 						</span>
 					</td>
 				</tr>

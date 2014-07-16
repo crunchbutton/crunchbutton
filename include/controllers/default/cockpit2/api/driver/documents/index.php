@@ -153,7 +153,14 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					if( $id_admin && $hasPermission ){
 						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );
 						if( $docStatus->id_driver_document_status ){
+							$admin = $docStatus->admin_approved();
 							$out[ 'status' ] = $docStatus->exports();
+							if( $admin->id_admin ){
+								$out[ 'status' ][ 'approved' ] = $admin->name;
+							} else {
+								$out[ 'status' ][ 'approved' ] = false;
+							}
+
 						}
 					}
 					$list[] = $out;

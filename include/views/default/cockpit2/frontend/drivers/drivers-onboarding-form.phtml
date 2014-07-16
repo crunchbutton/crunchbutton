@@ -6,6 +6,7 @@
 
 	<div class="divider"></div>
 
+	<navigation-back></navigation-back>
 
 	<h2 class="title">
 		<span ng-if="!driver.id_admin">Add driver</span>
@@ -97,6 +98,16 @@
 						<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
 							Document missing
 						</span>
+					</td>
+					<td>
+						<div ng-if="doc.status" class="pointer" ng-click="approve(doc.status)">
+							<span ng-if="doc.status.approved">
+								<i class="fa fa-check-square-o"></i> {{doc.status.approved}}
+							</span>
+							<span ng-if="!doc.status.approved">
+								<i class="fa fa-square-o"></i>
+							</span>
+						</div>
 					</td>
 				</tr>
 			</tbody>

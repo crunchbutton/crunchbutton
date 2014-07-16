@@ -356,6 +356,51 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 
 } );
 
+NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, DriverOnboardingService ) {
+
+	$scope.ready = false;
+	var waiting = false;
+	$scope.page = 1;
+
+	var list = function(){
+		DriverOnboardingService.docs.listDocs( $scope.page, function( data ){
+			$scope.pages = data.pages;
+			$scope.next = data.next;
+			$scope.prev = data.prev;
+			$scope.documents = data.results;
+			$scope.count = data.count;
+			$scope.ready = true;
+		} );
+	}
+
+	$scope.all = function(){
+		$scope.navigation.link( '/drivers/onboarding/' );
+	}
+
+	$scope.approve = function( doc ){
+		var approve = ( doc.approve ) ? false : true;
+		DriverOnboardingService.docs.approve( doc.id_driver_document_status, approve, function( data ){
+			list();
+		} );
+	}
+
+	$scope.nextPage = function(){
+		$scope.page = $scope.next;
+		list();
+	}
+
+	$scope.prevPage = function(){
+		$scope.page = $scope.prev;
+		list();
+	}
+
+	$scope.edit = function( id_admin ){
+		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
+	}
+
+	list();
+
+} );
 NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOnboardingService ) {
 
 	$scope.ready = false;
@@ -422,6 +467,13 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope.documents = data;
 		} );
 		docsPendency();
+	}
+
+	$scope.approve = function( doc ){
+		var approve = ( doc.approve ) ? false : true;
+		DriverOnboardingService.docs.approve( doc.id_driver_document_status, approve, function( data ){
+			docs();
+		} );
 	}
 
 	var docsPendency = function(){
