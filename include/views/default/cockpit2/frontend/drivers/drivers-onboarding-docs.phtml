@@ -19,7 +19,7 @@
 					<td>Community</td>
 					<td>Date</td>
 					<td>Download</td>
-					<td></td>
+					<td>Status</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -34,11 +34,11 @@
 					<td><span ng-repeat="community in doc.communities">{{community}}</span></td>
 					<td>{{doc.date}}<br>{{doc.time}}</td>
 					<td><a ng-href="{{doc.url}}" target="_blank">Download</a></td>
-					<td class="pointer" ng-click="approve(doc);doc.approving = true;">
+					<td>
 						<div ng-if="doc.approving">
 							<i class="fa fa-circle-o-notch fa-spin"></i>
 						</div>
-						<div ng-if="!doc.approving">
+						<div ng-if="!doc.approving" class="pointer" ng-click="approve(doc);doc.approving = true;">
 							<span ng-if="doc.approved">
 								<i class="fa fa-check-square-o"></i> {{doc.approved}}
 							</span>
@@ -46,6 +46,8 @@
 								<i class="fa fa-square-o"></i>
 							</span>
 						</div>
+						<div ng-if="doc.completed">Completed</div>
+						<div ng-if="!doc.completed">In Progress</div>
 					</td>
 				</tr>
 			</tbody>

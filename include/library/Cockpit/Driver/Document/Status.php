@@ -55,7 +55,7 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 	}
 
 	public function lastUpdatedDocs(){
-		return Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status ORDER BY id_admin_approved ASC, datetime DESC' );
+		return Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status dds INNER JOIN ( SELECT id_admin, IF(COUNT( * ) = 3, 1, 0) as completed FROM driver_document_status  WHERE id_driver_document IN( 1, 2, 3 ) GROUP BY id_admin ) doc_status ON doc_status.id_admin = dds.id_admin ORDER BY id_admin_approved ASC, completed DESC, datetime DESC' );
 	}
 
 	public function driver(){
