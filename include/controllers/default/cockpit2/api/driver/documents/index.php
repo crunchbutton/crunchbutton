@@ -217,6 +217,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 									'time' => $doc->date()->format( 'g:i:s A' ),
 									'url' => $doc->url(),
 									'doc' => $doc->doc()->name,
+									'completed' => ( intval( $doc->completed ) ? true : false ),
 									'approved' => $admin
 								];
 				$_doc = array_merge( $_doc, $doc->driver()->exports( [ 'phone', 'txt', 'email', 'timezone', 'testphone', 'permissions', 'groups', 'vehicle', 'active' ] ) );
