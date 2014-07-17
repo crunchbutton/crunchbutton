@@ -3,7 +3,7 @@
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
 			<div class="user-initials"><span>{{account.user.initials}}</span></div>
 
-			<ul>
+			<ul style="background:#2f323a;">
 				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/orders')" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
