@@ -60,7 +60,6 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 				if( json.balanced_bank ){
 					$scope.bank.showForm = false;
 				}
-				console.log('json',json);
 				$scope.ready = true;
 				$scope.payment = {};
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
@@ -92,8 +91,10 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 	}
 
 	$scope.bankInfoTest = function(){
-		$scope.bank.routing_number = '321174851';
-		$scope.bank.account_number = '9900000000';
+		StaffPayInfoService.bankInfoTest( function( json ){
+			$scope.bank.routing_number = json.routing_number; ;
+			$scope.bank.account_number = json.account_number;;
+		} )
 	}
 
 	$scope.tokenize = function(){

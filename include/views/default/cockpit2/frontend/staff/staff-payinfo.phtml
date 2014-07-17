@@ -3,6 +3,7 @@
 <div class="content-padding" ng-show="ready">
 
 	<h1 class="title left"><i class="fa fa-credit-card"></i><span>Payment info: #{{payInfo.id_admin}} - {{payInfo.name}}</span></h1>
+
 	<div class="divider"></div>
 
 	<div>
@@ -20,6 +21,23 @@
 						<small ng-show="form.payInfoLegalNamePayment.$error.required">Required.</small>
 						<small ng-show="form.payInfoLegalNamePayment.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
 						<small ng-show="form.payInfoLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.basicSocialSecurityNumber.$invalid}">
+					<div class="label">Social Security Number:</div>
+					<div class="input"><input type="text" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" required placeholder="Social Security Number" ng-maxlength="250"></div>
+					<div class="box-error">
+						<small ng-show="form.basicSocialSecurityNumber.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.basicAddress.$invalid}">
+					<div class="label">Address:</div>
+					<div class="input">
+					<textarea name="basicAddress" ng-model="payInfo.address" required placeholder="Address"></textarea>
+					<div class="box-error">
+						<small ng-show="form.basicAddress.$error.required">Required.</small>
 					</div>
 				</li>
 
@@ -60,6 +78,7 @@
 						<small ng-show="form.payInfoSummaryEmail.$error.email">Enter a valid email.</small>
 					</div>
 				</li>
+
 
 				<li class="li-input" ng-show="!isSaving">
 					<button class="button orange" ng-click="save();">Save</button>

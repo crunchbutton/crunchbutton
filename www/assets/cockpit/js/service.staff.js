@@ -52,15 +52,25 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 		} );
 	}
 
+	service.loadById = function( id_admin, callback ){
+		staff.load( { 'id_admin': id_admin }, function( data ){
+			callback( data );
+		} );
+	};
+
 	service.save = function( params, callback ){
-		params.id_admin = $routeParams.id;
+		if( !params.id_admin ){
+			params.id_admin = $routeParams.id;
+		}
 		staff.save( params, function( data ){
 			callback( data );
 		} );
 	}
 
 	service.save_bank = function( params, callback ){
-		params.id_admin = $routeParams.id;
+		if( !params.id_admin ){
+			params.id_admin = $routeParams.id;
+		}
 		staff.save_bank( params, function( data ){
 			callback( data );
 		} );
@@ -79,6 +89,10 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 		return methods;
 	}
 
+	service.bankInfoTest = function( callback ){
+		callback( { 'routing_number':'321174851', 'account_number':'9900000000' } );
+	}
+
 	service.bankAccount = function( payload, callback ){
 		ConfigService.processor( function( json ){
 			if( !json.error && json.processor ){
@@ -89,7 +103,6 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 						if( response.status_code === 201 ) {
 							callback( response.bank_accounts[ 0 ] );
 						} else {
-							console.log( response );
 							callback( {} );
 						}
 				} );
