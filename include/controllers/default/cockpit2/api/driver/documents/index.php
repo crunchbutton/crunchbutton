@@ -6,6 +6,37 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 
 		switch ( c::getPagePiece( 3 ) ) {
 
+			case 'download':
+				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+				if( $hasPermission ){
+					$id_driver_document_status = c::getPagePiece( 4 );
+					$document = Cockpit_Driver_Document_Status::o( $id_driver_document_status );
+					if( $document->id_driver_document_status ){
+						$file = $document->doc_path();
+						$name = $document->driver()->name . ' - ' .$document->driver_document()->name;
+						$ext = pathinfo( $file, PATHINFO_EXTENSION );
+						$name .= '.' . $ext;
+						if( file_exists( $file ) ){
+							header( 'Content-Description: File Transfer' );
+							header( 'Content-Type: application/octet-stream' );
+							header( 'Content-Disposition: attachment; filename=' . $name );
+							header( 'Expires: 0' );
+							header( 'Cache-Control: must-revalidate' );
+							header( 'Pragma: public' );
+							header( 'Content-Length: ' . filesize( $file ) );
+							readfile( $file );
+							exit;
+						} else {
+							$this->_error( 'download:file-not-found' );
+						}
+					} else {
+						$this->_error( 'download:file-not-found' );
+					}
+				} else {
+					$this->_error( 'download:permission-denied' );
+				}
+				break;
+
 			case 'list':
 				$this->_list();
 				break;
@@ -239,8 +270,27 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 		echo json_encode( $data );
 	}
 
-	private function _error( $error = 'invalid request' ){
-		echo json_encode( [ 'error' => $error ] );
-		exit();
+	private function _error( $error = 'invalid request', $filename = '' ){
+		if( strrpos( $error, 'download' ) === false ){
+			echo json_encode( [ 'error' => $error ] );
+			exit();
+		} else {
+			$error = str_replace( 'download:', '', $error );
+			header( 'Content-Description: File Transfer' );
+			header( 'Content-Type: application/octet-stream' );
+			header( 'Content-Disposition: attachment; filename=' . $error . '.txt' );
+			header( 'Expires: 0' );
+			header( 'Cache-Control: must-revalidate' );
+			header( 'Pragma: public' );
+			switch ( $error ) {
+				case 'file-not-found':
+					echo 'File Not Found!';
+					break;
+				case 'permission-denied':
+					echo 'Permission Denied!';
+					break;
+			}
+		}
+
 	}
 }

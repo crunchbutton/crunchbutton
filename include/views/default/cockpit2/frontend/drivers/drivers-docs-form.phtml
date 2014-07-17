@@ -26,7 +26,7 @@
 					<a href="{{doc.url}}" target="_blank">Download Template</a>
 				</td>
 				<td>
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+					<span ng-if="doc.status" class="link orange" ng-click="download( doc.status.id_driver_document_status)" title="Sent at {{doc.status.date_formated}}">Download</span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
 						Upload missing doc
 					</span>
@@ -46,7 +46,7 @@
 					{{doc.name}}
 				</td>
 				<td>
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+					<span ng-if="doc.status" class="link orange" ng-click="download( doc.status.id_driver_document_status)" title="Sent at {{doc.status.date_formated}}">Download</span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
 						Upload missing doc
 					</span>

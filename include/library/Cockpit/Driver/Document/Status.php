@@ -14,12 +14,27 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 		return Util::uploadWWW() . 'drivers-doc/';
 	}
 
+	public function download_url(){
+		return '/api/driver/documents/download/' . $this->id_driver_document_status;
+	}
+
 	public function path(){
 		return Util::uploadPath() . '/drivers-doc/';
 	}
 
+	public function doc_path(){
+		return Util::uploadPath() . '/drivers-doc/' . $this->file;
+	}
+
 	public function url(){
 		return $this->www() . $this->file;
+	}
+
+	public function driver_document(){
+		if( !$this->_driver_document ){
+			$this->_driver_document = Cockpit_Driver_Document::o( $this->id_driver_document );
+		}
+		return $this->_driver_document;
 	}
 
 	public function document( $id_admin, $id_driver_document ){
