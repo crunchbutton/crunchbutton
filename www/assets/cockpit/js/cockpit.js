@@ -594,7 +594,10 @@ App.init = function(config) {
 				App.snap.disable();
 			}
 		};
-		snapperCheck();
+
+		setTimeout( function(){
+			snapperCheck();
+		}, 1000 );
 
 		$(window).resize(function() {
 			snapperCheck();
@@ -602,7 +605,9 @@ App.init = function(config) {
 
 	}
 
-	App.snap.disable();
+	setTimeout( function(){
+		App.snap.disable();
+	}, 1000 );
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
