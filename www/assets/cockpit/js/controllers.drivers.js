@@ -636,6 +636,10 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 
 	$scope.ready = false;
 
+	$scope.pay_info = function(){
+		$scope.navigation.link( '/drivers/docs/payment' );
+	}
+
 	var docs = function(){
 		// Load the docs
 		DriverOnboardingService.docs.list( $scope.account.user.id_admin, function( data ){
@@ -722,6 +726,102 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 		} );
 	}
 } );
+
+NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService ) {
+
+	$scope.bank = { 'showForm': true };
+	$scope.basicInfo = {};
+
+	var load = function(){
+		StaffPayInfoService.loadById( $scope.account.user.id_admin, function( json ){
+			if( json.id_admin ){
+				$scope.basicInfo = json;
+				if( json.balanced_bank ){
+					$scope.bank.showForm = false;
+				}
+				$scope.ready = true;
+				$scope.payment = {};
+			} else {
+				App.alert( json.error );
+			}
+		} )
+	}
+
+	$scope.save_basic_info = function(){
+		if( $scope.formBasic.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.submitted = true;
+			return;
+		}
+		$scope.isSaving = true;
+		StaffPayInfoService.save( $scope.basicInfo, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.basicInfo = data;
+				$scope.saved = true;
+				$scope.flash.setMessage( 'Information saved!' );
+				setTimeout( function() { $scope.saved = false; }, 1500 );
+			}
+		} );
+	}
+
+	$scope.bankInfoTest = function(){
+		StaffPayInfoService.bankInfoTest( function( json ){
+			$scope.bank.routing_number = json.routing_number; ;
+			$scope.bank.account_number = json.account_number;;
+		} )
+	}
+
+	$scope.tokenize = function(){
+
+		if( $scope.formBank.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.bankSubmitted = true;
+			return;
+		}
+		$scope.isTokenizing = true;
+		var payload = { name: $scope.basicInfo.legal_name_payment,
+										account_number: $scope.bank.account_number,
+										routing_number: $scope.bank.routing_number };
+		StaffPayInfoService.bankAccount( payload, function( json ){
+			if( json.href ){
+				json.id_admin = $scope.basicInfo.id_admin;
+				json.legal_name_payment = $scope.basicInfo.legal_name_payment;
+				StaffPayInfoService.save_bank( json, function( data ){
+					if( data.error ){
+						App.alert( data.error);
+						return;
+					} else {
+						load();
+						$scope.isTokenizing = false;
+						$scope.saved = true;
+						$scope.bank.account_number = '';
+						$scope.bank.routing_number = '';
+						$scope.bank.showForm = false;
+						$scope.flash.setMessage( 'Bank information saved!' );
+						setTimeout( function() { $scope.saved = false; }, 1500 );
+					}
+				} );
+
+			} else {
+				App.alert( 'Error saving account! Please make sure you typed your account information correctly.' );
+				$scope.isTokenizing = false;
+			}
+		} );
+	}
+
+	$scope.list = function(){
+		$scope.navigation.link( '/staff/list' );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+});
 
 NGApp.controller('DriversHelpCtrl', function() {});
 NGApp.controller('DriversHelpCreditCardCtrl', function() {});
