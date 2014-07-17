@@ -50,7 +50,7 @@ class Crunchbutton_Referral extends Cana_Table{
 
 		$total_invites = $this->getInvitesPerCode( $this->invite_code );
 		$limit_invites = $this->getInvitesLimit();
-	
+
 		if( intval( $total_invites ) >= intval( $limit_invites ) ){
 			return;
 		}
@@ -60,6 +60,7 @@ class Crunchbutton_Referral extends Cana_Table{
 			$credit->id_user = $this->id_user_inviter;
 			$credit->id_referral = $this->id_referral;
 			$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 			$credit->date = date('Y-m-d H:i:s');
 			$credit->value = $this->getInviterCreditValue();
 			$credit->paid_by = 'crunchbutton';
@@ -69,7 +70,7 @@ class Crunchbutton_Referral extends Cana_Table{
 
 			$credit->save();
 			if( $this->getAddCreditToInvited() ){
-				$this->addCreditToInvited();	
+				$this->addCreditToInvited();
 			}
 		}
 	}
@@ -80,6 +81,7 @@ class Crunchbutton_Referral extends Cana_Table{
 			$credit->id_user = $this->id_user_invited;
 			$credit->id_referral = $this->id_referral;
 			$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 			$credit->date = date('Y-m-d H:i:s');
 			$credit->value = $this->getInvitedCreditValue();
 			$credit->paid_by = 'crunchbutton';
@@ -108,7 +110,7 @@ class Crunchbutton_Referral extends Cana_Table{
 		$config = Crunchbutton_Config::q( 'SELECT * FROM config WHERE `key`="'. self::KEY_INVITES_LIMIT_PER_CODE . '" LIMIT 0,1' );
 		if( $config->id_config && $config->value ){
 			return $config->value;
-		} 
+		}
 		return self::DEFAULT_INVITES_LIMIT_PER_CODE;
 	}
 
@@ -116,7 +118,7 @@ class Crunchbutton_Referral extends Cana_Table{
 		$config = Crunchbutton_Config::q( 'SELECT * FROM config WHERE `key`="'. self::KEY_INVITER_CREDIT_VALUE . '" LIMIT 0,1' );
 		if( $config->id_config && $config->value ){
 			return $config->value;
-		} 
+		}
 		return self::DEFAULT_INVITER_CREDIT_VALUE;
 	}
 
@@ -124,7 +126,7 @@ class Crunchbutton_Referral extends Cana_Table{
 		$config = Crunchbutton_Config::q( 'SELECT * FROM config WHERE `key`="'. self::KEY_INVITED_CREDIT_VALUE . '" LIMIT 0,1' );
 		if( $config->id_config && $config->value ){
 			return $config->value;
-		} 
+		}
 		return self::DEFAULT_INVITED_CREDIT_VALUE;
 	}
 
@@ -132,7 +134,7 @@ class Crunchbutton_Referral extends Cana_Table{
 		$config = Crunchbutton_Config::q( 'SELECT * FROM config WHERE `key`="'. self::KEY_IS_REFERRAL_ENABLE . '" LIMIT 0,1' );
 		if( $config->id_config && $config->value && intval( $config->value ) > 0 ){
 			return true;
-		} 
+		}
 		return self::DEFAULT_IS_REFERRAL_ENABLE;
 	}
 
@@ -140,7 +142,7 @@ class Crunchbutton_Referral extends Cana_Table{
 		$config = Crunchbutton_Config::q( 'SELECT * FROM config WHERE `key`="'. self::KEY_ADD_CREDIT_INVITED . '" LIMIT 0,1' );
 		if( $config->id_config && $config->value && $config->value > 0 ){
 			return true;
-		} 
+		}
 		return self::DEFAULT_ADD_CREDIT_INVITED;
 	}
 
