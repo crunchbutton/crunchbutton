@@ -394,6 +394,10 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
 	}
 
+	$scope.download = function( id_driver_document_status ){
+		DriverOnboardingService.docs.download( id_driver_document_status );
+	}
+
 	list();
 
 } );
@@ -578,6 +582,10 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		App.alert( 'Upload error, please try again or send us a message.' );
 	});
 
+	$scope.download = function( id_driver_document_status ){
+		DriverOnboardingService.docs.download( id_driver_document_status );
+	}
+
 	start();
 
 } );
@@ -672,6 +680,10 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 	uploader.bind('error', function (event, xhr, item, response) {
 		App.alert( 'Upload error, please try again or send us a message.' );
 	});
+
+	$scope.download = function( id_driver_document_status ){
+		DriverOnboardingService.docs.download( id_driver_document_status );
+	}
 
 } );
 

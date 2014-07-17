@@ -1,4 +1,4 @@
-NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $routeParams ) {
+NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $routeParams, $window ) {
 
 	var service = {};
 
@@ -24,7 +24,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				'save' : { 'method': 'POST', params : { action : 'save' } },
 				'pendency' : { 'method': 'GET', params : { action : 'pendency' } },
 				'list' : { 'method': 'GET', params : { action : 'list' } },
-				'approve' : { 'method': 'GET', params : { action : 'approve' } },
+				'approve' : { 'method': 'GET', params : { action : 'approve' } }
 			}
 		);
 
@@ -114,6 +114,11 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		documents.approve( { id_driver_document_status: id_driver_document_status, disapprove: disapprove }, function( data ){
 			callback( data );
 		} );
+	}
+
+	service.docs.download = function( id_driver_document_status ){
+		var url =  App.service + 'driver/documents/download/' + id_driver_document_status;
+		$window.open( url );
 	}
 
 	// get docs list
