@@ -750,7 +750,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 	$scope.save_basic_info = function(){
 		if( $scope.formBasic.$invalid ){
 			App.alert( 'Please fill in all required fields' );
-			$scope.submitted = true;
+			$scope.basicSubmitted = true;
 			return;
 		}
 		$scope.isSaving = true;
