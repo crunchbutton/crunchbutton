@@ -2101,7 +2101,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function hasCredit(){
-		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . ' AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" AND id_promo IS NULL';
+		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . ' AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_promo IS NULL';
 		$row = Cana::db()->get( $query )->get(0);
 		if( $row->total ){
 			return $row->total;
@@ -2327,7 +2327,7 @@ class Crunchbutton_Order extends Cana_Table {
 			return true;
 		}
 		// check if it has credit
-		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order} AND c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "'" );
+		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order} AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
 		if( $credit->count() > 0 ){
 			return true;
 		}
