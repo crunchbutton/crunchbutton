@@ -1,1 +1,1 @@
-ALTER TABLE `credit` ADD `credit_type` ENUM('cash','point')  NOT NULL DEFAULT 'cash';
+ALTER TABLE `credit` ADD `credit_type` ENUM('cash','point') DEFAULT 'cash';
