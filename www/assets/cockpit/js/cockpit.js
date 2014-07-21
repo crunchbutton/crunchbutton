@@ -166,6 +166,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
 		/* Customer */
+		.when('/customer', {
+			action: 'customer',
+			controller: 'CustomerCtrl',
+			templateUrl: 'assets/view/customer.html'
+		})
 		.when('/customer/reward/config', {
 			action: 'customer',
 			controller: 'CustomerRewardConfigCtrl',
