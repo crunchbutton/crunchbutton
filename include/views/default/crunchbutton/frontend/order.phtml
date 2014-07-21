@@ -30,25 +30,28 @@
 				<br />
 				<div class="divider dots"></div>
 			</div>
-			
+
 			<div ng-show="account.user.has_auth">
 				<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
 					<i class="fa fa-facebook"></i><span class="social-button-text">Share what you ordered</span>
 					<div class="divider"></div>
+				</div>
+				<div ng-if="order.reward.points && !order.reward.shared">
+					You just earned {{order.reward.points}} points! <strong>Double</strong> it by sharing on Facebook.<br><br>
 				</div>
 				<div ng-show="order._new && referral.invite_url && referral.enabled">
 					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
 					<br /><br />
 				</div>
 			</div>
-			
+
 			<div class="divider dots"></div>
 			<br />
 
-		
+
 			For updates on your order, please call
 			<div>
-				{{order._restaurant_name}}: 
+				{{order._restaurant_name}}:
 				<b>
 					<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
 					<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
@@ -57,7 +60,7 @@
 
 			<br>
 
-			You can reach Crunchbutton by texting <b> 
+			You can reach Crunchbutton by texting <b>
 			<span ng-show="isMobile"><a href="sms:+16467831444">{{ '6467831444' | formatPhone }}</a></span>
 			<span ng-show="!isMobile">{{ '6467831444' | formatPhone }}</span>
 			</b>
@@ -69,33 +72,33 @@
 			<div ng-show="(order.delivery_type == 'delivery')">
 				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
 			</div>
-	
+
 			<div ng-hide="(order.delivery_type == 'delivery')">
 				<b>Takeout order</b><br><br>
 			</div>
-	
+
 			<b>Your phone #:</b><br>{{ order.phone | formatPhone }}<br><br>
-	
+
 			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
-	
+
 			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
-	
+
 			<b ng-show="(order.pay_type == 'card')">Your total:<br></b>
 			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br></b>
-			
-			${{order.charged | formatPrice}}
-	
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
-	
-			<br><br>
-	
 
-	
+			${{order.charged | formatPrice}}
+
+			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+
+			<br><br>
+
+
+
 		</div>
 	</div>
-	
+
 	<br>
-	
+
 	<? if (!$this->export) : ?>
 		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
 	<? endif ; ?>

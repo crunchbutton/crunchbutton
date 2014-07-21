@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_order extends Crunchbutton_Controller_Rest {
-	
+
 	public function init() {
 
 		$order = Order::uuid(c::getPagePiece(2));
@@ -16,7 +16,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		$repeat = 3;
 
 		switch (c::getPagePiece(3)) {
-			
+
 			case 'refund':
 
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-refund'])) {
@@ -172,7 +172,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
-						
+
 						echo '<Pause length="1"/>';
 						echo '<Say voice="'.c::config()->twilio->voice.'">' . $order->driverInstructionsFoodStatus() .  '</Say>';
 
@@ -204,7 +204,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							. '<Pause length="1" />'
 							. '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' . . </Say>'
-							.'<Say voice="'.c::config()->twilio->voice.'">You have not confirmed order number ' . $order->id_order . ' . . </Say>' 
+							.'<Say voice="'.c::config()->twilio->voice.'">You have not confirmed order number ' . $order->id_order . ' . . </Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'">' . $message . '</Say>';
 							$pauseRepeat = '<Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. </Say>';
 							for ($x = 0; $x <= $repeat; $x++) {
@@ -289,7 +289,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			// Issue #1250 - make Max CB a phone call in addition to a text
-			case 'maxconfirmation' : 
+			case 'maxconfirmation' :
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
 					echo '<Say voice="'.c::config()->twilio->voice.'">';
@@ -299,16 +299,16 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 				break;
 
-			case 'maxcalling' : 
+			case 'maxcalling' :
 				header('Content-type: text/xml');
 					echo '<?xml version="1.0" encoding="UTF-8"?>';
 					echo '<Response>';
 					switch ($this->request()['Digits']) {
 						case 1:
 							if( $_REQUEST['id_notification'] ){
-								$notification = Notification_Log::o( $_REQUEST['id_notification'] );	
+								$notification = Notification_Log::o( $_REQUEST['id_notification'] );
 							} else {
-								$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
+								$notification = Notification_Log::getMaxCallNotification( $order->id_order );
 							}
 							if( $notification->id_notification_log ){
 									$notification->status = 'success';
@@ -324,11 +324,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							break;
 						default:
 
-							$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
-							
+							$notification = Notification_Log::getMaxCallNotification( $order->id_order );
+
 							$restaurant = Restaurant::o( $order->id_restaurant );
 							$types = $restaurant->notification_types();
-							
+
 							if( count( $types ) > 0 ){
 								$notifications = join( ' and ', $types );
 							} else {
@@ -336,9 +336,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							}
 
 							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $notification->id_notification_log ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
-							
+
 							echo '<Gather action="/api/order/'.$order->id_order.'/maxcalling?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
-								
+
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
 								echo "We've reached max call back for order number " . $order->id_order . " . ";
 									echo htmlentities( $restaurant->name ) . " from " . htmlentities( $order->name );
@@ -350,7 +350,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 									echo ' . ' . $notifications . ' . ';
 								echo '</Say>';
 								echo '<Pause length="1" />';
-								
+
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
 									echo "Again, the following are restaurant notifications: ";
 									echo ' . ' . $notifications . ' . ';
@@ -427,7 +427,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '#':
 					case '*':
 						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="#" method="get">'
-							. '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.'.</Say>' 
+							. '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.'.</Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order. . . .</Say>'
 							.'</Gather>';
 						break;
