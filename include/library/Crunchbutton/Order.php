@@ -542,8 +542,19 @@ class Crunchbutton_Order extends Cana_Table {
 				$rules = new Crunchbutton_Order_Rules();
 				$rules->run( $order );
 			});
+			// Reward
+			$reward = new Crunchbutton_Reward;
+			// Points by order
+			$points = $reward->processOrder( $order->id_order );
+			if( floatval( $points ) > 0 ){
+				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
+			}
+			// Points by ordering twice same week
+			$points = $reward->orderTwiceSameWeek( $order->id_user );
+			if( floatval( $points ) > 0 ){
+				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+			}
 		}
-
 
 		if( Crunchbutton_Referral::isReferralEnable() ){
 			// If the user was invited we'll give credit to the inviter user
@@ -569,6 +580,18 @@ class Crunchbutton_Order extends Cana_Table {
 					if( $this->pay_type == 'card' ){
 						// Finally give credit to inviter
 						$referral->addCreditToInviter();
+					}
+
+					// Reward
+					$reward = new Crunchbutton_Reward;
+					$points = $reward->getRefered();
+					if( floatval( $points ) > 0 ){
+						$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $_inviter->id_user ] );
+					}
+
+					$points = $reward->getReferNewUser();
+					if( floatval( $points ) > 0 ){
+						$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $_inviter->id_user, 'points' => $points, 'note' => 'points by reffering a new user O#' . $this->id_order . ' U#' . $this->id_user ] );
 					}
 
 					Log::debug([ 'inviter_code' => $inviter_code, 'totalOrdersByPhone' => $totalOrdersByPhone, 'type' => 'referral', 'pay_type' => $this->pay_type ]);
@@ -1916,6 +1939,14 @@ class Crunchbutton_Order extends Cana_Table {
 		$out['_tz'] = $date->format('T');
 
 		$out['summary'] = $this->orderMessage('summary');
+
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+		if( $credit->id_credit ){
+			$reward = new Crunchbutton_Reward;
+			$points = $reward->processOrder( $this->id_order );
+			$shared = $reward->orderWasAlreadyShared( $this->id_order );
+			$out['reward'] = array( 'points' => $points, 'shared' => $shared );
+		}
 
 		return $out;
 	}

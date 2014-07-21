@@ -161,6 +161,13 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 									User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 								}
 
+								// Reward
+								$reward = new Crunchbutton_Reward;
+								$points = $reward->makeAccountAfterOrder( $user->id_user );
+								if( floatval( $points ) > 0 ){
+									$reward->saveReward( [  'id_user' => $user->id_user, 'points' => $points, 'note' => 'points by creating an account' ] );
+								}
+
 								$user = c::auth()->doAuthByLocalUser( $params );
 								echo c::user()->json();
 								break;
