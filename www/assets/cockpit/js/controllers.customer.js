@@ -35,3 +35,13 @@ NGApp.controller('CustomerRewardConfigCtrl', function( $scope, CustomerRewardSer
 	}
 
 });
+
+NGApp.controller( 'CustomerCtrl', function ( $scope ) {
+
+	$scope.ready = true;
+
+	$scope.reward_settings = function(){
+		$scope.navigation.link( '/customer/reward/config' );
+	}
+
+} );
