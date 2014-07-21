@@ -1,4 +1,4 @@
-INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward-points-per-cents','+1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward-points-per-cents','*1');
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward-points-order-value-over-value','25');
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward-points-order-value-over-action','*2');
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward-points-shared-order','*2');
