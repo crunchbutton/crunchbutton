@@ -1,9 +1,8 @@
 <?php
 class Controller_Test_Reward extends Crunchbutton_Controller_Account {
 	public function init() {
-		// $reward = new Crunchbutton_Reward;
-		// $points = $reward->makeAccountAfterOrder( 13877 );
-		// echo '<pre>';var_dump( $reward->processOrder( 25337 ) );exit();
+		$reward = new Crunchbutton_Reward;
+		echo '<pre>';var_dump( $reward->winCluckbutton( 13877 ) );exit();
 
 		// echo '<pre>';var_dump( $reward->getRefered() );exit();;
 		// echo '<pre>';var_dump( $reward->getReferNewUser() );exit();;

@@ -165,6 +165,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversSummaryCtrl',
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
+		/* Customer */
+		.when('/customer/reward/config', {
+			action: 'customer',
+			controller: 'CustomerRewardConfigCtrl',
+			templateUrl: 'assets/view/customer-reward-config.html'
+		})
 		/* Driver shifts */
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
