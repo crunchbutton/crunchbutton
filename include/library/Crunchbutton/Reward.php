@@ -42,6 +42,18 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->save();
 	}
 
+	public function saveRewardAsCredit( $params ){
+		$credit = new Crunchbutton_Credit();
+		$credit->id_user = $params[ 'id_user' ];
+		$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+		$credit->date = date( 'Y-m-d H:i:s' );
+		$credit->value = $params[ 'value' ];
+		$credit->id_order = $params[ 'id_order' ];
+		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+		$credit->note = $params[ 'note' ];
+		$credit->save();
+	}
+
 	// Check if the user already received points for sharing this order
 	public function orderWasAlreadyShared( $id_order ){
 		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND note LIKE "%sharing%" LIMIT 1' );
