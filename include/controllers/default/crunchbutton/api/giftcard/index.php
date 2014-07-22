@@ -4,9 +4,9 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		switch ( $this->method() ) {
-			
+
 			case 'post':
-				
+
 				if ( c::admin()->id_admin ) {
 
 					// Verify the permissions
@@ -36,7 +36,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								}
 							break;
 					}
-									
+
 
 					switch ( c::getPagePiece( 2 ) ) {
 
@@ -88,9 +88,9 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 											$user = Crunchbutton_User::o( $id_user );
 											$giftcard->phone =  $user->phone;
 											if( $notify_by_email > 0 ){
-												$giftcard->email = $user->email; 
-												$giftcard->email_subject = 'Congrats, you got a gift card'; 
-												$giftcard->email_content = 'Congrats, you got a gift card to ' . Crunchbutton_Promo::TAG_RESTAURANT_NAME . '! To receive it, enter code: ' . Crunchbutton_Promo::TAG_GIFT_CODE . ' in your order notes or click here: ' . Crunchbutton_Promo::TAG_GIFT_URL . '.'; 
+												$giftcard->email = $user->email;
+												$giftcard->email_subject = 'Congrats, you got a gift card';
+												$giftcard->email_content = 'Congrats, you got a gift card to ' . Crunchbutton_Promo::TAG_RESTAURANT_NAME . '! To receive it, enter code: ' . Crunchbutton_Promo::TAG_GIFT_CODE . ' in your order notes or click here: ' . Crunchbutton_Promo::TAG_GIFT_URL . '.';
 											}
 										}
 										$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
@@ -119,7 +119,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 										} else {
 											$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
 										}
-										
+
 										if( $print ){
 											$giftcard->issued = Crunchbutton_Promo::ISSUED_PRINT;
 										}
@@ -149,11 +149,11 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 											if( $id_user ){
 												if( $notify_by_email > 0 && $giftcard->email ){
 													$giftcard->queNotifyEMAIL();
-												}	
+												}
 												if( $notify_by_sms > 0 && $giftcard->phone ){
 													$giftcard->queNotifySMS();
-												}	
-											} 
+												}
+											}
 										}
 
 										if($id_order_reference) {
@@ -178,7 +178,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$id_order_reference = $this->request()['id_order_reference'];
 							$paid_by = $this->request()['paid_by'];
 							$id_restaurant_paid_by = $this->request()['id_restaurant_paid_by'];
-							
+
 							$created_by = $this->request()['created_by'];
 							$track = $this->request()['track'];
 							$notify_phone = $this->request()['notify_phone'];
@@ -233,14 +233,14 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$id_order_reference = $this->request()['id_order_reference'];
 							$paid_by = $this->request()['paid_by'];
 							$id_restaurant_paid_by = $this->request()['id_restaurant_paid_by'];
-							
+
 							$created_by = $this->request()['created_by'];
 							$track = $this->request()['track'];
 							$notify_phone = $this->request()['notify_phone'];
 							$name = $this->request()['name'];
 							$how_delivery = $this->request()['how_delivery'];
 							$contact = $this->request()['contact'];
-							
+
 							$emails = explode("\n", $emails);
 							foreach ( $emails as $email ) {
 								if( trim( $email ) != '' ){
@@ -324,7 +324,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
 								$credit = $giftcard->credit();
 								if( $credit->removeCreditLeft() ){
-									echo json_encode(['success' => 'success']);	
+									echo json_encode(['success' => 'success']);
 								} else {
 									echo json_encode(['error' => 'error']);
 								}
@@ -348,7 +348,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							// It the gift has a user_id just this user will be able to use it
 							if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
 								echo json_encode(['error' => 'invalid gift card']);
-								exit;		
+								exit;
 							}
 							// Add credit to user
 							$credit = $giftcard->addCredit( c::user()->id_user );
@@ -394,7 +394,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							// It the gift has a user_id just this user will be able to use it
 							if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
 								echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ]);
-								exit;		
+								exit;
 							}
 							echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
 						}
@@ -417,6 +417,21 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 						if( $word == '' ){
 							continue;
 						}
+
+
+						// At first check if it is an user's invite code - rewards: two way gift cards #2561
+						$reward = new Crunchbutton_Reward;
+						$valid = $reward->validateInviteCode( $word );
+						if( $valid ){
+							$settings = $reward->loadSettings();
+							$value = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+							if( $value ){
+								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+								exit;
+							}
+						}
+
+						Crunchbutton_Promo::byCode( $word );
 						// Get the giftcard (promo) by code
 						$giftcard = Crunchbutton_Promo::byCode( $word );
 						// Check if the giftcard is valid
@@ -429,12 +444,12 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								// It the gift has a user_id just this user will be able to use it
 								if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
 									echo json_encode(['error' => 'invalid gift card', 'giftcard' => $word ]);
-									exit;		
+									exit;
 								}
 								echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $word, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
 								exit;
 							}
-						} 
+						}
 					}
 					echo json_encode(['error' => 'invalid gift card' ] );
 				}

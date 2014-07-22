@@ -563,6 +563,16 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
+/**
+ 						if( $valid ){
+							$settings = $reward->loadSettings();
+							$value = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+							if( $value ){
+								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+								exit;
+							}
+						}
+**/
 		if( Crunchbutton_Referral::isReferralEnable() ){
 			// If the user was invited we'll give credit to the inviter user
 			$inviter_code = Crunchbutton_Referral::checkCookie();
