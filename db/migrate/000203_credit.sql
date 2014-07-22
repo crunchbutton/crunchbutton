@@ -4,8 +4,10 @@ INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_per
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_shared_order_value','1');
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_shared_order_operation','*');
 
-INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_get_refered_value','2000');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_get_referred_value','2000');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_get_referred_discount_amt','2');
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_refer_new_user_value','2500');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_admin_refer_user_amt','3');
 
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_make_acount_value','3');
 INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_make_acount_operation','*');

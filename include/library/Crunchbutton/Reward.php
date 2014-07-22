@@ -4,25 +4,31 @@ class Crunchbutton_Reward extends Cana_Table{
 
 	const CONFIG_KEY_POINTS_PER_CENTS_VALUE = 'reward_points_per_cents_value';
 	const CONFIG_KEY_POINTS_PER_CENTS_OPERATION = 'reward_points_per_cents_operation';
-
 	const CONFIG_KEY_SHARED_ORDER_VALUE = 'reward_points_shared_order_value';
 	const CONFIG_KEY_SHARED_ORDER_OPERATION = 'reward_points_shared_order_operation';
-
 	const CONFIG_KEY_ORDER_VALUE_OVER_AMOUNT = 'reward_points_order_value_over_amount';
 	const CONFIG_KEY_ORDER_VALUE_OVER_VALUE = 'reward_points_order_value_over_value';
 	const CONFIG_KEY_ORDER_VALUE_OVER_OPERATION = 'reward_points_order_value_over_operation';
-
-	const CONFIG_KEY_GET_REFERED_VALUE = 'reward_points_get_refered_value';
-
+	const CONFIG_KEY_GET_REFERRED_VALUE = 'reward_points_get_referred_value';
+	const CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT = 'reward_points_get_referred_discount_amt';
 	const CONFIG_KEY_REFER_NEW_USER_VALUE = 'reward_points_refer_new_user_value';
+	const CONFIG_KEY_ADMIN_REFER_USER_AMOUNT = 'reward_points_admin_refer_user_amt';
 	const CONFIG_KEY_WIN_CLUCKBUTTON_VALUE = 'reward_points_win_cluckbutton_value';
 	const CONFIG_KEY_MAKE_ACCOUNT_VALUE = 'reward_points_make_acount_value';
 	const CONFIG_KEY_MAKE_ACCOUNT_OPERATION = 'reward_points_make_acount_operation';
 	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_VALUE = 'reward_points_order_twice_week_value';
 	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_OPERATION = 'reward_points_order_twice_week_operation';
-
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_VALUE = 'reward_points_order_2_days_row_value';
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION = 'reward_points_order_2_days_row_operation';
+
+	public function validateInviteCode( $code ){
+		$user = Crunchbutton_User::q( 'SELECT * FROM `user` u WHERE u.invite_code = "' . $code . '"');
+		if( $user->id_user ){
+			return $user->id_user;
+		}
+		return false;
+	}
+
 
 	public function saveReward( $params ){
 		$credit = new Crunchbutton_Credit();
@@ -71,7 +77,7 @@ class Crunchbutton_Reward extends Cana_Table{
 	//
 	public function getRefered(){
 		$settings = $this->loadSettings();
-		return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERED_VALUE ], '+', 0 );
+		return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_VALUE ], '+', 0 );
 	}
 
 	//
