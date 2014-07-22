@@ -18,8 +18,11 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_WIN_CLUCKBUTTON_VALUE = 'reward_points_win_cluckbutton_value';
 	const CONFIG_KEY_MAKE_ACCOUNT_VALUE = 'reward_points_make_acount_value';
 	const CONFIG_KEY_MAKE_ACCOUNT_OPERATION = 'reward_points_make_acount_operation';
-	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_VALUE = 'reward_points_order_twice_same_week_value';
-	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_OPERATION = 'reward_points_order_twice_same_operation';
+	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_VALUE = 'reward_points_order_twice_week_value';
+	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_OPERATION = 'reward_points_order_twice_week_operation';
+
+	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_VALUE = 'reward_points_order_2_days_row_value';
+	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION = 'reward_points_order_2_days_row_operation';
 
 	public function saveReward( $params ){
 		$credit = new Crunchbutton_Credit();
@@ -56,7 +59,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		return 0;
 	}
 
-	//
+	// rewards: 2x after user shares order #3429
 	public function sharedOrder( $id_order ){
 		$settings = $this->loadSettings();
 		$points = $this->processOrder( $id_order );
@@ -93,7 +96,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		return 0;
 	}
 
-	//
+	// rewards: 2x points when ordering in same week #3432
 	public function orderTwiceSameWeek( $id_user ){
 		$query = "SELECT o.* FROM `order` o WHERE o.id_user = '" . $id_user . "' ORDER BY id_order DESC LIMIT 2";
 		$orders = Crunchbutton_Order::q( $query );
@@ -106,6 +109,25 @@ class Crunchbutton_Reward extends Cana_Table{
 				$points = $this->processOrder( $order_1->id_order );
 				return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_ORDER_TWICE_SAME_WEEK_VALUE ],
 																				$settings[ Crunchbutton_Reward::CONFIG_KEY_ORDER_TWICE_SAME_WEEK_OPERATION ],
+																				$points );
+			}
+		}
+		return 0;
+	}
+
+	// rewards: 4x points when ordering 2 days in a row #3434
+	public function orderTwoDaysInARow( $id_user ){
+		$query = "SELECT o.* FROM `order` o WHERE o.id_user = '" . $id_user . "' ORDER BY id_order DESC LIMIT 2";
+		$orders = Crunchbutton_Order::q( $query );
+		if( $orders->count() == 2  ){
+			$order_1 = $orders->get( 0 );
+			$order_2 = $orders->get( 1 );
+			$interval = Crunchbutton_Util::intervalToSeconds( $order_1->date()->diff( $order_2->date() ) );
+			if( $interval <= ( 60 * 60 * 24 * 2 ) ){
+				$settings = $this->loadSettings();
+				$points = $this->processOrder( $order_1->id_order );
+				return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_VALUE ],
+																				$settings[ Crunchbutton_Reward::CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION ],
 																				$points );
 			}
 		}
