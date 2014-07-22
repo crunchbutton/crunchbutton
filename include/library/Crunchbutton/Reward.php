@@ -95,12 +95,13 @@ class Crunchbutton_Reward extends Cana_Table{
 
 	//
 	public function orderTwiceSameWeek( $id_user ){
-		$query = "SELECT o.*, DATE_FORMAT( o.date, '%Y%U' ) week FROM `order` o WHERE o.id_user = '" . $id_user . "' ORDER BY id_order DESC LIMIT 2";
+		$query = "SELECT o.* FROM `order` o WHERE o.id_user = '" . $id_user . "' ORDER BY id_order DESC LIMIT 2";
 		$orders = Crunchbutton_Order::q( $query );
 		if( $orders->count() == 2  ){
 			$order_1 = $orders->get( 0 );
 			$order_2 = $orders->get( 1 );
-			if( $order_1->week == $order_2->week ){
+			$interval = Crunchbutton_Util::intervalToSeconds( $order_1->date()->diff( $order_2->date() ) );
+			if( $interval <= ( 60 * 60 * 24 * 7 ) ){
 				$settings = $this->loadSettings();
 				$points = $this->processOrder( $order_1->id_order );
 				return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_ORDER_TWICE_SAME_WEEK_VALUE ],
