@@ -314,16 +314,34 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->id_user = $user->id_user;
 
+		$this->giftCardInviter = false;
+
 		// Find out if the user posted a gift card code at the notes field and get its value
 		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
 			$giftCardAdded = false;
-			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
-			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
-				if( $giftcard->id_promo ){
-					if( !$giftCardAdded ){
-						$this->giftcardValue += $giftcard->value;
-						$giftCardAdded = true;
+
+			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
+			// At first check if it is an user's invite code - rewards: two way gift cards #2561
+			$reward = new Crunchbutton_Reward;
+			$inviter_id_user = $reward->validateInviteCode( $word );
+			if( $totalOrdersByPhone <= 1 && $valid ){
+				$settings = $reward->loadSettings();
+				$this->giftCardInviter = [ 'id_user' => $inviter_id_user, 'value' => $value, 'word' => $word ];
+				$value = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+				if( $value ){
+					$this->giftcardValue = $value;
+					exit;
+				}
+			} else {
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+					if( $giftcard->id_promo ){
+						if( !$giftCardAdded ){
+							$this->giftcardValue = $giftcard->value;
+							$giftCardAdded = true;
+							break;
+						}
 					}
 				}
 			}
@@ -484,17 +502,37 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// If the payment succeds then redeem the gift card
 		if ( trim( $this->notes ) != '' ){
-			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
-			$giftCardAdded = false;
-			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
-				if( $giftcard->id_promo ){
-					if( !$giftCardAdded ){
-						$giftcard->addCredit( $user->id_user );
-					}
-					$giftCardAdded = true;
+			if( $this->giftCardInviter ){
+				$reward = new Crunchbutton_Reward;
+				$reward->saveRewardAsCredit( [ 	'id_user' => $user->id_user,
+																				'value' => $this->giftCardInviter[ 'value'],
+																				'id_order' => $this->id_order,
+																				'notes' => 'Inviter ID: ' . $this->giftCardInviter[ 'id_user'] . ' code: ' . $this->giftCardInviter[ 'word'],
+																			] );
+				$this->notes = str_replace( $this->giftCardInviter[ 'word'], '', $this->notes );
+				// Give points to the user that invites the new user
+				$points = $reward->getReferNewUser();
+				if( floatval( $points ) > 0 ){
+					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->giftCardInviter[ 'id_user'], 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $this->id_user ] );
 				}
+				// Give points to the user that was invited
+				$points = $reward->getRefered();
+				if( floatval( $points ) > 0 ){
+					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $this->giftCardInviter[ 'id_user'] ] );
+				}
+			} else {
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+				$giftCardAdded = false;
+				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+					if( $giftcard->id_promo ){
+						if( !$giftCardAdded ){
+							$giftcard->addCredit( $user->id_user );
+						}
+						$giftCardAdded = true;
+					}
+				}
+				$this->notes = $giftcards[ 'notes' ];
 			}
-			$this->notes = $giftcards[ 'notes' ];
 		}
 
 		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
@@ -563,17 +601,11 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-/**
- 						if( $valid ){
-							$settings = $reward->loadSettings();
-							$value = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
-							if( $value ){
-								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
-								exit;
-							}
-						}
-**/
-		if( Crunchbutton_Referral::isReferralEnable() ){
+		// Referral disabled because of the new system:
+		// rewards: two way gift cards #2561: https://github.com/crunchbutton/crunchbutton/issues/2561
+		/**
+		*******************************************************************************
+		if( false && Crunchbutton_Referral::isReferralEnable() ){
 			// If the user was invited we'll give credit to the inviter user
 			$inviter_code = Crunchbutton_Referral::checkCookie();
 			if( $inviter_code ){
@@ -617,6 +649,8 @@ class Crunchbutton_Order extends Cana_Table {
 				Crunchbutton_Referral::removeCookie();
 			}
 		}
+		*************************************************************************
+		*/
 		return true;
 	}
 
