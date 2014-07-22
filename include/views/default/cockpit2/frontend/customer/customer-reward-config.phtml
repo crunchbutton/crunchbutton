@@ -87,6 +87,16 @@
 					</div>
 				</li>
 
+				<li class="li-input" ng-class="{'error':form.rewardPointsOrderTwoDaysInARowValue.$invalid}">
+					<div class="label">Order two days in a row (multiply order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsOrderTwoDaysInARowValue" ng-model="config.reward_points_order_2_days_row_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsOrderTwoDaysInARowValue.$error.required">Required.</small>
+					</div>
+				</li>
+
 				<li class="li-input">
 					<button class="button green" ng-click="save();">Save</button>
 				</li>

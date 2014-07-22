@@ -12,7 +12,7 @@ NGApp.controller('CustomerRewardConfigCtrl', function( $scope, CustomerRewardSer
 	$scope.save = function(){
 		if( $scope.form.$invalid ){
 			App.alert( 'Please fill in all required fields' );
-			$scope.basicSubmitted = true;
+			$scope.submitted = true;
 			return;
 		}
 		$scope.isSaving = true;

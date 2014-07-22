@@ -544,15 +544,22 @@ class Crunchbutton_Order extends Cana_Table {
 			});
 			// Reward
 			$reward = new Crunchbutton_Reward;
-			// Points by order
+			// rewards: earn points when an order has been placed #2458
 			$points = $reward->processOrder( $order->id_order );
 			if( floatval( $points ) > 0 ){
 				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
 			}
-			// Points by ordering twice same week
-			$points = $reward->orderTwiceSameWeek( $order->id_user );
+			// rewards: 4x points when ordering 2 days in a row #3434
+			$points = $reward->orderTwoDaysInARow( $order->id_user );
 			if( floatval( $points ) > 0 ){
 				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+			}
+			if( !$points ){
+				// rewards: 2x points when ordering in same week #3432
+				$points = $reward->orderTwiceSameWeek( $order->id_user );
+				if( floatval( $points ) > 0 ){
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+				}
 			}
 		}
 
