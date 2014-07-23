@@ -47,7 +47,8 @@ class Controller_api_referral extends Crunchbutton_Controller_Rest {
 					$invites = Crunchbutton_Referral::getInvitesPerCode( $invite_code );
 					$limit = Crunchbutton_Referral::getInvitesLimit();
 					$enabled = Crunchbutton_Referral::isReferralEnable();
-					$url = 'http://' . $_SERVER['HTTP_HOST'] . '?invite=' . $invite_code;
+					// $url = 'http://' . $_SERVER['HTTP_HOST'] . '?invite=' . $invite_code;
+					$url = 'http://' . $_SERVER['HTTP_HOST'] . '/invite/' . $invite_code;
 					$value = Crunchbutton_Referral::getInviterCreditValue();
 					echo json_encode(['invites' => intval( $invites ), 'limit' => intval( $limit ), 'invite_url' => $url, 'value' => intval( $value ), 'enabled' => $enabled ]);
 				} else {
