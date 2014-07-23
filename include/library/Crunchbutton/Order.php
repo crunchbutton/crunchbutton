@@ -825,6 +825,24 @@ class Crunchbutton_Order extends Cana_Table {
 		return Order::q( $query );
 	}
 	
+	public static function outstandingOrders(){
+		$id_admin = c::admin()->id_admin;
+		$query = "SELECT id_order,
+						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
+						FROM `order` o
+						WHERE o.delivery_type = 'delivery'
+						AND o.delivery_service = 1
+						AND o.id_order NOT IN
+						(SELECT id_order
+						FROM order_action
+						WHERE type = 'delivery-delivered')
+						-- remove the commment below to get this the orders from today
+						 AND DATE(o.date) = DATE(NOW())
+						HAVING hours >= 2 ORDER BY id_order DESC ";
+		return Order::q( $query );
+									
+	}
+	
 	public static function deliveryOrderTimes( $hours = 24, $all = false ){
 		$interval = $hours . ' HOUR';
 		$id_admin = c::admin()->id_admin;
@@ -2236,7 +2254,24 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
-
+	
+	//Delete entry from order_action
+	public function undoStatus($status) {
+		switch ($status) {
+			case 'pickedup':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-pickedup" and id_admin=' .c::user()->id_admin. '');			
+			break;
+			
+			case 'delivered':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-delivered" and id_admin=' .c::user()->id_admin. '');			
+			break;
+			
+			case 'accepted':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-accepted" and id_admin=' .c::user()->id_admin. '');			
+			break;
+		}
+	}
+	
 	public function deliveryAccept($admin) {
 		if ($this->deliveryStatus('accepted')) {
 			return false;
@@ -2408,8 +2443,11 @@ class Crunchbutton_Order extends Cana_Table {
 			'uuid' => $this->uuid,
 			'delivery-status' => [
 				'delivered' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered')->publicExports() : false,
+				'del_date' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered_date') : false,
 				'pickedup' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup')->publicExports() : false,
-				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false
+				'pic_date' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup_date') : false,
+				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false,
+				'acc_date' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted_date') : false
 			],
 			'self-reply' => $this->deliveryReply(c::admin())
 		];

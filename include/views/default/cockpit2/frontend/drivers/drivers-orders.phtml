@@ -44,7 +44,7 @@
 					<div class="column-date">
 						<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
 						<h1 class="num"><strong>#{{order.id_order}}</strong></h1></br>
-						<h1 class="hour">{{order._date | date:'hh:mm'}} {{order._date | date:'a'}}</h1>
+						<h1 class="hour">{{order.date_hour | date:'h:mm a'}}</h1>
 					</div>
 					
 					<!-- vertical divider -->
@@ -55,11 +55,9 @@
 						<h2 class="restaurant-pointer" ng-click="showOrder( order.id_order )">
 							<?//<i class="fa fa-cutlery"></i>?> <b>{{order.restaurant}}</b>
 						</h2>
-
+						</br>
 						<h4 class="customer-pointer" ng-click="showOrder( order.id_order )">
-							<?//<i class="fa fa-user"></i> ?>
-							{{order.name}}</br>
-							<u>{{order.phone | formatPhone}}</u>
+							{{order.name}}</br></br><u>{{order.phone | formatPhone}}</u>
 						</h4>
 					</div>
 					<div class="divider"></div>

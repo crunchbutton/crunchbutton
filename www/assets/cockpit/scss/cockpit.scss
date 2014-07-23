@@ -202,7 +202,7 @@ html {
 h4 {
 	font-weight: bold;
 	font-size: 1.3em;
-	line-height: 1.9em;
+	/*line-height: 1.9em;*/
 }
 p {
 	font-size: 1.2em;
@@ -255,15 +255,31 @@ p {
 	}
 }
 
+@media(min-width: 475px){
+	.drivers-order-list .vert-divider{
+		height: 75px;
+	}
+}
+
 @media(max-width:474px) {
 	.column-info{
 		width: 50%;
 	}
+	.drivers-order-list .vert-divider{
+		height: 100px;
+	}
+
+}
+
+@media(max-width:470px){
+	.info-name{
+		width: 60%;
+	}
 }
 
 @media(max-width:458px) {
-	.info-name{
-		width: 50%;
+	.drivers-order-list .vert-divider{
+		height: 100px;
 	}
 }
 
@@ -271,10 +287,19 @@ p {
 	.column-info{
 		width: 50%;
 	}
+	.drivers-order-list .vert-divider{
+		height: 100px;
+	}
 }
 
 @media(max-width: 385px) {
 	.column-info{
+		width: 40%;
+	}
+	.drivers-order-list .vert-divider{
+		height: 100px;
+	}
+	.info-name{
 		width: 40%;
 	}
 }
@@ -297,11 +322,18 @@ p {
 	.column-info{
 		width: 40%;
 	}
+		.drivers-order-list .vert-divider{
+		height: 100px;
+	}
+
 } 
 
 @media(max-width: 328px) {
 	.column-info{
 		width: 35%;
+	}
+	.drivers-order-list .vert-divider{
+		height: 125px;
 	}
 }
 
@@ -524,7 +556,7 @@ p {
 	.wrapper {
 		float: left;
 	}
-	
+		
 	.content-padding {
 		width: 100%;
 	}
@@ -954,7 +986,7 @@ input {
 		line-height: 1.2em;
 		font-size: 1.2em;
 		border-bottom: 1px solid #eee;
-		white-space: nowrap;
+		/*white-space: nowrap;*/
 	}
 		.tb-grid tbody tr:last-child td{
 			border-bottom: none;
@@ -966,7 +998,15 @@ input {
 		width: 100% !important;
 	}
 	.tb-grid .td-medium{
-		width: 50%;
+		width: 60%;
+		text-align: left;
+		font-family: Ruda;
+	}
+	.upbutton {
+		width: 111px;
+		height: 60px;
+		float: right;
+		text-align: left;
 	}
 	
 .tb-grid .schedule-buttons{
@@ -1166,7 +1206,7 @@ h1.title {
 	font-weight: 300;
 	font-size: 2.5em;
 	color: #5d5f63;
-	margin-bottom: 1.2em;
+	margin-bottom: .5em;
 	margin-top: .2em;
 }
 h1.title .fa {
@@ -1401,7 +1441,6 @@ h4.title{
 	background-color: #bd4743;
 	border-style: none;
 	width: 2px;
-	height: 75px;
 	float: left;
 	margin-right: .3em;
 }
@@ -1431,7 +1470,6 @@ h4.title{
 		background-color: #333c43;
 		border-style: none;
 		width: 2px;
-		height: 75px;
 		float: left;
 		margin-right: .3em;
 	}
@@ -1458,7 +1496,6 @@ h4.title{
 		background-color: #2F618C;
 		border-style: none;
 		width: 2px;
-		height: 75px;
 		float: left;
 		margin-right: .3em;
 	}
@@ -1494,7 +1531,6 @@ h4.title{
 		background-color: #00bea0;
 		border-style: none;
 		width: 2px;
-		height: 75px;
 		float: left;
 		margin-right: .3em;
 	}
@@ -1597,30 +1633,34 @@ h4.title{
 
 	.restaurant-name {
 		float: left;
+		padding-top: 15px;
+		padding-left: 10px;
 	}
 
 	.order-id {
 		float: right;
 	}
-
+		
 	.header{
-		font-size: 2em;
+		font-size: 3em;
+		font-family: Ruda;
 	}
-
+	
 	.order-icon {
-		font-size: 1.5em;
+		font-size: 2.5em;
 		display: table-cell;
-		width: 3.2em;
+		width: 1.5em;
 		text-align: center;
 		vertical-align: middle;
 	}
 	.order-info {
 		display: table-cell;
-		font-size: 1.5em;
+		font-size: 1em;
+		font-family: Ruda;
 		vertical-align: middle;
 		line-height: 1.4em;
 	}
-
+	
 	.info-block {
 		background: #454b57;
 		color: #fff;
@@ -1632,43 +1672,60 @@ h4.title{
 	}
 
 	.info-block .order-icon {
-		padding-right: 10px;
+		padding-right: 5px;
 	}
 
 	.info-phone{
 		float: right;
+		font-size: 16px;
 	}
 
 	.info-phone a:link{
 		color: #4ec6bc;
-
+		font-size: 16px;
 	}
 
 	.info-name{
 		float: left;
+		font-size: 16px;
+	}
+	
+	.info-address p{
+		font-size: 16px;
+		line-height: 1em;
 	}
 
 	.info-address a:link{
 		color: #4ec6bc;
-		font-size: .8em;
+		font-size: 16px;
 	}
 
 	.order-item-block, .order-item-block-big, .order-item-block-bigger {
 		display: table;
 		float: left;
 		width: 15em;
-		margin: 1em 0 1em 0;
+		margin: .5em 0 .5em 0;
 	}
 
+	.order-item-block{
+		display: table;
+		float: left;
+		width: 7.9em;
+	}
+	
 	.order-item-info{
-		background: #c1c2c6;
+		background: #48B1A8;
+		font-size: 1.7em;
+		margin: .5em 0 0 0;
+		color: #000;
 	}
 
 	.order-item-block-big{
 		background: #e1574c;
 		color: #fff;
 		width: 100%;
-		height: 5em;
+		height: 3em;
+		font-size: 16px;
 	}
 	.order-item-block-bigger{
 		width: 100%;
@@ -1682,10 +1739,27 @@ h4.title{
 	.cust-pay-method{
 		background-color: #e1574c;
 		color: #fff;
+		padding-bottom:25px;
+		padding-top: 10px;
+		padding-left: 5px;
+		clear: both;
+	}
+	
+	.pay-icon{
+		font-size: 3.5em;
+		display: table-cell;
+		width: 1.7em;
+		text-align: center;
+		vertical-align: middle;		
+	}
+	
+	.cust-pay-method-text{
 		font-size: 2em;
-		padding-bottom:10px;
-		padding-top: 5px;
-		padding-left: 10px;
+		display: table-cell;
+		text-align: left;
+		vertical-align: middle;
+		letter-spacing: 0px;
+		padding-top: 10px;
 	}
 
 	.customer-total-block{
@@ -1741,18 +1815,19 @@ h4.title{
 		height: 0;
 		border-left: 7px solid transparent;
 		border-right: 7px solid transparent;
-		border-bottom: 7px solid #00957f;
+		border-bottom: 7px solid #DF5850;
 		margin-left: 1.2em;
 	}
 
 	.order-comment {
-		background: #00957f;
+		background: #DF5850;
 		color: #fff;
 		padding: .9em .9em .8em 1em;
 		border-radius: 4px;
 		margin-bottom: .8em;
+		font-size: 22px;
 	}
-
+	
 	.fa-bullhorn{
 		float:left;
 		font-size: 1.5em;
@@ -1880,8 +1955,9 @@ h4.title{
 		border-bottom: 1px solid #999;
 	}
 
-	.topitem {
+	.topitem, .fooditem {
 		border-bottom: 2px solid #999;
+		font-size: 18px;
 	}
 
 	.control .wrap {
@@ -1901,7 +1977,7 @@ h4.title{
 	.control .message-small{
 		font-size: .7em;
 		margin-top: 1em;
-		padding: 10px;
+		padding: 10px, 10px, 10px, 0;
 	}
 
 	.loader-wrap {
@@ -1929,9 +2005,9 @@ h4.title{
 		vertical-align: middle;
 		text-align: right;
 		float: right;
-		width: 150px;
+		width: 130px;
 	}
-
+	
 	.delivery-name{
 		text-transform: uppercase;
 	}
@@ -2019,8 +2095,8 @@ b, strong{ font-weight: bold; }
 	user-select: none;
 }
 .box-content {
-	background: #fff;
-	color: #000;
+	background: #DF5850;
+	color: #fff;
 	margin-bottom: 15px;
 	border: 2px;
 	border-color: #e1574c;
@@ -2041,15 +2117,20 @@ b, strong{ font-weight: bold; }
 	font-family: Ruda;
 	font-size: 1.5em;
 	padding: 10px;
+	max-width: 740px;
+	margin: auto;
 }
 	.box-content-new .message {
-		font-size: 1.3em;
+		font-size: 1.1em;
 		display: table-cell;
 		vertical-align: middle;
 		float: left;
 		text-shadow: none;
+		padding-bottom: 10px;
 	}
-
+	.box-content-new .buttons {
+		width: 125px;
+	}
 
 .box-content-rejected {
 	background-color: #E06961;
@@ -2058,20 +2139,32 @@ b, strong{ font-weight: bold; }
 	font-size: 1.5em;
 	padding: 10px;
 }
+	.box-content-rejected .message {
+		font-size: 1.1em;
+		display: table-cell;
+		vertical-align: middle;
+		float: left;
+		text-shadow: none;
+		padding-bottom: 10px;
+	}
 
 .box-content-accepted{
 	background-color: #50C5BC;
 	color: #fff;
 	font-family: Ruda;
 	font-size: 1.5em;
+	line-height: 1.3em;
 	padding: 10px;
+	max-width: 740px;
+	margin: auto;
 }
 
 	.box-content-accepted .message{
-		font-size: 1.3em;
+		font-size: 1.1em;
 		display: table-cell;
 		vertical-align: middle;
 		float: left;
+		padding-bottom: 10px;
 		text-shadow: none;
 	}
 
@@ -2079,16 +2172,22 @@ b, strong{ font-weight: bold; }
 	background-color: #4ea2ea;
 	color: #fff;
 	font-size: 1.5em;
+	font-family: Ruda;
 	line-height: 1.3em;
 	padding: 10px;
+	max-width: 740px;
+	margin: auto;
+
 }
 
 	.box-content-pickedup .message{
-		font-size: 1.3em;
+		font-size: 1.1em;
 		display: table-cell;
+		letter-spacing: 0px;
 		vertical-align: middle;
 		float: left;
 		text-shadow: none;
+		padding-bottom: 10px;
 	}
 	
 	.button.green2{
@@ -2098,7 +2197,14 @@ b, strong{ font-weight: bold; }
 
 .box-content-delivered{
 	background-color: #4d4d4d;
+	font-size: 2em;
+	line-height: 1.3em;
+	font-family: Ruda;
+	padding: 10px;
+	max-width: 740px;
+	margin: auto;
 }
+
 /**********************/
 
 .control .accepted{

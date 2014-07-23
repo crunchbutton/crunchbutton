@@ -55,12 +55,9 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 				
 				case 'undelivered':
 					$count = 0;
-					$orders = Order::deliveryOrders( $lastHours );
+					$orders = Order::outstandingOrders();
 					foreach ( $orders as $order ) {
-						$status = $order->deliveryLastStatus();
-						if( $status[ 'status' ] != 'delivered' ) {
-							$count++;
-						}
+						$count++;
 					}
 					echo json_encode( [ 'total' => $count ] );
 				break;
@@ -112,6 +109,18 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$order->deliveryReject(c::user());
 								$res['status'] = true;
 								break;
+								
+							case 'undo-accepted':
+								$res[ 'status' ] = $order->undoStatus('accepted');
+								break;
+								
+							case 'undo-delivered':
+								$res[ 'status' ] = $order->undoStatus('delivered');
+								break;
+							
+							case 'undo-pickedup':
+								$res[ 'status' ] = $order->undoStatus('pickedup');
+								break;
 						}
 
 						if ( $order->deliveryStatus() ){
@@ -122,6 +131,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 						echo json_encode( $ret );
 						exit;
 					} else {
+					
 						if( $order->id_order ) {
 							echo $order->json();
 						} else {
@@ -144,6 +154,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					'name' => $order->name,
 					'phone' => $order->phone,
 					'date' => $order->date(),
+					'date_hour' => $order->date()->format( 'g:i A'),
 					'restaurant' => $order->restaurant()->name,
 				] );
 			}
