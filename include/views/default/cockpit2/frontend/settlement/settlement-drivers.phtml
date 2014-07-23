@@ -77,6 +77,14 @@
 						<td>{{total_orders}}</td>
 					</tr>
 					<tr>
+						<td>Total Invited Users</td>
+						<td>{{total_invited_users}}</td>
+					</tr>
+					<tr>
+						<td>Total Payment Invited Users</td>
+						<td>$ {{total_payment_invited_users | formatPrice}}</td>
+					</tr>
+					<tr>
 						<td>Total of Not Included Orders</td>
 						<td>{{total_not_included}}</td>
 					</tr>
@@ -275,6 +283,10 @@
 									<td>Credit Card Charge</td>
 									<td>$ {{driver.credit_charge | formatPrice}}</td>
 								</tr>
+								<tr positive-or-negative-color="{{driver.invites_total_payment}}">
+									<td>Invited Users Payment</td>
+									<td>$ {{driver.invites_total_payment | formatPrice}}</td>
+								</tr>
 								<tr positive-or-negative-color="{{driver.gift_card}}">
 									<td>Gift Card</td>
 									<td>$ {{driver.gift_card | formatPrice}}</td>
@@ -300,7 +312,32 @@
 							<span ng-if="driver.shifts.worked"> | <span class="link" ng-if="!driver.show_shifts" ng-click="driver.show_shifts = true">Show shifts</span>
 								<span class="link" ng-if="driver.show_shifts" ng-click="driver.show_shifts = false">Hide shifts</span> (total {{driver.shifts.worked_total}} shifts)
 							</span>
+							<span ng-if="driver.invites_total">
+								 | <span class="link" ng-if="!driver.show_invites" ng-click="driver.show_invites = true">Show invited users</span>
+								<span class="link" ng-if="driver.show_invites" ng-click="driver.show_invites = false">Hide invited users</span> (total {{driver.invites_total}} users)
+							</span>
 						</h3>
+
+						<table class="tb-grid tb-zebra" ng-if="driver.show_invites">
+							<thead>
+								<tr>
+									<td>ID Order</td>
+									<td>ID User</td>
+									<td>Customer Name</td>
+									<td>Date</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="invite in driver.invites">
+									<td>{{invite.id_order}}</td>
+									<td>{{invite.user.id_user}}</td>
+									<td>{{invite.user.name}}</td>
+									<td>{{invite.date}}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<br/><br/>
 
 						<table class="tb-grid tb-zebra" ng-if="driver.show_shifts">
 							<thead>
