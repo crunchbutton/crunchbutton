@@ -41,6 +41,10 @@ NGApp.controller('LoginCtrl', function($scope, AccountService, MainNavigationSer
 	}
 });
 
+NGApp.controller( 'ProfileCtrl', function ( $scope ) {
+	$scope.ready = true;
+} );
+
 NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 	$rootScope.$on('notificationAlert', function(e, title, message) {
 		if ($scope.$$phase) {

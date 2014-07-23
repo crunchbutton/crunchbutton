@@ -708,7 +708,20 @@ input {
 	overflow: hidden;
 }
 
-.ul-inputs{}
+.ul-info .li-info{
+	margin-bottom: 1em;
+	margin-top: 1em;
+	clear: both;
+}
+	.ul-info .li-info .label{
+		color: #5d5f63;
+		width: 8em;
+	}
+	.ul-info .li-info .data{
+		font-size: 1.1em;
+		font-weight: bold;
+	}
+
 .ul-inputs .label{
 	color: #5d5f63;
 	font-weight: bold;

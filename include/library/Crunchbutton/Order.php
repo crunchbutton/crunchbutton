@@ -327,12 +327,12 @@ class Crunchbutton_Order extends Cana_Table {
 					Log::debug([ 'totalOrdersByPhone' => $totalOrdersByPhone ]);
 					// At first check if it is an user's invite code - rewards: two way gift cards #2561
 					$reward = new Crunchbutton_Reward;
-					$inviter_id_user = $reward->validateInviteCode( $word );
-					Log::debug([ 'inviter_id_user' => $inviter_id_user ]);
-					if( $totalOrdersByPhone <= 1 && $inviter_id_user ){
+					$inviter = $reward->validateInviteCode( $word );
+					Log::debug([ 'inviter' => $inviter ]);
+					if( $totalOrdersByPhone <= 1 && $inviter ){
 						// get the value of the discount
 						$value = $reward->getReferredDiscountAmount();
-						$this->giftCardInviter = [ 'id_user' => $inviter_id_user, 'value' => $value, 'word' => $word ];
+						$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word ];
 						if( $value ){
 							$this->giftcardValue = $value;
 							break;
@@ -340,7 +340,7 @@ class Crunchbutton_Order extends Cana_Table {
 					}
 				}
 			}
-
+			// if the code doenst belong to a user check if it belongs to a gift card
 			if( !$this->giftCardInviter ) {
 				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
 				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
@@ -557,6 +557,7 @@ class Crunchbutton_Order extends Cana_Table {
 					}
 				} else if( $this->giftCardInviter[ 'id_admin'] ){
 					$credits_amount = $reward->adminRefersNewUserCreditAmount();
+					Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
 				}
 
 				// Give points to the user that invites the new user

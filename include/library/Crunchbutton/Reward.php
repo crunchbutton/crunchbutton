@@ -24,9 +24,15 @@ class Crunchbutton_Reward extends Cana_Table{
 
 	public function validateInviteCode( $code ){
 		$code = trim( $code );
-		$user = Crunchbutton_User::q( 'SELECT * FROM `user` u WHERE u.invite_code = "' . $code . '"');
+		// at first check if it belongs to an admin
+		$admin = Crunchbutton_admin::byInviteCode( $code );
+		if( $admin->id_admin ){
+			return [ 'id_admin' => $admin->id_admin ];
+		}
+		// second check if it belongs to an user
+		$user = Crunchbutton_User::byInviteCode( $code );
 		if( $user->id_user ){
-			return $user->id_user;
+			return [ 'id_user' => $user->id_user ];
 		}
 		return false;
 	}
