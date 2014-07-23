@@ -383,6 +383,18 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 				if ( c::getPagePiece(2) == 'validate' ) {
 
 					$code = $this->request()['code'];
+
+					// At first check if it is an user's invite code - rewards: two way gift cards #2561
+					$reward = new Crunchbutton_Reward;
+					$valid = $reward->validateInviteCode( $code );
+					if( $valid ){
+						$value = $reward->getReferredDiscountAmount();
+						if( $value ){
+							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'This code (' . $code . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+							exit;
+						}
+					}
+
 					// Get the giftcard (promo) by code
 					$giftcard = Crunchbutton_Promo::byCode( $code);
 					// Check if the giftcard is valid
@@ -418,13 +430,11 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							continue;
 						}
 
-
 						// At first check if it is an user's invite code - rewards: two way gift cards #2561
 						$reward = new Crunchbutton_Reward;
 						$valid = $reward->validateInviteCode( $word );
 						if( $valid ){
-							$settings = $reward->loadSettings();
-							$value = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+							$value = $reward->getReferredDiscountAmount();
 							if( $value ){
 								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
 								exit;

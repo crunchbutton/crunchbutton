@@ -29,7 +29,12 @@
 			Go ahead and order some food!
 		</div>
 		<div class="success" ng-show="!modal.restaurant">
-			Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
+			<div ng-if="giftcard.message">
+				{{giftcard.message}}
+			</div>
+			<div ng-if="!giftcard.message">
+				Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
+			</div>
 			<br/>
 			Go ahead and order some food!
 		</div>

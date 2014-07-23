@@ -4,7 +4,7 @@ class Controller_vieworder extends Cana_Controller {
 	public function init() {
 
 		$order = Order::uuid( c::getPagePiece( 1 ) );
-		if (!$order->id_order || (!$_SESSION['admin'] && c::user()->id_user != $order->id_user)) {
+		if (!$order->id_order || (!c::user()->id_admin && c::user()->id_user != $order->id_user)) {
 			die('invalid order');
 		}
 
@@ -22,7 +22,7 @@ class Controller_vieworder extends Cana_Controller {
 				$cockpit_url = 'http://cbtn.io/' . $order->id_order;
 				break;
 		}
-		
+
 
 		$order = $order->get(0);
 

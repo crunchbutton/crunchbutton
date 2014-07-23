@@ -11,6 +11,7 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_ORDER_VALUE_OVER_OPERATION = 'reward_points_order_value_over_operation';
 	const CONFIG_KEY_GET_REFERRED_VALUE = 'reward_points_get_referred_value';
 	const CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT = 'reward_points_get_referred_discount_amt';
+	const CONFIG_KEY_REFER_NEW_USER_AMOUNT = 'reward_points_refer_new_user_amt';
 	const CONFIG_KEY_REFER_NEW_USER_VALUE = 'reward_points_refer_new_user_value';
 	const CONFIG_KEY_ADMIN_REFER_USER_AMOUNT = 'reward_points_admin_refer_user_amt';
 	const CONFIG_KEY_WIN_CLUCKBUTTON_VALUE = 'reward_points_win_cluckbutton_value';
@@ -22,6 +23,7 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION = 'reward_points_order_2_days_row_operation';
 
 	public function validateInviteCode( $code ){
+		$code = trim( $code );
 		$user = Crunchbutton_User::q( 'SELECT * FROM `user` u WHERE u.invite_code = "' . $code . '"');
 		if( $user->id_user ){
 			return $user->id_user;
@@ -51,6 +53,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->id_order = $params[ 'id_order' ];
 		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 		$credit->note = $params[ 'note' ];
+		$credit->id_referral = $params[ 'id_referral' ];
 		$credit->save();
 	}
 
@@ -112,6 +115,21 @@ class Crunchbutton_Reward extends Cana_Table{
 			}
 		}
 		return 0;
+	}
+
+	public function adminRefersNewUserCreditAmount(){
+		$settings = $this->loadSettings();
+		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
+	}
+
+	public function refersNewUserCreditAmount(){
+		$settings = $this->loadSettings();
+		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_REFER_NEW_USER_AMOUNT ] );
+	}
+
+	public function getReferredDiscountAmount(){
+		$settings = $this->loadSettings();
+		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
 	}
 
 	// rewards: 2x points when ordering in same week #3432
