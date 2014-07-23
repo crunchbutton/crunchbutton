@@ -74,6 +74,16 @@
 					</div>
 				</li>
 
+				<li class="li-input" ng-class="{'error':form.rewardPointsReferNewUserAmount.$invalid}">
+					<div class="label">Regular user refer a new user (add credit $):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsReferNewUserAmount" ng-model="config.reward_points_refer_new_user_amt" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsReferNewUserAmount.$error.required">Required.</small>
+					</div>
+				</li>
+
 				<li class="li-input" ng-class="{'error':form.rewardPointsAdminReferNewUserAmount.$invalid}">
 					<div class="label">Admin user refer a new user $:</div>
 					<div class="input">

@@ -1204,10 +1204,12 @@ NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCard
 	$scope.user = GiftCardService.account.user;
 	$scope.modal = GiftCardService.modal;
 	$scope.giftcard.value = GiftCardService.value;
+	$scope.giftcard.message = GiftCardService.message;
 	$rootScope.$on( 'GiftCardProcessed', function(e, data) {
 		// Update the scope
 		$scope.user = GiftCardService.account.user;
 		$scope.giftcard.value = GiftCardService.value;
+		$scope.giftcard.message = GiftCardService.message;
 		$scope.modal = GiftCardService.modal;
 	});
 });
