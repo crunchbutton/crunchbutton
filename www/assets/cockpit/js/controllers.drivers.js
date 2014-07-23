@@ -11,6 +11,7 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 	DriverOrdersService.revLastShift();
 	DriverOrdersService.timeLastShift();
 	DriverOrdersService.timeThisShift();
+	DriverOrdersService.outstandingOrders();
 	//Yell at driver if there is an outstanding undelivered order.
 
 });
@@ -45,6 +46,21 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 		);
 	};
 
+	$scope.undoAccept = function() {
+		$scope.makeBusy();
+		DriverOrdersService.undoAccepted( $scope.order.id_order, function(){ load(); } );
+	};
+
+	$scope.undoPickedup = function() {
+		$scope.makeBusy();
+		DriverOrdersService.undoPickedup( $scope.order.id_order, function(){ load(); } );
+	};
+
+	$scope.undoDelivered = function() {
+		$scope.makeBusy();
+		DriverOrdersService.undoDelivered( $scope.order.id_order, function(){ load(); } );
+	};
+
 	$scope.pickedup = function() {
 		$scope.makeBusy();
 		DriverOrdersService.pickedup( $scope.order.id_order, function(){ load(); } );
@@ -64,6 +80,8 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 	if( $scope.account.isLoggedIn() ){
 		load();
 	}
+
+	DriverOrdersService.driver_take();
 
 });
 
@@ -525,10 +543,6 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 		} else {
 			$scope.flash.setMessage( 'File not saved! ');
 		}
-	});
-
-	uploader.bind('error', function (event, xhr, item, response) {
-		App.alert( 'Upload error, please try again or send us a message.' );
 	});
 
 } );

@@ -10,6 +10,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$date = new DateTime( $this->date, new DateTimeZone( $this->restaurant()->timezone ) );
 		$out['date_formated'] = $date->format( 'g:i a, M dS, Y' );
+		$out['time_formated' ] = $date->format( 'g:i A' );
 		$out['_restaurant_name'] = $this->restaurant()->name;
 		$out['_restaurant_permalink'] = $this->restaurant()->permalink;
 		$out['_restaurant_phone'] = $this->restaurant()->phone;
