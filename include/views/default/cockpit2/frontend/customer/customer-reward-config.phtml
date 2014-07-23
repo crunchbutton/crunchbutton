@@ -120,6 +120,15 @@
 			</ul>
 			<p><strong>Reward: Other actions</strong><br><br></p>
 			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input" ng-class="{'error':form.rewardPointsCreateAnAccountValue.$invalid}">
+					<div class="label">Reward by creating an account (multiply last order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsCreateAnAccountValue" ng-model="config.reward_points_make_acount_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsCreateAnAccountValue.$error.required">Required.</small>
+					</div>
+				</li>
 				<li class="li-input" ng-class="{'error':form.rewardPointsSharedOrderValue.$invalid}">
 					<div class="label">Reward shared orders (multiply order's points by):</div>
 					<div class="input">

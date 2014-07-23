@@ -28,6 +28,7 @@
 				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 				<br />
+				You just earned {{order.reward.points}} points! <strong>Double</strong> it by sharing on Facebook.<br><br
 				<div class="divider dots"></div>
 			</div>
 
@@ -37,7 +38,7 @@
 					<div class="divider"></div>
 				</div>
 				<div ng-if="order.reward.points && !order.reward.shared">
-					You just earned {{order.reward.points}} points! <strong>Double</strong> it by sharing on Facebook.<br><br>
+					You just earned {{order.reward.points}} points! <strong>Double</strong> it by creating an account.<br><br>
 				</div>
 				<div ng-show="order._new && referral.invite_url && referral.enabled">
 					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
