@@ -1,0 +1,42 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-user"></i><span>Profile</span></h1>
+
+	<div class="divider"></div>
+
+	<div>
+
+		<ul class="ul-info box-content">
+			<li class="li-info">
+				<div class="label">Name:</div>
+				<div class="data">{{account.user.name}}</div>
+			</li>
+			<li class="li-info">
+				<div class="label">Login:</div>
+				<div class="data">{{account.user.login}}</div>
+			</li>
+			<li class="li-info" ng-if="account.user.phone">
+				<div class="label">Phone:</div>
+				<div class="data">{{account.user.phone | formatPhone}}</div>
+			</li>
+			<li class="li-info" ng-if="account.user.email">
+				<div class="label">Email:</div>
+				<div class="data">{{account.user.email}}</div>
+			</li>
+			<li class="li-info" ng-if="account.user.timezone">
+				<div class="label">Timezone:</div>
+				<div class="data">{{account.user.timezone}}</div>
+			</li>
+			<li class="li-info" ng-if="account.user.invite_code">
+				<div class="label">Invite code:</div>
+				<div class="data">{{account.user.invite_code}}</div>
+			</li>
+		</ul>
+
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

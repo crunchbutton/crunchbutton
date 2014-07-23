@@ -8,6 +8,18 @@ class Crunchbutton_Admin extends Cana_Table {
 	const VEHICLE_BIKE = 'bike';
 	const VEHICLE_CAR = 'car';
 
+	public function inviteCode(){
+		if( $this->id_admin && ( !$this->invite_code || $this->invite_code == '' ) ){
+			$this->invite_code = Crunchbutton_User::inviteCodeGenerator();
+			$this->save();
+		}
+		return $this->invite_code;
+	}
+
+	public static function byInviteCode( $code ){
+		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
+	}
+
 	public function vehicle(){
 		$vehicle = $this->getConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY );
 		if( $vehicle ){

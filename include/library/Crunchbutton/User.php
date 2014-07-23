@@ -16,7 +16,7 @@ class Crunchbutton_User extends Cana_Table {
 					}
 				}
 			}
-			
+
 			if (!count($o)) {
 				$tipper = 0;
 			} else {
@@ -44,24 +44,24 @@ class Crunchbutton_User extends Cana_Table {
 			$name = explode(' ',$this->name);
 			$this->_name = $name[0];
 		}
-		return $this->_name;		
+		return $this->_name;
 	}
 
 	public function byPhone($phone) {
 		$phone = preg_replace('/[^0-9]/i','',$phone);
 		return User::q('select * from user where phone="'.$phone.'" order by id_user desc limit 1');
 	}
-	
+
 	public function lastOrder() {
 		$order = Order::q('select * from `order` where id_user="'.$this->id_user.'" and id_user is not null order by date desc limit 1');
 		return $order;
 	}
-	
+
 	public function orders($type = 'full') {
 		if (!$this->id_user) {
 			return new Order;
 		}
-		
+
 		if (!isset($this->_orders)) {
 			if ($type == 'compact') {
 				$q = '
@@ -75,7 +75,7 @@ class Crunchbutton_User extends Cana_Table {
 			} else {
 				$q = 'select * from `order` where id_user="'.$this->id_user.'"';
 			}
-			
+
 			$this->_orders = Order::q($q);
 		}
 		return $this->_orders;
@@ -88,15 +88,15 @@ class Crunchbutton_User extends Cana_Table {
 			WHERE user_project.id_user="'.$this->id_user.'"
 		');
 	}
-	
+
 	public function projects() {
-	
+
 	}
-	
+
 	public function password($password) {
-		
+
 	}
-	
+
 	public static function facebook($id) {
 		return self::q('
 			select user.* from user
@@ -108,7 +108,7 @@ class Crunchbutton_User extends Cana_Table {
 				and user_auth.active=1
 			');
 	}
-	
+
 	public static function facebookCreate($id, $auth = false) {
 		$fbuser = self::facebook($id);
 		$user = $auth ? null : c::user();
@@ -131,7 +131,7 @@ class Crunchbutton_User extends Cana_Table {
 			$userAuth->type = 'facebook';
 			$userAuth->auth = $fb->fbuser()->id;
 			$userAuth->save();
-			
+
 			if ($user->phone) {
 				User_Auth::createPhoneAuthFromFacebook($user->id_user, $user->phone);
 			}
@@ -148,14 +148,14 @@ class Crunchbutton_User extends Cana_Table {
 
 		return $user;
 	}
-	
+
 	public function auths() {
 		if (!isset($this->_auths)) {
 			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=1');
 		}
 		return $this->_auths;
 	}
-	
+
 	public function email() {
 		if (!isset($this->_email)) {
 			$this->_email = null;
@@ -168,7 +168,7 @@ class Crunchbutton_User extends Cana_Table {
 		}
 		return $this->_email;
 	}
-	
+
 	public function presets() {
 		if (!isset($this->_presets)) {
 			$this->_presets = Preset::q('
@@ -177,7 +177,7 @@ class Crunchbutton_User extends Cana_Table {
 		}
 		return $this->_presets;
 	}
-	
+
 	public function preset($id_restaurant) {
 		foreach ($this->presets() as $preset) {
 			if ($preset->id_restaurant == $id_restaurant) {
@@ -191,7 +191,7 @@ class Crunchbutton_User extends Cana_Table {
 		$out = $this->properties();
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
 		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' )
-		
+
 		$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
 		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
 		$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
@@ -216,7 +216,7 @@ class Crunchbutton_User extends Cana_Table {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
-		$out['email'] = $this->email ? $this->email : $this->email();	
+		$out['email'] = $this->email ? $this->email : $this->email();
 
 		// Get user payment type
 		$payment_type = $this->payment_type();
@@ -233,12 +233,12 @@ class Crunchbutton_User extends Cana_Table {
 		if (c::env() == 'beta' || c::env() == 'local') {
 			$out['debug'] = true;
 		}
-		
+
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
-		
+
 		$out['tipper'] = $this->tipper();
-		
+
 		return $out;
 	}
 
@@ -280,14 +280,14 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function inviteCode(){
 		if( !$this->invite_code || $this->invite_code == '' ){
-			$this->invite_code = static::inviteCodeGenerator();
+			$this->invite_code = Crunchbutton_User::inviteCodeGenerator();
 			$this->save();
 		}
 		return $this->invite_code;
 	}
 
 	public static function inviteCodeGenerator(){
-		$random_id_length = 10; 
+		$random_id_length = 10;
 		$characters = '123456789qwertyuiopasdfghjklzxcvbnm';
 		$rnd_id = '';
 		for ($i = 0; $i < $random_id_length; $i++) {
@@ -295,11 +295,12 @@ class Crunchbutton_User extends Cana_Table {
 		}
 
 		// make sure the code do not exist
-		$user = static::byInviteCode( $rnd_id );
-		if( $user->count() > 0 ){
-			return static::inviteCodeGenerator();
+		$user = Crunchbutton_User::byInviteCode( $rnd_id );
+		$admin = Crunchbutton_Admin::byInviteCode( $rnd_id );
+		if( $user->count() > 0 || $admin->count() ){
+			return Crunchbutton_User::inviteCodeGenerator();
 		} else {
-			return $rnd_id;	
+			return $rnd_id;
 		}
 	}
 
@@ -314,7 +315,7 @@ class Crunchbutton_User extends Cana_Table {
 	public function debits(){
 		return Crunchbutton_Credit::debitByUser( $this->id_user );
 	}
-	
+
 	public function image() {
 		if (!isset($this->_image)) {
 			$auths = $this->auths();

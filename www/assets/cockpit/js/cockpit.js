@@ -239,6 +239,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversHelpCreditCardCtrl',
 			templateUrl: 'assets/view/drivers-help-credit-card.html'
 		})
+		.when('/profile', {
+			action: 'profile',
+			controller: 'ProfileCtrl',
+			templateUrl: 'assets/view/profile.html'
+		})
 		/* Admins payment info */
 		.when('/staff/list', {
 			action: 'staff',
