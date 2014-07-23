@@ -486,16 +486,28 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		var total_adjustments = 0;
 		var total_worked_hours = 0;
 		var total_refunded = 0;
+		var total_invited_users = 0;
+		var total_payment_invited_users = 0;
 		for( x in $scope.result.drivers ){
 			$scope.result.drivers[ x ].total_payments = ( $scope.result.drivers[ x ].total_payment_without_adjustment + $scope.result.drivers[ x ].adjustment );
 			if( $scope.result.drivers[ x ].pay ){
 				total_drivers++;
 				// include the adjustment at total_due
 				total_payments += $scope.result.drivers[ x ].total_payments;
-				total_reimbursements += $scope.result.drivers[ x ].total_reimburse;
+				if( $scope.result.drivers[ x ].total_reimburse ){
+					total_reimbursements += $scope.result.drivers[ x ].total_reimburse;
+				}
+
 				total_orders += $scope.result.drivers[ x ].orders_count;
 				total_not_included += $scope.result.drivers[ x ].not_included;
 				total_not_included += $scope.result.drivers[ x ].not_included;
+				if( $scope.result.drivers[ x ].invites_total ){
+					total_invited_users += $scope.result.drivers[ x ].invites_total;
+				}
+				if( $scope.result.drivers[ x ].invites_total_payment ){
+					console.log('tt',$scope.result.drivers[ x ].invites_total_payment);
+					total_payment_invited_users += $scope.result.drivers[ x ].invites_total_payment;
+				}
 				if( $scope.result.drivers[ x ].worked_hours ){
 					total_worked_hours += $scope.result.drivers[ x ].worked_hours;
 				}
@@ -518,6 +530,8 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		$scope.total_not_included = total_not_included;
 		$scope.total_refunded = total_refunded;
 		$scope.total_worked_hours = total_worked_hours;
+		$scope.total_invited_users = total_invited_users;
+		$scope.total_payment_invited_users = total_payment_invited_users;
 		$scope.sum = sum;
 	}
 

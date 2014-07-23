@@ -101,6 +101,23 @@ class Crunchbutton_Referral extends Cana_Table{
 		return $this->_date;
 	}
 
+	public function settlementExport(){
+		$out = [];
+		$out[ 'id_admin' ] = $this->id_admin_inviter;
+		$out[ 'id_referral' ] = $this->id_referral;
+		$out[ 'id_order' ] = $this->id_order;
+		$out[ 'user' ] = [ 'id_user' => $this->invitedUser()->id_user, 'name' => $this->invitedUser()->name ];
+		$out[ 'date' ] = $this->date()->format( 'M jS Y g:i:s A' );
+		return $out;
+	}
+
+	public function invitedUser(){
+		if (!isset($this->_invited_user)) {
+			$this->_invited_user = Crunchbutton_User::o( $this->id_user_invited );
+		}
+		return $this->_invited_user;
+	}
+
 	public function getInvitesPerCode( $code ){
 		$invites = Crunchbutton_Referral::q( "SELECT * FROM referral WHERE invite_code = '{$code}' AND new_user = 1" );
 		return $invites->count();

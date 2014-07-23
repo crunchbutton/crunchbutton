@@ -209,6 +209,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// this method receives the restaurant orders and run the math
 	public function driversProcess( $orders, $recalculatePaidOrders = false ){
 		$pay = [];
+
+		// amount for each invited user
+
 		foreach ( $orders as $order ) {
 
 			if( $order && $order[ 'id_admin' ] ){
@@ -271,6 +274,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
 			}
 		}
+
 		foreach( $pay as $id_driver => $driver ){
 			$pay_type = Admin::o( $id_driver )->payment_type();
 			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
@@ -304,6 +308,23 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+			}
+		}
+
+		// Add the invites data
+		// https://github.com/crunchbutton/crunchbutton/issues/2561#issuecomment-49223406
+		$amount_per_invited_user = $this->amount_per_invited_user();
+		$invites = $this->driverInvites();
+		if( $invites ){
+			foreach( $invites as $id_admin => $invites ){
+				if( !$pay[ $id_admin ] ){
+					$admin = Crunchbutton_Admin::o( $id_admin );
+					$pay[ $id_admin ] = [ 'id_admin' => $id_admin, 'name' => $admin->name ];
+				}
+				$pay[ $id_admin ][ 'invites' ] = $invites;
+				$pay[ $id_admin ][ 'invites_total' ] = count( $invites );
+				$pay[ $id_admin ][ 'invites_total_payment' ] = ( $amount_per_invited_user * $pay[ $id_admin ][ 'invites_total' ] );
+				$pay[ $id_admin ][ 'total_payment' ] += $pay[ $id_admin ][ 'invites_total_payment' ];
 			}
 		}
 
@@ -657,17 +678,27 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$shouldSchedule = ( $_driver[ 'total_payment' ] != 0 ) ? true : false;
 			}
 
-			foreach ( $_driver[ 'orders' ] as $order ) {
-				if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
-					if( !$order[ 'driver_reimbursed' ] ){
-						$shouldSchedule = true;
-					}
-				} else {
-					if( !$order[ 'driver_paid' ] ){
-						$shouldSchedule = true;
+			if( $_driver[ 'orders' ] ){
+				foreach ( $_driver[ 'orders' ] as $order ) {
+					if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+						if( !$order[ 'driver_reimbursed' ] ){
+							$shouldSchedule = true;
+						}
+					} else {
+						if( !$order[ 'driver_paid' ] ){
+							$shouldSchedule = true;
+						}
 					}
 				}
 			}
+
+			$invites = $_driver[ 'invites' ];
+			if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+				if( count( $invites ) > 0 ){
+					$shouldSchedule = true;
+				}
+			}
+
 
 			if( $shouldSchedule ){
 
@@ -710,20 +741,33 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$this->log( 'scheduleDriverPayment', $schedule->properties() );
 						}
 					}
+					if( $_driver[ 'invites' ] ){
+						foreach( $_driver[ 'invites' ] as $invite ){
+							$schedule_referral = new Cockpit_Payment_Schedule_Referral;
+							$schedule_referral->id_payment_schedule = $id_payment_schedule;
+							$schedule_referral->id_referral = $invite[ 'id_referral' ];
+							$schedule_referral->amount = $this->amount_per_invited_user();
+							$schedule_referral->save();
+							$this->log( 'scheduleReferralPayment', $schedule_referral->properties() );
+						}
+					}
 				}
 
-				foreach ( $_driver[ 'orders' ] as $order ) {
-					if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
-						$order_amount = $order[ 'pay_info' ][ 'total_reimburse' ];
-					} else {
-						$order_amount = $order[ 'pay_info' ][ 'total_payment' ];
+				if( $_driver[ 'orders' ] ){
+					foreach ( $_driver[ 'orders' ] as $order ) {
+						if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+							$order_amount = $order[ 'pay_info' ][ 'total_reimburse' ];
+						} else {
+							$order_amount = $order[ 'pay_info' ][ 'total_payment' ];
+						}
+						$schedule_order = new Cockpit_Payment_Schedule_Order;
+						$schedule_order->id_payment_schedule = $id_payment_schedule;
+						$schedule_order->id_order = $order[ 'id_order' ];
+						$schedule_order->amount = $order_amount;
+						$schedule_order->save();
 					}
-					$schedule_order = new Cockpit_Payment_Schedule_Order;
-					$schedule_order->id_payment_schedule = $id_payment_schedule;
-					$schedule_order->id_order = $order[ 'id_order' ];
-					$schedule_order->amount = $order_amount;
-					$schedule_order->save();
 				}
+
 				$this->log( 'scheduleDriverPayment', $schedule->properties() );
 			}
 		}
@@ -1390,6 +1434,26 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return false;
 	}
 
+	public function driverInvites( $id_admin = false ){
+		$out = [];
+		if( $id_admin ){
+			$where = ' AND a.id_admin = ' . $id_admin;
+		} else {
+			$where = '';
+		}
+		$invites = Crunchbutton_Referral::q( 'SELECT r.* FROM referral r
+																					INNER JOIN admin a ON r.id_admin_inviter = a.id_admin AND r.new_user = 1 ' . $where . '
+																					WHERE r.id_referral NOT IN( SELECT psr.id_referral FROM payment_schedule_referral psr )' );
+		foreach( $invites as $invite ){
+			$_invite = $invite->settlementExport();
+			if( !$out[ $invite->id_admin_inviter ] ){
+				$out[ $invite->id_admin_inviter ] = [];
+			}
+			$out[ $invite->id_admin_inviter ][] = $_invite;
+		}
+		return $out;
+	}
+
 	public function sendDriverPaymentNotification( $id_payment ){
 
 		$summary = $this->driverSummaryByIdPayment( $id_payment );
@@ -1415,6 +1479,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		return false;
+	}
+
+	public function amount_per_invited_user(){
+		if( !$this->_amount_per_invited_user ){
+			$reward = new Crunchbutton_Reward;
+			$this->amount_per_invited_user = $reward->adminRefersNewUserCreditAmount();
+		}
+		return $this->amount_per_invited_user;
 	}
 
 	private function log( $method, $message ){

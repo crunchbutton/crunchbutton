@@ -3,6 +3,9 @@
 class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
+		// @remove
+		// $this->_driverBegin();
+		// exit;
 
 		$this->resultsPerPage = 20;
 
@@ -394,6 +397,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$end = $this->request()['end'];
 		$id_driver = $this->request()['id_driver'];
 
+		// @remove
+		// $start = '2014-07-16';
+		// $end = '2014-07-23';
+		// $id_driver = 234;
+
 		if( !$start || !$end ){
 			$this->_error();
 		}
@@ -416,27 +424,31 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$total_drivers++;
 			$driver[ 'orders' ] = [];
 			$driver[ 'not_included' ] = 0;
-			foreach( $orders[ $key ][ 'orders' ] as $order ){
-				$_order = [];
-				$_order[ 'id_order' ] = $order[ 'id_order' ];
-				$_order[ 'name' ] = $order[ 'name' ];
-				$_order[ 'restaurant' ] = $order[ 'restaurant' ];
-				$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
-				$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
-				$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
-				$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
-				$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
-				$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
-				$_order[ 'date' ] = $order[ 'date' ];
-				$_order[ 'included' ] = !$order[ 'do_not_pay_driver' ];
-				if( !$_order[ 'included' ] ){
-					$driver[ 'not_included' ]++;
+			if( $orders[ $key ][ 'orders' ] ){
+				foreach( $orders[ $key ][ 'orders' ] as $order ){
+					$_order = [];
+					$_order[ 'id_order' ] = $order[ 'id_order' ];
+					$_order[ 'name' ] = $order[ 'name' ];
+					$_order[ 'restaurant' ] = $order[ 'restaurant' ];
+					$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
+					$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
+					$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
+					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
+					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
+					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
+					$_order[ 'date' ] = $order[ 'date' ];
+					$_order[ 'included' ] = !$order[ 'do_not_pay_driver' ];
+					if( !$_order[ 'included' ] ){
+						$driver[ 'not_included' ]++;
+					}
+					$driver[ 'orders' ][] = $_order;
+					$total_orders++;
 				}
-				$driver[ 'orders' ][] = $_order;
-				$total_orders++;
 			}
 			$driver[ 'total_payment_without_adjustment' ] = $driver[ 'total_payment' ];
 			$driver[ 'adjustment' ] = 0;
+			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
+			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
 
 			$driver[ 'pay' ] = true;
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
