@@ -94,7 +94,7 @@ html[xmlns] .clearfix {
 	margin: 0 5px 0 0;
 }
 .custom-checkbox, .custom-checkbox+label, .custom-checkbox+label+label{
-	cursor: pointer;	
+	cursor: pointer;
 }
 .custom-checkbox.checked {
 	color: #ec7063;
@@ -1215,6 +1215,11 @@ h1.about-header {
 	color:#999;
 	font-size:11px;
 }
+	.order-details-highlight{
+		color:#cb5921;
+		font-size:14px;
+		text-shadow:1px 1px 0px #CCC;
+	}
 .delivery-info-container label,.payment-info-container label {
 	float:left;
 	text-align:right;
@@ -1357,7 +1362,7 @@ h1.about-header {
 .invite-code-container{
 	margin-top: 10px;
 	padding-top: 10px;
-	border-top: 1px solid #F5F5F5;	
+	border-top: 1px solid #F5F5F5;
 }
 .invite-code-container input[type=text] {
 	text-align: center;
@@ -1923,8 +1928,8 @@ h1.about-header {
 	.home-reccomend-message-content {
 		text-align: center;
 	}
-	.visible-phone, .visible-tablet { 
-		display:block !important; 
+	.visible-phone, .visible-tablet {
+		display:block !important;
 	}
 	.content-readable:before {
 		content: " ";
@@ -2490,7 +2495,7 @@ h1.about-header {
 
 @media(min-width:768px) {
 	.home-reccomend-message-content {
-		display: block; 
+		display: block;
 		float: left;
 		margin: 12px 0 0 15px;
 	}
@@ -2781,7 +2786,7 @@ h1.about-header {
 		display: table-cell;
 	}
 	.restaurant-closed-content{
-		width: 80%;	
+		width: 80%;
 	}
 	.restaurant-closed-icon, .restaurant-closed-title{
 		color: #FFF;
@@ -2813,7 +2818,7 @@ h1.about-header {
 		display: none;
 	}
 }
-	
+
 @media (min-width: 768px) and (max-width: 1023px){
 	.tooltip-help{
 		margin-top: 10px;
@@ -2899,7 +2904,7 @@ h1.about-header {
 		display: none;
 	}
 	.toon-cherry {
-		display: none;	
+		display: none;
 	}
 }
 

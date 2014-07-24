@@ -21,8 +21,13 @@
 
 	<!-- Success -->
 	<div ng-show="modal.success && !modal.error">
-		<h1 ng-show="!user">Welcome!</h1>
-		<h1 ng-show="user">Congrats!</h1>
+		<div ng-if="giftcard.message">
+			<h1>Welcome to Crunchbutton!</h1>
+		</div>
+		<div ng-if="!giftcard.message">
+			<h1 ng-show="!user">Welcome!</h1>
+			<h1 ng-show="user">Congrats!</h1>
+		</div>
 		<div class="success" ng-show="modal.restaurant">
 			Congrats, you just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
 			<br/>
@@ -36,7 +41,7 @@
 				Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
 			</div>
 			<br/>
-			Go ahead and order some food!
+			Go ahead and order something delicious!
 		</div>
 		<div class="bottom-links">
 			<span class="giftcard-later" ng-click="modal.close();">Great</span>

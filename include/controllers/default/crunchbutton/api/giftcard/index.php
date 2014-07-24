@@ -390,7 +390,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					if( $valid ){
 						$value = $reward->getReferredDiscountAmount();
 						if( $value ){
-							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'This code (' . $code . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . ' gift card towards your first order.' ] ] );
 							exit;
 						}
 					}
@@ -436,7 +436,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 						if( $valid ){
 							$value = $reward->getReferredDiscountAmount();
 							if( $value ){
-								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
 								exit;
 							}
 						}
