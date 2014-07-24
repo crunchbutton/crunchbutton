@@ -31,6 +31,23 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		}
 	}
 
+	private function _invites( $id_driver ){
+		$settlement = new Settlement();
+		$amount_per_invited_user = $settlement->amount_per_invited_user();
+		$invites = $settlement->driverInvites( $id_driver );
+		$out = [];
+		if( $invites ){
+			$out[ 'referral' ] = [];
+			$out[ 'referral' ][ 'amount_per_user' ] = $amount_per_invited_user;
+			foreach( $invites as $id_admin => $invites ){
+				$out[ 'referral' ][ 'invites' ] = $invites;
+				$out[ 'referral' ][ 'invites_total' ] = count( $invites );
+				$out[ 'referral' ][ 'invites_total_payment' ] = ( $amount_per_invited_user * $out[ 'referral' ][ 'invites_total' ] );
+			}
+		}
+		return $out;
+	}
+
 	private function _summaryByHour( $range, $id_driver ){
 
 		$settlement = new Settlement( $range );
@@ -39,9 +56,15 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$payment_type = $driver->payment_type();
 		$hour_rate = floatval( $payment_type->hour_rate );
 
+		$out = [];
+
+		$out = array_merge( $out, $this->_invites( $id_driver ) );
+
 		if( $shifts ){
 
-			$out = [ 'type' => 'hour', 'payments' => [], 'weeks' => [] ];
+			$out[ 'type' ] = 'hour';
+			$out[ 'payments' ] = [];
+			$out[ 'weeks' ] = [];
 
 			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
 			foreach( $payments as $payment ){
@@ -182,11 +205,17 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$settlement = new Settlement( $range );
 		$orders = $settlement->driverWeeksSummaryOrders( $id_driver );
 
+		$out = [];
+
+		$out = array_merge( $out, $this->_invites( $id_driver ) );
+
 		if( $orders[ 0 ] ){
 
 			$orders = $orders[ 0 ];
 
-			$out = [ 'type' => 'order', 'payments' => [], 'weeks' => [] ];
+			$out[ 'type' ] = 'order';
+			$out[ 'payments' ] = [];
+			$out[ 'weeks' ] = [];
 
 			// payments
 			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
@@ -200,55 +229,58 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			}
 
 			// orders
-			foreach( $orders[ 'orders' ] as $order ){
-				$week = $order[ 'week' ];
-				$year = $order[ 'year' ];
-				$day = $order[ 'day' ];
+			if( $orders[ 'orders' ] && count( $orders[ 'orders' ] ) > 0 ){
 
-				$yearweek = $year . $week;
-				if( !$out[ 'weeks' ][ $week ] ){
+				foreach( $orders[ 'orders' ] as $order ){
 					$week = $order[ 'week' ];
-					if( !$out[ 'weeks' ][ $yearweek ] ){
-						$_day = new DateTime( date( 'Y-m-d', strtotime(  $year . 'W' .  $week . '0' ) ), new DateTimeZone( c::config()->timezone ) );
-						$period = 'From ' . $_day->format( 'm/d/Y' );
-						$_day->modify( '+ 6 days' );
-						$period .= ' to ' . $_day->format( 'm/d/Y' );
-						$out[ 'weeks' ][ $yearweek ] = [ 'period' => $period, 'total_payment' => 0, 'total_reimburse' => 0 ];
-						$out[ 'weeks' ][ $yearweek ][ 'payment_status' ] = [  'pending' => [ 'payment' => 0, 'reimburse' => 0 ],
-																					'processing' => [ 'payment' => 0, 'reimburse' => 0 ],
-																					'paid' => [ 'payment' => 0, 'reimburse' => 0 ] ];
+					$year = $order[ 'year' ];
+					$day = $order[ 'day' ];
+
+					$yearweek = $year . $week;
+					if( !$out[ 'weeks' ][ $week ] ){
+						$week = $order[ 'week' ];
+						if( !$out[ 'weeks' ][ $yearweek ] ){
+							$_day = new DateTime( date( 'Y-m-d', strtotime(  $year . 'W' .  $week . '0' ) ), new DateTimeZone( c::config()->timezone ) );
+							$period = 'From ' . $_day->format( 'm/d/Y' );
+							$_day->modify( '+ 6 days' );
+							$period .= ' to ' . $_day->format( 'm/d/Y' );
+							$out[ 'weeks' ][ $yearweek ] = [ 'period' => $period, 'total_payment' => 0, 'total_reimburse' => 0 ];
+							$out[ 'weeks' ][ $yearweek ][ 'payment_status' ] = [  'pending' => [ 'payment' => 0, 'reimburse' => 0 ],
+																						'processing' => [ 'payment' => 0, 'reimburse' => 0 ],
+																						'paid' => [ 'payment' => 0, 'reimburse' => 0 ] ];
+						}
 					}
+
+					$_order = [];
+					$_order[ 'id_order' ] = $order[ 'id_order' ];
+					$_order[ 'name' ] = $order[ 'name' ];
+					$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ];
+					$_order[ 'pay_type' ] = ( $order[ 'credit' ] ? 'Card' : 'Cash' );
+					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ];
+					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ];
+					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ];
+					$_order[ 'total_payment' ] = max( $order[ 'pay_info' ][ 'total_payment' ], 0 );
+
+					$_order[ 'payment' ] = $this->_statusByPaymentId( $order[ 'payment_info' ][ 'id_payment' ] );
+					$_order[ 'reimburse' ] = $this->_statusByPaymentId( $order[ 'reimbursed_info' ][ 'id_payment' ] );
+
+					if( !$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'orders' ] ){
+						$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'day' ] = $order[ 'date_day' ];
+						$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'date' ] = $day;
+						$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_reimburse' ] = 0;
+						$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_payment' ] = 0;
+						$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'orders' ] = [];
+					}
+					$out[ 'weeks' ][ $yearweek ][ 'yearweek' ] = $yearweek;
+					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'orders' ][] = $_order;
+					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_reimburse' ] += $_order[ 'total_reimburse' ];
+					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_payment' ] += $_order[ 'total_payment' ];
+					$out[ 'weeks' ][ $yearweek ][ 'total_payment' ] += $_order[ 'total_payment' ];
+					$out[ 'weeks' ][ $yearweek ][ 'total_reimburse' ] += $_order[ 'total_reimburse' ];
+
+					$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $_order[ 'payment' ][ 'status' ] ) ][ 'payment' ] += $_order[ 'total_payment' ];
+					$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $_order[ 'reimburse' ][ 'status' ] ) ][ 'reimburse' ] += $_order[ 'total_reimburse' ];
 				}
-
-				$_order = [];
-				$_order[ 'id_order' ] = $order[ 'id_order' ];
-				$_order[ 'name' ] = $order[ 'name' ];
-				$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ];
-				$_order[ 'pay_type' ] = ( $order[ 'credit' ] ? 'Card' : 'Cash' );
-				$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ];
-				$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ];
-				$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ];
-				$_order[ 'total_payment' ] = max( $order[ 'pay_info' ][ 'total_payment' ], 0 );
-
-				$_order[ 'payment' ] = $this->_statusByPaymentId( $order[ 'payment_info' ][ 'id_payment' ] );
-				$_order[ 'reimburse' ] = $this->_statusByPaymentId( $order[ 'reimbursed_info' ][ 'id_payment' ] );
-
-				if( !$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'orders' ] ){
-					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'day' ] = $order[ 'date_day' ];
-					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'date' ] = $day;
-					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_reimburse' ] = 0;
-					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_payment' ] = 0;
-					$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'orders' ] = [];
-				}
-				$out[ 'weeks' ][ $yearweek ][ 'yearweek' ] = $yearweek;
-				$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'orders' ][] = $_order;
-				$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_reimburse' ] += $_order[ 'total_reimburse' ];
-				$out[ 'weeks' ][ $yearweek ][ 'days' ][ $day ][ 'total_payment' ] += $_order[ 'total_payment' ];
-				$out[ 'weeks' ][ $yearweek ][ 'total_payment' ] += $_order[ 'total_payment' ];
-				$out[ 'weeks' ][ $yearweek ][ 'total_reimburse' ] += $_order[ 'total_reimburse' ];
-
-				$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $_order[ 'payment' ][ 'status' ] ) ][ 'payment' ] += $_order[ 'total_payment' ];
-				$out[ 'weeks' ][ $yearweek ][ 'payment_status' ][ strtolower( $_order[ 'reimburse' ][ 'status' ] ) ][ 'reimburse' ] += $_order[ 'total_reimburse' ];
 			}
 
 			usort( $out[ 'weeks' ], function( $a, $b ) {

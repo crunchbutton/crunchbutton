@@ -10,6 +10,13 @@ class Cockpit_Payment_Schedule_Referral extends Cana_Table {
 		return Cockpit_Payment_Schedule::o($this->id_payment_schedule);
 	}
 
+	public function referral(){
+		if( !$this->_referral ){
+			$this->_referral = Crunchbutton_Referral::o( $this->id_referral );
+		}
+		return $this->_referral;
+	}
+
 	public function payment(){
 		$payment = $this->payment_schedule()->payment();
 		if( $payment->id_payment ){

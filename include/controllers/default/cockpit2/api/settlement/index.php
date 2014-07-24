@@ -3,9 +3,6 @@
 class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-		// @remove
-		// $this->_driverBegin();
-		// exit;
 
 		$this->resultsPerPage = 20;
 
@@ -396,11 +393,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
 		$id_driver = $this->request()['id_driver'];
-
-		// @remove
-		// $start = '2014-07-16';
-		// $end = '2014-07-23';
-		// $id_driver = 234;
 
 		if( !$start || !$end ){
 			$this->_error();
