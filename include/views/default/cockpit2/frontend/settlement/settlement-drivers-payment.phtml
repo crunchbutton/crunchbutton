@@ -105,7 +105,7 @@
 					<td>Customer Fee</td>
 					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.markup}}">
+				<tr positive-or-negative-color="{{result.calcs.markup}}">
 					<td>Markup</td>
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>

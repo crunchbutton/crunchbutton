@@ -141,6 +141,10 @@
 			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Tips by Card</td>
 			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'tip' ], 2 ); ?></td>
 		</tr>
+			<tr class="class">
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Markup</td>
+				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'markup' ], 2 ); ?></td>
+			</tr>
 		<?php if( $summary[ 'driver_payment_hours' ] ) { ?>
 			<tr class="class">
 				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Worked Hours</td>
