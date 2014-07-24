@@ -12,10 +12,23 @@ class Controller_api_customer_reward extends Crunchbutton_Controller_RestAccount
 			case 'config':
 				$this->_config();
 				break;
-
+			case 'config-value':
+				$this->_configValue();
+				break;
 			default:
 				$this->_error();
 				break;
+		}
+	}
+
+	private function _configValue(){
+		$key = $this->request()[ 'key' ];
+		$reward = new Crunchbutton_Reward;
+		$settings = $reward->loadSettings();
+		if( $settings[ $key ] ){
+			echo json_encode( [ 'value' => $settings[ $key ] ] );exit();
+		} else {
+			$this->_error();
 		}
 	}
 
