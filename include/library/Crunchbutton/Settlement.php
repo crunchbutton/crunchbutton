@@ -120,11 +120,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// get orders we have to pay
 	public static function orders( $filters ){
-		$query = 'SELECT * FROM `order`
-									WHERE DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
-										AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
-										AND name NOT LIKE "%test%"
-									ORDER BY `date` ASC ';
+		$query = 'SELECT o.* FROM `order` o
+									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+									WHERE DATE(o.date) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
+										AND DATE(o.date) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
+										AND o.name NOT LIKE "%test%"
+										AND r.name NOT LIKE "%test%"
+									ORDER BY o.date ASC ';
 		// todo: do not commit with this line: for test only
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24462, 24463, 24464 ) order by id_order desc';
 		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
@@ -1298,6 +1300,20 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'status_date' ] = $schedule->status_date()->format( 'M jS Y g:i:s A T' );
 			}
 
+			$invites = $schedule->invites();
+			if( $invites ){
+				$summary[ 'invites_count' ] = 0;
+				$summary[ 'invites_amount' ] = 0;
+				$summary[ 'invites' ] = [];
+				foreach( $invites as $invite ){
+					$_invite = $invite->referral()->settlementExport();
+					$_invite[ 'amount' ] = $invite->amount;
+					$summary[ 'invites' ][] = $_invite;
+					$summary[ 'invites_count' ]++;
+					$summary[ 'invites_amount' ] += $invite->amount;
+				}
+			}
+
 			$shifts = $schedule->shifts();
 			if( $shifts ){
 				$summary[ 'shifts_count' ] = 0;
@@ -1352,7 +1368,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$total_payment = floatval( $summary[ 'amount' ] );
 					$summary[ 'hourly' ] = true;
 				} else {
-					$total_payment += $summary[ 'adjustment' ];
+					$total_payment = floatval( $summary[ 'amount' ] );
 				}
 
 			} else {
@@ -1371,6 +1387,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 															'gift_card' => $calcs[ 0 ][ 'gift_card' ],
 															'subtotal' => $calcs[ 0 ][ 'subtotal' ],
 														];
+
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
 			$summary[ 'total_payment' ] = max( $summary[ 'total_payment' ], 0 );
 			$summary[ 'total_reimburse' ] = max( $summary[ 'total_reimburse' ], 0 );
