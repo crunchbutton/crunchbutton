@@ -209,7 +209,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	// this method receives the restaurant orders and run the math
-	public function driversProcess( $orders, $recalculatePaidOrders = false ){
+	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true ){
 		$pay = [];
 
 		// amount for each invited user
@@ -315,18 +315,20 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// Add the invites data
 		// https://github.com/crunchbutton/crunchbutton/issues/2561#issuecomment-49223406
-		$amount_per_invited_user = $this->amount_per_invited_user();
-		$invites = $this->driverInvites();
-		if( $invites ){
-			foreach( $invites as $id_admin => $invites ){
-				if( !$pay[ $id_admin ] ){
-					$admin = Crunchbutton_Admin::o( $id_admin );
-					$pay[ $id_admin ] = [ 'id_admin' => $id_admin, 'name' => $admin->name ];
+		if( $include_invites ){
+			$amount_per_invited_user = $this->amount_per_invited_user();
+			$invites = $this->driverInvites();
+			if( $invites ){
+				foreach( $invites as $id_admin => $invites ){
+					if( !$pay[ $id_admin ] ){
+						$admin = Crunchbutton_Admin::o( $id_admin );
+						$pay[ $id_admin ] = [ 'id_admin' => $id_admin, 'name' => $admin->name ];
+					}
+					$pay[ $id_admin ][ 'invites' ] = $invites;
+					$pay[ $id_admin ][ 'invites_total' ] = count( $invites );
+					$pay[ $id_admin ][ 'invites_total_payment' ] = ( $amount_per_invited_user * $pay[ $id_admin ][ 'invites_total' ] );
+					$pay[ $id_admin ][ 'total_payment' ] += $pay[ $id_admin ][ 'invites_total_payment' ];
 				}
-				$pay[ $id_admin ][ 'invites' ] = $invites;
-				$pay[ $id_admin ][ 'invites_total' ] = count( $invites );
-				$pay[ $id_admin ][ 'invites_total_payment' ] = ( $amount_per_invited_user * $pay[ $id_admin ][ 'invites_total' ] );
-				$pay[ $id_admin ][ 'total_payment' ] += $pay[ $id_admin ][ 'invites_total_payment' ];
 			}
 		}
 
