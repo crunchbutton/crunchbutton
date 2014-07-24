@@ -6,13 +6,23 @@ NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeP
 				// list methods
 				'config' : { 'method': 'GET', params : { 'action' : 'config' } },
 				'config_save' : { 'method': 'POST', params : { 'action' : 'config' } },
+				'config_value' : { 'method': 'POST', params : { 'action' : 'config-value' } },
 			}
 		);
+
+	service.constants = {
+		'key_admin_refer_user_amt': 'reward_points_admin_refer_user_amt'
+	}
 
 	service.reward = {
 		config: {
 			load: function( callback ){
 				reward.config( function( data ){
+					callback( data );
+				} );
+			},
+			value: function( key, callback ){
+				reward.config_value( { key: key }, function( data ){
 					callback( data );
 				} );
 			},
