@@ -77,11 +77,11 @@
 						<td>{{total_orders}}</td>
 					</tr>
 					<tr>
-						<td>Total Invited Users</td>
+						<td>Total New Invited Users</td>
 						<td>{{total_invited_users}}</td>
 					</tr>
 					<tr>
-						<td>Total Payment Invited Users</td>
+						<td>Total Payment New Invited Users</td>
 						<td>$ {{total_payment_invited_users | formatPrice}}</td>
 					</tr>
 					<tr>
@@ -284,7 +284,7 @@
 									<td>$ {{driver.credit_charge | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{driver.invites_total_payment}}">
-									<td>Invited Users Payment</td>
+									<td>New Invited Users Payment</td>
 									<td>$ {{driver.invites_total_payment | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{driver.gift_card}}">
@@ -313,8 +313,8 @@
 								<span class="link" ng-if="driver.show_shifts" ng-click="driver.show_shifts = false">Hide shifts</span> (total {{driver.shifts.worked_total}} shifts)
 							</span>
 							<span ng-if="driver.invites_total">
-								 | <span class="link" ng-if="!driver.show_invites" ng-click="driver.show_invites = true">Show invited users</span>
-								<span class="link" ng-if="driver.show_invites" ng-click="driver.show_invites = false">Hide invited users</span> (total {{driver.invites_total}} users)
+								 | <span class="link" ng-if="!driver.show_invites" ng-click="driver.show_invites = true">Show new invited users</span>
+								<span class="link" ng-if="driver.show_invites" ng-click="driver.show_invites = false">Hide new invited users</span> (total {{driver.invites_total}} users)
 							</span>
 						</h3>
 
