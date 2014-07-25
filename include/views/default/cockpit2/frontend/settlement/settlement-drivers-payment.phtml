@@ -105,7 +105,7 @@
 					<td>Customer Fee</td>
 					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.markup}}">
+				<tr positive-or-negative-color="{{result.calcs.markup}}">
 					<td>Markup</td>
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
@@ -145,12 +145,12 @@
 				</tr>
 			</thead>
 			<thead>
-				<td>
+				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
-				</td>
+				</tr>
 			</thead>
 			<thead>
 				<tr>
@@ -174,10 +174,6 @@
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
@@ -197,7 +193,7 @@
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders">
-				<td>
+				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -206,7 +202,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
-				</td>
+				</tr>
 			</thead>
 			<thead ng-if="result.orders">
 				<tr>
@@ -289,7 +285,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
+				<tr class="transparent" ng-if="pay_type_payment">
 					<td></td>
 					<td></td>
 					<td><strong>Markup</strong></td>
