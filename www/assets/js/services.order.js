@@ -71,7 +71,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service._cardInfoHasChanged = false;
 		service._crunchSoundPlayded = false;
 		service._useRestaurantBoundingBox = false;
-		service._useCompleteAddress = false; // if true it means the address field will be fill with the address found by google api 
+		service._useCompleteAddress = false; // if true it means the address field will be fill with the address found by google api
 		service._completeAddressWithZipCode = true;
 
 		service.form.pay_type = (service.account.user && service.account.user.pay_type) ? service.account.user.pay_type : 'card';
@@ -98,7 +98,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		// Force the takeout verification
 		if( parseInt( service.restaurant.takeout ) != 1 ){
-			service.form.delivery_type = 'delivery';	
+			service.form.delivery_type = 'delivery';
 		}
 
 		service.form.autotip = 0;
@@ -137,10 +137,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '' ? userEntered.cardYear : service.form.cardYear );
 				if( userEntered.tip && userEntered.tip != '' ){
 					var _tip = userEntered.tip;
-					setTimeout(function() { 
-						service.form.tip = _tip; 
+					setTimeout(function() {
+						service.form.tip = _tip;
 						service.tipChanged();
-						service.updateTotal(); 
+						service.updateTotal();
 					}, 10 );
 				} else {
 					service.updateTotal();
@@ -160,7 +160,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		// Force the takeout verification
 		if( parseInt( service.restaurant.takeout ) != 1 ){
-			service.form.delivery_type = 'delivery';	
+			service.form.delivery_type = 'delivery';
 		}
 
 		// If the user has presets at other's restaurants but he did not typed his address yet
@@ -179,12 +179,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				service.loadOrder(service.account.user.presets[service.restaurant.id_restaurant]);
 			} catch (e) {
 				if( service.restaurant.preset ){
-					service.loadOrder(service.restaurant.preset());	
+					service.loadOrder(service.restaurant.preset());
 				}
 			}
 		} else {
 			if( service.restaurant.preset ){
-				service.loadOrder(service.restaurant.preset());	
+				service.loadOrder(service.restaurant.preset());
 			}
 		}
 		service.loaded = true;
@@ -292,7 +292,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 	service._breackDownTaxes = function (feeTotal) {
 		var taxes = (feeTotal * (service.restaurant.tax / 100));
-		// removed App.ceil - see #2613 
+		// removed App.ceil - see #2613
 		// taxes = App.ceil(taxes);
 		return taxes;
 	}
@@ -353,10 +353,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		feeTotal += elements['delivery'];
 		elements['fee'] = this._breackDownFee( feeTotal );
 		feeTotal += elements['fee'];
-		/* 	- taxes should be calculated using the price without markup 
+		/* 	- taxes should be calculated using the price without markup
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
 				- see #2236 and #2248 */
-		
+
 		// Check if the restaurant uses 3rd party delivery if it not, add the delivery fee
 		if( parseInt( service.restaurant.delivery_service ) ==  0 ){
 			totalWithoutMarkup += elements[ 'delivery' ];
@@ -371,27 +371,27 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 	service.submit = function( forceAddressOk ){
 		if( forceAddressOk ){
-			service._deliveryAddressOk = true;	
+			service._deliveryAddressOk = true;
 		} else {
 			service._deliveryAddressOk = false;
 		}
 		service.processOrder();
 	}
-	
+
 	service.checkout = function() {
 		service.scrollToForm();
 	}
-	
+
 	service.scrollToForm = function() {
 		var walkTo = $('.snap-content-inner').scrollTop() + $('.payment-form').offset().top - 60;
 		$('html, body, .snap-content-inner').animate({scrollTop: walkTo }, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	}
-	
+
 	service.errors = function(errors) {
 		var error = '';
 		for (var x in errors) {
 			if( x != 'debug' ){
-				error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';	
+				error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';
 			}
 		}
 		App.alert('<ul class="icons-ul">' + error + '</ul>');
@@ -413,7 +413,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		App.busy.makeBusy( service.local_gid );
 
 		if( service.form.address && service.form.address != '' ){
-			service.form.address = service.location.ordinalReplace( service.form.address );	
+			service.form.address = service.location.ordinalReplace( service.form.address );
 		}
 
 		var order = {
@@ -435,13 +435,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			order.tip = service.form.tip;
 			order.autotip_value = service.form.autotip;
 		}
-		
+
 		var displayErrors = function(errors) {
 			if (!$.isEmptyObject(errors)) {
 				service.scrollToForm();
 				service.errors(errors);
 				App.busy.unBusy();
-	
+
 				App.track('OrderError', errors);
 				// Log the error
 				App.log.order({
@@ -451,7 +451,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			}
 			return false;
 		}
-		
+
 
 		var errors = {};
 		if (!order.name) {
@@ -481,7 +481,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
 			errors['delivery_min'] = 'Please meet the delivery minimum of $' + service.restaurant.delivery_min + '.';
 		}
-		
+
 		var er = displayErrors(errors);
 		if (er) {
 			return;
@@ -490,7 +490,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		// if it is a delivery order we need to check the address
 		if (order.delivery_type == 'delivery') {
 			// Correct Legacy Addresses in Database to Avoid Screwing Users #1284
-			// If the user has already ordered food 
+			// If the user has already ordered food
 			if (service.account && service.account.user && service.account.user.last_order) {
 				// Check if the order was made at this community
 				if (service.account.user.last_order.communities.indexOf(service.restaurant.id_community) > -1) {
@@ -515,12 +515,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				if (service.location.bounding && google && google.maps && google.maps.LatLng ) {
 					var latLong = new google.maps.LatLng( service.location.bounding.lat, service.location.bounding.lon );
 				}
-				
+
 				// Use the restautant's position to create the bounding box - just for tests only
 				if (service._useRestaurantBoundingBox) {
 					var latLong = new google.maps.LatLng( service.restaurant.loc_lat, service.restaurant.loc_long );
 				}
-				
+
 				if (!latLong) {
 					App.busy.unBusy();
 					App.dialog.show( '.address-not-found-warning' );
@@ -550,7 +550,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						if (!service.restaurant.deliveryHere(distance)) {
 							App.busy.unBusy();
 							App.dialog.show( '.address-out-of-range-warning' );
-							
+
 							App.busy.unBusy();
 
 							$rootScope.$safeApply( function(){
@@ -625,7 +625,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (!service._deliveryAddressOk) {
 			return;
 		}
-			
+
 		var processOrder = function(card) {
 			if (card === false) {
 				// nada
@@ -645,7 +645,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					year: card.year
 				};
 			}
-			
+
 			// Play the crunch audio just once, when the user clicks at the Get Food button
 			if (!service._crunchSoundPlayded) {
 				App.playAudio('crunch');
@@ -656,7 +656,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			order.phone = order.phone.replace(/-/g, '');
 
 			var url = App.service + 'order';
-	
+
 			$http( {
 				method: 'POST',
 				url: url,
@@ -668,12 +668,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							var uuid = json.uuid;
 						} else {
 							console.error('Error',json);
-							App.log.order(json, 'processing error');	
+							App.log.order(json, 'processing error');
 							if( !json.errors ){
 								json = {
 									status: 'false',
 									errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
-								};	
+								};
 							}
 							$rootScope.$broadcast( 'orderProcessingError', true );
 						}
@@ -694,13 +694,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							'errors': json.errors
 						}, 'validation error - php');
 					} else {
-					
+
 						App.vibrate();
 
 						if (json.token) {
 							$.cookie( 'token', json.token );
 						}
-						
+
 						// Clean the user entered info
 						$.totalStorage( 'userEntered', null );
 						service.startStoreEntederInfo = false;
@@ -739,7 +739,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 								$rootScope.$safeApply( function(){
 									$rootScope.$broadcast( 'newOrder' );
 									OrderViewService.newOrder = true;
-									App.go( '/order/' + uuid, 'push' );	
+									App.go( '/order/' + uuid, 'push' );
 								} );
 
 							} );
@@ -760,7 +760,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					}
 				});
 		}
-		
+
 
 		if (service._cardInfoHasChanged && order.pay_type == 'card') {
 			// need to generate a new tokenized card
@@ -776,7 +776,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			processOrder(false);
 		}
 
-		
+
 	} // end service.processOrder
 
 	service.tipChanged = function () {
@@ -796,7 +796,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 */
 	service.updateTotal = function () {
 
-		// Stop runing the method if the restaurant wasn't loaded yet 
+		// Stop runing the method if the restaurant wasn't loaded yet
 		if (!service.restaurant.id_restaurant) {
 			return;
 		}
@@ -851,14 +851,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.info.fee = breakdown.fee.toFixed(2);
 		service.info.delivery = breakdown.delivery.toFixed(2);
 		service.info.total = total;
-		
+
 		if (service.form.pay_type == 'card' && credit > 0) {
 			service.info.creditLeft = '';
 			if (total < credit) {
 				service.info.creditLeft = App.ceil((credit - total)).toFixed(2);
 				credit = total;
 			}
-		} 
+		}
 	}
 	service._autotip = function () {
 		var subtotal = service.totalbreakdown().subtotal;
@@ -962,13 +962,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					success( data );
 				}
 			}	)
-			.error(function( data, status ) { 
+			.error(function( data, status ) {
 				error( data, status );
 			} );
 	}
 
 	service._test = function(){
-		$rootScope.$safeApply( 
+		$rootScope.$safeApply(
 			function(){
 			service._useRestaurantBoundingBox = true;
 			service.form.name = 'MR TEST';
@@ -998,7 +998,7 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 
 	service.checkItWasLoaded = function(){
 		if( !service.list ){
-			service.load();			
+			service.load();
 		}
 	}
 
@@ -1036,7 +1036,7 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 					var arr = json[x].date.split(/[- :]/);
 					json[x]._date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
 					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
-				}	
+				}
 				list = json;
 			} else {
 				// User has no orders
@@ -1044,11 +1044,11 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 			}
 			service.list = list;
 			$rootScope.$broadcast( 'OrdersLoaded', service.list );
-		} ).error( function( data, status, headers, config ) { 
+		} ).error( function( data, status, headers, config ) {
 		 		setTimeout( function(){ service.checkItWasLoaded(); }, 500 );
 		 } ).then( function(){
 		 		setTimeout( function(){ service.checkItWasLoaded(); }, 1500 );
-		 } );	
+		 } );
 	}
 
 	service.restaurant = function (permalink) {
@@ -1120,7 +1120,7 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 				service.facebook._order_uuid = service.order.uuid;
 				service.facebook.preLoadOrderStatus();
-				
+
 				$rootScope.$broadcast( 'OrderViewLoadedOrder', service.order );
 
 			} else {

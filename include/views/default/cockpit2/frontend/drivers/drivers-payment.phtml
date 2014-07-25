@@ -155,6 +155,49 @@
 				</tbody>
 			</table>
 
+		<br/>
+
+		<table class="tb-grid tb-zebra" ng-if="result.invites">
+			<thead>
+				<tr>
+					<td colspan="3" class="title">New Invited Users</td>
+				</tr>
+			</thead>
+			<thead>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</thead>
+			<thead>
+				<tr>
+					<td>Customer Name</td>
+					<td>First Order At</td>
+					<td>Amount</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="invite in result.invites">
+					<td>{{invite.user.name}}</td>
+					<td>{{invite.date}}</td>
+					<td>$ {{invite.amount | formatPrice}}</td>
+				</tr>
+			</tbody>
+				<tbody>
+					<tr class="transparent">
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr class="transparent">
+						<td></td>
+						<td>Total By Invited Users</td>
+						<td>${{result.invites_amount | formatPrice}}</td>
+					</tr>
+				</tbody>
+		</table>
+
 			<br/>
 
 		<table class="tb-grid tb-zebra">
@@ -256,6 +299,15 @@
 					<td></td>
 					<td>Total Delivery Fee</td>
 					<td>${{result.calcs.delivery_fee | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment && result.invites_amount">
+					<td class="hide-tiny-screen"></td>
+					<td></td>
+					<td>Total New Invited Users</td>
+					<td>$ {{result.invites_amount | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>

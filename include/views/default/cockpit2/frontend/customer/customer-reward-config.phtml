@@ -1,0 +1,162 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-smile-o"></i><span>Customer Reward Settings</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+		<div class="ul-inputs">
+			<p><strong>Reward: Basic</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input" ng-class="{'error':form.rewardPointsPerCentsValue.$invalid}">
+					<div class="label">Points por cent spent:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsPerCentsValue" ng-model="config.reward_points_per_cents_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsPerCentsValue.$error.required">Required.</small>
+					</div>
+				</li>
+			</ul>
+			<p><strong>Reward: Order over ${{config.reward_points_order_value_over_amount}}</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input" ng-class="{'error':form.rewardPointsOrderValueOverAmount.$invalid}">
+					<div class="label">Reward order over <strong>amount $</strong>:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsOrderValueOverAmount" ng-model="config.reward_points_order_value_over_amount" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsOrderValueOverAmount.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.rewardPointsOrderValueOverValue.$invalid}">
+					<div class="label">Reward order over <strong>points</strong> (multiply order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsOrderValueOverValue" ng-model="config.reward_points_order_value_over_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsOrderValueOverValue.$error.required">Required.</small>
+					</div>
+				</li>
+			</ul>
+
+			<p><strong>Reward: Two way gift cards</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input" ng-class="{'error':form.rewardPointsGetReferredValue.$invalid}">
+					<div class="label">Get referred (add points):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsGetReferredValue" ng-model="config.reward_points_get_referred_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsGetReferredValue.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.rewardPointsGetReferredDiscountAmount.$invalid}">
+					<div class="label">Get referred (order discount $):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsGetReferredDiscountAmount" ng-model="config.reward_points_get_referred_discount_amt" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsGetReferredDiscountAmount.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.rewardPointsReferNewUserValue.$invalid}">
+					<div class="label">Regular user refer a new user (add points):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsReferNewUserValue" ng-model="config.reward_points_refer_new_user_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsReferNewUserValue.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.rewardPointsReferNewUserAmount.$invalid}">
+					<div class="label">Regular user refer a new user (add credit $):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsReferNewUserAmount" ng-model="config.reward_points_refer_new_user_amt" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsReferNewUserAmount.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.rewardPointsAdminReferNewUserAmount.$invalid}">
+					<div class="label">Admin user refer a new user $:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsAdminReferNewUserAmount" ng-model="config.reward_points_admin_refer_user_amt" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsAdminReferNewUserAmount.$error.required">Required.</small>
+					</div>
+				</li>
+
+			</ul>
+			<p><strong>Reward: Repeat Users</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input" ng-class="{'error':form.rewardPointsOrderTwiceWeekValue.$invalid}">
+					<div class="label">Order twice in same week (multiply order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsOrderTwiceWeekValue" ng-model="config.reward_points_order_twice_week_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsOrderTwiceWeekValue.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.rewardPointsOrderTwoDaysInARowValue.$invalid}">
+					<div class="label">Order two days in a row (multiply order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsOrderTwoDaysInARowValue" ng-model="config.reward_points_order_2_days_row_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsOrderTwoDaysInARowValue.$error.required">Required.</small>
+					</div>
+				</li>
+
+			</ul>
+			<p><strong>Reward: Other actions</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input" ng-class="{'error':form.rewardPointsCreateAnAccountValue.$invalid}">
+					<div class="label">Reward by creating an account (multiply last order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsCreateAnAccountValue" ng-model="config.reward_points_make_acount_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsCreateAnAccountValue.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.rewardPointsSharedOrderValue.$invalid}">
+					<div class="label">Reward shared orders (multiply order's points by):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsSharedOrderValue" ng-model="config.reward_points_shared_order_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsSharedOrderValue.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.rewardPointsWinCluckbuttonValue.$invalid}">
+					<div class="label">Win Cluckbutton (add points):</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsWinCluckbuttonValue" ng-model="config.reward_points_win_cluckbutton_value" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsWinCluckbuttonValue.$error.required">Required.</small>
+					</div>
+				</li>
+			</ul>
+			<ul ng-class="{'submitted':submitted}" class="box-content">
+				<li class="li-input">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

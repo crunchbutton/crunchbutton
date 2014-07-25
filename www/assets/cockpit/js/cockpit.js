@@ -165,6 +165,17 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversSummaryCtrl',
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
+		/* Customer */
+		.when('/customer', {
+			action: 'customer',
+			controller: 'CustomerCtrl',
+			templateUrl: 'assets/view/customer.html'
+		})
+		.when('/customer/reward/config', {
+			action: 'customer',
+			controller: 'CustomerRewardConfigCtrl',
+			templateUrl: 'assets/view/customer-reward-config.html'
+		})
 		/* Driver shifts */
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
@@ -227,6 +238,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'drivers-help',
 			controller: 'DriversHelpCreditCardCtrl',
 			templateUrl: 'assets/view/drivers-help-credit-card.html'
+		})
+		.when('/profile', {
+			action: 'profile',
+			controller: 'ProfileCtrl',
+			templateUrl: 'assets/view/profile.html'
 		})
 		/* Admins payment info */
 		.when('/staff/list', {

@@ -247,6 +247,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'GiftcardCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
+		.when('/invite', {
+			action: 'giftcard',
+			controller: 'GiftcardCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
+		.when('/invite/:id', {
+			action: 'giftcard',
+			controller: 'GiftcardCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
 		.when('/reset', {
 			action: 'reset',
 			controller: 'AccountResetCtrl',
@@ -255,11 +265,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/reset/:id', {
 			action: 'reset',
 			controller: 'AccountResetCtrl',
-			templateUrl: 'assets/view/home.html'
-		})
-		.when('/invite/:id', {
-			action: 'invite',
-			controller: 'InviteCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/', {

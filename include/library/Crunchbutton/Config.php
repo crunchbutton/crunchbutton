@@ -17,7 +17,7 @@ class Crunchbutton_Config extends Cana_Table {
 		$config->set($value);
 		return $config;
 	}
-	
+
 	public static function getVal( $key ){
 		$config = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '{$key}'" );
 		if( $config->value ){
@@ -36,7 +36,7 @@ class Crunchbutton_Config extends Cana_Table {
 		$config->key = $key;
 		return $config;
 	}
-	
+
 	public function set($value) {
 		if (is_array($value)) {
 			$value = json_encode($value);
@@ -44,7 +44,7 @@ class Crunchbutton_Config extends Cana_Table {
 		$this->value = $value;
 		$this->save();
 	}
-	
+
 	public function val() {
 		$val = json_decode($this->value);
 		if (is_array($val)) {
