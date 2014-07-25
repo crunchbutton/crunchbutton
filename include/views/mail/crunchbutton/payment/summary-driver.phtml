@@ -73,6 +73,34 @@
 	<br>
 <?php } ?>
 
+<?php if( $summary[ 'invites' ] && count( $summary[ 'invites' ] ) >0 ) { ?>
+	<table width="100%" celpadding="0" cellspacing="0" class="detail">
+		<thead style="font-weight:bold">
+			<tr>
+				<td colspan="3" class="topitem" style="font-size:18px;">New Invited Users</td>
+			</tr>
+		</thead>
+		<thead style="font-weight:bold">
+			<tr>
+				<td class="topitem">Customer Name</td>
+				<td class="topitem">First Order At</td>
+				<td class="topitem">Amount</td>
+			</tr>
+		</thead>
+		<tbody>
+		<?php foreach( $summary[ 'invites' ] as $invite ) { ?>
+			<tr>
+				<td class="topitem"><?php echo $invite[ 'user' ][ 'name' ]; ?></td>
+				<td class="topitem"><?php echo $invite[ 'date' ]; ?></td>
+				<td class="topitem">$<?php echo number_format( $invite[ 'amount' ], 2 ); ?></td>
+			</tr>
+		<?php } ?>
+		</tbody>
+	</table>
+	<br>
+	<br>
+<?php } ?>
+
 <?php
 	$coslpan = ( $summary[ 'driver_payment_hours' ] ) ?  4 : 6;
 	if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) {
@@ -146,6 +174,12 @@
 				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Worked Hours</td>
 				<td>$<?php echo number_format( $summary[ 'shifts_hours_amount' ], 2 ); ?></td>
 			</tr>
+		<?php } ?>
+		<?php if( floatval( $summary[ 'invites_amount' ] ) > 0 ) { ?>
+		<tr class="class">
+			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total New Invited Users</td>
+			<td>$<?php echo number_format( $summary[ 'invites_amount' ], 2 ); ?></td>
+		</tr>
 		<?php } ?>
 		<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 		<tr class="class">

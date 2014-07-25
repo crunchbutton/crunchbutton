@@ -12,18 +12,18 @@ class Crunchbutton_User_Auth extends Cana_Table {
 	}
 
 	public static function resetCodeGenerator(){
-		$random_id_length = 6; 
-		$rnd_id = crypt( uniqid( rand(), 1 ) ); 
-		$rnd_id = strip_tags( stripslashes( $rnd_id ) ); 
-		$rnd_id = str_replace( '.', '', $rnd_id ); 
-		$rnd_id = strrev( str_replace( '/', '', $rnd_id ) ); 
-		$rnd_id = substr( $rnd_id, 0, $random_id_length ); 
+		$random_id_length = 6;
+		$rnd_id = crypt( uniqid( rand(), 1 ) );
+		$rnd_id = strip_tags( stripslashes( $rnd_id ) );
+		$rnd_id = str_replace( '.', '', $rnd_id );
+		$rnd_id = strrev( str_replace( '/', '', $rnd_id ) );
+		$rnd_id = substr( $rnd_id, 0, $random_id_length );
 		return strtolower( $rnd_id );
 	}
 
 	public static function byTypeId($type, $id) {
 		 $row = Cana::db()->get('
-			SELECT * 
+			SELECT *
 			FROM user_auth
 			WHERE
 				type="'.$type.'"
@@ -32,10 +32,10 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		');
 		return new Crunchbutton_User_Auth($row);
 	}
-	
+
 	public static function localLogin( $email, $password ) {
 		$password = static::passwordEncrypt( $password );
-		$query = sprintf(" SELECT * 
+		$query = sprintf(" SELECT *
 												FROM user_auth
 												WHERE
 													type='local'
@@ -54,7 +54,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 
 	public static function byUser($id_user) {
 		 $res = Cana::db()->query('
-			SELECT * 
+			SELECT *
 			FROM user_auth
 			WHERE
 				id_user="'.$id_user.'"
@@ -101,7 +101,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 
 	public function checkEmailExists( $email ){
 		$row = Cana::db()->get('
-			SELECT * 
+			SELECT *
 			FROM user_auth
 			WHERE
 				email="' . $email . '"
@@ -116,7 +116,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 
 	public function userHasFacebookAuth( $id_user ){
 		$row = Cana::db()->get('
-			SELECT * 
+			SELECT *
 			FROM user_auth
 			WHERE
 				id_user="' . $id_user . '"
@@ -132,7 +132,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 
 	public function userHasAuth( $id_user ){
 		$row = Cana::db()->get('
-			SELECT * 
+			SELECT *
 			FROM user_auth
 			WHERE
 				id_user="' . $id_user . '"
@@ -147,7 +147,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 
 	public function userHasEmailAuth( $id_user ){
 		$row = Cana::db()->get('
-			SELECT * 
+			SELECT *
 			FROM user_auth
 			WHERE
 				id_user="' . $id_user . '"
@@ -161,7 +161,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
-	// This function creates a user_auth 
+	// This function creates a user_auth
 	public function createPhoneAuth( $user_id, $phone ){
 		$id_user_auth = User_Auth::userHasEmailAuth( $user_id );
 		if( $id_user_auth ){
@@ -206,7 +206,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 	}
 
 	public function validateResetCode( $code ){
-		$query = sprintf(" SELECT * 
+		$query = sprintf(" SELECT *
 												FROM user_auth
 												WHERE
 													type='local'
@@ -227,6 +227,6 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		$this
 			->table('user_auth')
 			->idVar('id_user_auth')
-			->load($id); 
+			->load($id);
 	}
 }

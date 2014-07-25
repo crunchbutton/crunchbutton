@@ -77,6 +77,14 @@
 						<td>{{total_orders}}</td>
 					</tr>
 					<tr>
+						<td>Total New Invited Users</td>
+						<td>{{total_invited_users}}</td>
+					</tr>
+					<tr>
+						<td>Total Payment New Invited Users</td>
+						<td>$ {{total_payment_invited_users | formatPrice}}</td>
+					</tr>
+					<tr>
 						<td>Total of Not Included Orders</td>
 						<td>{{total_not_included}}</td>
 					</tr>
@@ -247,15 +255,15 @@
 									<td>Worked Hours</td>
 									<td>$ {{driver.worked_hours | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.subtotal}}">
+								<tr positive-or-negative-color="{{driver.subtotal}}" ng-if="driver.salary_type == 'orders'">
 									<td>Subtotal</td>
 									<td>$ {{driver.subtotal | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.tax}}">
+								<tr positive-or-negative-color="{{driver.tax}}" ng-if="driver.salary_type == 'orders'">
 									<td>Tax</td>
 									<td>$ {{driver.tax | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.delivery_fee}}">
+								<tr positive-or-negative-color="{{driver.delivery_fee}}" ng-if="driver.salary_type == 'orders'">
 									<td>Delivery Fee</td>
 									<td>$ {{driver.delivery_fee | formatPrice}}</td>
 								</tr>
@@ -267,13 +275,17 @@
 									<td>Customer Fee</td>
 									<td>$ {{driver.customer_fee | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.markup}}">
+								<tr positive-or-negative-color="{{driver.markup}}" ng-if="driver.salary_type == 'orders'">
 									<td>Markup</td>
 									<td>$ {{driver.markup | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{driver.credit_charge}}">
 									<td>Credit Card Charge</td>
 									<td>$ {{driver.credit_charge | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.invites_total_payment}}">
+									<td>New Invited Users Payment</td>
+									<td>$ {{driver.invites_total_payment | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{driver.gift_card}}">
 									<td>Gift Card</td>
@@ -300,7 +312,32 @@
 							<span ng-if="driver.shifts.worked"> | <span class="link" ng-if="!driver.show_shifts" ng-click="driver.show_shifts = true">Show shifts</span>
 								<span class="link" ng-if="driver.show_shifts" ng-click="driver.show_shifts = false">Hide shifts</span> (total {{driver.shifts.worked_total}} shifts)
 							</span>
+							<span ng-if="driver.invites_total">
+								 | <span class="link" ng-if="!driver.show_invites" ng-click="driver.show_invites = true">Show new invited users</span>
+								<span class="link" ng-if="driver.show_invites" ng-click="driver.show_invites = false">Hide new invited users</span> (total {{driver.invites_total}} users)
+							</span>
 						</h3>
+
+						<table class="tb-grid tb-zebra" ng-if="driver.show_invites">
+							<thead>
+								<tr>
+									<td>ID Order</td>
+									<td>ID User</td>
+									<td>Customer Name</td>
+									<td>Date</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="invite in driver.invites">
+									<td>{{invite.id_order}}</td>
+									<td>{{invite.user.id_user}}</td>
+									<td>{{invite.user.name}}</td>
+									<td>{{invite.date}}</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<br/><br/>
 
 						<table class="tb-grid tb-zebra" ng-if="driver.show_shifts">
 							<thead>

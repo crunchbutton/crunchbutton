@@ -1,6 +1,6 @@
 <? /* --> REMOVED, ONE LESS THING TO WATCH
 <div ng-show="!order.loaded">
- THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. 
+ THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS.
 </div>
 */ ?>
 
@@ -25,11 +25,11 @@
 	</div>
 
 	<div class="restaurant-message" ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
-	
+
 	<div ng-show="restaurant.image" class="restaurant-pic-wrapper {{AB.restaurantPage}}">
 		<div class="restaurant-pic" style="background: url({{restaurant.img}});"></div>
 	</div>
-	
+
 	<div ng-show="restaurant.message" class="main-content-readable">
 		<div class="restaurant-message-mobile" ng-bind-html-unsafe="restaurant.message"></div>
 	</div>
@@ -37,7 +37,7 @@
 	<div class="restaurant-closed-mobile" restaurant-is-closed></div>
 
 	<div class="main-content-readable" ng-show="!restaurantLoaded">
-		<div class="cart-items {{AB.restaurantPage}}">		
+		<div class="cart-items {{AB.restaurantPage}}">
 			<div class="restaurant-item-title text-your-order">
 				Loading
 			</div>
@@ -48,7 +48,7 @@
 		<div class="cart-items {{AB.restaurantPage}}">
 			<div ng-show="restaurant._open">
 				<div class="restaurant-item-title text-your-order">
-					Your Order 
+					Your Order
 				</div>
 			</div>
 		</div>
@@ -60,7 +60,7 @@
 		<div class="cart-items {{AB.restaurantPage}}" ng-show="order.loaded">
 			<div ng-show="restaurant._open">
 				<div class="restaurant-item-title text-your-order">
-					Your Order 
+					Your Order
 					<span suggestion-tool-tip type="mobile"></span>
 				</div>
 				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
@@ -70,7 +70,7 @@
 					<div class="order-begin">
 						<div class="icon">
 							<i class="fa fa-arrow-left hidden-lt-1023"></i>
-							<i class="fa fa-arrow-down hidden-gt-1024"></i> 
+							<i class="fa fa-arrow-down hidden-gt-1024"></i>
 						</div>
 						<div class="text">
 							<span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span>
@@ -108,11 +108,11 @@
 
 						<!-- Customizable options -->
 						<div class="cart-customize-options" ng-show="item.details.customization.customizable && item.details.customization.expanded">
-							
+
 							<div ng-repeat="option in item.details.customization.options">
 
 								<div class="cart-item-customize-item">
-								
+
 									<div ng-switch on="option.type">
 
 										<!-- Customizable - checkbox -->
@@ -147,16 +147,16 @@
 			</div>
 
 		</div>
-		
+
 		<!-- menu -->
 		<div class="restaurant-items">
 			<div class="content-item-name content-item-main-name">
 				<h1>
-					Add to your order 
+					Add to your order
 					<span suggestion-tool-tip type="desktop"></span>
 				</h1>
 			</div>
-		
+
 			<div ng-bind-once ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
@@ -167,37 +167,37 @@
 				</ul>
 			</div>
 
-			<?php 
+			<?php
 			/* Remove the suggestion link: Issue #1703
 			<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">
 				<div class="suggestion-link-title">Really want something else?</div>
 					<a href="javascript:;" ng-click="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
-			</div> 
+			</div>
 			*/
 			?>
-			
+
 		</div>
 		<div class="divider"></div>
 	</div>
 
 	<div class="restaurant-payment-div"></div>
 
-	
+
 
 	<div class="restaurant-closed-desktop">
 		<div class="is-closet main-content-readable">
-			<div restaurant-is-closed></div>	
+			<div restaurant-is-closed></div>
 		</div>
 	</div>
 
 	<!-- payment and user info -->
 	<form class="payment-form main-content-readable" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
-	
+
 		<div ng-show="restaurant._open && order.showForm && order.cart.hasItems()">
-		
+
 			<div class="content-item-name"><h1>Your Info</h1></div>
 			<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
-			
+
 			<!-- user info -->
 			<div class="delivery-info-container">
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
@@ -224,16 +224,16 @@
 					<div class="divider"></div>
 					<label>Name</label>
 					<div class="input-item"><input class="needsclick" type="text" name="pay-name" tabindex="2" ng-model="order.form.name"></div><div class="divider"></div>
-		
+
 					<label>Phone #</label>
 					<div class="input-item">
 					<input type="tel" class="needsclick" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone"></div><div class="divider"></div>
-		
+
 					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
 					<div ng-show="order.form.delivery_type=='delivery'" class="input-item">
 					<textarea ng-model="order.form.address" class="needsclick" name="pay-address" id="pay-address" tabindex="5"></textarea></div>
 					<div class="divider"></div>
-	
+
 					<div ng-show="(restaurant.id != 74)">
 						<label>Notes</label>
 						<div class="input-item"><textarea class="needsclick" name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6"></textarea></div><div class="divider"></div>
@@ -258,8 +258,11 @@
 							<div ng-show="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 								<!-- Gift card success -->
 								<div ng-repeat="success in giftcard.giftcards.success">
-									<div ng-show="!success.error">
-										Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.	
+									<div ng-show="!success.error && !success.message">
+										Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
+									</div>
+									<div ng-show="!success.error && success.message">
+										{{success.message}}
 									</div>
 									<div ng-show="success.error == 'other restaurant'">
 										The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
@@ -279,26 +282,26 @@
 							</span>
 						</div>
 					</div>
-	
+
 				</div>
 			</div>
-		
+
 			<div class="divider"></div>
-			
+
 			<!-- payment info -->
 			<div class="payment-info-container">
-		
+
 				<div class="payment-info field-container">
-		
+
 					<label class="pay-title-label">Payment Method</label>
 					<div class="input-item toggle-wrapper">
-						<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="toggle-item">card</button> 
-						<span ng-show="(restaurant.credit == '1' && restaurant.cash == '1')" class="toggle-spacer">or</span> 
+						<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="toggle-item">card</button>
+						<span ng-show="(restaurant.credit == '1' && restaurant.cash == '1')" class="toggle-spacer">or</span>
 						<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="toggle-item">cash</button>
 					</div>
-	
+
 					<div class="divider"></div>
-		
+
 						<div ng-show="order.form.pay_type=='card'" class="payment-card-info"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
 							<div class="card-icons">
 								<div class="payment-card card-visa payment-card-grey" pre-load-image="/assets/images/payment/card-visa-grey@2x.png" title="visa"></div>
@@ -311,30 +314,30 @@
 						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
 
 						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" class="needsclick" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber"></div><div class="divider"></div>
-		
+
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
-							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select>
 
-							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select>
 
 							<div class="divider"></div>
 						</div>
-		
+
 						<div class="divider"></div>
 
 						<label ng-show="order.form.pay_type=='card'">Tip</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
-	
+
 						<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip" tabindex="9"></select> 
+						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip" tabindex="9"></select>
 						<div class="divider"></div>
 					</div>
 				</div>
-		
+
 			</div>
-			
+
 			<div class="divider"></div>
 			<div class="payment-total" ng-show="order.subtotal()">
 				You're paying:&nbsp;
@@ -346,7 +349,7 @@
 						&nbsp;(-{{AB.dollar}}
 						<span ng-show="order.total() <= credit.number">{{order.total()}}</span>
 						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
-						&nbsp;credit 
+						&nbsp;credit
 
 						<span ng-show="order.info.creditLeft != ''" class="gift-left">
 							- You'll still have {{AB.dollar}}{{order.info.creditLeft}} gift card left
@@ -362,7 +365,7 @@
 				<span ng-show="order.form.pay_type=='card'">by card</span>
 			</div>
 		</div>
-	
+
 	</form>
 
 	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper button-bottom-inline"><button class="button-bottom button-orange" ng-click="order.submit();"><div>Get Food</div></button></div>
@@ -385,7 +388,7 @@
 						&nbsp;(-{{AB.dollar}}
 						<span ng-show="order.total() <= credit.number">{{order.total()}}</span>
 						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
-						&nbsp;credit 
+						&nbsp;credit
 						<span ng-show="order.info.creditLeft != ''" class="gift-left">
 							- You'll still have {{AB.dollar}}{{order.info.creditLeft}} gift card left
 						</span> )

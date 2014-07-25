@@ -39,9 +39,10 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		var url = $location.path();
 		// check if the url contains giftcard or just gift
 		if( url.indexOf( 'giftcard' ) > 0 ){
-			service.code = $location.path().replace( '/giftcard', '' );	
+			service.code = $location.path().replace( '/giftcard', '' );
 		} else {
-			service.code = $location.path().replace( '/gift', '' );	
+			service.code = $location.path().replace( '/gift', '' );
+			service.code = $location.path().replace( '/invite', '' );
 		}
 		service.code = service.code.replace( '/', '' );
 	}
@@ -58,10 +59,10 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.processModal = function(){
-		if( !service.code || service.code == '' ){ 
-			return; 
+		if( !service.code || service.code == '' ){
+			return;
 		}
-		
+
 		if( !(/^\w+$/.test( $.trim( service.code ) )) ){
 			service.code = '';
 			return;
@@ -71,7 +72,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 
 			// Do not auto redeem gift cards #1662
 			service.redeemed = false;
-			
+
 			service.validate( function( data ){
 
 				service.modal.intro = false;
@@ -94,6 +95,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 					service.viewed();
 					service.modal.success = true;
 					service.value = data.success['value'];
+					service.message = data.success['message'];
 					if( data.success['id_restaurant'] ){
 						service.modal.restaurant = { id_restaurant : data.success['id_restaurant'], name : data.success['restaurant'], permalink : data.success['permalink'] };
 					} else {
@@ -123,7 +125,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		}
 		service.modal.close();
 		setTimeout( function(){
-			service.accountModal.signinOpen();	
+			service.accountModal.signinOpen();
 		}, 500 );
 	}
 
@@ -150,13 +152,13 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 				callback( data );
-			}	).error(function( data, status ) { 
-				callback( { error : true } ); 
+			}	).error(function( data, status ) {
+				callback( { error : true } );
 			} );
 	}
 
 	service.notes_field.reset = function(){
-		service.notes_field.content = ''; 
+		service.notes_field.content = '';
 		service.notes_field.giftcards = { success : [], error : [] };
 		service.notes_field.value = '0.00';
 		service.notes_field.removed = false;
@@ -174,7 +176,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 			if( giftcard.id_restaurant && giftcard.id_restaurant != service.notes_field.id_restaurant ){
 				giftcard.error = 'other restaurant';
 			}
-			service.notes_field.giftcards.success.push( json.success );	
+			service.notes_field.giftcards.success.push( json.success );
 		} else {
 			service.notes_field.giftcards.success = [];
 		}
@@ -186,7 +188,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 
 		service.notes_field.hasGiftCards = false;
 		service.notes_field.giftcards.success = [];
-		
+
 		if( service.notes_field.content == '' ){
 			service.notes_field.lastValidation = '';
 			service.notes_field.checkAllValidated();
@@ -216,7 +218,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 						if( giftcard.id_restaurant &&  giftcard.id_restaurant != service.notes_field.id_restaurant ){
 							giftcard.error = 'other restaurant';
 						}
-						service.notes_field.giftcards.success.push( data.success );	
+						service.notes_field.giftcards.success.push( data.success );
 					} else if( data.error ){
 						service.notes_field.giftcards.success = [];
 					}
@@ -239,7 +241,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		if( service.notes_field.giftcards.success.length > 0 ){
 			$.each( service.notes_field.giftcards.success, function( key, giftcard ) {
 				if( giftcard && !giftcard.error ){
-					values += parseFloat( giftcard.value ); 
+					values += parseFloat( giftcard.value );
 				}
 			} );
 		}
@@ -278,7 +280,7 @@ NGApp.factory( 'CreditService', function( $http, $rootScope ){
 
 	service.getCredit = function( restaurant_id ){
 		var url = App.service + 'user/credit/' + restaurant_id;
-		$http( { url: url } ).success( function( data ) { 
+		$http( { url: url } ).success( function( data ) {
 			if( data.credit ){
 				service.setValue( App.ceil( data.credit ).toFixed( 2 ) );
 				service.redeemed = data.credit;
