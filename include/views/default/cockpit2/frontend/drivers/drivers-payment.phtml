@@ -84,7 +84,7 @@
 						<td>Tip</td>
 						<td>${{result.calcs.tip | formatPrice}}</td>
 					</tr>
-					<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.markup}}">
+					<tr positive-or-negative-color="{{result.calcs.markup}}">
 						<td>CB Cash Fee</td>
 						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
@@ -116,12 +116,12 @@
 					</tr>
 				</thead>
 				<thead>
-					<td>
+					<tr>
 						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>
-					</td>
+					</tr>
 				</thead>
 				<thead>
 					<tr>
@@ -145,10 +145,6 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
 					</tr>
 					<tr class="transparent">
 						<td></td>
@@ -168,7 +164,7 @@
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders">
-				<td>
+				<tr>
 					<td class="hide-tiny-screen">#</td>
 					<td></td>
 					<td></td>
@@ -176,7 +172,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
-				</td>
+				</tr>
 			</thead>
 			<thead ng-if="result.orders">
 				<tr>
@@ -264,10 +260,10 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
+				<tr class="transparent" ng-if="pay_type_payment">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
-					<td><strong>Markup</strong></td>
+					<td><strong>CB Cash Fee</strong></td>
 					<td><strong>${{result.calcs.markup | formatPrice}}</strong></td>
 					<td></td>
 					<td></td>

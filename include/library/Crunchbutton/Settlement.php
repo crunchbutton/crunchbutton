@@ -299,7 +299,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 
 				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
-				$pay[ $id_driver ][ 'total_payment' ] = ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip );
+				$pay[ $id_driver ][ 'total_payment' ] = ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] );
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
 
 			} else {
