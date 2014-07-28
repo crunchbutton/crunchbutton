@@ -2,7 +2,7 @@
 
 <!-- actions -->
 <div class="control" ng-show="ready">
-
+		
 	<div class="box-content2 content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered">
 			
 		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted && order.lastStatus['self-reply'] != 'rejected'">
@@ -10,7 +10,7 @@
 				<div class="message">
 					Accept this order?
 					<div class="message-small">
-						You MUST mark orders as </br> accepted, picked up, </br>and delivered to </br>get paid correctly ;)
+						You MUST mark orders as accepted,</br> picked up, and delivered to get paid </br>correctly ;)
 					</div>
 				</div>
 				
@@ -45,13 +45,15 @@
 		
 		<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered">
 			<div class="box-content-pickedup"><? //***************BOX CONTENT DESIGN***************** ?>
-				<div class="message">You picked up this order @ {{order.lastStatus[ 'delivery-status' ].pic_date | date: 'h:mm a'}} </br><a class="undo-link" ng-click="undoPickedup()">undo</a></br></div>
+				<div class="message">You picked up this order @ {{order.lastStatus[ 'delivery-status' ].pic_date}} </br><a class="undo-link" ng-click="undoPickedup()">undo</a></br></div>
 				<div class="buttons" ng-click="delivered()">
 					<button class="button blue">Delivered</button>
 				</div>
 				<div class="divider"></div>	
 			</div>
 		</div>
+	
+	</div>
 	
 	</div>
 	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="dialog-message dialog-message-error">
@@ -70,15 +72,18 @@
 	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="dialog-message box-content-delivered">
 		You delivered this order @ {{order.lastStatus[ 'delivery-status' ].del_date | date: 'h:mm a'}} <a class="undo-link" ng-click="undoDelivered()">undo</a></br>
 	</div>
-
 	<div class="divider"></div>
-</div>
+	</div>
+		
 <!-- /actions -->
 
 <div class="content-padding box-content2">
 	<div class="content">
 		<div class="wrap">
 			<div class="status"></div>
+			<div class="dialog-message dialog-message-error" style="font-size: 1.5em; text-align: center;">
+				Double check to make sure you received exactly the right food!
+			</div>
 			<div class="header" style="background: #D6D9DC; color: #8D8D8D">
 				<div class="restaurant-name"><strong>Order</strong></div>
 				<div class="order-id">
@@ -114,7 +119,7 @@
 					<div class="order-item-block">
 						<div class="order-icon"><i class="fa fa-clock-o"></i></div>
 						<div class="order-info">
-							At </br> {{order.time_formated | date:'h:mm A'}}
+							At {{order.time_formated | date:'h:mm A'}}
 						</div>
 					</div>
 					<div class="order-item-block">
@@ -124,18 +129,19 @@
 							<span ng-if="!order._delivery_estimated_time">None</span>
 						</div>
 					</div>
+					<div class="divider"></div>
 				</div>
 				<div class="divider"></div>
 				<div class="divider dots"></div>
 				<div class="order-item-block-big">
-					<div class="order-icon"><i class="fa fa-money"></i></div>
-					<div class="order-info order-info-small">
+					<div class="order-icon2"><i class="fa fa-money"></i></div>
+					<div class="order-info2 order-info-small">
 						{{order._instructions_payment}}
 					</div>
 				</div>
 				<div class="order-item-block-big">
-					<div class="order-icon"><i class="fa fa-hand-o-right"></i></div>
-					<div class="order-info order-info-small">
+					<div class="order-icon2"><i class="fa fa-hand-o-right"></i></div>
+					<div class="order-info2 order-info-small">
 						{{order._instructions_food}}
 					</div>
 				</div>
@@ -151,7 +157,7 @@
 				<br><br>
 				
 				<div class="info-block">
-					<div class="order-icon"><i class="icon-user"></i></div>
+					<div class="order-icon3"><i class="icon-user"></i></div>
 					<div class="order-info">
 						<div class="info-name">{{order.name}}</div>
 						<div class="info-phone"><a href="tel:+1{{order.phone}}">{{order.phone | formatPhone}}</a></div>
@@ -165,7 +171,7 @@
 				</br>
 				
 				<div class="info-block">
-					<div class="order-icon"><i class="icon-chef"></i></div>
+					<div class="order-icon3"><i class="icon-chef"></i></div>
 					<div class="order-info">
 						<div class="info-name">{{order._restaurant_name}}</div>
 						<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}">{{order._restaurant_phone | formatPhone}}</a></div>
@@ -205,22 +211,24 @@
 						<tr ng-repeat="dish in order._dishes">
 							<td class="fooditem">1</td>
 							<td class="fooditem" style="text-align: center;">{{dish.name}} {{dish.options.without_default_options}} {{dish.options.with_option}} {{dish.options.select_options}} </td>
-							<td class="fooditem" style="font-size:24px;color:#666;text-align: right;">
+							<td class="fooditem" style="font-size:1.2em;color:#666;text-align: right;">
 								${{dish.price.regular | formatPrice}}
 							</td>
 						</tr>
 						<tr class="class">
 							<td></td>
-							<td style="font-size:24px;color:#666;text-align:right">Subtotal</td>
-							<td style="font-size:24px;color:#666;text-align: right;">
+							<td style="font-size:1.2em;color:#666;text-align:right">Subtotal</td>
+							<td style="font-size:1.2em;color:#666;text-align: right;">
 								${{order.price | formatPrice}}
 							</td>
 						</tr>
+						<!--
 						<tr ng-if="order._tip">
 							<td></td>
 							<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="order.tip_type != 'number'"></span></td>
 							<td style="text-align:right; font-size:24px;color:#666;">${{order._tip | formatPrice}}</td>
 						</tr>
+						
 						<tr ng-if="order.delivery_fee">
 							<td></td>
 							<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
@@ -232,17 +240,18 @@
 							<td>${{order.service_fee | formatPrice}}</td>
 							<php if( $isDriverCockpit ) {  />
 						</tr>
+						-->
 						<tr>
 							<td></td>
-							<td style="text-align:right; font-size:24px;color:#666;">Tax</td>
-							<td style="text-align:right; font-size:24px;color:#666;">
+							<td style="text-align:right; font-size:1.2em;color:#666;">Tax</td>
+							<td style="text-align:right; font-size:1.2em;color:#666;">
 								${{order._tax | formatPrice}}
 							</td>
 						</tr>
 						<tr style="font-weight:bold;">
 							<td></td>
-							<td style="text-align:right; font-size: 24px;">Total</td>
-							<td style="font-size:24px;color:#666;text-align: right;">
+							<td style="text-align:right; font-size: 1.2em;">Total</td>
+							<td style="font-size:1.2em;color:#666;text-align: right;">
 								${{order._final_price | formatPrice}}
 							</td>
 						</tr>
@@ -259,14 +268,14 @@
 								</div>
 								
 								<div class="customer-total-block">
-									<span class="customer-total-price">${{order.final_price_plus_delivery_markup | formatPrice}}</span></br>
+									<span class="customer-total-price">${{order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
 									<span class="customer-total-text"><strong>Customer total</strong></span>
 									</br>
 								</div>
 								
 								<div class="tip-total-block">
 									<?//SAME CSS CONFIGURATION ?>
-									<span class="tip-total-price">${{driverTake.total | formatPrice}}</span></br>
+									<span class="tip-total-price">${{driverTake.total | formatPrice}}</span></br></br>
 									<span class="tip-total-text"><strong>Your take (fee+tip)</strong></span>
 									</br>
 								</div>
