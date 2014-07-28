@@ -37,7 +37,6 @@ class Crunchbutton_Reward extends Cana_Table{
 		return false;
 	}
 
-
 	public function saveReward( $params ){
 		$credit = new Crunchbutton_Credit();
 		$credit->id_user = $params[ 'id_user' ];
