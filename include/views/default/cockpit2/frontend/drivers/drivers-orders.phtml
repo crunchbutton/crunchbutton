@@ -34,16 +34,16 @@
 					
 					<!-- action -->
 					<div class="column-action">
-						<button class="button orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
-						<button class="button green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
-						<button class="button blue button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
-						<button class="button black button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
+						<button class="button orange button-pushable" style="font-size: 1.2em;" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
+						<button class="button green button-pushable" style="font-size: 1.2em;" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
+						<button class="button blue button-pushable" style="font-size: 1.2em;" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
+						<button class="button black button-pushable" style="font-size: 1.2em;" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
 					</div>
 
 					<!-- date -->
 					<div class="column-date">
 						<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-						<h1 class="num"><strong>#{{order.id_order}}</strong></h1></br>
+						<h1 class="hour"><strong>#{{order.id_order}}</strong></h1></br>
 						<h1 class="hour">{{order.date_hour | date:'h:mm a'}}</h1>
 					</div>
 					
