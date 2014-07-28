@@ -427,7 +427,7 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 		waiting = true;
 		$timeout( function() {
 			list();
-			$scope.ready = false;
+			// $scope.ready = false;
 			waiting = false;
 		}, 1 * 1000 );
 	} );
