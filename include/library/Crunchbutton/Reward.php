@@ -73,8 +73,11 @@ class Crunchbutton_Reward extends Cana_Table{
 	}
 
 	//
-	public function processOrder( $id_order ){
-		$order = Crunchbutton_Order::o( $id_order );
+	public function processOrder( $id_order, $order = false ){
+		if( !$order ){
+			$order = Crunchbutton_Order::o( $id_order );
+		}
+
 		$this->loadSettings();
 		if( $order->id_order ){
 			$amount = number_format( $order->final_price_plus_delivery_markup, 2 );
@@ -200,7 +203,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		return $points;
 	}
 
-	private function parseConfigValue( $value, $operation, $points ){
+	public function parseConfigValue( $value, $operation, $points ){
 		if( $value ){
 			switch ( $operation ) {
 				case '+':
