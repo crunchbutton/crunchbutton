@@ -56,16 +56,22 @@
 	</div>
 	
 	</div>
-	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="dialog-message dialog-message-error">
-		DO NOT DELIVER. THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].accepted.name}}</span>.
+	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="box-content2 content-padding">
+		<div  class="dialog-message dialog-message-error">
+			DO NOT DELIVER. THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].accepted.name}}</span>.
+		</div>
 	</div>
 
-	<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.name && order.lastStatus[ 'delivery-status' ].pickedup.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered" class="dialog-message dialog-message-error">
-		This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
+	<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.name && order.lastStatus[ 'delivery-status' ].pickedup.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered" class="box-content2 content-padding">
+		<div  class="dialog-message dialog-message-error">
+			This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
+		</div>
 	</div>
 	
-	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered && order.lastStatus[ 'delivery-status'].delivered.id_admin != account.user.id_admin" class="dialog-message box-content-delivered">
-		This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
+	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered && order.lastStatus[ 'delivery-status'].delivered.id_admin != account.user.id_admin" class="box-content2 content-padding">
+		<div class="dialog-message dialog-message-error"
+			This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
+		</div>
 	</div>
 	
 	<div class="box-content2 content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
@@ -119,7 +125,7 @@
 					<div class="order-item-block">
 						<div class="order-icon"><i class="fa fa-clock-o"></i></div>
 						<div class="order-info">
-							At {{order.time_formated | date:'h:mm A'}}
+							At {{order.time_formated}}
 						</div>
 					</div>
 					<div class="order-item-block">
