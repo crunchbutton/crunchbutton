@@ -8,6 +8,18 @@ class Crunchbutton_Admin extends Cana_Table {
 	const VEHICLE_BIKE = 'bike';
 	const VEHICLE_CAR = 'car';
 
+	public function inviteCode(){
+		if( $this->id_admin && ( !$this->invite_code || $this->invite_code == '' ) ){
+			$this->invite_code = Crunchbutton_User::inviteCodeGenerator();
+			$this->save();
+		}
+		return $this->invite_code;
+	}
+
+	public static function byInviteCode( $code ){
+		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
+	}
+
 	public function vehicle(){
 		$vehicle = $this->getConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY );
 		if( $vehicle ){
@@ -162,7 +174,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		$where = ( $search && trim( $search ) != '' ) ? ' AND a.name LIKE "%' . $search . '%"' : '';
 
-		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN driver_log dl ON dl.id_admin = a.id_admin WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
+		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
 	}
 
 	public function search( $search = [] ){
