@@ -62,7 +62,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
 		return Crunchbutton_Order_Action::q( $query );
 	}
-
+	
 	public function minutesToDelivery(){
 		$order = Order::o( $this->id_order );
 		$status = $order->deliveryStatus();
