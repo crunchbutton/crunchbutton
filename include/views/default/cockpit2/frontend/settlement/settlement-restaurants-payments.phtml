@@ -10,7 +10,7 @@
 		<span>Payments</span>
 	</h2>
 
-	<ul class="ul-inputs box-content">
+	<ul class="ul-inputs box-content2">
 		<li class="li-input">
 			<div class="label">Restaurant:</div>
 			<select ng-model="id_restaurant" ng-options="opt.id_restaurant as opt.name for opt in restaurants" class="cart-customize-select"></select>
@@ -19,7 +19,7 @@
 
 	<div ng-if="count">
 
-		<div class="box-content" ng-show="!showForm">
+		<div class="box-content2" ng-show="!showForm">
 			<p>
 				Total of <strong>{{count}}</strong> payments found.
 			</p>
