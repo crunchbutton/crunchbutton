@@ -15,7 +15,7 @@
 
 	<form name="form" novalidate ng-show="showForm">
 
-		<ul class="ul-inputs box-content">
+		<ul class="ul-inputs box-content2">
 
 			<li class="li-input">
 				<div class="label">Search by name:</div>
@@ -40,7 +40,7 @@
 
 	</form>
 
-	<div class="box-content" ng-show="!showForm && !isSearching">
+	<div class="box-content2" ng-show="!showForm && !isSearching">
 		<p>
 			Found {{count}} workers. Searching: <span ng-if="search.name">Name has <strong>{{search.name}}</strong>,</span> type is <strong>{{search.type}}</strong> and status is <strong>{{search.status}}</strong>.
 			<br>
