@@ -9,7 +9,7 @@
 	<form name="form" novalidate>
 		<div class="ul-inputs">
 			<p><strong>Reward: Basic</strong><br><br></p>
-			<ul ng-class="{'submitted':submitted}" class="box-content">
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.rewardPointsPerCentsValue.$invalid}">
 					<div class="label">Points por cent spent:</div>
 					<div class="input">
@@ -21,7 +21,7 @@
 				</li>
 			</ul>
 			<p><strong>Reward: Order over ${{config.reward_points_order_value_over_amount}}</strong><br><br></p>
-			<ul ng-class="{'submitted':submitted}" class="box-content">
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.rewardPointsOrderValueOverAmount.$invalid}">
 					<div class="label">Reward order over <strong>amount $</strong>:</div>
 					<div class="input">
@@ -43,7 +43,7 @@
 			</ul>
 
 			<p><strong>Reward: Two way gift cards</strong><br><br></p>
-			<ul ng-class="{'submitted':submitted}" class="box-content">
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.rewardPointsGetReferredValue.$invalid}">
 					<div class="label">Get referred (add points):</div>
 					<div class="input">
@@ -96,7 +96,7 @@
 
 			</ul>
 			<p><strong>Reward: Repeat Users</strong><br><br></p>
-			<ul ng-class="{'submitted':submitted}" class="box-content">
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.rewardPointsOrderTwiceWeekValue.$invalid}">
 					<div class="label">Order twice in same week (multiply order's points by):</div>
 					<div class="input">
@@ -119,7 +119,7 @@
 
 			</ul>
 			<p><strong>Reward: Other actions</strong><br><br></p>
-			<ul ng-class="{'submitted':submitted}" class="box-content">
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.rewardPointsCreateAnAccountValue.$invalid}">
 					<div class="label">Reward by creating an account (multiply last order's points by):</div>
 					<div class="input">
@@ -148,7 +148,7 @@
 					</div>
 				</li>
 			</ul>
-			<ul ng-class="{'submitted':submitted}" class="box-content">
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input">
 					<button class="button green" ng-click="save();">Save</button>
 				</li>
