@@ -4,7 +4,7 @@ class Crunchbutton_Reward_Log extends Cana_Table{
 
 	public function checkIfOrderWasAlreadyRewarded( $id_order ){
 		$log = Crunchbutton_Reward_Log::q( 'SELECT * FROM reward_log r WHERE r.id_order = "' . $id_order . '"  LIMIT 1' );
-		if( $log->id_reward_log ){
+		if( $log->count() ){
 			return true;
 		}
 		return false;
