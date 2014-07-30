@@ -1,3 +1,23 @@
+NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationService, DriverOrdersService ) {
+
+	//This links to orders page for pending orders
+	$scope.showOrderList = function(){
+		MainNavigationService.link('/drivers/order/');
+	}
+
+	DriverOrdersService.acceptedOrders();
+	DriverOrdersService.pickedupOrders();
+	DriverOrdersService.revThisShift();
+	DriverOrdersService.revLastShift();
+	DriverOrdersService.timeLastShift();
+	DriverOrdersService.timeThisShift();
+	DriverOrdersService.outstandingOrders();
+	//Yell at driver if there is an outstanding undelivered order.
+
+});
+
+
+
 NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
 	$scope.ready = false;
@@ -26,6 +46,21 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 		);
 	};
 
+	$scope.undoAccept = function() {
+		$scope.makeBusy();
+		DriverOrdersService.undoAccepted( $scope.order.id_order, function(){ load(); } );
+	};
+
+	$scope.undoPickedup = function() {
+		$scope.makeBusy();
+		DriverOrdersService.undoPickedup( $scope.order.id_order, function(){ load(); } );
+	};
+
+	$scope.undoDelivered = function() {
+		$scope.makeBusy();
+		DriverOrdersService.undoDelivered( $scope.order.id_order, function(){ load(); } );
+	};
+
 	$scope.pickedup = function() {
 		$scope.makeBusy();
 		DriverOrdersService.pickedup( $scope.order.id_order, function(){ load(); } );
@@ -45,6 +80,8 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 	if( $scope.account.isLoggedIn() ){
 		load();
 	}
+
+	DriverOrdersService.driver_take();
 
 });
 
@@ -654,35 +691,28 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 		$scope.doc_uploaded = id_driver_document
 	}
 
-	// Upload control stuff
-	$scope.doc_uploaded = 0;
+	// this is a listener to upload error
+	$scope.$on( 'driverDocsUploadedError', function(e, data) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	} );
 
-	var uploader = $scope.uploader = $fileUploader.create({
-									scope: $scope,
-									url: '/api/driver/documents/upload/',
-									filters: [ function( item ) { return true; } ]
-								} );
-
-	uploader.bind( 'success', function( event, xhr, item, response ) {
-		$scope.$apply();
+	// this is a listener to upload success
+	$scope.$on( 'driverDocsUploaded', function(e, data) {
+		var id_driver_document = data.id_driver_document;
+		var response = data.response;
 		if( response.success ){
-			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : $scope.doc_uploaded, file : response.success };
+			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : id_driver_document, file : response.success };
 			DriverOnboardingService.docs.save( doc, function( json ){
 				if( json.success ){
-					docs();
 					$scope.flash.setMessage( 'File saved!' );
+					docs();
 				} else {
 					$scope.flash.setMessage( 'File not saved: ' + json.error );
 				}
 			} );
-			uploader.clearQueue();
 		} else {
-			$scope.flash.setMessage( 'File not saved: ' + json.error );
+			$scope.flash.setMessage( 'File not saved! ');
 		}
-	});
-
-	uploader.bind('error', function (event, xhr, item, response) {
-		App.alert( 'Upload error, please try again or send us a message.' );
 	});
 
 	$scope.download = function( id_driver_document_status ){

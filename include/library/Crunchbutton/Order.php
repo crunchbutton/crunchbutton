@@ -948,6 +948,59 @@ class Crunchbutton_Order extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
 	}
+	
+	public static function outstandingOrders(){
+		$id_admin = c::admin()->id_admin;
+		$query = "SELECT id_order,
+						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
+						FROM `order` o
+						WHERE o.delivery_type = 'delivery'
+						AND o.delivery_service = 1
+						AND o.id_order NOT IN
+						(SELECT id_order
+						FROM order_action
+						WHERE type = 'delivery-delivered')
+						-- remove the commment below to get this the orders from today
+						 AND DATE(o.date) = DATE(NOW())
+						HAVING hours >= 2 ORDER BY id_order DESC ";
+		return Order::q( $query );
+									
+	}
+	
+	public static function deliveryOrderTimes( $hours = 24, $all = false ){
+		$interval = $hours . ' HOUR';
+		$id_admin = c::admin()->id_admin;
+		if( !$all ){
+			$admin = Admin::o( $id_admin );
+			$deliveryFor = $admin->allPlacesHeDeliveryFor();
+			if( count( $deliveryFor ) == 0 ){
+				$deliveryFor[] = 0;
+			}
+			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
+		} else {
+			$where = 'WHERE 1=1 ';
+		}
+
+		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
+		return Order::q( $query );
+	}
+	
+	public function revenueByAdminPeriod( $id_admin, $date_start, $date_end ){
+		//convert to La timezone
+		$date_start = new DateTime( $date_start, new DateTimeZone( c::config()->timezone ) );
+		$date_end = new DateTime( $date_end, new DateTimeZone( c::config()->timezone ) );
+		
+		//get orders at this period
+		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o 
+								INNER JOIN order_action oa ON oa.id_order = o.id_order
+								WHERE
+									AND oa.id_admin = "' . $id_admin . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
+		return Crunchbutton_Order_Action::q( $query );
+	}
 
 	public static function deliveredByCBDrivers( $search ){
 
@@ -2311,17 +2364,17 @@ class Crunchbutton_Order extends Cana_Table {
 				switch ($action->type) {
 					case 'delivery-delivered':
 						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
-						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'Y-m-d H:i:s' );
+						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'g:i A' );
 						break;
 
 					case 'delivery-pickedup':
 						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
-						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'Y-m-d H:i:s' );
+						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'g:i A' );
 						break;
 
 					case 'delivery-accepted':
 						$acpt[$action->id_admin] = true;
-						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'Y-m-d H:i:s' );
+						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'g:i A' );
 						break;
 
 					case 'delivery-rejected':
@@ -2338,7 +2391,24 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
-
+	
+	//Delete entry from order_action
+	public function undoStatus($status) {
+		switch ($status) {
+			case 'pickedup':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-pickedup" and id_admin=' .c::user()->id_admin. '');			
+			break;
+			
+			case 'delivered':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-delivered" and id_admin=' .c::user()->id_admin. '');			
+			break;
+			
+			case 'accepted':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-accepted" and id_admin=' .c::user()->id_admin. '');			
+			break;
+		}
+	}
+	
 	public function deliveryAccept($admin) {
 		if ($this->deliveryStatus('accepted')) {
 			return false;
@@ -2430,7 +2500,7 @@ class Crunchbutton_Order extends Cana_Table {
 	public function deliveryLastStatus(){
 		$statuses = $this->deliveryStatus();
 		if( $statuses[ 'delivered' ] ){
-			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone );
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
 		}
 		if( $statuses[ 'pickedup' ] ){
 			return array( 'status' => 'pickedup', 'name' => $statuses[ 'pickedup' ]->name, 'id_admin' => $statuses[ 'pickedup' ]->id_admin,  'order' => 2, 'date' => $statuses[ 'pickedup_date' ], 'timezone' => $this->restaurant()->timezone );
@@ -2439,6 +2509,16 @@ class Crunchbutton_Order extends Cana_Table {
 			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1, 'date' => $statuses[ 'accepted_date' ], 'timezone' => $this->restaurant()->timezone );
 		}
 		return array ( 'status' => 'new', 'order' => 0 );
+	}
+	
+	public function deliveryTimes(){
+		$statuses = $this->deliveryStatus();
+		if( $statuses[ 'delivered' ] ){
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date_pickedup' => $statuses[ 'pickedup_date' ], 'date_delivered' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
+		}
+		if( $statuses[ 'pickedup' ] ){
+			return array( 'status' => 'pickedup', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 2, 'date_pickedup' => $statuses[ 'pickedup_date' ], 'date_delivered' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
+		}
 	}
 
 	public function wasAcceptedByRep(){
@@ -2500,8 +2580,11 @@ class Crunchbutton_Order extends Cana_Table {
 			'uuid' => $this->uuid,
 			'delivery-status' => [
 				'delivered' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered')->publicExports() : false,
+				'del_date' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered_date') : false,
 				'pickedup' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup')->publicExports() : false,
-				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false
+				'pic_date' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup_date') : false,
+				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false,
+				'acc_date' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted_date') : false
 			],
 			'self-reply' => $this->deliveryReply(c::admin())
 		];
