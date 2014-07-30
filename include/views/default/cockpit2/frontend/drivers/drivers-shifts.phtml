@@ -22,7 +22,7 @@
 
 				<span class="day">{{shift.day}}</span>
 
-				<div ng-if="shift.drivers.length > 0" class="box-content">
+				<div ng-if="shift.drivers.length > 0" class="box-content2">
 
 					<table class="drivers">
 						<tr class="driver" ng-repeat="driver in shift.drivers" ng-class="{me: (driver.id == account.user.id_admin)}">
