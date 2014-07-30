@@ -656,7 +656,8 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		return $ex;
 	}
-
+	
+	//Last Shift
 	public function avgDeliveryTimeLastShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
 		return Admin::avgDeliveryTimeByShift( $id_admin,  $shift );
@@ -666,7 +667,46 @@ class Crunchbutton_Admin extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
 		return Admin::numberOfDeliveredOrdersByShift( $id_admin,  $shift );
 	}
-
+	
+	public function revenueLastWorkedShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		return Admin::revenueByShift( $id_main, $shift );
+	}
+	//*****
+	
+	//Current Shift
+	public function avgDeliveryTimeCurrentShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
+		return Admin::avgDeliveryTimeByShift( $id_admin, $shift );
+	}
+	
+	public function numberOfDeliveredOrdersCurrentShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
+		return Admin::numberOfDeliveredOrdersByShift( $id_admin, $shift );
+	}
+	
+	public function revenueCurrentShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
+		return Admin::revenueByShift( $id_admin, $shift );
+	}
+	
+	//*****
+	
+	public function revenueByShift( $id_admin, $shift ){
+		if( $shift->id_community_shift ){
+			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$end = $shift->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$orders = Order::revenueByAdminPeriod( $id_admin, $start, $end);
+			$revenue = 0;
+			foreach($orders as $order){
+				$revenue = $revenue + $order->deliveryFee() + $order->tip();
+			}
+			return $revenue;
+			//$orders = Crunchbutton_Order_action::ordersDeliveryByAdminPeriod( $id_admin, $start, $end );
+		}
+		return 0;
+	}
+	
 	public function numberOfDeliveredOrdersByShift( $id_admin, $shift ){
 		if( $shift->id_community_shift ){
 			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );

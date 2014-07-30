@@ -99,6 +99,24 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'RestaurantOrderPlacementView',
 			templateUrl: 'assets/view/restaurant-order-placement-view.html'
 		})
+		
+		/* Restaurants */
+		.when('/restaurant/order/new', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderNew',
+			templateUrl: 'assets/view/restaurant-order-new.html'
+		})
+		.when('/restaurant/order/list', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderList',
+			templateUrl: 'assets/view/restaurant-order-list.html'
+		})
+		.when('/restaurant/order/:id', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderView',
+			templateUrl: 'assets/view/restaurant-order-view.html'
+		})
+		
 		/* Settlement */
 		.when('/settlement', {
 			action: 'settlement',
@@ -177,6 +195,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/customer-reward-config.html'
 		})
 		/* Driver shifts */
+
+		.when('/drivers/dashboard', {
+			action: 'drivers-dashboard',
+			controller: 'DriversDashboardCtrl',
+			templateUrl: 'assets/view/drivers-dashboard.html'
+		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
@@ -436,6 +460,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		if( $rootScope.account.isLoggedIn() ){
 
 			DriverOrdersService.newOrdersBadge();
+			DriverOrdersService.acceptedOrders();
+			DriverOrdersService.pickedupOrders();
 
 			// run over and over again every 30 secs
 			$timeout( function() { badges() }, 30 * 1000 );
