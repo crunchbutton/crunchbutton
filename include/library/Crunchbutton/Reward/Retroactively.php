@@ -4,12 +4,17 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 
 	public function start(){
 
+		$iteraction = 1;
+
+		$limit = 1000;
+		$startingAt = ( $limit * $iteraction );
+
 		$reward = new Crunchbutton_Reward;
 
 		$settings = $reward->loadSettings();
 
 		// select all the users
-		$users = Crunchbutton_User::q( 'SELECT * FROM user ORDER BY id_user DESC' );
+		$users = Crunchbutton_User::q( 'SELECT * FROM user ORDER BY id_user DESC LIMIT ' . $startingAt . ',' . $limit );
 		foreach( $users as $user ){
 
 			$id_user = $id_user;
@@ -21,6 +26,7 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 				$id_order = $order->id_order;
 
 				// check if the order was already rewarded
+				echo '<pre>';var_dump( 1 );exit();
 				if( !Crunchbutton_Reward_Log::checkIfOrderWasAlreadyRewarded( $id_order ) ){
 
 					// at first convert the order's amount to points
