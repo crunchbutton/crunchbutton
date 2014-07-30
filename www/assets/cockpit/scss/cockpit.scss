@@ -707,7 +707,6 @@ input {
 	text-transform: uppercase;
 	font-size: .9em;
 	width: 100%;
-	height: 100%;
 
 	-webkit-transition: background linear 0.08s;
 		 -moz-transition: background linear 0.08s;
@@ -1633,7 +1632,7 @@ h4.title{
 	border: 2px solid $orange;
 	color: $orange;
 	border-radius: 0;
-	padding:.48em;
+	padding:.5em;
 	margin-right:1em !important;
 }
 
