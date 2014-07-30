@@ -47,11 +47,14 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
 		$credit->note = $params[ 'note' ];
 		$credit->save();
+
 		// save log to avoid duplicates
-		$log = new Crunchbutton_Reward_Log;
-		$log->id_order = $params[ 'id_user' ];
-		$log->points = $params[ 'points' ];
-		$log->save();
+		if( $credit->id_order ){
+			$log = new Crunchbutton_Reward_Log;
+			$log->id_order = $params[ 'id_order' ];
+			$log->points = $params[ 'points' ];
+			$log->save();
+		}
 	}
 
 	public function saveRewardAsCredit( $params ){
