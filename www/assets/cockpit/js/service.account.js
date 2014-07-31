@@ -43,6 +43,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		user.logout( {}, function(){
 			service.user = {};
 			$rootScope.$broadcast('userAuth');
+			location.reload(true);
 		} );
 	};
 
