@@ -1322,6 +1322,7 @@ h4.title{
 .pending-orders-block {
 	background-color: #e1574c;
 	color: #fff;
+	font-size: 10px;
 }
 	.pending-orders-wrap{
 		width: 250px;
@@ -1351,6 +1352,7 @@ h4.title{
 .outstanding-orders-block{
 	background-color: #d7d8dc;
 	color: #bcbdbf;
+	font-size: 10px;
 }
 	.outstanding-orders-wrap{
 		width: 300px;
@@ -1378,7 +1380,7 @@ h4.title{
 .revenue-block {
 	background-color: #50c5bc;
 	color: #fff;
-
+	font-size: 10px;
 }
 	.revenue-header {
 		background-color: #49aea6;
@@ -1409,6 +1411,7 @@ h4.title{
 .avg-time-block {
 	background-color: #454b57;
 	color: #fff;
+	font-size: 10px;
 }
 	.avg-time-header {
 		background-color: #333c43;
@@ -1442,6 +1445,7 @@ h4.title{
 
 .drivers-order-list{
 	background-color: #f1f2f7;
+	font-size: 10px;
 }
 
 .drivers-order-list .column-action{
@@ -2098,12 +2102,14 @@ h4.title{
 		padding: .5em;
 		max-width: 740px;
 		margin: 0 auto;
+		font-size: 10px;
 	}
 	.control .buttons {
 		display: table-cell;
 		vertical-align: middle;
 		text-align: right;
 		float: right;
+		font-size: 10px;
 		width: 80px;
 		height: 40px;
 	}
