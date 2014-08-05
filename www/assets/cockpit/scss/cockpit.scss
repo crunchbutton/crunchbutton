@@ -306,7 +306,7 @@ p {
 
 @media(max-width: 364px) {
 	body{
-		font-size: 10px;
+		font-size: 12px;
 	}
 	.restaurant-pointer{
 		width: 100%;
@@ -1190,7 +1190,7 @@ input {
 	font-weight: bold;
 }
 
-.drivers-shift .box-content {
+.drivers-shift .box-content, .drivers-shift .box-content2 {
 	margin-top: .7em;
 	margin-bottom: 1em;
 	padding: .3em;
