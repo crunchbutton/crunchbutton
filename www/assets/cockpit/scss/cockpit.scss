@@ -29,7 +29,7 @@ time, mark, audio, video {
 }
 body {
 	line-height: 1;
-	font-size: 12px;
+	font-size: 10px;
 	color: $textColor;
 	letter-spacing: .03em;
 }
@@ -241,7 +241,7 @@ p {
 }
 @media(min-width:500px) {
 	body {
-		font-size: 10px;
+		font-size: 12px;
 	}
 	.top-pad {
 		height: 67px;
