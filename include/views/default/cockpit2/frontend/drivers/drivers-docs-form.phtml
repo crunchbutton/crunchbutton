@@ -6,7 +6,7 @@
 			<b>In order to get paid</b></br> you must fill out and submit all documents!
 	</div>
 
-	<h1 class="title left"  style="font-size: 2em;"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
+	<h1 class="title left"  style="font-size: 2em; margin-bottom: .2em;"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
 
@@ -26,8 +26,7 @@
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td ng-click="edit(driver.id_admin)" class="td-medium">
-					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.2em; line-height: 1em;">{{doc.name}}</h2>
-					<br/>
+					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.2em; line-height: 1em; margin-bottom: .5em;">{{doc.name}}</h2>
 					<a href="{{doc.url}}" target="_blank" style="font-size:1.2em;">Download</a>
 				</td>
 				<td class="td-medium" style="vertical-align: top;">
