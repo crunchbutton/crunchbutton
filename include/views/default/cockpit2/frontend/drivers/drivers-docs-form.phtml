@@ -6,15 +6,15 @@
 			<b>In order to get paid</b></br> you must fill out and submit all documents!
 	</div>
 
+	<div class="dialog-message dialog-message-error" style="font-size: 1.3em;">
+			Please upload documents using a desktop computer!
+	</div>
+	
 	<h1 class="title left"  style="font-size: 2em; margin-bottom: .2em;"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
 
 	<h2 ng-if="!isLive" class="title" ng-click="pay_info()"><span class="link orange">Enter Payment Info</span></h2>
-
-	<div class="dialog-message dialog-message-error" style="font-size: 1.3em;">
-			Please upload documents using a desktop computer!
-	</div>
 	
 	<div class="divider"></div>
 	
@@ -51,7 +51,7 @@
 				<td ng-click="edit(driver.id_admin)" style="vertical-align: top;">
 					<h2 class="title" style="padding-top: 20px; font-family: Ruda; color: #000; font-size: 1.2em;">{{doc.name}}</h2>
 				</td>
-				<td class="td-medium upbutton">
+				<td class="td-medium">
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div></br>
 				</td>
