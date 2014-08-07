@@ -26,8 +26,8 @@
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td ng-click="edit(driver.id_admin)" class="td-medium">
-					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.2em; line-height: 1em; margin-bottom: .5em;">{{doc.name}}</h2>
-					<a href="{{doc.url}}" target="_blank" style="font-size:1.2em;">Download</a>
+					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.2em; line-height: 1em; margin-bottom: .5em;"><b>{{doc.name}}</b></h2>
+					<a href="{{doc.url}}" target="_blank" style="font-size:1.2em;"><b>Download</b></a>
 				</td>
 				<td class="td-medium" style="vertical-align: top;">
 					<!-- if he already have this doc, show the download link -->
@@ -49,10 +49,10 @@
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
 				<td ng-click="edit(driver.id_admin)" style="vertical-align: top;">
-					<h2 class="title" style="padding-top: 20px; font-family: Ruda; color: #000; font-size: 1.2em;">{{doc.name}}</h2>
+					<h2 class="title" style="padding-top: 20px; font-family: Ruda; color: #000; font-size: 1.2em;"><b>{{doc.name}}</b></h2>
 				</td>
 				<td class="td-medium">
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank"><b>Download</b></a></span>
 					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div></br>
 				</td>
 			</tr>
