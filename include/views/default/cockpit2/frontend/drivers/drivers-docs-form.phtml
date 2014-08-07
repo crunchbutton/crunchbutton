@@ -14,7 +14,7 @@
 
 	<div class="divider"></div>
 
-	<h2 ng-if="!isLive" class="title" ng-click="pay_info()" style="margin-bottom: .2em; font-size: .9em;"><span class="link orange">Enter Payment Info</span></h2>
+	<h2 ng-if="!isLive" class="title" ng-click="pay_info()" style="margin-bottom: .2em; font-size: 1.4em;"><span class="link orange">Enter Payment Info</span></h2>
 	
 	<div class="divider"></div>
 	
@@ -51,9 +51,9 @@
 				<td class="td-medium" ng-click="edit(driver.id_admin)">
 					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.1em; letter-spacing: 0px"><b>{{doc.name}}</b></h2>
 				</td>
-				<td class="td-medium">
+				<td class="td-medium" style="vertical-align: top;">
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank"><b>Download</b></a></span>
-					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div></br>
+					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div>
 				</td>
 			</tr>
 		</tbody>
