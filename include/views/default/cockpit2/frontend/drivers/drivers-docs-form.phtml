@@ -2,7 +2,7 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<div class="dialog-message dialog-message-error" style="font-size: 1.7em;">
+	<div class="dialog-message dialog-message-error" style="font-size: 1.4em;">
 			<b>In order to get paid</b></br> <span style="font-size: .8em;">you must fill out and submit all documents!</span>
 	</div>
 
@@ -10,7 +10,7 @@
 			Please upload documents using a desktop computer!
 	</div>
 	
-	<h1 class="title left"  style="font-size: 2.7em; margin-bottom: .2em;"><i class="fa fa-briefcase" style="vertical-alignment: baseline;"></i><span>Documents</span></h1>
+	<h1 class="title left"  style="font-size: 2.7em; margin-bottom: .2em;"><i class="fa fa-briefcase" style="vertical-align: baseline;"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
 
@@ -48,8 +48,8 @@
 	<table class="tb-grid" style="border-collapse: separate; border-spacing: 0px 7px">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
-				<td ng-click="edit(driver.id_admin)" style="vertical-align: top;">
-					<h2 class="title" style="padding-top: 20px; font-family: Ruda; color: #000; font-size: 1.1em;"><b>{{doc.name}}</b></h2>
+				<td class="td-medium" ng-click="edit(driver.id_admin)" style="vertical-align: top;">
+					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.1em;"><b>{{doc.name}}</b></h2>
 				</td>
 				<td class="td-medium">
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank"><b>Download</b></a></span>
