@@ -153,8 +153,7 @@
 						button.appendChild( progressElement );
 					}
 					
-					progressElement.style.width = '97px';
-					//progressElement.style.width = ( ( progress || 0 ) * button.offsetWidth ) + 'px';
+					progressElement.style.width = ( ( progress || 0 ) * button.offsetWidth ) + 'px';
 				}
 
 			},
