@@ -3,18 +3,18 @@
 <div class="content-padding" ng-show="ready">
 
 	<div class="dialog-message dialog-message-error" style="font-size: 1.7em;">
-			<b>In order to get paid</b></br> <span style="font-size: 1em;">you must fill out and submit all documents!</span>
+			<b>In order to get paid</b></br> <span style="font-size: .8em;">you must fill out and submit all documents!</span>
 	</div>
 
 	<div class="dialog-message dialog-message-error" style="font-size: 1.4em;">
 			Please upload documents using a desktop computer!
 	</div>
 	
-	<h1 class="title left"  style="font-size: 2.7em; margin-bottom: .2em;"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
+	<h1 class="title left"  style="font-size: 2.7em; margin-bottom: .2em;"><i class="fa fa-briefcase" style="vertical-alignment: baseline;"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
 
-	<h2 ng-if="!isLive" class="title" ng-click="pay_info()"><span class="link orange">Enter Payment Info</span></h2>
+	<h2 ng-if="!isLive" class="title" ng-click="pay_info()" style="margin-bottom: .2em;"><span class="link orange">Enter Payment Info</span></h2>
 	
 	<div class="divider"></div>
 	
@@ -27,7 +27,7 @@
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td ng-click="edit(driver.id_admin)" class="td-medium">
 					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.1em; line-height: 1em; margin-bottom: .5em;"><b>{{doc.name}}</b></h2>
-					<a href="{{doc.url}}" target="_blank" style="font-size:1.2em;"><b>Download</b></a>
+					<a href="{{doc.url}}" target="_blank" style="font-size:1.1em;"><b>Download</b></a>
 				</td>
 				<td class="td-medium" style="vertical-align: top;">
 					<!-- if he already have this doc, show the download link -->
@@ -45,7 +45,7 @@
 		Please upload a clear picture of your Drivers License and Insurance Card here. You can do this right from your smartphone.
 	</h2>
 
-	<table class="tb-grid">
+	<table class="tb-grid" style="border-collapse: separate; border-spacing: 0px 7px">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
 				<td ng-click="edit(driver.id_admin)" style="vertical-align: top;">
