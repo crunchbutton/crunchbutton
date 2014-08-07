@@ -152,8 +152,9 @@
 						progressElement.className = 'ladda-progress';
 						button.appendChild( progressElement );
 					}
-
-					progressElement.style.width = ( ( progress || 0 ) * button.offsetWidth ) + 'px';
+					
+					progressElement.style.width = '97px';
+					//progressElement.style.width = ( ( progress || 0 ) * button.offsetWidth ) + 'px';
 				}
 
 			},
