@@ -480,9 +480,19 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '#':
 					case '*':
 					default:
+						$name = explode( ' ', $order->name );
+						if( count( $name ) > 0 ){
+							$titles = [ 'miss', 'mrs.', 'ms.', "ma'am", 'mrs', 'ms' ];
+							if( in_array( trim( $name[ 0 ] ), $titles ) && $name[ 1 ] ){
+								$student = $name[ 1 ];
+							}
+							$student = $name[ 1 ];
+						} else {
+							$student = '';
+						}
 						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirmstealth" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							. '<Pause length="1" />'
-							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">You have received a takeout order from a student through the fax machine. Please check the fax machine and press 1 to confirm that you received the order. Or press 2 and they will give you a call.. . . .</Say>'
+							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">You have received a takeout order from a student ' . $student . ' through the fax machine. Please check the fax machine and press 1 to confirm that you received the order. Or press 2 and they will give you a call.. . . .</Say>'
 							. '<Pause length="1" />'
 							.'</Gather>';
 						break;
