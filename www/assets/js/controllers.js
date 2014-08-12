@@ -1025,6 +1025,12 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		ReferralService.getStatus();
 	}
 
+	$scope.$on( 'orderShared', function(e, data) {
+		$scope.order.reward.shared = true;
+		$scope.$safeApply();
+	} );
+
+
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
 		$scope.referral.invite_url = ReferralService.invite_url;
 		$scope.referral.invite_url_cleared = ReferralService.value;
@@ -1033,8 +1039,9 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	});
 
 	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
-		$scope.order = order;
-		$scope.$safeApply();
+		$scope.$safeApply( function(){
+			$scope.order = order;
+		} );
 	});
 
 	$scope.referral.cleaned_url = function(){
@@ -1197,10 +1204,12 @@ NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCard
 	$scope.user = GiftCardService.account.user;
 	$scope.modal = GiftCardService.modal;
 	$scope.giftcard.value = GiftCardService.value;
+	$scope.giftcard.message = GiftCardService.message;
 	$rootScope.$on( 'GiftCardProcessed', function(e, data) {
 		// Update the scope
 		$scope.user = GiftCardService.account.user;
 		$scope.giftcard.value = GiftCardService.value;
+		$scope.giftcard.message = GiftCardService.message;
 		$scope.modal = GiftCardService.modal;
 	});
 });

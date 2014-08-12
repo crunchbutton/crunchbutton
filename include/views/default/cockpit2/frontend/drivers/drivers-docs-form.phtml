@@ -2,85 +2,64 @@
 
 <div class="content-padding" ng-show="ready">
 
+	<div class="dialog-message dialog-message-error" style="font-size: 1.4em;">
+			<b>In order to get paid</b></br> <span style="font-size: .8em; letter-spacing: 0px;">you must fill out and submit all documents!</span>
+	</div>
 
-	<h1 class="title left"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
+	<div class="dialog-message dialog-message-error" style="font-size: 1.3em; letter-spacing: 0px;">
+			Please upload documents using a desktop computer!
+	</div>
+	
+	<h1 class="title left"  style="font-size: 2.7em; margin-bottom: .2em;"><i class="fa fa-briefcase" style="vertical-align: baseline;"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
 
-	<h2 ng-if="!isLive" class="title" ng-click="pay_info()"><span class="link orange">Enter Payment Info</span></h2><br><br>
-
-	<h2 class="title">
-		<span>Documents</span>
+	<h2 ng-if="!isLive" class="title" ng-click="pay_info()" style="margin-bottom: .2em; font-size: 1.4em;"><span class="link orange">Enter Payment Info</span></h2>
+	
+	<div class="divider"></div>
+	
+	<h2 class="title"  style="font-size: 1.25em; letter-spacing: 0px; margin-bottom: .2em;">
+		Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_blank">Hellosign</a>.
 	</h2>
 
-	<h3 class="title">
-		Here are important docs to fill out and sign. Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_blank">Hellosign</a>.
-	</h3>
-
-	<table class="tb-grid">
+	<table class="tb-grid" style="border-collapse: separate; border-spacing: 0px 7px">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
-				<td ng-click="edit(driver.id_admin)">
-					{{doc.name}}
+				<td ng-click="edit(driver.id_admin)" class="td-medium">
+					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.1em; line-height: 1em; margin-bottom: .5em; letter-spacing: 0px;"><b>{{doc.name}}</b></h2>
+					<a href="{{doc.url}}" target="_blank" style="font-size:1.1em;"><b>Download</b></a>
 				</td>
-				<td>
-					<a href="{{doc.url}}" target="_blank">Download Template</a>
-				</td>
-				<td>
-					<span ng-if="doc.status" class="link orange" ng-click="download( doc.status.id_driver_document_status)" title="Sent at {{doc.status.date_formated}}">Download</span>
-					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Upload missing doc
+				<td class="td-medium" style="vertical-align: top;">
+					<!-- if he already have this doc, show the download link -->
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}">
+						<a href="{{doc.status.url}}" target="_blank">Download doc</a>
 					</span>
+					<!-- upload directive -->
+					<div class="upbutton" style="text-align: right;"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<h3 class="title">
-		Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below.
-	</h3>
+	<h2 class="title" style="font-size: 1.25em; letter-spacing: 0px; margin-bottom: .2em;">
+		Please upload a clear picture of your Drivers License and Insurance Card here. You can do this right from your smartphone.
+	</h2>
 
-	<table class="tb-grid">
+	<table class="tb-grid" style="border-collapse: separate; border-spacing: 0px 7px">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
-				<td ng-click="edit(driver.id_admin)">
-					{{doc.name}}
+				<td class="td-medium" ng-click="edit(driver.id_admin)" style="vertical-align: bottom;">
+					<h2 class="title" style="font-family: Ruda; color: #000; font-size: 1.1em; letter-spacing: 0px"><b>{{doc.name}}</b></h2>
 				</td>
-				<td>
-					<span ng-if="doc.status" class="link orange" ng-click="download( doc.status.id_driver_document_status)" title="Sent at {{doc.status.date_formated}}">Download</span>
-					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Upload missing doc
-					</span>
+				<td class="td-medium" style="vertical-align: top;">
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank"><b>Download</b></a></span>
+					<div class="upbutton" style="text-align: right;"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-
-	<form name="docs">
-
-		<h3 class="title">Upload zone</h3>
-
-		<ul class="ul-inputs box-content">
-			<li class="li-input">
-				<div class="label">Select the file type:</div>
-				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
-			</li>
-			<li ng-show="doc_uploaded">
-				<input ng-file-select name="file" type="file" />
-			</li>
-			<li ng-show="uploader.progress"  class="li-input">
-				<span class="sp-label sp-label-info">
-					Progress {{uploader.progress}}%
-				</span>
-			</li>
-			<li ng-show="doc_uploaded"  class="li-input">
-				<button class="button" ng-click="uploader.uploadAll();">Upload</button>
-			</li>
-		</ul>
-
-	</form>
-
 </div>
+
 
 <spinner-loading></spinner-loading>
 <hack-expand-content></hack-expand-content>

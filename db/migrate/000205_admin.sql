@@ -1,0 +1,1 @@
+ALTER TABLE `admin` ADD `invite_code` VARCHAR( 50 ) NULL DEFAULT NULL;

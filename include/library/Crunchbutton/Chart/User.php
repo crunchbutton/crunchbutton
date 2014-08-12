@@ -1,15 +1,15 @@
-<?php 
+<?php
 class Crunchbutton_Chart_User extends Crunchbutton_Chart {
-	
+
 	public $unit = 'users';
 	public $description = 'Users';
 
-	public $groups = array( 
+	public $groups = array(
 
 												'group-new-users' => array(
 														'title' => 'New Users',
 														'tags' => array( 'main' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-new-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByDayByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByDayCohort' ) ) ),
 																'users-new-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByWeekByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByWeekCohort' ) ), 'default' => true ),
 																'users-new-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByMonthByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByMonthCohort' ) ) ),
@@ -18,7 +18,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-historical-new-users' => array(
 														'title' => 'New + Unchurned Users',
 														'tags' => array( 'detailed-analytics' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-new-per-day-historical' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDayHistorical' ),
 																'users-new-per-week-historical' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeekHistorical' ),
 																'users-new-per-month-historical' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonthHistorical' ),
@@ -27,7 +27,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-new-users-community' => array(
 														'title' => 'New Users',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-new-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'newByDayByCommunity' ),
 																'users-new-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'newByWeekByCommunity', 'default' => true ),
 																'users-new-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'newByMonthByCommunity' ),
@@ -36,7 +36,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-new-users-restaurant' => array(
 														'title' => 'New Users',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-new-per-day-by-restaurant' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-restaurant', 'method' => 'newByDayByRestaurant' ),
 																'users-new-per-week-by-restaurant' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-restaurant', 'method' => 'newByWeekByRestaurant', 'default' => true ),
 																'users-new-per-month-by-restaurant' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-restaurant', 'method' => 'newByMonthByRestaurant' ),
@@ -45,7 +45,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-repeat-community' => array(
 														'title' => 'Repeat Orders',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-repeat-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'repeatPerDayByCommunity' ),
 																'orders-repeat-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'repeatPerWeekByCommunity', 'default' => true ),
 																'orders-repeat-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'repeatPerMonthByCommunity' ),
@@ -54,7 +54,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-repeat-restaurant' => array(
 														'title' => 'Repeat Orders',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-repeat-day-by-restaurant' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-restaurant', 'method' => 'repeatPerDayByRestaurant' ),
 																'orders-repeat-week-by-restaurant' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-restaurant', 'method' => 'repeatPerWeekByRestaurant', 'default' => true ),
 																'orders-repeat-month-by-restaurant' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-restaurant', 'method' => 'repeatPerMonthByRestaurant' ),
@@ -63,7 +63,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-repeat' => array(
 														'title' => 'Repeat Orders',
 														'tags' => array( 'main' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerDayByCommunityGrouped' ) ) ),
 																'orders-repeat-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatPerWeek', 'default' => true, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerWeekByCommunityGrouped' ) ) ),
 																'orders-repeat-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerMonthByCommunityGrouped' ) ) ),
@@ -72,7 +72,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-reclaimed' => array(
 														'tags' => array( 'detailed-analytics' ),
 														'title' => 'Reclaimed Users',
-														'charts' => array(  
+														'charts' => array(
 																'users-reclaimed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'reclaimedByDay' ),
 																'users-reclaimed-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'reclaimedByWeek' ),
 																'users-reclaimed-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'reclaimedByMonth' ),
@@ -82,7 +82,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-track-frequece' => array(
 														'title' => 'Track User Frequency',
 														'tags' => array( 'detailed-analytics' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-track-frequece' => array( 'title' => 'Users', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
 												),
@@ -90,7 +90,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-new-users-per-active-user' => array(
 														'title' => 'New Users per Active Users',
 														'tags' => array( 'main' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-new-per-active-users-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newPerActiveByDay' ),
 																'users-new-per-active-users-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newPerActiveByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByWeekByCommunity' ) ), 'default' => true ),
 																'users-new-per-active-users-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newPerActiveByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByMonthByCommunity' ) ) )
@@ -99,7 +99,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-unique-users' => array(
 														'title' => 'Unique Users',
-														'charts' => array(  
+														'charts' => array(
 																'users-unique-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'uniqueByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'uniqueByDayByCommunity' ) ) ),
 																'users-unique-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'uniqueByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'uniqueByWeekByCommunity' ) ) ),
 																'users-unique-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'uniqueByMonth',  'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'uniqueByMonthByCommunity' ) ) ),
@@ -109,7 +109,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-active-users' => array(
 														'title' => 'Active Users',
 														'tags' => array( 'investors' ),
-														'charts' => array(  
+														'charts' => array(
 																'users-active-per-day' => array( 'title' => 'Day', 'type' => 'column', 'interval' => 'day', 'method' => 'activeByDay', 'filters' => array( array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'activeByDayCohort' ) ) ),
 																'users-active-per-week' => array( 'title' => 'Week', 'type' => 'column', 'interval' => 'week', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'activeByWeekCohort' ) ) ),
 																'users-active-per-month' => array( 'title' => 'Month', 'type' => 'column', 'interval' => 'month', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'activeByMonthCohort' ) ) ),
@@ -126,7 +126,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		$query = [];
 
 		$allMonths = $this->allDays();
-		
+
 		$now = time();
 
 		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
@@ -134,12 +134,12 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 			$days = floor( ( $now - strtotime( $day ) ) / ( 60 * 60 * 24 ) ) + $this->activeUsersInterval;
 
-			$query[] = "SELECT '{$day}' AS Day, 
-													COUNT(*) AS Total FROM 
+			$query[] = "SELECT '{$day}' AS Day,
+													COUNT(*) AS Total FROM
 													( SELECT DISTINCT( o.phone ) FROM `order` o WHERE o.date <= '{$day}'  ) a,
 													( SELECT DISTINCT( o.phone ) FROM `order` o WHERE o.date >= NOW() - INTERVAL $days DAY ) b
 										WHERE a.phone = b.phone";
-		}	
+		}
 
 		$parsedData = $this->parseDataDaysSimple( join( ' UNION ', $query ), $this->description );
 		if( $render ){
@@ -166,7 +166,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
 														 GROUP BY o.phone ) ActiveUsers";
-		}	
+		}
 
 		$parsedData = $this->parseDataDaysSimple( join( ' UNION ', $query ), $this->description );
 		if( $render ){
@@ -206,7 +206,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= '{$day}'
 																 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
@@ -214,10 +214,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																	 {$this->queryOnlyCommunties}
 																	 {$cohortQuery}
 																 GROUP BY u.phone ) ActiveUsers";
-						$union = ' UNION ';	
-				}	
+						$union = ' UNION ';
+				}
 				break;
-			
+
 			case 'months':
 
 				$month_cohort = $id_chart_cohort;
@@ -239,7 +239,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= '{$day}'
 																 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
@@ -255,8 +255,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			GROUP BY o.phone) orders ON o.id_order = orders.id_order
 																	 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month_cohort}' )
 																 GROUP BY u.phone ) ActiveUsers";
-						$union = ' UNION ';	
-				}	
+						$union = ' UNION ';
+				}
 				break;
 
 			case 'giftcard':
@@ -280,18 +280,18 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= '{$day}'
 																 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
 																	 {$this->queryExcludeUsers}
 																	 {$this->queryOnlyCommunties}
-																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 																	INNER JOIN user u ON u.id_user = c.id_user )
 																 GROUP BY u.phone ) ActiveUsers";
-						$union = ' UNION ';	
-				}	
+						$union = ' UNION ';
+				}
 				break;
 		}
 
@@ -320,7 +320,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 															 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
 														 GROUP BY o.phone ) ActiveUsers";
-		}	
+		}
 
 		$parsedData = $this->parseDataMonthSimple( join( ' UNION ', $query ), $this->description );
 		if( $render ){
@@ -355,7 +355,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 																	 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
@@ -364,10 +364,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																	 {$cohortQuery}
 																 GROUP BY u.phone ) ActiveUsers";
 
-						$union = ' UNION ';	
-				}	
+						$union = ' UNION ';
+				}
 				break;
-			
+
 			case 'months':
 
 				$month_cohort = $id_chart_cohort;
@@ -388,7 +388,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 																	 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
@@ -404,8 +404,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			GROUP BY o.phone) orders ON o.id_order = orders.id_order
 																	 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month_cohort}' )
 																 GROUP BY u.phone ) ActiveUsers";
-						$union = ' UNION ';	
-				}	
+						$union = ' UNION ';
+				}
 				break;
 
 			case 'giftcard':
@@ -428,18 +428,18 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 																	 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
 																	 {$this->queryExcludeUsers}
 																	 {$this->queryOnlyCommunties}
-																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 																	INNER JOIN user u ON u.id_user = c.id_user )
 																 GROUP BY u.phone ) ActiveUsers";
-						$union = ' UNION ';	
-				}	
+						$union = ' UNION ';
+				}
 				break;
 
 		}
@@ -682,17 +682,17 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 																	 {$this->queryExcludeUsers}
 																	 {$cohortQuery}
 																 GROUP BY u.phone) ActiveUsers";
-						$union = ' UNION ';	
+						$union = ' UNION ';
 				}
 				break;
-			
+
 			case 'months':
 
 				$month_cohort = $id_chart_cohort;
@@ -714,7 +714,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
@@ -729,7 +729,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			GROUP BY o.phone) orders ON o.id_order = orders.id_order
 																	 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month_cohort}' )
 																 GROUP BY u.phone) ActiveUsers";
-						$union = ' UNION ';	
+						$union = ' UNION ';
 				}
 				break;
 
@@ -754,16 +754,16 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 c.name
 																 FROM `order` o
 																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 																	 {$this->queryExcludeUsers}
-																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 																	INNER JOIN user u ON u.id_user = c.id_user )
 																 GROUP BY u.phone) ActiveUsers";
-						$union = ' UNION ';	
+						$union = ' UNION ';
 				}
 
 					break;
@@ -802,7 +802,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
-																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
@@ -822,7 +822,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
-																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
@@ -833,7 +833,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 													AND NewUsers.Community = ActiveUsers.Community
 													GROUP BY ActiveUsers.Community";
 			$union = ' UNION ';
-			$count++;	
+			$count++;
 		}
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
@@ -870,7 +870,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
-																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
@@ -890,7 +890,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
-																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
@@ -901,7 +901,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 													AND NewUsers.Community = ActiveUsers.Community
 													GROUP BY ActiveUsers.Community";
 			$union = ' UNION ';
-			$count++;	
+			$count++;
 		}
 
 		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
@@ -938,7 +938,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
-																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 																INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 																INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= '{$day}'
@@ -958,7 +958,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
-																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 																INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= '{$day}'
@@ -969,7 +969,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 													AND NewUsers.Community = ActiveUsers.Community
 													GROUP BY ActiveUsers.Community";
 			$union = ' UNION ';
-			$count++;	
+			$count++;
 		}
 
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
@@ -999,7 +999,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																		 c.name AS community
 														 FROM `order` o
 														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 						 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 						 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
@@ -1007,7 +1007,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 															 {$this->queryExcludeUsers}
 														 GROUP BY u.phone) ActiveUsers
 													GROUP BY ActiveUsers.community";
-			$union = ' UNION ';			
+			$union = ' UNION ';
 		}
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
@@ -1036,7 +1036,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																		 c.name AS community
 														 FROM `order` o
 														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 														 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 														 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 														 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
@@ -1044,7 +1044,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 															 {$this->queryExcludeUsers}
 														 GROUP BY u.phone ) ActiveUsers
 													GROUP BY ActiveUsers.community";
-			$union = ' UNION ';		
+			$union = ' UNION ';
 		}
 
 		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
@@ -1061,10 +1061,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 									 c.name AS `Group`
 						FROM `order` o
 						INNER JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
-						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 							{$this->queryExcludeUsers}
 						GROUP BY YEARWEEK(o.date),
 										c.name
@@ -1084,7 +1084,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 									 c.name AS `Group`
 						FROM `order` o
 						INNER JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 						WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
@@ -1097,7 +1097,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function uniqueByMonthByCommunity( $render = false ){
@@ -1107,7 +1107,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 									 c.name AS `Group`
 						FROM `order` o
 						INNER JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 						WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
@@ -1120,7 +1120,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function newPerActiveByWeek( $render = false ){
@@ -1134,7 +1134,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 			$new = $newUsers[ $i ]->Total;
 
 			if( $active != 0 && $new != 0 ){
-				$result = $new / $active;	
+				$result = $new / $active;
 			} else {
 				$result = 0;
 			}
@@ -1158,7 +1158,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 			$new = $newUsers[ $i ]->Total;
 
 			if( $active != 0 && $new != 0 ){
-				$result = $new / $active;	
+				$result = $new / $active;
 			} else {
 				$result = 0;
 			}
@@ -1182,7 +1182,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 			$new = $newUsers[ $i ]->Total;
 
 			if( $active != 0 && $new != 0 ){
-				$result = $new / $active;	
+				$result = $new / $active;
 			} else {
 				$result = 0;
 			}
@@ -1201,10 +1201,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-							WHERE 
-								o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'								
+							WHERE
+								o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 								{$this->queryExcludeUsers}
 							GROUP BY Day
 							ORDER BY Day ASC";
@@ -1222,9 +1222,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(o.date)
 							ORDER BY YEARWEEK(o.date) DESC";
@@ -1242,9 +1242,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-							WHERE 
+							WHERE
 								o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 								{$this->queryExcludeUsers}
 							GROUP BY Month
@@ -1258,7 +1258,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 	}
 
 	public function trackFrequence( $render = false ){
-		
+
 		$allWeeks = $this->allWeeks();
 
 		$query = '';
@@ -1268,37 +1268,37 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
 			$week = $allWeeks[ $i ];
-			$_data[ $week ] = array( 
+			$_data[ $week ] = array(
 											'Power' => 0,
 											'Weekly' => 0,
 											'Bi-Weekly' => 0,
 											'Tri-Weekly' => 0,
 											'Monthly' => 0
 											);
-			$query .= $union . 
+			$query .= $union .
 								"SELECT YEARWEEK(date) AS `Week`,
 										 u.phone AS 'Phone'
 								FROM `order` o
-								INNER JOIN user u ON u.id_user = o.id_user 
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE YEARWEEK(o.date) = {$week} 
+								WHERE YEARWEEK(o.date) = {$week}
 									{$this->queryExcludeUsers}";
 			$union = ' UNION ';
 		}
 
 		$users = c::db()->get( $query );
-		
+
 		foreach( $users as $user ){
 
 			$week = $user->Week;
 
-			$query = "SELECT * FROM 
-								( SELECT o.date AS day1 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 3, 1 ) day1, 
+			$query = "SELECT * FROM
+								( SELECT o.date AS day1 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 3, 1 ) day1,
 								( SELECT o.date AS day2 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 1 ) day2";
 			$days = c::db()->get( $query );
 			$days = $days->_items[0];
-			
+
 			if( $days ){
 
 				$interval = date_diff( date_create( $days->day1 ), date_create( $days->day2 ) );
@@ -1311,7 +1311,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 				if( $days > 25 ){ $_data[ $week ][ 'Monthly' ]++; }
 			}
 		}
-		
+
 		$data = [];
 		foreach( $_data as $week => $info ){
 			foreach( $info as $type => $value ){
@@ -1335,7 +1335,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1 = 1
 								 {$this->queryExcludeUsers}
@@ -1361,7 +1361,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								 WHERE 1 = 1
@@ -1388,7 +1388,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								 WHERE 1 = 1
@@ -1409,17 +1409,17 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$activeUsers = $this->activeByDay();
 		$data = [];
 		for( $i = 0; $i < count( $newUsers ); $i++ ){
-			$data[] = ( object ) array( 
-											'Label' => $newUsers[ $i ]->Label, 
-											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ), 
-											'Type' => $newUsers[ $i ]->Type, 
+			$data[] = ( object ) array(
+											'Label' => $newUsers[ $i ]->Label,
+											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ),
+											'Type' => $newUsers[ $i ]->Type,
 											);
 		}
 		if( $render ){
 			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'day' );
 		}
-		return $data;		
-	}	
+		return $data;
+	}
 
 	public function newByWeekHistorical( $render = false ){
 		$newUsers = $this->newByWeek();
@@ -1427,17 +1427,17 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$activeUsers = $this->activeByWeek();
 		$data = [];
 		for( $i = 0; $i < count( $newUsers ); $i++ ){
-			$data[] = ( object ) array( 
-											'Label' => $newUsers[ $i ]->Label, 
-											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ), 
-											'Type' => $newUsers[ $i ]->Type, 
+			$data[] = ( object ) array(
+											'Label' => $newUsers[ $i ]->Label,
+											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ),
+											'Type' => $newUsers[ $i ]->Type,
 											);
 		}
 		if( $render ){
 			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'week' );
 		}
-		return $data;		
-	}	
+		return $data;
+	}
 
 	public function newByMonthHistorical( $render = false ){
 		$newUsers = $this->newByMonth();
@@ -1445,17 +1445,17 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$activeUsers = $this->activeByMonth();
 		$data = [];
 		for( $i = 0; $i < count( $newUsers ); $i++ ){
-			$data[] = ( object ) array( 
-											'Label' => $newUsers[ $i ]->Label, 
-											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ), 
-											'Type' => $newUsers[ $i ]->Type, 
+			$data[] = ( object ) array(
+											'Label' => $newUsers[ $i ]->Label,
+											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ),
+											'Type' => $newUsers[ $i ]->Type,
 											);
 		}
 		if( $render ){
 			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'month' );
 		}
-		return $data;		
-	}	
+		return $data;
+	}
 	public function newByDay( $render = false ){
 
 		$query = "SELECT SUM(1) AS Total,
@@ -1466,9 +1466,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								 WHERE 1=1 
+								 WHERE 1=1
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -1498,7 +1498,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1 = 1
 										 {$this->queryExcludeUsers}
@@ -1517,7 +1517,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1 = 1
 										 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
@@ -1536,10 +1536,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1 = 1
-										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																			INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 																			INNER JOIN user u ON u.id_user = c.id_user )
 										 {$this->queryExcludeUsers}
@@ -1574,15 +1574,15 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										 WHERE 1=1 
+										 WHERE 1=1
 												{$this->queryExcludeUsers}
 												{$cohort->toQuery()}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 				break;
-			
+
 			case 'months':
 				$month = $id_chart_cohort;
 				$query = "SELECT SUM(1) AS Total,
@@ -1593,9 +1593,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										 WHERE 1=1 
+										 WHERE 1=1
 										 		AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
 												{$this->queryExcludeUsers}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
@@ -1611,10 +1611,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										 WHERE 1=1 
-												 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+										 WHERE 1=1
+												 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																		INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 																		INNER JOIN user u ON u.id_user = c.id_user )
 												{$this->queryExcludeUsers}
@@ -1649,15 +1649,15 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										 WHERE 1=1 
+										 WHERE 1=1
 												{$this->queryExcludeUsers}
 												{$cohort->toQuery()}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 				break;
-			
+
 			case 'months':
 				$month = $id_chart_cohort;
 				$query = "SELECT SUM(1) AS Total,
@@ -1668,9 +1668,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										 WHERE 1=1 
+										 WHERE 1=1
 										 		AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
 												{$this->queryExcludeUsers}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
@@ -1686,10 +1686,10 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														u.phone
 										 FROM `order` o
 										 INNER JOIN user u ON u.id_user = o.id_user
-										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										 WHERE 1=1 
-										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+										 WHERE 1=1
+										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																			INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 																			INNER JOIN user u ON u.id_user = c.id_user )
 												{$this->queryExcludeUsers}
@@ -1718,9 +1718,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								 WHERE 1=1 
+								 WHERE 1=1
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
@@ -1745,7 +1745,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												r.name as restaurant
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 WHERE r.id_restaurant = '{$restaurant}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
@@ -1773,7 +1773,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								 WHERE c.id_community = '{$community}'
@@ -1803,7 +1803,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												r.name as restaurant
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 WHERE r.id_restaurant = '{$restaurant}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
@@ -1831,7 +1831,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												c.name as community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								 WHERE c.id_community = '{$community}'
@@ -1861,7 +1861,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												r.name as restaurant
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 WHERE r.id_restaurant = '{$restaurant}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone, r.name) orders ON o.id_order = orders.id_order
@@ -1887,7 +1887,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								 WHERE c.id_community = '{$community}'
@@ -1913,7 +1913,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								 WHERE 1 = 1
@@ -1927,7 +1927,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		}
 		return $parsedData;
 	}
-	
+
 	public function repeatPerDay( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerDay( false ), 'unit' =>$order->unit, 'interval' => 'day' );
@@ -1956,22 +1956,22 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 	public function repeatPerWeekByCommunity( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerWeekByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'week' );
-	}	
+	}
 
 	public function repeatPerWeekByRestaurant( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerWeekByRestaurant( false ), 'unit' =>$order->unit, 'interval' => 'week' );
-	}	
+	}
 
 	public function repeatPerDayByRestaurant( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerDayByRestaurant( false ), 'unit' =>$order->unit, 'interval' => 'day' );
-	}	
+	}
 
 	public function repeatPerMonthByRestaurant( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerMonthByRestaurant( false ), 'unit' =>$order->unit, 'interval' => 'month' );
-	}	
+	}
 
 	public function repeatPerMonth( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
@@ -1995,7 +1995,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 							INNER JOIN user u ON u.id_user = o.id_user
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 	
+		return $result->_items[0]->Total;
 	}
 
 	public function totalUsersByCommunity( $id_community ){
@@ -2003,11 +2003,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										 COUNT( DISTINCT( o.phone ) ) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$id_community}'
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 	
+		return $result->_items[0]->Total;
 	}
 
 }

@@ -4,7 +4,7 @@ class Controller_api_Credit extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		switch ( $this->method() ) {
-			
+
 			// Saves a credit
 			case 'post':
 				if (c::getPagePiece(2) == 'new') {
@@ -12,7 +12,7 @@ class Controller_api_Credit extends Crunchbutton_Controller_Rest {
 						$credit = new Crunchbutton_Credit();
 						$credit->id_user = $this->request()['id_user'];
 						$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
-						
+
 						// id_restaurant == * means any restaurant
 						if( $this->request()['id_restaurant'] == '*' ){
 							$credit->note = 'This credit is valid to any restaurant!' . "\n" . $this->request()['note'];
@@ -22,7 +22,7 @@ class Controller_api_Credit extends Crunchbutton_Controller_Rest {
 						}
 						$credit->date = date('Y-m-d H:i:s');
 						$credit->value = $this->request()['value'];
-						
+						$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 						$credit->id_order_reference = $this->request()['id_order_reference'];
 						$credit->paid_by = $this->request()['paid_by'];
 						if( $this->request()['paid_by'] == 'other_restaurant' ){

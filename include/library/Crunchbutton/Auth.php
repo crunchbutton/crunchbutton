@@ -5,7 +5,7 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 	public function init() {
 
 	}
-	
+
 	public function postInit() {
 		// if we dont have a user lets check for a facebook user.
 		// not sure if theres any way to avoid this, but if a fb user is found, we have to make a fb request
@@ -22,7 +22,7 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 			}
 		}
 	}
-	
+
 	public function fbauth() {
 		// we have a facebook user
 		if ($this->facebook()->fbuser()->id) {
@@ -34,7 +34,7 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		}
 		return $this;
 	}
-	
+
 	public function setUser($user) {
 		$this->_user = $user;
 		$this->session()->id_user = $user->id_user;
@@ -58,7 +58,7 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 	public function doAuthByLocalUser( $params ) {
 		$auth = User_Auth::localLogin( $params['email'], $params['password'] );
 		if ( $auth->user()->active ) {
-			$this->_user = $auth->user();			
+			$this->_user = $auth->user();
 			$this->session()->id_user = $this->user()->id_user;
 			$this->session()->id_user_auth = $auth->id_user_auth;
 			$this->session()->date_active = date('Y-m-d H:i:s');
@@ -92,7 +92,7 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		$user->saving_from = $user->saving_from.'Auth::load - ';
 		$user->save();
 	}
-	
+
 	public function userObject($params = null) {
 		if ($params) {
 			return new Crunchbutton_User($params);

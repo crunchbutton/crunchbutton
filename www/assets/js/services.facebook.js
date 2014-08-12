@@ -11,7 +11,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		running : false,
 		error : { unknown : false, userExists : false, login : false }
 	}
-	
+
 	service.referral = ReferralService;
 
 	service.account = AccountService;
@@ -29,7 +29,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// This method let the user type his message before post
 	service.postOrder = function(){
-		if( service.orderStatus ){    
+		if( service.orderStatus ){
 			var status = service.orderStatus;
 			status.link = service.referral.cleaned_url();
 			App.share({
@@ -37,7 +37,17 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 				name: status.name,
 				caption: status.caption,
 				description: status.description,
-				picture: status.picture
+				picture: status.picture,
+				success : function( success ){
+					$http( {
+						method: 'POST',
+						url: App.service + 'facebook/reward/',
+						data: $.param( { 'post_id': success.post_id, 'uuid': service._order_uuid } ),
+						headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					} ).success( function(){
+						$rootScope.$broadcast( 'orderShared' );
+					} );
+				}
 			});
 		} else {
 			service.preLoadOrderStatus();
@@ -87,7 +97,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 			if( status.authResponse.userId ){
 				status.authResponse.userID = status.authResponse.userId;
 			}
-			
+
 			if (status.authResponse.userID) {
 
 				App.log.account({'userID': status.authResponse.userID}, 'facebook login');
@@ -105,7 +115,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 					$http( { method: 'GET', url: url, cache: false } ).success(function( data ) {
 
 						App.log.account({'userID': status.authResponse.userID, 'running': service.running, 'data': data }, 'facebook ajax');
-	
+
 						if (data.error) {
 							if (data.error == 'facebook id already in use') {
 								$rootScope.$broadcast( 'facebookIdAlreadyUsed', true );
@@ -126,7 +136,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 									$.magnificPopup.close();
 								} catch (e) {}
 							}
-							
+
 						}
 
 						App.log.account({'userID': status.authResponse.userID} , 'facebook currentPage');

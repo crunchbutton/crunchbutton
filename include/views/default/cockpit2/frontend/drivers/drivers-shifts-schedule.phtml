@@ -18,7 +18,7 @@
 			<div class="drivers-shift drivers-schedule">
 
 			<div>
-				<ul class="ul-inputs box-content">
+				<ul class="ul-inputs box-content2">
 					<li class="li-input">
 						<div class="label">How many shifts would you like to work?</div>
 						<select name="shiftsAvailableToWork" ng-model="shiftsAvailableToWork" ng-change="updateShiftsAvailable(this.shiftsAvailableToWork)" ng-options="shift as shift for shift in availableToWork"></select>
@@ -30,7 +30,7 @@
 
 				<h2 class="title">All shifts</h2>
 
-				<div class="box-content">
+				<div class="box-content2">
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
 							<td>
@@ -94,7 +94,7 @@
 
 				<h2 class="title">Shifts you CANNOT work</h2>
 
-				<div class="box-content">
+				<div class="box-content2">
 
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">

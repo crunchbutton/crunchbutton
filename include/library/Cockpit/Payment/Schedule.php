@@ -130,6 +130,14 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
 	}
 
+	public function referrals(){
+		return Cockpit_Payment_Schedule_Referral::q( 'SELECT * FROM payment_schedule_referral WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_referral DESC' );
+	}
+
+	public function invites(){
+		return $this->referrals();
+	}
+
 	public function shifts(){
 		return Cockpit_Payment_Schedule_Shift::q( 'SELECT * FROM payment_schedule_shift WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_admin_shift_assign DESC' );
 	}
