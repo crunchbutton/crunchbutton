@@ -44,6 +44,9 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		// javascript
 		$files[] = 'js/bundle.js?s=cockpit';
 		
-		echo json_encode($files);
+		echo json_encode([
+			'version' => Cana_Util::gitVersion(),
+			'files' => $files
+		]);
 	}
 }
