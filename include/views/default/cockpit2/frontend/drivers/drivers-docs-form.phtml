@@ -22,17 +22,17 @@
 		Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_blank">Hellosign</a>.
 	</h2>
 
-	<table class="tb-grid driver-doc-grid">
+	<table class="tb-grid driver-docs-grid">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
-				<td ng-click="edit(driver.id_admin)" class="td-medium">
+				<td ng-click="edit(driver.id_admin)" class="td-medium driver-docs-name">
 					<h2 class="title"><b>{{doc.name}}</b></h2>
 					<a href="{{doc.url}}" target="_blank"><b>Download</b></a>
 				</td>
 				<td class="td-medium td-download" style="vertical-align: top;">
 					<!-- if he already have this doc, show the download link -->
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}">
-						<a href="{{doc.status.url}}" target="_blank">Download doc</a>
+						<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download doc</a>
 					</span>
 					<!-- upload directive -->
 					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div>
@@ -48,11 +48,11 @@
 	<table class="tb-grid driver-docs-grid">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
-				<td class="td-medium driver-docs-card" ng-click="edit(driver.id_admin)">
+				<td class="td-medium driver-docs-card driver-docs-name" ng-click="edit(driver.id_admin)">
 					<h2 class="title"><b>{{doc.name}}</b></h2>
 				</td>
 				<td class="td-medium td-download">
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank"><b>Download</b></a></span>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download" href="{{doc.status.url}}" target="_blank"><b>Download</b></a></span>
 					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div>
 				</td>
 			</tr>
