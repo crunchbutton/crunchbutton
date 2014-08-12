@@ -87,17 +87,17 @@
 	<div class="content">
 		<div class="wrap">
 			<div class="status"></div>
-			<div class="dialog-message dialog-message-error" style="font-size: 1.5em; text-align: center;">
+			<div class="dialog-message dialog-message-error check-reminder">
 				Double check to make sure you received exactly the right food!
 			</div>
-			<div class="header" style="background: #D6D9DC; color: #8D8D8D">
+			<div class="header order-header">
 				<div class="restaurant-name"><strong>Order</strong></div>
 				<div class="order-id">
 				<table>
 					<tbody>
 						<tr>
-							<td style="padding-right: 0px;"><b>#</b></td>
-							<td style="padding-left: 0px;"><b>{{order.id_order}}</b></td>
+							<td><b>#</b></td>
+							<td><b>{{order.id_order}}</b></td>
 						</tr>
 					</tbody>
 				</table>
@@ -167,7 +167,7 @@
 					<div class="order-info">
 						<div class="info-name">{{order.name}}</div>
 						<div class="info-phone"><a href="tel:+1{{order.phone}}">{{order.phone | formatPhone}}</a></div>
-						<div style="clear: both;"/>
+						<div class="divider"/>
 						</br>
 						<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order.address}}">{{order.address | nl2br}}</a></p></div>
 						
@@ -181,7 +181,7 @@
 					<div class="order-info">
 						<div class="info-name">{{order._restaurant_name}}</div>
 						<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}">{{order._restaurant_phone | formatPhone}}</a></div>
-						<div style="clear: both;"/>
+						<div class="divider"/>
 						</br>
 						<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}">{{order._restaurant_address | nl2br }}</a></p></div>
 					</div>
@@ -208,27 +208,27 @@
 				<div class="divider dots"></div>
 				<br><br>
 				<table width="100%" celpadding="0" cellspacing="0" class="detail">
-					<thead style="font-weight:bold">
+					<thead>
 						<td class="topitem">Qty</td>
-						<td class="topitem" style="text-align: center;">Item</td>
-						<td class="topitem" style="width: 80px; text-align: right;">Store Price</td>
+						<td class="topitem itemname">Item</td>
+						<td class="topitem itemprice">Store Price</td>
 					</thead>
 					<tbody>
 						<tr ng-repeat="dish in order._dishes">
 							<td class="fooditem">1</td>
-							<td class="fooditem" style="text-align: center;">{{dish.name}} {{dish.options.without_default_options}} {{dish.options.with_option}} {{dish.options.select_options}} </td>
-							<td class="fooditem" style="font-size:1.2em;color:#666;text-align: right;">
+							<td class="fooditem dish-name">{{dish.name}} {{dish.options.without_default_options}} {{dish.options.with_option}} {{dish.options.select_options}} </td>
+							<td class="fooditem dish-price">
 								${{dish.price.regular | formatPrice}}
 							</td>
 						</tr>
 						<tr class="class">
 							<td></td>
-							<td style="font-size:1.2em;color:#666;text-align:right">Subtotal</td>
-							<td style="font-size:1.2em;color:#666;text-align: right;">
+							<td class="dish-price">Subtotal</td>
+							<td class="dish-price">
 								${{order.price | formatPrice}}
 							</td>
 						</tr>
-						<!--
+						<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
 						<tr ng-if="order._tip">
 							<td></td>
 							<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="order.tip_type != 'number'"></span></td>
@@ -249,24 +249,24 @@
 						-->
 						<tr>
 							<td></td>
-							<td style="text-align:right; font-size:1.2em;color:#666;">Tax</td>
-							<td style="text-align:right; font-size:1.2em;color:#666;">
+							<td class="dish-price">Tax</td>
+							<td class="dish-price">
 								${{order._tax | formatPrice}}
 							</td>
 						</tr>
-						<tr style="font-weight:bold;">
+						<tr class="order-total-row">
 							<td></td>
-							<td style="text-align:right; font-size: 1.2em;">Total</td>
-							<td style="font-size:1.2em;color:#666;text-align: right;">
+							<td class="order-total-text">Total</td>
+							<td class="dish-price">
 								${{order._final_price | formatPrice}}
 							</td>
 						</tr>
 						<tr ng-if="order._tip_with_cash">
-							<td colspan="3" style="text-align:left">Customer is tipping with cash</td>
+							<td class="order-tip-cash" colspan="3">Customer is tipping with cash</td>
 						</tr>
 						<tr>
-							<td colspan="4" style="width: 100%;">
-								<?//MAKE THE "CUSTOMER TOTAL" AND "YOUR TAKE" HERE ?>
+							<td class="your-take" colspan="4">
+								<!--MAKE THE "CUSTOMER TOTAL" AND "YOUR TAKE" HERE -->
 								<div class="cust-pay-method">
 									<div ng-if="order.pay_type=='cash'"><div class="pay-icon" ><i class="fa fa-money"></i></div><span class="cust-pay-method-text">Customer is paying by {{order.pay_type}}</span></div>
 									<div ng-if="order.pay_type=='card'"><div class="pay-icon" ><i class="fa fa-credit-card"></i></div><span class="cust-pay-method-text">Customer is paying by {{order.pay_type}}</span></div>									
