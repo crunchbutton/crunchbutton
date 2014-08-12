@@ -1063,6 +1063,13 @@ input {
 		text-align: right;
 	}
 	
+	.payment-info-text{
+		margin-bottom: .2em;
+		font-size: 1.4em;
+		margin-top: .2em;
+		line-height: 1.4em
+	}
+	
 	.driver-docs-grid{
 		border-collapse: separate;
 		border-spacing: 0px 7px;
@@ -1073,6 +1080,7 @@ input {
 			font-size: 1.1em;
 			line-height: 1em;
 			margin-bottom: .5em;
+			margin-top: .2em;
 			letter-spacing: 0px;
 		}
 		.docs-download{
@@ -1089,7 +1097,7 @@ input {
 	}
 	
 	.driver-docs-card{
-		vertical-align: bottom;
+		vertical-align: middle;
 	}
 	/************************/
 
