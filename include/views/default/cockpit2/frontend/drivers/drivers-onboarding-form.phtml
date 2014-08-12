@@ -64,7 +64,7 @@
 
 		<div ng-if="driver.login">
 
-			<h3 class="title">Access info</h3>
+			<h2 class="title">Access info</h2>
 
 			<ul class="ul-inputs">
 
@@ -86,7 +86,7 @@
 	</form>
 
 	<div ng-if="driver.id_admin">
-		<h3 class="title">Documents</h3>
+		<h2 class="title">Documents</h2>
 		<table class="tb-grid">
 			<tbody>
 				<tr ng-repeat="doc in documents">
@@ -118,7 +118,7 @@
 
 		<h3 class="title">Upload zone</h3>
 
-		<ul class="ul-inputs box-content">
+		<ul class="ul-inputs box-content2">
 			<li class="li-input">
 				<div class="label">Select the file type:</div>
 				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
