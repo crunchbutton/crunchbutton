@@ -160,8 +160,6 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->type = 'web';
 		}
 
-
-
 		// to make sure the value will be 2 decimals
 		$this->delivery_service_markup_value = number_format( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
 
@@ -314,16 +312,44 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->id_user = $user->id_user;
 
+		$this->giftCardInviter = false;
+
 		// Find out if the user posted a gift card code at the notes field and get its value
 		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
-			$giftCardAdded = false;
-			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
-			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
-				if( $giftcard->id_promo ){
-					if( !$giftCardAdded ){
-						$this->giftcardValue += $giftcard->value;
-						$giftCardAdded = true;
+
+			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
+			if( $totalOrdersByPhone < 1 ){
+				$words = explode( ' ', $this->notes );
+				$words = array_unique( $words );
+				foreach( $words as $word ){
+					$giftCardAdded = false;
+					Log::debug([ 'totalOrdersByPhone' => $totalOrdersByPhone ]);
+					// At first check if it is an user's invite code - rewards: two way gift cards #2561
+					$reward = new Crunchbutton_Reward;
+					$inviter = $reward->validateInviteCode( $word );
+					Log::debug([ 'inviter' => $inviter ]);
+					if( $totalOrdersByPhone <= 1 && $inviter ){
+						// get the value of the discount
+						$value = $reward->getReferredDiscountAmount();
+						$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word ];
+						if( $value ){
+							$this->giftcardValue = $value;
+							break;
+						}
+					}
+				}
+			}
+			// if the code doenst belong to a user check if it belongs to a gift card
+			if( !$this->giftCardInviter ) {
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+					if( $giftcard->id_promo ){
+						if( !$giftCardAdded ){
+							$this->giftcardValue = $giftcard->value;
+							$giftCardAdded = true;
+							break;
+						}
 					}
 				}
 			}
@@ -346,16 +372,16 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($res !== true) {
 			Log::debug([
 				'action' 				=> 'credit card error',
-				'address' 				=> $params['address'],
+				'address' 			=> $params['address'],
 				'phone' 				=> $params['phone'],
-				'pay_type' 				=> $params['pay_type'],
+				'pay_type' 			=> $params['pay_type'],
 				'tip' 					=> $params['tip'],
 				'autotip'				=> $params['autotip'],
-				'autotip_value'			=> $params['autotip_value'],
+				'autotip_value'	=> $params['autotip_value'],
 				'name' 					=> $params['name'],
-				'user_id' 				=> c::user()->id_user,
-				'delivery_type' 		=> $params['delivery_type'],
-				'restaurant' 			=> $params['restaurant'],
+				'user_id' 			=> c::user()->id_user,
+				'delivery_type' => $params['delivery_type'],
+				'restaurant' 		=> $params['restaurant'],
 				'notes' 				=> $params['notes'],
 				'errors' 				=> $res['errors'],
 				'cart' 					=> $params['cart'],
@@ -482,19 +508,81 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
 
+		Log::debug([ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ]);
+
 		// If the payment succeds then redeem the gift card
 		if ( trim( $this->notes ) != '' ){
-			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
-			$giftCardAdded = false;
-			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
-				if( $giftcard->id_promo ){
-					if( !$giftCardAdded ){
-						$giftcard->addCredit( $user->id_user );
-					}
-					$giftCardAdded = true;
+			if( $this->giftCardInviter ){
+
+				// remove the code from notes
+				$__order = Order::o( $this->id_order );
+				$__order->notes = str_replace( $this->giftCardInviter[ 'word'], '', $__order->notes );
+				$__order->save();
+
+				$referral = new Crunchbutton_Referral();
+				$referral->id_admin_inviter = $this->giftCardInviter[ 'id_admin'];
+				$referral->id_user_inviter = $this->giftCardInviter[ 'id_user'];
+				$referral->id_user_invited = $this->id_user;
+				$referral->id_order = $this->id_order;
+				$referral->invite_code = $this->giftCardInviter[ 'word'];
+				$referral->new_user = 1;
+				$referral->date = date('Y-m-d H:i:s');
+				$referral->save();
+
+				$reward = new Crunchbutton_Reward;
+				// the new user earns discount
+				if( $this->giftCardInviter[ 'id_user'] ){
+					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_user'] . ' code: ' . $this->giftCardInviter[ 'word'];
+				} else if( $this->giftCardInviter[ 'id_admin'] ){
+					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_admin'] . ' code: ' . $this->giftCardInviter[ 'word'];
 				}
+
+				$reward->saveRewardAsCredit( [ 	'id_user' => $user->id_user,
+																				'value' => $this->giftCardInviter[ 'value'],
+																				'id_order' => $this->id_order,
+																				'id_referral' => $referral->id_referral,
+																				'note' => $notes,
+																			] );
+
+				if( $this->giftCardInviter[ 'id_user'] ){
+					$credits_amount = $reward->refersNewUserCreditAmount();
+					if( $credits_amount ){
+						// the regular user that indicates his friend earns money too - configurable option
+						$reward->saveRewardAsCredit( [ 	'id_user' => $this->giftCardInviter[ 'id_user'],
+																						'value' => $credits_amount,
+																						'id_order' => null,
+																						'id_referral' => $referral->id_referral,
+																						'note' => 'Invited ID: ' . $this->id_user . ' code: ' . $this->giftCardInviter[ 'word'],
+																					] );
+					}
+				} else if( $this->giftCardInviter[ 'id_admin'] ){
+					$credits_amount = $reward->adminRefersNewUserCreditAmount();
+					Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
+				}
+
+				// Give points to the user that invites the new user
+				$points = $reward->getReferNewUser();
+				if( floatval( $points ) > 0 ){
+					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->giftCardInviter[ 'id_user'], 'points' => $points, 'note' => 'points by referrer new user O#' . $this->id_order . ' U#' . $this->id_user ] );
+				}
+				// Give points to the user that was invited
+				$points = $reward->getRefered();
+				if( floatval( $points ) > 0 ){
+					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $this->giftCardInviter[ 'id_user'] ] );
+				}
+			} else {
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+				$giftCardAdded = false;
+				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+					if( $giftcard->id_promo ){
+						if( !$giftCardAdded ){
+							$giftcard->addCredit( $user->id_user );
+						}
+						$giftCardAdded = true;
+					}
+				}
+				$this->notes = $giftcards[ 'notes' ];
 			}
-			$this->notes = $giftcards[ 'notes' ];
 		}
 
 		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
@@ -542,10 +630,32 @@ class Crunchbutton_Order extends Cana_Table {
 				$rules = new Crunchbutton_Order_Rules();
 				$rules->run( $order );
 			});
+			// Reward
+			$reward = new Crunchbutton_Reward;
+			// rewards: earn points when an order has been placed #2458
+			$points = $reward->processOrder( $order->id_order );
+			if( floatval( $points ) > 0 ){
+				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
+			}
+			// rewards: 4x points when ordering 2 days in a row #3434
+			$points = $reward->orderTwoDaysInARow( $order->id_user );
+			if( floatval( $points ) > 0 ){
+				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+			}
+			if( !$points ){
+				// rewards: 2x points when ordering in same week #3432
+				$points = $reward->orderTwiceSameWeek( $order->id_user );
+				if( floatval( $points ) > 0 ){
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+				}
+			}
 		}
 
-
-		if( Crunchbutton_Referral::isReferralEnable() ){
+		// Referral disabled because of the new system:
+		// rewards: two way gift cards #2561: https://github.com/crunchbutton/crunchbutton/issues/2561
+		/**
+		*******************************************************************************
+		if( false && Crunchbutton_Referral::isReferralEnable() ){
 			// If the user was invited we'll give credit to the inviter user
 			$inviter_code = Crunchbutton_Referral::checkCookie();
 			if( $inviter_code ){
@@ -571,12 +681,26 @@ class Crunchbutton_Order extends Cana_Table {
 						$referral->addCreditToInviter();
 					}
 
+					// Reward
+					$reward = new Crunchbutton_Reward;
+					$points = $reward->getRefered();
+					if( floatval( $points ) > 0 ){
+						$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $_inviter->id_user ] );
+					}
+
+					$points = $reward->getReferNewUser();
+					if( floatval( $points ) > 0 ){
+						$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $_inviter->id_user, 'points' => $points, 'note' => 'points by reffering a new user O#' . $this->id_order . ' U#' . $this->id_user ] );
+					}
+
 					Log::debug([ 'inviter_code' => $inviter_code, 'totalOrdersByPhone' => $totalOrdersByPhone, 'type' => 'referral', 'pay_type' => $this->pay_type ]);
 
 				}
 				Crunchbutton_Referral::removeCookie();
 			}
 		}
+		*************************************************************************
+		*/
 		return true;
 	}
 
@@ -823,6 +947,59 @@ class Crunchbutton_Order extends Cana_Table {
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
+	}
+	
+	public static function outstandingOrders(){
+		$id_admin = c::admin()->id_admin;
+		$query = "SELECT id_order,
+						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
+						FROM `order` o
+						WHERE o.delivery_type = 'delivery'
+						AND o.delivery_service = 1
+						AND o.id_order NOT IN
+						(SELECT id_order
+						FROM order_action
+						WHERE type = 'delivery-delivered')
+						-- remove the commment below to get this the orders from today
+						 AND DATE(o.date) = DATE(NOW())
+						HAVING hours >= 2 ORDER BY id_order DESC ";
+		return Order::q( $query );
+									
+	}
+	
+	public static function deliveryOrderTimes( $hours = 24, $all = false ){
+		$interval = $hours . ' HOUR';
+		$id_admin = c::admin()->id_admin;
+		if( !$all ){
+			$admin = Admin::o( $id_admin );
+			$deliveryFor = $admin->allPlacesHeDeliveryFor();
+			if( count( $deliveryFor ) == 0 ){
+				$deliveryFor[] = 0;
+			}
+			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
+		} else {
+			$where = 'WHERE 1=1 ';
+		}
+
+		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
+		return Order::q( $query );
+	}
+	
+	public function revenueByAdminPeriod( $id_admin, $date_start, $date_end ){
+		//convert to La timezone
+		$date_start = new DateTime( $date_start, new DateTimeZone( c::config()->timezone ) );
+		$date_end = new DateTime( $date_end, new DateTimeZone( c::config()->timezone ) );
+		
+		//get orders at this period
+		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o 
+								INNER JOIN order_action oa ON oa.id_order = o.id_order
+								WHERE
+									AND oa.id_admin = "' . $id_admin . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
+		return Crunchbutton_Order_Action::q( $query );
 	}
 
 	public static function deliveredByCBDrivers( $search ){
@@ -1917,6 +2094,14 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$out['summary'] = $this->orderMessage('summary');
 
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+		if( $credit->id_credit ){
+			$reward = new Crunchbutton_Reward;
+			$points = $reward->processOrder( $this->id_order );
+			$shared = $reward->orderWasAlreadyShared( $this->id_order );
+			$out['reward'] = array( 'points' => $points, 'shared' => $shared );
+		}
+
 		return $out;
 	}
 
@@ -1948,6 +2133,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$creditRefounded->id_order_reference = $this->id_order;
 					$creditRefounded->id_restaurant_paid_by = $this->id_restaurant_paid_by;
 					$creditRefounded->paid_by = $this->paid_by;
+					$creditRefounded->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 					$creditRefounded->note = 'Value ' . $credit->value . ' refunded from order: ' . $this->id_order . ' - ' . date('Y-m-d H:i:s');
 					$creditRefounded->save();
 				}
@@ -2100,7 +2286,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function hasCredit(){
-		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . '  AND id_promo IS NULL';
+		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . ' AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_promo IS NULL';
 		$row = Cana::db()->get( $query )->get(0);
 		if( $row->total ){
 			return $row->total;
@@ -2124,6 +2310,10 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function totalOrdersByPhone( $phone ){
+		// in order to test new users
+		if( Cana::env() != 'live' && $phone == '_PHONE_' ){
+			return 0;
+		}
 		$query = "SELECT COUNT(*) AS total FROM `order` WHERE phone = '{$phone}'";
 		$row = Cana::db()->get( $query )->get(0);
 		if( $row->total ){
@@ -2174,17 +2364,17 @@ class Crunchbutton_Order extends Cana_Table {
 				switch ($action->type) {
 					case 'delivery-delivered':
 						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
-						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'Y-m-d H:i:s' );
+						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'g:i A' );
 						break;
 
 					case 'delivery-pickedup':
 						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
-						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'Y-m-d H:i:s' );
+						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'g:i A' );
 						break;
 
 					case 'delivery-accepted':
 						$acpt[$action->id_admin] = true;
-						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'Y-m-d H:i:s' );
+						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'g:i A' );
 						break;
 
 					case 'delivery-rejected':
@@ -2201,7 +2391,24 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
-
+	
+	//Delete entry from order_action
+	public function undoStatus($status) {
+		switch ($status) {
+			case 'pickedup':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-pickedup" and id_admin=' .c::user()->id_admin. '');			
+			break;
+			
+			case 'delivered':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-delivered" and id_admin=' .c::user()->id_admin. '');			
+			break;
+			
+			case 'accepted':
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-accepted" and id_admin=' .c::user()->id_admin. '');			
+			break;
+		}
+	}
+	
 	public function deliveryAccept($admin) {
 		if ($this->deliveryStatus('accepted')) {
 			return false;
@@ -2293,7 +2500,7 @@ class Crunchbutton_Order extends Cana_Table {
 	public function deliveryLastStatus(){
 		$statuses = $this->deliveryStatus();
 		if( $statuses[ 'delivered' ] ){
-			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone );
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
 		}
 		if( $statuses[ 'pickedup' ] ){
 			return array( 'status' => 'pickedup', 'name' => $statuses[ 'pickedup' ]->name, 'id_admin' => $statuses[ 'pickedup' ]->id_admin,  'order' => 2, 'date' => $statuses[ 'pickedup_date' ], 'timezone' => $this->restaurant()->timezone );
@@ -2302,6 +2509,16 @@ class Crunchbutton_Order extends Cana_Table {
 			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1, 'date' => $statuses[ 'accepted_date' ], 'timezone' => $this->restaurant()->timezone );
 		}
 		return array ( 'status' => 'new', 'order' => 0 );
+	}
+	
+	public function deliveryTimes(){
+		$statuses = $this->deliveryStatus();
+		if( $statuses[ 'delivered' ] ){
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date_pickedup' => $statuses[ 'pickedup_date' ], 'date_delivered' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
+		}
+		if( $statuses[ 'pickedup' ] ){
+			return array( 'status' => 'pickedup', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 2, 'date_pickedup' => $statuses[ 'pickedup_date' ], 'date_delivered' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone  );
+		}
 	}
 
 	public function wasAcceptedByRep(){
@@ -2326,7 +2543,7 @@ class Crunchbutton_Order extends Cana_Table {
 			return true;
 		}
 		// check if it has credit
-		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order}" );
+		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order} AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
 		if( $credit->count() > 0 ){
 			return true;
 		}
@@ -2363,8 +2580,11 @@ class Crunchbutton_Order extends Cana_Table {
 			'uuid' => $this->uuid,
 			'delivery-status' => [
 				'delivered' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered')->publicExports() : false,
+				'del_date' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered_date') : false,
 				'pickedup' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup')->publicExports() : false,
-				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false
+				'pic_date' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup_date') : false,
+				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false,
+				'acc_date' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted_date') : false
 			],
 			'self-reply' => $this->deliveryReply(c::admin())
 		];

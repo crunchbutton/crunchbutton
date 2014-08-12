@@ -8,6 +8,18 @@ class Crunchbutton_Admin extends Cana_Table {
 	const VEHICLE_BIKE = 'bike';
 	const VEHICLE_CAR = 'car';
 
+	public function inviteCode(){
+		if( $this->id_admin && ( !$this->invite_code || $this->invite_code == '' ) ){
+			$this->invite_code = Crunchbutton_User::inviteCodeGenerator();
+			$this->save();
+		}
+		return $this->invite_code;
+	}
+
+	public static function byInviteCode( $code ){
+		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
+	}
+
 	public function vehicle(){
 		$vehicle = $this->getConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY );
 		if( $vehicle ){
@@ -161,8 +173,18 @@ class Crunchbutton_Admin extends Cana_Table {
 	public function driversList( $search = '' ){
 
 		$where = ( $search && trim( $search ) != '' ) ? ' AND a.name LIKE "%' . $search . '%"' : '';
-
-		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN driver_log dl ON dl.id_admin = a.id_admin WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
+		return Admin::q( 'SELECT a.* FROM admin a
+												INNER JOIN (
+													SELECT DISTINCT(id_admin) FROM (
+													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+													UNION
+													SELECT DISTINCT(a.id_admin) FROM admin a
+														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														) drivers
+													)
+											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ' . $where . ' ORDER BY name ASC' );
 	}
 
 	public function search( $search = [] ){
@@ -634,7 +656,8 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		return $ex;
 	}
-
+	
+	//Last Shift
 	public function avgDeliveryTimeLastShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
 		return Admin::avgDeliveryTimeByShift( $id_admin,  $shift );
@@ -644,7 +667,46 @@ class Crunchbutton_Admin extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
 		return Admin::numberOfDeliveredOrdersByShift( $id_admin,  $shift );
 	}
-
+	
+	public function revenueLastWorkedShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		return Admin::revenueByShift( $id_main, $shift );
+	}
+	//*****
+	
+	//Current Shift
+	public function avgDeliveryTimeCurrentShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
+		return Admin::avgDeliveryTimeByShift( $id_admin, $shift );
+	}
+	
+	public function numberOfDeliveredOrdersCurrentShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
+		return Admin::numberOfDeliveredOrdersByShift( $id_admin, $shift );
+	}
+	
+	public function revenueCurrentShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
+		return Admin::revenueByShift( $id_admin, $shift );
+	}
+	
+	//*****
+	
+	public function revenueByShift( $id_admin, $shift ){
+		if( $shift->id_community_shift ){
+			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$end = $shift->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' );
+			$orders = Order::revenueByAdminPeriod( $id_admin, $start, $end);
+			$revenue = 0;
+			foreach($orders as $order){
+				$revenue = $revenue + $order->deliveryFee() + $order->tip();
+			}
+			return $revenue;
+			//$orders = Crunchbutton_Order_action::ordersDeliveryByAdminPeriod( $id_admin, $start, $end );
+		}
+		return 0;
+	}
+	
 	public function numberOfDeliveredOrdersByShift( $id_admin, $shift ){
 		if( $shift->id_community_shift ){
 			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );

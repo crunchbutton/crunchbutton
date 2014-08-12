@@ -1,0 +1,88 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<!--PENDING ORDERS-->
+	<div class="pending-orders-block">
+		<div class="pending-orders-wrap">
+			<h1 class="pending-orders-number" ng-if="newDriverOrders.count" ng-click="showOrderList()">{{newDriverOrders.count}}</h1>
+			<h2 class="pending-orders-text" ng-if="newDriverOrders.count" ng-click="showOrderList()">orders pending </h2>
+			
+			<!--appears if no pending orders-->
+			<h1 class="pending-orders-number" ng-if="!newDriverOrders.count">{{newDriverOrders.count}}</h1>
+			<h2 class="pending-orders-text" ng-if="!newDriverOrders.count">orders pending </h2>
+			
+			
+			<!--dynamic counters for accepted and pickedup -->
+			<span class="orders-accepted">{{acceptedDriverOrders.accepted}} accepted </span>
+			<span class="orders-pickedup">{{pickedupDriverOrders.pickedup}} picked up </br></br></br></span>
+		</div>
+	</div>
+	</br>
+	
+	<!--OUTSTANDING ORDERS-->
+	<div class="outstanding-orders-block">
+		<div class="outstanding-orders-wrap">
+			<h1 class="outstanding-orders-number">{{driverOutstandingOrders.count}}</h1>
+			<h2 class="outstanding-orders-text">outstanding order</h2>
+			
+			<h1 class="outstanding-orders-subtext">an order was not marked as delivered previously.</h1>
+			</br></br>
+		</div>
+	</div>
+	</br>
+	
+	<!--REVENUE-->
+	<div class="revenue-block">
+		<!--clear both-->
+		<h1 class="revenue-header">revenue</h1>
+		
+		<div class="revenue-values">
+			<table class="revenue-table">
+				<tr>
+					<td align="center">
+						<div class="revenue-this-shift">$ <span class="revenue-dollar">{{driverRevenue.revenue}}</span></div>
+					</td>
+					<td align="center">
+						<div class="revenue-last-shift">$ <span class="revenue-dollar">{{driverRevenueLast.revenue}}</span></div>
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<span class="this-shift-sign">this shift</span>
+					</td>
+					<td align="center">
+						<span class="last-shift-sign">last shift</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	</br>
+	
+	<!--AVERAGE DELIVERY TIME-->
+	<div class="avg-time-block">
+		<!--clear both-->
+		<h1 class="avg-time-header">average delivery time</h1>
+			<table class="avg-delivery-table">
+				<tr>
+					<td>
+						<div class="time-this-shift">{{driverTimeCurrent.time}} <span class="minutes-sign">min</span></div>
+					</td>
+					<td>
+						<div class="time-last-shift">{{driverTimeLast.time}} <span class="minutes-sign">min</span></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="this-shift-sign">this shift</span>
+					</td>
+					<td>
+						<span class="last-shift-sign">last shift</span>
+					</td>
+				</tr>
+			</table>
+	</div>
+	
+	<!--LOG OUT BUTTON INSTEAD OF WEATHER? -->
+</div>

@@ -2,7 +2,6 @@
 
 class Controller_api_user extends Crunchbutton_Controller_Rest {
 	public function init() {
-
 		switch (c::getPagePiece(2)) {
 			case 'cookie':
 				switch ($this->method()) {
@@ -12,7 +11,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					case 'post':
 						// store cookies on the server for use with facebook api
 						foreach ($_POST['cookie'] as $key => $value) {
-							
+
 						}
 						break;
 				}
@@ -29,7 +28,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								echo json_encode(['success' => 'user not exists']);
 							}
 						} else {
-							echo json_encode(['error' => 'invalid request']);	
+							echo json_encode(['error' => 'invalid request']);
 						}
 					break;
 					default:
@@ -72,7 +71,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					} else {
 						echo json_encode(['error' => 'invalid user']);
 					}
-				} 
+				}
 				// else create a new user
 				else {
 					$user = c::user();
@@ -99,9 +98,9 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 					// This line will create a phone user auth just if the user already has an email auth
 					if( $user->phone ){
-						User_Auth::createPhoneAuth( $user->id_user, $user->phone );	
+						User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 					}
-					
+
 					$user = c::auth()->doAuthByLocalUser( $params );
 					echo c::user()->json();
 				}
@@ -116,7 +115,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 							$auths = User_Auth::byUserExport( $user->id_user );
 							echo json_encode( [ 'auths' => $auths ] );
 							exit;
-						} 
+						}
 						echo json_encode(['error' => 'invalid request']);
 						exit;
 						break;
@@ -159,9 +158,16 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 								// This line will create a phone user auth just if the user already has an email auth
 								if( $user->phone ){
-									User_Auth::createPhoneAuth( $user->id_user, $user->phone );	
+									User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 								}
-								
+
+								// Reward
+								$reward = new Crunchbutton_Reward;
+								$points = $reward->makeAccountAfterOrder( $user->id_user );
+								if( floatval( $points ) > 0 ){
+									$reward->saveReward( [  'id_user' => $user->id_user, 'points' => $points, 'note' => 'points by creating an account' ] );
+								}
+
 								$user = c::auth()->doAuthByLocalUser( $params );
 								echo c::user()->json();
 								break;
@@ -181,7 +187,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						if( !$user_auth ){
 							echo json_encode(['error' => 'user is not registred']);
 							exit;
-						} 
+						}
 						$code = User_Auth::resetCodeGenerator();
 						$user_auth->reset_code = $code;
 						$user_auth->reset_date = date('Y-m-d H:i:s');
@@ -194,7 +200,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								'email' => $email
 							] );
 							$mail->send();
-						} 
+						}
 						// Send the code by sms
 						else {
 							$phone = $email;
@@ -316,7 +322,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 							echo json_encode( [ 'credit' => $credit ] );
 					} else {
 						echo json_encode(['error' => 'invalid request']);
-					} 
+					}
 				} else {
 					echo json_encode(['error' => 'invalid request']);
 				}

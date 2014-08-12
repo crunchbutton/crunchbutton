@@ -29,11 +29,11 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public static function byPhone( $phone ){
-		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.phone = '{$phone}' AND c.type = 'CREDIT'" );
+		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.phone = '{$phone}' AND c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
 	}
 
 	public static function byIdUser( $id_user ){
-		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.id_user = '{$id_user}' AND c.type = 'CREDIT'" );
+		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.id_user = '{$id_user}' AND c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
 	}
 
 	public static function lastID(){
@@ -46,7 +46,7 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public static function promoCodeGenerator(){
-		$random_id_length = 6; 
+		$random_id_length = 6;
 		$characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
 		$rnd_id = '';
 		for ($i = 0; $i < $random_id_length; $i++) {
@@ -58,13 +58,13 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $promo->count() > 0 ){
 			return static::promoCodeGenerator();
 		} else {
-			return $rnd_id;	
+			return $rnd_id;
 		}
 	}
 
 	public static function promoCodeGeneratorUseChars( $chars, $length, $id_promo, $prefix ){
 
-		$random_id_length = $length - ( strlen( $id_promo ) + strlen( $prefix ) ); 
+		$random_id_length = $length - ( strlen( $id_promo ) + strlen( $prefix ) );
 		$characters = $chars;
 		$rnd_id = $prefix . $id_promo;
 		for ($i = 0; $i < $random_id_length; $i++) {
@@ -76,7 +76,7 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $promo->count() > 0 ){
 			return static::promoCodeGeneratorUseChars( $chars, $length, $id_promo, $prefix );
 		} else {
-			return $rnd_id;	
+			return $rnd_id;
 		}
 	}
 
@@ -92,7 +92,7 @@ class Crunchbutton_Promo extends Cana_Table
 					if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
 						if( $id_restaurant ){
 							if( $id_restaurant == $giftcard->id_restaurant || !$giftcard->id_restaurant ){
-								$giftcards[ $giftcard->id_promo ] = $giftcard;	
+								$giftcards[ $giftcard->id_promo ] = $giftcard;
 							}
 						} else {
 							$giftcards[ $giftcard->id_promo ] = $giftcard;
@@ -116,6 +116,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->id_promo = $this->id_promo;
 		$credit->date = date('Y-m-d H:i:s');
 		$credit->value = $this->value;
+		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 		$credit->id_order_reference = $this->id_order_reference;
 		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
 		$credit->paid_by = $this->paid_by;
@@ -201,7 +202,7 @@ class Crunchbutton_Promo extends Cana_Table
 				}
 			}
 		}
-		
+
 		// Remove duplicated - It should not to have duplicated, it is just to make sure!
 		array_unique( $idsOrdered );
 
@@ -217,7 +218,7 @@ class Crunchbutton_Promo extends Cana_Table
 				$idsOrdered[] = $idArray;
 			}
 		}
-		
+
 		$giftcardsArray = array();
 		$giftcardsOrdered = array();
 
@@ -234,7 +235,7 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function credit(){
-		return Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND id_promo = ' . $this->id_promo );
+		return Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_promo = ' . $this->id_promo  );
 	}
 
 	public function queTrack(){
@@ -253,11 +254,11 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $this->track ){
 
 			if( $this->notify_phone ){
-		
+
 				$env = c::getEnv();
-				
+
 				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-				
+
 				$phone = $this->notify_phone;
 
 				$message = 'The gift card you\'ve created was redeemed (' . $this->id_promo . ').';
@@ -307,7 +308,7 @@ class Crunchbutton_Promo extends Cana_Table
 	public function notifyEMAIL() {
 
 		$gift = $this;
-		
+
 		Log::debug([
 			'action' => 'INSIDE notifyEMAIL cana::timeout',
 			'promo_id' => $gift->id_promo,
@@ -331,11 +332,11 @@ class Crunchbutton_Promo extends Cana_Table
 		$content = str_replace( static::TAG_GIFT_URL , $url, $content );
 		$content = str_replace( static::TAG_GIFT_CODE , $gift->code, $content );
 		if( $gift->restaurant()->id_restaurant ){
-			$content = str_replace( static::TAG_RESTAURANT_NAME , $gift->restaurant()->name, $content );	
+			$content = str_replace( static::TAG_RESTAURANT_NAME , $gift->restaurant()->name, $content );
 		} else {
-			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton', $content );	
+			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton', $content );
 		}
-		
+
 		$content = nl2br( $content );
 
 		$email = $gift->email;
@@ -346,7 +347,7 @@ class Crunchbutton_Promo extends Cana_Table
 			'subject' => $subject,
 			'email' => $email
 		]);
-		
+
 		$mail->send();
 
 		$gift->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
@@ -384,9 +385,9 @@ class Crunchbutton_Promo extends Cana_Table
 		$url = $serverUrl . '/giftcard/'. $gift->code;
 
 		if( $gift->restaurant()->id_restaurant ){
-			$message = "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}"; 
+			$message = "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}";
 		} else {
-			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}"; 
+			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}";
 		}
 
 		$gift->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
@@ -394,7 +395,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$gift->save();
 
 		$message = str_split($message, 160);
-		
+
 		foreach ($message as $msg) {
 			$twilio->account->sms_messages->create(
 				c::config()->twilio->{$env}->outgoingTextCustomer,
@@ -407,16 +408,16 @@ class Crunchbutton_Promo extends Cana_Table
 	public static function find($search = []) {
 
 		$query = 'SELECT `promo`.*, user.name FROM `promo` LEFT JOIN restaurant USING(id_restaurant) LEFT OUTER JOIN user USING(id_user) WHERE id_promo IS NOT NULL ';
-		
+
 		if ($search['type']) {
 			$query .= ' and type="'.$search['type'].'" ';
 		}
-		
+
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
 			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
 		}
-		
+
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
 			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
@@ -441,18 +442,18 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function getLastGiftCardsRedeemedFromPhoneNumber( $phone, $giftcards = 2 ){
-		$query = "SELECT c.* FROM credit c 
+		$query = "SELECT c.* FROM credit c
 								INNER JOIN user u ON u.id_user = c.id_user AND u.phone = '{$phone}'
-								WHERE c.type = 'CREDIT' ORDER BY id_credit DESC limit 0,{$giftcards}";
+								WHERE c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' ) ORDER BY id_credit DESC limit 0,{$giftcards}";
 		return Crunchbutton_Promo::q( $query );
 	}
 
 	public function groups(){
-		return Crunchbutton_Promo_Group::q( "SELECT g.* FROM promo_group g INNER JOIN promo_group_promo pgp ON pgp.id_promo_group = g.id_promo_group AND pgp.id_promo = {$this->id_promo}" );		
+		return Crunchbutton_Promo_Group::q( "SELECT g.* FROM promo_group g INNER JOIN promo_group_promo pgp ON pgp.id_promo_group = g.id_promo_group AND pgp.id_promo = {$this->id_promo}" );
 	}
 
 	public function order_reference(){
-		return Order::o($this->id_order_reference);	
+		return Order::o($this->id_order_reference);
 	}
 
 	public function restaurant_paid_by() {

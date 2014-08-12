@@ -412,7 +412,7 @@ class Crunchbutton_App extends Cana_App {
 
 		if (!$this->isCompat()) {
 			$params['layout'] =  'layout/compat';
-		} elseif ($this->isDownloadable()) {
+		} elseif ($this->isDownloadable() && !$this->isCockpit()) {
 			$params['layout'] =  'layout/download';
 		} else {
 			$params['layout'] =  $this->config()->defaults->layout;
@@ -421,6 +421,10 @@ class Crunchbutton_App extends Cana_App {
 		parent::buildView($params);
 		
 		return $this;
+	}
+	
+	public function isCockpit() {
+		return preg_match('/^(.*\.?)cockpit(.*?)\.(crunchbutton\.com|crunchr\.co|localhost|la)$/i',$_SERVER['HTTP_HOST']) ? true : false;
 	}
 	
 	public function isDownloadable() {

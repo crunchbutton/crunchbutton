@@ -27,6 +27,7 @@ class Controller_tests_credit extends Crunchbutton_Controller_Account {
 			$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
 			$credit->date = date('Y-m-d H:i:s');
 			$credit->value = $remove[ 'value' ];
+			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 			$credit->note = 'Removed the credit from refund $' . $value . ' Issue: 3241';
 			$credit->save();
 

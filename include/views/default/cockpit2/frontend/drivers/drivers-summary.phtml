@@ -263,6 +263,39 @@
 			</tbody>
 		</table>
 
+		<div ng-if="summary.referral">
+			<h2 class="title">New Invited Users</h2>
+			<table class="tb-grid tb-zebra" ng-if="summary.referral.invites">
+				<thead>
+					<tr>
+						<td>ID Order</td>
+						<td>ID User</td>
+						<td>Customer Name</td>
+						<td>Date</td>
+						<td>Amount</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="invite in summary.referral.invites">
+						<td>{{invite.id_order}}</td>
+						<td>{{invite.user.id_user}}</td>
+						<td>{{invite.user.name}}</td>
+						<td>{{invite.date}}</td>
+						<td>${{summary.referral.amount_per_user | formatPrice}}</td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr class="transparent">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td><strong>Total</strong></td>
+						<td>${{summary.referral.invites_total_payment | formatPrice}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
 		<h4 class="title">*Reimbursement is equal to amount paid to restaurant.</h4>
 
 	</div>

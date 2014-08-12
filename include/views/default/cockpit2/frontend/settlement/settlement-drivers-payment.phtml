@@ -24,7 +24,7 @@
 					</td>
 				</tr>
 				<tr ng-if="result.id_payment_schedule">
-					<td><strong>Payment Schecule ID</strong></td>
+					<td><strong>Payment Schedule ID</strong></td>
 					<td>
 						# {{result.id_payment_schedule}}
 					</td>
@@ -97,7 +97,7 @@
 					<td>Delivery Fee</td>
 					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.tip}}">
+				<tr positive-or-negative-color="{{result.calcs.tip}}" ng-if="result.calcs.tip">
 					<td>Tip</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 				</tr>
@@ -116,6 +116,10 @@
 				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.calcs.gift_card}}">
 					<td>Gift Card</td>
 					<td>$ {{result.calcs.gift_card | formatPrice}}</td>
+				</tr>
+				<tr positive-or-negative-color="{{result.invites_amount}}" ng-if="result.invites_amount">
+					<td>New Invited Users</td>
+					<td>$ {{result.invites_amount | formatPrice}}</td>
 				</tr>
 				<tr ng-if="!result.hourly" positive-or-negative-color="{{result.adjustment}}">
 					<td>Adjustments</td>
@@ -138,6 +142,38 @@
 
 		<br/>
 
+		<table class="tb-grid tb-zebra" ng-if="result.invites">
+			<thead>
+				<tr>
+					<td colspan="3" class="title">New Invited Users</td>
+				</tr>
+			</thead>
+			<thead>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</thead>
+			<thead>
+				<tr>
+					<td>Customer Name</td>
+					<td>First Order At</td>
+					<td>Amount</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="invite in result.invites">
+					<td>{{invite.user.name}}</td>
+					<td>{{invite.date}}</td>
+					<td>$ {{invite.amount | formatPrice}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+
+		<br/>
+
 		<table class="tb-grid tb-zebra" ng-if="result.shifts">
 			<thead>
 				<tr>
@@ -145,12 +181,12 @@
 				</tr>
 			</thead>
 			<thead>
-				<td>
+				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
-				</td>
+				</tr>
 			</thead>
 			<thead>
 				<tr>
@@ -174,10 +210,6 @@
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
@@ -191,13 +223,13 @@
 		<br/>
 
 		<table class="tb-grid tb-zebra">
-			<thead>
+			<thead ng-if="result.orders.included.length > 0 || result.orders.not_included.length > 0">
 				<tr>
 					<td colspan="8" class="title">Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders">
-				<td>
+				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -206,9 +238,9 @@
 					<td></td>
 					<td></td>
 					<td></td>
-				</td>
+				</tr>
 			</thead>
-			<thead ng-if="result.orders">
+			<thead ng-if="result.orders.included.length > 0 || result.orders.not_included.length > 0">
 				<tr>
 					<td>#</td>
 					<td>Customer</td>
@@ -249,7 +281,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment">
+				<tr class="transparent" ng-if="pay_type_payment && result.calcs.tip">
 					<td></td>
 					<td></td>
 					<td>Tips by Card</td>
@@ -289,7 +321,17 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && !result.hourly">
+				<tr class="transparent" ng-if="pay_type_payment && result.invites_amount">
+					<td></td>
+					<td></td>
+					<td>Total New Invited Users</td>
+					<td>$ {{result.invites_amount | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment">
 					<td></td>
 					<td></td>
 					<td><strong>Markup</strong></td>
