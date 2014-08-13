@@ -1054,12 +1054,52 @@ input {
 		text-align: left;
 		font-family: Ruda;
 	}
+	
+	/* Driver Documents Form*/
 	.upbutton {
 		width: 111px;
 		height: 50px;
 		float: right;
-		text-align: left;
+		text-align: right;
 	}
+	
+	.payment-info-text{
+		margin-bottom: .2em;
+		font-size: 1.4em;
+		margin-top: .2em;
+		line-height: 1.4em
+	}
+	
+	.driver-docs-grid{
+		border-collapse: separate;
+		border-spacing: 0px 7px;
+	}
+		.driver-docs-name{
+			font-family: Ruda;
+			color: #000;
+			font-size: 1.1em;
+			line-height: 1em;
+			margin-bottom: .5em;
+			margin-top: .2em;
+			letter-spacing: 0px;
+		}
+		.docs-download{
+			font-size: 1.1em;
+		}
+		.driver-docs-grid .td-download{
+			vertical-align: top;
+		}
+		
+	.driver-docs-text{
+		font-size: 1.25em;
+		letter-spacing: 0px;
+		margin-bottom: .2em;
+	}
+	
+	.driver-docs-card{
+		vertical-align: middle;
+	}
+	/************************/
 
 .tb-grid .schedule-buttons{
 	text-align: right;
@@ -1188,6 +1228,11 @@ input {
 /* Driver shift page */
 .drivers-shift .day {
 	font-weight: bold;
+}
+
+.drivers-shifts-list{
+	height: 400px;
+	overflow: auto;
 }
 
 .drivers-shift .box-content, .drivers-shift .box-content2 {
@@ -1452,6 +1497,7 @@ h4.title{
 .drivers-order-list .column-action{
 	float: right;
 	display: table;
+	font-size: 1.2em;
 	width: 8em;
 	margin-right: 10px;
 }
@@ -1908,6 +1954,10 @@ h4.title{
 	.detail {
 		font-size: 1.2em;
 	}
+	
+	.detail thead{
+		font-weight: bold;
+	}
 
 	[class*='icon-'] {
 		display: inline-block;
@@ -2058,10 +2108,46 @@ h4.title{
 	.fooditem {
 		border-bottom: 1px solid #999;
 	}
-
+	
+	.dish-name{
+		text-align: center;
+	}
+	
+	.dish-price{
+		font-size: 1.2em;
+		color: #666;
+		text-align: right;
+	}
+	
+	.order-total-row{
+		font-weight: bold;
+	}
+	
+	.order-total-text{
+		text-align: right;
+		font-size: 1.2em;
+	}
+	
+	.order-tip-cash{
+		text-align: left;
+	}
+	
+	.your-take{
+		width: 100%;
+	}
+	
 	.topitem, .fooditem {
 		border-bottom: 2px solid #999;
 		font-size: 1.2em;
+	}
+	
+	.itemname{
+		text-align: center;
+	}
+	
+	.itemprice{
+		width: 80px;
+		text-align: right;
 	}
 
 	.control .wrap {
@@ -2217,6 +2303,22 @@ b, strong{ font-weight: bold; }
 	padding: 10px;
 	border: 5px;
 }
+
+.check-reminder{
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.order-header{
+	background: #D6D9DC;
+	color: #8D8D8D;
+}
+	.order-header td:first-of-type{
+		padding-right: 0px;
+	}
+	.order-header td:last-of-type{
+		padding-left: 0px;
+	}
 
 /* Order page's action row */
 .box-content-new {
