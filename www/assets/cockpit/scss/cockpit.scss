@@ -97,13 +97,11 @@ html {
 @media screen and (min-width: 1025px) {
 	.content-padding {
 		padding: 10px 0 10px 0;
-		width: 100%;
 	}
 	.nav .content,
 	.content-padding {
 		/*max-width: 767px;*/
 		margin: 0 auto;
-		width: 100%;
 	}
 
 }
@@ -140,9 +138,6 @@ html {
 @media screen and (min-width: 1025px) {
 	.nav-back {
 		display: none;
-	}
-	.content-padding{
-		width: 100%;
 	}
 }
 
@@ -555,10 +550,6 @@ p {
 @media(min-width:1025px) {
 	.wrapper {
 		float: left;
-		width: 100%;
-	}
-
-	.content-padding {
 		width: 100%;
 	}
 
@@ -2211,7 +2202,6 @@ h4.title{
 
 	.wrap {
 		padding: .5em;
-		max-width: 740px;
 		margin: 0 auto;
 		font-size: 10px;
 	}
@@ -2345,7 +2335,7 @@ b, strong{ font-weight: bold; }
 
 /* Order page's action row */
 .box-content-new {
-	background-color: #E06961;
+	background-color: #e1574c;
 	color: #fff;
 	font-family: Ruda;
 	font-size: 1.5em;
@@ -2370,7 +2360,7 @@ b, strong{ font-weight: bold; }
 	}
 
 .box-content-rejected {
-	background-color: #E06961;
+	background-color: #e1574c;
 	color: #fff;
 	font-family: Ruda;
 	font-size: 1.5em;
@@ -2387,7 +2377,7 @@ b, strong{ font-weight: bold; }
 	}
 
 .box-content-accepted{
-	background-color: #50C5BC;
+	background-color: #4ac5bc;
 	color: #fff;
 	font-family: Ruda;
 	font-size: 1.5em;
@@ -2408,7 +2398,7 @@ b, strong{ font-weight: bold; }
 	}
 
 .box-content-pickedup{
-	background-color: #4ea2ea;
+	background-color: #444c57;
 	color: #fff;
 	font-size: 1.5em;
 	font-family: Ruda;
@@ -2435,7 +2425,7 @@ b, strong{ font-weight: bold; }
 	}
 
 .box-content-delivered{
-	background-color: #4d4d4d;
+	background-color: #d6d9dc;
 	font-size: 1.2em;
 	line-height: 1.3em;
 	font-family: Ruda;

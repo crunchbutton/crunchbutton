@@ -15,8 +15,8 @@
 				</div>
 				
 				<div class="buttons">
-					<button ng-click="accept()" class="button green2">Yes</button>
-					<button ng-click="reject()" class="button orange">No</button>
+					<button ng-click="accept()" class="button green">Yes</button>
+					<button ng-click="reject()" class="button orange-on-orange">No</button>
 				</div>
 				<div class="divider"></div>	
 			</div>
@@ -36,7 +36,7 @@
 			<div class="box-content-accepted"><? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">You accepted this order @ {{order.lastStatus[ 'delivery-status' ].acc_date | date: 'h:mm a'}} </br><a class="undo-link" ng-click="undoAccept()"><u>undo</u></a></div>
 				<div class="buttons">
-					<button ng-click="pickedup()" class="button green">Picked up</button>
+					<button ng-click="pickedup()" class="button green-on-green">Picked up</button>
 					<? //<button ng-click="reject()" class="button orange">Cancel</button> ?>
 				</div>
 				<div class="divider"></div>
@@ -47,7 +47,7 @@
 			<div class="box-content-pickedup"><? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">You picked up this order @ {{order.lastStatus[ 'delivery-status' ].pic_date}} </br><a class="undo-link" ng-click="undoPickedup()">undo</a></br></div>
 				<div class="buttons" ng-click="delivered()">
-					<button class="button blue">Delivered</button>
+					<button class="button dgray-on-dgray">Delivered</button>
 				</div>
 				<div class="divider"></div>	
 			</div>
