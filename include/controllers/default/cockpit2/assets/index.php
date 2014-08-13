@@ -16,7 +16,7 @@ class Controller_assets extends Crunchbutton_Controller_AssetBundle {
 		
 		if ($file == 'bundle.js') {
 			array_shift(c::config()->controllerStack);
-			c::displayPage('assets/css/bundle.js');
+			c::displayPage('assets/js/bundle.js');
 			exit;
 		}
 

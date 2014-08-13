@@ -10,16 +10,16 @@
 <script src="/assets/js/spin.js"></script>
 <script src="/assets/js/ladda.js"></script>
 <script src="/assets/js/jquery.autosize-min.js"></script>
-<script src="/assets/js/howler-min.js"></script>
 <script src="/assets/js/location.js"></script>
-<? /* @sky-loader <script src="/assets/js/sky-loader_edgePreload.js"></script> */ ?>
 
 <?
 	if (!$scripts) {
-		$scripts = ['cockpit'];
+		$scripts = [];
 	}
 
 ?>
+<script src="/assets/cockpit/js/cockpit.js?v=<?=Cana_Util::gitVersion()?>"></script>
+
 <? foreach ($scripts as $script) : ?>
 	<script src="/assets/cockpit/js/<?=$script?>.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <? endforeach ; ?>
