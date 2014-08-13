@@ -555,6 +555,7 @@ p {
 @media(min-width:1025px) {
 	.wrapper {
 		float: left;
+		width: 100%;
 	}
 
 	.content-padding {
@@ -1232,7 +1233,6 @@ input {
 
 .drivers-shifts-list{
 	height: 400px;
-	overflow: auto;
 }
 
 .drivers-shift .box-content, .drivers-shift .box-content2 {
