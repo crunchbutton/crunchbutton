@@ -42,6 +42,7 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 				}
 			}
 
+
 			$data = $this->serve($files);
 
 			foreach ($tmps as $tmp) {
