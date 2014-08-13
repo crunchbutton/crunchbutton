@@ -251,7 +251,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/login', {
 			action: 'login',
 			controller: 'LoginCtrl',
-			templateUrl: 'assets/view/login.html'
+			templateUrl: 'assets/view/general-login.html'
 		})
 		.when('/drivers/help', {
 			action: 'drivers-help',
@@ -266,7 +266,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/profile', {
 			action: 'profile',
 			controller: 'ProfileCtrl',
-			templateUrl: 'assets/view/profile.html'
+			templateUrl: 'assets/view/general-profile.html'
 		})
 		/* Admins payment info */
 		.when('/staff/list', {
@@ -328,7 +328,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: 'assets/view/general-home.html'
 		});
 	// only use html5 enabled location stuff if its not in a phonegap container
 	$locationProvider.html5Mode(!App.isPhoneGap);
