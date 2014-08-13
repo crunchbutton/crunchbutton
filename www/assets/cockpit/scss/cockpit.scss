@@ -734,7 +734,11 @@ input {
 }
 /* colors */
 .button.orange {
-	background: #c14641;
+	background: #e1574c;
+	font-weight: bold;
+}
+.button.orange-on-orange {
+	background: #bc483f;
 	font-weight: bold;
 }
 .button.lightorange {
@@ -749,8 +753,28 @@ input {
 	background: #2F618C;
 	font-weight: bold;
 }
+.button.dark-gray{
+	background: #444c57;
+	font-weight: bold;
+}
+.button.dgray-on-dgray{
+	background: #353b44;
+	font-weight: bold;
+}
+.button.light-gray{
+	background: #d6d9dc;
+	font-weight: bold;
+}
+.button.lgray-on-lgray{
+	background: #b8babc;
+	font-weight: bold;
+}
 .button.green {
-	background: #307671;
+	background: #4ac5bc;
+	font-weight: bold;
+}
+.button.green-on-green{
+	background: #43b1a9;
 	font-weight: bold;
 }
 .button.find-restaurants {
@@ -1556,7 +1580,7 @@ h4.title{
 
 
 .drivers-order-list .delivered{
-	background-color: #454b57;
+	background-color: #d6d9dc;
 	color: #fff;
 	border-style: none;
 }
@@ -1566,17 +1590,17 @@ h4.title{
 	border-style: solid;
 	border-width: 2px;
 	border-width: 2px;
-	border-color: #454b57;
+	border-color: #d6d9dc;
 	color: black;
 }
 
 	.delivered .notMyOrder .row-status{
-		background-color: #454b57;
+		background-color: ##d6d9dc;
 		color: #fff;
 	}
 
 	.delivered .vert-divider{
-		background-color: #333c43;
+		background-color: #b8babc;
 		border-style: none;
 		width: 2px;
 		float: left;
@@ -1584,7 +1608,7 @@ h4.title{
 	}
 
 .drivers-order-list .pickedup{
-	background-color: #4ea2ea;
+	background-color: #444c57;
 	color: #fff;
 	border-style: none;
 }
@@ -1593,16 +1617,16 @@ h4.title{
 	background-color: #fff;
 	border-style: solid;
 	border-width: 2px;
-	border-color: #4ea2ea;
+	border-color: #444c57;
 	color: black;
 }
 
 	.pickedup .notMyOrder .row-status{
-		background-color: #4ea2ea;
+		background-color: #444c57;
 	}
 
 	.pickedup .vert-divider{
-		background-color: #2F618C;
+		background-color: #353b44;
 		border-style: none;
 		width: 2px;
 		float: left;
@@ -1611,11 +1635,11 @@ h4.title{
 
 
 .drivers-order-list .accepted{
-	background-color: #50C5BC;
+	background-color: #4ac5bc;
 	color: #fff;
 	border-style: solid;
 	border-width: 2px;
-	border-color: #50C5BC;
+	border-color: #4ac5bc;
 }
 
 .drivers-order-list .accepted .notMyOrder{
@@ -1624,7 +1648,7 @@ h4.title{
 }
 
 	.accepted .row-status{
-		background-color: #50C5BC;
+		background-color: #4ac5bc;
 		color: #fff;
 	}
 
@@ -1637,7 +1661,7 @@ h4.title{
 	}
 
 	.accepted .vert-divider{
-		background-color: #00bea0;
+		background-color: #43b1a9;
 		border-style: none;
 		width: 2px;
 		float: left;
@@ -2288,13 +2312,12 @@ b, strong{ font-weight: bold; }
 	user-select: none;
 }
 .box-content {
-	background: #DF5850;
+	background: #e1574c;
 	color: #fff;
 	margin-bottom: 15px;
 	border: 2px;
 	border-color: #e1574c;
 	border-style: solid;
-
 }
 
 .box-content2{

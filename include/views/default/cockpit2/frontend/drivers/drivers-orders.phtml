@@ -34,10 +34,10 @@
 					
 					<!-- action -->
 					<div class="column-action">
-						<button class="button orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
-						<button class="button green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
-						<button class="button blue button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
-						<button class="button black button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
+						<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
+						<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
+						<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
+						<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
 					</div>
 
 					<!-- date -->
