@@ -266,6 +266,11 @@ class Crunchbutton_App extends Cana_App {
 		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co' && !preg_match('/cockpit.la|cockpit.kenneth|cockpit.manish|cockpit3/',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
+		
+		// debug shit
+		if ($_REQUEST['_bundle']) {
+			$config->bundle = true;
+		}
 
 		$this
 			->config($config)
