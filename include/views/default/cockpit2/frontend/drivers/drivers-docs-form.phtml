@@ -27,7 +27,7 @@
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td ng-click="edit(driver.id_admin)" class="td-medium driver-docs-name">
 					<h2 class="driver-docs-name"><b>{{doc.name}}</b></h2>
-					<a href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
+					<a class="docs-download-form" href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
 					<!-- if he already have this doc, show the download link -->
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}">
 						<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download Doc</a>
