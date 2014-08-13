@@ -1,6 +1,8 @@
 <?php
 
 class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
+	private $_cacheId;
+
 	public function assets($dir) {
 		$directory = c::config()->dirs->www.'assets/'.$dir.'/';
 		$iterator = new DirectoryIterator($directory);
@@ -32,8 +34,8 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		}
 		$nocache = ($_REQUEST['nocache'] || $headers['pragma'] == 'no-cache' || $headers['cache-control'] == 'no-cache') ? true : false;
 
-		$cacheid = $id.$v.$_REQUEST['s'];
-		
+		$cacheid = $this->cacheId() ? $this->cacheId() : $id.$v.$_REQUEST['s'];
+
 		if (c::app()->cache()->cached($cacheid)) {
 			$mtime = c::cache()->mtime($cacheid);
 			
@@ -81,5 +83,12 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 			'maxAge' => 86400,
 			'quiet' => $quiet
 		]);
+    }
+    
+    public function cacheId($id = null) {
+    	if ($id) {
+	    	$this->_cacheId = $id;
+    	}
+    	return $this->_cacheId;
     }
 }

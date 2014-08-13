@@ -8,7 +8,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 
 		// views
 		foreach (Crunchbutton_Util::frontendTemplates(true) as $file) {
-			$files[] = 'view/'.$file.'.html';
+			//$files[] = 'view/'.$file.'.html';
 		}
 
 		// images
@@ -25,7 +25,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			}
 			$p = str_replace($path,'',$fileInfo->getPath());
 			if ($fileInfo->isFile() && ((!$p && substr($fileInfo->getBasename(),0,1) != '.') || ($p && !in_array($p, $exclude)))) {
-				$files[] = str_replace('//','/','images/'.$p.'/'.$fileInfo->getBasename());
+				$files[] = str_replace('//','/','cockpit/images/'.$p.'/'.$fileInfo->getBasename());
 			}
 		}
 

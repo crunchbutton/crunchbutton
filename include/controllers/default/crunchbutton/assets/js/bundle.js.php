@@ -2,12 +2,17 @@
 
 class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
+
 		$cacheid = 'crunchr-bundle-node-code'.$_REQUEST['v'].$_REQUEST['s'];
+		
+		$this->cacheId($cacheid);
 
 		if (Cana::app()->cache()->cached($cacheid)) {
 			$data = Cana::app()->cache()->read($cacheid);
+		}
 
-		} else {
+		if (!$data || !$data['content']) {
+
 			if ($_REQUEST['s']) {
 				switch ($_REQUEST['s']) {
 					case 'app':
@@ -25,7 +30,7 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 				}
 			}
 
-			$src = c::view()->render('bundle/bundler.js',['set' => ['scripts' => $scripts]]);
+			$src = c::view()->render('bundle/bundler.js');
 
 			$doc = new DOMDocument('1.0');
 			@$doc->loadHTML($src);
@@ -41,20 +46,24 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 					$files[] = $tmp;
 				}
 			}
-
-
-			$data = $this->serve($files);
-
-			foreach ($tmps as $tmp) {
-				unlink($tmp);
+			
+			if ($tmps) {
+				foreach ($tmps as $tmp) {
+					unlink($tmp);
+				}
 			}
 
 			Cana::app()->cache()->write($cacheid, $data);
+			$data = $this->serve($files, true);
+
 		}
 
-		foreach ($data['headers'] as $key => $header) {
-			header($key.': '.$header);
+		if ($data['headers']) {
+			foreach ($data['headers'] as $key => $header) {
+				header($key.': '.$header);
+			}
 		}
+		
 
 		echo $data['content'];
 		exit;
