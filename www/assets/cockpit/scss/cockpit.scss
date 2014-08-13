@@ -1102,7 +1102,7 @@ input {
 		.docs-download{
 			font-size: 100%;
 			font-weight: bold;
-			margin-left: 4.5em;
+			display: inline-block;
 		}
 		.driver-docs-grid .td-download{
 			vertical-align: top;
@@ -1112,6 +1112,12 @@ input {
 		font-size: 1.25em;
 		letter-spacing: 0px;
 		margin-bottom: .2em;
+	}
+	
+	.docs-download-form{
+		font-size: 100%;
+		font-weight: bold;
+		margin-right: 4.5em;
 	}
 	
 	.docs-download-card{
