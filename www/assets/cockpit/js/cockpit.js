@@ -25,6 +25,10 @@ var App = {
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
 
+if (App.isPhoneGap) {
+	App.service = 'http://beta.cockpit.la/api/';
+}
+
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
