@@ -261,7 +261,7 @@ p {
 		width: 50%;
 	}
 	.drivers-order-list .vert-divider{
-		height: 100px;
+		height: 75px;
 	}
 
 }
@@ -274,7 +274,7 @@ p {
 
 @media(max-width:458px) {
 	.drivers-order-list .vert-divider{
-		height: 100px;
+		height: 75px;
 	}
 }
 
@@ -283,7 +283,7 @@ p {
 		width: 50%;
 	}
 	.drivers-order-list .vert-divider{
-		height: 100px;
+		height: 75px;
 	}
 }
 
@@ -292,7 +292,7 @@ p {
 		width: 40%;
 	}
 	.drivers-order-list .vert-divider{
-		height: 100px;
+		height: 75px;
 	}
 	.info-name{
 		width: 40%;
@@ -318,7 +318,7 @@ p {
 		width: 40%;
 	}
 		.drivers-order-list .vert-divider{
-		height: 100px;
+		height: 75px;
 	}
 
 }
@@ -328,7 +328,7 @@ p {
 		width: 40%;
 	}
 	.drivers-order-list .vert-divider{
-		height: 95px;
+		height: 75px;
 	}
 }
 
@@ -1506,7 +1506,7 @@ h4.title{
 
 .drivers-order-list{
 	background-color: #f1f2f7;
-	font-size: 10px;
+	font-size: .95em;
 }
 
 .drivers-order-list .column-action{
@@ -1587,6 +1587,10 @@ h4.title{
 
 	.delivered .notMyOrder .row-status{
 		background-color: #d6d9dc;
+		color: #48494C;
+	}
+	
+	.delivered .myOrder .column-info .customer-pointer{
 		color: #48494C;
 	}
 
@@ -2423,7 +2427,7 @@ b, strong{ font-weight: bold; }
 
 .box-content-delivered{
 	background-color: #d6d9dc;
-	font-size: 1.2em;
+	font-size: 1.5em;
 	line-height: 1.3em;
 	font-family: Ruda;
 	padding: 10px;
