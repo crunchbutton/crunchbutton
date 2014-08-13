@@ -1100,7 +1100,8 @@ input {
 			letter-spacing: 0px;
 		}
 		.docs-download{
-			font-size: 1.1em;
+			font-size: 100%;
+			margin-left: 4.5em;
 		}
 		.driver-docs-grid .td-download{
 			vertical-align: top;
@@ -1110,6 +1111,10 @@ input {
 		font-size: 1.25em;
 		letter-spacing: 0px;
 		margin-bottom: .2em;
+	}
+	
+	.docs-download-card{
+		font-size: 100%;
 	}
 	
 	.driver-docs-card{
