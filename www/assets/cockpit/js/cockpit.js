@@ -31,6 +31,7 @@ if (App.isPhoneGap) {
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
 App.NGinit = function() {
+alert(App.isPhoneGap);
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
 	if (App.config.env == 'live') {
