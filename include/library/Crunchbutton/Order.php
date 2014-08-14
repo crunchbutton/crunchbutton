@@ -996,7 +996,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o 
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
-									AND oa.id_admin = "' . $id_admin . '"
+									oa.id_admin = "' . $id_admin . '"
 									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
 									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
 		return Crunchbutton_Order_Action::q( $query );
