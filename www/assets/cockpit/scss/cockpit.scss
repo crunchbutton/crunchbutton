@@ -630,6 +630,22 @@ p {
 	z-index: 99999999;
 }
 
+@-webkit-keyframes animation-fade-enter {
+	from {
+		opacity:0;
+	}
+	to {
+		opacity:1;
+	}
+}
+
+
+.login-content {
+	opacity: 1;
+	-webkit-animation: 1.0s animation-fade-enter ease-out;
+}
+
+
 input {
 	border: 0;
 }
@@ -2722,3 +2738,33 @@ b, strong{ font-weight: bold; }
 .pointer{
 	cursor: pointer;
 }
+
+
+
+/*
+
+.view-animate {
+
+}
+
+.view-animate.ng-enter, .view-animate.ng-leave {
+	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) .5s;
+	display:block;
+	width:100%;
+	position:absolute !important;
+}
+
+.view-animate.ng-enter {
+	z-index: 99998;
+}
+.view-animate.ng-leave {
+	z-index: 99999;
+
+}
+.view-animate.ng-enter.ng-enter-active {
+	opacity: 1;
+}
+.view-animate.ng-leave.ng-leave-active {
+	opacity: 0;
+}
+*/
