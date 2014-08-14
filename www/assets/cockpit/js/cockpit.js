@@ -24,7 +24,7 @@ var App = {
 
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
-
+alert(App.isPhoneGap);
 if (App.isPhoneGap) {
 	App.service = 'http://beta.cockpit.la/api/';
 }
