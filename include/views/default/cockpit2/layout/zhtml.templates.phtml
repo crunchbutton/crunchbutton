@@ -1,8 +1,0 @@
-<?php
-foreach ( Crunchbutton_Util::frontendTemplates( false, true ) as $file ) {
-	$basename = $file[ 'basename' ];
-	$pathname = 'frontend/' . ( $file[ 'subFolder' ] ? (  $file[ 'subFolder' ] . '/' ) : '' ) . $basename;
-	echo '<script type="text/ng-template" id="assets/view/' . $basename . '.html">';
-		echo $this->render( $pathname, [ 'filter' => false ] );
-	echo '</script>';
-}
