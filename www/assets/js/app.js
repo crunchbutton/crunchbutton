@@ -508,14 +508,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 });
 
-App.alert = function( txt, title, useNativeAlert ) {
+App.alert = function(txt, title, useNativeAlert, fn) {
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt);
+			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt, fn);
 		}
 	});
 };

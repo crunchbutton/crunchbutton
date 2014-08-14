@@ -19,16 +19,18 @@ NGApp.controller('SideMenuCtrl', function ($scope) {
 	$scope.setupPermissions = function() {}
 });
 
-NGApp.controller('LoginCtrl', function($scope, AccountService, MainNavigationService) {
+NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 	$scope.login = function() {
 		if( !$scope.username ){
-			App.alert( 'Please type your username' );
-			$scope.focus( '[name="username"]' );
+			App.alert('Please enter your username', '', false, function() {
+				$rootScope.focus('[name="username"]');
+			});
 			return;
 		}
 		if( !$scope.password ){
-			App.alert( 'Please type your password' );
-			$scope.focus( '[name="password"]' );
+			App.alert('Please enter your password', '', false, function() {
+				$rootScope.focus('[name="password"]');
+			});
 			return;
 		}
 		AccountService.login( $scope.username, $scope.password, function( status ) {
@@ -52,16 +54,26 @@ NGApp.controller( 'ProfileCtrl', function ( $scope, CustomerRewardService ) {
 
 } );
 
-NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
-	$rootScope.$on('notificationAlert', function(e, title, message) {
+NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
+	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
+		console.log(fn);
+		var complete = function() {
+			$rootScope.closePopup();
+			console.log(fn, typeof fn);
+			if (typeof fn === 'function') {
+				fn();
+			}
+		};
 		if ($scope.$$phase) {
 			$scope.title = title;
 			$scope.message = message;
+			$scope.complete = complete;
 			App.dialog.show('.notification-alert-container');
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.title = title;
 				scope.message = message;
+				$scope.complete = complete;
 				App.dialog.show('.notification-alert-container');
 			});
 		}

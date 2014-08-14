@@ -387,7 +387,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.focus = function( selector ){
 		setTimeout( function(){
 			angular.element( selector ).focus();
-		}, 100 );
+		}, 300 );
 	}
 
 	$rootScope.blur = function( selector ){
@@ -505,14 +505,14 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 	});
 });
 
-App.alert = function( txt, title, useNativeAlert ) {
+App.alert = function(txt, title, useNativeAlert, fn) {
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast( 'notificationAlert', title || 'Woops!', txt );
+			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt, fn);
 		}
 	});
 };
