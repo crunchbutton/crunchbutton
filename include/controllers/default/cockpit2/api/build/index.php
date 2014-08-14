@@ -47,7 +47,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		echo json_encode([
 			'version' => Cana_Util::gitVersion(),
 			'files' => $files,
-			'force' => true
+			'force' => false
 		]);
 	}
 }
