@@ -36,7 +36,10 @@ body {
 body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
-body, .bg {
+body {
+	background: $navColor;
+}
+.bg {
 	background: $background;
 }
 
@@ -91,7 +94,8 @@ html {
 }
 
 * {
-	-webkit-tap-highlight-color: rgba(205,69,29,.5);
+	/*-webkit-tap-highlight-color: rgba(205,69,29,.5);*/
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
 @media screen and (min-width: 1025px) {
@@ -100,7 +104,6 @@ html {
 	}
 	.nav .content,
 	.content-padding {
-		/*max-width: 767px;*/
 		margin: 0 auto;
 	}
 
@@ -151,7 +154,7 @@ html {
 }
 
 .menu {
-	background: url(../../images/micro/menu-location.svg) center center no-repeat;
+	background: url(../images/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 	width: 44px;
 	height: 28px;
@@ -169,7 +172,7 @@ html {
 	z-index : 0;
 	cursor: pointer;
 	margin: 8px 0 0 6px;
-	background: url(../../images/micro/back-location.svg) center center no-repeat;
+	background: url(../images/back-location.svg) center center no-repeat;
 	background-size: 100%;
 	width: 50px;
 	height: 28px;

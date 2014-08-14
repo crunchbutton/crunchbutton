@@ -9,7 +9,7 @@
 		<form ng-submit="login()">
 			<div class="input-wrap">
 				<span class="label">Username:</span>
-				<span class="field"><input type="text" name="username" ng-model="username" autofocus="autofocus" autocorrect="off" autocapitalize="off"></span>
+				<span class="field"><input type="text" name="username" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
 			</div>
 			
 			<div class="input-wrap">

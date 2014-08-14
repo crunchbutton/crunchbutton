@@ -270,6 +270,7 @@ class Crunchbutton_App extends Cana_App {
 		// debug shit
 		if ($_REQUEST['_bundle']) {
 			$config->bundle = true;
+			$config->viewExport = true;
 		}
 
 		$this
@@ -424,6 +425,10 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		parent::buildView($params);
+		
+		if ($this->config()->viewExport) {
+			$this->view()->export = true;
+		}
 		
 		return $this;
 	}
