@@ -70,7 +70,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			// only one restaurant for now
 			service.restaurant = service.restaurants[0];
 		}
-
+/*
 		if (service.user.groups) {
 			for (var x in service.user.groups) {
 				if (service.user.groups[x].indexOf('drivers-') == 0) {
@@ -79,7 +79,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 				}
 			}
 		}
-
+*/
 
 		if (service.user && service.user.id_admin) {
 			App.snap.enable();
