@@ -64,7 +64,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 				track();
 
 			}, function() {
-				alert('Your location services are off, or you declined location permissions. Please enable this.');
+				//alert('Your location services are off, or you declined location permissions. Please enable this.');
 			}, { enableHighAccuracy: true });
 		}
 	};
@@ -124,16 +124,15 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 	};
 
 	var interval = setInterval(track, 60000);
+	
+	$rootScope.$on('userAuth', function(e, data) {
+		// start watching if there is a user and their docs are filled out
+		if (data.id_admin) {
+			watch();
+		}
 
-	var starToWatch = true;
-
-	if( $rootScope && $rootScope.account && $rootScope.account.restaurant ){
-		starToWatch = false;
-	}
-
-	if( starToWatch ){
-		watch();
-	}
+		// stop watching if else
+	});
 
 	return service;
 });
