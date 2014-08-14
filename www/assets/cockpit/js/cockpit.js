@@ -28,6 +28,7 @@ App.localStorage = App.isPhoneGap;
 if (App.isPhoneGap) {
 	App.service = 'http://beta.cockpit.la/api/';
 }
+console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
@@ -37,7 +38,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'angularFileUpload' ], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload' ], function( $httpProvider ) {
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 	var param = function(obj) {
 		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
