@@ -60,10 +60,13 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 
 		if ($data['headers']) {
 			foreach ($data['headers'] as $key => $header) {
-				header($key.': '.$header);
+				if ($key == '_responseCode') {
+					header($header);
+				} else {
+					header($key.': '.$header);
+				}
 			}
 		}
-		
 
 		echo $data['content'];
 		exit;
