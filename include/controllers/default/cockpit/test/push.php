@@ -2,7 +2,6 @@
 class Controller_test_push extends Crunchbutton_Controller_Account {
 	public function init() {
 		// Report all PHP errors
-		error_reporting(-1);
 		$certs = c::config()->dirs->root.'ssl/';
 
 		
@@ -27,19 +26,16 @@ class Controller_test_push extends Crunchbutton_Controller_Account {
 		// Set a custom identifier. To get back this identifier use the getCustomIdentifier() method
 		// over a ApnsPHP_Message object retrieved with the getErrors() message.
 		$message->setCustomIdentifier('order-recieved');
-		$message->setBadge(1);
+		$message->setBadge(100);
 		
 		// Set a simple welcome text
 		$message->setText('#5634: Devin has placed an order to Chipotle');
 		
 		// Play the default sound
 		$message->setSound();
-		
-		// Set a custom property
-		//$message->setCustomProperty('acme2', array('bang', 'whiz'));
-		
+
 		// Set another custom property
-		//$message->setCustomProperty('acme3', array('bing', 'bong'));
+		$message->setCustomProperty('acme3', array('bing', 'bong'));
 		
 		// Set the expiry value to 30 seconds
 		$message->setExpiry(30);
