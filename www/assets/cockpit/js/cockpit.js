@@ -693,6 +693,8 @@ App.init = function(config) {
 		});
 	}
 	*/
+	
+	App.push.init();
 
 };
 
@@ -800,3 +802,30 @@ NGApp.factory( 'flash', function( $timeout ) {
 
 } );
 
+
+App.push = {
+	id: null,
+	init: function() {
+		if (!App.isPhoneGap) {
+			return;
+		}
+		parent.plugins.pushNotification.register(
+			function(id) {
+				App.push.id = id;
+				console.debug('Push id: ' + id);
+			},
+			function() {
+				console.error('Failed registering push notifications');
+			},
+			{
+				'badge': 'true',
+				'sound': 'true',
+				'alert': 'true',
+				'ecb': 'App.push.receive'
+			});
+	},
+	receive: function() {
+		console.log(arguments);
+	}
+	
+};
