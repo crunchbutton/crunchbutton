@@ -1,0 +1,1 @@
+ALTER TABLE `admin_notification` CHANGE `type` `type` enum('sms','email','phone','url','fax','sms-dumb','push-ios','push-android') DEFAULT NULL;

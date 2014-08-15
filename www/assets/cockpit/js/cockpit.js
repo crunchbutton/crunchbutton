@@ -809,6 +809,11 @@ App.push = {
 		if (!App.isPhoneGap) {
 			return;
 		}
+
+		document.addEventListener('pushnotification', function(e) {
+			App.push.receive(e.flag);
+		}, false);
+		
 		parent.plugins.pushNotification.register(
 			function(id) {
 				App.push.id = id;
@@ -821,7 +826,7 @@ App.push = {
 				'badge': 'true',
 				'sound': 'true',
 				'alert': 'true',
-				'ecb': 'App.push.receive'
+				'ecb': 'pushnotification'
 			});
 	},
 	receive: function() {
@@ -829,3 +834,5 @@ App.push = {
 	}
 	
 };
+
+
