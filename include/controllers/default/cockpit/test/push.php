@@ -9,7 +9,7 @@ class Controller_test_push extends Crunchbutton_Controller_Account {
 		// Instanciate a new ApnsPHP_Push object
 		$push = new ApnsPHP_Push(
 			ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
-			$certs.'aps_development_com.crunchbutton.beta.pem'
+			$certs.'aps_development_com.crunchbutton.cockpit.pem'
 		);
 		
 		// Set the Provider Certificate passphrase
@@ -22,15 +22,15 @@ class Controller_test_push extends Crunchbutton_Controller_Account {
 		$push->connect();
 		
 		// Instantiate a new Message with a single recipient
-		$message = new ApnsPHP_Message('3a57edd9cede41bc00df8760cb6ff525fa51e2b82de6197ce70dc5cf93b0fd37');
+		$message = new ApnsPHP_Message('8646e7b2f64471f9188a0b94edb215030551de71e8d625bf7a2fccc8daeb03f4');
 		
 		// Set a custom identifier. To get back this identifier use the getCustomIdentifier() method
 		// over a ApnsPHP_Message object retrieved with the getErrors() message.
-		$message->setCustomIdentifier('support-message');
+		$message->setCustomIdentifier('order-recieved');
 		$message->setBadge(1);
 		
 		// Set a simple welcome text
-		$message->setText('Devin: Your order is on its way.');
+		$message->setText('#5634: Devin has placed an order to Chipotle');
 		
 		// Play the default sound
 		$message->setSound();
