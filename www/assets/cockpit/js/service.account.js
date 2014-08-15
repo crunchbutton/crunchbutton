@@ -80,7 +80,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			}
 		}
 
-		if (service.user && service.user.id_admin) {
+		if (data && data.id_admin) {
 			App.snap.enable();
 			var name = service.user.name.split(' ');
 			service.user.initials = '';
