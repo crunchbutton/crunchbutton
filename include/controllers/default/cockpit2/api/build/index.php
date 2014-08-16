@@ -39,7 +39,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		}
 		
 		// css
-		$files[] = 'css/bundle.css?s=cockpit';
+		$files[] = 'css/bundle.css?s=cockpit&_export=1';
 		
 		// javascript
 		$files[] = 'js/bundle.js?s=cockpit';

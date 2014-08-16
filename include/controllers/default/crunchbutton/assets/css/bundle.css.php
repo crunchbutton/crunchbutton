@@ -2,7 +2,13 @@
 
 class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		$this->cacheServe('crunchr-bundle-node-css');
+		$git = Cana_Util::gitVersion();
+		$v = $git ? $git : $_REQUEST['v'];
+		
+		$id = 'crunchr-bundle-node-css';
+
+		$this->cacheId($id.$v.$_REQUEST['s'].$_REQUEST['_export']);
+		$this->cacheServe($id);
 	}
 	
 	public function getData() {
@@ -18,6 +24,16 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 					$style = [];
 					break;
 			}
+		}
+		
+		if ($_REQUEST['_export']) {
+			c::view()->export = true;
+		}
+		
+		if (preg_match('/ios|iphone|ipad/i',$_SERVER['HTTP_USER_AGENT'])) {
+			c::view()->isIOS = true;
+		} elseif (preg_match('/android/i',$_SERVER['HTTP_USER_AGENT'])) {
+			c::view()->isAndroid = true;
 		}
 
 		$src = c::view()->render('bundle/bundler.css',['set' => ['style' => $style]]);
