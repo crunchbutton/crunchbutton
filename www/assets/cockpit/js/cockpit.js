@@ -838,16 +838,16 @@ App.push = {
 
 		// iOS
 		if (msg.alert) {
-			navigator.notification.alert(msg.alert);
-		}
-
-		if (msg.sound) {
-			var snd = new Media(event.sound);
-			snd.play();
+			parent.navigator.notification.alert(msg.alert);
 		}
 
 		if (msg.badge) {
 			pushNotification.setApplicationIconBadgeNumber(complete, complete, msg.badge);
+		}
+
+		if (msg.sound) {
+			var snd = new Media(msg.sound);
+			snd.play();
 		}
 	}
 };
