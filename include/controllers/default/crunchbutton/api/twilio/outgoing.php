@@ -29,6 +29,7 @@ class Controller_api_twilio_outgoing extends Crunchbutton_Controller_Rest {
 
 		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 			.'<Response>'
+			.'<Pause length="10">'
 			.'<Dial callerId="'.$callerId.'">'.$num.'</Dial>'
 			.'</Response>';
 			
