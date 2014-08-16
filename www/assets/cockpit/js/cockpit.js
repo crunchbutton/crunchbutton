@@ -570,7 +570,7 @@ App.scrollTop = function(top) {
 			},10);
 			return;
 		}
-		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 200, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	},3);
 };
 
