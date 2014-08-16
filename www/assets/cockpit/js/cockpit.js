@@ -854,5 +854,5 @@ App.push = {
 };
 
 document.addEventListener('statusTap', function() {
-	App.scrollTop();
+	App.scrollTop(0);
 });
