@@ -438,7 +438,7 @@ class Crunchbutton_App extends Cana_App {
 	}
 	
 	public function isDownloadable() {
-		if (preg_match('/ios|iphone|ipad/i',$_SERVER['HTTP_USER_AGENT']) && !$_COOKIE['_viewmobile2']) {
+		if (preg_match('/ios|iphone|ipad|android/i',$_SERVER['HTTP_USER_AGENT']) && !$_COOKIE['_viewmobile2']) {
 			return true;
 		} else {
 			return false;
