@@ -851,3 +851,7 @@ App.push = {
 		}
 	}
 };
+
+window.addEventListener('statusTap', function() {
+	App.scrollTop();
+});
