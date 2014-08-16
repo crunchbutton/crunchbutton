@@ -838,11 +838,11 @@ App.push = {
 
 		// iOS
 		if (msg.alert) {
-			parent.navigator.notification.alert(msg.alert);
+			alert(msg.alert);
 		}
 
 		if (msg.badge) {
-			pushNotification.setApplicationIconBadgeNumber(complete, complete, msg.badge);
+			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, msg.badge);
 		}
 
 		if (msg.sound) {
