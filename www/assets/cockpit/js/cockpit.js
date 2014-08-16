@@ -17,7 +17,7 @@ var App = {
 	_init: false,
 	localStorage: false,
 	isPhoneGap: document.location.protocol == 'file:',
-	useNativeAlert: false,
+	useNativeAlert: true,
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
 };
@@ -508,7 +508,7 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 App.alert = function(txt, title, useNativeAlert, fn) {
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap) {
-			navigator.notification.alert(txt, null, title || 'Crunchbutton');
+			parent.navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
@@ -838,7 +838,7 @@ App.push = {
 
 		// iOS
 		if (msg.alert) {
-			alert(msg.alert);
+			App.alert(msg.alert);
 		}
 
 		if (msg.badge) {
