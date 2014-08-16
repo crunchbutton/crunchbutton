@@ -564,10 +564,11 @@ App.toggleMenu = function(side) {
  */
 App.scrollTop = function(top) {
 	setTimeout(function() {
-		if (!top) {
+		if (!top && top !== 0) {
 			setTimeout(function() {
 				$('html, body, .snap-content-inner').scrollTop(0);
 			},10);
+			return;
 		}
 		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	},3);
