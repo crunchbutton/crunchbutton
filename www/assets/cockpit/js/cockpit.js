@@ -811,7 +811,7 @@ App.push = {
 		}
 
 		document.addEventListener('pushnotification', function(e) {
-			App.push.receive(e.flag);
+			App.push.receive(e);
 		}, false);
 		
 		parent.plugins.pushNotification.register(
@@ -831,8 +831,27 @@ App.push = {
 	},
 	receive: function() {
 		console.log(arguments);
+		/*
+				
+// iOS
+function onNotificationAPN (event) {
+	console.debug(event);
+    if ( event.alert )
+    {
+        navigator.notification.alert(event.alert);
+    }
+
+    if ( event.sound )
+    {
+        var snd = new Media(event.sound);
+        snd.play();
+    }
+
+    if ( event.badge )
+    {
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+    }
+}
+*/
 	}
-	
 };
-
-

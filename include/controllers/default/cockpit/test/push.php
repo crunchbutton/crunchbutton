@@ -35,7 +35,7 @@ class Controller_test_push extends Crunchbutton_Controller_Account {
 		$message->setSound();
 
 		// Set another custom property
-		$message->setCustomProperty('acme3', array('bing', 'bong'));
+//		$message->setCustomProperty('acme3', array('bing', 'bong'));
 		
 		// Set the expiry value to 30 seconds
 		$message->setExpiry(30);
