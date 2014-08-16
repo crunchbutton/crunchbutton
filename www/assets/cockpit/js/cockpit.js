@@ -811,7 +811,7 @@ App.push = {
 		}
 
 		document.addEventListener('pushnotification', function(e) {
-			App.push.receive(e);
+			App.push.receive(e.msg);
 		}, false);
 		
 		parent.plugins.pushNotification.register(
@@ -829,29 +829,25 @@ App.push = {
 				'ecb': 'pushnotification'
 			});
 	},
-	receive: function() {
-		console.log(arguments);
-		/*
-				
-// iOS
-function onNotificationAPN (event) {
-	console.debug(event);
-    if ( event.alert )
-    {
-        navigator.notification.alert(event.alert);
-    }
+	receive: function(msg) {
+		console.debug('Notification: ', msg);
+		
+		var complete = function() {
+			
+		};
 
-    if ( event.sound )
-    {
-        var snd = new Media(event.sound);
-        snd.play();
-    }
+		// iOS
+		if (msg.alert) {
+			navigator.notification.alert(msg.alert);
+		}
 
-    if ( event.badge )
-    {
-        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
-    }
-}
-*/
+		if (msg.sound) {
+			var snd = new Media(event.sound);
+			snd.play();
+		}
+
+		if (msg.badge) {
+			pushNotification.setApplicationIconBadgeNumber(complete, complete, msg.badge);
+		}
 	}
 };
