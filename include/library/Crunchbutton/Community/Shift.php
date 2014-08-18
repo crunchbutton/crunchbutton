@@ -131,7 +131,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 							LIMIT 1';
 		return Crunchbutton_Community_Shift::q( $query );
 	}
-	
+
 	public function getCurrentShiftByAdmin( $id_admin ){
 		$query = "SELECT cs.* FROM admin_shift_assign asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
@@ -660,49 +660,95 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		echo $log."\n";
 		echo "\n";
 
-		$env = c::getEnv();
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$messagePattern = "Remember: you're scheduled to drive for Crunchbutton tomorrow, %s, from %s\nRemember to charge your phone!";
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$now->modify( '+ 1 day' );
-		$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift  WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '"' );
-		foreach ( $assigments as $assignment ) {
 
-			$shift = $assignment->shift();
-			$admin = $assignment->admin();
+		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin ) FROM admin_shift_assign asa INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift  WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '" AND cs.active = 1' );
+		foreach( $adminsWithShifts as $admin ){
+			$id_admin = $admin->id_admin;
+			$admin = Admin::o( $id_admin );
 
-			if( $shift && $admin ){
-				$message = "Remember: you're scheduled to drive for Crunchbutton tomorrow, " . $now->format( 'M jS Y' ) . ", from " . $shift->startEndToString() . "\nRemember to charge your phone!";
-				$txt = $admin->txt;
-				$phone = $admin->phone;
-
-				$num = ( $txt != '' ) ? $txt : $phone;
-
-				$message = str_split( $message, 160 );
-
-				if( $num != '' ){
-					foreach ( $message as $msg ) {
-						try {
-							// Log
-							Log::debug( [ 'action' => 'sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
-							$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
-							Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
-							echo $log."\n";
-						} catch (Exception $e) {
-							// Log
-							Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-							$log = 'Error Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
-							Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
-							echo $log."\n";
-						}
-					}
-				} else {
-					Log::debug( [ 'action' => 'ERROR: sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+			// get the admin's shifts
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM admin_shift_assign asa INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift  WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '" AND asa.id_admin = ' . $id_admin . ' AND cs.active = 1 ORDER BY date_start ASC' );
+			if( $shifts->count() > 1 ){
+				$hours = [];
+				$segments = [];
+				$id_community = null;
+				$timezone = null;
+				foreach( $shifts as $shift ){
+					$hours[] = [ 'start' => $shift->dateStart(), 'end' => $shift->dateEnd(), 'startEnd' => $shift->startEndToString() ];
+					$id_community = $shift->id_community;
+					$timezone = $shift->community()->timezone;
 				}
+				for( $i = 0; $i < count( $hours ); $i++ ){
+					if( $hours[ $i ][ 'merged' ] ){
+						continue;
+					}
+					$next = $i + 1;
+					if( $hours[ $next ] ){
+						$secs = Crunchbutton_Util::intervalToSeconds( $hours[ $i ][ 'end' ]->diff( $hours[ $next ][ 'start' ] ) );
+						if( $secs > 0 ){
+							$message = sprintf( $messagePattern, $now->format( 'M jS Y' ), $hours[ $i ][ 'startEnd' ] );
+							Crunchbutton_Community_Shift::shiftMessageWarning( $message, $admin );
+						} else {
+							$_shift = new Crunchbutton_Community_Shift;
+							$_shift->date_start = $hours[ $i ][ 'start' ]->format( 'Y-m-d H:i:s' );
+							$_shift->date_end = $hours[ $next ][ 'end' ]->format( 'Y-m-d H:i:s' );
+							$_shift->id_community = $id_community;
+							$_shift->_timezone = $timezone;
+							$message = sprintf( $messagePattern, $now->format( 'M jS Y' ), $_shift->startEndToString() );
+							$hours[ $next ][ 'merged' ] = true;
+							Crunchbutton_Community_Shift::shiftMessageWarning( $message, $admin );
+						}
+					} else {
+						$message = sprintf( $messagePattern, $now->format( 'M jS Y' ), $hours[ $i ][ 'startEnd' ] );
+						Crunchbutton_Community_Shift::shiftMessageWarning( $message, $admin );
+					}
+				}
+			} else if ( $shifts->count() == 1 ){
+				$message = sprintf( $messagePattern, $now->format( 'M jS Y' ), $shifts->startEndToString() );
+				Crunchbutton_Community_Shift::shiftMessageWarning( $message, $admin );
 			}
 		}
+	}
+
+	public function shiftMessageWarning( $message, $admin ){
+
+		$env = c::getEnv();
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+		$txt = $admin->txt;
+		$phone = $admin->phone;
+
+		$num = ( $txt != '' ) ? $txt : $phone;
+
+		$message = str_split( $message, 160 );
+
+		if( $num != '' ){
+			foreach ( $message as $msg ) {
+				try {
+					// Log
+					Log::debug( [ 'action' => 'sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+					if( $twilio ){
+						$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+					}
+					$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg;
+					Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
+					echo $log."\n";
+				} catch (Exception $e) {
+					// Log
+					Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+					$log = 'Error Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg;
+					Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
+					echo $log."\n";
+				}
+			}
+		} else {
+			Log::debug( [ 'action' => 'ERROR: sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+		}
+
 	}
 
 	public function minutesToStart(){
@@ -724,6 +770,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$minutes = 15;
 		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
 
+		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us back!';
+
 		foreach( $communities as $community ){
 
 			if( $community->timezone ){
@@ -733,21 +781,57 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$_now = $now->format( 'Y-m-d H:i' );
 				$now->modify( '+ ' . ( $minutes + 5 ) . ' minutes' );
 				$_interval = $now->format( 'Y-m-d H:i' );
+
 				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
 																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 																													WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
+
 				if( $nextShifts->count() > 0 ){
 
 					foreach( $nextShifts as $shift ){
 						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
+
 						foreach( $assigments as $assignment ){
 
 							$shift = $assignment->shift();
 							$admin = $assignment->admin();
 							$minutesToStart = $shift->minutesToStart();
+
 							if( $minutesToStart > 0 ){
 
-								$message = 'Your shift starts in ' . $minutesToStart . ' minutes. Your shift(s) today, ' . $now->format( 'M jS Y' ) . ': ' . $shift->startEndToString() . '. If you have any questions/feedback for us, feel free to text us back!';
+								// convert to string
+								$minutesToStart = "$minutesToStart";
+
+								// Check if the admin has a shift starting after this one
+								$nextShift = Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+																																INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND id_admin = ' . $admin->id_admin . '
+																																WHERE cs.id_community = ' . $shift->id_community . ' AND cs.date_start > "' . $_now . '" ORDER BY cs.date_start ASC LIMIT 1' );
+
+								if( $nextShift->id_community_shift ){
+									$nextShift = $nextShift->get( 0 );
+									$secs = Crunchbutton_Util::intervalToSeconds( $nextShift->dateEnd()->diff( $shift->dateStart() ) );
+									if( $secs > 0 ){
+										$_shift = new Crunchbutton_Community_Shift;
+										$_shift->date_start = $shift->dateStart()->format( 'Y-m-d H:i:s' );
+										$_shift->date_end = $nextShift->dateEnd()->format( 'Y-m-d H:i:s' );
+										$_shift->id_community = $shift->id_community;
+										$_shift->_timezone = $shift->timezone;
+										$message = sprintf( $messagePattern, $minutesToStart, $now->format( 'M jS Y' ), $_shift->startEndToString() );
+										$_assignment = Crunchbutton_Admin_Shift_Assign::o( $nextShift->id_admin_shift_assign );
+
+										if( $_assignment->id_admin_shift_assign ){
+											$assignment->warned = 1;
+											$assignment->save();
+										}
+
+									} else {
+										$message = sprintf( $messagePattern, $minutesToStart, $now->format( 'M jS Y' ), $shift->startEndToString() );
+									}
+								} else {
+									$message = sprintf( $messagePattern, $minutesToStart, $now->format( 'M jS Y' ), $shift->startEndToString() );
+								}
+
+echo '<pre>';var_dump( $message );exit();
 
 								$txt = $admin->txt;
 								$phone = $admin->phone;
