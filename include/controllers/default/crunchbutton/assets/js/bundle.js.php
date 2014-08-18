@@ -43,7 +43,14 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 						if (strpos($src, '//') === 0) {
 							$src = 'https:'.$src;
 						}
-						$code = file_get_contents($src);
+						//$code = file_get_contents($src);
+						
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $src);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+						curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
+						$code = curl_exec($ch);
+						curl_close($ch);
 
 					} else {
 						$files[] = c::config()->dirs->www.preg_replace('/^(.*)(\?.*)$/','\\1', $src);
@@ -60,15 +67,15 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 					$files[] = $tmp;
 				}
 			}
-			
+
+			$data = $this->serve($files, true);
+			Cana::app()->cache()->write($cacheid, $data);
+
 			if ($tmps) {
 				foreach ($tmps as $tmp) {
 					unlink($tmp);
 				}
 			}
-
-			$data = $this->serve($files, true);
-			Cana::app()->cache()->write($cacheid, $data);
 		}
 
 		if ($data['headers']) {
