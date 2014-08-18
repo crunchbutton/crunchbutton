@@ -32,8 +32,9 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		
 		// fonts
 		$use = '/fontawesome|opensans/i';
+		$ext = '/\.woff$/';
 		foreach (new DirectoryIterator(c::config()->dirs->www.'assets/fonts') as $fileInfo) {
-			if (!$fileInfo->isDot() && preg_match($use, $fileInfo->getBasename())) {
+			if (!$fileInfo->isDot() && preg_match($use, $fileInfo->getBasename()) && preg_match($ext, $fileInfo->getBasename())) {
 				$files[] = 'fonts/'.$fileInfo->getBasename();
 			}
 		}
