@@ -476,10 +476,11 @@ p {
 }
 
 
-.snap-drawers {
+.snap-drawers, .snap-drawer {
 	background: $sideBg;
 	color:#eee;
 }
+
 
 .snap-drawer-left {
 	left:0;
