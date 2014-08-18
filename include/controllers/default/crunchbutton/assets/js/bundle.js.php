@@ -67,9 +67,8 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 				}
 			}
 
-			Cana::app()->cache()->write($cacheid, $data);
 			$data = $this->serve($files, true);
-
+			Cana::app()->cache()->write($cacheid, $data);
 		}
 
 		if ($data['headers']) {
