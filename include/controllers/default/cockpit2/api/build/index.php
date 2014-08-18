@@ -29,7 +29,6 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			}
 		}
 
-		
 		// fonts
 		$use = '/fontawesome|opensans/i';
 		$ext = '/\.woff$/';
