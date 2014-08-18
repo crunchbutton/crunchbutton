@@ -36,26 +36,46 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 			@$doc->loadHTML($src);
 
 			foreach ($doc->getElementsByTagName('script') as $script) {
-				if ($script->getAttribute('src')) {
-					$files[] = c::config()->dirs->www.preg_replace('/^(.*)(\?.*)$/','\\1',$script->getAttribute('src'));
+				$code = null;
+				$src = $script->getAttribute('src');
+				if ($src) {
+					if (preg_match('/^(\/\/)|(http)/i',$src)) {
+						if (strpos($src, '//') === 0) {
+							$src = 'https:'.$src;
+						}
+						//$code = file_get_contents($src);
+						
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $src);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+						curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
+						$code = curl_exec($ch);
+						curl_close($ch);
+
+					} else {
+						$files[] = c::config()->dirs->www.preg_replace('/^(.*)(\?.*)$/','\\1', $src);
+					}
+
 				} else {
 					$code = $script->nodeValue;
+				}
+				
+				if ($code) {
 					$tmp = tempnam('/tmp',$cacheid);
 					$tmps[] = $tmp;
 					file_put_contents($tmp,$code);
 					$files[] = $tmp;
 				}
 			}
-			
+
+			$data = $this->serve($files, true);
+			Cana::app()->cache()->write($cacheid, $data);
+
 			if ($tmps) {
 				foreach ($tmps as $tmp) {
 					unlink($tmp);
 				}
 			}
-
-			Cana::app()->cache()->write($cacheid, $data);
-			$data = $this->serve($files, true);
-
 		}
 
 		if ($data['headers']) {
