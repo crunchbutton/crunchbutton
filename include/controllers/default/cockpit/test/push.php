@@ -32,7 +32,7 @@ class Controller_test_push extends Crunchbutton_Controller_Account {
 		$message->setText('#5634: Devin has placed an order to Chipotle');
 		
 		// Play the default sound
-		$message->setSound();
+		$message->setSound('www/order.wav');
 
 		// Set another custom property
 //		$message->setCustomProperty('acme3', array('bing', 'bong'));
