@@ -698,7 +698,8 @@ App.init = function(config) {
 	App.push.init();
 	
 	if (App.isPhoneGap) {
-		$(document).on('click', 'a', {}, function(e) {
+		$(document).on('mousedown', 'a', {}, function(e) {
+			e.preventDefault();
 			e.stopPropagation();
 			parent.window.open(e.target.href, '_system');
 			return false;
