@@ -10,8 +10,6 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 		if (Cana::app()->cache()->cached($cacheid)) {
 			$data = Cana::app()->cache()->read($cacheid);
 		}
-		
-		print_r($data);die('asd');
 
 		if (!$data || !$data['content']) {
 
