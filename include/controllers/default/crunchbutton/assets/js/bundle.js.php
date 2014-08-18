@@ -10,6 +10,8 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 		if (Cana::app()->cache()->cached($cacheid)) {
 			$data = Cana::app()->cache()->read($cacheid);
 		}
+		
+		print_r($data);die('asd');
 
 		if (!$data || !$data['content']) {
 
@@ -36,10 +38,24 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 			@$doc->loadHTML($src);
 
 			foreach ($doc->getElementsByTagName('script') as $script) {
-				if ($script->getAttribute('src')) {
-					$files[] = c::config()->dirs->www.preg_replace('/^(.*)(\?.*)$/','\\1',$script->getAttribute('src'));
+				$code = null;
+				$src = $script->getAttribute('src');
+				if ($src) {
+					if (preg_match('/^(\/\/)|(http)/i',$src)) {
+						if (strpos($src, '//') === 0) {
+							$src = 'https:'.$src;
+						}
+						$code = file_get_contents($src);
+
+					} else {
+						$files[] = c::config()->dirs->www.preg_replace('/^(.*)(\?.*)$/','\\1', $src);
+					}
+
 				} else {
 					$code = $script->nodeValue;
+				}
+				
+				if ($code) {
 					$tmp = tempnam('/tmp',$cacheid);
 					$tmps[] = $tmp;
 					file_put_contents($tmp,$code);
