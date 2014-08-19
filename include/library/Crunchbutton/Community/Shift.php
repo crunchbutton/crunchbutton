@@ -831,8 +831,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 									$message = sprintf( $messagePattern, $minutesToStart, $now->format( 'M jS Y' ), $shift->startEndToString() );
 								}
 
-echo '<pre>';var_dump( $message );exit();
-
 								$txt = $admin->txt;
 								$phone = $admin->phone;
 
