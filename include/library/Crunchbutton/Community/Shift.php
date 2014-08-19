@@ -822,8 +822,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 										$_assignment = Crunchbutton_Admin_Shift_Assign::o( $nextShift->id_admin_shift_assign );
 
 										if( $_assignment->id_admin_shift_assign ){
-											$assignment->warned = 1;
-											$assignment->save();
+											$_assignment->warned = 1;
+											$_assignment->save();
 										}
 
 									} else {
