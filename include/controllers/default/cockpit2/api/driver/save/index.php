@@ -52,6 +52,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		// first remove the driver from the delivery groups
 		$_communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );;
+
 		foreach( $_communities as $community ){
 			$group = $community->groupOfDrivers();
 			if( $group->id_group ){
@@ -105,6 +106,8 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		if ( $this->request()[ 'notify' ] ) {
 			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
 		}
+
+		Log::debug( [ 'action' => 'driver saved', 'exports' => $driver->exports(), 'type' => 'drivers-onboarding'] );
 
 		echo json_encode( [ 'success' => $driver->exports() ] );
 		return;
