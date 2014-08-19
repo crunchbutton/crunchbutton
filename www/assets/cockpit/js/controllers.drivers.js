@@ -498,7 +498,7 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 } );
 
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $fileUploader, DriverOnboardingService, CommunityService ) {
-
+console.log( 'DriversOnboardingFormCtrl' );
 	$scope.ready = false;
 	$scope.submitted = false;
 
@@ -566,17 +566,23 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 	// method save that saves the driver
 	$scope.save = function(){
-
-		if( $scope.form.$invalid ){
+console.log('$scope.form.$invalid',$scope.form.$invalid);
+		if( $scope.form.$invalid || !$scope.driver.phone ){
 			$scope.submitted = true;
 			return;
 		}
 
 		DriverOnboardingService.save( $scope.driver, function( json ){
+console.log('json',json);
 			if( json.success ){
-				start();
-				$scope.flash.setMessage( 'Driver saved!' );
-				$scope.driver.pass = '';
+console.log('json.success.id_admin',json.success.id_admin);
+				var url = '/drivers/onboarding/' + json.success.id_admin;
+console.log('url',url);
+				$scope.navigation.link( url );
+				setTimeout( function(){
+					$scope.flash.setMessage( 'Driver saved!' );
+				}, 500 );
+
 			} else {
 				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
 			}
