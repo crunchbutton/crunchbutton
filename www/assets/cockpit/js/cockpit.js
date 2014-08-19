@@ -696,16 +696,16 @@ App.init = function(config) {
 	*/
 	
 	App.push.init();
-	
+
+	// setup for system links
 	if (App.isPhoneGap) {
-		$(document).on('touchdown', 'a', function(e) {
+		$(document).on('click', 'a[target=_system]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 			parent.window.open(e.target.href, '_system');
 			return false;
 		});
 	}
-
 };
 
 /**
