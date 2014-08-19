@@ -768,6 +768,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
 		$minutes = 15;
+
 		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
 
 		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us back!';
@@ -789,6 +790,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				if( $nextShifts->count() > 0 ){
 
 					foreach( $nextShifts as $shift ){
+
 						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
 
 						foreach( $assigments as $assignment ){
@@ -805,7 +807,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								// Check if the admin has a shift starting after this one
 								$nextShift = Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 																																INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND id_admin = ' . $admin->id_admin . '
-																																WHERE cs.id_community = ' . $shift->id_community . ' AND cs.date_start > "' . $_now . '" ORDER BY cs.date_start ASC LIMIT 1' );
+																																WHERE cs.id_community = ' . $shift->id_community . ' AND cs.date_start >= "' . $shift->dateEnd()->format( 'Y-m-d H:i:s' ) . '" ORDER BY cs.date_start ASC LIMIT 1' );
 
 								if( $nextShift->id_community_shift ){
 									$nextShift = $nextShift->get( 0 );
@@ -830,7 +832,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								} else {
 									$message = sprintf( $messagePattern, $minutesToStart, $now->format( 'M jS Y' ), $shift->startEndToString() );
 								}
-
 								$txt = $admin->txt;
 								$phone = $admin->phone;
 
