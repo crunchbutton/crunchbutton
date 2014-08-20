@@ -579,7 +579,7 @@ console.log('$scope.form.$invalid',$scope.form.$invalid);
 			isSaving = false;
 			return;
 		}
-
+console.log('isSaving',isSaving);
 		isSaving = true;
 
 		DriverOnboardingService.save( $scope.driver, function( json ){

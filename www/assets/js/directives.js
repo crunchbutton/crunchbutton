@@ -503,9 +503,7 @@ NGApp.directive( 'phoneValidate', function () {
 								}
 							}
 						}
-						if( isValid ){
-							elem.val( elem.val().replace( /[^0-9]/g, '' ) );
-						}
+						elem.val( val.replace( /[^0-9]/g, '' ) );
 						ctrl.$setValidity( 'phoneValidate', isValid );
 					} );
 				} );
