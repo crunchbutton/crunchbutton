@@ -564,13 +564,23 @@ console.log( 'DriversOnboardingFormCtrl' );
 		$scope.doc_uploaded = id_driver_document
 	}
 
+	var isSaving = false;
+
 	// method save that saves the driver
 	$scope.save = function(){
+
+		if( isSaving ){
+			return;
+		}
+
 console.log('$scope.form.$invalid',$scope.form.$invalid);
 		if( $scope.form.$invalid || !$scope.driver.phone ){
 			$scope.submitted = true;
+			isSaving = false;
 			return;
 		}
+
+		isSaving = true;
 
 		DriverOnboardingService.save( $scope.driver, function( json ){
 console.log('json',json);
