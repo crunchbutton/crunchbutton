@@ -498,9 +498,10 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 } );
 
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $fileUploader, DriverOnboardingService, CommunityService ) {
-console.log( 'DriversOnboardingFormCtrl' );
+
 	$scope.ready = false;
 	$scope.submitted = false;
+	$scope.isSaving = false;
 
 	var docs = function(){
 		// Load the docs
@@ -564,34 +565,37 @@ console.log( 'DriversOnboardingFormCtrl' );
 		$scope.doc_uploaded = id_driver_document
 	}
 
-	var isSaving = false;
-
 	// method save that saves the driver
 	$scope.save = function(){
 
-		if( isSaving ){
+		if( $scope.isSaving ){
 			return;
 		}
 
-console.log('$scope.form.$invalid',$scope.form.$invalid);
 		if( $scope.form.$invalid || !$scope.driver.phone ){
 			$scope.submitted = true;
-			isSaving = false;
+			$scope.isSaving = false;
 			return;
 		}
-console.log('isSaving',isSaving);
-		isSaving = true;
+		$scope.isSaving = true;
 
 		DriverOnboardingService.save( $scope.driver, function( json ){
-console.log('json',json);
+
 			if( json.success ){
-console.log('json.success.id_admin',json.success.id_admin);
+
 				var url = '/drivers/onboarding/' + json.success.id_admin;
-console.log('url',url);
-				$scope.navigation.link( url );
+
+				if( $scope.driver.id_admin ){
+					$scope.reload();
+				} else {
+					$scope.navigation.link( url );
+				}
+
 				setTimeout( function(){
 					$scope.flash.setMessage( 'Driver saved!' );
 				}, 500 );
+
+				$scope.isSaving = false;
 
 			} else {
 				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
