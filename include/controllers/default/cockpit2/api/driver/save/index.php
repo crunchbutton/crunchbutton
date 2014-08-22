@@ -103,7 +103,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$log->datetime = date('Y-m-d H:i:s');
 		$log->save();
 
-		if ( $this->request()[ 'notify' ] ) {
+		if ( $newDriver ) {
 			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
 		}
 
