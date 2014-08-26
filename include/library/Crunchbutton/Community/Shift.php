@@ -632,7 +632,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
 							$log = 'Sending sms to: ' . $name . ' - ' . $num . ': ' . $msg;
 							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 							echo $log."\n";
@@ -732,7 +732,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					// Log
 					Log::debug( [ 'action' => 'sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
 					if( $twilio ){
-						$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+						$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
 					}
 					$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg;
 					Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
@@ -844,7 +844,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 										try {
 											// Log
 											Log::debug( [ 'action' => 'sending remind sms before shift', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-											$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+											$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
 											$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
 											Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
 											echo $log."\n";
