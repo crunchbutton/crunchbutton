@@ -99,6 +99,61 @@
 				</tbody>
 			</table>
 		</div>
+
+		<br/><br/>
+
+		<h2 class="title">
+			<span>Refunded Orders</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td></td>
+					<td>#</td>
+					<td>Restaurant</td>
+					<td>Name</td>
+					<td>Type</td>
+					<td>Tip</td>
+					<td>Delivery Fee</td>
+					<td>Reimburse</td>
+					<td>Payment</td>
+					<td>Date</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody ng-repeat="driver in result.drivers">
+				<tr ng-repeat="order in driver.orders" ng-if="order.refunded">
+					<td></td>
+					<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
+					<td ng-class="{ 'excluded': !order.included }">{{order.restaurant}}</td>
+					<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
+					<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
+					<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
+					<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
+					<td ng-class="{ 'excluded': !order.included }">$ {{order.total_reimburse | formatPrice}}</td>
+					<td ng-class="{ 'excluded': !order.included }">$ {{order.total_payment | formatPrice}}</td>
+					<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
+					<td>
+						<span class="pointer orange" ng-click="do_not_pay_driver( order.id_order, driver.id_admin, 1 )" ng-if="order.included">
+							<i class="fa fa-square-o"></i> Do not pay for it.
+						</span>
+						<span class="pointer" ng-click="do_not_pay_driver( order.id_order, driver.id_admin, 0 )" ng-if="!order.included">
+							<i class="fa fa-check-square-o"></i> Will not be paid!
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<br/><br/>
+
+		<h2 class="title">
+			<span>Drivers</span>
+		</h2>
+
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>

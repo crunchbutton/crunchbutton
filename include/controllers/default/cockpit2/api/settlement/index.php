@@ -429,6 +429,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
 					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
 					$_order[ 'date' ] = $order[ 'date' ];
+					$_order[ 'refunded' ] = $order[ 'refunded' ];
 					$_order[ 'included' ] = !$order[ 'do_not_pay_driver' ];
 					if( !$_order[ 'included' ] ){
 						$driver[ 'not_included' ]++;
