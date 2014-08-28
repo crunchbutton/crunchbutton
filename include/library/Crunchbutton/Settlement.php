@@ -213,15 +213,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$pay = [];
 
 		// amount for each invited user
-
 		foreach ( $orders as $order ) {
 
 			if( $order && $order[ 'id_admin' ] ){
 
-				// Refunded orders are not paid
- 				if( $order[ 'refunded' ] == 1 ){
-					continue;
-				}
+				// Refunded Driver Orders Should Show Up! #3568 -- !(Refunded orders are not paid)
+ 				// if( $order[ 'refunded' ] == 1 ){
+					// continue;
+				// }
 
 				$driver = $order[ 'id_admin' ];
 				if( !$pay[ $driver ] ){
