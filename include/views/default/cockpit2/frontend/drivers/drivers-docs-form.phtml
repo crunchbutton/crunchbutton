@@ -9,15 +9,15 @@
 	<div class="dialog-message dialog-message-error" style="font-size: 1.3em; letter-spacing: 0px;">
 			Please upload documents using a desktop computer!
 	</div>
-	
+
 	<h1 class="title left"  style="font-size: 2.7em; margin-bottom: .2em;"><i class="fa fa-briefcase" style="vertical-align: baseline;"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
 
-	<h2 ng-if="!isLive" class="payment-info-text" ng-click="pay_info()"><span class="link orange">Enter Payment Info</span></h2>
-	
+	<h2 class="payment-info-text" ng-click="pay_info()"><span class="link orange">Enter Payment Info</span></h2>
+
 	<div class="divider"></div>
-	
+
 	<h2 class="title driver-docs-text">
 		Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_system">Hellosign</a>.
 	</h2>
@@ -53,7 +53,7 @@
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download-card" href="{{doc.status.url}}" target="_blank"><b>Download Doc</b></a></span>
 				</td>
 				<td class="td-medium td-download">
-					
+
 					<div class="upbutton"><div driver-docs-upload="{{doc.id_driver_document}}"></div></div>
 				</td>
 			</tr>
