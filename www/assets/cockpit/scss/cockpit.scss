@@ -1010,6 +1010,9 @@ input {
 	.tb-zebra tr:nth-child(2n){
 		background: #F5F5F5;
 	}
+	.tb-zebra td{
+		color: #333;
+	}
 
 	.tb-zebra .excluded {
 		color: #CCC;
@@ -1094,7 +1097,7 @@ input {
 		text-align: left;
 		font-family: Ruda;
 	}
-	
+
 	/* Driver Documents Form*/
 	.upbutton {
 		width: 111px;
@@ -1102,14 +1105,14 @@ input {
 		float: right;
 		text-align: right;
 	}
-	
+
 	.payment-info-text{
 		margin-bottom: .2em;
 		font-size: 1.4em;
 		margin-top: .2em;
 		line-height: 1.4em
 	}
-	
+
 	.driver-docs-grid{
 		border-collapse: separate;
 		border-spacing: 0px 7px;
@@ -1131,23 +1134,23 @@ input {
 		.driver-docs-grid .td-download{
 			vertical-align: top;
 		}
-		
+
 	.driver-docs-text{
 		font-size: 1.25em;
 		letter-spacing: 0px;
 		margin-bottom: .2em;
 	}
-	
+
 	.docs-download-form{
 		font-size: 100%;
 		font-weight: bold;
 		margin-right: 4.5em;
 	}
-	
+
 	.docs-download-card{
 		font-size: 100%;
 	}
-	
+
 	.driver-docs-card{
 		vertical-align: middle;
 	}
@@ -1625,7 +1628,7 @@ h4.title{
 		background-color: #d6d9dc;
 		color: #48494C;
 	}
-	
+
 	.delivered .myOrder .column-info .customer-pointer{
 		color: #48494C;
 	}
@@ -2009,7 +2012,7 @@ h4.title{
 	.detail {
 		font-size: 1.2em;
 	}
-	
+
 	.detail thead{
 		font-weight: bold;
 	}
@@ -2163,43 +2166,43 @@ h4.title{
 	.fooditem {
 		border-bottom: 1px solid #999;
 	}
-	
+
 	.dish-name{
 		text-align: center;
 	}
-	
+
 	.dish-price{
 		font-size: 1.2em;
 		color: #666;
 		text-align: right;
 	}
-	
+
 	.order-total-row{
 		font-weight: bold;
 	}
-	
+
 	.order-total-text{
 		text-align: right;
 		font-size: 1.2em;
 	}
-	
+
 	.order-tip-cash{
 		text-align: left;
 	}
-	
+
 	.your-take{
 		width: 100%;
 	}
-	
+
 	.topitem, .fooditem {
 		border-bottom: 2px solid #999;
 		font-size: 1.2em;
 	}
-	
+
 	.itemname{
 		text-align: center;
 	}
-	
+
 	.itemprice{
 		width: 80px;
 		text-align: right;
