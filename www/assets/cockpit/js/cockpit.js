@@ -104,7 +104,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'RestaurantOrderPlacementView',
 			templateUrl: 'assets/view/restaurant-order-placement-view.html'
 		})
-		
+
 		/* Restaurants */
 		.when('/restaurant/order/new', {
 			action: 'restaurant-order-new',
@@ -121,7 +121,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'RestaurantOrderView',
 			templateUrl: 'assets/view/restaurant-order-view.html'
 		})
-		
+
 		/* Settlement */
 		.when('/settlement', {
 			action: 'settlement',
@@ -200,7 +200,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/customer-reward-config.html'
 		})
 		/* Driver shifts */
-
 		.when('/drivers/dashboard', {
 			action: 'drivers-dashboard',
 			controller: 'DriversDashboardCtrl',
@@ -694,7 +693,7 @@ App.init = function(config) {
 		});
 	}
 	*/
-	
+
 	App.push.init();
 
 	// setup for system links
@@ -823,7 +822,7 @@ App.push = {
 		document.addEventListener('pushnotification', function(e) {
 			App.push.receive(e.msg);
 		}, false);
-		
+
 		parent.plugins.pushNotification.register(
 			function(id) {
 				App.push.id = id;
@@ -841,9 +840,9 @@ App.push = {
 	},
 	receive: function(msg) {
 		console.debug('Notification: ', msg);
-		
+
 		var complete = function() {
-			
+
 		};
 
 		// iOS
