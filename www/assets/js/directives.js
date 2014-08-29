@@ -564,7 +564,20 @@ NGApp.directive('equals', function() {
 		restrict: 'A', // only activate on element attribute
 		require: '?ngModel', // get a hold of NgModelController
 		link: function(scope, elem, attrs, ngModel) {
+
 			if(!ngModel) return; // do nothing if no ng-model
+
+			elem.bind( 'blur', function ( evt ) {
+				scope.$apply( function () {
+					validate();
+				} );
+			} );
+
+			elem.bind( 'change', function ( evt ) {
+				scope.$apply( function () {
+					validate();
+				} );
+			} );
 
 			// watch own value and re-validate on change
 			scope.$watch(attrs.ngModel, function() {
@@ -573,6 +586,10 @@ NGApp.directive('equals', function() {
 
 			// observe the other value and re-validate on change
 			attrs.$observe('equals', function (val) {
+				validate();
+			});
+
+			attrs.$observe(ngModel, function (val) {
 				validate();
 			});
 
