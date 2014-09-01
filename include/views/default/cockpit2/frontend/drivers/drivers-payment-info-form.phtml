@@ -36,14 +36,19 @@
 				</li>
 				<li class="li-input">
 					<button class="button green" ng-click="save_basic_info();">Save</button>
+					<br/><br/>
+					After save this form you will have to enter your Bank Account information.
 				</li>
 			</ul>
 		</div>
 	</form>
 
-	<form name="formBank" novalidate ng-show="basicInfo.id_admin_payment_type">
+	<form name="formBank" novalidate ng-show="basicInfo.legal_name_payment && basicInfo.social_security_number">
+
+		<hr/>
+
 		<h2 class="title">Bank Account</h2>
-		<div class="ul-inputs box-content">
+		<div class="ul-inputs box-content2">
 			<p ng-show="!bank.showForm">
 				<span ng-click="bank.showForm = 1" class="link orange">Edit</span>
 			</p>

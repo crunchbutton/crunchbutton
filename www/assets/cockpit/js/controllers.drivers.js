@@ -826,7 +826,6 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 	}
 
 	$scope.tokenize = function(){
-
 		if( $scope.formBank.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.bankSubmitted = true;
