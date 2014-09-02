@@ -5,6 +5,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		$hasPermission = ( c::admin()->permission()->check( ['global', 'permission-all', 'permission-users'] ) );
+
 		if( $hasPermission ){
 			if( c::getPagePiece( 3 ) ){
 				$admin = Admin::o( c::getPagePiece( 3 ) );
