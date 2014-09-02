@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'settlement-id_order-start','1');

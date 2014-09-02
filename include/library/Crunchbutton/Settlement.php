@@ -7,12 +7,16 @@
  *
  */
 
+
 class Crunchbutton_Settlement extends Cana_Model {
 
 	const DEFAULT_NOTES = 'Crunchbutton Orders';
 
 	const TEST_SUMMARY_FAX = '_PHONE_';
 	const TEST_SUMMARY_EMAIL = 'daniel@_DOMAIN_';
+
+	// id_orders equals or lower than that will be ignored
+	const CONFIG_KEY_ID_ORDER_START = 'settlement-id_order-start';
 
 	public function __construct( $filters = [] ) {
 		$this->filters = $filters;
@@ -583,6 +587,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'driver_paid' ] = Cockpit_Payment_Schedule_Order::checkOrderWasPaidDriver( $order->id_order );
 		if( !$values[ 'driver_paid' ] ){
 			$values[ 'driver_paid' ] = Crunchbutton_Order_Transaction::checkOrderWasPaidDriver( $order->id_order );
+		}
+
+		// Assumes the order was already paid
+		// Checklist for AFTER new settlement is deployed #3603 - item 2
+		$id_order_start = $this->id_order_start();
+		if( intval( $values[ 'id_order' ] ) >= $id_order_start ){
+			$values[ 'restaurant_paid' ] = true;
+			$values[ 'driver_reimbursed' ] = true;
+			$values[ 'driver_paid' ] = true;
 		}
 
 		if( $values[ 'id_admin' ] ){
@@ -1498,6 +1511,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		return false;
+	}
+
+	public function id_order_start(){
+		if( !$this->_id_order_start ){
+			$id_order = Crunchbutton_Config::getVal( Crunchbutton_Settlement::CONFIG_KEY_ID_ORDER_START );
+			$this->_id_order_start = intval( $id_order );
+		}
+		return $this->_id_order_start;
 	}
 
 	public function amount_per_invited_user(){
