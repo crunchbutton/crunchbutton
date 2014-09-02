@@ -2,7 +2,8 @@
 
 class Controller_api_config_processor extends Crunchbutton_Controller_Rest {
 	public function init() {
-		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+
+		if( !c::user()->id_admin ){
 			$this->_error();
 		}
 
