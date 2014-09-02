@@ -826,6 +826,13 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 	}
 
 	$scope.tokenize = function(){
+
+		if( !$scope.basicInfo.id_admin_payment_type ){
+			App.alert( 'You must save the "Basic Information" form before save the Bank Account Information.' );
+			return;
+		}
+
+
 		if( $scope.formBank.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.bankSubmitted = true;
