@@ -35,17 +35,15 @@
 					</div>
 				</li>
 				<li class="li-input">
-					<button class="button green" ng-click="save_basic_info();">Save</button>
+					* After save this form you will have to enter your Bank Account information.
 					<br/><br/>
-					After save this form you will have to enter your Bank Account information.
+					<button class="button green" ng-click="save_basic_info();">Save</button>
 				</li>
 			</ul>
 		</div>
 	</form>
 
-	<form name="formBank" novalidate ng-show="basicInfo.legal_name_payment && basicInfo.social_security_number">
-
-		<hr/>
+	<form name="formBank" novalidate>
 
 		<h2 class="title">Bank Account</h2>
 		<div class="ul-inputs box-content2">
