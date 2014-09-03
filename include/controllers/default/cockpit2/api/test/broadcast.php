@@ -6,6 +6,8 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
+		die('please uncomment this line');
+
 		switch ( c::getPagePiece( 3 ) ) {
 			case 'sms':
 				Controller_Api_Test_Broadcast::sms();
