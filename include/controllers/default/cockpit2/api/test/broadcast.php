@@ -2,7 +2,7 @@
 
 class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount {
 
-	const FOR_REAL = false;
+	const FOR_REAL = true;
 
 	public function init() {
 
