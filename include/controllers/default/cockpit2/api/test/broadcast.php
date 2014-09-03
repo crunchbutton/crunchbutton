@@ -49,7 +49,7 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 																										'message' => $message ] );
 
 			if( Controller_Api_Test_Broadcast::FOR_REAL ){
-				$mail->send();
+				// $mail->send();
 			} else {
 				if( $driver->id_admin == 5 ){
 					echo "For real:\n\n";
@@ -90,7 +90,7 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 					try {
 						// Log
 						if( Controller_Api_Test_Broadcast::FOR_REAL ){
-							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
+							// $twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
 						} else {
 							if( $driver->id_admin == 5 ){
 								echo "For real:\n\n";
