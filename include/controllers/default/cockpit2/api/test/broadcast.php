@@ -36,7 +36,8 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 								'<br/><br/>'.
 								'Starting Monday, Sept. 8, we are going to reimburse you for orders directly through our system every day, rather than weekly or through Abacus.'.
 								'<br/>'.
-								'So please, before this date, go online and RE-enter your direct deposit info at http://cockpit.la/drivers/docs/payment'.
+								'So please, before this date, go online and RE-enter your direct deposit info at http://cockpit.la/drivers/docs/payment .'.
+								'<br/>'.
 								'<br/>'.
 								'Please note that salary payment will still be every Friday.';
 
