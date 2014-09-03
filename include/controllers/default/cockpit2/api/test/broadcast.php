@@ -19,12 +19,6 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 				die( 'Nothing here' );
 				break;
 		}
-
-		// Send message to drivers
-		// Checklist for AFTER new settlement is deployed #3603
-
-
-
 	}
 
 	public function email(){
@@ -37,8 +31,7 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 								'Starting Monday, Sept. 8, we are going to reimburse you for orders directly through our system every day, rather than weekly or through Abacus.'.
 								'<br/>'.
 								'So please, before this date, go online and RE-enter your direct deposit info at http://cockpit.la/drivers/docs/payment .'.
-								'<br/>'.
-								'<br/>'.
+								'<br/><br/>'.
 								'Please note that salary payment will still be every Friday.';
 
 		$subject = 'Crunchbutton Reimbursement Change';
@@ -50,7 +43,7 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 																										'message' => $message ] );
 
 			if( Controller_Api_Test_Broadcast::FOR_REAL ){
-				// $mail->send();
+				$mail->send();
 			} else {
 				if( $driver->id_admin == 5 ){
 					echo "For real:\n\n";
@@ -91,7 +84,7 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 					try {
 						// Log
 						if( Controller_Api_Test_Broadcast::FOR_REAL ){
-							// $twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
 						} else {
 							if( $driver->id_admin == 5 ){
 								echo "For real:\n\n";
