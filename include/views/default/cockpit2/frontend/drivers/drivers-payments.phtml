@@ -37,8 +37,7 @@
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Payment' }" ng-click="filter = 'Payment'">Payments</button>
 				<div class="divider"></div>
 			</div>
-
-			<table class="tb-grid tb-zebra">
+			<table class="tb-grid tb-zebra" ng-if="result.payments.length">
 				<thead>
 					<tr>
 						<td>Type</td>
@@ -66,7 +65,7 @@
 		</div>
 
 		<div ng-if="!result.payments.length" class="box-content2">
-			Nothing here.
+			Nothing yet. Go deliver some food!
 		</div>
 
 	</div>
