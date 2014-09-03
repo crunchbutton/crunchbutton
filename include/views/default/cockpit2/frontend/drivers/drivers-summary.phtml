@@ -24,9 +24,9 @@
 
 	<div ng-if="summary.payments">
 
-		<h2 class="title">Summary</h2>
+		<h2 class="title" ng-show="summary.payments.length">Summary</h2>
 
-		<table class="tb-grid tb-zebra">
+		<table class="tb-grid tb-zebra" ng-show="summary.payments.length">
 			<thead>
 				<tr>
 					<td>Type</td>
@@ -87,7 +87,11 @@
 					</tr>
 				</tbody>
 			</table>
-			<br>
+			<p class="note">
+				Earnings are the money you made: delivery fees and non-cash tips (you'll actually make more from cash tips). Reimbursement is us paying you back for the money you spend in the restaurants that require drivers to pay in the restaurant.
+			</p>
+			<br />
+			<br />
 
 		</div>
 
@@ -301,7 +305,7 @@
 	</div>
 
 	<div ng-if="!summary.weeks && !isLoading" class="box-content2">
-		Nothing here.
+		Nothing yet. Go deliver some food!
 	</div>
 
 </div>
