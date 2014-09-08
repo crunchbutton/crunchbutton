@@ -100,7 +100,7 @@
 			<div class="ul-inputs box-content2">
 
 				<p ng-show="!bank.showForm">
-					This worker already has a bank account. <span class="link orange">Edit</span>
+					This worker already has a bank account. <span ng-click="bank.showForm = 1" class="link orange">Edit</span>
 				</p>
 
 				<ul ng-class="{'submitted':bankSubmitted}" ng-show="bank.showForm">
