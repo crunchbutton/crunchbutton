@@ -592,7 +592,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		// Assumes the order was already paid
 		// Checklist for AFTER new settlement is deployed #3603 - item 2
 		$id_order_start = $this->id_order_start();
-		if( intval( $values[ 'id_order' ] ) >= $id_order_start ){
+		if( intval( $values[ 'id_order' ] ) <= $id_order_start ){
 			$values[ 'restaurant_paid' ] = true;
 			$values[ 'driver_reimbursed' ] = true;
 			$values[ 'driver_paid' ] = true;
