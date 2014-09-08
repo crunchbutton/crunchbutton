@@ -68,7 +68,8 @@
 					<td>{{worker.login}}</td>
 					<td><span ng-repeat="community in worker.communities">{{community}}</span></td>
 					<td>
-						<span class="link orange" ng-click="payinfo(worker.id_admin)">Pay info</span>
+						<span class="link orange" ng-click="payinfo(worker.id_admin)">Pay info</span>&nbsp;
+						<a title="Open Pay Info in new window" href="/staff/payinfo/{{worker.id_admin}}" target="_blank"><span class="link orange"><i class="fa fa-share-square"></i></span></a>
 					</td>
 				</tr>
 			</tbody>
