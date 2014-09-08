@@ -10,7 +10,7 @@ class Controller_api_staff_list extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 
-		$resultsPerPage = 20;
+		$resultsPerPage = 200;
 
 		if ( $this->request()[ 'page' ] ) {
 			$page = $this->request()[ 'page' ];

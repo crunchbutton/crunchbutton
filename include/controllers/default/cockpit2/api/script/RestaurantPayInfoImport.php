@@ -195,7 +195,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 85;Jordan's Hot Dogs & Mac;;check;;;957 State St., New Haven, CT, 06511;
 133;La Paloma;;check;;;175 3rd Avenue, New York, NY, 10003;
 134;The Wok;;check;;Longevity;180 Worcester Street, Wellesley, MA, 02481;
-135;Big Tony's Pizza;;deposit;261123866 00;;;
+135;Big Tony's Pizza;;deposit;261123866;;;
 123;Cilantro North Providence;;check;;;1650 Mineral Spring Avenue, North Providence, RI, 02904;
 142;Little Thai Kitchen;;check;;;13 Popham Road, Scarsdale, NY, 10583;
 143;Tomatillo Taco;tomatillo.taco@gmail.com;check;56626062001;316 Elm Street LLC;320 Elm St, New Haven, CT, 06511;
@@ -218,7 +218,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 179;Rio Grande Tex- Mex Grille;;check;;;3913 Oneida Street, New Hartford, NY, 13413;
 165;Tony's Pizzeria;;check;;;41 College Street, Clinton, NY, 13323;
 188;Uncle Tony's Pizza;;check;;;360 Dorset Street, S. Burlington, VT, 05403;
-201;FoBoGro;;check;;FoBoGro - for Brianna DeBrock;2140 F St NW, Washington, DC 20037;
+201;FoBoGro;;check;;FoBoGro - for Brianna DeBrock;2140 F St NW, Washington, DC, 20037;
 196;Hannaford's;;n/a;;;;
 197;Hill Party ;;n/a;;;;
 181;Mitsuba;;n/a;;;17 Ellinwood Drive, New Hartford, NY, 13413;
@@ -243,8 +243,8 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 235;I am BC Gorilla;;n/a;;;;
 248;G-DUB WINGZZZZ;;n/a;;;;
 251;TG Express;;check;;New TG Express;1906 W 3rd St, Los Angeles, CA, 90057;
-223;Mayura Amrit;pputhe@yahoo.com (might be pputne@yahoo.com;check;;Mayura Amrit LLC;1277 West Jefferson Boulevard, Los Angeles, CA, 90007;
-256;Mayura Restaurant;pputhe@yahoo.com (might be pputne@yahoo.com;check;;Anjaneya Group Inc;10406 Venice Blvd, Culver City, CA, 90232;
+223;Mayura Amrit;;;Mayura Amrit LLC;1277 West Jefferson Boulevard, Los Angeles, CA, 90007;
+256;Mayura Restaurant;;check;;Anjaneya Group Inc;10406 Venice Blvd, Culver City, CA, 90232;
 254;Chipotle DELIVERED;;n/a;;;;
 257;Ham-Mart;;n/a;;;;
 258;Puppy Visit;;n/a;;;;
@@ -358,5 +358,3 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 541;Buffalo Wild Wings;;n/a;;;;";
 	}
 }
-echo '<pre>';
-Controller_Api_Script_RestaurantPayInfoImport::init();
