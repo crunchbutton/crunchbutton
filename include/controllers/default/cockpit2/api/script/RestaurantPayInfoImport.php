@@ -7,6 +7,8 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 
 	public function init() {
 
+		die('remove it');
+
 		$data = Controller_Api_Script_RestaurantPayInfoImport::data();
 		$data = explode( "\n",  $data );
 
