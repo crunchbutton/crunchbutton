@@ -54,16 +54,16 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 						$errors[] = 'Zip: ' . $payment->check_address_zip;
 					}
 				} else {
-					$errors[] = 'Address: ' . $address;
+					$errors[] = 'Missing Address';
 				}
 			} else {
-
+				$errors[] = 'Missing Address';
 			}
 
 			if( $method != '' && ( $method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_CHECK || $method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT ) ){
 				$payment->method = $method;
 			} else {
-				$errors[] = 'Payment Method: ' . $method;
+				$errors[] = 'Missing Payment Method: ' . $method;
 			}
 
 			if( $email != '' ){
@@ -82,7 +82,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 				if( strlen( $tax_id ) == 9 ){
 					$payment->tax_id = $tax_id;
 				} else {
-					$errors[] = 'Tax ID: ' . $tax_id;
+					$errors[] = 'Invalid Tax ID: ' . $tax_id;
 				}
 			}
 
@@ -150,13 +150,14 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 		foreach ( $_saved as $saved ) {
 			echo $saved. "\n";
 		}
+
 		echo "\n--------------------------------\n\n";
-/* echo 'ERRORS: ' . count( $_errors ) . "\n";
+		echo 'ERRORS: ' . count( $_errors ) . "\n";
 		foreach ( $_errors as $error ) {
 			echo $error. "\n";
 		}
 		echo "\n--------------------------------\n\n";
-*/
+
 	}
 
 	// cvs converted into string
