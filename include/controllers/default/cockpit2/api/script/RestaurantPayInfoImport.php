@@ -94,7 +94,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 
 			if( count( $errors ) > 0 ){
 				$_restaurant = '';
-				$shouldSave = false;
+				// $shouldSave = false;
 				$_restaurant .= $legal_name_payment . ' ID:' . $id_restaurant;
 				foreach( $errors as $error ){
 					$_restaurant .= "\n" . $error ;
