@@ -12,6 +12,11 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 
 		$_errors = [];
 		$_saved = [];
+		$_nope = [ 	'summary' => [],
+								'method' => [],
+								'tax_id' => [],
+								'legal_name' => [],
+								'check_address' => [] ];
 
 		foreach ( $data as $row ) {
 
@@ -51,6 +56,8 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 				} else {
 					$errors[] = 'Address: ' . $address;
 				}
+			} else {
+
 			}
 
 			if( $method != '' && ( $method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_CHECK || $method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT ) ){
@@ -97,22 +104,59 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 			}
 
 			if( $shouldSave ){
+				$payment->save();
 				$_saved[] = $legal_name_payment;
 			}
+
+			if( !$payment->method ){
+				$_nope[ 'method' ][] = $legal_name_payment;
+			}
+			if( !$payment->summary ){
+				$_nope[ 'summary' ][] = $legal_name_payment;
+			}
+			if( !$payment->tax_id ){
+				$_nope[ 'tax_id' ][] = $legal_name_payment;
+			}
+			if( $payment->method == 'check' && !$payment->check_address ){
+				$_nope[ 'check_address' ][] = $legal_name_payment;
+			}
 		}
+
+		echo 'Method: ' . count( $_nope[ 'method' ] ) . "\n";
+		foreach ( $_nope[ 'method' ] as $restaurant ) {
+			echo $restaurant. ':' . $restaurant->id_restaurant . "\n";
+		}
+		echo "\n--------------------------------\n\n";
+
+		echo 'Summary: ' . count( $_nope[ 'summary' ] ) . "\n";
+		foreach ( $_nope[ 'summary' ] as $restaurant ) {
+			echo $restaurant. ':' . $restaurant->id_restaurant . "\n";
+		}
+		echo "\n--------------------------------\n\n";
+
+		echo 'Tax Id: ' . count( $_nope[ 'tax_id' ] ) . "\n";
+		foreach ( $_nope[ 'tax_id' ] as $restaurant ) {
+			echo $restaurant. ':' . $restaurant->id_restaurant . "\n";
+		}
+		echo "\n--------------------------------\n\n";
+
+		echo 'Address: ' . count( $_nope[ 'check_address' ] ) . "\n";
+		foreach ( $_nope[ 'check_address' ] as $restaurant ) {
+			echo $restaurant. ':' . $restaurant->id_restaurant . "\n";
+		}
+		echo "\n--------------------------------\n\n";
 
 		echo 'SAVED: ' . count( $_saved ) . "\n";
 		foreach ( $_saved as $saved ) {
 			echo $saved. "\n";
 		}
 		echo "\n--------------------------------\n\n";
-
-		echo 'ERRORS: ' . count( $_errors ) . "\n";
+/* echo 'ERRORS: ' . count( $_errors ) . "\n";
 		foreach ( $_errors as $error ) {
 			echo $error. "\n";
 		}
 		echo "\n--------------------------------\n\n";
-
+*/
 	}
 
 	// cvs converted into string
