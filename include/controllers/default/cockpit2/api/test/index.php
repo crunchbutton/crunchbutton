@@ -3,6 +3,7 @@
 class Controller_api_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
+			die('payment test');
 			$payment_type = Crunchbutton_Admin_Payment_Type::byAdmin( 3 );
 			try {
 				$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, 1, 'one dollar test' );
