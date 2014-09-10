@@ -23,4 +23,13 @@ class Crunchbutton_Admin_Payment_Type extends Cana_Table {
 		}
 		return false;
 	}
+
+	function claimBankAccount( $bank_account ){
+		$env = c::getEnv();
+		$headers = [ "Accept: application/vnd.api+json;revision=1.1" ];
+		$url = 'https://api.balancedpayments.com/bank_accounts/' . $bank_account;
+		$auth = c::config()->balanced->{$env}->secret;
+		$request = new \Cana_Curl($url, null, 'get', null, $headers, null, [ 'user' => $auth, 'pass' => '' ] );
+		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
+	}
 }

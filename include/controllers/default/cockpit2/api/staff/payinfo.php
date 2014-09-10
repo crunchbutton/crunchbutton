@@ -96,6 +96,10 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$payment_type->balanced_bank = $this->request()[ 'id' ];
 		$payment_type->balanced_id = $this->request()[ 'href' ];
 		$payment_type->save();
+
+		// claim it
+		$payment_type->claimBankAccount( $payment_type->balanced_bank );
+
 		$this->payInfo( $admin );
 	}
 
