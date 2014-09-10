@@ -3,18 +3,14 @@
 class Controller_api_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
-		die('remove this line!');
-
-
-		$bank_account = 'BA3doORHN1hauK18yRbTGD1h';
-
-		$headers = [ "Accept: application/vnd.api+json;revision=1.1" ];
-		$url = 'https://api.balancedpayments.com/bank_accounts/' . $bank_account;
-		$auth = c::config()->balanced->{'live'}->secret;
-		$request = new \Cana_Curl($url, null, 'get', null, $headers, null, [ 'user' => $auth, 'pass' => '' ] );
-		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
-		echo '<pre>';var_dump( $request );exit();
-
-
+			$payment_type = Crunchbutton_Admin_Payment_Type::byAdmin( 3 );
+			try {
+				$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, 1, 'one dollar test' );
+			} catch ( Exception $e ) {
+				echo '<pre>';var_dump( $e );exit();
+				throw new Exception( $e->getMessage() );
+				exit;
+			}
+			echo '<pre>';var_dump( $credit );exit();
 	}
 }
