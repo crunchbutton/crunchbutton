@@ -151,7 +151,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					FROM restaurant
 						LEFT OUTER JOIN ( SELECT id_restaurant, `date` FROM `payment` ) AS p using(id_restaurant)
 						INNER JOIN restaurant_payment_type rpt ON rpt.id_restaurant = restaurant.id_restaurant
-					WHERE active=1 ';
+					WHERE 1=1 ';
 		if ($filters['payment_method']) {
 			 $q .= ' AND rpt.payment_method = "'.$filters['payment_method']. '" ';
 		} else {
