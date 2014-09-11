@@ -41,6 +41,10 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$this->_list();
 				break;
 
+			case 'remove':
+				$this->_remove();
+				break;
+
 			case 'approve':
 				$this->_approve();
 				break;
@@ -198,6 +202,16 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				}
 				echo json_encode( $list );
 				break;
+		}
+	}
+
+	private function _remove(){
+		$doc = Cockpit_Driver_Document_Status::o( c::getPagePiece( 4 ) );
+		if( $doc->id_driver_document_status ){
+			$doc->delete();
+			echo json_encode( [ 'success' => true ] );exit();
+		} else {
+			$this->_error();
 		}
 	}
 
