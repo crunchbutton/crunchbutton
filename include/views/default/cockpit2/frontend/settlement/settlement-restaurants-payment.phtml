@@ -38,7 +38,13 @@
 				</tr>
 				<tr ng-if="result.status == 'error' && result.log">
 					<td><strong>Error log</strong></td>
-					<td class="orange">{{result.log}}</td>
+					<td class="orange">
+						{{result.log}}
+						<br />
+						<a href="http://cockpit.crunchbutton.com/restaurants/{{result.id_restaurant}}/pay" target="_blank">
+								Edit payment method
+						</a>
+					</td>
 				</tr>
 				<tr ng-if="result.status == 'error' && result.status_date">
 					<td><strong>Last try</strong></td>
