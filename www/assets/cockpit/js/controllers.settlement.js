@@ -14,6 +14,10 @@ NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 		$scope.navigation.link( '/settlement/restaurants/scheduled' );
 	}
 
+	$scope.restaurants_no_payment_method = function(){
+		$scope.navigation.link( '/settlement/restaurants/no-payment-method' );
+	}
+
 	$scope.drivers = function(){
 		$scope.navigation.link( '/settlement/drivers' );
 	}
@@ -30,6 +34,16 @@ NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 		$scope.navigation.link( '/staff/list' );
 	}
 
+} );
+
+NGApp.controller( 'SettlementRestaurantsNoPaymentCtrl', function ( $scope, RestaurantService ) {
+	$scope.result = [];
+	if( $scope.account.isLoggedIn() ){
+		RestaurantService.no_payment_method( function( json ){
+			$scope.ready = true;
+			$scope.result.restaurants = json;
+		} );
+	}
 } );
 
 NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, SettlementService ) {

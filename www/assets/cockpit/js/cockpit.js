@@ -133,6 +133,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementRestaurantsCtrl',
 			templateUrl: 'assets/view/settlement-restaurants.html'
 		})
+		.when('/settlement/restaurants/no-payment-method', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsNoPaymentCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-no-payment-method.html'
+		})
 		.when('/settlement/restaurants/scheduled', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsScheduledCtrl',

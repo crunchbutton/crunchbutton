@@ -1,0 +1,42 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Restaurants</span></h1>
+
+	<div class="divider"></div>
+
+	<div ng-if="result">
+
+		<div ng-if="result.restaurants">
+
+			<h2 class="title">
+				<span>Active restaurants with formal relationship and no payment method</span>
+			</h2>
+
+			<table class="tb-grid tb-zebra">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td class="td-medium">Restaurant</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="restaurant in result.restaurants">
+						<td>{{restaurant.id_restaurant}}</td>
+						<td>{{restaurant.name}}</td>
+						<td>
+							<a href="http://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}/pay" target="_blank">
+							Add a payment method
+						</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
