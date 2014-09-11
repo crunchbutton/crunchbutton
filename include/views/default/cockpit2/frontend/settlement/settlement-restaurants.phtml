@@ -48,7 +48,7 @@
 
 	</form>
 
-	<div class="box-content" ng-show="!showForm">
+	<div class="box-content2" ng-show="!showForm">
 		<p>
 			Listing orders from <strong>{{range.start | date:'MM/dd/yyyy'}}</strong> to <strong>{{range.end | date:'MM/dd/yyyy'}}</strong> and payment method <strong>{{pay_type_label}}</strong>.
 			<br>
@@ -161,6 +161,7 @@
 					<td></td>
 					<td class="td-medium">Restaurant</td>
 					<td class="td-medium">Total Due</td>
+					<td></td>
 				</tr>
 			</thead>
 			<tbody>
@@ -168,13 +169,20 @@
 					<td><span class="link" ng-click="show_details(restaurant)"><i class="fa fa-pencil-square-o"></i></span></td>
 					<td>{{restaurant.name}}</td>
 					<td>$ {{restaurant.total_due | formatPrice}}</td>
+					<td>
+						<a href="http://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}/pay" target="_blank">
+							<span ng-if="!restaurant.has_payment_type" class="sp-label sp-label-danger">
+								Restaurant With No Payment Method
+							</span>
+						</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 
 		<br/><br/>
 
-		<ul class="ul-inputs box-content">
+		<ul class="ul-inputs box-content2">
 			<li class="li-input">
 				<button class="button button-big save" ng-click="schedule();">Pay Restaurants</button>
 			</li>

@@ -178,6 +178,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$restaurant[ 'last_payment' ] = $_lastPayment;
 			}
 			$restaurant[ 'name' ] = $_restaurant->name;
+			$restaurant[ 'has_payment_type' ] = $_restaurant->hasPaymentType();
 			$restaurant[ 'id_restaurant' ] = $_restaurant->id_restaurant;
 			$restaurant[ 'not_included' ] = 0;
 			$restaurant[ 'orders_count' ] = 0;
