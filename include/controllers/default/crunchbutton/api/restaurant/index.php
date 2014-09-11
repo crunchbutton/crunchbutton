@@ -142,7 +142,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 			case 'post':
 
 				// @todo: real logins
-				if ($_SESSION['admin']) {
+				if ($_SESSION['admin'] || c::admin()) {
 					// save the restaurant
 					$r = Restaurant::o(c::getPagePiece(2));
 					/* @var $r Crunchbutton_Restaurant */
