@@ -100,6 +100,9 @@
 						</span>
 					</td>
 					<td>
+						<span ng-if="doc.status" class="link orange" ng-click="remove( doc.status.id_driver_document_status )">Delete</span>
+					</td>
+					<td>
 						<div ng-if="doc.status" class="pointer" ng-click="approve(doc.status)">
 							<span ng-if="doc.status.approved">
 								<i class="fa fa-check-square-o"></i> {{doc.status.approved}}

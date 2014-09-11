@@ -518,6 +518,14 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		} );
 	}
 
+	$scope.remove = function( id_driver_document_status ){
+		if( confirm( 'Confirm remove document?' ) ){
+			DriverOnboardingService.docs.remove( id_driver_document_status, function( data ){
+				docs();
+			} );
+		}
+	}
+
 	var docsPendency = function(){
 		DriverOnboardingService.docs.pendency( $routeParams.id, function( data ){  } );
 	}
