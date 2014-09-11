@@ -31,6 +31,15 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 						}
 						echo json_encode( $export );
 						break;
+
+					case 'no-payment-method':
+						$restaurants = Crunchbutton_Restaurant::with_no_payment_method();
+						$export = [];
+						foreach( $restaurants as $restaurant ){
+							$export[] = array( 'id_restaurant' => $restaurant->id_restaurant, 'name' => $restaurant->name );
+						}
+						echo json_encode( $export );
+						break;
 					default:
 						break;
 				}

@@ -17,14 +17,6 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		return $this->_lastPayment;
 	}
 
-	public function hasPaymentType(){
-		$payment_type = $this->payment_type();
-		if( $payment_type->balanced_id && $payment_type->balanced_bank ){
-			return true;
-		}
-		return false;
-	}
-
 	// get the last sent payment
 	public function sendPayment($filters = []) {
 		if (!isset($this->_lastPayment)) {

@@ -25,7 +25,26 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function active(){
-		return Crunchbutton_Restaurant::q('SELECT id_restaurant, name FROM restaurant WHERE active = 1 ORDER BY name ASC');
+		return Crunchbutton_Restaurant::q( 'SELECT id_restaurant, name FROM restaurant WHERE active = 1 ORDER BY name ASC' );
+	}
+
+	public function with_no_payment_method(){
+		$_restaurants = [];
+		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 AND formal_relationship = 1 AND name NOT LIKE "%test%" ORDER BY name' );
+		foreach( $restaurants as $restaurant ){
+			if( !$restaurant->hasPaymentType() ){
+				$_restaurants[] = $restaurant;
+			}
+		}
+		return $_restaurants;
+	}
+
+	public function hasPaymentType(){
+		$payment_type = $this->payment_type();
+		if( $payment_type->balanced_id && $payment_type->balanced_bank ){
+			return true;
+		}
+		return false;
 	}
 
 	public function meetDeliveryMin($order) {

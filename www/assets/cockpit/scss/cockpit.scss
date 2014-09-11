@@ -1214,6 +1214,9 @@ input {
 	-ms-user-select: none;
 	user-select: none;
 }
+.no-underline{
+	text-decoration:none;
+}
 .tb-grid .schedule-period{
 	font-weight:bold;
 }
