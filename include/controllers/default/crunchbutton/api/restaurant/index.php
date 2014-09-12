@@ -142,17 +142,17 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 			case 'post':
 
 				// @todo: real logins
-				if ($_SESSION['admin'] || c::user()) {
+				if ($_SESSION['admin'] || c::admin()) {
 					// save the restaurant
 					$r = Restaurant::o(c::getPagePiece(2));
 					/* @var $r Crunchbutton_Restaurant */
 
 					// Permissions
-					if( !c::user() ){
+					if( !c::admin() ){
 						return;
 					}
 
-					$hasPermission = c::user()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-all" ]);
+					$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-all" ]);
 
 					if( !$hasPermission ){
 						switch ($action) {
@@ -167,10 +167,10 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							case 'stripe-recipient':
 							case 'stripe-account':
 							case 'stripe-credit':
-								$hasPermission = c::user()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
 								break;
 							case 'weight-adj':
-								$hasPermission = c::user()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page' ]);
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page' ]);
 								break;
 							case 'categories':
 							case 'notifications':
@@ -180,13 +180,14 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							case 'save-dish':
 							case 'dishes':
 							default:
-								$hasPermission = c::user()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-edit" ]);
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-edit" ]);
 								break;
 						}
 					}
 
 					if( !$hasPermission ){
 						echo json_encode( [ 'error' => 'permission denied: ' . $action ] );
+						exit();
 					}
 
 					$action = c::getPagePiece(3);
