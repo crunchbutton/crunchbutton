@@ -18,6 +18,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'range':
 								$this->_range();
 								break;
+							case 'download-summary':
+								$this->_restaurantDownloadSummary();
+								break;
 							default:
 								$this->_error();
 								break;
@@ -74,6 +77,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 								break;
 							case 'view-summary':
 								$this->_restaurantViewSummary();
+								break;
+							case 'download-summary':
+								$this->_restaurantDownloadSummary();
 								break;
 							case 'scheduled':
 								$this->_restaurantScheduled();
@@ -186,7 +192,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$restaurant = $_restaurant->payment_data;
-
 			$lastPayment = $_restaurant->getLastPayment();
 			if( $lastPayment->id_payment ){
 				$_lastPayment = [];
@@ -340,7 +345,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$pages = ceil( $payments_total / $resultsPerPage );
 		}
 
-
 		$data = [];
 		$data[ 'count' ] = $payments_total;
 		$data[ 'pages' ] = $pages;
@@ -402,6 +406,23 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
 			echo json_encode( $out );
 		}
+	}
+
+	public function _restaurantDownloadSummary(){
+		$id_payment =  c::getPagePiece( 4 );
+		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
+		$filename = $summary[ 'restaurant' ] . ' - Payment ' . $id_payment . '.html';
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		$summary = $mail->message();
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename=' . $filename );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
+		header( 'Content-Length: ' . mb_strlen( $summary, '8bit' ) );
+		echo $summary;
 	}
 
 	public function _restaurantViewSummary(){

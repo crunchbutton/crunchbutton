@@ -400,6 +400,10 @@ NGApp.controller( 'SettlementRestaurantsPaymentCtrl', function ( $scope, $routeP
 		$scope.navigation.link( '/settlement/restaurants/summary/' + $routeParams.id );
 	}
 
+	$scope.download_summary = function(){
+		SettlementService.restaurants.download_summary( $routeParams.id );
+	}
+
 	$scope.send_summary = function(){
 		$scope.makeBusy();
 		SettlementService.restaurants.send_summary( function( json ){
