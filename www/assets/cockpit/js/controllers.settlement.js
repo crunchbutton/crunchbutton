@@ -89,7 +89,13 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 		SettlementService.restaurants.do_not_pay_restaurant( params, function( json ){
 			id_restaurant = json.id_restaurant;
 			if( id_restaurant ){
-				$scope.begin();
+				$scope.begin( function(){
+					for( x in $scope.result.restaurants ){
+						if( $scope.result.restaurants[ x ].id_restaurant == id_restaurant ){
+							$scope.show_details( $scope.result.restaurants[ x ], true );
+						}
+					}
+				} );
 			} else {
 				App.alert( 'Oops, something bad happened!' )
 				$scope.unBusy();
@@ -111,7 +117,7 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 		} );
 	}
 
-	$scope.begin = function(){
+	$scope.begin = function( callback ){
 
 		$scope.results = false;
 
@@ -159,6 +165,9 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 			$scope.isSearching = false;
 			$scope.summary();
 			$scope.unBusy();
+			if( callback ){
+				callback();
+			}
 		} );
 	}
 
@@ -223,16 +232,17 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 		$scope.total_reimburse_cash_orders = total_reimburse_cash_orders;
 		$scope.total_refunded = total_refunded;
 		$scope.sum = sum;
-		console.log( '$scope.sum',$scope.sum);
 	}
 
-	$scope.show_details = function( restaurant ){
+	$scope.show_details = function( restaurant, ignoreWalk ){
 		if( !restaurant.show_details ){
 			$scope.showing_details = true;
 			restaurant.show_details = true;
-			setTimeout( function(){
-				$scope.walkTo( '#restaurant-' + restaurant.id_restaurant, -80 );
-			} );
+			if( !ignoreWalk ){
+				setTimeout( function(){
+					$scope.walkTo( '#restaurant-' + restaurant.id_restaurant, -80 );
+				} );
+			}
 		} else {
 			restaurant.show_details = false;
 			$scope.showing_details = false;
@@ -442,7 +452,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		} );
 	}
 
-	$scope.begin = function(){
+	$scope.begin = function( callback ){
 
 		$scope.results = false;
 
@@ -488,6 +498,9 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 			$scope.isSearching = false;
 			$scope.summary();
 			$scope.unBusy();
+			if( callback ){
+				callback();
+			}
 		} );
 	}
 
@@ -523,7 +536,6 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 					total_invited_users += $scope.result.drivers[ x ].invites_total;
 				}
 				if( $scope.result.drivers[ x ].invites_total_payment ){
-					console.log('tt',$scope.result.drivers[ x ].invites_total_payment);
 					total_payment_invited_users += $scope.result.drivers[ x ].invites_total_payment;
 				}
 				if( $scope.result.drivers[ x ].worked_hours ){
@@ -559,7 +571,13 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		SettlementService.drivers.do_not_pay_driver( params, function( json ){
 			$scope.id_driver = json.id_driver;
 			if( $scope.id_driver ){
-				$scope.begin();
+				$scope.begin( function(){
+					for( x in $scope.result.drivers ){
+						if( $scope.result.drivers[ x ].id_admin == id_driver ){
+							$scope.show_details( $scope.result.drivers[ x ], true );
+						}
+					}
+				} );
 			} else {
 				App.alert( 'Oops, something bad happened!' )
 				$scope.unBusy();
@@ -627,13 +645,15 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		} );
 	}
 
-	$scope.show_details = function( driver ){
+	$scope.show_details = function( driver, ignoreWalk ){
 		if( !driver.show_details ){
 			$scope.showing_details = true;
 			driver.show_details = true;
-			setTimeout( function(){
-				$scope.walkTo( '#driver-' + driver.id_admin, -80 );
-			} );
+			if( !ignoreWalk ){
+				setTimeout( function(){
+					$scope.walkTo( '#driver-' + driver.id_admin, -80 );
+				} );
+			}
 		} else {
 			driver.show_details = false;
 			$scope.showing_details = false;
