@@ -170,9 +170,15 @@
 					<td>{{restaurant.name}}</td>
 					<td>$ {{restaurant.total_due | formatPrice}}</td>
 					<td>
-						<a href="http://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}/pay" target="_blank">
+						<a class="no-underline" href="http://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}/pay" target="_blank">
 							<span ng-if="!restaurant.has_payment_type" class="sp-label sp-label-danger">
 								Restaurant With No Payment Method
+							</span>
+							<span ng-if="!restaurant.has_payment_type && restaurant.summary_error">
+								&nbsp;
+							</span>
+							<span ng-if="restaurant.summary_error" class="sp-label sp-label-danger">
+								{{restaurant.summary_error}}
 							</span>
 						</a>
 					</td>

@@ -168,7 +168,25 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		// default notes
 		$out = [ 'notes' => Crunchbutton_Settlement::DEFAULT_NOTES ];
 		foreach ( $restaurants as $_restaurant ) {
+
+			// Get payment type
+			$payment_type = $_restaurant->payment_type();
+			$summary_error = false;
+			switch ( $payment_type->summary_method ) {
+				case 'email':
+						if( !$payment_type->summary_email ){
+							$summary_error = 'Summary email missing';
+						}
+					break;
+				case 'fax':
+						if( !$payment_type->summary_fax ){
+							$summary_error = 'Summary fax missing';
+						}
+					break;
+			}
+
 			$restaurant = $_restaurant->payment_data;
+
 			$lastPayment = $_restaurant->getLastPayment();
 			if( $lastPayment->id_payment ){
 				$_lastPayment = [];
@@ -177,6 +195,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$_lastPayment[ 'id_payment' ] = $lastPayment->id_payment;
 				$restaurant[ 'last_payment' ] = $_lastPayment;
 			}
+			$restaurant[ 'summary_error' ] = $summary_error;
 			$restaurant[ 'name' ] = $_restaurant->name;
 			$restaurant[ 'has_payment_type' ] = $_restaurant->hasPaymentType();
 			$restaurant[ 'id_restaurant' ] = $_restaurant->id_restaurant;
@@ -188,7 +207,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			if( $id_restaurant && $id_restaurant == $restaurant[ 'id_restaurant' ] ){
 				$restaurant[ 'show_orders' ] = true;
 			}
+
 			$orders = [];
+
 			foreach ( $_restaurant->_payableOrders as $_order ) {
 
 				$alreadyPaid = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $_order->id_order );
@@ -227,6 +248,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$restaurant[ 'orders_count' ]++;
 				}
 			}
+
 			$restaurant[ 'pay' ] = true;
 			$restaurant[ 'adjustment' ] = 0;
 			$restaurant[ 'orders' ] = $orders;
@@ -332,6 +354,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	private function _restaurantSendSummary(){
 		$id_payment = c::getPagePiece( 4 );
+		$id_payment = 1474;
 		$settlement = new Settlement;
 		if( $settlement->sendRestaurantPaymentNotification( $id_payment ) ){
 			echo json_encode( [ 'success' => true ] );
