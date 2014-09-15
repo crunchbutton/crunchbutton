@@ -88,6 +88,11 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		} );
 	}
 
+	service.restaurants.download_summary = function( id_payment ){
+		window.open( App.service + 'settlement/restaurants/download-summary/' + $routeParams.id );
+	}
+
+
 	service.restaurants.view_summary = function( callback ){
 		var url = App.service + 'settlement/restaurants/view-summary/' + $routeParams.id;
 		$http( { method: 'POST', url: url } ).
