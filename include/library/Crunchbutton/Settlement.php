@@ -1418,6 +1418,7 @@ class Crunchbutton_Settlement extends Cana_Model {
  	public function sendRestaurantPaymentNotification( $id_payment ){
 
 		$summary = $this->restaurantSummaryByIdPayment( $id_payment );
+
 		if( !$summary ){
 			return false;
 		}
@@ -1430,6 +1431,35 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );
 
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+
+		$error = false;
+
+		switch ( $summary[ 'summary_method' ] ) {
+			case 'email':
+					if( !$summary[ 'summary_email' ] ){
+						$error = 'email';
+					}
+				break;
+			case 'fax':
+					if( !$summary[ 'summary_fax' ] ){
+						$error = 'fax';
+					}
+				break;
+		}
+
+		if( $error ){
+			$message = 'Payment Summary send error! Restaurant: ' . $summary[ 'restaurant' ];
+			$message .= "\n". 'id_payment_schedule: ' . $summary[ 'id_payment_schedule' ];
+			$message .= "\n". 'amount: ' . $summary[ 'amount' ];
+			$message .= "\n";
+			if( $error == 'email' ){
+				$message .= 'Summary email missing.';
+			} else if( $error == 'fax' ){
+				$message .= 'Summary fax missing.';
+			}
+			Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+			return;
+		}
 
 		switch ( $summary[ 'summary_method' ] ) {
 			case 'email':
