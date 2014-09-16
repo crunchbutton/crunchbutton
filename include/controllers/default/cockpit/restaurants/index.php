@@ -105,7 +105,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 			$payment_type = $restaurant->payment_type();
 			$payment_type->charge_credit_fee = 1;
-			$payment_type->max_pay_promotion = 1;
+			$payment_type->max_pay_promotion = 2;
 			$payment_type->pay_apology_credits = 1;
 			$payment_type->pay_promotions = 1;
 			$payment_type->promotion_maximum = 2;
