@@ -11,7 +11,12 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 		$data = Controller_Api_Script_RestaurantPayInfoImport::method_data();
 		$data = explode( "\n",  $data );
 
+		$_notifications = [];
+
 		foreach ( $data as $row ) {
+
+			$_notification = ': none';
+
 			$row = explode( ";", $row );
 			$restaurant = [];
 			$id_restaurant = intval( trim( $row[ 0 ] ) );
@@ -25,22 +30,41 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 				$payment = new Crunchbutton_Restaurant_Payment_Type;
 			}
 			$payment->id_restaurant = $id_restaurant;
+
 			if( $method == 'email' ){
 				$payment->method = 'email';
-			}
-			if( $method == 'fax' ){
-				$payment->method = 'fax';
+				if( $email != '' ){
+					if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ){
+						$payment->summary_email = $email;
+					}
+				} else {
+					$email = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = 1 AND type = "' . Crunchbutton_Notification::TYPE_EMAIL . '" LIMIT 1' );
+					if( $email->id_notification ){
+						$payment->summary_email = $email->value;
+					}
+				}
+				$_notification = ' email: ' . $payment->summary_email;
 			}
 
-			if( $email != '' ){
-				if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ){
-					$payment->summary_email = $email;
+			if( $method == 'fax' ){
+				$payment->method = 'fax';
+				$fax = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = 1 AND type = "' . Crunchbutton_Notification::TYPE_FAX . '" LIMIT 1' );
+				if( $fax->id_notification ){
+					$payment->summary_fax = $fax->value;
 				}
+				$_notification = ' fax: ' . $payment->summary_fax;
 			}
+
 			$payment->save();
-			echo $name . "\n";
+			$_notifications[ $id_restaurant ] = $name . ' (' . $id_restaurant . ') ' . $_notification . "\n";
 		}
+
+		foreach( $_notifications as $notification ){
+			echo $notification;
+		}
+
 		die('done!');
+
 	}
 
 	public function payment_init(){
