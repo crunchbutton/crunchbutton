@@ -4,6 +4,7 @@
 class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
+		die('remove this line');
 		Controller_Api_Script_RestaurantPayInfoImport::method_init();
 	}
 
