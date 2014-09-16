@@ -132,7 +132,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 						}
 						break;
 						break;
-					case 'conversation' :
+					case 'conversation':
 						if ( $support->permissionToEdit() ) {
 							if( $_POST['text'] ){
 								$support->addAdminReply( $_POST['text'] );

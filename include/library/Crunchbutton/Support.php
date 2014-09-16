@@ -33,9 +33,13 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
+		$adminName = trim( c::admin()->name );
+
 		$sendSMSTo = array();
 		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-			$sendSMSTo[ $supportName ] = $supportPhone;
+			if( $adminName != trim( $supportName ) ){
+				$sendSMSTo[ $supportName ] = $supportPhone;
+			}
 		}
 
 		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
@@ -483,8 +487,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$message = $this->firstMessage();
 
-		$message =
-			"(support-" . $env . "): ".
+		$message = "(support-" . $env . "): ".
 			$support->name.
 			"\n\n".
 			"phone: ".
