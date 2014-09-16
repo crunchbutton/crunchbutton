@@ -3,13 +3,49 @@
 // Prep for Settlement Test #3516
 class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Controller_RestAccount {
 
-	const FOR_REAL = true;
-
 	public function init() {
+		Controller_Api_Script_RestaurantPayInfoImport::method_init();
+	}
 
-		die('remove it');
+	public function method_init(){
+		$data = Controller_Api_Script_RestaurantPayInfoImport::method_data();
+		$data = explode( "\n",  $data );
 
-		$data = Controller_Api_Script_RestaurantPayInfoImport::data();
+		foreach ( $data as $row ) {
+			$row = explode( ";", $row );
+			$restaurant = [];
+			$id_restaurant = intval( trim( $row[ 0 ] ) );
+			$name = trim( $row[ 1 ] );
+			$email = trim( $row[ 2 ] );
+			$method = strtolower( trim( $row[ 3 ] ) );
+
+			// Get the current restaurant's payment type
+			$payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ' . $id_restaurant . ' ORDER BY id_restaurant_payment_type DESC LIMIT 1' );
+			if( !$payment->id_restaurant_payment_type ){
+				$payment = new Crunchbutton_Restaurant_Payment_Type;
+			}
+			$payment->id_restaurant = $id_restaurant;
+			if( $method == 'email' ){
+				$payment->method = 'email';
+			}
+			if( $method == 'fax' ){
+				$payment->method = 'fax';
+			}
+
+			if( $email != '' ){
+				if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ){
+					$payment->summary_email = $email;
+				}
+			}
+			$payment->save();
+			echo $name . "\n";
+		}
+		die('done!');
+	}
+
+	public function payment_init(){
+
+		$data = Controller_Api_Script_RestaurantPayInfoImport::payment_data();
 		$data = explode( "\n",  $data );
 
 		$_errors = [];
@@ -162,8 +198,249 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 
 	}
 
-	// cvs converted into string
-	public function data(){
+	public function method_data(){
+		return "60;1 Fish 2 Fish;biao2423@hotmail.com;fax;
+1;Alpha Delta Pizza;;none;
+64;Angkor;;fax;
+83;Better Burger Company;;unknown;
+43;Bistro Med;;fax;
+2;Brick Oven Pizza;;none;
+59;Brickhouse Kitchen;;fax;
+41;Café Istanbul;;fax;
+47;Chap's Grille;;fax;
+9;China King;;fax;
+12;Chinese Iron Wok;;email;
+63;Cilantro Mexican Grill;;fax;
+44;Est Est Est Pizza;;fax;
+46;Fresh Taco;;fax;
+37;George's;;fax;
+17;Golden Crust;;fax;
+13;Hercules Mulligan;;unknown;
+20;Kabob and Curry;;fax;
+148;Kabob and Curry CBD;;fax;
+40;Kitchen No. 1;;fax;
+38;Los Cuates;;fax;
+80;Louis;;unknown;
+45;Main Garden;;fax;
+52;Marco Polo;;unknown;
+61;Marvelous Pizza;;fax;
+75;Meeting Street Cafe;edwinsosa40@gmail.com;email;
+29;Oasis Grill;;none;
+62;Pizza D'oro;;fax;
+25;Pizza Pie-er;;fax;
+19;Providence Calzone;;unknown;
+56;Sacrificial Lamb;;fax;
+28;Shanghai;;fax;
+27;Sitar;info@sitarnewhaven.com;fax;
+14;Sushi Express;;email;
+65;Sushi Mizu;;fax;
+21;s'Wings;;fax;
+51;Tandoor;;unknown;
+5;Thai Pan;;fax;
+42;Urfa Tomato Kabob;;fax;
+22;Vasilio's Pizza;;unknown;
+36;Wingo's;;fax;
+18;Wings Over Providence;;none;
+39;Wisey's;;fax;
+8;Zaroka;;fax;
+68;Geoff's Sandwiches;cafezogandgeoffs@gmail.com;fax;
+69;Bagel Gourmet Ole;;unknown;
+71;Mirano Pizza;;fax;
+76;Dial-a-Pizza;;fax;
+77;Falafel Corner;;fax;
+67;Banana Leaves;;fax;
+41;Cafe Istanbul;;fax;
+78;Sicilia's Pizzeria;;fax;
+79;Bagel Gourmet (Brook St);;unknown;
+70;Nancy's Fancies Cupcakes;;email;
+80;Loui's;;unknown;
+74;Spicy With Delivery;;;
+73;Abyssinia Ethiopian;;fax;
+86;Wise Guys Deli;Jessica@corpgfm.com;email;
+82;Pho Paradise;;unknown;
+99;Pizzoli's;;Fax;
+110;Sahara Mediterranean;colton.jang@yale.edu;fax;
+106;Siam Best Thai Cuisine;;fax;
+98;Boulder Salad;;Fax;
+103;Himalayan Cafe;;Fax;
+94;Naraya Thai & Sushi;;Fax;
+104;Numero Uno Pizza;;Fax;
+111;Veggie Fun;;fax;
+115;Yoo Sushi;;fax;
+108;Leaf Organics;rod@leaforganics.com;Fax;
+118;Marla's Cafe;;fax;
+120;Munch;;fax;
+121;My Daddy's Grille;dbog96@aol.com;none;
+122;San Marino Ristaurante;sanmarinosoho@gmail.com;fax;
+91;Milanos Pizzeria;;fax;
+128;Li Li Wok;;fax;
+85;Jordan's Hot Dogs & Mac;;none;
+133;La Paloma;;fax;
+134;The Wok;;Fax;
+135;Big Tony's Pizza;;fax;
+123;Cilantro North Providence;;fax;
+142;Little Thai Kitchen;;fax;
+143;Tomatillo Taco;tomatillo.taco@gmail.com;fax;
+140;Weed World Candies;;unknown;
+146;Jeera Thai;dara_2525@hotmail.com;Fax;
+154;Late Night Delivery;habchisaad9@aol.com;fax;
+170;Quiznos;;fax;
+158;China Garden;hongchan68@hotmail.com;fax;
+156;Manny and Olgas;;fax;
+173;Banana Delivery;;;
+159;New York Pizza Depot;dtelemaco@comcast.net;fax;
+161;Pino's;;fax;
+185;Fresh in the box;;fax;
+184;Taj India Palace;tajindiapalace@yahoo.com;fax;
+195;El Huarique;elhuariqueperu@hotmail.com;fax;
+178;Trio House;ray@triohouse.com;fax;
+176;Thai Corner Food Express;aritsaelliott@att.net;fax;
+168;China Express;;email;
+164;Giovanni's Pizzeria;;email;
+179;Rio Grande Tex- Mex Grille;;email;
+165;Tony's Pizzeria;;unknown;
+188;Uncle Tony's Pizza;;fax;
+201;FoBoGro;;unknown;
+196;Hannaford's;;;
+197;Hill Party ;;;
+181;Mitsuba;;email;
+179;Rio Grande Tex-Mex Grille;;email;
+167;Istanblue;;fax;
+166;The Pizza 7;;fax;
+219;Subway;;;
+218;Dunkin' Donuts;;;
+213;Hill Tobacco;;;
+198;Hill-Help;;;
+180;McDonalds;;;
+210;Benny's Tacos;bennystacos@aol.com;fax;
+240;Five Guys ;;;
+222;Panera Bread;;;
+173;Free Banana Delivery ;;;
+194;Pasta Roma;pastaromafig@sbcglobal.net;fax;
+244;Geo's Organic Coffee & Fine Tea;;fax;
+241;Viztango;titorivera5@aol.com;fax;
+193;Taste of the Islands;taste_of_the_islands@yahoo.com;Email;
+220;Frankie & Johnnie's Pizza;nasserahdoot@gmail.com;fax;
+250;Free Crunch;;;
+235;I am BC Gorilla;;;
+248;G-DUB WINGZZZZ;;;
+251;TG Express;;Fax;
+223;Mayura Amrit;pputhe@yahoo.com (might be pputne@yahoo.com;fax;
+256;Mayura Restaurant;pputhe@yahoo.com (might be pputne@yahoo.com;fax;
+254;Chipotle DELIVERED;;;
+257;Ham-Mart;;;
+258;Puppy Visit;;;
+205;Lewiston House of Pizza;JKoutsikos@gmail.com;Fax;
+268;Morfia's Ribs and Pies;;fax;
+262;Pure Thai;pat_alen@hotmail.com;unknown;
+225;Chopsticks;jenny@chopsticks-restaurant.com;email;
+274;Moes;;;
+276;KFC;;;
+277;Joe & Mimi's Pizzeria;joeandmimis@gmail.com;email;
+297;22 Utica Street Cafe;;fax;
+281;Rusch's Bar & Grill;ruschsbarandgrill@gmail.com;email;
+278;Chipotle;;;
+279;Panera Bread;;;
+280;7 Nana;;;
+290;McDonalds;;;
+291;Subway;;;
+293;Dunkin Donuts;;;
+302;McDonalds;;;
+307;Subway;;;
+308;Taco Bell;;;
+309;Arby's;;;
+310;Culver's;;;
+311;Chipotle;;;
+313;Al's Burger Shack;alsburgershack@gmail.com;email;
+316;Artisan Pizza;artisanpizzach@gmail.com;email;
+317;Sakura;sakuraxpress110@gmail.com;email;
+318;McAlister's Deli;;fax;
+260;Royal Indian Grill;bhavjotchadha@gmail.com;email;
+261;Chipotle;;;
+263;Panera Bread;;;
+305;Pizza Hut;;;
+319;Hamilton Eatery;;;
+320;Drive for CB;;;
+321;Drive for CB;;;
+322;Drive for CB;;;
+378;Wawa;;;
+259;Chipotle;;;
+264;Fresh to Order;;;
+295;Sweetgreen;;;
+380;In-N-Out;;;
+383;BurgerFi;;;
+385;Top This;pillyrivers@yahoo.com;email;
+389;Ken's Quick-E Mart;;none;
+392;Chipotle;;;
+395;Chipotle;;;
+396;Chick-fil-A;;;
+397;Panda Express;;;
+324;Drive or Bike for us;;;
+404;Chipotle;;;
+386;Zoe's Kitchen;;;
+403;Wawa;;;
+325;We Need Delivery Bikers!;;;
+327;We Need Drivers to Launch!;;;
+406;Subway;;;
+413;Spudnuts Donuts;;;
+414;Ground Zero Performance Cafe;;;
+415;Drive for CB;;;
+416;Pizza Studio;;;
+421;Bike for us!;;;
+402;Fitzgerald's;sales@fitzgeraldschapelhill.com;email;
+408;New Buffet;;;
+409;Panera Bread;;;
+265;Ruben's Mexican Restaurant;;fax;
+394;Healthy Fresh;;fax;
+410;Chipotle;;;
+435;Raising Cane's;;;
+447;McDonalds;;;
+412;Uncle Darrow's;;fax;
+446;Lime Fresh Mexican Grill;LF6330@limefmg.com;email;
+452;Hamilton Whole Foods;hamiltonwholefoodscb@gmail.com ;email;
+453;VJ's;vjsrestaruant@gmail.com  ;fax;
+461;Taco Bell;;;
+467;old Top This;mike.itayem@yahoo.com;email;
+411;Launch Crunchbutton Yourself;;;
+422;Drive For Us Next Semester;;;
+454;Drive for Crunchbutton;;;
+460;Raising Cane's;;;
+468;Red Onion;;fax;
+465;Char;;fax;
+462;Parthenon;;fax;
+463;California Kabob Kitchen;ckkrestaurant@gmail.com;fax;
+438;Food Haus;foodhauscafe@gmail.com;email;
+480;Klondike Cafe;KlondikeCafeBoone@yahoo.com;Email;
+478;Cilantro's Mexican Grille;cilantros@live.com;Email;
+423;Opens at 6pm!;;;
+470;drive for us;;;
+488;old Benny's Tacos;bennystacos@aol.com;;
+469;Chipotle;;;
+429;California Gogi Korean Grill;;;
+479;Comeback Shack;;;
+485;Budacki's;eve@budackishotdog.com;Email;
+492;Budacki's;eve@budackishotdog.com;email;
+493;Salad Farm;;fax;
+444;Chichen Itza;gcetina@chichenitzarestaurant.com;email;
+498;Jack-In-The-Box;;;
+500;McDonalds;;;
+505;Drive for us!;;;
+457;Cougar Country Drive In;;none;
+474;Drive for Us;;;
+512;In-N-Out;;;
+513;McDonalds;;;
+511;Chipotle;;;
+497;Nature's Brew;naturesbreworders@gmail.com;email;
+525;Taco Bell;;;
+551;old Main Garden;;;
+509;Arby's;;;
+515;Taco Bell;;;
+533;Chipotle;;;
+539;Penn Station East Coast Subs;;;
+541;Buffalo Wild Wings;;;";
+	}
+
+	public function payment_data(){
 		return "60;1 Fish 2 Fish;biao2423@hotmail.com;deposit;272121017;;;
 1;Alpha Delta Pizza;;deposit;;;;
 64;Angkor;;deposit;;;;
@@ -404,4 +681,5 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 539;Penn Station East Coast Subs;;n/a;;;;
 541;Buffalo Wild Wings;;n/a;;;;";
 	}
+
 }
