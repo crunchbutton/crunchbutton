@@ -948,7 +948,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
 	}
-	
+
 	public static function outstandingOrders(){
 		$id_admin = c::admin()->id_admin;
 		$query = "SELECT id_order,
@@ -964,9 +964,9 @@ class Crunchbutton_Order extends Cana_Table {
 						 AND DATE(o.date) = DATE(NOW())
 						HAVING hours >= 2 ORDER BY id_order DESC ";
 		return Order::q( $query );
-									
+
 	}
-	
+
 	public static function deliveryOrderTimes( $hours = 24, $all = false ){
 		$interval = $hours . ' HOUR';
 		$id_admin = c::admin()->id_admin;
@@ -986,14 +986,14 @@ class Crunchbutton_Order extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
 	}
-	
+
 	public function revenueByAdminPeriod( $id_admin, $date_start, $date_end ){
 		//convert to La timezone
 		$date_start = new DateTime( $date_start, new DateTimeZone( c::config()->timezone ) );
 		$date_end = new DateTime( $date_end, new DateTimeZone( c::config()->timezone ) );
-		
+
 		//get orders at this period
-		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o 
+		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
 									oa.id_admin = "' . $id_admin . '"
@@ -2004,7 +2004,7 @@ class Crunchbutton_Order extends Cana_Table {
 					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
 						$msg .= 'TIP BY CASH';
 					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
-						$msg .= 'TOTAL ' . $this->final_price;
+						$msg .= 'TOTAL ' . $this->final_price_plus_delivery_markup;
 					}
 
 					$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
@@ -2391,24 +2391,24 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
-	
+
 	//Delete entry from order_action
 	public function undoStatus($status) {
 		switch ($status) {
 			case 'pickedup':
-				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-pickedup" and id_admin=' .c::user()->id_admin. '');			
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-pickedup" and id_admin=' .c::user()->id_admin. '');
 			break;
-			
+
 			case 'delivered':
-				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-delivered" and id_admin=' .c::user()->id_admin. '');			
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-delivered" and id_admin=' .c::user()->id_admin. '');
 			break;
-			
+
 			case 'accepted':
-				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-accepted" and id_admin=' .c::user()->id_admin. '');			
+				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-accepted" and id_admin=' .c::user()->id_admin. '');
 			break;
 		}
 	}
-	
+
 	public function deliveryAccept($admin) {
 		if ($this->deliveryStatus('accepted')) {
 			return false;
@@ -2510,7 +2510,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return array ( 'status' => 'new', 'order' => 0 );
 	}
-	
+
 	public function deliveryTimes(){
 		$statuses = $this->deliveryStatus();
 		if( $statuses[ 'delivered' ] ){
