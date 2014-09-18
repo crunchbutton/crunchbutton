@@ -788,22 +788,26 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$this->log( 'scheduleDriverPayment', $schedule->properties() );
 			}
 		}
-		$settlement = new Crunchbutton_Settlement;
-		Cana::timeout(function() use( $settlement ) {
-			$settlement->doDriverPayments();
-		} );
+		$this->doDriverPayments();
 		return true;
 	}
 
 	public function doDriverPayments( $id_payment_schedule = false ){
 		if( $id_payment_schedule ){
-			return $this->payDriver( $id_payment_schedule );
+			$settlement = new Crunchbutton_Settlement;
+			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+				$settlement->payDriver( $id_payment_schedule );
+			} );
 		} else {
 			$schedule = new Cockpit_Payment_Schedule;
 			$lastDate = $schedule->lastRestaurantStatusDate();
 			$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
 			foreach( $schedules as $_schedule ){
-				$this->payDriver( $_schedule->id_payment_schedule );
+				$id_payment_schedule = $_schedule->id_payment_schedule;
+				$settlement = new Crunchbutton_Settlement;
+				Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+					$settlement->payDriver( $id_payment_schedule );
+				} );
 			}
 		}
 	}
