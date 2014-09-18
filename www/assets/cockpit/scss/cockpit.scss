@@ -368,7 +368,6 @@ p {
 
 @media(max-width:499px) {
 	.logo {
-		width: 170px;
 		height: 35px;
 	}
 	.menu {
@@ -643,12 +642,6 @@ p {
 	}
 }
 
-
-.login-content {
-
-}
-
-
 input {
 	border: 0;
 }
@@ -663,15 +656,15 @@ input {
 	width: 27em;
 	margin: 0 auto;
 	text-align: center;
-	margin-top: 5em;
+	margin-top: 8em;
 	padding-left: 1em;
 	padding-right: 1em;
 }
 
 .login-content .logo {
 	text-align: center;
-	margin-bottom: 1.5em;
-	font-size: 3em;
+	margin-bottom: 1.8em;
+	font-size: 2.5em;
 }
 
 .input-wrap {
