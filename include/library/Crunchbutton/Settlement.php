@@ -798,6 +798,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
 				$settlement->payDriver( $id_payment_schedule );
 			} );
+			return;
 		} else {
 			$schedule = new Cockpit_Payment_Schedule;
 			$lastDate = $schedule->lastRestaurantStatusDate();
@@ -809,6 +810,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$settlement->payDriver( $id_payment_schedule );
 				} );
 			}
+			return;
 		}
 	}
 
