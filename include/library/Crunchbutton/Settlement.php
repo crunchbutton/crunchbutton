@@ -794,11 +794,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function doDriverPayments( $id_payment_schedule = false ){
 		if( $id_payment_schedule ){
-			$settlement = new Crunchbutton_Settlement;
-			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-				$settlement->payDriver( $id_payment_schedule );
-			} );
-			return;
+			return $this->payDriver( $id_payment_schedule );
 		} else {
 			$schedule = new Cockpit_Payment_Schedule;
 			$lastDate = $schedule->lastRestaurantStatusDate();
