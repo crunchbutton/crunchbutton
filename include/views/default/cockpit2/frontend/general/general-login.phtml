@@ -1,6 +1,13 @@
 <div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin, 'logged-out': !account.loggedin}">
 	<div class="login-content hide-before-init fade-in-enter">
-		<div class="logo">well, <span class="green">hello</span> there!</div>
+		<div class="logo" ng-switch="welcome">
+			<span class="item" ng-switch-when="1">well, hello there!</span>
+			<span class="item"  ng-switch-when="2">aren't you looking lovely today!</span>
+			<span class="item"  ng-switch-when="3">hey, friend!</span>
+			<span class="item"  ng-switch-when="4">welcome!!</span>
+			<span class="item"  ng-switch-when="5">you are beautiful</span>
+			<span ng-switch-default>cockpit<span class="dot">.</span><span class="green">la</span>
+		</div>
 
 		<div class="dialog-message dialog-message-error" ng-show="error">
 			Invalid username or password
