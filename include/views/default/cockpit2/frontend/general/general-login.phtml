@@ -1,12 +1,12 @@
 <div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin, 'logged-out': !account.loggedin}">
 	<div class="login-content hide-before-init fade-in-enter">
 		<div class="logo" ng-switch="welcome">
-			<span class="item" ng-switch-when="1">well, hello there!</span>
-			<span class="item"  ng-switch-when="2">aren't you looking lovely today!</span>
-			<span class="item"  ng-switch-when="3">hey, friend!</span>
-			<span class="item"  ng-switch-when="4">welcome!!</span>
-			<span class="item"  ng-switch-when="5">you are beautiful</span>
-			<span ng-switch-default>cockpit<span class="dot">.</span><span class="green">la</span>
+			<span class="item" ng-switch-when="1">well, <span class="green">hello</span> there<span class="dot">!</span></span>
+			<span class="item"  ng-switch-when="2">aren't you looking <span class="green">lovely</span> today<span class="dot">!</span></span>
+			<span class="item"  ng-switch-when="3">hey, <span class="green">friend</span><span class="dot">!</span></span>
+			<span class="item"  ng-switch-when="4"><span class="green">welcome</span><span class="dot">!!</span></span>
+			<span class="item"  ng-switch-when="5">you are <span class="green">beautiful</span><span class="dot">.</span></span>
+			<span ng-switch-default>cockpit<span class="dot">.</span><span class="green">la</span></span>
 		</div>
 
 		<div class="dialog-message dialog-message-error" ng-show="error">
