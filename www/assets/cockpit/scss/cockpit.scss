@@ -645,8 +645,7 @@ p {
 
 
 .login-content {
-	opacity: 1;
-	-webkit-animation: 1.0s animation-fade-enter ease-out;
+
 }
 
 
@@ -2780,3 +2779,13 @@ b, strong{ font-weight: bold; }
 	opacity: 0;
 }
 */
+
+
+.fade-in-enter {
+	opacity: 1;
+	-webkit-animation: 1s animation-fade-enter ease-out;
+}
+
+body.ng-scope {
+	background: $background;
+}
