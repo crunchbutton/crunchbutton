@@ -868,6 +868,4 @@ App.push = {
 
 document.addEventListener('statusTap', function() {
 	App.scrollTop(0);
-	// always make sure the status bar is black translucent
-	parent.StatusBar.styleBlackTranslucent();
 });
