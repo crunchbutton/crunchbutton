@@ -43,7 +43,7 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	}
 	
 	// needs to be updated when the html is
-	$scope.welcome = Math.floor((Math.random() * 5) + 1);
+	$scope.welcome = Math.floor((Math.random() * 8) + 1);
 });
 
 NGApp.controller( 'ProfileCtrl', function ( $scope, CustomerRewardService ) {
