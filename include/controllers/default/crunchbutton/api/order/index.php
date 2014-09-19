@@ -47,7 +47,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					return ;
 				}
 
-				$order->do_not_reimburse_driver = c::getPagePiece(4);
+				$reimburse = ( c::getPagePiece(4) ) ? 1 : 0;
+				$order->do_not_reimburse_driver = $reimburse;
+				$order->do_not_pay_driver = $reimburse;
 				$order->save();
 				echo json_encode(['status' => 'success']);
 				exit;
