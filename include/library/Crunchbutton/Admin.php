@@ -56,6 +56,14 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Crunchbutton_Admin_Payment_Type::byAdmin( $this->id_admin );
 	}
 
+	public function hasPaymentType(){
+		$payment_type = $this->payment_type();
+		if( $payment_type->balanced_id && $payment_type->balanced_bank ){
+			return true;
+		}
+		return false;
+	}
+
 	public function validateLogin( $login, $increment = 0 ){
 		$test = $login . ( $increment > 0 ? $increment : '' );
 		$admin = Crunchbutton_Admin::login( $test, true );
@@ -656,7 +664,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		return $ex;
 	}
-	
+
 	//Last Shift
 	public function avgDeliveryTimeLastShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
@@ -667,31 +675,31 @@ class Crunchbutton_Admin extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
 		return Admin::numberOfDeliveredOrdersByShift( $id_admin,  $shift );
 	}
-	
+
 	public function revenueLastWorkedShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
 		return Admin::revenueByShift( $id_main, $shift );
 	}
 	//*****
-	
+
 	//Current Shift
 	public function avgDeliveryTimeCurrentShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
 		return Admin::avgDeliveryTimeByShift( $id_admin, $shift );
 	}
-	
+
 	public function numberOfDeliveredOrdersCurrentShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
 		return Admin::numberOfDeliveredOrdersByShift( $id_admin, $shift );
 	}
-	
+
 	public function revenueCurrentShift( $id_admin ){
 		$shift = Crunchbutton_Community_Shift::getCurrentShiftByAdmin( $id_admin );
 		return Admin::revenueByShift( $id_admin, $shift );
 	}
-	
+
 	//*****
-	
+
 	public function revenueByShift( $id_admin, $shift ){
 		if( $shift->id_community_shift ){
 			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );
@@ -706,7 +714,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return 0;
 	}
-	
+
 	public function numberOfDeliveredOrdersByShift( $id_admin, $shift ){
 		if( $shift->id_community_shift ){
 			$start = $shift->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' );

@@ -672,6 +672,39 @@ class Crunchbutton_Settlement extends Cana_Model {
 		} );
 	}
 
+	public function scheduleDriverArbitraryPayment( $id_driver, $amount, $pay_type, $notes ){
+
+		$this->log( 'scheduleDriverArbitraryPayment: start', [ $id_driver, $amount, $type, $notes ] );
+
+		$schedule = new Cockpit_Payment_Schedule;
+		$schedule->id_driver = $id_driver;
+		$schedule->date = date( 'Y-m-d H:i:s' );
+		$schedule->pay_type = $pay_type;
+		$schedule->amount = max( $amount, 0 );
+		$schedule->adjustment = 0;
+		$schedule->arbritary = 1;
+		$schedule->note = $notes;
+		$schedule->id_admin = c::user()->id_admin;
+		$schedule->type = Cockpit_Payment_Schedule::TYPE_DRIVER;
+		$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+		$schedule->save();
+
+		$id_payment_schedule = $schedule->id_payment_schedule;
+
+		$this->log( 'scheduleDriverArbitraryPayment: end', $schedule->properties() );
+
+		return $id_payment_schedule;
+
+	}
+
+	public function sendDriverArbitraryPayment( $id_payment_schedule ){
+		if( $this->doDriverPayments( $id_payment_schedule ) ){
+			return $id_payment_schedule;
+		} else {
+			return false;
+		}
+	}
+
 	public function scheduleDriverPayment( $id_drivers, $type ){
 
 		$this->log( 'scheduleDriversPayment', $id_drivers );
@@ -797,8 +830,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 			return $this->payDriver( $id_payment_schedule );
 		} else {
 			$schedule = new Cockpit_Payment_Schedule;
-			$lastDate = $schedule->lastRestaurantStatusDate();
-			$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
+			$lastDate = $schedule->lastDriverStatusDate();
+			$schedules = $schedule->driversSchedulesFromDate( $lastDate );
 			foreach( $schedules as $_schedule ){
 				$id_payment_schedule = $_schedule->id_payment_schedule;
 				$settlement = new Crunchbutton_Settlement;

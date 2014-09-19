@@ -24,6 +24,12 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $result->_items[0]->date;
 	}
 
+	public function lastDriverStatusDate(){
+		$query = "SELECT MAX( DATE_FORMAT( date, '%m/%d/%Y' ) ) AS date FROM payment_schedule WHERE id_driver IS NOT NULL";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->date;
+	}
+
 	public function exports(){
 		$out = $this->properties();
 		foreach ( $out as $key => $value ) {
@@ -94,6 +100,14 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		}
 		return $out;
 	}
+
+	public function driversSchedulesFromDate( $date ){
+		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+								INNER JOIN admin a ON a.id_admin = ps.id_driver
+								WHERE DATE_FORMAT( ps.date, \'%m/%d/%Y\' ) = "' . $date . '" ORDER BY ps.id_payment_schedule DESC';
+		return Cockpit_Payment_Schedule::q( $query );
+	}
+
 
 	public function restaurantSchedulesFromDate( $date ){
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
