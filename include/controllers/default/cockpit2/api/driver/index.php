@@ -38,6 +38,17 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'list-payment-type':
+				$out = [];
+				$drivers = Admin::drivers();
+				foreach( $drivers as $driver ){
+					if( $driver->hasPaymentType() ){
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name ];
+					}
+				}
+				echo json_encode( $out );
+				break;
+
 			default:
 				if ($this->method() == 'post') {
 					// save a setting

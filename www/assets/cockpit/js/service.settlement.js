@@ -35,6 +35,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
 		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
+		'schedule_arbitrary_payment' : { 'method': 'POST', params : { action: 'schedule-arbitrary-payment' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } }
@@ -165,7 +166,13 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	}
 
 	service.drivers.do_payment = function( id_payment_schedule, callback ){
-		settlement.drivers.do_payment( { 'id_payment_schedule' : id_payment_schedule  }, function( json ){
+		settlement.drivers.do_payment( { 'id_payment_schedule' : id_payment_schedule }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.schedule_arbitrary_payment = function( id_driver, amount, pay_type, notes, callback ){
+		settlement.drivers.schedule_arbitrary_payment( { 'id_driver': id_driver, 'amount': amount, 'pay_type': pay_type, 'notes': notes }, function( json ){
 			callback( json );
 		} );
 	}

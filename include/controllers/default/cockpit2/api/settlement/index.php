@@ -118,6 +118,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'view-summary':
 								$this->_driverViewSummary();
 								break;
+							case 'schedule-arbitrary-payment':
+								$this->_driverScheduleArbitraryPayment();
+								break;
 							case 'send-summary':
 								$this->_driverSendSummary();
 								break;
@@ -516,6 +519,22 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$id_driver = $this->request()['id_driver'];
 		Crunchbutton_Order_Action::changeTransferDeliveryDriver( $id_order, $id_driver );
 		echo json_encode( [ 'success' => true ] );
+	}
+
+	private function _driverScheduleArbitraryPayment(){
+
+		$id_driver = $this->request()['id_driver'];
+		$amount = $this->request()['amount'];
+		$pay_type = $this->request()['pay_type'];
+		$notes = $this->request()['notes'];
+
+		$settlement = new Settlement;
+		$id_payment_schedule = $settlement->scheduleDriverArbitraryPayment( $id_driver, $amount, $pay_type, $notes );
+		if( $id_payment_schedule ){
+			echo json_encode( [ 'success' => $id_payment_schedule ] );exit();
+		} else {
+			echo json_encode( [ 'error' => true ] );exit();
+		}
 	}
 
 	private function _driverSchedule(){

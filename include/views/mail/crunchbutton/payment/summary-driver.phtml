@@ -109,6 +109,7 @@
 ?>
 
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
+	<?php if( count(  $summary[ 'orders' ][ 'included' ] ) > 0 ) { ?>
 	<thead style="font-weight:bold">
 		<tr>
 			<td colspan="<?php echo $coslpan + 1; ?>" class="topitem" style="font-size:18px;">Orders</td>
@@ -132,6 +133,7 @@
 			<?php } ?>
 		</tr>
 	</thead>
+	<?php } ?>
 	<?php foreach( $summary[ 'orders' ][ 'included' ] as $order ) { ?>
 		<tr>
 			<td class="fooditem"><?php echo $order[ 'name' ]; ?></td>

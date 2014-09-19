@@ -26,6 +26,10 @@ NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 		$scope.navigation.link( '/settlement/drivers/payments' );
 	}
 
+	$scope.drivers_arbitrary_payments = function(){
+		$scope.navigation.link( '/settlement/drivers/payment/arbitrary' );
+	}
+
 	$scope.drivers_scheduled_payments = function(){
 		$scope.navigation.link( '/settlement/drivers/scheduled' );
 	}
@@ -732,6 +736,10 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 		} );
 	}
 
+	$scope.$on( 'do_payment', function(e, data) {
+		$scope.do_payment();
+	});
+
 	$scope.view_payment = function( id_payment ){
 		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
 	}
@@ -796,6 +804,69 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		$scope.pay_types = SettlementService.pay_types();
 		drivers();
 		list();
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $rootScope, SettlementService, DriverService) {
+
+	$scope.ready = false;
+	$scope.id_driver = 0;
+
+	var drivers = function(){
+		DriverService.list_payment_type( function( data ){
+			var drivers = [];
+			$scope.drivers = data;
+			$scope.ready = true;
+		} );
+	}
+
+	var payments_type = function(){
+		$scope.payments_type = [ { 'pay_type': 'payment', 'name': 'Payment'  }, { 'pay_type': 'reimbursement', 'name': 'Reimbursement'  } ];
+	}
+
+	var load = function(){
+		drivers();
+		payments_type();
+	}
+
+	$scope.open = function( id_payment ){
+		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
+	}
+
+	$scope.pay = function(){
+
+		if( $scope.isPaying ){
+			return;
+		}
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			$scope.isPaying = false;
+			return;
+		}
+		$scope.isPaying = true;
+		SettlementService.drivers.schedule_arbitrary_payment( $scope.payment.id_driver,
+																											$scope.payment.amount,
+																											$scope.payment.pay_type,
+																											$scope.payment.notes,
+
+			function( json ){
+
+				id_schedule = json.success;
+				var url = '/settlement/drivers/scheduled/' + id_schedule;
+				$scope.navigation.link( url );
+				setTimeout( function(){
+					$scope.flash.setMessage( 'Payment scheduled. Starting payment!' );
+					$rootScope.$broadcast( 'do_payment' );
+				}, 500 );
+			}
+		);
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
 	}
 
 });
