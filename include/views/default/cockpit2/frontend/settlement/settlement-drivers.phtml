@@ -112,7 +112,7 @@
 					<td></td>
 					<td>#</td>
 					<td>Restaurant</td>
-					<td>Name</td>
+					<td>Driver</td>
 					<td>Type</td>
 					<td>Tip</td>
 					<td>Delivery Fee</td>
@@ -125,11 +125,11 @@
 				</tr>
 			</thead>
 			<tbody ng-repeat="driver in result.drivers">
-				<tr ng-repeat="order in driver.orders" ng-if="order.refunded">
+				<tr ng-repeat="order in driver.orders" ng-if="order.refunded" style="border-bottom:1px solid #EEE;background:#FFF;">
 					<td></td>
 					<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
 					<td ng-class="{ 'excluded': !order.included }">{{order.restaurant}}</td>
-					<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
+					<td ng-class="{ 'excluded': !order.included }">{{driver.name}}</td>
 					<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
 					<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
 					<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
