@@ -1,6 +1,6 @@
 NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) {
 
-	var service = {};
+	var service = { 'PAY_TYPE_REIMBURSEMENT' : 'reimbursement', 'PAY_TYPE_PAYMENT' : 'payment' };
 
 	// Create a private resource 'Driver'
 	var drivers = $resource( App.service + 'driver/:action/:id_admin', { action: '@action', id_admin: '@id_admin' }, {
