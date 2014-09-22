@@ -9,6 +9,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 	);
 
 	if (App.isPhoneGap) {
+		console.debug('PHONEGAP LOCATION');
 			
 		var service = {
 		
@@ -17,9 +18,11 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		var watch = function() {
 			console.log('geo');
 			console.log(parent.window.navigator.geolocation);
+			/*
 			parent.window.navigator.geolocation.getCurrentPosition(function(location) {
 				console.log('Location from Phonegap');
 			});
+			*/
 			bgGeo.start();
 		}
 		
@@ -60,6 +63,8 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		});
 		
 	} else {
+	
+		console.debug('WEB LOCATION');
 	
 		var service = {
 			location: function() {
@@ -186,7 +191,6 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 	
 	}
 
-	alert('asd');
 	$rootScope.$on('userAuth', function(e, data) {
 		// start watching if there is a user and their docs are filled out
 		console.log('authing',data.id_admin);
