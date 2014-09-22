@@ -60,6 +60,8 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 		$out = array_merge( $out, $this->_invites( $id_driver ) );
 
+		$out = array_merge( $out, $this->_lastShift( $id_driver ) );
+
 		if( $shifts ){
 
 			$out[ 'type' ] = 'hour';
@@ -189,12 +191,13 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 					$out[ 'earnings' ][ 'current' ] = [ 'total_payment' => $weekval[ 'total_payment' ], 'total_reimburse' => $weekval[ 'total_reimburse' ], 'payment_status' => $weekval[ 'payment_status' ] ];
 				}
 			}
-
 			echo json_encode( $out );exit();
 
 		} else {
 			$out = [ 'weeks' => 0 ];
 		}
+
+
 
 		echo json_encode( $out );exit();
 
@@ -208,6 +211,8 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$out = [];
 
 		$out = array_merge( $out, $this->_invites( $id_driver ) );
+
+		$out = array_merge( $out, $this->_lastShift( $id_driver ) );
 
 		if( $orders[ 0 ] ){
 
@@ -325,6 +330,22 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			return $out;
 		}
 
+	}
+
+	private function _lastShift( $id_admin ){
+		$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $id_admin );
+		$orders = $shift->deliveredOrdersByAdminAtTheShift( $id_admin );
+		$orders = $orders->get(0);
+		$_orders = [];
+		$settlement = new Crunchbutton_Settlement;
+		foreach ( $orders as $order ) {
+			$_orders[] = $settlement->orderExtractVariables( $order );
+		}
+		$process = $settlement->driversProcess( $_orders );
+
+		$last_shift = $process[ 0 ];
+
+		return [ 'last_shift' => [ 'date' => $shift->dateStart()->get(0)->format( 'm/d/Y' ), 'total_payment' => $last_shift[ 'total_payment' ], 'total_reimburse' => $last_shift[ 'total_reimburse' ] ] ];
 	}
 
 	private function _scheduleByPaymentId( $id_payment ) {
