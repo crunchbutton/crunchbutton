@@ -85,14 +85,14 @@
 							${{summary.earnings.previous.total_reimburse | formatPrice}}
 						</td>
 					</tr>
-					<tr ng-if="summary.last_shift.date && summary.last_shift.total_payment ">
+					<tr ng-if="summary.last_shift.date">
 						<td>Earned for Most Recent Shift ({{summary.last_shift.date}})</td>
 						<td positive-or-negative-color="{{summary.last_shift.total_payment}}">
 							${{summary.last_shift.total_payment | formatPrice}}
 						</td>
 					</tr>
-					<tr ng-if="summary.last_shift.date && summary.last_shift.total_reimburse ">
-						<td>Earned for Most Recent Shift ({{summary.last_shift.date}})</td>
+					<tr ng-if="summary.last_shift.date">
+						<td>Reimbursement for Most Recent Shift ({{summary.last_shift.date}})</td>
 						<td positive-or-negative-color="{{summary.last_shift.total_reimburse}}">
 							${{summary.last_shift.total_reimburse | formatPrice}}
 						</td>
