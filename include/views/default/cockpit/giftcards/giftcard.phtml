@@ -2,14 +2,14 @@
 	$this->title = 'Gift cards';
 	$this->titleicon = 'gift';
 	$this->titleLink = '/giftcards';
-	
+
 	$this->title2 = 'Gift card #' . $this->giftcard->id_promo;
 	$this->title2icon = 'file';
 ?>
-<?php 
+<?php
 $wasUsed = Crunchbutton_Promo::giftWasAlreadyUsed( $this->giftcard->id_promo );
 $credit = $this->giftcard->credit();
-if ( $credit->id_credit ) { 
+if ( $credit->id_credit ) {
 	$credit = Crunchbutton_Credit::o( $credit->id_credit );
 }
 ?>
@@ -160,7 +160,7 @@ if ( $credit->id_credit ) {
 									<a target="_blank" class="btn btn-gray" href="/giftcards/print/<?=$this->giftcard->id_promo;?>"><i class="icon-print"></i> Print</a>&nbsp;
 									<a target="_blank" class="btn btn-blue" href="/giftcards/print-flyer/<?=$this->giftcard->id_promo;?>"><i class="icon-picture"></i> Print flyer</a>&nbsp;
 								<?php } ?>
-								<?php 
+								<?php
 								if( c::admin()->permission()->check( [ 'global', 'gift-card-all', 'gift-card-create-all', "gift-card-restaurant-{$this->giftcard->id_restaurant}", "gift-card-restaurant-create-{$this->giftcard->id_restaurant}" ] ) ){
 								?>
 									<?php if( $this->giftcard->phone ) { ?>
@@ -183,7 +183,7 @@ if ( $credit->id_credit ) {
 		<div class="span6">
 			<!-- box history start -->
 			<?php
-			$debits = $credit->debitHistory(); 
+			$debits = $credit->debitHistory();
 				if( $debits->count() > 0 ){ ?>
 			<div class="box">
 				<div class="box-header">
@@ -263,7 +263,7 @@ if ( $credit->id_credit ) {
 			</div>
 			<!-- box track info end -->
 			<!-- box danger zone start -->
-			<?php 
+			<?php
 			if (c::admin()->permission()->check( [ 'global','gift-card-all', 'gift-card-delete'])) {
 			?>
 			<div class="box">
