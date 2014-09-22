@@ -62,13 +62,13 @@
 			<table class="tb-grid tb-zebra">
 				<tbody>
 					<tr ng-if="summary.earnings.current">
-						<td>Earned so far this week</td>
+						<td>Payment Earned Since Monday</td>
 						<td positive-or-negative-color="{{summary.earnings.current.total_payment}}">
 							${{summary.earnings.current.total_payment | formatPrice}}
 						</td>
 					</tr>
 					<tr ng-if="summary.earnings.current">
-						<td>Reimbursement so far this week</td>
+						<td>Reimbursement Earned Since Monday</td>
 						<td positive-or-negative-color="{{summary.earnings.current.total_reimburse}}">
 							${{summary.earnings.current.total_reimburse | formatPrice}}
 						</td>
@@ -85,6 +85,18 @@
 							${{summary.earnings.previous.total_reimburse | formatPrice}}
 						</td>
 					</tr>
+					<tr ng-if="summary.last_shift.date">
+						<td>Earned for Most Recent Shift ({{summary.last_shift.date}})</td>
+						<td positive-or-negative-color="{{summary.last_shift.total_payment}}">
+							${{summary.last_shift.total_payment | formatPrice}}
+						</td>
+					</tr>
+					<tr ng-if="summary.last_shift.date">
+						<td>Reimbursement for Most Recent Shift ({{summary.last_shift.date}})</td>
+						<td positive-or-negative-color="{{summary.last_shift.total_reimburse}}">
+							${{summary.last_shift.total_reimburse | formatPrice}}
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			<p class="note">
@@ -94,12 +106,11 @@
 			</p>
 			<br />
 			<br />
-
 		</div>
-
 	</div>
 
-	<div ng-if="summary.weeks" class="driver-summary">
+	<!-- Hide View Details section: #3727 -->
+	<div ng-if="summary.weeks && false" class="driver-summary">
 
 		<h2 class="title">View Details</h2>
 

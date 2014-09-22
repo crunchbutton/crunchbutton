@@ -124,9 +124,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function getLastWorkedShiftByAdmin( $id_admin ){
+		$admin = Crunchbutton_Admin::o( $id_admin );
+		$timezone = $admin->timezone();
+		$now = new DateTime( 'now', $timezone );
 		$query = 'SELECT cs.* FROM admin_shift_assign asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-							WHERE asa.id_admin = "' . $id_admin .  '" AND cs.date_start < NOW()
+							WHERE asa.id_admin = "' . $id_admin .  '" AND cs.date_start < DATE_FORMAT( "' . $now->format( 'Y-m-d' ) . '", "%Y-%m-%d" )
 							ORDER BY cs.date_start DESC
 							LIMIT 1';
 		return Crunchbutton_Community_Shift::q( $query );
@@ -415,6 +418,17 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 																				INNER JOIN restaurant_community rc ON c.id_community = rc.id_community
 																				INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1
 																			ORDER BY c.name ASC' );
+	}
+
+	public function deliveredOrdersByAdminAtTheShift( $id_admin ){
+		$dateStart = $this->dateStart( c::config()->timezone );
+		$dateEnd = $this->dateEnd( c::config()->timezone );
+		$query = 'SELECT o.* FROM `order` o
+							INNER JOIN order_action oa ON oa.id_order = o.id_order
+							WHERE o.date >= "' . $dateStart->format( 'Y-m-d H:i:s' ) . '" AND o.date <= "' . $dateEnd->format( 'Y-m-d H:i:s' ) . '"
+							AND oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '" AND oa.id_admin = "' . $id_admin . '"';
+		$orders = Crunchbutton_Order::q( $query );
+		return $orders;
 	}
 
 	public function sendWarningToDrivers(){
