@@ -758,7 +758,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->date = date( 'Y-m-d H:i:s' );
 
 				if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
-					$amount = $_driver[ 'total_reimburse' ];
+					$amount = $_driver[ 'total_reimburse' ] + $adjustment;
 				} else {
 					$amount = $_driver[ 'total_payment' ] + $adjustment;
 					$pay_type = Admin::o( $id_driver )->payment_type();
@@ -1422,7 +1422,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 
 			} else {
-				$total_reimburse += $summary[ 'adjustment' ];
+				$total_reimburse = floatval( $summary[ 'amount' ] );
 			}
 
 			$summary[ 'calcs' ] = [ 'total_reimburse' => $total_reimburse,
