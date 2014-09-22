@@ -119,7 +119,7 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function creditByOrder( $id_order ) {
-		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE id_order="'.$id_order.'" AND type = "' . Crunchbutton_Credit::TYPE_DEBIT . '" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE id_order="'.$id_order.'" AND type = "' . Crunchbutton_Credit::TYPE_DEBIT . '" AND (  credit_type IS NULL OR credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
 	}
 
 	public function creditByOrderPaidBy( $id_order, $paid_by ) {
