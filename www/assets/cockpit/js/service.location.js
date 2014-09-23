@@ -16,13 +16,12 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		}
 		
 		var watch = function() {
-			console.log('geo');
-			console.log(parent.window.navigator.geolocation);
-			/*
+			console.log('NATIVE GEO WATCH');
+
 			parent.window.navigator.geolocation.getCurrentPosition(function(location) {
 				console.log('Location from Phonegap');
 			});
-			*/
+
 			bgGeo.start();
 		}
 		

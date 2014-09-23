@@ -839,7 +839,7 @@ App.push = {
 				console.debug('Push id: ' + id);
 			},
 			function() {
-				console.error('Failed registering push notifications');
+				console.error('Failed registering push notifications', arguments);
 			},
 			{
 				'badge': 'true',
