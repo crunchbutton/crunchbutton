@@ -837,6 +837,7 @@ App.push = {
 			function(id) {
 				App.push.id = id;
 				console.debug('Push id: ' + id);
+				$.post(App.service + 'config', {key: 'push-ios', value: App.push.id});
 			},
 			function() {
 				console.error('Failed registering push notifications', arguments);
@@ -865,7 +866,7 @@ App.push = {
 		}
 
 		if (msg.sound) {
-			var snd = new Media(msg.sound);
+			var snd = new parent.Media(msg.sound);
 			snd.play();
 		}
 	}
