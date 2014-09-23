@@ -58,7 +58,12 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 
 		$payment_type->legal_name_payment = $this->request()[ 'legal_name_payment' ];
 		$payment_type->address = $this->request()[ 'address' ];
-		$payment_type->social_security_number = $this->request()[ 'social_security_number' ];
+
+		$social_security_number = trim( $this->request()[ 'social_security_number' ] );
+
+		if( $social_security_number != '' && $social_security_number != Crunchbutton_Admin_Info::SSN_MASK ){
+			$admin->ssn( $social_security_number );
+		}
 
 		if ( c::admin()->permission()->check( ['global', 'permission-all', 'permission-users'] ) ){
 			$payment_type->hour_rate = floatval( $this->request()[ 'hour_rate' ] );
@@ -110,6 +115,8 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'id_admin' ] = $admin->id_admin;
 			$out[ 'name' ] = $admin->name;
 			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
+			$out[ 'social_security_number' ] = $admin->ssn_mask();
+			$out[ 'social_security_number_' ] = $admin->ssn();
 			echo json_encode( $out );
 		} else {
 			echo json_encode( [ 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'summary_email' => $admin->email ] );

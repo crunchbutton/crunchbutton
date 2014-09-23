@@ -16,6 +16,33 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->invite_code;
 	}
 
+	public function ssn_mask(){
+		if( trim( $this->ssn() ) != '' ){
+			return Crunchbutton_Admin_Info::SSN_MASK;
+		}
+		return '';
+	}
+
+	public function social_security_number( $ssn = false ){
+		if( $ssn ){
+			return Crunchbutton_Admin_Payment_Type::save_social_security_number( $this->id_admin, $ssn );
+		}
+		return Crunchbutton_Admin_Payment_Type::social_security_number( $this->id_admin );
+	}
+
+	public function save_social_security_number( $ssn ){
+		return Crunchbutton_Admin_Payment_Type::save_social_security_number( $this->id_admin, $ssn );
+	}
+
+	// alias
+	public function ssn( $ssn = false ){
+		return $this->social_security_number( $ssn );
+	}
+
+	public function save_ssn( $ssn ){
+		return $this->save_social_security_number( $this->id_admin, $ssn );
+	}
+
 	public static function byInviteCode( $code ){
 		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
 	}
