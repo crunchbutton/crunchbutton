@@ -116,7 +116,6 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'name' ] = $admin->name;
 			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
-			$out[ 'social_security_number_' ] = $admin->ssn();
 			echo json_encode( $out );
 		} else {
 			echo json_encode( [ 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'summary_email' => $admin->email ] );
