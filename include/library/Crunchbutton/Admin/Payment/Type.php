@@ -14,6 +14,23 @@ class Crunchbutton_Admin_Payment_Type extends Cana_Table {
 			->load($id);
 	}
 
+	public function social_security_number( $id_admin ){
+		return Crunchbutton_Admin_Info::getSSN( $id_admin );
+	}
+
+	public function save_social_security_number( $id_admin, $ssn ){
+		return Crunchbutton_Admin_Info::storeSSN( $id_admin, $ssn );
+	}
+
+	// alias
+	public function ssn( $id_admin ){
+		return Crunchbutton_Admin_Payment_Type::social_security_number( $id_admin );
+	}
+
+	public function save_ssn( $id_admin, $ssn ){
+		return Crunchbutton_Admin_Payment_Type::save_social_security_number( $id_admin, $ssn );
+	}
+
 	function byAdmin( $id_admin ){
 		if( $id_admin ){
 			$payment = Crunchbutton_Admin_Payment_Type::q( 'SELECT * FROM admin_payment_type WHERE id_admin = ' . $id_admin . ' ORDER BY id_admin_payment_type DESC LIMIT 1' );
