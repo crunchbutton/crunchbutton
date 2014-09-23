@@ -866,10 +866,14 @@ App.push = {
 		}
 
 		if (msg.sound) {
-			var snd = new parent.Media(msg.sound);
+			var snd = new parent.Media(msg.sound.replace('www/','');
 			snd.play();
 		}
 	}
+};
+
+App.path = function() {
+	var path = parent.loation.hash.replace('#').replace('cockpit.phtml');
 };
 
 document.addEventListener('statusTap', function() {

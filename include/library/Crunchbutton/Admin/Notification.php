@@ -603,7 +603,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$message = new ApnsPHP_Message($this->value);
 		$message->setCustomIdentifier('order-recieved');
 		$message->setText('#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.');
-		$message->setSound('www/order.wav');
+		$message->setSound('www/edm.wav');
 		$message->setExpiry(30);
 		
 		
