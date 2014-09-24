@@ -18,8 +18,8 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 					(new Admin_Location([
 						'id_admin' => $driver->id_admin,
 						'date' => date('Y-m-d H:i:s'),
-						'lat' => $this->request()['lat'],
-						'lon' => $this->request()['lon'],
+						'lat' => $this->request()['lat'] ? $this->request()['lat'] : $this->request()['latitude'],
+						'lon' => $this->request()['lon'] ? $this->request()['lon'] : $this->request()['longitude'],
 						'accuracy' => $this->request()['accuracy']
 					]))->save();
 				}
