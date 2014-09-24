@@ -3,41 +3,15 @@
 
 NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 
-	var locationService = $resource( App.service + 'driver/:action', { action: '@action' }, {
-			'track' : { 'method': 'POST', params : { 'action' : 'location' } }
-		}
-	);
 
 	if (App.isPhoneGap) {
-		console.debug('PHONEGAP LOCATION');
-			
-		var service = {
-		
-		}
-		
-		var watch = function() {
-			console.log('NATIVE GEO WATCH');
 
-			parent.window.navigator.geolocation.getCurrentPosition(function(location) {
-				console.log('Location from Phonegap');
-			});
-
-			bgGeo.start();
-		}
-		
-		var stopWatch = function() {
-			bgGeo.stop();
-		}
-		
 		var bgGeo = parent.window.plugins.backgroundGeoLocation;
-		
-		var callback = function(response) {
-        	bgGeo.finish();
-		};
 
 		var callbackFn = function(location) {
-			console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
-			callback.call(this);
+			console.debug('BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+			track();
+        	bgGeo.finish();
 		}
 		var failureFn = function(error) {
 			console.log('BackgroundGeoLocation error');
@@ -61,140 +35,144 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 			debug: true // <-- enable this hear sounds for background-geolocation life-cycle.
 		});
 		
-	} else {
-	
-		console.debug('WEB LOCATION');
-	
-		var service = {
-			location: function() {
-				return location;
-			},
-			updated: function() {
-				return updated;
-			},
-			track: function() {
-				// only set extended tracking for a max of 15 minites
-				if (!extendedTrack) {
-					setTimeout(function() {
-						service.untrack();
-					}, 15000);
-	
-					extendedTrack = true;
-				}
-			},
-			untrack: function() {
-				extendedTrack = false;
-			}
-		};
-	
-		var location = {
-			lat: null,
-			lon: null,
-			accuracy: null,
-			timestamp: null
-		};
-	
-		var watcher, last, updated = null;
-	
-		var extendedTrack = false;
-	
-		var watch = function() {
-			if (watcher) {
-				return;
-			}
-			if (navigator.geolocation) {
-				watcher = navigator.geolocation.watchPosition(function(pos) {
-					console.debug('Got drivers location: ', pos);
-					location = {
-						lat: pos.coords.latitude,
-						lon: pos.coords.longitude,
-						accuracy: pos.coords.accuracy,
-						timestamp: pos.timestamp,
-					};
-	
-					$rootScope.$broadcast('location', location);
-	
-					if (!extendedTrack) {
-						setTimeout(trackStop, 5000);
-					}
-	
-					track();
-	
-				}, function() {
-					//alert('Your location services are off, or you declined location permissions. Please enable this.');
-				}, { enableHighAccuracy: true });
-			}
-		};
-	
-		var trackStop = function() {
-			if (!watcher) {
-				return;
-			}
-			navigator.geolocation.clearWatch(watcher);
-			watcher = null;
-			// reactivate tracking every 2 minites
-			setTimeout(watch, 60000 * 2);
-		};
-		
-	
-	
-		var track = function() {
-			// I added this line - it was asking the user to login when he was filling the onboarding/setup form @pererinha
-			if( !$rootScope || !$rootScope.account || !$rootScope.account.user || !$rootScope.account.user.id_admin ){
-				return;
-			}
-	
-			if( $rootScope.account.restaurant ){
-				return;
-			}
-	
-			// if we dont have a location
-			if (!location.lat) {
-				return;
-			}
-	
-			var d = new Date;
-			d = d.getTime();
-	
-			// if it has been less than 1 minite
-			if (updated && updated + 60000 > d) {
-				return;
-			}
-	
-			// if the location is the same and has been for under 5 min
-			if (last && location.lat == last.lat && location.lon == last.lon && updated && updated + 300000 > d) {
-				return;
-			}
-	
-			// only send out a tracking post:
-			// 	when the location is different and the time is over 1 minite
-			//	when the location is the same and the time is over 5 minites
-	
-			locationService.track({
-				lat: location.lat,
-				lon: location.lon,
-				accuracy: location.accuracy,
-				timestamp: location.timestamp
-			}, function(json) {
-				updated = d;
-				last = location;
-				console.debug('Tracked drivers location: ', location, d);
-			});
-		};
-	
-		var interval = setInterval(track, 60000);
-		
-		var stopWatch = function() {
-			
-		}
-	
 	}
+
+	var locationService = $resource( App.service + 'driver/:action', { action: '@action' }, {
+			'track' : { 'method': 'POST', params : { 'action' : 'location' } }
+		}
+	);
+
+	var track = function(loc) {
+		// I added this line - it was asking the user to login when he was filling the onboarding/setup form @pererinha
+		if( !$rootScope || !$rootScope.account || !$rootScope.account.user || !$rootScope.account.user.id_admin ){
+			return;
+		}
+
+		// if it is a restaurant account, dont track
+		if( $rootScope.account.restaurant ){
+			return;
+		}
+
+		// if we dont have a location
+		if (!loc.latitude) {
+			return;
+		}
+
+		var d = new Date;
+		d = d.getTime();
+
+		// if it has been less than 1 minite
+		if (updated && updated + 60000 > d) {
+			return;
+		}
+
+		// if the location is the same and has been for under 3 min
+		if (last && loc.latitude == last.latitude && loc.longitude == last.longitude && updated && updated + 180000 > d) {
+			//return;
+		}
+
+		// only send out a tracking post:
+		// 	when the location is different and the time is over 1 minite
+		//	when the location is the same and the time is over 3 minites
+
+		locationService.track(loc, function(json) {
+			updated = d;
+			last = location;
+			console.debug('Tracked drivers location: ', location, d);
+		});
+	};
+
+	var service = {
+		location: function() {
+			return location;
+		},
+		updated: function() {
+			return updated;
+		},
+		track: function() {
+			// only set extended tracking for a max of 15 minites
+			if (!extendedTrack) {
+				setTimeout(function() {
+					service.untrack();
+				}, 15000);
+
+				extendedTrack = true;
+			}
+		},
+		untrack: function() {
+			extendedTrack = false;
+		}
+	};
+
+	var location = {
+		latitude: null,
+		longitude: null,
+		accuracy: null,
+		timestamp: null
+	};
+
+	var watcher, last, updated = null;
+
+	var extendedTrack = false;
+	
+	var startWatch = function() {
+		if (App.isPhoneGap) {
+			parent.window.navigator.geolocation.getCurrentPosition(function(location) {
+				console.log('Location from Phonegap');
+			});
+			bgGeo.start();
+		}
+		watch();
+		
+	}
+
+	var watch = function() {
+		if (watcher) {
+			return;
+		}
+		if (navigator.geolocation) {
+			watcher = parent.window.navigator.geolocation.watchPosition(function(pos) {
+				console.debug('Got drivers location: ', pos);
+				location = pos.coords;
+
+				$rootScope.$broadcast('location', location);
+
+				if (!extendedTrack) {
+					setTimeout(trackStop, 5000);
+				}
+
+				track(location);
+
+			}, function() {
+				//alert('Your location services are off, or you declined location permissions. Please enable this.');
+			}, { enableHighAccuracy: true });
+		}
+	};
+
+	var trackStop = function() {
+		if (!watcher) {
+			return;
+		}
+		parent.window.navigator.geolocation.clearWatch(watcher);
+		watcher = null;
+		// reactivate tracking every 2 minites
+		setTimeout(watch, 60000 * 2);
+	};
+
+	var interval = setInterval(track, 60000);
+	
+	var stopWatch = function() {
+		if (App.isPhoneGap) {
+			bgGeo.stop();
+		}
+	}
+
 
 	$rootScope.$on('userAuth', function(e, data) {
 		// start watching if there is a user and their docs are filled out
 		console.log('authing',data.id_admin);
 		if (data.id_admin) {
-			watch();
+			startWatch();
 		} else {
 			stopWatch();
 		}
