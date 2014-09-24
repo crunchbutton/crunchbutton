@@ -121,25 +121,33 @@
 					<td>New Invited Users</td>
 					<td>$ {{result.invites_amount | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.adjustment" positive-or-negative-color="{{result.adjustment}}">
+				<tr ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement" positive-or-negative-color="{{result._total_reimburse_}}">
+					<td>Reimbursement</td>
+					<td>${{result._total_reimburse_ | formatPrice}}</td>
+				</tr>
+				<tr ng-if="result.adjustment && result._total_payment_ && pay_type_payment" positive-or-negative-color="{{result._total_payment_}}">
+					<td>Payment</td>
+					<td>${{result._total_payment_ | formatPrice}}</td>
+				</tr>
+				<tr ng-if="result.adjustment" positive-or-negative-color="{{result.adjustment}}">
 					<td>Adjustments</td>
-					<td>$ {{result.adjustment | formatPrice}}</td>
+					<td>${{result.adjustment | formatPrice}}</td>
+				</tr>
+				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
+					<td class="td-medium">Amount</td>
+					<td class="td-medium">${{result.calcs.total_reimburse | formatPrice}}</td>
+				</tr>
+				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
+					<td class="td-medium">Amount</td>
+					<td class="td-medium">${{result.calcs.total_payment | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.adjustment_note">
-					<td>Adjustment Notes</td>
+					<td>Adjustments Note</td>
 					<td>{{result.adjustment_note}}</td>
 				</tr>
 				<tr>
 					<td>{{result.title}} Notes</td>
 					<td>{{result.note}}</td>
-				</tr>
-				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
-					<td class="td-medium">Reimbursement</td>
-					<td class="td-medium">$ {{result.calcs.total_reimburse | formatPrice}}</td>
-				</tr>
-				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
-					<td class="td-medium">Payment</td>
-					<td class="td-medium">$ {{result.calcs.total_payment | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -285,11 +293,51 @@
 					<td></td>
 					<td></td>
 				</tr>
+				<tr class="transparent" ng-if="pay_type_payment && !result.hourly && result.calcs.delivery_fee">
+					<td></td>
+					<td></td>
+					<td>Total Delivery Fee</td>
+					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="pay_type_payment && result.invites_amount">
+					<td></td>
+					<td></td>
+					<td>Total New Invited Users</td>
+					<td>$ {{result.invites_amount | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
 				<tr class="transparent" ng-if="pay_type_payment && result.calcs.tip">
 					<td></td>
 					<td></td>
 					<td>Tips by Card</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement">
+					<td></td>
+					<td></td>
+					<td>Reimbursement</td>
+					<td>${{result._total_reimburse_ | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="result.adjustment && result._total_payment_ && pay_type_payment">
+					<td></td>
+					<td></td>
+					<td>Payment</td>
+					<td>${{result._total_payment_ | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -310,26 +358,6 @@
 					<td></td>
 					<td><strong>Total Reimburse</strong></td>
 					<td><strong>$ {{result.calcs.total_reimburse | formatPrice}}</strong></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && !result.hourly && result.calcs.delivery_fee">
-					<td></td>
-					<td></td>
-					<td>Total Delivery Fee</td>
-					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && result.invites_amount">
-					<td></td>
-					<td></td>
-					<td>Total New Invited Users</td>
-					<td>$ {{result.invites_amount | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
