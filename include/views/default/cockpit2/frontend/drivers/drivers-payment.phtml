@@ -105,10 +105,6 @@
 						<td>Adjustments</td>
 						<td>${{result.adjustment | formatPrice}}</td>
 					</tr>
-					<tr ng-if="result.adjustment_note">
-						<td>Adjustments Note</td>
-						<td>{{result.adjustment_note}}</td>
-					</tr>
 					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
 						<td class="td-medium">Amount</td>
 						<td class="td-medium">${{result.calcs.total_reimburse | formatPrice}}</td>
@@ -116,6 +112,10 @@
 					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
 						<td class="td-medium">Amount</td>
 						<td class="td-medium">${{result.calcs.total_payment | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.adjustment_note">
+						<td>Adjustments Note</td>
+						<td>{{result.adjustment_note}}</td>
 					</tr>
 					<tr>
 						<td>{{result.title}} Notes</td>
@@ -363,6 +363,15 @@
 					<td></td>
 					<td><strong>Total Payment</strong></td>
 					<td><strong>${{result.calcs.total_payment | formatPrice}}</strong></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="result.adjustment">
+					<td class="hide-tiny-screen"></td>
+					<td></td>
+					<td>Adjustments Note</td>
+					<td>{{result.adjustment_note}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
