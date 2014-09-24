@@ -134,11 +134,11 @@
 					<td>{{result.note}}</td>
 				</tr>
 				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
-					<td class="td-medium">Amount</td>
+					<td class="td-medium">Reimbursement</td>
 					<td class="td-medium">$ {{result.calcs.total_reimburse | formatPrice}}</td>
 				</tr>
 				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
-					<td class="td-medium">Amount</td>
+					<td class="td-medium">Payment</td>
 					<td class="td-medium">$ {{result.calcs.total_payment | formatPrice}}</td>
 				</tr>
 			</tbody>
