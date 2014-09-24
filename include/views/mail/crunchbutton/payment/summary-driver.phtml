@@ -210,11 +210,6 @@
 				<td>$<?php echo number_format( $summary[ 'adjustment' ], 2 ); ?></td>
 			</tr>
 		<?php } ?>
-		<?php if( $summary[ 'adjustment_note' ] ) { ?>
-			<tr class="class">
-				<td style="" colspan="<?php echo ( $coslpan + 1 ); ?>">Adjustment Note: <?php echo $summary[ 'adjustment_note' ]; ?></td>
-			</tr>
-		<?php } ?>
 		<tr class="class">
 			<td colspan="<?php echo $coslpan; ?>" style="text-align:right"><strong>Amount</strong></td>
 			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
@@ -223,6 +218,12 @@
 				<td><strong>$<?php echo number_format( $summary[ 'calcs' ][ 'total_reimburse' ], 2 ); ?></strong></td>
 			<?php } ?>
 		</tr>
+		<?php if( $summary[ 'adjustment_note' ] ) { ?>
+			<tr class="class">
+				<td style="" colspan="<?php echo $coslpan; ?>">Adjustment Note:</td>
+				<td><?php echo $summary[ 'adjustment_note' ]; ?></td>
+			</tr>
+		<?php } ?>
 </table>
 <br/><br/>
 <table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
