@@ -772,6 +772,35 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return 0;
 	}
+	
+	public function setPush($id, $os = 'ios') {
+		$type = $os == 'ios' ? Crunchbutton_Admin_Notification::TYPE_PUSH_IOS : Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID;
+
+		$notifications = Admin_Notification::q('
+			SELECT * FROM admin_notification
+			WHERE
+				id_admin="'.$this->id_admin.'"
+				AND `type`="'.$type.'"
+		');
+		foreach($notifications as $n) {
+			if ($n->value == $id) {
+				$exists = true;
+				if (!$n->active) {
+					$n->active = 1;
+					$n->save();
+				}
+			}
+		}
+		if (!$exists) {
+			$n = new Admin_Notification([
+				'active' => 1,
+				'value' => $id,
+				'type' => $type,
+				'id_admin' => $this->id_admin
+			]);
+			$n->save();
+		}
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

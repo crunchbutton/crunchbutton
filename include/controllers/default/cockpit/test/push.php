@@ -21,18 +21,19 @@ class Controller_test_push extends Crunchbutton_Controller_Account {
 		$push->connect();
 		
 		// Instantiate a new Message with a single recipient
-		$message = new ApnsPHP_Message('8646e7b2f64471f9188a0b94edb215030551de71e8d625bf7a2fccc8daeb03f4');
+		$message = new ApnsPHP_Message('bda4c763f2e2f2ec8b123a960fd2e9ecba591cf4a310253708156eed658a4bb2');
 		
 		// Set a custom identifier. To get back this identifier use the getCustomIdentifier() method
 		// over a ApnsPHP_Message object retrieved with the getErrors() message.
 		$message->setCustomIdentifier('order-recieved');
-		$message->setBadge(100);
+		$message->setBadge(1);
 		
 		// Set a simple welcome text
 		$message->setText('#5634: Devin has placed an order to Chipotle');
 		
 		// Play the default sound
-		$message->setSound('www/order.wav');
+		$message->setSound('www/edm.wav');
+//		$message->setSound('order.wav');
 
 		// Set another custom property
 //		$message->setCustomProperty('acme3', array('bing', 'bong'));
