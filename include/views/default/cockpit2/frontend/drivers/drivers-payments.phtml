@@ -37,26 +37,34 @@
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Payment' }" ng-click="filter = 'Payment'">Payments</button>
 				<div class="divider"></div>
 			</div>
-			<table class="tb-grid tb-zebra" ng-if="result.payments.length">
+
+			<table class="tb-grid tb-zebra" ng-show="result.payments.length">
 				<thead>
 					<tr>
 						<td>Type</td>
 						<td>Amount</td>
 						<td>Status</td>
-						<td>Payment Expected Date</td>
+						<td>Sent date</td>
+						<td>Approximate payment date</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="payment in result.payments" ng-show="!filter || filter == payment.type">
-						<td>
-							<span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span>
-						</td>
+						<td><span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span></td>
 						<td positive-or-negative-color="{{payment.amount}}">
 							${{payment.amount | formatPrice}}
 						</td>
-						<td ng-class="{ 'td-driver-summary-paid': payment.status == 'Paid', 'td-driver-summary-pending': payment.status == 'Pending' }">
-							{{payment.status}}
+						<td>
+							<span ng-class="{ 'span-driver-summary-paid': payment.status == 'Paid',
+																'span-driver-summary-pending': payment.status == 'Pending',
+																'span-driver-summary-processing': payment.status == 'Processing' }">
+
+								<span ng-switch="payment.status">
+								<span ng-switch-when="Pending">Not Yet Paid</span>
+								<span ng-switch-default>{{payment.status}}</span>
+							</span>
 						</td>
+						<td>{{payment.send_date}}</td>
 						<td>{{payment.paid_date}}</td>
 					</tr>
 				</tbody>
