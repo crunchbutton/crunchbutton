@@ -95,20 +95,6 @@ html {
 
 
 
-@media screen and (min-width: 1025px) {
-	.content-padding {
-		padding: 10px 0 10px 0;
-	}
-	.restaurants-items,
-	.nav .content,
-	.page-restaurant .content,
-	.page-cafe .content,
-	.content-padding {
-		/*max-width: 767px;*/
-		max-width: 1024px;
-		margin: 0 auto;
-	}
-}
 
 @media screen and (max-width: 1024px) {
 	.content-padding {
@@ -3586,4 +3572,24 @@ select {
 	background-position: center top;
 	height: 8.6em;
 	width: 30em;
+}
+
+
+@media screen and (min-width: 1025px) {
+	.content-padding {
+		padding: 10px 0 10px 0;
+	}
+	.restaurants-items,
+	.nav .content,
+	.page-restaurant .content,
+	.page-cafe .content,
+	.content-padding {
+		/*max-width: 767px;*/
+		max-width: 1024px;
+		margin: 0 auto;
+	}
+	.restaurants-bubble-wrap {
+		margin-bottom: 20px;
+		margin-top: 0;
+	}
 }
