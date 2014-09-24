@@ -220,8 +220,9 @@
 		</tr>
 		<?php if( $summary[ 'adjustment_note' ] ) { ?>
 			<tr class="class">
-				<td style="" colspan="<?php echo $coslpan; ?>">Adjustment Note:</td>
-				<td><?php echo $summary[ 'adjustment_note' ]; ?></td>
+				<td style="text-align:right;padding-right:60px;" colspan="<?php echo ( $coslpan + 1 ); ?>">Adjustment Note:
+					<?php echo $summary[ 'adjustment_note' ]; ?>
+				</td>
 			</tr>
 		<?php } ?>
 </table>
