@@ -165,122 +165,122 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/location', {
 			action: 'location',
 			controller: 'LocationCtrl',
-			templateUrl: 'assets/view/location.html'
+			templateUrl: '/assets/view/location.html'
 		})
 		.when('/splash', {
 			action: 'splash',
 			controller: 'SplashCtrl',
-			templateUrl: 'assets/view/splash.html'
+			templateUrl: '/assets/view/splash.html'
 		})
 		.when('/download', {
 			action: 'download',
 			controller: 'DownloadCtrl',
-			templateUrl: 'assets/view/download.html'
+			templateUrl: '/assets/view/download.html'
 		})
 		.when('/food-delivery', {
 			action: 'restaurants',
 			controller: 'RestaurantsCtrl',
-			templateUrl: 'assets/view/restaurants.html'
+			templateUrl: '/assets/view/restaurants.html'
 		})
 		.when('/food-delivery/:id', {
 			action: 'restaurant',
 			controller: 'RestaurantCtrl',
-			templateUrl: 'assets/view/restaurant.html'
+			templateUrl: '/assets/view/restaurant.html'
 		})
 		.when('/legal', {
 			action: 'legal',
 			controller: 'LegalCtrl',
-			templateUrl: 'assets/view/legal.html'
+			templateUrl: '/assets/view/legal.html'
 		})
 		.when('/help', {
 			action: 'help',
 			controller: 'HelpCtrl',
-			templateUrl: 'assets/view/help.html'
+			templateUrl: '/assets/view/help.html'
 		})
 		.when('/about', {
 			action: 'about',
 			controller: 'AboutCtrl',
-			templateUrl: 'assets/view/about.html'
+			templateUrl: '/assets/view/about.html'
 		})
 		.when('/jobs', {
 			action: 'jobs',
 			controller: 'JobsCtrl',
-			templateUrl: 'assets/view/jobs.html'
+			templateUrl: '/assets/view/jobs.html'
 		})
 		.when('/owners', {
 			action: 'owners',
 			controller: 'OwnersCtrl',
-			templateUrl: 'assets/view/owners.html'
+			templateUrl: '/assets/view/owners.html'
 		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
-			templateUrl: 'assets/view/orders.html'
+			templateUrl: '/assets/view/orders.html'
 		})
 		.when('/order/:id', {
 			action: 'order',
 			controller: 'OrderCtrl',
-			templateUrl: 'assets/view/order.html'
+			templateUrl: '/assets/view/order.html'
 		})
 		.when('/cities', {
 			action: 'cities',
 			controller: 'CitiesCtrl',
-			templateUrl: 'assets/view/cities.html'
+			templateUrl: '/assets/view/cities.html'
 		})
 		.when('/giftcard', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/giftcard/:id', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/gift', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/gift/:id', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/invite', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/invite/:id', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/reset', {
 			action: 'reset',
 			controller: 'AccountResetCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/reset/:id', {
 			action: 'reset',
 			controller: 'AccountResetCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/', {
 			action: 'home',
 			controller: 'HomeCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 		.when('/cafe', {
 			action: 'cafe',
 			controller: 'CafeCtrl',
-			templateUrl: 'assets/view/cafe.html'
+			templateUrl: '/assets/view/cafe.html'
 		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
-			templateUrl: 'assets/view/home.html'
+			templateUrl: '/assets/view/home.html'
 		})
 	;
 	// only use html5 enabled location stuff if its not in a phonegap container
