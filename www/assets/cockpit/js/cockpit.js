@@ -866,7 +866,7 @@ App.push = {
 		}
 
 		if (msg.sound) {
-			var snd = new parent.Media(msg.sound.replace('www/','');
+			var snd = new parent.Media(msg.sound.replace('www/',''));
 			snd.play();
 		}
 	}

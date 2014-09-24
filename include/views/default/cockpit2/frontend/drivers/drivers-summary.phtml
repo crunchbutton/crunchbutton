@@ -46,7 +46,10 @@
 						<span ng-class="{ 'span-driver-summary-paid': payment.status == 'Paid',
 															'span-driver-summary-pending': payment.status == 'Pending',
 															'span-driver-summary-processing': payment.status == 'Processing' }">
-													{{payment.status}}
+
+							<span ng-switch="payment.status">
+							<span ng-switch-when="Pending">Not Yet Paid</span>
+							<span ng-switch-default>{{payment.status}}</span>
 						</span>
 					</td>
 					<td>{{payment.send_date}}</td>
