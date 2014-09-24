@@ -24,7 +24,7 @@
 
 	<div ng-if="summary.payments">
 
-		<h2 class="title" ng-show="summary.payments.length">Summary</h2>
+		<h2 class="title" ng-show="summary.payments.length">Recent Payments</h2>
 
 		<table class="tb-grid tb-zebra" ng-show="summary.payments.length">
 			<thead>
@@ -32,6 +32,7 @@
 					<td>Type</td>
 					<td>Amount</td>
 					<td>Status</td>
+					<td>Sent date</td>
 					<td>Approximate payment date</td>
 				</tr>
 			</thead>
@@ -48,6 +49,7 @@
 													{{payment.status}}
 						</span>
 					</td>
+					<td>{{payment.send_date}}</td>
 					<td>{{payment.paid_date}}</td>
 				</tr>
 			</tbody>
@@ -109,8 +111,7 @@
 		</div>
 	</div>
 
-	<!-- Hide View Details section: #3727 -->
-	<div ng-if="summary.weeks && false" class="driver-summary">
+	<div ng-if="summary.weeks" class="driver-summary">
 
 		<h2 class="title">View Details</h2>
 
@@ -315,7 +316,7 @@
 
 	</div>
 
-	<div ng-if="!summary.weeks && !isLoading" class="box-content2">
+	<div ng-if="!summary.payments && !isLoading" class="box-content2">
 		Nothing yet. Go deliver some food!
 	</div>
 

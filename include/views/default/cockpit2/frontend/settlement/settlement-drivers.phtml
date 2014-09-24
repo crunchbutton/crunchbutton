@@ -303,6 +303,10 @@
 												<div class="label">Adjustments:</div>
 												<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.adjustment" ng-change="summary();" placeholder=""></div>
 											</li>
+											<li class="li-input" ng-show="driver.adjustment != 0">
+												<div class="label">Adjustments Notes:</div>
+												<div class="input"><input type="text" ng-model="driver.adjustment_notes" maxlength="250" placeholder=""></div>
+											</li>
 										</ul>
 									</td>
 								</tr>

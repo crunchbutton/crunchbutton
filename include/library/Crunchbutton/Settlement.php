@@ -719,6 +719,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$notes = $id_drivers[ $_driver[ 'id_admin' ] ][ 'notes' ];
 			$adjustment = $id_drivers[ $_driver[ 'id_admin' ] ][ 'adjustment' ];
+			$adjustment_notes = $id_drivers[ $_driver[ 'id_admin' ] ][ 'adjustment_notes' ];
 			$id_driver = $_driver[ 'id_admin' ];
 
 			$shouldSchedule = false;
@@ -774,7 +775,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->pay_type = $type;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_DRIVER;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+				$schedule->log = 'Schedule created';
 				$schedule->note = $notes;
+				$schedule->adjustment_note = $adjustment_notes;
 				$schedule->id_admin = c::user()->id_admin;
 				$schedule->save();
 				$id_payment_schedule = $schedule->id_payment_schedule;
@@ -1220,6 +1223,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment = new Crunchbutton_Payment;
 						$payment->date = date( 'Y-m-d H:i:s' );
 						$payment->note = $schedule->note;
+						$payment->adjustment_note = $schedule->adjustment_note;
 						$payment->env = c::getEnv();
 						$payment->id_driver = $schedule->id_driver;
 						$payment->id_admin = c::user()->id_admin;
@@ -1247,6 +1251,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						// save the adjustment
 						if( floatval( $schedule->adjustment ) != 0  ){
 							$payment->adjustment = $schedule->adjustment;
+							$payment->adjustment_note = $schedule->adjustment_note;
 							$payment->save();
 						}
 
@@ -1324,7 +1329,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function driverSummary( $id_payment_schedule ){
-
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_DRIVER ){
 			$settlement = new Settlement;

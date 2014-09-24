@@ -188,6 +188,7 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 				id_restaurants.push( $scope.result.restaurants[ x ].id_restaurant );
 				params[ 'notes_' + $scope.result.restaurants[ x ].id_restaurant ] = $scope.result.restaurants[ x ].notes;
 				params[ 'adjustments_' + $scope.result.restaurants[ x ].id_restaurant ] = $scope.result.restaurants[ x ].adjustment;
+				params[ 'adjustments_notes_' + $scope.result.restaurants[ x ].id_restaurant ] = $scope.result.restaurants[ x ].adjustment_notes;
 			}
 		}
 		id_restaurants = id_restaurants.join( ',' );
@@ -634,6 +635,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 				id_drivers.push( $scope.result.drivers[ x ].id_admin );
 				params[ 'notes_' + $scope.result.drivers[ x ].id_admin ] = $scope.result.drivers[ x ].notes;
 				params[ 'adjustments_' + $scope.result.drivers[ x ].id_admin ] = $scope.result.drivers[ x ].adjustment;
+				params[ 'adjustments_notes_' + $scope.result.drivers[ x ].id_admin ] = $scope.result.drivers[ x ].adjustment_notes;
 			}
 		}
 		id_drivers = id_drivers.join( ',' );

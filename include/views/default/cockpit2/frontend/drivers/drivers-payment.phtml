@@ -5,7 +5,7 @@
 	<div ng-if="result.id_payment_schedule">
 
 		<h1 class="title left"><i class="fa fa-bank"></i>
-			<span>Payment #{{result.id_payment_schedule}} - {{result.driver}}</span>
+			<span>{{result.title}} #{{result.id_payment_schedule}} - {{result.driver}}</span>
 		</h1>
 
 		<div class="divider"></div>
@@ -16,13 +16,13 @@
 				<tbody>
 
 					<tr ng-if="result.id_payment">
-						<td><strong>Payment ID</strong></td>
+						<td><strong>{{result.title}} ID</strong></td>
 						<td>
 							# {{result.id_payment}}
 						</td>
 					</tr>
 					<tr ng-if="result.id_payment_schedule">
-						<td><strong>Payment Schecule ID</strong></td>
+						<td><strong>{{result.title}} Schecule ID</strong></td>
 						<td>
 							# {{result.id_payment_schedule}}
 						</td>
@@ -39,15 +39,15 @@
 					</tr>
 
 					<tr ng-if="result.payment_date">
-						<td><strong>Payment Sent Date</strong></td>
+						<td><strong>{{result.title}} Sent Date</strong></td>
 						<td>{{result.payment_date}}</td>
 					</tr>
 					<tr ng-if="result.expected_date">
-						<td><strong>Payment Expected Date</strong></td>
+						<td><strong>{{result.title}} Expected Date</strong></td>
 						<td>{{result.expected_date}}</td>
 					</tr>
 					<tr>
-						<td><strong>Payment method</strong></td>
+						<td><strong>{{result.title}} method</strong></td>
 						<td>{{result.payment_method}}</td>
 					</tr>
 					<tr ng-if="result.payment_date">
@@ -92,17 +92,21 @@
 						<td>Adjustments</td>
 						<td>${{result.adjustment | formatPrice}}</td>
 					</tr>
+					<tr ng-if="result.adjustment_note">
+						<td>Adjustments Note</td>
+						<td>{{result.adjustment_note}}</td>
+					</tr>
+					<tr>
+						<td>{{result.title}} Notes</td>
+						<td>{{result.note}}</td>
+					</tr>
 					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
-						<td class="td-medium">Reimbursement</td>
+						<td class="td-medium">Amount</td>
 						<td class="td-medium">${{result.calcs.total_reimburse | formatPrice}}</td>
 					</tr>
 					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
-						<td class="td-medium">Payment</td>
+						<td class="td-medium">Amount</td>
 						<td class="td-medium">${{result.calcs.total_payment | formatPrice}}</td>
-					</tr>
-					<tr>
-						<td>Payment Notes</td>
-						<td>{{result.note}}</td>
 					</tr>
 				</tbody>
 			</table>

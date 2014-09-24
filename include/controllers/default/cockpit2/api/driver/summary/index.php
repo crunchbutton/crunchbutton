@@ -197,7 +197,10 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			$out = [ 'weeks' => 0 ];
 		}
 
-
+		// Hide View Details section: #3727
+		$out[ 'weeks' ] = 0;
+		// Get rid of the "Earned Since..." section entirely. #3727
+		$out[ 'earnings' ] = 0;
 
 		echo json_encode( $out );exit();
 
@@ -323,6 +326,11 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		} else {
 			$out = [ 'weeks' => 0 ];
 		}
+
+		// Hide View Details section: #3727
+		$out[ 'weeks' ] = 0;
+		// Get rid of the "Earned Since..." section entirely. #3727
+		$out[ 'earnings' ] = 0;
 
 		if( $json ){
 			echo json_encode( $out );exit();
