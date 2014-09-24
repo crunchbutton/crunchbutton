@@ -92,6 +92,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE && $schedule->id_payment ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$expected = $schedule->payment()->date();
+			$out[ 'range_date' ] = $schedule->range_date;
 			$out[ 'send_date' ] = ( string ) $expected->format( 'M jS Y' );
 			$expected->modify( '+3 Weekday' );
 			$out[ 'paid_date' ] = ( string ) $expected->format( 'M jS Y' );

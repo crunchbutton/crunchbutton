@@ -492,7 +492,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
 			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
 
-			$driver[ 'pay' ] = true;
+			$driver[ 'pay' ] = false;
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
 			if( $id_driver ){
 				if( $id_driver == $driver[ 'id_admin' ] ){

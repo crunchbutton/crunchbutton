@@ -42,6 +42,7 @@
 				<thead>
 					<tr>
 						<td>Type</td>
+						<td>Period</td>
 						<td>Amount</td>
 						<td>Status</td>
 						<td>Sent date</td>
@@ -51,6 +52,7 @@
 				<tbody>
 					<tr ng-repeat="payment in result.payments" ng-show="!filter || filter == payment.type">
 						<td><span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span></td>
+						<td>{{payment.range_date}}</td>
 						<td positive-or-negative-color="{{payment.amount}}">
 							${{payment.amount | formatPrice}}
 						</td>
