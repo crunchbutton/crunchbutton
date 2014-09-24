@@ -1392,6 +1392,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 
+			$summary[ '_total_reimburse_' ] = 0;
+			$summary[ '_total_payment_' ] = 0;
+
 			$orders = $schedule->orders();
 			$_orders = [];
 			$summary[ 'orders_count' ] = 0;
@@ -1415,7 +1418,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total_reimburse' => $pay_info[ 0 ][ 'total_reimburse' ],
 																										'total_payment' => $pay_info[ 0 ][ 'total_payment' ]
 																									];
+
 					$_orders[] = $variables;
+					$summary[ '_total_reimburse_' ] += $pay_info[ 0 ][ 'total_reimburse' ];
+					$summary[ '_total_payment_' ] += $pay_info[ 0 ][ 'total_payment' ];
 				}
 			}
 			$calcs = $settlement->driversProcess( $_orders, true );
