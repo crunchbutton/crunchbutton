@@ -89,35 +89,35 @@
 					<td>Worked hours</td>
 					<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.tax" positive-or-negative-color="{{result.calcs.tax}}">
+				<tr ng-if="!result.hourly && result.calcs.tax && pay_type_payment" positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.delivery_fee" positive-or-negative-color="{{result.calcs.delivery_fee}}">
+				<tr ng-if="!result.hourly && result.calcs.delivery_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee}}">
 					<td>Delivery Fee</td>
 					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.tip}}" ng-if="result.calcs.tip">
+				<tr positive-or-negative-color="{{result.calcs.tip}}" ng-if="result.calcs.tip && pay_type_payment">
 					<td>Tip</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.customer_fee" positive-or-negative-color="{{result.calcs.customer_fee}}">
+				<tr ng-if="!result.hourly && result.calcs.customer_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee}}">
 					<td>Customer Fee</td>
 					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
-				<tr ng-if="result.calcs.markup" positive-or-negative-color="{{result.calcs.markup}}">
+				<tr ng-if="result.calcs.markup && pay_type_payment" positive-or-negative-color="{{result.calcs.markup}}">
 					<td>Markup</td>
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.credit_charge" positive-or-negative-color="{{result.calcs.credit_charge}}">
+				<tr ng-if="!result.hourly && result.calcs.credit_charge && pay_type_payment" positive-or-negative-color="{{result.calcs.credit_charge}}">
 					<td>Credit Card Charge</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.gift_card" positive-or-negative-color="{{result.calcs.gift_card}}">
+				<tr ng-if="!result.hourly && result.calcs.gift_card && pay_type_payment" positive-or-negative-color="{{result.calcs.gift_card}}">
 					<td>Gift Card</td>
 					<td>$ {{result.calcs.gift_card | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.invites_amount}}" ng-if="result.invites_amount">
+				<tr positive-or-negative-color="{{result.invites_amount}}" ng-if="result.invites_amount && pay_type_payment">
 					<td>New Invited Users</td>
 					<td>$ {{result.invites_amount | formatPrice}}</td>
 				</tr>
