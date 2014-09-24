@@ -770,8 +770,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 					}
 				}
 
+				// Range
+				$range = ( new DateTime( $this->filters[ 'start' ] ) )->format( 'm/d/Y' );
+				$range .= ' => ';
+				$range .= ( new DateTime( $this->filters[ 'end' ] ) )->format( 'm/d/Y' );
+
 				$schedule->amount = max( $amount, 0 );
 				$schedule->adjustment = $adjustment;
+				$schedule->range_date = $range;
 				$schedule->pay_type = $type;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_DRIVER;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;

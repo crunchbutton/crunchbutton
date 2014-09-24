@@ -38,6 +38,11 @@
 						<td>Payment</td>
 					</tr>
 
+					<tr ng-if="result.range_date">
+						<td><strong>Period</strong></td>
+						<td>{{result.range_date}}</td>
+					</tr>
+
 					<tr ng-if="result.payment_date">
 						<td><strong>{{result.title}} Sent Date</strong></td>
 						<td>{{result.payment_date}}</td>

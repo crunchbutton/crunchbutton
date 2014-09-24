@@ -13,7 +13,10 @@
 				Payment #
 			<?php } ?>
 			<?php echo $summary[ 'id_payment' ]; ?></span><br />
-			<?php echo $summary[ 'driver' ]; ?>
+			<?php echo $summary[ 'driver' ]; ?><br />
+			<?php if( $summary[ 'range_date' ] ) {
+				echo 'Period ' . $summary[ 'range_date' ];
+			}?>
 		</td>
 	</tr>
 </table>
