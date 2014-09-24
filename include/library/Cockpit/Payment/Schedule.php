@@ -37,6 +37,11 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 				unset( $out[ $key ] );
 			}
 		}
+		if( $out[ 'pay_type' ] == 'reimbursement' ){
+			$out[ 'title' ] = 'Reimbursement';
+		} else {
+			$out[ 'title' ] = 'Payment';
+		}
 		return $out;
 	}
 
@@ -87,6 +92,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE && $schedule->id_payment ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$expected = $schedule->payment()->date();
+			$out[ 'send_date' ] = ( string ) $expected->format( 'M jS Y' );
 			$expected->modify( '+3 Weekday' );
 			$out[ 'paid_date' ] = ( string ) $expected->format( 'M jS Y' );
 			if( $now->format( 'Ymd' ) >= $expected->format( 'Ymd' ) ){

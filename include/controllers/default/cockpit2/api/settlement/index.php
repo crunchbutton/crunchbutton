@@ -488,6 +488,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 			$driver[ 'total_payment_without_adjustment' ] = $driver[ 'total_payment' ];
 			$driver[ 'adjustment' ] = 0;
+			$driver[ 'adjustment_notes' ] = '';
 			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
 			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
 
@@ -548,9 +549,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$id_driver = trim( $val );
 			$notes = $this->request()[ 'notes_' . $id_driver ];
 			$adjustment = $this->request()[ 'adjustments_' . $id_driver ];
+			$adjustment_notes = $this->request()[ 'adjustments_notes_' . $id_driver ];
 			$id_drivers[ $id_driver ] = [];
 			$id_drivers[ $id_driver ][ 'notes' ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
 			$id_drivers[ $id_driver ][ 'adjustment' ] = $adjustment;
+			$id_drivers[ $id_driver ][ 'adjustment_notes' ] = $adjustment_notes;
 		}
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
 		if( $settlement->scheduleDriverPayment( $id_drivers, $pay_type ) ){

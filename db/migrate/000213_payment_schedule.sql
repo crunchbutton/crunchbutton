@@ -1,0 +1,1 @@
+ALTER TABLE  `payment_schedule` ADD  `adjustment_note` varchar(255) DEFAULT '';

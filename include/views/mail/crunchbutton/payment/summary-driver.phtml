@@ -165,6 +165,11 @@
 			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Adjustment</td>
 			<td>$<?php echo number_format( $summary[ 'adjustment' ], 2 ); ?></td>
 		</tr>
+		<?php if( $summary[ 'adjustment_note' ] ) { ?>
+			<tr class="class">
+				<td style="text-align:right" colspan="<?php echo ( $coslpan + 1 ); ?>">Adjustment Note: <?php echo $summary[ 'adjustment_note' ]; ?></td>
+			</tr>
+		<?php } ?>
 	<?php } ?>
 	<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
 		<tr class="class">
