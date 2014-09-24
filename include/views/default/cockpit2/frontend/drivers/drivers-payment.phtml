@@ -93,17 +93,17 @@
 						<td>CB Cash Fee</td>
 						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
-					<tr ng-if="!result.hourly && result.adjustment" positive-or-negative-color="{{result.adjustment}}">
+					<tr ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement" positive-or-negative-color="{{result._total_reimburse_}}">
+						<td>Reimbursement</td>
+						<td>${{result._total_reimburse_ | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.adjustment && result._total_payment_ && pay_type_payment" positive-or-negative-color="{{result._total_payment_}}">
+						<td>Payment</td>
+						<td>${{result._total_payment_ | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.adjustment" positive-or-negative-color="{{result.adjustment}}">
 						<td>Adjustments</td>
 						<td>${{result.adjustment | formatPrice}}</td>
-					</tr>
-					<tr ng-if="result.adjustment_note">
-						<td>Adjustments Note</td>
-						<td>{{result.adjustment_note}}</td>
-					</tr>
-					<tr>
-						<td>{{result.title}} Notes</td>
-						<td>{{result.note}}</td>
 					</tr>
 					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_reimburse}}" ng-if="pay_type_reimbursement">
 						<td class="td-medium">Amount</td>
@@ -112,6 +112,14 @@
 					<tr class="total-due" positive-or-negative-color="{{result.calcs.total_payment}}" ng-if="pay_type_payment">
 						<td class="td-medium">Amount</td>
 						<td class="td-medium">${{result.calcs.total_payment | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.adjustment_note">
+						<td>Adjustments Note</td>
+						<td>{{result.adjustment_note}}</td>
+					</tr>
+					<tr>
+						<td>{{result.title}} Notes</td>
+						<td>{{result.note}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -276,11 +284,38 @@
 					<td></td>
 					<td></td>
 				</tr>
+				<tr class="transparent" ng-if="pay_type_payment && !result.hourly && result.calcs.delivery_fee">
+					<td class="hide-tiny-screen"></td>
+					<td></td>
+					<td>Total Delivery Fee</td>
+					<td>${{result.calcs.delivery_fee | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
 				<tr class="transparent" ng-if="pay_type_payment && result.calcs.tip">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
 					<td>Tips by Card</td>
 					<td>${{result.calcs.tip | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="result.adjustment && result._total_payment_ && pay_type_payment">
+					<td class="hide-tiny-screen"></td>
+					<td></td>
+					<td>Payment</td>
+					<td>${{result._total_payment_ | formatPrice}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="transparent" ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement">
+					<td class="hide-tiny-screen"></td>
+					<td></td>
+					<td>Reimbursement</td>
+					<td>${{result._total_reimburse_ | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -303,15 +338,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && !result.hourly && result.calcs.delivery_fee">
-					<td class="hide-tiny-screen"></td>
-					<td></td>
-					<td>Total Delivery Fee</td>
-					<td>${{result.calcs.delivery_fee | formatPrice}}</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
+
 				<tr class="transparent" ng-if="pay_type_payment && result.invites_amount">
 					<td class="hide-tiny-screen"></td>
 					<td></td>

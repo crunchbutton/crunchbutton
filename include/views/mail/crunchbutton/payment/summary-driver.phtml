@@ -163,18 +163,14 @@
 		<tr>
 			<td colspan="<?php echo $coslpan + 1; ?>">&nbsp;</td>
 		</tr>
-	<?php if( $summary[ 'adjustment' ] ) { ?>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Adjustment</td>
-			<td>$<?php echo number_format( $summary[ 'adjustment' ], 2 ); ?></td>
-		</tr>
-		<?php if( $summary[ 'adjustment_note' ] ) { ?>
-			<tr class="class">
-				<td style="text-align:right" colspan="<?php echo ( $coslpan + 1 ); ?>">Adjustment Note: <?php echo $summary[ 'adjustment_note' ]; ?></td>
-			</tr>
-		<?php } ?>
-	<?php } ?>
+
 	<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
+		<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
+		<tr class="class">
+			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Delivery Fee</td>
+			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee' ], 2 ); ?></td>
+		</tr>
+		<?php } ?>
 		<tr class="class">
 			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Tips by Card</td>
 			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'tip' ], 2 ); ?></td>
@@ -195,26 +191,39 @@
 			<td>$<?php echo number_format( $summary[ 'invites_amount' ], 2 ); ?></td>
 		</tr>
 		<?php } ?>
-		<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Delivery Fee</td>
-			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee' ], 2 ); ?></td>
-		</tr>
-		<?php } ?>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Markup</td>
-			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'markup' ], 2 ); ?></td>
-		</tr>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right"><strong>Total Payment</strong></td>
-			<td><strong>$<?php echo number_format( $summary[ 'calcs' ][ 'total_payment' ], 2 ); ?></strong></td>
-		</tr>
-	<?php } else { ?>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right"><strong>Total Reimbursement</strong></td>
-			<td><strong>$<?php echo number_format( $summary[ 'calcs' ][ 'total_reimburse' ], 2 ); ?></strong></td>
-		</tr>
 	<?php } ?>
+
+		<?php if( $summary[ 'adjustment' ] ) { ?>
+			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
+				<tr class="class">
+					<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Payment</td>
+					<td>$<?php echo number_format( $summary[ '_total_payment_' ], 2 ); ?></td>
+				</tr>
+			<?php } else { ?>
+				<tr class="class">
+					<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Reimbursement</td>
+					<td>$<?php echo number_format( $summary[ '_total_reimburse_' ], 2 ); ?></td>
+				</tr>
+			<?php } ?>
+			<tr class="class">
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Adjustment</td>
+				<td>$<?php echo number_format( $summary[ 'adjustment' ], 2 ); ?></td>
+			</tr>
+		<?php } ?>
+
+		<tr class="class">
+			<td colspan="<?php echo $coslpan; ?>" style="text-align:right"><strong>Amount</strong></td>
+			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
+				<td><strong>$<?php echo number_format( $summary[ 'calcs' ][ 'total_payment' ], 2 ); ?></strong></td>
+			<?php } else { ?>
+				<td><strong>$<?php echo number_format( $summary[ 'calcs' ][ 'total_reimburse' ], 2 ); ?></strong></td>
+			<?php } ?>
+		</tr>
+		<?php if( $summary[ 'adjustment_note' ] ) { ?>
+			<tr class="class">
+				<td style="" colspan="<?php echo ( $coslpan + 1 ); ?>">Adjustment Note: <?php echo $summary[ 'adjustment_note' ]; ?></td>
+			</tr>
+		<?php } ?>
 </table>
 <br/><br/>
 <table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
