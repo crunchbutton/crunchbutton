@@ -1287,24 +1287,19 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
 		var complete = function() {
 			$rootScope.closePopup();
-			console.log(fn, typeof fn);
+
 			if (typeof fn === 'function') {
 				fn();
 			}
 		};
-		if ($scope.$$phase) {
-			$scope.title = title;
-			$scope.message = message;
-			$scope.complete = complete;
+		
+		$rootScope.$safeApply(function(scope) {
+			scope.title = title;
+			scope.message = message;
+			scope.complete = complete;
 			App.dialog.show('.notification-alert-container');
-		} else {
-			$rootScope.$apply(function(scope) {
-				scope.title = title;
-				scope.message = message;
-				$scope.complete = fn;
-				App.dialog.show('.notification-alert-container');
-			});
-		}
+		});
+
 	});
 });
 
