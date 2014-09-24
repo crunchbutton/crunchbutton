@@ -100,9 +100,9 @@
 
 	<br>
 
-	<? if (!$this->export) : ?>
-		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
-	<? endif ; ?>
+
+	<a href="/printorder/{{ order.uuid }}" target="_blank" class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
+
 
 	<div class="divider"></div>
 </div>
