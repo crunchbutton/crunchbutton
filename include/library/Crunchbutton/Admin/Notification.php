@@ -8,6 +8,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const TYPE_PHONE = 'phone';
 	const TYPE_URL = 'url';
 	const TYPE_FAX = 'fax';
+	const TYPE_PUSH_IOS = 'push-ios';
+	const TYPE_PUSH_ANDROID = 'push-android';
 	const REPS_COCKPIT = 'http://cbtn.io/';
 
 	const IS_ENABLE_KEY = 'notification-admin-is-enable';
@@ -316,6 +318,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				case Crunchbutton_Admin_Notification::TYPE_EMAIL :
 					$this->sendEmail( $order );
 					break;
+					
+				case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
+					$this->sendPushIos( $order );
+					break;
+					
+				case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
+					$this->sendPushAndroid( $order );
+					break;
 			}
 		} else if( $attempts >= 1 ){
 			$admin = $this->admin();
@@ -577,6 +587,44 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$this->loadSettings();
 		}
 		return $this->_config[ $key ];
+	}
+
+	public function sendPushIos($order) {
+
+		$certs = c::config()->dirs->root.'ssl/';
+		$push = new ApnsPHP_Push(
+			ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
+			$certs.'aps_development_com.crunchbutton.cockpit.pem'
+		);
+
+		$push->setRootCertificationAuthority($certs.'entrust_root_certification_authority.pem');
+		$push->connect();
+
+		$message = new ApnsPHP_Message($this->value);
+		$message->setCustomIdentifier('order-recieved');
+		$message->setText('#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.');
+		$message->setSound('www/edm.wav');
+		$message->setExpiry(30);
+		
+		
+		// get the total count of pending orders
+		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC";
+		$orders = Crunchbutton_Order::q($query);
+		
+		$message->setBadge($orders->count() ? $orders->count() : 1);
+
+		$push->add($message);
+		$push->send();
+		$push->disconnect();
+
+		$aErrorQueue = $push->getErrors();
+		if (!empty($aErrorQueue)) {
+			var_dump($aErrorQueue);
+		}
+	}
+	
+	public function sendPushAndroid() {
+		
 	}
 
 	public function __construct($id = null) {
