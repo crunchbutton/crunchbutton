@@ -194,7 +194,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							$message = str_split( $message, 160 );
 
 							if( $support->id_support ){
-								$message [] = '@'.$tsess->id_session_twilio.'  http://cbtn.io/support/' . $support->id_support . '?r=1';	
+								// #3666
+								//$message [] = '@'.$tsess->id_session_twilio.'  http://cbtn.io/support/' . $support->id_support . '?r=1';	
 							}
 							
 							// Log
