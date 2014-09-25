@@ -33,6 +33,8 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			$from = c::config()->twilio->{$env}->outgoingTextRestaurant;
 		}
 		
+		$message = trim($message);
+
 		if ($break) {
 			$messages = explode("\n", wordwrap($message, 160, "\n"));
 		} else {
@@ -49,6 +51,11 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			$t = self::formatNumber($t);
 			
 			if (!$to) {
+				continue;
+			}
+			
+			// dont message yourself
+			if (c::admin()->id_admin && self::formatNumber(c::admin()->txt) == $t) {
 				continue;
 			}
 
