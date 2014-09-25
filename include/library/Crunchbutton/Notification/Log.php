@@ -105,7 +105,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					'message' => $message
 				]);
 			}
-
+/*
 			Log::critical([
 				'id_notification_log' => $this->id_notification_log,
 				'id_notification' => $this->id_notification,
@@ -118,6 +118,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				'host' => c::config()->host_callback,
 				'type' => 'notification'
 			]);
+			*/
 
 		} else {
 			$this->queCallback();
