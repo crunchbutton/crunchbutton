@@ -1374,43 +1374,10 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function receipt() {
-		$env = c::getEnv();
-
-		$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
-
-
-		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-		$message = str_split($this->message('selfsms'),160);
-
-		$type = 'twilio';
-
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'receipt', 'num' => $num, 'message' => $message, 'type' => 'notification' ]);
-
-		foreach ($message as $msg) {
-			switch ($type) {
-				case 'googlevoice':
-					$gv = new GoogleVoice('cbvoice@arzynik.com', base64_decode('eXVtbWllc3Q='));
-					$gv->sms($num, $msg);
-					break;
-
-				case 'twilio':
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$num,
-						$msg
-					);
-					break;
-
-				case 'textbelt':
-				default:
-					$cmd = 'curl http://crunchr.co:9090/text \\'
-						.'-d number='.$num.' \\'
-						.'-d "message='.$msg.'"';
-					exec($cmd, $return);
-					print_r($return);
-					break;
-			}
-		}
+		Crunchbutton_Message_Sms::send([
+			'to' => $this->phone,
+			'message' => $this->message('selfsms')
+		]);
 	}
 
 	public function que( $sendReceipt = true ) {
@@ -1539,26 +1506,17 @@ class Crunchbutton_Order extends Cana_Table {
 		$env = c::getEnv();
 
 		$message = "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
-		$message = str_split( $message,160 );
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
 		// keep this ugly true for tests only
 		if( $env == 'live' ){
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				foreach ( $message as $msg ) {
-					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningStealthNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
-					try {
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$supportPhone,
-							$msg
-						);
-					} catch (Exception $e) {}
-				}
-			}
+		
+			Crunchbutton_Message_Sms::send([
+				'to' => Crunchbutton_Support::getUsers(),
+				'message' => $message
+			]);
+
 		} else {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed DEV dont send sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 		}
@@ -1590,25 +1548,18 @@ class Crunchbutton_Order extends Cana_Table {
 		$message .= "\n";
 		$message .= 'E# ' . $env;
 
-		$message = str_split( $message,160 );
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
 		if( $env == 'live' ){
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				foreach ( $message as $msg ) {
-					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
-					try {
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$supportPhone,
-							$msg
-						);
-					} catch (Exception $e) {}
-				}
-			}
+		
+			Crunchbutton_Message_Sms::send([
+				'to' => Crunchbutton_Support::getUsers(),
+				'message' => $message
+			]);
+
 		} else {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed DEV dont send sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 		}

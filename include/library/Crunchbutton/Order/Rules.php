@@ -173,21 +173,11 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		}
 
 		$message .= ' E: ' . $env;
-
-		$twilio = new Twilio( c::config()->twilio->{ $env }->sid, c::config()->twilio->{ $env }->token );
-		$msgs = str_split( $message, 160 );
-		foreach( $msgs as $msg ) {
-			try {
-				Log::debug( [ 'action' => 'sending sms - rule failed', 'phone' => $phone, 'msg' => $msg, 'type' => 'order-rules' ] );
-				$twilio->account->sms_messages->create(
-					c::config()->twilio->{$env}->outgoingTextCustomer,
-					'+1'.$phone,
-					$msg
-				);
-			} catch (Exception $e) {
-				Log::debug( [ 'action' => 'ERROR!!! sending sms - rule failed', 'phone' => $phone, 'msg' => $msg, 'type' => 'order-rules' ] );
-			}
-		}
+		
+		Crunchbutton_Message_Sms::send([
+			'to' => $phone,
+			'message' => $message
+		]);
 	}
 
 	public function notify_email( $email, $message ){

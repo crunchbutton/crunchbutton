@@ -255,10 +255,6 @@ class Crunchbutton_Promo extends Cana_Table
 
 			if( $this->notify_phone ){
 
-				$env = c::getEnv();
-
-				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-
 				$phone = $this->notify_phone;
 
 				$message = 'The gift card you\'ve created was redeemed (' . $this->id_promo . ').';
@@ -277,16 +273,12 @@ class Crunchbutton_Promo extends Cana_Table
 
 				$this->note = 'Sent a track notification to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n\n" . $this->note;
 				$this->save();
+				
+				Crunchbutton_Message_Sms::send([
+					'to' => $phone,
+					'message' => $message
+				]);
 
-				$message = str_split($message, 160);
-
-				foreach ($message as $msg) {
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$phone,
-						$msg
-					);
-				}
 			}
 		}
 	}
@@ -369,7 +361,6 @@ class Crunchbutton_Promo extends Cana_Table
 
 		$env = c::getEnv();
 
-		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$phone = $gift->phone;
 
 		if( !$phone ){
@@ -394,15 +385,11 @@ class Crunchbutton_Promo extends Cana_Table
 		$gift->issued = static::ISSUED_TEXT;
 		$gift->save();
 
-		$message = str_split($message, 160);
+		Crunchbutton_Message_Sms::send([
+			'to' => $phone,
+			'message' => $message
+		]);
 
-		foreach ($message as $msg) {
-			$twilio->account->sms_messages->create(
-				c::config()->twilio->{$env}->outgoingTextCustomer,
-				'+1'.$phone,
-				$msg
-			);
-		}
 	}
 
 	public static function find($search = []) {

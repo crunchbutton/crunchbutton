@@ -566,25 +566,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		if( false && count( $communitiesWithoutShift ) > 0 ){
 
-			$message = "The following communities doesn't have shifts for the current week: " . join( ', ', $communitiesWithoutShift );
-
-			$message = str_split( $message, 160 );
-
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$num = $supportPhone;
-				foreach ( $message as $msg ) {
-					if( $supportName != $admin->name ){
-						try {
-							// Log
-							Log::debug( [ 'action' => 'community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-						} catch (Exception $e) {
-							// Log
-							Log::debug( [ 'action' => 'ERROR: community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-						}
-					}
-				}
-			}
+			$message = 'The following communities doesn\'t have shifts for the current week: ' . join( ', ', $communitiesWithoutShift );
+			
+			Crunchbutton_Message_Sms::send([
+				'to' => Crunchbutton_Support::getUsers(),
+				'message' => $message
+			]);
 		}
 
 		echo "\n";
@@ -593,28 +580,17 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( $warningCS && count( $driversWillReceiveTheNotification ) > 0 ){
 
 			$message = count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit._DOMAIN_/drivers/shift/status/shift';
+			
+			echo "Sending sms to support users...\n";
 
-			$message = str_split( $message, 160 );
+			$rets = Crunchbutton_Message_Sms::send([
+				'to' => Crunchbutton_Support::getUsers(),
+				'message' => $message
+			]);
 
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$num = $supportPhone;
-				foreach ( $message as $msg ) {
-					if( $supportName != $admin->name ){
-						try {
-							// Log
-							Log::debug( [ 'action' => 'sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$log = 'Sending sms to: ' . $supportName . ' - ' . $supportPhone . ': ' . $msg;
-							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-							echo $log."\n";
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-						} catch (Exception $e) {
-							// Log
-							$log = 'Error Sending sms to: ' . $supportName . ' - ' . $supportPhone . ': ' . $msg;
-							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-							echo $log."\n";
-							Log::debug( [ 'action' => 'ERROR: sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-						}
-					}
+			foreach ($rets as $ret) {
+				if (!$ret->sid) {
+					echo 'Error Sending sms to: '.$ret->to;
 				}
 			}
 		}
@@ -633,33 +609,24 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$cs_message = 'Driver notificaton: ' . str_replace( '|', '<br>',  $message );
 				Crunchbutton_Support::createNewWarning(  [ 'body' => $cs_message ] );
 
-				if( strpos( $message, '|') > 0 ){
-					$message = explode( '|', $message );
-				} else {
-					$message = str_split( $message, 160 );
+				if (strpos( $message, '|') > 0) {
+					$message = str_replace('|', "\n", $message);
 				}
 
 				$num = ( $txt != '' ) ? $txt : $phone;
-
-				if( $num != '' ){
-					foreach ( $message as $msg ) {
-						try {
-							// Log
-							Log::debug( [ 'action' => 'sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
-							$log = 'Sending sms to: ' . $name . ' - ' . $num . ': ' . $msg;
-							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-							echo $log."\n";
-						} catch (Exception $e) {
-							// Log
-							Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$log = 'Error Sending sms to: ' . $name . ' - ' . $num . ': ' . $msg;
-							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-							echo $log."\n";
-						}
+				
+				echo "Sending sms to support users...\n";
+	
+				$rets = Crunchbutton_Message_Sms::send([
+					'to' => $num,
+					'from' => 'driver',
+					'message' => $message
+				]);
+	
+				foreach ($rets as $ret) {
+					if (!$ret->sid) {
+						echo 'Error Sending sms to: '.$ret->to;
 					}
-				} else {
-					Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
 				}
 			}
 		}
@@ -738,29 +705,18 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$num = ( $txt != '' ) ? $txt : $phone;
 
-		$message = str_split( $message, 160 );
+		echo "Sending sms to ".$num."...\n";
 
-		if( $num != '' ){
-			foreach ( $message as $msg ) {
-				try {
-					// Log
-					Log::debug( [ 'action' => 'sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-					if( $twilio ){
-						$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
-					}
-					$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg;
-					Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
-					echo $log."\n";
-				} catch (Exception $e) {
-					// Log
-					Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-					$log = 'Error Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg;
-					Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
-					echo $log."\n";
-				}
+		$rets = Crunchbutton_Message_Sms::send([
+			'to' => $num,
+			'from' => 'driver',
+			'message' => $message
+		]);
+
+		foreach ($rets as $ret) {
+			if (!$ret->sid) {
+				echo 'Error Sending sms to: '.$ret->to;
 			}
-		} else {
-			Log::debug( [ 'action' => 'ERROR: sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
 		}
 
 	}
@@ -850,31 +806,22 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								$phone = $admin->phone;
 
 								$num = ( $txt != '' ) ? $txt : $phone;
+								
 
-								$message = str_split( $message, 160 );
-
-								if( $num != '' ){
-									foreach ( $message as $msg ) {
-										try {
-											// Log
-											Log::debug( [ 'action' => 'sending remind sms before shift', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-											$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
-											$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
-											Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
-											echo $log."\n";
-											$assignment->warned = 1;
-											$assignment->save();
-										} catch (Exception $e) {
-											// Log
-											Log::debug( [ 'action' => 'ERROR: sending remind sms before shift', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-											$log = 'Error Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
-											Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
-											echo $log."\n";
-										}
+								echo "Sending sms to ".$num."...\n";
+						
+								$rets = Crunchbutton_Message_Sms::send([
+									'to' => $num,
+									'from' => 'driver',
+									'message' => $message
+								]);
+						
+								foreach ($rets as $ret) {
+									if (!$ret->sid) {
+										echo 'Error Sending sms to: '.$ret->to;
 									}
-								} else {
-									Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
 								}
+
 							}
 						}
 					}

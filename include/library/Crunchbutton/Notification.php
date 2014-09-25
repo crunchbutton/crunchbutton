@@ -121,20 +121,12 @@ class Crunchbutton_Notification extends Cana_Table
 				break;
 
 			case 'sms':
-				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-				$message = str_split($order->message('sms'),160);
-				
-				// Log
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms', 'num' => $sms, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
-
-				foreach ($message as $msg) {
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextRestaurant,
-						'+1'.$sms,
-						$msg
-					);
-					continue;
-				}
+			
+				Crunchbutton_Message_Sms::send([
+					'to' => $sms,
+					'from' => 'restaurant',
+					'message' => $order->message('sms')
+				]);
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
@@ -209,8 +201,6 @@ class Crunchbutton_Notification extends Cana_Table
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-		$env = c::getEnv();
-
 		if( $env != 'live' ){
 			return;
 		}
@@ -226,24 +216,10 @@ class Crunchbutton_Notification extends Cana_Table
 		// Make these notifications pop up on support on cockpit #3008
 		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 
-		$message = str_split( $message,160 );
-
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'que smsFaxError sending sms', 'type' => 'notification' ]);
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-		
-		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-			foreach ( $message as $msg ) {
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'smsFaxError', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
-				try {
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$supportPhone,
-						$msg
-					);
-				} catch (Exception $e) {}
-			}
-		}
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'message' => $message
+		]);
 	}
 
 

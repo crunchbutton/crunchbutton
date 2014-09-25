@@ -99,19 +99,11 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name.$community."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
 				$message = str_split($message,160);
-				foreach ( $sendSMSTo as $supportName => $supportPhone) {
-					$num = $supportPhone;
-					foreach ($message as $msg) {
-						try {
-							// Log
-							Log::debug( [ 'action' => 'sending sms MAX CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-						} catch (Exception $e) {
-							// Log
-							Log::debug( [ 'action' => 'ERROR!!! sending sms MAX CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
-						}
-					}
-				}
+				
+				Crunchbutton_Message_Sms::send([
+					'to' => $sendSMSTo,
+					'message' => $message
+				]);
 			}
 
 			Log::critical([
@@ -208,24 +200,12 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$community = '(' . $community . ')';
 				}
 
-				$env = c::getEnv();
-				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-
 				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name. $community. "\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
-				$message = str_split($message,160);
-				foreach ( $sendSMSTo as $supportName => $supportPhone) {
-					$num = $supportPhone;
-					foreach ($message as $msg) {
-						try {
-							// Log
-							Log::debug( [ 'action' => 'sending sms MAX CONFIRM CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-						} catch (Exception $e) {
-							// Log
-							Log::debug( [ 'action' => 'ERROR!!! sending sms MAX CONFIRM CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
-						}
-					}
-				}
+
+				Crunchbutton_Message_Sms::send([
+					'to' => $sendSMSTo,
+					'message' => $message
+				]);
 			}
 
 			Log::critical([
