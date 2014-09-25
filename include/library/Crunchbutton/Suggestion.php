@@ -20,7 +20,6 @@ class Crunchbutton_Suggestion extends Cana_Table {
 	public function notify() {
 		$env = c::getEnv();
 		$phones = c::config()->suggestion->{$env}->phone;
-		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
 		$message =
 			($this->user()->name ? $this->user()->name : 'A guest').
@@ -31,23 +30,10 @@ class Crunchbutton_Suggestion extends Cana_Table {
 			$this->restaurant()->name.
 			"\n\n (". $env . ")";
 
-		// Log
-		Log::debug( [ 'suggestion' => $this->id_suggestion, 'action' => 'starting send sms', 'type' => 'suggestion' ]);
-
-		$message = str_split($message, 160);
-		
-		foreach ($message as $msg) {
-			foreach ($phones as $phone) {
-				$twilio->account->sms_messages->create(
-					c::config()->twilio->{$env}->outgoingTextCustomer,
-					'+1'.$phone,
-					$msg
-				);
-				// Log
-				Log::debug( [ 'suggestion' => $this->id_suggestion, 'message' => $message, 'phone' => $phone, 'type' => 'suggestion' ]);
-				continue;	
-			}
-		}
+		Crunchbutton_Message_Sms::send([
+			'to' => $phones,
+			'message' => $message
+		]);
 	}
 	
 	public static function find($search = []) {

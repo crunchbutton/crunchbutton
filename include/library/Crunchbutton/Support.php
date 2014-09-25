@@ -27,36 +27,11 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function tellCustomerService( $message ){
-		$message = str_split( $message, 160 );
-
-		$env = c::getEnv();
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
-		$adminName = trim( c::admin()->name );
-
-		$sendSMSTo = array();
-		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-			if( $adminName != trim( $supportName ) ){
-				$sendSMSTo[ $supportName ] = $supportPhone;
-			}
-		}
-
-		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
-			$num = $supportPhone;
-			foreach ( $message as $msg ) {
-				if( $supportName != $admin->name ){
-					try {
-						// Log
-						Log::debug( [ 'action' => 'warningOtherReps: replying sms: ' . $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
-						$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-					} catch (Exception $e) {
-						// Log
-						Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
-					}
-				}
-			}
-		}
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'from' => 'customer',
+			'message' => $message
+		]);
 	}
 
 	public function getUsers(){
@@ -482,9 +457,6 @@ class Crunchbutton_Support extends Cana_Table {
 		$support = $this;
 
 		$env = c::getEnv();
-
-		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-
 		$message = $this->firstMessage();
 
 		$message = "(support-" . $env . "): ".
@@ -496,28 +468,12 @@ class Crunchbutton_Support extends Cana_Table {
 			$message->body;
 
 		// Log
-		Log::debug( [ 'action' => 'support', 'message' => $message, 'type' => 'support' ] );
-
 		$message = '@'.$this->id_session_twilio.' : ' . $message;
-		$message = str_split( $message, 160 );
-		// Send this message to the customer service
-		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-			$num = $supportPhone;
-			foreach ($message as $msg) {
-				try {
-					// Log
-					Log::debug( [ 'action' => 'sending sms - support', 'session id' => $this->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$num,
-						$msg
-					);
-				} catch (Exception $e) {
-					// Log
-					Log::debug( [ 'action' => 'ERROR sending sms - support', 'session id' => $this->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-				}
-			}
-		}
+		
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'message' => $message
+		]);
 
 		$this->makeACall();
 

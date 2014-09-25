@@ -100,29 +100,11 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 
 		// Log
 		Log::debug( [ 'action' => 'Twilio error', 'CallSid' => $_REQUEST[ 'CallSid' ], 'sms_error' => $sms_error, 'error_message' => $error_message, 'type' => 'twilio error' ] );
+		
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'message' => $sms_error
+		]);
 
-		$message = str_split( $sms_error, 160 );
-
-		// Send this message to the customer service
-		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-			
-			$num = $supportPhone;
-			
-			foreach ( $message as $msg ) {
-
-				try {
-					// Log
-					Log::debug( [ 'CallSid' => $_REQUEST[ 'CallSid' ], 'action' => 'sending sms - twilio error', 'num' => $num, 'msg' => $msg, 'type' => 'twilio error' ] );
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$num,
-						$msg
-					);
-				} catch (Exception $e) {
-					// Log
-					Log::debug( [ 'CallSid' => $_REQUEST[ 'CallSid' ], 'action' => 'ERROR sending sms - twilio error', 'num' => $num, 'msg' => $msg, 'type' => 'twilio error' ] );
-				}
-			}
-		}
 	}
 }

@@ -191,7 +191,6 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$message .= $last_cb;
 							}
 
-							$message = str_split( $message, 160 );
 
 							if( $support->id_support ){
 								// #3666
@@ -200,8 +199,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
-							
-							$b = $message;
+
 
 							$sendSMSTo = array();
 							foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
@@ -216,22 +214,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 									}
 								}	
 							}
+							
+							Crunchbutton_Message_Sms::send([
+								'to' => $sendSMSTo,
+								'message' => $message
+							]);
 
-							// c::timeout(function() use ($b, $env, $twilio) {
-								foreach ( $sendSMSTo as $supportName => $supportPhone) {
-									$num = $supportPhone;
-									foreach ($b as $msg) {
-										try {
-											// Log
-											Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-											$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-										} catch (Exception $e) {
-											// Log
-											Log::debug( [ 'action' => 'ERROR: sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-										}
-									}
-								}
-							// });
 						} 
 					break;
 		
@@ -265,12 +253,6 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 	public function warningOtherReps( $admin, $message ){
 
-		$message = str_split( $message, 160 );
-		
-		$env = c::getEnv();
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
 		$sendSMSTo = array();
 		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 			$sendSMSTo[ $supportName ] = $supportPhone;
@@ -284,22 +266,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				}
 			}	
 		}
+		
+		Crunchbutton_Message_Sms::send([
+			'to' => $sendSMSTo,
+			'message' => $message
+		]);
 
-		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
-			$num = $supportPhone;
-			foreach ( $message as $msg ) {
-				if( $supportName != $admin->name ){
-					try {
-						// Log
-						Log::debug( [ 'action' => 'warningOtherReps: replying sms: ' . $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
-						$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-					} catch (Exception $e) {
-						// Log
-						Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
-					}
-				}
-			}
-		}
 	}
 
 	public function reply( $id_session, $phone, $body ){
@@ -344,18 +316,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$support->addAdminMessage( [ 'phone' => $phone, 'body' => $body ] );
 					Log::debug( [ 'action' => 'saving the answer', 'id_support' => $support->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
 				}
+				
+				Crunchbutton_Message_Sms::send([
+					'to' => $nums,
+					'message' => $message
+				]);
 
-				$message = str_split( $message, 160 );
-				foreach ( $nums as $i => $num ) {
-					foreach ( $message as $msg ) {
-						try {
-							Log::debug( [ 'action' => 'sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-						} catch (Exception $e) {
-							Log::debug( [ 'action' => 'ERROR: sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-						}
-					}
-				}
 				$message = $admin->name . ' replied @' . $id_session . ' : ' . $body; 
 				$this->warningOtherReps( $admin, $message );
 				break;

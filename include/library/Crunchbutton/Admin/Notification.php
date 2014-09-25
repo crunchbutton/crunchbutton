@@ -231,44 +231,43 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			// Reps failed to pickup order texts changes #2802
 			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message ] );
 
-			foreach ( $ags as $a ) {
-				echo $sms_message."\n";
-				Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
-
-				$message = str_split( $sms_message , 160 );
-				foreach ($message as $msg) {
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$a->txt,
-						$msg
-					);
-					continue;
-				}
-
-				/*
-				Removed the phone call for while - asked by David 2/23/2014
-				$num = $a->getPhoneNumber();
-				if( $num ){
-
-					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/pick-up-fail';
-					$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
-					$message .= "\n";
-					$message .= $order->restaurant()->name;
-					if( $order->restaurant()->community && $order->restaurant()->community != '' ){
-						$message .= ' (' . $order->restaurant()->community . ')';
-					}
-
-					echo $message."\n";
-					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
-					$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-					$call = $twilio->account->calls->create(
-						c::config()->twilio->{$env}->outgoingDriver,
-						'+1'.$num,
-						$url
-					);
-				}
-				*/
+			foreach ($ags as $a) {
+				$to[] = $a->txt;
 			}
+			
+			Crunchbutton_Message_Sms::send([
+				'to' => $to,
+				'message' => $sms_message
+			]);
+
+			echo $sms_message."\n";
+			Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
+
+
+			/*
+			Removed the phone call for while - asked by David 2/23/2014
+			$num = $a->getPhoneNumber();
+			if( $num ){
+
+				$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/pick-up-fail';
+				$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
+				$message .= "\n";
+				$message .= $order->restaurant()->name;
+				if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+					$message .= ' (' . $order->restaurant()->community . ')';
+				}
+
+				echo $message."\n";
+				Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
+				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+				$call = $twilio->account->calls->create(
+					c::config()->twilio->{$env}->outgoingDriver,
+					'+1'.$num,
+					$url
+				);
+			}
+			*/
+
 		}
 	}
 
@@ -338,21 +337,15 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 						$sms = $txtNumber;
 
-						$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+						$message = "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is not optimal ;)";
 
-						$message = "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is annoying for us ;)";
-						$message = str_split( $message , 160 );
-
-						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $sms, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
-
-						foreach ($message as $msg) {
-							$twilio->account->sms_messages->create(
-								c::config()->twilio->{$env}->outgoingTextDriver,
-								'+1'.$sms,
-								$msg
-							);
-							continue;
-						}
+						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $txtNumber, 'message' => $message , 'type' => 'admin_notification' ]);
+						
+						$rets = Crunchbutton_Message_Sms::send([
+							'to' => $txtNumber,
+							'from' => 'driver',
+							'message' => $message
+						]);
 					}
 					break;
 				case 2:
@@ -406,21 +399,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		// Make these notifications pop up on support on cockpit #3008
 		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 
-		$message = str_split( $message,160 );
-		foreach ( $users as $user ) {
-			$num = $user->txt;
-			$name = $user->name;
-			foreach ($message as $msg) {
-				try {
-					// Log
-					Log::debug( [ 'action' => 'Sending no reps working warning ', 'to' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'notification' ] );
-					$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-				} catch (Exception $e) {
-					// Log
-					Log::debug( [ 'action' => 'ERROR!!! Sending no reps working warning ', 'to' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'notification' ] );
-				}
-			}
-		}
+		Crunchbutton_Message_Sms::send([
+			'to' => $user->txt,
+			'message' => $message
+		]);
+
 	}
 
 	public function host_callback(){
@@ -478,50 +461,30 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$sms = $this->value;
 
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
 		$message .= $order->message( 'sms-driver' );
 
-		$message = str_split( $message , 160 );
-
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send dumb sms to admin', 'num' => $sms, 'host' => $this->host_callback(), 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
-
-		foreach ($message as $msg) {
-			$twilio->account->sms_messages->create(
-				c::config()->twilio->{$env}->outgoingTextDriver,
-				'+1'.$sms,
-				$msg
-			);
-			continue;
-		}
-
+		Crunchbutton_Message_Sms::send([
+			'to' => $sms,
+			'from' => 'driver',
+			'message' => $message
+		]);
 	}
 
 	public function sendSms( Crunchbutton_Order $order ){
 
-		$env = c::getEnv();
-
 		$sms = $this->value;
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
 		$message = static::REPS_COCKPIT . $order->id_order;
 		$message .= "\n";
 		$message .= $order->message( 'sms-admin' );
-
-		$message = str_split( $message , 160 );
-
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'num' => $sms, 'host' => $this->host_callback(), 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
-
-		foreach ($message as $msg) {
-			$twilio->account->sms_messages->create(
-				c::config()->twilio->{$env}->outgoingTextDriver,
-				'+1'.$sms,
-				$msg
-			);
-			continue;
-		}
-
+		
+		$ret = Crunchbutton_Message_Sms::send([
+			'to' => $sms,
+			'from' => 'driver',
+			'message' => $message
+		]);
+		
+		return $ret;
 	}
 
 	public function sendEmail( Crunchbutton_Order $order ){
@@ -608,6 +571,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		
 		
 		// get the total count of pending orders
+		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
+		$orderFromLast = ' 3 HOUR';
+
 		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC";
 		$orders = Crunchbutton_Order::q($query);
 		
@@ -618,9 +584,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$push->disconnect();
 
 		$aErrorQueue = $push->getErrors();
-		if (!empty($aErrorQueue)) {
-			var_dump($aErrorQueue);
-		}
+
+		return $aErrorQueue ? $aErrorQueue : true;
 	}
 	
 	public function sendPushAndroid() {

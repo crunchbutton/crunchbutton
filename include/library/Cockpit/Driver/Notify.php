@@ -77,25 +77,10 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$email = $notification->email;
 		$message_type = $notification->message_type;
 
-		$env = c::getEnv();
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
-		$message = str_split( $message, 160 );
-
-		$isOk = true;
-
-		foreach ( $message as $msg ) {
-			try {
-				// Log
-				Log::debug( [ 'action' => 'notify admin: ' . $id_admin, 'phone' => $phone, 'msg' => $msg, 'type' => 'admin-notification' ] );
-				$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'. $phone, $msg );
-			} catch ( Exception $e ) {
-				$isOk = false;
-				// Log
-				Log::debug( [ 'action' => 'ERROR notify admin: ' . $id_admin, 'error' => $e->getInfo(), 'phone' => $phone, 'msg' => $msg, 'type' => 'admin-notification' ] );
-			}
-		}
+		Crunchbutton_Message_Sms::send([
+			'to' => $phone,
+			'message' => $message
+		]);
 
 		// Send email
 		if( $email ){

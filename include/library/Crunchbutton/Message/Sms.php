@@ -25,12 +25,12 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		}
 
 		$env = c::getEnv();
-		if (!$from || $from == 'customer') {
-			$from = c::config()->twilio->{$env}->outgoingTextCustomer;
-		} elseif ($from == 'driver') {
+		if ($from == 'driver') {
 			$from = c::config()->twilio->{$env}->outgoingTextDriver;
 		} elseif ($from == 'restaurant') {
 			$from = c::config()->twilio->{$env}->outgoingTextRestaurant;
+		} else {
+			$from = c::config()->twilio->{$env}->outgoingTextCustomer;
 		}
 		
 		$message = trim($message);

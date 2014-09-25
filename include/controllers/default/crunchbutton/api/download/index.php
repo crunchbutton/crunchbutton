@@ -24,17 +24,11 @@ class Controller_api_download extends Crunchbutton_Controller_Rest {
 			echo json_encode(['error' => 'invalid phone number', 'status' => false]);
 			exit;
 		}
-
-		$env = c::getEnv();		
-		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		
-		$msg = 'YAY! Crunchbutton for iPhone! '."\n".'http://_DOMAIN_/app';
-		
-		$twilio->account->sms_messages->create(
-			c::config()->twilio->{$env}->outgoingTextCustomer,
-			'+1'.$num,
-			$msg
-		);
+		Crunchbutton_Message_Sms::send([
+			'to' => $num,
+			'message' => "YAY! Crunchbutton for iPhone!\nhttp://_DOMAIN_/app"
+		]);
 
 		echo json_encode(['status' => true]);
 

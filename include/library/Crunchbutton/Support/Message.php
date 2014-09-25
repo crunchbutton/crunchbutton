@@ -31,8 +31,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	}
 
 	public function notify_by_sms() {
-		$env = c::getEnv();
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
 		$support = $this->support();
 		$phone = $support->phone;
 		if (!$phone) return;
@@ -42,10 +41,12 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			$rep_name = '';
 		}
 		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
-		$msgs = str_split( $msg, 160 );
-		foreach($msgs as $msg) {
-			$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$phone, $msg );
-		}
+		
+		Crunchbutton_Message_Sms::send([
+			'to' => $phone,
+			'message' => $msg
+		]);
+
 	}
 
 	public function admin(){

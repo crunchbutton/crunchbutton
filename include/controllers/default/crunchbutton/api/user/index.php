@@ -205,10 +205,6 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						else {
 							$phone = $email;
 
-							$env = c::getEnv();
-
-							$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-
 							$url = 'http://' . $_SERVER['HTTP_HOST'] . '/reset/';
 
 							$message = "Your crunchbutton password reset code is '".$code."'.\n\n";
@@ -216,15 +212,11 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 							$id_user = $user_auth->user()->id_user;
 
-							$message = str_split( $message, 160 );
-							foreach ( $message as $msg ) {
-								$twilio->account->sms_messages->create(
-									c::config()->twilio->{$env}->outgoingTextCustomer,
-									'+1'.$phone,
-									$msg
-								);
-								continue;
-							}
+							Crunchbutton_Message_Sms::send([
+								'to' => $phone,
+								'message' => $message
+							]);
+
 						}
 
 						$userHasFacebookAuth = User_Auth::userHasFacebookAuth( $id_user );

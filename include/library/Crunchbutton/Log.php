@@ -30,35 +30,20 @@ class Crunchbutton_Log extends Cana_Table {
 			// Make these notifications pop up on support on cockpit #3008
 			Crunchbutton_Support::createNewWarning( [ 'id_order' => $id_order, 'body' => $body ] );
 
-			$env = c::getEnv();
-			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-			
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				$nums[] = $supportPhone;
 			}
-			
-			/*
-			$nums = array('_PHONE_');
-			*/
 
 			$b = $args[0]['action'] ? $args[0]['action'] : $log->data;
 			$find = array(',"', '{', '}');
 			$replace = array(",\n\t\"", "{\n\t", "\n}");
 			$b = str_replace($find, $replace, $b);
 
-			c::timeout(function() use ($nums, $b, $twilio, $env) {
-
-				$message = str_split($b,160);
-
-				foreach ($nums as $num) {
-					foreach ($message as $msg) {
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$num,
-							$message
-						);
-					}
-				}
+			c::timeout(function() use ($nums, $b) {
+				Crunchbutton_Message_Sms::send([
+					'to' => $nums,
+					'message' => $b
+				]);
 			});
 		}
 	}
