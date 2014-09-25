@@ -2,6 +2,7 @@
 
 class TwilioTest extends PHPUnit_Framework_TestCase {
 	public function testSms() {
+	/*
 		$env = c::getEnv();
 		$twilio = c::twilio();
 
@@ -10,7 +11,13 @@ class TwilioTest extends PHPUnit_Framework_TestCase {
 			'+1_PHONE_',
 			'TWILIO-TRAVIS-TEST'
 		);
+		*/
+		
+		$res = Crunchbutton_Message_Sms::send([
+			'to' => '_PHONE_',
+			'message' => 'TWILIO-TRAVIS-TEST'
+		]);
 
-		$this->assertTrue($res->sid ? true : false);
+		$this->assertTrue($res[0]->sid ? true : false);
 	}
 }
