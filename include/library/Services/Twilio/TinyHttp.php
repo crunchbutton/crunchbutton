@@ -6,6 +6,30 @@
 
 class Services_Twilio_TinyHttpException extends ErrorException {}
 
+/**
+ * An HTTP client that makes requests
+ *
+ * :param string $uri: The base uri to use for requests
+ * :param array $kwargs: An array of additional arguments to pass to the
+ *  library. Accepted arguments are:
+ *
+ *      - **debug** - Print the HTTP request before making it to Twilio
+ *      - **curlopts** - An array of keys and values that are passed to
+ *          ``curl_setopt_array``.
+ *
+ * Here's an example. This is the default HTTP client used by the library.
+ *
+ * .. code-block:: php
+ *
+ *     $_http = new Services_Twilio_TinyHttp(
+ *         "https://api.twilio.com",
+ *         array("curlopts" => array(
+ *             CURLOPT_USERAGENT => self::USER_AGENT,
+ *             CURLOPT_HTTPHEADER => array('Accept-Charset: utf-8'),
+ *             CURLOPT_CAINFO => dirname(__FILE__) . '/cacert.pem',
+ *         ))
+ *     );
+ */
 class Services_Twilio_TinyHttp {
   var $user, $pass, $scheme, $host, $port, $debug, $curlopts;
 
@@ -79,9 +103,13 @@ class Services_Twilio_TinyHttp {
               $headers[$key] = trim($value);
             }
             curl_close($curl);
-            if (isset($buf) && is_resource($buf)) fclose($buf);
+            if (isset($buf) && is_resource($buf)) {
+                fclose($buf);
+            }
             return array($status, $headers, $body);
-          } else throw new Services_Twilio_TinyHttpException(curl_error($curl));
+          } else {
+              throw new Services_Twilio_TinyHttpException(curl_error($curl));
+          }
         } else throw new Services_Twilio_TinyHttpException(curl_error($curl));
       } else throw new Services_Twilio_TinyHttpException('unable to initialize cURL');
     } catch (ErrorException $e) {
