@@ -201,6 +201,7 @@ class Crunchbutton_App extends Cana_App {
 						break;
 					case 'beta.cockpit.crunchr.co':
 					case 'beta.cockpit._DOMAIN_':
+					case 'cockpitbeta._DOMAIN_':
 						$host_callback = 'beta.crunchr.co';
 						break;
 				}
