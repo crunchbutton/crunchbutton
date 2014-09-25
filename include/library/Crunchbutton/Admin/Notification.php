@@ -554,38 +554,21 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	public function sendPushIos($order) {
 
-		$certs = c::config()->dirs->root.'ssl/';
-		$push = new ApnsPHP_Push(
-			ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
-			$certs.'aps_development_com.crunchbutton.cockpit.pem'
-		);
-
-		$push->setRootCertificationAuthority($certs.'entrust_root_certification_authority.pem');
-		$push->connect();
-
-		$message = new ApnsPHP_Message($this->value);
-		$message->setCustomIdentifier('order-recieved');
-		$message->setText('#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.');
-		$message->setSound('www/edm.wav');
-		$message->setExpiry(30);
-		
-		
 		// get the total count of pending orders
 		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
 
 		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC";
 		$orders = Crunchbutton_Order::q($query);
-		
-		$message->setBadge($orders->count() ? $orders->count() : 1);
+	
+		$r = Crunchbutton_Message_Push_Ios::send([
+			'to' => $this->value,
+			'message' => '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.',
+			'count' => $orders->count() ? $orders->count() : 1,
+			'id' => 'order-'.$order->id
+		]);
 
-		$push->add($message);
-		$push->send();
-		$push->disconnect();
-
-		$aErrorQueue = $push->getErrors();
-
-		return $aErrorQueue ? $aErrorQueue : true;
+		return $r;
 	}
 	
 	public function sendPushAndroid() {

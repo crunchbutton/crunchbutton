@@ -5,8 +5,14 @@
 class Controller_test_longmessage extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-		print_r(Crunchbutton_Support::getUsers());
+		$r = Crunchbutton_Message_Push_Ios::send([
+			'to' => 'bda4c763f2e2f2ec8b123a960fd2e9ecba591cf4a310253708156eed658a4bb2',
+			'message' => '#5634: Devin has placed an order to Chipotle'
+		]);
+		print_r($r);
 		exit;
+		
+
 		Crunchbutton_Message_Sms::send([
 			'to' => '_PHONE_',
 			'message' => 'wont go to me'
