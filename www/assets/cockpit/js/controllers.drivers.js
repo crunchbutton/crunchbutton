@@ -667,6 +667,8 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 		$scope.navigation.link( '/login' );
 	}
 
+	$scope.check_password = false;
+
 	$scope.send = function(){
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;

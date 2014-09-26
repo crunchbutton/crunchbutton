@@ -772,7 +772,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return 0;
 	}
-	
+
 	public function setPush($id, $os = 'ios') {
 		$type = $os == 'ios' ? Crunchbutton_Admin_Notification::TYPE_PUSH_IOS : Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID;
 

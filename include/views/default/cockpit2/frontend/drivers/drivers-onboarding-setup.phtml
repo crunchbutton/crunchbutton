@@ -24,8 +24,6 @@
 				<div class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</div>
 				<div class="error" ng-show="form.driverPassword.$error.required">Enter a password.</div>
 				<div class="error" ng-show="form.driverPassword.$error.minlength">Your password is too short.</div>
-				<div class="error" ng-show="form.driverConfirm.$error.required">Enter a password confirmation.</div>
-				<div class="error" ng-show="form.driverConfirm.$error.equals">The confirm password doesn't match.</div>
 			</div>
 		</div>
 
@@ -38,13 +36,19 @@
 
 			<div class="input-wrap">
 				<span class="label">Password:</span>
-				<span class="field"><input type="password" name="driverPassword" required ng-minlength="5" ng-model="driver.password"></span>
+				<span class="field">
+					<input ng-show="!check_password" type="password" name="driverPassword" required ng-minlength="5" ng-model="driver.password">
+					<input ng-show="check_password" type="text" required ng-minlength="5" ng-model="driver.password">
+				</span>
 			</div>
 
-			<div class="input-wrap">
-				<span class="label">Confirm:</span>
-				<span class="field"><input type="password" equals="{{driver.password}}" name="driverConfirm" required ng-model="driver.confirm"></span>
+			<div class="link no-underline input-wrap-checkbox" ng-click="check_password=!check_password;">
+				<span class="checkbox">
+					<i ng-show="check_password" class="fa fa-check-square"></i>
+					<i ng-show="!check_password" class="fa fa-square"></i>
+				</span> Check password
 			</div>
+
 
 			<div class="button-pushable find-restaurants" ng-show="!sending">
 				<button class="button orange" ng-click="send()">Save</button>
