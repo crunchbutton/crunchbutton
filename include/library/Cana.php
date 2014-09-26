@@ -155,13 +155,19 @@ class Cana extends Cana_Model {
 		}
 
 		$env = ' -e=' . ( c::getEnv(false) );
+		
+		if (file_exists('/usr/local/bin/php')) {
+			$v = 'local';
+		} else {
+			$v = 'auto';
+		}
 
-		$cmd = c::config()->dirs->root.'cli/timeout.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded)) . $env;
+		$cmd = c::config()->dirs->root.'cli/timeout-'.$v.'.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded)) . $env;
 
 		if ($async) {
 			exec('nohup '.$cmd.' > /dev/null 2>&1 &');
 		} else {
-			exec($cmd, $o);
+			exec($cmd.' 2>&1 &', $o);
 			print_r($o);
 		}
 	}
