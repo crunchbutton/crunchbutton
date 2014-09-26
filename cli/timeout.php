@@ -10,7 +10,7 @@ if ($a->s) {
 }
 
 // include our libraries AFTER the nap, so we dont keep mysql or our memory awake
-require_once('../include/crunchbutton.php');
+require_once(dirname(__FILE__).'/../include/crunchbutton.php');
 
 if ($a->r) {
 	eval($a->r);
