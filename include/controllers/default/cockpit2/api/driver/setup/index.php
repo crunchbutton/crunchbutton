@@ -41,6 +41,7 @@ class Controller_api_driver_setup extends Crunchbutton_Controller_Rest {
 			$phone = c::getPagePiece( 3 );
 			if( $phone ){
 				$phone = preg_replace( '/[^0-9]/i', '', $phone );
+
 				$admin = Crunchbutton_Admin::getByPhoneSetup( $phone );
 
 				if( $admin->id_admin ){
@@ -48,11 +49,22 @@ class Controller_api_driver_setup extends Crunchbutton_Controller_Rest {
 					Log::debug( [ 'action' => 'driver setup started', 'driver' => $admin->id_admin, 'phone' => $phone, 'type' => 'drivers-onboarding'] );
 
 					echo json_encode( [ 'success' => [ 'id_admin' => $admin->id_admin, 'hasEmail' => ( $admin->email && $admin->email != '' ) ? true : false ] ] );
+
 				} else {
 
-					Log::debug( [ 'action' => 'driver setup error', 'invalid phone' => $phone, 'type' => 'drivers-onboarding'] );
+					// Check if the phone is already in use
+					$admin = Crunchbutton_Admin::getByPhone( $phone );
 
-					$this->_error( 'Invalid phone number' );
+					if( $admin->id_admin ){
+						Log::debug( [ 'action' => 'driver setup error', 'invalid phone' => $phone, 'type' => 'drivers-onboarding'] );
+
+						$this->_error( 'Sorry, this phone number is already in use' );
+					} else {
+						Log::debug( [ 'action' => 'driver setup error', 'invalid phone' => $phone, 'type' => 'drivers-onboarding'] );
+
+						$this->_error( 'Invalid phone number' );
+					}
+
 				}
 			} else {
 				$this->_error();
