@@ -32,7 +32,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 			notificationTitle: 'Background tracking',
 			notificationText: 'ENABLED',
 			activityType: 'AutomotiveNavigation',
-			debug: true
+			debug: false
 		});
 		
 	}
