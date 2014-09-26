@@ -2,7 +2,7 @@
 
 
 
-class Controller_test_timeout extends Crunchbutton_Controller_RestAccount {
+class Controller_api_test_timeout {
 
 	public function init() {
 		c::timeout(function() {
