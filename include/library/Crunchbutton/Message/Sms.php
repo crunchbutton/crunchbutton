@@ -2,7 +2,7 @@
 
 class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 	public static function send($from, $to = null, $message = null) {
-		
+
 		$break = false;
 
 		if (is_array($from)) {
@@ -12,14 +12,14 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			if (isset($from['break'])) {
 				$break = $from['break'] ? true : false;
 			}
-			
+
 			$from = $from['from'];
 		}
 
 		if (!$to || !$message) {
 			return false;
 		}
-		
+
 		if (!is_array($to)) {
 			$to = [$to];
 		}
@@ -32,7 +32,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		} else {
 			$from = c::config()->twilio->{$env}->outgoingTextCustomer;
 		}
-		
+
 		$message = trim($message);
 
 		if ($break) {
@@ -40,20 +40,20 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		} else {
 			$messages = [$message];
 		}
-		
+
 		$from = self::formatNumber($from);
-		
+
 		if (!$from) {
 			return false;
 		}
 
 		foreach ($to as $t) {
 			$t = self::formatNumber($t);
-			
+
 			if (!$to) {
 				continue;
 			}
-			
+
 			// dont message yourself
 			if (c::admin()->id_admin && self::formatNumber(c::admin()->txt) == $t) {
 				continue;
@@ -73,7 +73,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 						'msg' => $msg,
 						'type' => 'sms'
 					]);
-					$ret[] = c::twilio()->account->messages->sendMessage($from, $t, $msg);										
+					$ret[] = c::twilio()->account->messages->sendMessage($from, $t, $msg);
 				} catch (Exception $e) {
 					Log::error([
 						'action' => 'sending sms',
