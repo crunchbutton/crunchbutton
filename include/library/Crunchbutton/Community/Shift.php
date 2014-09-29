@@ -567,7 +567,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( false && count( $communitiesWithoutShift ) > 0 ){
 
 			$message = 'The following communities doesn\'t have shifts for the current week: ' . join( ', ', $communitiesWithoutShift );
-			
+
 			Crunchbutton_Message_Sms::send([
 				'to' => Crunchbutton_Support::getUsers(),
 				'message' => $message
@@ -580,7 +580,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( $warningCS && count( $driversWillReceiveTheNotification ) > 0 ){
 
 			$message = count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit._DOMAIN_/drivers/shift/status/shift';
-			
+
 			echo "Sending sms to support users...\n";
 
 			$rets = Crunchbutton_Message_Sms::send([
@@ -614,15 +614,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 
 				$num = ( $txt != '' ) ? $txt : $phone;
-				
+
 				echo "Sending sms to support users...\n";
-	
+
 				$rets = Crunchbutton_Message_Sms::send([
 					'to' => $num,
 					'from' => 'driver',
 					'message' => $message
 				]);
-	
+
 				foreach ($rets as $ret) {
 					if (!$ret->sid) {
 						echo 'Error Sending sms to: '.$ret->to;
@@ -806,16 +806,19 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								$phone = $admin->phone;
 
 								$num = ( $txt != '' ) ? $txt : $phone;
-								
+
 
 								echo "Sending sms to ".$num."...\n";
-						
+
 								$rets = Crunchbutton_Message_Sms::send([
 									'to' => $num,
 									'from' => 'driver',
 									'message' => $message
 								]);
-						
+
+								$assignment->warned = 1;
+								$assignment->save();
+
 								foreach ($rets as $ret) {
 									if (!$ret->sid) {
 										echo 'Error Sending sms to: '.$ret->to;
