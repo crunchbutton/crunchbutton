@@ -7,7 +7,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$body = trim($_REQUEST['Body']);
 		$env = c::getEnv();
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-		
+
 		$tsess = Session_Twilio::get( $_REQUEST );
 		$tsess->data = json_encode( $_REQUEST );
 		$tsess->save();
@@ -34,9 +34,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		}
 
 		switch ( $type ) {
-			
+
 			case 'rep':
-			
+
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
 					if ($supportPhone == $phone) continue;
 					$nums[] = $supportPhone;
@@ -48,7 +48,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$rsess = new Session_Twilio($id);
 					if (!$rsess->id_session_twilio) {
 						$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
-						$nums = [];					
+						$nums = [];
 						// Log
 						Log::debug( [ 'action' => 'invalid session', 'type' => 'sms' ] );
 					} else {
@@ -65,19 +65,19 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				// Session already exists
 				elseif ($_SESSION['support-respond-sess']) {
 					$this->reply( $_SESSION['support-respond-sess'], $phone, $body );
-				} 
+				}
 				// No session at all
 				else {
 					$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
 				}
-				
+
 				if( $msg ){
-					echo '<Sms>'.$msg.'</Sms>';	
+					echo '<Sms>'.$msg.'</Sms>';
 				}
-				
+
 				break;
 
-			// It means the message came from a customer 
+			// It means the message came from a customer
 			default:
 
 				$_SESSION['sms-action'] = 'support-ask';
@@ -93,14 +93,14 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				}
 
 				if( $order->id_order ) {
-					
+
 					$restaurant = new Restaurant($order->id_restaurant);
 					// hard-coding eastern daylight time because that's where
 					// all our support is right now. we should think of a solution
 					// to this and change it eventually. also right now our db times
 					// are all pst. we should change that too.
 					$types = $restaurant->notification_types();
-				
+
 					if( count( $types ) > 0 ){
 						$notifications = '/ RN: ' . join( '/', $types );
 					} else {
@@ -117,16 +117,16 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						$community = '(' . $community . ')';
 					}
 
-					$last_cb .= "Last Order: #$order->id_order, from $restaurant->name $community, on $date -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone ";
+					$last_cb .= " Last Order: #$order->id_order, from $restaurant->name $community, on $date -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone ";
 					if( $order->address ){
 						$last_cb .= " / " . $order->address;
 					}
 				} else {
-					$last_cb = 'Last Order: None.';
+					$last_cb = ' Last Order: None.';
 				}
 
 				switch ($_SESSION['sms-action']) {
-			
+
 					case 'support-ask':
 
 						if( trim( $phone ) != '' ){
@@ -167,9 +167,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							if( $createNewTicket ) {
 								// Create a new sms ticket
-								$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone, 
-																																				'id_order' => $order->id_order, 
-																																				'body' => $body, 
+								$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone,
+																																				'id_order' => $order->id_order,
+																																				'body' => $body,
 																																				'id_session_twilio' => $tsess->id_session_twilio ] );
 							} else {
 								if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
@@ -178,8 +178,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 									$support->addSystemMessage( 'Ticket reopened by customer' );
 								}
 								// Add the new customer message
-								$support->addCustomerMessage( [ 'name' => $order->name, 
-																								'phone' => $phone, 
+								$support->addCustomerMessage( [ 'name' => $order->name,
+																								'phone' => $phone,
 																								'body' => $body ] );
 								$support->save();
 							}
@@ -194,9 +194,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							if( $support->id_support ){
 								// #3666
-								//$message [] = '@'.$tsess->id_session_twilio.'  http://cbtn.io/support/' . $support->id_support . '?r=1';	
+								//$message [] = '@'.$tsess->id_session_twilio.'  http://cbtn.io/support/' . $support->id_support . '?r=1';
 							}
-							
+
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
 
@@ -205,24 +205,24 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 								$sendSMSTo[ $supportName ] = $supportPhone;
 							}
-							
+
 							if( $restaurant && $restaurant->id_restaurant ){
 								$usersToReceiveSMS = $restaurant->adminReceiveSupportSMS();
 								if( count( $usersToReceiveSMS ) > 0 ){
 									foreach( $usersToReceiveSMS as $user ){
 										$sendSMSTo[ $user->name ] = $user->txt;
 									}
-								}	
+								}
 							}
-							
+
 							Crunchbutton_Message_Sms::send([
 								'to' => $sendSMSTo,
 								'message' => $message
 							]);
 
-						} 
+						}
 					break;
-		
+
 					default:
 
 							$outgoingTextCustomer = c::config()->twilio->{$env}->outgoingTextCustomer;
@@ -232,22 +232,22 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 								$msg .= "To contact Crunchbutton, call ".c::config()->phone->support.".\n";
 								$msg .= 'Or, send us a text by replying with "support" '."\n";
-			
+
 								// Log
 								Log::debug( [ 'action' => 'message to phone', 'phone' => $phone, 'msg' => $msg, 'type' => 'sms' ] );
 
-								echo '<Sms>'.$msg.'</Sms>';		
+								echo '<Sms>'.$msg.'</Sms>';
 							} else {
 								// Log
 								Log::debug( [ 'action' => 'message to outgoingTextCustomer - ignored', 'outgoingTextCustomer' => $outgoingTextCustomer, 'type' => 'sms' ] );
 							}
-						
+
 						break;
 				}
 		}
 
 		echo '</Response>';
-			
+
 		exit;
 	}
 
@@ -264,9 +264,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				foreach( $usersToReceiveSMS as $user ){
 					$sendSMSTo[ $user->name ] = $user->txt;
 				}
-			}	
+			}
 		}
-		
+
 		Crunchbutton_Message_Sms::send([
 			'to' => $sendSMSTo,
 			'message' => $message
@@ -292,7 +292,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$action = $action[ 0 ];
 
 		switch ( $action ) {
-			
+
 			// close action
 			case 'close':
 			case 'closed':
@@ -302,12 +302,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$support->status = Crunchbutton_Support::STATUS_CLOSED;
 					$support->save();
 					Log::debug( [ 'action' => 'closing support', 'id_support' => $support->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
-					$message = $admin->name . ' closed @' . $id_session . ' / ticket #' . $support->id_support; 
+					$message = $admin->name . ' closed @' . $id_session . ' / ticket #' . $support->id_support;
 					$this->warningOtherReps( $admin, $message );
-				}				
+				}
 
 				break;
-			
+
 			// just reply
 			default:
 
@@ -316,13 +316,13 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$support->addAdminMessage( [ 'phone' => $phone, 'body' => $body ] );
 					Log::debug( [ 'action' => 'saving the answer', 'id_support' => $support->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
 				}
-				
+
 				Crunchbutton_Message_Sms::send([
 					'to' => $nums,
 					'message' => $message
 				]);
 
-				$message = $admin->name . ' replied @' . $id_session . ' : ' . $body; 
+				$message = $admin->name . ' replied @' . $id_session . ' : ' . $body;
 				$this->warningOtherReps( $admin, $message );
 				break;
 		}
