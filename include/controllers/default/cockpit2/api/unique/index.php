@@ -28,6 +28,12 @@ class Controller_api_unique extends Crunchbutton_Controller_Rest {
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;
 							break;
+
+						case 'login':
+							$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $value . '"' );
+							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
+							exit;
+							break;
 					}
 				}
 				break;
