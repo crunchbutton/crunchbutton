@@ -27,12 +27,22 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
+				<div class="label">Login:</div>
+				<div class="input"><input type="text" name="driverLogin" ng-readonly="driver.id_admin" required is-unique="login" placeholder="Login" ng-model="driver.login"></div>
+				<div class="box-error">
+					<small ng-show="form.driverLogin.$error.required">Required.</small>
+					<small ng-show="form.driverLogin.$error.isUnique">This login is already in use!</small>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}">
 				<div class="label">Phone:</div>
-				<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone"></div>
+				<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone" is-unique="phone"></div>
 				<div class="box-error">
 					<small ng-show="form.driverPhone.$error.required">Required.</small>
 					<small ng-show="form.driverPhone.$error.phoneValidate">Enter a valid phone.</small>
+					<small ng-show="form.driverPhone.$error.isUnique">This phone is already registred!</small>
 				</div>
 			</li>
 
@@ -67,11 +77,6 @@
 			<h2 class="title">Access info</h2>
 
 			<ul class="ul-inputs">
-
-				<li class="li-input">
-					<div class="label">Login:</div>
-					<div class="input"><input type="text" name="driverLogin" readonly="readonly" disabled="disabled" ng-model="driver.login"></div>
-				</li>
 
 				<li class="li-input">
 					<div class="label">Password:</div>

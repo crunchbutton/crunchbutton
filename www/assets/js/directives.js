@@ -622,6 +622,7 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 						switch( attrs.isUnique ){
 							case 'email':
 							case 'phone':
+							case 'login':
 								verify = true;
 								break;
 						}
