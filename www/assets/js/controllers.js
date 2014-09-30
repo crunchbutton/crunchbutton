@@ -1005,6 +1005,8 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
+	
+	$scope.Math = window.Math;
 
 	OrderViewService.load();
 
