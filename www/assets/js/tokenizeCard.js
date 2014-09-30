@@ -121,7 +121,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 				break;
 
 			case 400:
-				res.error = 'Missing fields';
+				res.error = 'Missing card information';
 				break;
 
 			case 402:
