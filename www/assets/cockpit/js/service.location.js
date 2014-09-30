@@ -10,7 +10,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 
 		var callbackFn = function(location) {
 			console.debug('BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
-			track(location);
+			track(location, true);
         	bgGeo.finish();
 		}
 		var failureFn = function(error) {
@@ -42,7 +42,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		}
 	);
 
-	var track = function(trackedPos) {
+	var track = function(trackedPos, report) {
 		// I added this line - it was asking the user to login when he was filling the onboarding/setup form @pererinha
 		if (!$rootScope || !$rootScope.account || !$rootScope.account.user || !$rootScope.account.user.id_admin) {
 			return;
@@ -62,22 +62,26 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		d = d.getTime();
 
 		// if it has been less than 1 minite
-		if (updated && updated + 60000 > d) {
-			return;
+//		if (updated && updated + 60000 > d) {
+			//return;
+//		}
+		
+		service.location = trackedPos;
+		service.updated = d;
+		
+		if (report) {
+			locationService.track(trackedPos, function(json) {
+				console.debug('Tracked drivers location: ', trackedPos, d);
+			});
 		}
-
-		locationService.track(trackedPos, function(json) {
-			updated = d;
-			last = trackedPos;
-			console.debug('Tracked drivers location: ', trackedPos, d);
-		});
 	};
 
 	var service = {
-
+		location: null,
+		updated: null
 	};
 
-	var watcher, last, updated = null;
+	var watcher = null;
 
 	var startWatch = function() {
 		if (watcher) {
@@ -91,7 +95,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 				console.debug('Got drivers location: ', trackedPos, Math.random());
 				$rootScope.$broadcast('location', trackedPos);
 
-				track(trackedPos);
+				track(trackedPos, false);
 
 			}, function() {
 				//alert('Your location services are off, or you declined location permissions. Please enable this.');
@@ -107,7 +111,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		var d = new Date;
 		d = d.getTime();
 
-		if (updated && updated + 300000 > d) {
+		if (service.updated && service.updated + 300000 > d) {
 			stopWatch();
 			startWatch();
 		}

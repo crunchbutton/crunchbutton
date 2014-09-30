@@ -1,0 +1,17 @@
+<div class="content-padding">
+	<div  ng-controller="SideChatCtrl">
+		<div ng-if="account.user.permissions.GLOBAL">
+			<div ng-repeat="ticket in tickets" class="side-support-ticket">
+				<b>{{ticket.name}}</b>
+				#{{ticket.id_support}}
+				{{ticket.message}}
+				
+			</div>
+		</div>
+
+		<div ng-if="!account.user.permissions.GLOBAL">
+			<br>
+			<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a></p>
+		</div>
+	</div>
+</div>

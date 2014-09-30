@@ -469,27 +469,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.account.checkUser();
 
-	var badges = function(){
-		// Just run if the user is loggedin
-		if( $rootScope.account.isLoggedIn() ){
-
-			DriverOrdersService.newOrdersBadge();
-			DriverOrdersService.acceptedOrders();
-			DriverOrdersService.pickedupOrders();
-
-			// run over and over again every 30 secs
-			$timeout( function() { badges() }, 30 * 1000 );
-		}
-
-	}
-	// Update the badges
-	badges();
-
-
-	// Event called when the app resumes
-	$rootScope.$on( 'appResume', function(e, data) {
-		badges();
-	} );
 
 } );
 
