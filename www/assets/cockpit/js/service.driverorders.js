@@ -6,9 +6,6 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	var orders = $resource( App.service + 'driver/orders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
 				// actions
 				'get' : { 'method': 'GET', params : { 'action' : 'order' } },
-				'count' : { 'method': 'GET', params : { 'action' : 'count' } },
-				'count_accepted' : {'method': 'GET', params : {'action' : 'accepted' } },
-				'count_pickedup' : {'method': 'GET', params : {'action' : 'pickedup' } },
 				'outstanding_Order' : {'method': 'GET', params : {'action' : 'undelivered' } },
 				'revenue' : {'method': 'GET', params : {'action' : 'revenue' } },
 				'revenue_last' : {'method': 'GET', params : {'action' : 'revenue' } },
@@ -34,22 +31,31 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 					orders.push( order );
 				}
 			}
-			service.newOrdersBadge();
 			callback( orders );
 		} );
 	}
+	
+	$rootScope.$on('newOrders', function(e, data) {
+		$rootScope.newDriverOrders = {
+			count: data.total,
+			time: new Date
+		};
+	});
+	
+	$rootScope.$on('acceptedOrders', function(e, data) {
+		$rootScope.acceptedDriverOrders = {
+			count: data.total,
+			time: new Date
+		};
+	});
+	
+	$rootScope.$on('pickedupOrders', function(e, data) {
+		$rootScope.pickedupOrders = {
+			count: data.total,
+			time: new Date
+		};
+	});
 
-	service.newOrdersBadge = function( callback ){
-		orders.count( {}, function( json ){ $rootScope.newDriverOrders = { count: json.total, time: new Date }; } );
-	}
-
-	service.acceptedOrders = function( callback ){
-		orders.count_accepted( {}, function( json ){ $rootScope.acceptedDriverOrders = { accepted: json.total }; } );
-	}
-
-	service.pickedupOrders = function( callback ){
-		orders.count_pickedup( {}, function( json ){ $rootScope.pickedupDriverOrders = { pickedup: json.total }; } );
-	}
 	
 	service.revThisShift = function( callback ){
 		orders.revenue( {}, function( json ){ $rootScope.driverRevenue = { revenue: json.totalCurrent }; } );

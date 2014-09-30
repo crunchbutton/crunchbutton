@@ -9,41 +9,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 		if( c::getPagePiece( 3 ) ){
 
 			switch ( c::getPagePiece( 3 ) ) {
-				case 'count':
-					$count = 0;
-					$orders = Order::deliveryOrders( $lastHours );
-					foreach ( $orders as $order ) {
-						$status = $order->deliveryLastStatus();
-						if( $status[ 'status' ] == 'new' ){
-							$count++;
-						}
-					}
-					echo json_encode( [ 'total' => $count ] );
-					break;
-				
-				case 'accepted':
-					$count = 0;
-					$orders = Order::deliveryOrders( $lastHours );
-					foreach ( $orders as $order ) {
-						$status = $order->deliveryLastStatus();
-						if( $status[ 'status' ] == 'accepted' ) {
-							$count++;
-						}
-					}
-					echo json_encode( [ 'total' => $count ] );
-					break;
-					
-				case 'pickedup':
-					$count = 0;
-					$orders = Order::deliveryOrders( $lastHours );
-					foreach ( $orders as $order ) {
-						$status = $order->deliveryLastStatus();
-						if( $status[ 'status' ] == 'pickedup' ) {
-							$count++;
-						}
-					}
-					echo json_encode( [ 'total' => $count ] );
-					break;
+
 					
 				case 'revenue':
 					$id_admin = c::admin()->id_admin;
