@@ -8,7 +8,7 @@
 	<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
 		<div ng-show="!help.visible">
 			<form name="formSignin" ng-submit="account.signin()">
-				<input type="email" maxlength="250" name="email" class="signin-email" ng-enter="account.signin()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
+				<input type="text" maxlength="250" name="email" class="signin-email" ng-enter="account.signin()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
 				<div class="divider"></div>
 				<input type="password" maxlength="250" name="password" class="signin-password" ng-enter="account.signin()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
 				<div class="divider"></div>
