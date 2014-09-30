@@ -226,7 +226,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	service.isValidEmailPhone = function(){
 		// check if it is a phone number
 		if( !App.phone.validate( service.form.email ) ){
-			if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( service.form.email ) ){
+			if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( service.form.email ) &&  !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test( service.form.email )){
 				return false
 			}
 		}
