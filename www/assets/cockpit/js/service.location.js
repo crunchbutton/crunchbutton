@@ -104,6 +104,9 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 	
 	// check to make sure we are sending the location
 	var checkWatch = function() {
+		var d = new Date;
+		d = d.getTime();
+
 		if (updated && updated + 300000 > d) {
 			stopWatch();
 			startWatch();

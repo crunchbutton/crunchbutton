@@ -8,7 +8,7 @@
 
 	<div>
 
-		<ul class="ul-info box-content">
+		<ul class="ul-info box-content2">
 			<li class="li-info">
 				<div class="label">Name:</div>
 				<div class="data">{{account.user.name}}</div>
@@ -32,7 +32,9 @@
 			<li class="li-info" ng-if="account.user.invite_code">
 				<div class="label">Invite code:</div>
 				<div class="data">{{account.user.invite_code}}</div>
-				<div class="desc">*Refer another customer and earn ${{admin_refer_user_amt|formatPrice}}!</div>
+				<div class="desc">
+					Give this code to your friends to get ${{customer_get_referred_amt|formatPrice}} off their first order and earn ${{admin_refer_user_amt|formatPrice}} yourself for every new customer your refer!
+				</div>
 			</li>
 		</ul>
 

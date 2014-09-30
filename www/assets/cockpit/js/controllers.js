@@ -41,18 +41,23 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 			}
 		} );
 	}
-	
+
 	// needs to be updated when the html is
 	$scope.welcome = Math.floor((Math.random() * 8) + 1);
 	console.debug('welcome message', $scope.welcome);
 });
 
 NGApp.controller( 'ProfileCtrl', function ( $scope, CustomerRewardService ) {
-	var key = CustomerRewardService.constants[ 'key_admin_refer_user_amt' ];
-	CustomerRewardService.reward.config.value( key, function( json ){
+	CustomerRewardService.reward.config.value( CustomerRewardService.constants[ 'key_admin_refer_user_amt' ], function( json ){
 		if( json.value ){
 			$scope.ready = true;
 			$scope.admin_refer_user_amt = json.value;
+		}
+	} );
+	CustomerRewardService.reward.config.value( CustomerRewardService.constants[ 'key_customer_get_referred_amt' ], function( json ){
+		if( json.value ){
+			$scope.ready = true;
+			$scope.customer_get_referred_amt = json.value;
 		}
 	} );
 
