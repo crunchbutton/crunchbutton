@@ -11,7 +11,8 @@ NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeP
 		);
 
 	service.constants = {
-		'key_admin_refer_user_amt': 'reward_points_admin_refer_user_amt'
+		'key_admin_refer_user_amt': 'reward_points_admin_refer_user_amt',
+		'key_customer_get_referred_amt': 'reward_points_get_referred_discount_amt'
 	}
 
 	service.reward = {
