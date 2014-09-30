@@ -8,6 +8,7 @@ class Controller_api_unique extends Crunchbutton_Controller_Rest {
 			case 'post':
 				$value = $this->request()[ 'value' ];
 				$name =  $this->request()[ 'name' ];
+				$id_admin =  $this->request()[ 'id_admin' ];
 				if( trim( $value ) == '' ){
 					$this->_error();
 				}
@@ -30,7 +31,7 @@ class Controller_api_unique extends Crunchbutton_Controller_Rest {
 							break;
 
 						case 'login':
-							$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $value . '"' );
+							$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $value . '" AND id_admin != "' . $id_admin . '"' );
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;
 							break;

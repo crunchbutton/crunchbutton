@@ -32,6 +32,13 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver->phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
 		$driver->email = $this->request()[ 'email' ];
 
+		// Double check unique login
+		$login = trim( $this->request()[ 'login' ] );
+		$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $login . '"' );
+		if( $admin->count() == 0 && !$driver->id_admin ){
+			$driver->login = $login;
+		}
+
 		$pass = $this->request()[ 'pass' ];
 		if( $pass && trim( $pass ) != '' ){
 			$driver->pass = $driver->makePass( $pass );

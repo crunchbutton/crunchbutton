@@ -642,8 +642,14 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 							var name = null;
 						}
 
+						if( scope.driver && scope.driver.id_admin ){
+							var id_admin = scope.driver.id_admin;
+						} else {
+							var id_admin = null;
+						}
+
 						var unique = $resource( App.service + 'unique/:property/:value', { property: '@property', value: '@value' }, { 'check' : { 'method': 'POST', params : {} } } );
-						unique.check( { property: attrs.isUnique, value: val, name: name }, function( json ){
+						unique.check( { property: attrs.isUnique, value: val, name: name, id_admin: id_admin }, function( json ){
 							if( json && json.canIUse ){
 								ctrl.$setValidity( 'isUnique', true );
 							} else {
