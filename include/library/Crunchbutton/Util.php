@@ -243,6 +243,15 @@ class Crunchbutton_Util extends Cana_Model {
 		}
 	}
 
+	public static function randomPass( $length = 6 ){
+		$characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+		$pass = '';
+		for ( $i = 0; $i < $length; $i++ ) {
+			$pass .= strtolower( $characters[ rand( 0, strlen( $characters ) - 1 ) ] );
+		}
+		return $pass;
+	}
+
 	public static function format_price($price) {
 		// $price is a number, dollars
 		// returns a string prefixed with '$' suitable for display
