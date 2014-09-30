@@ -396,7 +396,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$user->location_lat = $params['lat'];
 		$user->location_lon = $params['lon'];
-		
+
 		$this->location_lat = $params['lat'];
 		$this->location_lon = $params['lon'];
 
@@ -1514,7 +1514,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// keep this ugly true for tests only
 		if( $env == 'live' ){
-		
+
 			Crunchbutton_Message_Sms::send([
 				'to' => Crunchbutton_Support::getUsers(),
 				'message' => $message
@@ -1557,7 +1557,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
 		if( $env == 'live' ){
-		
+
 			Crunchbutton_Message_Sms::send([
 				'to' => Crunchbutton_Support::getUsers(),
 				'message' => $message
@@ -2008,7 +2008,7 @@ class Crunchbutton_Order extends Cana_Table {
 			unset( $out['restaurant_name'] );
 			unset( $out['restaurant_permalink'] );
 		} else {
-			$date = new DateTime( $this->date, new DateTimeZone( $this->restaurant()->timezone ) );
+			$date = $this->date();
 			$out['date_formated'] = $date->format( 'g:i a, M dS, Y' );
 			$out['_restaurant_name'] = $this->restaurant()->name;
 			$out['_restaurant_permalink'] = $this->restaurant()->permalink;
@@ -2018,8 +2018,8 @@ class Crunchbutton_Order extends Cana_Table {
 			$out['_restaurant_address'] = $this->restaurant()->address;
 			$out['_restaurant_delivery_estimated_time'] = $this->restaurant()->delivery_estimated_time;
 			$out['_restaurant_pickup_estimated_time'] = $this->restaurant()->pickup_estimated_time;
-			$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
-			$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
+			$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $date->format( 'Y-m-d H:i:s' ) );
+			$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $date->format( 'Y-m-d H:i:s' ) );
 			$out['user'] = $this->user()->uuid;
 			$out['_message'] = nl2br($this->orderMessage('web'));
 			$out['charged'] = $this->charged();
