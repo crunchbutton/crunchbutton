@@ -4,7 +4,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	var service = {
 		date: null,
 		repeat: null,
-		every: 10 * 1000
+		every: 20 * 1000
 	};
 
 	var heartbeat = $resource(App.service + 'heartbeat', {}, {
@@ -27,8 +27,8 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 		if (AccountService.isLoggedIn()) {
 		
 			// reboot the interval
-			$interval.cancel(repeat);
-			$interval(service.check, service.every);
+			$interval.cancel(service.repeat);
+			service.repeat = $interval(service.check, service.every);
 
 			service.load(function(data) {
 				service.date = new Date;
@@ -57,7 +57,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	$rootScope.$on('updateHeartbeat', service.check);
 
 	// check every 30 seconds
-	var repeat = $interval(service.check, service.every);
+	service.repeat = $interval(service.check, service.every);
 
 	return service;
 
