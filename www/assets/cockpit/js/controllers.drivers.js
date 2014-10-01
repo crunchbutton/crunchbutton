@@ -85,7 +85,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
 });
 
-NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, MainNavigationService ) {
+NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService ) {
 
 	$scope.show = { all : true };
 	$scope.ready = false;
@@ -100,26 +100,32 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		}
 		return false;
 	}
+	
+	$scope.changed = function() {
+		$rootScope.$broadcast('updateHeartbeat');
+		$scope.update();
+	};
 
-	$scope.list = function(){
+	$scope.update = function() {
+		console.debug('Updating drivers orders...');
 		$scope.unBusy();
-		DriverOrdersService.list( function( data ){
+		DriverOrdersService.list(function(data) {
 			$scope.driverorders = data;
 			$scope.ready = true;
-		} );
-	}
+		});
+	};
 
 	$scope.accept = function( id_order ) {
 		$scope.makeBusy();
 		DriverOrdersService.accept( id_order,
 			function( json ){
 				if( json.status ) {
-					$scope.list();
+					$scope.changed();
 				} else {
 					$scope.unBusy();
 					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
 					App.alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
-					$scope.list();
+					$scope.changed();
 				}
 			}
 		);
@@ -127,22 +133,26 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 
 	$scope.pickedup = function( id_order ) {
 		$scope.makeBusy();
-		DriverOrdersService.pickedup( id_order, function(){ $scope.list(); } );
+		DriverOrdersService.pickedup( id_order, $scope.changed);
 	};
 
 	$scope.delivered = function( id_order ) {
 		$scope.makeBusy();
-		DriverOrdersService.delivered( id_order, function(){ $scope.list();	} );
+		DriverOrdersService.delivered( id_order, $scope.changed);
 	};
 
 	$scope.showOrder = function( id_order ){
 		MainNavigationService.link( '/drivers/order/' + id_order );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		$scope.list();
-	}
+	$rootScope.$watch('totalDriverOrders', function(newValue, oldValue) {
+		if (!newValue) {
+			return;
+		}
+		if (!oldValue || newValue.count != oldValue.count) {
+			$scope.update();
+		}
+	});
 } );
 
 NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams ) {

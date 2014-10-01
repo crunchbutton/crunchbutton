@@ -11,16 +11,23 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/maps-drivers.html'
 
 		});
-		
 }]);
 
 
-NGApp.controller('SideChatCtrl', function($scope, TicketService) {
+NGApp.controller('SideChatCtrl', function($scope, $rootScope, TicketService) {
 	$scope.params = {
 		status: 'open'
 	};
 	
-	TicketService.list($scope.params, function(tickets) {
-		$scope.tickets = tickets;
+	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
+		if (!newValue) {
+			return;
+		}
+		if (!oldValue || newValue.count != oldValue.count) {
+			console.debug('Updating support tickets...');
+			TicketService.list($scope.params, function(tickets) {
+				$scope.tickets = tickets;
+			});
+		}
 	});
 });
