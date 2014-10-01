@@ -7,37 +7,37 @@ NGApp.factory('PushService', function($http) {
 		id: null
 	};
 
-	service.init = function() {
-		if (!App.isPhoneGap) {
-			return;
-		}
+	if (!App.isPhoneGap) {
+		return service;
+	}
 
-		document.addEventListener('pushnotification', function(e) {
-			service.receive(e.msg);
-		}, false);
+	document.addEventListener('pushnotification', function(e) {
+		service.receive(e.msg);
+	}, false);
 
-		parent.plugins.pushNotification.register(
-			function(id) {
-				service.id = id;
-				console.debug('Push id: ' + id);
+	parent.plugins.pushNotification.register(
+		function(id) {
+			service.id = id;
+			console.debug('Push id: ' + id);
 
-				$http({
-					method: 'POST',
-					url: App.service + 'config',
-					data: {key: 'push-ios', value: service.id},
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-				});
-			},
-			function() {
-				console.error('Failed registering push notifications', arguments);
-			},
-			{
-				'badge': 'true',
-				'sound': 'true',
-				'alert': 'true',
-				'ecb': 'pushnotification'
+			$http({
+				method: 'POST',
+				url: App.service + 'config',
+				data: {key: 'push-ios', value: service.id},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			});
-	};
+		},
+		function() {
+			console.error('Failed registering push notifications', arguments);
+		},
+		{
+			'badge': 'true',
+			'sound': 'true',
+			'alert': 'true',
+			'ecb': 'pushnotification'
+		}
+	);
+
 	
 	service.receive = function(msg) {
 		console.debug('Notification: ', msg);
