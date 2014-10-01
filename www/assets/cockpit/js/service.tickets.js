@@ -20,8 +20,11 @@ NGApp.factory('TicketService', function($rootScope, $resource, $routeParams) {
 		});
 	}
 	
-	$rootScope.$watch('support-messages', function(newValue, oldValue, scope) {
-		$rootScope.supportMessages = newValue;
+	$rootScope.$on('tickets', function(e, data) {
+		$rootScope.supportMessages = {
+			count: data,
+			time: new Date
+		};
 	});
 
 	return service;

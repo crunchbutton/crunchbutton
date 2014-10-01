@@ -35,23 +35,30 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		} );
 	}
 	
+	$rootScope.$on('totalOrders', function(e, data) {
+		$rootScope.totalDriverOrders = {
+			count: data,
+			time: new Date
+		};
+	});
+	
 	$rootScope.$on('newOrders', function(e, data) {
 		$rootScope.newDriverOrders = {
-			count: data.total,
+			count: data,
 			time: new Date
 		};
 	});
 	
 	$rootScope.$on('acceptedOrders', function(e, data) {
 		$rootScope.acceptedDriverOrders = {
-			count: data.total,
+			count: data,
 			time: new Date
 		};
 	});
 	
 	$rootScope.$on('pickedupOrders', function(e, data) {
 		$rootScope.pickedupOrders = {
-			count: data.total,
+			count: data,
 			time: new Date
 		};
 	});
