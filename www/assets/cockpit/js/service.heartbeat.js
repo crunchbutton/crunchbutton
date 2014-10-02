@@ -1,5 +1,5 @@
 
-NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, LocationService, AccountService) {
+NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, LocationService, AccountService, PushService) {
 
 	var service = {
 		date: null,
@@ -24,6 +24,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 
 	service.check = function() {
 		// Just run if the user is loggedin
+		console.debug('Checking heartbeat...');
 		if (AccountService.isLoggedIn()) {
 		
 			// reboot the interval
@@ -35,7 +36,8 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 				
 				if (App.isPhoneGap) {
 					var complete = function(){};
-					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, data.tickets + data.orders['new']);
+					PushService.badges = parseInt(data.tickets) + parseInt(data.orders['new']);
+					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
 				}
 				
 				$rootScope.$broadcast('tickets', data.tickets);
@@ -52,6 +54,13 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	
 	// check as soon as we come back
 	$rootScope.$on('appResume', service.check);
+
+	$rootScope.$on('appPause', function() {
+		if (App.isPhoneGap) {
+			var complete = function(){};
+			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
+		}
+	});
 	
 	// check when told to
 	$rootScope.$on('updateHeartbeat', service.check);
