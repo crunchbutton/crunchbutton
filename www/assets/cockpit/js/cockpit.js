@@ -500,7 +500,7 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt, fn);
+			App.rootScope.$broadcast('notificationAlert', title || '', txt, fn);
 		}
 	});
 };
@@ -599,6 +599,8 @@ App.init = function(config) {
 	if (App._init) {
 		return;
 	}
+	
+	App.phoneGapListener.init();
 
 	App._init = true;
 
@@ -806,3 +808,41 @@ App.path = function() {
 document.addEventListener('statusTap', function() {
 	App.scrollTop(0);
 });
+
+
+
+
+// Phonegap events listeners
+App.phoneGapListener = {
+	init : function(){
+		if( App.isPhoneGap ){
+			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
+			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
+			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
+			document.addEventListener( 'online', App.phoneGapListener.online , false );
+			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+			if( !navigator.onLine ){
+				App.phoneGapListener.offline();
+			}
+		}
+	},
+	deviceready : function(){
+		// deviceready
+	},
+	resume : function(){
+		// resume
+		App.rootScope.$broadcast( 'appResume', false );
+	},
+	pause : function(){
+		// pause
+		App.rootScope.$broadcast( 'appPause', false );
+	},
+	online : function(){
+		// online
+
+	},
+	offline: function(){
+		// offline
+
+	}
+};

@@ -26,7 +26,7 @@
 
 				<li class="li-input" ng-class="{'error':form.basicSocialSecurityNumber.$invalid}">
 					<div class="label">Social Security Number:</div>
-					<div class="input"><input type="text" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" required placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
+					<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" required placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
 					<div class="box-error">
 						<small ng-show="form.basicSocialSecurityNumber.$error.required">Required.</small>
 						<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Social Security Number. Please use the format: XXX-XX-XXXX.</small>
@@ -118,7 +118,7 @@
 
 					<li class="li-input" ng-class="{'error':formBank.accountNumber.$invalid}">
 						<div class="label">Account Number:</div>
-						<div class="input"><input type="text" name="accountNumber" ng-model="bank.account_number" required></div>
+						<div class="input"><input type="tel" name="accountNumber" ng-model="bank.account_number" required></div>
 						<div class="box-error">
 							<small ng-show="formBank.accountNumber.$error.required">Required.</small>
 						</div>
@@ -126,7 +126,7 @@
 
 					<li class="li-input" ng-class="{'error':formBank.routingNumber.$invalid}">
 						<div class="label">Routing Number:</div>
-						<div class="input"><input type="text" name="routingNumber" ng-model="bank.routing_number" required></div>
+						<div class="input"><input type="tel" name="routingNumber" ng-model="bank.routing_number" required></div>
 						<div class="box-error">
 							<small ng-show="formBank.routingNumber.$error.required">Required.</small>
 						</div>

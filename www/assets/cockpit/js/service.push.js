@@ -4,7 +4,8 @@
 NGApp.factory('PushService', function($http) {
 
 	var service = {
-		id: null
+		id: null,
+		badges: 0
 	};
 
 	if (!App.isPhoneGap) {
@@ -52,7 +53,8 @@ NGApp.factory('PushService', function($http) {
 		}
 
 		if (msg.badge) {
-			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, msg.badge);
+			service.badge++;
+			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
 		}
 
 		if (msg.sound) {
