@@ -24,6 +24,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 
 	service.check = function() {
 		// Just run if the user is loggedin
+		console.debug('Checking heartbeat...');
 		if (AccountService.isLoggedIn()) {
 		
 			// reboot the interval
