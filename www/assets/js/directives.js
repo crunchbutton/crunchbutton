@@ -518,8 +518,9 @@ NGApp.directive( 'socialSecurityNumberValidate', function () {
 			link: function ( scope, elem, attrs, ctrl ) {
 				elem.on( 'blur', function ( evt ) {
 					scope.$apply( function () {
-						var regex = new RegExp("^(?!219-09-9999|078-05-1120)(?!666|000|9\\d{2})\\d{3}-(?!00)\\d{2}-(?!0{4})\\d{4}$");
-						var isValid = regex.test( elem.val() );
+						var val = elem.val().replace(/[^0-9]/g,'');
+						var regex = new RegExp("^(?!(219)(09)(9999)|(078)(05)(1120))(?!666|000|9\\d{2})\\d{3}(?!00)\\d{2}(?!0{4})\\d{4}$");
+						var isValid = regex.test(val);
 						ctrl.$setValidity( 'socialSecurityNumberValidate', isValid );
 					} );
 				} );
