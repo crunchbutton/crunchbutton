@@ -1128,6 +1128,7 @@ App.phoneGapListener = {
 	},
 	pause : function(){
 		// pause
+		App.rootScope.$broadcast( 'appPause', false );
 	},
 	online : function(){
 		// online
