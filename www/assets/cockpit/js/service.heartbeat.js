@@ -53,6 +53,13 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	
 	// check as soon as we come back
 	$rootScope.$on('appResume', service.check);
+
+	$rootScope.$on('appPause', function() {
+		if (App.isPhoneGap) {
+			var complete = function(){};
+			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
+		}
+	});
 	
 	// check when told to
 	$rootScope.$on('updateHeartbeat', service.check);
