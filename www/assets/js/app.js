@@ -1109,6 +1109,7 @@ App.setNotificationBarStatus = function( status ){
 App.phoneGapListener = {
 	init : function(){
 		if( App.isPhoneGap ){
+			alert('init');
 			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
 			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
 			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
@@ -1123,6 +1124,7 @@ App.phoneGapListener = {
 		// deviceready
 	},
 	resume : function(){
+	alert('resume');
 		dateTime.restart();
 		App.rootScope.$broadcast( 'appResume', false );
 	},
