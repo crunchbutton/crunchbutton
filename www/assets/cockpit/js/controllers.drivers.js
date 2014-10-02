@@ -872,6 +872,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 						App.alert( data.error);
 						return;
 					} else {
+						document.activeElement.blur();
 						load();
 						$scope.isTokenizing = false;
 						$scope.saved = true;
