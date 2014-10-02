@@ -1,5 +1,5 @@
 
-NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, LocationService, AccountService) {
+NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, LocationService, AccountService, PushService) {
 
 	var service = {
 		date: null,
@@ -35,7 +35,8 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 				
 				if (App.isPhoneGap) {
 					var complete = function(){};
-					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, data.tickets + data.orders['new']);
+					PushService.badges = parseInt(data.tickets) + parseInt(data.orders['new']);
+					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
 				}
 				
 				$rootScope.$broadcast('tickets', data.tickets);
