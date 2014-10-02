@@ -500,7 +500,7 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt, fn);
+			App.rootScope.$broadcast('notificationAlert', title || '', txt, fn);
 		}
 	});
 };
