@@ -1,6 +1,6 @@
 <div class="hide angular-hider" ng-class="{ show: angularLoaded }">
-	<div class="snap-drawers static-nav-viewport loggedout-hideable" ng-controller="SideMenuCtrl">
-		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
+	<div class="snap-drawers static-nav-viewport loggedout-hideable">
+		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials"><span>{{account.user.initials}}</span></div>
 
 			<ul>
@@ -139,30 +139,6 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/food-delivery')" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
-							<td class="side-menu-label">Orders</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
-							<td class="side-menu-label">Restaurants</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/location')" ng-class="{'nav-active': (navigation.page == 'location')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-group"></i></td>
-							<td class="side-menu-label">Communities</a></td>
-						</tr>
-					</table>
-				</li>
 				<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -208,10 +184,7 @@
 
 		</div>
 		<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
-			<div class="content-padding">
-				<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a></p>
-			</div>
-
+			<div ng-include="'assets/view/tickets-side-list.html'"></div>
 		</div>
 	</div>
 
@@ -236,6 +209,7 @@
 								<i class="fa fa-truck"></i>
 							</div>
 							<div class="notification notification-support" ng-click="navigation.menu('right')">
+								<div class="badge" ng-show="supportMessages.count">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
 							<? /*
