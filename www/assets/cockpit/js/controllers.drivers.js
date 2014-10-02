@@ -863,6 +863,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 										account_number: $scope.bank.account_number,
 										routing_number: $scope.bank.routing_number };
 		StaffPayInfoService.bankAccount( payload, function( json ){
+			console.debug('Saving bank info response: ', arguments);
 			if( json.href ){
 				json.id_admin = $scope.basicInfo.id_admin;
 				json.legal_name_payment = $scope.basicInfo.legal_name_payment;
@@ -871,6 +872,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 						App.alert( data.error);
 						return;
 					} else {
+						document.activeElement.blur();
 						load();
 						$scope.isTokenizing = false;
 						$scope.saved = true;

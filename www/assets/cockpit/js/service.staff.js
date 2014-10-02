@@ -98,7 +98,9 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 			if( !json.error && json.processor ){
 				var marketplaceUri = json.processor.balanced;
 				balanced.init( marketplaceUri );
+				console.debug('Creating bank account: ', payload);
 				balanced.bankAccount.create( payload, function( response ) {
+					console.debug('Balanced response : ', arguments);
 						// Successful tokenization
 						if( response.status_code === 201 ) {
 							callback( response.bank_accounts[ 0 ] );
