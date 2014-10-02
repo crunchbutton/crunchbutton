@@ -188,7 +188,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							if(!$_SESSION['last_cb']) {
 								$_SESSION['last_cb'] = $last_cb;
-								$message .= $last_cb;
+								$message .= "\n\n".$last_cb;
 							}
 
 

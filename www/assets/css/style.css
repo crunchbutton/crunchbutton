@@ -574,6 +574,7 @@ html[xmlns] .clearfix {
 	text-decoration:none;
 	color:#fff;
 	text-indent:20px;
+	cursor: pointer;
 }
 .snap-drawer p {
 	opacity:0.5;

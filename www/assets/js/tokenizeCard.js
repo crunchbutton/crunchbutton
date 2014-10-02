@@ -60,6 +60,7 @@ App.tokenizeCard_stripe = function( card, complete ) {
 					res.error = 'An error occurred while processing the card.';
 					break;
 				default:
+					console.debug('STRIPE ERROR', card, response);
 					res.error = 'Unable to validate your card at this time';
 					break;
 			}
@@ -121,7 +122,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 				break;
 
 			case 400:
-				res.error = 'Missing fields';
+				res.error = 'Missing card information';
 				break;
 
 			case 402:
@@ -152,6 +153,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 
 			// who knows wtf this is
 			default:
+				console.debug('BALANCED ERROR', card, response);
 				res.error = 'Unable to validate your card at this time';
 				break;
 		}

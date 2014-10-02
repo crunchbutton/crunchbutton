@@ -349,7 +349,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -469,27 +469,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.account.checkUser();
 
-	var badges = function(){
-		// Just run if the user is loggedin
-		if( $rootScope.account.isLoggedIn() ){
-
-			DriverOrdersService.newOrdersBadge();
-			DriverOrdersService.acceptedOrders();
-			DriverOrdersService.pickedupOrders();
-
-			// run over and over again every 30 secs
-			$timeout( function() { badges() }, 30 * 1000 );
-		}
-
-	}
-	// Update the badges
-	badges();
-
-
-	// Event called when the app resumes
-	$rootScope.$on( 'appResume', function(e, data) {
-		badges();
-	} );
 
 } );
 
@@ -704,8 +683,6 @@ App.init = function(config) {
 	}
 	*/
 
-	App.push.init();
-
 	// setup for system links
 	if (App.isPhoneGap) {
 		$(document).on('click', 'a[target=_system]', function(e) {
@@ -821,56 +798,6 @@ NGApp.factory( 'flash', function( $timeout ) {
 
 } );
 
-
-App.push = {
-	id: null,
-	init: function() {
-		if (!App.isPhoneGap) {
-			return;
-		}
-
-		document.addEventListener('pushnotification', function(e) {
-			App.push.receive(e.msg);
-		}, false);
-
-		parent.plugins.pushNotification.register(
-			function(id) {
-				App.push.id = id;
-				console.debug('Push id: ' + id);
-				$.post(App.service + 'config', {key: 'push-ios', value: App.push.id});
-			},
-			function() {
-				console.error('Failed registering push notifications', arguments);
-			},
-			{
-				'badge': 'true',
-				'sound': 'true',
-				'alert': 'true',
-				'ecb': 'pushnotification'
-			});
-	},
-	receive: function(msg) {
-		console.debug('Notification: ', msg);
-
-		var complete = function() {
-
-		};
-
-		// iOS
-		if (msg.alert) {
-			App.alert(msg.alert);
-		}
-
-		if (msg.badge) {
-			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, msg.badge);
-		}
-
-		if (msg.sound) {
-			var snd = new parent.Media(msg.sound.replace('www/',''));
-			snd.play();
-		}
-	}
-};
 
 App.path = function() {
 	var path = parent.loation.hash.replace('#').replace('cockpit.phtml');

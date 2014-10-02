@@ -2793,3 +2793,47 @@ b, strong{ font-weight: bold; }
 body.ng-scope {
 	background: $background;
 }
+
+.tickets-side-list {
+	margin-top: 1em;
+	width: 100%;
+}
+
+.tickets-side-item {
+	border-right: 4px solid #de5750; 
+}
+
+.tickets-side-item:first-child {
+	border-top: 1px solid #474a53;
+}
+
+.tickets-side-item {
+	padding: 10px 5px 10px 5px;
+	border-bottom: 1px solid #474a53;
+}
+
+.tickets-side-name {
+	font-weight: bold;
+}
+.tickets-side-ticket {
+	float: left;
+	font-size: 1.2em;
+	color: #de5750;
+	text-decoration: none;
+	font-weight: bold;
+}
+.tickets-side-time {
+	float: right;
+	font-style: italic;
+	color: #7e828e;
+}
+.tickets-side-message {
+	clear: both;
+}
+
+.tickets-side-list h1 {
+	font-family: Ruda, Helvetica, Arial, sans-serif;
+	font-size: 1.9em;
+	color: #fff;
+	padding: 5px;
+}
