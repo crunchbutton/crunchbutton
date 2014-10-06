@@ -23,7 +23,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$newDriver = true;
 			$driver = new Cockpit_Admin();
 			// create the new driver as inactive
-			$driver->active = 0;
+			$driver->active = 1;
 		} else {
 			$driver = Cockpit_Admin::o( $id_admin );
 		}
@@ -42,6 +42,13 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$pass = $this->request()[ 'pass' ];
 		if( $pass && trim( $pass ) != '' ){
 			$driver->pass = $driver->makePass( $pass );
+		}
+
+		// if it is a new driver it should create a randon pass
+		$random_pass = '';
+		if( $newDriver ){
+			$random_pass = Crunchbutton_Util::randomPass();
+			$driver->pass = $driver->makePass( $random_pass );
 		}
 
 		$driver->save();
@@ -111,12 +118,13 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$log->save();
 
 		if ( $newDriver ) {
-			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
+			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_ACCESS_INFO, $random_pass );
 		}
 
 		Log::debug( [ 'action' => 'driver saved', 'exports' => $driver->exports(), 'type' => 'drivers-onboarding'] );
 
 		echo json_encode( [ 'success' => $driver->exports() ] );
+
 		return;
 	}
 

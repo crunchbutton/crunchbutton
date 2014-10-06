@@ -27,13 +27,19 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
+			<li class="li-input" ng-class="{'error':form.driverLogin.$invalid}">
 				<div class="label">Login:</div>
 				<div class="input"><input type="text" name="driverLogin" ng-readonly="driver.id_admin" required is-unique="login" placeholder="Login" ng-model="driver.login"></div>
 				<div class="box-error">
 					<small ng-show="form.driverLogin.$error.required">Required.</small>
 					<small ng-show="form.driverLogin.$error.isUnique">This login is already in use!</small>
 				</div>
+			</li>
+
+			<li class="li-input" ng-if="driver.id_admin">
+				<div class="label">Password:</div>
+				<div class="input"><input type="text" name="driverPass" ng-model="driver.pass"></div>
+				<small class="tip">Leave it blank if you don't wanna change it.</small>
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}">
@@ -71,22 +77,6 @@
 			</li>
 
 		</ul>
-
-		<div ng-if="driver.login">
-
-			<h2 class="title">Access info</h2>
-
-			<ul class="ul-inputs">
-
-				<li class="li-input">
-					<div class="label">Password:</div>
-					<div class="input"><input type="text" name="driverPass" ng-model="driver.pass"></div>
-					<small class="tip">Leave it blank if you don't wanna change it.</small>
-				</li>
-
-			</ul>
-
-		</div>
 
 	</form>
 
