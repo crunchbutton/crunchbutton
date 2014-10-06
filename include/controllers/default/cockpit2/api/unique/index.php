@@ -25,7 +25,7 @@ class Controller_api_unique extends Crunchbutton_Controller_Rest {
 							break;
 
 						case 'phone':
-							$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $value . '"' );
+							$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $value . '" AND id_admin != "' . $id_admin . '"' );
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;
 							break;
