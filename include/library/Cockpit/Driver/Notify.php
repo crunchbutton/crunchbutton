@@ -31,7 +31,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		switch ( $message ) {
 			case Cockpit_Driver_Notify::TYPE_WELCOME:
 				$message_type = Cockpit_Driver_Notify::TYPE_WELCOME;
-				$message = "Your username is {$username}. Access cockpit.la/setup/{$phone}";
+				$message = "Your username is {$username}. Url cockpit.la/setup/{$phone}";
 				break;
 
 			case Cockpit_Driver_Notify::TYPE_SETUP:
@@ -44,7 +44,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 				$message_type = Cockpit_Driver_Notify::TYPE_ACCESS_INFO;
 				$message = "Your username is {$username}.";
 				$message .= "\n" . "Your password is {$additional}.";
-				$message .= "\n" . "Access http://cockpit.la/";
+				$message .= "\n" . "Url http://cockpit.la/";
 				break;
 		}
 
