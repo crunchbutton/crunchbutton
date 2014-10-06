@@ -4,9 +4,10 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 	const TYPE_SETUP = 'setup';
 	const TYPE_WELCOME = 'welcome';
+	const TYPE_ACCESS_INFO = 'access-info';
 	const ORDER_TEST = '22890'; // id_order sent to drivers play with - Issue #2969 - step 3
 
-	public function send( $id_admin, $message ){
+	public function send( $id_admin, $message, $additional = false ){
 
 		$driver = Crunchbutton_Admin::o( $id_admin );
 
@@ -30,13 +31,20 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		switch ( $message ) {
 			case Cockpit_Driver_Notify::TYPE_WELCOME:
 				$message_type = Cockpit_Driver_Notify::TYPE_WELCOME;
-				$message = "You username is {$username}. Access cockpit.la/setup/{$phone}";
+				$message = "Your username is {$username}. Url cockpit.la/setup/{$phone}";
 				break;
 
 			case Cockpit_Driver_Notify::TYPE_SETUP:
 				$message_type = Cockpit_Driver_Notify::TYPE_SETUP;
 				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
 				$message .="\n" . 'If you have any questions, just text us directly at _PHONE_.';
+				break;
+
+			case Cockpit_Driver_Notify::TYPE_ACCESS_INFO:
+				$message_type = Cockpit_Driver_Notify::TYPE_ACCESS_INFO;
+				$message = "Your username is {$username}.";
+				$message .= "\n" . "Your password is {$additional}.";
+				$message .= "\n" . "Url http://cockpit.la/";
 				break;
 		}
 
@@ -49,6 +57,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$notification->phone = $phone;
 		$notification->message_type = $message_type;
 		$notification->email = $driver->email;
+		$notification->additional = $additional;
 		$notification->message = $message;
 
 		// Cana::timeout( function() use( $notification ) {
@@ -92,6 +101,11 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 				case Cockpit_Driver_Notify::TYPE_SETUP:
 					$mail = new Cockpit_Email_Driver_Setup( [ 'id_admin' => $id_admin ] );
+					$mail->send();
+					break;
+
+				case Cockpit_Driver_Notify::TYPE_ACCESS_INFO:
+					$mail = new Cockpit_Email_Driver_Access( [ 'id_admin' => $id_admin, 'pass' => $notification->additional ] );
 					$mail->send();
 					break;
 			}

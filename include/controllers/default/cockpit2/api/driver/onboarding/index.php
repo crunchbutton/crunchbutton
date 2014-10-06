@@ -47,7 +47,7 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		}
 
 		$driver = new Cockpit_Admin();
-		$driver->active = 0;
+		$driver->active = 1;
 		$driver->name = $name;
 		$driver->phone = $phone;
 		if( $email && trim( $email ) != '' ){
