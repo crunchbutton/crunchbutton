@@ -100,7 +100,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		}
 		return false;
 	}
-	
+
 	$scope.changed = function() {
 		$rootScope.$broadcast('updateHeartbeat');
 		$scope.update();
@@ -590,7 +590,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			return;
 		}
 
-		if( $scope.form.$invalid || !$scope.driver.phone ){
+		if( $scope.form.$invalid /* || !$scope.driver.phone */ ){
 			$scope.submitted = true;
 			$scope.isSaving = false;
 			return;

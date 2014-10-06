@@ -1,0 +1,30 @@
+<?php
+	$id_order = Cockpit_Driver_Notify::ORDER_TEST;
+	$url = 'http://cockpit.la/' . $id_order;
+?>
+<p>
+	Hey <?php echo $name; ?>,
+</p>
+<p>
+	Here's your username to log in when orders come in.
+</p>
+<p>
+	Username: <?php echo $login ?>
+	<br/>
+	Password: <?php echo $pass ?>
+	<br/>
+	Url: <a href="http://cockpit.la/">http://cockpit.la/</a>
+</p>
+<p>
+	Test this URL out on your phone (exactly as it appears, no www.) <a href="<?php echo $url; ?>">cockpit.la/<?php echo $id_order; ?></a>. Play around with it and make sure you understand how everything works.
+</p>
+<p>
+	If you have any questions, just text us directly at 646-783-1444.
+</p>
+<p>
+	Once you've tested it, let me know, to confirm that it worked.
+</p>
+<p>
+	Thanks,<br />
+	The Crunchbutton Team
+</p>
