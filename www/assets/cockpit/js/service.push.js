@@ -35,7 +35,45 @@ NGApp.factory('PushService', function($http) {
 			'badge': 'true',
 			'sound': 'true',
 			'alert': 'true',
-			'ecb': 'pushnotification'
+			'ecb': 'pushnotification',
+			'categories': [
+				{
+					'identifier': 'order-new-test',
+					'actions': [
+						{
+							'title': 'Accept',
+							'identifier': 'i11',
+							'authentication': 'false',
+							'mode': 'background'
+						},
+						{
+							'title': 'View',
+							'identifier': 'i22',
+							'authentication': 'false',
+							'mode': 'foreground'
+						}
+					]
+				},
+				{
+					'identifier': 'support-message-test',
+					'actions': [
+						{
+							'title': 'Close',
+							'identifier': 'i44',
+							'authentication': 'false',
+							'destructive': 'true',
+							'mode': 'background'
+						},
+						{
+							'title': 'View',
+							'identifier': 'i33',
+							'authentication': 'false',
+							'mode': 'foreground'
+						}
+
+					]
+				}
+			]
 		}
 	);
 

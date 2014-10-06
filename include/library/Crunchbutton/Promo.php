@@ -314,7 +314,7 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $env == 'live' ){
 			$serverUrl = '_DOMAIN_';
 		} else {
-			$serverUrl = 'beta._DOMAIN_';
+			$serverUrl = 'beta.crunchr.co';
 		}
 
 		$url = 'http://' . $serverUrl . '/giftcard/'. $gift->code;
@@ -370,7 +370,7 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $env == 'live' ){
 			$serverUrl = '_DOMAIN_';
 		} else {
-			$serverUrl = 'beta._DOMAIN_';
+			$serverUrl = 'beta.crunchr.co';
 		}
 
 		$url = $serverUrl . '/giftcard/'. $gift->code;
