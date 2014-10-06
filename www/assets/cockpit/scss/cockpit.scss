@@ -2808,8 +2808,9 @@ body.ng-scope {
 }
 
 .tickets-side-item {
-	padding: 10px 5px 10px 5px;
+	padding: 10px 7px 7px 7px;
 	border-bottom: 1px solid #474a53;
+	line-height: .7em;
 }
 
 .tickets-side-name {
@@ -2828,7 +2829,7 @@ body.ng-scope {
 	color: #7e828e;
 }
 .tickets-side-message {
-	clear: both;
+	line-height: 1.4em;
 }
 
 .tickets-side-list h1 {
@@ -2836,4 +2837,8 @@ body.ng-scope {
 	font-size: 1.9em;
 	color: #fff;
 	padding: 5px;
+	margin-top: 10px;
+}
+.tickets-spacer {
+	margin-top: 1em;
 }
