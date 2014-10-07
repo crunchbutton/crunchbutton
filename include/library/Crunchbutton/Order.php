@@ -1878,7 +1878,8 @@ class Crunchbutton_Order extends Cana_Table {
 				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
 					$msg .= 'TIP BY CASH' . $spacer;
 				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
-					$msg .= 'TOTAL ' . $this->final_price . $spacer;
+					// Driver Text Bug-delete $ amt from cash text msg #3552
+					// $msg .= 'TOTAL ' . $this->final_price . $spacer;
 				}
 				$msg .= $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 				break;
