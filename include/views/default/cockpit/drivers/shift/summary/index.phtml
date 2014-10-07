@@ -5,6 +5,21 @@
 	$this->title2 = 'Summary';
 	$this->title2icon = 'time';
 	$this->titleLink = '/drivers/shift/summary/';
+
+	$communities = [];
+
+	foreach( $this->days as $day ) {
+		$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
+		foreach( $segments as $segment ){
+			if( !$communities[ $segment->id_community ] ){
+				$communities[ $segment->id_community ] = [];
+			}
+			if( !$communities[ $segment->id_community ][ $day->format( 'Y-m-d' ) ] ){
+				$communities[ $segment->id_community ][ $day->format( 'Y-m-d' ) ] = [];
+			}
+			$communities[ $segment->id_community ][ $day->format( 'Y-m-d' ) ][] = $segment;
+		}
+	}
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -51,61 +66,75 @@
 							<?php } ?>
 						</tr>
 						<?php $dark = ''; ?>
-						<tr>
-							<?php foreach( $this->days as $day ) {
-								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
-								$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
-							?>
-								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
-									<div class="row-fluid">
-										<?php
-										foreach( $segments as $segment ) {
-											$segment = Crunchbutton_Community_Shift::o( $segment->id_community_shift );
-											$_drivers = $segment->getDrivers();
-											$firstDayOfWeek = $segment->firstDayOfWeek()->format( 'Y-m-d' );
-											$lastDayOfWeek = $segment->lastDayOfWeek()->format( 'Y-m-d' );
-											$hasDriver = false;
-											$drivers = [];
-											foreach( $_drivers as $driver ){
-												$hasDriver = true;
-												$ranking = 0;
-												$highestRanking = 0;
-												$preference = $segment->getAdminPreferencesByDriver( $driver->id_admin );
-												$highestRanking = Crunchbutton_Admin_Shift_Preference::highestRankingByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
-												if( $preference->id_admin_shift_preference ){
-													$ranking = $preference->ranking;
-												}
-												$drivers[] = $driver->name . " ({$ranking} of {$highestRanking})";
-											}
-											if( $hasDriver ){
-												$drivers = join( ', ', $drivers );
-											}
+						<?php
+							foreach( $communities as $community ) {
 
-											?><div class="row-fluid">
-												<div class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
-													<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
-														<div>
-															<?php if( $segment->id_community_shift_father || $segment->recurring > 0 ){ ?>
-																<i class="icon-retweet" title="It is a recurring event"></i>&nbsp;
+								echo '<tr>';
+
+									foreach( $this->days as $day ) {
+
+										$_day = $day->format( 'Y-m-d' );
+										$weekday = $day->format( 'N' );
+
+										$dark = ( $weekday % 2 ) ? '' : '#F5F5F5';
+
+										echo '<td valign="top" width="14%" style="background:'. $dark . '">';
+
+										$segments = $community[ $_day ];
+
+										if( count( $segments ) > 0 ){
+
+											foreach( $segments as $segment ){
+												$_drivers = $segment->getDrivers();
+												$firstDayOfWeek = $segment->firstDayOfWeek()->format( 'Y-m-d' );
+												$lastDayOfWeek = $segment->lastDayOfWeek()->format( 'Y-m-d' );
+												$hasDriver = false;
+												$drivers = [];
+												foreach( $_drivers as $driver ){
+													$hasDriver = true;
+													$ranking = 0;
+													$highestRanking = 0;
+													$preference = $segment->getAdminPreferencesByDriver( $driver->id_admin );
+													$highestRanking = Crunchbutton_Admin_Shift_Preference::highestRankingByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+													if( $preference->id_admin_shift_preference ){
+														$ranking = $preference->ranking;
+													}
+													$drivers[] = $driver->name . " ({$ranking} of {$highestRanking})";
+												}
+												if( $hasDriver ){
+													$drivers = join( ', ', $drivers );
+												}
+
+												?><div class="row-fluid">
+
+													<div class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
+														<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
+															<div>
+																<?php if( $segment->id_community_shift_father || $segment->recurring > 0 ){ ?>
+																	<i class="icon-retweet" title="It is a recurring event"></i>&nbsp;
+																<?php } ?>
+															<strong><?php echo $segment->community()->name; ?></strong></div>
+															<span class="community-timezone" title="<?php echo $segment->fullDate(); ?>">
+																<strong><?php echo $segment->startEndToString(); ?></strong> (<?php echo $segment->timezoneAbbr(); ?>)
+															</span>
+															<span class="pst-timezone" title="<?php echo $segment->fullDate( c::config()->timezone ); ?>">
+																<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
+															</span>
+															<?php if( $hasDriver ) { ?>
+																<span><strong>Drivers:</strong>&nbsp;<?php echo $drivers; ?></span>
 															<?php } ?>
-														<strong><?php echo $segment->community()->name; ?></strong></div>
-														<span class="community-timezone" title="<?php echo $segment->fullDate(); ?>">
-															<strong><?php echo $segment->startEndToString(); ?></strong> (<?php echo $segment->timezoneAbbr(); ?>)
-														</span>
-														<span class="pst-timezone" title="<?php echo $segment->fullDate( c::config()->timezone ); ?>">
-															<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
-														</span>
-														<?php if( $hasDriver ) { ?>
-															<span><strong>Drivers:</strong>&nbsp;<?php echo $drivers; ?></span>
-														<?php } ?>
-													</a>
-												</div>
-											</div><?php
-										} ?>
-									</div>
-								</td>
-						<?php } ?>
-						</tr>
+														</a>
+													</div>
+												</div><?php
+											}
+										}
+										echo '<br/>';
+										echo '<br/>';
+										echo '</td>';
+									}
+								echo '</tr>';
+							}
+						?>
 					</table>
 					<div class="divider"></div>
 				</div>
