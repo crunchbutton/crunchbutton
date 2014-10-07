@@ -40,7 +40,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 				} else {
 					load();
 					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
+					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
 				}
 			}
 		);
@@ -124,7 +124,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 				} else {
 					$scope.unBusy();
 					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
+					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
 					$scope.changed();
 				}
 			}
