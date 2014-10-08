@@ -19,7 +19,7 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 			exit();
 		}
 
-		$admin = Admin::getByPhone( $phone );	
+		$admin = Admin::getByPhone( $phone );
 
 		if( !$admin->id_admin ){
 			$this->adminError();
@@ -39,9 +39,9 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 			switch ( $action ) {
 
 				case Controller_api_twilio_driver::ACTION_ACCEPT:
-					$this->accept( $order->deliveryAccept( $admin ), $id_order );
+					$this->accept( $order->deliveryAccept( $admin, true ), $id_order );
 					break;
-				
+
 				case Controller_api_twilio_driver::ACTION_PICKEDUP:
 					$this->picked( $order->deliveryPickedup( $admin ), $id_order );
 					break;
@@ -66,7 +66,7 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 
 		} else {
 			if( $action == Controller_api_twilio_driver::ACTION_HELP ){
-				$this->help();	
+				$this->help();
 			} else {
 				$this->help( true );
 			}

@@ -33,7 +33,7 @@
 
 	<div class="order-content">
 		<div ng-hide="account.user.has_auth">
-		
+
 			<div class="divider dots spacer-two-two"></div>
 			<div class="content-padding order-buttons">
 				<p>Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>.</p>
@@ -45,7 +45,7 @@
 			</div>
 
 		</div>
-		
+
 		<div ng-show="account.user.has_auth">
 			<div ng-if="order._new">
 				<div class="divider dots spacer-two-two"></div>
@@ -62,22 +62,25 @@
 				*/ ?>
 			</div>
 		</div>
-	
+
 		<div class="divider dots spacer-two-two"></div>
-	
-	
+
+
 		<div class="content-padding">
-		
+
 			<div class="order-icon"><div class="icon-chef"></div></div>
 			<div class="order-info">
-				<p>
+				<p ng-if="order.delivery_service == 1">
+					For updates on your order, please text your driver, whose number you'll be texted.
+				</p>
+				<p ng-if="order.delivery_service == 0">
 					For updates on your order, please call
 					<br /><b>{{order._restaurant_name}}: <a href="tel:{{order._restaurant_phone}}" target="_blank">{{ order._restaurant_phone | formatPhone }}</a></b>
 					<br /><br />
 				</p>
 			</div>
 			<div class="divider"></div>
-	
+
 			<div class="order-icon"><div class="icon-support"></div></div>
 			<div class="order-info">
 				<p>
@@ -87,11 +90,11 @@
 			</div>
 			<div class="divider"></div>
 		</div>
-	
+
 		<div class="divider dots spacer-two-two"></div>
-		
+
 		<div class="content-padding">
-			
+
 			<div class="order-icon">
 				<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
 				<div ng-hide="(order.delivery_type == 'delivery')" class="icon-takeout"></div>
@@ -103,7 +106,7 @@
 				</p>
 			</div>
 			<div class="divider"></div>
-			
+
 			<div class="order-icon">
 				<div ng-show="(order.pay_type == 'card')" class="icon-card"></div>
 				<div ng-hide="(order.pay_type == 'card')" class="icon-cash"></div>
@@ -115,7 +118,7 @@
 				</p>
 			</div>
 			<div class="divider"></div>
-			
+
 			<div class="order-icon"><div class="icon-clock"></div></div>
 			<div class="order-info order-info-oneline">
 				<p>
@@ -123,7 +126,7 @@
 				</p>
 			</div>
 			<div class="divider"></div>
-			
+
 			<div class="order-icon"><div class="icon-timer"></div></div>
 			<div class="order-info order-info-oneline">
 				<p>
@@ -134,11 +137,11 @@
 			</div>
 			<div class="divider"></div>
 		</div>
-			
+
 		<div class="divider dots spacer-two-two"></div>
 
 		<div class="content-padding">
-			
+
 			<div class="order-icon"><div class="icon-user"></div></div>
 			<div class="order-info">
 				<p>
@@ -147,26 +150,26 @@
 				</p>
 			</div>
 			<div class="divider"></div>
-			
+
 			<div ng-if="order.notes">
 				<div class="order-comment-arrow"></div>
 				<div class="order-comment">
 					<p ng-bind-html-unsafe="order.notes | nl2br"></p>
 				</div>
 			</div>
-			
+
 			<div class="divider spacer-one-two"></div>
-			
+
 
 			<span ng-if="order.delivery_type == 'delivery'">
 
 				<a href="{{order.mapLink}}" target="_blank"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
-			
+
 			</span>
 			<span ng-if="order.delivery_type == 'takeout'">
 
 				<a href="{{order.mapLink}}" target="_blank"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
-			
+
 			</span>
 
 			<div class="divider spacer-two-two"></div>
@@ -185,13 +188,13 @@
 				<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
 			</div>
 			<div class="divider"></div>
-			
+
 		</div>
-			
+
 		<div class="divider dots spacer-two-two"></div>
-		
+
 		<div class="content-padding">
-	
+
 			<h4>Your receipt:</h4>
 			<p>
 				<span ng-bind-html-unsafe="order._message"></span>
@@ -199,13 +202,13 @@
 				Total: $<span ng-bind-html-unsafe="order.charged | formatPrice"></span>
 				<br><br>
 			</p>
-			
-	
+
+
 			<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<div class="divider spacer-two-two"></div>
 			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
 		</div>
-		
+
 	</div>
 </div>
