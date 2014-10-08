@@ -50,13 +50,19 @@
 			<br />
 
 
-			For updates on your order, please call
-			<div>
-				{{order._restaurant_name}}:
-				<b>
-					<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
-					<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
-				</b>
+			<div ng-if="order.delivery_service == 1">
+				For updates on your order, please text your driver, whose number you'll be texted.
+			</div>
+
+			<div ng-if="order.delivery_service == 0">
+				For updates on your order, please call
+				<div>
+					{{order._restaurant_name}}:
+					<b>
+						<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
+						<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
+					</b>
+				</div>
 			</div>
 
 			<br>

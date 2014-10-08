@@ -2364,7 +2364,8 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 
-	public function deliveryAccept($admin) {
+	public function deliveryAccept($admin, $textCustomer = false) {
+
 		if ($this->deliveryStatus('accepted')) {
 			return false;
 		}
@@ -2374,6 +2375,12 @@ class Crunchbutton_Order extends Cana_Table {
 			'timestamp' => date('Y-m-d H:i:s'),
 			'type' => 'delivery-accepted'
 		]))->save();
+
+
+		if( $textCustomer ){
+			$this->textCustomerAboutDriver();
+		}
+
 		$this->_actions = null;
 		return true;
 	}
@@ -2489,6 +2496,29 @@ class Crunchbutton_Order extends Cana_Table {
 			return true;
 		}
 		return false;
+	}
+
+	public function textCustomerAboutDriver(){
+		$order = Crunchbutton_Order::o( $this->id_order );
+		if( !$order->id_order ){
+			return;
+		}
+
+		$this->_actions = false;
+
+		$phone = $order->phone;
+		$driver = $order->getDeliveryDriver();
+
+		if( $driver ){
+			// Check if the order was rejected and change the message
+			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = "' . Crunchbutton_Order_Action::DELIVERY_REJECTED . '" AND id_order = "' . $this->id_order . '"' );
+			if( $action->count() > 0 ){
+				$message = "Sorry, your updated driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
+			} else {
+				$message = "Your driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
+			}
+			Crunchbutton_Message_Sms::send( [ 'to' => $phone, 'message' => $message ] );
+		}
 	}
 
 	public function hasGiftCardIssued(){

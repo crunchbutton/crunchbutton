@@ -7,7 +7,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		if (!$order->id_order) {
 			$order = Order::o(c::getPagePiece(2));
 		}
-		
+
 		if (!$order->id_order) {
 			echo json_encode(['error' => 'invalid object']);
 			exit;
@@ -31,7 +31,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					break;
 
 				case 'delivery-accept':
-					$res['status'] = $order->deliveryAccept(c::admin());
+					$res['status'] = $order->deliveryAccept(c::admin(), true);
 					break;
 
 				case 'delivery-reject':
@@ -40,11 +40,11 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					break;
 			}
 		}
-		
+
 		if ($order->deliveryStatus())
 		$ret = $order->deliveryExports();
 		$ret['status'] = $res['status'];
-		
+
 		echo json_encode($ret);
 		exit;
 

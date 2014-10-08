@@ -10,7 +10,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 			switch ( c::getPagePiece( 3 ) ) {
 
-					
+
 				case 'revenue':
 					$id_admin = c::admin()->id_admin;
 					$revenueCurrentShift = Admin::revenueCurrentShift( $id_admin );
@@ -18,7 +18,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					echo json_encode( ['totalCurrent' => $revenueCurrentShift,
 									   'totalLast' => $revenueLastShift] );
 					break;
-				
+
 				case 'undelivered':
 					$count = 0;
 					$orders = Order::outstandingOrders();
@@ -27,20 +27,20 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					}
 					echo json_encode( [ 'total' => $count ] );
 				break;
-				
+
 				//To be continued
 				case 'times':
 					$id_admin = c::admin()->id_admin;
 					$avgTimeLastShift = Admin::avgDeliveryTimeLastShift( $id_admin );
 					$avgTimeCurrentShift = Admin::avgDeliveryTimeCurrentShift( $id_admin );
-					$orderCountLastShift = Admin::numberOfDeliveredOrdersLastShift( $id_admin );				
+					$orderCountLastShift = Admin::numberOfDeliveredOrdersLastShift( $id_admin );
 					$orderCountCurrentShift = Admin::numberOfDeliveredOrdersCurrentShift( $id_admin );
 					echo json_encode( [ 'total_last' => $avgTimeLastShift,
 									'total_current' => $avgTimeCurrentShift,
 									'orderCountLast' => $orderCountLastShift,
 									'orderCountCurrent' => $orderCountCurrentShift ] );
 					break;
-				
+
 				default:
 
 					$order = Order::o(c::getPagePiece( 3 ) );
@@ -68,22 +68,22 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'delivery-accept':
-								$res['status'] = $order->deliveryAccept(c::user());
+								$res['status'] = $order->deliveryAccept(c::user(), true);
 								break;
 
 							case 'delivery-reject':
 								$order->deliveryReject(c::user());
 								$res['status'] = true;
 								break;
-								
+
 							case 'undo-accepted':
 								$res[ 'status' ] = $order->undoStatus('accepted');
 								break;
-								
+
 							case 'undo-delivered':
 								$res[ 'status' ] = $order->undoStatus('delivered');
 								break;
-							
+
 							case 'undo-pickedup':
 								$res[ 'status' ] = $order->undoStatus('pickedup');
 								break;
@@ -97,7 +97,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 						echo json_encode( $ret );
 						exit;
 					} else {
-					
+
 						if( $order->id_order ) {
 							echo $order->json();
 						} else {
