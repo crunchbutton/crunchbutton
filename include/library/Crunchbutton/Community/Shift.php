@@ -788,11 +788,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				echo "\n";
 
 				// Send the sms
-				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message ] );
+				// Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message ] );
 
 				// Send the email
 				if( $driver->email ){
-					$mail = new Cockpit_Email_Driver_Shift( [ 'email' => $driver->email, 'message' => $message ] );
+					$mail = new Cockpit_Email_Driver_Shift( [ 'email' => '_EMAIL', 'message' => $message ] );
+					// $mail = new Cockpit_Email_Driver_Shift( [ 'email' => $driver->email, 'message' => $message ] );
 					$mail->send();
 				}
 			}
