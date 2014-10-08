@@ -95,6 +95,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND id_community = "' . $id_community . '" ORDER BY cs.date_start ASC' );
 	}
 
+	public function shiftsByDriverByPeriod( $id_admin, $from, $to ){
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND asa.id_admin = "' . $id_admin . '" ORDER BY cs.date_start ASC' );
+	}
+
 	public function week(){
 		// Start week at monday #2666
 		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );
@@ -731,6 +735,70 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					+ ( $diff->y * 60 * 24 * 365 );
 	}
 
+	public function shiftWarningWeekly(){
+
+		$weekday = date( 'l' );
+
+		$sendWarning = false;
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		switch ( $weekday ) {
+			case 'Wednesday':
+				$sendWarning = true;
+				$dateStart = $now->format( 'Y-m-d' );
+				$now->modify( '+ 6 days' );
+				$dateEnd = $now->format( 'Y-m-d' );
+				$template = "Hi %s! You're scheduled for the following shifts this week: ";
+				break;
+			case 'Friday':
+				$sendWarning = true;
+				$now->modify( '+ 1 day' );
+				$dateStart = $now->format( 'Y-m-d' );
+				$now->modify( '+ 6 days' );
+				$dateEnd = $now->format( 'Y-m-d' );
+				$template = "Hi %s ! You're scheduled for the following shifts: ";
+				break;
+		}
+
+		$sendWarning = true;
+
+		if( !$sendWarning || !$dateStart || !$dateEnd ){
+			return;
+		}
+
+		// Get the shifts of this range
+		$drivers = Crunchbutton_Admin::drivers();
+		foreach( $drivers as $driver ){
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $dateStart . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $dateEnd . '" AND asa.id_admin = "' . $driver->id_admin . '" ORDER BY cs.date_start ASC' );
+			if( $shifts->count() > 0 ){
+
+				$message = sprintf( $template, $driver->firstName() );
+				$commas = '';
+
+				foreach( $shifts as $shift ){
+					$message .= $commas;
+					$message .= $shift->dateStart()->format( 'D ga' ) . '-' . $shift->dateEnd()->format( 'ga T' );
+					$commas = ', ';
+				}
+
+				$message .= '.';
+				Log::debug( [ 'action' => $message, 'type' => 'driver-schedule' ] );
+				echo $message;
+				echo "\n";
+
+				// Send the sms
+				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message ] );
+
+				// Send the email
+				if( $driver->email ){
+					$mail = new Cockpit_Email_Driver_Shift( [ 'email' => $driver->email, 'message' => $message ] );
+					$mail->send();
+				}
+			}
+		}
+	}
+
 	public function warningDriversBeforeTheirShift(){
 
 		$env = c::getEnv();
@@ -824,7 +892,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 										echo 'Error Sending sms to: '.$ret->to;
 									}
 								}
-
 							}
 						}
 					}
