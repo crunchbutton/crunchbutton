@@ -499,7 +499,20 @@ p {
 	margin-top: 4px;
 }
 
-
+.more-food-link {
+	color: #f45e46;
+	text-transform: uppercase;
+	font-size: 1.4em;
+	font-weight: bold;
+	letter-spacing: -.02em;
+	margin-top: .5em;
+	display: block;
+	height: 2.5em;
+	padding-top: .5em;
+	text-decoration: underline;
+	text-align: center;
+	cursor: pointer;
+}
 
 
 /* nav */
