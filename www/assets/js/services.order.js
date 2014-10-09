@@ -920,7 +920,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			value: 0,
 			label: 'Tip with cash'
 		});
-		var _tips = [10, 15, 18, 20, 25, 30];
+		var _tips = [10, 15, 18, 20, 25, 30, 35, 40, 45, 50];
 		for (var x in _tips) {
 			tips.push({
 				value: _tips[x],
