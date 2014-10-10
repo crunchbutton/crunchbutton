@@ -746,6 +746,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		switch ( $weekday ) {
 			case 'Wednesday':
 				$sendWarning = true;
+				$now->modify( '+ 1 day' );
 				$dateStart = $now->format( 'Y-m-d' );
 				$now->modify( '+ 6 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
@@ -755,7 +756,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$sendWarning = true;
 				$now->modify( '+ 1 day' );
 				$dateStart = $now->format( 'Y-m-d' );
-				$now->modify( '+ 6 days' );
+				$now->modify( '+ 4 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
 				$template = "Hi %s ! You're scheduled for the following shifts: ";
 				break;

@@ -1,7 +1,8 @@
 <?php
 
-class Controller_api_test extends Crunchbutton_Controller_RestAccount {
+class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+		die('hard');
 		Crunchbutton_Community_Shift::shiftWarningWeekly();
 	}
 }
