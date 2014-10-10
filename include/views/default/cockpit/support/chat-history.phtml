@@ -1,5 +1,5 @@
 <ul class="chat-box">
-<?php 
+<?php
 // $messages = $this->support->messages();
 $messages = Crunchbutton_Support_Message::byPhone( $this->support->phone );
 $last_id_support_message = 0;
@@ -29,7 +29,7 @@ foreach( $messages as $message ){
 								<span class="name">
 									<strong>
 										<?php echo $message->admin()->name; ?>
-									</strong> 
+									</strong>
 								<span class="badge badge-green">SMS</span>
 								</span>
 								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
@@ -38,7 +38,7 @@ foreach( $messages as $message ){
 						</li>
 					<?php
 					break;
-				
+
 				case Crunchbutton_Support_Message::TYPE_NOTE:
 					?>
 						<li class="box-note">
@@ -46,7 +46,7 @@ foreach( $messages as $message ){
 								<span class="name">
 									<strong>
 										<?php echo $message->admin()->name; ?>
-									</strong> 
+									</strong>
 								<span class="badge badge-green">NOTE</span>
 								</span>
 								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
@@ -56,7 +56,7 @@ foreach( $messages as $message ){
 					<?php
 					break;
 			}
-			
+
 			break;
 
 		case Crunchbutton_Support_Message::TYPE_FROM_SYSTEM:
@@ -64,9 +64,9 @@ foreach( $messages as $message ){
 				<li class="box-note-system">
 					<div class="info">
 						<span class="name">
-							<strong>System</strong> 
+							<strong>System</strong>
 							<span class="badge badge-gray">Log</span>
-							<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
+							<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
 						</span>
 						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
 					</div>
