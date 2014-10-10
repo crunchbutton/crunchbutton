@@ -52,7 +52,7 @@
 					<div class="row-fluid">
 
 						<?php foreach( $community[ 'numbers' ] as $numbers ) { ?>
-						
+
 						<div class="span3">
 							<div class="dashboard-stats small">
 								<ul class="inline">
@@ -69,13 +69,14 @@
 		</div>
 	</div>
 </div>
+
 <div class="box">
 	<div class="box-header">
 			<ul class="nav nav-tabs nav-tabs-left">
 				<?php if( $this->restaurantsPermissions ) { ?>
 					<li class="active"><a href="#restaurants" data-toggle="tab"><i class="icon-food"></i> <span>Restaurants</span></a></li>
 				<?php } ?>
-				<?php if( $this->driversPermissions ) { 
+				<?php if( $this->driversPermissions ) {
 					if( !$this->restaurantsPermissions ){
 						$active = 'class="active"';
 					}
@@ -102,9 +103,9 @@
 				<?php if (c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) { ?>
 					<a href="/permissions/users/new"> <i class="icon-user"></i> Create a new driver</a>
 					<br />
-					<br />			
+					<br />
 				<?php } ?>
-				
+
 				<?php if (c::admin()->permission()->check(['global','drivers-assign', 'drivers-all'])) { ?>
 				<a href="/drivers/assign/community/<?php echo $community[ 'community' ]->id_community;?>"> <i class="icon-magnet"></i> Assign drivers to <?php echo $community[ 'name' ]; ?></a>
 				<br />
@@ -116,6 +117,57 @@
 				<br />
 				<a href="/drivers/schedule"> <i class="icon-calendar"></i> Schedule</a>
 				<?php } ?>
+
+
+
+				<br>
+				<br>
+				<div>
+
+		<div class="box-content padded">
+			<div class="row-fluid">
+				<div class="separate-sections" style="margin-top: 5px;">
+					<div class="row-fluid">
+						<div class="span6">
+							<strong>Close all restaurants</strong>
+							<ul class="padded separate-sections">
+								<li class="input">
+									<label style="text-align:left;">
+										<input type="checkbox" name="close_all_restaurants" id="close_all_restaurants" <?php if( $community[ 'community' ]->close_all_restaurants ){ echo 'checked="checked"'; } ?> > Close all restaurants
+									</label>
+								</li>
+								<li class="input">
+									<input type="text" name="close_all_restaurants_note" id="close_all_restaurants_note" value="<?php echo $community[ 'community' ]->close_all_restaurants_note; ?>" placeholder="Notes">
+								</li>
+								<li>
+									<button type="button" onclick="community.closeAll();" class="btn close_all_restaurants_save btn-blue">Save changes</button>
+								</li>
+							</ul>
+						</div>
+						<div class="span6">
+							<strong>Close 3rd party delivery restaurants</strong>
+							<ul class="padded separate-sections">
+								<li class="input">
+									<label style="text-align:left;">
+										<input type="checkbox" name="close_3rd_party_delivery_restaurants" id="close_3rd_party_delivery_restaurants" <?php if( $community[ 'community' ]->close_3rd_party_delivery_restaurants ){ echo 'checked="checked"'; } ?> > Close 3rd party delivery restaurants
+									</label>
+								</li>
+								<li class="input">
+									<input type="text" name="close_3rd_party_delivery_restaurants_note" id="close_3rd_party_delivery_restaurants_note" value="<?php echo $community[ 'community' ]->close_3rd_party_delivery_restaurants_note; ?>" placeholder="Notes">
+								</li>
+								<li>
+									<button type="button" onclick="community.close3rdParty();" class="close_3rd_party_delivery_restaurants_save btn btn-blue">Save changes</button>
+								</li>
+							</ul>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
 			</div>
 			<div class="tab-pane" id="shifts">
 				<div class="row-fluid">
@@ -162,17 +214,17 @@ $( document ).ready( function(){
 
 	community.restaurants();
 	community.drivers();
-	<?php 
+	<?php
 	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
-	
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Friday' ){
-			$friday = $now;	
+			$friday = $now;
 		} else {
 			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 		}
 		$start_date = $friday->format( 'Y/m/d' );
-	
+
 	?>
 	community.shifts( '/drivers/shift/community/<?php echo $community[ 'community' ]->id_community; ?>/<?php echo $start_date; ?>?ajax=1' );
 	<?php } ?>
@@ -236,7 +288,69 @@ community.quickClose = function( id_restaurant, status ){
 	} );
 };
 
-community.holidays = function( id_restaurant ){	
+community.closeAll = function(){
+	var input = $('#close_all_restaurants');
+	var notes = $('#close_all_restaurants_note');
+	var save = true;
+	if( input.is(':checked') ){
+		if( notes.val() == '' ){
+			alert( 'Plese type the reason (notes)!' );
+			notes.focus();
+			return;
+		}
+	}
+	var data = {
+			'id_community': '<?php echo $community[ 'community' ]->id_community; ?>',
+			'close_all_restaurants': ( input.is(':checked') ? 1 : 0 ),
+			'close_all_restaurants_note': notes.val()
+		};
+	$.ajax( {
+		type: 'POST',
+		url: '/api/community/close-all',
+		data: data,
+		complete: function( request ) {
+			console.log('request',request);
+			if( request.success ){
+				alert( 'Saved!' )
+			} else {
+				alert( 'Oops! Please try again!' );
+			}
+		}
+	} );
+};
+
+community.close3rdParty = function(){
+	var input = $('#close_3rd_party_delivery_restaurants');
+	var notes = $('#close_3rd_party_delivery_restaurants_note');
+	var save = true;
+	if( input.is(':checked') ){
+		if( notes.val() == '' ){
+			alert( 'Plese type the reason (notes)!' );
+			notes.focus();
+			return;
+		}
+	}
+	var data = {
+			'id_community': '<?php echo $community[ 'community' ]->id_community; ?>',
+			'close_3rd_party_delivery_restaurants': ( input.is(':checked') ? 1 : 0 ),
+			'close_3rd_party_delivery_restaurants_note': notes.val()
+		};
+	$.ajax( {
+		type: 'POST',
+		url: '/api/community/close-3rd',
+		data: data,
+		complete: function( request ) {
+			console.log('request',request);
+			if( request.success ){
+				alert( 'Saved!' )
+			} else {
+				alert( 'Oops! Please try again!' );
+			}
+		}
+	} );
+};
+
+community.holidays = function( id_restaurant ){
 	_id_restaurant = id_restaurant;
 	hour_override.setCallback( function(){
 		community.restaurants();
@@ -260,7 +374,7 @@ community.holidays = function( id_restaurant ){
 	}
 	.restaurant-grid .inactive{
 		color:#CCC;
-		text-decoration:line-through;		
+		text-decoration:line-through;
 	}
 	.drivers-grid{
 		width: 100%;
