@@ -263,6 +263,11 @@ class Crunchbutton_Support extends Cana_Table {
 		if( $params[ 'id_order' ] ){
 			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_order = ' . $params[ 'id_order' ] . ' AND type = "' . Crunchbutton_Support::TYPE_WARNING . '" ORDER BY id_support DESC LIMIT 1' );
 		}
+
+		if( !$support->id_support && $params[ 'phone' ] ){
+			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE phone = "' . $params[ 'phone' ] . '" ORDER BY id_support DESC LIMIT 1' );
+		}
+
 		if( $support && $support->id_support ){
 			$support->status = Crunchbutton_Support::STATUS_OPEN;
 		} else {
@@ -278,6 +283,10 @@ class Crunchbutton_Support extends Cana_Table {
 				$support->id_restaurant = $order->id_restaurant;
 				$support->id_user = $order->id_user;
 				$support->phone = $order->phone;
+			} else {
+				if( $params[ 'phone' ] ){
+					$support->phone = $params[ 'phone' ];
+				}
 			}
 		}
 		$support->save();
@@ -469,7 +478,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 		// Log
 		$message = '@'.$this->id_session_twilio.' : ' . $message;
-		
+
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
 			'message' => $message

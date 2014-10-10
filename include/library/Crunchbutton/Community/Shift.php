@@ -610,14 +610,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 				$message = str_replace( '[name]' , $name, $driversMessage );
 
+				$num = ( $txt != '' ) ? $txt : $phone;
+
 				$cs_message = 'Driver notificaton: ' . str_replace( '|', '<br>',  $message );
-				Crunchbutton_Support::createNewWarning(  [ 'body' => $cs_message ] );
+				Crunchbutton_Support::createNewWarning(  [ 'body' => $cs_message, 'phone' => $num ] );
 
 				if (strpos( $message, '|') > 0) {
 					$message = str_replace('|', "\n", $message);
 				}
-
-				$num = ( $txt != '' ) ? $txt : $phone;
 
 				echo "Sending sms to support users...\n";
 
