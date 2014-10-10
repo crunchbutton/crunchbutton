@@ -67,6 +67,9 @@ var Restaurant = function(id) {
 		if( self.closed_message != '' ){
 			return self.closed_message;
 		} else {
+			if( self._closedDueTo != '' ){
+				return self._closedDueTo;
+			}
 			return 'Temporarily closed';
 		}
 
@@ -82,7 +85,7 @@ var Restaurant = function(id) {
 		}
 
 		self.categories();
-		
+
 		if (App.isPhoneGap) {
 			if( self.image ){
 				var img = self.image.replace(/^.*\/|\.[^.]*$/g, '');
@@ -108,7 +111,7 @@ var Restaurant = function(id) {
 					self._tag = 'closed';
 				}
 			} else {
-				self._tag = tag;	
+				self._tag = tag;
 			}
 			return;
 		}
@@ -126,7 +129,7 @@ var Restaurant = function(id) {
 		}
 		// if the restaurant does not have a closed message it has no hours for the week
 		if( self.closed_message == '' ){
-			self._tag = 'force_close';	
+			self._tag = 'force_close';
 		}
 		// if it has not tag, check if it is takeout only
 		if( self._tag == '' ){
@@ -139,7 +142,7 @@ var Restaurant = function(id) {
 	self.getNow = function( now ){
 		if( now && now.getTime ){
 			return now;
-		} 
+		}
 		return dateTime.getNow();
 	}
 
@@ -156,25 +159,26 @@ var Restaurant = function(id) {
 		return false;
 	}
 
-	/* 
-	** Open/Close check methods 
+	/*
+	** Open/Close check methods
 	*/
 	// return true if the restaurant is open
 	self.open = function( now, ignoreOpensClosesInCalc ) {
 
 		if( !ignoreOpensClosesInCalc ){
-			self.tagfy( 'opening' );	
+			self.tagfy( 'opening' );
 		}
 
 		// if the restaurant has no hours it probably will not be opened for the next 24 hours
 		self._hasHours = false;
-		
+
 		now = self.getNow( now );
 
 		self.processHours();
 		var now_time = now.getTime();
-		// loop to verify if it is open	
+		// loop to verify if it is open
 		self._open = false;
+
 		if( self.hours ){
 			for( x in self.hours ){
 				self._hasHours = true;
@@ -185,14 +189,14 @@ var Restaurant = function(id) {
 							return self._open;
 						}
 						// if it is open calc closes in
-						self.closesIn( now );	
+						self.closesIn( now );
 						self.tagfy();
 						return self._open;
 					} else if( self.hours[ x ].status == 'close' ){
 						self._closedDueTo = ( self.hours[ x ].notes ) ? self.hours[ x ].notes : false;
 						if( ignoreOpensClosesInCalc ){
 							return self._open;
-						}			
+						}
 						// If it is closed calc opens in
 						self.opensIn( now );
 						self.tagfy();
@@ -203,11 +207,14 @@ var Restaurant = function(id) {
 			// If it is closed calc opens in
 			self.opensIn( now );
 			self.tagfy();
+			if( !self._hasHours ){
+				self._closedDueTo = ( self._community_closed ? self._community_closed : ' ' ); // There is no reason, leave it blank
+			}
 			return self._open;
 		} else {
 			// if it doesn't have hours it is forced to be closed
 			self._tag = 'force_close';
-			self._closedDueTo = ' '; // There is no reason, leave it blank
+			self._closedDueTo = ( self._community_closed ? self._community_closed : ' ' ); // There is no reason, leave it blank
 		}
 	}
 
@@ -226,7 +233,7 @@ var Restaurant = function(id) {
 						return;
 					}
 				}
-			}			
+			}
 		}
 		if( self._closesIn == 0 || self._closesIn === false ){
 			self._open = false;
@@ -263,7 +270,7 @@ var Restaurant = function(id) {
 				self.hours[ x ]._from_time = self.hours[ x ]._from.getTime();
 				self.hours[ x ]._to = Date.parse( self.hours[ x ].to );
 				self.hours[ x ]._to_time = self.hours[ x ]._to.getTime();
-			}	
+			}
 			self._hours_processed = true;
 		}
 	}
@@ -288,7 +295,7 @@ var Restaurant = function(id) {
 		if( forceLoad ){
 			load = true;
 		} else {
-			var age = Math.floor( now - self.cachedAt ); // age in seconds	
+			var age = Math.floor( now - self.cachedAt ); // age in seconds
 			// if the age is more or equals to 23 hours
 			load = ( age >= ( ( 60 * 60 ) * 23 ) );
 		}

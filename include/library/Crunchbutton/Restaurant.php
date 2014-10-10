@@ -1566,6 +1566,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// return the restaurant's hours
 	public function hours( $gmt = false ) {
+
+		$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+		if( !$isCockpit ){
+			// check if the community is closed #2988
+			$community = $this->community()->get(0);
+			$allRestaurantsClosed = $community->allRestaurantsClosed();
+			if( $allRestaurantsClosed ){
+				return [];
+			}
+
+			$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
+			if( $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
+				return [];
+			}
+		}
+
 		return Hour::hoursByRestaurant( $this, $gmt );
 	}
 
@@ -1597,7 +1613,21 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// return the closed message
 	public function closed_message(){
-		return Hour::restaurantClosedMessage( $this );
+		$closed_message = Hour::restaurantClosedMessage( $this );
+		if( trim( $closed_message ) == '' ){
+			// check if the community is closed #2988
+			$community = $this->community()->get(0);
+			$allRestaurantsClosed = $community->allRestaurantsClosed();
+			if( $allRestaurantsClosed ){
+				$closed_message = $allRestaurantsClosed;
+			}
+
+			$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
+			if( !$closed_message && $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
+				$closed_message = $allThirdPartyDeliveryRestaurantsClosed;
+			}
+		}
+		return $closed_message;
 	}
 
 	public function next_open_time_message( $utc = false ){

@@ -85,6 +85,21 @@ class Crunchbutton_Community extends Cana_Table {
 		return $out;
 	}
 
+	public function allRestaurantsClosed(){
+		if( $this->close_all_restaurants > 0 ){
+			return $this->close_all_restaurants_note;
+		}
+		return false;
+	}
+
+	public function allThirdPartyDeliveryRestaurantsClosed(){
+		if( $this->close_3rd_party_delivery_restaurants > 0 ){
+			return $this->close_3rd_party_delivery_restaurants_note;
+		}
+		return false;
+	}
+
+
 	public static function permalink($permalink) {
 		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
 	}
