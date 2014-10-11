@@ -1571,15 +1571,18 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( !$isCockpit ){
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);
-			$allRestaurantsClosed = $community->allRestaurantsClosed();
-			if( $allRestaurantsClosed ){
-				return [];
+			if( $community->id_community ){
+				$allRestaurantsClosed = $community->allRestaurantsClosed();
+				if( $allRestaurantsClosed ){
+					return [];
+				}
+
+				$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
+				if( $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
+					return [];
+				}
 			}
 
-			$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
-			if( $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
-				return [];
-			}
 		}
 
 		return Hour::hoursByRestaurant( $this, $gmt );
@@ -1617,15 +1620,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( trim( $closed_message ) == '' ){
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);
-			$allRestaurantsClosed = $community->allRestaurantsClosed();
-			if( $allRestaurantsClosed ){
-				$closed_message = $allRestaurantsClosed;
+			if( $community->id_community ){
+				$allRestaurantsClosed = $community->allRestaurantsClosed();
+				if( $allRestaurantsClosed ){
+					$closed_message = $allRestaurantsClosed;
+				}
+				$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
+				if( !$closed_message && $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
+					$closed_message = $allThirdPartyDeliveryRestaurantsClosed;
+				}
 			}
 
-			$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
-			if( !$closed_message && $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
-				$closed_message = $allThirdPartyDeliveryRestaurantsClosed;
-			}
 		}
 		return $closed_message;
 	}
