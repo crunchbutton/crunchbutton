@@ -18,13 +18,13 @@
 			<?php foreach( $communities as $community ) { ?>
 				 <div class="span3">
 						<div>
-							<?php 
+							<?php
 								$restaurants = $community->totalRestaurantsByCommunity()[ 'community' ];
 							?>
-							 <input type="checkbox" 
-									class="icheck" 
-									id="checkbox-<?php echo $community->id_community;?>" 
-									community="<?php echo $community->id_community;?>" 
+							 <input type="checkbox"
+									class="icheck"
+									id="checkbox-<?php echo $community->id_community;?>"
+									community="<?php echo $community->id_community;?>"
 									name="checkbox-<?php echo $community->id_community;?>">
 							 <label for="checkbox-<?php echo $community->id_community;?>"><?php echo $community->name; ?> ( <?php echo $restaurants; ?> restaurants )</label>
 						</div>
@@ -76,7 +76,7 @@ function loadChartsOfCommunity( community ){
 		var partial = '';
 		switch( type){
 			case 'orders':
-				partial = 'orders-per-week-by-community/group-orders-community';
+				partial = 'orders-per-day-by-community/group-orders-community';
 				break;
 			case 'new-users':
 				partial = 'users-new-per-week-by-community/group-new-users-community';
@@ -88,7 +88,6 @@ function loadChartsOfCommunity( community ){
 				partial = 'gross-revenue-per-week-by-community/group-revenue-by-community';
 				break;
 		}
-
 		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community;
 		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
 	} );
@@ -113,13 +112,20 @@ $( document ).ready( function(){
 		}
 	});
 
+	<?php foreach( $communities as $community ) {
+		if( $community->hasShiftThisWeek() ){ ?>
+			$( '#checkbox-<?php echo $community->id_community;?>' ).iCheck( 'check' );
+	<?php
+		}
+	 } ?>
+
 } );
 
 	function loadChart( info ){
- 
+
 		var divId = info[ 'divId' ];
 		var permalink = info[ 'permalink' ];
-		var chart = $( '#' + divId );	
+		var chart = $( '#' + divId );
 		chart.attr( 'data-permalink', permalink );
 		var params = { 'community' : info[ 'community' ] };
 
@@ -130,10 +136,10 @@ $( document ).ready( function(){
 		var slider = $( '#slider-' + divId );
 		if( slider.length > 0 ){
 			if( slider.attr( 'data-from' ) ){
-				params[ 'from' ] = slider.attr( 'data-from' );	
+				params[ 'from' ] = slider.attr( 'data-from' );
 			}
 			if( slider.attr( 'data-to' ) ){
-				params[ 'to' ] = slider.attr( 'data-to' );	
+				params[ 'to' ] = slider.attr( 'data-to' );
 			}
 		}
 
@@ -154,7 +160,7 @@ $( document ).ready( function(){
 		}
 
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
-	
+
 	}
 
 	function loadSubChart( id ){
@@ -168,7 +174,6 @@ $( document ).ready( function(){
 		var community = $( '#' + id ).attr( 'community' );
 		var permalink = values[ 0 ].replace( '-' + community, '' );
 		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
-		 loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval, 'community' : community } ); 
+		 loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval, 'community' : community } );
 	}
-
 </script>
