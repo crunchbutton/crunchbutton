@@ -12,14 +12,14 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 				$this->data();
 				c::view()->display( 'charts/community/delivery_tips' );
 				break;
-			
+
 			case 'delivered-orders':
 				c::view()->layout( 'layout/ajax' );
 				c::view()->display( 'charts/community/delivered_orders' );
 				break;
 
 			case 'orders-per-day':
-				
+
 				$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
 				$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
 

@@ -328,6 +328,20 @@ class Crunchbutton_Community extends Cana_Table {
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
 	}
 
+	public function hasShiftThisWeek(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Sunday' ){
+			$day = $now;
+		} else {
+			$day = new DateTime( 'last sunday', new DateTimeZone( c::config()->timezone  ) );
+		}
+		$from = $day->format( 'Y-m-d' );
+		$day->modify( '+6 days' );
+		$to = $day->format( 'Y-m-d' );
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT COUNT(*) AS shifts FROM community_shift cs WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND id_community = "' . $this->id_community . '" ORDER BY cs.date_start ASC' );
+		return ( $shifts->shifts > 0 );
+	}
+
 	public function hasShiftByPeriod( $from = false, $to = false ){
 		return Crunchbutton_Community_Shift::shiftsByCommunityPeriod( $this->id_community, $from, $to );
 	}
