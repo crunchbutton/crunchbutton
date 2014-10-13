@@ -1,14 +1,14 @@
-<?php 
+<?php
 class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
-	
+
 	public $unit = 'orders';
 	public $description = 'Orders';
 
-	public $groups = array( 
+	public $groups = array(
 												'group-orders' => array(
 														'title' => 'Orders',
 														'tags' => array( 'investors' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byDayPerCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byDayCohort' ) ) ),
 																'orders-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byWeekPerCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byWeekCohort' ) ) ),
 																'orders-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byMonthPerCommunity') , array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byMonthCohort' ) ) ),
@@ -17,7 +17,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												'group-orders-per-user' => array(
 														'title' => 'Orders per User',
 														'tags' => array( 'investors' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-per-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byUsersPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerDayByCommunity' ) ) ),
 																'orders-per-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byUsersPerWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerWeekByCommunity' ) ) ),
 																'orders-per-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byUsersPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerMonthByCommunity' ) ) ),
@@ -26,7 +26,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												'group-orders-per-active-user' => array(
 														'title' => 'Repeat Orders per Active User',
 														'tags' => array( 'main' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-repeat-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatByActiveuserByDay'),
 																'orders-repeat-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatByActiveuserByWeek', 'default' => true, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByWeekByCommunity' ) ) ),
 																'orders-repeat-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatByActiveuserByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByMonthByCommunity' ) ) )
@@ -35,21 +35,21 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												'group-orders-per-day-per-community' => array(
 														'title' => 'Orders per Day By Community',
 														'tags' => array( 'especial' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-per-day-per-community' => array( 'title' => 'Last 14 Days', 'interval' => 'day', 'type' => 'column', 'method' => 'byDayPerCommunitySelective' ),
 															)
 												),
 												'group-delivered-orders-by-community' => array(
 														'title' => 'Delivered',
 														'tags' => array( 'especial' ),
-														'charts' => array(  
+														'charts' => array(
 																'delivered-orders-per-day-per-community' => array( 'title' => 'Orders', 'interval' => 'hour', 'type' => 'column', 'method' => 'deliveredByDayPerCommunity' ),
 															)
 												),
 												'group-orders-community' => array(
 														'title' => 'Orders',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'ordersByDayByCommunity' ),
 																'orders-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersByWeekByCommunity', 'default' => true ),
 																'orders-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'ordersByMonthByCommunity' ),
@@ -59,7 +59,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												'group-orders-repeat' => array(
 														'title' => 'Repeat Orders',
 														'tags' => array( 'main' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatVsNewPerDayPerCommunity' ) ) ),
 																'orders-repeat-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatPerWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatVsNewPerWeekPerCommunity' ) ), 'default' => true ),
 																'orders-repeat-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatVsNewPerMonthPerCommunity' ) ) ),
@@ -68,7 +68,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												*/
 												'group-orders-repeat-vs-news' => array(
 														'title' => 'Repeat vs. New Orders',
-														'charts' => array(  
+														'charts' => array(
 																'orders-repeat-vs-news-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatVsNewPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatVsNewPerDayPerCommunity' ) ) ),
 																'orders-repeat-vs-news-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatVsNewPerWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatVsNewPerWeekPerCommunity' ) ) ),
 																'orders-repeat-vs-news-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatVsNewPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatVsNewPerMonthPerCommunity' ) ) ),
@@ -76,20 +76,20 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												),
 												'group-orders-by-weekday-by-community' => array(
 														'title' => 'Orders by Weekday by Community',
-														'charts' => array(  
+														'charts' => array(
 																'orders-by-weekday-by-community' => array( 'title' => '', 'type' => 'area', 'method' => 'byWeekdayByCommunity' )
 															)
 												),
 											'group-orders-track-frequece' => array(
 														'title' => 'Track Orders Frequency',
 														'tags' => array( 'detailed-analytics' ),
-														'charts' => array(  
+														'charts' => array(
 																'orders-track-frequece' => array( 'title' => 'Orders', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
 												),
 												'group-orders-per-restaurant-by-community' => array(
 														'title' => 'Orders per Restaurant by Community',
-														'charts' => array(  
+														'charts' => array(
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
 															)
 												),
@@ -105,7 +105,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 										 COUNT(*) AS `Orders`,
 										 c.name AS `Community`
 							FROM `order` o
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE env = 'live'
@@ -127,11 +127,11 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE 
-									o.date >= '{$this->monthFrom}-01' 
-									AND 
+								WHERE
+									o.date >= '{$this->monthFrom}-01'
+									AND
 									DATE_FORMAT( o.date ,'%Y-%m') <= '{$this->monthTo}'
 									{$this->queryExcludeUsers}
 								GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -150,9 +150,9 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE 
+								WHERE
 									o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 									{$this->queryExcludeUsers}
 									AND c.id_community = {$community}
@@ -171,10 +171,10 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE 
-									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+								WHERE
+									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 									{$this->queryExcludeUsers}
 								GROUP BY YEARWEEK(date)
 								ORDER BY YEARWEEK(date) ASC";
@@ -194,10 +194,10 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE 
-									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+								WHERE
+									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 									{$this->queryExcludeUsers}
 									AND c.id_community = {$community}
 								GROUP BY YEARWEEK(date)
@@ -216,9 +216,9 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE 
+								WHERE
 									1 = 1
 									{$this->queryExcludeUsers}
 								GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -234,13 +234,22 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
 
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		$this->dayTo = $now->format( 'Y-m-d' );
+		$now->modify( '-2 weeks' );
+		$this->dayFrom = $now->format( 'Y-m-d' );
+
+		$this->from_day = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : ( count( $this->allDays ) - 15 ) );
+		$this->to_day = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : count( $this->allDays ) );
+
 		$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE 
+								WHERE
 									1 = 1
 									{$this->queryExcludeUsers}
 								AND c.id_community = '{$community}'
@@ -263,15 +272,15 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 									 r.name AS 'Group'
 						FROM `order` o
 						INNER JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 							AND r.id_restaurant = '{$restaurant}'
 							{$this->queryExcludeUsers}
 						GROUP BY YEARWEEK(date), r.name
 						ORDER BY YEARWEEK(date) DESC";
-		
+
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
-		
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
@@ -288,10 +297,10 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 										 c.name AS 'Group'
 							FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
-								INNER JOIN community c ON c.id_community = rc.id_community 
-							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+								INNER JOIN community c ON c.id_community = rc.id_community
+							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 								AND c.id_community = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date), c.name
@@ -304,10 +313,10 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 c.name AS 'Group'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
-								WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+								WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 									{$this->queryExcludeUsers}
 								GROUP BY YEARWEEK(date), c.name
 								ORDER BY YEARWEEK(date) DESC";
@@ -332,24 +341,24 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
+										WHERE
 											1 = 1
 											{$cohort->toQuery()}
 											{$this->queryExcludeUsers}
 										GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 				break;
-			
+
 			case 'months':
 				$month = $id_chart_cohort;
 				$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
+										WHERE
 											1 = 1
 											{$this->queryExcludeUsers}
 											AND o.phone IN( SELECT o.phone
@@ -370,12 +379,12 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
+										WHERE
 											1 = 1
 											{$this->queryExcludeUsers}
-											AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+											AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 											INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 											INNER JOIN user u ON u.id_user = c.id_user )
 										GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -404,24 +413,24 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
+										WHERE
 											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 											{$this->queryExcludeUsers}
 											{$cohort->toQuery()}
 										GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 				break;
-			
+
 			case 'months':
 				$month = $id_chart_cohort;
 				$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 													COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
+										WHERE
 											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 											{$this->queryExcludeUsers}
 											AND o.phone IN( SELECT o.phone
@@ -441,12 +450,12 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
+										WHERE
 											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 											{$this->queryExcludeUsers}
-										AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+										AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 											INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 											INNER JOIN user u ON u.id_user = c.id_user )
 										GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -472,26 +481,26 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
-											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+										WHERE
+											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 											{$this->queryExcludeUsers}
 											{$cohort->toQuery()}
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) ASC";
 				break;
-			
+
 			case 'months':
 				$month = $id_chart_cohort;
 				$query = "SELECT YEARWEEK(date) AS Week,
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
-											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+										WHERE
+											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 											{$this->queryExcludeUsers}
 											AND o.phone IN( SELECT o.phone
 												 FROM `order` o
@@ -511,17 +520,17 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-										WHERE 
-											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+										WHERE
+											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 											{$this->queryExcludeUsers}
-											AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+											AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 											INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
 											INNER JOIN user u ON u.id_user = c.id_user )
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) ASC";
-											
+
 				break;
 		}
 
@@ -541,7 +550,7 @@ public function byDayPerRestaurant( $render = false ){
 										 r.name AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 								AND r.id_restaurant = '{$restaurant}'
 								{$this->queryExcludeUsers}
@@ -560,12 +569,12 @@ public function byDayPerRestaurant( $render = false ){
 
 			$id_community = $_REQUEST[ 'id_community' ];
 			$day = $_REQUEST[ 'day' ];
-			
+
 			$where_day = ( $day != 'All' ) ? "AND DATE_FORMAT( o.date, '%W' ) = '{$day}' " : "";
 
 			$query = "SELECT COUNT(*) AS Total,
 									DATE_FORMAT( o.date, '%H' ) AS Hour
-									FROM `order` o 
+									FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$id_community}
 									WHERE o.delivery_service = 1 {$where_day}
@@ -577,11 +586,11 @@ public function byDayPerRestaurant( $render = false ){
 			$_hours = [];
 
 			for( $i = 0; $i <= 12; $i++ ){
-				$hour = $i . ( $i == 12 ? ' pm' : ' am' ); 
+				$hour = $i . ( $i == 12 ? ' pm' : ' am' );
 				$_hours[ $hour ] = 0;
 			}
 			for( $i = 1; $i <= 12; $i++ ){
-				$hour = $i . ' pm'; 
+				$hour = $i . ' pm';
 				$_hours[ $hour ] = 0;
 			}
 
@@ -597,7 +606,7 @@ public function byDayPerRestaurant( $render = false ){
 			$data = [];
 
 			foreach( $_hours as $hour => $value ){
-				$data[] = ( object ) array( 'Label' => $hour, 'Total' => $value, 'Type' => 'Hour'  ); 
+				$data[] = ( object ) array( 'Label' => $hour, 'Total' => $value, 'Type' => 'Hour'  );
 			}
 			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'hour' );
 	}
@@ -624,11 +633,11 @@ public function byDayPerRestaurant( $render = false ){
 			$now->modify( '- 14 day' );
 			$this->dayFrom = $now->format( 'Y-m-d' );
 
-			$query = "SELECT 	DATE_FORMAT( date ,'%Y-%m-%d') AS Day, 
-												COUNT(*) AS Total, 
-												c.name AS `Group` 
-								FROM `order` o 
-									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+			$query = "SELECT 	DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
+												COUNT(*) AS Total,
+												c.name AS `Group`
+								FROM `order` o
+									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 									INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
@@ -669,7 +678,7 @@ public function byDayPerRestaurant( $render = false ){
 				$day = $now->format( 'Y-m-d' );
 				foreach( $groups as $group ){
 					$total = ( $_days[ $day ][ $group ] ) ? $_days[ $day ][ $group ] : 0;
-					$data[] = ( object ) array( 'Label' => $this->parseDay( $day ), 'Total' => $total, 'Type' => $group  ); 
+					$data[] = ( object ) array( 'Label' => $this->parseDay( $day ), 'Total' => $total, 'Type' => $group  );
 				}
 			}
 			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
@@ -689,7 +698,7 @@ public function byDayPerRestaurant( $render = false ){
 											 c.name AS 'Group'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
@@ -705,7 +714,7 @@ public function byDayPerRestaurant( $render = false ){
 											c.name AS 'Group'
 								FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
@@ -732,7 +741,7 @@ public function byDayPerRestaurant( $render = false ){
 											 c.name AS 'Group'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
@@ -746,7 +755,7 @@ public function byDayPerRestaurant( $render = false ){
 											 COUNT(*) AS Total,
 											 c.name AS 'Group'
 								FROM `order` o
-									LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+									LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
@@ -772,7 +781,7 @@ public function byDayPerRestaurant( $render = false ){
 										 r.name AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 								AND r.id_restaurant = '{$restaurant}'
 								{$this->queryExcludeUsers}
@@ -818,7 +827,7 @@ public function byDayPerRestaurant( $render = false ){
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 							LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 								{$this->queryExcludeUsers}
@@ -838,7 +847,7 @@ public function byDayPerRestaurant( $render = false ){
 										 c.name AS 'Group'
 							FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE 1 = 1
@@ -857,7 +866,7 @@ public function byDayPerRestaurant( $render = false ){
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 							LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 								{$this->queryExcludeUsers}
@@ -877,7 +886,7 @@ public function byDayPerRestaurant( $render = false ){
 										 c.name AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE 1 = 1
@@ -896,9 +905,9 @@ public function byDayPerRestaurant( $render = false ){
 								 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 					FROM `order` o
 					INNER JOIN user u ON u.id_user = o.id_user
-					LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+					LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 					LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-					WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+					WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 						{$this->queryExcludeUsers}
 					GROUP BY YEARWEEK(date)
 					ORDER BY YEARWEEK(date) DESC";
@@ -916,7 +925,7 @@ public function byDayPerRestaurant( $render = false ){
 										 c.name AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE 1 = 1
@@ -946,7 +955,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
+				$days[ $new->Label ] = [];
 			}
 			$days[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -956,8 +965,8 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $days as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => 'New'  ); 
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => 'New'  );
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  );
 		}
 
 		if( $render ){
@@ -983,7 +992,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
+				$days[ $new->Label ] = [];
 			}
 			$days[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -993,7 +1002,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $days as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  );
 		}
 
 		if( $render ){
@@ -1014,14 +1023,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$days[ $order->Label ] ){
-				$days[ $order->Label ] = [];	
+				$days[ $order->Label ] = [];
 			}
 			$days[ $order->Label ][ 'Order' ] = $order->Total;
 		}
 
 		foreach ( $newUsers as $new ) {
 			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
+				$days[ $new->Label ] = [];
 			}
 			$days[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1031,7 +1040,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $days as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' );
 		}
 
 		if( $render ){
@@ -1052,14 +1061,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$days[ $order->Label ] ){
-				$days[ $order->Label ] = [];	
+				$days[ $order->Label ] = [];
 			}
 			$days[ $order->Label ][ 'Order' ] = $order->Total;
 		}
 
 		foreach ( $newUsers as $new ) {
 			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
+				$days[ $new->Label ] = [];
 			}
 			$days[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1069,7 +1078,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $days as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' );
 		}
 
 		if( $render ){
@@ -1090,7 +1099,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$days[ $order->Label ] ){
-				$days[ $order->Label ] = [];	
+				$days[ $order->Label ] = [];
 			}
 			$days[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$communities[ $order->Type ] = true;
@@ -1098,7 +1107,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
+				$days[ $new->Label ] = [];
 			}
 			$days[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
 			$communities[ $new->Type ] = true;
@@ -1110,7 +1119,7 @@ public function byDayPerRestaurant( $render = false ){
 			foreach( $communities as $community => $val ){
 				$new = $values[ 'New' ][ $community ];
 				$repeat = $values[ 'Order' ][ $community ] - $new;
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community );
 			}
 		}
 
@@ -1133,7 +1142,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$days[ $order->Label ] ){
-				$days[ $order->Label ] = [];	
+				$days[ $order->Label ] = [];
 			}
 			$days[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$groups[ $order->Type ] = $order->Type;
@@ -1141,7 +1150,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
+				$days[ $new->Label ] = [];
 			}
 			$days[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
 			$groups[ $new->Type ] = $new->Type;
@@ -1179,7 +1188,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$months[ $order->Label ] ){
-				$months[ $order->Label ] = [];	
+				$months[ $order->Label ] = [];
 			}
 			$months[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$groups[ $order->Type ] = $order->Type;
@@ -1187,7 +1196,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
+				$months[ $new->Label ] = [];
 			}
 			$months[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
 			$groups[ $new->Type ] = $new->Type;
@@ -1225,7 +1234,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$weeks[ $order->Label ] ){
-				$weeks[ $order->Label ] = [];	
+				$weeks[ $order->Label ] = [];
 			}
 			$weeks[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$groups[ $order->Type ] = $order->Type;
@@ -1233,7 +1242,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
+				$weeks[ $new->Label ] = [];
 			}
 			$weeks[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
 			$groups[ $new->Type ] = $new->Type;
@@ -1275,7 +1284,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
+				$weeks[ $new->Label ] = [];
 			}
 			$weeks[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1285,8 +1294,8 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $weeks as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => 'New'  ); 
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => 'New'  );
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  );
 		}
 
 		if( $render ){
@@ -1312,7 +1321,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
+				$weeks[ $new->Label ] = [];
 			}
 			$weeks[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1322,7 +1331,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $weeks as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  );
 		}
 
 		if( $render ){
@@ -1342,14 +1351,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$weeks[ $order->Label ] ){
-				$weeks[ $order->Label ] = [];	
+				$weeks[ $order->Label ] = [];
 			}
 			$weeks[ $order->Label ][ 'Order' ] = $order->Total;
 		}
 
 		foreach ( $newUsers as $new ) {
 			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
+				$weeks[ $new->Label ] = [];
 			}
 			$weeks[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1359,7 +1368,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $weeks as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' );
 		}
 
 		if( $render ){
@@ -1380,14 +1389,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$weeks[ $order->Label ] ){
-				$weeks[ $order->Label ] = [];	
+				$weeks[ $order->Label ] = [];
 			}
 			$weeks[ $order->Label ][ 'Order' ] = $order->Total;
 		}
 
 		foreach ( $newUsers as $new ) {
 			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
+				$weeks[ $new->Label ] = [];
 			}
 			$weeks[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1397,7 +1406,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $weeks as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' );
 		}
 
 		if( $render ){
@@ -1417,7 +1426,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$weeks[ $order->Label ] ){
-				$weeks[ $order->Label ] = [];	
+				$weeks[ $order->Label ] = [];
 			}
 			$weeks[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$communities[ $order->Type ] = true;
@@ -1425,7 +1434,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
+				$weeks[ $new->Label ] = [];
 			}
 			$weeks[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
 			$communities[ $new->Type ] = true;
@@ -1437,7 +1446,7 @@ public function byDayPerRestaurant( $render = false ){
 			foreach( $communities as $community => $val ){
 				$new = $values[ 'New' ][ $community ];
 				$repeat = $values[ 'Order' ][ $community ] - $new;
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community );
 			}
 		}
 		if( $render ){
@@ -1463,7 +1472,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
+				$months[ $new->Label ] = [];
 			}
 			$months[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1473,8 +1482,8 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $months as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => 'New'  ); 
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => 'New'  );
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  );
 		}
 
 		if( $render ){
@@ -1495,14 +1504,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$months[ $order->Label ] ){
-				$months[ $order->Label ] = [];	
+				$months[ $order->Label ] = [];
 			}
 			$months[ $order->Label ][ 'Order' ] = $order->Total;
 		}
 
 		foreach ( $newUsers as $new ) {
 			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
+				$months[ $new->Label ] = [];
 			}
 			$months[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1512,7 +1521,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $months as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' );
 		}
 
 		if( $render ){
@@ -1533,14 +1542,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$months[ $order->Label ] ){
-				$months[ $order->Label ] = [];	
+				$months[ $order->Label ] = [];
 			}
 			$months[ $order->Label ][ 'Order' ] = $order->Total;
 		}
 
 		foreach ( $newUsers as $new ) {
 			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
+				$months[ $new->Label ] = [];
 			}
 			$months[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1550,7 +1559,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $months as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' );
 		}
 
 		if( $render ){
@@ -1571,7 +1580,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $orders as $order ) {
 			if( !$months[ $order->Label ] ){
-				$months[ $order->Label ] = [];	
+				$months[ $order->Label ] = [];
 			}
 			$months[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$communities[ $order->Type ] = true;
@@ -1579,7 +1588,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
+				$months[ $new->Label ] = [];
 			}
 			$months[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
 			$communities[ $new->Type ] = true;
@@ -1591,7 +1600,7 @@ public function byDayPerRestaurant( $render = false ){
 			foreach( $communities as $community => $val ){
 				$new = $values[ 'New' ][ $community ];
 				$repeat = $values[ 'Order' ][ $community ] - $new;
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community );
 			}
 		}
 
@@ -1618,7 +1627,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $new ) {
 			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
+				$months[ $new->Label ] = [];
 			}
 			$months[ $new->Label ][ 'New' ] = $new->Total;
 		}
@@ -1628,7 +1637,7 @@ public function byDayPerRestaurant( $render = false ){
 		foreach ( $months as $label => $values ) {
 			$new = $values[ 'New' ];
 			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  );
 		}
 
 		if( $render ){
@@ -1655,14 +1664,14 @@ public function byDayPerRestaurant( $render = false ){
 			} else {
 				$activePrev = 0;
 			}
-			
+
 			// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )
 			$activeUsersAvg = ( $active + $activePrev ) / 2;
 
 			$ordersMinusNewUsers = $order - $new;
 
 			if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
-				$result = ( $order - $new ) / ( $activeUsersAvg );	
+				$result = ( $order - $new ) / ( $activeUsersAvg );
 			} else {
 				$result = 0;
 			}
@@ -1692,7 +1701,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $activeUsers as $active ) {
 			if( !$_data[ $active->Label ] ){
-				$_data[ $active->Label ] = [];	
+				$_data[ $active->Label ] = [];
 			}
 			$_data[ $active->Label ][ 'ActiveUser' ][ $active->Type ] = $active->Total;
 			$_data[ $active->Label ][ 'ActiveUserPrev' ][ $active->Type ] = ( $_prev[ $active->Type ] ? $_prev[ $active->Type ] : 0 );
@@ -1701,14 +1710,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $newUser ) {
 			if( !$_data[ $newUser->Label ] ){
-				$_data[ $newUser->Label ] = [];	
+				$_data[ $newUser->Label ] = [];
 			}
 			$_data[ $newUser->Label ][ 'NewUser' ][ $newUser->Type ] = $newUser->Total;
 		}
 
 		foreach ( $orders as $order ) {
 			if( !$_data[ $order->Label ] ){
-				$_data[ $order->Label ] = [];	
+				$_data[ $order->Label ] = [];
 			}
 			$_data[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 		}
@@ -1722,9 +1731,9 @@ public function byDayPerRestaurant( $render = false ){
 				$prev = $values[ 'ActiveUserPrev' ][ $community ];
 				$order = $values[ 'Order' ][ $community ];
 
-				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )				
+				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )
 				if( $active || $prev ){
-					$activeUsersAvg = ( $active + $prev ) / 2;	
+					$activeUsersAvg = ( $active + $prev ) / 2;
 				} else {
 					$activeUsersAvg = 0;
 				}
@@ -1732,14 +1741,14 @@ public function byDayPerRestaurant( $render = false ){
 				$ordersMinusNewUsers = $order - $new;
 
 				if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
-					$result = ( $order - $new ) / ( $activeUsersAvg );	
+					$result = ( $order - $new ) / ( $activeUsersAvg );
 				} else {
 					$result = 0;
 				}
 				if( $result < 0 ){
-					$result = 0;	
+					$result = 0;
 				}
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community );
 			}
 		}
 
@@ -1765,7 +1774,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $activeUsers as $active ) {
 			if( !$_data[ $active->Label ] ){
-				$_data[ $active->Label ] = [];	
+				$_data[ $active->Label ] = [];
 			}
 			$_data[ $active->Label ][ 'ActiveUser' ][ $active->Type ] = $active->Total;
 			$_data[ $active->Label ][ 'ActiveUserPrev' ][ $active->Type ] = ( $_prev[ $active->Type ] ? $_prev[ $active->Type ] : 0 );
@@ -1774,14 +1783,14 @@ public function byDayPerRestaurant( $render = false ){
 
 		foreach ( $newUsers as $newUser ) {
 			if( !$_data[ $newUser->Label ] ){
-				$_data[ $newUser->Label ] = [];	
+				$_data[ $newUser->Label ] = [];
 			}
 			$_data[ $newUser->Label ][ 'NewUser' ][ $newUser->Type ] = $newUser->Total;
 		}
 
 		foreach ( $orders as $order ) {
 			if( !$_data[ $order->Label ] ){
-				$_data[ $order->Label ] = [];	
+				$_data[ $order->Label ] = [];
 			}
 			$_data[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 		}
@@ -1795,9 +1804,9 @@ public function byDayPerRestaurant( $render = false ){
 				$prev = $values[ 'ActiveUserPrev' ][ $community ];
 				$order = $values[ 'Order' ][ $community ];
 
-				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )				
+				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )
 				if( $active || $prev ){
-					$activeUsersAvg = ( $active + $prev ) / 2;	
+					$activeUsersAvg = ( $active + $prev ) / 2;
 				} else {
 					$activeUsersAvg = 0;
 				}
@@ -1805,7 +1814,7 @@ public function byDayPerRestaurant( $render = false ){
 				$ordersMinusNewUsers = $order - $new;
 
 				if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
-					$result = ( $order - $new ) / ( $activeUsersAvg );	
+					$result = ( $order - $new ) / ( $activeUsersAvg );
 				} else {
 					$result = 0;
 				}
@@ -1813,7 +1822,7 @@ public function byDayPerRestaurant( $render = false ){
 					$result = 0;
 				}
 
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community );
 			}
 		}
 
@@ -1841,14 +1850,14 @@ public function byDayPerRestaurant( $render = false ){
 			} else {
 				$activePrev = 0;
 			}
-			
+
 			// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )
 			$activeUsersAvg = ( $active + $activePrev ) / 2;
 
 			$ordersMinusNewUsers = $order - $new;
 
 			if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
-				$result = ( $order - $new ) / ( $activeUsersAvg );	
+				$result = ( $order - $new ) / ( $activeUsersAvg );
 			} else {
 				$result = 0;
 			}
@@ -1880,14 +1889,14 @@ public function byDayPerRestaurant( $render = false ){
 			} else {
 				$activePrev = 0;
 			}
-			
+
 			// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )
 			$activeUsersAvg = ( $active + $activePrev ) / 2;
 
 			$ordersMinusNewUsers = $order - $new;
 
 			if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
-				$result = ( $order - $new ) / ( $activeUsersAvg );	
+				$result = ( $order - $new ) / ( $activeUsersAvg );
 			} else {
 				$result = 0;
 			}
@@ -1902,7 +1911,7 @@ public function byDayPerRestaurant( $render = false ){
 	}
 
 	public function trackFrequence( $render = false ){
-		
+
 		$allWeeks = $this->allWeeks();
 
 		$query = '';
@@ -1912,38 +1921,38 @@ public function byDayPerRestaurant( $render = false ){
 
 		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
 			$week = $allWeeks[ $i ];
-			$_data[ $week ] = array( 
+			$_data[ $week ] = array(
 											'Power' => 0,
 											'Weekly' => 0,
 											'Bi-Weekly' => 0,
 											'Tri-Weekly' => 0,
 											'Monthly' => 0
 											);
-			$query .= $union . 
+			$query .= $union .
 								"SELECT YEARWEEK(date) AS `Week`,
 										 u.phone AS 'Phone'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-								WHERE YEARWEEK(o.date) = {$week} 
+								WHERE YEARWEEK(o.date) = {$week}
 									{$this->queryExcludeUsers}";
 			$union = ' UNION ';
 		}
 
 		$users = c::db()->get( $query );
-		
+
 		foreach( $users as $user ){
 
 			$week = $user->Week;
 
-			$query = "SELECT * FROM 
-								( SELECT o.date AS day1 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 3, 1 ) day1, 
+			$query = "SELECT * FROM
+								( SELECT o.date AS day1 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 3, 1 ) day1,
 								( SELECT o.date AS day2 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 1 ) day2";
 
 			$days = c::db()->get( $query );
 			$days = $days->_items[0];
-			
+
 			$query = "SELECT COUNT(*) AS orders FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) = '{$user->Week}'";
 			$orders = c::db()->get( $query );
 			$orders = $orders->_items[0]->orders;
@@ -1960,7 +1969,7 @@ public function byDayPerRestaurant( $render = false ){
 				if( $days > 25 ){ $_data[ $week ][ 'Monthly' ] += $orders; }
 			}
 		}
-		
+
 		$data = [];
 		foreach( $_data as $week => $info ){
 			foreach( $info as $type => $value ){
@@ -1981,7 +1990,7 @@ public function byDayPerRestaurant( $render = false ){
 							WHERE id_restaurant = {$id_restaurant}
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 
+		return $result->_items[0]->Total;
 	}
 
 	public function totalOrdersByCommunity( $id_community ){
@@ -1989,23 +1998,23 @@ public function byDayPerRestaurant( $render = false ){
 										 COUNT(*) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							WHERE rc.id_community = '{$id_community}'
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 
+		return $result->_items[0]->Total;
 	}
-	
+
 	public function totalOrdersAll(){
 		$query = "SELECT
 										 COUNT(*) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							WHERE 1=1
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 
+		return $result->_items[0]->Total;
 	}
 }
