@@ -114,7 +114,7 @@ shift.community.removeRecurringFather = function(){
 
 shift.community.removeRecurring = function(){
 	var id_community_shift = $( '#form-id_community_shift' ).val();
-	if( confirm( 'Confirm remove it? It will remove all the future shifts of this recurrence.' ) ){
+	if( confirm( 'Confirm remove it?' ) ){
 		$.ajax( {
 			url: '/api/drivers/shift/community/remove',
 			method: 'POST',
