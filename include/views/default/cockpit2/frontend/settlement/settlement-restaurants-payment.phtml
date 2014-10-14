@@ -14,14 +14,14 @@
 		<table class="tb-grid tb-zebra">
 			<tbody>
 				<tr ng-if="result.id_payment">
-					<td><strong>Payment ID</strong></td>
+					<td><strong>Payment id</strong></td>
 					<td>
 						<span ng-if="payment"># {{result.id_payment}}</span>
 						<span ng-if="schedule" class="link orange" ng-click="view_payment( result.id_payment )"># {{result.id_payment}}</span>
 					</td>
 				</tr>
 				<tr ng-if="result.id_payment_schedule">
-					<td><strong>Payment Schecule ID</strong></td>
+					<td><strong>Payment schecule id</strong></td>
 					<td>
 						# {{result.id_payment_schedule}}
 					</td>
@@ -51,7 +51,7 @@
 					<td class="orange">{{result.status_date}}</td>
 				</tr>
 				<tr ng-if="result.payment_date">
-					<td><strong>Payment Date</strong></td>
+					<td><strong>Payment date</strong></td>
 					<td>{{result.payment_date}}</td>
 				</tr>
 				<tr>
