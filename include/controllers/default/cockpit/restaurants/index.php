@@ -159,6 +159,19 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					}
 					c::view()->display('restaurants/image');
 					break;
+				case 'duplicate':
+					// @permission
+					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all'])) {
+						return;
+					}
+					$id_restaurant = $restaurant->duplicate();
+
+					// Give the user the permission to edit the created restaurant
+					$permission = array( "restaurant-{$id_restaurant}-edit" => 1, "orders-list-restaurant-{$id_restaurant}" => 1 );
+					c::admin()->addPermissions( $permission );
+
+					header( "Location: /restaurants/{$id_restaurant}" );
+					exit;
 				case 'fax':
 					// @permission
 					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-fax'])) {
