@@ -260,7 +260,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
 		if( $shift->id_community_shift_father ){
 			c::db()->query( "UPDATE community_shift SET recurring = 0 WHERE id_community_shift = " . $shift->id_community_shift_father );
-			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift_father );
+			c::db()->query( "UPDATE community_shift SET id_community_shift_father = null WHERE id_community_shift_father = " . $shift->id_community_shift_father );
+			// Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift_father );
 		}
 	}
 
