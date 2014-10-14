@@ -1699,6 +1699,108 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return c::db()->get( $query );
 	}
 
+
+	public function duplicate(){
+
+		$self = $this;
+		$restaurant = new Crunchbutton_Restaurant;
+		foreach( $self->_properties as $property => $value ){
+			$restaurant->$property = $value;
+		}
+
+		foreach( [ 'id_restaurant', 'id', 'permalink', 'community', 'phone', 'address', 'balanced_id', 'balanced_bank', 'tax', 'loc_lat', 'loc_long' ] as $remove ){
+			$restaurant->$remove = null;
+		}
+
+		$restaurant->name = $restaurant->name . ' - duplicated';
+		$restaurant->notes_todo = 'Duplicated from ' . $self->name . ' (' . $self->id_restaurant . ')';
+		$restaurant->active = 0;
+		$restaurant->open_for_business = 0;
+		$restaurant->save();
+		$id_restaurant = $restaurant->id_restaurant;
+
+		// Hours
+		$hours = Crunchbutton_Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$self->id_restaurant}" );
+		foreach( $hours as $_hour ){
+			$hour = new Crunchbutton_Hour;
+			$hour->id_restaurant = $id_restaurant;
+			$hour->day = $_hour->day;
+			$hour->time_open = $_hour->time_open;
+			$hour->time_close = $_hour->time_close;
+			$hour->save();
+		}
+
+		// Categories
+		$categories_map = [];
+		$_categories = Crunchbutton_Category::q( "SELECT * FROM category WHERE id_restaurant='{$self->id_restaurant}'" );
+		foreach( $_categories as $_category ){
+			$category = new Crunchbutton_Category;
+			$category->id_restaurant = $id_restaurant;
+			$category->name = $_category->name;
+			$category->sort = $_category->sort;
+			$category->loc = $_category->loc;
+			$category->save();
+			$categories_map[ $_category->id_category ] = $category->id_category;
+		}
+
+		// Dishes
+		$dishes_map = [];
+		$dishes = $self->dishes();
+		foreach( $dishes as $_dish ){
+			$dish = new Crunchbutton_Dish;
+			foreach( $_dish->_properties as $property => $value ){
+				$dish->$property = $value;
+			}
+			foreach( [ 'id_dish', 'id', 'id_category' ] as $remove ){
+				$dish->$remove = null;
+			}
+			$dish->id_category = $categories_map[ $_dish->id_category ];
+			$dish->id_restaurant = $id_restaurant;
+			$dish->save();
+			$dishes_map[ $_dish->id_dish ] = $dish->id_dish;
+		}
+
+		// Options
+		$options_map = [];
+		$_options = Crunchbutton_Option::q( "SELECT * FROM `option` WHERE id_restaurant='{$self->id_restaurant}'" );
+		foreach( $_options as $_option ) {
+			$option = new Crunchbutton_Option;
+			$option->id_restaurant = $id_restaurant;
+			foreach( $_option->_properties as $property => $value ){
+				$option->$property = $value;
+			}
+			foreach( [ 'id_option', 'id', 'id_category' ] as $remove ){
+				$option->$remove = null;
+			}
+			$option->save();
+			$options_map[ $_option->id_option ] = $option->id_option;
+		}
+
+		// Fix the id_option_parent (option)
+		$_options = Crunchbutton_Option::q( "SELECT * FROM `option` WHERE id_restaurant='{$id_restaurant}'" );
+		foreach( $_options as $option ){
+			if( $option->id_option_parent ){
+				$option->id_option_parent = $options_map[ $option->id_option_parent ];
+				$option->save();
+			}
+		}
+
+		// Payment type
+		$_payment = Crunchbutton_Restaurant_Payment_Type::q( "SELECT * FROM restaurant_payment_type WHERE id_restaurant='{$self->id_restaurant}' ORDER BY id_restaurant_payment_type DESC" );
+		if( $_payment->id_restaurant_payment_type ){
+			$payment = new Crunchbutton_Restaurant_Payment_Type;
+			foreach( $_payment->_properties as $property => $value ){
+				$payment->$property = $value;
+			}
+			foreach( [ 'id_restaurant', 'id', 'tax_id', 'stripe_id', 'stripe_account_id', 'balanced_id', 'balanced_bank' ] as $remove ){
+				$payment->$remove = null;
+			}
+			$payment->id_restaurant = $id_restaurant;
+			$payment->save();
+		}
+		return $id_restaurant;
+	}
+
 	// Return minutes left to open
 	public function opensIn( $dt = null ) {
 		if( $this->open_for_business ){
