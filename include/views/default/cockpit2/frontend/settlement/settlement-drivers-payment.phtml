@@ -17,14 +17,14 @@
 		<table class="tb-grid tb-zebra">
 			<tbody>
 				<tr ng-if="result.id_payment">
-					<td><strong>{{result.title}} ID</strong></td>
+					<td><strong>{{result.title}} id</strong></td>
 					<td>
 						<span ng-if="payment"># {{result.id_payment}}</span>
 						<span ng-if="schedule" class="link orange" ng-click="view_payment( result.id_payment )"># {{result.id_payment}}</span>
 					</td>
 				</tr>
 				<tr ng-if="result.id_payment_schedule">
-					<td><strong>{{result.title}} Schedule ID</strong></td>
+					<td><strong>{{result.title}} schedule id</strong></td>
 					<td>
 						# {{result.id_payment_schedule}}
 					</td>
