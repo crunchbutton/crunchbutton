@@ -1720,6 +1720,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$id_restaurant = $restaurant->id_restaurant;
 
 		// Hours
+		// don't duplicate hours: https://github.com/crunchbutton/crunchbutton/issues/3446#issuecomment-59111100
+		/**
 		$hours = Crunchbutton_Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$self->id_restaurant}" );
 		foreach( $hours as $_hour ){
 			$hour = new Crunchbutton_Hour;
@@ -1729,6 +1731,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$hour->time_close = $_hour->time_close;
 			$hour->save();
 		}
+		**/
 
 		// Categories
 		$categories_map = [];
@@ -1765,13 +1768,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$_options = Crunchbutton_Option::q( "SELECT * FROM `option` WHERE id_restaurant='{$self->id_restaurant}'" );
 		foreach( $_options as $_option ) {
 			$option = new Crunchbutton_Option;
-			$option->id_restaurant = $id_restaurant;
 			foreach( $_option->_properties as $property => $value ){
 				$option->$property = $value;
 			}
 			foreach( [ 'id_option', 'id', 'id_category' ] as $remove ){
 				$option->$remove = null;
 			}
+			$option->id_restaurant = $id_restaurant;
+			$option->id_category = $categories_map[ $_option->id_category ];
 			$option->save();
 			$options_map[ $_option->id_option ] = $option->id_option;
 		}
@@ -1783,6 +1787,18 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$option->id_option_parent = $options_map[ $option->id_option_parent ];
 				$option->save();
 			}
+		}
+
+		// Dish options
+		$_dish_options = Crunchbutton_Dish_Option::q( "SELECT do.* FROM dish_option do INNER JOIN dish d ON d.id_dish = do.id_dish AND d.id_restaurant = '{$self->id_restaurant}'" );
+		foreach( $_dish_options as $_dish_option ){
+			$dish_option = new Crunchbutton_Dish_Option;
+			$dish_option->id_dish = $dishes_map[ $_dish_option->id_dish ];
+			$dish_option->id_option = $options_map[ $_dish_option->id_option ];
+			$dish_option->default = $_dish_option->default;
+			$dish_option->sort = $_dish_option->sort;
+			$dish_option->date = $_dish_option->date;
+			$dish_option->save();
 		}
 
 		// Payment type
