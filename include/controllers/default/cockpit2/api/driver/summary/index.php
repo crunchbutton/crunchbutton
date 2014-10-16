@@ -127,26 +127,28 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			// Merge the reimbursed and tipped orders
 			$orders = $this->_summaryByOrder( $range, $id_driver, false );
 			$reimbursed_tipped = [];
-			foreach( $orders[ 'weeks' ] as $orderkey => $orderval ){
-				$yearweek = $orderval[ 'yearweek' ];
-				$reimbursed_tipped[ $yearweek ] = [];
-				foreach( $orderval[ 'days' ] as $daykey => $dayvalue ){
-					if( ( floatval( $dayvalue[ 'total_reimburse' ] ) != 0 ) || floatval( $dayvalue[ 'total_payment' ] ) != 0 ){
-						$date = $dayvalue[ 'date' ];
-						$reimbursed_tipped[ $yearweek ][ $date ] = [];
-						$reimbursed_tipped[ $yearweek ][ $date ][ 'total_reimburse' ] = $dayvalue[ 'total_reimburse' ];
-						$reimbursed_tipped[ $yearweek ][ $date ][ 'total_payment' ] = $dayvalue[ 'total_payment' ];
-						$reimbursed_tipped[ $yearweek ][ $date ][ 'orders' ] = [];
-						foreach( $dayvalue[ 'orders' ] as $order ){
-							$order[ 'delivery_fee' ] = 0;
-							if( ( floatval( $order[ 'total_reimburse' ] ) != 0 ) || ( floatval( $order[ 'total_payment' ] ) != 0 ) ){
-								$reimbursed_tipped[ $yearweek ][ $date ][ 'orders' ][] = $order;
+			if( $orders[ 'weeks' ] ){
+
+				foreach( $orders[ 'weeks' ] as $orderkey => $orderval ){
+					$yearweek = $orderval[ 'yearweek' ];
+					$reimbursed_tipped[ $yearweek ] = [];
+					foreach( $orderval[ 'days' ] as $daykey => $dayvalue ){
+						if( ( floatval( $dayvalue[ 'total_reimburse' ] ) != 0 ) || floatval( $dayvalue[ 'total_payment' ] ) != 0 ){
+							$date = $dayvalue[ 'date' ];
+							$reimbursed_tipped[ $yearweek ][ $date ] = [];
+							$reimbursed_tipped[ $yearweek ][ $date ][ 'total_reimburse' ] = $dayvalue[ 'total_reimburse' ];
+							$reimbursed_tipped[ $yearweek ][ $date ][ 'total_payment' ] = $dayvalue[ 'total_payment' ];
+							$reimbursed_tipped[ $yearweek ][ $date ][ 'orders' ] = [];
+							foreach( $dayvalue[ 'orders' ] as $order ){
+								$order[ 'delivery_fee' ] = 0;
+								if( ( floatval( $order[ 'total_reimburse' ] ) != 0 ) || ( floatval( $order[ 'total_payment' ] ) != 0 ) ){
+									$reimbursed_tipped[ $yearweek ][ $date ][ 'orders' ][] = $order;
+								}
 							}
 						}
 					}
 				}
 			}
-
 			foreach( $out[ 'weeks' ] as $weekkey => $weekval ){
 				$yearweek = $weekval[ 'yearweek' ];
 				// it has reimbursed or tipped orders
