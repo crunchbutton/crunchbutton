@@ -16,19 +16,16 @@
 
 				<li class="li-input" ng-class="{'error':form.payInfoLegalNamePayment.$invalid}">
 					<div class="label">Legal Name Payment:</div>
-					<div class="input"><input type="text" name="payInfoLegalNamePayment" ng-model="payInfo.legal_name_payment" required placeholder="Legal Name Payment" ng-minlength="5" ng-maxlength="250"></div>
+					<div class="input"><input type="text" name="payInfoLegalNamePayment" ng-model="payInfo.legal_name_payment" placeholder="Legal Name Payment" ng-maxlength="250"></div>
 					<div class="box-error">
-						<small ng-show="form.payInfoLegalNamePayment.$error.required">Required.</small>
-						<small ng-show="form.payInfoLegalNamePayment.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
 						<small ng-show="form.payInfoLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
 					</div>
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.basicSocialSecurityNumber.$invalid}">
 					<div class="label">Social Security Number:</div>
-					<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" required placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
+					<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
 					<div class="box-error">
-						<small ng-show="form.basicSocialSecurityNumber.$error.required">Required.</small>
 						<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Social Security Number. Please use the format: XXX-XX-XXXX.</small>
 					</div>
 				</li>
@@ -36,10 +33,8 @@
 				<li class="li-input" ng-class="{'error':form.basicAddress.$invalid}">
 					<div class="label">Address:</div>
 					<div class="input">
-					<textarea name="basicAddress" ng-model="payInfo.address" required placeholder="Address"></textarea>
-					<div class="box-error">
-						<small ng-show="form.basicAddress.$error.required">Required.</small>
-					</div>
+					<textarea name="basicAddress" ng-model="payInfo.address" placeholder="Address"></textarea>
+					<div class="box-error"></div>
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.payInfoPaymentType.$invalid}">
