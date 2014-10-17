@@ -39,6 +39,8 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver->name = $this->request()[ 'name' ];
 		$driver->phone = $phone;
+		$driver->txt = $phone;
+		$driver->testphone = $phone;
 		$driver->email = $this->request()[ 'email' ];
 
 		// Double check unique login
