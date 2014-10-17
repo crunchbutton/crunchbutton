@@ -50,6 +50,8 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		$driver->active = 1;
 		$driver->name = $name;
 		$driver->phone = $phone;
+		$driver->txt = $phone;
+		$driver->testphone = $phone;
 		if( $email && trim( $email ) != '' ){
 			$driver->email = $email;
 		}
