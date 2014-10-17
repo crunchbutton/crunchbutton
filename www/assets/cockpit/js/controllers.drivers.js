@@ -617,6 +617,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 			} else {
 				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
+				$scope.isSaving = false;
 			}
 		} );
 	}

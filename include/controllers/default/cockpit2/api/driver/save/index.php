@@ -28,8 +28,17 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver = Cockpit_Admin::o( $id_admin );
 		}
 
+		$phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
+		if( trim( $phone ) == '' ){
+			$this->_error( 'the phone is missing' );
+		}
+
+		if( strlen( $phone ) != 10 ){
+			$this->_error( 'enter a valid phone' );
+		}
+
 		$driver->name = $this->request()[ 'name' ];
-		$driver->phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
+		$driver->phone = $phone;
 		$driver->email = $this->request()[ 'email' ];
 
 		// Double check unique login
