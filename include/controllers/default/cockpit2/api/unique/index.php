@@ -25,6 +25,7 @@ class Controller_api_unique extends Crunchbutton_Controller_Rest {
 							break;
 
 						case 'phone':
+							$value = preg_replace( '/[^0-9]/i', '', $value );
 							$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $value . '" AND id_admin != "' . $id_admin . '" AND active = 1' );
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;

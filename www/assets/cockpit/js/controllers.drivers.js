@@ -590,7 +590,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			return;
 		}
 
-		if( $scope.form.$invalid /* || !$scope.driver.phone */ ){
+		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			$scope.isSaving = false;
 			return;
