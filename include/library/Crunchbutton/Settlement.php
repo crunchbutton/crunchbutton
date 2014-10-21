@@ -218,6 +218,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// amount for each invited user
 		foreach ( $orders as $order ) {
+
 			if( $order && $order[ 'id_admin' ] ){
 
 				// Refunded Driver Orders Should Show Up! #3568 -- !(Refunded orders are not paid)
@@ -227,7 +228,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$driver = $order[ 'id_admin' ];
 				if( !$pay[ $driver ] ){
-					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'orders' => [] ];
+					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spend' => 0, 'orders' => [] ];
 					$pay[ $driver ][ 'id_admin' ] = $driver;
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 					$pay_type = Admin::o( $driver )->payment_type();
@@ -252,6 +253,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'gift_card' ] = $this->orderGiftCardDriverPay( $order );
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
+				$order[ 'pay_info' ][ 'total_spend' ] = $this->orderCalculateTotalSpend( $order );
 
 				// Do not reimburse drivers that are using pex card #3876
 				if( ( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || $pay[ $driver ][ 'using_pex' ] ){
@@ -277,6 +279,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'gift_card' ] += $order[ 'pay_info' ][ 'gift_card' ];
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
+				$pay[ $driver ][ 'total_spend' ] += $order[ 'pay_info' ][ 'total_spend' ];
 			}
 		}
 
@@ -341,6 +344,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		} );
 
 		return $pay;
+	}
+
+	public function orderCalculateTotalSpend( $arr ){
+		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'delivery_service' ] * ( 1 - $arr[ 'formal_relationship' ] );
 	}
 
 	public function orderCalculateTotalDueDriver( $pay ){
