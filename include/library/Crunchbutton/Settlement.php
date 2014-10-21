@@ -1401,6 +1401,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$summary[ '_total_reimburse_' ] = 0;
 			$summary[ '_total_payment_' ] = 0;
+			$summary[ '_total_received_cash_' ] = 0;
+			$summary[ '_total_cash_orders_' ] = 0;
 
 			$orders = $schedule->orders();
 			$_orders = [];
@@ -1425,6 +1427,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total_reimburse' => $pay_info[ 0 ][ 'total_reimburse' ],
 																										'total_payment' => $pay_info[ 0 ][ 'total_payment' ]
 																									];
+					if( $type == 'Cash' ){
+						$summary[ '_total_received_cash_' ] = $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
+						$summary[ '_total_cash_orders_' ]++;
+					}
+
 
 					$_orders[] = $variables;
 					$summary[ '_total_reimburse_' ] += $pay_info[ 0 ][ 'total_reimburse' ];

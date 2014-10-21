@@ -227,14 +227,22 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			$out[ 'payments' ] = [];
 			$out[ 'weeks' ] = [];
 
+			$settlement = new Crunchbutton_Settlement;
+
 			// payments
 			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
 			foreach( $payments as $payment ){
 				$_payment = [];
 				$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
+				$_payment[ 'total_orders' ] = $payment->total_orders();
 				$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
 				$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
 				$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
+				if( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
+					$summary = $settlement->driverSummary( $payment->id_payment_schedule );
+					$_payment[ 'total_received_cash' ] = max( 0, $summary[ '_total_received_cash_' ] );
+					$_payment[ 'total_cash_orders' ] = max( 0, $summary[ '_total_cash_orders_' ] );
+				}
 				$out[ 'payments' ][] = $_payment;
 			}
 

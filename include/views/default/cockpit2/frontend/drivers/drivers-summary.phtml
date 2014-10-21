@@ -33,13 +33,19 @@
 					<td>Period</td>
 					<td>Amount</td>
 					<td>Status</td>
-					<td>Sent date</td>
-					<td>Approximate payment date</td>
+					<td>Transfer Initiated</td>
+					<td>Estimated Date In Your Account</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="payment in summary.payments">
-					<td><span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span></td>
+					<td>
+						<span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span>
+						<span ng-if="payment.total_cash_orders" class="note">
+							<br>
+							Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
+						</span>
+					</td>
 					<td>{{payment.range_date}}</td>
 					<td positive-or-negative-color="{{payment.amount}}">
 						${{payment.amount | formatPrice}}

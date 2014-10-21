@@ -40,6 +40,7 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 		}
 
 		$schedules = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
+		$settlement = new Crunchbutton_Settlement;
 		$out = [ 'payments' => [] ];
 		foreach( $schedules as $payment ){
 			$_payment = [];
@@ -47,6 +48,11 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 			$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
 			$_payment[ 'amount' ] = max( $payment->amount, 0 );
 			$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
+			if( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
+				$summary = $settlement->driverSummary( $payment->id_payment_schedule );
+				$_payment[ 'total_received_cash' ] = max( 0, $summary[ '_total_received_cash_' ] );
+				$_payment[ 'total_cash_orders' ] = max( 0, $summary[ '_total_cash_orders_' ] );
+			}
 			$out[ 'payments' ][] = $_payment;
 		}
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
