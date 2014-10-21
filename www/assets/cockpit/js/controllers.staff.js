@@ -60,9 +60,11 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 				if( json.balanced_bank ){
 					$scope.bank.showForm = false;
 				}
+				$scope.payInfo.using_pex = parseInt( $scope.payInfo.using_pex );
 				$scope.ready = true;
 				$scope.payment = {};
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
+				$scope.payment._using_pex = StaffPayInfoService.typesUsingPex();
 				$scope.payment._types = StaffPayInfoService.typesPayment();
 			} else {
 				App.alert( json.error );
@@ -83,7 +85,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 				App.alert( data.error);
 				return;
 			} else {
-				$scope.payInfo = data;
+				load();
 				$scope.saved = true;
 				setTimeout( function() { $scope.saved = false; }, 1500 );
 			}

@@ -2,7 +2,7 @@
 	$this->title = 'Permissions';
 	$this->titleicon = 'lock';
 	$this->titleLink = '/permissions/users';
-	
+
 	$this->title2 = 'Users';
 	$this->title2icon = 'user';
 
@@ -51,7 +51,7 @@
 							</select>
 						</span>
 					</li>
-					
+
 				</ul>
 			</div>
 		</div>
@@ -81,12 +81,25 @@
 							</span>
 							<span>Phone # for Receiving Error Calls</span>
 							<div class="note">Only for test!</div>
-							
+
 						</li>
 						<li>
 							<span>Email</span>
 							<span class="pull-right">
 								<input type="text" name="email" maxlength="255" id="email" value="<?php echo $admin->email; ?>" />
+							</span>
+						</li>
+						<?php
+						$payment_type = $admin->payment_type();
+						$using_pex = ( intval( $payment_type->using_pex ) ? intval( $payment_type->using_pex ) : 0 );
+						?>
+						<li>
+							<span>Using Pex</span>
+							<span class="pull-right">
+								<select id="using_pex" name="using_pex" class="uniform">
+									<option <?php if( $using_pex == 0 ) { echo 'selected="selected"'; } ?> value="0">No</option>
+									<option <?php if( $using_pex == 1 ) { echo 'selected="selected"'; } ?> value="1">Yes</option>
+								</select>
 							</span>
 						</li>
 						<li>
@@ -111,7 +124,7 @@
 			<div class="box-content ">
 				<ul class="box-list">
 					<li class="input">
-						<button type="submit" class="btn btn-green admin-save"><i class="icon-save"></i> Save </button> 
+						<button type="submit" class="btn btn-green admin-save"><i class="icon-save"></i> Save </button>
 					</li>
 				</ul>
 			</div>
@@ -120,8 +133,8 @@
 	</div>
 
 	<div class="span6">
-		
-			<?php if( $admin->id_admin ) { 
+
+			<?php if( $admin->id_admin ) {
 
 			$notifications = $admin->getNotifications();
 
@@ -134,17 +147,17 @@
 				</div>
 				<div class="box-content padded">
 					 	<ul>
-							<?php 
+							<?php
 							if( $notifications->count() > 0 ){
 							foreach( $notifications as $notification ) { ?>
-								<li> 
+								<li>
 									<?php if( $notification->active == 1 ) { ?>
 										<span class="label label-green"> Active </span>
 									<?php } else { ?>
 										<span class="label label-grey"> Inactive </span>
-									<?php } ?> <?php echo $notification->type; ?> : <?php echo $notification->value; ?> 
+									<?php } ?> <?php echo $notification->type; ?> : <?php echo $notification->value; ?>
 								</li>
-							<?php } 
+							<?php }
 							} ?>
 						</ul>
 						<?php if( $admin->id_admin ){ ?>
@@ -157,12 +170,12 @@
 
 		 <?php } ?>
 
-		<?php if( $admin->id_admin ) { 
+		<?php if( $admin->id_admin ) {
 
 		$userPermissions = $admin->getPermissionsByUser();
 		$userPermissions = Crunchbutton_Admin_Permission::groupedPermissions( $userPermissions );
 
-		
+
 			?>
 				<div class="box">
 				<div class="box-header">
@@ -172,11 +185,11 @@
 				</div>
 				<div class="box-content padded">
 					 	<ul>
-							<?php 
+							<?php
 							if( count( $userPermissions ) > 0 ){
 							foreach( $userPermissions as $permission ) { ?>
 								<li>
-										<?php 
+										<?php
 											echo $permission[ 'description' ];
 											if( $permission[ 'elements' ] ){
 												?>
@@ -196,7 +209,7 @@
 		 </div>
 
 			<?php
-		
+
 
 		$groups = $admin->groups();
 		if( $groups->count() > 0 ){
@@ -212,11 +225,11 @@
 				</div>
 				<div class="box-content padded">
 					 	<ul>
-							<?php 
+							<?php
 							if( count( $groupPermissions ) > 0 ){
 							foreach( $groupPermissions as $permission ) { ?>
 								<li>
-										<?php 
+										<?php
 											echo $permission[ 'description' ];
 											if( $permission[ 'elements' ] ){
 												?>
@@ -269,6 +282,7 @@ function sendForm(){
 	var login = $.trim( $( '#login' ).val() );
 	var password = $.trim( $( '#password' ).val() );
 	var id_group = $.trim( $( '#id_group' ).val() );
+	var using_pex = $.trim( $( '#using_pex' ).val() );
 	console.log('id_group',id_group);
 	if( name == '' ){
 		alert( 'Please type a name!' );
@@ -291,7 +305,7 @@ function sendForm(){
 
 	<?php } ?>
 
-	var data = { 	'name' : name, 
+	var data = { 	'name' : name,
 								'phone' : phone,
 								'txt' : txt,
 								'email' : email,
@@ -299,11 +313,12 @@ function sendForm(){
 								'timezone' : timezone,
 								'login' : login,
 								'password' : password,
-								'id_group' : id_group
+								'id_group' : id_group,
+								'using_pex' : using_pex
 							};
-	
+
 	processing = true;
-	
+
 	$( '.admin-save' ).html( '<i class="icon-spinner icon-spin"></i> Please wait' );
 
 	var url = App.service + 'permissions/users/<?php echo $admin->id_admin; ?>';

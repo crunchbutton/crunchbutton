@@ -38,7 +38,10 @@ class Crunchbutton_Admin_Payment_Type extends Cana_Table {
 				return Crunchbutton_Admin_Payment_Type::o( $payment->id_admin_payment_type );
 			}
 		}
-		return false;
+		$payment = new Crunchbutton_Admin_Payment_Type();
+		$payment->id_admin = $id_admin;
+		$payment->save();
+		return $payment;
 	}
 
 	function claimBankAccount( $bank_account ){
