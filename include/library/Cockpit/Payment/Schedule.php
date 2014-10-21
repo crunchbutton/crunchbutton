@@ -147,6 +147,11 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
+	public function total_orders(){
+		$result = c::db()->get( 'SELECT COUNT(*) total FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
+		return $result->_items[0]->total;
+	}
+
 	public function orders(){
 		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
 	}
