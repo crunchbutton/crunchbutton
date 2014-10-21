@@ -1,0 +1,1 @@
+ALTER TABLE `admin_payment_type` ADD `using_pex` TINYINT( 1 ) NOT NULL DEFAULT '0';

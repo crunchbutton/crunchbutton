@@ -56,6 +56,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$payment_type->id_admin = $admin->id_admin;
 		}
 
+		$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
 		$payment_type->legal_name_payment = $this->request()[ 'legal_name_payment' ];
 		$payment_type->address = $this->request()[ 'address' ];
 

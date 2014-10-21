@@ -89,6 +89,13 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 		return methods;
 	}
 
+	service.typesUsingPex = function(){
+		var methods = [];
+		methods.push( { value: 0, label: 'No' } );
+		methods.push( { value: 1, label: 'Yes' } );
+		return methods;
+	}
+
 	service.bankInfoTest = function( callback ){
 		callback( { 'routing_number':'321174851', 'account_number':'9900000000' } );
 	}

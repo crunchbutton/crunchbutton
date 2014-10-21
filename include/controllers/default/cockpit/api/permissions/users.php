@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) {
@@ -38,7 +38,7 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 						$admin->addPermissions( $_REQUEST[ 'permissions' ] );
 						echo json_encode( ['success' => $admin->id_admin ] );
 						break;
-					
+
 					case 'notifications':
 
 						switch ( c::getPagePiece( 5 ) ) {
@@ -49,20 +49,20 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 								if( $notification->id_admin_notification ){
 									$notification->active = $active;
 									$notification->save();
-									echo json_encode( ['success' => $notification->id_admin_notification ] );	
+									echo json_encode( ['success' => $notification->id_admin_notification ] );
 								} else {
-									echo json_encode( ['error' => '1' ] );	
+									echo json_encode( ['error' => '1' ] );
 								}
 								break;
-							
+
 							case 'remove':
 								$id_admin_notification = $_REQUEST[ 'id_admin_notification' ];
 								$notification = Crunchbutton_Admin_Notification::o( $id_admin_notification );
 								if( $notification->id_admin_notification ){
 									$notification->delete();
-									echo json_encode( ['success' => 'removed' ] );	
+									echo json_encode( ['success' => 'removed' ] );
 								} else {
-									echo json_encode( ['error' => '1' ] );	
+									echo json_encode( ['error' => '1' ] );
 								}
 								break;
 
@@ -76,9 +76,9 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 								$notification->id_admin = $id_admin;
 								$notification->save();
 								if( $notification->id_admin_notification ){
-									echo json_encode( ['success' => $notification->id_admin_notification ] );	
+									echo json_encode( ['success' => $notification->id_admin_notification ] );
 								} else {
-									echo json_encode( ['error' => '1' ] );	
+									echo json_encode( ['error' => '1' ] );
 								}
 								break;
 							default:
@@ -131,6 +131,12 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 								$new->save();
 							}
 						}
+
+						$payment_type = $admin->payment_type();
+						$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
+						$payment_type->save();
+
+
 						echo json_encode( ['success' => $admin->id_admin ] );
 						break;
 				}
@@ -143,5 +149,5 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 		}
 	}
 
-		
+
 }
