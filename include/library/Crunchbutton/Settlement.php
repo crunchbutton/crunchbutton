@@ -228,13 +228,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$driver = $order[ 'id_admin' ];
 				if( !$pay[ $driver ] ){
-					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'orders' => [] ];
+					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spent' => 0, 'orders' => [] ];
 					$pay[ $driver ][ 'id_admin' ] = $driver;
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 					$pay_type = Admin::o( $driver )->payment_type();
+					$pay[ $driver ][ 'using_pex' ] = $pay_type->using_pex;
 					if( $pay_type->id_admin_payment_type ){
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
-
 					} else {
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 					}
@@ -253,8 +253,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'gift_card' ] = $this->orderGiftCardDriverPay( $order );
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
+				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
 
-				if( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ){
+				// Do not reimburse drivers that are using pex card #3876
+				if( ( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || $pay[ $driver ][ 'using_pex' ] ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
 				}
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
@@ -277,6 +279,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'gift_card' ] += $order[ 'pay_info' ][ 'gift_card' ];
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
+				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
 			}
 		}
 
@@ -341,6 +344,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		} );
 
 		return $pay;
+	}
+
+	public function orderCalculateTotalSpent( $arr ){
+		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'delivery_service' ] * ( $arr[ 'formal_relationship' ] ? 0 : 1 );
 	}
 
 	public function orderCalculateTotalDueDriver( $pay ){
