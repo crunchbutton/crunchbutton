@@ -4,6 +4,7 @@
 			<div class="user-initials"><span>{{account.user.initials}}</span></div>
 
 			<ul>
+				<? /*
 				<li ng-click="navigation.link('/drivers/dashboard')" ng-class="{'nav-active': (navigation.page == 'drivers-dashboard')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -12,6 +13,7 @@
 						</tr>
 					</table>
 				</li>
+				*/ ?>
 				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/profile')" ng-class="{'nav-active': (navigation.page == 'profile')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
