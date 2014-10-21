@@ -88,13 +88,17 @@
 						<td>Total of Not Included Orders</td>
 						<td>{{total_not_included}}</td>
 					</tr>
-					<tr positive-or-negative-color="{{total_payments}}">
+					<tr positive-or-negative-color="{{total_reimbursements}}">
 						<td>Total Reimbursements</td>
 						<td>$ {{total_reimbursements | formatPrice}}</td>
 					</tr>
 					<tr positive-or-negative-color="{{total_payments}}">
 						<td>Total Payments</td>
 						<td>$ {{total_payments | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{total_spent}}">
+						<td>Total Spent</td>
+						<td>$ {{total_spent | formatPrice}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -160,8 +164,9 @@
 					<td></td>
 					<td>#</td>
 					<td class="td-medium">Drivers</td>
-					<td class="td-medium">Reimbursement</td>
-					<td class="td-medium">Payment</td>
+					<td>Reimbursement</td>
+					<td>Payment</td>
+					<td>Total Spent</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -174,6 +179,7 @@
 					<td>{{driver.name}}</td>
 					<td>$ {{driver.total_reimburse | formatPrice}}</td>
 					<td>$ {{driver.total_payment | formatPrice}}</td>
+					<td>$ {{driver.total_spent | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -361,6 +367,10 @@
 								<tr class="total-due" positive-or-negative-color="{{driver.total_payment}}">
 									<td class="td-medium">Payment</td>
 									<td class="td-medium">$ {{driver.total_payment | formatPrice}}</td>
+								</tr>
+								<tr class="total-due" positive-or-negative-color="{{driver.total_spent}}">
+									<td class="td-medium">Total Spent</td>
+									<td class="td-medium">$ {{driver.total_spent | formatPrice}}</td>
 								</tr>
 							</tbody>
 						</table>
