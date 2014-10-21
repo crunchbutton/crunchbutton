@@ -243,6 +243,10 @@
 				<td class="td-medium">Total payments</td>
 				<td class="td-medium">$ {{sum.total_payment | formatPrice}}</td>
 			</tr>
+			<tr class="total-due" positive-or-negative-color="{{sum.total_spent}}">
+				<td class="td-medium">Total spent</td>
+				<td class="td-medium">$ {{total_spent | formatPrice}}</td>
+			</tr>
 		</table>
 
 		<ul class="ul-inputs box-content2">
