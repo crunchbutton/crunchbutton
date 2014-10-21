@@ -160,8 +160,9 @@
 					<td></td>
 					<td>#</td>
 					<td class="td-medium">Drivers</td>
-					<td class="td-medium">Reimbursement</td>
-					<td class="td-medium">Payment</td>
+					<td>Reimbursement</td>
+					<td>Payment</td>
+					<td>Total Spend</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -174,6 +175,7 @@
 					<td>{{driver.name}}</td>
 					<td>$ {{driver.total_reimburse | formatPrice}}</td>
 					<td>$ {{driver.total_payment | formatPrice}}</td>
+					<td>$ {{driver.total_spend | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
