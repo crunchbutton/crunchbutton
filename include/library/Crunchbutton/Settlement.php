@@ -218,7 +218,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// amount for each invited user
 		foreach ( $orders as $order ) {
-
 			if( $order && $order[ 'id_admin' ] ){
 
 				// Refunded Driver Orders Should Show Up! #3568 -- !(Refunded orders are not paid)
@@ -232,9 +231,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $driver ][ 'id_admin' ] = $driver;
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 					$pay_type = Admin::o( $driver )->payment_type();
+					$pay[ $driver ][ 'using_pex' ] = $pay_type->using_pex;
 					if( $pay_type->id_admin_payment_type ){
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
-
 					} else {
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 					}
@@ -254,7 +253,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
 
-				if( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ){
+				// Do not reimburse drivers that are using pex card #3876
+				if( ( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || $pay[ $driver ][ 'using_pex' ] ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
 				}
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
