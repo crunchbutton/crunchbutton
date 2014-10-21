@@ -153,6 +153,8 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 			$scope.update();
 		}
 	});
+	
+	$scope.update();
 } );
 
 NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams ) {
