@@ -659,7 +659,7 @@ App.init = function(config) {
 	}
 
 	setTimeout( function(){
-		App.snap.disable();
+		//App.snap.disable();
 	}, 1000 );
 
 	// init the storage type. cookie, or localstorage if phonegap

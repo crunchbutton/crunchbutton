@@ -36,11 +36,19 @@ body {
 body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
-body {
-	background: $navColor;
+
+@media screen and (max-width: 1024px) {
+	.bg {
+		background: $background;
+	}
+	body {
+		background: $navColor;
+	}
 }
-.bg {
-	background: $background;
+@media screen and (min-width: 1025px) {
+	body {
+		background: $background;
+	}
 }
 
 ol, ul {
@@ -621,8 +629,17 @@ p {
 	display: none !important;
 }
 
-.login-wrap {
-	background: $navColor;
+@media screen and (min-width: 1025px) {
+	.page-login .snap-drawers {
+		display: none;
+	}
+	.page-login .snap-content-inner {
+		margin: 0;
+	}
+}
+
+
+@mixin page-login-bg() {
 	background: linear-gradient(
       rgba(255, 255, 255, 0.12),
       rgba(255, 255, 255, 0.12)
@@ -634,15 +651,19 @@ p {
 	url(/assets/images/micro/bg-sandwich.jpg);
 	background-position: top right;
 	background-size: 150%;
-	position: fixed;
-	height: 100%;
-	width: 100%;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 501;
 }
+
+@media screen and (max-width: 1024px) {
+	.page-login .bg {
+		@include page-login-bg();
+	}
+}
+@media screen and (min-width: 1025px) {
+	.page-login {
+		@include page-login-bg();
+	}
+}
+
 
 @-webkit-keyframes animation-fade-enter {
 	from {
@@ -685,7 +706,7 @@ input {
 	color: #fff;
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 1024px) {
 	.login-content {
 		width: 80%;
 	}
@@ -746,8 +767,7 @@ input {
 
 .circle {
 	border: 2px solid #fff;
-	border-radius: 4em;
-	width: auto;
+	border-radius: 50%;
 	display: inline-block;
 	padding: .25em 0 0 0;
 	width: 2em;
@@ -755,6 +775,10 @@ input {
 	box-sizing: border-box;
 	overflow: hidden;
 	margin-bottom: .5em;
+}
+
+.login-option-terms .circle {
+	padding-top: .3em;
 }
 
 .login-option {
@@ -1834,7 +1858,7 @@ h4.title{
 }
 
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1025px) {
 	.user-initials {
 		margin-top: 2.8em;
 	}
@@ -2851,7 +2875,7 @@ b, strong{ font-weight: bold; }
 }
 
 body.ng-scope {
-	background: $background;
+/*	background: $background; */
 }
 
 .tickets-side-list {
