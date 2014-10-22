@@ -1,7 +1,7 @@
 <div class="hide angular-hider" ng-class="{ show: angularLoaded }">
 	<div class="snap-drawers static-nav-viewport loggedout-hideable">
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
-			<div class="user-initials"><span>{{account.user.initials}}</span></div>
+			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
 
 			<ul>
 				<? /*
@@ -132,6 +132,14 @@
 						</tr>
 					</table>
 				</li>
+				<li ng-if="!account.user.id" ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
+							<td class="side-menu-label">Help</a></td>
+						</tr>
+					</table>
+				</li>
 				<? /*
 				<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'home')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -174,11 +182,19 @@
 					</table>
 				</li>
 				*/ ?>
-				<li ng-click="account.logout()">
+				<li ng-click="account.logout()" ng-if="account.user.id_admin">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
 							<td class="side-menu-label">Sign Out</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.link('/login')" ng-if="!account.user.id_admin">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
+							<td class="side-menu-label">Sign In</a></td>
 						</tr>
 					</table>
 				</li>
