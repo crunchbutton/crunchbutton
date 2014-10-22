@@ -81,7 +81,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		}
 
 		if (data && data.id_admin) {
-			App.snap.enable();
+
 			var name = service.user.name.split(' ');
 			service.user.initials = '';
 			for (var x in name) {
@@ -89,7 +89,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			}
 
 		} else {
-			App.snap.disable();
+
 		}
 
 		App.snap.close();
