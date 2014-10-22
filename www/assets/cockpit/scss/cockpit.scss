@@ -623,6 +623,17 @@ p {
 
 .login-wrap {
 	background: $navColor;
+	background: linear-gradient(
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.12)
+    ),
+	linear-gradient(
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.25)
+    ),
+	url(/assets/images/micro/bg-sandwich.jpg);
+	background-position: top right;
+	background-size: 150%;
 	position: fixed;
 	height: 100%;
 	width: 100%;
@@ -650,6 +661,8 @@ input {
 	border-radius: 4px;
 	font-size: 1em;
 	width: 13em;
+	background: none;
+	color: #fff;
 }
 
 .login-content {
@@ -660,6 +673,24 @@ input {
 	padding-left: 1em;
 	padding-right: 1em;
 }
+
+.login-content .input-wrap {
+	background: rgba(200,200,200,.2);
+
+}
+.login-content .input-wrap .label {
+	color: #fff;
+}
+.login-content .logo .green, .login-content .logo .dot {
+	color: #fff;
+}
+
+@media screen and (max-width: 1023px) {
+	.login-content {
+		width: 80%;
+	}
+}
+
 
 .login-content .logo {
 	text-align: center;
@@ -694,11 +725,40 @@ input {
 
 .login-content .info {
 	margin-top: 10em;
-	color: #83858a;
 	font-size: 1em;
 	line-height: 1.5em;
 	padding-left: 1em;
 	padding-right: 1em;
+}
+
+.login-content .info, .login-content .info a {
+	color: #fff;
+}
+
+.login-content .info .circle {
+	font-size: 1.4em;
+}
+
+.login-option {
+	display: inline-block;
+	margin: 0 1em 0 1em;
+}
+
+.circle {
+	border: 2px solid #fff;
+	border-radius: 4em;
+	width: auto;
+	display: inline-block;
+	padding: .25em 0 0 0;
+	width: 2em;
+	height: 2em;
+	box-sizing: border-box;
+	overflow: hidden;
+	margin-bottom: .5em;
+}
+
+.login-option {
+	text-align: center;
 }
 
 .input-wrap-checkbox{

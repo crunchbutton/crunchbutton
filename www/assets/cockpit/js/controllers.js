@@ -19,6 +19,13 @@ NGApp.controller('SideMenuCtrl', function ($scope) {
 	$scope.setupPermissions = function() {}
 });
 
+NGApp.controller('LegalCtrl', function ($scope) {
+	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	var goodbye = 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('');
+	$scope.join = join;
+	$scope.goodbye = goodbye;
+});
+
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 	$scope.login = function() {
 		if( !$scope.username ){

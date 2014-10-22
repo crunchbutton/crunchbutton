@@ -267,6 +267,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'LoginCtrl',
 			templateUrl: 'assets/view/general-login.html'
 		})
+		.when('/legal', {
+			action: 'legal',
+			controller: 'LegalCtrl',
+			templateUrl: 'assets/view/general-legal.html'
+		})
+		.when('/info', {
+			action: 'info',
+			controller: 'InfoCtrl',
+			templateUrl: 'assets/view/general-info.html'
+		})
 		.when('/drivers/help', {
 			action: 'drivers-help',
 			controller: 'DriversHelpCtrl',
