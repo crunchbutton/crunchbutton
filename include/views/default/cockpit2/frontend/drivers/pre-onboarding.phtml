@@ -1,8 +1,7 @@
-<div class="login-wrap">
+<div class="">
 
-	<div class="login-content hide-before-init">
-
-		<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
+	<div class="content-padding hide-before-init">
+		<h1 class="title driver-title"><i class="fa fa-truck"></i></h1>
 
 		<div ng-show="finished">
 			<div class="dialog-message dialog-message-success">
@@ -37,6 +36,7 @@
 		</div>
 
 		<form name="form" ng-show="ready && !finished" novalidate>
+			<h4>Driver Application</h4><br><br>
 
 			<div class="input-wrap">
 				<span class="label">Name:</span>
@@ -63,18 +63,13 @@
 				<span class="field"><select name="driverIdCommunity" ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select></span>
 			</div>
 
-			<div class="button-pushable find-restaurants" ng-show="!sending">
-				<button class="button orange" ng-click="save()">Save</button>
-			</div>
+			<br><br>
 
-			<div class="button-pushable find-restaurants" ng-show="sending">
-				<button class="button"><span><i class="fa fa-spinner fa-spin"></i> Please wait</span></button>
-			</div>
+			<button class="button orange" ng-click="save()" ng-show="!sending">Save</button>
+			<button class="button" ng-show="sending"><span><i class="fa fa-spinner fa-spin"></i> Please wait</span></button>
+
 		</form>
 
-		<div class="info">
-			Cockpit is Crunchbutton's tool of awesomeness. Looking for delivery food? Head over to <a href="http://crunchbutton.com">crunchbutton.com</a>
-		</div>
 
 	</div>
 </div>
