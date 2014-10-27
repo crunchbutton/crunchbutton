@@ -459,7 +459,31 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('.nav-top').addClass('at-top');
 
 		App.scrollTop($rootScope.scrollTop);
+		App.snap.close();
 		$rootScope.scrollTop = 0;
+	});
+	
+	$scope.$on( '$routeChangeStart', function (event, next, current) {
+	/*
+		if (!$rootScope.account.isLoggedIn()) {
+			var isAllowed = false;
+			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
+			 if( $location.url().indexOf( allowed ) >= 0 ){
+				isAllowed = true;
+			 }
+			} );
+			if( !isAllowed  ) {
+//				setTimeout(function() {
+					MainNavigationService.link( '/login' );
+//				}, 10);
+				
+			}
+		} else {
+			if( $location.url() == '/login') {
+				MainNavigationService.link( '/' );
+			}
+		}
+		*/
 	});
 
 	// Make the window's size available to all scope
@@ -485,22 +509,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 // Check user's auth
 /* todo: check user's permission too */
 NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
-	$rootScope.$on( '$routeChangeStart', function ( event, next, current ) {
-		if( !$rootScope.account.isLoggedIn() ){
-			var isAllowed = false;
-			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
-			 if( $location.url().indexOf( allowed ) >= 0 ){
-				isAllowed = true;
-			 }
-			} );
-			if( !isAllowed  ) {
-				MainNavigationService.link( '/login' );
-			}
-		}
-		if( $location.url() == '/login' && $rootScope.account.isLoggedIn() ) {
-			MainNavigationService.link( '/' );
-		}
-	});
+
 });
 
 App.alert = function(txt, title, useNativeAlert, fn) {

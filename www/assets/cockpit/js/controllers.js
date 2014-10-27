@@ -1,4 +1,9 @@
 NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
+	if (!AccountService.user.id_admin) {
+		MainNavigationService.link('/login');
+		return;
+	}
+
 	var id_order = $location.path().replace( '/', '' );
 	if( !isNaN( parseInt( id_order ) ) ){
 		MainNavigationService.link('/drivers/order/' + id_order);
@@ -19,6 +24,10 @@ NGApp.controller('SideMenuCtrl', function ($scope) {
 	$scope.setupPermissions = function() {}
 });
 
+NGApp.controller('InfoCtrl', function ($scope) {
+
+});
+
 NGApp.controller('LegalCtrl', function ($scope) {
 	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
 	var goodbye = 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('');
@@ -27,6 +36,8 @@ NGApp.controller('LegalCtrl', function ($scope) {
 });
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
+//alert('asd')
+	$scope.newuser = true;
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {

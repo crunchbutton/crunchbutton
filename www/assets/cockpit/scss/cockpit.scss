@@ -70,7 +70,7 @@ a:active {
 	color: #ef8b70;
 }
 
-input[type="text"], input[type="tel"], input[type="password"], textarea, select {
+input[type="text"], input[type="tel"], input[type="password"], textarea {
 	-webkit-appearance: none;
 }
 
@@ -2925,4 +2925,11 @@ body.ng-scope {
 }
 .tickets-spacer {
 	margin-top: 1em;
+}
+
+h1.driver-title {
+	font-size: 4.5em;
+	text-align: center;
+	margin-bottom: 1.2em;
+	margin-top: .7em;
 }
