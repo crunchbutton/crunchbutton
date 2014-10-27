@@ -88,7 +88,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			for (var x in name) {
 				service.user.initials += name[x].charAt(0);
 			}
-			alert('user');
+
 			$.totalStorage('hasLoggedIn',true);
 
 		}
