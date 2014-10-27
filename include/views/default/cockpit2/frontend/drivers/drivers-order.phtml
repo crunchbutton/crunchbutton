@@ -2,9 +2,9 @@
 
 <!-- actions -->
 <div class="control" ng-show="ready">
-		
+
 	<div class="box-content2 content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered">
-			
+
 		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted && order.lastStatus['self-reply'] != 'rejected'">
 			<div class="box-content-new"> <? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">
@@ -13,22 +13,22 @@
 						You MUST mark orders as accepted,</br> picked up, and delivered to get paid </br>correctly ;)
 					</div>
 				</div>
-				
+
 				<div class="buttons">
 					<button ng-click="accept()" class="button green">Yes</button>
 					<button ng-click="reject()" class="button orange-on-orange">No</button>
 				</div>
-				<div class="divider"></div>	
+				<div class="divider"></div>
 			</div>
 		</div>
-		
+
 		<div ng-if="order.lastStatus['self-reply'] == 'rejected'">
 			<div class="box-content-rejected"><? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">You rejected this order. </div>
 				<div class="buttons">
 					<button ng-click="accept()" class="button green">Accept</button>
 				</div>
-				<div class="divider"></div>	
+				<div class="divider"></div>
 			</div>
 		</div>
 
@@ -42,19 +42,19 @@
 				<div class="divider"></div>
 			</div>
 		</div>
-		
+
 		<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered">
 			<div class="box-content-pickedup"><? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">You picked up this order @ {{order.lastStatus[ 'delivery-status' ].pic_date}} </br><a class="undo-link" ng-click="undoPickedup()">undo</a></br></div>
 				<div class="buttons" ng-click="delivered()">
 					<button class="button dgray-on-dgray">Delivered</button>
 				</div>
-				<div class="divider"></div>	
+				<div class="divider"></div>
 			</div>
 		</div>
-	
+
 	</div>
-	
+
 	</div>
 	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="box-content2 content-padding">
 		<div  class="dialog-message dialog-message-error">
@@ -67,20 +67,20 @@
 			This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
 		</div>
 	</div>
-	
+
 	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered && order.lastStatus[ 'delivery-status'].delivered.id_admin != account.user.id_admin" class="box-content2 content-padding">
 		<div class="dialog-message dialog-message-error"
 			This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
 		</div>
 	</div>
-	
+
 	<div class="box-content2 content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
 	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="dialog-message box-content-delivered">
 		You delivered this order @ {{order.lastStatus[ 'delivery-status' ].del_date | date: 'h:mm a'}} <a class="undo-link" ng-click="undoDelivered()">undo</a></br>
 	</div>
 	<div class="divider"></div>
 	</div>
-		
+
 <!-- /actions -->
 
 <div class="content-padding box-content2">
@@ -151,6 +151,13 @@
 						{{order._instructions_food}}
 					</div>
 				</div>
+				<div class="order-item-block-big" ng-if="order._instructions_fax">
+					<div class="order-icon2"><i class="fa fa-exclamation-triangle"></i></div>
+					<div class="order-info2 order-info-small">
+						{{order._instructions_fax}}
+					</div>
+				</div>
+
 				<div class="divider"></div>
 				<div class="divider dots"></div>
 				<span ng-if="order._stealth_notification">
@@ -161,7 +168,7 @@
 					<div class="divider dots"></div>
 				</span>
 				<br><br>
-				
+
 				<div class="info-block">
 					<div class="order-icon3"><i class="icon-user"></i></div>
 					<div class="order-info">
@@ -170,12 +177,12 @@
 						<div class="divider"/>
 						</br>
 						<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order.address}}">{{order.address | nl2br}}</a></p></div>
-						
+
 					</div>
 				</div>
-				
+
 				</br>
-				
+
 				<div class="info-block">
 					<div class="order-icon3"><i class="icon-chef"></i></div>
 					<div class="order-info">
@@ -186,14 +193,14 @@
 						<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}">{{order._restaurant_address | nl2br }}</a></p></div>
 					</div>
 				</div>
-				
+
 				</br>
-				
+
 				<a href="http://maps.apple.com/?daddr={{order.address}}&saddr={{order._restaurant_address}}">
 					<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=640x300&markers=color:green%7Clabel:A%7C{{order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div>
 				</a>
 				<br>
-				
+
 				<span ng-if="order.notes">
 					<div class="order-comment-arrow"></div>
 					<div class="order-comment">
@@ -203,7 +210,7 @@
 				<span ng-if="!order.notes">
 				<br>
 				</span>
-								
+
 				<br><br>
 				<div class="divider dots"></div>
 				<br><br>
@@ -234,7 +241,7 @@
 							<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="order.tip_type != 'number'"></span></td>
 							<td style="text-align:right; font-size:24px;color:#666;">${{order._tip | formatPrice}}</td>
 						</tr>
-						
+
 						<tr ng-if="order.delivery_fee">
 							<td></td>
 							<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
@@ -269,16 +276,16 @@
 								<!--MAKE THE "CUSTOMER TOTAL" AND "YOUR TAKE" HERE -->
 								<div class="cust-pay-method">
 									<div ng-if="order.pay_type=='cash'"><div class="pay-icon" ><i class="fa fa-money"></i></div><span class="cust-pay-method-text">Customer is paying by {{order.pay_type}}</span></div>
-									<div ng-if="order.pay_type=='card'"><div class="pay-icon" ><i class="fa fa-credit-card"></i></div><span class="cust-pay-method-text">Customer is paying by {{order.pay_type}}</span></div>									
+									<div ng-if="order.pay_type=='card'"><div class="pay-icon" ><i class="fa fa-credit-card"></i></div><span class="cust-pay-method-text">Customer is paying by {{order.pay_type}}</span></div>
 									<?//<span><i class="icon-{{order.pay_type}}"></i> Customer is paying by {{order.pay_type}}</span> ?>
 								</div>
-								
+
 								<div class="customer-total-block">
 									<span class="customer-total-price">${{order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
 									<span class="customer-total-text"><strong>Customer total</strong></span>
 									</br>
 								</div>
-								
+
 								<div class="tip-total-block">
 									<?//SAME CSS CONFIGURATION ?>
 									<span class="tip-total-price">${{driverTake.total | formatPrice}}</span></br></br>
@@ -288,8 +295,8 @@
 							</td>
 					</tbody>
 				</table>
-				
-				
+
+
 			</div>
 		</div>
 	</div>
