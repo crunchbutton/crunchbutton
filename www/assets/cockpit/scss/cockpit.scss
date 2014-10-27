@@ -2933,3 +2933,24 @@ h1.driver-title {
 	margin-bottom: 1.2em;
 	margin-top: .7em;
 }
+
+.page-login .nav-top {
+	background: none;
+	border-bottom: none;
+}
+
+.page-login .nav-top .logo {
+	display: none;
+}
+.nav-top .logo {
+	width: 12em;
+}
+
+.page-login .nav-top .menu {
+	opacity: .5;
+}
+
+.drawer-right-content {
+	margin-left: 1em;
+	margin-right: 1em;
+}

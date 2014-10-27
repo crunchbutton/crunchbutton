@@ -36,8 +36,9 @@ NGApp.controller('LegalCtrl', function ($scope) {
 });
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
-//alert('asd')
-	$scope.newuser = true;
+
+console.log($.totalStorage('hasLoggedIn'));
+	$scope.newuser = !$.totalStorage('hasLoggedIn');
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
