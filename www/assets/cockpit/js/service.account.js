@@ -49,6 +49,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 
 	$rootScope.$on('userAuth', function(e, data) {
 		console.debug('USERAUTH', data);
+		
+
 
 		service.user = data;
 
@@ -81,14 +83,13 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		}
 
 		if (data && data.id_admin) {
-
 			var name = service.user.name.split(' ');
 			service.user.initials = '';
 			for (var x in name) {
 				service.user.initials += name[x].charAt(0);
 			}
-
-		} else {
+			alert('user');
+			$.totalStorage('hasLoggedIn',true);
 
 		}
 

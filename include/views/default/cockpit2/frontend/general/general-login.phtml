@@ -22,15 +22,19 @@
 		</div>
 	
 		<form ng-submit="login()">
-			<div class="input-wrap">
-				<span class="label">Username:</span>
-				<span class="field"><input type="text" name="username" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
-			</div>
+			<label for="login-username">
+				<div class="input-wrap">
+					<span class="label">Username:</span>
+					<span class="field"><input id="login-username" type="text" name="username" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
+				</div>
+			</label>
 			
-			<div class="input-wrap">
-				<span class="label">Password:</span>
-				<span class="field"><input type="password" name="password" ng-model="password" autocorrect="off" autocapitalize="off"></span>
-			</div>
+			<label for="login-password">
+				<div class="input-wrap">
+					<span class="label">Password:</span>
+					<span class="field"><input id="login-password" type="password" name="password" ng-model="password" autocorrect="off" autocapitalize="off"></span>
+				</div>
+			</label>
 			
 			<div class="find-restaurants button-login">
 				<button class="button orange">

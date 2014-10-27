@@ -206,21 +206,23 @@
 
 		</div>
 		<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
-			<div ng-include="'assets/view/tickets-side-list.html'"></div>
+			<div class="drawer-right-content">
+				<div ng-include="'assets/view/tickets-side-list.html'"></div>
+			</div>
 		</div>
 	</div>
 
 	<div class="wrapper static-nav-viewport loggedout-hideable">
 
 		<div id="snap-content" class="snap-content">
-			<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl" ng-show="account.user.id_admin">
+			<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
 				<div class="nav nav-top">
 					<div class="content">
 
 						<div title="Menu" class="menu side hide-before-init" ng-click="navigation.menu()" ng-hide="hasBack"></div>
 						<div title="Back" class="nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
 
-						<div class="notifications">
+						<div class="notifications" ng-show="account.user.id_admin">
 
 							<div class="flash-message {{flash.getLevel()}}" ng-show="flash.hasMessage()">
 								<p>{{flash.getMessage()}}</p>
