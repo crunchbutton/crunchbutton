@@ -69,7 +69,7 @@
 			<td class="stealthfax-grid"><?
 
 				$food = $dish->dish()->name;
-				
+
 				$options = $dish->options();
 
 				if (gettype($options) == 'array') {
@@ -91,9 +91,9 @@
 							$optionGroup = Crunchbutton_Option::o( $option->id_option_parent );
 							if( $optionGroup->type == 'select' ){
 								$withOptions .= $optionGroup->name . ': ';
-								$withOptions .= $option->name.', ';		
+								$withOptions .= $option->name.', ';
 							}
-						} 
+						}
 					}
 				}
 
@@ -122,7 +122,7 @@
 				}
 
 				if( $withOptions != '' ){
-					$withOptions = substr( $withOptions, 0, -2 );	
+					$withOptions = substr( $withOptions, 0, -2 );
 				}
 
 				?>
@@ -131,4 +131,9 @@
 		</tr>
 
 	<? endforeach ; ?>
+</table>
+<table width="100%" celpadding="0" cellspacing="0">
+	<tr>
+		<td class="stealthfax-not-receipt">This is not a receipt</td>
+	</tr>
 </table>
