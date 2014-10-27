@@ -933,23 +933,36 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public static function deliveryOrders( $hours = 24, $all = false ){
-		$interval = $hours . ' HOUR';
-		$id_admin = c::admin()->id_admin;
-		if( !$all ){
-			$admin = Admin::o( $id_admin );
-			$deliveryFor = $admin->allPlacesHeDeliveryFor();
-			if( count( $deliveryFor ) == 0 ){
-				$deliveryFor[] = 0;
-			}
-			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
-		} else {
-			$where = 'WHERE 1=1 ';
-		}
+		if (c::admin()->getConfig('demo')) {
+			//$restaurant = Restaurant::q('select * from restaurant where name="devins driver test restaurant"');
+			$query = '
+				select o.* from `order` o
+				left join restaurant r using(id_restaurant)
+				where r.name like "%test restaurant%"
+				and r.delivery_service=1
+				limit 10
+			';
 
-		$where .= ' AND o.delivery_service = 1 ';
-		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
-		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
-		return Order::q( $query );
+		} else {
+		
+			$interval = $hours . ' HOUR';
+			$id_admin = c::admin()->id_admin;
+			if( !$all ){
+				$admin = Admin::o( $id_admin );
+				$deliveryFor = $admin->allPlacesHeDeliveryFor();
+				if( count( $deliveryFor ) == 0 ){
+					$deliveryFor[] = 0;
+				}
+				$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
+			} else {
+				$where = 'WHERE 1=1 ';
+			}
+	
+			$where .= ' AND o.delivery_service = 1 ';
+			$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
+		}
+		return Order::q($query);
 	}
 
 	public static function outstandingOrders(){
