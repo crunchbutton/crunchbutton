@@ -944,7 +944,7 @@ class Crunchbutton_Order extends Cana_Table {
 			';
 
 		} else {
-		
+
 			$interval = $hours . ' HOUR';
 			$id_admin = c::admin()->id_admin;
 			if( !$all ){
@@ -957,7 +957,7 @@ class Crunchbutton_Order extends Cana_Table {
 			} else {
 				$where = 'WHERE 1=1 ';
 			}
-	
+
 			$where .= ' AND o.delivery_service = 1 ';
 			$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
@@ -1814,6 +1814,8 @@ class Crunchbutton_Order extends Cana_Table {
 				// #2416
 				if( !$this->delivery_service ){
 					$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";
+				} else {
+					$msg .= "DO NOT call the restaurant. If you have any questions about your order, text or call us back directly!.\n";
 				}
 				// Start Telling Customers Estimated Delivery Time #2476
 				if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
