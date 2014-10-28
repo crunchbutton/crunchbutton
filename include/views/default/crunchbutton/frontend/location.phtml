@@ -2,7 +2,7 @@
 	<div class="home-welcome">
 		<h1>Push a button. Get food delivered.</h1>
 		<h2>
-			Order the top food in your area. 
+			Order the top food in your area.
 			<br />
 			After you order, everything is saved for future 1 click ordering.
 			<br />
@@ -39,8 +39,11 @@
 		<div class="home-welcome">
 			<h1>&#9785; Sorry!</h1>
 			<h2>
-				We detected your address as <span ng-click="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span>, which we don't serve. <br/>
-				Please {{isMobile | iif : 'tap' : 'click'}} <span ng-click="resetFormLocation()" class="change-location-inline">here</span> to enter a different address.
+				Your address wasn't recognized - <span ng-click="resetFormLocation()" class="change-location-inline">please try entering a street number and city</span>
+
+				<?php /* We detected your address as <span ng-click="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span>, which we don't serve. <br/>
+				Please {{isMobile | iif : 'tap' : 'click'}} <span ng-click="resetFormLocation()" class="change-location-inline">here</span> to enter a different address. */ ?>
+
 				<div ng-hide="recommend.greetings">
 					<div class="home-reccomend-spacer"></div>
 					Have something specific in mind? Tell us your favorite delivery restaurant in your area!
@@ -70,12 +73,12 @@
 			<div class="divider"></div>
 		</div>
 	</div>
-	
+
 	<div class="divider dots"></div>
-	
+
 	<div class="main-content-readable content-item-locations">
 		<div class="home-welcome">
-			<h1>Our most popular cities</h1> 
+			<h1>Our most popular cities</h1>
 			<h2>Take a look at some of the best delivery food in these cities.</h2>
 			<div class="content-item-locations-cities">
 				<span ng-repeat="alias in topCommunities">
