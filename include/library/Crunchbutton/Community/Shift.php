@@ -792,6 +792,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				// Send the sms
 				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message ] );
 
+				if( $driver->phone ){
+					Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone ] );
+				}
+
+
 				// Send the email
 				if( $driver->email ){
 					$mail = new Cockpit_Email_Driver_Shift( [ 'email' => $driver->email, 'message' => $message ] );
