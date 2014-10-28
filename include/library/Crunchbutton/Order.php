@@ -1814,8 +1814,10 @@ class Crunchbutton_Order extends Cana_Table {
 				// #2416
 				if( !$this->delivery_service ){
 					$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";
-				} else {
-					$msg .= "DO NOT call the restaurant. If you have any questions about your order, text or call us back directly!.\n";
+				}
+				// #3925
+				if( !$this->restaurant()->formal_relationship ) {
+					$msg .= "DO NOT call the restaurant. If you have any questions about your order, text or call us back directly!\n";
 				}
 				// Start Telling Customers Estimated Delivery Time #2476
 				if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
