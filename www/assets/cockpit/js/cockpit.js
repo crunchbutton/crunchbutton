@@ -711,7 +711,7 @@ App.init = function(config) {
 		$(document).on('click', 'a[target=_system]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
-			parent.window.open(e.target.href, '_system');
+			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
 			return false;
 		});
 	}
@@ -867,3 +867,4 @@ App.phoneGapListener = {
 
 	}
 };
+
