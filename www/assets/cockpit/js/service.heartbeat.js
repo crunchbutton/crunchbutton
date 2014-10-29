@@ -34,7 +34,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 			service.load(function(data) {
 				service.date = new Date;
 				
-				if (App.isPhoneGap) {
+				if (App.isPhoneGap && parent.plugins && parent.plugins.pushNotification) {
 					var complete = function(){};
 					PushService.badges = parseInt(data.tickets) + parseInt(data.orders['new']);
 					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
@@ -56,7 +56,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	$rootScope.$on('appResume', service.check);
 
 	$rootScope.$on('appPause', function() {
-		if (App.isPhoneGap) {
+		if (App.isPhoneGap && parent.plugins && parent.plugins.pushNotification) {
 			var complete = function(){};
 			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
 		}
