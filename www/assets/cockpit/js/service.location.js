@@ -4,7 +4,7 @@
 NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 
 
-	if (App.isPhoneGap) {
+	if (App.isPhoneGap && parent.window.plugins && parent.window.plugins.backgroundGeoLocation) {
 
 		var bgGeo = parent.window.plugins.backgroundGeoLocation;
 
@@ -101,7 +101,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 				//alert('Your location services are off, or you declined location permissions. Please enable this.');
 			}, { enableHighAccuracy: true });
 		}
-		if (App.isPhoneGap) {
+		if (App.isPhoneGap && bgGeo) {
 			bgGeo.start();
 		}
 	};
@@ -123,7 +123,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		parent.window.navigator.geolocation.clearWatch(watcher);
 		watcher = null;
 
-		if (App.isPhoneGap) {
+		if (App.isPhoneGap && bgGeo) {
 			bgGeo.stop();
 		}
 	}

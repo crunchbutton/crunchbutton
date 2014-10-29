@@ -516,8 +516,8 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 
 App.alert = function(txt, title, useNativeAlert, fn) {
 	setTimeout(function() {
-		if (useNativeAlert && App.isPhoneGap) {
-			parent.navigator.notification.alert(txt, null, title || 'Crunchbutton');
+		if (useNativeAlert && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
+			parent.window.navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
@@ -527,8 +527,8 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 };
 
 App.confirm = function(txt, title, fn, buttons) {
-	if (App.useNativeConfirm && App.isPhoneGap) {
-		return navigator.notification.confirm(txt, fn, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
+	if (App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
+		return parent.window.navigator.notification.confirm(txt, fn, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
 	} else {
 		return confirm(txt);
 	}
