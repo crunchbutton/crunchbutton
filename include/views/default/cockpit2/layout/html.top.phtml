@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
-<base href="">
+<? if (!c::config()->bundle) : ?>
+	<base href="/">
+<? endif; ?>
 <head>
 <title><?=$this->title ? $this->title : 'Cockpit'?></title>
 <meta name="fragment" content="!" />

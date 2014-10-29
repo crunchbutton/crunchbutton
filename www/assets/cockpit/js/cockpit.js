@@ -355,7 +355,9 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/general-home.html'
 		});
 	// only use html5 enabled location stuff if its not in a phonegap container
-	$locationProvider.html5Mode(!App.isPhoneGap);
+	//$locationProvider.html5Mode(!App.isPhoneGap);
+	// @test
+	$locationProvider.html5Mode(true);
 }]);
 
 // global route change items
