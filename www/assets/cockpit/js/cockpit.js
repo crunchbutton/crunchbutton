@@ -695,6 +695,12 @@ App.init = function(config) {
 	}, false );
 
 	$( window ).trigger( 'nginit' );
+	
+	if (App.isPhoneGap) {
+		$(document).on('click', 'a[target=_system]', function(e) {
+			window.open(e.currentTarget.href, '_system', 'location=yes')
+		});
+	}
 
 	/*
 	if (!App.isPhoneGap) {
@@ -867,3 +873,4 @@ App.phoneGapListener = {
 
 	}
 };
+
