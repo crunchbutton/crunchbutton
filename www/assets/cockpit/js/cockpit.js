@@ -698,7 +698,7 @@ App.init = function(config) {
 	
 	if (App.isPhoneGap) {
 		$(document).on('click', 'a[target=_system]', function(e) {
-			window.open(e.currentTarget.href, '_system', 'location=yes')
+			parent.window.open(e.currentTarget.href, '_system', 'location=yes')
 		});
 	}
 
