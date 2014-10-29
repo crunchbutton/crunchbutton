@@ -681,9 +681,10 @@ input {
 .login-content input {
 	border-radius: 4px;
 	font-size: 1em;
-	width: 13em;
+	width: 64%;
 	background: none;
 	color: #fff;
+	box-sizing: border-box;
 }
 
 .login-content {
