@@ -88,6 +88,7 @@ NGApp.controller( 'ProfileCtrl', function ( $scope, CustomerRewardService ) {
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
+		$(':focus').blur();
 		console.log(fn);
 		var complete = function() {
 			$rootScope.closePopup();
