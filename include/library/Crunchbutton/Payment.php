@@ -5,6 +5,10 @@ class Crunchbutton_Payment extends Cana_Table {
 	const PAY_TYPE_PAYMENT = 'payment';
 	const PAY_TYPE_REIMBURSEMENT = 'reimbursement';
 
+	const BALANCED_STATUS_PENDING = 'pending';
+	const BALANCED_STATUS_SUCCEEDED = 'succeeded';
+	const BALANCED_STATUS_FAILED = 'failed';
+
 	public static function credit($params = null) {
 
 		$payment = new Payment((object)$params);
@@ -54,6 +58,32 @@ class Crunchbutton_Payment extends Cana_Table {
 			return false;
 		}
 
+	}
+
+	public function checkBalancedStatus(){
+		if( $this->balanced_id && $this->env ){
+			$env = $this->env;
+			$api_key = c::config()->balanced->{$env}->secret;
+			Balanced\Settings::$api_key = $api_key;
+			$url = '/credits/' . $this->balanced_id;
+			$credit = Balanced\Credit::get( $url );
+			switch ( $credit->status ) {
+				case Crunchbutton_Payment::BALANCED_STATUS_FAILED:
+					$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_FAILED;
+					$this->failure_reason = $credit->failure_reason;
+				case Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED:
+					$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED;
+					break;
+				case Crunchbutton_Payment::BALANCED_STATUS_PENDING;
+				default:
+					$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_PENDING;
+					break;
+			}
+			$this->save();
+			echo '<pre>';var_dump( $this->balanced_status );exit();
+
+			return $this->balanced_status;
+		}
 	}
 
 	public static function credit_driver($params = null) {

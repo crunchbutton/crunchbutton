@@ -1616,6 +1616,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $this->_id_order_start;
 	}
 
+	public function checkPaymentStatus( $type = 'driver' ){
+		// get all payments with pending status - drivers
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND id_payment_schedule = 822" );
+		foreach( $payments as $payment ){
+			$payment->checkBalancedStatus();
+		}
+	}
+
 	public function amount_per_invited_user(){
 		if( !$this->_amount_per_invited_user ){
 			$reward = new Crunchbutton_Reward;
