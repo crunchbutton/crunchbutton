@@ -42,17 +42,13 @@ console.log($.totalStorage('hasLoggedIn'));
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
-				if (!App.isPhoneGap) {
-					$rootScope.focus('[name="username"]');
-				}
+				$rootScope.focus('[name="username"]');
 			});
 			return;
 		}
 		if( !$scope.password ){
 			App.alert('Please enter your password', '', false, function() {
-				if (!App.isPhoneGap) {
-					$rootScope.focus('[name="password"]');
-				}
+				$rootScope.focus('[name="password"]');
 			});
 			return;
 		}
