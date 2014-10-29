@@ -778,6 +778,20 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
+	$scope.balanced_status = function( id_payment ){
+		$scope.makeBusy();
+		SettlementService.drivers.balanced_status( id_payment, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+				// load();
+			} else {
+				list();
+			}
+			$scope.unBusy();
+		} );
+	}
+
+
 	$scope.open = function( id_payment ){
 		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
 	}

@@ -80,8 +80,6 @@ class Crunchbutton_Payment extends Cana_Table {
 					break;
 			}
 			$this->save();
-			echo '<pre>';var_dump( $this->balanced_status );exit();
-
 			return $this->balanced_status;
 		}
 	}
