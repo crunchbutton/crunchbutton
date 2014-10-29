@@ -261,50 +261,14 @@ p {
 	}
 }
 
-@media(min-width: 475px){
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-}
-
-@media(max-width:474px) {
-	.column-info{
-		width: 50%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-
-}
-
 @media(max-width:470px){
 	.info-name{
 		width: 60%;
 	}
 }
 
-@media(max-width:458px) {
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-}
-
-@media(max-width:453px) {
-	.column-info{
-		width: 50%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-}
 
 @media(max-width: 385px) {
-	.column-info{
-		width: 40%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
 	.info-name{
 		width: 40%;
 	}
@@ -325,22 +289,7 @@ p {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	.column-info{
-		width: 40%;
-	}
-		.drivers-order-list .vert-divider{
-		height: 75px;
-	}
 
-}
-
-@media(max-width: 328px) {
-	.column-info{
-		width: 40%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
 }
 
 @media(max-width: 315px) {
@@ -801,7 +750,7 @@ input {
 .button {
 	border: 0;
 	padding: .5em 0 .5em 0;
-	border-radius: 0px;
+	border-radius: 0;
 	cursor: pointer;
 	color: #fff;
 	text-transform: uppercase;
@@ -1638,43 +1587,62 @@ h4.title{
 	background-color: #f1f2f7;
 	font-size: .95em;
 }
+.column-action {
+	margin-right: .4em;
+}
+.column-action .button {
+	font-size: 1em;
+	height: 4.5em;
+}
+
+.drivers-order-list .column-date, .drivers-order-list .column-info, .drivers-order-list .column-action {
+	margin-top: .4em;
+}
 
 .drivers-order-list .column-action{
 	float: right;
-	display: table;
+	display: table-cell;
 	font-size: 1.2em;
 	width: 8em;
-	margin-right: 10px;
 }
 .drivers-order-list .column-date{
-	display: table;
+	display: table-cell;
 	float: left;
-	width: 5em;
+	width: 5.1em;
 	margin-right: .5em;
 	margin-left: .5em;
 	font-size: 1.2em;
 }
-	.column-date .day{
-		font-weight: normal;
-		text-align: right;
-	}
-	.column-date .hour{
-		text-align: right;
-	}
-	.column-date .num{
-		text-align: right;
-		font-size: 1.5em;
-	}
-	.column-date .ampm{
-		text-align: right;
-		text-transform: uppercase;
-	}
+.order-item-wrap {
+	margin-bottom: 1em;
+}
+.order-item-wrap a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(255,255,255,.6);
+}
+.column-date {
+	text-align: right;	
+}
+.column-date .day {
+	font-weight: normal;
+}
+
+.column-date .orderid {
+	text-decoration: underline;
+	font-weight: bold;
+	font-size: 1.2em;
+	cursor: pointer;
+	margin-bottom: 1em;
+	font-family: Ruda;
+}
+
 
 .drivers-order-list .column-info{
-	display: table;
+	width: 40%;
+	display: table-cell;
 	float: left;
-	font-family: Ruda;
-	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 	.column-info .restaurant{
 		margin-bottom: .4em;
@@ -1684,19 +1652,28 @@ h4.title{
 		font-size: 1.2em;
 		padding: 10px;
 	}
+	
+.order-item-content {
+	padding: .5em .5em .5em 0;
+	display: table;
+	width: 100%;
+	box-sizing: border-box;
+}
 
-	.column-info .restaurant-pointer{
-		font-size: 1.3em;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
+.column-info .restaurant-pointer {
+	font-family: Ruda;
+	font-size: 1.4em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: bold;
+}
 
-.drivers-order-list .vert-divider{
+.drivers-order-list .vert-divider {
 	background-color: #bd4743;
-	border-style: none;
-	width: 2px;
+	width: 1px;
 	float: left;
-	margin-right: .3em;
+	margin-right: .6em;
+	height: 6.2em;
 }
 
 
@@ -1715,6 +1692,11 @@ h4.title{
 	color: black;
 }
 
+.customer-pointer, .phone-pointer {
+	margin-top: .7em;
+	font-size: 1.1em;
+}
+
 	.delivered .notMyOrder .row-status{
 		background-color: #d6d9dc;
 		color: #48494C;
@@ -1727,9 +1709,6 @@ h4.title{
 	.delivered .vert-divider{
 		background-color: #b8babc;
 		border-style: none;
-		width: 2px;
-		float: left;
-		margin-right: .3em;
 	}
 
 .drivers-order-list .pickedup{
@@ -1753,9 +1732,7 @@ h4.title{
 	.pickedup .vert-divider{
 		background-color: #353b44;
 		border-style: none;
-		width: 2px;
-		float: left;
-		margin-right: .3em;
+
 	}
 
 
@@ -1788,9 +1765,6 @@ h4.title{
 	.accepted .vert-divider{
 		background-color: #43b1a9;
 		border-style: none;
-		width: 2px;
-		float: left;
-		margin-right: .3em;
 	}
 
 
@@ -2438,7 +2412,6 @@ b, strong{ font-weight: bold; }
 .box-content {
 	background: #e1574c;
 	color: #fff;
-	margin-bottom: 15px;
 	border: 2px;
 	border-color: #e1574c;
 	border-style: solid;

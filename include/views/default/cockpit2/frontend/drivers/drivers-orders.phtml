@@ -20,7 +20,7 @@
 
 		<div ng-if="driverorders.length">
 
-			<div class="box-content item" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
+			<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
 				<div ng-class="{'notMyOrder': order.lastStatus.id_admin !== account.user.id_admin, 'myOrder': order.lastStatus.id_admin == account.user.id_admin}">
 					<h6 class="row-status" ng-if="order.lastStatus.id_admin !== account.user.id_admin && order.lastStatus.status !== 'new'">
 						<span ng-switch="order.lastStatus.status">
@@ -30,38 +30,41 @@
 							<span> by <b>{{order.lastStatus.name}}</b> @ {{order.lastStatus.date | date:'shortTime'}}</span>
 						</span>
 					</h6>
-					</br>
 					
-					<!-- action -->
-					<div class="column-action">
-						<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
-						<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
-						<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
-						<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
+					<div class="order-item-content">
+						<!-- action -->
+						<div class="column-action">
+							<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
+							<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
+							<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
+							<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
+						</div>
+	
+						<!-- date -->
+						<div class="column-date" ng-click="showOrder( order.id_order )">
+							<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
+							<div class="orderid">#{{order.id_order}}</div>
+							<div class="hour">{{order.date_hour | date:'h:mm a'}}</div>
+						</div>
+						
+						<!-- vertical divider -->
+						<div class="vert-divider"></div>
+	
+						<!-- info -->
+						<div class="column-info">
+							<div class="restaurant-pointer" ng-click="showOrder( order.id_order )">
+								{{order.restaurant}}
+							</div>
+	
+							<div class="customer-pointer">
+								{{order.name}}
+							</div>
+							<div class="phone-pointer">
+								<a href="tel:{{order.phone}}">{{order.phone | formatPhone}}</a>
+							</div>
+						</div>
+						<div class="divider"></div>
 					</div>
-
-					<!-- date -->
-					<div class="column-date">
-						<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-						<h1 class="hour"><strong>#{{order.id_order}}</strong></h1></br>
-						<h1 class="hour">{{order.date_hour | date:'h:mm a'}}</h1>
-					</div>
-					
-					<!-- vertical divider -->
-					<div class="vert-divider"></div>
-
-					<!-- info -->
-					<div class="column-info">
-						<h2 class="restaurant-pointer" ng-click="showOrder( order.id_order )">
-							<?//<i class="fa fa-cutlery"></i>?> <b>{{order.restaurant}}</b>
-						</h2>
-						</br>
-						<h4 class="customer-pointer" ng-click="showOrder( order.id_order )">
-							{{order.name}}</br></br><u>{{order.phone | formatPhone}}</u>
-						</h4>
-					</div>
-					<div class="divider"></div>
-					</br>
 				</div>
 			</div>
 		</div>
