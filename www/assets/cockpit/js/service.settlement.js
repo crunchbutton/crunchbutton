@@ -38,7 +38,8 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'schedule_arbitrary_payment' : { 'method': 'POST', params : { action: 'schedule-arbitrary-payment' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
-		'begin' : { 'method': 'POST', params : { action: 'begin' } }
+		'begin' : { 'method': 'POST', params : { action: 'begin' } },
+		'balanced_status' : { 'method': 'POST', params : { action: 'balanced-status' } }
 	}	);
 
 	service.restaurants.begin = function( params, callback ){
@@ -197,6 +198,12 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	service.drivers.send_summary = function( callback ){
 		settlement.drivers.send_summary( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.balanced_status = function( id_payment, callback ){
+		settlement.drivers.balanced_status( { 'id_payment' : id_payment }, function( json ){
 			callback( json );
 		} );
 	}

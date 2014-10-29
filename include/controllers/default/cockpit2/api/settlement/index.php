@@ -91,6 +91,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 						break;
 					case 'drivers':
 						switch ( c::getPagePiece( 3 ) ) {
+							case 'balanced-status':
+								$this->_driverCheckBalancedStatus();
+								break;
 							case 'begin':
 								$this->_driverBegin();
 								break;
@@ -434,6 +437,17 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 		echo $mail->message();
+	}
+
+	private function _driverCheckBalancedStatus(){
+		$id_payment = $this->request()['id_payment'];
+		$payment = Crunchbutton_Payment::o( $id_payment );
+		if( $payment->id_payment ){
+			$status = $payment->checkBalancedStatus();
+			echo json_encode( [ 'success' => $status ] );
+		} else {
+			echo json_encode( [ 'error' => 'Payment not found!' ] );
+		}
 	}
 
 	private function _driverBegin(){

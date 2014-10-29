@@ -24,6 +24,15 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $result->_items[0]->date;
 	}
 
+
+	public function checkBalancedStatus(){
+		$payment = $this->payment();
+		if( $payment->id_payment ){
+			return $payment->checkBalancedStatus();
+		}
+		return false;
+	}
+
 	public function lastDriverStatusDate(){
 		$query = "SELECT MAX( DATE_FORMAT( date, '%m/%d/%Y' ) ) AS date FROM payment_schedule WHERE id_driver IS NOT NULL";
 		$result = c::db()->get( $query );

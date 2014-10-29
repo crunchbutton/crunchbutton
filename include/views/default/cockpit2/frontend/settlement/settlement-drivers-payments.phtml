@@ -36,6 +36,7 @@
 					<td class="td-medium">Driver</td>
 					<td>Type</td>
 					<td>Amount</td>
+					<td class="td-medium">Balanced Status</td>
 					<td>Date</td>
 				</tr>
 			</thead>
@@ -52,6 +53,10 @@
 					<td>{{payment.driver}}</td>
 					<td>{{payment.pay_type}}</td>
 					<td>$ {{payment.amount | formatPrice}}</td>
+					<td ng-class="payment.balanced_status">
+						{{payment.balanced_status}}
+						<span title="Check balanced status" class="link no-underline" ng-if="payment.balanced_status != 'succeeded'" ng-click="balanced_status( payment.id_payment );"> <i class="fa fa-refresh"></i> </span>
+					</td>
 					<td>{{payment.date}}</td>
 				</tr>
 			</tbody>
