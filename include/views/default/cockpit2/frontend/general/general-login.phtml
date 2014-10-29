@@ -53,8 +53,15 @@
 					Cockpit Information
 				</div>
 			</a>
-			
-			<a href="http://crunchbutton.com/app" target="_system">
+			<? if (c::config()->bundle) : ?>
+				<? if (c::app()->detect()->match('android')) : ?>
+					<a href="https://play.google.com/store/apps/details?id=com.crunchbutton" target="_system">
+				<? else : ?>
+					<a href="https://itunes.apple.com/app/id721780390" target="_system">
+				<? endif ; ?>
+			<? else : ?>
+				<a href="http://crunchbutton.com/app" target="_system">
+			<? endif ; ?>
 				<div class="login-option login-option-user">
 					<div class="circle"><i class="fa fa-cutlery"></i></div>
 					<br>
