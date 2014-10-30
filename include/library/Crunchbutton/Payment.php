@@ -60,7 +60,7 @@ class Crunchbutton_Payment extends Cana_Table {
 	}
 
 	public function checkBalancedStatus(){
-
+		Log::debug( [ 'method' => 'checkBalancedStatus_start', 'id_payment' => $this->id_payment, 'type' => 'settlement' ] );
 		if( $this->amount > 0 ){
 			if( $this->balanced_id && $this->env ){
 				$env = ( $this->env == 'live' ) ? 'live' : 'dev';
@@ -90,6 +90,7 @@ class Crunchbutton_Payment extends Cana_Table {
 			$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED;
 			$this->save();
 		}
+		Log::debug( [ 'method' => 'checkBalancedStatus_end', 'id_payment' => $this->id_payment, 'type' => 'settlement' ] );
 		return $this->balanced_status;
 	}
 
