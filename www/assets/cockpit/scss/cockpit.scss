@@ -1894,9 +1894,10 @@ h4.title{
 	}
 
 	.order-icon2 {
-		font-size: 1.5em;
+		font-size: 2em;
 		display: table-cell;
-		width: 2em;
+		width: 2.2em;
+		padding-right: .2em;
 		text-align: center;
 		vertical-align: middle;
 	}
@@ -1923,7 +1924,7 @@ h4.title{
 
 	.order-info2 {
 		display: table-cell;
-		font-size: .8em;
+		font-size: 1.3em;
 		font-family: Ruda;
 		vertical-align: middle;
 		text-align: left;
@@ -1980,7 +1981,6 @@ h4.title{
 	}
 
 	.order-item-block, .order-item-block-big, .order-item-block-bigger {
-		width: 15em;
 		margin: .5em 0 .5em 0;
 	}
 
@@ -2004,8 +2004,7 @@ h4.title{
 		background: #e1574c;
 		color: #fff;
 		width: 100%;
-		font-size: 1.5em;
-		padding: .3em 0 .3em 0;
+		padding: .7em 0 .6em 0;
 	}
 	.order-item-block-bigger{
 		width: 100%;
@@ -2016,16 +2015,6 @@ h4.title{
 		margin-top: 0;
 	}
 
-	.cust-pay-method{
-		background-color: #e1574c;
-		color: #fff;
-		padding-bottom:10px;
-		padding-top: 10px;
-		padding-left: 5px;
-		vertical-align: middle;
-		clear: both;
-	}
-
 	.pay-icon{
 		font-size: 1.4em;
 		display: table-cell;
@@ -2033,52 +2022,42 @@ h4.title{
 		text-align: center;
 		vertical-align: middle;
 	}
-
-	.cust-pay-method-text{
-		font-size: 1.4em;
-		display: table-cell;
-		text-align: left;
-		vertical-align: middle;
-		letter-spacing: 0px;
-		padding-top: 0px;
+	
+	.total-block {
+		color: #797979;
+		background-color: #d5d9dc;
+		text-align: center;
+		margin-top: 1em;
+		font-family: Ruda;
+		padding-bottom: 1em;
+		padding-top: 1em;
+		width: 47%;
 	}
 
 	.customer-total-block{
-		width: 47%;
-		background-color: #d5d9dc;
-		text-align: center;
 		float: left;
-		margin-top: 10px;
-		font-family: Ruda;
-		padding-bottom: 10px;
-		padding-top: 10px;
 	}
 
 	.tip-total-block{
-		width: 47%;
-		background-color: #d5d9dc;
-		text-align: center;
 		float: right;
-		margin-top: 10px;
-		font-family: Ruda;
-		padding-bottom: 10px;
-		padding-top: 10px;
 	}
 
-	.customer-total-price{
-		font-size: 2.5em;
+	.order-total-price {
+		font-size: 3em;
 		font-weight: bold;
 	}
 
-	.customer-total-text, .tip-total-text{
-		font-size: .9em;
-		color: gray;
+	.order-total-text {
+		font-size: 1.25em;
 	}
 
-	.tip-total-price{
-		font-size: 2.5em;
-		font-weight: bold;
+	.tip-total-price-dollar {
+		color: #8d8d8d;
+		font-size: .8em;
+		padding-right: .2em;
+		vertical-align: middle;
 	}
+	
 
 	.order-map {
 		width: 100%;
@@ -2169,10 +2148,6 @@ h4.title{
 
 	.order-tip-cash{
 		text-align: left;
-	}
-
-	.your-take{
-		width: 100%;
 	}
 
 	.topitem, .fooditem {
