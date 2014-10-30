@@ -18,14 +18,15 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 
 
 		// support
-		$q = 'SELECT count(*) as c from support where status="open"';
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
-			// only display support to their number
+		$tickets = null;
 
+		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
+			$q = 'SELECT count(*) as c from support where status="open"';
+			$q = c::db()->get($q);
+			$tickets = $q->get(0)->c;
 		}
 
-		$q = c::db()->get($q);
-		$r['tickets'] = $q->get(0)->c;
+		$r['tickets'] = $tickets;
 
 
 		// orders
