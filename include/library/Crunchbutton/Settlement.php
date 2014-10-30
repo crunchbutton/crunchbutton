@@ -1216,7 +1216,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
 					if( $amount > 0 ){
 						try {
+							$id_payment = ( $schedule->id_payment ) ? $schedule->id_payment : null;
 							$p = Payment::credit_driver( [ 'id_driver' => $schedule->id_driver,
+																			'id_payment' => $id_payment,
 																			'amount' => $amount,
 																			'note' => $schedule->note,
 																			'pay_type' => $schedule->pay_type,
@@ -1355,6 +1357,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_DRIVER;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
+				$summary[ 'balanced_status' ] = $payment->balanced_status;
+				$summary[ 'balanced_failure_reason' ] = $payment->balanced_failure_reason;
+				$balanced_date_checked = $payment->balanced_date_checked();
+				if( $balanced_date_checked ){
+					$summary[ 'balanced_date_checked' ] = $balanced_date_checked->format( 'M jS Y g:i:s A T' );
+				}
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
 				$summary[ 'check_id' ] = $payment->check_id;
@@ -1618,9 +1626,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function checkPaymentStatus( $type = 'driver' ){
 		// get all payments with pending status - drivers
-		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND id_payment_schedule = 822" );
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.balanced_status != '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "'" );
 		foreach( $payments as $payment ){
-			$payment->checkBalancedStatus();
+			Cana::timeout(function() use( $payment ) {
+				$payment->checkBalancedStatus();
+			} );
+			$message = 'id_payment : ' . $payment->id_payment;
+			$this->log( 'checkPaymentStatus', $message );
 		}
 	}
 

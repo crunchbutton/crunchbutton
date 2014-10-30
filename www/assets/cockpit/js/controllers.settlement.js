@@ -759,10 +759,11 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 
 	$scope.ready = false;
 	$scope.id_driver = 0;
+	$scope.balanced_status_filter = 0;
 	$scope.page = 1;
 
 	var list = function(){
-		SettlementService.drivers.payments( { 'page': $scope.page, 'id_driver': $scope.id_driver, 'pay_type': $scope.pay_type }, function( data ){
+		SettlementService.drivers.payments( { 'page': $scope.page, 'id_driver': $scope.id_driver, 'pay_type': $scope.pay_type, 'balanced_status': $scope.balanced_status_filter }, function( data ){
 			$scope.pages = data.pages;
 			$scope.next = data.next;
 			$scope.prev = data.prev;
@@ -783,7 +784,6 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		SettlementService.drivers.balanced_status( id_payment, function( json ){
 			if( json.error ){
 				App.alert( 'Oops, something bad happened: ' + json.error );
-				// load();
 			} else {
 				list();
 			}
@@ -791,12 +791,16 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-
 	$scope.open = function( id_payment ){
 		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
 	}
 
 	$scope.$watch( 'id_driver', function( newValue, oldValue, scope ) {
+		$scope.page = 1;
+		list();
+	} );
+
+	$scope.$watch( 'balanced_status_filter', function( newValue, oldValue, scope ) {
 		$scope.page = 1;
 		list();
 	} );
@@ -821,6 +825,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	if( $scope.account.isLoggedIn() ){
 		$scope.pay_type = 0;
 		$scope.pay_types = SettlementService.pay_types();
+		$scope.balanced_statuses = SettlementService.balanced_statuses();
 		drivers();
 		list();
 	}
@@ -928,6 +933,31 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 			}
 		} )
 	}
+
+	$scope.do_payment = function(){
+		$scope.makeBusy();
+		SettlementService.drivers.do_payment( $scope.result.id_payment_schedule, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+				load();
+				$scope.unBusy();
+			} else {
+				load();
+			}
+		} );
+	}
+
+	$scope.balanced_status = function(){
+			$scope.makeBusy();
+			SettlementService.drivers.balanced_status( $routeParams.id, function( json ){
+				if( json.error ){
+					App.alert( 'Oops, something bad happened: ' + json.error );
+				} else {
+					load();
+				}
+				$scope.unBusy();
+			} );
+		}
 
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
