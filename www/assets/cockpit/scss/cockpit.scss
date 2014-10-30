@@ -2823,7 +2823,7 @@ body.ng-scope {
 }
 
 .tickets-side-item {
-	border-right: 4px solid #de5750; 
+	border-right: 4px solid #de5750;
 }
 
 .tickets-side-item:first-child {
@@ -2892,4 +2892,18 @@ h1.driver-title {
 .drawer-right-content {
 	margin-left: 1em;
 	margin-right: 1em;
+}
+
+.pending, .succeeded, .failed {
+	font-weight: bold;
+}
+
+.pending {
+	color:#666 !important;
+}
+.succeeded {
+	color:#64763d !important;
+}
+.failed {
+	color: #cb311b !important;
 }

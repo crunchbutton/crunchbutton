@@ -91,6 +91,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 						break;
 					case 'drivers':
 						switch ( c::getPagePiece( 3 ) ) {
+							case 'balanced-status':
+								$this->_driverCheckBalancedStatus();
+								break;
 							case 'begin':
 								$this->_driverBegin();
 								break;
@@ -436,6 +439,17 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		echo $mail->message();
 	}
 
+	private function _driverCheckBalancedStatus(){
+		$id_payment = $this->request()['id_payment'];
+		$payment = Crunchbutton_Payment::o( $id_payment );
+		if( $payment->id_payment ){
+			$status = $payment->checkBalancedStatus();
+			echo json_encode( [ 'success' => $status ] );
+		} else {
+			echo json_encode( [ 'error' => 'Payment not found!' ] );
+		}
+	}
+
 	private function _driverBegin(){
 
 		$start = $this->request()['start'];
@@ -605,9 +619,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$page = max( $this->request()['page'], 1 );
 		$id_driver = max( $this->request()['id_driver'], 0 );
 		$pay_type = max( $this->request()['pay_type'], 0 );
+		$balanced_status = max( $this->request()['balanced_status'], 0 );
 		$start = ( ( $page - 1 ) * $resultsPerPage );
-		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type ] );
-		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type ] );
+		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'balanced_status' => $balanced_status ] );
+		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'balanced_status' => $balanced_status ] );
 		$payments_total = $payments_total->count();
 
 		$list = [];
