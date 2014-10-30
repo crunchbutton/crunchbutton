@@ -7,6 +7,10 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	service.PAY_TYPE_PAYMENT = 'payment';
 	service.PAY_TYPE_REIMBURSEMENT = 'reimbursement';
 
+	service.BALANCED_STATUS_PENDING = 'pending';
+	service.BALANCED_STATUS_SUCCEEDED = 'succeeded';
+	service.BALANCED_STATUS_FAILED = 'failed';
+
 	service.pay_type_options = [ { 'name': 'All', 'value' : 'all' }, { 'name': 'Check', 'value' : 'check' }, { 'name': 'Deposit', 'value' : 'deposit' } ];
 	service.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
@@ -38,7 +42,8 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'schedule_arbitrary_payment' : { 'method': 'POST', params : { action: 'schedule-arbitrary-payment' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
-		'begin' : { 'method': 'POST', params : { action: 'begin' } }
+		'begin' : { 'method': 'POST', params : { action: 'begin' } },
+		'balanced_status' : { 'method': 'POST', params : { action: 'balanced-status' } }
 	}	);
 
 	service.restaurants.begin = function( params, callback ){
@@ -184,7 +189,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	}
 
 	service.drivers.payments = function( params, callback ){
-		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type }, function( json ){
+		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type, 'balanced_status': params.balanced_status }, function( json ){
 			callback( json );
 		} );
 	}
@@ -201,6 +206,12 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		} );
 	}
 
+	service.drivers.balanced_status = function( id_payment, callback ){
+		settlement.drivers.balanced_status( { 'id_payment' : id_payment }, function( json ){
+			callback( json );
+		} );
+	}
+
 	service.drivers.view_summary = function( callback ){
 		var url = App.service + 'settlement/drivers/view-summary/' + $routeParams.id;
 		$http( { method: 'POST', url: url } ).
@@ -213,11 +224,20 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	}
 
 	service.pay_types = function(){
-		var tips = [];
-		tips.push( { type: 0, label: 'All' } );
-		tips.push( { type: service.PAY_TYPE_PAYMENT, label: 'Payment' } );
-		tips.push( { type: service.PAY_TYPE_REIMBURSEMENT, label: 'Reimbursement' } );
-		return tips;
+		var types = [];
+		types.push( { type: 0, label: 'All' } );
+		types.push( { type: service.PAY_TYPE_PAYMENT, label: 'Payment' } );
+		types.push( { type: service.PAY_TYPE_REIMBURSEMENT, label: 'Reimbursement' } );
+		return types;
+	}
+
+	service.balanced_statuses = function(){
+		var types = [];
+		types.push( { type: 0, label: 'All' } );
+		types.push( { type: service.BALANCED_STATUS_PENDING, label: 'Pending' } );
+		types.push( { type: service.BALANCED_STATUS_SUCCEEDED, label: 'Succeeded' } );
+		types.push( { type: service.BALANCED_STATUS_FAILED, label: 'Failed' } );
+		return types;
 	}
 
 	service.drivers.range = function( callback ){
