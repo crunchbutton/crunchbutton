@@ -2,9 +2,26 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+		$set = new Crunchbutton_Settlement;
+		$set->checkPaymentStatus();
+		die('hard');
 
 
-		Crunchbutton_Settlement::checkPaymentStatus();
+		$set = new Crunchbutton_Settlement;
+		$set->payDriver( 622 );
+		die('hard');
+
+
+	$payment = Crunchbutton_Payment::o( 2167 );
+	if( $payment->id_payment ){
+		// $schedule = $payment->schedule_error();
+		// echo '<pre>';var_dump( $schedule );exit();
+		// die('hard');
+	$status = $payment->checkBalancedStatus();
+	echo '<pre>';var_dump( $status );exit();
+		// echo json_encode( [ 'success' => $status ] );
+	}
+
 
 
 

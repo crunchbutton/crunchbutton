@@ -7,6 +7,10 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	service.PAY_TYPE_PAYMENT = 'payment';
 	service.PAY_TYPE_REIMBURSEMENT = 'reimbursement';
 
+	service.BALANCED_STATUS_PENDING = 'pending';
+	service.BALANCED_STATUS_SUCCEEDED = 'succeeded';
+	service.BALANCED_STATUS_FAILED = 'failed';
+
 	service.pay_type_options = [ { 'name': 'All', 'value' : 'all' }, { 'name': 'Check', 'value' : 'check' }, { 'name': 'Deposit', 'value' : 'deposit' } ];
 	service.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
@@ -185,7 +189,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	}
 
 	service.drivers.payments = function( params, callback ){
-		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type }, function( json ){
+		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type, 'balanced_status': params.balanced_status }, function( json ){
 			callback( json );
 		} );
 	}
@@ -220,11 +224,20 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	}
 
 	service.pay_types = function(){
-		var tips = [];
-		tips.push( { type: 0, label: 'All' } );
-		tips.push( { type: service.PAY_TYPE_PAYMENT, label: 'Payment' } );
-		tips.push( { type: service.PAY_TYPE_REIMBURSEMENT, label: 'Reimbursement' } );
-		return tips;
+		var types = [];
+		types.push( { type: 0, label: 'All' } );
+		types.push( { type: service.PAY_TYPE_PAYMENT, label: 'Payment' } );
+		types.push( { type: service.PAY_TYPE_REIMBURSEMENT, label: 'Reimbursement' } );
+		return types;
+	}
+
+	service.balanced_statuses = function(){
+		var types = [];
+		types.push( { type: 0, label: 'All' } );
+		types.push( { type: service.BALANCED_STATUS_PENDING, label: 'Pending' } );
+		types.push( { type: service.BALANCED_STATUS_SUCCEEDED, label: 'Succeeded' } );
+		types.push( { type: service.BALANCED_STATUS_FAILED, label: 'Failed' } );
+		return types;
 	}
 
 	service.drivers.range = function( callback ){

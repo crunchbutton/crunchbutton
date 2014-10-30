@@ -81,6 +81,25 @@
 					<td>Balanced</td>
 					<td>{{result.balanced_id}}</td>
 				</tr>
+				<tr>
+					<td><strong>Balanced Status</strong></td>
+					<td ng-class="result.balanced_status">
+						{{result.balanced_status}}
+						<span title="Check balanced status" class="link no-underline" ng-if="result.balanced_status != 'succeeded'" ng-click="balanced_status();"> <i class="fa fa-refresh"></i> </span>
+					</td>
+				</tr>
+				<tr ng-if="result.balanced_date_checked">
+					<td><strong>Balanced Status Checked</strong></td>
+					<td ng-class="result.balanced_status">
+						{{result.balanced_date_checked}}
+					</td>
+				</tr>
+				<tr ng-if="result.balanced_failure_reason">
+					<td><strong>Balanced Failure Reason</strong></td>
+					<td ng-class="result.balanced_status">
+						{{result.balanced_failure_reason}}
+					</td>
+				</tr>
 				<tr ng-if="result.stripe_id">
 					<td>Stripe</td>
 					<td>{{result.stripe_id}}</td>

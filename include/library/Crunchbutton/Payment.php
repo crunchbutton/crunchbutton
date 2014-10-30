@@ -57,44 +57,83 @@ class Crunchbutton_Payment extends Cana_Table {
 		} else {
 			return false;
 		}
-
 	}
 
 	public function checkBalancedStatus(){
-		if( $this->balanced_id && $this->env ){
-			$env = $this->env;
-			$api_key = c::config()->balanced->{$env}->secret;
-			Balanced\Settings::$api_key = $api_key;
-			$url = '/credits/' . $this->balanced_id;
-			$credit = Balanced\Credit::get( $url );
-			switch ( $credit->status ) {
-				case Crunchbutton_Payment::BALANCED_STATUS_FAILED:
-					$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_FAILED;
-					$this->failure_reason = $credit->failure_reason;
-				case Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED:
-					$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED;
-					break;
-				case Crunchbutton_Payment::BALANCED_STATUS_PENDING;
-				default:
-					$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_PENDING;
-					break;
+
+		if( $this->amount > 0 ){
+			if( $this->balanced_id && $this->env ){
+				$env = ( $this->env == 'live' ) ? 'live' : 'dev';
+				$api_key = c::config()->balanced->{$env}->secret;
+				Balanced\Settings::$api_key = $api_key;
+				$url = '/credits/' . $this->balanced_id;
+				$credit = Balanced\Credit::get( $url );
+				switch ( $credit->status ) {
+					case Crunchbutton_Payment::BALANCED_STATUS_FAILED:
+						$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_FAILED;
+						$this->balanced_failure_reason = $credit->failure_reason;
+						break;
+					case Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED:
+						$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED;
+						break;
+					case Crunchbutton_Payment::BALANCED_STATUS_PENDING;
+					default:
+						$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_PENDING;
+						break;
+				}
+				$this->balanced_date_checked = date('Y-m-d H:i:s');
+				$this->save();
+				$this->schedule_error();
 			}
+		} else {
+			$this->balanced_date_checked = date('Y-m-d H:i:s');
+			$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED;
 			$this->save();
-			return $this->balanced_status;
+		}
+		return $this->balanced_status;
+	}
+
+	public function schedule(){
+		$schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment = "' . $this->id_payment . '" ORDER BY id_payment_schedule DESC' );
+		if( $schedule->id_payment_schedule ){
+			return $schedule;
+		}
+		return false;
+	}
+
+	public function schedule_error(){
+		$schedule = $this->schedule();
+		if( $schedule ){
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+			$schedule->status_date = date('Y-m-d H:i:s');
+			$schedule->log = $this->balanced_failure_reason;
+			$schedule->save();
 		}
 	}
 
 	public static function credit_driver($params = null) {
 
-		$payment = new Payment((object)$params);
+		if( $params[ 'id_payment' ] ){
+			$payment = Payment::o( $params[ 'id_payment' ] );
+			// just redo payments with error
+			if( !$payment->balanced_status == Crunchbutton_Payment::BALANCED_STATUS_FAILED ){
+				return;
+			}
+			$payment->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_PENDING;
+			$payment->balanced_date_checked = null;
+			$payment->balanced_failure_reason = null;
+			$payment->balanced_id = null;
+		} else {
+			$payment = new Payment((object)$params);
+		}
+
 		$payment->date = date('Y-m-d H:i:s');
 		$payment_type = Crunchbutton_Admin_Payment_Type::byAdmin( $payment->id_driver );
 
-		if( $payment->type == 'balanced' ){
+		if( $payment->type == 'balanced' || $params[ 'type' ] == 'balanced' ){
 			try {
 				$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
 			} catch ( Exception $e ) {
-				echo '<pre>';var_dump( $e );exit();
 					throw new Exception( $e->getMessage() );
 					exit;
 			}
@@ -106,7 +145,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->env = c::getEnv(false);
 		$payment->id_admin = c::user()->id_admin;
 		$payment->save();
-
+echo '<pre>';var_dump( $payment );exit();
 		if( $payment->balanced_id || $payment->stripe_id ){
 			return $payment->id_payment;
 		} else {
@@ -156,6 +195,10 @@ class Crunchbutton_Payment extends Cana_Table {
 					$where .= ' AND p.pay_type = "' . $search[ 'pay_type' ] . '"';
 				}
 
+				if( $search[ 'balanced_status' ] ){
+					$where .= ' AND p.balanced_status = "' . $search[ 'balanced_status' ] . '"';
+				}
+
 				$query = 'SELECT p.*, a.name AS driver, ps.id_payment_schedule FROM payment p
 								LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
 								INNER JOIN admin a ON a.id_admin = p.id_driver
@@ -174,6 +217,17 @@ class Crunchbutton_Payment extends Cana_Table {
 			$this->_date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
 		}
 		return $this->_date;
+	}
+
+	public function balanced_date_checked(){
+		if (!isset($this->_balanced_date_checked)) {
+			if( $this->balanced_date_checked ){
+				$this->_balanced_date_checked = new DateTime( $this->balanced_date_checked, new DateTimeZone( c::config()->timezone ) );
+			} else {
+				return false;
+			}
+		}
+		return $this->_balanced_date_checked;
 	}
 
 	public function summary_sent_date() {
