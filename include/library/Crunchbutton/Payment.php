@@ -72,6 +72,7 @@ class Crunchbutton_Payment extends Cana_Table {
 					case Crunchbutton_Payment::BALANCED_STATUS_FAILED:
 						$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_FAILED;
 						$this->balanced_failure_reason = $credit->failure_reason;
+						$this->schedule_error();
 						break;
 					case Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED:
 						$this->balanced_status = Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED;
@@ -83,7 +84,6 @@ class Crunchbutton_Payment extends Cana_Table {
 				}
 				$this->balanced_date_checked = date('Y-m-d H:i:s');
 				$this->save();
-				$this->schedule_error();
 			}
 		} else {
 			$this->balanced_date_checked = date('Y-m-d H:i:s');
