@@ -5,6 +5,7 @@ $green: #4ecdc4;
 $background: #f1f2f7;
 $textColor: #312f38;
 $orange: #df4a32;
+$linkColor: #d74924;
 
 
 html, body, div, span, applet, object, iframe,
@@ -62,7 +63,7 @@ table {
 	border-spacing: 0;
 }
 a {
-	color: #d74924;
+	color: $linkColor;
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -261,50 +262,14 @@ p {
 	}
 }
 
-@media(min-width: 475px){
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-}
-
-@media(max-width:474px) {
-	.column-info{
-		width: 50%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-
-}
-
 @media(max-width:470px){
 	.info-name{
 		width: 60%;
 	}
 }
 
-@media(max-width:458px) {
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-}
-
-@media(max-width:453px) {
-	.column-info{
-		width: 50%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
-}
 
 @media(max-width: 385px) {
-	.column-info{
-		width: 40%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
 	.info-name{
 		width: 40%;
 	}
@@ -325,22 +290,7 @@ p {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	.column-info{
-		width: 40%;
-	}
-		.drivers-order-list .vert-divider{
-		height: 75px;
-	}
 
-}
-
-@media(max-width: 328px) {
-	.column-info{
-		width: 40%;
-	}
-	.drivers-order-list .vert-divider{
-		height: 75px;
-	}
 }
 
 @media(max-width: 315px) {
@@ -801,7 +751,7 @@ input {
 .button {
 	border: 0;
 	padding: .5em 0 .5em 0;
-	border-radius: 0px;
+	border-radius: 0;
 	cursor: pointer;
 	color: #fff;
 	text-transform: uppercase;
@@ -936,17 +886,22 @@ input {
 }
 
 .dialog-subtext {
-	color: #ffc0c2;
+	opacity: .8;
 	margin-bottom: 1em;
 	font-size: .7em;
 	font-family: Ruda;
 	line-height: 1.3em;
-
 }
 
 .dialog-message-error {
 	background: #e1574c;
 }
+
+.dialog-message-notice {
+	border: 2px solid #e1574c;
+	color: #79211a;
+}
+
 
 .dialog-message-success {
 	background: #77c675;
@@ -1638,43 +1593,62 @@ h4.title{
 	background-color: #f1f2f7;
 	font-size: .95em;
 }
+.column-action {
+	margin-right: .4em;
+}
+.column-action .button {
+	font-size: 1em;
+	height: 4.5em;
+}
+
+.drivers-order-list .column-date, .drivers-order-list .column-info, .drivers-order-list .column-action {
+	margin-top: .4em;
+}
 
 .drivers-order-list .column-action{
 	float: right;
-	display: table;
+	display: table-cell;
 	font-size: 1.2em;
 	width: 8em;
-	margin-right: 10px;
 }
 .drivers-order-list .column-date{
-	display: table;
+	display: table-cell;
 	float: left;
-	width: 5em;
+	width: 5.1em;
 	margin-right: .5em;
 	margin-left: .5em;
 	font-size: 1.2em;
 }
-	.column-date .day{
-		font-weight: normal;
-		text-align: right;
-	}
-	.column-date .hour{
-		text-align: right;
-	}
-	.column-date .num{
-		text-align: right;
-		font-size: 1.5em;
-	}
-	.column-date .ampm{
-		text-align: right;
-		text-transform: uppercase;
-	}
+.order-item-wrap {
+	margin-bottom: 1em;
+}
+.order-item-wrap a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(255,255,255,.6);
+}
+.column-date {
+	text-align: right;	
+}
+.column-date .day {
+	font-weight: normal;
+}
+
+.column-date .orderid {
+	text-decoration: underline;
+	font-weight: bold;
+	font-size: 1.2em;
+	cursor: pointer;
+	margin-bottom: 1em;
+	font-family: Ruda;
+}
+
 
 .drivers-order-list .column-info{
-	display: table;
+	width: 40%;
+	display: table-cell;
 	float: left;
-	font-family: Ruda;
-	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 	.column-info .restaurant{
 		margin-bottom: .4em;
@@ -1684,19 +1658,28 @@ h4.title{
 		font-size: 1.2em;
 		padding: 10px;
 	}
+	
+.order-item-content {
+	padding: .5em .5em .5em 0;
+	display: table;
+	width: 100%;
+	box-sizing: border-box;
+}
 
-	.column-info .restaurant-pointer{
-		font-size: 1.3em;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
+.column-info .restaurant-pointer {
+	font-family: Ruda;
+	font-size: 1.4em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: bold;
+}
 
-.drivers-order-list .vert-divider{
+.drivers-order-list .vert-divider {
 	background-color: #bd4743;
-	border-style: none;
-	width: 2px;
+	width: 1px;
 	float: left;
-	margin-right: .3em;
+	margin-right: .6em;
+	height: 6.2em;
 }
 
 
@@ -1715,6 +1698,11 @@ h4.title{
 	color: black;
 }
 
+.customer-pointer, .phone-pointer {
+	margin-top: .7em;
+	font-size: 1.1em;
+}
+
 	.delivered .notMyOrder .row-status{
 		background-color: #d6d9dc;
 		color: #48494C;
@@ -1727,9 +1715,6 @@ h4.title{
 	.delivered .vert-divider{
 		background-color: #b8babc;
 		border-style: none;
-		width: 2px;
-		float: left;
-		margin-right: .3em;
 	}
 
 .drivers-order-list .pickedup{
@@ -1753,9 +1738,7 @@ h4.title{
 	.pickedup .vert-divider{
 		background-color: #353b44;
 		border-style: none;
-		width: 2px;
-		float: left;
-		margin-right: .3em;
+
 	}
 
 
@@ -1788,9 +1771,6 @@ h4.title{
 	.accepted .vert-divider{
 		background-color: #43b1a9;
 		border-style: none;
-		width: 2px;
-		float: left;
-		margin-right: .3em;
 	}
 
 
@@ -1895,22 +1875,20 @@ h4.title{
 		padding-left: 10px;
 	}
 
-	.order-id {
-		float: right;
-		font-size: 1.2em;
-	}
-
 	.header{
 		font-size: 1.7em;
 		font-family: Ruda;
+	}
+	
+	.order-icon .fa {
+		width: 1.2em;
+		text-align: left;
 	}
 
 	.order-icon {
 		font-size: 1.5em;
 		display: table-cell;
-		width: 2em;
 		text-align: right;
-		padding-left: 20px;
 		padding-right: 20px;
 		vertical-align: middle;
 	}
@@ -1938,9 +1916,9 @@ h4.title{
 		font-size: .8em;
 		font-family: Ruda;
 		vertical-align: middle;
-		text-align: left;
 		line-height: 1.4em;
 		width: 100%;
+		white-space: nowrap;
 	}
 
 	.order-info2 {
@@ -1954,9 +1932,9 @@ h4.title{
 
 
 	.info-block {
-		background: #454b57;
-		color: #fff;
-		padding: 10px;
+		background: #fff;
+		color: #000;
+		padding: 1em;
 	}
 
 	.info-block .order-info {
@@ -1973,8 +1951,7 @@ h4.title{
 	}
 
 	.info-phone a:link{
-		color: #4ec6bc;
-		font-size: 1.8em;
+		font-size: 1.5em;
 	}
 
 	.info-name{
@@ -1989,37 +1966,38 @@ h4.title{
 	}
 
 	.info-address a:link{
-		color: #4ec6bc;
-		font-size: 14px;
+		color: #727477;
+		text-decoration: none;
+		font-size: .7em;
 	}
 
 	.order-item-block, .order-item-block-big, .order-item-block-bigger {
-		display: table;
-		float: left;
 		width: 15em;
 		margin: .5em 0 .5em 0;
 	}
 
 	.order-item-block{
-		display: table;
-		float: left;
-		width: 7.9em;
-		color: #fff;
+		width: 6em;
+	}
+	.order-item-block.right .order-info {
+		text-align: right;
+	}
+	.order-item-block.left .order-info {
+		text-align: left;
 	}
 
 	.order-item-info{
-		background: #48B1A8;
-		font-size: 1.7em;
+		font-size: 1.5em;
 		margin: .5em 0 0 0;
-		color: #000;
+		color: #3e6e6b;
 	}
 
 	.order-item-block-big{
 		background: #e1574c;
 		color: #fff;
 		width: 100%;
-		height: 3em;
-		font-size: 16px;
+		font-size: 1.5em;
+		padding: .3em 0 .3em 0;
 	}
 	.order-item-block-bigger{
 		width: 100%;
@@ -2299,25 +2277,6 @@ h4.title{
 		text-align: right;
 	}
 
-	.control .wrap {
-		width: 100%;
-		box-sizing: border-box;
-		display: table;
-	}
-
-	.control .message {
-		font-size: 1.3em;
-		display: table-cell;
-		vertical-align: middle;
-		text-shadow:1px 1px 0px #fff;
-		white-space:nowrap;
-		float: left;
-	}
-	.control .message-small{
-		font-size: .8em;
-		margin-top: 1em;
-		padding: 10px, 10px, 10px, 0;
-	}
 
 	.loader-wrap {
 		position: fixed;
@@ -2334,20 +2293,6 @@ h4.title{
 						transition: background .2s;
 	}
 
-	.wrap {
-		padding: .5em;
-		margin: 0 auto;
-		font-size: 10px;
-	}
-	.control .buttons {
-		display: table-cell;
-		vertical-align: middle;
-		text-align: right;
-		float: right;
-		font-size: 10px;
-		width: 80px;
-		height: 40px;
-	}
 
 	.delivery-name{
 		text-transform: uppercase;
@@ -2438,7 +2383,6 @@ b, strong{ font-weight: bold; }
 .box-content {
 	background: #e1574c;
 	color: #fff;
-	margin-bottom: 15px;
 	border: 2px;
 	border-color: #e1574c;
 	border-style: solid;
@@ -2452,13 +2396,18 @@ b, strong{ font-weight: bold; }
 }
 
 .check-reminder{
-	font-size: 1.5em;
-	text-align: center;
+	font-size: 1.2em;
+	text-align: left;
+	padding: .8em;
+	line-height: 1.5em;
 }
 
 .order-header{
-	background: #D6D9DC;
-	color: #8D8D8D;
+	color: #5d5f63;
+	font-size: 2.3em;
+	font-weight: 900;
+	text-align: right;
+	margin: 1em 0 .5em 0;
 }
 	.order-header td:first-of-type{
 		padding-right: 0px;
@@ -2467,111 +2416,96 @@ b, strong{ font-weight: bold; }
 		padding-left: 0px;
 	}
 
-/* Order page's action row */
+
+/**
+ * Order page's action row
+ **/
+
+.box-order-status .message{
+	font-size: 1em;
+	float: left;
+}
+.box-content-new, .box-content-rejected, .box-content-accepted, .box-content-pickedup, .box-content-delivered {
+	font-family: Ruda;
+	color: #fff;
+	padding: 1em;
+}
 .box-content-new {
 	background-color: #e1574c;
-	color: #fff;
-	font-family: Ruda;
-	font-size: 1.5em;
-	padding: 10px;
-	margin: auto;
 }
-	.box-content-new .message {
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		text-shadow: none;
-		padding-bottom: 20px;
-		width: 50%;
-	}
-
-
-	.box-content-new .buttons {
-		height: 30px;
-	}
-
 .box-content-rejected {
 	background-color: #e1574c;
-	color: #fff;
-	font-family: Ruda;
-	font-size: 1.5em;
-	padding: 10px;
 }
-	.box-content-rejected .message {
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		text-shadow: none;
-		padding-bottom: 10px;
-	}
-
-.box-content-accepted{
+.box-content-accepted {
 	background-color: #4ac5bc;
-	color: #fff;
-	font-family: Ruda;
-	font-size: 1.5em;
-	line-height: 1.3em;
-	padding: 10px;
-	margin: auto;
 }
-
-	.box-content-accepted .message{
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		padding-bottom: 10px;
-		text-shadow: none;
-	}
-
-.box-content-pickedup{
+.box-content-pickedup {
 	background-color: #444c57;
-	color: #fff;
-	font-size: 1.5em;
-	font-family: Ruda;
-	line-height: 1.3em;
-	padding: 10px;
-	margin: auto;
-
 }
-
-	.box-content-pickedup .message{
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		text-shadow: none;
-		padding-bottom: 10px;
-	}
-
-	.button.green2{
-		background: #008570;
-		font-weight: bold;
-	}
-
-.box-content-delivered{
+.box-content-delivered {
 	background-color: #d6d9dc;
-	font-size: 1.5em;
-	line-height: 1.3em;
-	font-family: Ruda;
-	padding: 10px;
-	margin: auto;
 	color: #48494C;
 }
 
-/**********************/
+.box-order-status .message {
+	font-size: 1.4em;
+}
+.box-order-status .button {
+	height: 4em;
+}
+.box-order-status .dialog-subtext {
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+.box-order-status .dialog-title {
+	font-family: Ruda;
+	font-weight: bold;
+}
+
+.order-action-undo {
+	color: inherit;
+	font-size: .8em;
+	font-weight: bold;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(255,255,255,.5);
+	text-transform: uppercase;
+}
+.box-content-delivered .order-action-undo {
+	color: $linkColor;
+	border-color: $linkColor;
+}
+
+	.control .buttons {
+		float: right;
+		width: 80px;
+	}
+
+	.control .wrap {
+		width: 100%;
+		box-sizing: border-box;
+		display: table;
+	}
 
 .control .accepted{
 	background: red;
 	margin-bottom: 15px;
 	border: 5px;
 }
+
+
+
+
+
+
+	.button.green2{
+		background: #008570;
+		font-weight: bold;
+	}
+
+
+
+/**********************/
+
 
 .box-content.green {
 	background: #43b1a9;
