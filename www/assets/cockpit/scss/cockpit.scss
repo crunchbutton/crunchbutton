@@ -1932,9 +1932,9 @@ h4.title{
 
 
 	.info-block {
-		background: #454b57;
-		color: #fff;
-		padding: 10px;
+		background: #fff;
+		color: #000;
+		padding: 1em;
 	}
 
 	.info-block .order-info {
@@ -1951,8 +1951,7 @@ h4.title{
 	}
 
 	.info-phone a:link{
-		color: #4ec6bc;
-		font-size: 1.8em;
+		font-size: 1.5em;
 	}
 
 	.info-name{
@@ -1967,8 +1966,9 @@ h4.title{
 	}
 
 	.info-address a:link{
-		color: #4ec6bc;
-		font-size: 14px;
+		color: #727477;
+		text-decoration: none;
+		font-size: .7em;
 	}
 
 	.order-item-block, .order-item-block-big, .order-item-block-bigger {

@@ -172,15 +172,15 @@
 					<div class="divider"></div>
 					<div class="divider dots"></div>
 				</span>
-				<br><br>
+				<br>
 
 				<div class="info-block">
 					<div class="order-icon3"><i class="icon-user"></i></div>
 					<div class="order-info">
 						<div class="info-name">{{order.name}}</div>
 						<div class="info-phone"><a href="tel:+1{{order.phone}}">{{order.phone | formatPhone}}</a></div>
-						<div class="divider"/>
-						</br>
+						<div class="divider"></div>
+
 						<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order.address}}">{{order.address | nl2br}}</a></p></div>
 
 					</div>
@@ -193,8 +193,8 @@
 					<div class="order-info">
 						<div class="info-name">{{order._restaurant_name}}</div>
 						<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}">{{order._restaurant_phone | formatPhone}}</a></div>
-						<div class="divider"/>
-						</br>
+						<div class="divider"></div>
+
 						<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}">{{order._restaurant_address | nl2br }}</a></p></div>
 					</div>
 				</div>
