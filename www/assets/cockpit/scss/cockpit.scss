@@ -1907,8 +1907,8 @@ h4.title{
 		width: 2em;
 		text-align: center;
 		padding-left: 0px;
-		padding-right: 10px;
-		vertical-align: middle;
+		padding-right: .8em;
+		vertical-align: top;
 	}
 
 	.order-info {
@@ -1958,11 +1958,19 @@ h4.title{
 		float: left;
 		font-size: 1.8em;
 		line-height: 16px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 11em;
+	}
+	
+	.info-address {
+		margin-top: .3em;
 	}
 
-	.info-address p{
+	.info-address p {
 		font-size: 2em;
-		line-height: 20px;
+		line-height: .8em;
+		white-space: normal;
 	}
 
 	.info-address a:link{
@@ -2114,118 +2122,22 @@ h4.title{
 		font-size: 1.5em;
 	}
 
-	.icon-support {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-support.svg) no-repeat;
-		background-position: top center;
-		width: 2.4em;
-		height: 2.8em;
-		background-size: 100%;
-	}
-
 	.icon-chef {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-chef.svg) no-repeat;
 		background-position: top center;
-		width: 2.0em;
-		height: 2.6em;
-		background-size: 100%;
+		width: 2em;
+		height: 2em;
+		background-size:contain;
 	}
 
 	.icon-user {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-user.svg) no-repeat;
 		background-position: top center;
-		width: 1.9em;
-		height: 2.4em;
-		background-size: 100%;
-	}
-
-	.icon-delivery {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-delivery.svg) no-repeat;
-		background-position: top center;
-		width: 2.2em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-card {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-card.svg) no-repeat;
-		background-position: top center;
-		width: 2.3em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-clock {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-clock.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
+		width: 2em;
 		height: 2em;
-		background-size: 100%;
+		background-size:contain;
 	}
 
-	.icon-timer {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-timer.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
-		height: 2.3em;
-		background-size: 100%;
-	}
-
-	.icon-map-home {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-home.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
-		height: 2.41em;
-		background-size: 100%;
-	}
-
-	.icon-map-restaurant {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-restaurant.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
-		height: 2.41em;
-		background-size: 100%;
-	}
-
-	.icon-cash {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-cash.svg) no-repeat;
-		background-position: top center;
-		width: 2.1em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-takeout {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-takeout.svg) no-repeat;
-		background-position: top center;
-		width: 1.5em;
-		height: 2.0em;
-		background-size: 100%;
-	}
-
-	.icon-phone {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-phone.svg) no-repeat;
-		background-position: top center;
-		width: 1.4em;
-		height: 1.4em;
-		background-size: 100%;
-		margin-top: .2em;
-	}
-
-	.icon-notes {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-notes.svg) no-repeat;
-		background-position: top center;
-		width: 1.9em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-credit {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-credit.svg) no-repeat;
-		background-position: top center;
-		width: 2.5em;
-		height: 1.9em;
-		background-size: 100%;
-	}
 
 	td {
 		border: 0;
