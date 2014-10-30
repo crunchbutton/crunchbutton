@@ -5,6 +5,7 @@ $green: #4ecdc4;
 $background: #f1f2f7;
 $textColor: #312f38;
 $orange: #df4a32;
+$linkColor: #d74924;
 
 
 html, body, div, span, applet, object, iframe,
@@ -62,7 +63,7 @@ table {
 	border-spacing: 0;
 }
 a {
-	color: #d74924;
+	color: $linkColor;
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -885,12 +886,11 @@ input {
 }
 
 .dialog-subtext {
-	color: #ffc0c2;
+	opacity: .8;
 	margin-bottom: 1em;
 	font-size: .7em;
 	font-family: Ruda;
 	line-height: 1.3em;
-
 }
 
 .dialog-message-error {
@@ -2273,25 +2273,6 @@ h4.title{
 		text-align: right;
 	}
 
-	.control .wrap {
-		width: 100%;
-		box-sizing: border-box;
-		display: table;
-	}
-
-	.control .message {
-		font-size: 1.3em;
-		display: table-cell;
-		vertical-align: middle;
-		text-shadow:1px 1px 0px #fff;
-		white-space:nowrap;
-		float: left;
-	}
-	.control .message-small{
-		font-size: .8em;
-		margin-top: 1em;
-		padding: 10px, 10px, 10px, 0;
-	}
 
 	.loader-wrap {
 		position: fixed;
@@ -2312,15 +2293,6 @@ h4.title{
 		padding: .5em;
 		margin: 0 auto;
 		font-size: 10px;
-	}
-	.control .buttons {
-		display: table-cell;
-		vertical-align: middle;
-		text-align: right;
-		float: right;
-		font-size: 10px;
-		width: 80px;
-		height: 40px;
 	}
 
 	.delivery-name{
@@ -2440,111 +2412,96 @@ b, strong{ font-weight: bold; }
 		padding-left: 0px;
 	}
 
-/* Order page's action row */
+
+/**
+ * Order page's action row
+ **/
+
+.box-order-status .message{
+	font-size: 1em;
+	float: left;
+}
+.box-content-new, .box-content-rejected, .box-content-accepted, .box-content-pickedup, .box-content-delivered {
+	font-family: Ruda;
+	color: #fff;
+	padding: 1em;
+}
 .box-content-new {
 	background-color: #e1574c;
-	color: #fff;
-	font-family: Ruda;
-	font-size: 1.5em;
-	padding: 10px;
-	margin: auto;
 }
-	.box-content-new .message {
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		text-shadow: none;
-		padding-bottom: 20px;
-		width: 50%;
-	}
-
-
-	.box-content-new .buttons {
-		height: 30px;
-	}
-
 .box-content-rejected {
 	background-color: #e1574c;
-	color: #fff;
-	font-family: Ruda;
-	font-size: 1.5em;
-	padding: 10px;
 }
-	.box-content-rejected .message {
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		text-shadow: none;
-		padding-bottom: 10px;
-	}
-
-.box-content-accepted{
+.box-content-accepted {
 	background-color: #4ac5bc;
-	color: #fff;
-	font-family: Ruda;
-	font-size: 1.5em;
-	line-height: 1.3em;
-	padding: 10px;
-	margin: auto;
 }
-
-	.box-content-accepted .message{
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		padding-bottom: 10px;
-		text-shadow: none;
-	}
-
-.box-content-pickedup{
+.box-content-pickedup {
 	background-color: #444c57;
-	color: #fff;
-	font-size: 1.5em;
-	font-family: Ruda;
-	line-height: 1.3em;
-	padding: 10px;
-	margin: auto;
-
 }
-
-	.box-content-pickedup .message{
-		font-size: .8em;
-		display: table-cell;
-		letter-spacing: 0px;
-		vertical-align: middle;
-		float: left;
-		text-shadow: none;
-		padding-bottom: 10px;
-	}
-
-	.button.green2{
-		background: #008570;
-		font-weight: bold;
-	}
-
-.box-content-delivered{
+.box-content-delivered {
 	background-color: #d6d9dc;
-	font-size: 1.5em;
-	line-height: 1.3em;
-	font-family: Ruda;
-	padding: 10px;
-	margin: auto;
 	color: #48494C;
 }
 
-/**********************/
+.box-order-status .message {
+	font-size: 1.5em;
+}
+.box-order-status .button {
+	height: 4em;
+}
+.box-order-status .dialog-subtext {
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+.box-order-status .dialog-title {
+	font-family: Ruda;
+	font-weight: bold;
+}
+
+.order-action-undo {
+	color: inherit;
+	font-size: .8em;
+	font-weight: bold;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(255,255,255,.5);
+	text-transform: uppercase;
+}
+.box-content-delivered .order-action-undo {
+	color: $linkColor;
+	border-color: $linkColor;
+}
+
+	.control .buttons {
+		float: right;
+		width: 80px;
+	}
+
+	.control .wrap {
+		width: 100%;
+		box-sizing: border-box;
+		display: table;
+	}
 
 .control .accepted{
 	background: red;
 	margin-bottom: 15px;
 	border: 5px;
 }
+
+
+
+
+
+
+	.button.green2{
+		background: #008570;
+		font-weight: bold;
+	}
+
+
+
+/**********************/
+
 
 .box-content.green {
 	background: #43b1a9;

@@ -3,49 +3,59 @@
 <!-- actions -->
 <div class="control" ng-show="ready">
 
-	<div class="box-content2 content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered">
+	<div class="content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered">
 
 		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted && order.lastStatus['self-reply'] != 'rejected'">
-			<div class="box-content-new"> <? //***************BOX CONTENT DESIGN***************** ?>
+			<div class="box-content-new box-order-status">
 				<div class="message">
-					Accept this order?
-					<div class="message-small">
-						You MUST mark orders as accepted,</br> picked up, and delivered to get paid </br>correctly ;)
-					</div>
+					<div class="dialog-title">Accept this order?</div>
+					<div class="dialog-subtext">You <b>must</b> mark orders as accepted, picked up, </br> and delivered to get paid correctly.</div>
+
+					<a class="order-action-undo" href ng-click="reject()">no</a>
 				</div>
 
 				<div class="buttons">
-					<button ng-click="accept()" class="button green">Yes</button>
-					<button ng-click="reject()" class="button orange-on-orange">No</button>
+					<button ng-click="accept()" class="button orange-on-orange">Yes</button>
 				</div>
 				<div class="divider"></div>
 			</div>
 		</div>
+		
+		
 
 		<div ng-if="order.lastStatus['self-reply'] == 'rejected'">
-			<div class="box-content-rejected"><? //***************BOX CONTENT DESIGN***************** ?>
+			<div class="box-content-rejected box-order-status">
 				<div class="message">You rejected this order. </div>
 				<div class="buttons">
-					<button ng-click="accept()" class="button green">Accept</button>
+					<button ng-click="accept()" class="button orange-on-orange">Accept</button>
 				</div>
 				<div class="divider"></div>
 			</div>
 		</div>
 
 		<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup">
-			<div class="box-content-accepted"><? //***************BOX CONTENT DESIGN***************** ?>
-				<div class="message">You accepted this order @ {{order.lastStatus[ 'delivery-status' ].acc_date | date: 'h:mm a'}} </br><a class="undo-link" ng-click="undoAccept()"><u>undo</u></a></div>
+			<div class="box-content-accepted box-order-status">
+				<div class="message">
+					<div class="dialog-title">You accepted this order</div>
+					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].acc_date | date: 'h:mm a'}}</div>
+
+					<a class="order-action-undo" ng-click="undoAccept()">undo</a>
+				</div>
 				<div class="buttons">
 					<button ng-click="pickedup()" class="button green-on-green">Picked up</button>
-					<? //<button ng-click="reject()" class="button orange">Cancel</button> ?>
 				</div>
 				<div class="divider"></div>
 			</div>
 		</div>
 
 		<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered">
-			<div class="box-content-pickedup"><? //***************BOX CONTENT DESIGN***************** ?>
-				<div class="message">You picked up this order @ {{order.lastStatus[ 'delivery-status' ].pic_date}} </br><a class="undo-link" ng-click="undoPickedup()">undo</a></br></div>
+			<div class="box-content-pickedup box-order-status">
+				<div class="message">
+					<div class="dialog-title">You picked up this order</div>
+					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].pic_date}}</div>
+
+					<a class="order-action-undo" ng-click="undoPickedup()">undo</a>
+				</div>
 				<div class="buttons" ng-click="delivered()">
 					<button class="button dgray-on-dgray">Delivered</button>
 				</div>
@@ -74,11 +84,16 @@
 		</div>
 	</div>
 
-	<div class="box-content2 content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
-	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="dialog-message box-content-delivered">
-		You delivered this order @ {{order.lastStatus[ 'delivery-status' ].del_date | date: 'h:mm a'}} <a class="undo-link" ng-click="undoDelivered()">undo</a></br>
-	</div>
-	<div class="divider"></div>
+	<div class="content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
+		<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="box-content-delivered box-order-status">
+			<div class="message">
+				You delivered this order @ {{order.lastStatus[ 'delivery-status' ].del_date | date: 'h:mm a'}}
+				<br><br>
+				<a class="order-action-undo" ng-click="undoDelivered()">undo</a>
+			</div>
+			<div class="divider"></div>
+		</div>
+
 	</div>
 
 <!-- /actions -->
