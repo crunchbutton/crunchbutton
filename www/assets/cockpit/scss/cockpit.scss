@@ -897,6 +897,12 @@ input {
 	background: #e1574c;
 }
 
+.dialog-message-notice {
+	border: 2px solid #e1574c;
+	color: #79211a;
+}
+
+
 .dialog-message-success {
 	background: #77c675;
 }
@@ -1869,22 +1875,20 @@ h4.title{
 		padding-left: 10px;
 	}
 
-	.order-id {
-		float: right;
-		font-size: 1.2em;
-	}
-
 	.header{
 		font-size: 1.7em;
 		font-family: Ruda;
+	}
+	
+	.order-icon .fa {
+		width: 1.2em;
+		text-align: left;
 	}
 
 	.order-icon {
 		font-size: 1.5em;
 		display: table-cell;
-		width: 2em;
 		text-align: right;
-		padding-left: 20px;
 		padding-right: 20px;
 		vertical-align: middle;
 	}
@@ -1912,9 +1916,9 @@ h4.title{
 		font-size: .8em;
 		font-family: Ruda;
 		vertical-align: middle;
-		text-align: left;
 		line-height: 1.4em;
 		width: 100%;
+		white-space: nowrap;
 	}
 
 	.order-info2 {
@@ -1968,32 +1972,32 @@ h4.title{
 	}
 
 	.order-item-block, .order-item-block-big, .order-item-block-bigger {
-		display: table;
-		float: left;
 		width: 15em;
 		margin: .5em 0 .5em 0;
 	}
 
 	.order-item-block{
-		display: table;
-		float: left;
-		width: 7.9em;
-		color: #fff;
+		width: 6em;
+	}
+	.order-item-block.right .order-info {
+		text-align: right;
+	}
+	.order-item-block.left .order-info {
+		text-align: left;
 	}
 
 	.order-item-info{
-		background: #48B1A8;
-		font-size: 1.7em;
+		font-size: 1.5em;
 		margin: .5em 0 0 0;
-		color: #000;
+		color: #3e6e6b;
 	}
 
 	.order-item-block-big{
 		background: #e1574c;
 		color: #fff;
 		width: 100%;
-		height: 3em;
-		font-size: 16px;
+		font-size: 1.5em;
+		padding: .3em 0 .3em 0;
 	}
 	.order-item-block-bigger{
 		width: 100%;
@@ -2289,11 +2293,6 @@ h4.title{
 						transition: background .2s;
 	}
 
-	.wrap {
-		padding: .5em;
-		margin: 0 auto;
-		font-size: 10px;
-	}
 
 	.delivery-name{
 		text-transform: uppercase;
@@ -2397,13 +2396,18 @@ b, strong{ font-weight: bold; }
 }
 
 .check-reminder{
-	font-size: 1.5em;
-	text-align: center;
+	font-size: 1.2em;
+	text-align: left;
+	padding: .8em;
+	line-height: 1.5em;
 }
 
 .order-header{
-	background: #D6D9DC;
-	color: #8D8D8D;
+	color: #5d5f63;
+	font-size: 2.3em;
+	font-weight: 900;
+	text-align: right;
+	margin: 1em 0 .5em 0;
 }
 	.order-header td:first-of-type{
 		padding-right: 0px;
@@ -2444,7 +2448,7 @@ b, strong{ font-weight: bold; }
 }
 
 .box-order-status .message {
-	font-size: 1.5em;
+	font-size: 1.4em;
 }
 .box-order-status .button {
 	height: 4em;
