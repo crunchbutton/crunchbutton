@@ -20,8 +20,6 @@
 				<div class="divider"></div>
 			</div>
 		</div>
-		
-		
 
 		<div ng-if="order.lastStatus['self-reply'] == 'rejected'">
 			<div class="box-content-rejected box-order-status">
@@ -65,24 +63,33 @@
 
 	</div>
 
-	</div>
-	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="box-content2 content-padding">
-		<div  class="dialog-message dialog-message-error">
-			DO NOT DELIVER. THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].accepted.name}}</span>.
+
+	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="content-padding">
+		<div class="dialog-message dialog-message-error">
+			<div class="message">
+				<div class="dialog-title"><b>DO NOT DELIVER</b></div>
+				<div class="dialog-subtext">THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].accepted.name}}</span>.</div>
+			</div>
 		</div>
 	</div>
 
-	<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.name && order.lastStatus[ 'delivery-status' ].pickedup.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered" class="box-content2 content-padding">
-		<div  class="dialog-message dialog-message-error">
-			This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
+
+	<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.name && order.lastStatus[ 'delivery-status' ].pickedup.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered" class="content-padding">
+		<div class="dialog-message dialog-message-error">
+			<div class="message">
+				This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
+			</div>
+		</div>
+	</div>
+	
+	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered && order.lastStatus[ 'delivery-status'].delivered.id_admin != account.user.id_admin" class="content-padding">
+		<div class="dialog-message dialog-message-error">
+			<div class="message">
+				This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
+			</div>
 		</div>
 	</div>
 
-	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered && order.lastStatus[ 'delivery-status'].delivered.id_admin != account.user.id_admin" class="box-content2 content-padding">
-		<div class="dialog-message dialog-message-error"
-			This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
-		</div>
-	</div>
 
 	<div class="content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
 		<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="box-content-delivered box-order-status">
@@ -93,15 +100,13 @@
 			</div>
 			<div class="divider"></div>
 		</div>
-
 	</div>
 
 <!-- /actions -->
 
 <div class="content-padding">
-	<div class="status"></div>
 
-	<div class="dialog-message dialog-message-notice check-reminder">
+	<div class="dialog-message dialog-message-notice check-reminder"  ng-if="order.lastStatus['delivery-status'].accepted.id_admin == account.user.id_admin&& !order.lastStatus[ 'delivery-status' ].delivered">
 		<b>Double check</b> to make sure you received exactly the right food!
 	</div>
 
@@ -206,30 +211,25 @@
 			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=640x300&markers=color:green%7Clabel:A%7C{{order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div>
 		</a>
 		<br>
-
-		<span ng-if="order.notes">
-			<div class="order-comment-arrow"></div>
-			<div class="order-comment">
-				<i class="fa fa-bullhorn"></i> <p> &nbsp; {{ order.notes | nl2br }}</p>
+		
+		<div class="order-item-block-big order-notes" ng-if="order.notes">
+			<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
+			<div class="order-info2 order-info-small">
+				{{ order.notes | nl2br }}
 			</div>
-		</span>
-		<span ng-if="!order.notes">
+		</div>
 		<br>
-		</span>
 
-		<br><br>
-		<div class="divider dots"></div>
-		<br><br>
-		<div class="content-padding box-content2">
+		<div class="order-contents">
 			<table width="100%" celpadding="0" cellspacing="0" class="detail">
 				<thead>
-					<td class="topitem">Qty</td>
+					<td class="topitem order-contents-item-qty">Qty</td>
 					<td class="topitem itemname">Item</td>
 					<td class="topitem itemprice">Store Price</td>
 				</thead>
 				<tbody>
 					<tr ng-repeat="dish in order._dishes">
-						<td class="fooditem">1</td>
+						<td class="fooditem order-contents-item-qty">1</td>
 						<td class="fooditem dish-name">{{dish.name}} {{dish.options.without_default_options}} {{dish.options.with_option}} {{dish.options.select_options}} </td>
 						<td class="fooditem dish-price">
 							${{dish.price.regular | formatPrice}}
@@ -271,7 +271,7 @@
 					<tr class="order-total-row">
 						<td></td>
 						<td class="order-total-text">Total</td>
-						<td class="dish-price">
+						<td class="dish-price order-total-text">
 							${{order._final_price | formatPrice}}
 						</td>
 					</tr>

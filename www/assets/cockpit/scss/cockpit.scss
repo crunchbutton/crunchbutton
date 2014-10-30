@@ -1733,6 +1733,7 @@ h4.title{
 
 	.pickedup .notMyOrder .row-status{
 		background-color: #444c57;
+		color: #fff;
 	}
 
 	.pickedup .vert-divider{
@@ -1935,11 +1936,7 @@ h4.title{
 	.info-block {
 		background: #fff;
 		color: #000;
-		padding: 1em;
-	}
-
-	.info-block .order-info {
-		width: 100%;
+		padding: 1em 1em .9em 1em;
 	}
 
 	.info-block .order-icon {
@@ -2077,30 +2074,6 @@ h4.title{
 		display: inline-block;
 	}
 
-	.order-comment-arrow {
-		width: 0;
-		height: 0;
-		border-left: 7px solid transparent;
-		border-right: 7px solid transparent;
-		border-bottom: 7px solid #DF5850;
-		margin-left: 1.2em;
-	}
-
-	.order-comment {
-		background: #DF5850;
-		color: #fff;
-		padding: .9em .9em .8em 1em;
-		border-radius: 4px;
-		margin-bottom: .8em;
-		font-size: 1.2em;
-		font-family: Ruda;
-	}
-
-	.fa-bullhorn{
-		float:left;
-		font-size: 1.5em;
-	}
-
 	.icon-chef {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-chef.svg) no-repeat;
 		background-position: top center;
@@ -2117,22 +2090,20 @@ h4.title{
 		background-size:contain;
 	}
 
-
-	td {
-		border: 0;
-		padding: .5em;
-	}
-
 	.fooditem {
 		border-bottom: 1px solid #999;
 	}
+	
+	.order-contents-item-qty {
+		width: 1em;
+	}
 
 	.dish-name{
-		text-align: center;
+		text-align: left;
+		width: 100%;
 	}
 
 	.dish-price{
-		font-size: 1.2em;
 		color: #666;
 		text-align: right;
 	}
@@ -2144,6 +2115,7 @@ h4.title{
 	.order-total-text{
 		text-align: right;
 		font-size: 1.2em;
+		color: #000;
 	}
 
 	.order-tip-cash{
@@ -2151,12 +2123,11 @@ h4.title{
 	}
 
 	.topitem, .fooditem {
-		border-bottom: 2px solid #999;
-		font-size: 1.2em;
+		border-bottom: 1px solid #c7c7c7;
 	}
 
 	.itemname{
-		text-align: center;
+		text-align: left;
 	}
 
 	.itemprice{
@@ -2282,6 +2253,15 @@ b, strong{ font-weight: bold; }
 	border: 5px;
 }
 
+.order-contents {
+	background: #fff;
+	margin-bottom: 1.5em;
+}
+
+.order-contents td {
+	padding: .7em;
+}
+
 .check-reminder{
 	font-size: 1.2em;
 	text-align: left;
@@ -2291,17 +2271,12 @@ b, strong{ font-weight: bold; }
 
 .order-header{
 	color: #5d5f63;
-	font-size: 2.3em;
-	font-weight: 900;
-	text-align: right;
-	margin: 1em 0 .5em 0;
+	font-size: 5em;
+	font-weight: bold;
+	text-align: center;
+	margin: .5em 0 .5em 0;
+	font-size: 18vw;
 }
-	.order-header td:first-of-type{
-		padding-right: 0px;
-	}
-	.order-header td:last-of-type{
-		padding-left: 0px;
-	}
 
 
 /**
