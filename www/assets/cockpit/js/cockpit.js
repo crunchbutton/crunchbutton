@@ -449,6 +449,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			this.$apply(fn);
 		}
 	};
+	
+	$rootScope.callText = function(num) {
+		$rootScope.$broadcast('callText', num);
+	};
 
 	$rootScope.hasBack = false;
 
