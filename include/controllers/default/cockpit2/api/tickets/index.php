@@ -6,13 +6,28 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		if ($this->method() != 'get') {
 			exit;
 		}
+		
+		if (c::getPagePiece(2)) {
+			$support = Support::o(c::getPagePiece(2));
+			if (!$support->id_support) {
+				header('HTTP/1.0 404 Not Found');
+				exit;
+			}
+			
+			if (get_class($support) != 'Crunchbutton_Support') {
+				$support = $support->get(0);
+			}
+
+			echo $support->json();
+			exit;
+		}
 
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
 		$staus = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'open';
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		
-
+/*
 		$q = '
 			SELECT
 				s.id_support,
@@ -32,6 +47,21 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN user u ON u.id_user=s.id_user
 			WHERE 1=1
 		';
+*/
+		$q = '
+			SELECT
+				s.id_support,
+				sm.id_support_message,
+				sm.date,
+				sm.name,
+				u.name as user_name,
+				u.id_user,
+				sm.body as message
+			FROM support s
+			INNER JOIN support_message sm ON s.id_support = sm.id_support
+			LEFT JOIN user u ON u.id_user=s.id_user
+			WHERE 1=1
+		';
 
 		if ($staus != 'all') {
 			$q .= '
@@ -39,10 +69,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			';
 		}
 
-		
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			// only display support to their number
-
 		}
 
 		$q .= '
@@ -62,7 +90,5 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		}
 		echo json_encode($d);
 		exit;
-		
-
 	}
 }
