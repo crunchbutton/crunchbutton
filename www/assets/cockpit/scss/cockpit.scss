@@ -473,10 +473,6 @@ p {
 			transition: background .2s;
 }
 
-.snap-drawer .menu-link:hover:not(.nav-active) .side-menu-wrap {
-	background: #22242a;
-}
-
 .snap-drawer .menu-link {
 	display:block;
 	padding: 8px 0 2px 0;
@@ -536,6 +532,10 @@ p {
 	}
 	.drawer-right-content {
 		margin: 0;
+	}
+
+	.snap-drawer .menu-link:hover:not(.nav-active) .side-menu-wrap {
+		background: #22242a;
 	}
 
 }
