@@ -91,10 +91,11 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	$scope.ready = false;
 
 	$scope.filterOrders = function( order ){
+
 		if( $scope.show.all ){
 			return true;
 		} else {
-			if( order.lastStatus.id_admin == $scope.account.user.id_admin ){
+			if( order.lastStatus.id_admin == $scope.account.user.id_admin || order.lastStatus.status == 'new'){
 				return true;
 			}
 		}
