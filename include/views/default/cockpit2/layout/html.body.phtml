@@ -1,4 +1,4 @@
-<div class="hide angular-hider" ng-class="{ show: angularLoaded }">
+<div class="hide angular-hider" ng-class="{ show: angularLoaded, 'support-toggled': supportToggled }">
 	<div class="snap-drawers static-nav-viewport loggedout-hideable">
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
@@ -205,6 +205,7 @@
 			</ul>
 
 		</div>
+		<div class="left-menu-fix"></div>
 		<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
 			<div class="drawer-right-content">
 				<div ng-include="'assets/view/tickets-side-list.html'"></div>
@@ -232,7 +233,11 @@
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
 							</div>
-							<div class="notification notification-support" ng-click="navigation.menu('right')">
+							<div class="notification notification-support notification-support-mobile" ng-click="navigation.menu('right')">
+								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
+								<i class="fa fa-comment"></i>
+							</div>
+							<div class="notification notification-support notification-support-desktop" ng-click="supportToggle()">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
