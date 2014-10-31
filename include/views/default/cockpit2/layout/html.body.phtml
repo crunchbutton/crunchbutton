@@ -278,11 +278,11 @@
 	
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
-		<a href="sms:{{number}}" class="number-action">
+		<a href="sms:{{number}}" class="number-action" target="_system">
 			<button class="button green">Text: {{number | formatPhone}}</button>
 		</a>
 
-		<a href="tel:{{number}}" class="number-action">
+		<a href="tel:{{number}}" class="number-action" target="_system">
 			<button class="button green">Call: {{number | formatPhone}}</button>
 		</a>
 
