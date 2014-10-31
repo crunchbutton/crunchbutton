@@ -29,6 +29,48 @@ class Crunchbutton_Support_Message extends Cana_Table {
 																								WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '" . $phone . "'
 																								ORDER BY sm.id_support_message ASC" );
 	}
+	
+	public function exports() {
+		$out = $this->properties();
+		$out['name'] = $this->getName();
+		$out['timestamp'] = strtotime($this->date);
+		return $out;
+	}
+	
+	public function getName() {
+		if (!isset($this->_name)) {
+			
+			$phone = preg_replace('/[^0-9]/','', $this->phone);
+
+			if ($this->from == 'system') {
+				$this->_name = 'SYSTEM';
+
+			} elseif (!$this->name) {
+
+				$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
+
+				if ($phone) {
+					$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phone.'"');
+
+					if (!$user->id_admin) {
+						$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phoneFormat.'"');
+					}
+					
+					if (!$user->id_admin) {
+						$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
+					}
+					
+					if ($user->id_admin || $user->id_user) {
+						$this->_name = $user->phone;
+					}
+				}
+				
+			} else {
+				$this->_name = $this->name;
+			}
+		}
+		return $this->_name;
+	}
 
 	public function notify_by_sms() {
 

@@ -712,6 +712,10 @@ class Crunchbutton_Support extends Cana_Table {
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
 		
+		foreach ($this->messages() as $message) {
+			$out['messages'][] = $message->exports();
+		}
+		
 		return $out;
 	}
 
