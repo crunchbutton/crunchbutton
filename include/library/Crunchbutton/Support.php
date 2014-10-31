@@ -704,5 +704,15 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 		return $hasCreatePermission;
 	}
+	
+	public function exports() {
+		$out = $this->properties();
+		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
+		$out['driver'] = ($this->order()->id_order && $this->order()->driver()->id_admin) ? $this->order()->driver()->exports() : null;
+		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
+		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
+		
+		return $out;
+	}
 
 }
