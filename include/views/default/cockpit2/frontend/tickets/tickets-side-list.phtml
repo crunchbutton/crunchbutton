@@ -1,11 +1,11 @@
 <div class="tickets-side-list">
-	<div ng-controller="SideChatCtrl">
+	<div ng-controller="SideTicketsCtrl">
 		<div ng-if="account.user.permissions.GLOBAL">
 			<h1>Tickets</h1>
 			<div class="tickets-side-tickets">
 				<div ng-repeat="ticket in tickets" class="tickets-side-item">
 					
-					<a href="#" class="tickets-side-ticket">#{{ticket.id_support}}</a>
+					<a class="tickets-side-ticket" ng-click="setViewTicket(ticket.id_support)">#{{ticket.id_support}}</a>
 					<span class="tickets-side-time">10 m ago</span>
 					<div class="divider"></div>
 					<br>
@@ -17,7 +17,7 @@
 
 		<div ng-if="!account.user.permissions.GLOBAL">
 			<br>
-			<p>To contact Crunchbutton support, please text <br><br><a href="tel:16467831444" target="_system">(646) 783-1444</a></p>
+			<p>To contact Crunchbutton support, please text <br><br><a href ng-click="callText('16467831444')">(646) 783-1444</a></p>
 		</div>
 	</div>
 </div>

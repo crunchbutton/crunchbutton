@@ -37,7 +37,6 @@ NGApp.controller('LegalCtrl', function ($scope) {
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 
-console.log($.totalStorage('hasLoggedIn'));
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 	$scope.login = function() {
 		if( !$scope.username ){
@@ -89,19 +88,20 @@ NGApp.controller( 'ProfileCtrl', function ( $scope, CustomerRewardService ) {
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
 		$(':focus').blur();
-		console.log(fn);
+
 		var complete = function() {
 			$rootScope.closePopup();
-			console.log(fn, typeof fn);
 			if (typeof fn === 'function') {
 				fn();
 			}
 		};
+
 		if ($scope.$$phase) {
 			$scope.title = title;
 			$scope.message = message;
 			$scope.complete = complete;
 			App.dialog.show('.notification-alert-container');
+
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.title = title;
@@ -110,5 +110,15 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 				App.dialog.show('.notification-alert-container');
 			});
 		}
+	});
+});
+
+NGApp.controller( 'CallText', function ($scope, $rootScope) {
+	$rootScope.$on('callText', function(e, num) {
+		$(':focus').blur();
+		$scope.number = num;
+		$scope.complete = $rootScope.closePopup;
+		App.dialog.show('.notification-call-text-container');
+
 	});
 });

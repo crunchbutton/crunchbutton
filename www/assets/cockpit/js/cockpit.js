@@ -375,6 +375,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.server = App.server;
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
+	$rootScope.supportToggled = false;
+	$rootScope.supportToggle = function() {
+		$rootScope.supportToggled = !$rootScope.supportToggled;
+	};
 
 	$rootScope.isLive = ( App.config.env == 'live' );
 	$rootScope.isBeta = !$rootScope.isLive;
@@ -444,6 +448,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		} else {
 			this.$apply(fn);
 		}
+	};
+	
+	$rootScope.callText = function(num) {
+		$rootScope.$broadcast('callText', num);
 	};
 
 	$rootScope.hasBack = false;

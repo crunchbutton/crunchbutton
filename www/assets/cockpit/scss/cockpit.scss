@@ -248,7 +248,7 @@ p {
 }
 @media(min-width:500px) {
 	body {
-		font-size: 12px;
+		font-size: 11px;
 	}
 	.top-pad {
 		height: 67px;
@@ -430,10 +430,13 @@ p {
 		height:auto;
 		overflow:hidden;
 	}
+	.left-menu-fix {
+		display: none;
+	}
 }
 
 
-.snap-drawers, .snap-drawer {
+.snap-drawer {
 	background: $sideBg;
 	color:#eee;
 }
@@ -455,22 +458,30 @@ p {
 .snapjs-expand-right .snap-drawer-right {
 	width: 100%;
 }
-.snap-drawer ul {
-	padding:0;
-	margin:0;
-	list-style-type:none;
-}
-.snap-drawer li.nav-active .side-menu-wrap {
+
+.snap-drawer .menu-link.nav-active .side-menu-wrap {
 	background: $green;
 	color: #fff;
 }
-.snap-drawer li {
+.snap-drawer .menu-link .side-menu-wrap {
+	-webkit-transform: translateX(0) !important;
+
+	-webkit-transition: background .2s;
+	   -moz-transition: background .2s;
+		-ms-transition: background .2s;
+		 -o-transition: background .2s;
+			transition: background .2s;
+}
+
+.snap-drawer .menu-link {
 	display:block;
-	padding:8px 0 2px 0;
+	padding: 8px 0 2px 0;
 	text-decoration:none;
 	color:$navLinkColor;
 	text-indent:10px;
 	cursor: pointer;
+
+	
 }
 @-moz-document url-prefix() {
 	.snap-content {
@@ -479,6 +490,7 @@ p {
 }
 .snap-drawer .fa {
 	font-size: 15px;
+	margin-left: -5px;
 }
 .side-menu-wrap {
 	height: 28px;
@@ -505,7 +517,39 @@ p {
 	padding: 12px 0 10px 0;
 }
 
+@media(min-width:1025px) {
+	.side-menu-label, .side-menu-icon {
+		padding: 8px 0 6px 0;
+	}
+	.snap-drawer .menu-link {
+		padding: 2px 0 2px 0;
+	}
+	.side-menu-icon {
+		line-height: 1.9em;
+	}
+	.indent {
+		margin-left: 1em;
+	}
+	.drawer-right-content {
+		margin: 0;
+	}
 
+	.snap-drawer .menu-link:hover:not(.nav-active) .side-menu-wrap {
+		background: #22242a;
+	}
+
+}
+
+@media(max-width:1024px) {
+	.notification-support-desktop {
+		display: none;
+	}
+}
+@media(min-width:1025px) {
+	.notification-support-mobile {
+		display: none;
+	}
+}
 
 /* SNAPS */
 @media(min-width:1025px) {
@@ -514,8 +558,19 @@ p {
 		width: 100%;
 	}
 
-	#side-menu-right {
-		display: none;
+	.snap-drawer-right {
+		display: block;
+		position: fixed;
+		right: 0;
+		width: 288px;
+		height: 100%;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+		margin-right: -288px;
+		top: 0;
+		bottom: 0;
+		box-sizing: border-box;
+		padding-bottom: 2em;
 	}
 
 	.snap-drawers {
@@ -526,12 +581,45 @@ p {
 		top: 0;
 		position: absolute;
 	}
+	.snap-content-inner, .snap-drawer-right {
+		-webkit-transform: translateX(0) !important;
+
+		-webkit-transition: margin cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+		   -moz-transition: margin cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+			-ms-transition: margin cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+			 -o-transition: margin cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+				transition: margin cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+	}
 	.snap-content-inner {
-		margin-left: 235px;
-		margin-right: 10px;
+		margin-left: 233px;
+		margin-right: 13px;
+
+	}
+	.support-toggled .snap-content-inner {
+		margin-right: 300px;
+	}
+	.left-menu-fix {
+		background: #2f323a;
+		position: fixed;
+		width: 222px;
+		height: 100%;
+		bottom: 0;
+		top: 0;
+		content: " ";
+		z-index: 1;
 	}
 	.snap-drawer-left {
-		margin-top: 65px;
+		position: absolute;
+		z-index: 2;
+		width: 222px;
+		margin-top: 5px;
+	}
+	.support-toggled .snap-drawer-right {
+		margin-right: 0;
+		
+	}
+	.snap-drawer {
+		padding-top: 63px;
 		-webkit-transform: translateX(0) !important;
 	}
 	.nav-top {
@@ -539,7 +627,7 @@ p {
 		border-bottom: none;
 	}
 	.side-menu-wrap {
-		width: 208px;
+		width: 205px;
 	}
 	.menu {
 		display: none;
@@ -1733,6 +1821,7 @@ h4.title{
 
 	.pickedup .notMyOrder .row-status{
 		background-color: #444c57;
+		color: #fff;
 	}
 
 	.pickedup .vert-divider{
@@ -1894,9 +1983,10 @@ h4.title{
 	}
 
 	.order-icon2 {
-		font-size: 1.5em;
+		font-size: 2em;
 		display: table-cell;
-		width: 2em;
+		width: 2.2em;
+		padding-right: .2em;
 		text-align: center;
 		vertical-align: middle;
 	}
@@ -1907,8 +1997,8 @@ h4.title{
 		width: 2em;
 		text-align: center;
 		padding-left: 0px;
-		padding-right: 10px;
-		vertical-align: middle;
+		padding-right: .8em;
+		vertical-align: top;
 	}
 
 	.order-info {
@@ -1923,7 +2013,7 @@ h4.title{
 
 	.order-info2 {
 		display: table-cell;
-		font-size: .8em;
+		font-size: 1.3em;
 		font-family: Ruda;
 		vertical-align: middle;
 		text-align: left;
@@ -1934,11 +2024,7 @@ h4.title{
 	.info-block {
 		background: #fff;
 		color: #000;
-		padding: 1em;
-	}
-
-	.info-block .order-info {
-		width: 100%;
+		padding: 1em 1em .9em 1em;
 	}
 
 	.info-block .order-icon {
@@ -1958,11 +2044,19 @@ h4.title{
 		float: left;
 		font-size: 1.8em;
 		line-height: 16px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 11em;
+	}
+	
+	.info-address {
+		margin-top: .3em;
 	}
 
-	.info-address p{
+	.info-address p {
 		font-size: 2em;
-		line-height: 20px;
+		line-height: .8em;
+		white-space: normal;
 	}
 
 	.info-address a:link{
@@ -1972,7 +2066,6 @@ h4.title{
 	}
 
 	.order-item-block, .order-item-block-big, .order-item-block-bigger {
-		width: 15em;
 		margin: .5em 0 .5em 0;
 	}
 
@@ -1996,8 +2089,7 @@ h4.title{
 		background: #e1574c;
 		color: #fff;
 		width: 100%;
-		font-size: 1.5em;
-		padding: .3em 0 .3em 0;
+		padding: .7em 0 .6em 0;
 	}
 	.order-item-block-bigger{
 		width: 100%;
@@ -2008,16 +2100,6 @@ h4.title{
 		margin-top: 0;
 	}
 
-	.cust-pay-method{
-		background-color: #e1574c;
-		color: #fff;
-		padding-bottom:10px;
-		padding-top: 10px;
-		padding-left: 5px;
-		vertical-align: middle;
-		clear: both;
-	}
-
 	.pay-icon{
 		font-size: 1.4em;
 		display: table-cell;
@@ -2025,52 +2107,42 @@ h4.title{
 		text-align: center;
 		vertical-align: middle;
 	}
-
-	.cust-pay-method-text{
-		font-size: 1.4em;
-		display: table-cell;
-		text-align: left;
-		vertical-align: middle;
-		letter-spacing: 0px;
-		padding-top: 0px;
+	
+	.total-block {
+		color: #797979;
+		background-color: #d5d9dc;
+		text-align: center;
+		margin-top: 1em;
+		font-family: Ruda;
+		padding-bottom: 1em;
+		padding-top: 1em;
+		width: 47%;
 	}
 
 	.customer-total-block{
-		width: 47%;
-		background-color: #d5d9dc;
-		text-align: center;
 		float: left;
-		margin-top: 10px;
-		font-family: Ruda;
-		padding-bottom: 10px;
-		padding-top: 10px;
 	}
 
 	.tip-total-block{
-		width: 47%;
-		background-color: #d5d9dc;
-		text-align: center;
 		float: right;
-		margin-top: 10px;
-		font-family: Ruda;
-		padding-bottom: 10px;
-		padding-top: 10px;
 	}
 
-	.customer-total-price{
-		font-size: 2.5em;
+	.order-total-price {
+		font-size: 3em;
 		font-weight: bold;
 	}
 
-	.customer-total-text, .tip-total-text{
-		font-size: .9em;
-		color: gray;
+	.order-total-text {
+		font-size: 1.25em;
 	}
 
-	.tip-total-price{
-		font-size: 2.5em;
-		font-weight: bold;
+	.tip-total-price-dollar {
+		color: #8d8d8d;
+		font-size: .8em;
+		padding-right: .2em;
+		vertical-align: middle;
 	}
+	
 
 	.order-map {
 		width: 100%;
@@ -2090,158 +2162,36 @@ h4.title{
 		display: inline-block;
 	}
 
-	.order-comment-arrow {
-		width: 0;
-		height: 0;
-		border-left: 7px solid transparent;
-		border-right: 7px solid transparent;
-		border-bottom: 7px solid #DF5850;
-		margin-left: 1.2em;
-	}
-
-	.order-comment {
-		background: #DF5850;
-		color: #fff;
-		padding: .9em .9em .8em 1em;
-		border-radius: 4px;
-		margin-bottom: .8em;
-		font-size: 1.2em;
-		font-family: Ruda;
-	}
-
-	.fa-bullhorn{
-		float:left;
-		font-size: 1.5em;
-	}
-
-	.icon-support {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-support.svg) no-repeat;
-		background-position: top center;
-		width: 2.4em;
-		height: 2.8em;
-		background-size: 100%;
-	}
-
 	.icon-chef {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-chef.svg) no-repeat;
 		background-position: top center;
-		width: 2.0em;
-		height: 2.6em;
-		background-size: 100%;
+		width: 2em;
+		height: 2em;
+		background-size:contain;
 	}
 
 	.icon-user {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-user.svg) no-repeat;
 		background-position: top center;
-		width: 1.9em;
-		height: 2.4em;
-		background-size: 100%;
-	}
-
-	.icon-delivery {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-delivery.svg) no-repeat;
-		background-position: top center;
-		width: 2.2em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-card {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-card.svg) no-repeat;
-		background-position: top center;
-		width: 2.3em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-clock {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-clock.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
+		width: 2em;
 		height: 2em;
-		background-size: 100%;
-	}
-
-	.icon-timer {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-timer.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
-		height: 2.3em;
-		background-size: 100%;
-	}
-
-	.icon-map-home {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-home.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
-		height: 2.41em;
-		background-size: 100%;
-	}
-
-	.icon-map-restaurant {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-restaurant.svg) no-repeat;
-		background-position: top center;
-		width: 1.6em;
-		height: 2.41em;
-		background-size: 100%;
-	}
-
-	.icon-cash {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-cash.svg) no-repeat;
-		background-position: top center;
-		width: 2.1em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-takeout {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-takeout.svg) no-repeat;
-		background-position: top center;
-		width: 1.5em;
-		height: 2.0em;
-		background-size: 100%;
-	}
-
-	.icon-phone {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-phone.svg) no-repeat;
-		background-position: top center;
-		width: 1.4em;
-		height: 1.4em;
-		background-size: 100%;
-		margin-top: .2em;
-	}
-
-	.icon-notes {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-notes.svg) no-repeat;
-		background-position: top center;
-		width: 1.9em;
-		height: 1.6em;
-		background-size: 100%;
-	}
-
-	.icon-credit {
-		background: url(http://dev.crunchr.co/assets/images/micro/icon-credit.svg) no-repeat;
-		background-position: top center;
-		width: 2.5em;
-		height: 1.9em;
-		background-size: 100%;
-	}
-
-	td {
-		border: 0;
-		padding: .5em;
+		background-size:contain;
 	}
 
 	.fooditem {
 		border-bottom: 1px solid #999;
 	}
+	
+	.order-contents-item-qty {
+		width: 1em;
+	}
 
 	.dish-name{
-		text-align: center;
+		text-align: left;
+		width: 100%;
 	}
 
 	.dish-price{
-		font-size: 1.2em;
 		color: #666;
 		text-align: right;
 	}
@@ -2253,23 +2203,19 @@ h4.title{
 	.order-total-text{
 		text-align: right;
 		font-size: 1.2em;
+		color: #000;
 	}
 
 	.order-tip-cash{
 		text-align: left;
 	}
 
-	.your-take{
-		width: 100%;
-	}
-
 	.topitem, .fooditem {
-		border-bottom: 2px solid #999;
-		font-size: 1.2em;
+		border-bottom: 1px solid #c7c7c7;
 	}
 
 	.itemname{
-		text-align: center;
+		text-align: left;
 	}
 
 	.itemprice{
@@ -2395,6 +2341,15 @@ b, strong{ font-weight: bold; }
 	border: 5px;
 }
 
+.order-contents {
+	background: #fff;
+	margin-bottom: 1.5em;
+}
+
+.order-contents td {
+	padding: .7em;
+}
+
 .check-reminder{
 	font-size: 1.2em;
 	text-align: left;
@@ -2404,17 +2359,12 @@ b, strong{ font-weight: bold; }
 
 .order-header{
 	color: #5d5f63;
-	font-size: 2.3em;
-	font-weight: 900;
-	text-align: right;
-	margin: 1em 0 .5em 0;
+	font-size: 5em;
+	font-weight: bold;
+	text-align: center;
+	margin: .5em 0 .5em 0;
+	font-size: 15vw;
 }
-	.order-header td:first-of-type{
-		padding-right: 0px;
-	}
-	.order-header td:last-of-type{
-		padding-left: 0px;
-	}
 
 
 /**
@@ -2889,11 +2839,6 @@ h1.driver-title {
 	opacity: .5;
 }
 
-.drawer-right-content {
-	margin-left: 1em;
-	margin-right: 1em;
-}
-
 .pending, .succeeded, .failed {
 	font-weight: bold;
 }
@@ -2906,4 +2851,18 @@ h1.driver-title {
 }
 .failed {
 	color: #cb311b !important;
+}
+
+.dialog-close-link {
+	text-transform: uppercase;
+	text-align: center;
+	font-weight: bold;
+	text-decoration: none;
+	display: block;
+	width: 100%;
+	margin-bottom: -.8em;
+}
+
+.notification-call-text-container .number-action .button {
+	margin-bottom: .8em;
 }

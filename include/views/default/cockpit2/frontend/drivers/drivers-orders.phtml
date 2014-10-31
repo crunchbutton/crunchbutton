@@ -60,7 +60,7 @@
 								{{order.name}}
 							</div>
 							<div class="phone-pointer">
-								<a href="tel:{{order.phone}}">{{order.phone | formatPhone}}</a>
+								<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
 							</div>
 						</div>
 						<div class="divider"></div>

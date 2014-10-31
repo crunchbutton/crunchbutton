@@ -8,9 +8,7 @@
 
 	<p>
 		<b>Have questions during a delivery?</b><br>
-		TXT us at <a href="tel:646-783-1444">646-783-1444</a>
-		<br>
-		or email <a href="mailto:drive@crunchbutton.com">drive@crunchbutton.com</a>
+		TXT us at <a ng-click="callText('646-783-1444')">646-783-1444</a>
 		<br><br>
 		<b>When do I fill out my schedule for the next week?</b><br>
 		Make sure to fill out your schedule by Monday at 8PM EDT at the latest.
@@ -18,7 +16,7 @@
 		<b>Can I earn cash back for money spent during my shifts at restaurants?</b><br>
 		Why Yes! If you are interested in getting extra cash back during your shifts, here are links to apply for the cards we'd recommend: they're specifically for college students and many have extra cash back for food purchases.
 			<br/>
-			<span ng-click="navigation.link('/drivers/help/credit-card');" class="link orange">Credit Cards for Crunchbutton Student Deliverers</span>
+			<a href="/drivers/help/credit-card" class="link orange">Credit Cards for Crunchbutton Student Deliverers</a>
 		<br><br>
 		<b>Payment:</b><br>
 		At the end of each week, you will be reimbursed for your credit/debit card spendings plus what you earned. You get to keep all cash received from cash orders. If there are discrepancies between what you paid for the order versus what the customer was charged (not including taxes, delivery fee, etc), email team@crunchbutton.com so we can fix prices online.

@@ -614,13 +614,23 @@ class Crunchbutton_Admin extends Cana_Table {
 		$admins = self::q($query);
 		return $admins;
 	}
-
-	public function getConfig( $key ){
-		$config = Crunchbutton_Admin_Config::q( 'SELECT * FROM admin_config WHERE `key` = "' . $key . '" AND id_admin = ' . $this->id_admin );
-		if( $config->id_admin_config ){
-			return $config;
+	
+	public function config($key = null) {
+		if (!isset($this->_config)) {
+			$config = Crunchbutton_Admin_Config::q('SELECT * FROM admin_config WHERE id_admin='.$this->id_admin);
+			foreach ($config as $c) {
+				$this->_config[$c->key] = $c;
+			}
 		}
-		return false;
+		if ($key) {
+			return $this->_config[$key] ? $this->_config[$key] : false;
+		} else {
+			return $this->_config;
+		}
+	}
+
+	public function getConfig($key) {
+		return $this->config($key);
 	}
 
 	public function setConfig( $key, $value ){
@@ -695,6 +705,12 @@ class Crunchbutton_Admin extends Cana_Table {
 			'communities' => $communities,
 			'active' => ( $this->active == 1 )
 		];
+		
+		foreach ($this->config() as $config) {
+			if ($config->exposed) {
+				$ex['prefs'][$config->key] = $config->value;
+			}
+		}
 
 		foreach( $remove as $rem ){
 			unset( $ex[ $rem ] );
