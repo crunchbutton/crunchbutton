@@ -450,6 +450,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	};
 	
+	$rootScope.triggerViewTicket = function(ticket) {
+		$rootScope.$broadcast('triggerViewTicket', ticket);
+	};
+	
 	$rootScope.callText = function(num) {
 		$rootScope.$broadcast('callText', num);
 	};

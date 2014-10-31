@@ -35,9 +35,19 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 });
 
 NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
-	TicketService.get(TicketViewService.scope.viewTicket, function(ticket) {
-		$scope.ticket = ticket;
+
+	var loadTicket = function(id) {
+		TicketService.get(id, function(ticket) {
+			$scope.ticket = ticket;
+		});
+	};
+
+	$rootScope.$on('triggerViewTicket', function(e, ticket) {
+		loadTicket(ticket);
 	});
+	
+	loadTicket(TicketViewService.scope.viewTicket);
+
 });
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
@@ -51,6 +61,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams)
 	service.setViewTicket = function(id) {
 		service.scope.viewTicket = id;
 	};
+	
+	$rootScope.$on('triggerViewTicket', function(e, ticket) {
+		service.scope.viewTicket = ticket;
+		$rootScope.supportToggled = true;
+	});
 	return service;
 });
 
@@ -77,6 +92,8 @@ NGApp.controller('TicketsViewCtrl', function($scope, $rootScope, TicketService, 
 });
 
 NGApp.controller('TicketsTicketCtrl', function($scope, $rootScope, $routeParams, TicketService) {
+	$rootScope.$broadcast('triggerViewTicket', $routeParams.id);
+
 	TicketService.get($routeParams.id, function(ticket) {
 		$scope.ticket = ticket;
 		$scope.ready = true;
