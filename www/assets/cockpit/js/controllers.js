@@ -13,7 +13,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 		} else if (AccountService.isDriver) {
 			MainNavigationService.link('/drivers/orders');
 		} else {
-			MainNavigationService.link('/drivers/help');
+			MainNavigationService.link('/login');
 		}
 	}
 });
