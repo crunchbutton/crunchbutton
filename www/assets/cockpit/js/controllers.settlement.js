@@ -695,6 +695,12 @@ NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, Settlemen
 		} );
 	}
 
+	$scope.do_err_payments = function(){
+		SettlementService.drivers.do_err_payments( function(){
+			$scope.update();
+		} );
+	}
+
 	$scope.payment = function( id_payment ){
 		$scope.navigation.link( '/settlement/drivers/scheduled/' + id_payment );
 	}
