@@ -2346,13 +2346,23 @@ b, strong{ font-weight: bold; }
 	margin-bottom: 25px;
 }
 
-.support-box-wrap {
-	width: 50%;
-	display: inline-block;
+
+@media(max-width:699px) {
+	.support-box-wrap {
+		width: 100%;
+	}
 }
-.support-box-wrap:nth-child(odd) .box-content-color {
-	margin-right: 15px;
+@media(min-width:600px) {
+	.support-box-wrap {
+		width: 50%;
+		float: left;
+	}
+	.support-box-wrap:nth-child(odd) .box-content-color {
+		margin-right: 15px;
+	}
 }
+
+
 
 .ticket-status-top {
 	float: right;
@@ -2378,7 +2388,6 @@ b, strong{ font-weight: bold; }
 	background: #bd2c00;
 }
 
-
 .support-box-wrap h1 {
 	font-size: 1.8em;
 	font-family: Source Sans Pro, Helvetica, sans-serif;
@@ -2392,22 +2401,17 @@ b, strong{ font-weight: bold; }
 }
 
 .field-container {
-	display: table;
 	width: 100%;
 }
 
 .field-container .field-key, .field-container .field-value {
-	display: table-cell;
 	padding: .7em;
-	border-bottom: 1px solid #f1f2f7;
 	line-height: 1.5em;
 }
 
 .field-button-spacer {
 	height: .2em;
 }
-
-
 
 .field-button {
 	margin: .7em;
@@ -2416,18 +2420,22 @@ b, strong{ font-weight: bold; }
 
 .field-container .field-row {
 	font-size: 1.2em;
-	display: table-row;
+	clear: both;
+	border-bottom: 1px solid #f1f2f7;
 }
 
 .field-container .field-key {
 	color: #74777e;
 	text-align: left;
 	white-space: nowrap;
+	float: left;
 }
 
 .field-container .field-value {
 	color: #2a2c2f;
 	text-align: right;
+
+
 }
 
 .order-contents {
