@@ -1,7 +1,29 @@
-<div class="tickets-side-list">
-	<div ng-controller="SideTicketCtrl">
-		<a ng-click="setViewTicket(0)">&lt;&lt; back</a>
-		<br>
-		{{ticket.id_support}}
+
+	<div ng-controller="SideTicketCtrl" class="support-side-chat">
+		<table style="height: 100%">
+			<tr><td class="support-chat-header">
+				<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
+				<a class="support-chat-header-issue" href="{{ticket.id_support}}">#{{ticket.id_support}}</a>
+				<div class="divider"></div>
+				<div class="support-chat-header-details">
+					{{ticket.restaurant.name}} / {{ticket.restaurant.community}}<br>
+					{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / {{ticket.order.status}}<br>
+					ETA: @todo
+				</div>
+			</td></tr>
+			<tr><td class="support-chat-contents">
+				<div class="support-chat-contents-scroll">
+					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message">
+						<div class="support-chat-contents-message-name">{{message.name}}</div>
+						<div class="support-chat-contents-message-time">{{message.timestamp | date: 'h:mm a'}}</div>
+						<div class="support-chat-contents-message-body">{{message.body}}</div>
+					</div>
+				</div>
+			</td></tr>
+			<tr><td class="support-side-chat-row">
+				<div class="support-chat-box-wrap">
+					<textarea class="support-chat-box" placeholder="Type someting and press enter..."></textarea>
+					</div>
+			</td></tr>
+		</table>
 	</div>
-</div>

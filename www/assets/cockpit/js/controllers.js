@@ -125,6 +125,9 @@ NGApp.controller( 'CallText', function ($scope, $rootScope) {
 
 NGApp.filter('capitalize', function() {
 	return function(input, scope) {
+		if (input == null) {
+			return null;
+		}
 		if (input!=null) {
 			input = input.toLowerCase();
 		}
