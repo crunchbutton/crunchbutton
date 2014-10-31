@@ -198,7 +198,7 @@
 			<div class="order-icon3"><i class="icon-chef"></i></div>
 			<div class="order-info">
 				<div class="info-name">{{order._restaurant_name}}</div>
-				<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}">{{order._restaurant_phone | formatPhone}}</a></div>
+				<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}" target="_system">{{order._restaurant_phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 
 				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}">{{order._restaurant_address | nl2br }}</a></p></div>
