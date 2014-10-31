@@ -14,11 +14,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 
-NGApp.controller('SideChatCtrl', function($scope, $rootScope, TicketService) {
+NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
 	$scope.params = {
 		status: 'open'
 	};
-	
+
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
@@ -26,8 +26,32 @@ NGApp.controller('SideChatCtrl', function($scope, $rootScope, TicketService) {
 		if (!oldValue || newValue.count != oldValue.count) {
 			console.debug('Updating support tickets...');
 			TicketService.list($scope.params, function(tickets) {
-				$scope.tickets = tickets;
+				TicketViewService.scope.tickets = tickets;
 			});
 		}
 	});
+});
+
+NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
+	TicketService.get(TicketViewService.scope.viewTicket, function(ticket) {
+		$scope.ticket = ticket;
+	});
+});
+
+NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
+	TicketViewService.scope = $scope;
+	$scope.setViewTicket = TicketViewService.setViewTicket;
+});
+
+
+NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams) {
+
+	var service = {};
+	
+	service.setViewTicket = function(id) {
+		service.scope.viewTicket = id;
+	};
+
+	return service;
+
 });
