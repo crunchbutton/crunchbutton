@@ -2852,3 +2852,17 @@ h1.driver-title {
 .failed {
 	color: #cb311b !important;
 }
+
+.dialog-close-link {
+	text-transform: uppercase;
+	text-align: center;
+	font-weight: bold;
+	text-decoration: none;
+	display: block;
+	width: 100%;
+	margin-bottom: -.8em;
+}
+
+.notification-call-text-container .number-action .button {
+	margin-bottom: .8em;
+}

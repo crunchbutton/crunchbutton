@@ -113,7 +113,6 @@
 				</table>
 			</a>
 
-
 			<a href="/drivers/help" class="menu-link" ng-if="account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -275,5 +274,18 @@
 		<h1 ng-bind="title" ng-show="title"></h1>
 		<p ng-bind-html-unsafe="message" class="small-message"></p>
 		<button ng-click="complete()" class="button green">OK</button>
+	</div>
+	
+	<!-- SMS vs Phone -->
+	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
+		<a href="sms:{{number}}" class="number-action">
+			<button class="button green">Text: {{number | formatPhone}}</button>
+		</a>
+
+		<a href="tel:{{number}}" class="number-action">
+			<button class="button green">Call: {{number | formatPhone}}</button>
+		</a>
+
+		<a ng-click="complete()" class="dialog-close-link">Close</a>
 	</div>
 </div>
