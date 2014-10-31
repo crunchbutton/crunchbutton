@@ -757,7 +757,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 
-
 			if( $shouldSchedule ){
 
 				// schedule it
@@ -839,6 +838,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 		$this->doDriverPayments();
 		return true;
+	}
+
+	public function doDriverErrPayments(){
+		$schedules = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE status = "' . Cockpit_Payment_Schedule::STATUS_ERROR . '"' );
+		foreach( $schedules as $_schedule ){
+			$id_payment_schedule = $_schedule->id_payment_schedule;
+			$settlement = new Crunchbutton_Settlement;
+			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+				$settlement->payDriver( $id_payment_schedule );
+			} );
+		}
 	}
 
 	public function doDriverPayments( $id_payment_schedule = false ){
