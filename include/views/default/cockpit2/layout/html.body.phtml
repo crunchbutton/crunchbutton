@@ -3,204 +3,196 @@
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
 
-			<ul>
-				<? /*
-				<li ng-click="navigation.link('/drivers/dashboard')" ng-class="{'nav-active': (navigation.page == 'drivers-dashboard')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
-							<td class="side-menu-label">Dashboard</a></td>
-						</tr>
-					</table>
-				</li>
-				*/ ?>
-				<a href="/profile" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'profile')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-user"></i></td>
-							<td class="side-menu-label">Profile</a></td>
-						</tr>
-					</table>
-				</a>
-				<a href="/drivers/orders" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-car"></i></td>
-							<td class="side-menu-label">Orders</a></td>
-						</tr>
-					</table>
-				</a>
 
-				<a href="/drivers/shifts" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
-							<td class="side-menu-label">Shifts</a></td>
-						</tr>
-					</table>
-				</a>
+			<? /*
+			<li ng-click="navigation.link('/drivers/dashboard')" ng-class="{'nav-active': (navigation.page == 'drivers-dashboard')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
+						<td class="side-menu-label">Dashboard</a></td>
+					</tr>
+				</table>
+			</li>
+			*/ ?>
+			<a href="/profile" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'profile')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-user"></i></td>
+						<td class="side-menu-label">Profile</a></td>
+					</tr>
+				</table>
+			</a>
+			<a href="/drivers/orders" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-car"></i></td>
+						<td class="side-menu-label">Orders</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/drivers/shifts/schedule" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shift-preferences')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
-							<td class="side-menu-label">Shift Preferences</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/drivers/shifts" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
+						<td class="side-menu-label">Shifts</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/drivers/summary" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-summary')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-money"></i></td>
-							<td class="side-menu-label">Payment Summary</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/drivers/shifts/schedule" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shift-preferences')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
+						<td class="side-menu-label">Shift Preferences</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/restaurant/order/placement/dashboard" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurant-order-placement')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-credit-card"></i></td>
-							<td class="side-menu-label">Order Placement</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/drivers/summary" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-summary')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-money"></i></td>
+						<td class="side-menu-label">Payment Summary</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/settlement" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'settlement')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-bank"></i></td>
-							<td class="side-menu-label">Settlement</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/restaurant/order/placement/dashboard" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurant-order-placement')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-credit-card"></i></td>
+						<td class="side-menu-label">Order Placement</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/staff/list" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'staff')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-users"></i></td>
-							<td class="side-menu-label">Staff</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/settlement" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'settlement')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-bank"></i></td>
+						<td class="side-menu-label">Settlement</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/customer" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'customer')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
-							<td class="side-menu-label">Customer</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/staff/list" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'staff')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-users"></i></td>
+						<td class="side-menu-label">Staff</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/drivers/onboarding" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-automobile"></i></td>
-							<td class="side-menu-label">Driver Onboarding</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/customer" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'customer')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
+						<td class="side-menu-label">Customer</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/drivers/docs" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
-							<td class="side-menu-label">Documents</a></td>
-						</tr>
-					</table>
-				</a>
+			<a href="/drivers/onboarding" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-automobile"></i></td>
+						<td class="side-menu-label">Driver Onboarding</a></td>
+					</tr>
+				</table>
+			</a>
 
-				<a href="/drivers/help" class="menu-link" ng-if="account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
-							<td class="side-menu-label">Help</a></td>
-						</tr>
-					</table>
-				</a>
-				<a href="/restaurants/help" class="menu-link" ng-if="account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurants-help')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
-							<td class="side-menu-label">Help</a></td>
-						</tr>
-					</table>
-				</a>
-				<? /*
-				<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'home')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
-							<td class="side-menu-label">Dashboard</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
-							<td class="side-menu-label">Customers</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.signin()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-road"></i></td>
-							<td class="side-menu-label">Drivers</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="signout.signout()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-bar-chart-o"></i></td>
-							<td class="side-menu-label">Reports</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="signout.signout()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-wrench"></i></td>
-							<td class="side-menu-label">Tools</a></td>
-						</tr>
-					</table>
-				</li>
-				*/ ?>
-				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
-							<td class="side-menu-label">Sign Out</a></td>
-						</tr>
-					</table>
-				</a>
-				<a href="/login" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'login')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
-							<td class="side-menu-label">Sign In</a></td>
-						</tr>
-					</table>
-				</a>
-				<a href="/info" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'info')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
-							<td class="side-menu-label">More Info</a></td>
-						</tr>
-					</table>
-				</a>
-				<div class="menu-link">
-					<br><br><br><br>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&copy;<?=date('Y')?> Youbeo, Inc.<br><br>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/legal">Terms of Use</a>
-					<br><br><br>
-				</div>
-			</ul>
+
+			<a href="/drivers/help" class="menu-link" ng-if="account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-support"></i></td>
+						<td class="side-menu-label">Help</a></td>
+					</tr>
+				</table>
+			</a>
+			<a href="/restaurants/help" class="menu-link" ng-if="account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurants-help')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-support"></i></td>
+						<td class="side-menu-label">Help</a></td>
+					</tr>
+				</table>
+			</a>
+			<? /*
+			<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'home')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
+						<td class="side-menu-label">Dashboard</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
+						<td class="side-menu-label">Customers</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.signin()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-road"></i></td>
+						<td class="side-menu-label">Drivers</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="signout.signout()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-bar-chart-o"></i></td>
+						<td class="side-menu-label">Reports</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="signout.signout()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-wrench"></i></td>
+						<td class="side-menu-label">Tools</a></td>
+					</tr>
+				</table>
+			</li>
+			*/ ?>
+			<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
+						<td class="side-menu-label">Sign Out</a></td>
+					</tr>
+				</table>
+			</a>
+			<a href="/login" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'login')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
+						<td class="side-menu-label">Sign In</a></td>
+					</tr>
+				</table>
+			</a>
+			<a href="/info" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'info')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-support"></i></td>
+						<td class="side-menu-label">More Info</a></td>
+					</tr>
+				</table>
+			</a>
+			<div class="menu-link">
+				<br><br><br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&copy;<?=date('Y')?> Youbeo, Inc.<br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/legal">Terms of Use</a>
+				<br><br><br>
+			</div>
+
 
 		</div>
 		<div class="left-menu-fix"></div>
