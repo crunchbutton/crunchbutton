@@ -14,124 +14,120 @@
 					</table>
 				</li>
 				*/ ?>
-				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/profile')" ng-class="{'nav-active': (navigation.page == 'profile')}">
+				<a href="/profile" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'profile')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-user"></i></td>
 							<td class="side-menu-label">Profile</a></td>
 						</tr>
 					</table>
-				</li>
-				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/orders')" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
+				</a>
+				<a href="/drivers/orders" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-car"></i></td>
 							<td class="side-menu-label">Orders</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/shifts')" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
+				<a href="/drivers/shifts" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
 							<td class="side-menu-label">Shifts</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/shifts/schedule')" ng-class="{'nav-active': (navigation.page == 'drivers-shift-preferences')}">
+				<a href="/drivers/shifts/schedule" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shift-preferences')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
 							<td class="side-menu-label">Shift Preferences</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/summary')" ng-class="{'nav-active': (navigation.page == 'drivers-summary')}">
+				<a href="/drivers/summary" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-summary')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-money"></i></td>
 							<td class="side-menu-label">Payment Summary</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<li ng-if="account.user.permissions.GLOBAL || account.isRestaurant" ng-click="navigation.link('/restaurant/order/placement/dashboard')" ng-class="{'nav-active': (navigation.page == 'restaurant-order-placement')}">
+				<a href="/restaurant/order/placement/dashboard" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurant-order-placement')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-credit-card"></i></td>
 							<td class="side-menu-label">Order Placement</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<?/* Permission GLOBAL hard coded for while | todo: remove it and apply the correct permission @pererinha */?>
-				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/settlement/')" ng-class="{'nav-active': (navigation.page == 'settlement')}">
+				<a href="/settlement" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'settlement')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-bank"></i></td>
 							<td class="side-menu-label">Settlement</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<?/* Permission GLOBAL hard coded for while | todo: remove it and apply the correct permission @pererinha */?>
-				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/staff/list')" ng-class="{'nav-active': (navigation.page == 'staff')}">
+				<a href="/staff/list" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'staff')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-users"></i></td>
 							<td class="side-menu-label">Staff</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<?/* Permission GLOBAL hard coded for while | todo: remove it and apply the correct permission @pererinha */?>
-				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/customer')" ng-class="{'nav-active': (navigation.page == 'customer')}">
+				<a href="/customer" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'customer')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
 							<td class="side-menu-label">Customer</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<?/* Permission GLOBAL hard coded for while | todo: remove it and apply the correct permission @pererinha */?>
-				<li ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/drivers/onboarding')" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
+				<a href="/drivers/onboarding" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-automobile"></i></td>
 							<td class="side-menu-label">Driver Onboarding</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<li ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-click="navigation.link('/drivers/docs/')" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
+				<a href="/drivers/docs" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
 							<td class="side-menu-label">Documents</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 
-				<li ng-if="account.isDriver" ng-click="navigation.link('/drivers/help')" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
+				<a href="/drivers/help" class="menu-link" ng-if="account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
 							<td class="side-menu-label">Help</a></td>
 						</tr>
 					</table>
-				</li>
-				<li ng-if="account.isRestaurant" ng-click="navigation.link('/restaurants/help')" ng-class="{'nav-active': (navigation.page == 'restaurants-help')}">
+				</a>
+				<a href="/restaurants/help" class="menu-link" ng-if="account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurants-help')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
 							<td class="side-menu-label">Help</a></td>
 						</tr>
 					</table>
-				</li>
+				</a>
 				<? /*
 				<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'home')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -174,34 +170,36 @@
 					</table>
 				</li>
 				*/ ?>
-				<li ng-click="account.logout()" ng-if="account.user.id_admin">
+				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
 							<td class="side-menu-label">Sign Out</a></td>
 						</tr>
 					</table>
-				</li>
-				<li ng-click="navigation.link('/login')" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'login')}">
+				</a>
+				<a href="/login" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'login')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
 							<td class="side-menu-label">Sign In</a></td>
 						</tr>
 					</table>
-				</li>
-				<li ng-if="!account.user.id_admin" ng-click="navigation.link('/info')" ng-class="{'nav-active': (navigation.page == 'info')}">
+				</a>
+				<a href="/info" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'info')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
 							<td class="side-menu-label">More Info</a></td>
 						</tr>
 					</table>
-				</li>
-				<li>
+				</a>
+				<div class="menu-link">
 					<br><br><br><br>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&copy; <?=date('Y')?> Youbeo, Inc. <a href="/legal">Terms of Use</a>
-				</li>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&copy;<?=date('Y')?> Youbeo, Inc.<br><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/legal">Terms of Use</a>
+					<br><br><br>
+				</div>
 			</ul>
 
 		</div>
