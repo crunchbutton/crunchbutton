@@ -528,14 +528,17 @@ p {
 	}
 
 	.snap-drawer-right {
-
 		display: block;
 		position: fixed;
 		right: 0;
 		width: 288px;
 		height: 100%;
-
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 		margin-right: -288px;
+		top: 0;
+		bottom: 0;
+		box-sizing: border-box;
 	}
 
 	.snap-drawers {
@@ -583,7 +586,7 @@ p {
 		
 	}
 	.snap-drawer {
-		margin-top: 63px;
+		padding-top: 63px;
 		-webkit-transform: translateX(0) !important;
 	}
 	.nav-top {
