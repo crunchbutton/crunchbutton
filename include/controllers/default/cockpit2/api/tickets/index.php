@@ -52,14 +52,20 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			SELECT
 				s.id_support,
 				sm.id_support_message,
+				sm.id_admin,
 				sm.date,
 				sm.name,
+				sm.phone,
+				sm.from,
 				u.name as user_name,
+				a.name as admin_name,
 				u.id_user,
+				s.status,
 				sm.body as message
 			FROM support s
 			INNER JOIN support_message sm ON s.id_support = sm.id_support
 			LEFT JOIN user u ON u.id_user=s.id_user
+			LEFT JOIN admin a ON a.id_admin=sm.id_admin
 			WHERE 1=1
 		';
 
@@ -71,6 +77,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			// only display support to their number
+			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
+			$q .= ' AND s.phone="'.$phone.'"';
 		}
 
 		$q .= '
@@ -86,9 +94,43 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			}
 			$o->image = $u->image();
 			*/
-			$d[] = $o;
+//			$d[$o->id_support] = $o;
+
+			$phone = preg_replace('/[^0-9]/','', $o->phone);
+
+			if ($o->from == 'system') {
+				$o->name = 'SYSTEM';
+
+			} elseif (!$o->name) {
+
+				$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
+
+				if ($phone) {
+					$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phone.'"');
+
+					if (!$user->id_admin) {
+						$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phoneFormat.'"');
+					}
+					
+					if (!$user->id_admin) {
+						$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
+					}
+					
+					if ($user->id_admin || $user->id_user) {
+						$o->name = $user->phone;
+					}
+				}
+				
+			}
+			
+			if (!$o->name) {
+				$o->name = $phone;
+			}
+			
+			$d[$o->id_support] = $o;
 		}
-		echo json_encode($d);
+
+		echo json_encode(array_values($d));
 		exit;
 	}
 }
