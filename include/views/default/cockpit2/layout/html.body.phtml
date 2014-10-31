@@ -289,13 +289,25 @@
 	
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
+		<h1 class="dialog-call-number">{{number | formatPhone}}</h1>
+
 		<a href="sms:{{number}}" class="number-action" target="_system">
-			<button class="button green">Text: {{number | formatPhone}}</button>
+			<button class="button green">Text</button>
 		</a>
 
 		<a href="tel:{{number}}" class="number-action" target="_system">
-			<button class="button green">Call: {{number | formatPhone}}</button>
+			<button class="button green">Call</button>
 		</a>
+		
+		<? /*
+		<a href class="number-action" target="_system" ng-if="account.user.permissions.GLOBAL">
+			<button class="button green">Conference Call (your phone)</button>
+		</a>
+		
+		<a href class="number-action" target="_system" ng-if="account.user.permissions.GLOBAL">
+			<button class="button green">Cockpit Call (web browser)</button>
+		</a>
+		*/ ?>
 
 		<a ng-click="complete()" class="dialog-close-link">Close</a>
 	</div>

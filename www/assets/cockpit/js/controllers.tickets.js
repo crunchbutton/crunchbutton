@@ -79,5 +79,6 @@ NGApp.controller('TicketsViewCtrl', function($scope, $rootScope, TicketService, 
 NGApp.controller('TicketsTicketCtrl', function($scope, $rootScope, $routeParams, TicketService) {
 	TicketService.get($routeParams.id, function(ticket) {
 		$scope.ticket = ticket;
+		$scope.ready = true;
 	});
 });

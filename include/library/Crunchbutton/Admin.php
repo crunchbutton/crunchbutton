@@ -706,9 +706,12 @@ class Crunchbutton_Admin extends Cana_Table {
 			'active' => ( $this->active == 1 )
 		];
 		
-		foreach ($this->config() as $config) {
-			if ($config->exposed) {
-				$ex['prefs'][$config->key] = $config->value;
+		$cfg = $this->config();
+		if ($cfg) {
+			foreach ($cfg as $config) {
+				if ($config->exposed) {
+					$ex['prefs'][$config->key] = $config->value;
+				}
 			}
 		}
 
