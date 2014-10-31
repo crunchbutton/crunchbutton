@@ -463,11 +463,11 @@ p {
 	margin:0;
 	list-style-type:none;
 }
-.snap-drawer li.nav-active .side-menu-wrap {
+.snap-drawer li.nav-active .side-menu-wrap, .snap-drawer .menu-link.nav-active .side-menu-wrap {
 	background: $green;
 	color: #fff;
 }
-.snap-drawer li {
+.snap-drawer li, .snap-drawer .menu-link {
 	display:block;
 	padding:8px 0 2px 0;
 	text-decoration:none;
@@ -508,6 +508,18 @@ p {
 	padding: 12px 0 10px 0;
 }
 
+@media(min-width:1025px) {
+	.side-menu-label, .side-menu-icon {
+		padding: 6px 0 4px 0;
+	}
+	.snap-drawer li, .snap-drawer .menu-link {
+		padding: 6px 0 2px 0;
+	}
+	.side-menu-icon {
+		line-height: 1.9em;
+	}
+
+}
 
 @media(max-width:1024px) {
 	.notification-support-desktop {
@@ -539,6 +551,7 @@ p {
 		top: 0;
 		bottom: 0;
 		box-sizing: border-box;
+		padding-bottom: 2em;
 	}
 
 	.snap-drawers {
