@@ -86,13 +86,24 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 });
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService ) {
+	var showAll = $.totalStorage('driver-orders-show');
+	if (!showAll) {
+		showAll = false;
+	} else {
+		showAll = $.totalStorage('driver-orders-show') == 'all' ? true : false;
+	}
 
-	$scope.show = { all : true };
+	$scope.show = {
+		all: showAll
+	};
 	$scope.ready = false;
+	
+	$scope.$watch('show.all', function() {
+		$.totalStorage('driver-orders-show', $scope.show.all ? 'all' : 'mine');
+	});
 
 	$scope.filterOrders = function( order ){
-
-		if( $scope.show.all ){
+		if ($scope.show.all) {
 			return true;
 		} else {
 			if( order.lastStatus.id_admin == $scope.account.user.id_admin || order.lastStatus.status == 'new'){
