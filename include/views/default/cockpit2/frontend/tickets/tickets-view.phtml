@@ -1,0 +1,20 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title left"><i class="fa fa-comments-o"></i><span>Support</span></h1>
+
+	<div class="divider"></div>
+	
+	<div ng-repeat="ticket in tickets" class="tickets-side-item">
+		<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
+		<span class="tickets-side-time">10 m ago</span>
+		<div class="divider"></div>
+		<br>
+		<span class="tickets-side-name">{{ticket.name}}: </span>
+		<span class="tickets-side-message">{{ticket.message}}</span>
+	</div>
+
+</div>
+
+<hack-expand-content></hack-expand-content>
