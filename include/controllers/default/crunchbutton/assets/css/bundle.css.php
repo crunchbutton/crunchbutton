@@ -7,10 +7,16 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 		
 		$id = 'crunchr-bundle-node-css';
 
-		$this->cacheId($id.$v.$_REQUEST['s'].$_REQUEST['_export']);
+		if (preg_match('/ios|iphone|ipad/i',$_SERVER['HTTP_USER_AGENT'])) {
+			c::view()->isIOS = true;
+		} elseif (preg_match('/android/i',$_SERVER['HTTP_USER_AGENT'])) {
+			c::view()->isAndroid = true;
+		}
+
+		$this->cacheId($id.$v.$_REQUEST['s'].$_REQUEST['_export'].(c::view()->isIOS ? '1' : '0').(c::view()->isAndroid ? '1' : '0'));
 		$this->cacheServe($id);
 	}
-	
+
 	public function getData() {
 		if ($_REQUEST['s']) {
 			switch ($_REQUEST['s']) {
@@ -28,12 +34,6 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 		
 		if ($_REQUEST['_export']) {
 			c::view()->export = true;
-		}
-		
-		if (preg_match('/ios|iphone|ipad/i',$_SERVER['HTTP_USER_AGENT'])) {
-			c::view()->isIOS = true;
-		} elseif (preg_match('/android/i',$_SERVER['HTTP_USER_AGENT'])) {
-			c::view()->isAndroid = true;
 		}
 
 		$src = c::view()->render('bundle/bundler.css',['set' => ['style' => $style]]);
