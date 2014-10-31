@@ -2343,7 +2343,7 @@ b, strong{ font-weight: bold; }
 
 .box-content-color {
 	background: #fff;
-	margin-bottom: 15px;
+	margin-bottom: 25px;
 }
 
 .support-box-wrap {
@@ -2354,12 +2354,41 @@ b, strong{ font-weight: bold; }
 	margin-right: 15px;
 }
 
+.ticket-status-top {
+	float: right;
+	color: #fff;
+	font-weight: bold;
+
+	width: 8em;
+	text-align: center;
+	font-size: 1.3em;
+	cursor: pointer;
+	line-height: 2.3em;
+}
+
+.ticket-status-open, .ticket-status-closed {
+	height: 100%;
+}
+
+.ticket-status-open {
+	background: #6cc644;
+}
+
+.ticket-status-closed {
+	background: #bd2c00;
+}
+
+
 .support-box-wrap h1 {
 	font-size: 1.8em;
 	font-family: Source Sans Pro, Helvetica, sans-serif;
 	font-weight: 300;
 	color: #5d5f63;
-	margin-bottom: .4em;
+	margin-bottom: .5em;
+}
+.support-box-wrap h1 .fa {
+	float: right;
+	margin-right: 1em;
 }
 
 .field-container {
@@ -2372,6 +2401,17 @@ b, strong{ font-weight: bold; }
 	padding: .7em;
 	border-bottom: 1px solid #f1f2f7;
 	line-height: 1.5em;
+}
+
+.field-button-spacer {
+	height: .2em;
+}
+
+
+
+.field-button {
+	margin: .7em;
+	line-height: 1.8em;
 }
 
 .field-container .field-row {
@@ -2910,6 +2950,17 @@ h1.driver-title {
 	display: block;
 	width: 100%;
 	margin-bottom: -.8em;
+}
+
+.dialog-call-number {
+	font-family: Ruda;
+	font-size: 1.8em;
+	display: block;
+	width: 100%;
+	text-align: center;
+	color: #5d5f63;
+	line-height: 1.4em;
+	margin-bottom: .8em;
 }
 
 .notification-call-text-container .number-action .button {

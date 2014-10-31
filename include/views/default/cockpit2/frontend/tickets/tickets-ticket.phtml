@@ -1,64 +1,118 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-if="ready">
 
 	<h1 class="title left"><i class="fa fa-comments-o"></i><span>Support</span> : Issue #{{ticket.id_support}}</h1>
 
+	<div class="ticket-status-top" ng-click="openCloseTicket()">
+		<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
+		<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
+	</div>
+
 	<div class="divider"></div>
 	
-	<div ng-if="ticket.user.id_user" class="support-box-wrap">
-		<h1>Customer <a href="/customer/{{ticket.user.id_user}}">#{{ticket.user.id_user}}</a></h1>
-		<div class="box-content-color">
-			<div class="field-container">
-				<div class="field-row">
-					<div class="field-key">Name</div>
-					<div class="field-value">{{ticket.user.name}}</div>
-				</div>
-				<div class="field-row">
-					<div class="field-key">Phone</div>
-					<div class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></div>
-				</div>
-				<div class="field-row">
-					<div class="field-key">Address</div>
-					<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
-				</div>
-				<div class="field-row">
-					<div class="field-key">Distance from restaurant</div>
-					<div class="field-value">@todo</div>
+	<div class="support-boxes">
+	
+		<div ng-if="ticket.user.id_user" class="support-box-wrap">
+			<h1>Customer <a href="/customer/{{ticket.user.id_user}}">#{{ticket.user.id_user}}</a></h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.user.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Distance from restaurant</div>
+						<div class="field-value">@todo</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	
-	<div ng-if="ticket.driver.id_admin" class="support-box-wrap">
-		<h1>Driver <a href="/driver/{{ticket.driver.id_admin}}">#{{ticket.driver.id_admin}}</a></h1>
-		<div class="box-content2">
-			Name {{ticket.admin.name}}
+		
+		<div ng-if="ticket.driver.id_admin" class="support-box-wrap">
+			<h1>Driver <a href="/driver/{{ticket.driver.id_admin}}">#{{ticket.driver.id_admin}}</a></h1>
+			<div class="box-content2">
+				Name {{ticket.admin.name}}
+			</div>
 		</div>
-	</div>
-	
-	<div ng-if="ticket.restaurant.id_restaurant" class="support-box-wrap">
-		<h1>Restaurant <a href="/restaurant/{{ticket.restaurant.id_restaurant}}">#{{ticket.restaurant.id_restaurant}}</a></h1>
-		<div class="box-content-color">
-			<div class="field-container">
-				<div class="field-row">
-					<div class="field-key">Name</div>
-					<div class="field-value">{{ticket.restaurant.name}}</div>
-				</div>
-				<div class="field-row">
-					<div class="field-key">Phone</div>
-					<div class="field-value"><a href ng-click="callText(ticket.restaurant.phone)">{{ticket.restaurant.phone | formatPhone}}</a></div>
-				</div>
-				<div class="field-row">
-					<div class="field-key">Address</div>
-					<div class="field-value"><a href ng-click="routeAddress(ticket.restaurant.address)">{{ticket.restaurant.address}}</a></div>
-				</div>
-				<div class="field-row">
-					<div class="field-key">Distance from customer</div>
-					<div class="field-value">@todo</div>
+		
+		<div ng-if="ticket.order.id_order" class="support-box-wrap">
+			<h1>Order <a href="/order/{{ticket.order.id_order}}">#{{ticket.order.id_order}}</a></h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Restaurant</div>
+						<div class="field-value"><a href="/restaurant/{{ticket.restaurant.id_restaurant}}">{{ticket.restaurant.name}} #{{ticket.restaurant.id_restaurant}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Pay / Type</div>
+						<div class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Time</div>
+						<div class="field-value">{{ticket.order.date}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">Picked up <b>10 minites ago</b></div>
+					</div>
 				</div>
 			</div>
 		</div>
+		
+		<? /*
+		<div ng-if="ticket.restaurant.id_restaurant" class="support-box-wrap">
+			<h1>Restaurant <a href="/restaurant/{{ticket.restaurant.id_restaurant}}">#{{ticket.restaurant.id_restaurant}}</a></h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.restaurant.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(ticket.restaurant.phone)">{{ticket.restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(ticket.restaurant.address)">{{ticket.restaurant.address}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Distance from customer</div>
+						<div class="field-value">@todo</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		*/ ?>
+		
+		<div class="support-box-wrap">
+			<h1>Resolution <a href><i class="fa fa-comment-o"></i></a></h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Who is to blame?</div>
+						<div class="field-value">@todo</div>
+					</div>
+				</div>
+				<div class="field-button-wrap">
+					<div class="field-button"><button class="button orange">Refund</button></div>
+				</div>
+				<div class="field-button-wrap">
+					<div class="field-button"><button class="button orange">Gift Card</button></div>
+				</div>
+				<div class="field-button-spacer"></div>
+			</div>
+		</div>
+	
 	</div>
 
 </div>
