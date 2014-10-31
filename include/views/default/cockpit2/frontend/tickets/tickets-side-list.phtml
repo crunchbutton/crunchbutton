@@ -3,14 +3,15 @@
 		<div ng-if="account.user.permissions.GLOBAL">
 			<h1>Tickets</h1>
 			<div class="tickets-side-tickets">
-				<div ng-repeat="ticket in tickets" class="tickets-side-item">
-					
-					<a class="tickets-side-ticket" ng-click="setViewTicket(ticket.id_support)">#{{ticket.id_support}}</a>
-					<span class="tickets-side-time">10 m ago</span>
-					<div class="divider"></div>
-					<br>
-					<span class="tickets-side-name">{{ticket.name}}: </span>
-					<span class="tickets-side-message">{{ticket.message}}</span>
+				<div ng-repeat="ticket in tickets" class="tickets-side-item" ng-class="{'tickets-side-item-unread': (ticket.from == 'client' || ticket.from == 'system'), 'tickets-side-item-read': (ticket.from == 'rep')}">
+					<div class="tickets-side-tickets-wrap">
+						<a class="tickets-side-ticket" ng-click="setViewTicket(ticket.id_support)">#{{ticket.id_support}}</a>
+						<span class="tickets-side-time">10 m ago</span>
+						<div class="divider"></div>
+						<br>
+						<span class="tickets-side-name">{{ticket.name}}: </span>
+						<span class="tickets-side-message">{{ticket.message}}</span>
+					</div>
 				</div>
 			</div>
 		</div>

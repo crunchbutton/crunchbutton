@@ -2877,9 +2877,15 @@ body.ng-scope {
 	margin-top: 1em;
 	width: 100%;
 }
+.tickets-side-tickets-wrap {
+	padding: 10px 7px 7px 7px;
+}
 
-.tickets-side-item {
+.tickets-side-item-unread .tickets-side-tickets-wrap {
 	border-right: 4px solid #de5750;
+}
+.tickets-side-item-read .tickets-side-tickets-wrap {
+	border-right: 4px solid #4ecdc4;
 }
 
 .tickets-side-item:first-child {
@@ -2887,7 +2893,6 @@ body.ng-scope {
 }
 
 .tickets-side-item {
-	padding: 10px 7px 7px 7px;
 	border-bottom: 1px solid #474a53;
 	line-height: .7em;
 }
@@ -2982,4 +2987,8 @@ h1.driver-title {
 
 .notification-call-text-container .number-action .button {
 	margin-bottom: .8em;
+}
+
+.support-chat-box-wrap {
+	background: #e2e4ed;
 }
