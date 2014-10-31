@@ -37,7 +37,6 @@ NGApp.controller('LegalCtrl', function ($scope) {
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 
-console.log($.totalStorage('hasLoggedIn'));
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 	$scope.login = function() {
 		if( !$scope.username ){
