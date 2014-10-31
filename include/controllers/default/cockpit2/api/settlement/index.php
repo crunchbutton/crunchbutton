@@ -127,6 +127,12 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'send-summary':
 								$this->_driverSendSummary();
 								break;
+							case 'send-summary':
+								$this->_driverSendSummary();
+								break;
+							case 'do-err-payments':
+								$this->_driverDoErrPayments();
+								break;
 							default:
 								$this->_error();
 								break;
@@ -517,6 +523,12 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 		echo json_encode( $out );
+	}
+
+	private function _driverDoErrPayments(){
+		$settlement = new Crunchbutton_Settlement;
+		$settlement->doDriverErrPayments();
+		echo json_encode( [ 'success' => true ] );
 	}
 
 	private function _driverDoNotPayForOrder(){
