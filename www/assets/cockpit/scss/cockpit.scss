@@ -2355,20 +2355,29 @@ b, strong{ font-weight: bold; }
 @media(min-width:600px) {
 	.support-box-wrap {
 		width: 50%;
-		float: left;
+		display: inline-block;
+		vertical-align: top;
 	}
 	.support-box-wrap:nth-child(odd) .box-content-color {
 		margin-right: 15px;
 	}
+
 }
 
+@media (min-width:600px) and (max-width: 1120px) {
+	.support-toggled .support-box-wrap {
+		width: 100%;
+	}
+	.support-toggled .support-box-wrap:nth-child(odd) .box-content-color {
+		margin-right: 0;
+	}
+}
 
 
 .ticket-status-top {
 	float: right;
 	color: #fff;
 	font-weight: bold;
-
 	width: 8em;
 	text-align: center;
 	font-size: 1.3em;
