@@ -297,7 +297,7 @@
 
 	<div class="customer-total-block total-block">
 		<span class="order-total-price"><span class="tip-total-price-dollar">$</span>{{order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
-		<span class="order-total-text">Customer total</span>
+		<span class="order-total-block-text">Customer total</span>
 		</br>
 	</div>
 	<? /*
@@ -313,7 +313,7 @@
 			<span ng-if="order._tip_with_cash || order._tip == 0">CASH</span>
 			<span ng-if="!order._tip_with_cash && order._tip != 0"><span class="tip-total-price-dollar">$</span>{{order._tip | formatPrice}}</span>
 		</span></br></br>
-		<span class="order-total-text">Tip</span>
+		<span class="order-total-block-text">Tip</span>
 		</br>
 	</div>
 	
