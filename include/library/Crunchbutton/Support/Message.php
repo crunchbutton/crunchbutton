@@ -38,6 +38,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	}
 	
 	public function getName() {
+	
 		if (!isset($this->_name)) {
 			
 			$phone = preg_replace('/[^0-9]/','', $this->phone);
@@ -59,14 +60,18 @@ class Crunchbutton_Support_Message extends Cana_Table {
 					if (!$user->id_admin) {
 						$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
 					}
+				}
 					
-					if ($user->id_admin || $user->id_user) {
-						$this->_name = $user->phone;
-					}
+				if ($user && ($user->id_admin || $user->id_user)) {
+					$this->_name = $user->phone;
 				}
 				
 			} else {
 				$this->_name = $this->name;
+			}
+			
+			if (!$this->_name) {
+				$this->_name = $this->phone;
 			}
 		}
 		return $this->_name;
