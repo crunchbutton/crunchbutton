@@ -2470,13 +2470,24 @@ b, strong{ font-weight: bold; }
 	line-height: 1.5em;
 }
 
-.order-header{
+.order-header {
 	color: #5d5f63;
 	font-size: 5em;
 	font-weight: bold;
 	text-align: center;
 	margin: .5em 0 .5em 0;
 	font-size: 15vw;
+}
+
+@media (min-width:700px) {
+	.order-header {
+		font-size: 10vw;
+	}
+}
+@media (min-width:1025px) {
+	.order-header {
+		font-size: 7vw;
+	}
 }
 
 
