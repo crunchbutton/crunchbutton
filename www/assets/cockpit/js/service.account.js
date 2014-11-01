@@ -1,4 +1,4 @@
-NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
+NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavigationService) {
 
 	// Private resource 'user'
 	var user = $resource( App.service + ':action', { action: '@action' }, {
@@ -43,8 +43,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		user.logout( {}, function(){
 			service.user = {};
 			$rootScope.$broadcast('userAuth');
-			location.reload(true);
-		} );
+			MainNavigationService.link('/login');
+		});
 	};
 
 	$rootScope.$on('userAuth', function(e, data) {

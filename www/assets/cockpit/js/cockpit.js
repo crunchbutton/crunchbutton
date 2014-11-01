@@ -478,7 +478,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 	
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
-	/*
 		if (!$rootScope.account.isLoggedIn()) {
 			var isAllowed = false;
 			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
@@ -487,9 +486,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			 }
 			} );
 			if( !isAllowed  ) {
-//				setTimeout(function() {
+				setTimeout(function() {
 					MainNavigationService.link( '/login' );
-//				}, 10);
+				}, 10);
 				
 			}
 		} else {
@@ -497,7 +496,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				MainNavigationService.link( '/' );
 			}
 		}
-		*/
 	});
 
 	// Make the window's size available to all scope
