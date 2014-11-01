@@ -187,7 +187,7 @@
 				<div class="info-phone"><a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 
-				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order.address}}">{{order.address | nl2br}}</a></p></div>
+				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order.address}}"><span ng-bind-html-unsafe="order.address | nl2br"></span></a></p></div>
 
 			</div>
 		</div>
@@ -201,7 +201,7 @@
 				<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}" target="_system">{{order._restaurant_phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 
-				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}">{{order._restaurant_address | nl2br }}</a></p></div>
+				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p></div>
 			</div>
 		</div>
 
@@ -215,7 +215,7 @@
 		<div class="order-item-block-big order-notes" ng-if="order.notes">
 			<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
 			<div class="order-info2 order-info-small">
-				{{ order.notes | nl2br }}
+				<span ng-bind-html-unsafe="order.notes | nl2br"></span>
 			</div>
 		</div>
 		<br>
