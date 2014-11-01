@@ -6,16 +6,19 @@
 				<a class="support-chat-header-issue" href="{{ticket.id_support}}">#{{ticket.id_support}}</a>
 				<div class="divider"></div>
 				<div class="support-chat-header-details">
-					{{ticket.restaurant.name}} / {{ticket.restaurant.community}}<br>
-					{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / {{ticket.order.status}}<br>
-					ETA: @todo
+					
+					<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
+					<div ng-if="ticket.order">
+						{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / {{ticket.order.status}}
+						<br>ETA: @todo
+					</div>					
 				</div>
 			</td></tr>
 			<tr><td class="support-chat-contents">
 				<div class="support-chat-contents-scroll">
 					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message">
 						<div class="support-chat-contents-message-name">{{message.name}}</div>
-						<div class="support-chat-contents-message-time">{{message.timestamp | date: 'h:mm a'}}</div>
+						<div class="support-chat-contents-message-time">{{message.timestamp | date: 'h:mm a'}}{{message.timestamp}}</div>
 						<div class="support-chat-contents-message-body">{{message.body}}</div>
 					</div>
 				</div>
