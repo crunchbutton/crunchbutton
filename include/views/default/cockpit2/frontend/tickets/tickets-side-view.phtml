@@ -16,7 +16,7 @@
 			</td></tr>
 			<tr><td class="support-chat-contents">
 				<div class="support-chat-contents-scroll">
-					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message">
+					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}">
 						<div class="support-chat-contents-message-name">{{message.name}}</div>
 						<div class="support-chat-contents-message-time">{{message.timestamp | date: 'h:mm a'}}{{message.timestamp}}</div>
 						<div class="support-chat-contents-message-body">{{message.body}}</div>
@@ -25,8 +25,8 @@
 			</td></tr>
 			<tr><td class="support-side-chat-row">
 				<div class="support-chat-box-wrap">
-					<textarea class="support-chat-box" placeholder="Type someting and press enter..."></textarea>
-					</div>
+					<textarea class="support-chat-box" placeholder="Type someting and press enter..." chat-send></textarea>
+				</div>
 			</td></tr>
 		</table>
 	</div>
