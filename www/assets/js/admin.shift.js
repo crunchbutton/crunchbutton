@@ -430,6 +430,11 @@ shift.status.init = function(){
 			}
 		} );
 	} );
+	$( '[name="form-note"]' ).on( 'blur', function(){
+		var id_admin = $( this ).attr( 'id_admin' );
+		shift.status.note( id_admin );
+
+	} );
 	$( '#show-completed' ).on( 'ifChanged', function( event, obj ){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
@@ -445,6 +450,26 @@ shift.status.init = function(){
 			$( '.schedule-not-completed' ).show();
 		} else {
 			$( '.schedule-not-completed' ).hide();
+		}
+	} );
+}
+shift.status.note = function( id_admin ){
+	var text = $( '#admin-note-' + id_admin ).val();
+	$( '#admin-note-updated-' + id_admin ).hide();
+	$( '#admin-note-updating-' + id_admin ).show();
+	$.ajax( {
+		url: '/api/drivers/shift/driver-note-update/',
+		method: 'POST',
+		data: { 'id_admin' : id_admin, 'text' : text },
+		dataType: 'json',
+	} ).done( function( data ) {
+		$( '#admin-note-updated-' + id_admin ).show();
+		$( '#admin-note-updating-' + id_admin ).hide();
+		if( data.success ){
+			$( '#note-updated-' + id_admin ).text( data.success.date );
+			$( '#note-added_by-' + id_admin ).text( data.success.added_by );
+		} else {
+			alert( 'Oops, error! ' + data.error );
 		}
 	} );
 }
