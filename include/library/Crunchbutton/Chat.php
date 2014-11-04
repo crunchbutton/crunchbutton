@@ -2,7 +2,7 @@
 
 class Crunchbutton_Chat {
 	public static function emit($payload = []) {
-		
+
 		if (!c::config()->site->config('chat-server')->val()) {
 			throw new Exception('No chat server defined. (chat-server)');
 		}
@@ -25,12 +25,13 @@ class Crunchbutton_Chat {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Expect:']);
 		curl_setopt($ch, CURLOPT_PORT, c::config()->site->config('chat-server-port')->val());
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-		
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POST, true);
-		
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));
 		
-		curl_exec($ch);
+		$res = curl_exec($ch);
 		curl_close($ch);
+		
+		return $res;
 	}
 }
