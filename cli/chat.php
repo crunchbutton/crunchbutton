@@ -152,36 +152,40 @@ function mask($text)
 }
 
 //handshake new client.
-function perform_handshaking($receved_header, $client_conn, $host, $port)
-{
+function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	$headers = [];
 	$query = [];
 	$lines = preg_split("/\r\n/", $receved_header);
-	var_dump($lines);
+
+	$request = explode(' ', trim(array_shift($lines)));
+	$request[1] = explode('?', $request[1]);
+	$method = $request[0];
+	$path = preg_replace('/^\/(.*)$/', '\\1', $request[1][0]);
+	parse_str($request[1][1], $query);
 	
-	if (preg_match('/POST \/emit HTTP\/.*\z/', $lines[0])) {
-		parse_str(array_pop($lines), $query);
+	$test = [
+		'method' => $method,
+		'path' => $path,
+		'query' => $query
+	];
+	
+	$test = $lines;
+
+	if ($path == 'emit') {
 		var_dump($query);
 		socket_close($client_conn);
 		return false;
 	}
-	
+
 	foreach($lines as $line) {
 		$line = chop($line);
 		if (preg_match('/\A(\S+): (.*)\z/', $line, $matches)) {
 			$headers[$matches[1]] = $matches[2];
-		} elseif (preg_match('/GET (.*)\?(.*) HTTP\/.*\z/', $line, $matches)) {
-
-			parse_str($matches[2], $query);
-			$path = [
-				$matches[1],
-				$query
-			];
 		}
 	}
-	
+
 	$check = false;
-	
+
 	if ($query['token']) {
 		$sess = Session::token($query['token']);
 		if ($sess->id_admin) {
@@ -203,11 +207,13 @@ function perform_handshaking($receved_header, $client_conn, $host, $port)
 	$upgrade  = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
 	"Upgrade: websocket\r\n" .
 	"User: ".$admin->id_admin."\r\n" .
+	"TEST: ".json_encode($test)."\r\n" .
 	"Connection: Upgrade\r\n" .
 	"WebSocket-Origin: $host\r\n" .
 	"WebSocket-Location: ws://$host:$port/demo/shout.php\r\n".
 	"Sec-WebSocket-Accept:$secAccept\r\n\r\n";
 	socket_write($client_conn,$upgrade,strlen($upgrade));
-	
+
 	return true;
 }
+
