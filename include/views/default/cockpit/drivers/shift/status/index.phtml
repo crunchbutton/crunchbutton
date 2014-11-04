@@ -61,6 +61,7 @@
 							<td>Shifts wants to work</td>
 							<td>Total assigned shifts</td>
 							<td>Send sms about schedule?</td>
+							<td>Notes</td>
 							<td></td>
 						</tr>
 					</thead>
@@ -111,6 +112,25 @@
 								<td>
 									<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $driver->id_admin; ?>" name="form-receive-sms" id="form-receive-sms-<?php echo $driver->id_admin; ?>">
 									<i class="icon-thumbs-up" style="opacity:0;;color:green;margin:0 0 0 10px;" id="saved-<?php echo $driver->id_admin; ?>"></i>
+								</td>
+								<td>
+									<?php
+										$note = $driver->note();
+										$note_data = [];
+										if( $note->id_admin_note ){
+											$note_data = $note->exports();
+										}
+
+									?>
+									<textarea name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'text' ]; ?></textarea>
+									<div <?php if( !$note_data[ 'date' ] ){ echo 'style="display:none;"'; } ?> class="admin-note-updated" id="admin-note-updated-<?php echo $driver->id_admin; ?>">
+										Updated at <span id="note-updated-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'date' ]; ?></span>
+										<br/>
+										by <span id="note-added_by-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'added_by' ]; ?></span>
+									</div>
+									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
+										<i class="icon-spinner icon-spin"></i>
+									</div>
 								</td>
 								<td>
 									<button id_admin="<?php echo $driver->id_admin; ?>" class="send-sms-button btn btn-blue"><i class="icon-comment-alt"></i>&nbsp;Send SMS</button>

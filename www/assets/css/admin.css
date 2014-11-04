@@ -454,13 +454,13 @@ input[name="dish-options-price"] {
 	.list-giftcards span.not-used{
 		background: green;
 	}
-	.list-suggestions th, 
-	.list-suggestions td, 
-	.list-support th, 
+	.list-suggestions th,
+	.list-suggestions td,
+	.list-support th,
 	.list-support td,
-	.list-giftcards th, 
-	.list-giftcards td, 
-	.list-credits th, 
+	.list-giftcards th,
+	.list-giftcards td,
+	.list-credits th,
 	.list-credits td {
 		padding: 5px;
 	}
@@ -479,7 +479,7 @@ input[name="dish-options-price"] {
 		background: green;
 		padding: 2px;
 	}
-	
+
 	.list-credits tr.credit{
 		color:green;
 	}
@@ -938,4 +938,14 @@ td.day{
 
 .separate-sections > li, .separate-sections > div {
 	margin-bottom: 2px !important;
+}
+
+.admin-note-updated{
+	font-size: 10px;
+	line-height: 14px;
+	height: 35px;
+}
+.admin-note-updating{
+	height: 35px;
+	display: none;
 }
