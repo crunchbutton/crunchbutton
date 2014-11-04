@@ -81,7 +81,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		}
 	});
 
-	service.websocket = new WebSocket('ws://' + location.host + ':9000/test?_token=' + $.cookie('token'));
+	service.websocket = new WebSocket('wss://' + location.host + ':9000/test?_token=' + $.cookie('token'));
 	
 	service.websocket.onopen = function(ev) {
 		console.debug('Connected to chat server.');
