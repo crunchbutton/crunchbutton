@@ -430,11 +430,22 @@ shift.status.init = function(){
 			}
 		} );
 	} );
+
+	$( '.admin-note-text' ).each( function(){
+		var el = $( this );
+		var id_admin = $( this ).attr( 'id_admin' );
+		var text = el.html().replace(/<br>/g, "\r");
+		$( '#admin-note-' + id_admin ).val( text );
+		$( '#admin-note-' + id_admin ).attr( 'placeholder', '' );
+	} )
+
 	$( '[name="form-note"]' ).on( 'blur', function(){
 		var id_admin = $( this ).attr( 'id_admin' );
 		shift.status.note( id_admin );
-
 	} );
+
+	$( '[name="form-note"]' ).autosize();
+
 	$( '#show-completed' ).on( 'ifChanged', function( event, obj ){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
