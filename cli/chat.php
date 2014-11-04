@@ -71,7 +71,6 @@ while (true) {
 							$support = Support::o($payload->ticket);
 							
 							if ($support->id_support) {
-								echo "has support\n";
 								$message = $support->addAdminMessage([
 									'body' => $payload->body,
 									'phone' => $admin->phone,
