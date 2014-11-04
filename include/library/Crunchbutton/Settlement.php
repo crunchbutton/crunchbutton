@@ -259,6 +259,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( ( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || $pay[ $driver ][ 'using_pex' ] ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
 				}
+
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
@@ -268,6 +269,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					continue;
 				}
+
 				$pay[ $driver ][ 'subtotal' ] += $order[ 'pay_info' ][ 'subtotal' ];
 				$pay[ $driver ][ 'tax' ] += $order[ 'pay_info' ][ 'tax' ];
 				$pay[ $driver ][ 'delivery_fee' ] += $order[ 'pay_info' ][ 'delivery_fee' ];
@@ -283,6 +285,21 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 		}
 
+		// Get all the shifts between the dates
+		$shifts = $this->shifts();
+		if( $shifts ){
+			foreach( $shifts as $shift ){
+				$driver = $shift->id_admin;
+				if( !$pay[ $driver ] ){
+					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spent' => 0, 'orders' => [] ];
+					$pay[ $driver ][ 'id_admin' ] = $driver;
+					$pay[ $driver ][ 'name' ] = $shift->name;
+					$pay[ $driver ][ 'using_pex' ] = $shift->using_pex;
+					$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+				}
+			}
+		}
+
 		foreach( $pay as $id_driver => $driver ){
 			$pay_type = Admin::o( $id_driver )->payment_type();
 			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
@@ -295,7 +312,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$_shift = [];
 						$_shift[ 'id_community_shift' ] = $shift->id_community_shift;
 						$_shift[ 'id_admin_shift_assign' ] = $shift->id_admin_shift_assign;
-						$_shift[ 'period' ] = $shift->startEndToStringCommunityTz();;
+						$_shift[ 'period' ] = $shift->startEndToStringCommunityTz();
 						$_shift[ 'hours' ] = $shift->duration();
 						$_shift[ 'amount' ] = round( $shift->duration() * $pay_type->hour_rate, 2 );
 						$pay[ $id_driver ][ 'shifts' ][ 'worked_total' ]++;
@@ -304,17 +321,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 					}
 				}
 				$tip = 0;
-
 				foreach( $pay[ $id_driver ][ 'orders' ] as $id_order => $order ){
 					if( !$order[ 'driver_paid' ] ){
 						$tip += $order[ 'pay_info' ][ 'tip' ];
 					}
 				}
-
 				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
 				$pay[ $id_driver ][ 'total_payment' ] = ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] );
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
-
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 			}
@@ -715,7 +729,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function scheduleDriverPayment( $id_drivers, $type ){
 
 		$this->log( 'scheduleDriversPayment', $id_drivers );
-
 		$drivers = $this->startDriver();
 
 		foreach ( $drivers as $_driver ) {
@@ -1646,6 +1659,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$message = 'id_payment : ' . $payment->id_payment;
 			$this->log( 'checkPaymentStatus', $message );
 		}
+	}
+
+	public function shifts(){
+		return Crunchbutton_Community_Shift::q( "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex
+																							FROM community_shift cs
+																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
+																							INNER JOIN admin a ON a.id_admin = asa.id_admin
+																							WHERE DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
+																							  AND DATE_FORMAT(cs.date_end, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'" );
 	}
 
 	public function amount_per_invited_user(){
