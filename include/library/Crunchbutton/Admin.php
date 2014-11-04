@@ -614,7 +614,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		$admins = self::q($query);
 		return $admins;
 	}
-	
+
 	public function config($key = null) {
 		if (!isset($this->_config)) {
 			$config = Crunchbutton_Admin_Config::q('SELECT * FROM admin_config WHERE id_admin='.$this->id_admin);
@@ -705,7 +705,7 @@ class Crunchbutton_Admin extends Cana_Table {
 			'communities' => $communities,
 			'active' => ( $this->active == 1 )
 		];
-		
+
 		$cfg = $this->config();
 		if ($cfg) {
 			foreach ($cfg as $config) {
@@ -829,6 +829,23 @@ class Crunchbutton_Admin extends Cana_Table {
 				'id_admin' => $this->id_admin
 			]);
 			$n->save();
+		}
+	}
+
+	public function note(){
+		return Crunchbutton_Admin_Note::lastNoteByAdmin( $this->id_admin )->get( 0 );
+	}
+
+	public function addNote( $text ){
+		$shouldAdd = false;
+		$lastNote = $this->note();
+		if( !$lastNote->id_admin_note || trim( $lastNote->text ) != trim( $text ) ){
+			$note = new Crunchbutton_Admin_Note;
+			$note->id_admin = $this->id_admin;
+			$note->id_admin_added = c::admin()->id_admin;
+			$note->text = trim( $text );
+			$note->date = date( 'Y-m-d H:i:s' );
+			$note->save();
 		}
 	}
 
