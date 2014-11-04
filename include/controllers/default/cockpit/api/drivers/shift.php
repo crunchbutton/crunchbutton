@@ -1,19 +1,23 @@
 <?php
 
 class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 		switch ( c::getPagePiece( 3 ) ) {
 			case 'community':
 				$this->community();
 				break;
-			
+
 			case 'driver':
 				$this->driver();
 				break;
 
 			case 'driver-schedule-sms-config':
 				$this->driverScheduleSMSConfig();
+				break;
+
+			case 'driver-note-update':
+			$this->driverNoteUpdate();
 				break;
 
 			default:
@@ -35,6 +39,19 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
+	public function driverNoteUpdate(){
+		$id_admin = $this->request()[ 'id_admin' ];
+		$admin = Admin::o( $id_admin );
+		if( $admin->id_admin ){
+			$text = $this->request()[ 'text' ];
+			$admin->addNote( $text );
+			$note = $admin->note();
+			echo json_encode( [ 'success' => $note->exports() ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
 	public function driverAssign(){
 		$ids_admin = $this->request()[ 'id_admin' ];
 		$id_community_shift = $this->request()[ 'id_community_shift' ];
@@ -44,9 +61,9 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		if( count( $ids_admin_permanently ) > 0 ){
 			foreach( $ids_admin_permanently as $id_admin_permanently ){
 				$permanently[ $id_admin_permanently ] = true;
-			}	
+			}
 		}
-		
+
 
 		if( $id_community_shift ){
 			Crunchbutton_Admin_Shift_Assign::removeAssignment( $id_community_shift );
@@ -54,7 +71,7 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				foreach( $ids_admin as $id_admin ){
 					$_permanently = ( $permanently[ $id_admin ] ) ? true : false;
 					Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift, $_permanently );
-				}	
+				}
 			}
 			echo json_encode( array( 'success' => true ) );
 		} else {
@@ -63,9 +80,9 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 	}
 
 	public function driver(){
-		
+
 		switch ( c::getPagePiece( 4 ) ) {
-		
+
 			case 'assign':
 				$this->driverAssign();
 				break;
@@ -82,7 +99,7 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				if( count( $allItems ) > 0 ){
 
 					$id_admin = c::admin()->id_admin;
-			
+
 					$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
 					$status->completed = $completed;
 					$status->shifts = $shifts;
@@ -122,10 +139,10 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 
 				} else {
 					echo json_encode( [ 'error' => 'invalid object' ] );
-				}				
+				}
 				break;
 		}
-	
+
 	}
 
 	public function community(){
@@ -142,7 +159,7 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					$shift->date_start = $_hours[ 'start' ];
 					$shift->date_end = $_hours[ 'end' ];
 					if( $shift->date_start && $shift->date_end ){
-						$shift->save();	
+						$shift->save();
 					}
 				}
 				echo json_encode( array( 'success' => true ) );
@@ -186,7 +203,7 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 						$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $weekday . ' 00:00:00', new DateTimeZone( $timezone ) );
 						$_hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $timezone );
 						if( $_hours ){
-							$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];	
+							$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];
 						}
 					}
 				} else {
@@ -194,7 +211,7 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $year . '-' . $month . '-' . $day . ' 00:00:00', new DateTimeZone( $timezone ) );
 					$_hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $timezone );
 					if( $_hours ){
-						$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];	
+						$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];
 					}
 				}
 
@@ -206,13 +223,13 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					$shift->recurring = $recurring;
 					$shift->active = 1;
 					if( $shift->date_start && $shift->date_end ){
-						$shift->save();	
+						$shift->save();
 					}
 				}
 
 				echo json_encode( array( 'success' => true ) );
 				break;
-			
+
 			case 'copy-all':
 
 				$year = $this->request()[ 'year' ];
@@ -227,7 +244,7 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 					$firstDay->modify( '+ 1 day' );
 				}
-				
+
 				foreach( $days as $day ){
 					$dateFrom = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 					$dateFrom->modify( '- 7 day' );
