@@ -1,6 +1,5 @@
 <?php
 
-
 require_once('../include/crunchbutton.php');
 
 $host = 'localhost'; //host
@@ -171,12 +170,6 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	
 	$test = $lines;
 
-	if ($path == 'emit') {
-		var_dump($query);
-		socket_close($client_conn);
-		return false;
-	}
-
 	foreach($lines as $line) {
 		$line = chop($line);
 		if (preg_match('/\A(\S+): (.*)\z/', $line, $matches)) {
@@ -185,6 +178,26 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	}
 
 	$check = false;
+	
+	// if the connection is not a socket
+	if ($headers['Upgrade'] != 'websocket' || $path == 'emit') {
+		echo "closing....\n";
+		socket_close($client_conn);
+		return false;
+
+		if ($path == 'emit' && $query['_key'] == c::config()->site->config('chat-server-key')->val()) {
+			echo "emiting...\n";
+			var_dump($query);
+		} else {
+			$upgrade =
+				"HTTP/1.0 404 Not Found\r\n".
+				"Content-Type:text/html; charset=UTF-8\r\n".
+				"\r\nThis is not the page you are looking for... <a href='http://_DOMAIN_'>http://_DOMAIN_</a>";
+			socket_write($client_conn, $upgrade, strlen($upgrade));
+		}
+		socket_close($client_conn);
+		return false;
+	}
 
 	if ($query['token']) {
 		$sess = Session::token($query['token']);
