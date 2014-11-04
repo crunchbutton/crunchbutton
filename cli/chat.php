@@ -55,12 +55,19 @@ while (true) {
 		//check for any incomming data
 		while(socket_recv($changed_socket, $buf, 1024, 0) >= 1) {
 			$received_text = unmask($buf);
+			$payload = json_decode($received_text);
+			
+			// sending a mesage to a ticket
+			switch ($payload->type) {
+				case 'ticket.message':
+					$support = Support::o($payload->ticket);
+					break;
 
-			$tst_msg = json_decode($received_text);
-			$user_message = $tst_msg->message;
-			echo "=============================================================RECIEVED:\n".$user_message."\n\n";
+				case 'ticket.typing.start':
+				case 'ticket.typing.stop':
+					break;
+			}
 
-			$support = Support::o($tst_msg->ticket);
 
 /*
 			$admin = Admin::o();

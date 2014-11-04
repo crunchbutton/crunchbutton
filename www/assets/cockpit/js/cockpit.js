@@ -878,3 +878,13 @@ App.phoneGapListener = {
 	}
 };
 
+
+App.playAudio = function(audio) {
+	var audio = document.getElementById(audio);
+	if (!audio) {
+		return;
+	}
+	audio.pause();
+	audio.currentTime = 0;
+	audio.play();
+}
