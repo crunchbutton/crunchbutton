@@ -58,7 +58,7 @@ NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewServi
 });
 
 
-NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams) {
+NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService) {
 	var service = {
 		isTyping: false
 	};
@@ -67,6 +67,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams)
 	};
 	
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
+		NotificationService.check();
+
 		service.scope.viewTicket = ticket;
 		$rootScope.supportToggled = true;
 		
@@ -78,7 +80,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams)
 		}
 	});
 
-	service.websocket = new WebSocket('ws://localhost:9000/test?token=' + $.cookie('token'));
+	service.websocket = new WebSocket('ws://localhost:9000/test?_token=' + $.cookie('token'));
 	
 	service.websocket.onopen = function(ev) {
 		console.debug('Connected to chat server.');
@@ -139,6 +141,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams)
 		var ucolor = msg.color; //color
 		
 		console.debug('Recieved chat message: ', umsg);
+		NotificationService.notify('Support', umsg, null, function() {
+			document.getElementById('support-chat-box').focus();
+		});
 
 		if(type == 'usermsg') 
 		{
