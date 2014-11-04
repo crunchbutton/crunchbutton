@@ -120,9 +120,8 @@
 										if( $note->id_admin_note ){
 											$note_data = $note->exports();
 										}
-
 									?>
-									<textarea name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'text' ]; ?></textarea>
+									<textarea name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
 									<div <?php if( !$note_data[ 'date' ] ){ echo 'style="display:none;"'; } ?> class="admin-note-updated" id="admin-note-updated-<?php echo $driver->id_admin; ?>">
 										Updated at <span id="note-updated-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'date' ]; ?></span>
 										<br/>
@@ -131,6 +130,7 @@
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
 									</div>
+									<div style="display:none;" id_admin="<?php echo $driver->id_admin; ?>" class="admin-note-text" id="admin-note-text-<?php echo $driver->id_admin; ?>"><?php echo nl2br( $note_data[ 'text' ] ); ?></div>
 								</td>
 								<td>
 									<button id_admin="<?php echo $driver->id_admin; ?>" class="send-sms-button btn btn-blue"><i class="icon-comment-alt"></i>&nbsp;Send SMS</button>
@@ -270,3 +270,4 @@ $( document ).ready( function(){
 } );
 </script>
 <script type="text/javascript" src="/assets/js/admin.support.js?v=<?php echo Cana_Util::gitVersion()?>"></script>
+<script type="text/javascript" src="/assets/js/jquery.autosize-min.js?v=<?php echo Cana_Util::gitVersion()?>"></script>
