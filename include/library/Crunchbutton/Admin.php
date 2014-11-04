@@ -842,7 +842,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		if( !$lastNote->id_admin_note || trim( $lastNote->text ) != trim( $text ) ){
 			$note = new Crunchbutton_Admin_Note;
 			$note->id_admin = $this->id_admin;
-			$note->id_admin_added = c::user()->id_admin;
+			$note->id_admin_added = c::admin()->id_admin;
 			$note->text = trim( $text );
 			$note->date = date( 'Y-m-d H:i:s' );
 			$note->save();
