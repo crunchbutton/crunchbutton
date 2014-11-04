@@ -38,7 +38,7 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 
 	var loadTicket = function(id) {
 		TicketService.get(id, function(ticket) {
-			$scope.ticket = ticket;
+			TicketViewService.scope.ticket = ticket;
 		});
 	};
 
@@ -74,7 +74,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		
 		if (service.websocket && service.websocket.readyState == WebSocket.OPEN) {
 			service.websocket.send(JSON.stringify({
-				cmd: 'ticket.subscribe',
+				type: 'ticket.subscribe',
 				ticket: service.scope.viewTicket
 			}));
 		}
@@ -94,7 +94,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	
 	service.send = function(message) {
 		var msg = {
-			cmd: 'ticket.message',
+			type: 'ticket.message',
 			ticket: service.scope.viewTicket,
 			message: message
 		};
@@ -108,14 +108,14 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		if (!service.isTyping) {
 			service.isTyping = true;
 			service.websocket.send({
-				cmd: 'ticket.typing.start'
+				type: 'ticket.typing.start'
 			});
 
 		} else {
 			if (!val) {
 				service.isTyping = false;
 				service.websocket.send({
-					cmd: 'ticket.typing.stop'
+					type: 'ticket.typing.stop'
 				});
 			}
 		}
@@ -127,34 +127,32 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			if (service.isTyping) {
 				service.isTyping = false;
 				service.websocket.send({
-					cmd: 'ticket.typing.stop'
+					type: 'ticket.typing.stop'
 				});
 			}
 		}, 5000);
 	};
 
 	service.websocket.onmessage = function(ev) {
-		var msg = JSON.parse(ev.data); //PHP sends Json data
-		var type = msg.type; //message type
-		var umsg = msg.message; //message text
-		var uname = msg.name; //user name
-		var ucolor = msg.color; //color
+		var payload = JSON.parse(ev.data);
+		console.debug('Recieved chat message: ', payload);
 		
-		console.debug('Recieved chat message: ', umsg);
-		NotificationService.notify('Support', umsg, null, function() {
+		if (payload.type != 'ticket.message') {
+			return;
+		};
+		
+		App.playAudio('support-message-recieved');
+
+		NotificationService.notify(payload.name, payload.body, null, function() {
 			document.getElementById('support-chat-box').focus();
 		});
-
-		if(type == 'usermsg') 
-		{
-			$('#message_box').append("<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"+uname+"</span> : <span class=\"user_message\">"+umsg+"</span></div>");
-		}
-		if(type == 'system')
-		{
-			$('#message_box').append("<div class=\"system_msg\">"+umsg+"</div>");
-		}
 		
-		$('#message').val(''); //reset text
+		service.scope.ticket.messages.push(payload);
+		service.scope.$apply();
+		
+		$('.support-chat-contents-scroll').stop(true,false).animate({
+			scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
+		}, 1800);
 	};
 
 	return service;
