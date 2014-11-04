@@ -1,6 +1,5 @@
 <?php
 
-
 require_once('../include/crunchbutton.php');
 
 $host = 'localhost'; //host
@@ -45,6 +44,8 @@ while (true) {
 			//make room for new socket
 			$found_socket = array_search($socket, $changed);
 			unset($changed[$found_socket]);
+		} else {
+			continue;
 		}
 	}
 	
@@ -93,9 +94,6 @@ while (true) {
 			send_message($response);
 		}
 	}
-			var_dump($clients);
-	sleep(3);
-
 }
 // close the listening socket
 socket_close($sock);
@@ -161,21 +159,6 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	$request[1] = explode('?', $request[1]);
 	$method = $request[0];
 	$path = preg_replace('/^\/(.*)$/', '\\1', $request[1][0]);
-	parse_str($request[1][1], $query);
-	
-	$test = [
-		'method' => $method,
-		'path' => $path,
-		'query' => $query
-	];
-	
-	$test = $lines;
-
-	if ($path == 'emit') {
-		var_dump($query);
-		socket_close($client_conn);
-		return false;
-	}
 
 	foreach($lines as $line) {
 		$line = chop($line);
@@ -184,10 +167,48 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 		}
 	}
 
-	$check = false;
+	if (($method == 'POST' || $method == 'PUT') && $headers['Content-Type'] == 'application/x-www-form-urlencoded') {
+		parse_str(array_pop($lines), $query);
+	} else {
+		parse_str($request[1][1], $query);
+	}
 
-	if ($query['token']) {
-		$sess = Session::token($query['token']);
+	$check = false;
+	
+	// if the connection is not a socket
+	if ($headers['Upgrade'] != 'websocket') {
+
+		// we are emiting from php
+		if ($path == 'emit' && $query['_key'] == c::config()->site->config('chat-server-key')->val()) {
+			echo "Emiting...\n";
+			$msg = [];
+			foreach ($query as $k => $v) {
+				if ($k{0} != '_') {
+					$msg[$k] = $v;
+				}
+			}
+			send_mask($msg);
+			var_dump($query);
+			
+			$upgrade =
+				"HTTP/1.1 200 Ok\r\n".
+				"\r\ntrue";
+			socket_write($client_conn, $upgrade, strlen($upgrade));
+		
+		// someone came here from the browser
+		} else {
+			$upgrade =
+				"HTTP/1.0 404 Not Found\r\n".
+				"Content-Type:text/html; charset=UTF-8\r\n".
+				"\r\nThis is not the page you are looking for... <a href='http://_DOMAIN_'>http://_DOMAIN_</a>\r\n\r\n".c::config()->site->config('chat-server-key')->val()."\r\n\r\n".$query['_key'];
+			socket_write($client_conn, $upgrade, strlen($upgrade));
+		}
+		socket_close($client_conn);
+		return false;
+	}
+
+	if ($query['_token']) {
+		$sess = Session::token($query['_token']);
 		if ($sess->id_admin) {
 			$admin = new Admin($sess->id_admin);
 			if ($admin->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
@@ -197,8 +218,8 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	}
 	
 	if (!$check) {
-		//socket_close($client_conn);
-		//return false;
+		socket_close($client_conn);
+		return false;
 	}
 
 	$secKey = $headers['Sec-WebSocket-Key'];
@@ -207,7 +228,6 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	$upgrade  = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
 	"Upgrade: websocket\r\n" .
 	"User: ".$admin->id_admin."\r\n" .
-	"TEST: ".json_encode($test)."\r\n" .
 	"Connection: Upgrade\r\n" .
 	"WebSocket-Origin: $host\r\n" .
 	"WebSocket-Location: ws://$host:$port/demo/shout.php\r\n".
