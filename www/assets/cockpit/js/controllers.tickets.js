@@ -39,6 +39,7 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 	var loadTicket = function(id) {
 		TicketService.get(id, function(ticket) {
 			TicketViewService.scope.ticket = ticket;
+			TicketViewService.scroll();
 		});
 	};
 
@@ -58,7 +59,7 @@ NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewServi
 });
 
 
-NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService) {
+NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService, AccountService) {
 	var service = {
 		isTyping: false
 	};
@@ -96,8 +97,18 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		var msg = {
 			type: 'ticket.message',
 			ticket: service.scope.viewTicket,
-			message: message
+			body: message,
+			_token: $.cookie('token')
 		};
+
+		service.scope.ticket.messages.push({
+			body: message,
+			name: AccountService.user.firstName,
+			timestamp: new Date().getTime()
+		});
+		service.scope.$apply();
+		service.scroll();
+
 		service.websocket.send(JSON.stringify(msg));
 		service.isTyping = false;
 	};
@@ -105,6 +116,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	var typingTimer;
 	
 	service.typing = function(val) {
+		return;
 		if (!service.isTyping) {
 			service.isTyping = true;
 			service.websocket.send({
@@ -149,7 +161,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		
 		service.scope.ticket.messages.push(payload);
 		service.scope.$apply();
-		
+		service.scroll();
+	};
+	
+	service.scroll = function() {
 		$('.support-chat-contents-scroll').stop(true,false).animate({
 			scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
 		}, 1800);

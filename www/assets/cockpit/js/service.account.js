@@ -84,6 +84,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 
 		if (data && data.id_admin) {
 			var name = service.user.name.split(' ');
+			service.user.firstName = name[0];
 			service.user.initials = '';
 			for (var x in name) {
 				service.user.initials += name[x].charAt(0);
