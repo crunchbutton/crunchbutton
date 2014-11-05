@@ -1472,7 +1472,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
 
-					$_total_payment = ( $schedule->driver_payment_hours > 0 ) ? max( 0, $pay_info[ 0 ][ 'total_payment' ] ) : 0;
+					$_total_payment = ( $schedule->driver_payment_hours > 0 ) ? 0 : max( 0, $pay_info[ 0 ][ 'total_payment' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
