@@ -56,11 +56,33 @@ while (true) {
 		while(socket_recv($changed_socket, $buf, 1024, 0) >= 1) {
 			$received_text = unmask($buf);
 			$payload = json_decode($received_text);
+
+			var_dump($payload);
 			
 			// sending a mesage to a ticket
 			switch ($payload->type) {
 				case 'ticket.message':
-					$support = Support::o($payload->ticket);
+				
+					$sess = Session::token($payload->_token);
+					if ($sess->id_admin) {
+						$admin = new Admin($sess->id_admin);
+
+						if ($admin->id_admin) {
+							$support = Support::o($payload->ticket);
+							
+							if ($support->id_support) {
+								$message = $support->addAdminMessage([
+									'body' => $payload->body,
+									'phone' => $admin->phone,
+									'id_admin' => $admin->id_admin
+								]);
+								if ($message->id_support_message) {
+									$message->notify();
+								}
+							}
+						}
+					}
+
 					break;
 
 				case 'ticket.typing.start':
