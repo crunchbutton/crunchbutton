@@ -1435,6 +1435,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 
 			$shifts = $schedule->shifts();
+
 			if( $shifts ){
 				$summary[ 'shifts_count' ] = 0;
 				$summary[ 'shifts_hours' ] = 0;
@@ -1470,6 +1471,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
+
+					$_total_payment = ( $schedule->driver_payment_hours > 0 ) ? max( 0, $pay_info[ 0 ][ 'total_payment' ] ) : 0;
+
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
 																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
@@ -1479,7 +1483,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'delivery_fee' => $variables[ 'delivery_fee' ],
 																										'pay_type' => $type,
 																										'total_reimburse' => max( 0, $pay_info[ 0 ][ 'total_reimburse' ] ),
-																										'total_payment' => max( 0, $pay_info[ 0 ][ 'total_payment' ] )
+																										'total_payment' => $_total_payment
 																									];
 					if( $type == 'Cash' ){
 						$summary[ '_total_received_cash_' ] = $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
@@ -1492,7 +1496,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$summary[ '_total_payment_' ] += $pay_info[ 0 ][ 'total_payment' ];
 				}
 			}
-			$calcs = $settlement->driversProcess( $_orders, true, true, false );
+
+			$calcs = $settlement->driversProcess( $_orders, true, true, ( $schedule->driver_payment_hours == 1 ) );
+
+			if( $schedule->driver_payment_hours > 0 ){
+				$calcs[ 'shifts' ] = false;
+			}
 
 			$total_reimburse = $calcs[ 0 ][ 'total_reimburse' ];
 			$total_payment = $calcs[ 0 ][ 'total_payment' ];
