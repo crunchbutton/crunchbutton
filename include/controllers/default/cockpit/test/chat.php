@@ -1,11 +1,13 @@
 <?php
 class Controller_test_chat extends Crunchbutton_Controller_Account {
 	public function init() {
-		$res = Chat::emit([
-			'cmd' => 'ticket.message',
-			'message' => 'TEST'
-		]);
+		$message = Support_Message::o(41945);
 		
-		echo 'res...<br>'.$res;
+		$out = $message->exports();
+		$out['type'] = 'ticket.message';
+
+		$res = Chat::emit($out);
+		
+		echo $res;
 	}
 }
