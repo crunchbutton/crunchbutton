@@ -53,10 +53,13 @@
 				<div class="divider"></div>
 			</div>
 
-			<div ng-click="do_err_payments()" class="orange link left">
-				<br/>
-					<strong>Process errors all again</strong>
-				<br/>
+			<div>
+				<h3 class="title">
+					Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
+				</h3>
+				<h3 ng-click="do_err_payments()" class="title">
+					<strong class="orange link">Process errors all again</strong>
+				</h3>
 			</div>
 
 			<table class="tb-grid tb-zebra">
