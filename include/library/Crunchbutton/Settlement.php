@@ -213,7 +213,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	// this method receives the restaurant orders and run the math
-	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true ){
+	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true, $proccess_shifts = true ){
 		$pay = [];
 
 		// amount for each invited user
@@ -286,16 +286,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		// Get all the shifts between the dates
-		$shifts = $this->shifts();
-		if( $shifts ){
-			foreach( $shifts as $shift ){
-				$driver = $shift->id_admin;
-				if( !$pay[ $driver ] ){
-					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spent' => 0, 'orders' => [] ];
-					$pay[ $driver ][ 'id_admin' ] = $driver;
-					$pay[ $driver ][ 'name' ] = $shift->name;
-					$pay[ $driver ][ 'using_pex' ] = $shift->using_pex;
-					$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+		if( $proccess_shifts ){
+			$shifts = $this->shifts();
+			if( $shifts ){
+				foreach( $shifts as $shift ){
+					$driver = $shift->id_admin;
+					if( !$pay[ $driver ] ){
+						$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spent' => 0, 'orders' => [] ];
+						$pay[ $driver ][ 'id_admin' ] = $driver;
+						$pay[ $driver ][ 'name' ] = $shift->name;
+						$pay[ $driver ][ 'using_pex' ] = $shift->using_pex;
+						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+					}
 				}
 			}
 		}
@@ -1464,7 +1466,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$_order = $order->order();
 				if( $_order->id_order ){
 					$variables = $settlement->orderExtractVariables( $_order );
-					$pay_info = $settlement->driversProcess( [ $variables ], true );
+					$pay_info = $settlement->driversProcess( [ $variables ], true, true, false );
+
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
@@ -1475,8 +1478,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'restaurant' => $variables[ 'restaurant' ],
 																										'delivery_fee' => $variables[ 'delivery_fee' ],
 																										'pay_type' => $type,
-																										'total_reimburse' => $pay_info[ 0 ][ 'total_reimburse' ],
-																										'total_payment' => $pay_info[ 0 ][ 'total_payment' ]
+																										'total_reimburse' => max( 0, $pay_info[ 0 ][ 'total_reimburse' ] ),
+																										'total_payment' => max( 0, $pay_info[ 0 ][ 'total_payment' ] )
 																									];
 					if( $type == 'Cash' ){
 						$summary[ '_total_received_cash_' ] = $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
@@ -1489,7 +1492,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$summary[ '_total_payment_' ] += $pay_info[ 0 ][ 'total_payment' ];
 				}
 			}
-			$calcs = $settlement->driversProcess( $_orders, true );
+			$calcs = $settlement->driversProcess( $_orders, true, true, false );
 
 			$total_reimburse = $calcs[ 0 ][ 'total_reimburse' ];
 			$total_payment = $calcs[ 0 ][ 'total_payment' ];
