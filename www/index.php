@@ -1,7 +1,7 @@
 <?php
 /**
  * HTTP entry point
- * 
+ *
  * @author	Devin Smith (www.devin-smith.com)
  * @date	2009.09.18
  *
@@ -12,7 +12,7 @@
 
 error_reporting(E_ALL ^ ( E_NOTICE | E_STRICT | E_DEPRECATED ) );
 ini_set('display_errors',true);
-set_time_limit(10);
+set_time_limit(100);
 ini_set('zlib.output_compression','On');
 ini_set('zlib.output_compression_level',9);
 
