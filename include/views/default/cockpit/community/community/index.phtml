@@ -19,6 +19,12 @@
 						<h3 class="title">
 							<i class="icon-dashboard"></i>
 							<?php echo $community[ 'name' ]; ?>
+							<?php if( $community[ 'community' ]->close_all_restaurants ) { ?>
+								<span style="color:red"> - Community Closed</span>
+							<?php } ?>
+							<?php if( $community[ 'community' ]->close_3rd_party_delivery_restaurants ) { ?>
+								<span style="color:red"> - 3rd Party Delivery Restaurants Closed</span>
+							<?php } ?>
 						</h3>
 						<h5> Summary of the last 7 days </h5>
 					</div>
@@ -73,15 +79,13 @@
 <div class="box">
 	<div class="box-header">
 			<ul class="nav nav-tabs nav-tabs-left">
+				<li class="active"><a href="#hours" data-toggle="tab"><i class="icon-time"></i> <span>
+				Closing Time</span></a></li>
 				<?php if( $this->restaurantsPermissions ) { ?>
-					<li class="active"><a href="#restaurants" data-toggle="tab"><i class="icon-food"></i> <span>Restaurants</span></a></li>
+					<li><a href="#restaurants" data-toggle="tab"><i class="icon-food"></i> <span>Restaurants</span></a></li>
 				<?php } ?>
-				<?php if( $this->driversPermissions ) {
-					if( !$this->restaurantsPermissions ){
-						$active = 'class="active"';
-					}
-					?>
-					<li <?php echo $active; ?>><a href="#drivers" data-toggle="tab"><i class="icon-road"></i> <span>Drivers</span></a></li>
+				<?php if( $this->driversPermissions ) {?>
+					<li><a href="#drivers" data-toggle="tab"><i class="icon-road"></i> <span>Drivers</span></a></li>
 				<?php } ?>
 				<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) { ?>
 				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts</span></a></li>
@@ -93,8 +97,52 @@
 
 	<div class="box-content padded">
 		<div class="tab-content">
+			<div class="tab-pane active" id="hours">
+
+<div class="box-content padded">
+			<div class="row-fluid">
+				<div class="separate-sections" style="margin-top: 5px;">
+					<div class="row-fluid">
+						<div class="span6">
+							<strong>Close all restaurants</strong>
+							<ul class="padded separate-sections">
+								<li class="input">
+									<label style="text-align:left;">
+										<input type="checkbox" name="close_all_restaurants" id="close_all_restaurants" <?php if( $community[ 'community' ]->close_all_restaurants ){ echo 'checked="checked"'; } ?> > Close all restaurants
+									</label>
+								</li>
+								<li class="input">
+									<input style="width:100%" type="text" name="close_all_restaurants_note" id="close_all_restaurants_note" value="<?php echo $community[ 'community' ]->close_all_restaurants_note; ?>" placeholder="Notes displayed when restaurant is clicked">
+								</li>
+								<li>
+									<button type="button" onclick="community.closeAll();" class="btn close_all_restaurants_save btn-blue">Save changes</button>
+								</li>
+							</ul>
+						</div>
+						<div class="span6">
+							<strong>Close 3rd party delivery restaurants</strong>
+							<ul class="padded separate-sections">
+								<li class="input">
+									<label style="text-align:left;">
+										<input type="checkbox" name="close_3rd_party_delivery_restaurants" id="close_3rd_party_delivery_restaurants" <?php if( $community[ 'community' ]->close_3rd_party_delivery_restaurants ){ echo 'checked="checked"'; } ?> > Close 3rd party delivery restaurants
+									</label>
+								</li>
+								<li class="input">
+									<input style="width:100%" type="text" name="close_3rd_party_delivery_restaurants_note" id="close_3rd_party_delivery_restaurants_note" value="<?php echo $community[ 'community' ]->close_3rd_party_delivery_restaurants_note; ?>" placeholder="Notes displayed when restaurant is clicked">
+								</li>
+								<li>
+									<button type="button" onclick="community.close3rdParty();" class="close_3rd_party_delivery_restaurants_save btn btn-blue">Save changes</button>
+								</li>
+							</ul>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+			</div>
 			<?php if( $this->restaurantsPermissions ) { ?>
-				<div class="tab-pane active" id="restaurants"></div>
+				<div class="tab-pane" id="restaurants"></div>
 			<?php } ?>
 			<?php if( $this->driversPermissions ) { ?>
 				<div class="tab-pane" id="drivers"></div>
@@ -124,46 +172,7 @@
 				<br>
 				<div>
 
-		<div class="box-content padded">
-			<div class="row-fluid">
-				<div class="separate-sections" style="margin-top: 5px;">
-					<div class="row-fluid">
-						<div class="span6">
-							<strong>Close all restaurants</strong>
-							<ul class="padded separate-sections">
-								<li class="input">
-									<label style="text-align:left;">
-										<input type="checkbox" name="close_all_restaurants" id="close_all_restaurants" <?php if( $community[ 'community' ]->close_all_restaurants ){ echo 'checked="checked"'; } ?> > Close all restaurants
-									</label>
-								</li>
-								<li class="input">
-									<input type="text" name="close_all_restaurants_note" id="close_all_restaurants_note" value="<?php echo $community[ 'community' ]->close_all_restaurants_note; ?>" placeholder="Notes">
-								</li>
-								<li>
-									<button type="button" onclick="community.closeAll();" class="btn close_all_restaurants_save btn-blue">Save changes</button>
-								</li>
-							</ul>
-						</div>
-						<div class="span6">
-							<strong>Close 3rd party delivery restaurants</strong>
-							<ul class="padded separate-sections">
-								<li class="input">
-									<label style="text-align:left;">
-										<input type="checkbox" name="close_3rd_party_delivery_restaurants" id="close_3rd_party_delivery_restaurants" <?php if( $community[ 'community' ]->close_3rd_party_delivery_restaurants ){ echo 'checked="checked"'; } ?> > Close 3rd party delivery restaurants
-									</label>
-								</li>
-								<li class="input">
-									<input type="text" name="close_3rd_party_delivery_restaurants_note" id="close_3rd_party_delivery_restaurants_note" value="<?php echo $community[ 'community' ]->close_3rd_party_delivery_restaurants_note; ?>" placeholder="Notes">
-								</li>
-								<li>
-									<button type="button" onclick="community.close3rdParty();" class="close_3rd_party_delivery_restaurants_save btn btn-blue">Save changes</button>
-								</li>
-							</ul>
-						</div>
-				</div>
-			</div>
-		</div>
-	</div>
+
 </div>
 
 
