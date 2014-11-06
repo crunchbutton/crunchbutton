@@ -84,7 +84,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	
 	service.socket.on('connect', function (data) {
 		console.debug('Connected to socket.io');
-		service.socket.emit('token', $.cookie('token'));
+		service.socket.emit('auth', {
+			token: $.cookie('token'),
+			phpsessid: $.cookie('PHPSESSID')
+		});
 
 		if (AccountService.user.id_admin == 1) {
 			service.socket.emit('event.subscribe', 'ticket.all');
