@@ -4,6 +4,10 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		// script to fix #4020
+
+		die('remove this line');
+
 		$out = [ 'ok' => [], 'nope' => [] ];
 
 		// Get the payments schedule with error
