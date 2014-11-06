@@ -6,47 +6,63 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 var http = require('http');
 var querystring = require('querystring');
+var bodyParser = require('body-parser');
+
+var key = 'eoW5Z/nhFNMPjjYI62czeNhaK6x5jgsw94rFrSZnoLpa/fVswc+fJlhK1vi21kk7RHz5Dzvv0XvJkmdmc3ldY7JjmjgsZvVLq0E8x+jXBO9Dtp3tvlndHcj8v3onjP0ghh8vf4oSE1nbGKxsqpTHDpgHP6QLjJb+4vNyWmoDhlEwr4EabditQsALfSUvXJrgXR6JQ3NlDke/1w9mC9X7KEG52VLIZJhGyyPB4Dt2sWEYIXOTahy5PDGPCNxw';
 
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
 });
 
-// Routing
-app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
+
+
+// from php
+app.post('/', function (req, res) {
+	if (req.body._key != key) {
+		res.status(401).end();
+		return;
+	}
+	var payload = req.body.payload;
+	var to = req.body.to;
+	var event = req.body.event;
+
+	console.log('recieved broadcast...', to, event, payload);
+
+	if (to.room) {
+		if (typeof to.room != 'object') {
+			to.room = [to.room];
+		}
+
+		for (var x in to.room) {
+			io.to(to.room[x]).emit(event, payload);
+		}
+	}
+
+	if (to.admin) {
+		if (typeof to.admin != 'object') {
+			to.admin = [to.admin];
+		}
+
+		io.sockets.clients().forEach(function(socket) {
+			if (to.admin.indexOf(socket.id_admin) > -1) {
+				socket.emit(event, payload);
+			}
+		});
+	}
+
+	res.send('{"status":"sent"}');
+});
+
+app.all('*', function (req, res) {
+	res.status(404).end();
+})
 
 io.on('connection', function (socket) {
 	var addedUser = false;
 	console.log('user connected...');
 	
 	socket.events = {};
-
-	// from php
-	socket.on('event.broadcast', function (payload) {
-		console.log('recieved broadcast...', payload);
-
-		if (payload.room) {
-			if (typeof payload.room != 'object') {
-				payload.room = [payload.room];
-			}
-
-			for (var x in payload.room) {
-				io.to(payload.room[x]).emit(payload.event, payload.data);
-			}
-		}
-
-		if (payload.admin) {
-			if (typeof payload.admin != 'object') {
-				payload.admin = [payload.admin];
-			}
-
-			io.sockets.clients().forEach(function(socket) {
-				if (payload.admin.indexOf(socket.id_admin) > -1) {
-					socket.emit(payload.event, payload.data);
-				}
-			});
-
-		}
-	});
 
 	// from socket
 	socket.on('event.message', function (payload) {
@@ -69,15 +85,15 @@ io.on('connection', function (socket) {
 				'Cookie': 'token=' + socket.token
 			}
 		};
-		
+
 		var complete = function(data) {
 			console.log('api response: ', data);
-			//io.to('ticket.' + data.id_support).emit('ticket.message', data);
+			socket.emit('event.response', data);
 		};
 
 		var req = http.request(options, function(res) {
-			console.log("statusCode: ", res.statusCode);
-			console.log("headers: ", res.headers);
+			console.log('statusCode: ', res.statusCode);
+			console.log('headers: ', res.headers);
 			
 			res.setEncoding('utf8');
 			var str = '';

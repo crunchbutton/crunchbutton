@@ -148,10 +148,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 		console.debug('Recieved chat message: ', payload);
 		
-		if (payload.type != 'ticket.message') {
-			return;
-		};
-		
 		App.playAudio('support-message-recieved');
 
 		NotificationService.notify(payload.name, payload.body, null, function() {
