@@ -59,7 +59,7 @@ io.on('connection', function (socket) {
 		var post = querystring.stringify(payload.data);
 
 		var options = {
-			host: 'beta.cockpit.la',
+			host: payload.host || 'beta.cockpit.la',
 			path: payload.url,
 			port: '80',
 			method: 'POST',

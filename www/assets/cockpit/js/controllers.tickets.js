@@ -94,6 +94,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.send = function(message) {
 		var msg = {
 			url: '/api/tickets/' + service.scope.viewTicket + '/message',
+			host: location.host,
 			data: {
 				body: message
 			}
