@@ -430,6 +430,11 @@ class Crunchbutton_Support extends Cana_Table {
 			$this->id_admin = $message->id_admin;
 			$this->save();
 		}
+		
+		Chat::emit([
+			'room' => 'ticket.'.$message->id_support,
+			'room' => 'ticket.all',
+		], 'ticket.message', $this->exports());
 
 		return $message;
 	}
