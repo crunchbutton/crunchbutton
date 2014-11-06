@@ -1276,18 +1276,8 @@ $( document ).ready( function(){
 	$( '#restaurant-delivery-service-container' ).click( function(){
 		isDeliveryServiceChecked();
 	} );
-	$( '#restaurant-formal-relationship-container' ).click( function(){
-		isFormalBillingRelationshipChecked();
-	} );
-} );
 
-function isFormalBillingRelationshipChecked(){
-	if( $( '#restaurant-formal-relationship-container' ).text() == 'no' ){
-		$( '#order-notifications-sent-container' ).show();
-	} else {
-		$( '#order-notifications-sent-container' ).hide();
-	}
-}
+} );
 
 function isDeliveryServiceChecked(){
 	return;
