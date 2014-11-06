@@ -1,4 +1,6 @@
 <?php
+	
+die('this is just here for reference now');
 
 require_once('../include/crunchbutton.php');
 
