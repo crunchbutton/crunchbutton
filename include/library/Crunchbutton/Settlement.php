@@ -1258,11 +1258,27 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$amount = floatval( $schedule->amount );
 
-				$payment_method = $schedule->driver()->payment_type()->payment_method;
+				$payment_type = $schedule->driver()->payment_type();
+
+				$payment_method = $payment_type->payment_method;
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
+
+					if( !$payment_type->balanced_id || !$payment_type->balanced_bank ){
+						$schedule->log = 'There is no account info for this driver.';
+						$message = 'Restaurant Payment error! Driver: ' . $schedule->driver()->name;
+						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+						$message .= "\n". 'amount: ' . $schedule->amount;
+						$message .= "\n". $schedule->log;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						return false;
+					}
+
 					if( $amount > 0 ){
+
 						try {
 							$id_payment = ( $schedule->id_payment ) ? $schedule->id_payment : null;
 							$p = Payment::credit_driver( [ 'id_driver' => $schedule->id_driver,
