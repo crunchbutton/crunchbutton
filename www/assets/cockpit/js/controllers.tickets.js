@@ -156,7 +156,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 		console.debug('Recieved chat message: ', payload);
 		
-		App.playAudio('support-message-recieved');
+		if (payload.id_support == service.scope.viewTicket) {
+			App.playAudio('support-message-recieved');
+		} else {
+			App.playAudio('support-message-new');
+		}
 
 		NotificationService.notify(payload.name, payload.body, null, function() {
 			document.getElementById('support-chat-box').focus();
