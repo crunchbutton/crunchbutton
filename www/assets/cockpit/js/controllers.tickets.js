@@ -44,7 +44,7 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 	};
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
-		loadTicket(ticket);
+		loadTicket(ticket == 'refresh' ? TicketViewService.scope.ticket : ticket);
 	});
 	
 	$scope.send = TicketViewService.send;
@@ -81,24 +81,22 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		}
 	});
 
-	service.websocket = new WebSocket('wss://' + location.host + ':9000/test?_token=' + $.cookie('token'));
+//	service.websocket = new WebSocket('wss://' + location.host + ':9000/test?_token=' + $.cookie('token'));
 	
-	service.websocket.onopen = function(ev) {
-		console.debug('Connected to chat server.');
-	}
-	service.websocket.onerror = function(ev) {
-		console.error('Chat server error: ', ev.data);
-	}; 
-	service.websocket.onclose = function(ev) {
-		console.debug('Chat server connection closed.');
-	};
+	service.socket = io('https://chat.cockpit.la');
+	
+	service.socket.on('connect', function (data) {
+		console.debug('Connected to socket.io');
+		service.socket.emit('token', $.cookie('token'));
+		service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
+	});
 	
 	service.send = function(message) {
 		var msg = {
-			type: 'ticket.message',
-			ticket: service.scope.viewTicket,
-			body: message,
-			_token: $.cookie('token')
+			url: '/api/tickets/' + service.scope.viewTicket + '/message',
+			data: {
+				body: message
+			}
 		};
 
 		service.scope.ticket.messages.push({
@@ -108,8 +106,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		});
 		service.scope.$apply();
 		service.scroll();
-
-		service.websocket.send(JSON.stringify(msg));
+		
+		service.socket.emit('event.message', msg);
 		service.isTyping = false;
 	};
 	
@@ -145,8 +143,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		}, 5000);
 	};
 
-	service.websocket.onmessage = function(ev) {
-		var payload = JSON.parse(ev.data);
+	service.socket.on('ticket.message', function(payload) {
+
 		console.debug('Recieved chat message: ', payload);
 		
 		if (payload.type != 'ticket.message') {
@@ -162,8 +160,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.scope.ticket.messages.push(payload);
 		service.scope.$apply();
 		service.scroll();
-	};
-	
+	});
+
 	service.scroll = function() {
 		$('.support-chat-contents-scroll').stop(true,false).animate({
 			scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
