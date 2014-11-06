@@ -34,8 +34,8 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				$this->session()->id_user = $id_user;
 				$this->session()->id_admin = $id_admin;
 				
-				$headers = get_headers();
-				if ($headers['Session-Type'] == 'passthru' && $headers['Session-Type-Key'] == c::config()->site->config('chat-server-key')->val()) {
+				$headers = apache_request_headers();
+				if ($headers['Session-Type'] && trim($headers['Session-Type']) == 'passthru' && trim($headers['Session-Type-Key']) == c::config()->site->config('chat-server-key')->val()) {
 					
 				} else {
 					$this->session()->token   = $token;
