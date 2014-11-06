@@ -1684,12 +1684,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function checkPaymentStatus( $type = 'driver' ){
 		// get all payments with pending status - drivers
-		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.balanced_status != '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "'" );
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND ( p.balanced_status != '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "' OR p.balanced_status IS NULL ) " );
 		foreach( $payments as $payment ){
 			$id_payment = $payment->id_payment;
-			Cana::timeout(function() use( $id_payment ) {
-				$payment = Crunchbutton_Payment::o( $id_payment );
-				$status = $payment->checkBalancedStatus();
+			$payment = Crunchbutton_Payment::o( $id_payment );
+			Cana::timeout(function() use( $payment ) {
+				$payment->checkBalancedStatus();
 			} );
 			$message = 'id_payment : ' . $payment->id_payment;
 			$this->log( 'checkPaymentStatus', $message );
