@@ -126,15 +126,15 @@ App.tokenizeCard_balanced = function(card, completed) {
 				break;
 
 			case 402:
-				res.error = 'Unable to authorize';
+				res.error = 'Unable to authorize card';
 				break;
 
 			case 404:
-				res.error = 'Unexpected error';
+				res.error = 'Unexpected payment error';
 				break;
 
 			case 409:
-				res.error = 'Unable to validate';
+				res.error = 'Unable to validate credit card';
 				break;
 
 			case 500:
