@@ -18,7 +18,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 
 
 		// support
-		$tickets = null;
+		$tickets = [];
 
 		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			$q = 'SELECT count(*) as c from support where status="open"';
