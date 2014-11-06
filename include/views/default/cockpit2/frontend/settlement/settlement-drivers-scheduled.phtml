@@ -71,6 +71,7 @@
 						<td>Type</td>
 						<td>Amount</td>
 						<td>Status</td>
+						<td></td>
 					</tr>
 				</thead>
 				<tbody>
@@ -83,6 +84,9 @@
 						<td>
 							<span class="link orange" ng-click="payment( driver.id_payment_schedule )">{{driver.status}}</span>
 							&nbsp;<a title="Open in new window" href="/settlement/drivers/scheduled/{{driver.id_payment_schedule}}" target="_blank"><span class="link orange"><i class="fa fa-share-square"></i></span></a>
+						</td>
+						<td>
+							{{driver.log}}
 						</td>
 					</tr>
 				</tbody>
