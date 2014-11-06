@@ -4,9 +4,36 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		// script to fix #4020
+		$out = [ 'ok' => [], 'nope' => [] ];
 
-		die('remove this line');
+		$settlement = new Settlement;
+
+		$payments_schedule = Cockpit_Payment_Schedule::q( 'SELECT ps.* FROM payment_schedule ps INNER JOIN payment p ON p.id_payment = ps.id_payment AND p.balanced_id IS NULL AND ps.status = "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule DESC' );
+		foreach( $payments_schedule as $payment_schedule ){
+			$nope = false;
+			// echo '<pre>';var_dump( $payment_schedule );exit();
+
+			// Fix the pay_type null error
+			if( !$payment_schedule->pay_type ){
+				$payment_schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
+				$payment_schedule->save();
+			}
+
+			if( $payment_schedule->amount ){
+				$payment_schedule->id_payment = $payment->id_payment;
+				$payment_schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+				$payment_schedule->log = 'Schedule created';
+				$payment_schedule->status_date = $payment->date;
+				$payment_schedule->save();
+				$out[ 'ok' ][] = $payment_schedule->id_payment_schedule;
+			}
+
+			$nope = true;
+		}
+		echo json_encode( $out );exit;
+		// script to fix #4020
+		return;
+		return;
 
 		$out = [ 'ok' => [], 'nope' => [] ];
 

@@ -60,6 +60,7 @@ class Crunchbutton_Payment extends Cana_Table {
 	}
 
 	public function checkBalancedStatus(){
+
 		Log::debug( [ 'method' => 'checkBalancedStatus_start', 'id_payment' => $this->id_payment, 'type' => 'settlement' ] );
 		if( $this->amount > 0 ){
 			if( $this->balanced_id && $this->env ){
