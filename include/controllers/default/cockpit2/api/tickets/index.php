@@ -3,9 +3,6 @@
 class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-		if ($this->method() != 'get') {
-			exit;
-		}
 		
 		if (c::getPagePiece(2)) {
 			$support = Support::o(c::getPagePiece(2));
@@ -17,9 +14,28 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			if (get_class($support) != 'Crunchbutton_Support') {
 				$support = $support->get(0);
 			}
+			
+			if ($this->method() == 'get') {
+				echo $support->json();
+				exit;
+			}
+			
+			if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
+				$message = $support->addAdminMessage([
+					'body' => $this->request()['body'],
+					'phone' => c::admin()->phone,
+					'id_admin' => c::admin()->id_admin
+				]);
+				if ($message->id_support_message) {
+					$message->notify();
+				}
+				echo $message->json();
+				exit;
+			}
 
-			echo $support->json();
+			header('HTTP/1.0 409 Conflict');
 			exit;
+			 
 		}
 
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
