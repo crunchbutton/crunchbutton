@@ -2,7 +2,7 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
-	die('hard');
+
 
 		$set = new Crunchbutton_Settlement;
 		$set->checkPaymentStatus();
