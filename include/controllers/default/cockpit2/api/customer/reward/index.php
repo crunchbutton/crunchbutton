@@ -5,7 +5,7 @@ class Controller_api_customer_reward extends Crunchbutton_Controller_RestAccount
 	public function init() {
 
 		if( !c::admin()->permission()->check( ['global'] ) ){
-			$this->_error();
+			//$this->_error();
 		}
 
 		switch ( c::getPagePiece( 3 ) ) {
