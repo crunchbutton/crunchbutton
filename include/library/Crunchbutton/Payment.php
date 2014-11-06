@@ -147,7 +147,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->env = c::getEnv(false);
 		$payment->id_admin = c::user()->id_admin;
 		$payment->save();
-echo '<pre>';var_dump( $payment );exit();
+
 		if( $payment->balanced_id || $payment->stripe_id ){
 			return $payment->id_payment;
 		} else {
