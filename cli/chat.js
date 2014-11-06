@@ -55,7 +55,7 @@ app.post('/', function (req, res) {
 });
 
 app.all('*', function (req, res) {
-	res.status(404).end();
+	res.redirect(302, 'https://cockpit.la/');
 })
 
 io.on('connection', function (socket) {
