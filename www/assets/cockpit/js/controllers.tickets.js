@@ -73,11 +73,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.scope.viewTicket = ticket;
 		$rootScope.supportToggled = true;
 		
-		if (service.websocket && service.websocket.readyState == WebSocket.OPEN) {
-			service.websocket.send(JSON.stringify({
-				type: 'ticket.subscribe',
-				ticket: service.scope.viewTicket
-			}));
+		if (service.scope.viewTicket) {
+			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
 		}
 	});
 
@@ -88,7 +85,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.socket.on('connect', function (data) {
 		console.debug('Connected to socket.io');
 		service.socket.emit('token', $.cookie('token'));
-		service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
 
 		if (AccountService.user.id_admin == 1) {
 			service.socket.emit('event.subscribe', 'ticket.all');
