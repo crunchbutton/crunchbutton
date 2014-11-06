@@ -85,6 +85,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			ORDER BY s.datetime DESC
 			LIMIT '.$limit.'
 		';
+		
+		$d = [];
 
 		$r = c::db()->query($q);
 		while ($o = $r->fetch()) {
