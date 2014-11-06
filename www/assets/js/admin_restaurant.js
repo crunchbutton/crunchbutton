@@ -1218,7 +1218,6 @@ var ADMIN = {
 					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
 					isDeliveryServiceChecked();
-					isFormalBillingRelationshipChecked();
 					$( '#save-button' ).html( 'Save' );
 					ADMIN.isRestaurantLoaded = true;
 					ADMIN.restaurant_update_closed_open();
