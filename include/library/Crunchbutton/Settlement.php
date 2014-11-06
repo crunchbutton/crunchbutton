@@ -1486,7 +1486,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$_order = $order->order();
 				if( $_order->id_order ){
 					$variables = $settlement->orderExtractVariables( $_order );
-					// $pay_info = $settlement->driversProcess( [ $variables ], true, true, false );
+					$pay_info = $settlement->driversProcess( [ $variables ], true, true, false );
 
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
@@ -1529,12 +1529,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $schedule->driver_payment_hours ){
 					$total_payment = floatval( $summary[ 'amount' ] );
 					$summary[ 'hourly' ] = true;
-				} else {
-					$total_payment = floatval( $summary[ 'amount' ] );
 				}
-
-			} else {
-				$total_reimburse = floatval( $summary[ 'amount' ] );
 			}
 
 			$summary[ 'calcs' ] = [ 'total_reimburse' => $total_reimburse,
