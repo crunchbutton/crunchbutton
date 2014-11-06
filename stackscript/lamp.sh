@@ -182,8 +182,11 @@ function mysql_grant_user {
 # install php from a 3rd party repo
 function php_install {
 	# yum -y remove php-common
-	rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
+	#rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
+rpm -Uvh https://mirror.webtatic.com/yum/el7/epel-release.rpm
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
 	yum -y install php55w php55w-opcache php55w-xml php55w-mysql php55w-mbstring php55w-mcrypt php55w-pear
+
 	
 	sed -i -e 's/^short_open_tag = Off$/short_open_tag = On/' /etc/php.ini
 }
