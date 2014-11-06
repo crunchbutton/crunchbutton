@@ -89,6 +89,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		console.debug('Connected to socket.io');
 		service.socket.emit('token', $.cookie('token'));
 		service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
+
+		if (AccountService.user.id_admin == 1) {
+			service.socket.emit('event.subscribe', 'ticket.all');
+		}
 	});
 	
 	service.send = function(message) {
@@ -143,6 +147,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			}
 		}, 5000);
 	};
+	
+	service.socket.on('event.response', function(payload) {
+		console.debug('event response: ',payload);
+	});
 
 	service.socket.on('ticket.message', function(payload) {
 
