@@ -82,7 +82,9 @@ io.on('connection', function (socket) {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 				'Content-Length': post.length,
-				'Cookie': 'token=' + socket.token
+				'Session-Type': 'passthru',
+				'Session-Type-Key': key,
+				'Cookie': 'PHPSESSID=' + socket.phpsessid + '; token=' + socket.token
 			}
 		};
 
@@ -122,8 +124,9 @@ io.on('connection', function (socket) {
 		socket.leave(event);
 	});
 
-	// set the token to be used for authentication
-	socket.on('token', function (token) {
-		socket.token = token;
+	// set the auth to be used for authentication
+	socket.on('auth', function (data) {
+		socket.phpsessid = data.phpsessid;
+		socket.token = data.token;
 	});
 });

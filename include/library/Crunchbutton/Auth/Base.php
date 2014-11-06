@@ -33,13 +33,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				$this->session()->id_session = $id_session;
 				$this->session()->id_user = $id_user;
 				$this->session()->id_admin = $id_admin;
-				
-				$headers = apache_request_headers();
-				if ($headers['Session-Type'] && trim($headers['Session-Type']) == 'passthru' && trim($headers['Session-Type-Key']) == c::config()->site->config('chat-server-key')->val()) {
-					
-				} else {
-					$this->session()->token   = $token;
-				}
+				$this->session()->token   = $token;
 			} else {
 				// if no id_user in session, delete cookie and session in DB as it's not used, see #624
 				Session::deleteToken($_COOKIE['token']);
