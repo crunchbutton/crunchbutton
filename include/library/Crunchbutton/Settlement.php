@@ -213,7 +213,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	// this method receives the restaurant orders and run the math
-	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true, $proccess_shifts = true ){
+	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true, $proccess_shifts = true, $id_driver = 0 ){
+
 		$pay = [];
 
 		// amount for each invited user
@@ -287,7 +288,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// Get all the shifts between the dates
 		if( $proccess_shifts ){
-			$shifts = $this->shifts();
+			$shifts = $this->shifts( $id_driver );
 			if( $shifts ){
 				foreach( $shifts as $shift ){
 					$driver = $shift->id_admin;
@@ -324,10 +325,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 				$tip = 0;
 				foreach( $pay[ $id_driver ][ 'orders' ] as $id_order => $order ){
-					if( !$order[ 'driver_paid' ] ){
+
+					if( !$order[ 'driver_paid' ] || $recalculatePaidOrders ){
 						$tip += $order[ 'pay_info' ][ 'tip' ];
 					}
 				}
+
 				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
 				$pay[ $id_driver ][ 'total_payment' ] = ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] );
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
@@ -1467,12 +1470,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$_order = $order->order();
 				if( $_order->id_order ){
 					$variables = $settlement->orderExtractVariables( $_order );
-					$pay_info = $settlement->driversProcess( [ $variables ], true, true, false );
+					// $pay_info = $settlement->driversProcess( [ $variables ], true, true, false );
 
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
 
-					$_total_payment = ( $schedule->driver_payment_hours > 0 ) ? 0 : max( 0, $pay_info[ 0 ][ 'total_payment' ] );
+					$_total_payment = max( 0, $pay_info[ 0 ][ 'total_payment' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
@@ -1497,7 +1500,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 
-			$calcs = $settlement->driversProcess( $_orders, true, true, ( $schedule->driver_payment_hours == 1 ) );
+			$calcs = $settlement->driversProcess( $_orders, true, true, ( $schedule->driver_payment_hours == 1 ), $schedule->id_driver );
 
 			if( $schedule->driver_payment_hours > 0 ){
 				$calcs[ 'shifts' ] = false;
@@ -1693,14 +1696,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
-	public function shifts(){
+	public function shifts( $id_driver = 0 ){
+		$where = ( $id_driver == 0 ) ? '' : ' AND asa.id_admin = ' . $id_driver;
 		return Crunchbutton_Community_Shift::q( "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex
 																							FROM community_shift cs
 																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
 																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
 																							INNER JOIN admin a ON a.id_admin = asa.id_admin
 																							WHERE DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
-																							  AND DATE_FORMAT(cs.date_end, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'" );
+																							  AND DATE_FORMAT(cs.date_end, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "' " . $where );
 	}
 
 	public function amount_per_invited_user(){
