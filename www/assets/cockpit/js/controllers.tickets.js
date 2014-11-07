@@ -102,7 +102,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				body: message
 			}
 		};
-
+/*
 		service.scope.ticket.messages.push({
 			body: message,
 			name: AccountService.user.firstName,
@@ -110,6 +110,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		});
 		service.scope.$apply();
 		service.scroll();
+*/
 		
 		service.socket.emit('event.message', msg);
 		service.isTyping = false;
