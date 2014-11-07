@@ -27,6 +27,12 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 					'id_admin' => c::admin()->id_admin
 				]);
 				if ($message->id_support_message) {
+					Chat::emit([
+						'room' => [
+							'ticket.'.$message->id_support,
+							'ticket.all'
+						]
+					], 'ticket.message', $message->exports());
 					$message->notify();
 				}
 				echo $message->json();
