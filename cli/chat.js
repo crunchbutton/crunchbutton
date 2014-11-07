@@ -27,7 +27,7 @@ app.post('/', function (req, res) {
 	var to = req.body.to;
 	var event = req.body.event;
 	
-	var notified = [];
+	var sockets = {};
 
 	console.log('recieved broadcast...', to, event, payload);
 
@@ -40,6 +40,13 @@ app.post('/', function (req, res) {
 
 		for (var x in to.room) {
 			io.to(to.room[x]).emit(event, payload);
+			continue;
+			io.sockets.clients(to.room[x]).forEach(function(socket) {
+				if (!sockets[socket.phpsessid]) {
+					sockets[socket.phpsessid] = socket;
+				}
+			});
+
 		}
 	}
 
@@ -50,9 +57,15 @@ app.post('/', function (req, res) {
 
 		io.sockets.clients().forEach(function(socket) {
 			if (to.admin.indexOf(socket.id_admin) > -1) {
-				socket.emit(event, payload);
+				if (!sockets[socket.phpsessid]) {
+					sockets[socket.phpsessid] = socket;
+				}
 			}
 		});
+	}
+	
+	for (var x in sockets) {
+		sockets[x].emit(event, payload);
 	}
 
 	res.send('{"status":"sent"}');
