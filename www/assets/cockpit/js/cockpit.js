@@ -38,7 +38,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload' ], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment'], function( $httpProvider ) {
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 	var param = function(obj) {
 		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
@@ -76,6 +76,10 @@ var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'ngAnimate', 'ang
 		return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
 	}];
 });;
+
+NGApp.constant('angularMomentConfig', {
+    timezone: 'America/Los_Angeles'
+});
 
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
@@ -362,6 +366,9 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService) {
+
+
+	moment.relativeTimeThreshold('m', 1);
 
 	// define external pointers
 	App.rootScope = $rootScope;
