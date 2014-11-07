@@ -18,7 +18,10 @@
 				<div class="support-chat-contents-scroll">
 					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}">
 						<div class="support-chat-contents-message-name">{{message.name}}</div>
-						<div class="support-chat-contents-message-time">{{message.timestamp*1000 | date: 'M/d h:mm a'}}</div>
+						<div class="support-chat-contents-message-time">
+							<? /*{{message.timestamp*1000 | date: 'M/d h:mm a'}} */ ?>
+							<span am-time-ago="message.date"></span>
+						</div>
 						<div class="support-chat-contents-message-body">{{message.body}}</div>
 					</div>
 				</div>
