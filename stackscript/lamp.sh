@@ -210,5 +210,5 @@ function install_basics {
 
 # changes sshs port
 function ssh_port {
-	sed -i -e 's/^#Port 22$/Port $1/' /etc/ssh/sshd_config
+	sed -i 's/^#Port .*$/Port ${1}/' /etc/ssh/sshd_config
 }

@@ -2,3 +2,4 @@
 
 su -l deploy -c "cd /home/chat.cockpit.la && git pull"
 service nginx restart
+service chat restart
