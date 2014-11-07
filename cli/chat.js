@@ -26,8 +26,12 @@ app.post('/', function (req, res) {
 	var payload = req.body.payload;
 	var to = req.body.to;
 	var event = req.body.event;
+	
+	var notified = [];
 
 	console.log('recieved broadcast...', to, event, payload);
+
+	// @todo: prevent duplicate messages
 
 	if (to.room) {
 		if (typeof to.room != 'object') {
@@ -75,15 +79,13 @@ io.on('connection', function (socket) {
 		var post = querystring.stringify(payload.data);
 
 		var options = {
-			host: payload.host || 'beta.cockpit.la',
+			host: socket.apiHost || 'beta.cockpit.la',
 			path: payload.url,
 			port: '80',
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 				'Content-Length': post.length,
-				'Session-Type': 'passthru',
-				'Session-Type-Key': key,
 				'Cookie': 'PHPSESSID=' + socket.phpsessid + '; token=' + socket.token
 			}
 		};
@@ -101,11 +103,14 @@ io.on('connection', function (socket) {
 			var str = '';
 			res.on('data', function (chunk) {
 				str += chunk;
-				console.log('chunk: ', chunk);
 			});
 			res.on('end', function () {
 				complete(str);
 			});
+		});
+
+		req.on('error', function (err) {
+			console.log(err);
 		});
 		
 		req.write(post);
@@ -125,8 +130,45 @@ io.on('connection', function (socket) {
 	});
 
 	// set the auth to be used for authentication
-	socket.on('auth', function (data) {
-		socket.phpsessid = data.phpsessid;
-		socket.token = data.token;
+	socket.on('auth', function (payload) {
+		socket.phpsessid = payload.phpsessid;
+		socket.token = payload.token;
+		socket.apiHost = payload.host || 'beta.cockpit.la';
+
+		var options = {
+			host: socket.apiHost,
+			path: '/api/config',
+			port: '443',
+			method: 'GET',
+			headers: {
+				'Cookie': 'PHPSESSID=' + socket.phpsessid + '; token=' + socket.token
+			}
+		};
+
+		var complete = function(data) {
+			console.log('config response: ', data);
+			if (data.user && data.user.id_admin) {
+				socket.id_admin = data.user.id_admin;
+			}
+		};
+
+		var req = http.request(options, function(res) {
+			console.log('statusCode: ', res.statusCode);
+			console.log('headers: ', res.headers);
+
+			var str = '';
+			res.on('data', function (chunk) {
+				str += chunk;
+			});
+			res.on('end', function () {
+				complete(str);
+			});
+
+		});
+
+		req.on('error', function (err) {
+			console.log(err);
+		});
+
 	});
 });

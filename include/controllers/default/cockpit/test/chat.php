@@ -4,8 +4,10 @@ class Controller_test_chat extends Crunchbutton_Controller_Account {
 
 		$message = Support_Message::o(2913);
 		$res = Chat::emit([
-			'room' => 'ticket.'.$message->id_support,
-			'room' => 'ticket.all',
+			'room' => [
+				'ticket.'.$message->id_support,
+				'ticket.all',
+			]
 		], 'ticket.message', $message->exports());
 
 		echo $res;
