@@ -86,7 +86,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		console.debug('Connected to socket.io');
 		service.socket.emit('auth', {
 			token: $.cookie('token'),
-			phpsessid: $.cookie('PHPSESSID')
+			phpsessid: $.cookie('PHPSESSID'),
+			host: location.host
 		});
 
 		if (AccountService.user.id_admin == 1) {
@@ -97,7 +98,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.send = function(message) {
 		var msg = {
 			url: '/api/tickets/' + service.scope.viewTicket + '/message',
-			host: location.host,
 			data: {
 				body: message
 			}
@@ -151,9 +151,20 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		console.debug('event response: ',payload);
 	});
 
+	var notified  = new Array();
 	service.socket.on('ticket.message', function(payload) {
 
 		console.debug('Recieved chat message: ', payload);
+		
+		service.scope.ticket.messages.push(payload);
+		service.scope.$apply();
+		service.scroll();
+		
+		if (notified.indexOf(payload.id_support_message) > -1) {
+			return;
+		}
+		
+		notified.push(payload.id_support_message);
 		
 		if (payload.id_support == service.scope.viewTicket) {
 			App.playAudio('support-message-recieved');
@@ -164,10 +175,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		NotificationService.notify(payload.name, payload.body, null, function() {
 			document.getElementById('support-chat-box').focus();
 		});
-		
-		service.scope.ticket.messages.push(payload);
-		service.scope.$apply();
-		service.scroll();
+
 	});
 
 	service.scroll = function() {
