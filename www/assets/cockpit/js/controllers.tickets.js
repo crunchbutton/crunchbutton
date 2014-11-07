@@ -161,13 +161,13 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			return;
 		}
 
-		service.scope.ticket.messages.push(payload);
-		service.scope.$apply();
-		service.scroll();
-		
 		notified.push(payload.id_support_message);
 		
 		if (payload.id_support == service.scope.viewTicket) {
+			service.scope.ticket.messages.push(payload);
+			service.scope.$apply();
+			service.scroll();
+		
 			App.playAudio('support-message-recieved');
 		} else {
 			App.playAudio('support-message-new');
