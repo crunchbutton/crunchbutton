@@ -731,7 +731,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
-	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver ){
+	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type ){
 
 		$this->log( 'scheduleDriverPayment', [ 'id_driver' => $id_driver ] );
 
@@ -859,21 +859,21 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		foreach ( $drivers as $_driver ) {
 
-			if( !$id_drivers[ $_driver[ 'id_admin' ] ] ){
-				continue;
+			$key = intval( $_driver[ 'id_admin' ] );
+
+			if( ( $key > 0 ) && array_key_exists( $key, $id_drivers ) ){
+
+				$notes = $id_drivers[ $key ][ 'notes' ];
+				$adjustment = $id_drivers[ $key ][ 'adjustment' ];
+				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];
+				$id_driver = $key;
+
+				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver ) {
+					$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type );
+				} );
 			}
 
-			$notes = $id_drivers[ $_driver[ 'id_admin' ] ][ 'notes' ];
-			$adjustment = $id_drivers[ $_driver[ 'id_admin' ] ][ 'adjustment' ];
-			$adjustment_notes = $id_drivers[ $_driver[ 'id_admin' ] ][ 'adjustment_notes' ];
-			$id_driver = $_driver[ 'id_admin' ];
-
-			Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver ) {
-				$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver );
-			} );
-
 		}
-
 		return true;
 	}
 
@@ -1323,6 +1323,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
  					}
 
+ 					$this->log( 'payDriver: Success id_payment', $p );
+
 					if( $p ){
 
 						$payment = Crunchbutton_Payment::o( $p );
@@ -1331,8 +1333,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 						if( floatval( $schedule->adjustment ) != 0  ){
 							$payment->adjustment = $schedule->adjustment;
 							$payment->adjustment_note = $schedule->adjustment_note;
-							$payment->save();
 						}
+
+						// Bug fix
+						$payment->pay_type = $schedule->pay_type;
+						$payment->save();
 
 						$schedule->id_payment = $payment->id_payment;
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
@@ -1669,6 +1674,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$this->log( 'sendDriverPaymentNotification', $summary );
 
 		$env = c::getEnv();
+
+		if( $env != 'live' ){
+			return;
+		}
 
 		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
 		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );

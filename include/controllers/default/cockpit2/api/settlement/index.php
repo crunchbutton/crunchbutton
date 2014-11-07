@@ -570,9 +570,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$pay_type = $this->request()['pay_type'];
 
 		$_id_drivers = explode( ',', $this->request()['id_drivers'] );
+
 		$id_drivers = [];
+
 		foreach ( $_id_drivers as $key => $val ) {
-			$id_driver = trim( $val );
+			$id_driver = floatval( trim( $val ) );
 			$notes = $this->request()[ 'notes_' . $id_driver ];
 			$adjustment = $this->request()[ 'adjustments_' . $id_driver ];
 			$adjustment_notes = $this->request()[ 'adjustments_notes_' . $id_driver ];
@@ -581,6 +583,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$id_drivers[ $id_driver ][ 'adjustment' ] = $adjustment;
 			$id_drivers[ $id_driver ][ 'adjustment_notes' ] = $adjustment_notes;
 		}
+
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
 		if( $settlement->scheduleDriverPayment( $id_drivers, $pay_type ) ){
 			echo json_encode( [ 'success' => true ] );
