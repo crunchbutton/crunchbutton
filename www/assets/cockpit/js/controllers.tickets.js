@@ -156,13 +156,13 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 		console.debug('Recieved chat message: ', payload);
 		
-		service.scope.ticket.messages.push(payload);
-		service.scope.$apply();
-		service.scroll();
-		
 		if (notified.indexOf(payload.id_support_message) > -1) {
 			return;
 		}
+
+		service.scope.ticket.messages.push(payload);
+		service.scope.$apply();
+		service.scroll();
 		
 		notified.push(payload.id_support_message);
 		
