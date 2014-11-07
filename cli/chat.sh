@@ -74,7 +74,7 @@ case "$1" in
         echo "done."
     ;;
     *)
-        echo "Usage: project {start|stop|restart}" >&2
+        echo "Usage: chat {start|stop|restart}" >&2
         exit 3
     ;;
 esac
