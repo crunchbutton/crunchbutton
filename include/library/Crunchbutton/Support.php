@@ -432,9 +432,11 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 		
 		Chat::emit([
-			'room' => 'ticket.'.$message->id_support,
-			'room' => 'ticket.all',
-		], 'ticket.message', $this->exports());
+			'room' => [
+				'ticket.'.$message->id_support,
+				'ticket.all'
+			]
+		], 'ticket.message', $message->exports());
 
 		return $message;
 	}
