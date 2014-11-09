@@ -213,7 +213,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	// this method receives the restaurant orders and run the math
-	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true, $proccess_shifts = true, $id_driver = 0 ){
+	public function driversProcess( $orders, $recalculatePaidOrders = false, $include_invites = true, $process_shifts = true, $id_driver = 0 ){
 
 		$pay = [];
 
@@ -287,7 +287,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		// Get all the shifts between the dates
-		if( $proccess_shifts ){
+		if( $process_shifts ){
 			$shifts = $this->shifts( $id_driver );
 			if( $shifts ){
 				foreach( $shifts as $shift ){
@@ -843,6 +843,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$this->log( 'scheduleDriverPayment', $schedule->properties() );
 
 			$settlement = new Crunchbutton_Settlement;
+
 			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
 				$settlement->doDriverPayments( $id_payment_schedule );
 			} );
@@ -868,7 +869,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];
 				$id_driver = $key;
 
-				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver ) {
+				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type ) {
 					$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type );
 				} );
 			}
