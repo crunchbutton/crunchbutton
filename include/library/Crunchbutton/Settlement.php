@@ -733,6 +733,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type ){
 
+		if( !$type ){
+			return false;
+		}
+
 		$this->log( 'scheduleDriverPayment', [ 'id_driver' => $id_driver ] );
 
 		$shouldSchedule = false;
@@ -843,7 +847,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$this->log( 'scheduleDriverPayment', $schedule->properties() );
 
 			$settlement = new Crunchbutton_Settlement;
-
 			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
 				$settlement->doDriverPayments( $id_payment_schedule );
 			} );
@@ -868,7 +871,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$adjustment = $id_drivers[ $key ][ 'adjustment' ];
 				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];
 				$id_driver = $key;
-
 				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type ) {
 					$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type );
 				} );
@@ -899,6 +901,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$schedules = $schedule->driversSchedulesFromDate( $lastDate );
 			foreach( $schedules as $_schedule ){
 				$id_payment_schedule = $_schedule->id_payment_schedule;
+
 				$settlement = new Crunchbutton_Settlement;
 				Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
 					$settlement->payDriver( $id_payment_schedule );
