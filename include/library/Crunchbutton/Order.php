@@ -2124,6 +2124,9 @@ class Crunchbutton_Order extends Cana_Table {
 
 				if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD) {
 
+					$this->refunded = 1;
+					$this->save();
+
 					switch ($this->processor) {
 						case 'stripe':
 						default:
@@ -2173,9 +2176,6 @@ class Crunchbutton_Order extends Cana_Table {
 			if ($support) {
 				$support->addSystemMessage('Order refunded.');
 			}
-
-			$this->refunded = 1;
-			$this->save();
 			return true;
 		}
 		return false;
