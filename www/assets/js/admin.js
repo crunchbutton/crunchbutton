@@ -887,6 +887,7 @@ App.orders = {
 	},
 	createEvents: function(){
 		$(document).on('click', '.refund', function() {
+
 			var el = $(this);
 			var question = 'Are you sure you want to refund this?';
 			if( parseFloat( el.attr( 'data-gift' ) ) > 0 ){
@@ -896,15 +897,34 @@ App.orders = {
 			if (!confirm( question )) {
 				return;
 			}
+
 			$( '.refunded-' + el.attr('data-uuid') ).show();
 			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
-			$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
-				el.html('REFUNDED');
-			}).fail( function( d, textStatus, error ){
-				alert( 'Refunding fail! See the console.log!' );
-				console.log( d, textStatus, error );
+
+			var fail = function( result ){
+				console.log( result.responseText );
 				el.html('REFUND');
-			} );
+				alert( 'Refunding fail! See the console.log!' );
+			}
+			$.ajax({
+				url: '/api/order/' + el.attr('data-uuid') + '/refund',
+				success: function( result ){
+						try {
+							var json = $.parseJSON( result );
+							if( json.status && json.status == 'success' ){
+								el.html('REFUNDED');
+							} else {
+								fail( result );
+							}
+						}
+						catch (err) {
+							fail( result );
+						}
+					},
+				error: function( result ){
+					fail( result );
+				}
+			})
 		});
 
 		$(document).on( 'click', '.pay_if_refunded', function() {
