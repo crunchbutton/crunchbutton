@@ -900,7 +900,11 @@ App.orders = {
 			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
 			$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
 				el.html('REFUNDED');
-			});
+			}).fail( function( d, textStatus, error ){
+				alert( 'Refunding fail! See the console.log!' );
+				console.log( d, textStatus, error );
+				el.html('REFUND');
+			} );
 		});
 
 		$(document).on( 'click', '.pay_if_refunded', function() {
