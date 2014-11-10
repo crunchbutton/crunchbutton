@@ -118,7 +118,7 @@ function _loadNotification(notification) {
  * @return void
  */
 function _loadRestaurant() {
-	
+
 	var restaurant = this;
 	var checkswap = {
 		'delivery_fee_check' : 'delivery_fee',
@@ -356,7 +356,7 @@ function _saveCategories(complete) {
 				App.restaurantObject.__categories.push(App.cache('Category', c_id));
 			}
 		}
-		
+
 		if (complete) {
 			complete();
 		}
@@ -431,7 +431,7 @@ function saveDishes (complete) {
 			$.post('/api/restaurant/' + App.restaurant + '/save-dish', {dish: dish}, function() {});
 		}
 	});
-	
+
 	if( App.deletedDishes.length > 0 ){
 		$.each( App.deletedDishes, function( i, value ) {
 			$.post('/api/restaurant/' + App.restaurant + '/delete-dish', {id_dish: value}, function() {
@@ -583,7 +583,7 @@ function deleteCategory(from_id, to_id) {
 	var dishes    = $('.admin-food-item-wrap', $toDelete.next());
 	// $('select[name="dish-id_category"]').val(to_id);
 	$('h3[data-id_category="'+to_id+'"]').next().append(dishes);
-	$('select[name="dish-id_category"]').each(function(){ 
+	$('select[name="dish-id_category"]').each(function(){
 		if( $(this).val() == from_id ){
 			$(this).val( to_id );
 		}
@@ -896,11 +896,11 @@ App.orders = {
 			if (!confirm( question )) {
 				return;
 			}
+			$( '.refunded-' + el.attr('data-uuid') ).show();
 			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
 			$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
-				$( '.refunded-' + el.attr('data-uuid') ).show();
 				el.html('REFUNDED');
-			});				
+			});
 		});
 
 		$(document).on( 'click', '.pay_if_refunded', function() {
@@ -915,7 +915,7 @@ App.orders = {
 				} else {
 					el.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
 				}
-			});				
+			});
 		});
 
 		$(document).on( 'click', '.do_not_reimburse_driver', function() {
@@ -930,7 +930,7 @@ App.orders = {
 				} else {
 					el.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
 				}
-			});				
+			});
 		});
 
 
@@ -950,7 +950,7 @@ App.orders = {
 				} else {
 					alert('Oops, error! Please try it again.');
 				}
-			});				
+			});
 		});
 
 
@@ -970,7 +970,7 @@ App.orders = {
 				} else {
 					alert('Oops, error! Please try it again.');
 				}
-			});				
+			});
 		});
 	}
 };
@@ -1083,7 +1083,7 @@ App.credits = {
 	},
 	prepareForm: function( id_suggetion ){
 		$(document).on('click', '.admin-credit-save', function() {
-			
+
 			var value = $.trim( $( '#value' ).val() );
 			var id_restaurant = $( '#id_restaurant' ).val();
 			var id_user = $( '#id_user' ).val();
@@ -1110,7 +1110,7 @@ App.credits = {
 				return;
 			}
 			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'note' : note, 'paid_by' : paid_by, 'id_order_reference' : id_order_reference, 'id_restaurant_paid_by' : id_restaurant_paid_by };
-			
+
 			var url = App.service + 'credit/new';
 			$.ajax({
 				type: 'POST',
@@ -1610,7 +1610,7 @@ App.giftcards = {
 			var value = $.trim( $( '#value' ).val() );
 			var id_restaurant = $( '#id_restaurant' ).val();
 			var phones = $( '#phones' ).val();
-			
+
 			var paid_by = $( '#paid_by' ).val();
 			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
 			var note = $( '#note' ).val();
@@ -1644,7 +1644,7 @@ App.giftcards = {
 				if( notify_phone == '' ){
 					alert( 'Please type the phone number that will receive a sms!' );
 					$( '#notify_phone' ).focus();
-					return;		
+					return;
 				}
 			}
 
@@ -1687,7 +1687,7 @@ App.giftcards = {
 			var emails = $( '#emails' ).val();
 			var subject = $( '#subject' ).val();
 			var content = $( '#content' ).val();
-			
+
 			var created_by = $.trim( $( '#created_by' ).val() );
 			var track = ( $('#track').is(':checked') ? 1 : 0 );
 			var notify_phone = $.trim( $( '#notify_phone' ).val() );
@@ -1733,7 +1733,7 @@ App.giftcards = {
 				if( notify_phone == '' ){
 					alert( 'Please type the phone number that will receive a sms!' );
 					$( '#notify_phone' ).focus();
-					return;		
+					return;
 				}
 			}
 
@@ -2034,11 +2034,11 @@ hour_override.save = function(){
 		$( '#hour_override_date_start' ).focus();
 		return;
 	}
-	
+
 	 if( !/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test( date_start_hour ) ){
 			alert( 'Please type a valid start hour! \nFormat hh:mm!' );
 			$( '#hour_override_date_start_hour' ).focus();
-			return;	
+			return;
 	 }
 
 	if( $.trim( date_end ) == '' ){
@@ -2050,7 +2050,7 @@ hour_override.save = function(){
  if( !/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test( date_end_hour ) ){
 			alert( 'Please type a valid end hour! \nFormat hh:mm!' );
 			$( '#hour_override_date_end_hour' ).focus();
-			return;	
+			return;
 	 }
 
 
@@ -2060,15 +2060,15 @@ hour_override.save = function(){
 		return;
 	}
 
-	var data = { 
-			'id_restaurant' : _id_restaurant, 
-			'date_start' : date_start, 
-			'date_start_hour' : date_start_hour, 
-			'hour_override_date_start_ampm' : hour_override_date_start_ampm, 
-			'date_end' : date_end, 
-			'date_end_hour' : date_end_hour, 
-			'hour_override_date_end_ampm' : hour_override_date_end_ampm, 
-			'type' : type, 
+	var data = {
+			'id_restaurant' : _id_restaurant,
+			'date_start' : date_start,
+			'date_start_hour' : date_start_hour,
+			'hour_override_date_start_ampm' : hour_override_date_start_ampm,
+			'date_end' : date_end,
+			'date_end_hour' : date_end_hour,
+			'hour_override_date_end_ampm' : hour_override_date_end_ampm,
+			'type' : type,
 			'notes' : notes
 		}
 
