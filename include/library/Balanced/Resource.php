@@ -21,7 +21,7 @@ class Resource extends \RESTful\Resource
     public static function convertError($response)
     {
 	    // @debug: only defined on a cockpit refund
-	    if (c::app()->balanced_debug) {
+	    if (\Cana::app()->balanced_debug) {
 	        echo '<pre>'; var_dump($response); exit;
 		}
         if (property_exists($response->body, 'errors'))
