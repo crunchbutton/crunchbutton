@@ -20,7 +20,10 @@ class Resource extends \RESTful\Resource
 
     public static function convertError($response)
     {
-        // echo '<pre>';var_dump( $response );exit();
+        // @debug: only defined on a cockpit refund
+        if (\Cana::app()->balanced_debug) {
+            echo '<pre>'; var_dump($response); exit;
+        }
         if (property_exists($response->body, 'errors'))
             $error = Error::createFromResponse($response);
         else
