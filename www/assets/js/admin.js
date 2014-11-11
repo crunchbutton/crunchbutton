@@ -912,8 +912,8 @@ App.orders = {
 				url: '/api/order/' + el.attr('data-uuid') + '/refund',
 				success: function( result ){
 						try {
-							var json = $.parseJSON( result );
-							if( json.status && json.status == 'success' ){
+
+							if( result.status && result.status == 'success' ){
 								el.html('REFUNDED');
 							} else {
 								fail( result );

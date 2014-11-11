@@ -2167,7 +2167,12 @@ class Crunchbutton_Order extends Cana_Table {
 										'refunded' => $amt
 									]);
 									
-									return (object)['status' => false, 'errors' => 'refund amount too high. refunded: '.number_format($amt/100,2).' of '.$this->final_price_plus_delivery_markup];
+									$total = number_format($amt/100,2);
+									if ($total == $this->final_price_plus_delivery_markup && !$this->refunded) {
+										// allow it to mark refunded
+									} else {
+										return (object)['status' => false, 'errors' => 'refund amount too high. refunded: '.$total.' of '.$this->final_price_plus_delivery_markup];
+									}
 
 								} else {
 									var_dump($e);
@@ -2182,10 +2187,9 @@ class Crunchbutton_Order extends Cana_Table {
 								$res = $hold->void();
 
 							} catch (Exception $e) {
-									var_dump($e);
 								// hold is already captured. no need to void
 								if ($e->response->body->errors[0]->category_code == 'hold-already-captured') {
-									
+
 								} else {
 									var_dump($e);
 									return (object)['status' => false, 'errors' => null];
