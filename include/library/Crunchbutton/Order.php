@@ -2168,7 +2168,7 @@ class Crunchbutton_Order extends Cana_Table {
 									]);
 									
 									$total = number_format($amt/100,2);
-									if ($total == $this->final_price_plus_delivery_markup && !$this->refunded) {
+									if ($amt == $ch->amount && !$this->refunded) {
 										// allow it to mark refunded
 									} else {
 										return (object)['status' => false, 'errors' => 'refund amount too high. refunded: '.$total.' of '.$this->final_price_plus_delivery_markup];
