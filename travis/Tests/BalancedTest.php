@@ -115,7 +115,7 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 		}
 		
 		$res = $order->refund();
-		$this->assertTrue($res);
+		$this->assertTrue($res->status);
 	}
 	
 	
