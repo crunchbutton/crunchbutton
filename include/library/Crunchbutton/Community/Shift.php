@@ -622,9 +622,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 				echo "Sending sms to support users...\n";
 
+				// #4060 - dont send from driver number
 				$rets = Crunchbutton_Message_Sms::send([
 					'to' => $num,
-					'from' => 'driver',
 					'message' => $message
 				]);
 
@@ -712,9 +712,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		echo "Sending sms to ".$num."...\n";
 
+		// #4060 - dont send from driver number
 		$rets = Crunchbutton_Message_Sms::send([
 			'to' => $num,
-			'from' => 'driver',
 			'message' => $message
 		]);
 
@@ -885,9 +885,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 								echo "Sending sms to ".$num."...\n";
 
+								// #4060 - dont send from driver number
 								$rets = Crunchbutton_Message_Sms::send([
 									'to' => $num,
-									'from' => 'driver',
 									'message' => $message
 								]);
 

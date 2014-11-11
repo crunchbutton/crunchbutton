@@ -2112,6 +2112,16 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 	}
+	
+	public function refundedAmount($ch) {
+		if (!isset($this->_refundedAmount)) {
+			$this->_refundedAmount = 0;
+			foreach ($ch->refunds as $refund) {
+				$this->_refundedAmount += $refund->amount;
+			}
+		}
+		return $this->_refundedAmount;
+	}
 
 	public function refund() {
 
@@ -2133,9 +2143,10 @@ class Crunchbutton_Order extends Cana_Table {
 							try {
 								$ch->refund();
 							} catch (Exception $e) {
-								return false;
+								var_dump($e);
+								return (object)['status' => false, 'errors' => null];
 							}
-						break;
+							break;
 
 						case 'balanced':
 							try {
@@ -2144,8 +2155,24 @@ class Crunchbutton_Order extends Cana_Table {
 								$ch->refund();
 
 							} catch (Exception $e) {
-								print_r($e);
-								return false;
+
+								// the amount is greater than the availble amount to debit
+								if ($e->response->body->errors[0]->category_code == 'invalid-amount') {
+									$amt = $this->refundedAmount($ch);
+
+									Log::debug([
+										'order' => $this->id_order,
+										'action' => 'refund',
+										'status' => 'refund amount too high',
+										'refunded' => $amt
+									]);
+									
+									return (object)['status' => false, 'errors' => 'refund amount too high. available: '.$amt];
+
+								} else {
+									var_dump($e);
+									return (object)['status' => false, 'errors' => null];
+								}
 							}
 
 							$res = false;
@@ -2155,7 +2182,14 @@ class Crunchbutton_Order extends Cana_Table {
 								$res = $hold->void();
 
 							} catch (Exception $e) {
-
+									var_dump($e);
+								// hold is already captured. no need to void
+								if ($e->response->body->errors[0]->category_code == 'hold-already-captured') {
+									
+								} else {
+									var_dump($e);
+									return (object)['status' => false, 'errors' => null];
+								}
 							}
 							if (!$res) {
 								Log::debug([
@@ -2175,9 +2209,9 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 			$this->refunded = 1;
 			$this->save();
-			return true;
+			return (object)['status' => true];
 		}
-		return false;
+		return (object)['status' => false];
 	}
 
 	public function getSupport() {
