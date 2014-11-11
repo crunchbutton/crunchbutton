@@ -123,7 +123,7 @@ html {
 	.content-padding {
 		padding: 10px;
 	}
-	*:not(input,textarea,.allow-select) {
+	*:not(input,textarea) {
 		-webkit-touch-callout: none;
 		 -webkit-user-select: none;
 		  -khtml-user-select: none;
@@ -132,6 +132,11 @@ html {
 			  -o-user-select: none;
 			     user-select: none;
 	}
+}
+
+.allow-select {
+	-webkit-touch-callout: auto;
+	-webkit-user-select: auto;
 }
 
 
