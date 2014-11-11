@@ -131,9 +131,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC ';
-		// todo: do not commit with this line: for test only
-		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24462, 24463, 24464 ) order by id_order desc';
-		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
 		return Order::q( $query );
 	}
 
@@ -1496,12 +1493,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$_order = $order->order();
 				if( $_order->id_order ){
 					$variables = $settlement->orderExtractVariables( $_order );
-					$pay_info = $settlement->driversProcess( [ $variables ], true, true, false );
+					$pay_info = $settlement->driversProcess( [ $variables ], true, false, false );
 
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
 
-					$_total_payment = max( 0, $pay_info[ 1 ][ 'total_payment' ] );
+					$_total_payment = $pay_info[ 0 ][ 'orders' ][ 0 ][ 'pay_info' ][ 'total_payment' ];
+					if( is_null( $_total_payment ) ){
+						$_total_payment = $pay_info[ 1 ][ 'total_payment' ];
+					}
+					$_total_payment = max( 0, $_total_payment );
 					$_total_reimburse = max( 0, $pay_info[ 1 ][ 'total_reimburse' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
@@ -1527,7 +1528,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 
-			$calcs = $settlement->driversProcess( $_orders, true, true, ( $schedule->driver_payment_hours == 1 ), $schedule->id_driver );
+			$calcs = $settlement->driversProcess( $_orders, true, false, ( $schedule->driver_payment_hours == 1 ), $schedule->id_driver );
 
 			if( $schedule->driver_payment_hours > 0 ){
 				$calcs[ 'shifts' ] = false;
@@ -1543,17 +1544,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 
+			$index = 0;
+
 			$summary[ 'calcs' ] = [ 'total_reimburse' => $total_reimburse,
 															'total_payment' => $total_payment,
-															'tax' => $calcs[ 1 ][ 'tax' ],
-															'delivery_fee' => $calcs[ 1 ][ 'delivery_fee' ],
-															'tip' => $calcs[ 1 ][ 'tip' ],
-															'customer_fee' => $calcs[ 1 ][ 'customer_fee' ],
-															'markup' => $calcs[ 1 ][ 'markup' ],
-															'credit_charge' => $calcs[ 1 ][ 'credit_charge' ],
-															'restaurant_fee' => $calcs[ 1 ][ 'restaurant_fee' ],
-															'gift_card' => $calcs[ 1 ][ 'gift_card' ],
-															'subtotal' => $calcs[ 1 ][ 'subtotal' ],
+															'tax' => $calcs[ $index ][ 'tax' ],
+															'delivery_fee' => $calcs[ $index ][ 'delivery_fee' ],
+															'tip' => $calcs[ $index ][ 'tip' ],
+															'customer_fee' => $calcs[ $index ][ 'customer_fee' ],
+															'markup' => $calcs[ $index ][ 'markup' ],
+															'credit_charge' => $calcs[ $index ][ 'credit_charge' ],
+															'restaurant_fee' => $calcs[ $index ][ 'restaurant_fee' ],
+															'gift_card' => $calcs[ $index ][ 'gift_card' ],
+															'subtotal' => $calcs[ $index ][ 'subtotal' ],
 														];
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
