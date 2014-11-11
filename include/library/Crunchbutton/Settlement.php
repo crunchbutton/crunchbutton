@@ -1500,7 +1500,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
 					$summary[ 'orders_count' ]++;
 
-					$_total_payment = max( 0, $pay_info[ 0 ][ 'total_payment' ] );
+					$_total_payment = max( 0, $pay_info[ 1 ][ 'total_payment' ] );
+					$_total_reimburse = max( 0, $pay_info[ 1 ][ 'total_reimburse' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
@@ -1510,7 +1511,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'restaurant' => $variables[ 'restaurant' ],
 																										'delivery_fee' => $variables[ 'delivery_fee' ],
 																										'pay_type' => $type,
-																										'total_reimburse' => max( 0, $pay_info[ 0 ][ 'total_reimburse' ] ),
+																										'total_reimburse' => $_total_reimburse,
 																										'total_payment' => $_total_payment
 																									];
 					if( $type == 'Cash' ){
@@ -1520,8 +1521,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 
 					$_orders[] = $variables;
-					$summary[ '_total_reimburse_' ] += $pay_info[ 0 ][ 'total_reimburse' ];
-					$summary[ '_total_payment_' ] += $pay_info[ 0 ][ 'total_payment' ];
+					$summary[ '_total_reimburse_' ] += $pay_info[ 1 ][ 'total_reimburse' ];
+					$summary[ '_total_payment_' ] += $pay_info[ 1 ][ 'total_payment' ];
 				}
 			}
 
@@ -1531,8 +1532,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$calcs[ 'shifts' ] = false;
 			}
 
-			$total_reimburse = $calcs[ 0 ][ 'total_reimburse' ];
-			$total_payment = $calcs[ 0 ][ 'total_payment' ];
+			$total_reimburse = $calcs[ 1 ][ 'total_reimburse' ];
+			$total_payment = $calcs[ 1 ][ 'total_payment' ];
 
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
 				if( $schedule->driver_payment_hours ){
@@ -1543,15 +1544,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$summary[ 'calcs' ] = [ 'total_reimburse' => $total_reimburse,
 															'total_payment' => $total_payment,
-															'tax' => $calcs[ 0 ][ 'tax' ],
-															'delivery_fee' => $calcs[ 0 ][ 'delivery_fee' ],
-															'tip' => $calcs[ 0 ][ 'tip' ],
-															'customer_fee' => $calcs[ 0 ][ 'customer_fee' ],
-															'markup' => $calcs[ 0 ][ 'markup' ],
-															'credit_charge' => $calcs[ 0 ][ 'credit_charge' ],
-															'restaurant_fee' => $calcs[ 0 ][ 'restaurant_fee' ],
-															'gift_card' => $calcs[ 0 ][ 'gift_card' ],
-															'subtotal' => $calcs[ 0 ][ 'subtotal' ],
+															'tax' => $calcs[ 1 ][ 'tax' ],
+															'delivery_fee' => $calcs[ 1 ][ 'delivery_fee' ],
+															'tip' => $calcs[ 1 ][ 'tip' ],
+															'customer_fee' => $calcs[ 1 ][ 'customer_fee' ],
+															'markup' => $calcs[ 1 ][ 'markup' ],
+															'credit_charge' => $calcs[ 1 ][ 'credit_charge' ],
+															'restaurant_fee' => $calcs[ 1 ][ 'restaurant_fee' ],
+															'gift_card' => $calcs[ 1 ][ 'gift_card' ],
+															'subtotal' => $calcs[ 1 ][ 'subtotal' ],
 														];
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
