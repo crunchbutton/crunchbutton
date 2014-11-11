@@ -1421,6 +1421,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_DRIVER ){
 			$settlement = new Settlement;
 			$summary = $schedule->exports();
+
 			$summary[ 'adjustment' ] = floatval( $summary[ 'adjustment' ] );
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'summary_email' ] = $schedule->driver()->payment_type()->summary_email;
@@ -1556,10 +1557,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 														];
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
-			$summary[ 'total_payment' ] = max( $summary[ 'total_payment' ], 0 );
-			$summary[ 'total_reimburse' ] = max( $summary[ 'total_reimburse' ], 0 );
-			$summary[ 'calcs' ][ 'total_payment' ] = max( $summary[ 'calcs' ][ 'total_payment' ], 0 );
-			$summary[ 'calcs' ][ 'total_reimburse' ] = max( $summary[ 'calcs' ][ 'total_reimburse' ], 0 );
+
+			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
+				$summary[ 'total_payment' ] = max( $summary[ 'amount' ], 0 );
+				$summary[ 'calcs' ][ 'total_payment' ] = $summary[ 'total_payment' ];
+			}
+			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+				$summary[ 'total_reimburse' ] = max( $summary[ 'amount' ], 0 );
+				$summary[ 'calcs' ][ 'total_reimburse' ] = $summary[ 'total_reimburse' ];
+			}
 
 			return $summary;
 		} else {
