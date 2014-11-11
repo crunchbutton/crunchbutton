@@ -543,14 +543,7 @@ p {
 	border: 2px solid $green;
 	color: $green;
 }
-.menu-tab:hover {
-	background: $navHilight;
-}
 
-.menu-tab:hover:not(.menu-active) {
-	color: $navLinkColor;
-
-}
 
 .menu-tab:nth-child(2) {
 	margin-left: 9px;
@@ -584,6 +577,14 @@ p {
 	}
 	.notification-support-mobile {
 		display: none;
+	}
+	.menu-tab:hover {
+		background: $navHilight;
+	}
+	
+	.menu-tab:hover:not(.menu-active) {
+		color: $navLinkColor;
+	
 	}
 }
 
