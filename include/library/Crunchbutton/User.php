@@ -289,12 +289,9 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public static function inviteCodeGenerator(){
-		$random_id_length = 10;
-		$characters = '123456789qwertyuiopasdfghjklzxcvbnm';
-		$rnd_id = '';
-		for ($i = 0; $i < $random_id_length; $i++) {
-			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
-		}
+		$random_id_length = 9;
+
+		$rnd_id = self::_inviteCodePartGenerator('a-z', 3).self::_inviteCodePartGenerator('0-9', 3).self::_inviteCodePartGenerator('a-z', 3);
 
 		// make sure the code do not exist
 		$user = Crunchbutton_User::byInviteCode( $rnd_id );
@@ -302,8 +299,21 @@ class Crunchbutton_User extends Cana_Table {
 		if( $user->count() > 0 || $admin->count() ){
 			return Crunchbutton_User::inviteCodeGenerator();
 		} else {
-			return $rnd_id;
+			return strtoupper($rnd_id);
 		}
+	}
+	
+	private static function _inviteCodePartGenerator($chars = '123456789qwertyuiopasdfghjklzxcvbnm', $len = 0) {
+		if ($chars == 'a-z') {
+			$chars = 'qwertyuiopasdfghjklzxcvbnm';
+		} elseif ($chars == '0-9') {
+			$chars = '123456789';
+		}
+		$rnd_id = '';
+		for ($i = 0; $i < $len; $i++) {
+			$rnd_id .= $chars[rand(0, strlen($chars) - 1)];
+		}
+		return $rnd_id;
 	}
 
 	public static function byInviteCode( $code ){
