@@ -1502,8 +1502,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 					if( is_null( $_total_payment ) ){
 						$_total_payment = $pay_info[ 1 ][ 'total_payment' ];
 					}
+
 					$_total_payment = max( 0, $_total_payment );
-					$_total_reimburse = max( 0, $pay_info[ 1 ][ 'total_reimburse' ] );
+					$_total_reimburse = max( 0, $pay_info[ 0 ][ 'total_reimburse' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
@@ -1521,14 +1522,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$summary[ '_total_cash_orders_' ]++;
 					}
 
-
 					$_orders[] = $variables;
 					$summary[ '_total_reimburse_' ] += $pay_info[ 1 ][ 'total_reimburse' ];
 					$summary[ '_total_payment_' ] += $pay_info[ 1 ][ 'total_payment' ];
 				}
 			}
 
-			$calcs = $settlement->driversProcess( $_orders, true, false, ( $schedule->driver_payment_hours == 1 ), $schedule->id_driver );
+			$calcs = $settlement->driversProcess( $_orders, true, false, ( $schedule->driver_payment_hours == 1 && $schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ), $schedule->id_driver );
 
 			if( $schedule->driver_payment_hours > 0 ){
 				$calcs[ 'shifts' ] = false;
