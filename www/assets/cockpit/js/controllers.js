@@ -20,8 +20,21 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 
 NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
 
-NGApp.controller('SideMenuCtrl', function ($scope) {
+NGApp.controller('SideMenuCtrl', function ($scope, AccountService) {
 	$scope.setupPermissions = function() {}
+	$scope.menu = {};
+	
+	$scope.menu.toggle = $.totalStorage('menu.toggle') || 'admin';
+	
+	if (AccountService.isDriver && !AccountService.user.permissions.GLOBAL) {
+		$scope.menu.toggle = 'driver';
+	}
+	
+	$.totalStorage('menu.toggle', $scope.menu.toggle);
+	
+	$scope.$watch('menu.toggle', function() {
+		$.totalStorage('menu.toggle', $scope.menu.toggle);
+	});
 });
 
 NGApp.controller('InfoCtrl', function ($scope) {
