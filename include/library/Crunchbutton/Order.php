@@ -2119,8 +2119,6 @@ class Crunchbutton_Order extends Cana_Table {
 
 			// Refund the gift
 			$this->refundGiftFromOrder();
-			
-			c::app()->balanced_debug = true;
 
 			if ( intval( $this->charged() ) > 0 ) {
 
@@ -2157,7 +2155,8 @@ class Crunchbutton_Order extends Cana_Table {
 								$res = $hold->void();
 
 							} catch (Exception $e) {
-
+								print_r($e);
+								return false;
 							}
 							if (!$res) {
 								Log::debug([

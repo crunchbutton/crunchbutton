@@ -22,7 +22,7 @@ class Resource extends \RESTful\Resource
     {
 	    // @debug: only defined on a cockpit refund
 	    if (c::app()->balanced_debug) {
-	        echo '<pre>'; var_dump($response);
+	        echo '<pre>'; var_dump($response); exit;
 		}
         if (property_exists($response->body, 'errors'))
             $error = Error::createFromResponse($response);
