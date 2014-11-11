@@ -90,7 +90,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			host: location.host
 		});
 
-		if (AccountService.user.id_admin == 1) {
+		if (AccountService.user.id_admin == 1 || AccountService.user.id_admin == 2) {
 			service.socket.emit('event.subscribe', 'ticket.all');
 		}
 	});
