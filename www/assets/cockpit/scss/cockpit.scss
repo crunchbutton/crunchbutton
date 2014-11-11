@@ -529,12 +529,21 @@ p {
 	color: $navHilight;
 	font-size: 2em;
 	cursor: pointer;
+
+	-webkit-transform: translateX(0) !important;
+
+	-webkit-transition: all .2s;
+	   -moz-transition: all .2s;
+		-ms-transition: all .2s;
+		 -o-transition: all .2s;
+			transition: all .2s;
 }
 
 .menu-tab.menu-active {
 	border: 2px solid $green;
 	color: $green;
 }
+
 
 .menu-tab:nth-child(2) {
 	margin-left: 9px;
@@ -569,6 +578,14 @@ p {
 	.notification-support-mobile {
 		display: none;
 	}
+	.menu-tab:hover {
+		background: $navHilight;
+	}
+	
+	.menu-tab:hover:not(.menu-active) {
+		color: $navLinkColor;
+	
+	}
 }
 
 @media(max-width:1024px) {
@@ -577,7 +594,7 @@ p {
 	}
 	.menu-tab {
 		width: 92px;
-		margin-top: 18px;
+		margin-top: 9px;
 	}
 }
 
