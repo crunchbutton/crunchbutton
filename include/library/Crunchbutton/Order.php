@@ -2184,7 +2184,9 @@ class Crunchbutton_Order extends Cana_Table {
 							try {
 								// cancel the hold
 								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
-								$res = $hold->void();
+								if ($hold) {
+									$res = $hold->void();
+								}
 
 							} catch (Exception $e) {
 								// hold is already captured. no need to void
