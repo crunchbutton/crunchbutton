@@ -2144,7 +2144,11 @@ class Crunchbutton_Order extends Cana_Table {
 								$ch->refund();
 
 							} catch (Exception $e) {
-								print_r($e);
+								print_r($ch);
+								// the amount is greater than the availble amount to debit
+								if ($e->response->body->errors[0]->category_code == 'invalid-amount') {
+									echo '-'.$e->response->body->errors[0]->category_code.'-';
+								}
 								return false;
 							}
 
