@@ -48,8 +48,10 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		}
 		if( $out[ 'pay_type' ] == 'reimbursement' ){
 			$out[ 'title' ] = 'Reimbursement';
+			$out[ 'pay_type' ] = Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT;
 		} else {
 			$out[ 'title' ] = 'Payment';
+			$out[ 'pay_type' ] = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
 		}
 		return $out;
 	}

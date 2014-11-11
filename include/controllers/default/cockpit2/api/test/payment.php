@@ -35,6 +35,32 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 		// return;
 		// return;
 
+		// Update payment info if needed
+		$out = [ 'ok' => [], 'nope' => [] ];
+		$payments = Crunchbutton_Payment::q( 'SELECT * FROM payment WHERE pay_type IS NULL OR id_admin IS NULL' );
+		foreach( $payments as $payment ){
+			$payment_schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment = ' . $payment->id_payment );
+			if( $payment_schedule->id_payment ){
+				$updated = [ 'id_payment' => $payment->id_payment ];
+				$updated = [ 'date' => $payment->date()->format( 'd/m/Y' ) ];
+				$updated[ 'id_payment_schedule' ] = $payment_schedule->id_payment_schedule;
+				if( !$payment->id_admin && $payment_schedule->id_admin ){
+					$payment->id_admin = $payment_schedule->id_admin;
+					$updated[ 'id_admin' ] = true;
+				}
+				if( !$payment->pay_type && $payment_schedule->pay_type ){
+					$payment->pay_type = $payment_schedule->pay_type;
+					$updated[ 'pay_type' ] = true;
+				}
+				$out[ 'ok' ][] = $updated;
+				$payment->save();
+			}
+		}
+
+		echo json_encode( $out );exit;
+
+		die('hard');
+
 		$out = [ 'ok' => [], 'nope' => [] ];
 
 		// Get the payments schedule with error
@@ -56,7 +82,7 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 
 					// Hard codded values !!!!
 					$payment_schedule->id_admin = 3;
-					$payment_schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT;
+					$payment_schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
 
 					$payment_schedule->save();
 					$out[ 'ok' ][] = [ 'id_payment_schedule' => $payment_schedule->id_payment_schedule, 'id_payment' => $payment->id_payment ];
