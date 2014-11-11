@@ -1,6 +1,30 @@
 <?php
 
 class Controller_home extends Crunchbutton_Controller_Account {
+	public function __construct() {
+		$this->cbtn_forward = c::config()->site->config('cbtn_forward')->val() == 'true' ? true : false;
+
+		if ($this->cbtn_forward) {
+			$p = c::getPagePiece(0);
+			switch ($p) {
+				case 'shifts-list':
+					$url = 'drivers/shifts';
+					break;
+				case 'orders-list':
+					$url = 'drivers/orders';
+					break;
+				default:
+					if ($p) {
+						$url = 'drivers/order/'.$p;
+					}
+					break;
+			}
+			header('Location: https://cockpit.la/'.$url);
+			exit;
+		}
+		
+		parent::__construct();
+	}
 
 	public function init() {
 		c::view()->layout( 'layout/html' );
