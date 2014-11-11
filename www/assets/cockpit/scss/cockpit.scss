@@ -123,7 +123,7 @@ html {
 	.content-padding {
 		padding: 10px;
 	}
-	*:not(input):not(textarea) {
+	*:not(input):not(textarea):not(.allow-select) {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
 		 -khtml-user-select: none;
@@ -1094,16 +1094,13 @@ input {
 }
 	.ul-info .li-info .label{
 		color: #5d5f63;
-		width: 8em;
 	}
 	.ul-info .li-info .data{
 		font-size: 1.1em;
 		font-weight: bold;
 		line-height:2em;
 	}
-	.ul-info .li-info .desc{
-		font-size: .9em;
-	}
+
 
 .ul-inputs .label{
 	color: #5d5f63;
@@ -1545,7 +1542,7 @@ h1.title {
 	font-weight: 300;
 	font-size: 2.5em;
 	color: #5d5f63;
-	margin-bottom: 1.2em;
+	margin-bottom: .9em;
 	margin-top: .2em;
 }
 h1.title .fa {
@@ -1559,7 +1556,7 @@ h1.title .fa {
 		font-weight: 300;
 		font-size: 2em;
 		color: #5d5f63;
-		margin-bottom: 1.2em;
+		margin-bottom: .6em;
 		margin-top: .2em;
 	}
 h2.title, h2.subtitle{
@@ -1968,7 +1965,7 @@ h4.title{
 	height: 100px;
 	margin-bottom: 1em;
 	margin-top: 1em;
-	color: #2f323a;
+	color: $sideBg;
 	overflow: hidden;
 	clear: both;
 }
@@ -2387,7 +2384,7 @@ b, strong{ font-weight: bold; }
 
 .box-content2{
 	background: #fff;
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 	padding: 10px;
 	border: 5px;
 }
@@ -3151,3 +3148,57 @@ h1.driver-title {
 	height: 100%;
 	width: 100%;
 }
+
+.invite-code {
+	margin-top: 1em;
+	font-size: 3em;
+}
+
+
+input[type="checkbox"].switch {
+	font-size: 2em;
+}
+
+input[type="checkbox"].switch:not(:checked), 
+input[type="checkbox"].switch:checked { /* :checked here acting as a filter for older browsers */
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+input[type="checkbox"].switch + div {
+	width: 1.8em;
+	height: 1em;
+	border: 1px solid rgba(0,0,0,.2);
+	border-radius: 999px;
+	margin: 0 auto .8em;
+	background: #f1f2f7;
+	overflow: hidden;
+	transition-duration: .4s;
+	transition-property: padding, width;
+	font-size: 2em;
+	cursor: pointer;
+}
+
+input[type="checkbox"].switch:checked + div {
+	padding-left: .8em;
+	width: 1em;
+}
+
+input[type="checkbox"].switch + div:before {
+	content: '';
+	display: block;
+	width: 1em; height: 1em;
+	margin: -1px;
+	border: 1px solid rgba(0,0,0,.2);
+	border-radius: inherit;
+	background: $orange;
+
+
+}
+
+input[type="checkbox"].switch:active + div:before {
+	background-color: #aaa;
+}
+
+
