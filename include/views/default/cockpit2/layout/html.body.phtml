@@ -3,7 +3,12 @@
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
 
-
+			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
+				<i class="fa fa-truck"></i>
+			</div>
+			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
+				<i class="fa fa-dashboard"></i>
+			</div>
 			<? /*
 			<li ng-click="navigation.link('/drivers/dashboard')" ng-class="{'nav-active': (navigation.page == 'drivers-dashboard')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -14,7 +19,7 @@
 				</table>
 			</li>
 			*/ ?>
-			<a href="/profile" class="menu-link" ng-if="account.isDriver" ng-class="{'nav-active': (navigation.page == 'profile')}">
+			<a href="/profile" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'profile')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-user"></i></td>
@@ -23,7 +28,7 @@
 				</table>
 			</a>
 			
-			<a href="/tickets" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'tickets' || navigation.page == 'ticket')}">
+			<a href="/tickets" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'tickets' || navigation.page == 'ticket')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
@@ -33,7 +38,7 @@
 			</a>
 			
 			
-			<a href="/drivers/orders" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
+			<a href="/drivers/orders" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-car"></i></td>
@@ -42,7 +47,7 @@
 				</table>
 			</a>
 
-			<a href="/drivers/shifts" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
+			<a href="/drivers/shifts" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
@@ -51,7 +56,7 @@
 				</table>
 			</a>
 
-			<a href="/drivers/shifts/schedule" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-shift-preferences')}">
+			<a href="/drivers/shifts/schedule" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-shift-preferences')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
@@ -60,7 +65,7 @@
 				</table>
 			</a>
 			
-			<a href="/drivers/docs" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
+			<a href="/drivers/docs" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
@@ -79,7 +84,7 @@
 				</table>
 			</a>
 
-			<a href="/restaurant/order/placement/dashboard" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.isRestaurant" ng-class="{'nav-active': (navigation.page == 'restaurant-order-placement')}">
+			<a href="/restaurant/order/placement/dashboard" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.isRestaurant)  && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'restaurant-order-placement')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-credit-card"></i></td>
@@ -88,7 +93,7 @@
 				</table>
 			</a>
 
-			<a href="/settlement" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'settlement')}">
+			<a href="/settlement" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'settlement')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-bank"></i></td>
@@ -97,7 +102,7 @@
 				</table>
 			</a>
 
-			<a href="/staff/list" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'staff')}">
+			<a href="/staff/list" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'staff')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-users"></i></td>
@@ -106,7 +111,7 @@
 				</table>
 			</a>
 
-			<a href="/customer" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'customer')}">
+			<a href="/customer" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'customer')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
@@ -115,7 +120,7 @@
 				</table>
 			</a>
 
-			<a href="/drivers/onboarding" class="menu-link" ng-if="account.user.permissions.GLOBAL" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
+			<a href="/drivers/onboarding" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-automobile"></i></td>
@@ -124,7 +129,7 @@
 				</table>
 			</a>
 
-			<a href="/drivers/help" class="menu-link" ng-if="account.isDriver" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
+			<a href="/drivers/help" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-support"></i></td>
