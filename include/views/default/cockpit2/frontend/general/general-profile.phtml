@@ -2,43 +2,57 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-user"></i><span>Profile</span></h1>
+	<h1 class="subltitle"><span>Profile</span></h1>
 
-	<div class="divider"></div>
-
-	<div>
-
+	<ul class="ul-info box-content2">
+		<li class="li-info">
+			<div class="label">Name:</div>
+			<div class="data">{{account.user.name}}</div>
+		</li>
+		<li class="li-info">
+			<div class="label">Login:</div>
+			<div class="data">{{account.user.login}}</div>
+		</li>
+		<li class="li-info" ng-if="account.user.phone">
+			<div class="label">Phone:</div>
+			<div class="data">{{account.user.phone | formatPhone}}</div>
+		</li>
+		<li class="li-info" ng-if="account.user.email">
+			<div class="label">Email:</div>
+			<div class="data">{{account.user.email}}</div>
+		</li>
+		<li class="li-info" ng-if="account.user.timezone">
+			<div class="label">Timezone:</div>
+			<div class="data">{{account.user.timezone}}</div>
+		</li>
+	</ul>
+	
+	<div ng-if="account.user.invite_code">
+		<h1 class="subltitle"><span>Free money!</span></h1>
+		<ul class="ul-info box-content2">
+	
+			<li class="li-info">
+				<p>
+					Give this code to your friends to get <b>${{customer_get_referred_amt|formatPrice}} off</b> their first order and <b>earn ${{admin_refer_user_amt|formatPrice}}</b> yourself for every new customer your refer!
+				</p>
+				<div class="invite-code">{{account.user.invite_code}}</div>
+			</li>
+		</ul>
+	</div>
+	
+	<div ng-if="account.user.permissions.GLOBAL">
+		<h1 class="subltitle"><span>Preferences</span></h1>
+	
 		<ul class="ul-info box-content2">
 			<li class="li-info">
-				<div class="label">Name:</div>
-				<div class="data">{{account.user.name}}</div>
-			</li>
-			<li class="li-info">
-				<div class="label">Login:</div>
-				<div class="data">{{account.user.login}}</div>
-			</li>
-			<li class="li-info" ng-if="account.user.phone">
-				<div class="label">Phone:</div>
-				<div class="data">{{account.user.phone | formatPhone}}</div>
-			</li>
-			<li class="li-info" ng-if="account.user.email">
-				<div class="label">Email:</div>
-				<div class="data">{{account.user.email}}</div>
-			</li>
-			<li class="li-info" ng-if="account.user.timezone">
-				<div class="label">Timezone:</div>
-				<div class="data">{{account.user.timezone}}</div>
-			</li>
-			<li class="li-info" ng-if="account.user.invite_code">
-				<div class="label">Invite code:</div>
-				<div class="data">{{account.user.invite_code}}</div>
-				<div class="desc">
-					Give this code to your friends to get ${{customer_get_referred_amt|formatPrice}} off their first order and earn ${{admin_refer_user_amt|formatPrice}} yourself for every new customer your refer!
+				<p>Notify on all support tickets</p>
+				<div class="data">
+					<label><input type="checkbox" class="switch"><div class="switch"></div></label>
 				</div>
 			</li>
 		</ul>
-
 	</div>
+
 </div>
 
 <spinner-loading></spinner-loading>
