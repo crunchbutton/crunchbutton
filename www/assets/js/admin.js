@@ -902,9 +902,11 @@ App.orders = {
 			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
 
 			var fail = function( result ){
-				console.log( result.responseText );
+				console.log( result.responseText);
 				el.html('REFUND');
-				alert( 'Refunding fail! See the console.log!' );
+				var er = result.errors ? "\n\n" + result.errors : 'See the console.log!';
+
+				alert('Refunding fail! ' + er);
 			}
 			$.ajax({
 				url: '/api/order/' + el.attr('data-uuid') + '/refund',

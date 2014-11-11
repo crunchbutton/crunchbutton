@@ -2167,7 +2167,7 @@ class Crunchbutton_Order extends Cana_Table {
 										'refunded' => $amt
 									]);
 									
-									return (object)['status' => false, 'errors' => 'refund amount too high. available: '.$amt];
+									return (object)['status' => false, 'errors' => 'refund amount too high. refunded: '.number_format($amt/100,2).' of '.$this->final_price_plus_delivery_markup];
 
 								} else {
 									var_dump($e);
