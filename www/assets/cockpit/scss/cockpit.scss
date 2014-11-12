@@ -3177,17 +3177,19 @@ input[type="checkbox"].switch + div {
 	border: 1px solid rgba(0,0,0,.2);
 	border-radius: 999px;
 	margin: 0 auto .8em;
-	background: #f1f2f7;
+	background: #dd3131;
 	overflow: hidden;
-	transition-duration: .4s;
-	transition-property: padding, width;
+	transition-duration: .3s;
+	transition-property: padding, width, background;
 	font-size: 2em;
 	cursor: pointer;
+	-webkit-user-select: none;
 }
 
 input[type="checkbox"].switch:checked + div {
 	padding-left: .8em;
 	width: 1em;
+	background: #3fae25;
 }
 
 input[type="checkbox"].switch + div:before {
@@ -3197,13 +3199,8 @@ input[type="checkbox"].switch + div:before {
 	margin: -1px;
 	border: 1px solid rgba(0,0,0,.2);
 	border-radius: inherit;
-	background: $orange;
+	background: #f1f2f7;
 
 
 }
-
-input[type="checkbox"].switch:active + div:before {
-	background-color: #aaa;
-}
-
 
