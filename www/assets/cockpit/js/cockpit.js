@@ -731,6 +731,14 @@ App.init = function(config) {
 			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
 			return false;
 		});
+
+		document.body.oncopy = function() {
+			if (!parent.navigator || !parent.navigator.splashscreen) {
+				return;
+			}
+			parent.navigator.splashscreen.show();
+			parent.navigator.splashscreen.hide();
+		}
 	}
 };
 
@@ -894,9 +902,4 @@ App.playAudio = function(audio) {
 	audio.pause();
 	audio.currentTime = 0;
 	audio.play();
-}
-
-document.body.oncopy = function() {
-	parent.navigator.splashscreen.show();
-	parent.navigator.splashscreen.hide();
 }
