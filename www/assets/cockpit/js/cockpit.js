@@ -895,3 +895,8 @@ App.playAudio = function(audio) {
 	audio.currentTime = 0;
 	audio.play();
 }
+
+document.body.oncopy = function() {
+	parent.navigator.splashscreen.show();
+	parent.navigator.splashscreen.hide();
+}
