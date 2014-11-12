@@ -708,6 +708,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		];
 
 		$cfg = $this->config();
+		$ex['prefs'] = [];
 		if ($cfg) {
 			foreach ($cfg as $config) {
 				if ($config->exposed) {
