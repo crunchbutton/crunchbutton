@@ -3165,7 +3165,7 @@ input[type="checkbox"].switch {
 }
 
 input[type="checkbox"].switch:not(:checked), 
-input[type="checkbox"].switch:checked { /* :checked here acting as a filter for older browsers */
+input[type="checkbox"].switch:checked {
 	position: absolute;
 	opacity: 0;
 	cursor: pointer;
@@ -3200,7 +3200,23 @@ input[type="checkbox"].switch + div:before {
 	border: 1px solid rgba(0,0,0,.2);
 	border-radius: inherit;
 	background: #f1f2f7;
-
-
+}
+.switch-wrap {
+	float: right;
 }
 
+.tb-info {
+	display: table;
+	width: 100%;
+	box-sizing: border-box;
+}
+.tb-info-item {
+	display:table-row;
+}
+.tb-info-content, .tb-info-data {
+	display: table-cell;
+	vertical-align: top;
+}
+.tb-info-data {
+	text-align: right;
+}
