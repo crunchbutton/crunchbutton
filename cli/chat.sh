@@ -18,7 +18,7 @@ startup=(
 
 # commands to run on "stop" (new line per command)
 stopitems=(
-    "forever stop chat.js"
+    "forever --sourceDir /home/chat.cockpit.la/cli stop chat.js"
 )
 
 # start function
