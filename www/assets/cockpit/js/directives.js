@@ -17,7 +17,7 @@ NGApp.directive('chatSend', function(TicketViewService) {
 });
 
 
-NGApp.directive('profilePreference', function (AccountService, $http) {
+NGApp.directive('profilePreference', function (AccountService, $http, $rootScope) {
 	return {
 		restrict: 'A',
 		templateUrl: 'assets/view/general-profile-preference.html',
@@ -40,6 +40,8 @@ NGApp.directive('profilePreference', function (AccountService, $http) {
 				}
 				
 				AccountService.user.prefs[$scope.key] = value;
+				
+				$rootScope.$broadcast('user-preference-' + $scope.key, value);
 				
 				$http({
 					method: 'POST',
