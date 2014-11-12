@@ -42,15 +42,11 @@
 	
 	<div ng-if="account.user.permissions.GLOBAL">
 		<h1 class="subltitle"><span>Preferences</span></h1>
-	
-		<ul class="ul-info box-content2">
-			<li class="li-info">
-				<p>Notify on all support tickets</p>
-				<div class="data">
-					<label><input type="checkbox" class="switch"><div class="switch"></div></label>
-				</div>
-			</li>
-		</ul>
+
+		<div class="tb-info box-content2">
+			<div profile-preference class="tb-info-item" content="Notify on all support tickets" type="bool" key="notification-desktop-support-all"></div>
+			<div profile-preference class="tb-info-item" content="Display demo orders" type="bool" key="demo"></div>
+		</div>
 	</div>
 
 </div>
