@@ -13,7 +13,7 @@ export "FOREVER_ROOT=/home/deploy/.forever"
 
 # commands to run on "start" (new line per command)
 startup=(
-    "forever --uid 'chat' --sourceDir /home/chat.cockpit.la/cli start chat.js" 
+    "forever -a --uid 'chat' --sourceDir /home/chat.cockpit.la/cli start chat.js" 
 )
 
 # commands to run on "stop" (new line per command)
