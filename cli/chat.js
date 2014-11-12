@@ -16,16 +16,7 @@ server.listen(port, function () {
 
 app.use(bodyParser.json());
 
-
-// from php
-app.post('/', function (req, res) {
-	if (req.body._key != key) {
-		res.status(401).end();
-		return;
-	}
-	var payload = req.body.payload;
-	var to = req.body.to;
-	var event = req.body.event;
+var sendBroadcast = function(payload, to, event) {
 	
 	var sockets = {};
 
@@ -67,6 +58,17 @@ app.post('/', function (req, res) {
 	for (var x in sockets) {
 		sockets[x].emit(event, payload);
 	}
+}
+
+
+// from php
+app.post('/', function (req, res) {
+	if (req.body._key != key) {
+		res.status(401).end();
+		return;
+	}
+	
+	sendBroadcast(req.body.payload, req.body.to, req.body.event);
 
 	res.send('{"status":"sent"}');
 });
@@ -82,6 +84,10 @@ io.on('connection', function (socket) {
 	socket.events = {};
 
 	// from socket
+	socket.on('event.broadcast', function (payload) {
+		sendBroadcast(payload.payload, payload.to, payload.event);
+	});
+
 	socket.on('event.message', function (payload) {
 		console.log('recieved message...', payload);
 		
