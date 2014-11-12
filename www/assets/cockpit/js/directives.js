@@ -39,6 +39,8 @@ NGApp.directive('profilePreference', function (AccountService, $http) {
 					value = value ? '1' : '0';
 				}
 				
+				AccountService.user.prefs[$scope.key] = value;
+				
 				$http({
 					method: 'POST',
 					url: App.service + 'config',
