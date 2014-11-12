@@ -933,7 +933,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public static function deliveryOrders( $hours = 24, $all = false ){
-		if (c::admin()->getConfig('demo')) {
+		if (c::admin()->getConfig('demo')->value == '1') {
 			//$restaurant = Restaurant::q('select * from restaurant where name="devins driver test restaurant"');
 			$query = '
 				select o.* from `order` o
