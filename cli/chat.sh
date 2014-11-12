@@ -3,7 +3,7 @@
 # description: Startup script for project.
 
 # exit on first error
-set -e
+#set -e
 
 # user running this script
 _user="$(id -u -n)"
