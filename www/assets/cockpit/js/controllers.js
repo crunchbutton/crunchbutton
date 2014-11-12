@@ -27,13 +27,13 @@ NGApp.controller('SideMenuCtrl', function ($scope, $rootScope, AccountService) {
 	$scope.menu.toggle = $.totalStorage('menu.toggle');
 
 	$rootScope.$on('userAuth', function(e, data) {
-		if (!$scope.menu.toggle) {
-			if (AccountService.isDriver && !AccountService.user.permissions.GLOBAL) {
-				$scope.menu.toggle = 'driver';
-			} else {
-				$scope.menu.toggle = 'admin';
-			}
+		
+		if (AccountService.isDriver && !AccountService.user.permissions.GLOBAL) {
+			$scope.menu.toggle = 'driver';
+		} else if (!$scope.menu.toggle) {
+			$scope.menu.toggle = 'admin';
 		}
+
 	});
 	
 	$.totalStorage('menu.toggle', $scope.menu.toggle);
