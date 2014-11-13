@@ -26,6 +26,9 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 					case 'push-android':
 						c::admin()->setPush($_REQUEST['value'], $_REQUEST['key'] == 'push-ios' ? 'ios' : 'android');
 						break;
+					default:
+						c::admin()->setConfig($_REQUEST['key'], $_REQUEST['value'], 1);
+						break;
 				}
 				break;
 		}

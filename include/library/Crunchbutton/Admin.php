@@ -633,7 +633,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->config($key);
 	}
 
-	public function setConfig( $key, $value ){
+	public function setConfig( $key, $value, $exposed = 0 ){
 		$config = $this->getConfig( $key );
 		if( !$config->id_admin_config ){
 			$config = new Crunchbutton_Admin_Config();
@@ -641,6 +641,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		$config->key = $key;
 		$config->value = $value;
+		$config->exposed = $exposed;
 		$config->save();
 	}
 
@@ -707,6 +708,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		];
 
 		$cfg = $this->config();
+		$ex['prefs'] = [];
 		if ($cfg) {
 			foreach ($cfg as $config) {
 				if ($config->exposed) {
