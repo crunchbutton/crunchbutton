@@ -640,7 +640,8 @@ class Crunchbutton_Admin extends Cana_Table {
 			$config->id_admin = $this->id_admin;
 		}
 		$config->key = $key;
-		$config->value = $value;
+		$config->value = self::formatPref($key, $value);
+
 		$config->exposed = $exposed;
 		$config->save();
 	}
@@ -709,10 +710,11 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		$cfg = $this->config();
 		$ex['prefs'] = [];
+
 		if ($cfg) {
 			foreach ($cfg as $config) {
 				if ($config->exposed) {
-					$ex['prefs'][$config->key] = $config->value;
+					$ex['prefs'][$config->key] = self::formatPref($config->key, $config->value, true);
 				}
 			}
 		}
@@ -722,6 +724,19 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 
 		return $ex;
+	}
+	
+	private static function _isBoolPref($pref) {
+		$boolprefs = ['demo', 'notification-desktop-support-all'];
+		return in_array($pref, $boolprefs);
+	}
+	
+	public static function formatPref($key, $value, $export = false) {
+		if ($export) {
+			return self::_isBoolPref($key) ? ($value == '1' ? true : false) : $value;
+		} else {
+			return self::_isBoolPref($key) ? ($value == 'true' || $value === true ? '1' : '0') : $value;
+		}
 	}
 
 	//Last Shift

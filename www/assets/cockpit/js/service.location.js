@@ -130,7 +130,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 
 	$rootScope.$on('userAuth', function(e, data) {
 		// start watching if there is a user and their docs are filled out
-		if (data.id_admin) {
+		if (data && data.id_admin) {
 			startWatch();
 		} else {
 			stopWatch();
