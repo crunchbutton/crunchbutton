@@ -1,0 +1,44 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="subltitle"><i class="fa fa-database"></i>&nbsp;&nbsp;<span>{{server.name}}</span></h1>
+	<div class="box-content2 deploy-wrap">
+		<table>
+			<tr>
+				<th>Server</th>
+				<th>Last Update</th>
+				<th>Last Git Version</th>
+			</tr>
+			<tr ng-repeat="server in servers">
+				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
+				<td>{{server.version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>{{server.version.version}}</td>
+			</tr>
+		</table>
+	</div>
+
+
+	<h1 class="subltitle "><i class="fa fa-bookmark"></i>&nbsp;&nbsp;<span>Versions</span></h1>
+	<div class="box-content2 deploy-wrap">
+		<table>
+			<tr>
+				<th>Version</th>
+				<th>Server</th>
+				<th>Date</th>
+				<th>Git Version</th>
+				<th>Status</th>
+				<th>Admin</th>
+			</tr>
+			<tr ng-repeat="version in versions">
+				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
+				<td>{{version.server.name}}</td>
+				<td>{{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>{{version.version}}</td>
+				<td>{{version.status}}</td>
+				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
+			</tr>
+		</table>
+	</div>
+
+</div>
