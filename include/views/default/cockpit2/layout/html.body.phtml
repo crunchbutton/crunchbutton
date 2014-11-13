@@ -128,6 +128,15 @@
 					</tr>
 				</table>
 			</a>
+			
+			<a href="/deploy" class="menu-link" ng-if="account.user.permissions['SERVER-DEPLOY'] && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'deploy')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-database"></i></td>
+						<td class="side-menu-label">Server Deployment</a></td>
+					</tr>
+				</table>
+			</a>
 
 			<a href="/drivers/help" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">

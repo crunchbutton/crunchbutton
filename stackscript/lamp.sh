@@ -5,6 +5,9 @@ function set_hostname {
 	echo setting hostname to $1
 	echo "HOSTNAME=$1" >> /etc/sysconfig/network
 	hostname "$1"
+	
+	echo "$1" >> /etc/hostname
+	systemctl restart systemd-hostnamed
 
 	# update /etc/hosts
 	echo $(system_primary_ip) $(get_rdns_primary_ip) $(hostname) >> /etc/hosts
