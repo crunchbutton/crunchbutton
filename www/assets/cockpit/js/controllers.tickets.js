@@ -77,6 +77,33 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
 		}
 	});
+	
+
+	$rootScope.$on('userAuth', function(e, data) {
+		if (!service.socket) {
+			return;
+		}
+		if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
+			console.debug('Subscribing to all tickets');
+			service.socket.emit('event.subscribe', 'ticket.all');
+		} else {
+			console.debug('Unsubscribing to all tickets');
+			service.socket.emit('event.unsubscribe', 'ticket.all');
+		}
+	});
+	
+	$rootScope.$on('user-preference-notification-desktop-support-all', function(e, value) {
+		if (!service.socket) {
+			return;
+		}
+		if (value == '1') {
+			console.debug('Subscribing to all tickets');
+			service.socket.emit('event.subscribe', 'ticket.all');
+		} else {
+			console.debug('Unsubscribing to all tickets');
+			service.socket.emit('event.unsubscribe', 'ticket.all');
+		}
+	});
 
 //	service.websocket = new WebSocket('wss://' + location.host + ':9000/test?_token=' + $.cookie('token'));
 	
@@ -89,8 +116,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			phpsessid: $.cookie('PHPSESSID'),
 			host: location.host
 		});
-
-		if (AccountService.user.id_admin == 1 || AccountService.user.id_admin == 2) {
+		
+		if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
+			console.debug('Subscribing to all tickets');
 			service.socket.emit('event.subscribe', 'ticket.all');
 		}
 	});

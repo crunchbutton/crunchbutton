@@ -731,6 +731,14 @@ App.init = function(config) {
 			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
 			return false;
 		});
+
+		document.body.oncopy = function() {
+			if (!parent.navigator || !parent.navigator.splashscreen) {
+				return;
+			}
+			parent.navigator.splashscreen.show();
+			parent.navigator.splashscreen.hide();
+		}
 	}
 };
 

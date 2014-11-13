@@ -3,7 +3,7 @@
 # description: Startup script for project.
 
 # exit on first error
-set -e
+#set -e
 
 # user running this script
 _user="$(id -u -n)"
@@ -13,12 +13,12 @@ export "FOREVER_ROOT=/home/deploy/.forever"
 
 # commands to run on "start" (new line per command)
 startup=(
-    "forever --sourceDir /home/chat.cockpit.la/cli start chat.js" 
+    "forever -a --uid 'chat' --sourceDir /home/chat.cockpit.la/cli start chat.js" 
 )
 
 # commands to run on "stop" (new line per command)
 stopitems=(
-    "forever stop chat.js"
+    "forever stop chat"
 )
 
 # start function
