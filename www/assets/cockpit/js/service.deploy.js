@@ -12,6 +12,11 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 			method: 'GET',
 			params : {}
 		},
+		'versions' : {
+			url: App.service + 'deploy/server/:id_deploy_server/versions',
+			method: 'GET',
+			isArray:true
+		},
 	});
 	
 	var version = $resource( App.service + 'deploy/versions/:id_deploy_version', { id_deploy_version: '@id_deploy_version'}, {
@@ -30,6 +35,12 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 
 	service.server.get = function(id_deploy_server, callback) {
 		server.load({id_deploy_server: id_deploy_server}, function(data) {
+			callback(data);
+		});
+	}
+	
+	service.server.versions = function(id_deploy_server, callback) {
+		server.versions({id_deploy_server: id_deploy_server}, function(data) {
 			callback(data);
 		});
 	}

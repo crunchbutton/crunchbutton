@@ -6,14 +6,59 @@
 	<div class="box-content2 deploy-wrap">
 		<table>
 			<tr>
-				<th>Server</th>
-				<th>Last Update</th>
-				<th>Last Git Version</th>
+				<th>Hostname</th>
+				<td>{{server.hostname}}</td>
 			</tr>
-			<tr ng-repeat="server in servers">
-				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
+			<tr>
+				<th>IP</th>
+				<td>{{server.ip}}</td>
+			</tr>
+			<tr>
+				<th>Script</th>
+				<td>{{server.script}}</td>
+			</tr>
+			<tr>
+				<th>Params</th>
+				<td>{{server.params}}</td>
+			</tr>
+			<tr>
+				<th>Git Repo</th>
+				<td><a href="{{server.repo}}" target="_system">{{server.repo}}</a></td>
+			</tr>
+			<tr>
+				<th>Requires Travis Validation</th>
+				<td>{{server.travis == '1' ? 'Yes' : 'No'}}</td>
+			</tr>
+			<tr>
+				<th>Requires Git Tag</th>
+				<td>{{server.tag == '1' ? 'Yes' : 'No'}}</td>
+			</tr>
+			<tr>
+				<th>Last Update</th>
 				<td>{{server.version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+			</tr>
+			<tr>
+				<th>Last Git Version</th>
 				<td>{{server.version.version}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<h1 class="subltitle "><i class="fa fa-bolt"></i>&nbsp;&nbsp;<span>Deploy a Version</span></h1>
+	<div class="box-content2 deploy-wrap">
+		<table>
+			<tr>
+				<th>Date</th>
+				<td><input type="datetime-local"></td>
+			</tr>
+			<tr>
+				<th>Git Version</th>
+				<td><select>
+					<option value="master">master</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td colspan="2"><button class="button orange">Deploy</button></td>
 			</tr>
 		</table>
 	</div>
@@ -26,7 +71,7 @@
 				<th>Version</th>
 				<th>Server</th>
 				<th>Date</th>
-				<th>Git Version</th>
+				<th>Git Version / Tag</th>
 				<th>Status</th>
 				<th>Admin</th>
 			</tr>
@@ -34,7 +79,17 @@
 				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
 				<td>{{version.server.name}}</td>
 				<td>{{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
-				<td>{{version.version}}</td>
+				<td>
+					<span ng-if="version.version">
+						<a href="{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
+					</span>
+					<span ng-if="version.version && version.tag">
+						&nbsp;/&nbsp;
+					</span>				
+					<span ng-if="version.tag">
+						<a href="{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
+					</span>
+				</td>
 				<td>{{version.status}}</td>
 				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>

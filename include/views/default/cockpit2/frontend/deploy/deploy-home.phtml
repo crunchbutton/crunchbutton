@@ -13,7 +13,7 @@
 			<tr ng-repeat="server in servers">
 				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
 				<td>{{server.version.timestamp | date:'MM/dd @ HH:mm'}}</td>
-				<td>{{server.version.version}}</td>
+				<td><a href="{{server.repo}}/commit/{{server.version.version}}" target="_system">{{server.version.version}}</a></td>
 			</tr>
 		</table>
 	</div>
@@ -26,7 +26,7 @@
 				<th>Version</th>
 				<th>Server</th>
 				<th>Date</th>
-				<th>Git Version</th>
+				<th>Git Version / Tag</th>
 				<th>Status</th>
 				<th>Admin</th>
 			</tr>
@@ -34,7 +34,17 @@
 				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
 				<td>{{version.server.name}}</td>
 				<td>{{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
-				<td>{{version.version}}</td>
+				<td>
+					<span ng-if="version.version">
+						<a href="{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
+					</span>
+					<span ng-if="version.version && version.tag">
+						&nbsp;/&nbsp;
+					</span>				
+					<span ng-if="version.tag">
+						<a href="{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
+					</span>
+				</td>
 				<td>{{version.status}}</td>
 				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>

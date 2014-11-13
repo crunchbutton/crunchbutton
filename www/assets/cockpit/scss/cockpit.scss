@@ -3228,6 +3228,7 @@ input[type="checkbox"].switch + div:before {
 .deploy-wrap table {
 	width: 100%;
 	box-sizing: border-box;
+
 }
 
 .deploy-wrap td, .deploy-wrap th {
@@ -3235,10 +3236,11 @@ input[type="checkbox"].switch + div:before {
 	font-size: 1.2em;
 	border-bottom: 1px solid #eeeeee;
 }
-.deploy-wrap tr:first-child th {
+
+.deploy-wrap tr:first-child th, .deploy-wrap tr:first-child td {
 	padding-top: 1.1em;
 }
-.deploy-wrap tr:last-child td {
+.deploy-wrap tr:last-child td, .deploy-wrap tr:last-child th {
 	padding-bottom: 1.1em;
 	border-bottom: none;
 }
