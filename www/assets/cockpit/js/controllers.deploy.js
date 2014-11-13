@@ -24,21 +24,23 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices) {
 	DeployServices.server.list({}, function(d) {
 		$scope.servers = d;
 	});
-	DeployServices.server.get(1, function(d) {
-		console.log(d);
-	});
 	DeployServices.version.list({}, function(d) {
 		$scope.versions = d;
 	});
-	DeployServices.version.get(1, function(d) {
+});
+
+NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices) {
+	DeployServices.server.get($routeParams.id, function(d) {
+		$scope.server = d;
+	});
+	DeployServices.server.versions($routeParams.id, function(d) {
 		console.log(d);
+		$scope.versions = d;
 	});
 });
 
-NGApp.controller('DeployServerCtrl', function ($scope, $routeParams) {
-
-});
-
-NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams) {
-
+NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServices) {
+	DeployServices.version.get($routeParams.id, function(d) {
+		$scope.version = d;
+	});
 });

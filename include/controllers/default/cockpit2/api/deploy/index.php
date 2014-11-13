@@ -13,7 +13,14 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				$r = Deploy_Server::q('select * from deploy_server');
 				break;
 			case 'server':
-				$r = Deploy_Server::o(c::getPagePiece(3));
+				switch (c::getPagePiece(4)) {
+					case 'versions':
+						$r = Deploy_Server::o(c::getPagePiece(3))->versions();
+						break;
+					default:
+						$r = Deploy_Server::o(c::getPagePiece(3));
+						break;
+				}
 				break;
 			case 'versions':
 				$r = Deploy_Version::q('select * from deploy_version order by date desc limit 10 ');

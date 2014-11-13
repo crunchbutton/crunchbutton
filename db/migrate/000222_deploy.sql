@@ -15,8 +15,6 @@ CREATE TABLE `deploy_server` (
   PRIMARY KEY (`id_deploy_server`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `deploy_server` WRITE;
-
 
 INSERT INTO `deploy_server` (`id_deploy_server`, `name`, `repo`, `ip`, `script`, `params`, `hostname`, `travis`, `tag`)
 VALUES
@@ -26,8 +24,6 @@ VALUES
 	(4,'dev._DOMAIN_','git@github.com:crunchbutton/crunchbutton.git','_IP_','crunchbutton.sh','-path=/home/dev.crunchbutton/','_DOMAIN_',0,0),
 	(5,'beta._DOMAIN_','git@github.com:crunchbutton/crunchbutton.git','_IP_','crunchbutton.sh','-path=/home/beta.crunchbutton/','_DOMAIN_',0,0),
 	(6,'_DOMAIN_','git@github.com:crunchbutton/crunchbutton.git','_IP_','crunchbutton.sh','-path=/home/crunchbutton/','_DOMAIN_',1,1);
-
-UNLOCK TABLES;
 
 
 # Dump of table deploy_version

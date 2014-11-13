@@ -19,6 +19,17 @@ class Cockpit_Deploy_Server extends Cana_Table {
 		}
 		return $this->_version;
 	}
+	
+	public function versions() {
+		if (!isset($this->_versions)) {
+			$this->_versions = Deploy_Version::q('
+				select * from deploy_version
+				where id_deploy_server="'.$this->id_deploy_server.'"
+				order by date desc
+			');
+		}
+		return $this->_versions;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

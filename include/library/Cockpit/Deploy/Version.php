@@ -5,7 +5,8 @@ class Cockpit_Deploy_Version extends Cana_Table {
 		$ex = $this->properties();
 		$ex['timestamp'] = strtotime($this->date);
 		$ex['server'] = [
-			'name' => $this->server()->name
+			'name' => $this->server()->name,
+			'repo' => $this->server()->repo
 		];
 		$ex['admin'] = [
 			'name' => $this->admin()->name
