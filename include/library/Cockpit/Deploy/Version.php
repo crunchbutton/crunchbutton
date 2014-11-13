@@ -16,7 +16,7 @@ class Cockpit_Deploy_Version extends Cana_Table {
 
 	public function server() {
 		if (!isset($this->_server)) {
-			$this->_server = Deploy_Server::o($this->id_deploy_server);
+			$this->_server = Cockpit_Deploy_Server::o($this->id_deploy_server);
 		}
 		return $this->_server;
 	}
@@ -26,6 +26,24 @@ class Cockpit_Deploy_Version extends Cana_Table {
 			$this->_admin = Admin::o($this->id_admin);
 		}
 		return $this->_admin;
+	}
+	
+	public static function getQue($host) {
+		if (!$host) {
+			return;
+		}
+
+		$que = self::q('
+			select deploy_version.* from deploy_version
+			left join deploy_server using (id_deploy_server)
+			where
+				deploy_server.hostname="'.$host.'"
+				and deploy_server.name != "_DOMAIN_"
+				and status="new"
+				and date <= NOW()
+			order by date desc
+		');
+		return $que;
 	}
 
 	public function __construct($id = null) {

@@ -9,7 +9,7 @@ class Cockpit_Deploy_Server extends Cana_Table {
 
 	public function version() {
 		if (!isset($this->_version)) {
-			$this->_version = Deploy_Version::q('
+			$this->_version = Cockpit_Deploy_Version::q('
 				select * from deploy_version
 				where status="success"
 				and id_deploy_server="'.$this->id_deploy_server.'"
@@ -22,7 +22,7 @@ class Cockpit_Deploy_Server extends Cana_Table {
 	
 	public function versions() {
 		if (!isset($this->_versions)) {
-			$this->_versions = Deploy_Version::q('
+			$this->_versions = Cockpit_Deploy_Version::q('
 				select * from deploy_version
 				where id_deploy_server="'.$this->id_deploy_server.'"
 				order by date desc
