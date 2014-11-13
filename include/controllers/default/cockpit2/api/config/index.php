@@ -21,13 +21,14 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				break;
 				
 			case 'post':
-				switch ($_REQUEST['key']) {
+				$key = strtolower($_REQUEST['key']);
+				switch ($key) {
 					case 'push-ios':
 					case 'push-android':
-						c::admin()->setPush($_REQUEST['value'], $_REQUEST['key'] == 'push-ios' ? 'ios' : 'android');
+						c::admin()->setPush($_REQUEST['value'], $key == 'push-ios' ? 'ios' : 'android');
 						break;
 					default:
-						c::admin()->setConfig($_REQUEST['key'], $_REQUEST['value'], 1);
+						c::admin()->setConfig($key, $_REQUEST['value'], 1);
 						break;
 				}
 				break;

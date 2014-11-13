@@ -27,22 +27,23 @@ NGApp.directive('profilePreference', function (AccountService, $http, $rootScope
 			type: '@'
 		},
 		controller: function ($scope) {
-			$scope.value = AccountService.user.prefs[$scope.key];
+			$scope.account = AccountService;
+			console.log(AccountService.user.prefs[$scope.key]);
+
+
+//			$scope.value = AccountService.user.prefs[$scope.key];
+//			AccountService.user.prefs['demo'] = true;
+/*
 			if ($scope.type == 'bool') {
 				$scope.value = $scope.value == '1' ? true : false;
 			}
-
+*/
 			$scope.change = function(value) {
-				console.log(value);
+				value = AccountService.user.prefs[$scope.key];
+				console.log($scope.key, value);
 
-				if ($scope.type == 'bool') {
-					value = value ? '1' : '0';
-				}
-				
-				AccountService.user.prefs[$scope.key] = value;
-				
-				$rootScope.$broadcast('user-preference-' + $scope.key, value);
-				
+				$rootScope.$broadcast('user-preference', {key: $scope.key, value: value});
+
 				$http({
 					method: 'POST',
 					url: App.service + 'config',
