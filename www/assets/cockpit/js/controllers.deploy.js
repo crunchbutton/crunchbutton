@@ -20,7 +20,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		
 }]);
 
-NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices) {
+NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, MainNavigationService) {
 	DeployServices.server.list({}, function(d) {
 		$scope.servers = d;
 	});
@@ -34,9 +34,20 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		$scope.server = d;
 	});
 	DeployServices.server.versions($routeParams.id, function(d) {
-		console.log(d);
 		$scope.versions = d;
 	});
+
+	$scope.deploy = {
+		date: moment().format('YYYY-MM-DD HH:mm:ss'),
+		version: 'master',
+		id_deploy_server: $routeParams.id
+	};
+	
+	$scope.saveDeploy = function() {
+		DeployServices.version.post($scope.deploy, function(d) {
+			//MainNavigationService.link('/deploy');
+		});
+	};
 });
 
 NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServices) {

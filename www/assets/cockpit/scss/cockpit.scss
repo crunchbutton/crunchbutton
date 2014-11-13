@@ -3231,23 +3231,27 @@ input[type="checkbox"].switch + div:before {
 
 }
 
+.deploy-wrap input {
+	font-size: 1.0em;
+}
+
 .deploy-wrap td, .deploy-wrap th {
-	padding: .8em;
 	font-size: 1.2em;
+	padding: .8em;
 	border-bottom: 1px solid #eeeeee;
 }
 
-.deploy-wrap tr:first-child th, .deploy-wrap tr:first-child td {
+.deploy-wrap tr:first-child > * {
 	padding-top: 1.1em;
 }
-.deploy-wrap tr:last-child td, .deploy-wrap tr:last-child th {
+.deploy-wrap tr:last-child > * {
 	padding-bottom: 1.1em;
 	border-bottom: none;
 }
-.deploy-wrap td:first-child, .deploy-wrap th:first-child {
+.deploy-wrap tr > *:first-child {
 	padding-left: 1.1em;
 }
-.deploy-wrap td:last-child, .deploy-wrap th:last-child {
+.deploy-wrap tr > *:last-child {
 	padding-left: 1.1em;
 }
 
