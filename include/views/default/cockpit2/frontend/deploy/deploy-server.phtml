@@ -49,16 +49,14 @@
 		<table>
 			<tr>
 				<th>Date</th>
-				<td><input type="datetime-local"></td>
+				<td><input type="datetime" ng-model="deploy.date"></td>
 			</tr>
 			<tr>
 				<th>Git Version</th>
-				<td><select>
-					<option value="master">master</option>
-				</select></td>
+				<td><input type="text" ng-model="deploy.version"></td>
 			</tr>
 			<tr>
-				<td colspan="2"><button class="button orange">Deploy</button></td>
+				<td colspan="2"><button class="button orange" ng-click="saveDeploy()">Deploy</button></td>
 			</tr>
 		</table>
 	</div>
