@@ -69,7 +69,12 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		if ( c::admin()->permission()->check( ['global', 'permission-all', 'permission-users'] ) ){
 			$payment_type->hour_rate = floatval( $this->request()[ 'hour_rate' ] );
 			$payment_type->payment_method = $this->request()[ 'payment_method' ];
-			$payment_type->payment_type = $this->request()[ 'payment_type' ];
+			if( $this->request()[ 'payment_type' ] ){
+				$payment_type->payment_type = $this->request()[ 'payment_type' ];
+			} else {
+				$payment_type->payment_type = $payment_type->payment_type ? $payment_type->payment_type : Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+			}
+
 			$payment_type->summary_email = $this->request()[ 'summary_email' ];
 		}
 
