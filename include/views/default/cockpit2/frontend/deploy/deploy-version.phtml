@@ -7,7 +7,7 @@
 		<table>
 			<tr>
 				<th>Date</th>
-				<td>{{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>{{version.date}} {{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
 			</tr>
 			<tr>
 				<th>Server</th>
@@ -42,7 +42,7 @@
 
 			<tr>
 				<th>Log</th>
-				<td>{{version.log}}</td>
+				<td><pre class="deploy-log">{{version.log}}</pre></td>
 			</tr>
 		</table>
 	</div>
