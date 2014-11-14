@@ -4,7 +4,6 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 	
 	private function _gitLog() {
 		$logs = [];
-		exec('git fetch');
 		exec('git log -n 20', $o);
 		foreach ($o as $k => $line) {
 			if (substr($line, 0, 6) == 'commit') {
