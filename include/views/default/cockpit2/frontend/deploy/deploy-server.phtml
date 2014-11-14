@@ -35,7 +35,7 @@
 			</tr>
 			<tr>
 				<th>Last Update</th>
-				<td>{{server.version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td><span ng-if="server.version.timestamp">{{server.version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</span></td>
 			</tr>
 			<tr>
 				<th>Last Git Version</th>
@@ -81,7 +81,7 @@
 			<tr ng-repeat="version in versions">
 				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
 				<td>{{version.server.name}}</td>
-				<td>{{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
 				<td>
 					<span ng-if="version.version">
 						<a href="{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>

@@ -12,7 +12,7 @@
 			</tr>
 			<tr ng-repeat="server in servers">
 				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
-				<td>{{server.version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td><span ng-if="server.version.timestamp">{{server.version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</span></td>
 				<td><a href="{{server.repo}}/commit/{{server.version.version}}" target="_system">{{server.version.version}}</a></td>
 			</tr>
 		</table>
@@ -33,7 +33,7 @@
 			<tr ng-repeat="version in versions">
 				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
 				<td>{{version.server.name}}</td>
-				<td>{{version.timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
 				<td>
 					<span ng-if="version.version">
 						<a href="{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
