@@ -1,5 +1,5 @@
-#!/usr/bin/env php
 <?php
+//	#!/usr/bin/env php
 //#!/usr/local/bin/php
 
 error_reporting(E_ALL ^ (E_NOTICE | E_STRICT));
