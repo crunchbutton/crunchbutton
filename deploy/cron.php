@@ -25,7 +25,12 @@ foreach ($que as $q) {
 
 //	$error = implode("\n", $o);
 
-	$q->status = 'success';
+	if (preg_match('/fatal:|\#\!\/bin\/sh|No such file or directory/', $log)) {
+		$q->status = 'failed';
+	} else {
+		$q->status = 'success';
+	}
+
 	$q->log = $log;
 	$q->save();
 	exit;
