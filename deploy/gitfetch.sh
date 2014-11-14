@@ -1,2 +1,2 @@
 #!/bin/sh
-cd /home/cockpit.la && git fetch
+cd /home/server && git fetch
