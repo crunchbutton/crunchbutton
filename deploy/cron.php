@@ -8,19 +8,27 @@ ini_set('display_errors',true);
 require_once('../include/crunchbutton.php');
 
 $host = gethostname();
+$host = 'chat.cockpit.la';
 $que = Cockpit_Deploy_Version::getQue($host);
 
 foreach ($que as $q) {
 	$q->status = 'deploying';
 	$q->save();
 
-	$cmd = dirname(__FILE__).'/'.$q->server()->script.' '.$q->server()->params;
-	exec($cmd.' 2>&1 &', $o);
+	$params = json_decode($q->server()->params);
 
-	$error = implode("\n", $o);
+//	$cmd = dirname(__FILE__).'/'.$q->server()->script.' -v '.$q->version.' '.$q->server()->params;
+//	exec($cmd.' 2>&1 &', $o);
+	ob_start();
+	include(dirname(__FILE__).'/'.$q->server()->script);
+	$log = ob_get_contents();
+	ob_end_clean();
+
+//	$error = implode("\n", $o);
 
 	$q->status = 'success';
-	$q->log = $error;
+	$q->log = $log;
 	$q->save();
+	exit;
 }
 exit;
