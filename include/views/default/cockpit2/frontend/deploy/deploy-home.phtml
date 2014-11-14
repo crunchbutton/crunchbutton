@@ -31,7 +31,7 @@
 				<th>Admin</th>
 			</tr>
 			<tr ng-repeat="version in versions">
-				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
+				<td><a href="/deploy/version/{{version.id_deploy_version}}">#{{version.id_deploy_version}}</td>
 				<td>{{version.server.name}}</td>
 				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
 				<td>
