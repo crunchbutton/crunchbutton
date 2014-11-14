@@ -60,12 +60,20 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 	
 	service.version.list = function(params, callback) {
 		version.query(params, function(data){
+			for (var x in data) {
+				if (data[x].status == 'new' && data[x].timestamp * 1000 <= Date.now()) {
+					data[x].status = 'deploying';
+				}
+			}
 			callback(data);
 		});
 	}
 
 	service.version.get = function(id_deploy_version, callback) {
 		version.load({id_deploy_version: id_deploy_version}, function(data) {
+			if (data.status == 'new' && data.timestamp * 1000 <= Date.now()) {
+				data.status = 'deploying';
+			}
 			callback(data);
 		});
 	}
