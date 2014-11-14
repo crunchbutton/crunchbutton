@@ -34,7 +34,7 @@ before_script:
 
 
 script:
-  - phantomjs travis/phantom.js
+#  - phantomjs travis/phantom.js
   - phpunit --configuration travis/phpunit.xml --coverage-text
 
 #addons:
