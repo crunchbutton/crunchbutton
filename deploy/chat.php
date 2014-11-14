@@ -11,5 +11,5 @@ $cmds = [
 foreach ($cmds as $cmd) {
 	$o = null;
 	exec($cmd.' 2>&1 &', $o);
-	echo implode("\n", $o);
+	echo implode("\n", $o)."\n";
 }
