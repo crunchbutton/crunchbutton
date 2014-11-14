@@ -3,7 +3,8 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 
 	var service = {
 		server: {},
-		version: {}
+		version: {},
+		git: {}
 	};
 
 	var server = $resource( App.service + 'deploy/servers/:id_deploy_server', { id_deploy_server: '@id_deploy_server'}, {
@@ -16,7 +17,7 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 			url: App.service + 'deploy/server/:id_deploy_server/versions',
 			method: 'GET',
 			isArray:true
-		},
+		}
 	});
 	
 	var version = $resource( App.service + 'deploy/versions/:id_deploy_version', { id_deploy_version: '@id_deploy_version'}, {
@@ -29,7 +30,14 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 			url: App.service + 'deploy/version/:id_deploy_version',
 			method: 'POST',
 			params : {}
-		},
+		}
+	});
+	
+	var git = $resource( App.service + 'deploy/gitlog', {}, {
+		'load' : {
+			method: 'GET',
+			params : {}
+		}
 	});
 	
 	service.server.list = function(params, callback) {
@@ -64,6 +72,12 @@ NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
 	
 	service.version.post = function(params, callback) {
 		version.save(params, function(data) {
+			callback(data);
+		});
+	}
+	
+	service.git.list = function(params, callback) {
+		git.query(params, function(data) {
 			callback(data);
 		});
 	}

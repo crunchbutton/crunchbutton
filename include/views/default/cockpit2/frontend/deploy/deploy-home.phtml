@@ -45,7 +45,7 @@
 						<a href="{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
 					</span>
 				</td>
-				<td>{{version.status}}</td>
+				<td>{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
 				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>
 		</table>
