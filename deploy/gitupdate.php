@@ -1,6 +1,6 @@
 <?php
 	
-echo 'Updating git at /home/'.$params->path."...\n";
+echo "\nUpdating git at /home/".$params->path."...\n";
 
 if ($q->tag) {
 	$gitcmd = 'git checkout tags/'.$q->tag;
