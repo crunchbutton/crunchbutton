@@ -10,6 +10,8 @@ foreach (new DirectoryIterator('db/migrate') as $fileInfo) {
 	}
 }
 
+natcasesort($files);
+
 echo "\nRunning db migrate scripts...\n";
 
 foreach ($files as $file) {
