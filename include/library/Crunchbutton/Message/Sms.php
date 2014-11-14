@@ -4,6 +4,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 	public static function send($from, $to = null, $message = null) {
 
 		$break = false;
+		$ret = [];
 
 		if (is_array($from)) {
 			$to = $from['to'];
@@ -63,8 +64,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 				if (!$msg) {
 					continue;
 				}
-				// old twilio
-				// $ret[] = c::twilio()->account->sms_messages->create($from, $t, $msg);
+
 				try {
 					Log::debug([
 						'action' => 'sending sms',
@@ -73,8 +73,11 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 						'msg' => $msg,
 						'type' => 'sms'
 					]);
+
 					$ret[] = c::twilio()->account->messages->sendMessage($from, $t, $msg);
+
 				} catch (Exception $e) {
+
 					Log::error([
 						'action' => 'sending sms',
 						'to' => $t,
