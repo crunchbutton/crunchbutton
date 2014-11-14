@@ -35,7 +35,7 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, M
 	$interval(update, 5000);
 });
 
-NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices, $interval) {
+NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices, $interval, MainNavigationService) {
 	$scope.deploy = {
 		date: moment().format('YYYY-MM-DD HH:mm:ss'),
 		version: 'master',
@@ -55,7 +55,7 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		
 		$scope.saveDeploy = function() {
 			DeployServices.version.post($scope.deploy, function(d) {
-				MainNavigationService.link('/deploy');
+				MainNavigationService.link('/deploy/version/' + d.id_deploy_version);
 			});
 		};
 	};
