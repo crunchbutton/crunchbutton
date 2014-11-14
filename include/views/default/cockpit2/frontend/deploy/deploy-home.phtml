@@ -12,7 +12,7 @@
 			</tr>
 			<tr ng-repeat="server in servers">
 				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
-				<td><span ng-if="server.version.timestamp">{{server.version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</span></td>
+				<td><span ng-if="server.version.timestamp"><span am-time-ago="server.version.date"></span></span></td>
 				<td><a href="{{server.repo}}/commit/{{server.version.version}}" target="_system">{{server.version.version}}</a></td>
 			</tr>
 		</table>
