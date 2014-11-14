@@ -3237,8 +3237,9 @@ input[type="checkbox"].switch + div:before {
 
 .deploy-wrap td, .deploy-wrap th {
 	font-size: 1.2em;
-	padding: .8em;
+	padding: .7em;
 	border-bottom: 1px solid #eeeeee;
+	line-height: 1.6em;
 }
 
 .deploy-wrap tr:first-child > * {

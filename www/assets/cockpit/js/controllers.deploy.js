@@ -20,38 +20,59 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		
 }]);
 
-NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, MainNavigationService) {
-	DeployServices.server.list({}, function(d) {
-		$scope.servers = d;
-	});
-	DeployServices.version.list({}, function(d) {
-		$scope.versions = d;
-	});
-});
-
-NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices) {
-	DeployServices.server.get($routeParams.id, function(d) {
-		$scope.server = d;
-	});
-	DeployServices.server.versions($routeParams.id, function(d) {
-		$scope.versions = d;
-	});
-
-	$scope.deploy = {
-		date: moment().format('YYYY-MM-DD HH:mm:ss'),
-		version: 'master',
-		id_deploy_server: $routeParams.id
-	};
-	
-	$scope.saveDeploy = function() {
-		DeployServices.version.post($scope.deploy, function(d) {
-			//MainNavigationService.link('/deploy');
+NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, MainNavigationService, $interval) {
+	var update = function() {
+		DeployServices.server.list({}, function(d) {
+			$scope.servers = d;
+		});
+		DeployServices.version.list({}, function(d) {
+			$scope.versions = d;
 		});
 	};
+	
+	update();
+	
+	$interval(update, 5000);
 });
 
-NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServices) {
-	DeployServices.version.get($routeParams.id, function(d) {
-		$scope.version = d;
-	});
+NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices, $interval) {
+	var update = function() {
+		DeployServices.server.get($routeParams.id, function(d) {
+			$scope.server = d;
+		});
+		DeployServices.server.versions($routeParams.id, function(d) {
+			$scope.versions = d;
+		});
+		DeployServices.git.list({}, function(d) {
+			$scope.gitversions = d;
+		});
+	
+		$scope.deploy = {
+			date: moment().format('YYYY-MM-DD HH:mm:ss'),
+			version: 'master',
+			id_deploy_server: $routeParams.id
+		};
+		
+		$scope.saveDeploy = function() {
+			DeployServices.version.post($scope.deploy, function(d) {
+				MainNavigationService.link('/deploy');
+			});
+		};
+	};
+	
+	update();
+	
+	$interval(update, 5000);
+});
+
+NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServices, $interval) {
+	var update = function() {
+		DeployServices.version.get($routeParams.id, function(d) {
+			$scope.version = d;
+		});
+	};
+	
+	update();
+	
+	$interval(update, 5000);
 });

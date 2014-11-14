@@ -53,7 +53,12 @@
 			</tr>
 			<tr>
 				<th>Git Version</th>
-				<td><input type="text" ng-model="deploy.version"></td>
+				<td>
+					<select ng-model="deploy.version">
+						<option value="master">master</option>
+						<option ng-repeat="gitversion in gitversions">{{gitversion.commit}} / {{gitversion.author}} / {{gitversion.date | date:'MM/dd @ HH:mm'}}</option>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2"><button class="button orange" ng-click="saveDeploy()">Deploy</button></td>
@@ -88,7 +93,7 @@
 						<a href="{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
 					</span>
 				</td>
-				<td>{{version.status}}</td>
+				<td>{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
 				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>
 		</table>
