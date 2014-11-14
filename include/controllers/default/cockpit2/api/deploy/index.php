@@ -39,7 +39,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'servers':
-				$r = Deploy_Server::q('select * from deploy_server order by name');
+				$r = Deploy_Server::q('select * from deploy_server where active="1" order by name');
 				break;
 
 			case 'server':

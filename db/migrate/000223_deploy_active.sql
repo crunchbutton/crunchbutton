@@ -1,0 +1,1 @@
+ALTER TABLE  `deploy_server` ADD  `active` TINYINT( 1 ) NOT NULL DEFAULT  '0';
