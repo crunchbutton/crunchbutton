@@ -36,6 +36,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'id_user' => $u->id_user,
 			'date' => date('Y-m-d H:i:s'),
 			'id_community' => '',
+			'id_restaurat' => $r->id_restaurant,
 			'active' => 1
 		]))->save();
 
@@ -83,7 +84,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($status);
 	}
-
+/*
 	public function testNotifyDriverPushIos() {
 
 		$n = (new Crunchbutton_Admin_Notification([
@@ -100,7 +101,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($status);
 	}
-
+*/
 
 
 
