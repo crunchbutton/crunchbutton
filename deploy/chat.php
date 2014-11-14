@@ -2,7 +2,7 @@
 
 include(dirname(__FILE__).'/gitupdate.php');
 
-echo "Restarting services...\n";
+echo "\nRestarting services...\n";
 
 $cmds = [
 	'service nginx restart',
