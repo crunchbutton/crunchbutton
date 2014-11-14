@@ -56,7 +56,7 @@
 				<td>
 					<select ng-model="deploy.version">
 						<option value="master">master</option>
-						<option ng-repeat="gitversion in gitversions">{{gitversion.commit}} / {{gitversion.author}} / {{gitversion.date | date:'MM/dd @ HH:mm'}}</option>
+						<option ng-repeat="gitversion in gitversions">{{gitversion.commit}} / {{gitversion.author}} / {{gitversion.date*1000 | date:'MM/dd @ HH:mm'}} / {{gitversion.note}}</option>
 					</select>
 				</td>
 			</tr>
