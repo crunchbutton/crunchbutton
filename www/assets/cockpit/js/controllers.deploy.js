@@ -36,6 +36,12 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, M
 });
 
 NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices, $interval) {
+	$scope.deploy = {
+		date: moment().format('YYYY-MM-DD HH:mm:ss'),
+		version: 'master',
+		id_deploy_server: $routeParams.id
+	};
+
 	var update = function() {
 		DeployServices.server.get($routeParams.id, function(d) {
 			$scope.server = d;
@@ -46,12 +52,6 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		DeployServices.git.list({}, function(d) {
 			$scope.gitversions = d;
 		});
-	
-		$scope.deploy = {
-			date: moment().format('YYYY-MM-DD HH:mm:ss'),
-			version: 'master',
-			id_deploy_server: $routeParams.id
-		};
 		
 		$scope.saveDeploy = function() {
 			DeployServices.version.post($scope.deploy, function(d) {
