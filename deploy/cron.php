@@ -33,6 +33,5 @@ foreach ($que as $q) {
 
 	$q->log = $log;
 	$q->save();
-	exit;
 }
 exit;
