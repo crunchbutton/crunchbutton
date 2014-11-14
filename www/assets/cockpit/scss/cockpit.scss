@@ -3261,3 +3261,13 @@ input[type="checkbox"].switch + div:before {
 	font-weight: bold;
 	text-align: left;
 }
+
+.deploy-status-success {
+	color: #289337;
+}
+.deploy-status-failed {
+	color: #c33636;
+}
+.deploy-status-deploying {
+	font-weight: bold;
+}

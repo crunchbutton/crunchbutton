@@ -37,7 +37,7 @@
 			</tr>
 			<tr>
 				<th>Status</th>
-				<td>{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
+				<td class="deploy-status-{{version.status}}">{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
 			</tr>
 
 			<tr>
