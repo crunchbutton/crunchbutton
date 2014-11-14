@@ -368,8 +368,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService) {
 
 
-	moment.relativeTimeThreshold('m', 1);
-
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
