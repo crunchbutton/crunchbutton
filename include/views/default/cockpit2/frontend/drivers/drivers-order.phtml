@@ -3,9 +3,9 @@
 <!-- actions -->
 <div class="control" ng-show="ready">
 
-	<div class="content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered">
+	<div class="content-padding">
 
-		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted && order.lastStatus['self-reply'] != 'rejected'">
+		<div ng-if="order.status.status == 'new'">
 			<div class="box-content-new box-order-status">
 				<div class="message">
 					<div class="dialog-title">Accept this order?</div>
@@ -20,7 +20,7 @@
 				<div class="divider"></div>
 			</div>
 		</div>
-
+<? /*
 		<div ng-if="order.lastStatus['self-reply'] == 'rejected'">
 			<div class="box-content-rejected box-order-status">
 				<div class="message">You rejected this order. </div>
@@ -30,14 +30,15 @@
 				<div class="divider"></div>
 			</div>
 		</div>
+	*/ ?>
 
-		<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup">
+		<div ng-if="order.status.status == 'accepted' && order.status.driver.id_admin == account.user.id_admin">
 			<div class="box-content-accepted box-order-status">
 				<div class="message">
 					<div class="dialog-title">You accepted this order</div>
-					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].accepted.timestamp*1000 | date: 'h:mm a'}}</div>
+					<div class="dialog-subtext">@ {{order.status.timestamp*1000 | date: 'h:mm a'}}</div>
 
-					<a class="order-action-undo" ng-click="undoAccept()">undo</a>
+					<a class="order-action-undo" ng-click="undo()">undo</a>
 				</div>
 				<div class="buttons">
 					<button ng-click="pickedup()" class="button green-on-green">Picked up</button>
@@ -46,13 +47,13 @@
 			</div>
 		</div>
 
-		<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered">
+		<div ng-if="order.status.status == 'pickedup' && order.status.driver.id_admin == account.user.id_admin">
 			<div class="box-content-pickedup box-order-status">
 				<div class="message">
 					<div class="dialog-title">You picked up this order</div>
-					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].pickedup.timestamp*1000 | date: 'h:mm a'}}</div>
+					<div class="dialog-subtext">@ {{order.status.timestamp*1000 | date: 'h:mm a'}}</div>
 
-					<a class="order-action-undo" ng-click="undoPickedup()">undo</a>
+					<a class="order-action-undo" ng-click="undo()">undo</a>
 				</div>
 				<div class="buttons" ng-click="delivered()">
 					<button class="button dgray-on-dgray">Delivered</button>
@@ -62,51 +63,52 @@
 		</div>
 
 	</div>
-
-
-	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="content-padding">
-		<div class="dialog-message dialog-message-error">
-			<div class="message">
-				<div class="dialog-title"><b>DO NOT DELIVER</b></div>
-				<div class="dialog-subtext">THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].accepted.name}}</span>.</div>
-			</div>
-		</div>
-	</div>
-
-
-	<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.name && order.lastStatus[ 'delivery-status' ].pickedup.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered" class="content-padding">
-		<div class="dialog-message dialog-message-error">
-			<div class="message">
-				This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
-			</div>
-		</div>
-	</div>
 	
-	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered && order.lastStatus[ 'delivery-status'].delivered.id_admin != account.user.id_admin" class="content-padding">
-		<div class="dialog-message dialog-message-error">
-			<div class="message">
-				This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
-			</div>
-		</div>
-	</div>
 
-
-	<div class="content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
-		<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="box-content-delivered box-order-status">
+	<div ng-if="order.status.status == 'delivered' && order.status.driver.id_admin == account.user.id_admin" class="content-padding">
+		<div class="box-content-delivered box-order-status">
 			<div class="message">
-				You delivered this order @ {{order.lastStatus[ 'delivery-status' ].delivered.timestamp*1000 | date: 'h:mm a'}}
+				You delivered this order @ {{order.status.timestamp*1000 | date: 'h:mm a'}}
 				<br><br>
-				<a class="order-action-undo" ng-click="undoDelivered()">undo</a>
+				<a class="order-action-undo" ng-click="undo()">undo</a>
 			</div>
 			<div class="divider"></div>
 		</div>
 	</div>
 
+
+	<div ng-if="order.status.status == 'accepted' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
+		<div class="dialog-message dialog-message-error">
+			<div class="message">
+				<div class="dialog-title"><b>DO NOT DELIVER</b></div>
+				<div class="dialog-subtext">THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.status.driver.name}}</span>.</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div ng-if="order.status.status == 'pickedup' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
+		<div class="dialog-message dialog-message-error">
+			<div class="message">
+				This order has been picked up by <span class="delivery-name">{{order.status.driver.name}}</span>.
+			</div>
+		</div>
+	</div>
+	
+	<div ng-if="order.status.status == 'delivered' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
+		<div class="dialog-message dialog-message-error">
+			<div class="message">
+				This order has been delivered by <span class="delivery-name">{{order.status.driver.name}}</span>
+			</div>
+		</div>
+	</div>
+
+
 <!-- /actions -->
 
 <div class="content-padding">
 
-	<div class="dialog-message dialog-message-notice check-reminder"  ng-if="order.lastStatus['delivery-status'].accepted.id_admin == account.user.id_admin&& !order.lastStatus[ 'delivery-status' ].delivered">
+	<div class="dialog-message dialog-message-notice check-reminder"  ng-if="order.status.status != 'delivered' && order.status.driver.id_admin == account.user.id_admin">
 		<b>Double check</b> to make sure you received exactly the right food!
 	</div>
 

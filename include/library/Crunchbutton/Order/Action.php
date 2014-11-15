@@ -1,6 +1,7 @@
 <?php
 
 class Crunchbutton_Order_Action extends Cana_Table {
+	const DELIVERY_NEW   = 'delivery-new';
 	const DELIVERY_PICKEDUP   = 'delivery-pickedup';
 	const DELIVERY_ACCEPTED   = 'delivery-accepted';
 	const DELIVERY_REJECTED   = 'delivery-rejected';
@@ -64,11 +65,12 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	}
 
 	public function minutesToDelivery(){
-		$order = Order::o( $this->id_order );
-		$status = $order->deliveryStatus();
-		if( $status[ 'pickedup_date' ] && $status[ 'delivered_date' ] ){
-			$pickedup_date = new DateTime( $status[ 'pickedup_date' ], new DateTimeZone( c::config()->timezone ) );
-			$delivered_date = new DateTime( $status[ 'delivered_date' ], new DateTimeZone( c::config()->timezone ) );
+
+		$status = $this->order()->status();
+
+		if ($status->pickedup() && $status->delivered()){
+			$pickedup_date = new DateTime($status->pickedup()['date'], new DateTimeZone( c::config()->timezone ) );
+			$delivered_date = new DateTime($status->delivered()['date'], new DateTimeZone( c::config()->timezone ) );
 			return Util::intervalToSeconds( $delivered_date->diff( $pickedup_date ) ) / 60;
 		}
 		return 0;
@@ -79,8 +81,12 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		$date->setTimezone( new DateTimeZone( $timezone ) );
 		return $date;
 	}
+
 	public function admin(){
-		return Admin::o( $this->id_admin );
+		return Admin::o($this->id_admin);
 	}
 
+	public function order() {
+		return Order::o($this->id_order);
+	}
 }

@@ -60,42 +60,30 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 						switch ( c::getPagePiece(4) ) {
 							case 'delivery-pickedup':
-								$res['status'] = $order->deliveryPickedup(c::user());
+								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_PICKEDUP);
 								break;
 
 							case 'delivery-delivered':
-								$res['status'] = $order->deliveryDelivered(c::user());
+								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED);
 								break;
 
 							case 'delivery-accept':
-								$res['status'] = $order->deliveryAccept(c::user(), true);
+								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true);
 								break;
 
 							case 'delivery-reject':
-								$order->deliveryReject(c::user());
-								$res['status'] = true;
+								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_REJECTED);
 								break;
 
-							case 'undo-accepted':
-								$res[ 'status' ] = $order->undoStatus('accepted');
-								break;
-
-							case 'undo-delivered':
-								$res[ 'status' ] = $order->undoStatus('delivered');
-								break;
-
-							case 'undo-pickedup':
-								$res[ 'status' ] = $order->undoStatus('pickedup');
+							case 'undo':
+								$res['status'] = $order->undoStatus();
 								break;
 						}
 
-						if ( $order->deliveryStatus() ){
-							$ret = $order->deliveryExports();
-						}
-						$ret[ 'status' ] = $res[ 'status' ];
-
-						echo json_encode( $ret );
+						$ret['status'] = $order->status()->last();
+						echo json_encode($ret);
 						exit;
+
 					} else {
 
 						if( $order->id_order ) {
@@ -117,7 +105,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			foreach ( $orders as $order ) {
 				$exports[] = Model::toModel( [
 					'id_order' => $order->id_order,
-					'lastStatus' => $order->deliveryLastStatus(),
+					'status' => $order->status()->last(),
 					'name' => $order->name,
 					'phone' => $order->phone,
 					'date' => $order->date(),
