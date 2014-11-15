@@ -4,6 +4,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	
 	public function publicExports() {
 		$out = parent::publicExports();
+		$out['phone'] = $this->phone;
 		foreach ($this->deliveries() as $order) {
 			$out['deliveries'][] = [
 				'id_order' => $order->id_order,
