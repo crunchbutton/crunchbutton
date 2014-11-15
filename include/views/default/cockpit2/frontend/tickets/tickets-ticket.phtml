@@ -64,12 +64,17 @@
 						<div class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Time</div>
-						<div class="field-value">{{ticket.order.date}}</div>
+						<div class="field-key">Placed At</div>
+						<div class="field-value">{{ticket.order.date}} (<span am-time-ago="ticket.order.date"></span>)</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Status</div>
-						<div class="field-value">Picked up <b>10 minites ago</b></div>
+						<div class="field-value">
+							<span ng-if="ticket.order.lastStatus['delivery-status'].delivered">Delivered @ {{ticket.order.lastStatus['delivery-status'].delivered.timestamp*1000 | date: 'h:mm a'}} (<span am-time-ago="ticket.order.lastStatus['delivery-status'].delivered.timestamp*1000"></span>)</span>
+							<span ng-if="ticket.order.lastStatus['delivery-status'].pickedup && !ticket.order.lastStatus['delivery-status'].delivered">Picked up @ {{ticket.order.lastStatus['delivery-status'].pickedup.timestamp*1000 | date: 'h:mm a'}} (<span am-time-ago="ticket.order.lastStatus['delivery-status'].pickedup.timestamp*1000"></span>)</span>
+							<span ng-if="ticket.order.lastStatus['delivery-status'].accepted && !ticket.order.lastStatus['delivery-status'].pickedup && !ticket.order.lastStatus['delivery-status'].delivered">Accepted @ {{ticket.order.lastStatus['delivery-status'].accepted.timestamp*1000 | date: 'h:mm a'}} (<span am-time-ago="ticket.order.lastStatus['delivery-status'].accepted.timestamp*1000"></span>)</span>
+							<span ng-if="!ticket.order.lastStatus['delivery-status'].delivered && !ticket.order.lastStatus['delivery-status'].pickedup && !ticket.order.lastStatus['delivery-status'].accepted">Placed</span>
+						</div>
 					</div>
 				</div>
 			</div>
