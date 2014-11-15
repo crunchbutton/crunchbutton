@@ -3270,3 +3270,10 @@ input[type="checkbox"].switch + div:before {
 .deploy-status-deploying {
 	font-weight: bold;
 }
+
+.title-loader {
+	font-size: 0.8em;
+	display: block;
+	margin-top: .3em;
+	float: right;
+}
