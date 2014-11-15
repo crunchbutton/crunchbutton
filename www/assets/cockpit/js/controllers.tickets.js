@@ -59,7 +59,7 @@ NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewServi
 });
 
 
-NGApp.controller('TicketsViewCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
+NGApp.controller('TicketsViewCtrl', function($scope, $rootScope, TicketService, TicketViewService, CallService) {
 	$scope.params = {
 		status: 'open'
 	};
@@ -78,6 +78,10 @@ NGApp.controller('TicketsViewCtrl', function($scope, $rootScope, TicketService, 
 	
 	TicketService.list($scope.params, function(tickets) {
 		$scope.tickets = tickets;
+	});
+
+	CallService.list($scope.params, function(calls) {
+		$scope.calls = calls;
 	});
 });
 
