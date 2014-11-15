@@ -170,7 +170,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 		}
 
 		$out['lastStatus'] = $this->deliveryExports();
-		$out['driver'] = $this->driver()->get(0)->publicExports();
+		if ($this->driver()->get(0) && method_exists($this->driver()->get(0), 'publicExports')) {
+			$out['driver'] = $this->driver()->get(0)->publicExports();
+		} else {
+			$out['driver'] = null;
+		}
 
 		return $out;
 	}
