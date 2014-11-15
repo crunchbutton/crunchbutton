@@ -15,7 +15,9 @@ class Crunchbutton_Order_Status extends Cana_Table {
 		foreach ($this->_actions as $k => $status) {
 			if ($status->type == Crunchbutton_Order_Action::DELIVERY_REJECTED) {
 				$unset = $status->id_admin;
-				unset($this->_actions[$k]);
+				if ($status->id_admin != c::user()->id_admin) {
+					unset($this->_actions[$k]);
+				}
 
 			} elseif ($unset && $status->id_admin == $unset) {
 				unset($this->_actions[$k]);
