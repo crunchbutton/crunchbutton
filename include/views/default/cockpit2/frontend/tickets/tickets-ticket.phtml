@@ -43,11 +43,18 @@
 				</div>
 			</div>
 		</div>
-		
-		<div ng-if="ticket.driver.id_admin" class="support-box-wrap">
-			<h1>Driver <a href="/driver/{{ticket.driver.id_admin}}">#{{ticket.driver.id_admin}}</a></h1>
-			<div class="box-content2">
-				Name {{ticket.admin.name}}
+
+		<div ng-if="ticket.order.driver.id_admin" class="support-box-wrap">
+			<h1>Driver <a href="/driver/{{ticket.driver.id_admin}}">#{{ticket.order.driver.id_admin}}</a></h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.order.driver.name}}</div>
+					</div>
+
+				</div>
+				 
 			</div>
 		</div>
 		
