@@ -3059,7 +3059,6 @@ h1.driver-title {
 }
 
 .support-chat-header {
-	height: 12em;
 	font-family: Ruda;
 	padding: 1em;
 }
@@ -3221,43 +3220,43 @@ input[type="checkbox"].switch + div:before {
 	text-align: right;
 }
 
-.deploy-wrap {
+.box-content-table {
 	padding: 0;
 }
 
-.deploy-wrap table {
+.box-content-table table {
 	width: 100%;
 	box-sizing: border-box;
 
 }
 
-.deploy-wrap input {
+.box-content-table input {
 	font-size: 1.0em;
 }
 
-.deploy-wrap td, .deploy-wrap th {
+.box-content-table td, .box-content-table th {
 	font-size: 1.2em;
 	padding: .5em;
 	border-bottom: 1px solid #eeeeee;
 	line-height: 1.6em;
 }
 
-.deploy-wrap tr:first-child > * {
+.box-content-table tr:first-child > * {
 	padding-top: .8em;
 }
-.deploy-wrap tr:last-child > * {
+.box-content-table tr:last-child > * {
 	padding-bottom: .8em;
 	border-bottom: none;
 }
-.deploy-wrap tr > *:first-child {
+.box-content-table tr > *:first-child {
 	padding-left: 1.1em;
 }
-.deploy-wrap tr > *:last-child {
+.box-content-table tr > *:last-child {
 	padding-left: 1.1em;
 }
 
 
-.deploy-wrap th {
+.box-content-table th {
 	font-weight: bold;
 	text-align: left;
 }
