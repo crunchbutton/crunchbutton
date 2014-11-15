@@ -2374,18 +2374,11 @@ class Crunchbutton_Order extends Cana_Table {
 			foreach ($this->_actions as $action) {
 				switch ($action->type) {
 					case 'delivery-delivered':
-						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
-						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'g:i A' );
-						break;
-
 					case 'delivery-pickedup':
-						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
-						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'g:i A' );
-						break;
-
 					case 'delivery-accepted':
-						$acpt[$action->id_admin] = true;
-						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'g:i A' );
+						$this->_deliveryStatus[$action->type] = Admin::o($action->id_admin)->publicExports();
+						$this->_deliveryStatus[$action->type]['date'] = $action->date()->format('Y-m-d H:i:s');
+						$this->_deliveryStatus[$action->type]['timestamp'] = $action->date()->getTimestamp();
 						break;
 
 					case 'delivery-rejected':
@@ -2620,12 +2613,9 @@ class Crunchbutton_Order extends Cana_Table {
 			'id_order' => $this->id_order,
 			'uuid' => $this->uuid,
 			'delivery-status' => [
-				'delivered' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered')->publicExports() : false,
-				'del_date' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered_date') : false,
-				'pickedup' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup')->publicExports() : false,
-				'pic_date' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup_date') : false,
-				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false,
-				'acc_date' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted_date') : false
+				'delivered' => $this->deliveryStatus('delivery-delivered') ? $this->deliveryStatus('delivery-delivered') : false,
+				'pickedup' => $this->deliveryStatus('delivery-pickedup') ? $this->deliveryStatus('delivery-pickedup') : false,
+				'accepted' => $this->deliveryStatus('delivery-accepted') ? $this->deliveryStatus('delivery-accepted') : false,
 			],
 			'self-reply' => $this->deliveryReply(c::admin())
 		];

@@ -35,7 +35,7 @@
 			<div class="box-content-accepted box-order-status">
 				<div class="message">
 					<div class="dialog-title">You accepted this order</div>
-					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].acc_date | date: 'h:mm a'}}</div>
+					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].accepted.timestamp*1000 | date: 'h:mm a'}}</div>
 
 					<a class="order-action-undo" ng-click="undoAccept()">undo</a>
 				</div>
@@ -50,7 +50,7 @@
 			<div class="box-content-pickedup box-order-status">
 				<div class="message">
 					<div class="dialog-title">You picked up this order</div>
-					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].pic_date}}</div>
+					<div class="dialog-subtext">@ {{order.lastStatus[ 'delivery-status' ].pickedup.timestamp*1000 | date: 'h:mm a'}}</div>
 
 					<a class="order-action-undo" ng-click="undoPickedup()">undo</a>
 				</div>
@@ -94,7 +94,7 @@
 	<div class="content-padding" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && order.lastStatus[ 'delivery-status' ].delivered" >
 		<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.id_admin == account.user.id_admin && order.lastStatus[ 'delivery-status' ].delivered" class="box-content-delivered box-order-status">
 			<div class="message">
-				You delivered this order @ {{order.lastStatus[ 'delivery-status' ].del_date | date: 'h:mm a'}}
+				You delivered this order @ {{order.lastStatus[ 'delivery-status' ].delivered.timestamp*1000 | date: 'h:mm a'}}
 				<br><br>
 				<a class="order-action-undo" ng-click="undoDelivered()">undo</a>
 			</div>
