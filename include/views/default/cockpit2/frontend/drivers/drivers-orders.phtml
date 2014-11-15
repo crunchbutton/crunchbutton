@@ -20,24 +20,24 @@
 
 		<div ng-if="driverorders.length">
 
-			<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
-				<div ng-class="{'notMyOrder': order.lastStatus.id_admin !== account.user.id_admin, 'myOrder': order.lastStatus.id_admin == account.user.id_admin}">
-					<h6 class="row-status" ng-if="order.lastStatus.id_admin !== account.user.id_admin && order.lastStatus.status !== 'new'">
-						<span ng-switch="order.lastStatus.status">
+			<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.status.status">
+				<div ng-class="{'notMyOrder': order.status.driver.id_admin !== account.user.id_admin, 'myOrder': order.status.driver.id_admin == account.user.id_admin}">
+					<h6 class="row-status" ng-if="order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new'">
+						<span ng-switch="order.status.status">
 							<span ng-switch-when="delivered">Delivered</span>
 							<span ng-switch-when="pickedup">Picked up</span>
 							<span ng-switch-when="accepted">Accepted</span>
-							<span> by <b>{{order.lastStatus.name}}</b> @ {{order.lastStatus.date | date:'shortTime'}}</span>
+							<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.date | date:'shortTime'}}</span>
 						</span>
 					</h6>
 					
 					<div class="order-item-content">
 						<!-- action -->
 						<div class="column-action">
-							<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
-							<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
-							<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
-							<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'delivered' "> View </button>
+							<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.status.status == 'new' || !order.status.status" > Accept </button>
+							<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'accepted'"> Picked up </button>
+							<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'pickedup' "> Delivered </button>
+							<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'delivered' "> View </button>
 						</div>
 	
 						<!-- date -->

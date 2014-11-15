@@ -169,12 +169,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ '_dishes' ][] = [ 'name' => $food, 'price' => [ 'regular' => $regular_price, 'marked_up' => $price ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions, 'select_options' => $selectOptions ] ];
 		}
 
-		$out['lastStatus'] = $this->deliveryExports();
-		if ($this->driver()->get(0) && method_exists($this->driver()->get(0), 'publicExports')) {
-			$out['driver'] = $this->driver()->get(0)->publicExports();
-		} else {
-			$out['driver'] = null;
-		}
+		$out['status'] = $this->status()->last();
+		$out['driver'] = $this->status()->driver();
 
 		return $out;
 	}

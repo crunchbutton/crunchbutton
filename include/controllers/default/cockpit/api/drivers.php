@@ -70,20 +70,7 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 
 		if( count( $actions ) > 0 ){
 			foreach( $actions as $action ){
-				switch ( $action ) {
-					case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
-						$order->deliveryAccept( $admin );
-						break;
-					case Crunchbutton_Order_Action::DELIVERY_PICKEDUP:
-						$order->deliveryPickedup( $admin );
-						break;
-					case Crunchbutton_Order_Action::DELIVERY_DELIVERED:
-						$order->deliveryDelivered( $admin );
-						break;
-					case Crunchbutton_Order_Action::DELIVERY_REJECTED:
-						$order->deliveryReject( $admin );
-						break;
-				}
+				$order->setStatus($action, false, $admin);
 			}
 		}
 		echo json_encode( array( 'success' => true ) );

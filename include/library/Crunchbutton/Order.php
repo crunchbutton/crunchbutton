@@ -2360,57 +2360,70 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return array_unique( $restaurants_ids );
 	}
-
-	/*
-		get the delivery status of the order based on reps or restaurants actions agaisnt it
-		@todo: add restaurant actions
-	*/
-	public function deliveryStatus($type = null) {
-		if (!$this->_actions) {
-			$this->_actions = Order_Action::q('select * from order_action where id_order="'.$this->id_order.'" order by timestamp');
-			$this->_deliveryStatus = ['accepted' => false, 'delivered' => false, 'pickedup' => false];
-			$acpt = [];
-
-			foreach ($this->_actions as $action) {
-				switch ($action->type) {
-					case 'delivery-delivered':
-					case 'delivery-pickedup':
-					case 'delivery-accepted':
-						$this->_deliveryStatus[$action->type] = Admin::o($action->id_admin)->publicExports();
-						$this->_deliveryStatus[$action->type]['date'] = $action->date()->format('Y-m-d H:i:s');
-						$this->_deliveryStatus[$action->type]['timestamp'] = $action->date()->getTimestamp();
-						break;
-
-					case 'delivery-rejected':
-						$acpt[$action->id_admin] = false;
-						break;
-				}
-			}
-
-			foreach ($acpt as $admin => $status) {
-				if ($status) {
-					$this->_deliveryStatus['accepted'] = Admin::o($admin);
-				}
-			}
+	
+	public function status() {
+		if (!$this->_statuss) {
+			$this->_statuss = new Order_Status($this);
 		}
-		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
+		return $this->_statuss;
 	}
 
-	//Delete entry from order_action
-	public function undoStatus($status) {
+
+	public function undoStatus() {
+		$status = $this->status()->last();
+		$status = 'delivery-'.$status['status'];
+		
 		switch ($status) {
-			case 'pickedup':
-				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-pickedup" and id_admin=' .c::user()->id_admin. '');
-			break;
-
-			case 'delivered':
-				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-delivered" and id_admin=' .c::user()->id_admin. '');
-			break;
-
-			case 'accepted':
-				Order_Action::q('delete from order_action where id_order="'.$this->id_order.'" and type="delivery-accepted" and id_admin=' .c::user()->id_admin. '');
-			break;
+			case Crunchbutton_Order_Action::DELIVERY_NEW:
+			case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+				$newStatus = Crunchbutton_Order_Action::DELIVERY_REJECTED;
+				break;
+			case Crunchbutton_Order_Action::DELIVERY_PICKEDUP:
+				$newStatus = Crunchbutton_Order_Action::DELIVERY_ACCEPTED;
+				break;
+			case Crunchbutton_Order_Action::DELIVERY_DELIVERED:
+				$newStatus = Crunchbutton_Order_Action::DELIVERY_PICKEDUP;
+				break;
+			case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+				$newStatus = Crunchbutton_Order_Action::DELIVERY_NEW;
+				break;
 		}
+		
+		if (!$newStatus) {
+			return false;
+		}
+		
+		$this->setStatus($newStatus);
+		
+		return str_replace('delivery-', '', $newStatus);
+	}
+
+
+	public function setStatus($status, $notify = false, $admin = null) {
+		if (!$status) {
+			return false;
+		}
+
+		if (!$admin) {
+			$admin = c::user();
+		}
+
+		if ($this->status()->driver() && $this->status()->driver()->id_admin != $admin->id_admin) {
+			return false;
+		}
+
+		(new Order_Action([
+			'id_order' => $this->id_order,
+			'id_admin' => $admin->id_admin,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => $status
+		]))->save();
+		
+		if ($notify) {
+			$this->textCustomerAboutDriver();
+		}
+
+		return true;
 	}
 
 	public function deliveryAccept($admin, $textCustomer = false) {
@@ -2418,17 +2431,10 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($this->deliveryStatus('accepted')) {
 			return false;
 		}
-		(new Order_Action([
-			'id_order' => $this->id_order,
-			'id_admin' => $admin->id_admin,
-			'timestamp' => date('Y-m-d H:i:s'),
-			'type' => 'delivery-accepted'
-		]))->save();
 
 
-		if( $textCustomer ){
-			$this->textCustomerAboutDriver();
-		}
+
+
 
 		$this->_actions = null;
 		return true;
@@ -2507,7 +2513,7 @@ class Crunchbutton_Order extends Cana_Table {
 		return $act;
 	}
 
-
+	// @legacy: should only be used on cbtn.io
 	public function deliveryLastStatus(){
 		$statuses = $this->deliveryStatus();
 		if( $statuses[ 'delivered' ] ){

@@ -46,19 +46,9 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 		);
 	};
 
-	$scope.undoAccept = function() {
+	$scope.undo = function() {
 		$scope.makeBusy();
-		DriverOrdersService.undoAccepted( $scope.order.id_order, function(){ load(); } );
-	};
-
-	$scope.undoPickedup = function() {
-		$scope.makeBusy();
-		DriverOrdersService.undoPickedup( $scope.order.id_order, function(){ load(); } );
-	};
-
-	$scope.undoDelivered = function() {
-		$scope.makeBusy();
-		DriverOrdersService.undoDelivered( $scope.order.id_order, function(){ load(); } );
+		DriverOrdersService.undo( $scope.order.id_order, function(){ load(); } );
 	};
 
 	$scope.pickedup = function() {

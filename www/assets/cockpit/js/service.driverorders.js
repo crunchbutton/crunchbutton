@@ -15,9 +15,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
 				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } },
-				'undo_accepted' : { 'method': 'POST', params : {'action' : 'undo-accepted' } },
-				'undo_delivered' : { 'method': 'POST', params : {'action' : 'undo-delivered' } },				
-				'undo_pickedup' : { 'method': 'POST', params : {'action' : 'undo-pickedup' } }
+				'undo' : { 'method': 'POST', params : {'action' : 'undo' } }
 			}
 		);
 
@@ -89,16 +87,8 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		orders.accept( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}
 
-	service.undoPickedup = function( id_order, callback ){
-		orders.undo_pickedup( { 'id_order': id_order }, function( json ){ callback( json ); } );
-	}
-
-	service.undoAccepted = function( id_order, callback ){
-		orders.undo_accepted( { 'id_order': id_order }, function( json ){ callback( json ); } );
-	}
-
-	service.undoDelivered = function( id_order, callback ){
-		orders.undo_delivered( { 'id_order': id_order }, function( json){ callback( json ); } );
+	service.undo = function( id_order, callback ){
+		orders.undo( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}
 
 	service.pickedup = function( id_order, callback ){
