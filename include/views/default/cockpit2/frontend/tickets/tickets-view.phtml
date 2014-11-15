@@ -8,7 +8,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<th>Support ID</th>
+				<th>Support&nbsp;ID</th>
 				<th>Updated</th>
 				<th>Name</th>
 				<th>Message</th>
@@ -28,15 +28,15 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<th>ID</th>
 				<th>From</th>
+				<th>Support&nbsp;ID</th>
 				<th>Status</th>
 				<th>Start</th>
 				<th>End</th>
 			</tr>
 			<tr ng-repeat="call in calls">
-				<td><a href="/call/{{call.sid}}">{{call.sid}}</td>
 				<td>{{call.from}}</td>
+				<td>{{call.support.id_support}}</td>
 				<td>{{call.status}}</td>
 				<td>{{call.start_time}}</td>
 				<td>{{call.end_time}}</td>
