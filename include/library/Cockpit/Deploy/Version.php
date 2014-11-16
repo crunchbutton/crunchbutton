@@ -38,7 +38,6 @@ class Cockpit_Deploy_Version extends Cana_Table {
 			left join deploy_server using (id_deploy_server)
 			where
 				deploy_server.hostname="'.$host.'"
-				and deploy_server.name != "_DOMAIN_"
 				and status="new"
 				and date <= NOW()
 			order by date desc
