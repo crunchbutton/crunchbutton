@@ -96,7 +96,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		if ($scope.show.all) {
 			return true;
 		} else {
-			if( order.lastStatus.id_admin == $scope.account.user.id_admin || order.lastStatus.status == 'new'){
+			if (!order.status.driver || order.status.driver.id_admin == $scope.account.user.id_admin){
 				return true;
 			}
 		}
