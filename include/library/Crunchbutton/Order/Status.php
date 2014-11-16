@@ -58,7 +58,7 @@ class Crunchbutton_Order_Status extends Cana_Table {
 				'driver' => null
 			];
 		} else {
-			return $this->_exportStatus($this->actions()[0]);
+			return $this->_exportStatus(array_values($this->actions())[0]);
 		}
 	}
 	
