@@ -32,7 +32,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		// orders
 		foreach (Order::deliveryOrders(12) as $order) {
 			$r['orders']['total']++;
-			switch ($order->deliveryLastStatus()['status']) {
+			switch ($order->status()->last()['status']) {
 				case 'new':
 					$r['orders']['new']++;
 					break;
