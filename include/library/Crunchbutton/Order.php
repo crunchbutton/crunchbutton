@@ -2426,59 +2426,6 @@ class Crunchbutton_Order extends Cana_Table {
 		return true;
 	}
 
-	public function deliveryAccept($admin, $textCustomer = false) {
-
-		if ($this->deliveryStatus('accepted')) {
-			return false;
-		}
-
-
-
-
-
-		$this->_actions = null;
-		return true;
-	}
-
-	public function deliveryReject($admin) {
-		(new Order_Action([
-			'id_order' => $this->id_order,
-			'id_admin' => $admin->id_admin,
-			'timestamp' => date('Y-m-d H:i:s'),
-			'type' => 'delivery-rejected'
-		]))->save();
-		$this->_actions = null;
-		return true;
-	}
-
-	public function deliveryPickedup($admin) {
-		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
-			return false;
-		}
-		(new Order_Action([
-			'id_order' => $this->id_order,
-			'id_admin' => $admin->id_admin,
-			'timestamp' => date('Y-m-d H:i:s'),
-			'type' => 'delivery-pickedup'
-		]))->save();
-		$this->_actions = null;
-		return true;
-	}
-
-	public function deliveryDelivered($admin) {
-		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
-			return false;
-		}
-		(new Order_Action([
-			'id_order' => $this->id_order,
-			'id_admin' => $admin->id_admin,
-			'timestamp' => date('Y-m-d H:i:s'),
-			'type' => 'delivery-delivered'
-		]))->save();
-		$this->_actions = null;
-		return true;
-	}
-
 	public function deliveryReply($admin) {
 		$act = false;
 
@@ -2501,7 +2448,6 @@ class Crunchbutton_Order extends Cana_Table {
 						break;
 
 					case 'delivery-rejected':
-
 						if ( $action->id_admin == $admin->id_admin ) {
 							$act = 'rejected';
 						}

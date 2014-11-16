@@ -39,15 +39,15 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 			switch ( $action ) {
 
 				case Controller_api_twilio_driver::ACTION_ACCEPT:
-					$this->accept( $order->deliveryAccept( $admin, true ), $id_order );
+					$this->accept($order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true), $id_order );
 					break;
 
 				case Controller_api_twilio_driver::ACTION_PICKEDUP:
-					$this->picked( $order->deliveryPickedup( $admin ), $id_order );
+					$this->picked($order->setStatus(Crunchbutton_Order_Action::DELIVERY_PICKEDUP), $id_order );
 					break;
 
 				case Controller_api_twilio_driver::ACTION_DELIVERED:
-					$this->delivered( $order->deliveryDelivered( $admin ), $id_order );
+					$this->delivered($order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED), $id_order );
 					break;
 
 				case Controller_api_twilio_driver::ACTION_DETAILS:
