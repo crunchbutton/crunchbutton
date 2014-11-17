@@ -249,8 +249,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'restaurant_fee' ] = $this->orderRestaurantFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'gift_card' ] = $this->orderGiftCardDriverPay( $order );
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
+				$order[ 'pay_info' ][ 'standard_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
 				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
+				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
 
 				// Do not reimburse drivers that are using pex card #3876
 				if( ( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || $pay[ $driver ][ 'using_pex' ] ){
@@ -276,6 +278,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'credit_charge' ] += $order[ 'pay_info' ][ 'credit_charge' ];
 				$pay[ $driver ][ 'restaurant_fee' ] += $order[ 'pay_info' ][ 'restaurant_fee' ];
 				$pay[ $driver ][ 'gift_card' ] += $order[ 'pay_info' ][ 'gift_card' ];
+				$pay[ $driver ][ 'standard_reimburse' ] += $order[ 'pay_info' ][ 'standard_reimburse' ];
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
@@ -350,6 +353,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $id_admin ][ 'invites_total' ] = count( $invites );
 					$pay[ $id_admin ][ 'invites_total_payment' ] = max( 0, ( $amount_per_invited_user * $pay[ $id_admin ][ 'invites_total' ] ) );
 					$pay[ $id_admin ][ 'total_payment' ] += $pay[ $id_admin ][ 'invites_total_payment' ];
+					if( !$pay[ $id_admin ][ 'total_spent' ] ){
+						$pay[ $id_admin ][ 'total_spent' ] = 0;
+					}
+
+					if( !$pay[ $id_admin ][ 'pay_type' ] || $pay[ $id_admin ][ 'pay_type' ][ 'payment_type' ] ){
+						$pay_type = Admin::o( $id_admin )->payment_type();
+						$pay[ $id_admin ][ 'using_pex' ] = $pay_type->using_pex;
+						if( $pay_type->id_admin_payment_type ){
+							$pay[ $id_admin ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
+						} else {
+							$pay[ $id_admin ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+						}
+					}
 				}
 			}
 		}
