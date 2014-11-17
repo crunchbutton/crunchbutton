@@ -531,7 +531,9 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 				total_drivers++;
 				// include the adjustment at total_due
 				total_payments += $scope.result.drivers[ x ].total_payments;
-				total_spent += $scope.result.drivers[ x ].total_spent;
+				if( $scope.result.drivers[ x ].total_spent ){
+					total_spent += $scope.result.drivers[ x ].total_spent;
+				}
 				if( $scope.result.drivers[ x ].total_reimburse ){
 					total_reimbursements += $scope.result.drivers[ x ].total_reimburse;
 				}
