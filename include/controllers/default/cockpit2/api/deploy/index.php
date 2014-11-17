@@ -46,6 +46,9 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				switch (c::getPagePiece(4)) {
 					case 'versions':
 						$r = Deploy_Server::o(c::getPagePiece(3))->versions();
+						if (!$r || !$r->count()) {
+							$r = [];
+						}
 						break;
 					default:
 						$r = Deploy_Server::o(c::getPagePiece(3));
@@ -54,7 +57,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'versions':
-				$r = Deploy_Version::q('select * from deploy_version order by date desc limit 10 ');
+				$r = Deploy_Version::q('select * from deploy_version order by date desc limit 10');
 				break;
 
 			case 'version':
@@ -85,8 +88,10 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				break;
 		}
 
-		if ($r) {
+		if ($r && method_exists($r, 'json')) {
 			echo $r->json();
+		} else {
+			echo json_encode($r);
 		}
 		exit;
 
