@@ -2540,8 +2540,8 @@ class Crunchbutton_Order extends Cana_Table {
 	public function getDeliveryDriver(){
 		// for payment reasons the driver could be changed at payment time #3232
 		$status = $this->status()->last();
-		if( $status->driver && $status->driver->id_admin ){
-			return Admin::o( $status->driver->id_admin );
+		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
+			return Admin::o( $status[ 'driver' ][ 'id_admin' ] );
 		}
 		return false;
 	}
