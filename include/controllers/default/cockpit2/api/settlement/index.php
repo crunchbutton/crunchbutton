@@ -494,6 +494,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
 					$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
 					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
+					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
 					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
 					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
 					$_order[ 'date' ] = $order[ 'date' ];
@@ -509,11 +510,17 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$driver[ 'total_payment_without_adjustment' ] = $driver[ 'total_payment' ];
 			$driver[ 'adjustment' ] = 0;
 			$driver[ 'adjustment_notes' ] = '';
+			$driver[ 'standard_reimburse' ] = ( $driver[ 'standard_reimburse' ] ? $driver[ 'standard_reimburse' ] : 0 );
 			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
 			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
 
 			$driver[ 'pay' ] = true;
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
+
+			if( !$driver[ 'pay_type' ] || !$driver[ 'pay_type' ][ 'payment_type' ] ){
+				$driver[ 'pay_type' ] = [ 'payment_type' => '-' ];
+			}
+
 			if( $id_driver ){
 				if( $id_driver == $driver[ 'id_admin' ] ){
 					$out[ 'drivers' ][] = $driver;

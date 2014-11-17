@@ -100,6 +100,10 @@
 						<td>Total Spent</td>
 						<td>$ {{total_spent | formatPrice}}</td>
 					</tr>
+					<tr positive-or-negative-color="{{total_standard_reimbursements}}">
+						<td>Total Standard Reimbursements</td>
+						<td>$ {{total_standard_reimbursements | formatPrice}}</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -168,6 +172,7 @@
 					<td>Reimbursement</td>
 					<td>Payment</td>
 					<td>Total Spent</td>
+					<td>Standard Reimburse</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -182,6 +187,7 @@
 					<td>$ {{driver.total_reimburse | formatPrice}}</td>
 					<td>$ {{driver.total_payment | formatPrice}}</td>
 					<td>$ {{driver.total_spent | formatPrice}}</td>
+					<td>$ {{driver.standard_reimburse | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -377,6 +383,10 @@
 								<tr class="total-due" positive-or-negative-color="{{driver.total_spent}}">
 									<td class="td-medium">Total Spent</td>
 									<td class="td-medium">$ {{driver.total_spent | formatPrice}}</td>
+								</tr>
+								<tr class="total-due" positive-or-negative-color="{{driver.standard_reimburse}}">
+									<td class="td-medium">Standard Reimburse</td>
+									<td class="td-medium">$ {{driver.standard_reimburse | formatPrice}}</td>
 								</tr>
 							</tbody>
 						</table>
