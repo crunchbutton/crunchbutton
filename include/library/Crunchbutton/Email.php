@@ -7,8 +7,6 @@ class Crunchbutton_Email extends Cana_Model {
 		$this->from = $params['from'];
 		$this->subject = $params['subject'];
 		$this->html = $params['messageHtml'];
-
-		$this->to = 'arzynik@gmail.com';
 	}
 
 	public function buildView($params) {
