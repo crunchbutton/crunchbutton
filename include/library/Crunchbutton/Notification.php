@@ -61,6 +61,7 @@ class Crunchbutton_Notification extends Cana_Table
 					$log->save();
 				} else {
 					$log->status = 'error';
+					$log->data = json_encode($fax);
 					$log->save();
 					// Send a sms informing the error
 					$this->smsFaxError( $order );
@@ -108,6 +109,7 @@ class Crunchbutton_Notification extends Cana_Table
 					$log->save();
 				} else {
 					$log->status = 'error';
+					$log->data = json_encode($fax);
 					$log->save();
 					// Send a sms informing the error
 					$this->smsFaxError( $order );

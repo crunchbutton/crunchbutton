@@ -13,14 +13,14 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>_DOMAIN_</host>
+			<host>db._DOMAIN_</host>
 			<prefix></prefix>
 		</live>
 		<beta>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
-			<host>_DOMAIN_</host>
+			<host>db._DOMAIN_</host>
 			<prefix></prefix>
 		</beta>
 		<local>
