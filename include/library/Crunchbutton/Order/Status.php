@@ -8,8 +8,12 @@ class Crunchbutton_Order_Status extends Cana_Table {
 		$actions = Order_Action::q('select * from order_action where id_order="'.$order->id_order.'" order by timestamp desc');
 		$this->_order = $order;
 
-		foreach ($actions as $action) {
-			$this->_actions[] = $action;
+		$this->_actions = [];
+
+		if ($actions) {
+			foreach ($actions as $action) {
+				$this->_actions[] = $action;
+			}
 		}
 
 		foreach ($this->_actions as $k => $status) {
@@ -32,7 +36,7 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			Crunchbutton_Order_Action::DELIVERY_ACCEPTED => 1,
 			Crunchbutton_Order_Action::DELIVERY_PICKEDUP => 2,
 			Crunchbutton_Order_Action::DELIVERY_DELIVERED => 3,
-			Crunchbutton_Order_Action::DELIVERY_TRANSFERED => 4,
+			Crunchbutton_Order_Action::DELIVERY_TRANSFERED => 4
 		];
 	}
 

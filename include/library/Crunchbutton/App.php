@@ -144,6 +144,7 @@ class Crunchbutton_App extends Cana_App {
 								$host_callback = 'beta.crunchr.co';
 								break;
 							case '/home/crunchbutton/include/library/Crunchbutton':
+							case '/home/_DOMAIN_/include/library/Crunchbutton':
 								$params['env'] = 'live';
 								$_SERVER['SERVER_NAME'] = '_DOMAIN_';
 								$host_callback = '_DOMAIN_';
@@ -188,6 +189,7 @@ class Crunchbutton_App extends Cana_App {
 				$host_callback = 'beta.crunchr.co';
 				break;
 			case '/home/crunchbutton/include/library/Crunchbutton':
+			case '/home/_DOMAIN_/include/library/Crunchbutton':
 				$host_callback = '_DOMAIN_';
 				break;
 			case '/home/staging.crunchbutton/include/library/Crunchbutton':

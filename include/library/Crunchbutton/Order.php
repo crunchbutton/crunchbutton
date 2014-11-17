@@ -2538,16 +2538,10 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function getDeliveryDriver(){
-
 		// for payment reasons the driver could be changed at payment time #3232
-		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND type = '" . Crunchbutton_Order_Action::DELIVERY_TRANSFERED . "' ORDER BY id_order_action DESC LIMIT 1 " );
-		if( $action->id_admin ){
-			return $action->admin();
-		} else {
-			$status = $this->status()->last();
-			if( $status->driver && $status->driver->id_admin ){
-				return Admin::o( $status->driver->id_admin );
-			}
+		$status = $this->status()->last();
+		if( $status->driver && $status->driver->id_admin ){
+			return Admin::o( $status->driver->id_admin );
 		}
 		return false;
 	}
