@@ -12,11 +12,14 @@
 	<div class="divider"></div>
 	
 	<div class="support-boxes">
-	
-		<div ng-if="!ticket.order.id_order" class="support-box-wrap">
-			<h1>&nbsp;</h1>
+		<div ng-if="!ticket.id_support" class="support-box-wrap">
+			<h1>Invalid Ticket</h1>
+		</div>
+
+		<div ng-if="ticket.type == 'WARNING' && !ticket.order.id_order" class="support-box-wrap">
+			<h1>Internal Warning</h1>
 			<div class="box-content-color">
-				No order, customer, or restaurant associated with issue.
+				No action is required.
 			</div>
 		</div>
 	
@@ -125,7 +128,7 @@
 		</div>
 		*/ ?>
 		
-		<div class="support-box-wrap">
+		<div class="support-box-wrap" ng-if="ticket.type != 'WARNING'">
 			<h1>Resolution <a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a></h1>
 			<div class="box-content-color">
 				<div ng-if="ticket.order.id_order">
