@@ -70,6 +70,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				sm.id_support_message,
 				sm.id_admin,
 				sm.date,
+				UNIX_TIMESTAMP(sm.date) as timestamp,
 				sm.name,
 				sm.phone,
 				sm.from,
