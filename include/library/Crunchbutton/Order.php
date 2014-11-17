@@ -2112,7 +2112,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 	}
-	
+
 	public function refundedAmount($ch) {
 		if (!isset($this->_refundedAmount)) {
 			$this->_refundedAmount = 0;
@@ -2166,7 +2166,7 @@ class Crunchbutton_Order extends Cana_Table {
 										'status' => 'refund amount too high',
 										'refunded' => $amt
 									]);
-									
+
 									$total = number_format($amt/100,2);
 									if ($amt == $ch->amount && !$this->refunded) {
 										// allow it to mark refunded
@@ -2360,7 +2360,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return array_unique( $restaurants_ids );
 	}
-	
+
 	public function status() {
 		if (!$this->_statuss) {
 			$this->_statuss = new Order_Status($this);
@@ -2372,7 +2372,7 @@ class Crunchbutton_Order extends Cana_Table {
 	public function undoStatus() {
 		$status = $this->status()->last();
 		$status = 'delivery-'.$status['status'];
-		
+
 		switch ($status) {
 			case Crunchbutton_Order_Action::DELIVERY_NEW:
 			case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
@@ -2388,13 +2388,13 @@ class Crunchbutton_Order extends Cana_Table {
 				$newStatus = Crunchbutton_Order_Action::DELIVERY_NEW;
 				break;
 		}
-		
+
 		if (!$newStatus) {
 			return false;
 		}
-		
+
 		$this->setStatus($newStatus);
-		
+
 		return str_replace('delivery-', '', $newStatus);
 	}
 
@@ -2418,7 +2418,7 @@ class Crunchbutton_Order extends Cana_Table {
 			'timestamp' => date('Y-m-d H:i:s'),
 			'type' => $status
 		]))->save();
-		
+
 		if ($notify) {
 			$this->textCustomerAboutDriver();
 		}
@@ -2544,17 +2544,9 @@ class Crunchbutton_Order extends Cana_Table {
 		if( $action->id_admin ){
 			return $action->admin();
 		} else {
-			$actions = $this->deliveryExports();
-			if( $actions[ 'delivery-status' ] ){
-				if( $actions[ 'delivery-status' ][ 'delivered' ][ 'id_admin' ] ){
-					return Admin::o( $actions[ 'delivery-status' ][ 'delivered' ][ 'id_admin' ] );
-				}
-				if( $actions[ 'delivery-status' ][ 'pickedup' ][ 'id_admin' ] ){
-					return Admin::o( $actions[ 'delivery-status' ][ 'pickedup' ][ 'id_admin' ] );
-				}
-				if( $actions[ 'delivery-status' ][ 'accepted' ][ 'id_admin' ] ){
-					return Admin::o( $actions[ 'delivery-status' ][ 'accepted' ][ 'id_admin' ] );
-				}
+			$status = $this->status()->last();
+			if( $status->driver && $status->driver->id_admin ){
+				return Admin::o( $status->driver->id_admin );
 			}
 		}
 		return false;
