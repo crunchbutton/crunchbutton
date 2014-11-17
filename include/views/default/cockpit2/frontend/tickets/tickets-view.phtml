@@ -9,14 +9,18 @@
 		<table>
 			<tr>
 				<th>Support&nbsp;ID</th>
+				<th>From</th>
 				<th>Updated</th>
 				<th>Name</th>
 				<th>Message</th>
 			</tr>
 			<tr ng-repeat="ticket in tickets">
 				<td><a href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</td>
-				<td>@TODO</td>
-<? /*				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td> */ ?>
+				<td><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></td>
+				<td>
+					<span ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></span>
+					<span ng-if="!ticket.timestamp"><i>Unknown</i></span>
+				</td>
 				<td>{{ticket.name}}</td>
 				<td>{{ticket.message}}</td>
 
@@ -28,15 +32,15 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<th>From</th>
 				<th>Support&nbsp;ID</th>
+				<th>From</th>
 				<th>Status</th>
 				<th>Start</th>
 				<th>End</th>
 			</tr>
 			<tr ng-repeat="call in calls">
-				<td>{{call.from}}</td>
 				<td>{{call.support.id_support}}</td>
+				<td><a href ng-click="callText(call.from)">{{call.from | formatPhone}}</a></td>
 				<td>{{call.status}}</td>
 				<td>{{call.start_time}}</td>
 				<td>{{call.end_time}}</td>
