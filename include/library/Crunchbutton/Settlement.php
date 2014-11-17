@@ -797,7 +797,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$schedule->log = 'Schedule created';
 			$schedule->note = $notes;
 			$schedule->adjustment_note = $adjustment_notes;
-			$schedule->id_admin = c::user()->id_admin;
+			$schedule->id_admin = ( c::user()->id_admin ) ? c::user()->id_admin : c::admin()->id_admin;
 			$schedule->save();
 			$id_payment_schedule = $schedule->id_payment_schedule;
 
@@ -1305,7 +1305,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment->adjustment_note = $schedule->adjustment_note;
 						$payment->env = c::getEnv();
 						$payment->id_driver = $schedule->id_driver;
-						$payment->id_admin = c::user()->id_admin;
+						$payment->id_admin = ( c::user()->id_admin ? c::user()->id_admin : c::admin()->id_admin );
 						$payment->amount = 0;
 						$payment->pay_type = $schedule->pay_type;
 						$payment->adjustment = $schedule->adjustment;
