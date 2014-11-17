@@ -624,4 +624,11 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_twilio;
 	}
 	
+	public function mailgun() {
+		if (!isset($this->_mailgun)) {
+			$this->_mailgun = new \Mailgun\Mailgun(c::config()->mailgun->key);
+		}
+		return $this->_mailgun; 
+	}
+	
 } 

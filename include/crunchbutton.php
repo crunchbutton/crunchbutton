@@ -27,7 +27,7 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Cana','Services','Balanced','RESTful','Ordrin','QueryPath','Github','ApnsPHP','Scss'],
+	],'libraries' 			=> ['Crunchbutton','Cana','Services','Balanced','RESTful','Ordrin','QueryPath','Github','ApnsPHP','Scss','Mailgun'],
 	'alias'					=> []
 ];
 
@@ -99,6 +99,7 @@ spl_autoload_register(function ($className) {
 \QueryPath\Bootstrap::init();
 \Buzz\Bootstrap::init();
 \Github\Bootstrap::init();
+\Mailgun\Bootstrap::init();
 
 $configFile = $GLOBALS['config']['dirs']['config'].'config.demo.xml';
 if (file_exists($GLOBALS['config']['dirs']['config'].'config.xml')) {

@@ -155,6 +155,10 @@
 			<phone>_PHONE_</phone>
 		</live>
 	</support>
+	<mailgun>
+		<key>_KEY_</key>
+		<domain>_DOMAIN_</domain>
+	</mailgun>
 	<twilio>
 		<apps>
 			<driver>_KEY_</driver>
