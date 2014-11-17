@@ -184,6 +184,23 @@
 					<span>Drivers <i class="icon-caret-down"></i></span>
 				</a>
 				<ul id="admin-nav-drivers" class="collapse">
+
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+					<li class="">
+						<a href="/drivers/shift/summary">
+							<i class="icon-file-alt"></i> Scheduled Shifts
+						</a>
+					</li>
+					<? } ?>
+
+					<? if ( c::admin()->permission()->check( [ 'global'] )  ) { ?>
+					<li class="">
+						<a href="/drivers/shift/status/shift">
+							<i class="icon-file-alt"></i> List All Drivers
+						</a>
+					</li>
+					<? } ?>
+
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-orders-view' ] ) ) { ?>
 						<li class="">
 							<a href="/drivers/deliveries">
@@ -215,14 +232,6 @@
 					</li>
 					<? } ?>
 
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
-					<li class="">
-						<a href="/drivers/shift/summary">
-							<i class="icon-file-alt"></i> Scheduled Shifts
-						</a>
-					</li>
-					<? } ?>
-
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
 					<li class="">
 						<a href="/drivers/shift/schedule/driver">
@@ -230,15 +239,6 @@
 						</a>
 					</li>
 					<? } ?>
-
-					<? if ( c::admin()->permission()->check( [ 'global'] )  ) { ?>
-					<li class="">
-						<a href="/drivers/shift/status/shift">
-							<i class="icon-file-alt"></i> List All
-						</a>
-					</li>
-					<? } ?>
-
 
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
 						<li class="">
