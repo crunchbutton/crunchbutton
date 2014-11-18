@@ -2626,4 +2626,42 @@ class Crunchbutton_Order extends Cana_Table {
 			->idVar('id_order')
 			->load($id);
 	}
+	
+	public function deliveryStatus($type = null) {
+		if (!$this->_actions) {
+			$this->_actions = Order_Action::q('select * from order_action where id_order="'.$this->id_order.'" order by timestamp');
+			$this->_deliveryStatus = ['accepted' => false, 'delivered' => false, 'pickedup' => false];
+			$acpt = [];
+
+			foreach ($this->_actions as $action) {
+				switch ($action->type) {
+					case 'delivery-delivered':
+						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
+						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'g:i A' );
+						break;
+
+					case 'delivery-pickedup':
+						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
+						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'g:i A' );
+						break;
+
+					case 'delivery-accepted':
+						$acpt[$action->id_admin] = true;
+						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'g:i A' );
+						break;
+
+					case 'delivery-rejected':
+						$acpt[$action->id_admin] = false;
+						break;
+				}
+			}
+
+			foreach ($acpt as $admin => $status) {
+				if ($status) {
+					$this->_deliveryStatus['accepted'] = Admin::o($admin);
+				}
+			}
+		}
+		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
+	}
 }
