@@ -2,7 +2,7 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
-
+exit;
 
 			Log::critical([
 				'action' => 'max confirm callback tries ('.c::config()->twilio->maxconfirmback.') exceeded.',
