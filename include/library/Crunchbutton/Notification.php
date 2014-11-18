@@ -119,6 +119,8 @@ class Crunchbutton_Notification extends Cana_Table
 					$order->_confirm_trigger = true;
 					$order->queConfirmFaxWasReceived();
 				}
+				
+				return $fax->success;
 
 				break;
 
