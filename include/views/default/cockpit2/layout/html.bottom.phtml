@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
 $(function() {
-	App.request( App.service + 'config', function(r) {
+	App.request( App.service + 'config?init=1', function(r) {
 		App._remoteConfig = true;
 		App.init(r);
 	}, function() {

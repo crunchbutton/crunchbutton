@@ -367,7 +367,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService) {
 
-
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -520,8 +519,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.account.checkUser();
 
-
-} );
+});
 
 // Check user's auth
 /* todo: check user's permission too */
@@ -623,6 +621,10 @@ App.processConfig = function(json, user) {
 		App.config.user = user;
 	} else {
 		App.config = json;
+	}
+	
+	if (json.timezones) {
+		moment.tz.load(json.timezones);
 	}
 };
 

@@ -7,7 +7,10 @@
 		<table>
 			<tr>
 				<th>Date</th>
-				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
+				<td>
+					<? /* {{version.date | localtime | timestamp | date:'MM/dd @ HH:mm'}} */ ?>
+					{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}
+				</td>
 			</tr>
 			<tr>
 				<th>Server</th>
