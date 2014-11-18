@@ -16,6 +16,10 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 					'version' => Cana_Util::gitVersion(),
 					'site' => c::config()->site->exposedConfig()
 				];
+				
+				if ($this->request()['init']) {
+					$config['timezones'] = json_decode(file_get_contents(c::config()->dirs->www.'assets/cockpit/js/moment-timezone-db.json'));
+				}
 
 				echo json_encode($config);
 				break;
