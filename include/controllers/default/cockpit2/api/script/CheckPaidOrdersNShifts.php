@@ -1,14 +1,166 @@
 <?php
 
+// Big Payment Mess #4055
+
 class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controller_RestAccount {
 
-	const DATE_START = '20141101';
-	const DATE_END = '20141112';
+	const DATE_START = '20141105';
+	const DATE_END = '20141107';
 	const NOTES = 'Order payment fix';
 
 	public function init() {
+
+		$this->markOrdersAsPaid();
+		// $this->markShiftsAsPaid();
 		// $this->orders();
-		$this->shifts();
+		// $this->shifts();
+	}
+
+	public function markShiftsAsPaid(){
+
+		$out = [ 'ok' => [], 'nope' => [] ];
+
+		$settlement = new Crunchbutton_Settlement;
+
+		$query = 'SELECT DISTINCT( asa.id_admin ) AS id_admin, a.name, apt.using_pex FROM admin_shift_assign asa
+								INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+								INNER JOIN admin a ON a.id_admin = asa.id_admin
+								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin
+								WHERE
+									DATE_FORMAT( cs.date_start, "%Y%m%d" ) >= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START . '"
+								AND
+									DATE_FORMAT( cs.date_end, "%Y%m%d" ) <= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END . '"
+								AND
+									asa.id_admin_shift_assign NOT IN ( SELECT id_admin_shift_assign FROM payment_schedule_shift pss )
+								AND
+									apt.payment_type = "hours"';
+
+
+		$assigned_shifts = Crunchbutton_Admin_Shift_Assign::q( $query );
+
+		$pay = [];
+
+		foreach( $assigned_shifts as $shift ){
+			$pay[ $shift->id_admin ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spent' => 0, 'orders' => [] ];
+			$pay[ $shift->id_admin ][ 'id_admin' ] = $shift->id_admin;
+			$pay[ $shift->id_admin ][ 'name' ] = $shift->name;
+			$pay[ $shift->id_admin ][ 'using_pex' ] = $shift->using_pex;
+			$pay[ $shift->id_admin ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+		}
+
+		foreach( $pay as $id_driver => $driver ){
+			$pay_type = Admin::o( $id_driver )->payment_type();
+			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+				$shifts = $settlement->workedShiftsByPeriod( $id_driver, [ 'start' => Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START, 'end' => Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END ] );
+				$worked_shifts = [];
+				$_hours = 0;
+				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+				$pay[ $id_driver ][ 'shifts' ] = [ 'worked_total' => 0, 'amount' => 0, 'hour_rate' => $pay_type->hour_rate ];
+				foreach( $shifts as $shift ){
+					if( !Cockpit_Payment_Schedule_Shift::checkShiftWasPaidDriver( $shift->id_admin_shift_assign ) || $recalculatePaidOrders ){
+						$_shift = [];
+						$_shift[ 'id_community_shift' ] = $shift->id_community_shift;
+						$_shift[ 'id_admin_shift_assign' ] = $shift->id_admin_shift_assign;
+						$_shift[ 'period' ] = $shift->startEndToStringCommunityTz();
+						$_shift[ 'hours' ] = $shift->duration();
+						$_shift[ 'amount' ] = round( $shift->duration() * $pay_type->hour_rate, 2 );
+						$pay[ $id_driver ][ 'shifts' ][ 'worked_total' ]++;
+						$pay[ $id_driver ][ 'shifts' ][ 'amount' ] += round( $_shift[ 'amount' ], 2 );
+						$worked_shifts[] = $_shift;
+						$_hours += $_shift[ 'hours' ];
+					}
+				}
+				$tip = 0;
+				foreach( $pay[ $id_driver ][ 'orders' ] as $id_order => $order ){
+
+					if( !$order[ 'driver_paid' ] || $recalculatePaidOrders ){
+						$tip += $order[ 'pay_info' ][ 'tip' ];
+					}
+				}
+
+				$pay[ $id_driver ][ 'hours' ] = $_hours;
+				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
+				$pay[ $id_driver ][ 'total_payment' ] = ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] );
+				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
+			} else {
+				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+			}
+		}
+		echo json_encode( $pay );exit();
+	}
+
+	public function markOrdersAsPaid(){
+
+		$out = [ 'ok' => [], 'nope' => [] ];
+
+		$settlement = new Crunchbutton_Settlement;
+
+		$query = 'SELECT * FROM `order` AS o WHERE DATE_FORMAT( o.date, "%Y%m%d" ) >= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START . '" AND DATE_FORMAT( o.date, "%Y%m%d" ) <= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END . '" AND o.delivery_service = 1 AND o.id_order NOT IN ( SELECT id_order FROM order_transaction WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER . '" )';
+
+		$orders = Crunchbutton_Order::q( $query );
+
+		$payments = [];
+
+		foreach( $orders as $order ){
+			$driver = $order->getDeliveryDriver();
+			$schedule_order = Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_order = ' . $order->id_order );
+			if( $schedule_order->id_payment_schedule ){
+				$payment_schedule = Cockpit_Payment_Schedule::o( $schedule_order->id_payment_schedule );
+				if( $payment_schedule->id_payment ){
+					$payments[ $driver->id_admin ] = $payment_schedule->id_payment;
+				}
+			}
+		}
+
+		foreach( $orders as $order ){
+
+			$driver = $order->getDeliveryDriver();
+
+			if( $driver->id_admin ){
+				if( !$out[ 'ok' ][ $driver->id_admin ] ){
+					$out[ 'ok' ][ $driver->id_admin ] = [ 'ok' => [], 'nope' => [] ];
+				}
+					$id_payment = false;
+					$schedule_order = Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_order = ' . $order->id_order );
+					if( $schedule_order->id_payment_schedule ){
+						$payment_schedule = Cockpit_Payment_Schedule::o( $schedule_order->id_payment_schedule );
+						$total_payment = $schedule_order->amount;
+						if( $payment_schedule->id_payment ){
+							$id_payment = $payment_schedule->id_payment;
+						}
+						$out[ 'ok' ][ $driver->id_admin ][ 'ok' ][] = $order->id_order;
+					} else {
+						$variables = $settlement->orderExtractVariables( $order );
+						$pay_info = $settlement->driversProcess( [ $variables ], true, false, false );
+						$total_payment = $pay_info[0][ 'total_payment' ];
+						$out[ 'ok' ][ $driver->id_admin ][ 'nope' ][] = $order->id_order;
+					}
+
+					if( !$id_payment ){
+						$id_payment = $payments[ $driver->id_admin ];
+					}
+
+					$order_transaction = new Crunchbutton_Order_Transaction;
+					$order_transaction->id_order = $order->id_order;
+					$order_transaction->amt = $total_payment;
+					$order_transaction->date = date( 'Y-m-d H:i:s' );
+					$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER;
+					$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+					$order_transaction->id_admin = 3;
+					$order_transaction->save();
+
+					if( $id_payment ){
+						$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
+						$payment_order_transaction->id_payment = $id_payment;
+						$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
+						$payment_order_transaction->save();
+					}
+
+			} else {
+				$out[ 'nope' ][] = $order->id_order;
+			}
+		}
+		echo json_encode( $out );exit();
 	}
 
 	public function shifts(){
@@ -83,7 +235,7 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 // echo json_encode( $pay );exit();
 		$separator = ';';
 		$new_line = "\n";
-		if( false )
+		// if( false )
 		foreach( $pay as $driver ){
 			echo $driver[ 'id_admin' ];
 				echo $separator;
@@ -99,7 +251,7 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 			echo $new_line;
 		}
 
-		if( false )
+		// if( false )
 		foreach( $pay as $driver ){
 			foreach( $driver[ 'shifts' ][ 'worked' ] as $shift ){
 				echo $driver[ 'id_admin' ];
@@ -118,13 +270,8 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 		}
 
 		foreach( $pay as $driver ){
-			$settlement->scheduleDriverPaymentTimeout( $driver, Controller_Api_Script_CheckPaidOrdersNShifts::NOTES, 0, 0, $driver[ 'id_admin' ], Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT );
+			// $settlement->scheduleDriverPaymentTimeout( $driver, Controller_Api_Script_CheckPaidOrdersNShifts::NOTES, 0, 0, $driver[ 'id_admin' ], Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT );
 		}
-
-		// usort( $pay, function( $a, $b ) {
-			// return $a[ 'name'] > $b[ 'name' ];
-		// } );
-
 	}
 
 	public function orders() {
@@ -235,7 +382,7 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 
 			$out[ 'drivers' ][] = $driver;
 
-			$settlement->scheduleDriverPaymentTimeout( $driver, Controller_Api_Script_CheckPaidOrdersNShifts::NOTES, 0, 0, $driver[ 'id_admin' ], $pay_type );
+			// $settlement->scheduleDriverPaymentTimeout( $driver, Controller_Api_Script_CheckPaidOrdersNShifts::NOTES, 0, 0, $driver[ 'id_admin' ], $pay_type );
 
 		}
 
@@ -255,10 +402,9 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 				echo max( $driver[ 'total_reimburse' ], 0 );
 				echo $new_line;
 			}
-
+			if( false )
 			foreach( $out[ 'drivers' ] as $driver ){
 				foreach( $driver[ 'orders' ] as $order ){
-
 					echo $order[ 'id_order' ];
 						echo $separator;
 					echo $driver[ 'name' ];
