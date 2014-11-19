@@ -1,0 +1,1 @@
+ALTER TABLE deploy_server ADD UNIQUE(name);

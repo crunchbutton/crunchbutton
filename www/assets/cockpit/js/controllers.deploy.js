@@ -54,6 +54,10 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	};
 	
 	$scope.updateCommits();
+	
+	$scope.server = {
+		name: $routeParams.id
+	};
 
 	var update = function() {
 		DeployServices.server.get($routeParams.id, function(d) {

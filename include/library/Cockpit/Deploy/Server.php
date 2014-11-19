@@ -6,6 +6,10 @@ class Cockpit_Deploy_Server extends Cana_Table {
 		$ex['version'] = $this->version() ? $this->version()->exports() : null;
 		return $ex;
 	}
+	
+	public function byName($name) {
+		return Cockpit_Deploy_Server::q('select * from deploy_server where name="'.$name.'"')->get(0);
+	}
 
 	public function version() {
 		if (!isset($this->_version)) {
