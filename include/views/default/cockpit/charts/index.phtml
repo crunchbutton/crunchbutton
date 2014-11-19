@@ -17,13 +17,25 @@
 				 </ul>
 			</div>
 			<div class="box-content padded">
+			Graphs that don’t work and other problems:
+			<br/>
+			<strong>Main: </strong>Repeat Order Rate by month. (Repeat Order Rate by week is just slightly inaccurate)
+			<br/>
+			<strong>Detailed Analytics: </strong> All Graphs
+			<br/>
+			<strong>Old Graphs: </strong>Churn Rate, Orders per Restaurant by Community (not last 14 days, time period unknown)
+			<br/>
+			<br/>
+Also, anywhere it says "The number of users who _________ in the past 60 days (time period defined at bottom)” it’s not actually the past 60 days, it’s the period defined at the bottom, which is by default 45 days”
+
+
 				 <?php
-						foreach ($this->graphs as $category => $graphs ){ 
+						foreach ($this->graphs as $category => $graphs ){
 							?>
 				 <h5><?php echo $category;?></h5>
 				 <?php
 						$count = 1;
-						foreach ($graphs as $id => $graph ){ 
+						foreach ($graphs as $id => $graph ){
 
 							if( $count == 1 ){
 									echo '<div class="row-fluid">';
@@ -33,33 +45,33 @@
 								?>
 				 <div class="span4">
 						<div>
-							 <input type="checkbox" 
-									class="icheck cat-<?php echo strtolower( str_replace( ' ', '-', $category ) ); ?>" 
-									id="checkbox-<?php echo $divId;?>" 
-									data-divId="<?php echo $divId;?>" 
+							 <input type="checkbox"
+									class="icheck cat-<?php echo strtolower( str_replace( ' ', '-', $category ) ); ?>"
+									id="checkbox-<?php echo $divId;?>"
+									data-divId="<?php echo $divId;?>"
 									name="checkbox-<?php echo $divId;?>">
 							 <label for="checkbox-<?php echo $divId;?>"><?php echo $title; ?></label>
 						</div>
 				 </div>
 				 <?
-						if( $count % 3 == 0 ){ 
+						if( $count % 3 == 0 ){
 							echo '</div>';
-							$count = 0; 
+							$count = 0;
 						}
 						$count++;
-						} 
+						}
 						if( $count != 1){ echo '</div>'; }
 						?>
 				 <hr/>
-				 <? 
-						foreach ( $graphs as $id => $graph ){ 
+				 <?
+						foreach ( $graphs as $id => $graph ){
 							$chart = $graph[ 'url' ];
 							$activeDays = ( $graph[ 'activeDays' ] ) ? $graph[ 'activeDays' ] : 45;
 							$divId = $id;
 							echo '<div id="' . $divId . '" data-active-days="' . $activeDays . '" data-permalink="' . $chart . '" class="chart" style="display:none;width:49%;min-height:420px;;float:left;border-bottom:1px solid #CCC;"><i class="icon-spinner icon-spin"></i> Loading </div>';
 						} ?>
 						<div style="clear:both;"></div>
-				
+
 				 <?php
 						}
 					?>
@@ -78,13 +90,13 @@
 								<b>Community</b>
 							</div>
 							<div>
-								<?php 
+								<?php
 									$communities = Restaurant::getCommunities();
 								?>
 								<select name="filter-by-community" id="filter-by-community" class="span10">
 									<option value="">Ignore filter</option>
 									<option value="all">All</option>
-									<?php 
+									<?php
 										foreach( $communities as $community ){
 											echo '<option value="' . $community . '">' . $community . '</option>';
 										}
@@ -117,7 +129,7 @@
 	 </div>
 	 <div class="modal-body">
 			<h4>Communities</h4>
-			<?php 
+			<?php
 				 $communities = Crunchbutton_Restaurant::getCommunities();
 				 foreach( $communities as $community ){
 					?>
@@ -128,7 +140,7 @@
 						foreach( $restaurants as $restaurant ){
 							?>
 				 <li><?php echo  $restaurant->name; ?></li>
-				 <?php 
+				 <?php
 						}
 						?>
 			</ul>
@@ -137,7 +149,7 @@
 				 ?>
 			<?php if ( c::admin()->permission()->check( ['global','metrics-manage-cohorts'] ) ) { ?>
 				<h4>Cohorts</h4>
-				<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
+				<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a>
 			<?php } ?>
 	 </div>
 	 <div class="modal-footer">
@@ -149,7 +161,7 @@
 	var activeDaysChanged = false;
 
 	 $( document ).ready( function(){
-	 
+
 	 	$( '#active-user-days' ).change( function(){
 	 		activeDaysChanged = true;
 	 	} );
@@ -163,17 +175,17 @@
 				chart.show();
 				if( !chart.attr( 'opened' ) ){
 					loadChart( { 'divId' : divId  } );
-				} 
+				}
 			} else {
 				chart.attr( 'opened', false );
 				chart.hide();
 			}
 		});
-	 
+
 		$( '#button-open-all' ).click( function(){
-			$( '.icheck' ).iCheck( 'check' ); 
+			$( '.icheck' ).iCheck( 'check' );
 		} );
-	 
+
 		$( '#button-reload' ).click( function(){
 			$( '.chart' ).each( function(){
 				var chart = $( this );
@@ -188,11 +200,11 @@
 				}
 			} );
 		} );
-	 
+
 		/* Load the weeks */
 		var url = '/home/charts/weeks';
-		$.ajax( { dataType: 'json', url: url, } ).done( 
-			function( weeks ) { 
+		$.ajax( { dataType: 'json', url: url, } ).done(
+			function( weeks ) {
 				var total = weeks.length;
 				$( '#slider-label' ).html( 'Show from <b>' + weeks[ 0 ] + '</b> to <b>' + weeks[ total - 1 ] + '</b>' );
 				$( '#slider-master' ).attr( 'data-from', 1 );
@@ -214,12 +226,12 @@
 		$( '.cat-main' ).iCheck( 'check' );
 
 	 } );
-	 
+
 	 function loadChart( info ){
-	 
+
 		var divId = info[ 'divId' ];
 
-		var chart = $( '#' + divId );	
+		var chart = $( '#' + divId );
 
 		if( activeDaysChanged ){
 			var activeUserDays = $( '#active-user-days' ).val();
@@ -228,13 +240,13 @@
 		}
 
 		var params = { 'activeUserDays' : activeUserDays };
-	 
+
 		if( info[ 'filter' ] ){
 			params[ 'filter' ] = info[ 'filter' ];
 		} else {
 			params[ 'filter' ] = '';
 		}
-	 
+
 		if( info[ 'interval' ] ){
 			params[ 'interval' ] = info[ 'interval' ];
 		}
@@ -244,25 +256,25 @@
 		} else {
 			var permalink = chart.attr( 'data-permalink' );
 		}
-	 
+
 		chart.attr( 'data-permalink', permalink );
-	 
+
 		var slider = $( '#slider-' + divId );
-	 
+
 		if( slider.length > 0 ){
 			if( slider.attr( 'data-from' ) ){
-				params[ 'from' ] = slider.attr( 'data-from' );	
+				params[ 'from' ] = slider.attr( 'data-from' );
 			}
 			if( slider.attr( 'data-to' ) ){
-				params[ 'to' ] = slider.attr( 'data-to' );	
+				params[ 'to' ] = slider.attr( 'data-to' );
 			}
 		}
-	 
+
 		if( info[ 'force' ] ){
-	 
+
 			var weekFrom = $( '#slider-master' ).attr( 'data-from' );
 			var weekTo = $( '#slider-master' ).attr( 'data-to' );
-	 
+
 			if( weekFrom && weekFrom != '' && typeof weekFrom != 'undefined' ){
 				params[ 'from' ] = weekFrom;
 			}
@@ -270,7 +282,7 @@
 				params[ 'to' ] = weekTo;
 			}
 		}
-	 
+
 		if( $('#filter-by-community').val() != '' ){
 			params[ 'filter' ] = 'community';
 			params[ 'community' ] = $('#filter-by-community').val();
@@ -283,18 +295,18 @@
 			}
 			strParams += key + "=" + params[key];
 		}
-	 
+
 		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
-	 
+
 	 if( info[ 'force' ] ){
 			chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
 		}
 
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
-		
+
 		chart.attr( 'opened', true );
 	 }
-	 
+
 	 function loadSubChart( id ){
 		var select = $( id );
 		var slider = $( '#slider-' + divId );
