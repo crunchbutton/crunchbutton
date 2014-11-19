@@ -14,12 +14,12 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			if (get_class($support) != 'Crunchbutton_Support') {
 				$support = $support->get(0);
 			}
-			
+
 			if ($this->method() == 'get') {
 				echo $support->json();
 				exit;
 			}
-			
+
 			if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
 				$message = $support->addAdminMessage([
 					'body' => $this->request()['body'],
