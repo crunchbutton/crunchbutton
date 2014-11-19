@@ -52,7 +52,8 @@ NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffSe
 	
 	$scope.setPage = function(page) {
 		$scope.query.page = page;
-	}
+		App.scrollTop(0);
+	};
 });
 
 NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
