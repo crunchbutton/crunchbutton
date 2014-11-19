@@ -11,7 +11,7 @@
 				<th>Last Git Version</th>
 			</tr>
 			<tr ng-repeat="server in servers">
-				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
+				<td><a href="/deploy/server/{{server.name}}">{{server.name}}</a></td>
 				<td><span ng-if="server.version.timestamp"><span am-time-ago="server.version.timestamp*1000"></span></span></td>
 				<td><a href="https://github.com/{{server.repo}}/commit/{{server.version.version}}" target="_system">{{server.version.version}}</a></td>
 			</tr>

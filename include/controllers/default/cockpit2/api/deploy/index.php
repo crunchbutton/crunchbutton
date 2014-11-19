@@ -15,19 +15,28 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'server':
+				$server = Deploy_Server::o(c::getPagePiece(3));
+				if (!$server->id_deploy_server) {
+					$server = Deploy_Server::byName(c::getPagePiece(3));
+				}
+				if (!$server->id_deploy_server) {
+					header('HTTP/1.0 404 Not Found');
+					exit;
+				}
+				
 				switch (c::getPagePiece(4)) {
 					case 'commits':
-						$r = Deploy_Server::o(c::getPagePiece(3))->commits();
+						$r = $server->commits();
 						break;
 
 					case 'versions':
-						$r = Deploy_Server::o(c::getPagePiece(3))->versions();
+						$r = $server->versions();
 						if (!$r || !$r->count()) {
 							$r = [];
 						}
 						break;
 					default:
-						$r = Deploy_Server::o(c::getPagePiece(3));
+						$r = $server;
 						break;
 				}
 				break;
