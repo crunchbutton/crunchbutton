@@ -4,7 +4,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['server-deploy'])) {
+		if (!c::admin()->permission()->check(['global', 'server-deploy-admin', 'server-deploy'])) {
 			exit;
 		}
 
@@ -38,6 +38,11 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 
 			case 'version':
 				if ($this->method() == 'post') {
+					if (!c::admin()->permission()->check(['server-deploy-admin'])) {
+						header('HTTP/1.1 401 Unauthorized');
+						exit;
+					}
+					
 					$server = Server::o($this->request()['id_deploy_server']);
 					if (!$server->id_deploy_server) {
 						header('HTTP/1.0 404 Not Found');
