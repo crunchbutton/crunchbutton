@@ -44,28 +44,30 @@
 		</table>
 	</div>
 	
-	<h1 class="subltitle "><i class="fa fa-bolt"></i>&nbsp;&nbsp;<span>Deploy a Version</span></h1>
-	<div class="box-content2 box-content-table">
-		<table>
-			<tr>
-				<th>Date</th>
-				<td><input type="datetime" ng-model="deploy.date"></td>
-			</tr>
-			<tr>
-				<th>Git&nbsp;Version</th>
-				<td>
-					<select ng-model="deploy.version" class="deploy-commit-select">
-						<option value="master">master</option>
-						<option ng-repeat="commit in commits" value="{{commit.commit}}">{{commit.commit}} / {{commit.author}} / {{commit.date | date:'MM/dd @ HH:mm'}} / {{commit.note}}</option>
-					</select>
-					<span ng-if="commitLoad">&nbsp;&nbsp;<i class="fa fa-refresh fa-spin"></i></span>
-					<span ng-if="!commitLoad">&nbsp;&nbsp;<a href="" ng-click="updateCommits()">refresh</a></span>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"><button class="button orange" ng-click="saveDeploy()">Deploy</button></td>
-			</tr>
-		</table>
+	<div ng-if="account.user.permissions['SERVER-DEPLOY-ADMIN']">
+		<h1 class="subltitle "><i class="fa fa-bolt"></i>&nbsp;&nbsp;<span>Deploy a Version</span></h1>
+		<div class="box-content2 box-content-table">
+			<table>
+				<tr>
+					<th>Date</th>
+					<td><input type="datetime" ng-model="deploy.date"></td>
+				</tr>
+				<tr>
+					<th>Git&nbsp;Version</th>
+					<td>
+						<select ng-model="deploy.version" class="deploy-commit-select">
+							<option value="master">master</option>
+							<option ng-repeat="commit in commits" value="{{commit.commit}}">{{commit.commit}} / {{commit.author}} / {{commit.date | date:'MM/dd @ HH:mm'}} / {{commit.note}}</option>
+						</select>
+						<span ng-if="commitLoad">&nbsp;&nbsp;<i class="fa fa-refresh fa-spin"></i></span>
+						<span ng-if="!commitLoad">&nbsp;&nbsp;<a href="" ng-click="updateCommits()">refresh</a></span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><button class="button orange" ng-click="saveDeploy()">Deploy</button></td>
+				</tr>
+			</table>
+		</div>
 	</div>
 
 
