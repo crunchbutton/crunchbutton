@@ -111,7 +111,28 @@
 											<td>
 												<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin" id="form-id_admin-<?php echo $admin->id_admin; ?>">
 											</td>
-											<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
+											<td>
+												<?php echo $admin->name; ?>
+												<br/>
+												<?php echo $admin->phone(); ?>
+												<br/>
+												<?php
+													$payment_type = $admin->payment_type();
+													if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+														echo 'Hourly';
+													} else if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+														echo 'Commission';
+													} else {
+														echo '-';
+													}
+													echo '<br>';
+													if( $payment_type->using_pex == 1 ) {
+														echo 'Using pex card';
+													} else {
+														echo 'Not using pex card';
+													}
+												?>
+											</td>
 											<td style="background:#009c48;color:#FFF;text-align:center;"><strong><?php echo $preference->ranking; ?></strong> of <?php echo $highestRanking; ?></td>
 											<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
 											<td><?php echo $totalShifts; ?></td>
@@ -166,7 +187,28 @@
 											<td>
 												<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin" id="form-id_admin-<?php echo $admin->id_admin; ?>">
 											</td>
-											<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
+											<td>
+											<?php echo $admin->name; ?>
+												<br/>
+												<?php echo $admin->phone(); ?>
+												<br/>
+												<?php
+													$payment_type = $admin->payment_type();
+													if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+														echo 'Hourly';
+													} else if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+														echo 'Commission';
+													} else {
+														echo '-';
+													}
+													echo '<br>';
+													if( $payment_type->using_pex == 1 ) {
+														echo 'Using pex card';
+													} else {
+														echo 'Not using pex card';
+													}
+												?>
+											</td>
 											<td>-</td>
 											<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
 											<td><?php echo $totalShifts; ?></td>
@@ -208,7 +250,28 @@
 												<td>
 													<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin" id="form-id_admin-<?php echo $admin->id_admin; ?>">
 												</td>
-												<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
+												<td>
+												<?php echo $admin->name; ?>
+												<br/>
+												<?php echo $admin->phone(); ?>
+												<br/>
+												<?php
+													$payment_type = $admin->payment_type();
+													if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+														echo 'Hourly';
+													} else if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+														echo 'Commission';
+													} else {
+														echo '-';
+													}
+													echo '<br>';
+													if( $payment_type->using_pex == 1 ) {
+														echo 'Using pex card';
+													} else {
+														echo 'Not using pex card';
+													}
+												?>
+												</td>
 												<td>-</td>
 												<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
 												<td><?php echo $totalShifts; ?></td>

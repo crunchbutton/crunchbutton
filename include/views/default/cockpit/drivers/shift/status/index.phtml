@@ -61,6 +61,8 @@
 							<td>Shifts wants to work</td>
 							<td>Total assigned shifts</td>
 							<td>Send sms about schedule?</td>
+							<td>Type</td>
+							<td>Pex card</td>
 							<td>Notes</td>
 							<td></td>
 						</tr>
@@ -112,6 +114,27 @@
 								<td>
 									<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $driver->id_admin; ?>" name="form-receive-sms" id="form-receive-sms-<?php echo $driver->id_admin; ?>">
 									<i class="icon-thumbs-up" style="opacity:0;;color:green;margin:0 0 0 10px;" id="saved-<?php echo $driver->id_admin; ?>"></i>
+								</td>
+								<td>
+									<?php
+										$payment_type = $driver->payment_type();
+										if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+											echo 'Hourly';
+										} else if( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+											echo 'Commission';
+										} else {
+											echo '-';
+										}
+									?>
+								</td>
+								<td>
+									<?php
+										if( $payment_type->using_pex == 1 ) {
+											echo 'Yes';
+										} else {
+											echo 'No';
+										}
+									?>
 								</td>
 								<td>
 									<?php
