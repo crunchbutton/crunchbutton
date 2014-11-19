@@ -755,7 +755,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				break;
 			case 'Friday':
 				$sendWarning = true;
-				$now->modify( '+ 1 day' );
 				$dateStart = $now->format( 'Y-m-d' );
 				$now->modify( '+ 4 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
