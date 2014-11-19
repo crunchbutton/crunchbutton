@@ -38,7 +38,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment'], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io'], function( $httpProvider ) {
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 	var param = function(obj) {
 		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
@@ -75,7 +75,7 @@ var NGApp = angular.module('NGApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angu
 	$httpProvider.defaults.transformRequest = [function(data) {
 		return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
 	}];
-});;
+});
 
 NGApp.constant('angularMomentConfig', {
     timezone: 'America/Los_Angeles'

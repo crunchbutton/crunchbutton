@@ -32,9 +32,10 @@ NGApp.factory('TicketService', function($rootScope, $resource, $routeParams) {
 });
 
 
-NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService, AccountService) {
+NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService, AccountService, SocketService) {
 	var service = {
-		isTyping: false
+		isTyping: false,
+		socket: SocketService.socket
 	};
 	service.setViewTicket = function(id) {
 		service.scope.viewTicket = id;
@@ -54,33 +55,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	$rootScope.$on('userAuth', function(e, data) {
 
 		if (AccountService.user && AccountService.user.id_admin) {
-
-			service.socket = io('https://chat.cockpit.la');
-			
-			service.socket.on('connect', function (data) {
-				console.debug('Connected to socket.io');
-
-				service.socket.emit('auth', {
-					token: $.cookie('token'),
-					phpsessid: $.cookie('PHPSESSID'),
-					host: location.host
-				});
-				
-				service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin);
-				
-				if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
-					console.debug('Subscribing to all tickets');
-					service.socket.emit('event.subscribe', 'ticket.all');
-				} else {
-					console.debug('Unsubscribing to all tickets');
-					service.socket.emit('event.unsubscribe', 'ticket.all');
-				}
-			});
-			
-			
-			service.socket.on('event.response', function(payload) {
-				console.debug('event response: ',payload);
-			});
 		
 			var notified  = new Array();
 			service.socket.on('user.preference', function(payload) {
@@ -125,22 +99,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			//service.socket.close();
 			//service.socket = null;
 		}
-	});
-	
-	$rootScope.$on('user-preference', function(e, data) {
-		if (!service.socket) {
-			return;
-		}
-		console.log('Broadcasting preference change', data);
-
-		service.socket.emit('event.broadcast', {
-			to: {room: 'user.preference.' + AccountService.user.id_admin},
-			event: 'user.preference',
-			payload: {
-				key: data.key,
-				value: data.value
-			}
-		});
 	});
 	
 	$rootScope.$watch('account.user.prefs["notification-desktop-support-all"]', function(e, value) {
