@@ -167,7 +167,7 @@ class Crunchbutton_App extends Cana_App {
 								} else {
 									$params['env'] = 'local';
 									$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
-									$host_callback = $_SERVER['HTTP_HOST'];
+									$host_callback = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : 'dev.crunchr.co';
 								}
 
 								break;
@@ -209,7 +209,7 @@ class Crunchbutton_App extends Cana_App {
 				}
 				break;
 			default:
-				$host_callback = $_SERVER['HTTP_HOST'];
+				$host_callback = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : 'dev.crunchr.co';
 				break;
 		}
 
