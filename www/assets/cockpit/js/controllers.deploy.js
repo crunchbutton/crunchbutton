@@ -44,6 +44,16 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		date: DateTimeService.local(new Date).format('YYYY-MM-DD HH:mm:ss Z'),
 		version: 'master'
 	};
+	
+	$scope.updateCommits = function() {
+		$scope.commitLoad = true;
+		DeployServices.server.commits($routeParams.id, function(d) {
+			$scope.commits = d;
+			$scope.commitLoad = false;
+		});
+	};
+	
+	$scope.updateCommits();
 
 	var update = function() {
 		DeployServices.server.get($routeParams.id, function(d) {
@@ -51,10 +61,7 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		});
 		DeployServices.server.versions($routeParams.id, function(d) {
 			$scope.versions = d;
-		});
-		DeployServices.git.list({}, function(d) {
-			$scope.gitversions = d;
-		});
+		});	
 		
 		$scope.saveDeploy = function() {
 			var version = {

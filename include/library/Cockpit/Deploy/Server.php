@@ -31,6 +31,64 @@ class Cockpit_Deploy_Server extends Cana_Table {
 		return $this->_versions;
 	}
 
+	public function commits() {
+		if (!isset($this->_commits)) {
+			$this->_commits = [];
+			$repo = explode('/', $this->repo);
+			$logs = Github::commits($repo[0], $repo[1]);
+			if ($logs) {
+				foreach ($logs as $log) {
+					$this->_commits[] = [
+						'commit' => $log['sha'],
+						'author' => $log['commit']['author']['name'],
+						'date' => $log['commit']['author']['date'],
+						'note' => $log['commit']['message']
+					];
+				}
+			}
+		}
+		return $this->_commits;
+	}
+	
+	public function createTag($version) {
+		$name = date('ymd');
+		$inc = '00';
+		$tags = $this->tags();
+
+		while ($created == false) {
+			$inc++;
+			foreach ($tags as $tag) {
+				$tagName = str_replace('refs/tags/', '', $tag['ref']);
+				if ($tagName == $name.$inc) {
+					$created = false;
+					break;
+				}
+			}
+			$created = true;
+			$inc = sprintf('%02d', $inc);
+			if ($inc == 99) {
+				return false;
+			}
+		}
+		
+		$tag = $name.'.'.$inc;
+
+		$repo = explode('/', $this->repo);
+		$log = Github::createTag($repo[0], $repo[1], $tag, $version, 'Created from Cockpit Deployment Tool');
+		
+		$this->_commits = null;
+
+		return $tag;
+	}
+	
+	public function tags() {
+		if (!isset($this->_tags) || $this->_tags === null) {
+			$repo = explode('/', $this->repo);
+			$this->_tags = Github::tags($repo[0], $repo[1]);
+		}
+		return $this->_tags;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

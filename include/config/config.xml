@@ -57,6 +57,7 @@
 			<id>_KEY_</id>
 			<secret>_KEY_</secret>
 		</beta>
+		<token>_KEY_</token>
 	</github>
 	<facebook>
 		<local>

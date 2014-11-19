@@ -23,7 +23,7 @@
 			</tr>
 			<tr>
 				<th>Git Repo</th>
-				<td><a href="{{server.repo}}" target="_system">{{server.repo}}</a></td>
+				<td><a href="https://github.com/{{server.repo}}" target="_system">{{server.repo}}</a></td>
 			</tr>
 			<tr>
 				<th>Requires Travis Validation</th>
@@ -48,16 +48,18 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<th>Date (your TZ)</th>
+				<th>Date</th>
 				<td><input type="datetime" ng-model="deploy.date"></td>
 			</tr>
 			<tr>
-				<th>Git Version</th>
+				<th>Git&nbsp;Version</th>
 				<td>
-					<select ng-model="deploy.version">
+					<select ng-model="deploy.version" class="deploy-commit-select">
 						<option value="master">master</option>
-						<option ng-repeat="gitversion in gitversions" value="{{gitversion.commit}}">{{gitversion.commit}} / {{gitversion.author}} / {{gitversion.date*1000 | date:'MM/dd @ HH:mm'}} / {{gitversion.note}}</option>
+						<option ng-repeat="commit in commits" value="{{commit.commit}}">{{commit.commit}} / {{commit.author}} / {{commit.date | date:'MM/dd @ HH:mm'}} / {{commit.note}}</option>
 					</select>
+					<span ng-if="commitLoad">&nbsp;&nbsp;<i class="fa fa-refresh fa-spin"></i></span>
+					<span ng-if="!commitLoad">&nbsp;&nbsp;<a href="" ng-click="updateCommits()">refresh</a></span>
 				</td>
 			</tr>
 			<tr>
@@ -84,13 +86,13 @@
 				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
 				<td>
 					<span ng-if="version.version">
-						<a href="{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
+						<a href="https://github.com/{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
 					</span>
 					<span ng-if="version.version && version.tag">
 						&nbsp;/&nbsp;
 					</span>				
 					<span ng-if="version.tag">
-						<a href="{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
+						<a href="https://github.com/{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
 					</span>
 				</td>
 				<td class="deploy-status-{{version.status}}">{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>

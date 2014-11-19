@@ -7,10 +7,12 @@ use Github\Api\CurrentUser\Emails;
 use Github\Api\CurrentUser\Followers;
 use Github\Api\CurrentUser\Notifications;
 use Github\Api\CurrentUser\Watchers;
+use Github\Api\CurrentUser\Starring;
 
 /**
  * @link   http://developer.github.com/v3/users/
  * @author Joseph Bielawski <stloyd@gmail.com>
+ * @revised Felipe Valtl de Mello <eu@felipe.im>
  */
 class CurrentUser extends AbstractApi
 {
@@ -77,13 +79,31 @@ class CurrentUser extends AbstractApi
     }
 
     /**
-     * @link http://developer.github.com/v3/repos/#list-your-repositories
+     * @link http://developer.github.com/v3/orgs/#list-user-organizations
      *
      * @return array
      */
-    public function repositories()
+    public function organizations()
     {
-        return $this->get('user/repos');
+        return $this->get('user/orgs');
+    }
+
+    /**
+     * @link http://developer.github.com/v3/repos/#list-your-repositories
+     *
+     * @param  string $type      role in the repository
+     * @param  string $sort      sort by
+     * @param  string $direction direction of sort, ask or desc
+
+     * @return array
+     */
+    public function repositories($type = 'owner', $sort = 'full_name', $direction = 'asc')
+    {
+        return $this->get('user/repos', array(
+            $type,
+            $sort,
+            $direction
+        ));
     }
 
     /**
@@ -93,10 +113,31 @@ class CurrentUser extends AbstractApi
     {
         return new Watchers($this->client);
     }
-
+    
+    /**
+     * @deprecated Use watchers() instead
+     */
     public function watched($page = 1)
     {
         return $this->get('user/watched', array(
+            'page' => $page
+        ));
+    }
+    
+    /**
+     * @return Starring
+     */
+    public function starring()
+    {
+         return new Starring($this->client);
+    }
+
+    /**
+     * @deprecated Use starring() instead
+     */
+    public function starred($page = 1)
+    {
+        return $this->get('user/starred', array(
             'page' => $page
         ));
     }

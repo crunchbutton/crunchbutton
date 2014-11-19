@@ -1,30 +1,6 @@
 <?php
 
 class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
-	
-	private function _gitLog() {
-		$logs = [];
-		exec('cd /home/server && git log origin/master -n 20', $o);
-		foreach ($o as $k => $line) {
-			if (substr($line, 0, 6) == 'commit') {
-				$log = [];
-				$notes = '';
-				$log['commit'] = preg_replace('/commit /', '', $line);
-				$kk = $k;
-				if (preg_match('/Merge:/', $o[$kk+1])) {
-					$notes = $o[$kk+1];
-					$kk++;
-				}
-				
-				$log['author'] = preg_replace('/^Author: (.*) <.*$/i', '\\1', $o[$kk+1]);
-				$log['date'] = strtotime(trim(preg_replace('/Date:/', '', $o[$kk+2])));
-				$log['note'] =  ($notes ? $notes.'. ' : '').trim($o[$kk+4]);
-
-				$logs[] = $log;
-			}
-		}
-		return $logs;
-	}
 
 	public function init() {
 
@@ -33,10 +9,6 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 		}
 
 		switch (c::getPagePiece(2)) {
-			case 'gitlog':
-				echo json_encode($this->_gitLog());
-				exit;
-				break;
 
 			case 'servers':
 				$r = Deploy_Server::q('select * from deploy_server where active="1" order by name');
@@ -44,6 +16,10 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 
 			case 'server':
 				switch (c::getPagePiece(4)) {
+					case 'commits':
+						$r = Deploy_Server::o(c::getPagePiece(3))->commits();
+						break;
+
 					case 'versions':
 						$r = Deploy_Server::o(c::getPagePiece(3))->versions();
 						if (!$r || !$r->count()) {
@@ -62,6 +38,12 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 
 			case 'version':
 				if ($this->method() == 'post') {
+					$server = Server::o($this->request()['id_deploy_server']);
+					if (!$server->id_deploy_server) {
+						header('HTTP/1.0 404 Not Found');
+						exit;
+					}
+
 					$date = $this->request()['date'];
 					$version = $this->request()['version'];
 
@@ -71,13 +53,17 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 					}
 
 					if ($version == 'master') {
-						$log = $this->_gitLog();
-						$version = $log[0]['commit'];
+						$version = $server->commits()[0]['commit'];
 					}
+					
+					if ($server->tag) {
+						$server->createTag($version);
+					}
+
 					$r = new Deploy_Version([
 						'date' => $date,
 						'version' => $version,
-						'id_deploy_server' => $this->request()['id_deploy_server'],
+						'id_deploy_server' => $server->id_deploy_server,
 						'status' => 'new',
 						'id_admin' => c::admin()->id_admin
 					]);

@@ -2,8 +2,6 @@
 
 namespace Github\HttpClient;
 
-use Buzz\Client\ClientInterface;
-
 use Github\HttpClient\Cache\CacheInterface;
 use Github\HttpClient\Cache\FilesystemCache;
 
@@ -20,32 +18,49 @@ class CachedHttpClient extends HttpClient
      * @var CacheInterface
      */
     protected $cache;
+    
+    /**
+     * contains the lastResponse fetched from cache
+     * 
+     * @var Guzzle\Http\Message\Response 
+     */
+    private $lastCachedResponse;
 
     /**
-     * @param array                $options
-     * @param null|ClientInterface $client
-     * @param null|CacheInterface  $cache
+     * @return CacheInterface
      */
-    public function __construct(array $options = array(), ClientInterface $client = null, CacheInterface $cache = null)
+    public function getCache()
     {
-        parent::__construct($options, $client);
+        if (null === $this->cache) {
+            $this->cache = new FilesystemCache($this->options['cache_dir'] ?: sys_get_temp_dir().DIRECTORY_SEPARATOR.'php-github-api-cache');
+        }
 
-        $this->cache = $cache ?: new FilesystemCache($this->options['cache_dir'] ?: sys_get_temp_dir().DIRECTORY_SEPARATOR.'php-github-api-cache');
+        return $this->cache;
+    }
+
+    /**
+     * @param $cache CacheInterface
+     */
+    public function setCache(CacheInterface $cache)
+    {
+        $this->cache = $cache;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function request($path, array $parameters = array(), $httpMethod = 'GET', array $headers = array())
+    public function request($path, $body = null, $httpMethod = 'GET', array $headers = array(), array $options = array())
     {
-        $response = parent::request($path, $parameters, $httpMethod, $headers);
-
-        $key = trim($this->options['base_url'].$path, '/');
-        if ($response->isNotModified()) {
-            return $this->cache->get($key);
+        $response = parent::request($path, $body, $httpMethod, $headers, $options);
+        
+        if (304 == $response->getStatusCode()) {
+            $cacheResponse = $this->getCache()->get($path);
+            $this->lastCachedResponse = $cacheResponse;
+            
+            return $cacheResponse;
         }
 
-        $this->cache->set($key, $response);
+        $this->getCache()->set($path, $response);
 
         return $response;
     }
@@ -55,11 +70,40 @@ class CachedHttpClient extends HttpClient
      *
      * {@inheritdoc}
      */
-    protected function createRequest($httpMethod, $url)
+    protected function createRequest($httpMethod, $path, $body = null, array $headers = array(), array $options = array())
     {
-        $request = parent::createRequest($httpMethod, $url);
-        $request->addHeader(sprintf('If-Modified-Since: %s', date('r', $this->cache->getModifiedSince($url))));
+        $request = parent::createRequest($httpMethod, $path, $body, $headers, $options);
+
+        if ($modifiedAt = $this->getCache()->getModifiedSince($path)) {
+            $modifiedAt = new \DateTime('@'.$modifiedAt);
+            $modifiedAt->setTimezone(new \DateTimeZone('GMT'));
+
+            $request->addHeader(
+                'If-Modified-Since',
+                sprintf('%s GMT', $modifiedAt->format('l, d-M-y H:i:s'))
+            );
+        }
+        if ($etag = $this->getCache()->getETag($path)) {
+            $request->addHeader(
+                'If-None-Match',
+                $etag
+            );
+        }
 
         return $request;
+    }
+    
+     /**
+     * @return Guzzle\Http\Message\Response
+     */
+    public function getLastResponse($force = false)
+    {
+        
+        $lastResponse =  parent::getLastResponse();
+        if (304 != $lastResponse->getStatusCode()) {
+            $force = true;
+        }
+        
+        return ($force) ? $lastResponse : $this->lastCachedResponse;
     }
 }

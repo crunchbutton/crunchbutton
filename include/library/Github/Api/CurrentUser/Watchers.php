@@ -5,61 +5,62 @@ namespace Github\Api\CurrentUser;
 use Github\Api\AbstractApi;
 
 /**
- * @link   http://developer.github.com/v3/repos/watching/
+ * @link   https://developer.github.com/v3/activity/watching/
  * @author Joseph Bielawski <stloyd@gmail.com>
+ * @revised Felipe Valtl de Mello <eu@felipe.im>
  */
 class Watchers extends AbstractApi
 {
     /**
      * List repositories watched by the authenticated user
-     * @link http://developer.github.com/v3/repos/watching/
+     * @link https://developer.github.com/v3/activity/watching/
      *
-     * @param  integer  $page
+     * @param  integer $page
      * @return array
      */
     public function all($page = 1)
     {
-        return $this->get('user/watched', array(
+        return $this->get('user/subscriptions', array(
             'page' => $page
         ));
     }
 
     /**
      * Check that the authenticated user watches a repository
-     * @link http://developer.github.com/v3/repos/watching/
+     * @link https://developer.github.com/v3/activity/watching/
      *
-     * @param  string  $username         the user who owns the repo
-     * @param  string  $repository       the name of the repo
+     * @param  string $username   the user who owns the repo
+     * @param  string $repository the name of the repo
      * @return array
      */
     public function check($username, $repository)
     {
-        return $this->get('user/watched/'.urlencode($username).'/'.urlencode($repository));
+        return $this->get('user/subscriptions/'.rawurlencode($username).'/'.rawurlencode($repository));
     }
 
     /**
      * Make the authenticated user watch a repository
-     * @link http://developer.github.com/v3/repos/watching/
+     * @link https://developer.github.com/v3/activity/watching/
      *
-     * @param  string  $username         the user who owns the repo
-     * @param  string  $repository       the name of the repo
+     * @param  string $username   the user who owns the repo
+     * @param  string $repository the name of the repo
      * @return array
      */
     public function watch($username, $repository)
     {
-        return $this->put('user/watched/'.urlencode($username).'/'.urlencode($repository));
+        return $this->put('user/subscriptions/'.rawurlencode($username).'/'.rawurlencode($repository));
     }
 
     /**
      * Make the authenticated user unwatch a repository
-     * @link http://developer.github.com/v3/repos/watching/
+     * @link https://developer.github.com/v3/activity/watching/
      *
-     * @param  string  $username         the user who owns the repo
-     * @param  string  $repository       the name of the repo
+     * @param  string $username   the user who owns the repo
+     * @param  string $repository the name of the repo
      * @return array
      */
     public function unwatch($username, $repository)
     {
-        return $this->delete('user/watched/'.urlencode($username).'/'.urlencode($repository));
+        return $this->delete('user/subscriptions/'.rawurlencode($username).'/'.rawurlencode($repository));
     }
 }

@@ -260,9 +260,6 @@ class Crunchbutton_App extends Cana_App {
 				$config->facebook->secret = $config->facebook->{$env}->secret;
 				break;
 		}
-		
-		$config->github->id = $config->github->{$params['env']}->id;
-		$config->github->secret = $config->github->{$params['env']}->secret;
 
 		$this->config($config);
 
@@ -629,6 +626,14 @@ class Crunchbutton_App extends Cana_App {
 			$this->_mailgun = new \Mailgun\Mailgun(c::config()->mailgun->key);
 		}
 		return $this->_mailgun; 
+	}
+	
+	public function github() {
+		if (!isset($this->_github)) {
+			$this->_github = new \Github\Client();
+			$this->_github->authenticate(c::config()->github->token, '', Github\Client::AUTH_HTTP_TOKEN);
+		}
+		return $this->_github;
 	}
 	
 } 

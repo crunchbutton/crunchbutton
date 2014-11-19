@@ -13,7 +13,7 @@
 			<tr ng-repeat="server in servers">
 				<td><a href="/deploy/server/{{server.id_deploy_server}}">{{server.name}}</a></td>
 				<td><span ng-if="server.version.timestamp"><span am-time-ago="server.version.timestamp*1000"></span></span></td>
-				<td><a href="{{server.repo}}/commit/{{server.version.version}}" target="_system">{{server.version.version}}</a></td>
+				<td><a href="https://github.com/{{server.repo}}/commit/{{server.version.version}}" target="_system">{{server.version.version}}</a></td>
 			</tr>
 		</table>
 	</div>
@@ -36,13 +36,13 @@
 				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
 				<td>
 					<span ng-if="version.version">
-						<a href="{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
+						<a href="https://github.com/{{version.server.repo}}/commit/{{version.version}}" target="_system">{{version.version}}</a>
 					</span>
 					<span ng-if="version.version && version.tag">
 						&nbsp;/&nbsp;
 					</span>				
 					<span ng-if="version.tag">
-						<a href="{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
+						<a href="https://github.com/{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
 					</span>
 				</td>
 				<td class="deploy-status-{{version.status}}">{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
