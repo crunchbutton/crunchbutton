@@ -118,6 +118,49 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<?php $date->setTimeZone( new DateTimeZone( c::config()->timezone ) ); ?>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> <strong>(<?php echo $date->format( 'T' ) ?>)</strong>
 					<br/>
+					<br/>
+					<br/>
+
+			<?php
+				$_log = '';
+				$timeToDelivery = '';
+				$logs = $order->actions();
+				foreach( $logs as $log ){
+					$_date = $log->date();
+					switch ( $log->type ) {
+						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+							$color = '#fb3927';
+							break;
+						case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						case Crunchbutton_Order_Action::DELIVERY_PICKEDUP:
+						case Crunchbutton_Order_Action::DELIVERY_DELIVERED:
+							$color = '#009c48';
+							break;
+						default:
+							$color = '#000';
+							break;
+					}
+					if( $log->type == Crunchbutton_Order_Action::DELIVERY_DELIVERED ){
+					 	$timeToDelivery = $date->diff( $_date );
+					 	$timeToDelivery = ( $timeToDelivery->days * 24 * 60 ) + ( $timeToDelivery->h * 60 ) + ( $timeToDelivery->i );
+						$timeToDelivery .= ' minutes';
+					}
+						$_log .= '<span style="color:' . $color . '">' . $log->type . ' by ' . $log->name . '</span> : ';
+
+						$_log .= '<span class="restaurant-tz">';
+						$_log .= $_date->format( 'g:i:s A T' );
+						$_log .= '</span><br/>';
+				}
+
+				if( $timeToDelivery != '' ){
+					echo '<strong style="color:#666;font-size:12px;">Delivered in ' . $timeToDelivery . '</strong><br/>';
+				}
+				if( $_log ){
+					echo $_log;
+				} else {
+					echo '<i style="color:#CCC;font-size:11px;">-</i>';
+				}
+				?>
 
 				</td>
 				<td nowrap="nowrap">
