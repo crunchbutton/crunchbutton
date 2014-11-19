@@ -27,7 +27,7 @@
 					</tr>
 				</table>
 			</a>
-			
+
 			<a href="/tickets" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'tickets' || navigation.page == 'ticket')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -36,8 +36,8 @@
 					</tr>
 				</table>
 			</a>
-			
-			
+
+
 			<a href="/drivers/orders" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -46,7 +46,7 @@
 					</tr>
 				</table>
 			</a>
-			
+
 			<a href="/orders" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'orders' || navigation.page == 'order')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -73,7 +73,7 @@
 					</tr>
 				</table>
 			</a>
-			
+
 			<a href="/drivers/docs" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -137,7 +137,7 @@
 					</tr>
 				</table>
 			</a>
-			
+
 			<a href="/deploy" class="menu-link" ng-if="account.user.permissions.GLOBAL || account.user.permissions['SERVER-DEPLOY'] || account.user.permissions['SERVER-DEPLOY-ADMIN'] && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'deploy' || navigation.page == 'deploy-server' || navigation.page == 'deploy-version')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -151,7 +151,7 @@
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-support"></i></td>
-						<td class="side-menu-label">Help</a></td>
+						<td class="side-menu-label">FAQ</a></td>
 					</tr>
 				</table>
 			</a>
@@ -301,7 +301,7 @@
 		<p ng-bind-html-unsafe="message" class="small-message"></p>
 		<button ng-click="complete()" class="button green">OK</button>
 	</div>
-	
+
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
 		<h1 class="dialog-call-number">{{number | formatPhone}}</h1>
@@ -313,12 +313,12 @@
 		<a href="tel:{{number}}" class="number-action" target="_system">
 			<button class="button green">Call</button>
 		</a>
-		
+
 		<? /*
 		<a href class="number-action" target="_system" ng-if="account.user.permissions.GLOBAL">
 			<button class="button green">Conference Call (your phone)</button>
 		</a>
-		
+
 		<a href class="number-action" target="_system" ng-if="account.user.permissions.GLOBAL">
 			<button class="button green">Cockpit Call (web browser)</button>
 		</a>
