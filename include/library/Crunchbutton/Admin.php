@@ -314,18 +314,16 @@ class Crunchbutton_Admin extends Cana_Table {
 		return ( $result->_items[0]->Total > 0 );
 	}
 
-	public function communitiesHeDeliveriesFor(){
-
-		$deliveryFor = [];
-		if( $this->id_admin ){
-			$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
-			foreach( $communities as $community ){
-				if( $community->driverDeliveryHere( $this->id_admin ) ){
-					$deliveryFor[] = $community;
-				}
-			}
+	public function communitiesHeDeliveriesFor() {
+		if (!isset($this->_communitiesHeDeliveriesFor)) {
+			$this->_communitiesHeDeliveriesFor = Community::q('
+				SELECT c.* FROM community c
+				LEFT JOIN `group` g ON g.name=c.driver_group
+				LEFT JOIN admin_group ag ON ag.id_group=g.id_group
+				WHERE ag.id_admin="'.$this->id_admin.'"
+			');
 		}
-		return $deliveryFor;
+		return $this->_communitiesHeDeliveriesFor;
 	}
 
 	public function isWorking(){

@@ -145,12 +145,14 @@ class Crunchbutton_Community extends Cana_Table {
 
 
 	function groupOfDrivers(){
-		$group = Crunchbutton_Group::byName( $this->driverGroup() );
-		if( $group->id_group ){
-			return $group;
+		if (!isset($this->_groupOfDrivers)) {
+			$group = Crunchbutton_Group::byName($this->driverGroup());
+			if (!$group->id_group) {
+				$group = Crunchbutton_Group::createDriverGroup($this->driverGroup(), $this->name);
+			}
+			$this->_groupOfDrivers = $group;
 		}
-		$group = Crunchbutton_Group::createDriverGroup( $this->driverGroup(), $this->name );
-		return $group;
+		return $this->_groupOfDrivers;
 	}
 
 	public function communityByDriverGroup( $group ){
@@ -285,6 +287,7 @@ class Crunchbutton_Community extends Cana_Table {
 
 	public function driverDeliveryHere( $id_admin ){
 		$group = $this->groupOfDrivers();
+
 		if( $group->id_group ){
 			$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = {$group->id_group} AND ag.id_admin = {$id_admin} LIMIT 1" );
 			if( $admin_group->id_admin_group ){
