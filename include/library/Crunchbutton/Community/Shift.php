@@ -848,10 +848,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								// convert to string
 								$minutesToStart = "$minutesToStart";
 
-								// Check if the admin has a shift starting after this one
+								$date_shift_ends = new DateTime( $shift->dateEnd()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $community->timezone ) );
+								$date_shift_ends->modify( '+5 minutes' );
+
 								$nextShift = Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 																																INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND id_admin = ' . $admin->id_admin . '
-																																WHERE cs.id_community = ' . $shift->id_community . ' AND cs.date_start >= "' . $shift->dateEnd()->format( 'Y-m-d H:i:s' ) . '" ORDER BY cs.date_start ASC LIMIT 1' );
+																																WHERE cs.id_community = ' . $shift->id_community . ' AND cs.date_start >= "' . $shift->dateEnd()->format( 'Y-m-d H:i:s' ) . '" AND cs.date_start <= "' . $date_shift_ends->format( 'Y-m-d H:i:s' ) . '" ORDER BY cs.date_start ASC LIMIT 1' );
+
 
 								if( $nextShift->id_community_shift ){
 									$nextShift = $nextShift->get( 0 );
