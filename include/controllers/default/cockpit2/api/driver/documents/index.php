@@ -138,6 +138,8 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						echo $this->_error();
 					}
 
+					$payment_type = $admin->payment_type();
+
 					$user = c::user();
 					$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) );
 					if( !$hasPermission ){
@@ -148,8 +150,19 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$docs = Cockpit_Driver_Document::all();
 					foreach( $docs as $doc ){
 						if( $doc->required ){
+
+							if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+								$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+								continue;
+							}
+
+							if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+								$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+								continue;
+							}
+
 							$docStatus = Cockpit_Driver_Document_Status::document( $admin->id_admin, $doc->id_driver_document );
-							if( $docStatus->id_driver_document_status ){
+							if( !$docStatus->id_driver_document_status ){
 								$needToSendDocs = true;
 							}
 						}
@@ -177,6 +190,8 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				// get driver's vehicle
 				$vehicle = $admin->vehicle();
 
+				$payment_type = $admin->payment_type();
+
 				// shows the regular list
 				$list = [];
 				$docs = Cockpit_Driver_Document::all();
@@ -184,6 +199,17 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					if( !$doc->showDocument( $vehicle ) ){
 						continue;
 					}
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+						$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+						$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
 					$out = $doc->exports();;
 					if( $id_admin && $hasPermission ){
 						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );
