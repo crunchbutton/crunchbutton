@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<meta http-equiv="refresh" content="5">
+		<title>Crunchbutton</title>
+		
+		<style>
+			body, html {
+				margin: 0;
+				padding: 0;
+				background: #2a2a2a;
+			}
+			pre {
+				color: #fff;
+				width: 450px;
+				margin: 0 auto;
+				margin-top: 80px;
+			}
+		</style>
+	</head>
+	<body>
+<pre>
+while (true) {
+   if (server.status == 'down') {
+      if (server.changed) {
+         print 'Our servers are currently on vacation...';
+      }
+
+      print 'Having a beer...';
+      drink('beer');
+   }
+   sleep(5);
+}
+</pre>
+	</body>
+</html>
