@@ -45,7 +45,11 @@
 						<a href="https://github.com/{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
 					</span>
 				</td>
-				<td class="deploy-status-{{version.status}}">{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
+				<td class="deploy-status-{{version.status}}">
+					{{version.status}}
+					<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
+					<span ng-if="version.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(version.id_deploy_version)"><i class="fa fa-times-circle"></i></a></span>
+				</td>
 				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>
 		</table>

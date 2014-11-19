@@ -31,6 +31,10 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, M
 	};
 	
 	update();
+	
+	$scope.cancel = function(id) {
+		DeployServices.version.cancel(id, update);
+	};
 
 	$scope.updater = $interval(update, 5000);
 	$scope.$on('$destroy', function() {
@@ -82,6 +86,10 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	
 	update();
 	
+	$scope.cancel = function(id) {
+		DeployServices.version.cancel(id, update);
+	};
+	
 	$scope.updater = $interval(update, 5000);
 	$scope.$on('$destroy', function() {
 		$interval.cancel($scope.updater);
@@ -96,6 +104,10 @@ NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServ
 	};
 	
 	update();
+	
+	$scope.cancel = function(id) {
+		DeployServices.version.cancel(id, update);
+	};
 	
 	$scope.updater = $interval(update, 5000);
 	$scope.$on('$destroy', function() {
