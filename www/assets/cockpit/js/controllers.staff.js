@@ -20,7 +20,7 @@ NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffSe
 		search: query.search,
 		type: query.type || 'all',
 		status: query.status || 'active',
-		limit: query.limit || 100,
+		limit: query.limit || 25,
 		page: query.page || 1
 	};
 	
