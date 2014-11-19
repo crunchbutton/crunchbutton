@@ -5,6 +5,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'server-deploy-admin', 'server-deploy'])) {
+			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}
 
