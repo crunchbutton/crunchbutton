@@ -23,12 +23,19 @@ NGApp.controller('OrdersCtrl', function ($scope, $routeParams, $location, OrderS
 		restaurant: query.restaurant,
 		community: query.community,
 		limit: query.limit || 25,
-		date: query.date
+		date: query.date,
+		page: query.page || 1
 	};
+	
+	$scope.query.page = parseInt($scope.query.page);
 
 	var update = function() {
+		$scope.loading = true;
 		OrderService.list($scope.query, function(d) {
-			$scope.orders = d;
+			$scope.orders = d.results;
+			$scope.count = d.count;
+			$scope.pages = d.pages;
+			$scope.loading = false;
 		});
 	};
 	
@@ -39,6 +46,12 @@ NGApp.controller('OrdersCtrl', function ($scope, $routeParams, $location, OrderS
 	
 	$scope.$watch('query.search', watch);
 	$scope.$watch('query.limit', watch);
+	$scope.$watch('query.page', watch);
+	
+	$scope.setPage = function(page) {
+		$scope.query.page = page;
+		App.scrollTop(0);
+	};
 });
 
 NGApp.controller('OrderCtrl', function ($scope, $routeParams, DeployServices, $interval, MainNavigationService, DateTimeService) {
