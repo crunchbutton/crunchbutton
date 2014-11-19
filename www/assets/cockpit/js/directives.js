@@ -21,6 +21,9 @@ NGApp.directive('pageKey', function() {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			$(document.body).bind('keydown keypress', function (e) {
+				if (document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'SELECT' || document.activeElement.tagName == 'TEXTAREA') {
+					return;
+				}
 				// next
 				if (e.which == 39 && scope.query.page < scope.pages) {
 					scope.$apply(function() {
