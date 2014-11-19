@@ -90,7 +90,7 @@
 						<td>${{result.calcs.tip | formatPrice}}</td>
 					</tr>
 					<tr ng-if="result.calcs.markup && pay_type_payment" positive-or-negative-color="{{result.calcs.markup}}">
-						<td>CB Cash Fee</td>
+						<td>Minus Crunchbutton Fees You Collected in Cash</td>
 						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
 					<tr ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement" positive-or-negative-color="{{result._total_reimburse_}}">
@@ -352,7 +352,7 @@
 				<tr class="transparent" ng-if="pay_type_payment && result.calcs.markup">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
-					<td><strong>CB Cash Fee</strong></td>
+					<td><strong>Minus Crunchbutton Fees You Collected in Cash</strong></td>
 					<td><strong>${{result.calcs.markup | formatPrice}}</strong></td>
 					<td></td>
 					<td></td>
