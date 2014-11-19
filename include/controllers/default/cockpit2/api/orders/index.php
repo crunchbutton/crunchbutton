@@ -13,6 +13,14 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
+		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		
+		if ($page == 1) {
+			$offset = '0';
+		} else {
+			$offset = ($page-1) * $limit;
+		}
+
 		
 		/*
 		$q = '
@@ -32,11 +40,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		
 		$q = '
 			SELECT
-				`order`.*,
-				restaurant.name as _restaurant_name,
-				restaurant.community as _community_name,
-				admin.name as _driver_name,
-				admin.id_admin as _driver_id
+				-WILD-
 			FROM `order`
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
 			LEFT JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
@@ -67,28 +71,41 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		
 		$q .= '
 			GROUP BY `order`.id_order
-			ORDER BY `order`.id_order DESC
-			LIMIT '.$limit.'
 		';
 
-		// @todo: fix speed
-		// echo Order::q($q)->json();
-		/*
-		foreach (Order::q($q) as $o) {
-			$d[] = $o->exports();
+		// get the count
+		$count = 0;
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		while ($c = $r->fetch()) {
+			$count++;
 		}
-		echo json_encode($d);
-		*/
 
-		$r = c::db()->query($q);
-		$d = [];
+		$q .= '
+			ORDER BY `order`.id_order DESC
+			LIMIT '.$offset.', '.$limit.'
+		';
+		
+		// do the query
+		$data = [];
+		$r = c::db()->query(str_replace('-WILD-','
+			`order`.*,
+			restaurant.name as _restaurant_name,
+			restaurant.community as _community_name,
+			admin.name as _driver_name,
+			admin.id_admin as _driver_id
+		', $q));
+
 		while ($o = $r->fetch()) {
 			$o->status = Order::o($o->id_order)->status()->last();
-			$d[] = $o;
+			$data[] = $o;
 		}
-		echo json_encode($d);
-		exit;
-		
+
+		echo json_encode([
+			'count' => intval($count),
+			'pages' => ceil($count / $limit),
+			'page' => $page,
+			'results' => $data
+		]);
 
 	}
 }

@@ -10,12 +10,11 @@ NGApp.factory('StaffService', function($resource, $routeParams) {
 		'query' : {
 			method: 'GET',
 			params : {}
-		},
+		}
 	});
 
 	service.list = function(params, callback) {
 		staff.query(params, function(data){
-			console.log(data);
 			callback(data);
 		});
 	}
