@@ -16,6 +16,31 @@ NGApp.directive('chatSend', function(TicketViewService) {
 	};
 });
 
+NGApp.directive('pageKey', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			$(document.body).bind('keydown keypress', function (e) {
+				if (document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'SELECT' || document.activeElement.tagName == 'TEXTAREA') {
+					return;
+				}
+				// next
+				if (e.which == 39 && scope.query.page < scope.pages) {
+					scope.$apply(function() {
+						scope.setPage(scope.query.page+1);
+					});
+
+				// prev
+				} else if (e.which == 37 && scope.query.page > 1) {
+					scope.$apply(function() {
+						scope.setPage(scope.query.page-1);
+					});
+				}
+			});
+		}
+	};
+});
+
 
 NGApp.directive('profilePreference', function (AccountService, $http, $rootScope) {
 	return {
