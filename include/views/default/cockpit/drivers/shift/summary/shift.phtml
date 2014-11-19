@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$shift = $this->shift;
 ?>
 <div class="row-fluid">
@@ -63,17 +63,18 @@
 													Make it permanent?
 												<?php } ?>
 											</td>
+											<td></td>
 										</tr>
 									</thead>
 									<tbody>
-									<?php 
+									<?php
 									$alreadyShown = [];
 									$driversDontWantWorkHere = [];
 									$preferences = $shift->getAdminPreferences();
 									$hasDrivers = false;
 									$week = $shift->week();
 									$year = $shift->year();
-									foreach( $preferences as $preference ){ 
+									foreach( $preferences as $preference ){
 										if( intval( $preference->ranking ) > 0 ){
 											$hasDrivers = true;
 										} else if( intval( $preference->ranking ) == 0 ){
@@ -83,7 +84,7 @@
 									if( $hasDrivers ){
 									?>
 									<tr>
-										<td colspan="6">
+										<td colspan="7">
 											<strong><center>Drivers that want to work at this shift</center></strong>
 										</td>
 									</tr>
@@ -91,7 +92,7 @@
 									$firstDayOfWeek = $shift->firstDayOfWeek()->format( 'Y-m-d' );
 									$lastDayOfWeek = $shift->lastDayOfWeek()->format( 'Y-m-d' );
 
-									foreach( $preferences as $preference ){ 
+									foreach( $preferences as $preference ){
 										$admin = $preference->admin();
 
 										$highestRanking = $preference->highestRankingByPeriod( $admin->id_admin, $firstDayOfWeek, $lastDayOfWeek );
@@ -119,14 +120,24 @@
 													<input type="checkbox" class="icheck" <?php echo $checkedPermanently; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin_permanently" id="form-id_admin_permanently-<?php echo $admin->id_admin; ?>">
 												<?php } ?>
 											</td>
+											<td>
+												<?php
+													$note = $admin->note();
+													$note_data = [];
+													if( $note->id_admin_note ){
+														$note_data = $note->exports();
+														echo $note_data[ 'text' ];
+													}
+										 		?>
+											</td>
 										</tr>
-										<?php } 
+										<?php }
 										}
 									?>
-									<?php 
+									<?php
 									$otherDrivers = $shift->community()->getDriversOfCommunity();
 									$hasDrivers = false;
-									foreach( $otherDrivers as $admin ){ 
+									foreach( $otherDrivers as $admin ){
 										if( in_array( $admin->id_admin, $alreadyShown ) ){
 											continue;
 										}
@@ -135,13 +146,13 @@
 									if ( $hasDrivers ){
 									?>
 									<tr>
-										<td colspan="5">
+										<td colspan="7">
 											<strong><center>Other drivers</center></strong>
 										</td>
 									</tr>
 									<?php
 
-									foreach( $otherDrivers as $admin ){ 
+									foreach( $otherDrivers as $admin ){
 										if( in_array( $admin->id_admin, $alreadyShown ) ){
 											continue;
 										}
@@ -164,6 +175,16 @@
 													<input type="checkbox" class="icheck" <?php echo $checkedPermanently; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin_permanently" id="form-id_admin_permanently-<?php echo $admin->id_admin; ?>">
 												<?php } ?>
 											</td>
+											<td>
+												<?php
+													$note = $admin->note();
+													$note_data = [];
+													if( $note->id_admin_note ){
+														$note_data = $note->exports();
+														echo $note_data[ 'text' ];
+													}
+										 		?>
+											</td>
 										</tr>
 										<?php
 										}
@@ -171,12 +192,12 @@
 									?>
 									<?php if( count( $driversDontWantWorkHere ) > 0 ) { ?>
 										<tr>
-											<td colspan="5">
+											<td colspan="7">
 												<strong><center>Drivers that don't want to work at this shift</center></strong>
 											</td>
 										</tr>
 										<?php
-										foreach( $driversDontWantWorkHere as $admin ){ 
+										foreach( $driversDontWantWorkHere as $admin ){
 											$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
 											$checked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
 											$checkedPermanently = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
@@ -196,6 +217,16 @@
 														<input type="checkbox" class="icheck" <?php echo $checkedPermanently; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin_permanently" id="form-id_admin_permanently-<?php echo $admin->id_admin; ?>">
 													<?php } ?>
 											</td>
+											<td>
+												<?php
+													$note = $admin->note();
+													$note_data = [];
+													if( $note->id_admin_note ){
+														$note_data = $note->exports();
+														echo $note_data[ 'text' ];
+													}
+										 		?>
+											</td>
 											</tr>
 										<?php
 										}
@@ -203,7 +234,7 @@
 									</tbody>
 								</table>
 							</div>
-							
+
 							<div class="row-fluid">
 								<div class="row-fluid">
 									<div class="span12">
@@ -212,7 +243,7 @@
 								</div>
 								<div class="row-fluid">
 									<div class="span6">
-										<button type="button" onclick="shift.summary.assign.save();" class="btn btn-green"><i class="icon-save"></i> Save </button> 
+										<button type="button" onclick="shift.summary.assign.save();" class="btn btn-green"><i class="icon-save"></i> Save </button>
 									</div>
 								</div>
 							</div>
