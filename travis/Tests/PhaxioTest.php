@@ -80,12 +80,11 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 		$this->order = Order::q('select * from `order` where name="'.$name.'"limit 1')->get(0);
 	}
 
-	public function testMail() {
+	public function testFaxNotification() {
 		if (!$this->order->id_order) {
 			return $this->assertTrue('No id_order');
 		}
-		
-		
+
 		$n = new Notification([
 			'value' => '_PHONE_',
 			'active' => 1,
