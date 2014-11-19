@@ -12,11 +12,11 @@
 			</tr>
 		</thead>
 
-		<?php 
+		<?php
 			$tz_default = c::view()->tz_default;
-			foreach( $this->orders as $order ) { 
+			foreach( $this->orders as $order ) {
 				$timeToDelivery = '';
-				$date = $order->date(); 
+				$date = $order->date();
 				$date_admin_tz = $order->dateAtTz( $this->admin_tz );
 				?>
 			<tr>
@@ -30,15 +30,15 @@
 					<?php echo $order->restaurant()->communityNames(); ?>
 					<br />
 					<div class="admin-tz" <?php if( $tz_default == 'restaurant-tz' ){ echo 'style="display:none;"'; } ?>>
-						<?php echo $date_admin_tz->format('M jS Y')?> <?php echo $date_admin_tz->format('g:i:s A T')?>	
+						<?php echo $date_admin_tz->format('M jS Y')?> <?php echo $date_admin_tz->format('g:i:s A T')?>
 					</div>
 					<div class="restaurant-tz" <?php if( $tz_default == 'admin-tz' ){ echo 'style="display:none;"'; } ?>>
 						<?php echo $date->format('M jS Y')?> <?php echo $date->format('g:i:s A T')?>
 					</div>
-					
+
 				</td>
 				<td style="vertical-align:top;">
-					<?php 
+					<?php
 						if( $order->driver()->name ){
 							?>
 							<a href="/permissions/users/<?php echo $order->driver()->id_admin ?>" target="_blank">
@@ -46,13 +46,13 @@
 							</a>
 							<?php
 							if( $order->driver()->phone ){
-								echo '<br/><i class="icon icon-phone"></i> ' . $order->driver()->phone;	
+								echo '<br/><i class="icon icon-phone"></i> ' . $order->driver()->phone;
 							}
 							if( $order->driver()->txt ){
-								echo '<br/><i class="icon icon-mobile-phone"></i> ' . $order->driver()->txt;	
+								echo '<br/><i class="icon icon-mobile-phone"></i> ' . $order->driver()->txt;
 							}
 							if( $order->driver()->email ){
-								echo '<br/><i class="icon icon-envelope"></i> ' . $order->driver()->email;	
+								echo '<br/><i class="icon icon-envelope"></i> ' . $order->driver()->email;
 							}
 							$activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$order->driver()->id_admin} AND active = 1" );
 							if ( count( $activeNotifications ) > 0 ) {
@@ -60,11 +60,11 @@
 								<hr/>
 								<strong>Active notifications:</strong>
 								<?php
-							
+
 								foreach ( $activeNotifications as $activeNotification ) {
 									?>
 									<br/><strong><?php echo $activeNotification->type ?>: </strong>
-									<?php echo $activeNotification->value ?> 
+									<?php echo $activeNotification->value ?>
 									<?php
 								}
 							}
@@ -78,7 +78,7 @@
 					?>
 				</td>
 				<td style="vertical-align:top;">
-				<?php 
+				<?php
 					$hasNotification = false;
 					$notifications = Crunchbutton_Admin_Notification_Log::byOrder( $order->id_order );
 					foreach( $notifications as $notification ){
@@ -103,7 +103,7 @@
 				?>
 				</td>
 				<td style="vertical-align:top;">
-				<?php 
+				<?php
 				$editActions = true;
 				$_log = '';
 				$logs = $order->actions();
@@ -153,7 +153,7 @@
 					echo '<strong style="color:#666;font-size:12px;">Delivered in ' . $timeToDelivery . '</strong><br/>';
 				}
 				if( $_log ){
-					echo $_log;	
+					echo $_log;
 				} else {
 					echo '<i style="color:#CCC;font-size:11px;">-</i>';
 				}

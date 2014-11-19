@@ -2,7 +2,7 @@
 
 class Controller_orders_content extends Crunchbutton_Controller_Account {
 	public function init() {
-		
+
 		$restaurant_id = $_REQUEST['restaurant'];
 
 		if( !c::admin()->permission()->check( [ 'global', 'orders-all', 'orders-list-page', "orders-list-restaurant-{$restaurant_id}" ] ) ){
@@ -24,21 +24,21 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 			}
 
 		}
-		
+
 		if ($_REQUEST['env']) {
 			$search['env'] = $_REQUEST['env'];
 		}
-		
+
 		if ($_REQUEST['processor']) {
 			$search['processor'] = $_REQUEST['processor'];
 		}
-		
+
 		if ($_REQUEST['dates']) {
 			$dates = explode(',',$_REQUEST['dates']);
 			$search['start'] = $dates[0];
 			$search['end'] = $dates[1];
 		}
-		
+
 		if ($_REQUEST['restaurant']) {
 			$search['restaurant'] = $_REQUEST['restaurant'];
 		}
@@ -50,7 +50,7 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 		c::view()->orders = Order::find($search);
 
 		if ($_REQUEST['export']) {
-			
+
 			if( !c::admin()->permission()->check(['global','orders-all','orders-export'] ) ) {
 				return;
 			}

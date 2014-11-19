@@ -1,13 +1,13 @@
 <?php
 
 class Controller_drivers extends Crunchbutton_Controller_Account {
-	
+
 	const ADMIN_DRIVER_LIST_TZ = 'admin-driver-list-tz';
 
 	public function init() {
 
 		switch ( c::getPagePiece( 1 ) ){
-			
+
 			case 'deliveries':
 					if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-orders-view' ] ) ) {
 						$this->deliveries();
@@ -39,8 +39,8 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 
 					$date = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
 					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-					
-					c::view()->date = $date->format( 'Y-m-d' );					
+
+					c::view()->date = $date->format( 'Y-m-d' );
 					c::view()->dateFormatted = $date->format( 'M jS Y D' );
 
 					$date->modify( '+ 1 day' );
@@ -57,7 +57,7 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 					c::view()->page = 'drivers';
 					c::view()->display( 'drivers/schedule/index' );
 				break;
-		}	
+		}
 	}
 
 	public function deliveries(){
@@ -92,7 +92,7 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 				if ( $_REQUEST[ 'id_admin' ] ) {
 					$search[ 'id_admin' ] = $_REQUEST[ 'id_admin' ];
 				}
-				
+
 				c::view()->orders = Order::deliveredByCBDrivers( $search );
 				if ( $_REQUEST[ 'export' ] ) {
 					c::view()->layout( 'layout/csv' );
