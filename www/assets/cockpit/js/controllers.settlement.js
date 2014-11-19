@@ -1,43 +1,5 @@
 NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 
-	$scope.ready = true;
-
-	$scope.restaurants = function(){
-		$scope.navigation.link( '/settlement/restaurants' );
-	}
-
-	$scope.restaurants_payments = function(){
-		$scope.navigation.link( '/settlement/restaurants/payments' );
-	}
-
-	$scope.restaurants_scheduled_payments = function(){
-		$scope.navigation.link( '/settlement/restaurants/scheduled' );
-	}
-
-	$scope.restaurants_no_payment_method = function(){
-		$scope.navigation.link( '/settlement/restaurants/no-payment-method' );
-	}
-
-	$scope.drivers = function(){
-		$scope.navigation.link( '/settlement/drivers' );
-	}
-
-	$scope.drivers_payments = function(){
-		$scope.navigation.link( '/settlement/drivers/payments' );
-	}
-
-	$scope.drivers_arbitrary_payments = function(){
-		$scope.navigation.link( '/settlement/drivers/payment/arbitrary' );
-	}
-
-	$scope.drivers_scheduled_payments = function(){
-		$scope.navigation.link( '/settlement/drivers/scheduled' );
-	}
-
-	$scope.drivers_payment_info = function(){
-		$scope.navigation.link( '/staff/list' );
-	}
-
 } );
 
 NGApp.controller( 'SettlementRestaurantsNoPaymentCtrl', function ( $scope, RestaurantService ) {

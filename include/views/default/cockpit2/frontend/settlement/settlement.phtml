@@ -1,50 +1,24 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
-
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement</span></h1>
-
-	<div class="divider"></div>
-	<div class="box-content2">
-		<h2 class="title"><i class="fa fa-coffee"></i> Restaurants</h2>
-		<ul class="link-list">
-			<li>
-				<span class="title link no-underline" ng-click="restaurants()">New Payment</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="restaurants_payments()">Payments list</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="restaurants_scheduled_payments()">Scheduled Payments (not finished or error)</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="restaurants_no_payment_method()">Restaurants with no payment method</span>
-			</li>
-		</ul>
+<div class="content-padding">
+	<h1 class="subltitle"><i class="fa fa-coffee"></i>&nbsp;&nbsp;<span>Restaurants</span></h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr><td><a href="/settlement/restaurants">New Payment</a></td></tr>
+			<tr><td><a href="/settlement/restaurants/payments">Payments list</a></td></tr>
+			<tr><td><a href="/settlement/restaurants/scheduled">Scheduled Payments</a> (<i>not finished or error</i>)</td></tr>
+			<tr><td><a href="/settlement/restaurants/no-payment-method">Restaurants with no payment method</a></td></tr>
+		</table>
 	</div>
-	<div class="box-content2">
-		<h2 class="title"><i class="fa fa-automobile"></i> Drivers</h2>
-		<ul class="link-list">
-			<li>
-				<span class="title link no-underline" ng-click="drivers()">New Payment</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="drivers_payments()">Payments list</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="drivers_scheduled_payments()">Scheduled Payments (not finished or error)</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="drivers_arbitrary_payments()">Arbitrary Payment</span>
-			</li>
-			<li>
-				<span class="title link no-underline" ng-click="drivers_payment_info()">Edit driver's payment info</span>
-			</li>
-		</ul>
+	<br>
+	<h1 class="subltitle"><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Drivers</span></h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr><td><a href="/settlement/drivers">New Payment</a></td></tr>
+			<tr><td><a href="/settlement/drivers/payments">Payments list</a></td></tr>
+			<tr><td><a href="/settlement/drivers/scheduled">Scheduled Payments</a> (<i>not finished or error</i>)</td></tr>
+			<tr><td><a href="/settlement/drivers/payment/arbitrary">Arbitrary Payment</a></td></tr>
+			<tr><td><a href="/staff?type=driver&status=active&limit=25&page=1">Edit driver's payment info</a></td></tr>
+		</table>
 	</div>
-	<div class="divider"></div>
-
 </div>
-
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>
