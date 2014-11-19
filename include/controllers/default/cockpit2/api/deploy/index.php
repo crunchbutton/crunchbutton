@@ -52,7 +52,10 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 						exit;
 					}
 					
-					$server = Server::o($this->request()['id_deploy_server']);
+					$server = Deploy_Server::o($this->request()['id_deploy_server']);
+					if (!$server->id_deploy_server) {
+						$server = Deploy_Server::byName($this->request()['id_deploy_server']);
+					}
 					if (!$server->id_deploy_server) {
 						header('HTTP/1.0 404 Not Found');
 						exit;
