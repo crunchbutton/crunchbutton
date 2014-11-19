@@ -3281,3 +3281,7 @@ input[type="checkbox"].switch + div:before {
 .deploy-commit-select {
 	width: 10em;
 }
+
+.staff-community-repeat:not(:first-child):before {
+	content: ", ";
+}

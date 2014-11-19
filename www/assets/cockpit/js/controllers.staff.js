@@ -1,3 +1,60 @@
+NGApp.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		.when('/staff', {
+			action: 'staff',
+			controller: 'StaffCtrl',
+			templateUrl: 'assets/view/staff-list.html',
+			reloadOnSearch: false
+		})
+		.when('/staff/:id/payinfo', {
+			action: 'staff',
+			controller: 'StaffPayInfoCtrl',
+			templateUrl: 'assets/view/staff-payinfo.html'
+		});
+}]);
+
+NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffService) {
+	
+	var query = $location.search();
+	$scope.query = {
+		search: query.search,
+		type: query.type || 'all',
+		status: query.status || 'active',
+		limit: query.limit || 100,
+		page: query.page || 1
+	};
+	
+	$scope.query.page = parseInt($scope.query.page);
+	
+	$scope.count = 0;
+	$scope.pages = 0;
+
+	var update = function() {
+		$scope.loading = true;
+		StaffService.list($scope.query, function(d) {
+			$scope.staff = d.results;
+			$scope.count = d.count;
+			$scope.pages = d.pages;
+			$scope.loading = false;
+		});
+	};
+	
+	var watch = function() {
+		$location.search($scope.query);
+		update();
+	};
+	
+	$scope.$watch('query.search', watch);
+	$scope.$watch('query.type', watch);
+	$scope.$watch('query.status', watch);
+	$scope.$watch('query.limit', watch);
+	$scope.$watch('query.page', watch);
+	
+	$scope.setPage = function(page) {
+		$scope.query.page = page;
+	}
+});
+
 NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 
 	$scope.showForm = true;
