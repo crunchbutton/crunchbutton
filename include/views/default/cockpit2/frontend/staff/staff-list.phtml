@@ -1,100 +1,70 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
+<div class="content-padding">
+	<h1 class="subltitle "><i class="fa fa-users"></i>&nbsp;&nbsp;<span>Staff</span><div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search"></td>
+			</tr>
 
-	<h1 class="title left"><i class="fa fa-users"></i><span>Staff</span></h1>
+			<tr>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" name="searchType">
+						<option value="all">All</option>
+						<option value="driver">Drivers</option>
+					</select>
+				</td>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" name="searchType">
+						<option value="all">All</option>
+						<option value="active">Active</option>
+						<option value="inactive">Inactive</option>
+					</select>
+				</td>
+			</tr>
 
-	<div class="divider"></div>
-
-	<div class="box-filter right">
-
-		<div class="divider"></div>
-	</div>
-
-	<div class="divider"></div>
-
-	<form name="form" novalidate ng-show="showForm">
-
-		<ul class="ul-inputs box-content2">
-
-			<li class="li-input">
-				<div class="label">Search by name:</div>
-				<div class="input"><input type="text" name="searchName" ng-model="search.name"></div>
-			</li>
-
-			<li class="li-input">
-				<div class="label">Type:</div>
-				<select ng-model="search.type" name="searchType" ng-options="type.value as type.label for type in search._types"></select>
-			</li>
-
-			<li class="li-input">
-				<div class="label">Status:</div>
-				<select ng-model="search.status" name="searchStatus" ng-options="status.value as status.label for status in search._status"></select>
-			</li>
-
-			<li class="li-input">
-				<button class="button save" ng-click="doSearch();">Search</button>
-			</li>
-
-		</ul>
-
-	</form>
-
-	<div class="box-content2" ng-show="!showForm && !isSearching">
-		<p>
-			Found {{count}} workers. Searching: <span ng-if="search.name">Name has <strong>{{search.name}}</strong>,</span> type is <strong>{{search.type}}</strong> and status is <strong>{{search.status}}</strong>.
-			<br>
-			<span class="link" ng-click="showForm = true">Show form</span>
-		</p>
-	</div>
-
-	<div class="divider"></div>
-
-	<div ng-if="count && !isSearching">
-		<table class="tb-grid">
-			<thead>
-				<tr>
-					<td class="td-medium">Name</td>
-					<td class="td-medium">Phone</td>
-					<td class="td-medium">Login</td>
-					<td>Community</td>
-					<td></td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="worker in staff">
-					<td>{{worker.name}}</td>
-					<td>{{worker.phone}}</td>
-					<td>{{worker.login}}</td>
-					<td><span ng-repeat="community in worker.communities">{{community}}</span></td>
-					<td>
-						<span class="link orange" ng-click="payinfo(worker.id_admin)">Pay info</span>&nbsp;
-						<a title="Open Pay Info in new window" href="/staff/payinfo/{{worker.id_admin}}" target="_blank"><span class="link orange"><i class="fa fa-share-square"></i></span></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="tb-pagination" ng-if="pages > 1">
-			<tbody>
-				<tr>
-					<td class="td-prev"><button class="button orange" ng-show="prev" ng-click="prevPage()">prev</button></td>
-					<td class="td-info">Page {{page}} of {{pages}}</td>
-					<td class="td-next"><button class="button orange" ng-show="next" ng-click="nextPage()">next</button></td>
-				</tr>
-			</tbody>
 		</table>
 	</div>
 
-	<div ng-if="!count && !isSearching && searched" class="box-content">
-		No workers.
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>Name</th>
+				<th>Phone</th>
+				<th>Login</th>
+				<th>Community</th>
+				<th> </th>
+			</tr>
+			<tr ng-repeat="s in staff">
+				<td><a href="/staff/{{s.login}}">{{s.name}}</a></td>
+				<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
+				<td>{{s.login}}</td>
+				<td>
+					<span class="staff-community-repeat" ng-repeat="community in s.communities">
+						{{community}}
+					</span>
+				</td>
+				<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
+			</tr>
+		</table>
 	</div>
-
-	<div ng-if="isSearching" class="box-content2">
-		<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
-	</div>
+	
+	<table class="tb-pagination right" ng-if="pages > 1">
+		<tbody>
+			<tr>
+				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
+				<td class="td-info">Page {{query.page}} of {{pages}}</td>
+				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div class="divider"></div>
 
 </div>
 
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>
+
+

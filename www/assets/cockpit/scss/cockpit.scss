@@ -1192,7 +1192,7 @@ input {
 	margin-bottom:1.5em;
 }
 	.tb-zebra tr:nth-child(2n){
-		background: #F5F5F5;
+		background: #f9f9f9;
 	}
 	.tb-zebra td{
 		color: #333;
@@ -3280,4 +3280,8 @@ input[type="checkbox"].switch + div:before {
 
 .deploy-commit-select {
 	width: 10em;
+}
+
+.staff-community-repeat:not(:first-child):before {
+	content: ", ";
 }
