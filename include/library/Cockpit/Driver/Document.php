@@ -4,6 +4,8 @@ class Cockpit_Driver_Document extends Cana_Table {
 
 	const ID_DRIVERS_LICENCE = 4;
 	const ID_AUTO_INSURANCE_CARD = 5;
+	const ID_INDY_CONTRACTOR_AGREEMENT_ORDER = 1;
+	const ID_INDY_CONTRACTOR_AGREEMENT_HOURLY = 6;
 
 	public function __construct($id = null) {
 		parent::__construct();
