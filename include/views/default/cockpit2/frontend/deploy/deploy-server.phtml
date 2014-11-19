@@ -55,15 +55,15 @@
 				<tr>
 					<th>Git&nbsp;Version</th>
 					<td>
-						<select ng-model="deploy.version" class="deploy-commit-select">
-							<option value="master">master</option>
+						<select ng-model="deploy.version" class="deploy-commit-select" ng-disabled="commitLoad">
+							<option value="master" ng-disabled="server.travis == '1'">master</option>
 							<option ng-repeat="commit in commits" value="{{commit.commit}}" ng-disabled="server.travis == '1' && commit.status != 'passed'">[{{commit.status | uppercase}}] {{commit.commit}} / {{commit.author}} / {{commit.date | date:'MM/dd @ HH:mm'}} / {{commit.note}}</option>
 						</select>
 						<span ng-if="commitLoad">&nbsp;&nbsp;<i class="fa fa-refresh fa-spin"></i></span>
 						<span ng-if="!commitLoad">&nbsp;&nbsp;<a href="" ng-click="updateCommits()">refresh</a></span>
 					</td>
 				</tr>
-				<tr>
+				<tr ng-if="server.id_deploy_server && (server.travis != '1' || (server.travis == '1' && deploy.version != 'master'))">
 					<td colspan="2"><button class="button orange" ng-click="saveDeploy()">Deploy</button></td>
 				</tr>
 			</table>
