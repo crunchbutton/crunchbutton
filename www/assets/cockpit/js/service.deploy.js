@@ -1,5 +1,5 @@
 
-NGApp.factory('DeployServices', function($rootScope, $resource, $routeParams) {
+NGApp.factory('DeployService', function($rootScope, $resource, $routeParams) {
 
 	var service = {
 		server: {},
