@@ -46,45 +46,63 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'version':
-				if ($this->method() == 'post') {
+				if ($this->method() == 'post' || $this->method() == 'delete') {
 					if (!c::admin()->permission()->check(['server-deploy-admin'])) {
 						header('HTTP/1.1 401 Unauthorized');
 						exit;
 					}
 					
-					$server = Deploy_Server::o($this->request()['id_deploy_server']);
-					if (!$server->id_deploy_server) {
-						$server = Deploy_Server::byName($this->request()['id_deploy_server']);
-					}
-					if (!$server->id_deploy_server) {
-						header('HTTP/1.0 404 Not Found');
-						exit;
+					if ($this->method() == 'post') {
+
+						$server = Deploy_Server::o($this->request()['id_deploy_server']);
+						if (!$server->id_deploy_server) {
+							$server = Deploy_Server::byName($this->request()['id_deploy_server']);
+						}
+						if (!$server->id_deploy_server) {
+							header('HTTP/1.0 404 Not Found');
+							exit;
+						}
+	
+						$date = $this->request()['date'];
+						$version = $this->request()['version'];
+	
+						$d = strtotime($date);
+						if ($d < time()) {
+							$date = date('Y-m-d H:i:s');
+						}
+	
+						if ($version == 'master') {
+							$version = $server->commits()[0]['commit'];
+						}
+						
+						if ($server->tag) {
+							$server->createTag($version);
+						}
+	
+						$r = new Deploy_Version([
+							'date' => $date,
+							'version' => $version,
+							'id_deploy_server' => $server->id_deploy_server,
+							'status' => 'new',
+							'id_admin' => c::admin()->id_admin
+						]);
+						$r->save();
+
+					} else {						
+						$d = Deploy_Version::o(c::getPagePiece(3));
+						if (!$d->id_deploy_version) {
+							header('HTTP/1.0 404 Not Found');
+							exit;
+						} elseif ($d->status != 'new') {
+							header('HTTP/1.0 406 Not Acceptable');
+							exit;
+						}
+						$d->status = 'canceled';
+						$d->save();
+
+						$r = $d;
 					}
 
-					$date = $this->request()['date'];
-					$version = $this->request()['version'];
-
-					$d = strtotime($date);
-					if ($d < time()) {
-						$date = date('Y-m-d H:i:s');
-					}
-
-					if ($version == 'master') {
-						$version = $server->commits()[0]['commit'];
-					}
-					
-					if ($server->tag) {
-						$server->createTag($version);
-					}
-
-					$r = new Deploy_Version([
-						'date' => $date,
-						'version' => $version,
-						'id_deploy_server' => $server->id_deploy_server,
-						'status' => 'new',
-						'id_admin' => c::admin()->id_admin
-					]);
-					$r->save();
 				} else {
 					$r = Deploy_Version::o(c::getPagePiece(3));
 				}

@@ -1,0 +1,1 @@
+ALTER TABLE `deploy_version` CHANGE `status` `status` ENUM('deploying','success','failed','new','canceled');

@@ -40,7 +40,11 @@
 			</tr>
 			<tr>
 				<th>Status</th>
-				<td class="deploy-status-{{version.status}}">{{version.status}}<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></td>
+				<td class="deploy-status-{{version.status}}">
+					{{version.status}}
+					<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
+					<span ng-if="version.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(version.id_deploy_version)"><i class="fa fa-times-circle"></i></a></span>
+				</td>
 			</tr>
 
 			<tr>
