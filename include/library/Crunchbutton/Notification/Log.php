@@ -9,11 +9,11 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 	public function order() {
 		return Order::o($this->id_order);
 	}
-	
+
 	public function tries() {
 		return self::q('select * from notification_log where id_order="'.$this->id_order.'"')->count();
 	}
-	
+
 	public function deleteFromOrder( $id_order ){
 		$query = 'DELETE FROM notification_log WHERE id_order = ' . $id_order;
 		Cana::db()->query( $query );
@@ -22,14 +22,14 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 	public function notification() {
 		return Notification::o($this->id_notification);
 	}
-	
+
 	public function callback() {
 		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="callback" and `type`="twilio"');
 
 		if ($nl->count() >= c::config()->twilio->maxcallback) {
 			$this->status = 'maxcallbackexceeded';
 			$this->save();
-			
+
 			if (c::env() != 'live') {
 				return;
 			}
@@ -61,9 +61,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$sendSMSTo = array();
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				$sendSMSTo[ $supportName ] = $supportPhone;
-			
+
 			}
-			
+
 			// Send SMS to Reps - Issue #2027
 			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
 
@@ -99,7 +99,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name.$community."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
 				$message = str_split($message,160);
-				
+
 				Crunchbutton_Message_Sms::send([
 					'to' => $sendSMSTo,
 					'message' => $message
@@ -124,7 +124,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$this->queCallback();
 		}
 	}
-	
+
 
 	public function getMaxCallNotification( $id_order ){
 		return Notification_Log::q( "SELECT * FROm notification_log WHERE id_order ='$id_order' AND type ='maxcall' " );
@@ -137,7 +137,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$not = $log->notification();
 			$order = $log->order();
 			$not->send($order);
-		}, c::config()->twilio->callbackTime);		
+		}, c::config()->twilio->callbackTime);
 	}
 
 	public function confirm() {
@@ -149,7 +149,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		if ($nl->count() >= c::config()->twilio->maxconfirmback) {
 			$this->status = 'maxconfirmbackexceeded';
 			$this->save();
-			
+
 			if (c::env() != 'live') {
 				return;
 			}
@@ -166,9 +166,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$sendSMSTo = array();
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$sendSMSTo[ $supportName ] = $supportPhone;			
+				$sendSMSTo[ $supportName ] = $supportPhone;
 			}
-			
+
 			$community = $this->order()->restaurant()->communityNames();
 			if( $community != '' ){
 				$community = '(' . $community . ')';
@@ -187,7 +187,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 
 			if( count( $sendSMSTo ) > 0 ){
-	
+
 				$restaurant = Restaurant::o( $this->order()->id_restaurant );
 				$types = $restaurant->notification_types();
 				if( count( $types ) > 0 ){
@@ -210,7 +210,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			}
 
 			Log::critical([
-				'id_order' => $this->id_order, 
+				'id_order' => $this->id_order,
 				'id_notification_log' => $this->id_notification_log,
 				'id_notification' => $this->id_notification,
 				'id_restaurant' => $this->order()->restaurant()->id_restaurant,
@@ -238,13 +238,13 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 	public function maxCallWasConfirmed(){
 		$notification = $this;
-		$notification = Notification_Log::getMaxCallNotification( $notification->id_order );	
+		$notification = Notification_Log::getMaxCallNotification( $notification->id_order );
 		if( $notification->id_notification_log ){
 			Log::debug( [ 'order' => $notification->id_order, 'id_notification_log' => $notification->id_notification_log, 'action' => 'MAX CB - confirmed', 'status' => $notification->status, 'type' => 'notification' ]);
 			if( $notification->status != 'success' ){
 				$this->tellRepsAboutMaxConfirmationCall();
 			}
-		} 
+		}
 		return false;
 	}
 
@@ -260,18 +260,21 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		$group_name = Config::getVal( Crunchbutton_Notification_Log::MAX_CALL_GROUP_KEY );
 		$group = Crunchbutton_Group::byName( $group_name );
 		if( $group->id_group ){
-			return Crunchbutton_Admin_Group::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
+			return Crunchbutton_Admin_Group::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 		}
 		return false;
 	}
 
 	public function tellRepsAboutMaxConfirmationCall(){
-		
+
+		// Stop Phone Calls for Max CB #3901
+		return;
+
 		$env = c::getEnv();
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-		
+
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
-		
+
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
 
 		$users = $this->repsWillReceiveMaxCallWarning();
