@@ -19,7 +19,7 @@ class Cana_Db_MySQL_Db extends mysqli {
 		}
 		@parent::__construct($params->host, $params->user, $params->pass ? $params->pass : null, $params->db);
 		if ($this->connect_errno) {
-			die('Unable to connect to the database');
+			throw new Cana_Exception('Unable to connect to the database');
 		}
 	}
 

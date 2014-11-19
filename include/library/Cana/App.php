@@ -52,9 +52,7 @@ class Cana_App extends Cana_Model {
 		try {
 			$this->buildDb($this->_env);
 		} catch (Exception $e) {
-			// @todo: add gracefull db error
-			echo 'Could not connect to the database';
-			exit;
+			throw new Cana_Exception('Could not connect to the database');
 		}
 
 		if (!isset($params['postInitSkip'])) {

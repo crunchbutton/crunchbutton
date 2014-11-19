@@ -228,8 +228,12 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
-		parent::init($params);
-		
+		try {
+			parent::init($params);
+		} catch (Exception $e) {
+			$this->dbError();
+		}
+
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
 		
@@ -634,6 +638,11 @@ class Crunchbutton_App extends Cana_App {
 			$this->_github->authenticate(c::config()->github->token, '', Github\Client::AUTH_HTTP_TOKEN);
 		}
 		return $this->_github;
+	}
+	
+	public function dbError() {
+		include(c::config()->dirs->www.'server-vacation.html');
+		exit;
 	}
 	
 } 
