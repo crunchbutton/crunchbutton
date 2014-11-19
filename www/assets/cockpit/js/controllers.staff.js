@@ -44,10 +44,19 @@ NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffSe
 		update();
 	};
 	
-	$scope.$watch('query.search', watch);
-	$scope.$watch('query.type', watch);
-	$scope.$watch('query.status', watch);
-	$scope.$watch('query.limit', watch);
+	// @todo: this breaks linking to pages
+	var inputWatch = function() {
+		if ($scope.query.page != 1) {
+			$scope.query.page = 1;
+		} else {
+			watch();
+		}
+	};
+	
+	$scope.$watch('query.search', inputWatch);
+	$scope.$watch('query.type', inputWatch);
+	$scope.$watch('query.status', inputWatch);
+	$scope.$watch('query.limit', inputWatch);
 	$scope.$watch('query.page', watch);
 	
 	$scope.setPage = function(page) {
