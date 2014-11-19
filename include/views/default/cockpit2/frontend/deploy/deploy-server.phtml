@@ -57,7 +57,7 @@
 					<td>
 						<select ng-model="deploy.version" class="deploy-commit-select">
 							<option value="master">master</option>
-							<option ng-repeat="commit in commits" value="{{commit.commit}}">{{commit.commit}} / {{commit.author}} / {{commit.date | date:'MM/dd @ HH:mm'}} / {{commit.note}}</option>
+							<option ng-repeat="commit in commits" value="{{commit.commit}}" ng-disabled="server.travis == '1' && commit.status == 'failed'">[{{commit.status | uppercase}}] {{commit.commit}} / {{commit.author}} / {{commit.date | date:'MM/dd @ HH:mm'}} / {{commit.note}}</option>
 						</select>
 						<span ng-if="commitLoad">&nbsp;&nbsp;<i class="fa fa-refresh fa-spin"></i></span>
 						<span ng-if="!commitLoad">&nbsp;&nbsp;<a href="" ng-click="updateCommits()">refresh</a></span>

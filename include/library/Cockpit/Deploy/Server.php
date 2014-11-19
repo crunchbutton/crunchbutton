@@ -41,12 +41,16 @@ class Cockpit_Deploy_Server extends Cana_Table {
 			$repo = explode('/', $this->repo);
 			$logs = Github::commits($repo[0], $repo[1]);
 			if ($logs) {
+				$travis = new Travis;
+				$status = $travis->status($repo[0],$repo[1]);
+
 				foreach ($logs as $log) {
 					$this->_commits[] = [
 						'commit' => $log['sha'],
 						'author' => $log['commit']['author']['name'],
 						'date' => $log['commit']['author']['date'],
-						'note' => $log['commit']['message']
+						'note' => $log['commit']['message'],
+						'status' => $status[$log['sha']]
 					];
 				}
 			}
