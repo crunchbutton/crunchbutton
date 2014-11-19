@@ -1,38 +1,32 @@
-NGApp.factory( 'StaffService', function( $resource, $routeParams ) {
+NGApp.factory('StaffService', function($resource, $routeParams) {
 
 	var service = {};
 
-	// Create a private resource 'staff'
-	var staff = $resource( App.service + 'staff/:action/:id_admin', { id_admin: '@id_admin', action: '@action' }, {
-				'list' : { 'method': 'POST', params : { action: 'list' } },
-			}
-		);
+	var staff = $resource(App.service + 'staff/:id_admin', { id_admin: '@id_admin'}, {
+		'load' : {
+			method: 'GET',
+			params : {}
+		},
+		'query' : {
+			method: 'GET',
+			params : {}
+		},
+	});
 
-	// get staff's list
-	service.list = function( search, callback ){
-		staff.list( { page : search.page, name : search.name, type: search.type, status: search.status }, function( data ){
-			callback( data );
-		} );
+	service.list = function(params, callback) {
+		staff.query(params, function(data){
+			console.log(data);
+			callback(data);
+		});
 	}
 
-	service.typeSearch = function(){
-		var type = [];
-		type.push( { value: 'all', label: 'All' } );
-		type.push( { value: 'drivers', label: 'Drivers' } );
-		return type;
+	service.get = function(id_admin, callback) {
+		staff.load({id_admin: id_admin}, function(data) {
+			callback(data);
+		});
 	}
-
-	service.statusSearch = function(){
-		var status = [];
-		status.push( { value: 'all', label: 'All' } );
-		status.push( { value: 'active', label: 'Active' } );
-		status.push( { value: 'inactive', label: 'Inactive' } );
-		return status;
-	}
-
 	return service;
-
-} );
+});
 
 NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigService ) {
 

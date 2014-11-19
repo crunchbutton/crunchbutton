@@ -296,17 +296,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'ProfileCtrl',
 			templateUrl: 'assets/view/general-profile.html'
 		})
-		/* Admins payment info */
-		.when('/staff/list', {
-			action: 'staff',
-			controller: 'StaffListCtrl',
-			templateUrl: 'assets/view/staff-list.html'
-		})
-		.when('/staff/payinfo/:id', {
-			action: 'staff',
-			controller: 'StaffPayInfoCtrl',
-			templateUrl: 'assets/view/staff-payinfo.html'
-		})
 		/* Driver onBoarding Routes */
 		.when('/drivers/onboarding/', {
 			action: 'drivers-onboarding',
