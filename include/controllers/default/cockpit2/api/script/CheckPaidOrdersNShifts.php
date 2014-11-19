@@ -10,8 +10,8 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 
 	public function init() {
 
-		$this->markOrdersAsPaid();
-		// $this->markShiftsAsPaid();
+		// $this->markOrdersAsPaid();
+		$this->markShiftsAsPaid();
 		// $this->orders();
 		// $this->shifts();
 	}
@@ -68,6 +68,15 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 						$pay[ $id_driver ][ 'shifts' ][ 'amount' ] += round( $_shift[ 'amount' ], 2 );
 						$worked_shifts[] = $_shift;
 						$_hours += $_shift[ 'hours' ];
+
+
+						$schedule_shift = new Cockpit_Payment_Schedule_Shift;
+						$schedule_shift->id_payment_schedule = null;
+						$schedule_shift->id_admin_shift_assign = $_shift[ 'id_admin_shift_assign' ];
+						$schedule_shift->hours = $_shift[ 'hours' ];
+						$schedule_shift->amount = $_shift[ 'amount' ];
+						$schedule_shift->save();
+// echo '<pre>';var_dump( $schedule_shift );exit();
 					}
 				}
 				$tip = 0;
