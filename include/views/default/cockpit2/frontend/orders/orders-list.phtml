@@ -1,0 +1,52 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<h1 class="subltitle "><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Orders</span></h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search"></td>
+				<th>Limit <input type="text" ng-model="query.limit"></th>
+			</tr>
+			<? /*
+			<tr>
+				<th>Date</th>
+				<th>Restaurant</th>
+				<th>Driver</th>
+				<th>Status</th>
+			</tr>
+			*/ ?>
+
+		</table>
+	</div>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<th>Info</th>
+				<th>Date</th>
+				<th>Restaurant</th>
+				<th>Customer</th>
+				<th>Driver</th>
+				<th>Order</th>
+				<th>Status</th>
+			</tr>
+			<tr ng-repeat="order in orders">
+				<td><a href="/order/{{order.id_order}}">#{{order.id_order}}</td>
+				<td>{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>
+					<a href="/restaurant/{{order.id_restaurant}}">{{order._restaurant_name}}</a><br>
+					<a href="/community/{{order._community_name}}">{{order._community_name}}</a>
+				</td>
+				<td><a href="/customer/{{id_user}}">{{order.name}}</a></td>
+				<td><a href="/driver/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></td>
+				<td>${{order.final_price_plus_delivery_markup}}</td>
+				<td>
+					<b>{{order.status.status}}</b><br>
+					<span ng-if="order.status"><span am-time-ago="order.status.date | localtime | timestamp"></span></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</div>
