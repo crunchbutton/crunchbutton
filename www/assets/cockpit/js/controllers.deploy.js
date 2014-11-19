@@ -72,6 +72,11 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		});	
 		
 		$scope.saveDeploy = function() {
+			if ($scope.deploying) {
+				return;
+			}
+			$scope.deploying = true;
+
 			var version = {
 				date: DateTimeService.server($scope.deploy.date).format('YYYY-MM-DD HH:mm:ss Z'),
 				id_deploy_server: $routeParams.id,
@@ -79,6 +84,7 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 			};
 
 			DeployServices.version.post(version, function(d) {
+				$scope.deploying = false;
 				MainNavigationService.link('/deploy/version/' + d.id_deploy_version);
 			});
 		};

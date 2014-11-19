@@ -64,7 +64,10 @@
 					</td>
 				</tr>
 				<tr ng-if="server.id_deploy_server && (server.travis != '1' || (server.travis == '1' && deploy.version != 'master'))">
-					<td colspan="2"><button class="button orange" ng-click="saveDeploy()">Deploy</button></td>
+					<td colspan="2">
+						<button class="button orange" ng-click="saveDeploy()">Deploy<span ng-if="deploying">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></button>
+						
+					</td>
 				</tr>
 			</table>
 		</div>
