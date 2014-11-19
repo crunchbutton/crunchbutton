@@ -20,12 +20,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		
 }]);
 
-NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, MainNavigationService, $interval) {
+NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployService, MainNavigationService, $interval) {
 	var update = function() {
-		DeployServices.server.list({}, function(d) {
+		DeployService.server.list({}, function(d) {
 			$scope.servers = d;
 		});
-		DeployServices.version.list({}, function(d) {
+		DeployService.version.list({}, function(d) {
 			$scope.versions = d;
 		});
 	};
@@ -33,7 +33,7 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, M
 	update();
 	
 	$scope.cancel = function(id) {
-		DeployServices.version.cancel(id, update);
+		DeployService.version.cancel(id, update);
 	};
 
 	$scope.updater = $interval(update, 5000);
@@ -42,7 +42,7 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployServices, M
 	});
 });
 
-NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServices, $interval, MainNavigationService, DateTimeService) {
+NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployService, $interval, MainNavigationService, DateTimeService) {
 
 	$scope.deploy = {
 		date: DateTimeService.local(new Date).format('YYYY-MM-DD HH:mm:ss Z'),
@@ -51,7 +51,7 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	
 	$scope.updateCommits = function() {
 		$scope.commitLoad = true;
-		DeployServices.server.commits($routeParams.id, function(d) {
+		DeployService.server.commits($routeParams.id, function(d) {
 			$scope.commits = d;
 			$scope.commitLoad = false;
 		});
@@ -64,10 +64,10 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	};
 
 	var update = function() {
-		DeployServices.server.get($routeParams.id, function(d) {
+		DeployService.server.get($routeParams.id, function(d) {
 			$scope.server = d;
 		});
-		DeployServices.server.versions($routeParams.id, function(d) {
+		DeployService.server.versions($routeParams.id, function(d) {
 			$scope.versions = d;
 		});	
 		
@@ -83,7 +83,7 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 				version: $scope.deploy.version
 			};
 
-			DeployServices.version.post(version, function(d) {
+			DeployService.version.post(version, function(d) {
 				$scope.deploying = false;
 				MainNavigationService.link('/deploy/version/' + d.id_deploy_version);
 			});
@@ -93,7 +93,7 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	update();
 	
 	$scope.cancel = function(id) {
-		DeployServices.version.cancel(id, update);
+		DeployService.version.cancel(id, update);
 	};
 	
 	$scope.updater = $interval(update, 5000);
@@ -102,9 +102,9 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	});
 });
 
-NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServices, $interval) {
+NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployService, $interval) {
 	var update = function() {
-		DeployServices.version.get($routeParams.id, function(d) {
+		DeployService.version.get($routeParams.id, function(d) {
 			$scope.version = d;
 		});
 	};
@@ -112,7 +112,7 @@ NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServ
 	update();
 	
 	$scope.cancel = function(id) {
-		DeployServices.version.cancel(id, update);
+		DeployService.version.cancel(id, update);
 	};
 	
 	$scope.updater = $interval(update, 5000);
