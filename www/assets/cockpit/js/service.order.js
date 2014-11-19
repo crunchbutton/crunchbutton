@@ -13,6 +13,10 @@ NGApp.factory('OrderService', function($resource) {
 			url: App.service + 'order/:id_order',
 			method: 'POST',
 			params : {}
+		},
+		'query' : {
+			method: 'GET',
+			params : {}
 		}
 	});
 
