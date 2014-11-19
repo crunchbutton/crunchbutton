@@ -32,7 +32,21 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 				$data = $driver->exports( [ 'permissions', 'groups' ] );
 				$data[ 'vehicle' ] = $driver->vehicle();
 				$sentAllDocs = true;
+
+				$payment_type = $driver->payment_type();
+
 				foreach( $docs as $doc ){
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+						$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+						$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
 					// see: https://github.com/crunchbutton/crunchbutton/issues/3393
 					if( $doc->isRequired( $data[ 'vehicle' ] ) ){
 						$docStatus = Cockpit_Driver_Document_Status::document( $driver->id_admin, $doc->id_driver_document );
