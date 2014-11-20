@@ -5,7 +5,7 @@
 	$this->title = 'Support';
 	$this->titleicon = 'comments';
 	$this->titleLink = '/support';
-	
+
 	$this->title2 = 'Issue #'.$this->support->id_support;
 	$this->title2icon = 'warning-sign';
 
@@ -95,7 +95,7 @@ function saveName(){
 			} else{
 				alert( 'Oops!' );
 			}
-			
+
 		}
 	} );
 };
@@ -134,7 +134,7 @@ $(function() {
 			} else {
 				$( css ).hide();
 			}
-		} ); 
+		} );
 	} );
 
 	/* Form reply conversation */
@@ -151,7 +151,7 @@ $(function() {
 
 		text.val( 'Sending...' );
 		text.prop( 'enabled', false );
-		
+
 		$.post('/support/<?php echo $support->id_support; ?>/conversation', {
 			text: val
 		}, function( ) {
@@ -165,7 +165,7 @@ $(function() {
 	/* Show the hidden field */
 	$( document ).on( 'change', '#user_perspective', function(){
 		if( $( this ).val() == 'Other' ){
-			$( ".user_perspective_other" ).show();		
+			$( ".user_perspective_other" ).show();
 		} else {
 			$( ".user_perspective_other" ).hide();
 		}
@@ -173,32 +173,12 @@ $(function() {
 
 	/* Form update */
 	$(document).on('click', '.button-update', function() {
-		
+
 		$( '.alert' ).hide();
 
-		var fault_of = $( '#fault_of' ).val();
-		var customer_happy = ( $('#customer_happy').is(':checked') ? 1 : 0 );
 		var status = ( $('#status').is(':checked') ? 'open' : 'closed' );
-		var id_github = $( '#id_github' ).val();
-		var description_client = $( '#description_client' ).val();
-		var description_cb = $( '#description_cb' ).val();
-		var user_perspective = $( '#user_perspective' ).val();
-		var user_perspective_other = $( '#user_perspective_other' ).val();
-		var how_to_prevent = $( '#how_to_prevent' ).val();
-		var id_restaurant = $( '#id_restaurant' ).val();
 
-		var data = { 
-								'status' : status,
-								'fault_of' : fault_of,
-								'customer_happy' : customer_happy,
-								'id_restaurant' : id_restaurant,
-								'id_github' : id_github,
-								'description_client' : description_client,
-								'description_cb' : description_cb,
-								'user_perspective' : user_perspective,
-								'user_perspective_other' : user_perspective_other,
-								'how_to_prevent' : how_to_prevent
-							};
+		var data = { 'status' : status };
 
 		var url = '/support/<?php echo $support->id_support; ?>/update';
 		$.ajax({
@@ -219,7 +199,7 @@ $(function() {
 
 	/* Form add note */
 	$(document).on('click', '.button-add-note', function() {
-		
+
 		$( '.alert' ).hide();
 
 		if( $( '.add-note-field' ).css('display') != 'none' ){
@@ -255,7 +235,7 @@ $(function() {
 
 	/* Button refund */
 	$(document).on('click', '.button-refund', function() {
-		
+
 		$( '.alert' ).hide();
 
 		var el = $( this );
@@ -269,11 +249,11 @@ $(function() {
 		if (!confirm( question )) {
 			return;
 		}
-		
+
 		var button = parent.html();
-		
+
 		parent.html( '<i class="icon-cogs"></i> Processing' );
-		
+
 		$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund', function( json ) {
 			showAlert( '.alert-refund', 'success', '<strong>Ok!</strong> Order refunded!' );
 			parent.html( '<b>Order refunded.</b>' );
