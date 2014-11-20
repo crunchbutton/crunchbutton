@@ -47,9 +47,9 @@ class Crunchbutton_User extends Cana_Table {
 		return $this->_name;
 	}
 
-	public function byPhone($phone) {
+	public function byPhone($phone, $limit = true) {
 		$phone = preg_replace('/[^0-9]/i','',$phone);
-		return User::q('select * from user where phone="'.$phone.'" order by id_user desc limit 1');
+		return User::q('select * from user where phone="'.$phone.'" order by id_user desc'. ($limit ? ' limit 1' : ''));
 	}
 
 	public function lastOrder() {
@@ -348,6 +348,10 @@ class Crunchbutton_User extends Cana_Table {
 			$this->_image = $image;
 		}
 		return $this->_image;
+	}
+	
+	public static function uuid($uuid) {
+		return self::q('select * from `user` where uuid="'.$uuid.'"')->get(0);
 	}
 
 	public function __construct($id = null) {

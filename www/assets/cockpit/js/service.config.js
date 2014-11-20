@@ -21,7 +21,7 @@ NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeP
 
 	var service = {};
 
-	var reward = $resource( App.service + 'customer/reward/:action', { action: '@action' }, {
+	var reward = $resource( App.service + 'config/reward/:action', { action: '@action' }, {
 				// list methods
 				'config' : { 'method': 'GET', params : { 'action' : 'config' } },
 				'config_save' : { 'method': 'POST', params : { 'action' : 'config' } },
