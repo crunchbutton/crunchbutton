@@ -456,15 +456,21 @@
 </div>
 
 <div class="address-out-of-range-warning order-warning modal zoom-anim-dialog small-container mfp-hide">
-	<h1>Woops!</h1>
-	<p>The address <strong>{{order.form.address}}</strong> is out of delivery range, or you have entered an invalid address.<br/><br/>Please check your address, or order takeout.</p>
+	<h1>You might be too far for this restaurant :(</h1>
+	<p>
+		The address <strong>{{order.form.address}}</strong> is more than <strong>{{restaurant.delivery_radius}}</strong> miles from {{restaurant.name}}, or you have entered an invalid addres.
+		<br/><br/>
+		Please double check you’re not too far away.</p>
 	<ul>
 		<li>
-			<div ng-click="addressOutOfRangePlaceAnyway();">Place Order Anyway</div>
+			<div ng-click="addressOutOfRangePlaceAnyway();">I’m within delivery radius—Place my order anyway</div>
 		</li>
 		<li>
 			<div ng-click="addressLetMeChangeIt();">Modify Address</div>
 		</li>
 	</ul>
+	<p>
+		Or try texting customer support at 646-783-1444
+	</p>
 </div>
 
