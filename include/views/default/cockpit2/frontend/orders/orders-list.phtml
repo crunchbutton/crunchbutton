@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="subltitle "><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Orders</span></h1>
+	<h1 class="subltitle "><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Orders</span><div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
@@ -32,14 +32,14 @@
 				<th>Status</th>
 			</tr>
 			<tr ng-repeat="order in orders">
-				<td><a href="/order/{{order.id_order}}">#{{order.id_order}}</td>
+				<td><a href="/order/{{order.id_order}}">{{order.id_order}}</td>
 				<td>{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
 				<td>
 					<a href="/restaurant/{{order.id_restaurant}}">{{order._restaurant_name}}</a><br>
 					<a href="/community/{{order._community_name}}">{{order._community_name}}</a>
 				</td>
 				<td><a href="/customer/{{id_user}}">{{order.name}}</a></td>
-				<td><a href="/driver/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></td>
+				<td><a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></td>
 				<td>${{order.final_price_plus_delivery_markup}}</td>
 				<td>
 					<b>{{order.status.status}}</b><br>
