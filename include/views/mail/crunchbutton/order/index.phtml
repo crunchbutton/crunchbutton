@@ -2,6 +2,8 @@
 // customer / cockpit and drivers will see the value with the markup #2369
 $isDriverCockpit = ( $cockpit || $this->cockpit_url );
 
+$restaurant = $order->restaurant();
+
 $icon = '';
 if( $isDriverCockpit ){
 	if( $version == 'restaurant' ){
@@ -43,7 +45,13 @@ if( $isDriverCockpit ){
 			<? if ($order->delivery_type == 'delivery') : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
 					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/delivery.png')?>" class="icon-big"></td>
-					<td class="text-size-mid">Order for Delivery</td>
+					<td class="text-size-mid">
+						<?php if( $icon == 'restaurant' && $restaurant->delivery_service && $restaurant->formal_relationship ) { ?>
+							Order for Crunchbutton Pickup
+						<?php } else { ?>
+							Order for Delivery
+						<?php } ?>
+					</td>
 				</tr></table>
 			<? else : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
@@ -69,7 +77,12 @@ if( $isDriverCockpit ){
 		<td>
 			<table cellpadding="0" cellspacing="0"><tr>
 				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/timer.png')?>" class="icon-big"></td>
-				<td class="text-size-mid">Expected by <?=$order->expectedBy()->format('h:i')?></td>
+				<td class="text-size-mid">
+						<?php if( $icon == 'restaurant' && $restaurant->delivery_service && $restaurant->formal_relationship ) { ?>
+							Make food, we'll pick it up!
+						<?php } else { ?>
+							Expected by <?=$order->expectedBy()->format('h:i')?></td>
+						<?php } ?>
 			</tr></table>
 		</td>
 	</tr>
