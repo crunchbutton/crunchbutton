@@ -12,6 +12,9 @@
 		<h1 ng-bind-html-unsafe="slogan" ng-hide="image"></h1>
 		<h2 ng-bind-html-unsafe="tagline"></h2>
 	</div>
+	<div>
+		<h2 ng-if="allClosed && community_closed" class="community-closed-message home-welcome home-tagline main-content-readable">{{community_closed}}</h2>
+	</div>
 
 	<? /*
 	<div class="home-welcome home-tagline main-content-readable home-welcome-user" ng-show="account.user.id_user">

@@ -172,7 +172,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			}
 		}
 		$scope.allClosed = allClosed;
-
+		$scope.community_closed = restaurants.community_closed;
 	};
 
 	var updateRestaurantsStatus = null;
@@ -1005,7 +1005,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
-	
+
 	$scope.Math = window.Math;
 
 	OrderViewService.load();
@@ -1294,7 +1294,7 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 				fn();
 			}
 		};
-		
+
 		$rootScope.$safeApply(function(scope) {
 			scope.title = title;
 			scope.message = message;

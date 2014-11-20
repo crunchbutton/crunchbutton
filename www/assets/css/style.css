@@ -3071,3 +3071,8 @@ h1.about-header {
 	width: 200px;
 	height: 88px;
 }
+.community-closed-message{
+	text-align:center;
+	margin-bottom:15px;
+	font-size:16px;
+}

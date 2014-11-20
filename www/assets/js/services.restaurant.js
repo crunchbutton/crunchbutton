@@ -32,7 +32,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		// call the method open to check it status and tagfy - 2662
 		for ( var x in list ) {
-			if( list[ x ].openRestaurantPage( now, true ) ){ 
+			if( list[ x ].openRestaurantPage( now, true ) ){
 				list[ x ]._maximized = true;
 				areAllTheRestaurantsMinimized = false;
 				if( !list[ x ]._open ){
@@ -52,7 +52,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 			if( list && list.sort ){
 
-				list.sort( 
+				list.sort(
 					sort_by( {
 						name: '_hasHours',
 						reverse: true
@@ -82,7 +82,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				);
 			}
 		} else {
-			list.sort( 
+			list.sort(
 				sort_by( {
 					name: '_maximized',
 					reverse: true
@@ -121,7 +121,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			var divider = false;
 			for ( var x in list ) {
 				if( divider ){
-					list[ x ]._divider = true;	
+					list[ x ]._divider = true;
 					divider = false;
 				}
 				if( tagRestaurantsAsClosing <= 0 ){
@@ -135,7 +135,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					divider = true;
 				}
 			}
-		} else {			
+		} else {
 			for ( var x in list ) {
 				if( !list[x]._maximized ){
 					var prev = x - 1;
@@ -169,7 +169,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		// call the method open to check it status and tagfy - 2662
 		for ( var x in list ) {
-			if( list[ x ].openRestaurantPage( now, true ) ){ 
+			if( list[ x ].openRestaurantPage( now, true ) ){
 				areAllTheRestaurantsMinimized = false;
 				totalClosedRestaurantsBefore++;
 				if( !list[ x ]._open ){
@@ -203,7 +203,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			for ( var x in restaurants ) {
 				restaurants[ x ].reloadHours( true );
 			}
-		}	
+		}
 	}
 
 	service.removeInactive = function( id_restaurant ){
@@ -217,7 +217,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	}
 
 	service.list = function ( success, error ) {
-		
+
 		if (!service.position.pos().valid('restaurants')) {
 			if (error) {
 				error();
@@ -236,6 +236,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			}).success(function (data) {
 				// property to control the cache expiration of the list
 				service.cachedAt = ( Math.floor( new Date().getTime() / 1000 ) );
+				service.community_closed = data.community_closed;
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {
@@ -287,7 +288,7 @@ NGApp.factory( 'CommunityService', function( $http ){
 
 //RestaurantService Service
 NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
-	
+
 	var service = { basicInfo : null, loadedList: {}, initied : {} };
 
 	service.alreadyLoaded = function(){
