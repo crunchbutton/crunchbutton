@@ -204,17 +204,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversSummaryCtrl',
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
-		/* Customer */
-		.when('/customer', {
-			action: 'customer',
-			controller: 'CustomerCtrl',
-			templateUrl: 'assets/view/customer.html'
-		})
-		.when('/customer/reward/config', {
-			action: 'customer',
-			controller: 'CustomerRewardConfigCtrl',
-			templateUrl: 'assets/view/customer-reward-config.html'
-		})
 		/* Driver shifts */
 		.when('/drivers/dashboard', {
 			action: 'drivers-dashboard',
@@ -343,6 +332,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'onboarding',
 			controller: 'PreOnboardingCtrl',
 			templateUrl: 'assets/view/pre-onboarding.html'
+		})
+		.when('/404', {
+			action: '404',
+			controller: 'NotFoundCtrl',
+			templateUrl: 'assets/view/general-404.html'
 		})
 		.otherwise({
 			action: 'home',

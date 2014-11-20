@@ -1,5 +1,3 @@
-
-
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 		.when('/orders', {
