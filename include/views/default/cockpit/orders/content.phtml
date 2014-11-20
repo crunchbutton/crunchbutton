@@ -82,7 +82,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 									</div>
 
 
-							<div style="<?php if( !$order->refunded ) { echo 'display:none;';} ?>" class="pointer  refunded-<?php echo $order->uuid; ?> do_not_reimburse_driver" data-value="<?php if( $order->do_not_reimburse_driver ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
+							<div style="<?php if( !$order->refunded ) { echo 'display:none;';} ?>" class="pointer do_not_reimburse_driver-<?php echo $order->uuid; ?> refunded-<?php echo $order->uuid; ?> do_not_reimburse_driver" data-value="<?php if( $order->do_not_reimburse_driver ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
 								<span><?php if( $order->do_not_reimburse_driver ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span>
 								Do Not Reimburse Driver?
 							</div>
