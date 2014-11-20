@@ -9,7 +9,10 @@
 					
 					<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
 					<div ng-if="ticket.order">
-						{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / {{ticket.order.status}}
+						{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / 
+						
+							<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
+							<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 						<br>ETA: @todo
 					</div>					
 				</div>
