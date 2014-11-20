@@ -1,56 +1,49 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
+<div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Payments - Drivers</span></h1>
+	<h1 class="subltitle "><i class="fa fa-bank"></i>&nbsp;&nbsp;<span>Payments - Drivers</span><div class="title-loader" ng-if="!ready"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
-	<div class="divider"></div>
 
-	<h2 class="title">
-		<span>Payments</span>
-	</h2>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<th>Driver</th>
+				<td>
+					<select ng-model="query.driver" ng-options="opt.id_driver as opt.name for opt in drivers" class="cart-customize-select"></select>
+				</td>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
+				</td>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" ng-options="opt.type as opt.label for opt in balanced_statuses" class="cart-customize-select"></select>
+				</td>
+			</tr>
+		</table>
+	</div>
 
-	<ul class="ul-inputs box-content2">
-		<li class="li-input">
-			<div class="label">Driver:</div>
-			<select ng-model="id_driver" ng-options="opt.id_driver as opt.name for opt in drivers" class="cart-customize-select"></select>
-		</li>
-		<li class="li-input">
-			<div class="label">Type:</div>
-			<select ng-model="pay_type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
-		</li>
-		<li class="li-input">
-			<div class="label">Balanced Status:</div>
-			<select ng-model="balanced_status_filter" ng-options="opt.type as opt.label for opt in balanced_statuses" class="cart-customize-select"></select>
-		</li>
-	</ul>
 
 	<div ng-if="count">
 
-		<div class="box-content2" ng-show="!showForm">
-			<p>
-				Total of <strong>{{count}}</strong> payments found.
-			</p>
-		</div>
-
-		<table class="tb-grid tb-zebra">
-			<thead>
+		<div class="box-content2 box-content-table">
+			<table class="tb-zebra">
 				<tr>
-					<td>#</td>
-					<td class="td-medium">Driver</td>
-					<td>Type</td>
-					<td>Amount</td>
-					<td class="td-medium">Balanced Status</td>
-					<td>Date</td>
+					<th>ID</th>
+					<th>Driver</th>
+					<th>Type</th>
+					<th>Amount</th>
+					<th>Balanced Status</th>
+					<th>Date</th>
 				</tr>
-			</thead>
-			<tbody>
+
 				<tr ng-repeat="payment in payments">
 					<td>
-						<span ng-show="payment.id_payment_schedule" class="orange link" ng-click="open(payment.id_payment)">
+						<a ng-if="payment.id_payment_schedule" href="/settlement/drivers/payment/{{payment.id_payment}}">
 							{{payment.id_payment}}
 						</span>
-						<span ng-show="!payment.id_payment_schedule">
+						<span ng-if="!payment.id_payment_schedule">
 							{{payment.id_payment}}
 						</span>
 					</td>
@@ -67,24 +60,23 @@
 					</td>
 					<td>{{payment.date}}</td>
 				</tr>
-			</tbody>
-		</table>
 
-		<table class="tb-pagination" ng-show="pages > 1">
+			</table>
+		</div>
+
+		<table class="tb-pagination right" ng-if="pages > 1" page-key>
 			<tbody>
 				<tr>
-					<td class="td-prev"><button class="button orange" ng-show="prev" ng-click="prevPage()">prev</button></td>
-					<td class="td-info">Page {{page}} of {{pages}}</td>
-					<td class="td-next"><button class="button orange" ng-show="next" ng-click="nextPage()">next</button></td>
+					<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
+					<td class="td-info">Page {{query.page}} of {{pages}}</td>
+					<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
 				</tr>
 			</tbody>
 		</table>
+		<div class="divider"></div>
+		
 	</div>
-	<div ng-if="!count">
-		No payments
-	</div>
+
+
 
 </div>
-
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>

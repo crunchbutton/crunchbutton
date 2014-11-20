@@ -731,15 +731,31 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 	}
 });
 
-NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, SettlementService, DriverService) {
+NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService) {
 
-	$scope.ready = false;
-	$scope.id_driver = 0;
-	$scope.balanced_status_filter = 0;
-	$scope.page = 1;
+	var query = $location.search();
+	$scope.query = {
+		type: query.type || 0,
+		status: query.status || 0,
+		driver: query.driver || 0,
+		limit: query.limit || 25,
+		page: query.page || 1
+	};
+	
+	$scope.query.page = parseInt($scope.query.page);
+	
+	$scope.count = 0;
+	$scope.pages = 0;
+
 
 	var list = function(){
-		SettlementService.drivers.payments( { 'page': $scope.page, 'id_driver': $scope.id_driver, 'pay_type': $scope.pay_type, 'balanced_status': $scope.balanced_status_filter }, function( data ){
+		$scope.ready = false;
+		SettlementService.drivers.payments({
+			'page': $scope.query.page,
+			'id_driver': $scope.query.driver,
+			'pay_type': $scope.query.type,
+			'balanced_status': $scope.query.status
+		}, function( data ){
 			$scope.pages = data.pages;
 			$scope.next = data.next;
 			$scope.prev = data.prev;
@@ -755,6 +771,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
+
 	$scope.balanced_status = function( id_payment ){
 		$scope.makeBusy();
 		SettlementService.drivers.balanced_status( id_payment, function( json ){
@@ -767,35 +784,33 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-	$scope.open = function( id_payment ){
-		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
-	}
-
-	$scope.$watch( 'id_driver', function( newValue, oldValue, scope ) {
-		$scope.page = 1;
+	var watch = function() {
+		$location.search($scope.query);
 		list();
-	} );
+	};
+	
+	// @todo: this breaks linking to pages
+	var inputWatch = function() {
+		if ($scope.query.page != 1) {
+			$scope.query.page = 1;
+		} else {
+			watch();
+		}
+	};
+	
+	$scope.$watch('query.driver', inputWatch);
+	$scope.$watch('query.type', inputWatch);
+	$scope.$watch('query.status', inputWatch);
+	$scope.$watch('query.limit', inputWatch);
+	$scope.$watch('query.page', watch);
+	
+	$scope.setPage = function(page) {
+		$scope.query.page = page;
+		App.scrollTop(0);
+	};
 
-	$scope.$watch( 'balanced_status_filter', function( newValue, oldValue, scope ) {
-		$scope.page = 1;
-		list();
-	} );
-
-	$scope.$watch( 'pay_type', function( newValue, oldValue, scope ) {
-		$scope.page = 1;
-		list();
-	} );
 
 
-	$scope.nextPage = function(){
-		$scope.page = $scope.next;
-		list();
-	}
-
-	$scope.prevPage = function(){
-		$scope.page = $scope.prev;
-		list();
-	}
 
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
