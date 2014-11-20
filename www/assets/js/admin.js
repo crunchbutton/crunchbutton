@@ -900,8 +900,6 @@ App.orders = {
 
 			$( '.refunded-' + el.attr('data-uuid') ).show();
 
-			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
-
 			var do_not_reimburse_driver = $( '.do_not_reimburse_driver-' + el.attr('data-uuid') );
 			do_not_reimburse_driver.show();
 			var do_not_reimburse_driver_value = ( do_not_reimburse_driver.attr( 'data-value' ) == 1 ? 0 : 1 );
@@ -911,6 +909,9 @@ App.orders = {
 			} else {
 				do_not_reimburse_driver.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
 			}
+
+
+			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
 
 			var fail = function( result ){
 				console.log( result.responseText);
