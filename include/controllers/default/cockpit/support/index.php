@@ -205,53 +205,13 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 			$changes[] = 'Status changed to: ' . $args['status'];
 		}
 
-		if( $support->id_github != $args['id_github'] ){
-			$changes[] = 'GitHub Issue changed to: ' . $args['id_github'];
-		}
-
-		if( $support->fault_of != $args['fault_of'] ){
-			$changes[] = 'Fault of changed to: ' . $args['fault_of'];
-		}
-
-		if( $support->customer_happy != $args['customer_happy'] ){
-			$changes[] = 'Customer happy changed to: ' . ( ( $args['customer_happy'] == 1 ) ? 'Yes' : 'No' ) ;
-		}
-
-		if( $support->user_perspective != $args['user_perspective'] ){
-			$changes[] = 'User perspective changed to: ' . $args['user_perspective'];
-		}
-
-		if( $support->user_perspective_other != $args['user_perspective_other'] ){
-			$changes[] = 'User perspective (other) changed to: ' . $args['user_perspective_other'];
-		}
-
-		if( $support->description_cb != $args['description_cb'] ){
-			$changes[] = 'Behind the scenes changed to: ' . $args['description_cb'];
-		}
-
-		if( $support->how_to_prevent != $args['how_to_prevent'] ){
-			$changes[] = 'Hot to prevent changed to: ' . $args['how_to_prevent'];
-		}
-
-		if( $support->id_restaurant != $args['id_restaurant'] ){
-			$changes[] = 'Changed restaurant to: ' . $args['id_restaurant'];
-		}
 
 		$changes = join( "\n", $changes );
 		if( trim( $changes ) != '' ){
 			$support->addSystemMessage( $changes );
 		}
 
-		$support->id_restaurant 					= $args['id_restaurant'			];
-		$support->user_perspective 				= $args['user_perspective'			];
-		$support->user_perspective_other 	= $args['user_perspective_other'];
-		$support->description_client 			= $args['description_client'		];
-		$support->how_to_prevent 					= $args['how_to_prevent'				];
-		$support->description_cb     			= $args['description_cb'    		];
-		$support->fault_of           			= $args['fault_of'          		];
-		$support->customer_happy     			= $args['customer_happy'    		];
 		$support->status             			= $args['status'            		];
-		$support->id_github          			= $args['id_github'         		];
 		$support->save();
 	}
 
