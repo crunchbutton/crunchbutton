@@ -185,7 +185,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/settlement/drivers/payments', {
 			action: 'settlement',
 			controller: 'SettlementDriversPaymentsCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payments.html'
+			templateUrl: 'assets/view/settlement-drivers-payments.html',
+			reloadOnSearch: false
 		})
 		.when('/settlement/drivers/payment/arbitrary', {
 			action: 'settlement',
