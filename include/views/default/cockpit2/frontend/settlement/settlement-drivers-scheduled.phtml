@@ -1,57 +1,50 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
-
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Scheduled Payments - Drivers</span></h1>
-
-	<div class="divider"></div>
+<div class="content-padding">
+	<h1 class="subltitle "><i class="fa fa-bank"></i>&nbsp;&nbsp;<span>Scheduled Driver Payments Summary</span></h1>
 
 	<div ng-if="result">
 
-		<h2 class="title">
-			<span>Summary</span>
-		</h2>
 		<h3 class="title">
 			Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
 		</h3>
 
-		<table class="tb-grid tb-zebra summary">
-			<tbody>
+		<div class="box-content2 box-content-table">
+			<table>
 				<tr>
-					<td>Total of Payments</td>
+					<th>Total of Payments</th>
 					<td>{{result.total_payments}}</td>
 				</tr>
 				<tr>
-					<td>Total of Reimbursements</td>
+					<th>Total of Reimbursements</th>
 					<td>{{result.total_reimbursements}}</td>
 				</tr>
 				<tr>
-					<td>Scheduled</td>
+					<th>Scheduled</th>
 					<td>{{result.scheduled}}</td>
 				</tr>
 				<tr>
-					<td>Processing</td>
+					<th>Processing</th>
 					<td>{{result.processing}}</td>
 				</tr>
 				<tr ng-class="{'orange' : result.error > 0 }">
-					<td>Error</td>
+					<th>Errors</th>
 					<td>{{result.error}}</td>
 				</tr>
-			</tbody>
-		</table>
+			</table>
+		</div>
 
 		<div ng-show="result.drivers">
+			
+			<h1 class="subltitle left"><i class="fa fa-bank"></i>&nbsp;&nbsp;<span>Payments</span></h1>
 
-			<h2 class="title">
-				<span>Scheduled Payments</span>
-			</h2>
-
-			<div class="box-filter">
+			<div class="box-filter right">
 				<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'reimbursement' }" ng-click="filter = 'reimbursement'">Reimbursement</button>
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'payment' }" ng-click="filter = 'payment'">Payments</button>
-				<div class="divider"></div>
 			</div>
+			
+			<div class="divider"></div>
 
 			<div>
 				<h3 class="title">
@@ -62,35 +55,32 @@
 				</h3>
 			</div>
 
-			<table class="tb-grid tb-zebra">
-				<thead>
+			<div class="box-content2 box-content-table">
+				<table class="tb-zebra">
 					<tr>
-						<td>#</td>
-						<td class="td-medium">Driver</td>
-						<td>Scheduled at</td>
-						<td>Type</td>
-						<td>Amount</td>
-						<td>Status</td>
-						<td></td>
+						<th>ID</th>
+						<th>Driver</th>
+						<th>Scheduled at</th>
+						<th>Type</th>
+						<th>Amount</th>
+						<th>Status</th>
+						<th></th>
 					</tr>
-				</thead>
-				<tbody>
 					<tr ng-repeat="driver in result.drivers" ng-show="!filter || filter == driver.pay_type">
-						<td>{{driver.id_payment_schedule}}</td>
+						<td><a href="/settlement/drivers/scheduled/{{driver.id_payment_schedule}}">{{driver.id_payment_schedule}}</td>
 						<td>{{driver.driver}}</td>
 						<td>{{driver.date}}</td>
 						<td>{{driver.pay_type}}</td>
-						<td>$ {{driver.amount | formatPrice}}</td>
-						<td>
-							<span class="link orange" ng-click="payment( driver.id_payment_schedule )">{{driver.status}}</span>
-							&nbsp;<a title="Open in new window" href="/settlement/drivers/scheduled/{{driver.id_payment_schedule}}" target="_blank"><span class="link orange"><i class="fa fa-share-square"></i></span></a>
+						<td>${{driver.amount | formatPrice}}</td>
+						<td class="deploy-status-{{driver.status}}">
+							{{driver.status}}
 						</td>
 						<td>
 							{{driver.log}}
 						</td>
 					</tr>
-				</tbody>
-			</table>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>

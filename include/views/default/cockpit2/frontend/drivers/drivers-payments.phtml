@@ -35,8 +35,9 @@
 				<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Reimbursement' }" ng-click="filter = 'Reimbursement'">Reimbursement</button>
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Payment' }" ng-click="filter = 'Payment'">Payments</button>
-				<div class="divider"></div>
 			</div>
+			
+			<div class="divider"></div>
 
 			<table class="tb-grid tb-zebra" ng-show="result.payments.length">
 				<thead>

@@ -3264,7 +3264,7 @@ input[type="checkbox"].switch + div:before {
 .deploy-status-success {
 	color: #289337;
 }
-.deploy-status-failed {
+.deploy-status-failed, .deploy-status-error {
 	color: #c33636;
 }
 .deploy-status-deploying {
@@ -3284,4 +3284,8 @@ input[type="checkbox"].switch + div:before {
 
 .staff-community-repeat:not(:first-child):before {
 	content: ", ";
+}
+
+.box-filter .button:not(:last-child) {
+	border-left: none !important;
 }
