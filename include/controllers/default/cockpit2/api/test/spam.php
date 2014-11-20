@@ -492,7 +492,7 @@ $users = '9258183053,1198112
 8082065534,1193131
 5415566252,1193124';
 	
-$users = '4152052084,CELL
+$users = '_PHONE_,CELL
 _PHONE_,GVOICE
 _PHONE_,JUDDTEST';
 
@@ -512,7 +512,6 @@ foreach ($messages as $message) {
 			'to' => $user[0],
 			'message' => str_replace('CODE', $user[1], $message)
 		]);
-
-	
 	}
+	sleep(5);
 }
