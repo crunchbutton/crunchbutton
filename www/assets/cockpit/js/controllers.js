@@ -8,7 +8,9 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 	if( !isNaN( parseInt( id_order ) ) ){
 		MainNavigationService.link('/drivers/order/' + id_order);
 	} else {
-		if (AccountService.isRestaurant) {
+		if (AccountService.user.permissions.GLOBAL) {
+			MainNavigationService.link('/404');
+		} else if (AccountService.isRestaurant) {
 			MainNavigationService.link('/restaurant/order/placement/dashboard');
 		} else if (AccountService.isDriver) {
 			MainNavigationService.link('/drivers/orders');
@@ -17,6 +19,8 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 		}
 	}
 });
+
+NGApp.controller('NotFoundCtrl', function ( $scope) {} );
 
 NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
 

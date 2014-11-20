@@ -3136,7 +3136,7 @@ h1.driver-title {
 .support-chat-contents-scroll div {
 	-webkit-transform: translateZ(0);
     animation: fadeIn 200ms 1;
-    -webkit-animation: fadeIn 200ms 1;
+/*    -webkit-animation: fadeIn 200ms 1;*/
 }
 
 @keyframes fadeIn {
@@ -3288,4 +3288,16 @@ input[type="checkbox"].switch + div:before {
 
 .box-filter .button:not(:last-child) {
 	border-left: none !important;
+}
+
+.image-not-found {
+	background: url(../images/404.png)  center center no-repeat;
+	background-size: 100%;
+	width: 200px;
+	height: 200px;
+	margin: 0 auto;
+}
+
+body.page-404 {
+	background: black;
 }
