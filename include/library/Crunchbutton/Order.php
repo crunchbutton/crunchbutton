@@ -2214,6 +2214,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$support->addSystemMessage('Order refunded.');
 			}
 			$this->refunded = 1;
+			$this->do_not_reimburse_driver = 1;
 			$this->save();
 			return (object)['status' => true];
 		}
@@ -2626,7 +2627,7 @@ class Crunchbutton_Order extends Cana_Table {
 			->idVar('id_order')
 			->load($id);
 	}
-	
+
 	public function deliveryStatus($type = null) {
 		if (!$this->_actions) {
 			$this->_actions = Order_Action::q('select * from order_action where id_order="'.$this->id_order.'" order by timestamp');
