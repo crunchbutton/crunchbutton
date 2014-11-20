@@ -39,7 +39,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					default:
 
 						$order = Order::uuid(c::getPagePiece(2));
-						/* @var $order Crunchbutton_Order */
+
 						if (!$order->id_order) {
 							$order = Order::o(c::getPagePiece(2));
 						}
@@ -48,15 +48,23 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 							$order = $order->get(0);
 						}
 
-						if( $order->id_order ){
-							$restaurant = Admin::restaurantOrderPlacement();
-							if( $restaurant && $restaurant->id_restaurant && $order->id_restaurant == $order->id_restaurant ){
-								echo $order->json();
-							} else {
-								echo json_encode(['error' => 'invalid object']);
-							}
+						if (!$order->id_order) {
+							header('HTTP/1.0 404 Not Found');
+							exit;
+						}
+						
+						$restaurant = Admin::restaurantOrderPlacement();
+						
+						if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) && $restaurant->id_restaurant != $order->id_restaurant) {
+							header('HTTP/1.1 401 Unauthorized');
+							exit;
 						}
 
+						$out = $order->exports();
+						$out['user'] = $order->user()->id_user ? $order->user()->exports() : null;
+						$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports() : null;
+
+						echo json_encode($out);;
 						break;
 				}
 				break;

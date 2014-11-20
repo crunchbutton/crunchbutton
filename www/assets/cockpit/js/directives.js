@@ -22,6 +22,9 @@ NGApp.directive('pageKey', function() {
 		link: function(scope, element, attrs) {
 			$(document.body).bind('keydown keypress', function (e) {
 				if (document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'SELECT' || document.activeElement.tagName == 'TEXTAREA') {
+					if (e.which == 27 || e.which == 13) {
+						document.activeElement.blur();
+					}
 					return;
 				}
 				// next

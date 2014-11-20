@@ -6,12 +6,24 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/staff-list.html',
 			reloadOnSearch: false
 		})
+		.when('/staff/:id', {
+			action: 'staff',
+			controller: 'StaffInfoCtrl',
+			templateUrl: 'assets/view/staff-staff.html'
+		})
 		.when('/staff/:id/payinfo', {
 			action: 'staff',
 			controller: 'StaffPayInfoCtrl',
 			templateUrl: 'assets/view/staff-payinfo.html'
 		});
 }]);
+
+NGApp.controller('StaffInfoCtrl', function ($scope, $routeParams, $location, StaffService) {
+	StaffService.get($routeParams.id, function(staff) {
+		$scope.staff = staff;
+		$scope.ready = true;
+	});
+});
 
 NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffService) {
 	
