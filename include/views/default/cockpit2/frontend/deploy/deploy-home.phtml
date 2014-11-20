@@ -23,7 +23,7 @@
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
-				<th>Version</th>
+				<th>ID</th>
 				<th>Environment</th>
 				<th>Date</th>
 				<th>Git Version / Tag</th>
@@ -31,7 +31,7 @@
 				<th>Admin</th>
 			</tr>
 			<tr ng-repeat="version in versions">
-				<td><a href="/deploy/version/{{version.id_deploy_version}}">#{{version.id_deploy_version}}</td>
+				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{version.id_deploy_version}}</td>
 				<td>{{version.server.name}}</td>
 				<td>{{version.timestamp*1000 | date:'MM/dd @ HH:mm'}}</td>
 				<td>
