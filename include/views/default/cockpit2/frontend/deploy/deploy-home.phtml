@@ -2,11 +2,11 @@
 
 <div class="content-padding">
 
-	<h1 class="subltitle"><i class="fa fa-database"></i>&nbsp;&nbsp;<span>Servers</span></h1>
+	<h1 class="subltitle"><i class="fa fa-database"></i>&nbsp;&nbsp;<span>Environments</span></h1>
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
-				<th>Server</th>
+				<th>Environment</th>
 				<th>Last Update</th>
 				<th>Last Git Version</th>
 			</tr>
@@ -24,7 +24,7 @@
 		<table class="tb-zebra">
 			<tr>
 				<th>Version</th>
-				<th>Server</th>
+				<th>Environment</th>
 				<th>Date</th>
 				<th>Git Version / Tag</th>
 				<th>Status</th>
@@ -48,7 +48,7 @@
 				<td class="deploy-status-{{version.status}}">
 					{{version.status}}
 					<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
-					<span ng-if="version.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(version.id_deploy_version)"><i class="fa fa-times-circle"></i></a></span>
+					<span ng-if="version.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(version.id_deploy_version)" ng-if="account.user.permissions['SERVER-DEPLOY-ADMIN']"><i class="fa fa-times-circle"></i></a></span>
 				</td>
 				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>
