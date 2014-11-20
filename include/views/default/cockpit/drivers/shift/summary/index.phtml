@@ -99,7 +99,14 @@
 													if( $preference->id_admin_shift_preference ){
 														$ranking = $preference->ranking;
 													}
-													$drivers[] = $driver->name . " ({$ranking} of {$highestRanking})";
+
+													$isPermanent = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $segment->id_community_shift ) ) ? 'checked="checked"' : '';
+
+													$_driver = '<strong style="' . ( $isPermanent ? 'color:blue;' : '' ) . '">';
+													$_driver .= $driver->name . " ({$ranking} of {$highestRanking})";
+													$_driver .= '</strong>';
+
+													$drivers[] = $_driver;
 												}
 												if( $hasDriver ){
 													$drivers = join( ', ', $drivers );
