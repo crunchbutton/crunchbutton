@@ -4,7 +4,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])){
+		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}

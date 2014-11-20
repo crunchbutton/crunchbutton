@@ -1,0 +1,32 @@
+
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="subltitle "><i class="fa fa-comments-o"></i>&nbsp;&nbsp;<span>{{staff.name}}</span></h1>
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>ID</th>
+				<th>From</th>
+				<th>Updated</th>
+				<th>Name</th>
+				<th>Message</th>
+			</tr>
+			<tr ng-repeat="ticket in tickets">
+				<td><a href="/ticket/{{ticket.id_support}}">{{ticket.id_support}}</td>
+				<td><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></td>
+				<td>
+					<span ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></span>
+					<span ng-if="!ticket.timestamp"><i>Unknown</i></span>
+				</td>
+				<td>{{ticket.name}}</td>
+				<td>{{ticket.message}}</td>
+
+			</tr>
+		</table>
+	</div>
+
+
+</div>
