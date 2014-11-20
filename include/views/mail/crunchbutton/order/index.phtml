@@ -9,7 +9,7 @@ if( $isDriverCockpit ){
 	} else if( $version == 'customer' ){
 		$icon = 'customer';
 	} else {
-		$icon = 'driver';	
+		$icon = 'driver';
 	}
 } else {
 	if( $user ){
@@ -99,15 +99,7 @@ if( $isDriverCockpit ){
 			<table cellpadding="0" cellspacing="0"><tr>
 				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/customer.png')?>" class="icon-big"></td>
 				<td class="text-size-mid"><?=$order->name?><br />
-				<?php
-				// change the customer phone to 646-783-1444 at fax/email to 3rd party delivery restaurants
-				// https://github.com/crunchbutton/crunchbutton/issues/2848#issuecomment-41191749
-				if( $order->delivery_service && $icon == 'restaurant' ){
-					echo c::config()->phone->restaurant;
-				} else {
-					echo $order->phone();
-				}
-				?>
+				<?php echo $order->phone(); ?>
 				</td>
 			</tr></table>
 		</td>
@@ -138,7 +130,7 @@ if( $isDriverCockpit ){
 	</tr>
 
 </table>
-<?php 
+<?php
 if( $this->cockpit_url ){
 	// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
 ?>
@@ -156,7 +148,7 @@ if( $this->cockpit_url ){
 <?php } ?>
 <div class="xhatch separator-small"></div>
 
-<?php echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version, 'viewer' => $icon ]]);	
+<?php echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version, 'viewer' => $icon ]]);
 
 ;?>
 <br /><br />
@@ -170,7 +162,7 @@ if( $this->cockpit_url ){
 <? endif ; ?>
 
 
-<?php 
+<?php
 /* Link to reps */
 if( $this->cockpit_url ) { ?>
 	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
@@ -190,7 +182,7 @@ if( $this->cockpit_url ) { ?>
 	<br /><br />
 	<div style="border-top: 1px dashed black"> </div>
 	<br /><br />
-	
+
 	<h2 align="center">Customer Copy</h2>
 	<br /><br />
 	<h1 style="text-align: center"><?=$order->restaurant()->name?></h1>
