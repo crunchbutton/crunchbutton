@@ -66,6 +66,10 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 					$json[ 'pexcard_date' ] = $driver->driver_info()->pexcard_date()->format( 'Y,m,d' );
 				}
 
+				if( $json[ 'weekly_hours' ] ){
+					$json[ 'weekly_hours' ] = intval( $json[ 'weekly_hours' ] );
+				}
+
 				echo json_encode( $json );exit();
 				break;
 		}
