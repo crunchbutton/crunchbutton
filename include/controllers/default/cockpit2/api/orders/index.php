@@ -81,6 +81,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					OR order.phone LIKE "%'.$word.'%"
 					OR order.address LIKE "%'.$word.'%"
 					OR order.id_order LIKE "'.$word.'%"
+					OR order.notes LIKE "'.$word.'%"
 				)';
 			}
 			$q .= '
