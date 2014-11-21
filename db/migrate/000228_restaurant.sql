@@ -1,0 +1,1 @@
+ALTER TABLE `restaurant` ADD `notes_to_driver` TEXT NULL DEFAULT NULL;

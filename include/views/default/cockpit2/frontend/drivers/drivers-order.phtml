@@ -62,7 +62,7 @@
 		</div>
 
 	</div>
-	
+
 
 	<div ng-if="order.status.status == 'delivered' && order.status.driver.id_admin == account.user.id_admin" class="content-padding">
 		<div class="box-content-delivered box-order-status">
@@ -93,7 +93,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div ng-if="order.status.status == 'delivered' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
 		<div class="dialog-message dialog-message-error">
 			<div class="message">
@@ -151,6 +151,17 @@
 		</div>
 		<div class="divider"></div>
 		<div class="divider dots"></div>
+
+		<span ng-if="order.notes_to_driver">
+			<div class="divider dots"></div>
+			<div class="order-item-block-big">
+				<div class="order-icon2"><i class="fa fa-exclamation"></i></div>
+				<div class="order-info2 order-info-small">
+					{{order.notes_to_driver}}
+				</div>
+			</div>
+		</span>
+
 		<div class="order-item-block-big">
 			<div class="order-icon2"><i class="fa fa-money"></i></div>
 			<div class="order-info2 order-info-small">
@@ -212,7 +223,7 @@
 			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=640x300&markers=color:green%7Clabel:A%7C{{order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div>
 		</a>
 		<br>
-		
+
 		<div class="order-item-block-big order-notes" ng-if="order.notes">
 			<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
 			<div class="order-info2 order-info-small">
@@ -281,9 +292,9 @@
 		</div>
 
 	</div>
-	
-		
-		
+
+
+
 	<div class="order-item-block-big">
 		<div class="order-icon2">
 			<i class="fa fa-money" ng-if="order.pay_type=='cash'"></i>
@@ -293,7 +304,7 @@
 			Customer is paying by {{order.pay_type}}
 		</div>
 	</div>
-	
+
 
 
 	<div class="customer-total-block total-block">
@@ -317,7 +328,7 @@
 		<span class="order-total-block-text">Tip</span>
 		</br>
 	</div>
-	
+
 	<div class="divider"></div><br><br><br>
 
 

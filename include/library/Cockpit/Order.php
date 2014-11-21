@@ -24,6 +24,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = $this->charged();
+		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
 		$credit = $this->chargedByCredit();
 		if( $credit > 0 ){
 			$out['credit'] = $credit;

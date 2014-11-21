@@ -1381,6 +1381,7 @@ var DOM_MAP = {
 				'input#restaurant-email' : ['email'],
 				'textarea#restaurant-address' : ['address'],
 				'textarea#restaurant-notes' : ['notes'],
+				'textarea#notes-to-drivers' : ['notes_to_driver'],
 				'textarea#restaurant-notes-todo' : ['notes_todo'],
 				'textarea#restaurant-notes-owner' : ['notes_owner'],
 				'select#restaurant-timezone' : ['timezone'],
