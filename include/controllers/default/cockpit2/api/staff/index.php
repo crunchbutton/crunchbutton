@@ -74,9 +74,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		
 		if ($search) {
+			$search  = stripslashes($search);
 			$words = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $search, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 			foreach ($words as $word) {
-				$sq .= ($sq ? ' OR ' : '').'(
+				$sq .= ($sq ? ' AND ' : '').'(
 					admin.name LIKE "%'.$word.'%"
 					OR admin.phone LIKE "%'.$word.'%"
 					OR admin.login LIKE "%'.$word.'%"

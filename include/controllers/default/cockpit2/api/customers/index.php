@@ -36,16 +36,17 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		';
 		
 		if ($search) {
+			$search  = stripslashes($search);
 			$words = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $search, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 			foreach ($words as $word) {
-				$sq .= ($sq ? ' OR ' : '').'(
+				$sq .= ($sq ? ' AND ' : '').'(
 					user.name LIKE "%'.$word.'%"
 					OR user.phone LIKE "%'.$word.'%"
 					OR user.address LIKE "%'.$word.'%"
 					OR `order`.name LIKE "%'.$word.'%"
 					OR `order`.phone LIKE "%'.$word.'%"
 					OR `order`.address LIKE "%'.$word.'%"
-					OR user.id_user LIKE "%'.$word.'%"
+					OR user.id_user LIKE "'.$word.'%"
 				)';
 			}
 			$q .= '
@@ -65,7 +66,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
-			ORDER BY `user`.id_user DESC, `order`.date DESC
+			ORDER BY `user`.id_user DESC, `order`.date ASC
 			LIMIT '.$offset.', '.$limit.'
 		';
 		
@@ -73,7 +74,8 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			`user`.*,
-			`order`.date as _order_date
+			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = user.id_user) as _order_date,
+			COUNT(`order`.id_order) orders
 		', $q));
 
 		while ($o = $r->fetch()) {

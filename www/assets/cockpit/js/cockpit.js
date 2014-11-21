@@ -288,10 +288,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/general-profile.html'
 		})
 		/* Driver onBoarding Routes */
-		.when('/drivers/onboarding/', {
+		.when('/drivers/onboarding', {
 			action: 'drivers-onboarding',
 			controller: 'DriversOnboardingCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-list.html'
+			templateUrl: 'assets/view/drivers-onboarding-list.html',
+			reloadOnSearch: false
 		})
 		.when('/drivers/onboarding/docs', {
 			action: 'drivers-onboarding',
