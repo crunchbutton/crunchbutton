@@ -6,9 +6,9 @@
 	<h1 class="title left" ng-style="{true: {width: '100%'}, false: {}}[loading]"><i class="fa fa-bank"></i>Payments<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 	
 	<div class="box-filter right" ng-if="summary.payments">
-		<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
-		<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Reimbursement' }" ng-click="filter = 'Reimbursement'">Reimbursement</button>
-		<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Payment' }" ng-click="filter = 'Payment'">Payments</button>
+		<button class="button green" ng-class="{ 'inactive' : $parent.filter }" ng-click="$parent.filter = false">All</button>
+		<button class="button button-big green" ng-class="{ 'inactive' : $parent.filter != 'Reimbursement' }" ng-click="$parent.filter = 'Reimbursement'">Reimbursement</button>
+		<button class="button button-big green" ng-class="{ 'inactive' : $parent.filter != 'Payment' }" ng-click="$parent.filter = 'Payment'">Payments</button>
 	</div>
 	
 	<div class="divider"></div>
