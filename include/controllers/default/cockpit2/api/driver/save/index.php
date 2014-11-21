@@ -127,7 +127,10 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver_info->phone_type = $this->request()[ 'phone_type' ];
 		$driver_info->cell_carrier = $this->request()[ 'cell_carrier' ];
 		$driver_info->address = $this->request()[ 'address' ];
-		$driver_info->pexcard_date = $this->request()[ 'pexcard_date' ];
+
+		if( $this->request()[ 'pexcard_date' ] ){
+			$driver_info->pexcard_date = ( new DateTime( $this->request()[ 'pexcard_date' ] ) )->format( 'Y-m-d' );
+		}
 		$driver_info->student = $this->request()[ 'student' ];
 		$driver_info->permashifts = $this->request()[ 'permashifts' ];
 		$driver_info->weekly_hours = $this->request()[ 'weekly_hours' ];

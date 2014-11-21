@@ -32,4 +32,11 @@ class Cockpit_Driver_Info extends Cana_Table {
 		return $this->properties();
 	}
 
+	public function pexcard_date(){
+		if ( !isset( $this->_pexcard_date ) ) {
+			$this->_pexcard_date = new DateTime( $this->pexcard_date, new DateTimeZone( c::config()->timezone ) );
+		}
+		return $this->_pexcard_date;
+	}
+
 }
