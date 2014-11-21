@@ -460,7 +460,7 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 		limit: query.limit || 25,
 		page: query.page || 1
 	};
-	
+
 	$scope.query.page = parseInt($scope.query.page);
 
 	var update = function() {
@@ -477,7 +477,7 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 		$location.search($scope.query);
 		update();
 	};
-	
+
 	// @todo: this breaks linking to pages
 	var inputWatch = function() {
 		if ($scope.query.page != 1) {
@@ -486,20 +486,20 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 			watch();
 		}
 	};
-	
+
 	$scope.$watch('query.search', inputWatch);
 	$scope.$watch('query.limit', inputWatch);
 	$scope.$watch('query.page', watch);
-	
+
 	$scope.setPage = function(page) {
 		$scope.query.page = page;
 		App.scrollTop(0);
 	};
-	
+
 	$scope.focus('#search');
 });
 
-NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $fileUploader, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, $fileUploader, DriverOnboardingService, CommunityService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
@@ -544,6 +544,12 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope._yesNo = DriverOnboardingService.yesNo();
 
 			$scope.driver = driver;
+
+			if( driver.pexcard_date ){
+				$scope.driver.pexcard_date = new Date( driver.pexcard_date );
+			}
+
+
 			if( !$scope.driver.id_admin ){
 				$scope.driver.notify = true;
 			}
@@ -596,6 +602,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope.isSaving = false;
 			return;
 		}
+
+		$scope.driver.pexcard_date = $filter( 'date' )( $scope.driver.pexcard_date, 'yyyy-MM-dd' );
+
 		$scope.isSaving = true;
 
 		DriverOnboardingService.save( $scope.driver, function( json ){
@@ -605,9 +614,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 				var url = '/drivers/onboarding/' + json.success.id_admin;
 
 				if( $scope.driver.id_admin ){
-					// $scope.reload();
+					$scope.reload();
 				} else {
-					// $scope.navigation.link( url );
+					$scope.navigation.link( url );
 				}
 
 				setTimeout( function(){

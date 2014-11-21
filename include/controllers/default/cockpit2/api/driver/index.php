@@ -54,12 +54,17 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				if ($this->method() == 'post') {
 					// save a setting
 				}
+
 				$json = $driver->exports();
 				$driver_info = $driver->driver_info()->exports();
 				$json = array_merge( $json, $driver_info );
 
 				$payment_type = $driver->payment_type();
 				$json[ 'hourly' ] = ( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? '1' : '0';
+
+				if( $driver->driver_info()->pexcard_date ){
+					$json[ 'pexcard_date' ] = $driver->driver_info()->pexcard_date()->format( 'Y,m,d' );
+				}
 
 				echo json_encode( $json );exit();
 				break;
