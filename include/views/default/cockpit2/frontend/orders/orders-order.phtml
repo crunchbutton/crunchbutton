@@ -82,11 +82,14 @@
 						</div>
 						<div class="field-row">
 							<div class="field-key">Deliveries</div>
-							<div class="field-value">{{order.driver.deliveries.length}}</div>
+							<div class="field-value">&nbsp;{{order.driver.deliveries.length}}</div>
 						</div>
 						<div class="field-row">
 							<div class="field-key">Shift ends in</div>
-							<div class="field-value">@todo</div>
+							<div class="field-value">
+								<span ng-if="order.driver.working">{{order.driver.shift_ends/60/60 | formatPrice}} hours</span>
+								<span ng-if="!order.driver.working">Shift ended</span>
+							</div>
 						</div>
 	
 					</div>

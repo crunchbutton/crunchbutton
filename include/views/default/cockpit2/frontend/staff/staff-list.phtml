@@ -35,6 +35,8 @@
 				<th>Phone</th>
 				<th>Login</th>
 				<th>Community</th>
+				<th class="tb-center">Active</th>
+				<th class="tb-center">Working</th>
 				<th> </th>
 			</tr>
 			<tr ng-repeat="s in staff">
@@ -45,6 +47,12 @@
 					<span class="staff-community-repeat" ng-repeat="community in s.communities">
 						{{community}}
 					</span>
+				</td>
+				<td class="tb-center">
+					<span ng-if="s.active"><i class="fa fa-check"></i></span>
+				</td>
+				<td class="tb-center">
+					<span ng-if="s.working"><i class="fa fa-check"></i></span>
 				</td>
 				<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
 			</tr>
