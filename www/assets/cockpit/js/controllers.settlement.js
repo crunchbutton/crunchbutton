@@ -731,46 +731,37 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 	}
 });
 
-NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService) {
+NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService, ViewListService) {
 
-	var query = $location.search();
-	$scope.query = {
-		type: query.type || 0,
-		status: query.status || 0,
-		driver: query.driver || 0,
-		limit: query.limit || 25,
-		page: query.page || 1
-	};
-	
-	$scope.query.page = parseInt($scope.query.page);
-	
-	$scope.count = 0;
-	$scope.pages = 0;
+	angular.extend($scope, ViewListService);
 
+	$scope.view({
+		scope: $scope,
+		watch: {
+			type: 0,
+			status: 0,
+			driver: 0,
+		},
+		update: function() {
+			$scope.ready = false;
+			SettlementService.drivers.payments({
+				'page': $scope.query.page,
+				'id_driver': $scope.query.driver,
+				'pay_type': $scope.query.type,
+				'balanced_status': $scope.query.status
+			}, function( data ){
+				$scope.payments = data.results;
+				$scope.complete(data);
 
-	var list = function(){
-		$scope.ready = false;
-		SettlementService.drivers.payments({
-			'page': $scope.query.page,
-			'id_driver': $scope.query.driver,
-			'pay_type': $scope.query.type,
-			'balanced_status': $scope.query.status
-		}, function( data ){
-			$scope.pages = data.pages;
-			$scope.next = data.next;
-			$scope.prev = data.prev;
-			$scope.payments = data.results;
-			$scope.count = data.count;
-			$scope.ready = true;
-		} );
-	}
+			});
+		}
+	});
 
 	var drivers = function(){
 		DriverService.paid( function( data ){
 			$scope.drivers = data;
 		} );
 	}
-
 
 	$scope.balanced_status = function( id_payment ){
 		$scope.makeBusy();
@@ -784,43 +775,14 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-	var watch = function() {
-		$location.search($scope.query);
-		list();
-	};
-	
-	// @todo: this breaks linking to pages
-	var inputWatch = function() {
-		if ($scope.query.page != 1) {
-			$scope.query.page = 1;
-		} else {
-			watch();
-		}
-	};
-	
-	$scope.$watch('query.driver', inputWatch);
-	$scope.$watch('query.type', inputWatch);
-	$scope.$watch('query.status', inputWatch);
-	$scope.$watch('query.limit', inputWatch);
-	$scope.$watch('query.page', watch);
-	
-	$scope.setPage = function(page) {
-		$scope.query.page = page;
-		App.scrollTop(0);
-	};
-
-
-
-
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
 		$scope.pay_type = 0;
 		$scope.pay_types = SettlementService.pay_types();
 		$scope.balanced_statuses = SettlementService.balanced_statuses();
 		drivers();
-		list();
+		$scope.update();
 	}
-
 });
 
 NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $rootScope, SettlementService, DriverService) {

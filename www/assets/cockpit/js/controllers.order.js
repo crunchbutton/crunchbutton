@@ -13,54 +13,24 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('OrdersCtrl', function ($scope, $routeParams, $location, OrderService) {
-	
-	var query = $location.search();
-	$scope.query = {
-		search: query.search,
-		restaurant: query.restaurant,
-		community: query.community,
-		limit: query.limit || 25,
-		date: query.date,
-		page: query.page || 1
-	};
-	
-	$scope.query.page = parseInt($scope.query.page);
+NGApp.controller('OrdersCtrl', function ($scope, OrderService, ViewListService) {
+	angular.extend($scope, ViewListService);
 
-	var update = function() {
-		$scope.loading = true;
-		OrderService.list($scope.query, function(d) {
-			$scope.orders = d.results;
-			$scope.count = d.count;
-			$scope.pages = d.pages;
-			$scope.loading = false;
-		});
-	};
-	
-	var watch = function() {
-		$location.search($scope.query);
-		update();
-	};
-	
-	// @todo: this breaks linking to pages
-	var inputWatch = function() {
-		if ($scope.query.page != 1) {
-			$scope.query.page = 1;
-		} else {
-			watch();
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			restaurant: '',
+			community: '',
+			date: '',
+		},
+		update: function() {
+			OrderService.list($scope.query, function(d) {
+				$scope.orders = d.results;
+				$scope.complete(d);
+			});
 		}
-	};
-	
-	$scope.$watch('query.search', inputWatch);
-	$scope.$watch('query.limit', inputWatch);
-	$scope.$watch('query.page', watch);
-	
-	$scope.setPage = function(page) {
-		$scope.query.page = page;
-		App.scrollTop(0);
-	};
-	
-	$scope.focus('#search');
+	});
 });
 
 NGApp.controller('OrderCtrl', function ($scope, $routeParams, $interval, OrderService) {

@@ -25,58 +25,23 @@ NGApp.controller('StaffInfoCtrl', function ($scope, $routeParams, $location, Sta
 	});
 });
 
-NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffService) {
-	
-	var query = $location.search();
-	$scope.query = {
-		search: query.search,
-		type: query.type || 'all',
-		status: query.status || 'active',
-		limit: query.limit || 25,
-		page: query.page || 1
-	};
-	
-	$scope.query.page = parseInt($scope.query.page);
-	
-	$scope.count = 0;
-	$scope.pages = 0;
+NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
+	angular.extend($scope, ViewListService);
 
-	var update = function() {
-		$scope.loading = true;
-		StaffService.list($scope.query, function(d) {
-			$scope.staff = d.results;
-			$scope.count = d.count;
-			$scope.pages = d.pages;
-			$scope.loading = false;
-		});
-	};
-	
-	var watch = function() {
-		$location.search($scope.query);
-		update();
-	};
-	
-	// @todo: this breaks linking to pages
-	var inputWatch = function() {
-		if ($scope.query.page != 1) {
-			$scope.query.page = 1;
-		} else {
-			watch();
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'all',
+			status: 'active'
+		},
+		update: function() {
+			StaffService.list($scope.query, function(d) {
+				$scope.staff = d.results;
+				$scope.complete(d);
+			});
 		}
-	};
-	
-	$scope.$watch('query.search', inputWatch);
-	$scope.$watch('query.type', inputWatch);
-	$scope.$watch('query.status', inputWatch);
-	$scope.$watch('query.limit', inputWatch);
-	$scope.$watch('query.page', watch);
-	
-	$scope.setPage = function(page) {
-		$scope.query.page = page;
-		App.scrollTop(0);
-	};
-	
-	$scope.focus('#search');
+	});
 });
 
 NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
