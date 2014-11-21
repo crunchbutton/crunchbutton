@@ -1,11 +1,12 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="subltitle "><i class="fa fa-user"></i>&nbsp;&nbsp;<span>Customers</span><div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<h1 class="title"><i class="fa fa-user"></i>Customers<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search"></td>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
 			</tr>
 		</table>
 	</div>
@@ -17,6 +18,7 @@
 				<th>Name</th>
 				<th>Phone</th>
 				<th>Address</th>
+				<th>Orders</th>
 				<th>Last&nbsp;Order</th>
 			</tr>
 			<tr ng-repeat="customer in customers">
@@ -24,7 +26,8 @@
 				<td>{{customer.name}}</td>
 				<td><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></td>
 				<td>{{customer.address}}</td>
-				<td>{{customer.order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>{{customer.orders}}</td>
+				<td><span ng-if="customer._order_date"><span am-time-ago="customer._order_date"></span></span></td>
 			</tr>
 		</table>
 	</div>

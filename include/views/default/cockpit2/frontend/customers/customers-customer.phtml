@@ -3,7 +3,7 @@
 <div class="content-padding">
 
 
-	<h1 class="left subltitle"><i class="fa fa-user"></i>&nbsp;&nbsp;<span>Customer #{{customer.id_user}}</span><div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<h1 class="left title"><i class="fa fa-user"></i>Customer #{{customer.id_user}}<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
 	<div class="ticket-status-top">
 		<div class="ticket-status-open">{{order.status.status}}</div>
@@ -18,7 +18,6 @@
 			<div ng-if="!customer.id_user" class="support-box-wrap">
 				<h1>Invalid Customer</h1>
 			</div>
-
 		
 			<div ng-if="customer.id_user" class="support-box-wrap">
 				<h1>Details</h1>
@@ -45,7 +44,7 @@
 			</div>
 		</div>
 
-		<h1 class="subltitle"><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Orders</span><div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+		<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
 
 		<div class="box-content2 box-content-table">
 			<table class="tb-zebra">
