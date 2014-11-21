@@ -1545,10 +1545,9 @@ input {
 h1.title {
 	font-family: Source Sans Pro;
 	font-weight: 300;
-	font-size: 2.5em;
+	font-size: 2em;
 	color: #5d5f63;
-	margin-bottom: .9em;
-	margin-top: .2em;
+	margin-bottom: .6em;
 }
 h1.title .fa {
 	font-size: .8em;
@@ -1556,15 +1555,7 @@ h1.title .fa {
 	padding-top: .1em;
 	vertical-align: top;
 }
-	h1.subltitle{
-		font-family: Source Sans Pro;
-		font-weight: 300;
-		font-size: 2em;
-		color: #5d5f63;
-		margin-bottom: .6em;
-		margin-top: .2em;
-	}
-h2.title, h2.subtitle{
+h2.title{
 	font-family: Source Sans Pro;
 	font-weight: 300;
 	font-size: 1.5em;
@@ -1573,14 +1564,14 @@ h2.title, h2.subtitle{
 	margin-top: .2em;
 	line-height: 1.4em;
 }
-	h2.title small{
-		font-size: .8em;
-	}
-	h2.subtitle{
-		font-weight: bold;
-		font-size: 1.2em;
-		color: #86898f;
-	}
+h2.title small{
+	font-size: .8em;
+}
+h2{
+	font-weight: bold;
+	font-size: 1.2em;
+	color: #86898f;
+}
 h3.title{
 	font-family: Source Sans Pro;
 	font-weight: 300;
@@ -3232,6 +3223,8 @@ input[type="checkbox"].switch + div:before {
 
 .box-content-table input {
 	font-size: 1.0em;
+	box-sizing: border-box;
+	width: 90%;
 }
 
 .box-content-table td, .box-content-table th {

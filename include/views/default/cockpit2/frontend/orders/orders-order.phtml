@@ -3,7 +3,7 @@
 <div class="content-padding">
 
 
-	<h1 class="left subltitle"><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Order Details</span></h1>
+	<h1 class="left title"><i class="fa fa-car"></i>Order Details</h1>
 
 	<div class="ticket-status-top">
 		<div class="ticket-status-open">{{order.status.status}}</div>
@@ -18,8 +18,7 @@
 			<div ng-if="!order.id_order" class="support-box-wrap">
 				<h1>Invalid Order</h1>
 			</div>
-			
-			
+
 			<div ng-if="order.id_order" class="support-box-wrap">
 				<h1>Order <a href="/order/{{order.id_order}}">#{{order.id_order}}</a></h1>
 				<div class="box-content-color">
@@ -70,7 +69,7 @@
 			</div>
 	
 			<div ng-if="order.driver.id_admin" class="support-box-wrap">
-				<h1>Driver <a href="/staff/{{ticket.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
+				<h1>Driver <a href="/staff/{{order.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
 				<div class="box-content-color">
 					<div class="field-container">
 						<div class="field-row">

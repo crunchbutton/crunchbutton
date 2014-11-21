@@ -452,64 +452,52 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 	list();
 
 } );
-NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOnboardingService ) {
+NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, DriverOnboardingService) {
 
-	$scope.ready = false;
-	$scope.search = '';
+	var query = $location.search();
+	$scope.query = {
+		search: query.search,
+		limit: query.limit || 25,
+		page: query.page || 1
+	};
+	
+	$scope.query.page = parseInt($scope.query.page);
 
-	var list = function(){
-		DriverOnboardingService.list( $scope.page, $scope.search, function( data ){
+	var update = function() {
+		$scope.loading = true;
+		DriverOnboardingService.list($scope.query.page, $scope.query.search, function(data) {
 			$scope.pages = data.pages;
-			$scope.next = data.next;
-			$scope.prev = data.prev;
 			$scope.drivers = data.results;
 			$scope.count = data.count;
-			$scope.ready = true;
-			$scope.focus( '#search' );
-		} );
+			$scope.loading = false;
+		});
 	}
 
-	var waiting = false;
-
-	$scope.$watch( 'search', function( newValue, oldValue, scope ) {
-		if( newValue == oldValue || waiting ){
-			return;
+	var watch = function() {
+		$location.search($scope.query);
+		update();
+	};
+	
+	// @todo: this breaks linking to pages
+	var inputWatch = function() {
+		if ($scope.query.page != 1) {
+			$scope.query.page = 1;
+		} else {
+			watch();
 		}
-		waiting = true;
-		$timeout( function() {
-			list();
-			// $scope.ready = false;
-			waiting = false;
-		}, 1 * 1000 );
-	} );
-
-	$scope.page = 1;
-
-	$scope.nextPage = function(){
-		$scope.page = $scope.next;
-		list();
-	}
-
-	$scope.prevPage = function(){
-		$scope.page = $scope.prev;
-		list();
-	}
-
-	$scope.add = function( id_admin ){
-		$scope.navigation.link( '/drivers/onboarding/new' );
-	}
-
-	$scope.docs = function(){
-		$scope.navigation.link( '/drivers/onboarding/docs' );
-	}
-
-	$scope.edit = function( id_admin ){
-		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
-	}
-
-	list();
-
-} );
+	};
+	
+	$scope.$watch('query.search', inputWatch);
+	$scope.$watch('query.limit', inputWatch);
+	$scope.$watch('query.page', watch);
+	
+	$scope.setPage = function(page) {
+		$scope.query.page = page;
+		App.scrollTop(0);
+	};
+	
+	$scope.focus('#search');
+});
 
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $fileUploader, DriverOnboardingService, CommunityService ) {
 
