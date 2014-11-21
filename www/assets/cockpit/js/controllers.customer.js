@@ -56,6 +56,8 @@ NGApp.controller('CustomersCtrl', function ($scope, $routeParams, $location, Cus
 		$scope.query.page = page;
 		App.scrollTop(0);
 	};
+	
+	$scope.focus('#search');
 });
 
 NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService) {

@@ -1,72 +1,69 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
+<div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
+	<h1 class="title"><i class="fa fa-automobile"></i>Driver Onboarding<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
-	<div class="divider"></div>
-
-	<div class="box-filter right">
-		<input type="text" class="search" id="search" ng-model="search" placeholder="search" />
-		<button class="button orange" ng-click="add()">New Driver</button>
-		<button class="button green" ng-click="docs()">Documents</button>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
+			</tr>
+		</table>
 	</div>
+
+	<h2>
+		<a href="/drivers/onboarding/docs">Documents</a> | 
+		<a href="/drivers/onboarding/new">Create a new driver</a>
+	</h2>
+	<br><br>
+
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>Name</th>
+				<th>Login</th>
+				<th>Vehicle</th>
+				<th>Community</th>
+				<th></th>
+			</tr>
+			<tr ng-repeat="driver in drivers">
+				<td>
+					<a href="/drivers/onboarding/{{driver.id_admin}}">{{driver.name}}</a>
+				</td>
+				<td>
+					<span ng-if="driver.login">{{driver.login}}</span>
+				</td>
+				<td>
+					{{driver.vehicle}}
+				</td>
+				<td>
+					<span class="staff-community-repeat" ng-repeat="community in driver.communities">
+						{{community}}
+					</span>
+				</td>
+				<td>
+					<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
+						Docs ok
+					</span>
+					<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
+						Docs missing
+					</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<table class="tb-pagination right" ng-if="pages > 1" page-key>
+		<tbody>
+			<tr>
+				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
+				<td class="td-info">Page {{query.page}} of {{pages}}</td>
+				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
+			</tr>
+		</tbody>
+	</table>
 	
 	<div class="divider"></div>
 
-	<div class="divider"></div>
-
-	<div ng-if="count">
-		<table class="tb-grid">
-			<thead>
-				<tr>
-					<td class="td-medium">Name</td>
-					<td class="td-medium">Login</td>
-					<td>Vehicle</td>
-					<td>Community</td>
-					<td></td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="driver in drivers">
-					<td class="link" ng-click="edit(driver.id_admin)">
-						{{driver.name}}
-					</td>
-					<td>
-						<span ng-if="driver.login">{{driver.login}}</span>
-					</td>
-					<td>
-						{{driver.vehicle}}
-					</td>
-					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
-					<td>
-						<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
-							Docs ok
-						</span>
-						<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
-							Docs missing
-						</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<table class="tb-pagination" ng-if="pages > 1">
-			<tbody>
-				<tr>
-					<td class="td-prev"><button class="button orange" ng-show="prev" ng-click="prevPage()">prev</button></td>
-					<td class="td-info">Page {{page}} of {{pages}}</td>
-					<td class="td-next"><button class="button orange" ng-show="next" ng-click="nextPage()">next</button></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-
-	<div ng-if="!count" class="box-content">
-		No drivers.
-	</div>
-
 </div>
-
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>
