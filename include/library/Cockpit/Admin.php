@@ -74,5 +74,37 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $this->_deliveries;
 	}
+	
+	public function exports($params = []) {
+		$out = parent::exports($params);
+		$out['shifts'] = [];
+		$out['working'] = false;
+
+		$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
+
+		if ($next) {
+			foreach ($next as $shift) {
+				$shift = $shift->exports();
+				
+				$date = new DateTime($shift['date_start'], new DateTimeZone(c::config()->timezone));
+				$start = $date->getTimestamp();
+				
+				if ($start <= time() ) {
+					$date = new DateTime($shift['date_end'], new DateTimeZone(c::config()->timezone));
+					$end = $date->getTimestamp();
+
+					$shift['current'] = true;
+					$out['working'] = true;
+					$out['shift_ends'] = $end - time();
+
+				} else {
+					$shift['current'] = false;
+				}
+				$out['shifts'][] = $shift;
+			}
+		}
+
+		return $out;
+	}
 
 }

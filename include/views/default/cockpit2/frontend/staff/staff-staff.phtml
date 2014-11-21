@@ -3,11 +3,120 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
+
+	<h1 class="title left"><i class="fa fa-user"></i>{{staff.name}}</h1>
+	<div class="ticket-status-top" ng-if="staff.id_staff">
+		<div class="ticket-status-open" ng-if="staff.active">Active</div>
+		<div class="ticket-status-closed" ng-if="!staff.active">Inactive</div>
+	</div>
+
+	<div class="divider"></div>
+	<br>
+
 	
+	<div class="support-boxes">
+
+		<div class="support-box-wrap">
+			<h1>Info</h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{staff.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(staff.phone)">{{staff.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Email</div>
+						<div class="field-value"><a href="mailto:{{staff.email}}">{{staff.email}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Login</div>
+						<div class="field-value">{{staff.login}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Timezone</div>
+						<div class="field-value">{{staff.timezone}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Communities</div>
+						<div class="field-value">
+							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
+								{{community}}
+							</span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/1" target="_blank"><i class="fa fa-plus-circle"></i></a>
+						</div>
+					</div>
+				</div>
+				 
+			</div>
+		</div>
+		
+		<div class="support-box-wrap">
+			<h1>Shifts</h1>
+			<div class="box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Current</div>
+						<div class="field-value">{{staff.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(staff.phone)">{{staff.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Email</div>
+						<div class="field-value"><a href="mailto:{{staff.email}}">{{staff.email}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Login</div>
+						<div class="field-value">{{staff.login}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Timezone</div>
+						<div class="field-value">{{staff.timezone}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Communities</div>
+						<div class="field-value">
+							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
+								{{community}}
+							</span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/1" target="_blank"><i class="fa fa-plus-circle"></i></a>
+						</div>
+					</div>
+				</div>
+				 
+			</div>
+		</div>
+		
+	</div>
+
+	<h1 class="title"><i class="fa fa-calendar"></i>Shifts</h1>
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>Start</th>
+				<th>End</th>
+				<th>Community</th>
+				<th>Current</th>
+			</tr>
+			<tr ng-repeat="shift in staff.shifts" ng-class="{'highlight':shift.current}">
+				<td>{{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}</td>
+				<td>{{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}</td>
+				<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
+				<td>
+					<span ng-if="shift.current"><i class="fa fa-check"></i></span>
+				</td>
+			</tr>
+		</table>
+	</div>
 	
 	
 
-	<h1 class="title"><i class="fa fa-user"></i>{{staff.name}}</h1>
+
 	<? /*
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
@@ -37,6 +146,7 @@
 		<table>
 			<tr><td><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement </a></td></tr>
 			<tr><td><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></td></tr>
+			<tr><td><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></td></tr>
 		</table>
 	</div>
 	

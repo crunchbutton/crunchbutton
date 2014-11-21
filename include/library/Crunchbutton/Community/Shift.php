@@ -9,6 +9,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->idVar('id_community_shift')
 			->load($id);
 	}
+	
+	public function exports() {
+		$out = $this->properties();
+		$out['community_name'] = $this->community()->name;
+		return $out;
+	}
 
 	public function driversCouldDeliveryOrder( $id_order ){
 		if( !$id_order ){

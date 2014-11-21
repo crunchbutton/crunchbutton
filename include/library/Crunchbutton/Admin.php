@@ -69,7 +69,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public static function login($login, $inactive = false) {
 		$status = ( $inactive ? '' : 'and active = 1' );
-		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'"' . $status . ' limit 1')->get(0);
+		return self::q('select * from admin where login="'.c::db()->escape($login).'"' . $status . ' limit 1')->get(0);
 	}
 
 	public function publicExports() {

@@ -3218,7 +3218,10 @@ input[type="checkbox"].switch + div:before {
 .box-content-table table {
 	width: 100%;
 	box-sizing: border-box;
+}
 
+.box-content-table .tb-center {
+	text-align: center;
 }
 
 .box-content-table input {
@@ -3245,7 +3248,11 @@ input[type="checkbox"].switch + div:before {
 	padding-left: 1.1em;
 }
 .box-content-table tr > *:last-child {
-	padding-left: 1.1em;
+	padding-right: 1.1em;
+}
+.box-content-table tr > *:last-child:not(:first-child) {
+	text-align: right;
+	
 }
 
 
@@ -3292,3 +3299,8 @@ input[type="checkbox"].switch + div:before {
 	text-align: center;
 	padding-top: 9em;
 }
+
+.tb-zebra tr.highlight {
+	background: #ffe8ce;
+}
+

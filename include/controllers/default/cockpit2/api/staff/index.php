@@ -33,7 +33,27 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 	}
 	
 	private function _view($staff) {
-		echo $staff->json();
+		$out = $staff->exports();
+
+		/*
+		$out['shifts'] = [];
+
+//		$current = Community_Shift::getCurrentShiftByAdmin($staff->id_admin)->get(0);
+		$next = Community_Shift::nextShiftsByAdmin($staff->id_admin);
+
+		if ($next) {
+			foreach ($next as $shift) {
+				$shift = $shift->exports();
+				if (strtotime($shift['date_start']) <= time() ) {
+					$shift['current'] = true;
+				} else {
+					$shift['current'] = false;
+				}
+				$out['shifts'][] = $shift;
+			}
+		}
+*/
+		echo json_encode($out);
 	}
 
 	private function _list() {
