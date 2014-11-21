@@ -87,7 +87,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		all: showAll
 	};
 	$scope.ready = false;
-	
+
 	$scope.$watch('show.all', function() {
 		$.totalStorage('driver-orders-show', $scope.show.all ? 'all' : 'mine');
 	});
@@ -155,7 +155,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 			$scope.update();
 		}
 	});
-	
+
 	$scope.update();
 } );
 
@@ -552,6 +552,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 	var start = function(){
 		DriverOnboardingService.get( $routeParams.id, function( driver ){
+
+			$scope._yesNo = DriverOnboardingService.yesNo();
+
 			$scope.driver = driver;
 			if( !$scope.driver.id_admin ){
 				$scope.driver.notify = true;
@@ -564,10 +567,16 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 					$scope.driver.vehicle = json.default;
 				}
 			} );
+
 			CommunityService.listSimple( function( data ){
 				$scope.communities = data;
 				$scope.ready = true;
 			} );
+
+		} );
+
+		DriverOnboardingService.phone_types( function( json ){
+			$scope.phone_types = json.options;
 		} );
 
 	}
@@ -608,9 +617,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 				var url = '/drivers/onboarding/' + json.success.id_admin;
 
 				if( $scope.driver.id_admin ){
-					$scope.reload();
+					// $scope.reload();
 				} else {
-					$scope.navigation.link( url );
+					// $scope.navigation.link( url );
 				}
 
 				setTimeout( function(){

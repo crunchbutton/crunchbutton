@@ -76,6 +76,77 @@
 
 		</ul>
 
+		<br/><br/><br/>
+
+		<h2 class="title">Additional Info</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input" ng-class="{'error':form.driverPhoneType.$invalid}">
+				<div class="label">Phone type:</div>
+				<select name="driverPhoneType" required ng-model="driver.phone_type" ng-options="opt as opt for opt in phone_types" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.driverPhoneType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverCellCarrier.$invalid}">
+				<div class="label">Cell Carrier:</div>
+				<div class="input"><input type="text" name="driverCellCarrier" ng-model="driver.cell_carrier" required placeholder="Cell Carrier" ng-maxlength="40"></div>
+				<div class="box-error">
+					<small ng-show="form.driverCellCarrier.$error.required">Required.</small>
+					<small ng-show="form.driverCellCarrier.$error.maxlength">Name cannot be longer than 40 characters.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverAddress.$invalid}">
+				<div class="label">Address:</div>
+				<div class="input">
+				<textarea name="driverAddress" ng-model="driver.address"></textarea>
+			</li>
+
+			<li class="li-input">
+				<div class="label">How soon the driver needs a pexcard:</div>
+				<div class="input"><input type="date" ignore-mouse-wheel name="pexcardDate" ng-model="driver.pexcard_date" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverStudent.$invalid}">
+				<div class="label">Student:</div>
+				<div class="input">
+					<select ng-model="driver.student" required name="driverStudent" ng-options="type.value as type.label for type in _yesNo"></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.driverStudent.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverHourly.$invalid}">
+				<div class="label">Hourly:</div>
+				<div class="input">
+					<select ng-model="driver.hourly" required name="driverHourly" ng-options="type.value as type.label for type in _yesNo"></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.driverHourly.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverPermashifts.$invalid}">
+				<div class="label">Permashifts:</div>
+				<div class="input">
+					<select ng-model="driver.permashifts" required name="driverPermashifts" ng-options="type.value as type.label for type in _yesNo"></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.driverPermashifts.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Desired Weekly Hours:</div>
+				<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.weekly_hours" placeholder=""></div>
+			</li>
+
+		</ul>
+
 	</form>
 
 	<div ng-if="driver.id_admin">

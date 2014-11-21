@@ -1,7 +1,7 @@
 <?php
 
 class Cockpit_Admin extends Crunchbutton_Admin {
-	
+
 	public function publicExports() {
 		$out = parent::publicExports();
 		$out['phone'] = $this->phone;
@@ -38,7 +38,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return false;
 	}
-	
+
 	public function deliveries() {
 		if (!isset($this->_deliveries)) {
 			$o = Order::q('
