@@ -1,124 +1,127 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-if="ready">
+<div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-car"></i><span>Order</span> :  #{{order.id_order}}</h1>
+
+	<h1 class="left subltitle"><i class="fa fa-car"></i>&nbsp;&nbsp;<span>Order Details</span></h1>
 
 	<div class="ticket-status-top">
 		<div class="ticket-status-open">{{order.status.status}}</div>
 	</div>
 
 	<div class="divider"></div>
+	<br>
 	
-	<div class="support-boxes">
-		<div ng-if="!order.id_order" class="support-box-wrap">
-			<h1>Invalid Order</h1>
-		</div>
+	<div ng-if="ready">
 		
-		
-		<div ng-if="order.id_order" class="support-box-wrap">
-			<h1>Order <a href="/order/{{order.id_order}}">#{{order.id_order}}</a></h1>
-			<div class="box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key">Pay / Type</div>
-						<div class="field-value">{{order.pay_type | capitalize}} / {{order.delivery_type | capitalize}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Placed At</div>
-						<div class="field-value">{{order.date}} (<span am-time-ago="order.date"></span>)</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Status</div>
-						<div class="field-value">
-							<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
-							<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+		<div class="support-boxes">
+			<div ng-if="!order.id_order" class="support-box-wrap">
+				<h1>Invalid Order</h1>
+			</div>
+			
+			
+			<div ng-if="order.id_order" class="support-box-wrap">
+				<h1>Order <a href="/order/{{order.id_order}}">#{{order.id_order}}</a></h1>
+				<div class="box-content-color">
+					<div class="field-container">
+						<div class="field-row">
+							<div class="field-key">Pay / Type</div>
+							<div class="field-value">{{order.pay_type | capitalize}} / {{order.delivery_type | capitalize}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Placed At</div>
+							<div class="field-value">{{order.date}} (<span am-time-ago="order.date"></span>)</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Status</div>
+							<div class="field-value">
+								<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
+								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-
+			
 	
-		<div ng-if="order.user.id_user" class="support-box-wrap">
-			<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
-			<div class="box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key">Name</div>
-						<div class="field-value">{{order.user.name}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Phone</div>
-						<div class="field-value"><a href ng-click="callText(order.user.phone)">{{order.user.phone | formatPhone}}</a></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Address</div>
-						<div class="field-value"><a href ng-click="routeAddress(order.user.address)">{{order.user.address}}</a></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Distance from restaurant</div>
-						<div class="field-value">@todo</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div ng-if="order.driver.id_admin" class="support-box-wrap">
-			<h1>Driver <a href="/staff/{{ticket.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
-			<div class="box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key">Name</div>
-						<div class="field-value">{{order.driver.name}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Phone</div>
-						<div class="field-value"><a href ng-click="callText(order.driver.phone)">{{order.driver.phone | formatPhone}}</a></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Deliveries</div>
-						<div class="field-value">{{order.driver.deliveries.length}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Shift ends in</div>
-						<div class="field-value">@todo</div>
-					</div>
-
-				</div>
-				 
-			</div>
-		</div>
-
-		<div ng-if="order.restaurant.id_restaurant" class="support-box-wrap">
-			<h1>Restaurant <a href="/restaurant/{{order.restaurant.id_restaurant}}">#{{order.restaurant.id_restaurant}}</a></h1>
-			<div class="box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key">Name</div>
-						<div class="field-value">{{order.restaurant.name}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Phone</div>
-						<div class="field-value"><a href ng-click="callText(order.restaurant.phone)">{{order.restaurant.phone | formatPhone}}</a></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Address</div>
-						<div class="field-value"><a href ng-click="routeAddress(order.restaurant.address)">{{order.restaurant.address}}</a></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Distance from customer</div>
-						<div class="field-value">@todo</div>
+		
+			<div ng-if="order.user.id_user" class="support-box-wrap">
+				<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
+				<div class="box-content-color">
+					<div class="field-container">
+						<div class="field-row">
+							<div class="field-key">Name</div>
+							<div class="field-value">{{order.user.name}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Phone</div>
+							<div class="field-value"><a href ng-click="callText(order.user.phone)">{{order.user.phone | formatPhone}}</a></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Address</div>
+							<div class="field-value"><a href ng-click="routeAddress(order.user.address)">{{order.user.address}}</a></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Distance from restaurant</div>
+							<div class="field-value">@todo</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-
-
+	
+			<div ng-if="order.driver.id_admin" class="support-box-wrap">
+				<h1>Driver <a href="/staff/{{ticket.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
+				<div class="box-content-color">
+					<div class="field-container">
+						<div class="field-row">
+							<div class="field-key">Name</div>
+							<div class="field-value">{{order.driver.name}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Phone</div>
+							<div class="field-value"><a href ng-click="callText(order.driver.phone)">{{order.driver.phone | formatPhone}}</a></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Deliveries</div>
+							<div class="field-value">{{order.driver.deliveries.length}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Shift ends in</div>
+							<div class="field-value">@todo</div>
+						</div>
+	
+					</div>
+					 
+				</div>
+			</div>
+	
+			<div ng-if="order.restaurant.id_restaurant" class="support-box-wrap">
+				<h1>Restaurant <a href="/restaurant/{{order.restaurant.id_restaurant}}">#{{order.restaurant.id_restaurant}}</a></h1>
+				<div class="box-content-color">
+					<div class="field-container">
+						<div class="field-row">
+							<div class="field-key">Name</div>
+							<div class="field-value">{{order.restaurant.name}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Phone</div>
+							<div class="field-value"><a href ng-click="callText(order.restaurant.phone)">{{order.restaurant.phone | formatPhone}}</a></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Address</div>
+							<div class="field-value"><a href ng-click="routeAddress(order.restaurant.address)">{{order.restaurant.address}}</a></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Distance from customer</div>
+							<div class="field-value">@todo</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+			</div>
 	
 	</div>
 
 </div>
 
-<hack-expand-content></hack-expand-content>

@@ -14,6 +14,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		$user = $this->request()['user'] ? c::db()->escape($this->request()['user']) : null;
+		$phone = $this->request()['phone'] ? c::db()->escape($this->request()['phone']) : null;
 		
 		if ($page == 1) {
 			$offset = '0';
@@ -45,13 +47,25 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
 			LEFT JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
-			WHERE order_action.type != "delivery-rejected"
+			WHERE `order`.id_restaurant IS NOT NULL
 		';
 		
 		if (!c::admin()->permission()->check(['global', 'orders-all', 'orders-list-page'])) {
 			// Order::deliveryOrders( $lastHours );
 			$q .= '
 				AND order_admin.id_admin = "'.c::admin()->id_admin.'"
+			';
+		}
+		
+		if ($user) {
+			$q .= '
+				AND `order`.id_user="'.$user.'"
+			';
+		}
+		
+		if ($phone) {
+			$q .= '
+				AND `order`.phone="'.$phone.'"
 			';
 		}
 		
