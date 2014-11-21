@@ -45,7 +45,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 					OR `order`.name LIKE "%'.$word.'%"
 					OR `order`.phone LIKE "%'.$word.'%"
 					OR `order`.address LIKE "%'.$word.'%"
-					OR user.id_user LIKE "%'.$word.'%"
+					OR user.id_user LIKE "'.$word.'%"
 				)';
 			}
 			$q .= '
