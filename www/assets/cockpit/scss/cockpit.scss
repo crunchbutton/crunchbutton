@@ -3283,14 +3283,12 @@ input[type="checkbox"].switch + div:before {
 	border-left: none !important;
 }
 
-.image-not-found {
-	background: url(../images/404.png)  center center no-repeat;
-	background-size: 100%;
-	width: 200px;
-	height: 200px;
-	margin: 0 auto;
+.fa.home-icon {
+	font-size: 13em;
 }
 
-body.page-404 {
-	background: black;
+.home-text {
+	display: block;
+	text-align: center;
+	padding-top: 9em;
 }
