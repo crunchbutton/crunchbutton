@@ -171,7 +171,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 		}
 
 		$out['status'] = $this->status()->last();
-		$out['driver'] = $this->status()->driver()->exports();
+		$driver = $this->status()->driver();
+		if( $driver ){
+			$out['driver'] = $driver->exports();
+		}
+
 
 		return $out;
 	}
