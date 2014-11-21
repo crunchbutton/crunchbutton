@@ -76,6 +76,9 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					restaurant.name LIKE "%'.$word.'%"
 					OR admin.name LIKE "%'.$word.'%"
 					OR order.name LIKE "%'.$word.'%"
+					OR order.phone LIKE "%'.$word.'%"
+					OR order.address LIKE "%'.$word.'%"
+					OR order.id_order LIKE "'.$word.'%"
 				)';
 			}
 			$q .= '
