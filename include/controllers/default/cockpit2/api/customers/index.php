@@ -65,7 +65,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
-			ORDER BY `user`.id_user DESC, `order`.date DESC
+			ORDER BY `user`.id_user DESC, `order`.date ASC
 			LIMIT '.$offset.', '.$limit.'
 		';
 		
@@ -73,7 +73,8 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			`user`.*,
-			`order`.date as _order_date
+			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = user.id_user) as _order_date,
+			COUNT(`order`.id_order) orders
 		', $q));
 
 		while ($o = $r->fetch()) {
