@@ -120,6 +120,32 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
+
+		// Driver info
+		$driver_info = $driver->driver_info();
+
+		$driver_info->phone_type = $this->request()[ 'phone_type' ];
+		$driver_info->cell_carrier = $this->request()[ 'cell_carrier' ];
+		$driver_info->address = $this->request()[ 'address' ];
+		$driver_info->pexcard_date = $this->request()[ 'pexcard_date' ];
+		$driver_info->student = $this->request()[ 'student' ];
+		$driver_info->permashifts = $this->request()[ 'permashifts' ];
+		$driver_info->weekly_hours = $this->request()[ 'weekly_hours' ];
+
+		$driver_info->save();
+
+		$payment_type = $driver->payment_type();
+		if( intval( $this->request()[ 'hourly' ] ) == 1 ){
+			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
+		} else {
+			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+		}
+		$payment_type->save();
+
+		if( intval( $driver_info->permashifts ) == 1 ){
+			$driver->setConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING, 1 );
+		}
+
 		Log::debug( [ 'action' => 'driver saved', 'driver' => $driver->id_admin, 'type' => 'drivers-onboarding'] );
 
 		$log = new Cockpit_Driver_Log();

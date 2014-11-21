@@ -723,12 +723,12 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		return $ex;
 	}
-	
+
 	private static function _isBoolPref($pref) {
 		$boolprefs = ['demo', 'notification-desktop-support-all'];
 		return in_array($pref, $boolprefs);
 	}
-	
+
 	public static function formatPref($key, $value, $export = false) {
 		if ($export) {
 			return self::_isBoolPref($key) ? ($value == '1' ? true : false) : $value;
@@ -862,6 +862,16 @@ class Crunchbutton_Admin extends Cana_Table {
 			$note->date = date( 'Y-m-d H:i:s' );
 			$note->save();
 		}
+	}
+
+	public function driver_info(){
+		$driver_info = Cockpit_Driver_Info::byAdmin( $this->id_admin );
+		if( !$driver_info->id_driver_info ){
+			$driver_info = new Cockpit_Driver_Info;
+			$driver_info->id_admin = $this->id_admin;
+			$driver_info->save();
+		}
+		return $driver_info->get( 0 );
 	}
 
 	public function __construct($id = null) {

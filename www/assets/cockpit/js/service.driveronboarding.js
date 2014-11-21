@@ -18,6 +18,11 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			}
 		);
 
+	var phone_types = $resource( App.service + 'driver/onboarding/phone_types', {}, {
+				'options' : { 'method': 'GET' }
+			}
+		);
+
 	// documents resource
 	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document/:id_driver_document_status/:page/:disapprove', { id_admin: '@id_admin', id_driver_document: '@id_driver_document', id_driver_document_status: '@id_driver_document_status', page: '@page', disapprove:'@disapprove' }, {
 				'status' : { 'method': 'GET', params : { action : null }, isArray: true },
@@ -34,6 +39,19 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				'get' : { 'method': 'GET', params : {}, isArray: true },
 			}
 		);
+
+	service.phone_types = function( callback ){
+		phone_types.options( {}, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.yesNo = function(){
+		var options = [];
+		options.push( { value: '0', label: 'No' } );
+		options.push( { value: '1', label: 'Yes' } );
+		return options;
+	}
 
 	service.vehicles = function( callback ){
 		vehicles.options( {}, function( json ){
