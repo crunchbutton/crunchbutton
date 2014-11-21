@@ -75,6 +75,8 @@ NGApp.controller('StaffCtrl', function ($scope, $routeParams, $location, StaffSe
 		$scope.query.page = page;
 		App.scrollTop(0);
 	};
+	
+	$scope.focus('#search');
 });
 
 NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
