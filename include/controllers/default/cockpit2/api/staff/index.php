@@ -99,7 +99,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		
 		$q .= '
 			GROUP BY `admin`.id_admin
-			ORDER BY `admin`.id_admin DESC
+			ORDER BY `admin`.name ASC
 			LIMIT '.$offset.', '.$limit.'
 		';
 		
