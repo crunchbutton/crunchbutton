@@ -1,0 +1,44 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<h1 class="subltitle "><i class="fa fa-user"></i>&nbsp;&nbsp;<span>Customers</span><div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Phone</th>
+				<th>Address</th>
+				<th>Last&nbsp;Order</th>
+			</tr>
+			<tr ng-repeat="customer in customers">
+				<td><a href="/customer/{{customer.id_user}}">{{customer.id_user}}</a></td>
+				<td>{{customer.name}}</td>
+				<td><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></td>
+				<td>{{customer.address}}</td>
+				<td>{{customer.order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
+			</tr>
+		</table>
+	</div>
+	
+	<table class="tb-pagination right" ng-if="pages > 1" page-key>
+		<tbody>
+			<tr>
+				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
+				<td class="td-info">Page {{query.page}} of {{pages}}</td>
+				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div class="divider"></div>
+
+</div>

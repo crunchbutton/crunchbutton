@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_customer_reward extends Crunchbutton_Controller_RestAccount {
+class Controller_api_config_reward extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
