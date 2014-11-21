@@ -3,8 +3,12 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
+	
+	
+	
 
-	<h1 class="title"><i class="fa fa-comments-o"></i>{{staff.name}}</h1>
+	<h1 class="title"><i class="fa fa-user"></i>{{staff.name}}</h1>
+	<? /*
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
@@ -23,10 +27,18 @@
 				</td>
 				<td>{{ticket.name}}</td>
 				<td>{{ticket.message}}</td>
-
 			</tr>
 		</table>
 	</div>
-
-
+	*/ ?>
+	
+	<h1 class="title"><i class="fa fa-cog"></i>Tools</h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr><td><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement </a></td></tr>
+			<tr><td><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></td></tr>
+		</table>
+	</div>
+	
+	
 </div>

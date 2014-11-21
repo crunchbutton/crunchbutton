@@ -1,6 +1,6 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
+<div class="content-padding">
 
 	<h1 class="title "><i class="fa fa-user"></i>Profile</h1>
 
@@ -28,16 +28,7 @@
 	</ul>
 	
 	<div ng-if="account.user.invite_code">
-		<h1 class="title"><i class="fa fa-money"></i>Free money!</h1>
-		<ul class="ul-info box-content2">
-	
-			<li class="li-info">
-				<p>
-					Get new customers to put this code in the Notes section of their first order for <b>${{customer_get_referred_amt|formatPrice}} off</b> and <b>earn ${{admin_refer_user_amt|formatPrice}}</b> yourself for every new customer your refer
-				</p>
-				<div class="invite-code allow-select">{{account.user.invite_code}}</div>
-			</li>
-		</ul>
+		<div ng-include="'assets/view/general-profile-referal.html'"></div>
 	</div>
 	
 	<div ng-if="account.user.permissions.GLOBAL">
@@ -50,6 +41,3 @@
 	</div>
 
 </div>
-
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>
