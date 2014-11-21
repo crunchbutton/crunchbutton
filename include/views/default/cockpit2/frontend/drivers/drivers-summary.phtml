@@ -1,73 +1,117 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
+<div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-calendar"></i><span>Summary</span></h1>
 
+	<h1 class="title left" ng-style="{true: {width: '100%'}, false: {}}[loading]"><i class="fa fa-bank"></i>Payments<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	
+	<div class="box-filter right" ng-if="summary.payments">
+		<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
+		<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Reimbursement' }" ng-click="filter = 'Reimbursement'">Reimbursement</button>
+		<button class="button button-big green" ng-class="{ 'inactive' : filter != 'Payment' }" ng-click="filter = 'Payment'">Payments</button>
+	</div>
+	
 	<div class="divider"></div>
 
-	<form name="form" ng-show="drivers">
-
-		<ul class="ul-inputs box-content2">
-			<li class="li-input">
-				<div class="label">Select a driver:</div>
-				<div class="input">
-					<select name="driverSummary" ng-model="id_admin" ng-change="load_driver()" ng-options="opt.id_admin as opt.name for opt in drivers"></select>
-				</div>
-			</li>
-		</ul>
-	</form>
-
-	<div ng-show="isLoading">
-		<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
+	<div class="box-content2 box-content-table" ng-if="summary.payments">
+		<table class="tb-zebra">
+			<tr>
+				<th>Type</th>
+				<th>Period</th>
+				<th>Amount</th>
+				<th>Status</th>
+				<th>Transfer Initiated</th>
+				<th>Est. In Account</th>
+			</tr>
+			<tr ng-repeat="payment in summary.payments" ng-show="!filter || filter == payment.type">
+				<td>
+					<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
+					<span ng-if="payment.total_cash_orders" class="note">
+						<br>
+						Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
+					</span>
+				</td>
+				<td>{{payment.range_date}}</td>
+				<td positive-or-negative-color="{{payment.amount}}">
+					${{payment.amount | formatPrice}}
+				</td>
+				<td>
+					<span ng-class="{
+						'span-driver-summary-paid': payment.status == 'Paid',
+						'span-driver-summary-pending': payment.status == 'Pending',
+						'span-driver-summary-processing': payment.status == 'Processing'
+					}">
+					<span ng-switch="payment.status">
+						<span ng-switch-when="Pending">Not Yet Paid</span>
+						<span ng-switch-default>{{payment.status}}</span>
+					</span>
+				</td>
+				<td>{{payment.send_date}}</td>
+				<td>{{payment.paid_date}}</td>
+			</tr>
+		</table>
 	</div>
 
-	<div ng-if="summary.payments">
+	
+	<div ng-if="!summary.payments && !loading" class="box-content2">
+		<p>Not payments yet. Go deliver some food!</p>
+	</div>
 
-		<h2 class="title" ng-show="summary.payments.length">Recent Payments</h2>
-
-		<table class="tb-grid tb-zebra" ng-show="summary.payments.length">
-			<thead>
-				<tr>
-					<td>Type</td>
-					<td>Period</td>
-					<td>Amount</td>
-					<td>Status</td>
-					<td>Transfer Initiated</td>
-					<td>Estimated Date In Your Account</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="payment in summary.payments">
-					<td>
-						<span class="link" ng-click="show_payment( payment.id_payment_schedule );">{{payment.type}}</span>
-						<span ng-if="payment.total_cash_orders" class="note">
-							<br>
-							Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
-						</span>
-					</td>
-					<td>{{payment.range_date}}</td>
-					<td positive-or-negative-color="{{payment.amount}}">
-						${{payment.amount | formatPrice}}
-					</td>
-					<td>
-						<span ng-class="{ 'span-driver-summary-paid': payment.status == 'Paid',
-															'span-driver-summary-pending': payment.status == 'Pending',
-															'span-driver-summary-processing': payment.status == 'Processing' }">
-
-							<span ng-switch="payment.status">
-							<span ng-switch-when="Pending">Not Yet Paid</span>
-							<span ng-switch-default>{{payment.status}}</span>
-						</span>
-					</td>
-					<td>{{payment.send_date}}</td>
-					<td>{{payment.paid_date}}</td>
-				</tr>
-			</tbody>
+	<h1 class="title" ng-if="!loading"><i class="fa fa-users"></i>Customer Referrals</h1>
+	<div class="box-content2 box-content-table" ng-if="summary.referral.invites">
+		<table class="tb-zebra">
+			<tr>
+				<th>Name</th>
+				<th>Date</th>
+				<th>Amount</th>
+			</tr>
+			<tr ng-repeat="invite in summary.referral.invites">
+				<td>{{invite.user.name}}</td>
+				<td>{{invite.date}}</td>
+				<td>${{summary.referral.amount_per_user | formatPrice}}</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><strong>Total</strong></td>
+				<td>${{summary.referral.invites_total_payment | formatPrice}}</td>
+			</tr>
 		</table>
+	</div>
 
-		<p><span ng-click="payments()" class="link orange">All payments</span></p>
-<!--
+	<div ng-if="!summary.referral.invites && !loading">
+		<div ng-include="'assets/view/general-profile-referal.html'"></div>
+	</div>
+
+</div>
+
+
+<? /*
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		<div ng-if="summary.earnings">
 
 			<br><br>
@@ -292,47 +336,4 @@
 				</tr>
 			</tbody>
 		</table>
-!-->
-		<div ng-if="summary.referral">
-			<h2 class="title">New Invited Users</h2>
-			<table class="tb-grid tb-zebra" ng-if="summary.referral.invites">
-				<thead>
-					<tr>
-						<td>ID Order</td>
-						<td>ID User</td>
-						<td>Customer Name</td>
-						<td>Date</td>
-						<td>Amount</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="invite in summary.referral.invites">
-						<td>{{invite.id_order}}</td>
-						<td>{{invite.user.id_user}}</td>
-						<td>{{invite.user.name}}</td>
-						<td>{{invite.date}}</td>
-						<td>${{summary.referral.amount_per_user | formatPrice}}</td>
-					</tr>
-				</tbody>
-				<tbody>
-					<tr class="transparent">
-						<td></td>
-						<td></td>
-						<td></td>
-						<td><strong>Total</strong></td>
-						<td>${{summary.referral.invites_total_payment | formatPrice}}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-	</div>
-
-	<div ng-if="!summary.payments && !isLoading" class="box-content2">
-		Nothing yet. Go deliver some food!
-	</div>
-
-</div>
-
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>
+*/ ?>

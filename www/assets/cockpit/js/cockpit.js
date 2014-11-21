@@ -372,6 +372,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.isLive = ( App.config.env == 'live' );
 	$rootScope.isBeta = !$rootScope.isLive;
+	$rootScope.config = App.config.site;
 
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){

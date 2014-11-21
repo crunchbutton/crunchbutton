@@ -1549,7 +1549,7 @@ h1.title {
 	color: #5d5f63;
 	margin-bottom: .6em;
 }
-h1.title .fa {
+h1.title .fa:not(.fa-refresh) {
 	font-size: .8em;
 	padding-right: .5em;
 	padding-top: .1em;

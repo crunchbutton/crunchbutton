@@ -5,8 +5,7 @@ NGApp.factory('ViewListService', function($location) {
 	
 	service.view = function(params) {
 		var scope = params.scope;
-		
-		console.log('B', scope);
+
 		var query = $location.search();
 		scope.query = {
 			limit: query.limit || 25,

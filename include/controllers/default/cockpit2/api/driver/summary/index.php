@@ -213,44 +213,50 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 	private function _summaryByOrder( $range, $id_driver, $json = true ){
 
-		$settlement = new Settlement( $range );
-		$orders = $settlement->driverWeeksSummaryOrders( $id_driver );
+		/**
+		  * @hideme: 
+		  * Hide View Details section: #3727
+		  * Get rid of the "Earned Since..." section entirely. #3727
+		 */
 
+		// $orders = $settlement->driverWeeksSummaryOrders( $id_driver ); // @hideme
+		// $settlement = new Settlement($range); // @hideme
 		$out = [];
+		$out['weeks'] = 0;
+		$out['earnings'] = 0;
+		$settlement = new Crunchbutton_Settlement;
 
 		$out = array_merge( $out, $this->_invites( $id_driver ) );
+		// $out = array_merge( $out, $this->_lastShift( $id_driver ) );  // @hideme
 
-		$out = array_merge( $out, $this->_lastShift( $id_driver ) );
+		// payments
+		$out[ 'payments' ] = [];
+		$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
+		foreach( $payments as $payment ){
+			$_payment = [];
+			$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
+			$_payment[ 'total_orders' ] = $payment->total_orders();
+			$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
+			$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
+			$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
+			if( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
+				$summary = $settlement->driverSummary( $payment->id_payment_schedule );
+				$_payment[ 'total_received_cash' ] = max( 0, $summary[ '_total_received_cash_' ] );
+				$_payment[ 'total_cash_orders' ] = max( 0, $summary[ '_total_cash_orders_' ] );
+			}
+			if( $payment->arbritary ){
+				$_payment[ 'range_date' ] = $payment->note;
+			}
+			$out[ 'payments' ][] = $_payment;
+		}
 
+		// weeks
 		if( $orders[ 0 ] ){
 
 			$orders = $orders[ 0 ];
 
 			$out[ 'type' ] = 'order';
-			$out[ 'payments' ] = [];
 			$out[ 'weeks' ] = [];
-
-			$settlement = new Crunchbutton_Settlement;
-
-			// payments
-			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
-			foreach( $payments as $payment ){
-				$_payment = [];
-				$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
-				$_payment[ 'total_orders' ] = $payment->total_orders();
-				$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
-				$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
-				$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
-				if( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
-					$summary = $settlement->driverSummary( $payment->id_payment_schedule );
-					$_payment[ 'total_received_cash' ] = max( 0, $summary[ '_total_received_cash_' ] );
-					$_payment[ 'total_cash_orders' ] = max( 0, $summary[ '_total_cash_orders_' ] );
-				}
-				if( $payment->arbritary ){
-					$_payment[ 'range_date' ] = $payment->note;
-				}
-				$out[ 'payments' ][] = $_payment;
-			}
 
 			// orders
 			if( $orders[ 'orders' ] && count( $orders[ 'orders' ] ) > 0 ){
@@ -338,18 +344,12 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				}
 				break;
 			}
-
-		} else {
-			$out = [ 'weeks' => 0 ];
 		}
 
-		// Hide View Details section: #3727
-		$out[ 'weeks' ] = 0;
-		// Get rid of the "Earned Since..." section entirely. #3727
-		$out[ 'earnings' ] = 0;
 
 		if( $json ){
-			echo json_encode( $out );exit();
+			echo json_encode($out);
+			exit;
 		} else {
 			return $out;
 		}

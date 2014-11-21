@@ -743,6 +743,9 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			driver: 0,
 		},
 		update: function() {
+			$scope.query.status = parseInt($scope.query.status);
+			$scope.query.type = parseInt($scope.query.type);
+
 			$scope.ready = false;
 			SettlementService.drivers.payments({
 				'page': $scope.query.page,
@@ -756,6 +759,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			});
 		}
 	});
+	
 
 	var drivers = function(){
 		DriverService.paid( function( data ){

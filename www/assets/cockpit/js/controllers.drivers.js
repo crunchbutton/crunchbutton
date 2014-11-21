@@ -161,7 +161,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 
 NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams ) {
 
-	$scope.ready = false;
+	$scope.loading = true;
 
 	var drivers = function(){
 		DriverService.listSimple( function( data ){
@@ -189,25 +189,12 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 		}
 	}
 
-	$scope.load_driver = function(){
-		$scope.navigation.link( '/drivers/summary/' + $scope.id_admin );
-	}
-
 	list = function(){
-		$scope.isLoading = true;
+		$scope.loading = true;
 		DriverService.summary( $scope.id_admin, function( data ){
 			$scope.summary = data;
-			$scope.ready = true;
-			$scope.isLoading = false;
+			$scope.loading = false;
 		} );
-	}
-
-	$scope.payments = function (){
-		$scope.navigation.link( '/drivers/payments/' + $scope.id_admin );
-	}
-
-	$scope.show_payment = function( id_payment ){
-		$scope.navigation.link( '/drivers/payment/' + id_payment );
 	}
 
 	if( $scope.account.isLoggedIn() ){
@@ -223,7 +210,12 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 
 } );
 
-NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $routeParams ) {
+
+NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $routeParams, MainNavigationService) {
+	
+	MainNavigationService.link('/drivers/summary/' + $routeParams.id);
+	
+	/*
 
 	$scope.ready = false;
 	$scope.filter = false;
@@ -256,7 +248,9 @@ NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $rout
 		}
 		$scope.list();
 	}
+	*/
 });
+
 
 NGApp.controller( 'DriversPaymentCtrl', function ( $scope, DriverService, $routeParams ) {
 
@@ -281,6 +275,7 @@ NGApp.controller( 'DriversPaymentCtrl', function ( $scope, DriverService, $route
 		load();
 	}
 });
+
 
 
 NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {

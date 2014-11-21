@@ -92,21 +92,8 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	console.debug('welcome message', $scope.welcome);
 });
 
-NGApp.controller( 'ProfileCtrl', function ( $scope, CustomerRewardService ) {
-	CustomerRewardService.reward.config.value( CustomerRewardService.constants[ 'key_admin_refer_user_amt' ], function( json ){
-		if( json.value ){
-			$scope.ready = true;
-			$scope.admin_refer_user_amt = json.value;
-		}
-	} );
-	CustomerRewardService.reward.config.value( CustomerRewardService.constants[ 'key_customer_get_referred_amt' ], function( json ){
-		if( json.value ){
-			$scope.ready = true;
-			$scope.customer_get_referred_amt = json.value;
-		}
-	} );
-
-} );
+NGApp.controller( 'ProfileCtrl', function ($scope) {
+});
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
