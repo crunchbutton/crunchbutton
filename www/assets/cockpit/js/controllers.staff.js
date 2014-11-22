@@ -31,18 +31,25 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 
 	
 	$scope.$watch('staff', function() {
+		console.log('staff');
 		update();
 	});
 	
 	$scope.$watch('map', function() {
-		update();
+		console.log('map');
+		//update();
 	});
 	
 	var update = function() {
 		if (!$scope.map || !$scope.staff) {
 			return;
 		}
-		var myLatlng = new google.maps.LatLng(parseFloat($scope.staff.lat), parseFloat($scope.staff.lon));
+		
+		if (marker) {
+			marker.setMap(null);
+		}
+
+		var myLatlng = new google.maps.LatLng(parseFloat($scope.staff.location.lat), parseFloat($scope.staff.location.lon));
 		var params = {
 			map: $scope.map,
 			position: myLatlng,
@@ -54,7 +61,8 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 	
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
-		update();
+		MapService.style(map);
+		//update();
 	});
 });
 
