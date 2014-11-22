@@ -33,10 +33,33 @@ NGApp.controller('OrdersCtrl', function ($scope, OrderService, ViewListService) 
 	});
 });
 
-NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService) {
+NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService) {
+	
+	var customerLocation;
+	
+	var update = function() {
+		if (!$scope.map || !$scope.order) {
+			return;
+		}
+
+		MapService.trackOrder({
+			map: $scope.map,
+			order: $scope.order,
+			restaurant: $scope.order.restaurant,
+			driver: $scope.order.driver
+		});
+	};
+
 	OrderService.get($routeParams.id, function(d) {
 		$rootScope.title = 'Order #' + d.id_order;
 		$scope.order = d;
 		$scope.ready = true;
+		update();
+	});
+	
+	$scope.$on('mapInitialized', function(event, map) {
+		$scope.map = map;
+		MapService.style(map);
+		update();
 	});
 });

@@ -87,6 +87,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		if (watcher) {
 			return;
 		}
+
 		if (parent.window.navigator.geolocation) {
 			watcher = parent.window.navigator.geolocation.watchPosition(function(pos) {
 				var trackedPos = pos.coords;

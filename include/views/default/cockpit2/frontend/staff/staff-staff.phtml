@@ -5,7 +5,7 @@
 <div class="content-padding">
 
 	<h1 class="title left"><i class="fa fa-user"></i>{{staff.name}}</h1>
-	<div class="ticket-status-top" ng-if="staff.id_staff">
+	<div class="ticket-status-top" ng-if="staff.id_admin">
 		<div class="ticket-status-open" ng-if="staff.active">Active</div>
 		<div class="ticket-status-closed" ng-if="!staff.active">Inactive</div>
 	</div>
@@ -59,13 +59,8 @@
 			<map zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
 				<traffic-layer></traffic-layer>
 			</map>
-
 		</div>
-		
 	</div>
-
-
-
 
 	<h1 class="title"><i class="fa fa-calendar"></i>Shifts</h1>	
 	<div class="box-content2 box-content-table">
