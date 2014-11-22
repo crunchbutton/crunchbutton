@@ -21,6 +21,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 			
 			switch (c::getPagePiece(3)) {
+				case 'locations':
+					$this->_locations($staff);
+					break;
+
 				default:
 					$this->_view($staff);
 					break;
@@ -30,6 +34,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$this->_list();
 		}
 
+	}
+	
+	private function _locations($staff) {
+		echo $staff->locations()->json();
 	}
 	
 	private function _view($staff) {

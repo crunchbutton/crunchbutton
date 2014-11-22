@@ -7,6 +7,11 @@ NGApp.factory('StaffService', function($resource, $routeParams) {
 			method: 'GET',
 			params : {}
 		},
+		'locations' : {
+			url: App.service + 'staff/:id_admin/locations',
+			method: 'GET',
+			isArray:true
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -24,6 +29,13 @@ NGApp.factory('StaffService', function($resource, $routeParams) {
 			callback(data);
 		});
 	}
+	
+	service.locations = function(id_admin, callback) {
+		staff.locations({id_admin: id_admin}, function(data) {
+			callback(data);
+		});
+	}
+
 	return service;
 });
 

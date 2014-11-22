@@ -18,10 +18,42 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('StaffInfoCtrl', function ($scope, $routeParams, $location, StaffService) {
+NGApp.controller('StaffInfoCtrl', function ($scope, $routeParams, $location, StaffService, MapService) {
+	$scope.staff = null;
+	$scope.map = null;
+	var marker;
+
 	StaffService.get($routeParams.id, function(staff) {
 		$scope.staff = staff;
 		$scope.ready = true;
+	});
+
+	
+	$scope.$watch('staff', function() {
+		update();
+	});
+	
+	$scope.$watch('map', function() {
+		update();
+	});
+	
+	var update = function() {
+		if (!$scope.map || !$scope.staff) {
+			return;
+		}
+		var myLatlng = new google.maps.LatLng(parseFloat($scope.staff.lat), parseFloat($scope.staff.lon));
+		var params = {
+			map: $scope.map,
+			position: myLatlng,
+		};
+		params.icon = MapService.icon.car;
+		$scope.map.setCenter(myLatlng);
+		marker = new google.maps.Marker(params);
+	};
+	
+	$scope.$on('mapInitialized', function(event, map) {
+		$scope.map = map;
+		update();
 	});
 });
 
