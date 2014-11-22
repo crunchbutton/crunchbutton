@@ -55,31 +55,81 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		map.setOptions({styles: service.styles.cockpit});
 	};
 	
+	var maps = {};
+	
+	service.reset = function(id) {
+		maps[id] = null;
+	};
+	
 	service.trackOrder = function(params) {
 		var map = params.map;
 		var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
 		var restaurant = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
-		var customer;
-		var driverMarker;
-		var directionsRenderer;
-		var restaurantMarker;
-		var customerMarker;
+
+		if (!maps[params.id]) {
+			maps[params.id] = {markers: {}};
+			params.scope.$on('destroy', function() {
+				service.reset(params.id);
+			});
+		}
 		
+		var getDirections = function() {
+			// directions render
+			if (maps[params.id].markers.directions){
+				maps[params.id].markers.directions.setMap(null);
+			}
+
+			var dest;
+			if (params.order.status.status == 'accepted' || params.order.status.status == 'transfered') {
+				dest = restaurant;
+			} else if (params.order.status.status == 'pickedup') {
+				dest = maps[params.id].markers.customerLocation;
+			} else {
+				return;
+			}
+			
+			var directionsService = new google.maps.DirectionsService();
+			maps[params.id].markers.directions = new google.maps.DirectionsRenderer({suppressMarkers: true});
+			maps[params.id].markers.directions.setMap(map);
+
+			directionsService.route({
+				origin: driver,
+				destination: dest,
+				travelMode: params.driver.vehicle == 'car' ? google.maps.TravelMode.DRIVING : google.maps.TravelMode.BICYCLING
+
+			}, function(response, status) {
+				console.debug('Got directions response: ', response);
+				if (status === google.maps.DirectionsStatus.OK) {
+					maps[params.id].markers.directions.setDirections(response);
+				}
+			});
+		}
+
 		// restaurant marker
-		if (!restaurantMarker) {
-			restaurantMarker = new google.maps.Marker({
+		if (!maps[params.id].markers.restaurant) {
+			maps[params.id].markers.restaurant = new google.maps.Marker({
 				map: map,
 				position: restaurant,
 				zIndex: 98,
 				icon: service.icon.restaurant
 			});
 		}
+	
 
 		// driver marker
-		if (driverMarker) {
-			driverMarker.setMap(null);
+		if (maps[params.id].markers.driver) {
+			if (maps[params.id].markers.driverLat == params.driver.location.lat && maps[params.id].markers.driverLon == params.driver.location.lon) {
+				// no updates
+				console.debug('No updated driver position');
+				return;
+			}
+			maps[params.id].markers.driver.setMap(null);
+			getDirections();
 		}
-		driverMarker = new google.maps.Marker({
+		maps[params.id].markers.driverLat = params.driver.location.lat;
+		maps[params.id].markers.driverLon = params.driver.location.lon;
+
+		maps[params.id].markers.driver = new google.maps.Marker({
 			map: map,
 			position: driver,
 			zIndex: 100,
@@ -87,14 +137,16 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		});
 
 		// customer marker
-		if (!customerMarker) {
+		if (!maps[params.id].markers.customer) {
 			var geocoder = new google.maps.Geocoder();
+
 			geocoder.geocode({address: params.order.address}, function (results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					console.debug('Got geocoded result: ', results[0]);
-					customer = results[0].geometry.location;
+					
+					maps[params.id].markers.customerLocation = results[0].geometry.location;
 	
-					var customerMarker = new google.maps.Marker({
+					maps[params.id].markers.customer = new google.maps.Marker({
 						map: map,
 						position: results[0].geometry.location,
 						zIndex: 99,
@@ -102,43 +154,12 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 					});
 					
 					getDirections();
-					
 				} else {
 					console.error('Could not geocode address: ', d.address);
 				}
 			});
 		}
-		
-		// directions render
-		if (directionsRenderer){
-			directionsRenderer.setMap(null);
-		}
-		var getDirections = function() {
-			var dest;
-			if (params.order.status.status == 'accepted' || params.order.status.status == 'transfered') {
-				dest = restaurant;
-			} else if (params.order.status.status == 'pickedup') {
-				dest = customer;
-			} else {
-				return;
-			}
-			
-			var directionsService = new google.maps.DirectionsService();
-			directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
-	
-			directionsRenderer.setMap(map);
-			directionsService.route({
-				origin: driver,
-				destination: dest,
-				travelMode: params.driver.vehicle == 'car' ? google.maps.TravelMode.DRIVING : google.maps.TravelMode.BICYCLING
 
-			}, function(response, status) {
-				console.log(response);
-				if (status === google.maps.DirectionsStatus.OK) {
-					directionsRenderer.setDirections(response);
-				}
-			});
-		}
 	};
 
 	return service;
