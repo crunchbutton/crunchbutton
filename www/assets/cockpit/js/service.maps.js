@@ -60,45 +60,59 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
 		var restaurant = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
 		var customer;
+		var driverMarker;
+		var directionsRenderer;
+		var restaurantMarker;
+		var customerMarker;
 		
 		// restaurant marker
-		new google.maps.Marker({
-			map: map,
-			position: restaurant,
-			icon: service.icon.restaurant
-		});
+		if (!restaurantMarker) {
+			restaurantMarker = new google.maps.Marker({
+				map: map,
+				position: restaurant,
+				zIndex: 98,
+				icon: service.icon.restaurant
+			});
+		}
 
 		// driver marker
-		new google.maps.Marker({
+		if (driverMarker) {
+			driverMarker.setMap(null);
+		}
+		driverMarker = new google.maps.Marker({
 			map: map,
 			position: driver,
+			zIndex: 100,
 			icon: params.driver.vehicle == 'car' ? service.icon.car : service.icon.bike
 		});
 
 		// customer marker
-		var geocoder = new google.maps.Geocoder();
-		geocoder.geocode({address: params.order.address}, function (results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				console.debug('Got geocoded result: ', results[0]);
-				customer = results[0].geometry.location;
-
-				new google.maps.Marker({
-					map: map,
-					position: results[0].geometry.location,
-					icon: service.icon.customer
-				});
-				
-				getDirections();
-				
-			} else {
-				console.error('Could not geocode address: ', d.address);
-			}
-		});
+		if (!customerMarker) {
+			var geocoder = new google.maps.Geocoder();
+			geocoder.geocode({address: params.order.address}, function (results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					console.debug('Got geocoded result: ', results[0]);
+					customer = results[0].geometry.location;
+	
+					var customerMarker = new google.maps.Marker({
+						map: map,
+						position: results[0].geometry.location,
+						zIndex: 99,
+						icon: service.icon.customer
+					});
+					
+					getDirections();
+					
+				} else {
+					console.error('Could not geocode address: ', d.address);
+				}
+			});
+		}
 		
 		// directions render
-//		if (directionsRenderer){
-//			directionsRenderer.setMap(null);
-//		}
+		if (directionsRenderer){
+			directionsRenderer.setMap(null);
+		}
 		var getDirections = function() {
 			var dest;
 			if (params.order.status.status == 'accepted' || params.order.status.status == 'transfered') {
@@ -110,7 +124,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 			}
 			
 			var directionsService = new google.maps.DirectionsService();
-			var directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
+			directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true});
 	
 			directionsRenderer.setMap(map);
 			directionsService.route({
