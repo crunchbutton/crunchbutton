@@ -4,7 +4,7 @@
 	<base href="/">
 <? endif; ?>
 <head>
-<title><?=$this->title ? $this->title : 'Cockpit'?></title>
+<title ng-bind="title ? title + ' | Cockpit' : 'Cockpit'">Cockpit</title>
 <meta name="fragment" content="!" />
 <meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
 <meta name="format-detection" content="telephone=no">

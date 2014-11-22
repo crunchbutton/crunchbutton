@@ -359,6 +359,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.http = $http;
 
 	// define global services
+	$rootScope.title = '';
 	$rootScope.flash = flash;
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.isPhoneGap = App.isPhoneGap;
@@ -450,11 +451,21 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.hasBack = false;
+	
+	var camelCase = function(str) {
+		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	};
+	
+	var makeTitle = function() {
+		return $route.current.title || camelCase($route.current.action.replace(/-/g,' '));
+	};
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
+
+		$rootScope.title = makeTitle();
 		App.track('page', $route.current.action);
 
 		$('body').removeClass(function (index, css) {
