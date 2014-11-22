@@ -33,9 +33,9 @@ NGApp.controller('OrdersCtrl', function ($scope, OrderService, ViewListService) 
 	});
 });
 
-NGApp.controller('OrderCtrl', function ($scope, $routeParams, $interval, OrderService) {
+NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService) {
 	OrderService.get($routeParams.id, function(d) {
-		$rootScope.title = 'Order #' + order.id_order;
+		$rootScope.title = 'Order #' + d.id_order;
 		$scope.order = d;
 		$scope.ready = true;
 	});
