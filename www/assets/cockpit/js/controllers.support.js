@@ -6,7 +6,8 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/tickets', {
 			action: 'tickets',
 			controller: 'TicketsViewCtrl',
-			templateUrl: 'assets/view/tickets-view.html'
+			templateUrl: 'assets/view/tickets-view.html',
+			title: 'Support'
 		})
 		.when('/ticket/:id', {
 			action: 'ticket',
