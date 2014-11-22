@@ -2,6 +2,8 @@
  * maps, and map queries should be directly linkable when the query params change. just like google maps.
  * this way we can link to the from other pages
  */
+ 
+
 
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
@@ -41,19 +43,65 @@ NGApp.controller('MapsDriversCtrl', function ($scope, $routeParams) {
 
 });
 
-NGApp.controller('MapsDriverCtrl', function ($scope, $routeParams) {
+NGApp.controller('MapsDriverCtrl', function ($scope, $routeParams, StaffService, MapService) {
+	var current = null;
+
+	$scope.$on('mapInitialized', function(event, map) {
+		StaffService.locations($routeParams.id, function(d) {
+			for (var x in d) {
+				var lat = parseFloat(d[x].lat);
+				var lon = parseFloat(d[x].lon);
+				
+				if (current && lat == current.lat && lon == current.lon) {
+					continue;
+				} else if (current) {
+
+				}
+
+				var myLatlng = new google.maps.LatLng(lat, lon);
+				var params = {
+					map: map,
+					position: myLatlng,
+				};
+
+				if (x == 0) {
+					params.icon = MapService.icon.car;
+					params.zIndex = 100;
+					map.setCenter(myLatlng);
+					current = {
+						lat: lat,
+						lon: lon
+					};
+
+				} else {
+					params.zIndex = 99;
+					params.icon = 'small_red';
+				}
+				new google.maps.Marker(params);
+			}
+			$scope.locations = d;
+		});
+
+		$scope.ready = true;
+	});
+
+	StaffService.get($routeParams.id, function(d) {
+		$scope.driver = d;
+	});
+	
+	
+	var update = function() {
+		StaffService.locations($routeParams.id, function(d) {
+			$scope.locations = d;
+		});
+		// add marker
+	};
+
 
 });
 
 NGApp.controller('MapsOrdersCtrl', function ($scope, $routeParams) {
-	setTimeout(function() {
-		var mapOptions = {
-			center: {
-				lat: -34.397, lng: 150.644},
-				zoom: 8
-			};
-		var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-	}, 100);
+
 });
 
 NGApp.controller('MapsOrderCtrl', function ($scope, $routeParams) {

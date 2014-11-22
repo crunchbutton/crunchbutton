@@ -15,6 +15,19 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		return $out;
 	}
+	
+	public function locations() {
+		if (!isset($this->_locations)) {
+			$this->_locations = Admin_Location::q('
+				select * from admin_location
+				where id_admin="'.$this->id_admin.'"
+				group by round(UNIX_TIMESTAMP(date) / 300)
+				order by date desc
+				limit 25
+			');
+		}
+		return $this->_locations;
+	}
 
 	public function location() {
 		if (!isset($this->_location)) {
@@ -79,6 +92,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out = parent::exports($params);
 		$out['shifts'] = [];
 		$out['working'] = false;
+		if ($this->location()) {
+			$out['location'] = $this->location()->exports();
+		}
 
 		$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
 
