@@ -303,9 +303,9 @@ class Crunchbutton_User extends Cana_Table {
 		}
 	}
 	
-	private static function _inviteCodePartGenerator($chars = '123456789qwertyuiopasdfghjklzxcvbnm', $len = 0) {
+	private static function _inviteCodePartGenerator($chars = '123456789qwertyupasdfghjklzxcvbnm', $len = 0) {
 		if ($chars == 'a-z') {
-			$chars = 'qwertyuiopasdfghjklzxcvbnm';
+			$chars = 'qwertyupasdfghjklzxcvbnm';
 		} elseif ($chars == '0-9') {
 			$chars = '123456789';
 		}
