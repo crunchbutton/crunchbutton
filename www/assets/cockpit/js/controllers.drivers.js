@@ -159,15 +159,13 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	$scope.update();
 } );
 
-NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams ) {
+NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams, StaffService, $rootScope) {
 
 	$scope.loading = true;
-
-	var drivers = function(){
-		DriverService.listSimple( function( data ){
-			$scope.drivers = data;
-		} );
-	}
+	
+	StaffService.get($routeParams.id, function(staff) {
+		$rootScope.title = staff.name + ' | Payments';
+	});
 
 	$scope.show_all_weeks = function(){
 		$scope.showing_all_weeks = true;
@@ -200,7 +198,6 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 	if( $scope.account.isLoggedIn() ){
 		$scope.id_admin = parseInt( $scope.account.user.id_admin );
 		if( $scope.account.isAdmin ){
-			drivers();
 			if( $routeParams.id ){
 				$scope.id_admin = parseInt( $routeParams.id );
 			}

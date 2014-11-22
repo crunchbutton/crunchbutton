@@ -13,7 +13,9 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('CustomersCtrl', function ($scope, CustomerService, ViewListService) {
+NGApp.controller('CustomersCtrl', function ($rootScope, $scope, CustomerService, ViewListService) {
+	$rootScope.title = 'Customers';
+
 	angular.extend($scope, ViewListService);
 
 	$scope.view({
@@ -30,10 +32,11 @@ NGApp.controller('CustomersCtrl', function ($scope, CustomerService, ViewListSer
 	});
 });
 
-NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService) {
+NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService, $rootScope) {
 	$scope.loading = true;
 
 	CustomerService.get($routeParams.id, function(d) {
+		$rootScope.title = d.name + ' | Customers';
 		$scope.customer = d;
 		$scope.loading = false;
 	});

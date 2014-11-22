@@ -18,12 +18,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('StaffInfoCtrl', function ($scope, $routeParams, $location, StaffService, MapService) {
+NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $location, StaffService, MapService) {
 	$scope.staff = null;
 	$scope.map = null;
 	var marker;
 
 	StaffService.get($routeParams.id, function(staff) {
+		$rootScope.title = staff.name + ' | Staff';
 		$scope.staff = staff;
 		$scope.ready = true;
 	});
