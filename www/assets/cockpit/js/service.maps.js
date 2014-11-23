@@ -61,6 +61,48 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		maps[id] = null;
 	};
 	
+	service.trackStaff = function(params) {
+		var map = params.map;
+
+		if (!maps[params.id]) {
+			maps[params.id] = {markers: {}};
+			params.scope.$on('$destroy', function() {
+				service.reset(params.id);
+			});
+		}
+
+		var locs = {};
+		
+		locs[params.staff.location.lat] = params.staff.location.lon;
+
+		for (var x in params.locations) {
+			if (locs[params.locations[x].lat] == params.locations[x].lon) {
+				continue;
+			}
+			new google.maps.Marker({
+				map: map,
+				position: new google.maps.LatLng(parseFloat(params.locations[x].lat), parseFloat(params.locations[x].lon)+(x/100)),
+				zIndex: 99,
+				icon: service.icon.dot
+			});
+			locs[params.locations[x].lat] = params.locations[x].lon;
+		}
+
+		if (maps[params.id].markers.current) {
+			maps[params.id].markers.current.setMap(null);
+		}
+
+		var myLatlng = new google.maps.LatLng(parseFloat(params.staff.location.lat), parseFloat(params.staff.location.lon));
+		
+		map.setCenter(myLatlng);
+		maps[params.id].markers.current = new google.maps.Marker({
+			map: map,
+			position: myLatlng,
+			zIndex: 100,
+			icon: params.staff.vehicle == 'car' ? service.icon.car : service.icon.bike
+		});
+	};
+	
 	service.trackOrder = function(params) {
 		var map = params.map;
 		var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
@@ -68,7 +110,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 
 		if (!maps[params.id]) {
 			maps[params.id] = {markers: {}};
-			params.scope.$on('destroy', function() {
+			params.scope.$on('$destroy', function() {
 				service.reset(params.id);
 			});
 		}
