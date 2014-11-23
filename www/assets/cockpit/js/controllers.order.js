@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
-			templateUrl: 'assets/view/orders-list.html',
+			templateUrl: 'assets/view/orders.html',
 			reloadOnSearch: false
 
 		}).when('/order/:id', {
