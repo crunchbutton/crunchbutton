@@ -11,14 +11,13 @@
 
 	<div class="divider"></div>
 	<br>
-	
+
 	<div>
-		
 		<div class="support-boxes-column">
 			<div ng-if="!order.id_order" class="support-box-wrap">
 				<h1>Invalid Order</h1>
 			</div>
-
+	
 			<div ng-if="order.id_order" class="support-box-wrap">
 				<h1>Order <a href="/order/{{order.id_order}}">#{{order.id_order}}</a></h1>
 				<div class="box-content-color">
@@ -47,7 +46,7 @@
 					</div>
 				</div>
 			</div>
-
+	
 			<div ng-if="order.user.id_user" class="support-box-wrap">
 				<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
 				<div class="box-content-color">
@@ -99,11 +98,11 @@
 			
 		</div>
 		<div class="support-boxes-column">
-
+	
 			<div class="support-box-wrap" ng-if="order.driver.id_admin">
 				<h1>Location</h1>
 				<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-
+	
 				</map>
 				<div class="divider"></div>
 				<br><br>
@@ -154,10 +153,8 @@
 					 
 				</div>
 			</div>
-
-		</div>
 	
+		</div>
 	</div>
 
 </div>
-
