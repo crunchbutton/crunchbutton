@@ -168,24 +168,26 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		}
 
 		// driver marker
-		if (maps[params.id].markers.driver) {
-			if (maps[params.id].markers.driverLat == params.driver.location.lat && maps[params.id].markers.driverLon == params.driver.location.lon) {
-				// no updates
-				console.debug('No updated driver position');
-				return;
+		if (params.order.status.status != 'delivered') {
+			if (maps[params.id].markers.driver) {
+				if (maps[params.id].markers.driverLat == params.driver.location.lat && maps[params.id].markers.driverLon == params.driver.location.lon) {
+					// no updates
+					console.debug('No updated driver position');
+					return;
+				}
+				maps[params.id].markers.driver.setMap(null);
+				getDirections();
 			}
-			maps[params.id].markers.driver.setMap(null);
-			getDirections();
+			maps[params.id].markers.driverLat = params.driver.location.lat;
+			maps[params.id].markers.driverLon = params.driver.location.lon;
+	
+			maps[params.id].markers.driver = new google.maps.Marker({
+				map: map,
+				position: driver,
+				zIndex: 100,
+				icon: params.driver.vehicle == 'car' ? service.icon.car : service.icon.bike
+			});
 		}
-		maps[params.id].markers.driverLat = params.driver.location.lat;
-		maps[params.id].markers.driverLon = params.driver.location.lon;
-
-		maps[params.id].markers.driver = new google.maps.Marker({
-			map: map,
-			position: driver,
-			zIndex: 100,
-			icon: params.driver.vehicle == 'car' ? service.icon.car : service.icon.bike
-		});
 
 		// customer marker
 		if (!maps[params.id].markers.customer) {
