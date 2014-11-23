@@ -109,7 +109,7 @@
 			<div class="support-box-wrap" ng-if="ticket.order.driver.id_admin">
 				<h1>Location</h1>
 				<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-	
+					<traffic-layer ng-if="staff.id_admin"></traffic-layer>
 				</map>
 				<div class="divider"></div>
 				<br><br>
