@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/staff', {
 			action: 'staff',
 			controller: 'StaffCtrl',
-			templateUrl: 'assets/view/staff-list.html',
+			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
 		.when('/staff/:id', {
