@@ -85,6 +85,8 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 				dest = maps[params.id].markers.customerLocation;
 			} else if (params.order.status.status == 'pickedup') {
 				dest = maps[params.id].markers.customerLocation;
+			} else if (!maps[params.id].markers.directions) {
+				map.setCenter(restaurant);
 			} else {
 				return;
 			}
