@@ -38,6 +38,12 @@
 								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 							</div>
 						</div>
+						<div class="field-row">
+							<div class="field-key">ETA</div>
+							<div class="field-value">
+								{{eta.total.duration + 15 | formatPrice}} minutes
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -124,6 +130,24 @@
 							<div class="field-value">
 								<span ng-if="order.driver.working">{{order.driver.shift_ends/60/60 | formatPrice}} hours</span>
 								<span ng-if="!order.driver.working">Shift ended</span>
+							</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Restaurant Dis</div>
+							<div class="field-value">
+								{{eta.restaurant.duration | formatPrice}} minutes / {{eta.restaurant.distance | formatPrice}} miles
+							</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Customer Dis</div>
+							<div class="field-value">
+								{{eta.customer.duration | formatPrice}} minutes / {{eta.customer.distance | formatPrice}} miles
+							</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Total Dis</div>
+							<div class="field-value">
+								{{eta.total.duration | formatPrice}} minutes / {{eta.total.distance | formatPrice}} miles
 							</div>
 						</div>
 					</div>

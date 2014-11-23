@@ -81,7 +81,8 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 
 			var dest;
 			if (params.order.status.status == 'accepted' || params.order.status.status == 'transfered') {
-				dest = restaurant;
+				//dest = restaurant;
+				dest = maps[params.id].markers.customerLocation;
 			} else if (params.order.status.status == 'pickedup') {
 				dest = maps[params.id].markers.customerLocation;
 			} else {
@@ -91,14 +92,21 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 			var directionsService = new google.maps.DirectionsService();
 			maps[params.id].markers.directions = new google.maps.DirectionsRenderer({suppressMarkers: true});
 			maps[params.id].markers.directions.setMap(map);
-
-			directionsService.route({
+			
+			var routeParams = {
 				origin: driver,
 				destination: dest,
 				travelMode: params.driver.vehicle == 'car' ? google.maps.TravelMode.DRIVING : google.maps.TravelMode.BICYCLING
+			};
 
-			}, function(response, status) {
+			if (params.order.status.status == 'accepted' || params.order.status.status == 'transfered') {
+				routeParams.waypoints = [{location: restaurant,stopover: true}];
+			}
+
+			directionsService.route(routeParams, function(response, status) {
 				console.debug('Got directions response: ', response);
+				params.scope.$broadcast('order-route-' + params.order.id_order, response.routes[0].legs);
+
 				if (status === google.maps.DirectionsStatus.OK) {
 					maps[params.id].markers.directions.setDirections(response);
 				}
@@ -114,7 +122,6 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 				icon: service.icon.restaurant
 			});
 		}
-	
 
 		// driver marker
 		if (maps[params.id].markers.driver) {
