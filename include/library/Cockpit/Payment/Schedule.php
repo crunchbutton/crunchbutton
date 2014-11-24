@@ -113,7 +113,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 				$out[ 'status' ] = 'Processing';
 			}
 		} else {
-			$out[ 'status' ] = 'Pending';
+			$out[ 'status' ] = 'Error';
 			$out[ 'paid_date' ] = '-';
 		}
 		return $out;
