@@ -10,6 +10,7 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 	    
 		switch (c::getPagePiece(3)) {
 		    case 'recording':
+		    case 'complete':
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response></Response>';
 
