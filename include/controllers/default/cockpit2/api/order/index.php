@@ -59,12 +59,25 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 							header('HTTP/1.1 401 Unauthorized');
 							exit;
 						}
+						
+						switch (c::getPagePiece(3)) {
+							case 'eta':
+								echo json_encode(['time' => $order->eta()]);
+								break;
 
-						$out = $order->exports();
-						$out['user'] = $order->user()->id_user ? $order->user()->exports() : null;
-						$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports() : null;
+							case 'status':
+								echo json_encode($order->status()->last());
+								break;
 
-						echo json_encode($out);;
+							default:
+								$out = $order->exports();
+								$out['user'] = $order->user()->id_user ? $order->user()->exports() : null;
+								$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports() : null;
+		
+								echo json_encode($out);
+								break;
+						}
+
 						break;
 				}
 				break;
