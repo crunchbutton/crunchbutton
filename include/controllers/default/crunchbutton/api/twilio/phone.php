@@ -5,9 +5,7 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 		
 		$_REQUEST['forward'] = preg_replace('/[^0-9]/','',$_REQUEST['forward']);
 		header('Content-type: text/xml');
-	    
-		die(c::getPagePiece(3));
-	    
+
 		switch (c::getPagePiece(3)) {
 		    case 'recording':
 		    case 'complete':
