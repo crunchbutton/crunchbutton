@@ -61,6 +61,7 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 				}
 				
 				if ($code) {
+					$code = str_replace('+ ++e', '+ (++e)', $code);
 					$tmp = tempnam('/tmp',$cacheid);
 					$tmps[] = $tmp;
 					file_put_contents($tmp,$code);
