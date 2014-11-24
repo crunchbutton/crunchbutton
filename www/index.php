@@ -20,6 +20,15 @@ if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
 }
 
+if (isset($_GET['__host'])) {
+	setcookie('__host', $_GET['__host'], 0, '/');
+	$_COOKIE['__host'] = $_GET['__host'];
+}
+
+if ($_COOKIE['__host']) {
+	$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = $_REQUEST['__host'];
+}
+
 /*
 if (preg_match('/^www.cockpit.la$/',$_SERVER['HTTP_HOST'])) {
 	$replace = 'cockpit.la';
