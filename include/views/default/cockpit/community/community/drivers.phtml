@@ -1,5 +1,5 @@
-<?php 
-$drivers = $this->drivers; 
+<?php
+$drivers = $this->drivers;
 ?>
 <?php if( count( $drivers ) > 0 ) { ?>
 <table class="drivers-grid">
@@ -40,8 +40,8 @@ $drivers = $this->drivers;
 			</a>
 		</td>
 		<td>
-			<?php 
-			$notifications = $driver->getNotifications(); 
+			<?php
+			$notifications = $driver->getNotifications();
 			if( $notifications && count( $notifications ) > 0 ){
 				foreach( $notifications as $notification ){
 					switch ( $notification->type ) {
@@ -66,14 +66,14 @@ $drivers = $this->drivers;
 		</td>
 		<td>
 			<strong><?php echo $driver->timezone; ?></strong>
-			<?php 
-				$workingHours = $driver->workingHoursWeek(); 
+			<?php
+				$workingHours = $driver->workingHoursWeek();
 				if( count( $workingHours ) > 0 ){
 					foreach( $workingHours as $weekday => $hours ){
 						?>
 						<div><?php echo $weekday; ?>: <strong><?php echo $hours; ?></strong></div>
 						<?php
-					}	
+					}
 				} else {
 					echo '<div>-</div>';
 				}
@@ -99,11 +99,11 @@ $drivers = $this->drivers;
 		<td>
 			<a href="/permissions/users/<?php echo $driver->id_admin ?>" class="btn btn-green">
 				Edit Driver
-			</a>								
+			</a>
 		</td>
 	</tr>
 <?php } ?>
 </table>
-<?php } else { 
+<?php } else {
 	echo 'There are no drivers.';
 } ?>

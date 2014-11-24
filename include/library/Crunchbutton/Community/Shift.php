@@ -9,7 +9,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->idVar('id_community_shift')
 			->load($id);
 	}
-	
+
 	public function exports() {
 		$out = $this->properties();
 		$out['community_name'] = $this->community()->name;
@@ -321,6 +321,18 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$dateTime = new DateTime();
 		$dateTime->setTimeZone( new DateTimeZone( $this->timezone() ) );
 		return $dateTime->format( 'T' );
+	}
+
+	public function currentShiftByCommunity( $id_community ){
+		$community = Crunchbutton_Community::o( $id_community );
+		if( $community->id_community ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->setTimeZone( new DateTimeZone( $community->timezone ) );
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = ' . $id_community . ' AND date_start >= "' . $now->format( 'Y-m-d H:i:s' ) . '" LIMIT 1' );
+			return $shifts;
+		}
+		return false;
+
 	}
 
 	public function dateStart( $timezone = false ){

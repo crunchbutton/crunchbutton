@@ -1,0 +1,151 @@
+<?php
+$drivers = $this->drivers;
+$current_shift = $this->community->currentShift();
+?>
+<div class="box-content padded">
+	<div class="row-fluid">
+		<div class="separate-sections" style="margin-top: 5px;">
+			<div class="row-fluid">
+				<div class="span6">
+					<strong>Text drivers</strong>
+					<ul class="padded separate-sections">
+						<li class="input">
+							<label style="text-align:left;">
+								<input type="radio" name="text" id="all-drivers" value="all-drivers"> All drivers
+							</label>
+						</li>
+						<?php if( $current_shift ) { ?>
+						<li class="input">
+							<strong>
+								Current/Next shift <?php echo $current_shift->dateStartFriendly() ?>
+							</strong>
+						</li>
+						<li class="input">
+							<label style="text-align:left;">
+								<input type="radio" name="text" id="assigned-drivers" value="assigned-drivers"> Assigned drivers
+							</label>
+						</li>
+						<li class="input">
+							<label style="text-align:left;">
+								<input type="radio" name="text" id="not-assigned-drivers" value="not-assigned-drivers"> Not assigned drivers
+							</label>
+						</li>
+						<?php } else { ?>
+						<li class="input">
+							There is no current shift.
+						</li>
+						<?php } ?>
+					</ul>
+				</div>
+				<div class="span6">
+					<strong>Drivers</strong>
+					<ul class="padded separate-sections">
+						<?php foreach( $drivers as $driver ) {
+							$is_assigned = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $current_shift->id_community_shift ) ) ? 'assigned-drivers' : 'not-assigned-drivers';
+							?>
+						<li class="input">
+								<label style="text-align:left;">
+									<input type="checkbox" class="all-drivers all <?php echo $is_assigned; ?>" name="phone" id="phone" value="<?php echo $driver->phone; ?>" > <?php echo $driver->name; ?> - <?php echo $driver->phone; ?>
+								</label>
+							</li>
+						<?php } ?>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="box-content padded">
+	<div class="row-fluid">
+		<ul class="padded separate-sections">
+			<li class="input">
+				<label style="text-align:left;">
+					Phones
+				</label>
+				<input type="text" value="" name="phones" id="phones">
+			</li>
+			<li class="input">
+				<label style="text-align:left;">
+					Message
+				</label>
+				<input type="text" value="" name="message" id="message">
+			</li>
+			<li class="input">
+				<button type="button" onclick="sendSMS();" class="btn btn-blue">Send SMS</button>
+			</li>
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+function uncheck(){
+	$( '.all-drivers' ).prop( 'checked', false );
+}
+function getCheckedPhone(){
+	var phones = '';
+	var commas = '';
+	$( '.all-drivers' ).each( function(){
+		var el = $( this );
+		if( el.is( ':checked' ) ){
+			phones += commas + $( this ).val();
+			commas = ';';
+		}
+	} );
+	$( '#phones' ).val( phones );
+}
+$( document ).ready( function(){
+	$( '.all-drivers' ).on( 'click', function(){
+		getCheckedPhone();
+	} );
+	$( '#all-drivers' ).on( 'click', function(){
+		uncheck();
+		$( '.all-drivers' ).each( function(){
+			$( this ).prop( 'checked', true );
+		} );
+		getCheckedPhone();
+	} );
+	$( '#all-drivers' ).on( 'click', function(){
+		uncheck();
+		$( '.all-drivers' ).each( function(){
+			$( this ).prop( 'checked', true );
+		} );
+		getCheckedPhone();
+	} );
+	$( '#assigned-drivers' ).on( 'click', function(){
+		uncheck();
+		$( '.assigned-drivers' ).each( function(){
+			$( this ).prop( 'checked', true );
+		} );
+		getCheckedPhone();
+	} );
+	$( '#not-assigned-drivers' ).on( 'click', function(){
+		uncheck();
+		$( '.not-assigned-drivers' ).each( function(){
+			$( this ).prop( 'checked', true );
+		} );
+		getCheckedPhone();
+	} );
+} );
+function sendSMS(){
+	var phones = $.trim( $( '#phones' ).val() );
+	if( phones == '' ){
+		alert( 'Please enter a least one phone number!' );
+		$( '#phones' ).focus();
+		return;
+	}
+	var message = $( '#message' ).val();
+	if( $.trim( message ) == '' ){
+		alert( 'Please type the message!' );
+		$( '#message' ).focus();
+		return;
+	}
+	var data = { 'phones': phones, 'message': message };
+	$.ajax({
+	data: data,
+	method: 'POST',
+	url: '/api/support/send-sms',
+	success: function( json ){
+		alert( 'Sms sent!' );
+		}
+	});
+}
+</script>

@@ -1,7 +1,7 @@
 <?php
 
 class Controller_community extends Crunchbutton_Controller_Account {
-	
+
 	public function init() {
 
 		$id_community = c::getPagePiece( 1 );
@@ -38,9 +38,9 @@ class Controller_community extends Crunchbutton_Controller_Account {
 					c::view()->layout( 'layout/ajax' );
 					c::view()->display( 'community/community/restaurants' );
 					break;
-				
+
 			case 'drivers':
-					
+
 					if ( ( 	( !c::admin()->permission()->check( [ 'global','community-all', $permission ] ) ) ) ||
 									( !c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) )
 						) {
@@ -50,11 +50,19 @@ class Controller_community extends Crunchbutton_Controller_Account {
 					if ( !c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) ) {
 						return;
 					}
-					
+
+					c::view()->community = $community;
 					c::view()->drivers = $this->drivers( $id_community );
 					c::view()->layout( 'layout/ajax' );
 					c::view()->display( 'community/community/drivers' );
 					break;
+
+			case 'drivers-sms':
+				c::view()->community = $community;
+				c::view()->drivers = $this->drivers( $id_community );
+				c::view()->layout( 'layout/ajax' );
+				c::view()->display( 'community/community/drivers-sms' );
+				break;
 
 				default:
 
@@ -72,7 +80,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 
 		} else {
 			$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
-			c::view()->communities = $communities;			
+			c::view()->communities = $communities;
 			c::view()->display( 'community/index' );
 		}
 	}
@@ -84,12 +92,12 @@ class Controller_community extends Crunchbutton_Controller_Account {
 		$_sorted = [];
 		foreach( $drivers as $driver ){
 			if( $driver->isWorking() ){
-				$_sorted[] = $driver;	
+				$_sorted[] = $driver;
 			}
 		}
 		foreach( $drivers as $driver ){
 			if( !$driver->isWorking() ){
-				$_sorted[] = $driver;	
+				$_sorted[] = $driver;
 			}
 		}
 		return $_sorted;
@@ -101,7 +109,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 
 		$info[ 'community' ] = $community;
 
-		$info[ 'name' ] = $community->name; 
+		$info[ 'name' ] = $community->name;
 		$info[ 'ordersLastWeek' ] = $community->ordersLastWeek();
 		$info[ 'newUsersLastWeek' ] = $community->newUsersLastWeek();
 
@@ -123,7 +131,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 		foreach ( $communities as $community ) {
 			$orders[ $community->name ] = $community->getOrdersFromLastDaysByCommunity( $interval );
 		}
-		$today = new DateTime( $time, new DateTimeZone( 'America/Los_Angeles' ) ); 
+		$today = new DateTime( $time, new DateTimeZone( 'America/Los_Angeles' ) );
 		for( $i = 0; $i <= $interval; $i++ ){
 			$days[] = $today->format( 'm/d/Y' );
 			$today->modify( '-1 day' );

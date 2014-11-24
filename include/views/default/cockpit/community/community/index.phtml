@@ -91,6 +91,7 @@
 				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts</span></a></li>
 				<li><a href="#charts" data-toggle="tab"><i class="icon-bar-chart"></i> <span>Delivery Report</span></a></li>
 				<?php } ?>
+				<li><a href="#drivers-sms" data-toggle="tab"><i class="icon-cog"></i> <span>SMS to Drivers</span></a></li>
 				<li><a href="#more" data-toggle="tab"><i class="icon-cog"></i> <span>More actions</span></a></li>
 			</ul>
 	</div>
@@ -146,6 +147,7 @@
 			<?php } ?>
 			<?php if( $this->driversPermissions ) { ?>
 				<div class="tab-pane" id="drivers"></div>
+				<div class="tab-pane" id="drivers-sms"></div>
 			<?php } ?>
 			<div class="tab-pane" id="more">
 				<?php if (c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) { ?>
@@ -223,6 +225,7 @@ $( document ).ready( function(){
 
 	community.restaurants();
 	community.drivers();
+	community.driversSMS();
 	<?php
 	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
 
@@ -269,6 +272,15 @@ community.drivers = function(){
 		url: '/community/' + community.id_community + '/drivers',
 		complete: function(content) {
 			$('#drivers').html( content.responseText );
+		}
+	} );
+};
+
+community.driversSMS = function(){
+	$.ajax( {
+		url: '/community/' + community.id_community + '/drivers-sms',
+		complete: function(content) {
+			$('#drivers-sms').html( content.responseText );
 		}
 	} );
 };
