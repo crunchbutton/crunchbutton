@@ -18,208 +18,62 @@ class Crunchbutton_App extends Cana_App {
 			$cli = true;
 			// get the env send by parameter
 			$a = (object)getopt('s::c::r::f::e::');
-			if( $a->e ){
-				$_env = $a->e;
+			if ($a->e) {
+				$cliEnv = $a->e;
+			}
+			
+			// set hostname by path
+			if (preg_match('/^\/Users\//',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'crunchbutton.localhost';
+
+			} elseif (preg_match('/^\/home\/beta.crunchbutton/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'beta.crunchr.co';
+
+			} elseif (preg_match('/^\/home\/dev.crunchbutton/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'dev.crunchr.co';
+
+			} elseif (preg_match('/^\/home\/(crunchbutton|cockpit.crunchbutton)|/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = '_DOMAIN_';
+
+			} elseif (preg_match('/^\/home\/staging.crunchbutton/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'staging.crunchr.co';
 			}
 		}
 
-		$host = $_SERVER['SERVER_NAME'];
+		
+		// db by hostname
+		// anything local
+		if (preg_match('/localhost$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'local';
+		// any one of our cull live urls, or staging prefixes
+		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'live';
+		// anything ._DOMAIN_ fails
+		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'fail';
+		// anything prefixed with beta or dev
+		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
+			$db = 'beta';
+		// anything else (should be nothing)
+		} else {
+			$db = 'fail';
+		}
+		
 
-		$params['postInitSkip'] = true;
-		switch ($_SERVER['SERVER_NAME']) {
-			case 'staging.crunchr.co':
-				$env = 'staging';
-				break;
-			case 'crunchr.co':
-			case '_DOMAIN_':
-			case 'cockpit.crunchr.co':
-			case 'cockpit._DOMAIN_':
-			case 'cbtn.io':
-			case 'cockpit.la':
-			case 'dispatch.la':
-			case 'staging.kenneth.crunchr.co':
-			case 'cockpit.kenneth.crunchr.co':
-			case 'cockpit3.kenneth.crunchr.co':
-			case 'staging.manish.crunchr.co':
-			case 'cockpit.manish.crunchr.co':
-			case 'cockpit3.manish.crunchr.co':
-				$env = 'live';
-				break;
-			case 'wenzel.beta.crunchr.co':
-			case 'beta.crunchr.co':
-			case 'beta.cockpit.crunchr.co':
-			case 'beta.cockpit._DOMAIN_':
-			case 'beta.kenneth.crunchr.co':
-			case 'beta.cockpit.kenneth.crunchr.co':
-			case 'beta.cockpit3.kenneth.crunchr.co':
-			case 'beta.manish.crunchr.co':
-			case 'beta.cockpit.manish.crunchr.co':
-			case 'beta.cockpit3.manish.crunchr.co':
-			case 'beta.cockpit.la':
-			case 'cockpitbeta._DOMAIN_':
-				$env = 'beta';
-				break;
-			case 'dev.crunchr.co':
-			case 'dev.kenneth.crunchr.co':
-			case 'kenneth.crunchr.co':
-			case 'dev.manish.crunchr.co':
-			case 'manish.crunchr.co':
-			case 'dev.cockpit.la':
-				$env = 'dev';
-				break;
-			case 'cockpit.localhost':
-			case 'crunchbutton.localhost':
-				$env = 'local';
-				break;
-			default:
-				$env = 'local';
-				break;
+		// overwrite if we specify the db
+		if ($cliEnv) {
+			$db = $cliEnv;
 		}
 
-		switch ($_SERVER['SERVER_NAME']) {
-			case 'crunchbutton.localhost':
-			case 'wenzel.localhost':
-			case 'seven.localhost':
-				$params['env'] = 'local';
-				break;
-			case 'crunchr.co':
-			case '_DOMAIN_':
-			case 'staging._DOMAIN_':
-			case 'spicywithdelivery.com':
-			case 'cockpit.la':
-			case 'dispatch.la':
-			case 'cockpit.kenneth.crunchr.co':
-			case 'cockpit3.kenneth.crunchr.co':
-			case 'staging.kenneth.crunchr.co':
-			case 'cockpit.manish.crunchr.co':
-			case 'cockpit3.manish.crunchr.co':
-			case 'staging.manish.crunchr.co':
-				$isStaging = true;
-				$params['env'] = 'live';
-				break;
-			case 'beta.crunchr.co':
-			case 'alpha.crunchr.co':
-			case 'test.crunchr.co':
-			case 'dev.crunchr.co':
-			case 'beta._DOMAIN_':
-			case 'alpha._DOMAIN_':
-			case 'test._DOMAIN_':
-			case 'brad.crunchr.co':
-			case 'dev._DOMAIN_':
-			case 'beta.spicywithdelivery.com':
-			case 'dev.spicywithdelivery.com':
-			case 'beta.cockpit.crunchr.co':
-			case 'beta.cockpit._DOMAIN_':
-			case 'beta.cockpit3._DOMAIN_':
-			case 'wenzel.beta.crunchr.co':
-			case 'beta.kenneth.crunchr.co':
-			case 'dev.kenneth.crunchr.co':
-			case 'kenneth.crunchr.co':
-			case 'beta.manish.crunchr.co':
-			case 'dev.manish.crunchr.co':
-			case 'manish.crunchr.co':
-			case 'beta.cockpit.la':
-			case 'dev.cockpit.la':
-			case 'beta.cockpit3.kenneth.crunchr.co':
-			case 'beta.cockpit3.manish.crunchr.co':
-			case 'beta.cockpit.kenneth.crunchr.co':
-			case 'beta.cockpit.manish.crunchr.co':
-			case 'cockpitbeta._DOMAIN_':
-				$params['env'] = 'beta';
-				break;
-
-			default:
-				switch ($_SERVER['SERVER_ADDR']) {
-					case '74.207.245.57':
-					case '_IP_':
-					case '66.175.217.154':
-						$params['env'] = 'live';
-						break;
-					default:
-						switch (dirname(__FILE__)) {
-							case '/home/beta.crunchbutton/include/library/Crunchbutton':
-							case '/home/dev.crunchbutton/include/library/Crunchbutton':
-								$params['env'] = 'beta';
-								$_SERVER['SERVER_NAME'] = 'beta.crunchr.co';
-								$host_callback = 'beta.crunchr.co';
-								break;
-							case '/home/crunchbutton/include/library/Crunchbutton':
-							case '/home/_DOMAIN_/include/library/Crunchbutton':
-								$params['env'] = 'live';
-								$_SERVER['SERVER_NAME'] = '_DOMAIN_';
-								$host_callback = '_DOMAIN_';
-								break;
-							case '/home/staging.crunchbutton/include/library/Crunchbutton':
-								$params['env'] = 'live';
-								$_SERVER['SERVER_NAME'] = '_DOMAIN_';
-								$host_callback = 'staging.crunchr.co';
-								break;
-							case '/Users/arzynik/Sites/crunchbutton/include/library/Crunchbutton':
-								$params['env'] = 'local';
-								$_SERVER['SERVER_NAME'] = 'crunchbutton.localhost';
-								$host_callback = 'dev.crunchr.co';
-								break;
-							default:
-								if (getenv('TRAVIS')) {
-									$params['env'] = 'travis';
-									$_SERVER['SERVER_NAME'] = 'dev.crunchr.co';
-									$host_callback = 'dev.crunchr.co';
-								} else {
-									$params['env'] = 'local';
-									$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
-									$host_callback = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : 'dev.crunchr.co';
-								}
-
-								break;
-						}
-						
-						break;
-				}
-		}
-
-		if( $cli && $_env ){
-			$params[ 'env' ] = $_env;
-			$env = $_env;
-		}
-
-		// Force the host_callback - sometimes it is empty
-		switch (dirname(__FILE__)) {
-			case '/home/beta.crunchbutton/include/library/Crunchbutton':
-			case '/home/dev.crunchbutton/include/library/Crunchbutton':
-				$host_callback = 'beta.crunchr.co';
-				break;
-			case '/home/crunchbutton/include/library/Crunchbutton':
-			case '/home/_DOMAIN_/include/library/Crunchbutton':
-				$host_callback = '_DOMAIN_';
-				break;
-			case '/home/staging.crunchbutton/include/library/Crunchbutton':
-				$host_callback = 'staging.crunchr.co';
-				break;
-			case '/home/cockpit.crunchbutton/include/library/Crunchbutton':
-				switch ( $_SERVER['SERVER_NAME'] ) {
-					case 'cockpit.crunchr.co':
-					case 'cockpit._DOMAIN_':
-						$host_callback = '_DOMAIN_';
-						break;
-					case 'beta.cockpit.crunchr.co':
-					case 'beta.cockpit._DOMAIN_':
-					case 'cockpitbeta._DOMAIN_':
-						$host_callback = 'beta.crunchr.co';
-						break;
-				}
-				break;
-			default:
-				$host_callback = $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : 'dev.crunchr.co';
-				break;
-		}
-
-		if ($_SERVER['SERVER_NAME'] == 'crunchr.co') {
-			header ('HTTP/1.1 301 Moved Permanently');
-			header('Location: http://_DOMAIN_/');
+		// redirect bad urls
+		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
+			header('HTTP/1.1 301 Moved Permanently');
+			header('Location: https://_DOMAIN_/');
 			exit;
 		}
 
-		if ($params['env'] == 'live' && !$cli && ($_SERVER['SERVER_NAME'] == '_DOMAIN_' || $_SERVER['SERVER_NAME'] == 'spicywithdelivery.com')) {
+		// special settings for live web views
+		if ($db == 'live' && !$cli && !isset($_REQUEST['__host'])) {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
@@ -227,6 +81,9 @@ class Crunchbutton_App extends Cana_App {
 				exit;
 			}
 		}
+
+		$params['postInitSkip'] = true;
+		$params['env'] = $db;
 
 		try {
 			parent::init($params);
@@ -246,30 +103,21 @@ class Crunchbutton_App extends Cana_App {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 
-		$config->host_callback = $host_callback;
+		// set host callback by hostname
+		$config->host_callback = ($db == 'local' || $db == 'travis' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
 
-		switch ($_SERVER['SERVER_NAME']) {
-			case 'seven.localhost':
-				$config->facebook->app = $config->facebook->seven->app;
-				$config->facebook->secret = $config->facebook->seven->secret;
-				break;
-				
-			case 'dev.crunchr.co':
-				$config->facebook->app = $config->facebook->dev->app;
-				$config->facebook->secret = $config->facebook->dev->secret;
-				break;
-
-			default:
-				$config->facebook->app = $config->facebook->{$env}->app;
-				$config->facebook->secret = $config->facebook->{$env}->secret;
-				break;
+		// set facebook config by hostname
+		if ($config->facebook->{$_SERVER['SERVER_NAME']}) {
+			$config->facebook->app = $config->facebook->{$_SERVER['SERVER_NAME']}->app;
+			$config->facebook->secret = $config->facebook->{$_SERVER['SERVER_NAME']}->secret;
 		}
 
 		$this->config($config);
 
 		$this->buildAuth($this->db());
 		
-		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co' && !preg_match('/cockpit.la|cockpit.kenneth|cockpit.manish|cockpit3/',$_SERVER['SERVER_NAME'])) {
+		// set bundle on everything except tests
+		if ($db != 'local' && !preg_match('/cockpit.la|dev.crunchr.co/',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
 		
@@ -314,6 +162,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		
 		header('X-Powered-By: '.$this->config()->powered);
+		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
 
 	}
 	

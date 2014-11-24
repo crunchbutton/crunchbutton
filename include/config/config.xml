@@ -60,34 +60,34 @@
 		<token>_KEY_</token>
 	</github>
 	<facebook>
-		<local>
+		<crunchbutton.localhost>
 			 <!-- Daniels dev
 				<app>***REMOVED***</app>
 				<secret>***REMOVED***</secret>
  				-->
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
-		</local>
-		<seven>
+		</crunchbutton.localhost>
+		<seven.localhost>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
-		</seven>
-		<live>
+		</seven.localhost>
+		<_DOMAIN_>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
-		</live>
-		<beta>
+		</_DOMAIN_>
+		<beta.crunchr.co>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
-		</beta>
-		<dev>
+		</beta.crunchr.co>
+		<dev.crunchr.co>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
-		</dev>
-		<staging>
+		</dev.crunchr.co>
+		<staging.crunchr.co>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
-		</staging>
+		</staging.crunchr.co>
 		<default>
 			<scope>email</scope>
 			<poststatus>
