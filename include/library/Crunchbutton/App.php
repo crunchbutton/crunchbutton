@@ -42,14 +42,19 @@ class Crunchbutton_App extends Cana_App {
 
 		
 		// db by hostname
+		// anything local
 		if (preg_match('/localhost$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
+		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
+		// anything ._DOMAIN_ fails
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'fail';
+		// anything prefixed with beta or dev
 		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
+		// anything else (should be nothing)
 		} else {
 			$db = 'fail';
 		}
@@ -62,7 +67,6 @@ class Crunchbutton_App extends Cana_App {
 
 		// redirect bad urls
 		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
-			die('misconfigured');
 			header('HTTP/1.1 301 Moved Permanently');
 			header('Location: https://_DOMAIN_/');
 			exit;
@@ -100,7 +104,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// set host callback by hostname
-		$config->host_callback = $_SERVER['SERVER_NAME'] ? $_SERVER['SERVER_NAME'] : 'dev.crunchr.co';
+		$config->host_callback = ($db == 'local' || $db == 'travis' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
 
 		// set facebook config by hostname
 		if ($config->facebook->{$_SERVER['SERVER_NAME']}) {
@@ -158,7 +162,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		
 		header('X-Powered-By: '.$this->config()->powered);
-		header('X-Footprint: '.$db);
+		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
 
 	}
 	
