@@ -46,6 +46,12 @@
 								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 							</div>
 						</div>
+						<div class="field-row" ng-if="order.status.status != 'delivered'">
+							<div class="field-key">ETA</div>
+							<div class="field-value">
+								{{eta.time | formatPrice}} minutes
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -65,10 +71,6 @@
 						<div class="field-row">
 							<div class="field-key">Address</div>
 							<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Distance from restaurant</div>
-							<div class="field-value">@todo</div>
 						</div>
 					</div>
 				</div>
@@ -91,10 +93,6 @@
 						<div class="field-row">
 							<div class="field-key">Address</div>
 							<div class="field-value"><a href ng-click="routeAddress(ticket.restaurant.address)">{{ticket.restaurant.address}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Distance from customer</div>
-							<div class="field-value">@todo</div>
 						</div>
 					</div>
 				</div>
@@ -129,18 +127,24 @@
 							<div class="field-key">Phone</div>
 							<div class="field-value"><a href ng-click="callText(ticket.order.driver.phone)">{{ticket.order.driver.phone | formatPhone}}</a></div>
 						</div>
-							<div class="field-row">
-								<div class="field-key">Deliveries</div>
-								<div class="field-value">&nbsp;{{ticket.order.driver.deliveries.length}}</div>
+						<div class="field-row">
+							<div class="field-key">Deliveries</div>
+							<div class="field-value">&nbsp;{{ticket.order.driver.deliveries.length}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Shift ends in</div>
+							<div class="field-value">
+								<span ng-if="ticket.order.driver.working">{{ticket.order.driver.shift_ends/60/60 | formatPrice}} hours</span>
+								<span ng-if="!ticket.order.driver.working">Shift ended</span>
 							</div>
-							<div class="field-row">
-								<div class="field-key">Shift ends in</div>
-								<div class="field-value">
-									<span ng-if="ticket.order.driver.working">{{ticket.order.driver.shift_ends/60/60 | formatPrice}} hours</span>
-									<span ng-if="!ticket.order.driver.working">Shift ended</span>
-								</div>
+						</div>
+						<div class="field-row" ng-if="ticket.order.status.status == 'accepted' || ticket.order.status.status == 'pickedup'">
+							<div class="field-key">Distance</div>
+							<div class="field-value">
+								{{eta.distance | formatPrice}} miles
 							</div>
-	
+						</div>
+
 					</div>
 					 
 				</div>

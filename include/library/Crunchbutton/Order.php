@@ -2665,4 +2665,16 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
+	
+	
+	public function eta($refresh = false) {
+		if (!isset($this->_eta) || $refresh) {
+			$eta = Order_Eta::q('select * from order_eta where id_order="'.$this->id_order.'" order by date desc limit 1')->get(0);
+			if (!$eta->id_order_eta || $refresh) {
+				$eta = Order_Eta::create($this);
+			}
+			$this->_eta = $eta;
+		}
+		return $this->_eta;
+	}
 }
