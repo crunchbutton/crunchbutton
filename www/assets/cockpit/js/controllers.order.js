@@ -65,43 +65,21 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		MapService.style(map);
 		draw();
 	});
+	
+	var cleanup = $rootScope.$on('order-route-' + $routeParams.id, function(event, args) {
+		$scope.$apply(function() {
+			$scope.eta = args;
+		});
+		console.debug('Got route update: ', args);
+	});
 
 	$scope.updater = $interval(update, 5000);
 	$scope.$on('$destroy', function() {
 		$interval.cancel($scope.updater);
+		cleanup();
 	});
 	
-	$scope.$on('order-route-' + $routeParams.id, function(event, args) {
-		var eta = {
-			customer: {},
-			restaurant: {},
-			total: {}
-		};
-		if (args.length == 2) {
-			eta.restaurant.distance = args[0].distance.value * 0.000621371;
-			eta.restaurant.duration = args[0].duration.value/60;
-			
-			eta.customer.distance = args[1].distance.value;
-			eta.customer.duration = args[1].duration.value/60;
-			
-			eta.total.duration = eta.restaurant.duration + eta.customer.duration;
-			eta.total.distance = eta.restaurant.distance + eta.customer.distance;
 
-		} else {
-			eta.customer.distance = args[0].distance.value * 0.000621371;
-			eta.customer.duration = args[0].duration.value/60;
-			
-			eta.total.duration = eta.customer.duration;
-			eta.total.distance = eta.customer.distance;
-		}
-		
-
-		$scope.$apply(function() {
-			$scope.eta = eta;
-		});
-
-		console.debug('Got route update: ', eta);
-	});
 	
 	update();
 });

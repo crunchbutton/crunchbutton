@@ -13,7 +13,7 @@
 						
 							<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
 							<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-						<br>ETA: @todo
+						<br>ETA: {{ticket.order.eta.time}} minites
 					</div>					
 				</div>
 			</td></tr>
