@@ -3,6 +3,11 @@
 class BalancedTest extends PHPUnit_Framework_TestCase {
 
 	public static function setUpBeforeClass() {
+		echo "\n\n";
+		echo 'Balanced env: '.c::env()."\n";
+		echo 'Balanced getenv: '.c::getEnv()."\n";
+		echo 'Balanced config: '.c::config()->balanced->{c::getEnv()}->secret."\n\n\n";
+
 		(new Restaurant([
 			'name' => 'UNIT TEST RESTAURANT',
 			'active' => 1
