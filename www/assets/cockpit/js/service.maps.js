@@ -47,7 +47,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 			{"elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},
 		{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#38a9a1"},{"lightness":-34}]},
 		{"featureType":"administrative","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#388a84"},{"weight":0.8}]},
-		{"featureType":"poi.park","stylers":[{"color":"#225652"}]},
+		{"featureType":"poi.park","stylers":[{"color":"#1f4441"}]},
 		{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#308a84"},{"weight":0.1},{"lightness":10}]}],
 	};
 	
@@ -81,7 +81,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 			}
 			new google.maps.Marker({
 				map: map,
-				position: new google.maps.LatLng(parseFloat(params.locations[x].lat), parseFloat(params.locations[x].lon)+(x/100)),
+				position: new google.maps.LatLng(parseFloat(params.locations[x].lat), parseFloat(params.locations[x].lon)),
 				zIndex: 99,
 				icon: service.icon.dot
 			});

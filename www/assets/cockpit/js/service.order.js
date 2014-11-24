@@ -1,9 +1,9 @@
 
-NGApp.factory('OrderService', function($resource) {
+NGApp.factory('OrderService', function(ResourceFactory) {
 
 	var service = {};
 
-	var order = $resource(App.service + 'orders/:id_order', { id_order: '@id_order'}, {
+	var order = ResourceFactory.createResource(App.service + 'orders/:id_order', { id_order: '@id_order'}, {
 		'load' : {
 			url: App.service + 'order/:id_order',
 			method: 'GET',
@@ -21,7 +21,7 @@ NGApp.factory('OrderService', function($resource) {
 	});
 
 	service.list = function(params, callback) {
-		order.query(params, function(data){
+		order.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}

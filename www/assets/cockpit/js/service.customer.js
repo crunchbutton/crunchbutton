@@ -1,9 +1,9 @@
 
-NGApp.factory('CustomerService', function($resource) {
+NGApp.factory('CustomerService', function(ResourceFactory) {
 
 	var service = {};
 
-	var order = $resource(App.service + 'customers/:id_user', { id_user: '@id_user'}, {
+	var customer = ResourceFactory.createResource(App.service + 'customers/:id_user', { id_user: '@id_user'}, {
 		'load' : {
 			url: App.service + 'customer/:id_user',
 			method: 'GET',
@@ -21,19 +21,19 @@ NGApp.factory('CustomerService', function($resource) {
 	});
 
 	service.list = function(params, callback) {
-		order.query(params, function(data){
+		customer.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
 
 	service.get = function(id_user, callback) {
-		order.load({id_user: id_user}, function(data) {
+		customer.load({id_user: id_user}, function(data) {
 			callback(data);
 		});
 	}
 	
 	service.post = function(params, callback) {
-		order.save(params, function(data) {
+		customer.save(params, function(data) {
 			callback(data);
 		});
 	}

@@ -20,20 +20,14 @@ if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
 }
 
-/*
-if (preg_match('/^www.cockpit.la$/',$_SERVER['HTTP_HOST'])) {
-	$replace = 'cockpit.la';
+if (isset($_GET['__host'])) {
+	setcookie('__host', $_GET['__host'], 0, '/');
+	$_COOKIE['__host'] = $_GET['__host'];
 }
 
-if (preg_match('/^_DOMAIN_$/',$_SERVER['HTTP_HOST'])) {
-	$replace = 'www._DOMAIN_';
+if ($_COOKIE['__host']) {
+	$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = $_REQUEST['__host'];
 }
-
-if ($replace) {
-	header('Location: http://'.$replace.$_SERVER['REQUEST_URI']);
-	exit;
-}
-*/
 
 if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 	header('Location: http://'.str_replace('www.','',$_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']);
