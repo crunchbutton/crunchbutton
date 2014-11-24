@@ -40,10 +40,12 @@
 					<span ng-class="{
 						'span-driver-summary-paid': payment.status == 'Paid',
 						'span-driver-summary-pending': payment.status == 'Pending',
+						'span-driver-summary-pending': payment.status == 'Error',
 						'span-driver-summary-processing': payment.status == 'Processing'
 					}">
 					<span ng-switch="payment.status">
 						<span ng-switch-when="Pending">Not Yet Paid</span>
+						<span ng-switch-when="Error">Payment Error!*</span>
 						<span ng-switch-default>{{payment.status}}</span>
 					</span>
 				</td>
@@ -53,6 +55,9 @@
 		</table>
 	</div>
 
+	<div ng-if="summary.has_error" class="box-content2">
+		<p>* <span class="link orange" ng-click="navigation.link( '/drivers/docs/payment' );">Please upload correct deposit info</span></p>
+	</div>
 
 	<div ng-if="!summary.payments && !loading" class="box-content2">
 		<p>Not payments yet. Go deliver some food!</p>

@@ -69,6 +69,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			$out[ 'weeks' ] = [];
 
 			$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
+			$has_error = false;
 			foreach( $payments as $payment ){
 				$_payment = [];
 				$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
@@ -78,8 +79,13 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				if( $payment->arbritary ){
 					$_payment[ 'range_date' ] = 's'. $payment->note;
 				}
+				if( $_payment[ 'status' ] == 'Error' ){
+					$has_error = true;
+				}
 				$out[ 'payments' ][] = $_payment;
 			}
+
+			$out[ 'has_error' ] = $has_error;
 
 			// shifts
 			foreach( $shifts as $shift ){
@@ -214,7 +220,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 	private function _summaryByOrder( $range, $id_driver, $json = true ){
 
 		/**
-		  * @hideme: 
+		  * @hideme:
 		  * Hide View Details section: #3727
 		  * Get rid of the "Earned Since..." section entirely. #3727
 		 */
@@ -232,6 +238,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		// payments
 		$out[ 'payments' ] = [];
 		$payments = Cockpit_Payment_Schedule::driverPaymentByIdAdmin( $id_driver );
+		$has_error = false;
 		foreach( $payments as $payment ){
 			$_payment = [];
 			$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
@@ -244,11 +251,16 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 				$_payment[ 'total_received_cash' ] = max( 0, $summary[ '_total_received_cash_' ] );
 				$_payment[ 'total_cash_orders' ] = max( 0, $summary[ '_total_cash_orders_' ] );
 			}
+			if( $_payment[ 'status' ] == 'Error' ){
+				$has_error = true;
+			}
 			if( $payment->arbritary ){
 				$_payment[ 'range_date' ] = $payment->note;
 			}
 			$out[ 'payments' ][] = $_payment;
 		}
+
+		$out[ 'has_error' ] = $has_error;
 
 		// weeks
 		if( $orders[ 0 ] ){
