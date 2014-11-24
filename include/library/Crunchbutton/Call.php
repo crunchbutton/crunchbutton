@@ -26,11 +26,13 @@ class Crunchbutton_Call extends Cana_Table {
 			$end->modify('-'.$data['CallDuration'].' seconds');
 			$call->date_end = $end->format('Y-m-d H:i:s');
 			$call->status = 'completed';
+			$call->save();
 		}
 		if ($data['RecordingUrl']) {
 			$call->recording_url = $data['RecordingUrl'];
 			$call->recording_sid = $data['RecordingSid'];
 			$call->recording_duration = $data['RecordingDuration'];
+			$call->save();
 		}
 		return $call;
 	}
