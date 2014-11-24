@@ -1,8 +1,8 @@
-NGApp.factory('StaffService', function($resource, $routeParams) {
+NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 
 	var service = {};
 
-	var staff = $resource(App.service + 'staff/:id_admin', { id_admin: '@id_admin'}, {
+	var staff = ResourceFactory.createResource(App.service + 'staff/:id_admin', { id_admin: '@id_admin'}, {
 		'load' : {
 			method: 'GET',
 			params : {}
@@ -19,7 +19,7 @@ NGApp.factory('StaffService', function($resource, $routeParams) {
 	});
 
 	service.list = function(params, callback) {
-		staff.query(params, function(data){
+		staff.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
