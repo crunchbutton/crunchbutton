@@ -110,6 +110,9 @@ class Crunchbutton_Payment extends Cana_Table {
 			$schedule->status_date = date('Y-m-d H:i:s');
 			$schedule->log = $this->balanced_failure_reason;
 			$schedule->save();
+
+			$settlement = new Settlement;
+			$settlement->driverPaymentError( $schedule->id_payment_schedule );
 		}
 	}
 
