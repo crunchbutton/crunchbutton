@@ -1396,6 +1396,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
+						$this->driverPaymentError( $schedule->id_payment_schedule );
 						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 						return false;
 					}
@@ -1409,6 +1410,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$schedule->status_date = date( 'Y-m-d H:i:s' );
 					$schedule->save();
 					$this->log( 'payDriver: Error', $schedule->properties() );
+					$this->driverPaymentError( $schedule->id_payment_schedule );
 					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 				}
 			} else {
@@ -1416,6 +1418,26 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 		} else {
 			return false;
+		}
+	}
+
+	public function driverPaymentError( $id_payment_schedule ){
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule ){
+			$driver = $schedule->driver();
+			if( $driver->id_admin ){
+				$message = 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at http://cockpit.la/drivers/docs/payment. Text if you have questions!';
+				if( $driver->phone ){
+					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message ] );
+					Crunchbutton_Support::createNewWarning( [ 'phone' => $driver->phone, 'body' => $message ] );
+				}
+				if( $driver->email ){
+					$mail = new Cockpit_Email_Driver_Broadcast( [ 'driver' => $driver,
+																												'subject' => 'Hey your payment from Crunchbutton.com failed',
+																												'message' => $message ] );
+					$mail->send();
+				}
+			}
 		}
 	}
 
