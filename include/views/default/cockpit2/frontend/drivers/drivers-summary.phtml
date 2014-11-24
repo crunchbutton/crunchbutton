@@ -4,13 +4,13 @@
 
 
 	<h1 class="title left" ng-style="{true: {width: '100%'}, false: {}}[loading]"><i class="fa fa-bank"></i>Payments<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
-	
+
 	<div class="box-filter right" ng-if="summary.payments">
 		<button class="button green" ng-class="{ 'inactive' : $parent.filter }" ng-click="$parent.filter = false">All</button>
 		<button class="button button-big green" ng-class="{ 'inactive' : $parent.filter != 'Reimbursement' }" ng-click="$parent.filter = 'Reimbursement'">Reimbursement</button>
 		<button class="button button-big green" ng-class="{ 'inactive' : $parent.filter != 'Payment' }" ng-click="$parent.filter = 'Payment'">Payments</button>
 	</div>
-	
+
 	<div class="divider"></div>
 
 	<div class="box-content2 box-content-table" ng-if="summary.payments">
@@ -28,12 +28,13 @@
 					<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
 					<span ng-if="payment.total_cash_orders" class="note">
 						<br>
-						Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
+						*Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
 					</span>
 				</td>
 				<td>{{payment.range_date}}</td>
 				<td positive-or-negative-color="{{payment.amount}}">
 					${{payment.amount | formatPrice}}
+					<span ng-if="payment.total_cash_orders">*</span>
 				</td>
 				<td>
 					<span ng-class="{
@@ -52,7 +53,7 @@
 		</table>
 	</div>
 
-	
+
 	<div ng-if="!summary.payments && !loading" class="box-content2">
 		<p>Not payments yet. Go deliver some food!</p>
 	</div>
@@ -86,32 +87,32 @@
 
 
 <? /*
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		<div ng-if="summary.earnings">
 
 			<br><br>
