@@ -21,13 +21,24 @@ class Crunchbutton_Call extends Cana_Table {
 		if (!$call->id_call) {
 			$call = self::createFromTwilio($data);
 		}
+		if ($data['CallDuration']) {
+			$end = new DateTime($call->date_start);
+			$end->modify('-'.$data['CallDuration'].' seconds');
+			$call->date_end = $end->format('Y-m-d H:i:s');
+			$call->status = 'completed';
+		}
+		if ($data['RecordingUrl']) {
+			$call->recording_url = $data['RecordingUrl'];
+			$call->recording_sid = $data['RecordingSid'];
+			$call->recording_duration = $data['RecordingDuration'];
+		}
 		return $call;
 	}
 
 	public static function createFromTwilio($data) {
 		$call = new Call([
 			'data' => json_encode($data),
-			'date' => date('Y-m-d H:i:s'),
+			'date_start' => date('Y-m-d H:i:s'),
 			'direction' => 'inbound',
 			'twilio_id' => $data['CallSid'],
 			'status' => $data['CallStatus'],
