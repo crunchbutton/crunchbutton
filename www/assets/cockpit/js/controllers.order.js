@@ -51,10 +51,11 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	};
 
 	var update = function() {
+		var loading = true;
 		OrderService.get($routeParams.id, function(d) {
 			$rootScope.title = 'Order #' + d.id_order;
 			$scope.order = d;
-			$scope.ready = true;
+			$scope.loading = false;
 			draw();
 		});
 	};

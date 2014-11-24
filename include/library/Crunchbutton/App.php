@@ -117,7 +117,7 @@ class Crunchbutton_App extends Cana_App {
 		$this->buildAuth($this->db());
 		
 		// set bundle on everything except tests
-		if ($db != 'local' && !preg_match('/cockpit.la|dev.crunchr.co/',$_SERVER['SERVER_NAME'])) {
+		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
 		
