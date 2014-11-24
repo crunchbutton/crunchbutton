@@ -3,7 +3,7 @@
 <div class="content-padding">
 
 
-	<h1 class="left title"><i class="fa fa-car"></i>Order Details</h1>
+	<h1 class="left title"><i class="fa fa-car"></i>Order Details<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
 	<div class="ticket-status-top">
 		<div class="ticket-status-open">{{order.status.status}}</div>
@@ -14,9 +14,6 @@
 
 	<div>
 		<div class="support-boxes-column">
-			<div ng-if="!order.id_order" class="support-box-wrap">
-				<h1>Invalid Order</h1>
-			</div>
 	
 			<div ng-if="order.id_order" class="support-box-wrap">
 				<h1>Order <a href="/order/{{order.id_order}}">#{{order.id_order}}</a></h1>
