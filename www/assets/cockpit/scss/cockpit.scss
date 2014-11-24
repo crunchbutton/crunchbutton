@@ -2463,11 +2463,14 @@ b, strong{ font-weight: bold; }
 
 .field-container {
 	width: 100%;
+	display: table;
 }
 
 .field-container .field-key, .field-container .field-value {
 	padding: .7em;
 	line-height: 1.5em;
+	border-bottom: 1px solid #f1f2f7;
+	display: table-cell;
 }
 
 .field-button-spacer {
@@ -2481,15 +2484,13 @@ b, strong{ font-weight: bold; }
 
 .field-container .field-row {
 	font-size: 1.2em;
-	clear: both;
-	border-bottom: 1px solid #f1f2f7;
+	display: table-row;
 }
 
 .field-container .field-key {
 	color: #74777e;
 	text-align: left;
 	white-space: nowrap;
-	float: left;
 }
 
 .field-container .field-value {
