@@ -11,7 +11,7 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 				.'<Dial timeout="10" record="false">'.($_REQUEST['forward'] ? $_REQUEST['forward'] : '800-351-4161').'</Dial>'
 				.'</Response>';
 		} else {
-			Call::createFromTwilio($_REQUEST);
+			Call::logFromTwilio($_REQUEST);
 		}
 			
 
