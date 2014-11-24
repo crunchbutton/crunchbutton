@@ -81,7 +81,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 			}
 			new google.maps.Marker({
 				map: map,
-				position: new google.maps.LatLng(parseFloat(params.locations[x].lat), parseFloat(params.locations[x].lon)+(x/100)),
+				position: new google.maps.LatLng(parseFloat(params.locations[x].lat), parseFloat(params.locations[x].lon)),
 				zIndex: 99,
 				icon: service.icon.dot
 			});

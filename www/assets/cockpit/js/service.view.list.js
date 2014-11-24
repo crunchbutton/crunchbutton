@@ -8,7 +8,7 @@ NGApp.factory('ViewListService', function($location) {
 
 		var query = $location.search();
 		scope.query = {
-			limit: query.limit || 25,
+			limit: query.limit || (App.isMobile() ? 5 : 25),
 			page: query.page || 1
 		};
 		scope.query.page = parseInt(scope.query.page);
