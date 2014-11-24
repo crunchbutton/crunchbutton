@@ -25,7 +25,7 @@ foreach ($que as $q) {
 
 //	$error = implode("\n", $o);
 
-	if (preg_match('/fatal:|\#\!\/bin\/sh|No such file or directory|Already up-to-date|su: Sorry|command not found/', $log)) {
+	if (preg_match('/fatal:|\#\!\/bin\/sh|No such file or directory|Already up-to-date|su: Sorry|command not found|unable to update local ref/', $log)) {
 		$q->status = 'failed';
 	} else {
 		$q->status = 'success';
