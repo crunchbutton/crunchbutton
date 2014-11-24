@@ -6,7 +6,7 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 		$_REQUEST['forward'] = preg_replace('/[^0-9]/','',$_REQUEST['forward']);
 	    header('Content-type: text/xml');
 	    
-	    $callback = 'http'.($_SERVER['HTTPS'] != 'on' ? '' : 's').'://'.$this->host_callback().'/api/twilio/phone/recording';
+	    $callback = 'http'.($_SERVER['HTTPS'] != 'on' ? '' : 's').'://'.c::config()->host_callback.'/api/twilio/phone/recording';
 
 		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 			.'<Response>'
