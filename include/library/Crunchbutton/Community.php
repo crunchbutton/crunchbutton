@@ -365,4 +365,8 @@ class Crunchbutton_Community extends Cana_Table {
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
 	}
 
+	public function currentShift(){
+		return Crunchbutton_Community_Shift::currentShiftByCommunity( $this->id_community )->get( 0 );
+	}
+
 }

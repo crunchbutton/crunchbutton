@@ -26,6 +26,18 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 					echo json_encode( [ 'error' => 'invalid request' ] );
 				}
 				break;
+			case 'send-sms':
+				$message = $this->request()[ 'message' ];
+				$phones = explode( ';', $this->request()[ 'phones' ] );
+				foreach( $phones as $phone ){
+					Crunchbutton_Message_Sms::send([
+						'from' => 'driver',
+						'to' => $phone,
+						'message' => $message
+					] );
+				}
+				echo json_encode( [ 'success' => true ] );
+				exit();
 			case 'add-name':
 				$id_support = $this->request()[ 'id_support' ];
 				$name = $this->request()[ 'name' ];
@@ -41,6 +53,5 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 				}
 				break;
 		}
-
 	}
 }
