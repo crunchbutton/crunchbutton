@@ -870,8 +870,10 @@ class Crunchbutton_Admin extends Cana_Table {
 			$driver_info = new Cockpit_Driver_Info;
 			$driver_info->id_admin = $this->id_admin;
 			$driver_info->save();
+		} else {
+			$driver_info = $driver_info->get( 0 );
 		}
-		return $driver_info->get( 0 );
+		return $driver_info;
 	}
 
 	public function __construct($id = null) {
