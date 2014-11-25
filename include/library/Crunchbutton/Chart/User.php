@@ -97,6 +97,16 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															)
 												),
 
+												'group-new-users-per-active-user-by-community' => array(
+														'title' => 'New Users per Active Users',
+														'tags' => array( 'main' ),
+														'charts' => array(
+																'users-new-per-active-users-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'newPerActiveByDay' ),
+																'users-new-per-active-users-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'newPerActiveByWeek', 'default' => true ),
+																'users-new-per-active-users-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'newPerActiveByMonth' )
+															)
+												),
+
 												'group-unique-users' => array(
 														'title' => 'Unique Users',
 														'charts' => array(
@@ -152,6 +162,8 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$query = [];
 
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
 		$allMonths = $this->allDays();
 		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
 			$day = $allMonths[ $i ];
@@ -165,6 +177,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														 WHERE o.date <= '{$day}'
 														 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
+															 {$community}
 														 GROUP BY o.phone ) ActiveUsers";
 		}
 
@@ -306,6 +319,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		$query = [];
 
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
 		$allMonths = $this->allMonths();
 		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
 			$month = $allMonths[ $i ];
@@ -319,6 +334,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 															 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
+															 {$community}
 														 GROUP BY o.phone ) ActiveUsers";
 		}
 
@@ -625,6 +641,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 	public function activeByWeek( $render = false ){
 
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
 		$allWeeks = $this->allWeeks();
 
 		$query = [];
@@ -640,6 +658,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 														 FROM `order` o
 														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 															 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+															 {$community}
 															 {$this->queryExcludeUsers}
 														 GROUP BY o.phone) ActiveUsers";
 		}
@@ -1327,6 +1346,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 	public function newByMonth( $render = false ){
 
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m') AS Month
 							FROM `order` o
@@ -1338,6 +1359,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1 = 1
+								 {$community}
 								 {$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -1458,6 +1480,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 	}
 	public function newByDay( $render = false ){
 
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
 							FROM `order` o
@@ -1469,6 +1493,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1=1
+								 		{$community}
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -1710,6 +1735,8 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 	public function newByWeek( $render = false ){
 
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
 		$query = "SELECT SUM(1) AS Total,
 										 YEARWEEK(o.date) AS Week
 							FROM `order` o
@@ -1721,6 +1748,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1=1
+								 		{$community}
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";

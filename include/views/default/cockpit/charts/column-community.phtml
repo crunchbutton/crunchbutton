@@ -1,5 +1,6 @@
-<?php 
+<?php
 $isPopup = ( $_GET[ 'popup' ] ? true : false );
+$hideSlider = ( $_GET[ 'hideSlider' ] ? true : false );
 if( $isPopup ){
 ?>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800">
@@ -16,7 +17,7 @@ if( $isPopup ){
 	$categories = [];
 	$ys = [];
 	$group = [];
-	
+
 	// set up x labels and empty objects
 	foreach ($data as $item) {
 		$vars = get_object_vars($item);
@@ -31,11 +32,11 @@ if( $isPopup ){
 		$y = array_shift($vars);
 
 		$group = array_shift($vars);
-		
+
 		$ys[$group] = [];
 
 	}
-	
+
 	$hasResults = true;
 
 	if( count( $xs ) == 0 ){
@@ -48,7 +49,7 @@ if( $isPopup ){
 			$xx .= "'".str_replace("'","\\'",$k)."', ";
 		}
 		$xx = substr($xx,0,-2);
-		
+
 		// fill empty columns
 		foreach ($xs as $k => $v) {
 			foreach ($ys as $kk => $vv) {
@@ -60,21 +61,21 @@ if( $isPopup ){
 		// gather data
 		foreach ($data as $item) {
 			$vars = get_object_vars($item);
-			
+
 			// X
 			$x = array_shift($vars);
 			$xs[$x] = true;
 
 			// Y & group
 			$y = array_shift($vars);
-			
+
 			$groupName = key($vars);
 			$group = array_shift($vars);
-			
+
 			$ys[$group][$x] = $y;
 
 		}
-		
+
 		$applyCommunityFilter = false;
 
 		foreach ($ys as $k => $v) {
@@ -82,8 +83,8 @@ if( $isPopup ){
 				if( $_GET[ 'community' ] && $_GET[ 'community' ] != '' && strtolower( $_GET[ 'community' ] ) != 'all' ){
 					if( strtolower( $_GET[ 'community' ] ) == strtolower( $k ) ){
 						$applyCommunityFilter = true;
-					} 
-				} 
+					}
+				}
 			}
 		}
 
@@ -98,7 +99,7 @@ if( $isPopup ){
 					} else {
 						$visible = false;
 					}
-				} 
+				}
 			}
 			$ys[$k] = [
 				'name' => $k,
@@ -107,7 +108,7 @@ if( $isPopup ){
 			];
 		}
 
-		
+
 		$jsData = [
 			'xs' => array_keys($xs),
 			'ys' => array_values($ys)
@@ -125,24 +126,24 @@ if( $isPopup ){
 					$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]&popup=1";
 					echo '&nbsp;&nbsp;<a href="' . $url . '" target="_blank" title="Zoom this chart"><i class="icon-zoom-in"></i></a>';
 					}?>
-			</h4>	
+			</h4>
 		</div>
 	</div>
 	<?php if( $hasResults ){ ?>
-	<div id="chart-<?=$chartId;?>" style="min-width: 100%; <?php if( $isPopup ){ echo 'height:90%;'; }else{ echo 'height:250px;'; } ?> margin: 0 auto"></div>
+	<div id="chart-<?=$chartId;?>" style="min-width: 100%; <?php if( $isPopup || $hideSlider ){ echo 'height:90%;'; }else{ echo 'height:250px;'; } ?> margin: 0 auto"></div>
 	<?php if( $subtitle != '' ){ ?>
 		<div style="font-size:10px;"><?php echo $subtitle; ?></div>
 	<?php } ?>
 	<?php echo $description; ?>
 
-	<div id="options-<?=$divId?>" style="height:110px;background:#F5F5F5;overflow-x:auto;width:99%;overflow-y:hidden;<?php if( $isPopup ){ echo 'display:none'; } ?>">
+	<div id="options-<?=$divId?>" style="height:110px;background:#F5F5F5;overflow-x:auto;width:99%;overflow-y:hidden;<?php if( $isPopup || $hideSlider ){ echo 'display:none'; } ?>">
 		<table>
 			<tr>
-			<?php 
+			<?php
 				if( $groups ){ ?>
 				<td class="padded" nowrap="">
 					<select style="width:100px;font-size:10px;" class="charts-select" id="select-<?=$chartId?>" community="<?php echo $_REQUEST['community']; ?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
-						<?php foreach ( $groups as $key => $value ) { 
+						<?php foreach ( $groups as $key => $value ) {
 							$key = $key . '-' . $_REQUEST[ 'community' ];
  							$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
 							?>
@@ -153,8 +154,8 @@ if( $isPopup ){
 			<?php } ?>
 			</tr>
 		</table>
-	
-	<div class="row-fluid span11"  style="padding:0 20px; font-size:10px;">
+
+	<div class="row-fluid span11"  style="padding:0 20px; font-size:10px;<?php if( $hideSlider ){ echo 'display:none;'; } ?>">
 		<div class="span4" id="week-<?=$chartId?>">
 			<?php
 			if( $interval == 'week' ){
@@ -168,13 +169,13 @@ if( $isPopup ){
 					$_slider_from = $from_month;
 			?>
 				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> (total <?php echo $totalMonths; ?>)
-			<?php 
+			<?php
 			} else if( $interval == 'day' ){
 					$_slider_to = $to_day;
 					$_slider_from = $from_day;
 			?>
 				Days <?php echo $from_day; ?> to <?php echo $to_day; ?> (total <?php echo $totalDays; ?>)
-			<?php 
+			<?php
 			} ?>
 		</div>
 		<div class="span6">
@@ -251,12 +252,12 @@ $(function () {
 		?>
 			values: [ <?php echo $from_month; ?>, <?php echo $to_month; ?> ],
 			max: <?php echo $totalMonths; ?>,
-		<?php 
+		<?php
 		} else if( $interval == 'day' ){
 		?>
 			values: [ <?php echo $from_day; ?>, <?php echo $to_day; ?> ],
 			max: <?php echo $totalDays; ?>,
-		<?php 
+		<?php
 		} ?>
 		change: function( event, ui ) {
 			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i>' );

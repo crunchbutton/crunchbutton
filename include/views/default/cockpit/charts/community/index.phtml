@@ -46,19 +46,40 @@
 		<?php } ?>
 		<?php foreach( $communities as $community ) { ?>
 
-		<?php
-			$restaurants = $community->totalRestaurantsByCommunity()[ 'community' ];
-		?>
+		<?php $restaurants = $community->totalRestaurantsByCommunity()[ 'community' ]; ?>
+
 		<div class="container-<?php echo $community->id_community; ?>" style="display:none;">
+
 				<center><h3><?php echo $community->name; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
+
 				<div class="row-fluid">
+
 					<div type="orders" class="span3 orders- <?php echo $community->id_community; ?>" id="orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 					<div type="new-users" class="span3 new-users <?php echo $community->id_community; ?>" id="new-users-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
 					<div type="repeated-orders" class="span3 repeated-orders <?php echo $community->id_community; ?>" id="repeated-orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
 					<div type="gross-revenue" class="span3 group-revenue-by <?php echo $community->id_community; ?>" id="group-revenue-by-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
 				</div>
+
+				<div class="row-fluid">
+
+
+					<div type="users-rate" class="span3 group-user-rate <?php echo $community->id_community; ?>" id="group-user-rate-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
+					<div type="per-weekday" class="span3 group-per-weekday <?php echo $community->id_community; ?>" id="group-per-weekday-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
+					<div type="per-hour" class="span3 group-per-hour <?php echo $community->id_community; ?>" id="group-per-hour-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
+
+
+				</div>
+
 				<hr/>
+
 		</div>
+
 		<?php } ?>
 
 		</div>
@@ -68,12 +89,18 @@
 
 function loadChartsOfCommunity( community ){
 
+	if ( typeof community == 'undefined' ) {
+		return;
+	}
+
 	$( '.container-' + community ).show();
 	$( '.' + community ).each( function(){
+
 		var area = $( this );
 		var chart = area.attr( 'id' );
 		var type = area.attr( 'type' );
 		var partial = '';
+		var more_info = '';
 		switch( type){
 			case 'orders':
 				partial = 'orders-per-day-by-community/group-orders-community';
@@ -87,8 +114,19 @@ function loadChartsOfCommunity( community ){
 			case 'gross-revenue':
 				partial = 'gross-revenue-per-week-by-community/group-revenue-by-community';
 				break;
+			case 'users-rate':
+				partial = 'users-new-per-active-users-per-week-by-community/group-new-users-per-active-user-by-community';
+				break;
+			case 'per-weekday':
+				partial = 'orders-per-weekday-by-community/group-orders-per-weekday-by-community';
+				more_info = '&hideSlider=1';
+				break;
+			case 'per-hour':
+				partial = 'orders-per-hour-by-community/group-orders-per-hour-by-community';
+				more_info = '&hideSlider=1';
+				break;
 		}
-		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community;
+		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community + more_info;
 		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
 	} );
 }
