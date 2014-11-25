@@ -51,7 +51,6 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 	$scope.send = TicketViewService.send;
 	
 	loadTicket(TicketViewService.scope.viewTicket);
-
 });
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
@@ -86,9 +85,10 @@ NGApp.controller('TicketsCtrl', function($scope, $rootScope, TicketService, Tick
 	});
 });
 
-NGApp.controller('TicketsTicketCtrl', function($scope, $rootScope, $interval, $routeParams, TicketService, MapService) {
+NGApp.controller('TicketsTicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, MapService) {
 	
-	
+	$rootScope.title = 'Ticket #' + $routeParams.id;
+	var cleanup;
 	
 	var draw = function() {
 		if (!$scope.map || !$scope.ticket) {
@@ -112,6 +112,15 @@ NGApp.controller('TicketsTicketCtrl', function($scope, $rootScope, $interval, $r
 		TicketService.get($routeParams.id, function(ticket) {
 			$scope.ticket = ticket;
 			$scope.ready = true;
+			
+			if (!cleanup) {
+				cleanup = $rootScope.$on('order-route-' + ticket.order.id_order, function(event, args) {
+					$scope.$apply(function() {
+						$scope.eta = args;
+					});
+					console.debug('Got route update: ', args);
+				});
+			}
 			draw();
 		});
 	};
@@ -125,45 +134,12 @@ NGApp.controller('TicketsTicketCtrl', function($scope, $rootScope, $interval, $r
 	$scope.updater = $interval(update, 5000);
 	$scope.$on('$destroy', function() {
 		$interval.cancel($scope.updater);
-	});
-	
-	$scope.$on('order-route-' + $routeParams.id, function(event, args) {
-		var eta = {
-			customer: {},
-			restaurant: {},
-			total: {}
-		};
-		if (args.length == 2) {
-			eta.restaurant.distance = args[0].distance.value * 0.000621371;
-			eta.restaurant.duration = args[0].duration.value/60;
-			
-			eta.customer.distance = args[1].distance.value;
-			eta.customer.duration = args[1].duration.value/60;
-			
-			eta.total.duration = eta.restaurant.duration + eta.customer.duration;
-			eta.total.distance = eta.restaurant.distance + eta.customer.distance;
-
-		} else {
-			eta.customer.distance = args[0].distance.value * 0.000621371;
-			eta.customer.duration = args[0].duration.value/60;
-			
-			eta.total.duration = eta.customer.duration;
-			eta.total.distance = eta.customer.distance;
+		if (cleanup) {
+			cleanup();
 		}
-		
-
-		$scope.$apply(function() {
-			$scope.eta = eta;
-		});
-
-		console.debug('Got route update: ', eta);
 	});
 	
 	update();
-	
-	
-	
-	
 	
 	$rootScope.$broadcast('triggerViewTicket', $routeParams.id);
 

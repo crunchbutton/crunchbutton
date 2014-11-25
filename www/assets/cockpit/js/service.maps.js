@@ -105,7 +105,9 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 	
 	service.trackOrder = function(params) {
 		var map = params.map;
-		var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
+		if (params.driver.location) {
+			var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
+		}
 		var restaurant = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
 
 		if (!maps[params.id]) {
@@ -149,7 +151,11 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 
 			directionsService.route(routeParams, function(response, status) {
 				console.debug('Got directions response: ', response);
-				params.scope.$broadcast('order-route-' + params.order.id_order, response.routes[0].legs);
+				$rootScope.$broadcast('order-route', {
+					order: params.order,
+					restaurant: params.restaurant,
+					legs: response.routes[0].legs
+				});
 
 				if (status === google.maps.DirectionsStatus.OK) {
 					maps[params.id].markers.directions.setDirections(response);
@@ -168,7 +174,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		}
 
 		// driver marker
-		if (params.order.status.status != 'delivered') {
+		if (params.order.status.status != 'delivered' && params.order.status.status != 'new' && driver) {
 			if (maps[params.id].markers.driver) {
 				if (maps[params.id].markers.driverLat == params.driver.location.lat && maps[params.id].markers.driverLon == params.driver.location.lon) {
 					// no updates

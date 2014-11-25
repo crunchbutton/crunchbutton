@@ -38,6 +38,9 @@ body {
 body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
+i {
+	font-style: italic;
+}
 
 @media screen and (max-width: 1024px) {
 	.bg {
@@ -132,6 +135,10 @@ html {
 				 -o-user-select: none;
 						user-select: none;
 	}
+}
+
+.content-padding-notop {
+	padding-top: 0;
 }
 
 .allow-select {
@@ -1041,6 +1048,22 @@ input {
 	background: #e1574c;
 }
 
+.dialog-message-nice, .dialog-message-nice .dialog-subtext {
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+}
+.dialog-message-nice {
+	background: #fff;
+	color: #312f38;
+	line-height: 1.8em;
+	padding: .4em .8em .8em .8em;
+	margin-top: .2em;
+}
+.dialog-message-nice .dialog-subtext {
+	line-height: 1.7em;
+	margin-bottom: 0;
+	font-size: .85em;
+}
+
 .dialog-message-notice {
 	border: 2px solid #e1574c;
 	color: #79211a;
@@ -1260,17 +1283,17 @@ input {
 .tb-grid tbody {
 	background: #fff;
 }
-	.tb-grid tbody td{
+	.tb-grid  td{
 		padding: .6em .4em .6em .4em;
 		line-height: 1.2em;
 		font-size: 1.2em;
 		border-bottom: 1px solid #eee;
 		white-space: nowrap;
 	}
-		.tb-grid tbody tr:last-child td{
+		.tb-grid  tr:last-child td{
 			border-bottom: none;
 		}
-		.tb-grid tbody td:last-child{
+		.tb-grid  td:last-child{
 			border-right: none;
 		}
 	.tb-grid .td-large, .tb-hack .td-large{
@@ -1279,13 +1302,12 @@ input {
 	.tb-grid .td-medium{
 		width: 60%;
 		text-align: left;
-		font-family: Ruda;
 	}
 
 	/* Driver Documents Form*/
 	.upbutton {
-		width: 111px;
-		height: 50px;
+		width: 84px;
+		height: 40px;
 		float: right;
 		text-align: right;
 	}
@@ -1301,13 +1323,14 @@ input {
 		border-collapse: separate;
 		border-spacing: 0px 7px;
 	}
+	.driver-docs-grid td {
+		vertical-align: top;
+	}
 		.driver-docs-name{
-			font-family: Ruda;
 			color: #000;
 			font-size: 1.1em;
-			line-height: 1em;
 			margin-bottom: .5em;
-			margin-top: .2em;
+
 			letter-spacing: 0px;
 		}
 		.docs-download{
@@ -1317,12 +1340,32 @@ input {
 		}
 		.driver-docs-grid .td-download{
 			vertical-align: top;
+			padding-right: .5em;
 		}
 
-	.driver-docs-text{
+	.title.driver-docs-text{
 		font-size: 1.25em;
-		letter-spacing: 0px;
-		margin-bottom: .2em;
+		letter-spacing: 0;
+		margin-bottom: .4em;
+		font-weight: 400;
+		line-height: 1.5em;
+		color: #717479;
+	}
+	
+	td.documents-check {
+		padding: .7em .5em 0 .6em;
+		width: 10px;
+	}
+	
+	.documents-check .fa {
+		font-size: 2em;
+	}
+	
+	.documents-check-bad {
+		opacity: .1;
+	}
+	.documents-check-green {
+		color: #1bb506;
 	}
 
 	.docs-download-form{
@@ -1716,9 +1759,7 @@ h4.title{
 
 /* drivers order list page */
 .last-updated{
-	font-size: 1em;
-	font-style: italic;
-	margin: 1em 0;
+	margin-top: 2em;
 }
 
 .drivers-order-list{
@@ -2476,6 +2517,9 @@ b, strong{ font-weight: bold; }
 .field-button-spacer {
 	height: .2em;
 }
+.docs-list-spacer {
+	height: .3em;
+}
 
 .field-button {
 	margin: .7em;
@@ -2681,7 +2725,9 @@ b, strong{ font-weight: bold; }
 .file-hidden{
 	line-height: 1px;
 	height: 1px;
+	width: 1px;
 	opacity: 0;
+	display: none;
 }
 .delivery-out-of-range, .delivery-range{
 	background: #df5850;
