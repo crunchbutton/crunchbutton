@@ -102,11 +102,11 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			foreach ($next as $shift) {
 				$shift = $shift->exports();
 				
-				$date = new DateTime($shift['date_start'], new DateTimeZone(c::config()->timezone));
+				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
 				$start = $date->getTimestamp();
 				
 				if ($start <= time() ) {
-					$date = new DateTime($shift['date_end'], new DateTimeZone(c::config()->timezone));
+					$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
 					$end = $date->getTimestamp();
 
 					$shift['current'] = true;
