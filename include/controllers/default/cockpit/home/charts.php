@@ -223,7 +223,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 		return c::view()->display('charts/column-community', ['set' => [
 						'chartId' => $chartId,
-						'data' => $params[ 'data' ] ,
+						'data' => $params[ 'data' ],
 						'interval' => $interval,
 						'to' => $this->chart->to,
 						'from' => $this->chart->from,

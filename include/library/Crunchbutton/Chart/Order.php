@@ -811,18 +811,32 @@ public function byDayPerRestaurant( $render = false ){
 
 		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
 
-		$query = "SELECT
-								c.name AS 'Community',
-								count(1) AS 'Orders',
-								HOUR( o.date ) AS 'Day'
+		$query = "SELECT 	c.name AS 'Community',
+											count(1) AS 'Orders',
+											HOUR( o.date ) AS 'Day'
 							FROM `order` o
 								INNER JOIN community c ON c.id_community = o.id_community
 								WHERE 1=1 {$community}
 							GROUP BY HOUR( o.date )";
 
 		$data = c::db()->get( $query );
+
+		$community = Crunchbutton_Community::o( $_REQUEST[ 'community' ] );
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		$parsedData = [];
+		// Covert the hour to communitie's timezone
+		foreach( $data as $hour ){
+			$fake = $now->format( 'Y-m-d' ) . ' ' . ( $hour->Day > 9 ? $hour->Day : '0' . $hour->Day ) . ':00:00';
+			$date = new DateTime( $fake, new DateTimeZone( c::config()->timezone ) );
+			$date->setTimezone( new DateTimeZone( $community->timezone ) );
+			$_hour = $date->format( 'H' ) . 'h (' . $date->format( 'T' ) . ')' ;
+			$parsedData[] = (object) [ 'Community' => $hour->Community, 'Orders' => $hour->Orders, 'Day' => $_hour ];
+		}
+
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'hideSlider' => true, 'hideGroups' => true );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'hideSlider' => true, 'hideGroups' => true );
 		}
 		return $data;
 	}
