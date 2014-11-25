@@ -3369,3 +3369,28 @@ input[type="checkbox"].switch + div:before {
     height: 900px;
 }
 
+.bar-loader-loading {
+	background: -webkit-linear-gradient(left, #24ceaf 0%,#fe9723 25%,#f5107c 50%,#9717cb 75%,#24ceaf 100%);
+	background-size: 2000px;
+}
+
+@-webkit-keyframes masked-animation {
+	0% {background-position: -10000px bottom;}
+	100% {background-position: left bottom;}
+}
+
+.bar-loader {
+	-webkit-animation-name: masked-animation;
+	-webkit-animation-duration: 10s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;	
+}
+
+.bar-loader.bar-loader-search {
+	height: 5px;
+	overflow: hidden;
+	width: 100%;
+	margin-bottom: 15px;
+	margin-top: -20px;
+}
+
