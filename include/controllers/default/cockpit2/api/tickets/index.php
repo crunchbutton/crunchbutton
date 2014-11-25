@@ -38,7 +38,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			 
 		}
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$staus = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'open';
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';

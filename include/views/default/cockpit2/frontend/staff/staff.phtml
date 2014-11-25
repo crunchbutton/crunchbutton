@@ -38,50 +38,6 @@
 	
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Name</th>
-				<th>Phone</th>
-				<th>Login</th>
-				<th>Community</th>
-				<th class="tb-center">Active</th>
-				<th class="tb-center">Working</th>
-				<th> </th>
-			</tr>
-			<tr ng-repeat="s in staff" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
-				<td><a href="/staff/{{s.login}}">{{s.name}}</a></td>
-				<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
-				<td>{{s.login}}</td>
-				<td>
-					<span class="staff-community-repeat" ng-repeat="community in s.communities">
-						{{community}}
-					</span>
-				</td>
-				<td class="tb-center">
-					<span ng-if="s.active"><i class="fa fa-check"></i></span>
-				</td>
-				<td class="tb-center">
-					<span ng-if="s.working"><i class="fa fa-check"></i></span>
-				</td>
-				<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
-			</tr>
-		</table>
-	</div>
-	
-	<table class="tb-pagination right" ng-if="pages > 1" page-key>
-		<tbody>
-			<tr>
-				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
-				<td class="td-info">Page {{query.page}} of {{pages}}</td>
-				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
-			</tr>
-		</tbody>
-	</table>
-	
-	<div class="divider"></div>
-
+	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
 </div>
-
-
-

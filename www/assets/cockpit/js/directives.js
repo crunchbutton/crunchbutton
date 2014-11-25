@@ -209,3 +209,13 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 		};
 	}
 ]);
+
+NGApp.filter('formatTimezone', function() {
+	return function(timezone) {
+		if (!timezone) {
+			return '';
+		}
+		var tz = timezone.split('/');
+		return tz[1].replace('_',' ');
+	};
+});

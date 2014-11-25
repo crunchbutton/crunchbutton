@@ -13,46 +13,6 @@
 	
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th></th>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Phone</th>
-				<th>Address</th>
-				<th>Community</th>
-				<th>Orders</th>
-				<th>Last&nbsp;Order</th>
-			</tr>
-			<tr ng-repeat="restaurant in restaurants" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
-				<td class="tb-image-row"><a href="/restaurant/{{restaurant.permalink}}">
-					<div class="customer-image-crop">
-						<img ng-if="restaurant.image" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>
-						<div ng-if="!restaurant.image" class="customer-image restaurant-image-null"></div>
-					</div>
-				</a></td>
-				<td><a href="/restaurant/{{restaurant.permalink}}">{{restaurant.id_restaurant}}</a></td>
-				<td>{{restaurant.name}}</td>
-				<td><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></td>
-				<td>{{restaurant.address}}</td>
-				<td>{{restaurant.community}}</td>
-				<td>{{restaurant.orders}}</td>
-				<td><span ng-if="restaurant._order_date"><span am-time-ago="restaurant._order_date"></span></span></td>
-			</tr>
-		</table>
-	</div>
-	
-	<table class="tb-pagination right" ng-if="pages > 1" page-key>
-		<tbody>
-			<tr>
-				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
-				<td class="td-info">Page {{query.page}} of {{pages}}</td>
-				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
-			</tr>
-		</tbody>
-	</table>
-	
-	<div class="divider"></div>
-
+	<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
 </div>

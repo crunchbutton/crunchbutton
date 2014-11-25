@@ -74,7 +74,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _list() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : '';

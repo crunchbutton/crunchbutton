@@ -47,7 +47,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 	
 	private function _query() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
@@ -113,15 +113,21 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			COUNT(`order`.id_order) orders
 		', $q));
 		while ($s = $r->fetch()) {
-//			$restaurant = Restaurant::o($s)->exports();
+			$restaurant = Restaurant::o($s);
+			$out = $s;
+			$out->communities = [];
+			foreach ($restaurant->communities() as $community) {
+				$out->communities[] = $community->properties();
+			}
+
 /*
 			$unset = ['email','timezone','testphone','txt'];
 			foreach ($unset as $un) {
 				unset($staff[$un]);
 			}
 */
-//			$data[] = $restaurant;
-			$data[] = $s;
+			$data[] = $out;
+//			$data[] = $s;
 		}
 
 		echo json_encode([
