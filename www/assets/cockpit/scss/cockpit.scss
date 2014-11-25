@@ -3369,21 +3369,20 @@ input[type="checkbox"].switch + div:before {
     height: 900px;
 }
 
-.bar-loader-loading {
-	background: -webkit-linear-gradient(left, #24ceaf 0%,#fe9723 25%,#f5107c 50%,#9717cb 75%,#24ceaf 100%);
-	background-size: 2000px;
-}
-
-@-webkit-keyframes masked-animation {
-	0% {background-position: -10000px bottom;}
-	100% {background-position: left bottom;}
-}
 
 .bar-loader {
+	opacity: 0;
+	-webkit-transition: opacity .3s;
+
 	-webkit-animation-name: masked-animation;
 	-webkit-animation-duration: 10s;
 	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-timing-function: linear;	
+	-webkit-animation-timing-function: linear;
+	
+	background: -webkit-linear-gradient(left, #24ceaf 0%,#fe9723 25%,#f5107c 50%,#9717cb 75%,#24ceaf 100%);
+	background-size: 2000px;
+
+	-webkit-transform: translateZ(0);
 }
 
 .bar-loader.bar-loader-search {
@@ -3392,5 +3391,14 @@ input[type="checkbox"].switch + div:before {
 	width: 100%;
 	margin-bottom: 15px;
 	margin-top: -20px;
+}
+
+.bar-loader-loading {
+	opacity: 1;
+}
+
+@-webkit-keyframes masked-animation {
+	0% {background-position: -10000px bottom;}
+	100% {background-position: left bottom;}
 }
 
