@@ -77,7 +77,8 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 		watch: {
 			search: '',
 			type: 'all',
-			status: 'active'
+			status: 'active',
+			working: 'all'
 		},
 		update: function() {
 			StaffService.list($scope.query, function(d) {

@@ -5,7 +5,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
+				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
 			</tr>
 
 			<tr>
@@ -22,6 +22,14 @@
 						<option value="all">All</option>
 						<option value="active">Active</option>
 						<option value="inactive">Inactive</option>
+					</select>
+				</td>
+				<th>Working</th>
+				<td>
+					<select ng-model="query.working" name="searchType">
+						<option value="all">All</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
 					</select>
 				</td>
 			</tr>
