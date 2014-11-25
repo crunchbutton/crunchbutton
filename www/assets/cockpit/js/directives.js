@@ -27,6 +27,7 @@ NGApp.directive('pageKey', function() {
 					}
 					return;
 				}
+
 				// next
 				if (e.which == 39 && scope.query.page < scope.pages) {
 					scope.$apply(function() {
@@ -38,6 +39,28 @@ NGApp.directive('pageKey', function() {
 					scope.$apply(function() {
 						scope.setPage(scope.query.page-1);
 					});
+				}
+			});
+		}
+	};
+});
+
+NGApp.directive('tabSelect', function(MainNavigationService) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var go = function() {
+				console.log('going to ', attrs.tabSelect)
+				MainNavigationService.link(attrs.tabSelect);
+				scope.$apply();
+			};
+			$(element).bind('dblclick', function (e) {
+				go();
+
+			});
+			$(element).bind('keydown keypress', function (e) {
+				if (e.which == 13) {
+					go();
 				}
 			});
 		}

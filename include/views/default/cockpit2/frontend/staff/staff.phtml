@@ -5,20 +5,20 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
+				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
 			</tr>
 
 			<tr>
 				<th>Type</th>
 				<td>
-					<select ng-model="query.type" name="searchType">
+					<select ng-model="query.type" name="searchType" tabindex="2">
 						<option value="all">All</option>
 						<option value="driver">Drivers</option>
 					</select>
 				</td>
 				<th>Status</th>
 				<td>
-					<select ng-model="query.status" name="searchType">
+					<select ng-model="query.status" name="searchType" tabindex="3">
 						<option value="all">All</option>
 						<option value="active">Active</option>
 						<option value="inactive">Inactive</option>
@@ -26,7 +26,7 @@
 				</td>
 				<th>Working</th>
 				<td>
-					<select ng-model="query.working" name="searchType">
+					<select ng-model="query.working" name="searchType" tabindex="4">
 						<option value="all">All</option>
 						<option value="yes">Yes</option>
 						<option value="no">No</option>
@@ -49,7 +49,7 @@
 				<th class="tb-center">Working</th>
 				<th> </th>
 			</tr>
-			<tr ng-repeat="s in staff">
+			<tr ng-repeat="s in staff" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
 				<td><a href="/staff/{{s.login}}">{{s.name}}</a></td>
 				<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
 				<td>{{s.login}}</td>

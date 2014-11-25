@@ -5,7 +5,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
 			</tr>
 		</table>
 	</div>
@@ -23,7 +23,7 @@
 				<th>Order</th>
 				<th>Status</th>
 			</tr>
-			<tr ng-repeat="order in orders">
+			<tr ng-repeat="order in orders" ng-attr-tabindex="{{$index+1}}" tab-select="/order/{{order.id_order}}">
 				<td><a href="/order/{{order.id_order}}">{{order.id_order}}</td>
 				<td>{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
 				<td>
