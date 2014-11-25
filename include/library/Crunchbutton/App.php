@@ -2,7 +2,7 @@
 
 /**
  * Cana application class
- * 
+ *
  * @author	Devin Smith <devins@devin-smith.com>
  * @date	2009.06.11
  *
@@ -13,7 +13,8 @@ class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
-	
+	$_SERVER['SERVER_NAME'] = 'crunchbutton.localhost';
+	$db = 'local';
 		if (!$_SERVER['SERVER_NAME']) {
 			$cli = true;
 			// get the env send by parameter
@@ -21,7 +22,7 @@ class Crunchbutton_App extends Cana_App {
 			if ($a->e) {
 				$cliEnv = $a->e;
 			}
-			
+
 			// set hostname by path
 			if (preg_match('/^\/Users\//',dirname(__FILE__))) {
 				$_SERVER['SERVER_NAME'] = 'crunchbutton.localhost';
@@ -40,7 +41,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
-		
+
 		// db by hostname
 		// anything local
 		if (preg_match('/localhost$/',$_SERVER['SERVER_NAME'])) {
@@ -58,7 +59,7 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$db = 'fail';
 		}
-		
+
 
 		// overwrite if we specify the db
 		if ($cliEnv) {
@@ -93,7 +94,7 @@ class Crunchbutton_App extends Cana_App {
 
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
-		
+
 		if ($config->site->name == 'redirect' && $config->site->theme && php_sapi_name() !== 'cli') {
 			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
 			exit;
@@ -115,12 +116,12 @@ class Crunchbutton_App extends Cana_App {
 		$this->config($config);
 
 		$this->buildAuth($this->db());
-		
+
 		// set bundle on everything except tests
 		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
-		
+
 		// debug shit
 		if ($_REQUEST['_bundle']) {
 			$config->bundle = true;
@@ -131,7 +132,7 @@ class Crunchbutton_App extends Cana_App {
 			->config($config)
 			->postInit($params);
 
-		require_once c::config()->dirs->library . '/Cana/Stripe.php';			
+		require_once c::config()->dirs->library . '/Cana/Stripe.php';
 		Stripe::setApiKey(c::config()->stripe->dev->secret);
 
 		switch ($_SERVER['SERVER_NAME']) {
@@ -160,12 +161,12 @@ class Crunchbutton_App extends Cana_App {
 				break;
 
 		}
-		
+
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
 
 	}
-	
+
 	public function exception($e) {
 		if ($this->env == 'live') {
 			echo
@@ -180,18 +181,18 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$this->config()->db = null;
 			echo "\n<br />".$e->getMessage()."\n<br /><pre>";
-			foreach($e->getTrace() as $k=>$v){ 
-				if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){ 
-					$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />"; 
-				} else { 
-					$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />"; 
-				} 
-			} 
+			foreach($e->getTrace() as $k=>$v){
+				if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
+					$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />";
+				} else {
+					$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />";
+				}
+			}
 			echo $backtracel;
 			exit;
 		}
 	}
-	
+
 	public function isCompat() {
 		if (preg_match('/(Firefox\/1\.)|(MSIE (1|2|3|4|5|6|7|8|9)\b)/i',$_SERVER['HTTP_USER_AGENT'])) {
 			return false;
@@ -199,18 +200,18 @@ class Crunchbutton_App extends Cana_App {
 			return true;
 		}
 	}
-	
+
 	public function user() {
 		return $this->auth()->user();
 	}
-	
+
 	public function admin($admin = null) {
 		if ($admin !== null) {
 			$this->_admin = $admin;
 		}
 		return $this->_admin;
 	}
-	
+
 	public function displayPage($page = null) {
 
 		if (is_null($page)) {
@@ -223,18 +224,18 @@ class Crunchbutton_App extends Cana_App {
 				default:
 					$pageName = implode('/',$this->pages());
 					break;
-			
+
 			}
 		} else {
 			$pageName = $page;
 		}
 
 		parent::displayPage($pageName == 'error' ? 'home' : $pageName);
-		
+
 		return $this;
 	}
 
-	
+
 	public function buildView($params = array()) {
 		// domain level setup
 
@@ -242,7 +243,7 @@ class Crunchbutton_App extends Cana_App {
 		if ($this->config()->site->config('ui2-mobile-force')->value && $this->isMobile() && $this->config()->site->theme == 'crunchbutton') {
 			$this->config()->site->theme =  'seven';
 		}
-		
+
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';
 		if (is_array($themes = json_decode($this->config()->site->theme,'array'))) {
 			$themes = array_reverse($themes);
@@ -252,7 +253,7 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->site->theme.'/';
 		}
-		
+
 		if (isset($this->config()->site->version)) {
 			$params['theme'][] = $this->config()->site->version.'/'.$this->config()->defaults->theme.'/';
 		}
@@ -280,18 +281,18 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		parent::buildView($params);
-		
+
 		if ($this->config()->viewExport) {
 			$this->view()->export = true;
 		}
-		
+
 		return $this;
 	}
-	
+
 	public function isCockpit() {
 		return preg_match('/^(.*\.?)cockpit(.*?)\.(crunchbutton\.com|crunchr\.co|localhost|la)$/i',$_SERVER['HTTP_HOST']) ? true : false;
 	}
-	
+
 	public function isDownloadable() {
 		if (preg_match('/ios|iphone|ipad|android/i',$_SERVER['HTTP_USER_AGENT']) && !$_COOKIE['_viewmobile2']) {
 			return true;
@@ -299,17 +300,17 @@ class Crunchbutton_App extends Cana_App {
 			return false;
 		}
 	}
-	
+
 	public function getTheme($config = null) {
 		$config = $config ? $config : $this->config();
-		
+
 		if (is_array($themes = json_decode($config->site->brand,'array'))) {
 			return $themes;
 		} else {
 			return $config->site->brand;
 		}
 	}
-	
+
 	public function crypt($crypt = null) {
 		if (is_null($crypt)) {
 			return $this->_crypt = new Cana_Crypt($this->config()->crypt->key);
@@ -326,15 +327,15 @@ class Crunchbutton_App extends Cana_App {
 		$this->acl(new Crunchbutton_Acl($db, $this->auth()));
 		return $this;
 	}
-	
+
 	public function revision() {
 		return isset($this->_revision) ? $this->_revision : Crunchbutton_Util::revision();
 	}
-	
+
 	public function appDb() {
 		return $this->_appDb;
 	}
-	
+
 	public function appConfig($output = ['base']) {
 		$config = [];
 
@@ -342,7 +343,7 @@ class Crunchbutton_App extends Cana_App {
 			$config['user'] = c::user()->exports();
 			$config['env'] = $this->env();
 			$config['ab'] = json_decode($this->auth()->get('ab'));
-			
+
 			// export the processor info
 			$config[ 'processor' ][ 'type' ] = Crunchbutton_User_Payment_Type::processor();
 			$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
@@ -359,15 +360,15 @@ class Crunchbutton_App extends Cana_App {
 				$this->auth()->set('city', $geo->getCity());
 				$this->auth()->set('region', $geo->getRegion());
 			}
-	
+
 			$config['loc']['lat'] = $this->auth()->get('loc_lat');
 			$config['loc']['lon'] = $this->auth()->get('loc_lon');
 			$config['loc']['city'] = $this->auth()->get('city');
 			$config['loc']['region'] = $this->auth()->get('region');
-			
+
 			$config['version'] = Cana_Util::gitVersion();
 		}
-		
+
 		if (in_array('extended', $output)) {
 			$config['aliases'] = Community_Alias::all(['id_community', 'prep', 'name_alt', 'permalink', 'image']);
 			$config['locations'] = Community::all_locations();
@@ -379,7 +380,7 @@ class Crunchbutton_App extends Cana_App {
 				$c['stored'] = true;
 				$config['communities'][$community->permalink] = $c;
 			}
-			
+
 			$config['topCommunities'] = [];
 			foreach (Community_Alias::q('select * from community_alias where top="1" order by `sort`') as $community_alias) {
 				$config['topCommunities'][] = [
@@ -388,12 +389,12 @@ class Crunchbutton_App extends Cana_App {
 				];
 			}
 		}
-		
+
 		$config['site'] = $this->config()->site->exposedConfig();
 
 		return $config;
 	}
-	
+
 	public function getEnv($d = true) {
 		if (c::user()->debug) {
 			$env = 'dev';
@@ -406,7 +407,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $env;
 	}
-	
+
 	public function balanced() {
 		if (!$this->_balanced) {
 			\Balanced\Settings::$api_key = c::config()->balanced->{c::getEnv()}->secret;
@@ -415,7 +416,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_balanced;
 	}
-	
+
 	public function lob($d = true) {
 		if (!$this->_lob) {
 			if (c::env() == 'live') {
@@ -430,32 +431,32 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_lob;
 	}
-	
+
 	public function isBot() {
 		if (!isset($this->_isBot)) {
 			$this->_isBot = preg_match('/googlebot|slurp|yahoo|bingbot|jeeves|scoutjet|webcrawl/i',$_SERVER['HTTP_USER_AGENT']);
 		}
 		return $this->_isBot;
 	}
-	
+
 	public function detect() {
 		if (!isset($this->_detect)) {
 			$this->_detect = new Crunchbutton_Detect;
 		}
 		return $this->_detect;
 	}
-	
+
 	public function isMobile() {
 		return $this->detect()->isMobile();
 	}
-	
+
 	public function rep($rep = null) {
 		if (!isset($this->_rep)) {
 			$this->_rep = $rep;
 		}
 		return $this->_rep;
 	}
-	
+
 	public function facebook() {
 		if (!$this->_facebook) {
 			$this->_facebook = new Cana_Facebook([
@@ -465,7 +466,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_facebook;
 	}
-	
+
 	public function twilio() {
 		if (!isset($this->_twilio)) {
 			$env = c::getEnv();
@@ -473,14 +474,14 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_twilio;
 	}
-	
+
 	public function mailgun() {
 		if (!isset($this->_mailgun)) {
 			$this->_mailgun = new \Mailgun\Mailgun(c::config()->mailgun->key);
 		}
-		return $this->_mailgun; 
+		return $this->_mailgun;
 	}
-	
+
 	public function github() {
 		if (!isset($this->_github)) {
 			$this->_github = new \Github\Client();
@@ -488,10 +489,10 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_github;
 	}
-	
+
 	public function dbError() {
 		include(c::config()->dirs->www.'server-vacation.html');
 		exit;
 	}
-	
-} 
+
+}

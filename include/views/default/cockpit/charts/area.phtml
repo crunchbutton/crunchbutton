@@ -3,11 +3,10 @@
 	// 0: X
 	// 1: Y
 	// 2: Group
-
 	$categories = [];
 	$ys = [];
 	$group = [];
-	
+
 	// set up x labels and empty objects
 	foreach ($data as $item) {
 
@@ -23,7 +22,7 @@
 		$y = array_shift($vars);
 
 		$group = array_shift($vars);
-		
+
 		$ys[$group] = [];
 
 	}
@@ -40,7 +39,7 @@
 				$xx .= "'".str_replace("'","\\'",$k)."', ";
 			}
 			$xx = substr($xx,0,-2);
-			
+
 			// fill empty columns
 			foreach ($xs as $k => $v) {
 				foreach ($ys as $kk => $vv) {
@@ -52,21 +51,21 @@
 			// gather data
 			foreach ($data as $item) {
 				$vars = get_object_vars($item);
-				
+
 				// X
 				$x = array_shift($vars);
 				$xs[$x] = true;
 
 				// Y & group
 				$y = array_shift($vars);
-				
+
 				$groupName = key($vars);
 				$group = array_shift($vars);
-				
+
 				$ys[$group][$x] = $y;
 
 			}
-			
+
 			// remove assoc vals and add proper keys
 			foreach ($ys as $k => $v) {
 				$ys[$k] = array_values($ys[$k]);
@@ -76,7 +75,7 @@
 				];
 			}
 
-			
+
 			$jsData = [
 				'xs' => array_keys($xs),
 				'ys' => array_values($ys)
@@ -100,13 +99,13 @@
 	<?php echo $description; ?>
 </center>
 	<div id="options-<?=$divId?>" style="height:95px;background:#F5F5F5;width:98%;overflow-x:auto;overflow-y:hidden;<?php if( $hideSlider ) { echo 'display:none;'; } ?>">
-	
+
 	<br/>
 
 	<?php if( $groups && !$hideGroups ){ ?>
 		<span class="pull-right">
 			<select class="charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
-				<?php foreach ( $groups as $key => $value ) { 
+				<?php foreach ( $groups as $key => $value ) {
 					$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
 					?>
 					<option <?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
@@ -125,11 +124,11 @@
 			} else if( $interval == 'month' ){
 			?>
 				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
-			<?php 
+			<?php
 			} else if( $interval == 'day' ){
 			?>
 				Months <?php echo $from_day; ?> to <?php echo $to_day; ?> (of <?php echo $totalDays; ?>):
-			<?php 
+			<?php
 			} ?>
 		</div>
 		<div class="span8">
@@ -217,12 +216,12 @@ $(function () {
 		?>
 			values: [ <?php echo $from_month; ?>, <?php echo $to_month; ?> ],
 			max: <?php echo $totalMonths; ?>,
-		<?php 
+		<?php
 		} else if( $interval == 'day' ){
 		?>
 			values: [ <?php echo $from_day; ?>, <?php echo $to_day; ?> ],
 			max: <?php echo $totalDays; ?>,
-		<?php 
+		<?php
 		} ?>
 		change: function( event, ui ) {
 			var activeUserDays = $( '#active-user-days' ).val();
