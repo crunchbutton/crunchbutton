@@ -2,6 +2,8 @@
 
 class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 	public function init() {
+		
+		// @todo: move this method to /communities and pass it params
 
 		switch ( $this->method() ) {
 

@@ -12,7 +12,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		}
 	);
 	
-	var restaurant = ResourceFactory.createResource(App.service + 'restaurants/:id_restaurant', { id_user: '@id_restaurant'}, {
+	var restaurant = ResourceFactory.createResource(App.service + 'restaurants/:id_restaurant', { id_restaurant: '@id_restaurant'}, {
 		'load' : {
 			url: App.service + 'restaurant/:id_restaurant',
 			method: 'GET',

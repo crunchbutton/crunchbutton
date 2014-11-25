@@ -11,7 +11,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
 		
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$user = $this->request()['user'] ? c::db()->escape($this->request()['user']) : null;
@@ -47,6 +47,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
 			LEFT JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
+			LEFT JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
+			LEFT JOIN community ON community.id_community=restaurant_community.id_community
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
 		
@@ -105,7 +107,10 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$r = c::db()->query(str_replace('-WILD-','
 			`order`.*,
 			restaurant.name as _restaurant_name,
-			restaurant.community as _community_name,
+			restaurant.permalink as _restaurant_permalink,
+			community.name as _community_name,
+			community.permalink as _community_permalink,
+			community.id_community as _community_id,
 			admin.name as _driver_name,
 			admin.id_admin as _driver_id
 		', $q));
