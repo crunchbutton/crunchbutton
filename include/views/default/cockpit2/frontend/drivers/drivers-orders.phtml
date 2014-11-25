@@ -2,20 +2,21 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<div class="dialog-message dialog-message-error">
-		<b>In order to get paid</b></br> <div class="dialog-subtext">you MUST mark your orders as accepted & delivered!</div>		
-	</div>
-	
 	<? /* @todo: make this a diff date. write date diff in js */ ?>
-	
-	<?/*		*/ ?>
+
+	<h1 class="title left"><i class ="fa fa-truck"></i><span>Orders &nbsp;&nbsp;</span></h1>
 	<div class="box-filter">
-		<h1 class="title left"><i class ="fa fa-truck"></i><span>Orders &nbsp&nbsp</span></h1>
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 	</div>
 	
 	<div class="divider"></div>
+
+
+	<div class="dialog-message dialog-message-nice">
+		<b>In order to get paid</b></br> <div class="dialog-subtext">you MUST mark your orders as accepted & delivered!</div>		
+	</div>
+	
 
 	<div class="drivers-order-list">
 
@@ -74,7 +75,7 @@
 			<h3>You currently have no orders to deliver.</h3>
 		</div>
 		
-		<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>
+		<div class="last-updated"><p>Updated <span class="last-updated-time" am-time-ago="newDriverOrders.time.getTime()"></span></p></div>
 
 	</div>
 
