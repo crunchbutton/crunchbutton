@@ -55,7 +55,9 @@
 						</span>
 
 						{{payment.balanced_status}}
-						<span title="Check balanced status" class="link no-underline" ng-if="payment.balanced_status != 'succeeded'" ng-click="balanced_status( payment.id_payment );"> <i class="fa fa-refresh"></i> </span>
+						<i ng-if="!payment.balanced_status">new</i>
+						&nbsp;&nbsp;
+						<span title="Check balanced status" class="link no-underline" ng-if="payment.balanced_status != 'succeeded'" ng-click="balanced_status( payment.id_payment );"> <i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i> </span>
 					</td>
 					<td>{{payment.date}}</td>
 				</tr>

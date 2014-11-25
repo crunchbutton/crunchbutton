@@ -16,6 +16,20 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 	
+	public function status() {
+		// get the work status
+		$status = [
+			'payment' => false
+		];
+		$paymentType = $this->payment_type();
+		if ($paymentType->id_admin_payment_type) {
+			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->balanced_id && $this->ssn()) {
+				$status['payment'] = true;
+			}
+		}
+		return $status;
+	}
+	
 	public function locations() {
 		if (!isset($this->_locations)) {
 			$this->_locations = Admin_Location::q('
@@ -102,11 +116,11 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			foreach ($next as $shift) {
 				$shift = $shift->exports();
 				
-				$date = new DateTime($shift['date_start'], new DateTimeZone(c::config()->timezone));
+				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
 				$start = $date->getTimestamp();
 				
 				if ($start <= time() ) {
-					$date = new DateTime($shift['date_end'], new DateTimeZone(c::config()->timezone));
+					$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
 					$end = $date->getTimestamp();
 
 					$shift['current'] = true;
@@ -119,6 +133,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$out['shifts'][] = $shift;
 			}
 		}
+		
+		$out['status'] = $this->status();
 
 		return $out;
 	}

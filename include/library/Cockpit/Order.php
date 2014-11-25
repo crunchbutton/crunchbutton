@@ -171,71 +171,14 @@ class Cockpit_Order extends Crunchbutton_Order {
 		}
 
 		$out['status'] = $this->status()->last();
+		$out['eta'] = $this->eta()->exports();
 		$driver = $this->status()->driver();
 		if( $driver ){
 			$out['driver'] = $driver->exports();
 		}
 
-
 		return $out;
 	}
-	
-	public function eta() {
-		if (!isset($this->_eta)) {
-			
-			$status = $this->status()->last()['status'];
 
-			if (!$status) {
-				$this->_eta = $this->restaurant()->delivery_estimated_time;
-			} elseif ($status == 'delivered') {
-				$this->_eta = 0;
-			} else {
-				$this->_eta = $this->calculateGoogleEta();
-				
-				if ($status == 'accepted' || $status == 'transfered') {
-					if ($this->restaurant()->formal_relationship == 1 || $this->restaurant()->order_notifications_sent) {
-						$this->_eta += 5;
-					} else {
-						$this->_eta += 15;
-					}
-				}
-			}
-		}
-		return $this->_eta;
-	}
-	
-	public function calculateGoogleEta() {
-
-		$status = $this->status()->last()['status'];
-		
-		$driver = $this->driver()->location()->lat.','.$this->driver()->location()->lon;
-		$customer = urlencode($this->address);
-		$restaurant = $this->restaurant()->loc_lat.','.$this->restaurant()->loc_long;
-		
-		$url = 'https://maps.googleapis.com/maps/api/directions/json?';
-
-		if ($status == 'pickedup') {
-			$url .= 'origin='.$driver.'&destination='.$customer;
-
-		} elseif ($status == 'accepted' || $status == 'transfered') {
-			$url .= 'origin='.$driver.'&destination='.$customer.'&waypoints='.$restaurant;
-		}
-		
-		
-		$url = 'https://maps.googleapis.com/maps/api/directions/json?origin=33.9848,-118.446&destination=1120%20princeton,%20marina%20del%20rey%20ca%2090292&waypoints=33.1751,-96.6778';
-
-		$res = @json_decode(@file_get_contents($url));
-		$eta = 0;
-
-		if ($res) {
-			foreach ($res->routes[0]->legs as $leg) {
-				$eta += $leg->duration->value/60;
-			}
-		}
-
-		return $eta;
-		
-		//&key=API_KEY
-	}
 
 }

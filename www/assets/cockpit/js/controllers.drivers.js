@@ -712,19 +712,38 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 
 } );
 
-NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, DriverOnboardingService ) {
+NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, DriverOnboardingService, StaffService ) {
 
 	$scope.ready = false;
+	$scope.status = {
+		
+	};
+	
 
-	$scope.pay_info = function(){
-		$scope.navigation.link( '/drivers/docs/payment' );
-	}
+	StaffService.status($scope.account.user.id_admin, function(data) {
+		if (data.payment == true) {
+			$scope.status.paymentinfo = true;
+		}
+	});
 
 	var docs = function(){
 		// Load the docs
 		DriverOnboardingService.docs.list( $scope.account.user.id_admin, function( data ){
 			$scope.documents = data;
 			$scope.ready = true;
+
+			$scope.status.docs = true;
+			$scope.status.identification = true;
+
+			angular.forEach($scope.documents, function(doc, x) {
+				if ($scope.documents[x].url && (!$scope.documents[x].status || $scope.documents[x].status.file.substring(9, 14) == 'blank')) {
+					console.log($scope.documents[x]);
+					$scope.status.docs = false;
+				} else if (!$scope.documents[x].url && !$scope.documents[x].status) {
+					console.log($scope.documents[x]);
+					$scope.status.identification = false;
+				}
+			});
 		} );
 	}
 
