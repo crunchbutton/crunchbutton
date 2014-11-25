@@ -79,6 +79,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : '';
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
+		$working = $this->request()['working'] ? c::db()->escape($this->request()['working']) : 'all';
 		
 		if ($page == 1) {
 			$offset = '0';
@@ -107,57 +108,69 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				AND active="'.($status == 'active' ? '1' : '0').'"
 			';
 		}
-
+		
 		
 		if ($search) {
-			$search  = stripslashes($search);
-			$words = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $search, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-			foreach ($words as $word) {
-				$sq .= ($sq ? ' AND ' : '').'(
-					admin.name LIKE "%'.$word.'%"
-					OR admin.phone LIKE "%'.$word.'%"
-					OR admin.login LIKE "%'.$word.'%"
-					OR admin.email LIKE "%'.$word.'%"
-				)';
-			}
-			$q .= '
-				AND ('.$sq.')
-			';
+			$q .= Crunchbutton_Query::search([
+				'search' => stripslashes($search),
+				'fields' => [
+					'admin.name' => 'like',
+					'admin.phone' => 'like',
+					'admin.login' => 'like',
+					'admin.email' => 'like',
+					'admin.id_admin' => 'liker'
+				]
+			]);
 		}
-
 		
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
-		while ($c = $r->fetch()) {
-			$count = $c->c;
+		if ($working == 'all') {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
-		
+
 		$q .= '
 			GROUP BY `admin`.id_admin
 			ORDER BY `admin`.name ASC
-			LIMIT '.$offset.', '.$limit.'
 		';
+		if ($working == 'all') {
+			$q .= ' LIMIT '.$offset.', '.$limit;
+		}
 		
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','admin.*', $q));
 		while ($s = $r->fetch()) {
 			$staff = Admin::o($s)->exports(['permissions', 'groups']);
+
+			if (($working == 'yes' && $staff->working) || ($working == 'no' && !$staff->working)) {
+				$count++;
+			}
+			
+			if (($working == 'yes' && !$staff->working) || ($working == 'no' && $staff->working)) {
+				continue;
+			}
+
 			$unset = ['email','timezone','testphone','txt'];
 			foreach ($unset as $un) {
 				unset($staff[$un]);
 			}
+
 			$data[] = $staff;
 		}
 
-		// @todo: move this controll functionality into here
-		// $staff = Crunchbutton_Admin::search( $search );
-
+		if ($working == 'all') {
+			$pages = ceil($count / $limit);
+		} else {
+			$pages = 1;
+		}
 
 		echo json_encode([
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
+			'pages' => $pages,
 			'page' => $page,
 			'results' => $data
 		]);

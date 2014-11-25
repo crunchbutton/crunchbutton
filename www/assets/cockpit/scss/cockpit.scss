@@ -3290,6 +3290,7 @@ input[type="checkbox"].switch + div:before {
 	padding: .5em;
 	border-bottom: 1px solid #eeeeee;
 	line-height: 1.6em;
+	vertical-align: top;
 }
 
 .box-content-table tr:first-child > * {
@@ -3307,7 +3308,13 @@ input[type="checkbox"].switch + div:before {
 }
 .box-content-table tr > *:last-child:not(:first-child) {
 	text-align: right;
-	
+}
+
+.box-content-table td.tb-image-row {
+	padding-top: .35em;
+	padding-bottom: .35em;
+	padding-left: .7em;
+	width: 1px;
 }
 
 
@@ -3397,8 +3404,24 @@ input[type="checkbox"].switch + div:before {
 	opacity: 1;
 }
 
+
+.customer-image-crop {
+	border-radius: 100px;
+	overflow: hidden;
+}
+
+.customer-image, .customer-image-crop {
+	height: 2.5em;
+	width: 2.5em;
+}
+
+.customer-image-null {
+	background: url(../images/cockpit-user.png);
+	background-size: contain;
+}
+
+
 @-webkit-keyframes masked-animation {
 	0% {background-position: -10000px bottom;}
 	100% {background-position: left bottom;}
 }
-
