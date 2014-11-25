@@ -3308,7 +3308,13 @@ input[type="checkbox"].switch + div:before {
 }
 .box-content-table tr > *:last-child:not(:first-child) {
 	text-align: right;
-	
+}
+
+.box-content-table td.tb-image-row {
+	padding-top: .35em;
+	padding-bottom: .35em;
+	padding-left: .7em;
+	width: 1px;
 }
 
 
