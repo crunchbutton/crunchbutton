@@ -93,6 +93,18 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
 															)
 												),
+												'group-orders-per-weekday-by-community' => array(
+														'title' => 'Orders per Weekday by Community',
+														'charts' => array(
+																'orders-per-weekday-by-community' => array( 'title' => '', 'type' => 'column-community', 'method' => 'perWeekdayByCommunity' )
+															)
+												),
+												'group-orders-per-hour-by-community' => array(
+														'title' => 'Orders per Hour by Community',
+														'charts' => array(
+																'orders-per-hour-by-community' => array( 'title' => '', 'type' => 'column-community', 'method' => 'perHourByCommunity' )
+															)
+												),
 										);
 
 	public function __construct() {
@@ -793,6 +805,46 @@ public function byDayPerRestaurant( $render = false ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
+	}
+
+	public function perHourByCommunity( $render = false ){
+
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
+		$query = "SELECT
+								c.name AS 'Community',
+								count(1) AS 'Orders',
+								HOUR( o.date ) AS 'Day'
+							FROM `order` o
+								INNER JOIN community c ON c.id_community = o.id_community
+								WHERE 1=1 {$community}
+							GROUP BY HOUR( o.date )";
+
+		$data = c::db()->get( $query );
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'hideSlider' => true, 'hideGroups' => true );
+		}
+		return $data;
+	}
+
+	public function perWeekdayByCommunity( $render = false ){
+
+		$community = ( $_REQUEST[ 'community' ] ? 'AND o.id_community = ' . $_REQUEST[ 'community' ] : '' );
+
+		$query = "SELECT
+								c.name AS 'Community',
+								count(1) AS 'Orders',
+								DAYNAME( o.date ) AS 'Day'
+							FROM `order` o
+								INNER JOIN community c ON c.id_community = o.id_community
+								WHERE 1=1 {$community}
+							GROUP BY WEEKDAY( o.date )";
+
+		$data = c::db()->get( $query );
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'hideSlider' => true, 'hideGroups' => true );
+		}
+		return $data;
 	}
 
 	public function perRestaurantPerCommunity( $render = false ){

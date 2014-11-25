@@ -8,7 +8,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$hasPermission = c::admin()->permission()->check( [ 'global', 'metrics-all' ] );
 
 		if( !$hasPermission ){
-			
+
 			// $charts = Chart::getAllCharts();
 
 			$hasTag = false;
@@ -26,7 +26,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						}
 						$hasPermission = c::admin()->permission()->check( [ 'metrics-communities-all', "metrics-communities-{$community}", "metrics-restaurant-{$_REQUEST[ 'restaurant' ]}" ] );
 					}
-					if( $hasPermission ){ break; }	
+					if( $hasPermission ){ break; }
 				}
 			}
 
@@ -44,7 +44,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$subTitle = $info['chart'][ 'title' ];
 		$type = $info['chart'][ 'type' ];
 		$method = $info['chart'][ 'method' ];
-		
+
 		if( $_GET['filter'] ){
 			$filters = $info['chart'][ 'filters' ];
 			if( $filters ){
@@ -59,7 +59,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 		if( $_GET[ 'cohort_type' ] ){
 			$info[ 'cohort_type' ] = $_GET[ 'cohort_type' ];
-		} 
+		}
 
 		if( $_GET[ 'id_chart_cohort' ] ){
 			$info[ 'id_chart_cohort' ] = $_GET[ 'id_chart_cohort' ];
@@ -148,7 +148,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 	}
 
 	private function renderPieCommunities( $params, $groups, $description, $title ){
-			
+
 			$subtitle = $params[ 'title' ] . ' : ' . $groups[ $this->chartId ][ 'title' ];
 
 			if( !$title ){
@@ -165,7 +165,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				'groups' => $groups,
 				'divId' => $this->divId,
 				'description' => $description
-			]]); 
+			]]);
 	}
 
 	private function renderArea( $params, $groups, $description, $title ){
@@ -178,7 +178,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		}
 
 		$interval = ( $params[ 'interval' ] ) ? $params[ 'interval' ] : 'week';
-		
+
 		c::view()->display('charts/area', ['set' => [
 					'chartId' => $this->chartId,
 					'data' => $params[ 'data' ] ,
@@ -203,7 +203,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'hideSlider' => $params[ 'hideSlider' ],
 					'divId' => $this->divId,
 					'description' => $description
-		]]); 
+		]]);
 	}
 
 	private function renderColumnCommunity( $params, $groups, $description, $title ){
@@ -243,7 +243,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'info' => $params,
 						'divId' => $divId,
 						'description' => $description
-					]]); 
+					]]);
 	}
 
 	private function renderColumnRestaurant( $params, $groups, $description, $title ){
@@ -283,7 +283,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'info' => $params,
 						'divId' => $divId,
 						'description' => $description
-					]]); 
+					]]);
 	}
 
 	private function renderColumn( $params, $groups, $description, $title ){
@@ -319,6 +319,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'info' => $params,
 						'divId' => $this->divId,
 						'description' => $description
-					]]); 
+					]]);
 	}
 }
