@@ -24,6 +24,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				case 'locations':
 					$this->_locations($staff);
 					break;
+					
+				case 'status':
+					$this->_status($staff);
+					break;
 
 				default:
 					$this->_view($staff);
@@ -38,6 +42,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 	
 	private function _locations($staff) {
 		echo $staff->locations()->json();
+	}
+	
+	private function _status($staff) {
+		echo json_encode($staff->status());
 	}
 	
 	private function _view($staff) {
