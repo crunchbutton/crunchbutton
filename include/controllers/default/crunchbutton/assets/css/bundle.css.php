@@ -2,8 +2,7 @@
 
 class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		$git = Cana_Util::gitVersion();
-		$v = $git ? $git : $_REQUEST['v'];
+		$v = $_REQUEST['v'] ? $_REQUEST['v'] : Cana_Util::gitVersion();
 		
 		$id = 'crunchr-bundle-node-css';
 
