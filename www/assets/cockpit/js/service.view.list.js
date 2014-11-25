@@ -1,5 +1,5 @@
 
-NGApp.factory('ViewListService', function($location) {
+NGApp.factory('ViewListService', function($location, $timeout) {
 	
 	var service = {};
 	
@@ -55,11 +55,25 @@ NGApp.factory('ViewListService', function($location) {
 			}
 		};
 		
+		
+		scope.loader = false;
+		
 		scope.complete = function(d) {
 			scope.count = d.count;
 			scope.pages = d.pages;
-			scope.loading = false;
+
+			if (scope.loader) {
+				clearTimeout(scope.loader);
+				scope.loader = setTimeout(function() {
+					scope.scope.$apply(function() {
+						scope.loading = false;
+					});
+				},100);
+			} else {
+				scope.loading = false;
+			}
 		};
+
 	
 		var update = function() {
 			scope.loading = true;
