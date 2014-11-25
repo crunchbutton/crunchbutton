@@ -333,14 +333,14 @@ class Crunchbutton_User extends Cana_Table {
 			$auths = $this->auths();
 			foreach ($auths as $auth) {
 				if ($auth->type == 'facebook') {
-					$image = 'http://graph.facebook.com/'.$auth->auth.'/picture?type=square&height=200&width=200';
+					$image = 'https://graph.facebook.com/'.$auth->auth.'/picture?type=square&height=200&width=200';
 					break;
 				}
 			}
 			if (!$image && $gravatar) {
 				foreach ($auths as $auth) {
 					if ($auth->type == 'local') {
-						$image = 'http://www.gravatar.com/avatar/'.md5(strtolower($auth->email)).'?s=480&d=404';
+						$image = 'https://www.gravatar.com/avatar/'.md5(strtolower($auth->email)).'?s=480&d=404';
 						break;
 					}
 				}
