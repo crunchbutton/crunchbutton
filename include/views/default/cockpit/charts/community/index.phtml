@@ -65,7 +65,6 @@
 
 				<div class="row-fluid">
 
-
 					<div type="users-rate" class="span3 group-user-rate <?php echo $community->id_community; ?>" id="group-user-rate-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 
 					<div type="per-weekday" class="span3 group-per-weekday <?php echo $community->id_community; ?>" id="group-per-weekday-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
@@ -75,9 +74,17 @@
 
 					<div type="avg-delivery-time" class="span3 group-avg-delivery-time <?php echo $community->id_community; ?>" id="group-avg-delivery-time-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 
+				</div>
+
+				<div class="row-fluid">
+
+					<div type="orders-delivered-in-greater-than-60-min" class="span3 group-orders-delivered-in-greater-than-60-min <?php echo $community->id_community; ?>" id="group-orders-delivered-in-greater-than-60-min-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
+					<div type="past-orders" class="span3 group-past-orders <?php echo $community->id_community; ?>" id="group-past-orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 
 
 				</div>
+
 
 				<hr/>
 
@@ -131,6 +138,15 @@ function loadChartsOfCommunity( community ){
 			case 'avg-delivery-time':
 				partial = 'median-delivery-time-community-per-week-by-community/group-orders-median-delivery-time-community';
 				more_info = '&hideSlider=1';
+				break;
+			case 'orders-delivered-in-greater-than-60-min':
+				partial = 'orders-delivered-in-greater-than-60-min-community/group-orders-delivered-in-greater-than-60-min-community';
+				more_info = '&hideSlider=1';
+				break;
+			case 'past-orders':
+				partial = 'past-orders-per-restaurant-by-community/group-past-orders-per-restaurant-by-community';
+				more_info = '&hideSlider=1';
+				break;
 		}
 		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community + more_info;
 		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );

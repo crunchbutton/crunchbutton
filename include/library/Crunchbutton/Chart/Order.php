@@ -62,6 +62,27 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'median-delivery-time-community-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersMedianDeliveryTimeByWeekByCommunity', 'default' => true ),
 															)
 												),
+												'group-orders-median-delivery-time-community' => array(
+														'title' => 'Avg Delivery Time',
+														'tags' => array( 'reps' ),
+														'charts' => array(
+																'median-delivery-time-community-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersMedianDeliveryTimeByWeekByCommunity', 'default' => true ),
+															)
+												),
+												'group-orders-delivered-in-greater-than-60-min-community' => array(
+														'title' => 'Delivered in greater than 60 min',
+														'tags' => array( 'reps' ),
+														'charts' => array(
+																'orders-delivered-in-greater-than-60-min-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersDelivedInGreaterThan60MinCommunity', 'default' => true ),
+															)
+												),
+												'group-past-orders-per-restaurant-by-community' => array(
+														'title' => 'Orders per restaurant (past 100 orders)',
+														'tags' => array( 'reps' ),
+														'charts' => array(
+																'past-orders-per-restaurant-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersPerRestaurantByCommunity', 'default' => true ),
+															)
+												),
 												/*
 												'group-orders-repeat' => array(
 														'title' => 'Repeat Orders',
@@ -262,6 +283,98 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 		return $parsedData;
 	}
+
+
+	public function ordersPerRestaurantByCommunity( $render = false ){
+
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
+
+		$query = "SELECT
+								r.name AS Restaurant, o.id_order
+							FROM `order` o
+							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+							WHERE
+								o.id_community = {$community}
+								{$this->queryExcludeUsers}
+								ORDER BY o.id_order DESC LIMIT 100";
+
+		$data = c::db()->get( $query );
+
+		$weeks = [];
+		foreach ( $data as $item ) {
+			if( !$weeks[ $item->Restaurant ] ){
+				$weeks[ $item->Restaurant ] = 0;
+			}
+			$weeks[ $item->Restaurant ]++;
+		}
+
+		$data = [];
+		foreach ( $weeks as $restaurant => $val ) {
+			$data[] = ( object ) array( 'Label' => 'Orders', 'Total' => $val, 'Type' => $restaurant );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => 'Orders' );
+		}
+		return $parsedData;
+	}
+
+	public function ordersDelivedInGreaterThan60MinCommunity( $render = false ){
+
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
+
+		$query = "SELECT 	YEARWEEK(date) AS Week,
+											o.id_order,
+											o.date,
+											oa.timestamp
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
+								INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "'
+								WHERE
+									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
+									{$this->queryExcludeUsers}
+									AND c.id_community = {$community}
+								GROUP BY YEARWEEK(date)
+								ORDER BY YEARWEEK(date) ASC";
+
+		$data = c::db()->get( $query );
+
+		$weeks = [];
+		foreach ( $data as $item ) {
+			$weeks[ $item->Week ] = 0;
+		}
+		foreach ( $data as $item ) {
+
+			$ordered_at = new DateTime ( $item->date, new DateTimeZone( c::config()->timezone ) );
+			$delivered_at = new DateTime ( $item->timestamp, new DateTimeZone( c::config()->timezone ) );
+			$timeToDelivery = $delivered_at->diff( $ordered_at );
+			$timeToDelivery = ( $timeToDelivery->days * 24 * 60 ) + ( $timeToDelivery->h * 60 ) + ( $timeToDelivery->i );
+			if( $timeToDelivery > 60 ){
+				$weeks[ $item->Week ]++;
+			}
+		}
+
+		$_weeks = [];
+		foreach ( $weeks as $week => $val ) {
+			$_weeks[ $week ] = $val;
+		}
+		$allWeeks = $this->allWeeks();
+
+		$data = [];
+		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+			$week = $allWeeks[ $i ];
+			$total = ( $_weeks[ $week ] ) ? $_weeks[ $week ] : 0;
+			$data[] = ( object ) array( 'Label' => $this->parseWeek( $week ), 'Total' => $total, 'Type' => 'Orders'  );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => 'Orders' );
+		}
+		return $parsedData;
+	}
+
 
 	public function ordersByWeekByCommunity( $render = false ){
 
