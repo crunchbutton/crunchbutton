@@ -3398,10 +3398,6 @@ input[type="checkbox"].switch + div:before {
 	opacity: 1;
 }
 
-@-webkit-keyframes masked-animation {
-	0% {background-position: -10000px bottom;}
-	100% {background-position: left bottom;}
-}
 
 .customer-image-crop {
 	border-radius: 100px;
@@ -3416,4 +3412,10 @@ input[type="checkbox"].switch + div:before {
 .customer-image-null {
 	background: url(../images/cockpit-user.png);
 	background-size: contain;
+}
+
+
+@-webkit-keyframes masked-animation {
+	0% {background-position: -10000px bottom;}
+	100% {background-position: left bottom;}
 }
