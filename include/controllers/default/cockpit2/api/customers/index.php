@@ -36,22 +36,18 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		';
 		
 		if ($search) {
-			$search  = stripslashes($search);
-			$words = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $search, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-			foreach ($words as $word) {
-				$sq .= ($sq ? ' AND ' : '').'(
-					user.name LIKE "%'.$word.'%"
-					OR user.phone LIKE "%'.$word.'%"
-					OR user.address LIKE "%'.$word.'%"
-					OR `order`.name LIKE "%'.$word.'%"
-					OR `order`.phone LIKE "%'.$word.'%"
-					OR `order`.address LIKE "%'.$word.'%"
-					OR user.id_user LIKE "'.$word.'%"
-				)';
-			}
-			$q .= '
-				AND ('.$sq.')
-			';
+			$q .= Crunchbutton_Query::search([
+				'search' => stripslashes($search),
+				'fields' => [
+					'user.name' => 'like',
+					'user.phone' => 'like',
+					'user.address' => 'like',
+					'`order`.name' => 'like',
+					'`order`.phone' => 'like',
+					'`order`.address' => 'like',
+					'user.id_user' => 'liker'
+				]
+			]);
 		}
 		
 		$q .= '
@@ -79,6 +75,8 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		', $q));
 
 		while ($o = $r->fetch()) {
+			$u = new User($o);
+			$o->image = $u->image(false);
 			$data[] = $o;
 		}
 

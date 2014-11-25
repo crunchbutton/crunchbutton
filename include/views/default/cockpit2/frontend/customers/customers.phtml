@@ -16,6 +16,7 @@
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
+				<th></th>
 				<th>ID</th>
 				<th>Name</th>
 				<th>Phone</th>
@@ -24,6 +25,12 @@
 				<th>Last&nbsp;Order</th>
 			</tr>
 			<tr ng-repeat="customer in customers">
+				<td><a href="/customer/{{customer.id_user}}">
+					<div class="customer-image-crop">
+						<img ng-if="customer.image" class="customer-image" src="{{customer.image}}"></img>
+						<div ng-if="!customer.image" class="customer-image customer-image-null"></div>
+					</div>
+				</a></td>
 				<td><a href="/customer/{{customer.id_user}}">{{customer.id_user}}</a></td>
 				<td>{{customer.name}}</td>
 				<td><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></td>

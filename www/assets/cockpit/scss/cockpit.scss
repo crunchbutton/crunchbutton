@@ -3290,6 +3290,7 @@ input[type="checkbox"].switch + div:before {
 	padding: .5em;
 	border-bottom: 1px solid #eeeeee;
 	line-height: 1.6em;
+	vertical-align: top;
 }
 
 .box-content-table tr:first-child > * {
@@ -3402,3 +3403,17 @@ input[type="checkbox"].switch + div:before {
 	100% {background-position: left bottom;}
 }
 
+.customer-image-crop {
+	border-radius: 100px;
+	overflow: hidden;
+}
+
+.customer-image, .customer-image-crop {
+	height: 2.5em;
+	width: 2.5em;
+}
+
+.customer-image-null {
+	background: url(../images/cockpit-user.png);
+	background-size: contain;
+}
