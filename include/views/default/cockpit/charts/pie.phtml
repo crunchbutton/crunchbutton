@@ -1,4 +1,15 @@
+<?php
+echo '<pre>';var_dump( 1 );exit();
+$isPopup = ( $_GET[ 'popup' ] ? true : false );
+if( $isPopup ){
+?>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800">
+	<link href="/assets/css/core/core.css" media="screen" rel="stylesheet" type="text/css" />
+	<script src="/assets/js/core/core.js" type="text/javascript"></script>
+	<script src="/assets/js/highcharts.src.js" type="text/javascript"></script>
 <?
+}
+echo '<pre>';var_dump( 1 );exit();
 	// group up the data by order of data items recieved
 	// 0: X
 	// 1: Y
@@ -7,7 +18,7 @@
 	$categories = [];
 	$ys = [];
 	$group = [];
-	
+
 	// set up x labels and empty objects
 	foreach ($data as $item) {
 		$vars = get_object_vars($item);
@@ -22,16 +33,16 @@
 		$y = array_shift($vars);
 
 		$group = array_shift($vars);
-		
+
 		$ys[$group] = [];
 
 	}
-	
+
 	foreach ($xs as $k => $v) {
 		$xx .= "'".str_replace("'","\\'",$k)."', ";
 	}
 	$xx = substr($xx,0,-2);
-	
+
 	// fill empty columns
 	foreach ($xs as $k => $v) {
 		foreach ($ys as $kk => $vv) {
@@ -43,21 +54,21 @@
 	// gather data
 	foreach ($data as $item) {
 		$vars = get_object_vars($item);
-		
+
 		// X
 		$x = array_shift($vars);
 		$xs[$x] = true;
 
 		// Y & group
 		$y = array_shift($vars);
-		
+
 		$groupName = key($vars);
 		$group = array_shift($vars);
-		
+
 		$ys[$group][$x] = $y;
 
 	}
-	
+
 	// remove assoc vals and add proper keys
 	foreach ($ys as $k => $v) {
 		$ys[$k] = array_values($ys[$k]);
@@ -69,7 +80,7 @@
 
 	$data = array();
 	foreach ($ys as $y) {
-		$data[] = [ $y[ 'name' ], $y[ 'data' ][0] ];	
+		$data[] = [ $y[ 'name' ], $y[ 'data' ][0] ];
 	}
 	$jsData = [
 		'xs' => array_keys($xs),
@@ -79,7 +90,7 @@
 <div class="row-fluid">
 	<div class="row-fluid">
 		<div class="span12">
-			<h4 style="text-align:center;"><?php echo $title; ?></h4>	
+			<h4 style="text-align:center;"><?php echo $title; ?></h4>
 		</div>
 	</div>
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:250px; margin: 0 auto"></div>
