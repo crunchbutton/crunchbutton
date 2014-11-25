@@ -773,7 +773,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			if( json.error ){
 				App.alert( 'Oops, something bad happened: ' + json.error );
 			} else {
-				list();
+				$scope.update();
 			}
 			$scope.unBusy();
 		} );
