@@ -768,14 +768,14 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	}
 
 	$scope.balanced_status = function( id_payment ){
-		$scope.makeBusy();
+		$scope.balancedRefresh = id_payment;
 		SettlementService.drivers.balanced_status( id_payment, function( json ){
 			if( json.error ){
 				App.alert( 'Oops, something bad happened: ' + json.error );
 			} else {
 				$scope.update();
 			}
-			$scope.unBusy();
+			$scope.balancedRefresh = false;
 		} );
 	}
 

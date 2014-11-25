@@ -38,6 +38,9 @@ body {
 body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
+i {
+	font-style: italic;
+}
 
 @media screen and (max-width: 1024px) {
 	.bg {
