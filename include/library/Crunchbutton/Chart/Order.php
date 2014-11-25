@@ -55,6 +55,13 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'ordersByMonthByCommunity' ),
 															)
 												),
+												'group-orders-median-delivery-time-community' => array(
+														'title' => 'Avg Delivery Time',
+														'tags' => array( 'reps' ),
+														'charts' => array(
+																'median-delivery-time-community-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersMedianDeliveryTimeByWeekByCommunity', 'default' => true ),
+															)
+												),
 												/*
 												'group-orders-repeat' => array(
 														'title' => 'Repeat Orders',
@@ -194,6 +201,64 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
+		}
+		return $parsedData;
+	}
+
+	public function ordersMedianDeliveryTimeByWeekByCommunity( $render = false ){
+
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
+
+		$query = "SELECT 	YEARWEEK(date) AS Week,
+											o.id_order,
+											o.date,
+											oa.timestamp
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
+								INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "'
+								WHERE
+									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
+									{$this->queryExcludeUsers}
+									AND c.id_community = {$community}
+								GROUP BY YEARWEEK(date)
+								ORDER BY YEARWEEK(date) ASC";
+
+		$data = c::db()->get( $query );
+
+		$weeks = [];
+		foreach ( $data as $item ) {
+			$weeks[ $item->Week ] = [ 'orders' => 0, 'time' => 0 ];
+		}
+		foreach ( $data as $item ) {
+			$weeks[ $item->Week ][ 'orders' ]++;
+			$ordered_at = new DateTime ( $item->date, new DateTimeZone( c::config()->timezone ) );
+			$delivered_at = new DateTime ( $item->timestamp, new DateTimeZone( c::config()->timezone ) );
+
+			$timeToDelivery = $delivered_at->diff( $ordered_at );
+
+			$timeToDelivery = ( $timeToDelivery->days * 24 * 60 ) + ( $timeToDelivery->h * 60 ) + ( $timeToDelivery->i );
+
+			$weeks[ $item->Week ][ 'time' ] += $timeToDelivery;
+		}
+
+		$_weeks = [];
+		foreach ( $weeks as $week => $values ) {
+			$_weeks[ $week ] = intval( $values[ 'time' ] / $values[ 'orders' ] );
+		}
+
+		$allWeeks = $this->allWeeks();
+
+		$data = [];
+		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+			$week = $allWeeks[ $i ];
+			$total = ( $_weeks[ $week ] ) ? $_weeks[ $week ] : 0;
+			$data[] = ( object ) array( 'Label' => $this->parseWeek( $week ), 'Total' => $total, 'Type' => 'Minutes'  );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => 'minutes' );
 		}
 		return $parsedData;
 	}

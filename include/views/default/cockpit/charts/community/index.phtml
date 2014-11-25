@@ -73,6 +73,9 @@
 					<div type="per-hour" class="span3 group-per-hour <?php echo $community->id_community; ?>" id="group-per-hour-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 
 
+					<div type="avg-delivery-time" class="span3 group-avg-delivery-time <?php echo $community->id_community; ?>" id="group-avg-delivery-time-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+
+
 
 				</div>
 
@@ -125,6 +128,9 @@ function loadChartsOfCommunity( community ){
 				partial = 'orders-per-hour-by-community/group-orders-per-hour-by-community';
 				more_info = '&hideSlider=1';
 				break;
+			case 'avg-delivery-time':
+				partial = 'median-delivery-time-community-per-week-by-community/group-orders-median-delivery-time-community';
+				more_info = '&hideSlider=1';
 		}
 		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community + more_info;
 		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
