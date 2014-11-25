@@ -328,7 +328,7 @@ class Crunchbutton_User extends Cana_Table {
 		return Crunchbutton_Credit::debitByUser( $this->id_user );
 	}
 
-	public function image() {
+	public function image($gravatar = true) {
 		if (!isset($this->_image)) {
 			$auths = $this->auths();
 			foreach ($auths as $auth) {
@@ -337,7 +337,7 @@ class Crunchbutton_User extends Cana_Table {
 					break;
 				}
 			}
-			if (!$image) {
+			if (!$image && $gravatar) {
 				foreach ($auths as $auth) {
 					if ($auth->type == 'local') {
 						$image = 'http://www.gravatar.com/avatar/'.md5(strtolower($auth->email)).'?s=480&d=404';
