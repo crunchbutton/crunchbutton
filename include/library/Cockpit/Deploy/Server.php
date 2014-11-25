@@ -7,8 +7,12 @@ class Cockpit_Deploy_Server extends Cana_Table {
 		return $ex;
 	}
 	
-	public function byName($name) {
+	public static function byName($name) {
 		return Cockpit_Deploy_Server::q('select * from deploy_server where name="'.$name.'"')->get(0);
+	}
+	
+	public static function currentVersion() {
+		return md5(self::byName($_SERVER['SERVER_NAME'])->version()->version);
 	}
 
 	public function version() {

@@ -70,23 +70,18 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 		
 		if ($search) {
-			$search  = stripslashes($search);
-			$words = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $search, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-
-			foreach ($words as $word) {
-				$sq .= ($sq ? ' AND ' : '').'(
-					restaurant.name LIKE "%'.$word.'%"
-					OR admin.name LIKE "%'.$word.'%"
-					OR order.name LIKE "%'.$word.'%"
-					OR order.phone LIKE "%'.$word.'%"
-					OR order.address LIKE "%'.$word.'%"
-					OR order.id_order LIKE "'.$word.'%"
-					OR order.notes LIKE "'.$word.'%"
-				)';
-			}
-			$q .= '
-				AND ('.$sq.')
-			';
+			$q .= Crunchbutton_Query::search([
+				'search' => stripslashes($search),
+				'fields' => [
+					'restaurant.name' => 'like',
+					'admin.name' => 'like',
+					'order.phone' => 'like',
+					'order.name' => 'like',
+					'order.address' => 'like',
+					'order.notes' => 'like',
+					'order.id_order' => 'liker'
+				]
+			]);
 		}
 		
 		$q .= '
