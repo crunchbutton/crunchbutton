@@ -105,7 +105,7 @@
 					<span ng-if="version.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
 					<span ng-if="version.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(version.id_deploy_version)"><i class="fa fa-times-circle"></i></a></span>
 				</td>
-				<td><a href="/staff/info/{{version.id_admin}}">{{version.admin.name}}</a></td>
+				<td><a href="/staff/{{version.id_admin}}">{{version.admin.name}}</a></td>
 			</tr>
 		</table>
 	</div>
