@@ -2725,7 +2725,9 @@ b, strong{ font-weight: bold; }
 .file-hidden{
 	line-height: 1px;
 	height: 1px;
+	width: 1px;
 	opacity: 0;
+	display: none;
 }
 .delivery-out-of-range, .delivery-range{
 	background: #df5850;
