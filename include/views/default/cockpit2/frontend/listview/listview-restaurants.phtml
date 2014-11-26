@@ -7,7 +7,7 @@
 			<th>Phone</th>
 			<th>Address</th>
 			<th ng-if="!community">Communities</th>
-			<th>Orders</th>
+			<th class="tb-center">Orders</th>
 			<th>Last&nbsp;Order</th>
 		</tr>
 		<tr ng-repeat="restaurant in restaurants" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
@@ -26,7 +26,7 @@
 					<a href="/community/{{community.permalink}}">{{community.name}}</a>
 				</span>
 			</td>
-			<td>
+			<td class="tb-center">
 				<a href="/orders?restaurant={{restaurant.id_restaurant}}" ng-if="restaurant.orders != '0'">{{restaurant.orders}}</a>
 				<span ng-if="restaurant.orders == '0'">0</span>
 			</td>
