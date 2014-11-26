@@ -3,7 +3,11 @@
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
-die('hard');
+		$card = new Crunchbutton_Pexcard_Card;
+		// echo '<pre>';var_dump( $card->ping() );exit();
+		echo '<pre>';var_dump( $card->card_list() );exit();
+
+		die('hard');
 		$set = new Crunchbutton_Settlement;
 		$set->checkPaymentStatus();
 		die('hard');

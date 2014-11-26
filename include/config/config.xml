@@ -44,6 +44,16 @@
 		<version>default</version>
 		<theme>crunchbutton</theme>
 	</defaults>
+	<pexcard>
+		<beta>
+			<username>_USERNAME_</username>
+			<password>_PASSWORD_</password>
+		</beta>
+		<live>
+			<username>missing</username>
+			<password>missing</password>
+		</live>
+	</pexcard>
 	<github>
 		<local>
 			<id>_KEY_</id>

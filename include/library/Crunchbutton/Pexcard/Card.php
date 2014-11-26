@@ -5,7 +5,7 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 	const CARD_STATUS_OPEN = 'OPEN';
 	const CARD_STATUS_BLOCKED = 'BLOCKED';
 
-	public function list(){
+	public function card_list(){
 		return Crunchbutton_Pexcard_Resource::request( 'cardlist', [] );
 	}
 

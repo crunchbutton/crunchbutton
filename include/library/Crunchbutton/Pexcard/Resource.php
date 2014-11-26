@@ -4,12 +4,13 @@ use Httpful\Request;
 
 class Crunchbutton_Pexcard_Resource extends Cana_Model {
 
-	public static $api_url = 'https://coreapi.pexcard.com/v3/';
-	public static $auth_token = '2bd13c07d029047ff5fb6045ee8d07';
-	public static $room_id = '171095';
-	public static $from = 'CBNotify';
-	public static $color_notification = 'yellow';
-	public static $color_urgent = 'red';
+	public static function uri(){
+		if( c::getEnv() == 'live' ){
+			return 'https://coreapi.pexcard.com/v3/';
+		} else {
+			return 'https://corebeta.pexcard.com/api/v3/';
+		}
+	}
 
 	public static function url( $point ){
 		$urls = [
@@ -25,7 +26,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Model {
 							'cardfundingreport' => 'admin/CardFundingReport',
 		 				];
 		if( $urls[ $point ] ){
-			return Crunchbutton_Pexcard_Resource::$api_url . $urls[ $point ];
+			return Crunchbutton_Pexcard_Resource::uri() . $urls[ $point ];
 		}
 		return false;
 	}
@@ -36,8 +37,10 @@ class Crunchbutton_Pexcard_Resource extends Cana_Model {
 
 	public static function request( $point, $params = [], $auth = true, $json = true ){
 
-		$user = '_USERNAME_';
-		$pass = '_PASSWORD_';
+		$env = ( c::getEnv() == 'live' ) ? 'live' : 'beta';
+
+		$user = c::config()->pexcard->{$env}->username;
+		$pass = c::config()->pexcard->{$env}->password;
 
 		$url = Crunchbutton_Pexcard_Resource::url( $point );
 
@@ -54,7 +57,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Model {
 			}
 
 			if( $json ){
-				$response->expects( 'json' );
+				$request->expects( 'json' );
 			}
 			$request->sendsForm();
 
