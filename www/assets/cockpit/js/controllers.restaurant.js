@@ -62,6 +62,7 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 		scope: $scope,
 		watch: {
 			search: '',
+			community: ''
 		},
 		update: function() {
 			RestaurantService.list($scope.query, function(d) {
@@ -73,14 +74,34 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 });
 
 
-NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, RestaurantService, OrderService, $rootScope) {
+NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;
+	
+	$scope.$on('mapInitialized', function(event, map) {
+		$scope.map = map;
+		MapService.style(map);
+		update();
+	});
+	
+	var update = function() {
+		if (!$scope.map || !$scope.restaurant) {
+			return;
+		}
+
+		MapService.trackRestaurant({
+			map: $scope.map,
+			restaurant: $scope.restaurant,
+			scope: $scope,
+			id: 'restaurant-location'
+		});
+	};
 
 	RestaurantService.get($routeParams.id, function(d) {
-		console.log(d);
 		$rootScope.title = d.name + ' | Restaurant';
 		$scope.restaurant = d;
 		$scope.loading = false;
+		
+		update();
 
 		OrderService.list({restaurant: d.id_restaurant, limit: 5}, function(d) {
 			$scope.orders = d.results;

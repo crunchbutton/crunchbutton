@@ -23,7 +23,7 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 	$scope.view({
 		scope: $scope,
 		watch: {
-			search: '',
+			search: ''
 		},
 		update: function() {
 			CommunityService.list($scope.query, function(d) {
