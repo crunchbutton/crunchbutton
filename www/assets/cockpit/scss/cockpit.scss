@@ -3318,6 +3318,14 @@ input[type="checkbox"].switch + div:before {
 }
 
 
+.box-content-table tr:focus {
+	background: #e8f9f8;
+}
+.box-content-table tr:focus td {
+	border-bottom: 1px solid #b3e0de;
+}
+
+
 .box-content-table th {
 	font-weight: bold;
 	text-align: left;
@@ -3417,6 +3425,11 @@ input[type="checkbox"].switch + div:before {
 
 .customer-image-null {
 	background: url(../images/cockpit-user.png);
+	background-size: contain;
+}
+
+.restaurant-image-null {
+	background: url(../images/cockpit-restaurant.png);
 	background-size: contain;
 }
 

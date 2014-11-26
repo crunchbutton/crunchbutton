@@ -7,7 +7,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
 			</tr>
 		</table>
 	</div>
@@ -28,7 +28,7 @@
 				<th>Community</th>
 				<th></th>
 			</tr>
-			<tr ng-repeat="driver in drivers">
+			<tr ng-repeat="driver in drivers" ng-attr-tabindex="{{$index+1}}" tab-select="/drivers/onboarding/{{driver.id_admin}}">
 				<td>
 					<a href="/drivers/onboarding/{{driver.id_admin}}">{{driver.name}}</a>
 				</td>

@@ -1,0 +1,24 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Permalink</th>
+			<th>Timezone</th>
+			<th class="tb-center">Restaurants</th>
+			<th>Last Order</th>
+			<th>Active</th>
+		</tr>
+		<tr ng-repeat="community in communities" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}">
+			<td><a href="/community/{{community.permalink || community.id_community}}">{{community.id_community}}</td>
+			<td>{{community.name}}</td>
+			<td>{{community.permalink}}</td>
+			<td>{{community.timezone | formatTimezone}}</td>
+			<td class="tb-center">{{community.restaurants}}</td>
+			<td>
+				<span ng-if="community._order_date"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
+			</td>
+			<td><i class="fa fa-check" ng-if="community.active"></i></td>
+		</tr>
+	</table>
+</div>

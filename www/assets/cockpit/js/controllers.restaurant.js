@@ -1,3 +1,97 @@
+NGApp.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		/* Restaurants Order Placement */
+		.when('/restaurant/order/placement/dashboard/:id?', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementDashboard',
+			templateUrl: 'assets/view/restaurant-order-placement-dashboard.html'
+		})
+		.when('/restaurant/order/placement/new/:id?', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementNew',
+			templateUrl: 'assets/view/restaurant-order-placement-new.html'
+		})
+		.when('/restaurant/order/placement/list/:id?', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementList',
+			templateUrl: 'assets/view/restaurant-order-placement-list.html'
+		})
+		.when('/restaurant/order/placement/:id', {
+			action: 'restaurant-order-placement',
+			controller: 'RestaurantOrderPlacementView',
+			templateUrl: 'assets/view/restaurant-order-placement-view.html'
+		})
+
+		/* Restaurants */
+		.when('/restaurants', {
+			action: 'restaurants',
+			controller: 'RestaurantsCtrl',
+			templateUrl: 'assets/view/restaurants.html',
+			reloadOnSearch: false
+		})
+		.when('/restaurant/:id', {
+			action: 'restaurant',
+			controller: 'RestaurantCtrl',
+			templateUrl: 'assets/view/restaurants-restaurant.html'
+		})
+
+		.when('/restaurant/order/new', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderNew',
+			templateUrl: 'assets/view/restaurant-order-new.html'
+		})
+		.when('/restaurant/order/list', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderList',
+			templateUrl: 'assets/view/restaurant-order-list.html'
+		})
+		.when('/restaurant/order/:id', {
+			action: 'restaurant-order-new',
+			controller: 'RestaurantOrderView',
+			templateUrl: 'assets/view/restaurant-order-view.html'
+		});
+}]);
+
+
+NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService) {
+	$rootScope.title = 'Restaurants';
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+		},
+		update: function() {
+			RestaurantService.list($scope.query, function(d) {
+				$scope.restaurants = d.results;
+				$scope.complete(d);
+			});
+		}
+	});
+});
+
+
+NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, RestaurantService, OrderService, $rootScope) {
+	$scope.loading = true;
+
+	RestaurantService.get($routeParams.id, function(d) {
+		console.log(d);
+		$rootScope.title = d.name + ' | Restaurant';
+		$scope.restaurant = d;
+		$scope.loading = false;
+
+		OrderService.list({restaurant: d.id_restaurant, limit: 5}, function(d) {
+			$scope.orders = d.results;
+			$scope.count = d.count;
+			$scope.pages = d.pages;
+			$scope.loading = false;
+		});
+	});
+});
+
+
 NGApp.controller('RestaurantOrderPlacementDashboard', function ( $scope, RestaurantOrderPlacementService, $routeParams ) {
 
 	// Load restaurants that are allowed to place orders

@@ -1,0 +1,30 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Name</th>
+			<th>Phone</th>
+			<th>Login</th>
+			<th ng-if="!community">Community</th>
+			<th class="tb-center">Active</th>
+			<th class="tb-center">Working</th>
+			<th> </th>
+		</tr>
+		<tr ng-repeat="s in staff" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
+			<td><a href="/staff/{{s.login}}">{{s.name}}</a></td>
+			<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
+			<td>{{s.login}}</td>
+			<td ng-if="!community">
+				<span class="staff-community-repeat" ng-repeat="community in s.communities">
+					{{community}}
+				</span>
+			</td>
+			<td class="tb-center">
+				<span ng-if="s.active"><i class="fa fa-check"></i></span>
+			</td>
+			<td class="tb-center">
+				<span ng-if="s.working"><i class="fa fa-check"></i></span>
+			</td>
+			<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
+		</tr>
+	</table>
+</div>

@@ -5,20 +5,20 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search"></td>
+				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
 			</tr>
 
 			<tr>
 				<th>Type</th>
 				<td>
-					<select ng-model="query.type" name="searchType">
+					<select ng-model="query.type" name="searchType" tabindex="2">
 						<option value="all">All</option>
 						<option value="driver">Drivers</option>
 					</select>
 				</td>
 				<th>Status</th>
 				<td>
-					<select ng-model="query.status" name="searchType">
+					<select ng-model="query.status" name="searchType" tabindex="3">
 						<option value="all">All</option>
 						<option value="active">Active</option>
 						<option value="inactive">Inactive</option>
@@ -26,7 +26,7 @@
 				</td>
 				<th>Working</th>
 				<td>
-					<select ng-model="query.working" name="searchType">
+					<select ng-model="query.working" name="searchType" tabindex="4">
 						<option value="all">All</option>
 						<option value="yes">Yes</option>
 						<option value="no">No</option>
@@ -38,50 +38,6 @@
 	
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Name</th>
-				<th>Phone</th>
-				<th>Login</th>
-				<th>Community</th>
-				<th class="tb-center">Active</th>
-				<th class="tb-center">Working</th>
-				<th> </th>
-			</tr>
-			<tr ng-repeat="s in staff">
-				<td><a href="/staff/{{s.login}}">{{s.name}}</a></td>
-				<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
-				<td>{{s.login}}</td>
-				<td>
-					<span class="staff-community-repeat" ng-repeat="community in s.communities">
-						{{community}}
-					</span>
-				</td>
-				<td class="tb-center">
-					<span ng-if="s.active"><i class="fa fa-check"></i></span>
-				</td>
-				<td class="tb-center">
-					<span ng-if="s.working"><i class="fa fa-check"></i></span>
-				</td>
-				<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
-			</tr>
-		</table>
-	</div>
-	
-	<table class="tb-pagination right" ng-if="pages > 1" page-key>
-		<tbody>
-			<tr>
-				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
-				<td class="td-info">Page {{query.page}} of {{pages}}</td>
-				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
-			</tr>
-		</tbody>
-	</table>
-	
-	<div class="divider"></div>
-
+	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
 </div>
-
-
-

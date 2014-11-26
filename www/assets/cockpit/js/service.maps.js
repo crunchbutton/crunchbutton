@@ -61,6 +61,36 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 		maps[id] = null;
 	};
 	
+	service.trackCommunity = function(params) {
+		var map = params.map;
+
+		if (!maps[params.id]) {
+			maps[params.id] = {markers: {}};
+			params.scope.$on('$destroy', function() {
+				service.reset(params.id);
+			});
+		}
+
+		if (maps[params.id].markers.current) {
+			maps[params.id].markers.current.setMap(null);
+		}
+
+		var myLatlng = new google.maps.LatLng(parseFloat(params.community.loc_lat), parseFloat(params.community.loc_lon));
+		
+		map.setCenter(myLatlng);
+
+		maps[params.id].markers.current = new google.maps.Circle({
+			strokeColor: '#ed3c06',
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: '#fc7c08',
+			fillOpacity: 0.35,
+			map: map,
+			center: myLatlng,
+			radius: parseInt(params.community.range) * 1609.34
+		});
+	};
+	
 	service.trackStaff = function(params) {
 		var map = params.map;
 

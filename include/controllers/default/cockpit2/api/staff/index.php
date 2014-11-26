@@ -74,12 +74,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _list() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : '';
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
 		$working = $this->request()['working'] ? c::db()->escape($this->request()['working']) : 'all';
+		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
 		
 		if ($page == 1) {
 			$offset = '0';
@@ -97,7 +98,14 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
 				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
 			';
+			
+			if ($community) {
+				$q .= '
+					LEFT JOIN community ON community.driver_group=g.name
+				';
+			}
 		}
+		
 		
 		$q .='
 			WHERE 1=1
@@ -106,6 +114,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if ($status != 'all') {
 			$q .= '
 				AND active="'.($status == 'active' ? '1' : '0').'"
+			';
+		}
+		
+		if ($community) {
+			$q .= '
+				AND community.id_community="'.$community.'"
 			';
 		}
 		
