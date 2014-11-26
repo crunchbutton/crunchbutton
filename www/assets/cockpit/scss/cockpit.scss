@@ -3317,6 +3317,13 @@ input[type="checkbox"].switch + div:before {
 	width: 1px;
 }
 
+.box-content-table tr, .box-content-table td {
+	-webkit-transition: all 0.1s;
+	 -moz-transition: all 0.1s;
+		-ms-transition: all 0.1s;
+		 -o-transition: all 0.1s;
+				transition: all 0.1s;
+}
 
 .box-content-table tr:focus {
 	background: #e8f9f8;
