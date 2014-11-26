@@ -4,8 +4,14 @@ use Httpful\Request;
 
 class Crunchbutton_Pexcard_Resource extends Cana_Model {
 
+	// I created this method so I can fake live
+	public function env(){
+		return 'live';
+		return ( c::getEnv() == 'live' ) ? 'live' : 'beta';
+	}
+
 	public static function uri(){
-		if( c::getEnv() == 'live' ){
+		if( Crunchbutton_Pexcard_Resource::env() == 'live' ){
 			return 'https://coreapi.pexcard.com/v3/';
 		} else {
 			return 'https://corebeta.pexcard.com/api/v3/';
@@ -37,10 +43,8 @@ class Crunchbutton_Pexcard_Resource extends Cana_Model {
 
 	public static function request( $point, $params = [], $auth = true, $json = true ){
 
-		$env = ( c::getEnv() == 'live' ) ? 'live' : 'beta';
-
-		$user = c::config()->pexcard->{$env}->username;
-		$pass = c::config()->pexcard->{$env}->password;
+		$user = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->username;
+		$pass = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->password;
 
 		$url = Crunchbutton_Pexcard_Resource::url( $point );
 
@@ -49,7 +53,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Model {
 			$request = \Httpful\Request::post( $url );
 
 			if( $auth ){
-				$params = array_merge( [ 'UserName' => $user, 'Password' => $pass ] );
+				$params = array_merge( [ 'UserName' => $user, 'Password' => $pass ], $params );
 			}
 
 			if( count( $params ) ){

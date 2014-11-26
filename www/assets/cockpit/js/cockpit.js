@@ -166,6 +166,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversSummaryCtrl',
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
+		/* Pexcard */
+		.when('/pexcard/card', {
+			action: 'pexcard',
+			controller: 'PexCardIdCtrl',
+			templateUrl: 'assets/view/pexcard-pex-id.html'
+		})
 		/* Driver shifts */
 		.when('/drivers/dashboard', {
 			action: 'drivers-dashboard',
@@ -403,21 +409,21 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			this.$apply(fn);
 		}
 	};
-	
+
 	$rootScope.triggerViewTicket = function(ticket) {
 		$rootScope.$broadcast('triggerViewTicket', ticket);
 	};
-	
+
 	$rootScope.callText = function(num) {
 		$rootScope.$broadcast('callText', num);
 	};
 
 	$rootScope.hasBack = false;
-	
+
 	var camelCase = function(str) {
 		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	};
-	
+
 	var makeTitle = function() {
 		return $route.current.title || camelCase($route.current.action.replace(/-/g,' '));
 	};
@@ -440,7 +446,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.snap.close();
 		$rootScope.scrollTop = 0;
 	});
-	
+
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
 		if (!$rootScope.account.isLoggedIn()) {
 			var isAllowed = false;
@@ -453,7 +459,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				setTimeout(function() {
 					MainNavigationService.link( '/login' );
 				}, 10);
-				
+
 			}
 		} else {
 			if( $location.url() == '/login') {
@@ -582,7 +588,7 @@ App.processConfig = function(json, user) {
 	} else {
 		App.config = json;
 	}
-	
+
 	if (json.timezones) {
 		moment.tz.load(json.timezones);
 	}
@@ -597,7 +603,7 @@ App.init = function(config) {
 	if (App._init) {
 		return;
 	}
-	
+
 	App.phoneGapListener.init();
 
 	App._init = true;

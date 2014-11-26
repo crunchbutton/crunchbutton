@@ -1,0 +1,85 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-credit-card"></i>Pex Card</h1>
+
+		<div class="divider"></div>
+
+		<navigation-back></navigation-back>
+
+		<form name="form" novalidate>
+
+			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+				<li class="li-input" ng-class="{'error':form.crunchbuttonCardId.$invalid}">
+					<div class="label">Crunchbutton Id:</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Crunchbutton Id"></div>
+					<div class="box-error">
+						<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
+						<small ng-show="form.crunchbuttonCardId.$error.minlength">Crunchbutton Id is too short. It is required to be at least 3 characters.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="!isSearching">
+					<button class="button save" ng-click="search();">Card info</button>
+				</li>
+				<li class="li-input" ng-show="isSearching">
+					<i class="fa fa-circle-o-notch fa-spin"></i> Searching
+				</li>
+			</ul>
+		</form>
+
+		<div ng-if="card">
+
+			<div class="divider"></div>
+
+			<h1 class="title">Card Info</h1>
+
+			<ul class="ul-info box-content2">
+				<li class="li-info">
+					<div class="label">Pex Id:</div>
+					<div class="data">{{card.id}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">First Name:</div>
+					<div class="data">{{card.firstName}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">Last Name:</div>
+					<div class="data">{{card.lastName}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">Ledger Balance:</div>
+					<div class="data">$ {{card.ledgerBalance | formatPrice}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">Available Balance:</div>
+					<div class="data">$ {{card.availableBalance | formatPrice}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">Status:</div>
+					<div class="data">{{card.status}}</div>
+				</li>
+			</ul>
+
+			<h1 class="title">Cards</h1>
+
+			<ul class="ul-info box-content2" ng-repeat="_card in card.cards">
+				<li class="li-info">
+					<div class="label">Card Id:</div>
+					<div class="data">{{_card.id}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">Card Number:</div>
+					<div class="data">{{_card.cardNumber}}</div>
+				</li>
+				<li class="li-info">
+					<div class="label">Status:</div>
+					<div class="data">{{_card.status}}</div>
+				</li>
+			</ul>
+
+		</div>
+
+</div>

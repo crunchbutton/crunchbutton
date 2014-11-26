@@ -4,8 +4,13 @@ class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		$card = new Crunchbutton_Pexcard_Card;
+		$card->details( 106971 )->body
 		// echo '<pre>';var_dump( $card->ping() );exit();
-		echo '<pre>';var_dump( $card->card_list() );exit();
+		// echo '<pre>';var_dump( $card->card_list() );exit();
+		echo '<pre>';var_dump(
+			$card->details( 106971 )->body
+		 );exit();
+		// echo '<pre>';var_dump( $card->create( [ 'firstName' => 'Test', 'lastName' => '001' ] ) );exit();
 
 		die('hard');
 		$set = new Crunchbutton_Settlement;
