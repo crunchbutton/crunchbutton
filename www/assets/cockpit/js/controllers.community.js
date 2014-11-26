@@ -35,24 +35,51 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 });
 
 
-NGApp.controller('CommunityCtrl', function ($scope, $routeParams, CommunityService, RestaurantService, OrderService, $rootScope) {
+NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
 	$scope.loading = true;
+	$scope.loadingOrders = true;
+	$scope.loadingRestaurants = true;
+	$scope.loadingStaff = true;
+	
+	$scope.$on('mapInitialized', function(event, map) {
+		$scope.map = map;
+		MapService.style(map);
+		update();
+	});
+	
+	var update = function() {
+		if (!$scope.map || !$scope.community) {
+			return;
+		}
+
+		MapService.trackCommunity({
+			map: $scope.map,
+			community: $scope.community,
+			scope: $scope,
+			id: 'community-location'
+		});
+	};
 
 	CommunityService.get($routeParams.id, function(d) {
 		$rootScope.title = d.name + ' | Community';
 		$scope.community = d;
 		$scope.loading = false;
+		
+		update();
 
 		OrderService.list({community: d.id_community, limit: 5}, function(d) {
 			$scope.orders = d.results;
-			$scope.loading = false;
+			$scope.loadingOrders = false;
 		});
 		
-		RestaurantService.list({community: d.id_community, limit: 5}, function(d) {
+		RestaurantService.list({community: d.id_community, limit: 50}, function(d) {
 			$scope.restaurants = d.results;
-			$scope.count = d.count;
-			$scope.pages = d.pages;
-			$scope.loading = false;
+			$scope.loadingRestaurants = false;
+		});
+		
+		StaffService.list({community: d.id_community, limit: 50, type: 'driver'}, function(d) {
+			$scope.staff = d.results;
+			$scope.loadingStaff = false;
 		});
 	});
 });

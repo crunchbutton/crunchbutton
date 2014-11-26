@@ -51,20 +51,26 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : 'all';
-		
+		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
 			$offset = ($page-1) * $limit;
 		}
 
-
 		$q = '
 			SELECT
 				-WILD-
 			FROM restaurant
-			LEFT JOIN `order` using(id_restaurant)
+			LEFT JOIN `order` ON restaurant.id_restaurant=`order`.id_restaurant
+		';
+		if ($community) {
+			$q .= '
+				LEFT JOIN restaurant_community ON restaurant.id_restaurant=restaurant_community.id_restaurant
+			';
+		}
+		$q .='
 			WHERE 
 				restaurant.name IS NOT NULL
 		';
@@ -72,6 +78,12 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		if ($status != 'all') {
 			$q .= '
 				AND active="'.($status == 'active' ? '1' : '0').'"
+			';
+		}
+		
+		if ($community) {
+			$q .= '
+				AND restaurant_community.id_community="'.$community.'"
 			';
 		}
 		

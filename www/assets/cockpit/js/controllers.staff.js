@@ -34,9 +34,6 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		update();
 	});
 
-
-
-	
 	$scope.$watch('staff', function() {
 		console.log('staff');
 		update();
