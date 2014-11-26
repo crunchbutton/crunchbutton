@@ -10,7 +10,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 	public function __construct($params) {
 
-		$parsed = $this->parseBody($params->body);
+		$parsed = $this->parseBody($params['body']);
 		$action = $parsed['verb'];
 
 		$order = Order::o(intval($parsed['order']));
@@ -21,15 +21,15 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			switch ($action) {
 
 				case self::ACTION_ACCEPT:
-					$response = ['msg' => $this->accept($order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $params->admin), $order), 'stop' => true];
+					$response = ['msg' => $this->accept($order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $params['admin']), $order), 'stop' => true];
 					break;
 
 				case self::ACTION_PICKEDUP:
-					$response = ['msg' => $this->pickedup($order->setStatus(Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $params->admin), $order), 'stop' => true];
+					$response = ['msg' => $this->pickedup($order->setStatus(Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $params['admin']), $order), 'stop' => true];
 					break;
 
 				case self::ACTION_DELIVERED:
-					$response = ['msg' => $this->delivered($order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $params->admin), $order), 'stop' => true];
+					$response = ['msg' => $this->delivered($order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $params['admin']), $order), 'stop' => true];
 					break;
 
 				case self::ACTION_DETAILS:
@@ -51,7 +51,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 	public function help($order = null) {
 		$response = 
-			"Driver command usage: \"".($order ? $order->id_order : 'order')." command\"\n".
+			"Driver command usage: ".($order ? $order->id_order : 'order')." command\n".
 			"Commands: \n".
 			"    accept (or a)\n".
 			"    picked (or p)\n".
@@ -110,16 +110,21 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			self::ACTION_PICKEDUP => [ 'picked up', 'picked', 'pick', 'got', 'up', 'p' ],
 			self::ACTION_DELIVERED => [ 'delivered', 'd' ],
 			self::ACTION_DETAILS => [ 'details', 'deets', 'det' ],
-			self::ACTION_HELP => [ 'help', 'h' ]
+			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support']
 		];
 		
-		if (preg_match('/^help|h$/',$body)) {
+
+		foreach ($verbs[self::ACTION_HELP] as $k => $verb) {
+			$help .= ($help ? '$|^' : '').'\/?'.$verb;
+		}
+
+		if (preg_match('/^'.$help.'$/',$body)) {
 			return ['verb' => self::ACTION_HELP, 'order' => null];
 		}
 
 		foreach ($verbs as $verb =>  $verbList) {
 			foreach ($verbList as $v) {
-				if (preg_match('/^((#)?([0-9]+) ('.$v.'))|(('.$v.') (#)?([0-9]+))$/', $body, $matches)) {
+				if (preg_match('/^((#)?([0-9]+) \/?('.$v.'))|(\/?('.$v.') (#)?([0-9]+))$/', $body, $matches)) {
 					if ($matches[5]) {
 						return ['verb' => $verb, 'order' => $matches[8]];
 					} elseif ($matches[1]) {

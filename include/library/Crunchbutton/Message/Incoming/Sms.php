@@ -3,15 +3,23 @@
 class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 	public static function route($request) {
 
-		$phone = str_replace('+1', '', $request['From']);
+		$from = str_replace('+1', '', $request['From']);
+		$to = str_replace('+1', '', $request['To']);
 		$body = trim($request['Body']);
-		$admin = Admin::getByPhone($phone, true);
-		
-		if (!$phone || !$body) {
+		$admin = Admin::getByPhone($from, true);
+
+		if (!$from || !$body) {
 			// error
 			header('HTTP/1.0 400 Bad Request');
 			exit;
 		}
+		
+		$params = [
+			'body' => $body,
+			'from' => $from,
+			'to' => $to,
+			'sid' => $request['SmsMessageSid']
+		];
 
 		// routing for drivers and support
 		if ($admin->id_admin) {
@@ -20,40 +28,31 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 				'action' => 'message received',
 				'id_admin' => $admin->id_admin,
 				'name' => $admin->name,
-				'phone' => $phone,
+				'from' => $from,
 				'body' => $body
 			]);
 			
-			$params = (object)[
-				'body' => $body,
-				'phone' => $phone,
-				'admin' => $admin
-			];
-			
+			$params['admin'] = $admin;
+
 			if ($admin->isDriver()) {
 				$msg[] = (new Message_Incoming_Driver($params))->response;
 			}
-/*
-			if (!$msg[0]->stop && $admin->isSupport()) {
+
+			if ($msg[0]->stop !== true && $admin->isSupport()) {
 				$msg[] = (new Message_Incoming_Support($params))->response;
 			}
-*/
-			if ($msg) {
+
+			if ($msg[0]->msg || ($msg[1] && $msg[1]->msg)) {
 				Message_Incoming_Response::twilioSms($msg);
 				exit;
 			}
 		}
-		/*
+		
 		// routing for incoming support messges
-		$params = (object)[
-			'body' => $body,
-			'phone' => $phone
-		];
 		$msg[] = (new Message_Incoming_Customer($params))->response;
 		if ($msg) {
 			Message_Incoming_Response::twilioSms($msg);
 			exit;
 		}
-		*/
 	}
 }

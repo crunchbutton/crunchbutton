@@ -2,44 +2,53 @@
 	
 class Crunchbutton_Message_Incoming_Support extends Cana_model {
 
-	const ACTION_ACCEPT = 'accept';
-	const ACTION_PICKEDUP = 'picked';
-	const ACTION_DELIVERED = 'delivered';
-	const ACTION_DETAILS = 'details';
+	const ACTION_CLOSE = 'close';
+	const ACTION_OPEN = 'open';
+	const ACTION_STATUS = 'status';
+	const ACTION_INFO = 'info';
+	const ACTION_REPLY = 'reply';
 	const ACTION_HELP = 'help';
 
 	public function __construct($params) {
 
-		$parsed = $this->parseBody($params->body);
+		$parsed = $this->parseBody($params['body']);
 		$action = $parsed['verb'];
-
-		$order = Order::o(intval($parsed['order']));
+		$this->message = $parsed['message'];
+		$this->support = Support::o(intval($parsed['support']));
+		$this->admin = $params['admin'];
+		$this->body = $params['body'];
+		$this->from = $params['from'];
 		$response = [];
+		
+		/*
+		$session = Session_Twilio::o($action['session']);
+		$session->twilio_id = $params['sid'];
+		$session->phone = $params['from'];
+		*/
 
-		if ($order->id_order) {
+		if ($this->support->id_support) {
 
 			switch ($action) {
 
-				case self::ACTION_ACCEPT:
-					$response = ['msg' => $this->accept($order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true), $order), 'stop' => true];
+				case self::ACTION_CLOSE:
+					$response = ['msg' => $this->close(), 'stop' => true];
 					break;
 
-				case self::ACTION_PICKEDUP:
-					$response = ['msg' => $this->pickedup($order->setStatus(Crunchbutton_Order_Action::DELIVERY_PICKEDUP), $order), 'stop' => true];
+				case self::ACTION_REPLY:
+					$response = ['msg' => $this->reply(), 'stop' => true];
 					break;
-
-				case self::ACTION_DELIVERED:
-					$response = ['msg' => $this->delivered($order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED), $order), 'stop' => true];
+					
+				case self::ACTION_STATUS:
+					$response = ['msg' => $this->status(), 'stop' => true];
 					break;
-
-				case self::ACTION_DETAILS:
-					$response = ['msg' => $this->details($order), 'stop' => true];
+					
+				case self::ACTION_INFO:
+					$response = ['msg' => $this->info(), 'stop' => true];
 					break;
-
+					
 				case self::ACTION_HELP:
 					$response = ['msg' => $this->help($order), 'stop' => false];
 					break;
-
 			}
 
 		} elseif ($action == self::ACTION_HELP) {
@@ -48,57 +57,100 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 
 		$this->response = (object)$response;
 	}
+	
+	public function close() {
+		$this->support->addSystemMessage($this->admin->name . ' closed the message from text message.' );
+		$this->support->status = Crunchbutton_Support::STATUS_CLOSED;
+		$this->support->save();
+		
+		$this->log( [ 'action' => 'closing support', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
+
+		$this->notifyReps($this->admin->name . ' closed #' . $this->support->id_support);
+	}
+	
+	public function reply() {
+		$this->support->addAdminMessage( [ 'phone' => $this->from, 'body' => $this->body ] );
+		$this->log( [ 'action' => 'saving the answer', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
+
+		Crunchbutton_Message_Sms::send([
+			'to' => $this->support->phone,
+			'message' => $this->message
+		]);
+
+		$this->notifyReps($this->admin->name . ' replied to #' . $this->support->id_support . ': ' . $this->body);
+	}
+	
+	public function info() {
+		$response = 'From: '.$this->support->phone;
+		if ($this->support->id_user) {
+			$response .= "\nUser: ".$this->support->user()->name;
+		}
+
+		if ($this->support->id_order) {
+			$response .= "\nOrder: #".$this->support->id_order;
+			$response .= "\nDriver: ".$this->support->order()->status()->last()['driver']['name'];
+			$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
+			
+			$response .= "\nRestaurant: ".$this->support->order()->restaurant()->name;
+			
+			$date = new DateTime($this->support->order()->date, new DateTimeZone('America/Los_Angeles'));
+			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
+			$response .= "\nOrdered @ ".$date->format('n/j g:iA T');
+		}
+		return $response;
+	}
+	
+	public function status() {
+		if ($this->support->id_order) {
+			$response .= "\nOrder: #".$this->support->id_order;
+			$response .= "\nDriver: ".$this->support->order()->status()->last()['driver']['name'];
+			$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
+
+			$date = new DateTime($this->support->order()->status()->last()['date'], new DateTimeZone('America/Los_Angeles'));
+			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
+			$response .= "\nUpdated @ ".$date->format('n/j g:iA T');
+
+		} else {
+			$response = 'Could not find order status.';
+		}
+		return $response;
+	}
+
+	public function notifyReps($message) {
+		$to = [];
+
+		foreach (Crunchbutton_Support::getUsers() as $phone) {
+			$to[] = $phone;
+		}
+
+		if ($this->support->id_order && $this->support->order()->id_order) {
+			$reps = $this->support->order()->restaurant()->adminReceiveSupportSMS();
+			if ($reps) {
+				foreach ($reps as $phone) {
+					$to[] = $phone->txt;
+				}
+			}
+		}
+
+		Crunchbutton_Message_Sms::send([
+			'to' => $to,
+			'message' => $message
+		]);
+
+	}
 
 	public function help($order = null) {
 		$response = 
-			"Driver command usage: \"".($order ? $order->id_order : 'order')." command\"\n".
+			"Support command usage: @".($order ? $order->id_order : 'order')." command|message\n".
 			"Commands: \n".
-			"    accept (or a)\n".
-			"    picked (or p)\n".
-			"    delivered (or d)\n".
-			"    details\n";
-			"Ex:   ".($order ? $order->id_order : '123')." p";
+			"    close\n".
+			"    info\n".
+			"    status\n".
+			"Ex:\n".
+			"    @".($order ? $order->id_order : '123')." close\n".
+			"    @".($order ? $order->id_order : '123')." Hello there!";
 
 		$this->log( [ 'action' => 'help requested', 'invalidOrder' => $invalidOrder ] );
-		$this->response($response);
-	}
-
-	public function accept($success, $order) {
-		if ($success) {
-			$response = 'Order #' . $order->id_order . ' accepted';
-			$this->log( [ 'action' => 'order accepted', 'id_order' => $order->id_order ] );
-		} else {
-			$response = 'Error accepting order #' . $order->id_order;
-			$this->log( [ 'action' => 'accept error', 'id_order' => $order->id_order ] );
-		}
-		return $response;
-	}
-
-	public function pickedup($success, $order) {
-		if ($success) {
-			$response = 'Changed order #' . $order->id_order . ' status to picked up';
-			$this->log( [ 'action' => 'order picked up', 'id_order' => $order->id_order ] );
-		} else {
-			$response = 'Error changing order #' . $order->id_order . ' status to picked up';
-			$this->log( [ 'action' => 'picked up error', 'id_order' => $order->id_order ] );
-		}
-		return $response;
-	}
-
-	public function delivered($success, $order) {
-		if ($success) {
-			$response = 'Changed order #' . $order->id_order . ' status to delivered';
-			$this->log( [ 'action' => 'order delivered', 'id_order' => $order->id_order ] );
-		} else {
-			$response = 'Error changing order #' . $order->id_order . ' status to delivered';
-			$this->log( [ 'action' => 'delivered error', 'id_order' => $order->id_order ] );
-		}
-		return $response;
-	}
-
-	public function details($order){
-		$response = $order->message('sms-driver');
-		$this->log( [ 'action' => 'details requested', 'id_order' => $order->id_order ] );
 		return $response;
 	}
 
@@ -106,22 +158,26 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		$body = strtolower($body);
 
 		$verbs = [
-			self::ACTION_ACCEPT => [ 'accept', 'acept', 'a' ],
-			self::ACTION_PICKEDUP => [ 'picked up', 'picked', 'pick', 'got', 'up', 'p' ],
-			self::ACTION_DELIVERED => [ 'delivered', 'd' ],
-			self::ACTION_DETAILS => [ 'details', 'deets', 'det' ],
-			self::ACTION_HELP => [ 'help', 'h' ]
+			self::ACTION_CLOSE => [ 'close' ],
+			self::ACTION_OPEN => [ 'open' ],
+			self::ACTION_STATUS => [ 'status' ],
+			self::ACTION_INFO => [ 'info' ],
+			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support'],
+			self::ACTION_REPLY => [ '.*' ]
 		];
+		
+		foreach ($verbs[self::ACTION_HELP] as $k => $verb) {
+			$help .= ($help ? '$|^' : '').'\/?'.$verb;
+		}
+
+		if (preg_match('/^'.$help.'$/',$body)) {
+			return ['verb' => self::ACTION_HELP, 'order' => null];
+		}
 
 		foreach ($verbs as $verb =>  $verbList) {
 			foreach ($verbList as $v) {
-				if (preg_match('/^((#)?([0-9]+) ('.$v.'))|(('.$v.') (#)?([0-9]+))$/', $body, $matches)) {
-					if ($matches[5]) {
-						return ['verb' => $verb, 'order' => $matches[8]];
-					} elseif ($matches[1]) {
-						return ['verb' => $verb, 'order' => $matches[3]];
-					}
-					return false;
+				if (preg_match('/^(\@|\#)([0-9]+) \/?('.$v.')$/', $body, $matches)) {
+					return ['verb' => $verb, 'support' => $matches[2], 'message' => $matches[3]];
 				}
 			}
 		}
@@ -130,6 +186,6 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	}
 
 	public function log($content) {
-		Log::debug( array_merge ( $content, [ 'type' => 'driver-sms' ] ) );
+		Log::debug( array_merge ( $content, [ 'type' => 'support-sms' ] ) );
 	}
 }
