@@ -5,29 +5,32 @@
 
 	<h1 class="left title"><i class="fa fa-slideshare"></i>{{community.name}}<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
-<? /*
-	<div class="ticket-status-top">
-		<div class="ticket-status-open">{{order.status.status}}</div>
+	<div class="ticket-status-top" ng-if="community.id_community">
+		<div class="ticket-status-open" ng-if="community.active">Active</div>
+		<div class="ticket-status-closed" ng-if="!community.active">Inactive</div>
 	</div>
-*/ ?>
+
 
 	<div class="divider"></div>
 	<br>
 	
-	<div ng-if="!loading">
-		
-		<div class="support-boxes">
-			<div ng-if="community.id_community" class="support-box-wrap">
+	<div>
+		<div class="support-boxes-column">
+			<div class="support-box-wrap">
 				<h1>Details</h1>
 				<div class="box-content-color">
 					<div class="field-container">
 						<div class="field-row">
 							<div class="field-key">Name</div>
-							<div class="field-value">{{community.name}}</div>
+							<div class="field-value">{{community.name}}<span ng-if="community.name_alt && community.name_alt != community.name"> / {{community.name_alt}}</span></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Permalink</div>
+							<div class="field-value">{{community.permalink}}</div>
 						</div>
 						<div class="field-row">
 							<div class="field-key">Loc</div>
-							<div class="field-value">{{community.la}}, {{community.lon}}</div>
+							<div class="field-value">{{community.loc_lat}}, {{community.loc_lon}}</div>
 						</div>
 						<div class="field-row">
 							<div class="field-key">Timezone</div>
@@ -38,10 +41,33 @@
 			</div>
 		</div>
 		
-		<h1 class="title"><i class="fa fa-coffee"></i>Restaurants<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
-		<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
-
-		<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
-		<ng-include src="'assets/view/listview-orders.html'"></ng-include>
+		<div class="support-boxes-column">
+			
+			<div class="support-box-wrap">
+				<h1>Location</h1>
+				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+	
+				</map>
+			</div>
+		</div>
 	</div>
+	
+	<div class="divider"></div>
+	
+	<br><br>
+	<h1 class="title"><i class="fa fa-coffee"></i>Restaurants<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+	<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
+
+	<br><br>
+	<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
+
+	<div class="right">
+		<p><a href="/orders?community={{community.id_community}}">View all orders</a></p>
+	</div>
+	
+	<br><br>
+	<h1 class="title"><i class="fa fa-road"></i>Drivers<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
+
 </div>

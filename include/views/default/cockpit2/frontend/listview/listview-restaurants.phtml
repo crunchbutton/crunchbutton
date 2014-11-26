@@ -26,7 +26,10 @@
 					<a href="/community/{{community.permalink}}">{{community.name}}</a>
 				</span>
 			</td>
-			<td>{{restaurant.orders}}</td>
+			<td>
+				<a href="/orders?restaurant={{restaurant.id_restaurant}}" ng-if="restaurant.orders != '0'">{{restaurant.orders}}</a>
+				<span ng-if="restaurant.orders == '0'">0</span>
+			</td>
 			<td><span ng-if="restaurant._order_date"><span am-time-ago="restaurant._order_date"></span></span></td>
 		</tr>
 	</table>

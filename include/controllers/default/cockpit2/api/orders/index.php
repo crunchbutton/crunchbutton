@@ -16,6 +16,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		$user = $this->request()['user'] ? c::db()->escape($this->request()['user']) : null;
 		$phone = $this->request()['phone'] ? c::db()->escape($this->request()['phone']) : null;
+		$restaurant = $this->request()['restaurant'] ? c::db()->escape($this->request()['restaurant']) : null;
+		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
 		
 		if ($page == 1) {
 			$offset = '0';
@@ -68,6 +70,18 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		if ($phone) {
 			$q .= '
 				AND `order`.phone="'.$phone.'"
+			';
+		}
+		
+		if ($community) {
+			$q .= '
+				AND community.id_community="'.$community.'"
+			';
+		}
+		
+		if ($restaurant) {
+			$q .= '
+				AND restaurant.id_restaurant="'.$restaurant.'"
 			';
 		}
 		
