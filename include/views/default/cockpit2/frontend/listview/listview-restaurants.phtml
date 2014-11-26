@@ -1,0 +1,36 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th></th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Phone</th>
+			<th>Address</th>
+			<th ng-if="!community">Communities</th>
+			<th>Orders</th>
+			<th>Last&nbsp;Order</th>
+		</tr>
+		<tr ng-repeat="restaurant in restaurants" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
+			<td class="tb-image-row"><a href="/restaurant/{{restaurant.permalink}}">
+				<div class="customer-image-crop">
+					<img ng-if="restaurant.image" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>
+					<div ng-if="!restaurant.image" class="customer-image restaurant-image-null"></div>
+				</div>
+			</a></td>
+			<td><a href="/restaurant/{{restaurant.permalink}}">{{restaurant.id_restaurant}}</a></td>
+			<td>{{restaurant.name}}</td>
+			<td><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></td>
+			<td>{{restaurant.address}}</td>
+			<td ng-if="!community">
+				<span class="staff-community-repeat" ng-repeat="community in restaurant.communities">
+					<a href="/community/{{community.permalink}}">{{community.name}}</a>
+				</span>
+			</td>
+			<td>
+				<a href="/orders?restaurant={{restaurant.id_restaurant}}" ng-if="restaurant.orders != '0'">{{restaurant.orders}}</a>
+				<span ng-if="restaurant.orders == '0'">0</span>
+			</td>
+			<td><span ng-if="restaurant._order_date"><span am-time-ago="restaurant._order_date"></span></span></td>
+		</tr>
+	</table>
+</div>

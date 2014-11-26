@@ -1,18 +1,42 @@
-NGApp.factory( 'RestaurantService', function( $rootScope, $resource, $routeParams ) {
+NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams, ResourceFactory) {
 
 	var service = {};
 
-	// Create a private resource 'restaurant'
-	var restaurants = $resource( App.service + 'restaurant/:action', { action: '@action' }, {
-				// list methods
-				'list' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true },
-				'no_payment_method' : { 'method': 'GET', params : { 'action' : 'no-payment-method' }, isArray: true },
-				'paid_list' : { 'method': 'GET', params : { 'action' : 'paid-list' }, isArray: true },
-				'order_placement' : { 'method': 'GET', params : { 'action' : 'order-placement' } },
-			}
-		);
+	// this is the stuff for the restaurant order placement
+	// and some for restaurant settlement. not sure what is used
+	var restaurants = $resource( App.service + 'restaurants/:action', { action: '@action' }, {
+			'list' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true },
+			'no_payment_method' : { 'method': 'GET', params : { 'action' : 'no-payment-method' }, isArray: true },
+			'paid_list' : { 'method': 'GET', params : { 'action' : 'paid-list' }, isArray: true },
+			'order_placement' : { 'method': 'GET', params : { 'action' : 'order-placement' } },
+		}
+	);
+	
+	var restaurant = ResourceFactory.createResource(App.service + 'restaurants/:id_restaurant', { id_restaurant: '@id_restaurant'}, {
+		'load' : {
+			url: App.service + 'restaurant/:id_restaurant',
+			method: 'GET',
+			params : {}
+		},
+		'query' : {
+			method: 'GET',
+			params : {}
+		}
+	});
+	
+	service.list = function(params, callback) {
+		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
+	}
+	
+	service.get = function(id_restaurant, callback) {
+		restaurant.load({id_restaurant: id_restaurant}, function(data) {
+			callback(data);
+		});
+	}
 
-	service.list = function( callback ){
+	service.shortlist = function( callback ){
 		restaurants.list( function( data ){
 			callback( data );
 		} );

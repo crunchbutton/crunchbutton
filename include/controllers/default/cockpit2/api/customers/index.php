@@ -17,7 +17,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
 		
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 25;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
 		
