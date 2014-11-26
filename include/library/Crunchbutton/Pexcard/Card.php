@@ -17,14 +17,14 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 
 		$defaults = [ 'firstName' => null,
 									'lastName' => null,
-									'dateOfBirth' => null,
-									'phoneNumber' => null,
-									'email' => null,
-									'streetLine1' => null,
+									'dateOfBirth' => '09/05/2012',
+									'phoneNumber' => '_PHONE_',
+									'email' => '_EMAIL',
+									'streetLine1' => '1120 Princeton Drive #7',
 									'streetLine2' => null,
-									'city' => null,
-									'state' => null,
-									'zip' => null ];
+									'city' => 'Marina Del Rey',
+									'state' => 'California',
+									'zip' => '90292' ];
 
 		foreach( $defaults as $key => $val ){
 			if( !$params[ $key ] ){
