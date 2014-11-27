@@ -18,7 +18,7 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 
 
 
-NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
+NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService, MainNavigationService) {
 
 	$scope.ready = false;
 
@@ -58,7 +58,10 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
 	$scope.delivered = function() {
 		$scope.makeBusy();
-		DriverOrdersService.delivered( $scope.order.id_order, function(){ load();	} );
+		DriverOrdersService.delivered( $scope.order.id_order, function(){
+			load();
+			MainNavigationService.link('/drivers/orders');
+		} );
 	};
 
 	$scope.reject = function() {

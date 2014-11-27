@@ -48,10 +48,21 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			return false;
 		}
 
-		foreach ($to as $t) {
+		foreach ($to as $user) {
+
+			$tz = null;
+			if (is_array($user)) {
+				if ($user['tz']) {
+					$tz = $user['tz'];
+				}
+				$t = $user['num'];
+			} else {
+				$t = $user;
+			}
+			
 			$t = self::formatNumber($t);
 
-			if (!$to) {
+			if (!$t) {
 				continue;
 			}
 
@@ -59,10 +70,23 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			if (c::admin()->id_admin && self::formatNumber(c::admin()->txt) == $t) {
 				continue;
 			}
+			
+			// dont message our own numbers
+			if (in_array($t, c::config()->twilio->numbers)) {
+				continue;
+			}
 
 			foreach ($messages as $msg) {
 				if (!$msg) {
 					continue;
+				}
+				
+				if ($tz) {
+					$msg = preg_replace_callback('/%DATETIMETZ:(.*)%/', function($matches){
+						$date = new DateTime($matches[1], new DateTimeZone(c::config()->timezone));
+						$date = $date->format('n/j g:iA T');
+						return $date;
+					}, $msg);
 				}
 
 				try {
