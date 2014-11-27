@@ -171,6 +171,8 @@
 		<domain>_DOMAIN_</domain>
 	</mailgun>
 	<twilio>
+		<numbers>+1_PHONE_</numbers>
+		<numbers>+1_PHONE_</numbers>
 		<apps>
 			<driver>_KEY_</driver>
 			<customer>_KEY_</customer>

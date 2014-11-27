@@ -109,7 +109,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			self::ACTION_ACCEPT => [ 'accept', 'acept', 'a' ],
 			self::ACTION_PICKEDUP => [ 'picked up', 'picked', 'pick', 'got', 'up', 'p' ],
 			self::ACTION_DELIVERED => [ 'delivered', 'd' ],
-			self::ACTION_DETAILS => [ 'details', 'deets', 'det' ],
+			self::ACTION_DETAILS => [ 'details' ],
 			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support']
 		];
 		

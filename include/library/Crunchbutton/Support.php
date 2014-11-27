@@ -33,6 +33,16 @@ class Crunchbutton_Support extends Cana_Table {
 			'message' => $message
 		]);
 	}
+	
+	// @todo: remove the getusers function in favor of getsupport
+	public static function getSupport() {
+		return Admin::q('
+			select a.* FROM admin a
+			left join admin_group ag using(id_admin) 
+			left join `group` g using(id_group)
+			where g.name="'.Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ).'"
+		');
+	}
 
 	public function getUsers(){
 		$support = array();

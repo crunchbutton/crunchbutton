@@ -4,8 +4,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 
 	const ACTION_CLOSE = 'close';
 	const ACTION_OPEN = 'open';
-	const ACTION_STATUS = 'status';
-	const ACTION_INFO = 'info';
+	const ACTION_DETAILS = 'details';
 	const ACTION_REPLY = 'reply';
 	const ACTION_HELP = 'help';
 
@@ -38,12 +37,8 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 					$response = ['msg' => $this->reply(), 'stop' => true];
 					break;
 					
-				case self::ACTION_STATUS:
+				case self::ACTION_DETAILS:
 					$response = ['msg' => $this->status(), 'stop' => true];
-					break;
-					
-				case self::ACTION_INFO:
-					$response = ['msg' => $this->info(), 'stop' => true];
 					break;
 					
 				case self::ACTION_HELP:
@@ -65,7 +60,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		
 		$this->log( [ 'action' => 'closing support', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
 
-		$this->notifyReps($this->admin->name . ' closed #' . $this->support->id_support);
+		self::notifyReps($this->admin->name . ' closed #' . $this->support->id_support, $support);
 	}
 	
 	public function reply() {
@@ -77,10 +72,10 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 			'message' => $this->message
 		]);
 
-		$this->notifyReps($this->admin->name . ' replied to #' . $this->support->id_support . ': ' . $this->body);
+		self::notifyReps($this->admin->name . ' replied to #' . $this->support->id_support . ': ' . $this->body, $support);
 	}
 	
-	public function info() {
+	public function details() {
 		$response = 'From: '.$this->support->phone;
 		if ($this->support->id_user) {
 			$response .= "\nUser: ".$this->support->user()->name;
@@ -88,46 +83,35 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 
 		if ($this->support->id_order) {
 			$response .= "\nOrder: #".$this->support->id_order;
-			$response .= "\nDriver: ".$this->support->order()->status()->last()['driver']['name'];
-			$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
-			
-			$response .= "\nRestaurant: ".$this->support->order()->restaurant()->name;
-			
 			$date = new DateTime($this->support->order()->date, new DateTimeZone('America/Los_Angeles'));
 			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
 			$response .= "\nOrdered @ ".$date->format('n/j g:iA T');
-		}
-		return $response;
-	}
-	
-	public function status() {
-		if ($this->support->id_order) {
-			$response .= "\nOrder: #".$this->support->id_order;
+
+			$response .= "\nRestaurant: ".$this->support->order()->restaurant()->name;
+
 			$response .= "\nDriver: ".$this->support->order()->status()->last()['driver']['name'];
 			$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
-
+			
 			$date = new DateTime($this->support->order()->status()->last()['date'], new DateTimeZone('America/Los_Angeles'));
 			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
 			$response .= "\nUpdated @ ".$date->format('n/j g:iA T');
-
-		} else {
-			$response = 'Could not find order status.';
 		}
 		return $response;
 	}
 
-	public function notifyReps($message) {
+	public static function notifyReps($message, $support = null) {
 		$to = [];
+		
+		$adminsg[] = Crunchbutton_Support::getSupport();
 
-		foreach (Crunchbutton_Support::getUsers() as $phone) {
-			$to[] = $phone;
+		if ($support && $support->id_order && $support->order()->id_order) {
+			$adminsg[] = $support->order()->restaurant()->adminReceiveSupportSMS();
 		}
 
-		if ($this->support->id_order && $this->support->order()->id_order) {
-			$reps = $this->support->order()->restaurant()->adminReceiveSupportSMS();
-			if ($reps) {
-				foreach ($reps as $phone) {
-					$to[] = $phone->txt;
+		foreach ($adminsg as $admins) {
+			if ($admins) {
+				foreach ($admins as $admin) {
+					$to[] = ['num' => $admin->txt, 'tz' => $admin->timezone];
 				}
 			}
 		}
@@ -136,16 +120,14 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 			'to' => $to,
 			'message' => $message
 		]);
-
 	}
 
 	public function help($order = null) {
 		$response = 
 			"Support command usage: @".($order ? $order->id_order : 'order')." command|message\n".
 			"Commands: \n".
-			"    close\n".
-			"    info\n".
-			"    status\n".
+			"    close - close the ticket\n".
+			"    info - get info on the ticket\n".
 			"Ex:\n".
 			"    @".($order ? $order->id_order : '123')." close\n".
 			"    @".($order ? $order->id_order : '123')." Hello there!";
@@ -160,8 +142,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		$verbs = [
 			self::ACTION_CLOSE => [ 'close' ],
 			self::ACTION_OPEN => [ 'open' ],
-			self::ACTION_STATUS => [ 'status' ],
-			self::ACTION_INFO => [ 'info' ],
+			self::ACTION_DETAILS => [ 'info', 'details' ],
 			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support'],
 			self::ACTION_REPLY => [ '.*' ]
 		];
