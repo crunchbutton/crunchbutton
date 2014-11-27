@@ -38,6 +38,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _driver_active(){
+
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
 
 		if( $id_pexcard ){

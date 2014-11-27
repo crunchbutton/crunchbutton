@@ -782,14 +782,20 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, DriverOnboardingService, StaffService ) {
 
 	$scope.ready = false;
-	$scope.status = {
+	$scope.status = {};
+	$scope.pexcard = false;
 
-	};
 
-
-	StaffService.status($scope.account.user.id_admin, function(data) {
+	StaffService.status( $scope.account.user.id_admin, function(data) {
 		if (data.payment == true) {
 			$scope.status.paymentinfo = true;
+		}
+	});
+
+	StaffService.has_pexcard( $scope.account.user.id_admin, function( json ) {
+		console.log('json',json);
+		if( json.success ){
+			$scope.pexcard = json.success;
 		}
 	});
 
