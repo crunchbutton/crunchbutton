@@ -28,7 +28,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		$scope.staff = staff;
 		$scope.ready = true;
 	});
-	
+
 	StaffService.locations($routeParams.id, function(d) {
 		$scope.locations = d;
 		update();
@@ -38,12 +38,12 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		console.log('staff');
 		update();
 	});
-	
+
 	$scope.$watch('map', function() {
 		console.log('map');
 		//update();
 	});
-	
+
 	var update = function() {
 		if (!$scope.map || !$scope.staff || !$scope.locations) {
 			return;
@@ -58,7 +58,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		});
 
 	};
-	
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
@@ -137,7 +137,9 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 
 });
 
-NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
+NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
+
+	$scope.status = PexCardService.status;
 
 	$scope.bank = { 'showForm': true };
 
@@ -221,6 +223,33 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 
 	$scope.list = function(){
 		$scope.navigation.link( '/staff/list' );
+	}
+
+	$scope.open_card = function( id_card ){
+		change_card_status( id_card, PexCardService.status.OPEN );
+	}
+
+	$scope.block_card = function( id_card ){
+		change_card_status( id_card, PexCardService.status.BLOCKED );
+	}
+
+	var change_card_status = function( id_card, status ){
+		if( confirm( 'Confirm change card status to ' + status + '?' ) ){
+			PexCardService.pex_change_card_status( { id_card: id_card, status: status },
+				function( json ){
+					if( json.id ){
+						for( x in $scope.payInfo.cards ){
+							if( $scope.payInfo.cards[ x ].id == json.id ){
+								$scope.payInfo.cards[ x ] = json;
+							}
+						}
+						$scope.flash.setMessage( 'Card status changed to ' + status, 'success' );
+					} else {
+						$scope.flash.setMessage( json.error, 'error' );
+					}
+				}
+			);
+		}
 	}
 
 	if( $scope.account.isLoggedIn() ){
