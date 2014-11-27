@@ -287,6 +287,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversPaymentFormCtrl',
 			templateUrl: 'assets/view/drivers-payment-info-form.html'
 		})
+		.when('/drivers/docs/pexcard', {
+			action: 'drivers-documents',
+			controller: 'DriversPexCardCtrl',
+			templateUrl: 'assets/view/drivers-pexcard.html'
+		})
 		.when('/setup/:phone', {
 			action: 'drivers-setup',
 			controller: 'DriversOnboardingSetupCtrl',

@@ -3,9 +3,9 @@
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
-die('hard');
-		$card = Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' );
-
+// die('hard');
+		// $card = Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' );
+echo '<pre>';var_dump( Crunchbutton_Pexcard_Card::card_list() );exit();
 		echo '<pre>';var_dump(  Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' )  );exit();
 		// echo '<pre>';var_dump( $card->ping() );exit();
 		// echo '<pre>';var_dump( $card->card_list() );exit();

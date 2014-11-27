@@ -17,15 +17,22 @@
 					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Crunchbutton Id"></div>
 					<div class="box-error">
 						<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
-						<small ng-show="form.crunchbuttonCardId.$error.minlength">Crunchbutton Id is too short. It is required to be at least 3 characters.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.lastFourDigits.$invalid}">
+					<div class="label">Last four digits:</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last four digits"></div>
+					<div class="box-error">
+						<small ng-show="form.lastFourDigits.$error.required">Required.</small>
 					</div>
 				</li>
 
 				<li class="li-input" ng-show="!isSearching">
-					<button class="button save" ng-click="search();">Card info</button>
+					<button class="button save" ng-click="search();">Load Card Info</button>
 				</li>
 				<li class="li-input" ng-show="isSearching">
-					<i class="fa fa-circle-o-notch fa-spin"></i> Searching
+					<i class="fa fa-circle-o-notch fa-spin"></i> Loading
 				</li>
 			</ul>
 		</form>
@@ -65,10 +72,7 @@
 				</li>
 				<li class="li-info" ng-if="card.admin_name">
 					<div class="label">Assigned to:</div>
-					<div class="data">
-						<span class="link" ng-click="payinfo();">{{card.admin_name}}</span>
-						&nbsp;&nbsp;&nbsp;<span class="orange link" ng-click="remove_assignment()"><i class="fa fa-times"></i> Remove assignment</span>
-					</div>
+					<div class="data">{{card.admin_name}}</div>
 				</li>
 			</ul>
 
@@ -85,46 +89,25 @@
 				</li>
 				<li class="li-info">
 					<div class="label">Status:</div>
-					<div class="data">
-						{{_card.status}}
-						&nbsp;&nbsp;&nbsp;
-						<span ng-if="_card.status == status.OPEN" class="orange link" ng-click="block_card( _card.id )">Block card</span>
-						<span ng-if="_card.status == status.BLOCKED" class="orange link" ng-click="open_card( _card.id )">Open card</span>
-					</div>
+					<div class="data">{{_card.status}}</div>
 				</li>
 			</ul>
 
 			<div class="divider"></div>
 
-			<h2 class="title">Driver</h2>
+				<ul ng-show="activateOption" class="ul-inputs">
 
-				<ul ng-class="{'submitted':assignedSubmitted}" class="ul-inputs">
-
-					<li class="li-input" ng-class="{'error':formAssign.cardIdAdmin.$invalid}">
-
-						<div class="label">Driver:</div>
-
-						<div class="input">
-							<select name="cardIdAdmin" required ng-model="card.id_admin" ng-options="opt.id_admin as opt.name for opt in drivers" ></select>
-						</div>
-
-						<div class="box-error">
-							<small ng-show="formAssign.cardIdAdmin.$error.required">Required.</small>
-						</div>
-
+					<li class="li-input" ng-show="!isActivating">
+						<button class="button save" ng-click="active();">Active card</button>
 					</li>
 
-					<li class="li-input" ng-show="!isSaving">
-						<button class="button save" ng-click="assign();">Assign driver</button>
-					</li>
-
-					<li class="li-input" ng-show="isSaving">
-						<i class="fa fa-circle-o-notch fa-spin"></i> Saving
+					<li class="li-input" ng-show="isActivating">
+						<i class="fa fa-circle-o-notch fa-spin"></i> Activating
 					</li>
 
 				</ul>
 
-	</div>
+		</div>
 
 	</form>
 
