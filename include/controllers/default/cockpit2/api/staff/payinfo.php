@@ -135,6 +135,16 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'name' ] = $admin->name;
 			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
+
+			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin );
+			if( $cards && count( $cards ) > 0 ){
+				$out[ 'cards' ] = [];
+				foreach( $cards as $card ){
+					$out[ 'cards' ][] = $card->load_card_info();
+				}
+			}
+
+
 			echo json_encode( $out );
 		} else {
 			echo json_encode( [ 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'summary_email' => $admin->email ] );
