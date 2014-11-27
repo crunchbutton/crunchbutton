@@ -91,8 +91,8 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, PexCardService, DriverOnbo
 			$scope.isSaving = false;
 			return;
 		}
-
-		var data = { 'id_pexcard': $scope.card.id, 'id_admin': $scope.card.id_admin };
+		var last_four = $scope.card.cards[ 0 ].cardNumber;
+		var data = { 'id_pexcard': $scope.card.id, 'id_admin': $scope.card.id_admin, 'card_serial': $scope.card.lastName, 'last_four': last_four };
 		PexCardService.admin_pexcard( data, function( json ){
 			$scope.isSaving = false;
 			if( json.success ){
