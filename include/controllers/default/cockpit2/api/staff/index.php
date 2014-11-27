@@ -8,7 +8,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}
-		
+
 		if (c::getPagePiece(2)) {
 			$staff = Admin::o(c::getPagePiece(2));
 
@@ -19,12 +19,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				header('HTTP/1.0 404 Not Found');
 				exit;
 			}
-			
+
 			switch (c::getPagePiece(3)) {
 				case 'locations':
 					$this->_locations($staff);
 					break;
-					
+
 				case 'status':
 					$this->_status($staff);
 					break;
@@ -39,17 +39,19 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 	}
-	
+
 	private function _locations($staff) {
 		echo $staff->locations()->json();
 	}
-	
+
 	private function _status($staff) {
 		echo json_encode($staff->status());
 	}
-	
+
 	private function _view($staff) {
 		$out = $staff->exports();
+		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin )->get( 0 );
+		$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
 
 		/*
 		$out['shifts'] = [];
@@ -81,7 +83,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
 		$working = $this->request()['working'] ? c::db()->escape($this->request()['working']) : 'all';
 		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
-		
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
@@ -92,38 +94,38 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$q = '
 			SELECT -WILD- FROM admin
 		';
-		
+
 		if ($type == 'driver') {
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
 				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
 			';
-			
+
 			if ($community) {
 				$q .= '
 					LEFT JOIN community ON community.driver_group=g.name
 				';
 			}
 		}
-		
-		
+
+
 		$q .='
 			WHERE 1=1
 		';
-		
+
 		if ($status != 'all') {
 			$q .= '
 				AND active="'.($status == 'active' ? '1' : '0').'"
 			';
 		}
-		
+
 		if ($community) {
 			$q .= '
 				AND community.id_community="'.$community.'"
 			';
 		}
-		
-		
+
+
 		if ($search) {
 			$q .= Crunchbutton_Query::search([
 				'search' => stripslashes($search),
@@ -136,7 +138,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				]
 			]);
 		}
-		
+
 		// get the count
 		$count = 0;
 		if ($working == 'all') {
@@ -153,7 +155,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if ($working == 'all') {
 			$q .= ' LIMIT '.$offset.', '.$limit;
 		}
-		
+
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','admin.*', $q));
@@ -163,7 +165,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			if (($working == 'yes' && $staff->working) || ($working == 'no' && !$staff->working)) {
 				$count++;
 			}
-			
+
 			if (($working == 'yes' && !$staff->working) || ($working == 'no' && $staff->working)) {
 				continue;
 			}

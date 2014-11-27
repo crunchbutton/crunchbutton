@@ -38,6 +38,9 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 
 	private function get( $admin ){
 		switch( c::getPagePiece( 4 ) ){
+			case 'pexcard':
+				$this->_pexcard( $admin );
+				break;
 			default:
 				$this->payInfo( $admin );
 				break;
@@ -133,23 +136,28 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out = $payment_type->exports();
 			$out[ 'id_admin' ] = $admin->id_admin;
 			$out[ 'name' ] = $admin->name;
+			$out[ 'login' ] = $admin->login;
 			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
-
-			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin );
-			if( $cards && count( $cards ) > 0 ){
-				$out[ 'cards' ] = [];
-				foreach( $cards as $card ){
-					$out[ 'cards' ][] = $card->load_card_info();
-				}
-			}
-
-
+			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin )->get( 0 );
+			$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
 			echo json_encode( $out );
 		} else {
 			echo json_encode( [ 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'summary_email' => $admin->email ] );
 			exit;
 		}
+	}
+
+	private function _pexcard( $staff ){
+		$out = $staff->exports();
+		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin );
+		if( $cards && count( $cards ) > 0 ){
+			$out[ 'cards' ] = [];
+			foreach( $cards as $card ){
+				$out[ 'cards' ][] = $card->load_card_info();
+			}
+		}
+		echo json_encode( $out );exit;
 	}
 
 	private function _error( $error = 'invalid request' ){

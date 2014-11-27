@@ -15,6 +15,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'staff',
 			controller: 'StaffPayInfoCtrl',
 			templateUrl: 'assets/view/staff-payinfo.html'
+		})
+		.when('/staff/:id/pexcard', {
+			action: 'staff',
+			controller: 'StaffPexCardCtrl',
+			templateUrl: 'assets/view/staff-pexcard.html'
 		});
 }]);
 
@@ -137,9 +142,55 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 
 });
 
-NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
+NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
 
 	$scope.status = PexCardService.status;
+
+	$scope.open_card = function( id_card ){
+		change_card_status( id_card, PexCardService.status.OPEN );
+	}
+
+	$scope.block_card = function( id_card ){
+		change_card_status( id_card, PexCardService.status.BLOCKED );
+	}
+
+	var change_card_status = function( id_card, status ){
+		if( confirm( 'Confirm change card status to ' + status + '?' ) ){
+			PexCardService.pex_change_card_status( { id_card: id_card, status: status },
+				function( json ){
+					if( json.id ){
+						for( x in $scope.payInfo.cards ){
+							if( $scope.payInfo.cards[ x ].id == json.id ){
+								$scope.payInfo.cards[ x ] = json;
+							}
+						}
+						$scope.flash.setMessage( 'Card status changed to ' + status, 'success' );
+					} else {
+						$scope.flash.setMessage( json.error, 'error' );
+					}
+				}
+			);
+		}
+	}
+
+	var load = function(){
+		StaffPayInfoService.pexcard( function( json ){
+			if( json.id_admin ){
+				$scope.payInfo = json;
+				$scope.ready = true;
+			} else {
+				App.alert( json.error );
+			}
+		} )
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+} );
+
+NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 
 	$scope.bank = { 'showForm': true };
 
@@ -223,33 +274,6 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService, PexC
 
 	$scope.list = function(){
 		$scope.navigation.link( '/staff/list' );
-	}
-
-	$scope.open_card = function( id_card ){
-		change_card_status( id_card, PexCardService.status.OPEN );
-	}
-
-	$scope.block_card = function( id_card ){
-		change_card_status( id_card, PexCardService.status.BLOCKED );
-	}
-
-	var change_card_status = function( id_card, status ){
-		if( confirm( 'Confirm change card status to ' + status + '?' ) ){
-			PexCardService.pex_change_card_status( { id_card: id_card, status: status },
-				function( json ){
-					if( json.id ){
-						for( x in $scope.payInfo.cards ){
-							if( $scope.payInfo.cards[ x ].id == json.id ){
-								$scope.payInfo.cards[ x ] = json;
-							}
-						}
-						$scope.flash.setMessage( 'Card status changed to ' + status, 'success' );
-					} else {
-						$scope.flash.setMessage( json.error, 'error' );
-					}
-				}
-			);
-		}
 	}
 
 	if( $scope.account.isLoggedIn() ){
