@@ -11,7 +11,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$parsed = $this->parseBody($params['body']);
 		$action = $parsed['verb'];
 		
-		$this->order = Order::q('select * from `order` where phone="'.$params['from'].'" order by date desc limit 1');
+		$this->order = Order::q('select * from `order` where phone="'.$params['from'].'" order by date desc limit 1')->get(0);
 		$this->support = Support::q('
 			select support.* from support
 			left join support_message using(id_support)
@@ -19,7 +19,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			and timestampdiff(hour, support_message.date, now()) < 4
 			order by support_message.date desc
 			limit 1
-		');
+		')->get(0);
 
 		$response = [];
 
@@ -29,8 +29,8 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				$response = ['msg' => $this->reply($params), 'stop' => true];
 				break;
 
-			case self::ACTION_DETAILS:
-				$response = ['msg' => $this->details($params), 'stop' => true];
+			case self::ACTION_STATUS:
+				$response = ['msg' => $this->status($params), 'stop' => true];
 				break;
 
 			case self::ACTION_HELP:
@@ -39,6 +39,27 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		}
 
 		$this->response = (object)$response;
+	}
+	
+	public function status() {
+		if ($this->support->id_order) {
+			$response .= "\nOrder: #".$this->support->id_order;
+			$date = new DateTime($this->support->order()->date, new DateTimeZone('America/Los_Angeles'));
+			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
+			$response .= "\nOrdered @ ".$date->format('n/j g:iA T');
+
+			$response .= "\nRestaurant: ".$this->support->order()->restaurant()->name;
+
+			if ($this->support->order()->status()->last()['driver']) {
+				$response .= "\nDriver: ".$this->support->order()->status()->last()['driver']['name'];
+				$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
+			}
+			
+			$date = new DateTime($this->support->order()->status()->last()['date'], new DateTimeZone('America/Los_Angeles'));
+			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
+			$response .= "\nUpdated @ ".$date->format('n/j g:iA T');
+		}
+		return $response;
 	}
 	
 	public function reply($params) {
@@ -71,7 +92,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		// build the message to send to reps
 		$message = '@'.$this->support->id_support;
-		if ($params['admin']->isDriver()) {
+		if ($params['admin'] && $params['admin']->isDriver()) {
 			// format as a driver message
 			$message .= ' DRIVER '.$params['admin']->name;
 		} elseif ($this->order->id_order) {
