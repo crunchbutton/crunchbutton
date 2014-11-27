@@ -50,12 +50,15 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$customer = Crunchbutton_Pexcard_Card::details( $id_pexcard );
 				if( $customer->body && $customer->body->cards ){
 					foreach( $customer->body->cards as $card ){
-						Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
+						$last_four = str_replace( 'X', '', $card->cardNumber );
+						// Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
 						$opened = true;
 					}
 				}
 
 				if( $opened ){
+					$admin_pexcard->card_serial = $customer->body->lastName;
+					$admin_pexcard->last_four = $last_four;
 					$admin_pexcard->id_admin = $id_admin;
 					$admin_pexcard->save();
 					$admin_pexcard = Cockpit_Admin_Pexcard::o( $admin_pexcard->id_admin_pexcard );
@@ -105,8 +108,13 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 		$id_admin = $this->request()[ 'id_admin' ];
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
+		$card_serial = $this->request()[ 'card_serial' ];
+		$last_four = $this->request()[ 'last_four' ];
+		$last_four = str_replace( 'X', '', $last_four );
 		$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 		$admin_pexcard->id_admin = $id_admin;
+		$admin_pexcard->card_serial = $card_serial;
+		$admin_pexcard->last_four = $last_four;
 		$admin_pexcard->save();
 		$admin_pexcard = Cockpit_Admin_Pexcard::o( $admin_pexcard->id_admin_pexcard );
 		$admin = $admin_pexcard->admin();
