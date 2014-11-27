@@ -3,10 +3,11 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var service = {};
 
 	// Create a private resource 'drivers'
-	var drivers = $resource( App.service + 'driver/:action/:id_admin/:page/:search/:phone', { id_admin: '@id_admin', action: '@action' }, {
+	var drivers = $resource( App.service + 'driver/:action/:method/:id_admin/:page/:search/:phone', { id_admin: '@id_admin', action: '@action' }, {
 				'get' : { 'method': 'GET', params : { action : null } },
 				'notify' : { 'method': 'POST', params : { action: 'notify' } },
-				'list' : { 'method': 'GET', params : { action: 'list', id_admin: null } },
+				'list' : { 'method': 'GET', params : { action: 'list', method: 'method' } },
+				'pexcard' : { 'method': 'GET', params : { action: 'list', method: 'pexcard' }, isArray: true },
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'setupValidate' : { 'method': 'GET', params : { action: 'setup' } },
 				'setupSave' : { 'method': 'POST', params : { action: 'setup' } },
@@ -119,6 +120,11 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
+	service.pexcard = function( callback ){
+		drivers.pexcard( {}, function( data ){
+			callback( data );
+		} );
+	}
 
 	service.docs = {};
 

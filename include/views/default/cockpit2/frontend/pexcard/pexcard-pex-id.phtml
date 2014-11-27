@@ -13,7 +13,7 @@
 			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
 				<li class="li-input" ng-class="{'error':form.crunchbuttonCardId.$invalid}">
-					<div class="label">Crunchbutton Id:</div>
+					<div class="label">Crunchbutton Id (Card holder Last Name: e.g. 002):</div>
 					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Crunchbutton Id"></div>
 					<div class="box-error">
 						<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
@@ -29,6 +29,8 @@
 				</li>
 			</ul>
 		</form>
+
+		<form name="formAssign" novalidate>
 
 		<div ng-if="card">
 
@@ -61,6 +63,13 @@
 					<div class="label">Status:</div>
 					<div class="data">{{card.status}}</div>
 				</li>
+				<li class="li-info" ng-if="card.admin_name">
+					<div class="label">Assigned to:</div>
+					<div class="data">
+						<span class="link" ng-click="payinfo();">{{card.admin_name}}</span>
+						&nbsp;&nbsp;&nbsp;<span class="orange link" ng-click="remove_assignment()"><i class="fa fa-times"></i> Remove assignment</span>
+					</div>
+				</li>
 			</ul>
 
 			<h1 class="title">Cards</h1>
@@ -80,6 +89,38 @@
 				</li>
 			</ul>
 
-		</div>
+			<div class="divider"></div>
+
+			<h1 class="title">Driver</h1>
+
+				<ul ng-class="{'submitted':assignedSubmitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':formAssign.cardIdAdmin.$invalid}">
+
+						<div class="label">Crunchbutton Id (Card holder Last Name: e.g. 002):</div>
+
+						<div class="input">
+							<select name="cardIdAdmin" required ng-model="card.id_admin" ng-options="opt.id_admin as opt.name for opt in drivers" ></select>
+						</div>
+
+						<div class="box-error">
+							<small ng-show="formAssign.cardIdAdmin.$error.required">Required.</small>
+						</div>
+
+					</li>
+
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="assign();">Assign driver</button>
+					</li>
+
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i> Saving
+					</li>
+
+				</ul>
+
+	</div>
+
+	</form>
 
 </div>

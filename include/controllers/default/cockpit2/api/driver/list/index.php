@@ -10,6 +10,10 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 
+		if( c::getPagePiece( 3 ) == 'pexcard' ){
+			$this->_pexcard();
+		}
+
 		$resultsPerPage = 20;
 
 		if ( c::getPagePiece( 3 ) ) {
@@ -73,6 +77,15 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 		$data[ 'results' ] = $list;
 
 		echo json_encode( $data );
+	}
+
+	private function _pexcard(){
+		$out = [];
+		$drivers = Crunchbutton_Admin::q( 'SELECT a.name, a.id_admin FROM admin a INNER JOIN admin_payment_type apt ON apt.id_admin = a.id_admin WHERE apt.using_pex = 1 AND a.active = 1 ORDER BY a.name' );
+		foreach( $drivers as $drive ){
+			$out[] = [ 'id_admin' => intval( $drive->id_admin ), 'name' => $drive->name ];
+		}
+		echo json_encode( $out );exit;
 	}
 
 	private function _error( $error = 'invalid request' ){
