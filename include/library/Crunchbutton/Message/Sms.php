@@ -1,6 +1,9 @@
 <?
 
 class Crunchbutton_Message_Sms extends Crunchbutton_Message {
+	public static function numbers() {
+		return explode(',',c::config()->site->config('twilio-number')->value);
+	}
 	public static function send($from, $to = null, $message = null) {
 
 		$break = false;
@@ -25,15 +28,8 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			$to = [$to];
 		}
 
-		$env = c::getEnv();
-		if ($from == 'driver') {
-			$from = c::config()->twilio->{$env}->outgoingTextDriver;
-		} elseif ($from == 'restaurant') {
-			$from = c::config()->twilio->{$env}->outgoingTextRestaurant;
-		} else {
-			$from = c::config()->twilio->{$env}->outgoingTextCustomer;
-		}
-
+		$numbers = self::numbers();
+		$from = '+1'.$numbers[array_rand($numbers)];
 		$message = trim($message);
 
 		if ($break) {
@@ -72,7 +68,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			}
 			
 			// dont message our own numbers
-			if (in_array($t, c::config()->twilio->numbers)) {
+			if (in_array($t, $numbers)) {
 				continue;
 			}
 
