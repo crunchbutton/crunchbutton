@@ -3,26 +3,26 @@
 <div class="content-padding content-padding-notop">
 
 	<div ng-show="ready">
-		
+
 		<div class="dialog-message dialog-message-nice">
 			<b>In order to get paid, please:</b>
 			<div class="docs-list-spacer"></div>
 			<div class="dialog-subtext">
-				<i class="fa fa-check-circle" ng-class="{'documents-check-bad': !status.docs, 'documents-check-green': status.docs}"></i>&nbsp;&nbsp;Sign and upload all documents<br>	
+				<i class="fa fa-check-circle" ng-class="{'documents-check-bad': !status.docs, 'documents-check-green': status.docs}"></i>&nbsp;&nbsp;Sign and upload all documents<br>
 				<i class="fa fa-check-circle" ng-class="{'documents-check-bad': !status.identification, 'documents-check-green': status.identification}"></i>&nbsp;&nbsp;Upload identification cards<br>
 				<i class="fa fa-check-circle" ng-class="{'documents-check-bad': !status.paymentinfo, 'documents-check-green': status.paymentinfo}"></i>&nbsp;&nbsp;Fill out your payment information.
 
 			</div>
-				<span ng-if="status.docs && status.identification && status.paymentinfo"><br>You're all set!</span>			
+				<span ng-if="status.docs && status.identification && status.paymentinfo"><br>You're all set!</span>
 		</div>
 		<br>
-		
+
 		<h1 class="title"><i class="fa fa-briefcase"></i>Documents</h1>
-	
+
 		<h2 class="title driver-docs-text">
 			To complete the documents section, please visit <a href="https://cockpit.la" target="_system">https://cockpit.la</a> from a computer using Chrome as your browser. Download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_system">Hellosign</a>.
 		</h2>
-	
+
 		<table class="tb-grid driver-docs-grid">
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td class="documents-check ">
@@ -43,13 +43,13 @@
 				</td>
 			</tr>
 		</table>
-		
+
 		<h1 class="title" ><i class="fa fa-picture-o"></i><span>Identification</span></h1>
-	
+
 		<h2 class="title driver-docs-text">
 			Upload a clear picture of your Drivers License and Insurance card. You can do this from most smartphones if you have already taken a picture. If that doesn't work, please use Chrome on your computer.
 		</h2>
-	
+
 		<table class="tb-grid driver-docs-grid">
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
 				<td class="documents-check">
@@ -65,11 +65,21 @@
 				</td>
 			</tr>
 		</table>
-		
-			
+
+
 		<h1 class="title" ><i class="fa fa-bank"></i><span>Payment Information</span></h1>
 		<h2 class="title driver-docs-text">
 			To complete your onboarding, please enter your <a href="/drivers/docs/payment">payment information</a>.
 		</h2>
-		
+
+		<div ng-if="pexcard">
+
+			<div class="divider"></div><br/><br/>
+
+			<h1 class="title" ><i class="fa fa-credit-card"></i><span>Pex Card</span></h1>
+			<h2 class="title driver-docs-text">
+				<a href="/drivers/docs/pexcard">Activate your Pex Card</a>.
+			</h2>
+		</div>
+
 	</div>
