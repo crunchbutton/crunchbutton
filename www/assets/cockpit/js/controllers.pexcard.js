@@ -3,6 +3,8 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, PexCardService, DriverOnbo
 	$scope.submitted = false;
 	$scope.isSearching = false;
 
+	$scope.status = PexCardService.status;
+
 	$scope.search = function() {
 
 		$scope.card = null;
@@ -52,6 +54,29 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, PexCardService, DriverOnbo
 				}
 
 			} );
+		}
+	}
+
+	$scope.open_card = function( id_card ){
+		change_card_status( id_card, PexCardService.status.OPEN );
+	}
+
+	$scope.block_card = function( id_card ){
+		change_card_status( id_card, PexCardService.status.BLOCKED );
+	}
+
+	var change_card_status = function( id_card, status ){
+		if( confirm( 'Confirm change card status to ' + status + '?' ) ){
+			PexCardService.pex_change_card_status( { id_card: id_card, status: status },
+				function( json ){
+					if( json.id ){
+						$scope.card = json;
+						$scope.flash.setMessage( 'Card status changed to ' + status, 'success' );
+					} else {
+						$scope.flash.setMessage( json.error, 'error' );
+					}
+				}
+			);
 		}
 	}
 

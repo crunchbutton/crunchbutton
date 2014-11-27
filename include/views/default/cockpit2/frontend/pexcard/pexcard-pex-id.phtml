@@ -85,7 +85,12 @@
 				</li>
 				<li class="li-info">
 					<div class="label">Status:</div>
-					<div class="data">{{_card.status}}</div>
+					<div class="data">
+						{{_card.status}}
+						&nbsp;&nbsp;&nbsp;
+						<span ng-if="_card.status == status.OPEN" class="orange link" ng-click="block_card( _card.id )">Block card</span>
+						<span ng-if="_card.status == status.BLOCKED" class="orange link" ng-click="open_card( _card.id )">Open card</span>
+					</div>
 				</li>
 			</ul>
 
