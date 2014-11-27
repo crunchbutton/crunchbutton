@@ -3,12 +3,23 @@
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
-		$card = new Crunchbutton_Pexcard_Card;
-		$card->details( 106971 )->body
+
+		$card = Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' );
+
+		echo '<pre>';var_dump(  Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' )  );exit();
 		// echo '<pre>';var_dump( $card->ping() );exit();
 		// echo '<pre>';var_dump( $card->card_list() );exit();
+		$cards = Crunchbutton_Pexcard_Card::details( 100255 );
+		if( $cards->body && $cards->body->cards ){
+			foreach( $cards->body->cards as $card ){
+				// echo '<pre>';var_dump( $card );exit();
+				echo '<pre>';var_dump( Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN ) );exit();
+			}
+		}
+
 		echo '<pre>';var_dump(
-			$card->details( 106971 )->body
+			Crunchbutton_Pexcard_Card::change_status( 100254, Crunchbutton_Pexcard_Card::CARD_STATUS_BLOCKED )
+			// Crunchbutton_Pexcard_Card::details( 100256 )
 		 );exit();
 		// echo '<pre>';var_dump( $card->create( [ 'firstName' => 'Test', 'lastName' => '001' ] ) );exit();
 

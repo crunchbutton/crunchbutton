@@ -53,7 +53,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Model {
 			$request = \Httpful\Request::post( $url );
 
 			if( $auth ){
-				$params = array_merge( [ 'UserName' => $user, 'Password' => $pass ], $params );
+				$params = array_merge( [ 'userName' => $user, 'password' => $pass ], $params );
 			}
 
 			if( count( $params ) ){

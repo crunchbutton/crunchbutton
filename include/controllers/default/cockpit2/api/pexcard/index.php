@@ -4,6 +4,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+			$this->_error();
+		}
+
 		switch ( c::getPagePiece( 2 ) ) {
 
 			case 'pex-id':
@@ -16,6 +20,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 			case 'admin-pexcard-remove':
 				$this->_admin_pexcard_remove();
+				break;
+
+			case 'pexcard-change-card-status':
+				$this->_pexcard_change_card_status();
 				break;
 
 			default:
@@ -31,11 +39,26 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 		$admin_pexcard->id_admin = $id_admin;
 		$admin_pexcard->save();
-
 		$admin_pexcard = Cockpit_Admin_Pexcard::o( $admin_pexcard->id_admin_pexcard );
 		$admin = $admin_pexcard->admin();
-
 		echo json_encode( [ 'success' => [ 'name' => $admin->name, 'login' => $admin->login ] ] );
+	}
+
+	private function _pexcard_change_card_status(){
+		$id_card = $this->request()[ 'id_card' ];
+		$status = $this->request()[ 'status' ];
+		$card = Crunchbutton_Pexcard_Card::change_status( $id_card, $status );
+		if( $card->body && $card->body->id ){
+			$card = $card->body;
+			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
+			if( $admin_pexcard->id_admin ){
+				$card->id_admin = intval( $admin_pexcard->id_admin );
+				$card->admin_name = $admin_pexcard->admin()->name;
+				$card->admin_login = $admin_pexcard->admin()->login;
+			}
+			echo json_encode( $card );exit;
+		}
+		$this->_error( 'Oops, something is wrong!' );
 	}
 
 	private function _admin_pexcard_remove(){
