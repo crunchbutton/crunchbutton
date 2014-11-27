@@ -44,8 +44,8 @@ class Crunchbutton_Call extends Cana_Table {
 			'direction' => 'inbound',
 			'twilio_id' => $data['CallSid'],
 			'status' => $data['CallStatus'],
-			'from' => self::cleanPhone($data['From']),
-			'to' => self::cleanPhone($data['To']),
+			'from' => Phone::clean($data['From']),
+			'to' => Phone::clean($data['To']),
 			'location_to' => $data['ToCity'].', '.$data['ToState'].' '.$data['ToZip'],
 			'location_from' => $data['FromCity'].', '.$data['FromState'].' '.$data['FromZip'],
 		]);
@@ -54,11 +54,7 @@ class Crunchbutton_Call extends Cana_Table {
 
 		return $call;
 	}
-	
-	public static function cleanPhone($num) {
-		return str_replace('+1', '', $num);
-	}
-	
+
 	public function associateForeignKeys() {
 		if ($this->direction == 'outbound') {
 			$this->id_admin_to = Admin::q('select * from admin where active=1 and phone="'.$this->to.'" limit 1')->get(0)->id_admin;
