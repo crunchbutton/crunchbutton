@@ -34,13 +34,13 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 			callback(data);
 		});
 	}
-	
+
 	service.locations = function(id_admin, callback) {
 		staff.locations({id_admin: id_admin}, function(data) {
 			callback(data);
 		});
 	}
-	
+
 	service.status = function(id_admin, callback) {
 		staff.status({id_admin: id_admin}, function(data) {
 			callback(data);
@@ -57,6 +57,7 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 	// Create a private resource 'staff'
 	var staff = $resource( App.service + 'staff/payinfo/:id_admin/:action', { id_admin: '@id_admin', action: '@action' }, {
 				'load' : { 'method': 'GET', params : { action: '' } },
+				'pexcard' : { 'method': 'GET', params : { action: 'pexcard' } },
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'save_bank' : { 'method': 'POST', params : { action: 'save-bank' } },
 			}
@@ -64,6 +65,12 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 
 	service.load = function( callback ){
 		staff.load( { 'id_admin': $routeParams.id }, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.pexcard = function( callback ){
+		staff.pexcard( { 'id_admin': $routeParams.id }, function( data ){
 			callback( data );
 		} );
 	}

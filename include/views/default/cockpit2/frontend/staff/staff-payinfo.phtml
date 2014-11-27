@@ -6,6 +6,8 @@
 
 	<div class="divider"></div>
 
+	<navigation-back></navigation-back>
+
 	<div>
 
 		<form name="form" novalidate>
@@ -152,62 +154,13 @@
 
 		</form>
 
-		<div ng-if="payInfo.cards">
+		<div ng-if="payInfo.pexcard">
 
 			<h2 class="title">Cards</h2>
-
-			<div ng-repeat="card in payInfo.cards">
-
-				<ul class="ul-info box-content2">
-					<li class="li-info">
-						<div class="label">Pex Id:</div>
-						<div class="data">{{card.id}}</div>
-					</li>
-					<li class="li-info">
-						<div class="label">First Name:</div>
-						<div class="data">{{card.firstName}}</div>
-					</li>
-					<li class="li-info">
-						<div class="label">Last Name:</div>
-						<div class="data">{{card.lastName}}</div>
-					</li>
-					<li class="li-info">
-						<div class="label">Ledger Balance:</div>
-						<div class="data">$ {{card.ledgerBalance | formatPrice}}</div>
-					</li>
-					<li class="li-info">
-						<div class="label">Available Balance:</div>
-						<div class="data">$ {{card.availableBalance | formatPrice}}</div>
-					</li>
-					<li class="li-info">
-						<div class="label">Status:</div>
-						<div class="data">{{card.status}}</div>
-					</li>
-					<li>
-						<hr/>
-						<h2 class="title">Cards</h2>
-						<ul class="ul-info" ng-repeat="_card in card.cards">
-							<li class="li-info">
-								<div class="label">Card Id:</div>
-								<div class="data">{{_card.id}}</div>
-							</li>
-							<li class="li-info">
-								<div class="label">Card Number:</div>
-								<div class="data">{{_card.cardNumber}}</div>
-							</li>
-							<li class="li-info">
-								<div class="label">Status:</div>
-								<div class="data">
-									{{_card.status}}
-									&nbsp;&nbsp;&nbsp;
-									<span ng-if="_card.status == status.OPEN" class="orange link" ng-click="block_card( _card.id )">Block card</span>
-									<span ng-if="_card.status == status.BLOCKED" class="orange link" ng-click="open_card( _card.id )">Open card</span>
-								</div>
-							</li>
-						</ul>
-					</li>
-				</ul>
-
+			<div class="box-content2 box-content-table">
+				<table>
+					<tr><td><a href="/staff/{{payInfo.login}}/pexcard">Pexcard</a></td></tr>
+				</table>
 			</div>
 
 

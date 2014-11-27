@@ -13,7 +13,7 @@
 	<div class="divider"></div>
 	<br>
 
-	
+
 	<div class="support-boxes">
 
 		<div class="support-box-wrap">
@@ -50,10 +50,10 @@
 						</div>
 					</div>
 				</div>
-				 
+
 			</div>
 		</div>
-		
+
 		<div class="support-box-wrap">
 			<h1>Location</h1>
 			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
@@ -62,7 +62,7 @@
 		</div>
 	</div>
 
-	<h1 class="title"><i class="fa fa-calendar"></i>Shifts</h1>	
+	<h1 class="title"><i class="fa fa-calendar"></i>Shifts</h1>
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
@@ -81,8 +81,8 @@
 			</tr>
 		</table>
 	</div>
-	
-	
+
+
 
 
 	<? /*
@@ -108,15 +108,16 @@
 		</table>
 	</div>
 	*/ ?>
-	
+
 	<h1 class="title"><i class="fa fa-cog"></i>Tools</h1>
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr><td><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement </a></td></tr>
 			<tr><td><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></td></tr>
 			<tr><td><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></td></tr>
+			<tr ng-if="staff.pexcard"><td><a href="/staff/{{staff.login}}/pexcard">Pexcard</a></td></tr>
 		</table>
 	</div>
-	
-	
+
+
 </div>
