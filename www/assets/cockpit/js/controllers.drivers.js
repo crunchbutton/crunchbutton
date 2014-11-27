@@ -165,7 +165,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams, StaffService, $rootScope) {
 
 	$scope.loading = true;
-	
+
 	StaffService.get($routeParams.id, function(staff) {
 		$rootScope.title = staff.name + ' | Payments';
 	});
@@ -212,9 +212,9 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 
 
 NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $routeParams, MainNavigationService) {
-	
+
 	MainNavigationService.link('/drivers/summary/' + $routeParams.id);
-	
+
 	/*
 
 	$scope.ready = false;
@@ -251,6 +251,70 @@ NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $rout
 	*/
 });
 
+NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
+
+	$scope.submitted = false;
+	$scope.isSearching = false;
+	$scope.isActivating = false;
+	$scope.activateOption = true;
+
+	$scope.status = PexCardService.status;
+
+	$scope.active = function(){
+		if( $scope.card.id ){
+			$scope.isActivating = true;
+			PexCardService.driver_active( $scope.card.id, function( json ){
+				if( json.success ){
+					$scope.activateOption = false;
+					$scope.card = json.success;
+					$scope.crunchbutton_card_id = null;
+					$scope.last_four_digits = null;
+					$scope.flash.setMessage( 'Card activated!', 'success' );
+				} else {
+					$scope.flash.setMessage( 'Error activating card!', 'error' );
+					$scope.isActivating = false;
+				}
+
+			} );
+		}
+	}
+
+	$scope.search = function() {
+
+		$scope.card = null;
+		$scope.activateOption = true;
+
+		if( $scope.isSearching ){
+			return;
+		}
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			$scope.isSearching = false;
+			return;
+		}
+
+		$scope.isSearching = true;
+		$scope.isActivating = false;
+
+		var data = { 'crunchbutton_card_id': $scope.crunchbutton_card_id, 'last_four_digits' : $scope.last_four_digits };
+
+		PexCardService.driver_search( data,
+			function( json ){
+				$scope.isSearching = false;
+				$scope.submitted = false;
+				if( json.id ){
+					$scope.card = json;
+				} else {
+					$scope.flash.setMessage( json.error, 'error' );
+					$scope.crunchbutton_card_id = '';
+					$scope.last_four_digits = '';
+				}
+			}
+		);
+	};
+
+} );
 
 NGApp.controller( 'DriversPaymentCtrl', function ( $scope, DriverService, $routeParams ) {
 
@@ -719,9 +783,9 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 
 	$scope.ready = false;
 	$scope.status = {
-		
+
 	};
-	
+
 
 	StaffService.status($scope.account.user.id_admin, function(data) {
 		if (data.payment == true) {
