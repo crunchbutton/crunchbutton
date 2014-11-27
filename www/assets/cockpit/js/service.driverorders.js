@@ -119,7 +119,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		orders.get( { 'id_order': id_order }, function( order ) { 
 			totalTake = (1 * order._tip) + (1 * order.delivery_fee);
 			$rootScope.driverTake = { total: totalTake };
-			callback( order );
+			if (callback) {
+				callback( order );
+			}
 		} );
 		
 	}

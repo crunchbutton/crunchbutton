@@ -129,8 +129,8 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $login;
 	}
 
-	public function getByPhone( $phone ){
-		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY id_admin DESC LIMIT 1 " );
+	public function getByPhone( $phone, $activeOnly = false){
+		return Crunchbutton_Admin::q("SELECT * FROM admin a WHERE ".($activeOnly ? 'active=1 AND' : '')." (REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}') ORDER BY id_admin DESC LIMIT 1 ")->get(0);
 	}
 
 	public function getByPhoneSetup( $phone ){
@@ -308,10 +308,26 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $deliveryFor;
 	}
 
-	public function isDriver(){
-		$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%"';
-		$result = c::db()->get( $query );
-		return ( $result->_items[0]->Total > 0 );
+	public function isDriver() {
+		if (!isset($this->_isDriver)) {
+			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%"';
+			$result = c::db()->get( $query );
+			$this->_isDriver = ( $result->_items[0]->Total > 0 );
+		}
+		return $this->_isDriver;
+	}
+	
+	public function isSupport() {
+		if (!isset($this->_isSupport)) {
+			$result = c::db()->get('
+				SELECT COUNT(*) AS Total FROM admin_group ag 
+				LEFT JOIN `group` g using (id_group)
+				WHERE ag.id_admin = ' . $this->id_admin . ' 
+				AND g.name="'.Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ).'"
+			');
+			$this->_isSupport = ( $result->_items[0]->Total > 0 );
+		}
+		return $this->_isSupport;
 	}
 
 	public function communitiesHeDeliveriesFor() {
