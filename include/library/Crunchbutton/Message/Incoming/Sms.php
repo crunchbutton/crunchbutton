@@ -3,8 +3,8 @@
 class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 	public static function route($request) {
 
-		$from = self::cleanPhone($request['From']);
-		$to = self::cleanPhone($request['To']);
+		$from = Phone::clean($request['From']);
+		$to =Phone::clean($request['To']);
 		$body = trim($request['Body']);
 		$admin = Admin::getByPhone($from, true);
 
@@ -54,9 +54,5 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			Message_Incoming_Response::twilioSms($msg);
 			exit;
 		}
-	}
-	
-	public static function cleanPhone($phone) {
-		return preg_replace('/[^0-9]/','', str_replace('+1', '', $phone));
 	}
 }
