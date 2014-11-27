@@ -51,7 +51,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				if( $customer->body && $customer->body->cards ){
 					foreach( $customer->body->cards as $card ){
 						$last_four = str_replace( 'X', '', $card->cardNumber );
-						// Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
+						Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
 						$opened = true;
 					}
 				}
