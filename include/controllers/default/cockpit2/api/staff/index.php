@@ -29,6 +29,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_status($staff);
 					break;
 
+				case 'has_pexcard':
+					$this->_has_pexcard($staff);
+					break;
+
 				default:
 					$this->_view($staff);
 					break;
@@ -46,6 +50,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _status($staff) {
 		echo json_encode($staff->status());
+	}
+
+	private function _has_pexcard( $staff ){
+		$payment_type = $staff->payment_type();
+		echo json_encode( [ 'success' => ( $payment_type->using_pex > 0 ? true : false ) ] );
 	}
 
 	private function _view($staff) {

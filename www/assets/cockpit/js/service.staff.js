@@ -12,6 +12,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 			method: 'GET',
 			params : {}
 		},
+		'has_pexcard' : {
+			url: App.service + 'staff/:id_admin/has_pexcard',
+			method: 'GET',
+			params : {}
+		},
 		'locations' : {
 			url: App.service + 'staff/:id_admin/locations',
 			method: 'GET',
@@ -37,6 +42,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 
 	service.locations = function(id_admin, callback) {
 		staff.locations({id_admin: id_admin}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.has_pexcard = function(id_admin, callback) {
+		staff.has_pexcard({id_admin: id_admin}, function(data) {
 			callback(data);
 		});
 	}
