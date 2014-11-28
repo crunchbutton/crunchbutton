@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS `admin_pexcard`;
-
 CREATE TABLE `admin_pexcard` (
   `id_admin_pexcard` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_admin` int(11) unsigned DEFAULT NULL,

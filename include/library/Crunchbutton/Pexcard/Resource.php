@@ -2,7 +2,7 @@
 
 use Httpful\Request;
 
-class Crunchbutton_Pexcard_Resource extends Cana_Model {
+class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 	// I created this method so I can fake live
 	public function env(){
