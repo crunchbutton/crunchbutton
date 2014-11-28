@@ -51,8 +51,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM admin_shift_assign AS asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 							WHERE asa.id_admin = "' . $id_driver . '"
-								AND DATE( cs.date_start ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
-								AND DATE( cs.date_start ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
+								AND DATE( cs.date_start ) = "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
 		$shifts = Crunchbutton_Community_Shift::q( $query );
 		$_shifts = [];
 		foreach( $shifts as $shift ){
@@ -137,8 +136,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// shifts we have to pay hourly
 	public function workedShiftsByPeriod( $id_admin, $filters ){
 		$start = ( new DateTime( $filters[ 'start' ] ) )->format( 'Y-m-d' );
-		$end = ( new DateTime( $filters[ 'end' ] ) )->format( 'Y-m-d' );
-		return Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $id_admin, $start, $end );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin .
+																							' WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $start . '"' );
 	}
 
 
@@ -743,7 +743,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
-	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type ){
+	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ){
 
 		if( !$type ){
 			return false;
@@ -813,7 +813,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$schedule->log = 'Schedule created';
 			$schedule->note = $notes;
 			$schedule->adjustment_note = $adjustment_notes;
-			$schedule->id_admin = ( c::user()->id_admin ) ? c::user()->id_admin : c::admin()->id_admin;
+			$schedule->id_admin = $id_admin;
 			$schedule->save();
 			$id_payment_schedule = $schedule->id_payment_schedule;
 
@@ -883,8 +883,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$adjustment = $id_drivers[ $key ][ 'adjustment' ];
 				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];
 				$id_driver = $key;
-				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type ) {
-					$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type );
+				$id_admin = c::user()->id_admin;
+				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ) {
+					$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin );
 				} );
 			}
 
@@ -1774,8 +1775,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
 																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
 																							INNER JOIN admin a ON a.id_admin = asa.id_admin
-																							WHERE DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
-																							  AND DATE_FORMAT(cs.date_end, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "' " . $where );
+																							WHERE DATE_FORMAT(cs.date_start, '%m/%d/%Y') = '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'" . $where );
 	}
 
 	public function amount_per_invited_user(){
