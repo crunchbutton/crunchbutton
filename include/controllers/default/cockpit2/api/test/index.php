@@ -5,7 +5,12 @@ class Controller_api_test extends Crunchbutton_Controller_Rest {
 
 // die('hard');
 		// $card = Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' );
-echo '<pre>';var_dump( Crunchbutton_Pexcard_Card::card_list() );exit();
+
+		$transactions = Crunchbutton_Pexcard_Transaction::transactions( '11/25/2014', '11/26/2014' );
+		foreach( $transactions as $transaction ){
+			Crunchbutton_Pexcard_Transaction::save_transaction( $transaction );
+		}
+die('hard');
 		echo '<pre>';var_dump(  Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' )  );exit();
 		// echo '<pre>';var_dump( $card->ping() );exit();
 		// echo '<pre>';var_dump( $card->card_list() );exit();
