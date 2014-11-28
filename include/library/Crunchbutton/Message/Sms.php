@@ -104,8 +104,8 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 					]);
 
 					$ret[] = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg);
-					
-					Phone_Log::log($t, $tfrom, 'message');
+
+					Phone_Log::log($t, $tfrom, 'message', 'outgoing');
 
 				} catch (Exception $e) {
 

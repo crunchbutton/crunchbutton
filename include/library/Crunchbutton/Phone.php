@@ -17,17 +17,35 @@ class Crunchbutton_Phone extends Cana_Table{
 	// return a number specific from number based on our numbers in the last 30 days
 	public function from() {
 		$phone = Phone::q('
-			select phone.* from phone_log
+			select phone.*, phone_log.date
+			from phone_log
 			left join phone on phone.id_phone=phone_log.id_phone_from
-			where phone.phone is not null
-			and phone_log.id_phone_to="'.$this->id_phone.'"
-			and datediff(now(), date) < 30
-			order by date asc
+			where
+				phone.id_phone is not null
+				and phone_log.direction="outgoing"
+				and phone_log.id_phone_to="'.$this->id_phone.'"
+				and datediff(now(), date) < 30
+				group by phone.id_phone
+			
+			union
+			
+			select phone.*, phone_log.date
+			from phone_log
+			left join phone on phone.id_phone=phone_log.id_phone_to
+			where
+				phone.id_phone is not null
+				and phone_log.direction="incoming"
+				and phone_log.id_phone_from="'.$this->id_phone.'"
+				and datediff(now(), date) < 30
+				group by phone.id_phone
+				
+			order by date desc
 		');
 
 		foreach ($phone as $p) {
 			if (in_array($p->phone, self::numbers())) {
 				$use = $p->phone;
+				break;
 			}
 		}
 
@@ -63,7 +81,7 @@ class Crunchbutton_Phone extends Cana_Table{
 			$use = $logs[0]->phone;
 		}
 		
-		return $use;
+		return $use ? $use : self::clean(c::config()->phone->support);
 	}
 	
 	public static function clean($phone) {
