@@ -37,6 +37,9 @@ class Crunchbutton_App extends Cana_App {
 
 			} elseif (preg_match('/^\/home\/staging.crunchbutton/',dirname(__FILE__))) {
 				$_SERVER['SERVER_NAME'] = 'staging.crunchr.co';
+
+			} elseif (preg_match('/^\/home\/staging2.crunchbutton/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'staging2.crunchr.co';
 			}
 		}
 
@@ -45,7 +48,7 @@ class Crunchbutton_App extends Cana_App {
 		if (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
 		// any one of our cull live urls, or staging prefixes
-		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
 		// anything ._DOMAIN_ fails
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
