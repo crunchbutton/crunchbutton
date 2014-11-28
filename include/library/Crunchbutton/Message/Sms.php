@@ -68,10 +68,6 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			if (in_array($t, Phone::numbers())) {
 				continue;
 			}
-				
-			if ($t != '+1_PHONE_') {
-				continue;
-			}
 
 			$tfrom = $from ? $from : self::number($t);
 
