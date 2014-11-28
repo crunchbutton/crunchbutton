@@ -4,7 +4,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 	public static function route($request) {
 
 		$from = Phone::clean($request['From']);
-		$to =Phone::clean($request['To']);
+		$to = Phone::clean($request['To']);
 		$body = trim($request['Body']);
 		$admin = Admin::getByPhone($from, true);
 
@@ -20,6 +20,8 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			'to' => $to,
 			'sid' => $request['SmsMessageSid']
 		];
+
+		Phone_Log::log($to, $from, 'message', 'incoming');
 
 		// routing for drivers and support
 		if ($admin->id_admin) {
