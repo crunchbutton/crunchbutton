@@ -10,6 +10,7 @@ CREATE TABLE `phone_log` (
   `id_phone_to` int(11) unsigned DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `type` enum('call','message') DEFAULT NULL,
+  `direction` enum('outgoing','incoming') DEFAULT NULL,
   PRIMARY KEY (`id_phone_log`),
   KEY `id_phone_to` (`id_phone_to`),
   CONSTRAINT `phone_log_ibfk_1` FOREIGN KEY (`id_phone_to`) REFERENCES `phone` (`id_phone`) ON DELETE CASCADE ON UPDATE CASCADE,

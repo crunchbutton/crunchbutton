@@ -857,11 +857,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 
 			$this->log( 'scheduleDriverPayment', $schedule->properties() );
-
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-				$settlement->doDriverPayments( $id_payment_schedule );
-			} );
+			$this->doDriverPayments( $id_payment_schedule );
 		}
 	}
 
@@ -870,8 +866,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$this->log( 'scheduleDriversPayment', $id_drivers );
 
 		$drivers = $this->startDriver();
-
-		$settlement = new Crunchbutton_Settlement( $this->filters );
 
 		foreach ( $drivers as $_driver ) {
 
@@ -884,9 +878,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];
 				$id_driver = $key;
 				$id_admin = c::user()->id_admin;
-				Cana::timeout( function() use( $settlement, $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ) {
-					$settlement->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin );
-				} );
+				$this->log( 'scheduleDriverPayment', [ $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ] );
+				$this->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin );
 			}
 
 		}
@@ -907,15 +900,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function doDriverPayments( $id_payment_schedule = false ){
 		if( $id_payment_schedule ){
 			$this->log( 'doDriverPayments', $id_payment_schedule );
-			return $this->payDriver( $id_payment_schedule );
+			$settlement = new Crunchbutton_Settlement( $this->filters );
+			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+				$settlement->payDriver( $id_payment_schedule );
+			} );
 		} else {
 			$schedule = new Cockpit_Payment_Schedule;
 			$lastDate = $schedule->lastDriverStatusDate();
 			$schedules = $schedule->driversSchedulesFromDate( $lastDate );
+			$settlement = new Crunchbutton_Settlement( $this->filters );
 			foreach( $schedules as $_schedule ){
 				$id_payment_schedule = $_schedule->id_payment_schedule;
-
-				$settlement = new Crunchbutton_Settlement( $this->filters );
 				Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
 					$settlement->payDriver( $id_payment_schedule );
 				} );
@@ -1322,7 +1317,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment->adjustment_note = $schedule->adjustment_note;
 						$payment->env = c::getEnv();
 						$payment->id_driver = $schedule->id_driver;
-						$payment->id_admin = ( c::user()->id_admin ? c::user()->id_admin : c::admin()->id_admin );
+						$payment->id_admin = ( c::user()->id_admin ? c::user()->id_admin : $schedule->id_driver );
 						$payment->amount = 0;
 						$payment->pay_type = $schedule->pay_type;
 						$payment->adjustment = $schedule->adjustment;
