@@ -18,6 +18,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_driver_active();
 				break;
 
+			case 'report':
+				$this->_report();
+				break;
+
 			case 'admin-pexcard':
 				$this->_admin_pexcard();
 				break;
@@ -70,6 +74,13 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 		$this->_error( 'Card Not Found' );
+	}
+
+	private function _report(){
+		$start = $this->request()['start'];
+		$end = $this->request()['end'];
+		$report = Crunchbutton_Pexcard_Transaction::processExpenses( $start, $end );
+		echo json_encode( $report );exit;
 	}
 
 	private function _driver_search(){
