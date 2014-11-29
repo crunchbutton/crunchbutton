@@ -1,3 +1,37 @@
+NGApp.controller( 'PexCardCtrl', function(){} );
+
+NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardService ) {
+
+	var date = new Date();
+	date.setDate(date.getDate() - 1);
+
+	$scope.range = { 'start': date, 'end': date };
+
+	$scope.result = null;
+
+	$scope.report = function(){
+
+		$scope.results = false;
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isProcessing = true;
+
+		var params = { 'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
+										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy') };
+
+		PexCardService.report( params, function( json ){
+			$scope.isProcessing = false;
+			$scope.result = json;
+		} );
+
+	}
+
+} );
+
 NGApp.controller( 'PexCardIdCtrl', function ( $scope, PexCardService, DriverOnboardingService ) {
 
 	$scope.submitted = false;

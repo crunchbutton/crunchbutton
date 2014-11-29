@@ -15,3 +15,6 @@ CREATE TABLE `pexcard_transaction` (
   PRIMARY KEY (`id_pexcard_transaction`),
   UNIQUE KEY `id_pexcard_transaction` (`id_pexcard_transaction`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE pexcard_transaction ADD INDEX (cardNumber);
+ALTER TABLE pexcard_transaction ADD INDEX (lastName);

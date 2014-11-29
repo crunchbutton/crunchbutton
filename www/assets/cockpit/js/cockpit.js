@@ -167,10 +167,20 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/settlement-summary.html'
 		})
 		/* Pexcard */
+		.when('/pexcard', {
+			action: 'pexcard',
+			controller: 'PexCardCtrl',
+			templateUrl: 'assets/view/pexcard.html'
+		})
 		.when('/pexcard/card', {
 			action: 'pexcard',
 			controller: 'PexCardIdCtrl',
 			templateUrl: 'assets/view/pexcard-pex-id.html'
+		})
+		.when('/pexcard/report', {
+			action: 'pexcard',
+			controller: 'PexCardReportCtrl',
+			templateUrl: 'assets/view/pexcard-report.html'
 		})
 		/* Driver shifts */
 		.when('/drivers/dashboard', {
