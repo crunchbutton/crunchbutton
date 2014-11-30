@@ -9,7 +9,7 @@
 			<th class="tb-center">Restaurants</th>
 			<th>Active</th>
 		</tr>
-		<tr ng-repeat="community in communities" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}">
+		<tr ng-repeat="community in communities track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}">
 			<td><a href="/community/{{community.permalink || community.id_community}}">{{community.id_community}}</td>
 			<td>{{community.name}}</td>
 			<td>{{community.permalink}}</td>

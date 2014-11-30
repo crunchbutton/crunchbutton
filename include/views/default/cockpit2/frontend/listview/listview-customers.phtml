@@ -9,7 +9,7 @@
 			<th>Orders</th>
 			<th>Last&nbsp;Order</th>
 		</tr>
-		<tr ng-repeat="customer in customers" ng-attr-tabindex="{{$index+1}}" tab-select="/customer/{{customer.id_user}}">
+		<tr ng-repeat="customer in customers track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/customer/{{customer.id_user}}">
 			<td class="tb-image-row"><a href="/customer/{{customer.id_user}}">
 				<div class="customer-image-crop">
 					<img ng-if="customer.image" class="customer-image" src="{{customer.image}}"></img>
