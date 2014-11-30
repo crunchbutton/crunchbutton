@@ -79,6 +79,11 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	private function _report(){
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
+
+		if( !$start || !$end ){
+			$this->_error();
+		}
+
 		$report = Crunchbutton_Pexcard_Transaction::processExpenses( $start, $end );
 		echo json_encode( $report );exit;
 	}

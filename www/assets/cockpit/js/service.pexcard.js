@@ -9,7 +9,7 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		'driver_active' : { 'method': 'POST', params : { action: 'driver-active' } },
 		'admin_pexcard_remove' : { 'method': 'POST', params : { action: 'admin-pexcard-remove' } },
 		'pex_change_card_status' : { 'method': 'POST', params : { action: 'pexcard-change-card-status' } },
-		'report' : { 'method': 'POST', params : { action: 'report' }, isArray: true }
+		'report' : { 'method': 'POST', params : { action: 'report' } }
 	}	);
 
 	service.pex_id = function( id, callback ){

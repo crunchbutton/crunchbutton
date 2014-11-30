@@ -19,7 +19,12 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function saveTransactionsByPeriod( $start, $end ){
-		$transactions = Crunchbutton_Pexcard_Transaction::transactions( $start, $end );
+		$start = new DateTime( $start );
+		$end = new DateTime( $end );
+		if( $start->format( 'm/d/Y' ) == $end->format( 'm/d/Y' ) ){
+			$start->modify( '-1 day' );
+		}
+		$transactions = Crunchbutton_Pexcard_Transaction::transactions( $start->format( 'm/d/Y' ), $end->format( 'm/d/Y' ) );
 		foreach( $transactions as $transaction ){
 			Crunchbutton_Pexcard_Transaction::saveTransaction( $transaction );
 		}
@@ -42,9 +47,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																					AND
 																						o.pay_type = "' . Crunchbutton_Order::PAY_TYPE_CREDIT_CARD . '"
 																					AND
-																						DATE_FORMAT( o.date, "%m/%d/%Y" ) <= "' . $start . '"
+																						DATE_FORMAT( o.date, "%m/%d/%Y" ) >= "' . $start . '"
 																					AND
-																						DATE_FORMAT( o.date, "%m/%d/%Y" ) >= "' . $end . '"
+																						DATE_FORMAT( o.date, "%m/%d/%Y" ) <= "' . $end . '"
 																					GROUP BY a.id_admin ORDER BY driver' );
 		return $expenses;
 	}
@@ -65,7 +70,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function processExpenses( $start, $end ){
 		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $start, $end );
 		$order_expenses = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $start, $end );
-		$cards_expenses = [];
+		$drivers_expenses = [];
 		foreach( $order_expenses as $order_expense ){
 			$cards = Cockpit_Admin_Pexcard::getByAdmin( $order_expense->id_admin );
 			if( $cards->count() ){
@@ -76,15 +81,23 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 					foreach( $pex_expenses as $pex_expense ){
 						if( $card->last_four == $pex_expense->last_four && $card->card_serial == $pex_expense->card_serial ){
 							$amount = number_format( $pex_expense->amount, 2 );
+							$pex_expense->used = true;
 						}
 					}
 					$card_amount += $amount;
 					$_cards[] = [ 'card_serial' => $card->card_serial, 'last_four' => $card->last_four, 'amount' => $amount ] ;
 				}
-				$cards_expenses[] = [ 'id_admin' => $order_expense->id_admin, 'driver' => $order_expense->driver, 'card_amount' => number_format( $card_amount, 2 ), 'orders_amount' => number_format( $order_expense->amount, 2 ), 'orders' => $order_expense->orders, 'cards' => $_cards ];
+				$drivers_expenses[] = [ 'id_admin' => $order_expense->id_admin, 'driver' => $order_expense->driver, 'card_amount' => number_format( $card_amount, 2 ), 'orders_amount' => number_format( $order_expense->amount, 2 ), 'orders' => $order_expense->orders, 'cards' => $_cards ];
 			}
 		}
-		return $cards_expenses;
+
+		$card_expenses = [];
+		foreach( $pex_expenses as $pex_expense ){
+			if( !$pex_expense->used ){
+				$card_expenses[] = [ 'card_serial' => $pex_expense->card_serial, 'last_four' => $pex_expense->last_four, 'amount' => number_format( $pex_expense->amount, 2 ) ];
+			}
+		}
+		return [ 'drivers_expenses' => $drivers_expenses, 'card_expenses' => $card_expenses ];
 	}
 
 	public function saveTransaction( $transaction ){

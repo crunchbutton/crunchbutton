@@ -61,7 +61,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="driver in result">
+				<tr ng-repeat="driver in result.drivers_expenses">
 					<td>{{driver.id_admin}}</td>
 					<td>{{driver.driver}}</td>
 					<td>{{driver.orders}}</td>
@@ -77,6 +77,29 @@
 							{{card.last_four}}
 						</div>
 					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h2 class="title">
+			<span>Cards without driver</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td>Card Serial</td>
+					<td>Last Four</td>
+					<td>Card Spent</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="card in result.card_expenses">
+					<td>
+						<a title="Assign Pex Card to Driver" href="/pexcard/card/{{card.card_serial}}">{{card.card_serial}}</a>
+					</td>
+					<td>{{card.last_four}}</td>
+					<td>$ {{card.amount | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>

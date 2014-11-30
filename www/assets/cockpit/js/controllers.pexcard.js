@@ -2,16 +2,21 @@ NGApp.controller( 'PexCardCtrl', function(){} );
 
 NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardService ) {
 
-	var date = new Date();
-	date.setDate(date.getDate() - 1);
+	$scope.range = {};
 
-	$scope.range = { 'start': date, 'end': date };
+	var start = new Date();
+	start.setDate( start.getDate() - 2 );
+	$scope.range.start = start;
+
+	var end = new Date();
+	end.setDate( end.getDate() - 1 );
+	$scope.range.end = end;
 
 	$scope.result = null;
 
 	$scope.report = function(){
 
-		$scope.results = false;
+		$scope.result = false;
 
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
@@ -32,7 +37,7 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 
 } );
 
-NGApp.controller( 'PexCardIdCtrl', function ( $scope, PexCardService, DriverOnboardingService ) {
+NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, PexCardService, DriverOnboardingService ) {
 
 	$scope.submitted = false;
 	$scope.isSearching = false;
@@ -141,5 +146,13 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, PexCardService, DriverOnbo
 	}
 
 	DriverOnboardingService.pexcard( function( json ){ $scope.drivers = json; } );
+
+	if( $routeParams.id ){
+		setTimeout( function() {
+			$scope.crunchbutton_card_id = parseInt( $routeParams.id );
+			App.rootScope.$safeApply();
+			$scope.search();
+		}, 500 );
+	}
 
 } );
