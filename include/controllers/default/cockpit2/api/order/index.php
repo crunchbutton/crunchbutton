@@ -32,7 +32,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			
 			exit;
 		}
-		
+
 		// post an order
 		if (!c::getPagePiece(2) && $this->method() == 'post') {
 
@@ -80,6 +80,24 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 		
+		
+		// update an order
+		if ($this->method() == 'put') {
+
+			$allowed = ['lat','lon','notes','address','phone','name'];
+			$changed = false;
+			foreach ($this->request() as $k => $v) {
+				if (in_array($k, $allowed)) {
+					$order->{$k} = c::db()->escape($v);
+					$changed = true;
+				}
+			}
+			
+			if ($changed) {
+				$order->save();
+			}
+		}
+		
 		switch (c::getPagePiece(3)) {
 			case 'eta':
 				if (c::getPagePiece(4) == 'refresh') {
@@ -103,7 +121,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			default:
-				$out = $order->exports();
+				$out = $order->ordersExports();
 				$out['user'] = $order->user()->id_user ? $order->user()->exports() : null;
 				$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports() : null;
 

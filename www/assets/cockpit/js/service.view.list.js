@@ -26,7 +26,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 				watch();
 			}
 		};
-		
+
 		scope.watch = function(vars) {
 			for (var x in vars) {
 				scope.query[x] = query[x] || vars[x];

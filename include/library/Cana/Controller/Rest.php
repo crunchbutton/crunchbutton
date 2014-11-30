@@ -19,12 +19,16 @@ class Cana_Controller_Rest extends Cana_Controller {
 
                     } elseif ($_SERVER['CONTENT_TYPE'] === 'application/json') {
                         $content = $this->getContent();
+
                         $request = json_decode($content,'array');
                         if (!$request) {
                             $this->request = false;
                         } else {
                             $this->request = $request;
                         }
+                    } else {
+	                    $content = $this->getContent();
+	                    parse_str($content, $this->request);
                     }
                     break;
 

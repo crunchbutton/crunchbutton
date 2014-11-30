@@ -9,9 +9,9 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			method: 'GET',
 			params : {}
 		},
-		'save' : {
+		'put' : {
 			url: App.service + 'order/:id_order',
-			method: 'POST',
+			method: 'PUT',
 			params : {}
 		},
 		'saveeta' : {
@@ -42,8 +42,9 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 		});
 	}
 	
-	service.post = function(params, callback) {
-		order.save(params, function(data) {
+	service.put = function(params, callback) {
+		order.put(params, function(data) {
+			if (!callback) { return; }
 			callback(data);
 		});
 	}

@@ -46,7 +46,6 @@ class Cockpit_Deploy_Version extends Cana_Table {
 	}
 	
 	public function save() {
-
 		$new = $this->id_deploy_version ? false : true;
 
 		parent::save();
