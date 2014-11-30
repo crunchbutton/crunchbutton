@@ -30,8 +30,7 @@ var sendBroadcast = function(payload, to, event) {
 		}
 
 		for (var x in to.room) {
-			payload.room = to.room[x];
-			io.to(to.room[x]).emit(event, payload);
+			io.to(to.room[x]).emit(to.room[x] + '.' + event, payload);
 			continue;
 			io.sockets.clients(to.room[x]).forEach(function(socket) {
 				if (!sockets[socket.phpsessid]) {
