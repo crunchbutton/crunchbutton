@@ -36,11 +36,14 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 });
 
 NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
+	
+	var loaded = false;
 
 	var loadTicket = function(id) {
 		TicketService.get(id, function(ticket) {
 			TicketViewService.scope.ticket = ticket;
-			TicketViewService.scroll();
+			TicketViewService.scroll(!loaded);
+			loaded = true;
 		});
 	};
 
