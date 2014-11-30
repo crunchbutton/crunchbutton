@@ -1,7 +1,13 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<h1 class="title left"><i class="fa fa-car"></i>Orders</h1>
+	<div class="box-filter">
+		<button class="button orange" ng-class="{ 'inactive' : query.view=='list' }" ng-click="query.view = 'map'">Map</button>
+		<button class="button orange" ng-class="{ 'inactive' : query.view=='map' }" ng-click="query.view = 'list'">List</button>
+	</div>
+	<div class="divider"></div>
+
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
@@ -12,6 +18,8 @@
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
+	
+	<ng-include src="'assets/view/mapview-orders.html'" ng-show="query.view=='map'"></ng-include>
 </div>

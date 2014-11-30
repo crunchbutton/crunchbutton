@@ -13,8 +13,43 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('OrdersCtrl', function ($scope, OrderService, ViewListService) {
+NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService) {
 	angular.extend($scope, ViewListService);
+	
+//	var query = $location.search();
+//	$scope.query.view = 'list';
+	
+	SocketService.listen('orders', $scope)
+		.on('update', function(d) {
+			for (var x in $scope.orders) {
+				if ($scope.orders[x].id_order == d.id_order) {
+					$scope.orders[x] = d;
+				}
+			}
+
+		}).on('create', function(d) {
+			$scope.update();
+		});
+		
+	var draw = function() {
+		if (!$scope.map || !$scope.orders) {
+			return;
+		}
+
+		MapService.trackOrders({
+			map: $scope.map,
+			orders: $scope.orders,
+			id: 'orders-location',
+			scope: $scope
+		});
+	};
+	
+	$scope.$on('mapInitialized', function(event, map) {
+		console.log('INIT');
+		$scope.map = map;
+		MapService.style(map);
+		draw();
+	});
 
 	$scope.view({
 		scope: $scope,
@@ -23,17 +58,24 @@ NGApp.controller('OrdersCtrl', function ($scope, OrderService, ViewListService) 
 			restaurant: '',
 			community: '',
 			date: '',
+			view: 'list'
 		},
 		update: function() {
 			OrderService.list($scope.query, function(d) {
 				$scope.orders = d.results;
 				$scope.complete(d);
+				draw();
 			});
 		}
 	});
 });
 
 NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService) {
+	
+	SocketService.listen('order.' + $routeParams.id, $scope)
+		.on('update', function(d) {
+			$scope.order = d;
+		});
 	
 	var draw = function() {
 		if (!$scope.map || !$scope.order) {

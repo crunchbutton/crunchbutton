@@ -16,6 +16,28 @@ NGApp.directive('chatSend', function(TicketViewService) {
 	};
 });
 
+NGApp.directive('fitHeight', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+	
+			var setHeight = function() {
+				angular.element(element).height(angular.element(window).height() - angular.element(element).position().top - 10);				
+			};
+			
+			angular.element(window).on('resize', setHeight);
+
+			scope.$on('$destroy', function() {
+				angular.element(window).off('resize', setHeight);
+			});
+			
+			setHeight();
+			
+			scope.$watch('view', setHeight);
+		}
+	};
+});
+
 NGApp.directive('pageKey', function() {
 	return {
 		restrict: 'A',

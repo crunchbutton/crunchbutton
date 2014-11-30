@@ -1,4 +1,4 @@
-NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
+NGApp.factory('MapService', function($rootScope, $resource, $routeParams, OrderService) {
 	var service = {
 		icon: {
 			car: {
@@ -59,6 +59,91 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams) {
 	
 	service.reset = function(id) {
 		maps[id] = null;
+	};
+	
+	service.trackOrders = function(params) {
+		var map = params.map;
+
+		if (!maps[params.id]) {
+			maps[params.id] = {
+				markers: []
+			};
+			params.scope.$on('$destroy', function() {
+				service.reset(params.id);
+			});
+		}
+		console.log(maps[params.id].markers);
+		for (var x in maps[params.id].markers) {
+			maps[params.id].markers[x].setMap(null);
+		}
+		maps[params.id].markers = [];
+		console.log(maps[params.id].markers);
+		
+		var latlngbounds = new google.maps.LatLngBounds();
+		var updateBounds = function(loc) {
+			latlngbounds.extend(loc);
+			map.setCenter(latlngbounds.getCenter());
+			map.fitBounds(latlngbounds); 
+		};
+		
+		var geocoder = new google.maps.Geocoder();
+		
+		var getGeo = function(order, address, retries) {
+			if (retries > 3) {
+				return;
+			}
+			geocoder.geocode({address: address}, function (results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					console.debug('Got geocoded result: ', results[0]);
+					markOrder(results[0].geometry.location);
+					
+					// update the order with the lat and lon so we never have to geocode the address again
+					OrderService.put({
+						id_order: order,
+						lat: results[0].geometry.location.lat(),
+						lon: results[0].geometry.location.lng()
+					});
+
+				} else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+					setTimeout(function() {
+						//getGeo(params.orders[x].address, retries+1);
+					}, 1000);
+					console.error('Could not geocode address: ', address, arguments);
+				}
+			});
+		};
+		
+		var markOrder = function(loc) {
+			updateBounds(loc);
+
+			maps[params.id].markers.push(new google.maps.Marker({
+				map: map,
+				position: loc,
+				zIndex: 99,
+				animation: google.maps.Animation.DROP,
+				icon: service.icon.customer
+			}));
+		}
+		
+		var trackOrder = function(order) {
+			if (!order.address) {
+				return;
+			}
+			if (order.lat && order.lon) {
+				markOrder(new google.maps.LatLng(parseFloat(order.lat), parseFloat(order.lon)));
+			} else {
+				getGeo(order.id_order, order.address, 0);
+			}
+		}
+
+		for (var x in params.orders) {
+			trackOrder(params.orders[x]);
+		}
+
+		// center on the US
+		//map.setCenter(new google.maps.LatLng(parseFloat(39.0997), parseFloat(-94.5783)));
+		
+		return trackOrder;
 	};
 	
 	service.trackCommunity = function(params) {
