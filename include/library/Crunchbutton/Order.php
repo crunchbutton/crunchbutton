@@ -10,7 +10,7 @@
  * @property notes The comments the user set for the order
  */
 
-class Crunchbutton_Order extends Cana_Table {
+class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	const PAY_TYPE_CASH        = 'cash';
 	const PAY_TYPE_CREDIT_CARD = 'card';
@@ -2676,5 +2676,32 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->_eta = $eta;
 		}
 		return $this->_eta;
+	}
+	
+	public function ordersExports() {
+		$out = $this->exports();
+		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
+		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
+		$out['_community_name'] = $this->restaurant()->community()->name;
+		$out['_community_permalink'] = $this->restaurant()->community()->permalink;
+		$out['_driver_name'] = $this->status()->last()['driver']['name'];
+		$out['_driver_id'] = $this->status()->last()['driver']['id_admin'];
+
+		return $out;
+	}
+	
+	public function save() {
+		$new = $this->id_order ? false : true;
+
+		parent::save();
+
+		Event::emit([
+			'room' => [
+				'order.'.$this->id_order,
+				'orders',
+				'restaurant.'.$this->id_restaurant.'.orders',
+				'user.'.$this->id_user.'.orders'
+			]
+		], $new ? 'create' : 'update', $this->ordersExports());
 	}
 }

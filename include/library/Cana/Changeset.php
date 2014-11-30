@@ -34,7 +34,11 @@ class Cana_Changeset extends Cana_Model {
 		$set = Cana_Table::fromTable((isset($options['set']['table']) ? $options['set']['table'] : $object->table().'_change_set'), (isset($options['set']['id']) ? $options['set']['id'] : $object->idVar().'_change_set'), $object->db());
 		$set->strip();
 		$set->timestamp = $time;
-		$set->id_admin = c::admin()->id_admin;
+		if (c::admin()->id_admin) {
+			$set->id_admin = c::admin()->id_admin;
+		} elseif (c::user()->id_user) {
+			$set->id_user = c::user()->id_user;
+		}
 		$set->{$object->idVar()} = $object->{$object->idVar()};
 
 		// changes. only save set if theres at least one change
