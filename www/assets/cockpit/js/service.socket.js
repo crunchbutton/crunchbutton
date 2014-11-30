@@ -14,6 +14,32 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 	var service = {};
 	service.socket = eventSocket;
 	
+	service.listen = function(group, scope) {
+		
+		service.socket.emit('event.subscribe', group);
+
+		// @todo: test better
+		scope.$on('$destroy', function() {
+			//service.socket.emit('event.unsubscribe', group);
+		});
+		
+		var listener = {
+			group: group,
+			scope: scope,
+			on: function(evt, fn) {
+				service.socket.forward(evt, scope);	
+				scope.$on('socket:' + evt, function (ev, data) {
+					scope.$apply(function() {
+						fn(data);
+					});
+				});
+				return listener;
+			}
+		};
+
+		return listener;
+	};
+	
 	service.socket.on('connect', function (data) {
 		console.debug('Connected to socket.io');
 

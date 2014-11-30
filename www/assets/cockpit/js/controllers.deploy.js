@@ -102,21 +102,17 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 	});
 });
 
-NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployService, $interval) {
-	var update = function() {
-		DeployService.version.get($routeParams.id, function(d) {
-			$scope.version = d;
-		});
-	};
-	
-	update();
+NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployService, $interval, SocketService) {
+	var listener = SocketService.listen('deploy.version.' + $routeParams.id, $scope).on('update', function(version) {
+		$scope.version = version;
+	});
+
+	DeployService.version.get($routeParams.id, function(d) {
+		$scope.version = d;
+	});
 	
 	$scope.cancel = function(id) {
 		DeployService.version.cancel(id, update);
 	};
-	
-	$scope.updater = $interval(update, 5000);
-	$scope.$on('$destroy', function() {
-		$interval.cancel($scope.updater);
-	});
+
 });
