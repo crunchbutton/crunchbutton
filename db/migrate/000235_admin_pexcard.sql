@@ -1,3 +1,4 @@
+/*
 INSERT INTO `admin_pexcard` (`id_admin_pexcard`, `id_admin`, `id_pexcard`, `card_serial`, `last_four`)
 VALUES
 	(1, 675, 100260, '007', '9077'),
@@ -45,3 +46,4 @@ VALUES
 	(43, 664, 107126, '276', '8128'),
 	(44, 730, 100254, '001', '3459'),
 	(45, 613, 107002, '153', '8614');
+*/
