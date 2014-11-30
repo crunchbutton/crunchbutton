@@ -20,26 +20,48 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		
 }]);
 
-NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployService, MainNavigationService, $interval) {
-	var update = function() {
+NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployService, MainNavigationService, $interval, SocketService) {
+	var updateServers = function() {
 		DeployService.server.list({}, function(d) {
 			$scope.servers = d;
 		});
+	};
+	var updateVersions = function() {
 		DeployService.version.list({}, function(d) {
 			$scope.versions = d;
 		});
 	};
 	
-	update();
+	SocketService.listen('deploy.versions', $scope)
+		.on('update', function(d) {
+			for (var x in $scope.versions) {
+				if ($scope.versions[x].id_deploy_version == d.id_deploy_version) {
+					$scope.versions[x] = d;
+				}
+			}
+
+		}).on('create', function(d) {
+			updateVersions();
+		});
+		
+	SocketService.listen('deploy.servers', $scope)
+		.on('update', function(d) {
+			for (var x in $scope.servers) {
+				if ($scope.servers[x].id_deploy_server == d.id_deploy_server) {
+					$scope.servers[x] = d;
+				}
+			}
+
+		}).on('create', function(d) {
+			updateServers();
+		});
+
+	updateServers();
+	updateVersions();
 	
 	$scope.cancel = function(id) {
 		DeployService.version.cancel(id, update);
 	};
-
-	$scope.updater = $interval(update, 5000);
-	$scope.$on('$destroy', function() {
-		$interval.cancel($scope.updater);
-	});
 });
 
 NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, SocketService, DeployService, $interval, MainNavigationService, DateTimeService) {
@@ -74,16 +96,21 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, SocketServi
 	DeployService.server.get($routeParams.id, function(d) {
 		$scope.server = d;
 		
-		SocketService.listen('deploy.server.' + d.id_deploy_server + '.versions', $scope).on('update', function(d) {
-			console.log('version')
-			updateVersions();
-		});
+		SocketService.listen('deploy.server.' + d.id_deploy_server + '.versions', $scope)
+			.on('update', function(d) {
+				for (var x in $scope.versions) {
+					if ($scope.versions[x].id_deploy_version == d.id_deploy_version) {
+						$scope.versions[x] = d;
+					}
+				}
+
+			}).on('create', function(d) {
+				updateVersions();
+			});
 		
 		SocketService.listen('deploy.server.' + d.id_deploy_server, $scope).on('update', function(d) {
-			console.log('server');
 			$scope.server = d;
 		});
-
 	});
 
 	$scope.saveDeploy = function() {

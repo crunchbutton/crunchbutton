@@ -25,24 +25,31 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 		
 
 		
-		var listener = {
-			group: group,
-			scope: scope,
-			on: function(evt, fn) {
+		var Listener = function(group, scope) {
+			this.group = group;
+			this.scope = scope;
+			
+			var self = this;
+
+			this.on = function(evt, fn) {
 				var event = group + '.' + evt;
-				console.log(event);
-				service.socket.forward(event, scope);	
+				console.debug('Listening to ' + this.group + ' for ' + event);
+
+				service.socket.forward(event, self.scope);	
 				scope.$on('socket:' + event, function (ev, data) {
-					console.debug(ev, data);
+
+					console.debug('Recieved event', ev, data, self.group);
+
 					scope.$apply(function() {
-						fn(data, event);
+						fn(data, evt);
 					});
 				});
-				return listener;
+
+				return this;
 			}
 		};
 
-		return listener;
+		return new Listener(group, scope);
 	};
 	
 	service.socket.on('connect', function (data) {

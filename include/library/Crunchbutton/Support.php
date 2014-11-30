@@ -441,7 +441,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$this->save();
 		}
 		
-		Chat::emit([
+		Event::emit([
 			'room' => [
 				'ticket.'.$this->id_support,
 				'ticket.all'
