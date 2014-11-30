@@ -3,7 +3,7 @@ class Controller_api_test_chat extends Crunchbutton_Controller_Account {
 	public function init() {
 
 		$version = Deploy_Version::o(15);
-		$version->version = 'poo';
+		$version->version = 'pooasdasdsdsdsd';
 		$version->save();
 
 		echo $res;
