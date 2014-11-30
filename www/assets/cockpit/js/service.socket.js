@@ -23,14 +23,19 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 			//service.socket.emit('event.unsubscribe', group);
 		});
 		
+
+		
 		var listener = {
 			group: group,
 			scope: scope,
 			on: function(evt, fn) {
-				service.socket.forward(evt, scope);	
-				scope.$on('socket:' + evt, function (ev, data) {
+				var event = group + '.' + evt;
+				console.log(event);
+				service.socket.forward(event, scope);	
+				scope.$on('socket:' + event, function (ev, data) {
+					console.debug(ev, data);
 					scope.$apply(function() {
-						fn(data);
+						fn(data, event);
 					});
 				});
 				return listener;

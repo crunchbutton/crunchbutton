@@ -74,7 +74,6 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			}
 		};
 
-	
 		var update = function() {
 			scope.loading = true;
 			updater();

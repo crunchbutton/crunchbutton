@@ -42,7 +42,7 @@ NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployService, Ma
 	});
 });
 
-NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployService, $interval, MainNavigationService, DateTimeService) {
+NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, SocketService, DeployService, $interval, MainNavigationService, DateTimeService) {
 
 	$scope.deploy = {
 		date: DateTimeService.local(new Date).format('YYYY-MM-DD HH:mm:ss Z'),
@@ -63,43 +63,50 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, DeployServi
 		name: $routeParams.id
 	};
 
-	var update = function() {
-		DeployService.server.get($routeParams.id, function(d) {
-			$scope.server = d;
-		});
+	var updateVersions = function() {
 		DeployService.server.versions($routeParams.id, function(d) {
 			$scope.versions = d;
 		});	
-		
-		$scope.saveDeploy = function() {
-			if ($scope.deploying) {
-				return;
-			}
-			$scope.deploying = true;
-
-			var version = {
-				date: DateTimeService.server($scope.deploy.date).format('YYYY-MM-DD HH:mm:ss Z'),
-				id_deploy_server: $routeParams.id,
-				version: $scope.deploy.version
-			};
-
-			DeployService.version.post(version, function(d) {
-				$scope.deploying = false;
-				MainNavigationService.link('/deploy/version/' + d.id_deploy_version);
-			});
-		};
 	};
 	
-	update();
+	updateVersions();
+	
+	DeployService.server.get($routeParams.id, function(d) {
+		$scope.server = d;
+		
+		SocketService.listen('deploy.server.' + d.id_deploy_server + '.versions', $scope).on('update', function(d) {
+			console.log('version')
+			updateVersions();
+		});
+		
+		SocketService.listen('deploy.server.' + d.id_deploy_server, $scope).on('update', function(d) {
+			console.log('server');
+			$scope.server = d;
+		});
+
+	});
+
+	$scope.saveDeploy = function() {
+		if ($scope.deploying) {
+			return;
+		}
+		$scope.deploying = true;
+
+		var version = {
+			date: DateTimeService.server($scope.deploy.date).format('YYYY-MM-DD HH:mm:ss Z'),
+			id_deploy_server: $routeParams.id,
+			version: $scope.deploy.version
+		};
+
+		DeployService.version.post(version, function(d) {
+			$scope.deploying = false;
+			MainNavigationService.link('/deploy/version/' + d.id_deploy_version);
+		});
+	};
 	
 	$scope.cancel = function(id) {
 		DeployService.version.cancel(id, update);
 	};
-	
-	$scope.updater = $interval(update, 5000);
-	$scope.$on('$destroy', function() {
-		$interval.cancel($scope.updater);
-	});
 });
 
 NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployService, $interval, SocketService) {
@@ -114,5 +121,4 @@ NGApp.controller('DeployVersionCtrl', function ($scope, $routeParams, DeployServ
 	$scope.cancel = function(id) {
 		DeployService.version.cancel(id, update);
 	};
-
 });
