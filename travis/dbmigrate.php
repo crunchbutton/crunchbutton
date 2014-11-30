@@ -22,13 +22,14 @@ foreach ($files as $file) {
 	$ret = implode("\n", $o);
 
 	if (preg_match('/ERROR [0-9]+/', $ret)) {
-		$error = true;
+		$error = $ret;
+		break;
 	}
 	echo "\n";
 }
 
 if ($error) {
-	exit(1);
+	exit($error);
 } else {
 	exit(0);
 }
