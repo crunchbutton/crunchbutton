@@ -168,10 +168,12 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	};
 
 
-	service.scroll = function() {
-		$('.support-chat-contents-scroll').stop(true,false).animate({
-			scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
-		}, 1800);
+	service.scroll = function(instant) {
+		setTimeout(function() {
+			$('.support-chat-contents-scroll').stop(true,false).animate({
+				scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
+			}, instant ? 0 : 800);			
+		}, 100);
 	};
 
 	return service;
