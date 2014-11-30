@@ -172,7 +172,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'PexCardCtrl',
 			templateUrl: 'assets/view/pexcard.html'
 		})
-		.when('/pexcard/card', {
+		.when('/pexcard/card/:id?', {
 			action: 'pexcard',
 			controller: 'PexCardIdCtrl',
 			templateUrl: 'assets/view/pexcard-pex-id.html'
