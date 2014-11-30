@@ -75,7 +75,7 @@ app.post('/', function (req, res) {
 
 app.all('*', function (req, res) {
 	res.redirect(302, 'https://cockpit.la/');
-})
+});
 
 io.on('connection', function (socket) {
 	var addedUser = false;

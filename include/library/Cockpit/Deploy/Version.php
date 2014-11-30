@@ -44,6 +44,15 @@ class Cockpit_Deploy_Version extends Cana_Table {
 		');
 		return $que;
 	}
+	
+	public function save() {
+		parent::save();
+		$res = Chat::emit([
+			'room' => [
+				'deploy.version.'.$this->id_deploy_version,
+			]
+		], 'update', $this->exports());
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
