@@ -69,7 +69,7 @@
 					<td>$ {{driver.card_amount | formatPrice}}</td>
 					<td>
 						<div ng-repeat="card in driver.cards">
-							{{card.card_serial}}
+							<a href="/pexcard/card/{{card.card_serial}}">{{card.card_serial}}</a>
 						</div>
 					</td>
 					<td>
