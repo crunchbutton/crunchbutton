@@ -1,7 +1,7 @@
 <?php
 
-class Crunchbutton_Chat {
-	public static function emit($to, $event, $payload = []) {
+class Crunchbutton_Event {
+	public static function q($payload) {
 
 		if (!c::config()->site->config('chat-server')->val()) {
 			throw new Exception('No chat server defined. (chat-server)');
@@ -16,9 +16,9 @@ class Crunchbutton_Chat {
 		}
 
 		$data = json_encode([
-			'to' => $to,
-			'event' => $event,
-			'payload' => $payload,
+			'to' => $payload->to,
+			'event' => $payload->event,
+			'payload' => $payload->payload,
 			'_key' => c::config()->site->config('chat-server-key')->val()
 		]);
 
@@ -36,5 +36,14 @@ class Crunchbutton_Chat {
 		curl_close($ch);
 
 		return $res;	
+	}
+	
+	public static function emit($to, $event, $payload = []) {
+
+		$work = new Event_Payload($to, $event, $payload);
+
+		c::timeout(function() use($work) {
+			Event::q($work);
+		});
 	}
 }

@@ -46,25 +46,18 @@ class Cockpit_Deploy_Version extends Cana_Table {
 	}
 	
 	public function save() {
+
+		$new = $this->id_deploy_version ? false : true;
+
 		parent::save();
 
-		Chat::emit([
+		$res = Event::emit([
 			'room' => [
-				'deploy.version.'.$this->id_deploy_version
-			]
-		], 'deploy.version.'.$this->id_deploy_version.'.update', $this->exports());
-		
-		Chat::emit([
-			'room' => [
-				'deploy.versions'
-			]
-		], 'deploy.versions.update', $this->exports());
-		
-		Chat::emit([
-			'room' => [
+				'deploy.version.'.$this->id_deploy_version,
+				'deploy.versions',
 				'deploy.server.'.$this->id_deploy_server.'.versions'
 			]
-		], 'deploy.server.'.$this->id_deploy_server.'.versions.update', $this->exports());
+		], $new ? 'create' : 'update', $this->exports());
 	}
 
 	public function __construct($id = null) {
