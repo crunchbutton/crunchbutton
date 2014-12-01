@@ -2,13 +2,11 @@
 
 class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 	public static function route($request) {
-print_r($request);
+
 		$from = Phone::clean($request['From']);
 		$to = Phone::clean($request['To']);
 		$body = trim($request['Body']);
 		$admin = Admin::getByPhone($from, true);
-		
-		print_r($admin);
 
 		if (!$from || !$body) {
 			// error
