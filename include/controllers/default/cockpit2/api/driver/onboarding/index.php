@@ -15,7 +15,13 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 				case 'phone_types':
 					$out = [];
 					$out[ 'options' ] = Cockpit_Driver_Info::phoneTypes();
-					$out[ 'default' ] = Cockpit_Driver_Info::phoneTypesDefault();
+					$out[ 'default' ] = Cockpit_Driver_Info::phoneTypeDefault();
+					echo json_encode( $out );exit();
+					break;
+				case 'carrier_types':
+					$out = [];
+					$out[ 'options' ] = Cockpit_Driver_Info::carrierTypes();
+					$out[ 'other' ] = Cockpit_Driver_Info::carrierTypeOther();
 					echo json_encode( $out );exit();
 					break;
 			}

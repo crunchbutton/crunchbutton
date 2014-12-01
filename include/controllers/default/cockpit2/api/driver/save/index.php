@@ -126,6 +126,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver_info->phone_type = $this->request()[ 'phone_type' ];
 		$driver_info->cell_carrier = $this->request()[ 'cell_carrier' ];
+		$driver_info->cell_carrier = ( $this->request()[ 'carrier_type' ] == Cockpit_Driver_Info::CARRIER_TYPE_OTHER ? $this->request()[ 'carrier_type_other' ] : $this->request()[ 'carrier_type' ] );
 		$driver_info->address = $this->request()[ 'address' ];
 
 		if( $this->request()[ 'pexcard_date' ] ){

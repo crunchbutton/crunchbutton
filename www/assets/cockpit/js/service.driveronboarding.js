@@ -24,6 +24,11 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			}
 		);
 
+	var carrier_types = $resource( App.service + 'driver/onboarding/carrier_types', {}, {
+				'options' : { 'method': 'GET' }
+			}
+		);
+
 	// documents resource
 	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document/:id_driver_document_status/:page/:disapprove', { id_admin: '@id_admin', id_driver_document: '@id_driver_document', id_driver_document_status: '@id_driver_document_status', page: '@page', disapprove:'@disapprove' }, {
 				'status' : { 'method': 'GET', params : { action : null }, isArray: true },
@@ -46,6 +51,14 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			callback( json );
 		} );
 	}
+
+	service.carrier_types = function( callback ){
+		carrier_types.options( {}, function( json ){
+			callback( json );
+		} );
+	}
+
+
 
 	service.yesNo = function(){
 		var options = [];
