@@ -1,5 +1,5 @@
 
-NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, LocationService, AccountService, PushService) {
+NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, LocationService, AccountService, PushService, favicoService) {
 
 	var service = {
 		date: null,
@@ -45,6 +45,8 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 				$rootScope.$broadcast('newOrders', data.orders['new']);
 				$rootScope.$broadcast('acceptedOrders', data.orders['accepted']);
 				$rootScope.$broadcast('pickedupOrders', data.orders['pickedup']);
+
+				favicoService.badge((parseInt(data.tickets) + parseInt(data.orders['new'])) || 0);
 			});
 		}
 	}
