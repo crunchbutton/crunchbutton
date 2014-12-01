@@ -2,7 +2,7 @@
 	
 class Crunchbutton_Message_Incoming_Response extends Cana_Model {
 	public static function twilioSms($response, $from) {
-		//header('Content-type: text/xml');
+		header('Content-type: text/xml');
 
 		if ($response) {
 			foreach ($response as $res) {
