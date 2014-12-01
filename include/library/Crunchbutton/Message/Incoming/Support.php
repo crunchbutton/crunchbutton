@@ -18,7 +18,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		$this->body = $params['body'];
 		$this->from = $params['from'];
 		$response = [];
-		
+
 		/*
 		$session = Session_Twilio::o($action['session']);
 		$session->twilio_id = $params['sid'];
@@ -64,15 +64,15 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	}
 	
 	public function reply() {
-		$this->support->addAdminMessage( [ 'phone' => $this->from, 'body' => $this->body ] );
+		$this->support->addAdminMessage( [ 'phone' => $this->from, 'body' => $this->message ] );
 		$this->log( [ 'action' => 'saving the answer', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $this->support->phone,
-			'message' => $this->message
+			'message' => $this->admin->firstName() . ': '.$this->message
 		]);
 
-		self::notifyReps($this->admin->name . ' replied to #' . $this->support->id_support . ': ' . $this->body, $support);
+		self::notifyReps($this->admin->name . ' replied to #' . $this->support->id_support . ': ' . $this->message, $support);
 	}
 	
 	public function details() {
