@@ -6,7 +6,6 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 	// I created this method so I can fake live
 	public function env(){
-		return 'live';
 		return ( c::getEnv() == 'live' ) ? 'live' : 'beta';
 	}
 
