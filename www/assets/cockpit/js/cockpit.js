@@ -332,7 +332,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 	// only use html5 enabled location stuff if its not in a phonegap container
 	//$locationProvider.html5Mode(!App.isPhoneGap);
 	// @test
-	$locationProvider.html5Mode(true);
+	$locationProvider.html5Mode({
+		enabled: true,
+  	requireBase: false
+	});
 }]);
 
 // global route change items
