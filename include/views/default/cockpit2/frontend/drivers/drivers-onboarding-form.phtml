@@ -90,12 +90,19 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.driverCellCarrier.$invalid}">
+			<li class="li-input" ng-class="{'error':form.driverCarrierType.$invalid}">
 				<div class="label">Cell Carrier:</div>
-				<div class="input"><input type="text" name="driverCellCarrier" ng-model="driver.cell_carrier" required placeholder="Cell Carrier" ng-maxlength="40"></div>
+				<select name="driverCarrierType" required ng-model="driver.carrier_type" ng-options="opt as opt for opt in carrier_types" class="cart-customize-select"></select>
 				<div class="box-error">
-					<small ng-show="form.driverCellCarrier.$error.required">Required.</small>
-					<small ng-show="form.driverCellCarrier.$error.maxlength">Name cannot be longer than 40 characters.</small>
+					<small ng-show="form.driverCarrierType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-if="carrier_type_other && driver.carrier_type == carrier_type_other" ng-class="{'error':form.driverCarrierTypeOther.$invalid}">
+				<div class="label">Cell Carrier (Other):</div>
+				<div class="input"><input type="text" name="driverCarrierTypeOther" ng-model="driver.carrier_type_other" required="driver.carrier_type == carrier_type_other" placeholder="Cell Carrier" ng-maxlength="40"></div>
+				<div class="box-error">
+					<small ng-show="form.driverCarrierTypeOther.$error.required">Required.</small>
 				</div>
 			</li>
 

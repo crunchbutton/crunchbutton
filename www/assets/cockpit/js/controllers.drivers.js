@@ -632,6 +632,11 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope.phone_types = json.options;
 		} );
 
+		DriverOnboardingService.carrier_types( function( json ){
+			$scope.carrier_types = json.options;
+			$scope.carrier_type_other = json.other;
+		} );
+
 	}
 
 	$scope.notify = function(){
@@ -852,7 +857,7 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 	$scope.download = function( id_driver_document_status ){
 		DriverOnboardingService.docs.download( id_driver_document_status );
 	}
-	
+
 
 
 
