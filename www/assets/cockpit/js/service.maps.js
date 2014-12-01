@@ -1,4 +1,4 @@
-NGApp.factory('MapService', function($rootScope, $resource, $routeParams, OrderService) {
+NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templateRequest, $timeout, $compile, OrderService) {
 	var service = {
 		icon: {
 			car: {
@@ -63,22 +63,36 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, OrderS
 	
 	service.trackOrders = function(params) {
 		var map = params.map;
+		
+		var closeInfoWindows = function() {
+			for (var x in maps[params.id].infoWindows) {
+				maps[params.id].infoWindows[x].close();
+			}
+		}
 
 		if (!maps[params.id]) {
 			maps[params.id] = {
-				markers: []
+				markers: [],
+				infoWindows: []
 			};
 			params.scope.$on('$destroy', function() {
 				service.reset(params.id);
 			});
+
+			google.maps.event.addListener(map, 'click', closeInfoWindows);
 		}
-		console.log(maps[params.id].markers);
+
 		for (var x in maps[params.id].markers) {
 			maps[params.id].markers[x].setMap(null);
 		}
 		maps[params.id].markers = [];
-		console.log(maps[params.id].markers);
 		
+		for (var x in maps[params.id].infoWindows) {
+			maps[params.id].infoWindows[x].close();
+			maps[params.id].infoWindows[x] = null;
+		}
+		maps[params.id].infoWindows = [];
+
 		var latlngbounds = new google.maps.LatLngBounds();
 		var updateBounds = function(loc) {
 			latlngbounds.extend(loc);
@@ -95,7 +109,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, OrderS
 			geocoder.geocode({address: address}, function (results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					console.debug('Got geocoded result: ', results[0]);
-					markOrder(results[0].geometry.location);
+					markOrder(order, results[0].geometry.location);
 					
 					// update the order with the lat and lon so we never have to geocode the address again
 					OrderService.put({
@@ -113,16 +127,44 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, OrderS
 			});
 		};
 		
-		var markOrder = function(loc) {
+		var markOrder = function(order, loc) {
 			updateBounds(loc);
 
-			maps[params.id].markers.push(new google.maps.Marker({
-				map: map,
-				position: loc,
-				zIndex: 99,
-				animation: google.maps.Animation.DROP,
-				icon: service.icon.customer
-			}));
+
+			$templateRequest('assets/view/mapview-order-info.html').then(function(d) {
+				var orderScope = params.scope.$new(true);
+				orderScope.order = order;
+
+				var template = angular.element(d);
+				var linkFn = $compile(d);
+				var element = linkFn(orderScope);
+				
+				$timeout(function() {
+					orderScope.$apply();
+					var infowindow = new google.maps.InfoWindow({
+						content: element[0].innerHTML
+					});
+					
+					var marker = new google.maps.Marker({
+						map: map,
+						position: loc,
+						zIndex: 99,
+						animation: google.maps.Animation.DROP,
+						icon: service.icon.customer
+					});
+		
+					maps[params.id].markers.push(marker);
+					maps[params.id].infoWindows.push(infowindow);
+		
+					google.maps.event.addListener(marker, 'click', function() {
+						closeInfoWindows();
+						infowindow.open(map, marker);
+					});
+				})
+
+				
+
+			});
 		}
 		
 		var trackOrder = function(order) {
@@ -130,7 +172,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, OrderS
 				return;
 			}
 			if (order.lat && order.lon) {
-				markOrder(new google.maps.LatLng(parseFloat(order.lat), parseFloat(order.lon)));
+				markOrder(order, new google.maps.LatLng(parseFloat(order.lat), parseFloat(order.lon)));
 			} else {
 				getGeo(order.id_order, order.address, 0);
 			}

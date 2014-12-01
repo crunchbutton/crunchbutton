@@ -70,7 +70,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 	});
 });
 
-NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService) {
+NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService, SocketService) {
 	
 	SocketService.listen('order.' + $routeParams.id, $scope)
 		.on('update', function(d) {

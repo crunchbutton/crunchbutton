@@ -11,13 +11,17 @@ class Cana_Controller_Rest extends Cana_Controller {
         }
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
+	        
+	        $contentType = explode(';',trim($_SERVER['CONTENT_TYPE']));
+	        $contentType = trim($contentType[0]);
+
             switch ($_SERVER['REQUEST_METHOD']) {
                 case 'PUT':
                 case 'DELETE':
-                    if ($_SERVER['CONTENT_TYPE'] === 'application/x-www-form-urlencoded') {
+                    if ($contentType === 'application/x-www-form-urlencoded') {
                         parse_str($this->getContent(), $this->request);
 
-                    } elseif ($_SERVER['CONTENT_TYPE'] === 'application/json') {
+                    } elseif ($contentType === 'application/json') {
                         $content = $this->getContent();
 
                         $request = json_decode($content,'array');
@@ -33,24 +37,26 @@ class Cana_Controller_Rest extends Cana_Controller {
                     break;
 
                 case 'GET':
-                    if ($_SERVER['CONTENT_TYPE'] === 'application/x-www-form-urlencoded' || !$_SERVER['CONTENT_TYPE']) {
+                    if ($contentType === 'application/x-www-form-urlencoded' || !$contentType) {
                         $this->request = $_GET;
-                    } elseif ($_SERVER['CONTENT_TYPE'] === 'application/json') {
+                    } elseif ($contentType === 'application/json') {
                         $this->request = $this->getRawRequest();
                     }
                     break;
 
                 case 'POST':
-                    if ($_SERVER['CONTENT_TYPE'] === 'application/json') {
+                    if ($contentType === 'application/json') {
                         $this->request = json_decode($this->getContent(), 'array');
                     /* Found a case where the CONTENT_TYPE was 'application/x-www-form-urlencoded; charset=UTF-8'
                      *
                      * @todo Is there any case where we do not set the $request to $_POST nor the json?
                      * If not, there there should be OK to use the fallback scenario
                      */
-                    // } elseif ($_SERVER['CONTENT_TYPE'] === 'application/x-www-form-urlencoded') {
-                    } else  {
+                    } elseif ($contentType === 'application/x-www-form-urlencoded') {
                         $this->request = $_POST;
+                    } else {
+	                    $content = $this->getContent();
+	                    parse_str($content, $this->request);
                     }
                     break;
             }

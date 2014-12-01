@@ -558,7 +558,7 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 	$scope.focus('#search');
 });
 
-NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, $fileUploader, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
@@ -697,15 +697,14 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 	// Upload control stuff
 	$scope.doc_uploaded = 0;
+	var uploader = $scope.uploader = new FileUploader({
+		url: '/api/driver/documents/upload/'
+	});
 
-	var uploader = $scope.uploader = $fileUploader.create({
-									scope: $scope,
-									url: '/api/driver/documents/upload/',
-									filters: [ function( item ) { return true; } ]
-								} );
 
-	uploader.bind( 'success', function( event, xhr, item, response ) {
+	uploader.onSuccessItem = function(fileItem, response, status, headers) {
 		$scope.$apply();
+
 		if( response.success ){
 			var doc = { id_admin : $scope.driver.id_admin, id_driver_document : $scope.doc_uploaded, file : response.success };
 			DriverOnboardingService.docs.save( doc, function( json ){
@@ -721,11 +720,11 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		} else {
 			$scope.flash.setMessage( 'File not saved: ' + json.error );
 		}
-	});
+	};
 
-	uploader.bind('error', function (event, xhr, item, response) {
+	uploader.onErrorItem = function (fileItem, response, status, headers) {
 		App.alert( 'Upload error, please try again or send us a message.' );
-	});
+	};
 
 	$scope.download = function( id_driver_document_status ){
 		DriverOnboardingService.docs.download( id_driver_document_status );
@@ -779,7 +778,7 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 
 } );
 
-NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, DriverOnboardingService, StaffService ) {
+NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnboardingService, StaffService) {
 
 	$scope.ready = false;
 	$scope.status = {};
@@ -853,6 +852,9 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 	$scope.download = function( id_driver_document_status ){
 		DriverOnboardingService.docs.download( id_driver_document_status );
 	}
+	
+
+
 
 } );
 
