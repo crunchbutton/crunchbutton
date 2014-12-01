@@ -15,7 +15,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		return $out;
 	}
-	
+
 	public function status() {
 		// get the work status
 		$status = [
@@ -29,7 +29,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $status;
 	}
-	
+
 	public function locations() {
 		if (!isset($this->_locations)) {
 			$this->_locations = Admin_Location::q('
@@ -101,7 +101,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $this->_deliveries;
 	}
-	
+
 	public function exports($params = []) {
 		$out = parent::exports($params);
 		$out['shifts'] = [];
@@ -115,10 +115,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		if ($next) {
 			foreach ($next as $shift) {
 				$shift = $shift->exports();
-				
+
 				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
 				$start = $date->getTimestamp();
-				
+
 				if ($start <= time() ) {
 					$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
 					$end = $date->getTimestamp();
@@ -133,10 +133,15 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$out['shifts'][] = $shift;
 			}
 		}
-		
+
 		$out['status'] = $this->status();
 
 		return $out;
+	}
+
+	// return the last added pexcard
+	public function pexcard(){
+		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = "' . $this->id_admin . '" ORDER BY id_admin_pexcard DESC' )->get( 0 );
 	}
 
 }
