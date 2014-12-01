@@ -48,8 +48,14 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 				Message_Incoming_Response::twilioSms($msg, $to);
 				exit;
 			}
+			
+			foreach ($msg as $m) {
+				if ($m->stop) {
+					exit;
+				}
+			}
 		}
-		
+
 		// routing for incoming support messges
 		$msg[] = (new Message_Incoming_Customer($params))->response;
 		if ($msg) {
