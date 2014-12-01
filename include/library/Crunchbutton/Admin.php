@@ -316,13 +316,13 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $this->_isDriver;
 	}
-	
+
 	public function isSupport() {
 		if (!isset($this->_isSupport)) {
 			$result = c::db()->get('
-				SELECT COUNT(*) AS Total FROM admin_group ag 
+				SELECT COUNT(*) AS Total FROM admin_group ag
 				LEFT JOIN `group` g using (id_group)
-				WHERE ag.id_admin = ' . $this->id_admin . ' 
+				WHERE ag.id_admin = ' . $this->id_admin . '
 				AND g.name="'.Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ).'"
 			');
 			$this->_isSupport = ( $result->_items[0]->Total > 0 );
