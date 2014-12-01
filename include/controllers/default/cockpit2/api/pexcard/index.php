@@ -94,15 +94,15 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 		if( $crunchbutton_id ){
 			$cards = Crunchbutton_Pexcard_Card::card_list();
+
 			if( is_array( $cards->body ) ){
 				foreach( $cards->body as $card ){
-					if( $card->lastName == $crunchbutton_id ){
+					if( intval( $card->lastName ) == intval( $crunchbutton_id ) ){
 						$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
 						if( !$admin_pexcard->id_admin ){
-
-							$_cards = $card->cards;
-							foreach( $_cards as $_card ){
-								if( strpos( $_card->cardNumber, $last_four_digits ) ){
+							foreach( $card->cards as $_card ){
+								$card_number = str_replace( 'X', '', $_card->cardNumber );
+								if( intval( $card_number ) == intval( $last_four_digits ) ){
 									echo json_encode( $card );exit;
 								}
 							}
