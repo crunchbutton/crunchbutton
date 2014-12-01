@@ -2665,8 +2665,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
-	
-	
+
+
 	public function eta($refresh = false) {
 		if (!isset($this->_eta) || $refresh) {
 			$eta = Order_Eta::q('select * from order_eta where id_order="'.$this->id_order.'" order by date desc limit 1')->get(0);
@@ -2677,7 +2677,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		return $this->_eta;
 	}
-	
+
 	public function ordersExports() {
 		$out = $this->exports();
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
@@ -2689,7 +2689,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		return $out;
 	}
-	
+
 	public function save() {
 		$new = $this->id_order ? false : true;
 
