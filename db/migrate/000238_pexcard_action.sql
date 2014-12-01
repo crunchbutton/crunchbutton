@@ -22,3 +22,8 @@ CREATE TABLE `pexcard_action` (
   CONSTRAINT `pexcard_action_ibfk_4` FOREIGN KEY (`id_admin_pexcard`) REFERENCES `admin_pexcard` (`id_admin_pexcard`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `pexcard_action_ibfk_5` FOREIGN KEY (`id_admin_shift_assign`) REFERENCES `admin_shift_assign` (`id_admin_shift_assign`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'pex-amount-shift-start','10.00');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'pex-card-funds-shift-enable','0');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'pex-card-funds-order-enable','0');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'pex-card-funds-order-enable-for-cash','0');

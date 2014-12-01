@@ -36,11 +36,13 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 	public function removeFundsOrderCancelled( $id_order ){
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE ) ) > 0 ){
 			$order = Crunchbutton_Order::o( $id_order );
-			if( ( $order->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ) ||
-					intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH ) ) > 0 ){
-				$amount = number_format( floatval( $order->price + $order->tax() ), 2 );
-				$amount = $amount * -1;
-				return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED, 'id_order' => $id_order, 'amount' => $amount ] );
+			if( !Crunchbutton_Pexcard_Action::checkOrderReturnedFunds( $id_order, $this->id_admin ) ){
+				if( ( $order->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ) ||
+						intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH ) ) > 0 ){
+					$amount = number_format( floatval( $order->price + $order->tax() ), 2 );
+					$amount = $amount * -1;
+					return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED, 'id_order' => $id_order, 'amount' => $amount ] );
+				}
 			}
 		}
 	}
@@ -48,21 +50,25 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 	public function addFundsOrderAccepeted( $id_order ){
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE ) ) > 0 ){
 			$order = Crunchbutton_Order::o( $id_order );
-			if( ( $order->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ) ||
-					intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH ) ) > 0 ){
-				$amount = number_format( floatval( $order->price + $order->tax() ), 2 );
-				return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED, 'id_order' => $id_order, 'amount' => $amount ] );
+			if( !Crunchbutton_Pexcard_Action::checkOrderReceivedFunds( $id_order, $this->id_admin ) ){
+				if( ( $order->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ) ||
+						intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH ) ) > 0 ){
+					$amount = number_format( floatval( $order->price + $order->tax() ), 2 );
+					return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED, 'id_order' => $id_order, 'amount' => $amount ] );
+				}
 			}
 		}
 	}
 
 	public function removeFundsShiftFinished( $id_admin_shift_assign ){
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ) ) > 0 ){
-			$card = $this->load_card_info();
-			if( $card && $card->availableBalance ){
-				$amount = $card->availableBalance;
-				$amount = $amount * -1;
-				return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED, 'id_admin_shift_assign' => $id_admin_shift_assign, 'amount' => $amount ] );
+			if( !Crunchbutton_Pexcard_Action::checkShiftReturnedFunds( $id_admin_shift_assign ) ){
+				$card = $this->load_card_info();
+				if( $card && $card->availableBalance ){
+					$amount = $card->availableBalance;
+					$amount = $amount * -1;
+					return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED, 'id_admin_shift_assign' => $id_admin_shift_assign, 'amount' => $amount ] );
+				}
 			}
 		}
 	}
@@ -71,8 +77,11 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ) ) > 0 ){
 			$config = Crunchbutton_Config::getConfigByKey( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START );
 			if( $config->value ){
-				$amount = number_format( floatval( $config->value ), 2 );
-				return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED, 'id_admin_shift_assign' => $id_admin_shift_assign, 'amount' => $amount ] );
+				// Make sure the haven't received funds yet
+				if( !Crunchbutton_Pexcard_Action::checkShiftReceivedFunds( $id_admin_shift_assign ) ){
+					$amount = number_format( floatval( $config->value ), 2 );
+					return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED, 'id_admin_shift_assign' => $id_admin_shift_assign, 'amount' => $amount ] );
+				}
 			}
 		}
 	}
