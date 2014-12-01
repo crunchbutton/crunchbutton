@@ -124,7 +124,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 		foreach ($verbs as $verb =>  $verbList) {
 			foreach ($verbList as $v) {
-				if (preg_match('/^((#)?([0-9]+) \/?('.$v.'))|(\/?('.$v.') (#)?([0-9]+))$/', $body, $matches)) {
+				if (preg_match('/^((#)?([0-9]+) \/?('.$v.'))$|^(\/?('.$v.') (#)?([0-9]+))$/i', $body, $matches)) {
 					if ($matches[5]) {
 						return ['verb' => $verb, 'order' => $matches[8]];
 					} elseif ($matches[1]) {
