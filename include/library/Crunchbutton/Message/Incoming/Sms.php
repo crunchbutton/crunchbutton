@@ -45,7 +45,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			}
 
 			if ($msg[0]->msg || ($msg[1] && $msg[1]->msg)) {
-				Message_Incoming_Response::twilioSms($msg);
+				Message_Incoming_Response::twilioSms($msg, $to);
 				exit;
 			}
 		}
@@ -53,7 +53,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 		// routing for incoming support messges
 		$msg[] = (new Message_Incoming_Customer($params))->response;
 		if ($msg) {
-			Message_Incoming_Response::twilioSms($msg);
+			Message_Incoming_Response::twilioSms($msg, $to);
 			exit;
 		}
 	}
