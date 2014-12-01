@@ -50,7 +50,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			}
 		}
 		
-		if ($msg[0] && $msg[0]->stop !== true) {
+		if (($msg[0] && $msg[0]->stop !== true) || ($msg[1] && $msg[1]->stop !== true)) {
 			// routing for incoming support messges
 			$msg[] = (new Message_Incoming_Customer($params))->response;
 			if ($msg) {
