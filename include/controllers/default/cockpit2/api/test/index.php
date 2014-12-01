@@ -3,6 +3,10 @@
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
+echo '<pre>';var_dump( mysql_real_escape_string( '111' ) );exit();
+
+// $user_auth = User_Auth::validateResetCode( '14qobk' );
+echo '<pre>';var_dump( $user_auth );exit();
 // die('hard');
 		// $card = Crunchbutton_Pexcard_Card::change_status( 133214, 'OPEN' );
 /*
