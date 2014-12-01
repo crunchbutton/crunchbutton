@@ -1,7 +1,6 @@
 NGApp.factory('favicoService', function() {
 	var favico = new Favico({
-		animation : 'popFade',
-		position : 'up'
+		animation : 'popFade'
 	});
 	
 	var prev = 0;
