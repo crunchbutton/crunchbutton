@@ -262,6 +262,14 @@ class Crunchbutton_User extends Cana_Table {
 		return false;
 	}
 
+	public function firstName(){
+		$name = explode( ' ', $this->name );
+		if( trim( $name[ 0 ] ) != '' ){
+			return $name[ 0 ];
+		}
+		return $this->name;
+	}
+
 	public function creditsExport(){
 		$credits = $this->credits();
 		$out = array();
@@ -302,7 +310,7 @@ class Crunchbutton_User extends Cana_Table {
 			return strtoupper($rnd_id);
 		}
 	}
-	
+
 	private static function _inviteCodePartGenerator($chars = '123456789qwertyupasdfghjklzxcvbnm', $len = 0) {
 		if ($chars == 'a-z') {
 			$chars = 'qwertyupasdfghjklzxcvbnm';
@@ -349,7 +357,7 @@ class Crunchbutton_User extends Cana_Table {
 		}
 		return $this->_image;
 	}
-	
+
 	public static function uuid($uuid) {
 		return self::q('select * from `user` where uuid="'.$uuid.'"')->get(0);
 	}

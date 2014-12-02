@@ -26,23 +26,24 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		Log::debug( [ 'action' => 'notification starting', 'driver' => $id_admin, 'phone' => $phone, 'message' => $message, 'type' => 'drivers-onboarding'] );
 
 		$username = $driver->login;
+		$first_name = Crunchbutton_Message_Sms::greeting( $driver->firstName() );
 
 		// Pre defined messages
 		switch ( $message ) {
 			case Cockpit_Driver_Notify::TYPE_WELCOME:
 				$message_type = Cockpit_Driver_Notify::TYPE_WELCOME;
-				$message = "Your username is {$username}. Url cockpit.la/setup/{$phone}";
+				$message = $first_name . "Your username is {$username}. Url cockpit.la/setup/{$phone}";
 				break;
 
 			case Cockpit_Driver_Notify::TYPE_SETUP:
 				$message_type = Cockpit_Driver_Notify::TYPE_SETUP;
-				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
+				$message = $first_name . 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
 				$message .="\n" . 'If you have any questions, just text us directly at _PHONE_.';
 				break;
 
 			case Cockpit_Driver_Notify::TYPE_ACCESS_INFO:
 				$message_type = Cockpit_Driver_Notify::TYPE_ACCESS_INFO;
-				$message = "Your username is {$username}.";
+				$message = $first_name . "Your username is {$username}.";
 				$message .= "\n" . "Your password is {$additional}.";
 				$message .= "\n" . "Url http://cockpit.la/";
 				break;
