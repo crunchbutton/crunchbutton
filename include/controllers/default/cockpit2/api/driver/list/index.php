@@ -81,7 +81,7 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 
 	private function _pexcard(){
 		$out = [];
-		$drivers = Crunchbutton_Admin::q( 'SELECT a.name, a.id_admin FROM admin a INNER JOIN admin_payment_type apt ON apt.id_admin = a.id_admin WHERE apt.using_pex = 1 AND a.active = 1 ORDER BY a.name' );
+		$drivers = Crunchbutton_Admin::q( 'SELECT a.name, a.id_admin FROM admin a INNER JOIN admin_payment_type apt ON apt.id_admin = a.id_admin WHERE a.active = 1 ORDER BY a.name' );
 		foreach( $drivers as $drive ){
 			$out[] = [ 'id_admin' => intval( $drive->id_admin ), 'name' => $drive->name ];
 		}
