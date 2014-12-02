@@ -14,6 +14,7 @@ CREATE TABLE `phone_log` (
   `direction` enum('outgoing','incoming') DEFAULT NULL,
   PRIMARY KEY (`id_phone_log`),
   KEY `id_phone_to` (`id_phone_to`),
+  KEY `id_phone_from` (`id_phone_from`),
   CONSTRAINT `phone_log_ibfk_1` FOREIGN KEY (`id_phone_to`) REFERENCES `phone` (`id_phone`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `phone_log_ibfk_2` FOREIGN KEY (`id_phone_to`) REFERENCES `phone` (`id_phone`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `phone_log_ibfk_2` FOREIGN KEY (`id_phone_from`) REFERENCES `phone` (`id_phone`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
