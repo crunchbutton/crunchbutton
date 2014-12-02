@@ -1454,6 +1454,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if (!$this->timezone) {
 			$this->timezone = c::config()->timezone;
 		}
+		$this->phone = Phone::clean($this->phone);
 		return parent::save();
 	}
 	

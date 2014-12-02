@@ -234,6 +234,13 @@ class Crunchbutton_Notification extends Cana_Table
 	public function confirm() {
 
 	}
+	
+	public function save() {
+		if ($this->type == 'sms' || $this->type == 'fax') {
+			$this->value = Phone::clean($this->value);
+		}
+		return parent::save();
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
