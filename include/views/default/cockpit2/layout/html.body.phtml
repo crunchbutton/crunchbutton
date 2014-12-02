@@ -87,6 +87,15 @@
 					</table>
 				</a>
 
+				<a href="/drivers/docs/pexcard" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-pex-card')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-credit-card"></i></td>
+							<td class="side-menu-label">Activate PEX Card</a></td>
+						</tr>
+					</table>
+				</a>
+
 				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
