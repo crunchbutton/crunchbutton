@@ -891,12 +891,17 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $driver_info;
 	}
-	
+
 	public function save() {
 		$this->phone = Phone::clean($this->phone);
 		$this->txt = Phone::clean($this->txt);
 		$this->testphone = Phone::clean($this->testphone);
 		return parent::save();
+	}
+
+	// return the last added pexcard
+	public function pexcard(){
+		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = "' . $this->id_admin . '" ORDER BY id_admin_pexcard DESC' )->get( 0 );
 	}
 
 	public function __construct($id = null) {
