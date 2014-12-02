@@ -207,7 +207,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 							$url = 'http://' . $_SERVER['HTTP_HOST'] . '/reset/';
 
-							$message = "Your crunchbutton password reset code is '".$code."'.\n\n";
+							$message = Crunchbutton_Message_Sms::greeting( $user_auth->user()->firstName() );
+							$message .= "Your crunchbutton password reset code is '".$code."'.\n\n";
 							$message .= "Access ".$url." to reset your password.\n\n";
 
 							$id_user = $user_auth->user()->id_user;

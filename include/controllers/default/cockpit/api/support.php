@@ -27,7 +27,7 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 				}
 				break;
 			case 'send-sms':
-				$message = $this->request()[ 'message' ];
+				$message = Crunchbutton_Message_Sms::greeting() . $this->request()[ 'message' ];
 				$phones = explode( ';', $this->request()[ 'phones' ] );
 				foreach( $phones as $phone ){
 					Crunchbutton_Message_Sms::send([

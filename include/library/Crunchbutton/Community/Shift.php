@@ -473,24 +473,24 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 				// Sent on Sun at 6 PM PDT
 				else if ( $time >= 1800 && $time <= 1859 ){
-					$driversMessage = 'Don’t forget: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Got a question? Text us back.';
+					$driversMessage = '[name], Don’t forget: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Got a question? Text us back.';
 					$warningDrivers = true;
 				}
 				break;
 			case 'Monday':
 				// Sent on Mon at 10 AM PDT
 				if( $time >= 1000 && $time <= 1559 ){
-					$driversMessage = 'Remember: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PT';
+					$driversMessage = '[name], Remember: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PT';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 4 PM PDT
 				else if( $time >= 1600 && $time <= 1654 ){
-					$driversMessage = 'Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. If you have any questions, just text back.';
+					$driversMessage = '[name], Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. If you have any questions, just text back.';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 4:55 PM PDT
 				else if( $time >= 1655 && $time <= 1659 ){
-					$driversMessage = 'Reminder: your shift preferences are due in 5 min!! cockpit._DOMAIN_/schedule. Got a question? Text us back.';
+					$driversMessage = '[name], Reminder: your shift preferences are due in 5 min!! cockpit._DOMAIN_/schedule. Got a question? Text us back.';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 5 PM PDT - alert CS
@@ -589,7 +589,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		if( false && count( $communitiesWithoutShift ) > 0 ){
 
-			$message = 'The following communities doesn\'t have shifts for the current week: ' . join( ', ', $communitiesWithoutShift );
+			$message = Crunchbutton_Message_Sms::greeting() . 'The following communities doesn\'t have shifts for the current week: ' . join( ', ', $communitiesWithoutShift );
 
 			Crunchbutton_Message_Sms::send([
 				'to' => Crunchbutton_Support::getUsers(),
@@ -602,7 +602,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		if( $warningCS && count( $driversWillReceiveTheNotification ) > 0 ){
 
-			$message = count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit._DOMAIN_/drivers/shift/status/shift';
+			$message = Crunchbutton_Message_Sms::greeting() . count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit._DOMAIN_/drivers/shift/status/shift';
 
 			echo "Sending sms to support users...\n";
 
@@ -664,7 +664,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		echo $log."\n";
 		echo "\n";
 
-		$messagePattern = "Remember: you're scheduled to drive for Crunchbutton tomorrow, %s, from %s\nRemember to charge your phone!";
+		$messagePattern = Crunchbutton_Message_Sms::greeting() . "Remember: you're scheduled to drive for Crunchbutton tomorrow, %s, from %s\nRemember to charge your phone!";
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$now->modify( '+ 1 day' );
@@ -987,6 +987,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 
 								echo "Sending sms to ".$num."...\n";
+
+								$message = Crunchbutton_Message_Sms::greeting( $admin->firstName() ) . $message;
 
 								// #4060 - dont send from driver number
 								$rets = Crunchbutton_Message_Sms::send([

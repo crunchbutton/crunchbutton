@@ -273,7 +273,7 @@ class Crunchbutton_Promo extends Cana_Table
 
 				$this->note = 'Sent a track notification to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n\n" . $this->note;
 				$this->save();
-				
+
 				Crunchbutton_Message_Sms::send([
 					'to' => $phone,
 					'message' => $message
@@ -376,9 +376,9 @@ class Crunchbutton_Promo extends Cana_Table
 		$url = $serverUrl . '/giftcard/'. $gift->code;
 
 		if( $gift->restaurant()->id_restaurant ){
-			$message = "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}";
+			$message = Crunchbutton_Message_Sms::greeting() . "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}";
 		} else {
-			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}";
+			$message = Crunchbutton_Message_Sms::greeting() . "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}";
 		}
 
 		$gift->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;

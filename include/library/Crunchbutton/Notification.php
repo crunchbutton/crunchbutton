@@ -119,24 +119,27 @@ class Crunchbutton_Notification extends Cana_Table
 					$order->_confirm_trigger = true;
 					$order->queConfirmFaxWasReceived();
 				}
-				
+
 				return $fax->success;
 
 				break;
 
 			case 'sms':
-			
+
+				$message = Crunchbutton_Message_Sms::greeting( $order->user()->firstName() );
+				$message .= $order->message('sms');
+
 				Crunchbutton_Message_Sms::send([
 					'to' => $sms,
 					'from' => 'restaurant',
-					'message' => $order->message('sms')
+					'message' => $message
 				]);
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
 					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
 					if( !$order->restaurant()->hasFaxNotification() ){
-						$order->queConfirm();	
+						$order->queConfirm();
 					} else {
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'sms - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
@@ -189,7 +192,7 @@ class Crunchbutton_Notification extends Cana_Table
 					$order->_confirm_trigger = true;
 					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
 					if( !$order->restaurant()->hasFaxNotification() ){
-						$order->queConfirm();	
+						$order->queConfirm();
 					} else {
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'email - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
@@ -208,8 +211,8 @@ class Crunchbutton_Notification extends Cana_Table
 		if( $env != 'live' ){
 			return;
 		}
-		
-		$message = 'FAX Error: O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ').';
+
+		$message = Crunchbutton_Message_Sms::greeting() . 'FAX Error: O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ').';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
 		$message .= "\n";
@@ -234,7 +237,7 @@ class Crunchbutton_Notification extends Cana_Table
 	public function confirm() {
 
 	}
-	
+
 	public function save() {
 		if ($this->type == 'sms' || $this->type == 'fax') {
 			$this->value = Phone::clean($this->value);
