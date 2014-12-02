@@ -2417,19 +2417,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return false;
 		}
 
-		// Pexcard stuff - #3992
-		$pexcard = $admin->pexcard();
-		if( $pexcard->id_admin_pexcard ){
-			switch ( $status ) {
-				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
-						$pexcard->addFundsOrderAccepeted( $id_order );
-					break;
-				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
-					$pexcard->removeFundsOrderCancelled( $id_order );
-					break;
-			}
-		}
-
 		(new Order_Action([
 			'id_order' => $this->id_order,
 			'id_admin' => $admin->id_admin,
@@ -2439,6 +2426,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if ($notify) {
 			$this->textCustomerAboutDriver();
+		}
+
+		// Pexcard stuff - #3992
+		$pexcard = $admin->pexcard();
+		if( $pexcard->id_admin_pexcard ){
+			switch ( $status ) {
+				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						$pexcard->addFundsOrderAccepeted( $this->id_order );
+					break;
+				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+					$pexcard->removeFundsOrderCancelled( $this->id_order );
+					break;
+			}
 		}
 
 		return true;
