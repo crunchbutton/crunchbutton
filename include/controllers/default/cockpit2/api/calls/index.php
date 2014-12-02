@@ -1,11 +1,141 @@
 <?php
 
-
-ignore_user_abort(false);
-
 class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
-
+	
 	public function init() {
+
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
+		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
+		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
+		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
+
+		$q = '
+			SELECT
+				-WILD-
+			FROM `call` c
+			LEFT JOIN `user` uf ON uf.id_user=c.id_user_from
+			LEFT JOIN `user` ut ON ut.id_user=c.id_user_to
+			LEFT JOIN admin af ON af.id_admin=c.id_admin_from
+			LEFT JOIN admin at ON at.id_admin=c.id_admin_to
+			WHERE 1=1
+		';
+
+		if ($status != 'all') {
+			if (!is_array($status)) {
+				$status = [$status];
+			}
+			foreach ($status as $s) {
+				$st .= ($st ? ' OR ' : '').' c.status="'.$s.'" ';
+			}
+			$q .= '
+				AND ('.$st.')
+			';
+		}
+
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
+			// only display support to their number
+			$q .= ' AND (
+				c.from="'.Phone::clean(c::admin()->phone).'"
+				OR c.to="'.Phone::clean(c::admin()->phone).'"
+			)';
+		}
+		
+		if ($search) {
+			$q .= Crunchbutton_Query::search([
+				'search' => stripslashes($search),
+				'fields' => [
+					'uf.name' => 'like',
+					'uf.phone' => 'like',
+					'ut.name' => 'like',
+					'ut.phone' => 'like',
+					'af.name' => 'like',
+					'af.phone' => 'like',
+					'at.name' => 'like',
+					'at.phone' => 'like',
+					'c.id_call' => 'liker'
+				]
+			]);
+		}
+		
+		$q .= '
+			GROUP BY c.id_call
+		';
+
+		// get the count
+		$count = 0;
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) co', $q));
+		while ($c = $r->fetch()) {
+			$count++;
+		}
+
+		$q .= '
+			ORDER BY c.date_start DESC
+			LIMIT '.$limit.'
+		';
+
+		// do the query
+		$d = [];
+		$r = c::db()->query(str_replace('-WILD-','
+			c.id_call,
+			c.direction,
+			c.date_start,
+			c.date_end,
+			c.location_to,
+			c.location_from,
+			c.status,
+			c.twilio_id,
+			c.recording_url,
+			c.recording_duration,
+			c.from,
+			c.to,
+			uf.name as user_from,
+			ut.name as user_to,
+			at.name as admin_to,
+			at.name as admin_from,
+			c.id_user_from,
+			c.id_user_to,
+			c.id_admin_from,
+			c.id_admin_to
+		', $q));
+
+		while ($o = $r->fetch()) {
+			if ($o->direction == 'inbound') {
+				if ($o->user_from) {
+					$name = $o->user_from;
+				}
+				if ($o->admin_from) {
+					$name = $o->admin_from;
+				}
+				if (!$name) {
+					$o->from_name = Phone::name($o->from);
+				}
+			} else {
+				if ($o->user_to) {
+					$name = $o->user_to;
+				}
+				if ($o->admin_to) {
+					$name = $o->admin_to;
+				}
+				if (!$name) {
+					$o->to_name = Phone::name($o->to);
+				}
+			}
+
+			$d[] = $o;
+		}
+
+		echo json_encode([
+			'count' => intval($count),
+			'pages' => ceil($count / $limit),
+			'page' => $page,
+			'results' => $d
+		]);
+
+		exit;
+	}
+
+/*
+	public function _twilio() {
 		//"Status" => "in-progress",
 		$i = 0;
 		$max = 5;
@@ -46,4 +176,5 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 		echo json_encode($calls);
 		exit;
 	}
+*/
 }

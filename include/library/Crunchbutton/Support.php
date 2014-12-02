@@ -579,6 +579,9 @@ class Crunchbutton_Support extends Cana_Table {
 		if(!Support::o($this->id_support)->id_support) {
 			$initial_save = true;
 		}
+
+		$this->phone = Phone::clean($this->phone);
+
 		parent::save();
 		if($initial_save) {
 			// Crunchbutton_Hipchat_Notification::NewSupport($this);

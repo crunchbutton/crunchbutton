@@ -1,32 +1,69 @@
 
-NGApp.factory('CallService', function($rootScope, $resource, $routeParams) {
+NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope, AccountService, NotificationService, MainNavigationService) {
 
 	var service = {};
 
-	var call = $resource( App.service + 'calls/:id_call', { id_support: '@id_call'}, {
-		'load' : { 'method': 'GET', params : {} }
+	var call = ResourceFactory.createResource( App.service + 'calls/:id_call', { id_support: '@id_call'}, {
+		'load' : {
+			url: App.service + 'call/:id_call',
+			method: 'GET',
+			params : {}
+		},
+		'save' : {
+			url: App.service + 'call/:id_call',
+			method: 'POST',
+			params : {}
+		},
+		'query' : {
+			method: 'GET',
+			params : {}
+		}
 	});
 	
 	service.list = function(params, callback) {
-		call.query(params, function(data){
+		call.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
 
 	service.get = function(id_call, callback) {
-		call.load({id_call: id_call}, function(data) {
+		customer.load({id_call: id_call}, function(data) {
+			callback(data);
+		});
+	}
+	
+	service.post = function(params, callback) {
+		customer.save(params, function(data) {
 			callback(data);
 		});
 	}
 
-	$rootScope.$on('calls', function(e, data) {
-		$rootScope.calls = {
-			count: data,
-			time: new Date
-		};
+	$rootScope.$on('userAuth', function(e, data) {
+
+		if (AccountService.user && AccountService.user.id_admin) {
+
+			if (AccountService.user.permissions.GLOBAL || AccountService.user.permissions['SUPPORT-ALL'] ||  AccountService.user.permissions['SUPPORT-VIEW'] ||  AccountService.user.permissions['SUPPORT-CRUD']) {
+				SocketService.listen('calls', $rootScope)
+					.on('update', function(d) {
+						console.log('CALL UPDATED', d);
+					}).on('create', function(d) {
+						if (d.direction == 'inbound') {
+							var content = '';
+							if (d.id_admin_from) {
+								content += 'Driver: ' + d.name + "\n";
+							} else if (d.id_user_from) {
+								content += 'Customer: ' + d.name + "\n";
+							}
+							content += 'Phone: ' + d.from;
+							NotificationService.notify('Incoming call', content, null, function() {
+								MainNavigationService.link('/call/' + d.id_call);
+								$rootScope.$safeApply();
+							});
+						}
+					});
+			}
+		}
 	});
 
 	return service;
-
 });
-
