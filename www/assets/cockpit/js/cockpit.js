@@ -339,7 +339,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;

@@ -17,6 +17,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			->idVar('id_support_message')
 			->load($id);
 	}
+	
+	public function save() {
+		$this->phone = Phone::clean($this->phone);
+		parent::save();
+	}
 
 	public function notify() {
 		self::notify_by_sms();
@@ -32,49 +37,9 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	
 	public function exports() {
 		$out = $this->properties();
-		$out['name'] = $this->getName();
+		$out['name'] = Phone::name($this);
 		$out['timestamp'] = strtotime($this->date);
 		return $out;
-	}
-	
-	public function getName() {
-	
-		if (!isset($this->_name)) {
-			
-			$phone = preg_replace('/[^0-9]/','', $this->phone);
-
-			if ($this->from == 'system') {
-				$this->_name = 'SYSTEM';
-
-			} elseif (!$this->name) {
-
-				$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
-
-				if ($phone) {
-					$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phone.'"');
-
-					if (!$user->id_admin) {
-						$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phoneFormat.'"');
-					}
-					
-					if (!$user->id_admin) {
-						$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
-					}
-				}
-					
-				if ($user && ($user->id_admin || $user->id_user)) {
-					$this->_name = $user->phone;
-				}
-				
-			} else {
-				$this->_name = $this->name;
-			}
-			
-			if (!$this->_name) {
-				$this->_name = $this->phone;
-			}
-		}
-		return $this->_name;
 	}
 
 	public function notify_by_sms() {

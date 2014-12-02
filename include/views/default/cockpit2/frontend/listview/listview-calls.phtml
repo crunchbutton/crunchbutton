@@ -1,0 +1,23 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>ID</th>
+			<th>From</th>
+			<th>Status</th>
+			<th>Start</th>
+			<th>End</th>
+			<th>Ticket</th>
+		</tr>
+		<tr ng-repeat="call in calls">
+			<td><a href="/call/{{call.id_call}}">{{call.id_call}}</td>
+			<td><a href ng-click="callText(call.from)">{{call.from | formatPhone}}</a></td>
+			<td>{{call.status}}</td>
+			<td>{{call.start_time}}</td>
+			<td>{{call.end_time}}</td>
+			<td>
+				<span ng-if="call.support.id_support"><a href="/ticket/{{call.support.id_support}}">View Ticket</a></span>
+				<span ng-if="!call.support.id_support"><a href="/call/{{call.id_call}}/ticket">Create Ticket</a></span>
+			</td>
+		</tr>
+	</table>
+</div>
