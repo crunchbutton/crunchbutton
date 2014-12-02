@@ -139,9 +139,4 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 
-	// return the last added pexcard
-	public function pexcard(){
-		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = "' . $this->id_admin . '" ORDER BY id_admin_pexcard DESC' )->get( 0 );
-	}
-
 }
