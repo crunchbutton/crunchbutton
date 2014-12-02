@@ -16,6 +16,19 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		return $this->_admin;
 	}
 
+	public function isFirstWeek( $id_admin, $date ){
+		$query = 'SELECT YEARWEEK( cs.date_start ) first_week, YEARWEEK( "' . $date . '" ) current_week
+							FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+								AND asa.id_admin = ' . $id_admin . ' ORDER BY cs.date_start ASC LIMIT 1';
+		$result = c::db()->get( $query );
+		$result = $result->get( 0 );
+		if( $result->first_week && $result->current_week ){
+			return ( $result->first_week == $result->current_week );
+		}
+		return false;
+	}
+
 	public function shift(){
 		if( !$this->_shift ){
 			$this->_shift = Crunchbutton_Community_Shift::o( $this->id_community_shift );

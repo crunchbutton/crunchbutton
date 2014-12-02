@@ -85,6 +85,7 @@
 										if( count( $segments ) > 0 ){
 
 											foreach( $segments as $segment ){
+
 												$_drivers = $segment->getDrivers();
 												$firstDayOfWeek = $segment->firstDayOfWeek()->format( 'Y-m-d' );
 												$lastDayOfWeek = $segment->lastDayOfWeek()->format( 'Y-m-d' );
@@ -102,7 +103,12 @@
 
 													$isPermanent = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $segment->id_community_shift ) ) ? 'checked="checked"' : '';
 
-													$_driver = '<strong style="' . ( $isPermanent ? 'color:blue;' : '' ) . '">';
+													$isFirstWeek = Crunchbutton_Admin_Shift_Assign::isFirstWeek( $driver->id_admin, $segment->dateStart()->format( 'Y-m-d H:i' )  );
+
+													$font_color = ( $isPermanent ? ';color:blue;' : '' );
+													$background_color = ( $isFirstWeek ? ';background-color:#45ef7f;' : '' );
+
+													$_driver = '<strong style="' . $font_color . $background_color . '">';
 													$_driver .= $driver->name . " ({$ranking} of {$highestRanking})";
 													$_driver .= '</strong>';
 
