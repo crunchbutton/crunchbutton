@@ -105,7 +105,7 @@ class Crunchbutton_Phone extends Cana_Table{
 	
 	public function save() {
 		$this->phone = self::clean($this->phone);
-		parent::save();
+		return parent::save();
 	}
 	
 	public static function byPhone($phone) {

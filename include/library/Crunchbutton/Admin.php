@@ -891,6 +891,13 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $driver_info;
 	}
+	
+	public function save() {
+		$this->phone = Phone::clean($this->phone);
+		$this->txt = Phone::clean($this->txt);
+		$this->testphone = Phone::clean($this->testphone);
+		return parent::save();
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
