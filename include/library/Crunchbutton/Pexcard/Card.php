@@ -35,7 +35,10 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function fund( $id, $amount ){
-		return Crunchbutton_Pexcard_Resource::request( 'fund', [ 'id' => $id, 'amount' => $amount ] );
+		// for tests
+		if( intval( $id ) == 100254 || ( intval( $id ) == 100296 ) ){
+			return Crunchbutton_Pexcard_Resource::request( 'fund', [ 'id' => $id, 'amount' => $amount ] );
+		}
 	}
 
 	public function change_status( $id, $status ){
