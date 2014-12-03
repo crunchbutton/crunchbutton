@@ -35,12 +35,15 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			return false;
 		}
 
+		if (c::getEnv() != 'live') {
+			$to = c::admin()->testphone ? c::admin()->testphone : '_PHONE_';
+		}
+
 		if (!is_array($to)) {
 			$to = [$to];
 		}
 
 		$message = trim($message);
-
 
 		foreach ($to as $user) {
 			$tz = null;
