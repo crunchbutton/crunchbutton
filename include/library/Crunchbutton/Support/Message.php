@@ -111,7 +111,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		} else {
 			$rep_name = '';
 		}
-		$msg = Crunchbutton_Message_Sms::greeting( $rep_name ) . $this->body;
+		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
