@@ -27,8 +27,11 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	}
 
 	public function checkOrderReceivedFunds( $id_order, $id_driver ){
-		$action = Crunchbutton_Pexcard_Action::q( 'SELECT SUM( amount ) AS amount FROM pexcard_action WHERE id_order = "' . $id_order . '" AND id_driver = "' . $id_driver . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_CREDIT . '"' );
-		return ( number_format( $action->amount, 2 ) );
+		$received_action = Crunchbutton_Pexcard_Action::q( 'SELECT SUM( amount ) AS amount FROM pexcard_action WHERE id_order = "' . $id_order . '" AND id_driver = "' . $id_driver . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_CREDIT . '"' );
+		$returned_action = Crunchbutton_Pexcard_Action::q( 'SELECT SUM( amount ) AS amount FROM pexcard_action WHERE id_order = "' . $id_order . '" AND id_driver = "' . $id_driver . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_DEBIT . '"' )->get( 0 );
+		$returned_amount = number_format( $received_action->amount, 2 );
+		$received_amount = number_format( $returned_action->amount, 2 );
+		return ( ( $returned_amount + $received_amount ) > 0 );
 	}
 
 	public function checkOrderReturnedFunds( $id_order, $id_driver ){
