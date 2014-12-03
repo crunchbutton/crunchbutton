@@ -30,10 +30,6 @@
 				<div class="box-content-color">
 					<div class="field-container">
 						<div class="field-row">
-							<div class="field-key">Restaurant</div>
-							<div class="field-value"><a href="/restaurant/{{ticket.restaurant.id_restaurant}}">{{ticket.restaurant.name}} #{{ticket.restaurant.id_restaurant}}</a></div>
-						</div>
-						<div class="field-row">
 							<div class="field-key">Pay / Type</div>
 							<div class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</div>
 						</div>
@@ -95,6 +91,18 @@
 						<div class="field-row">
 							<div class="field-key">Address</div>
 							<div class="field-value"><a href ng-click="routeAddress(ticket.restaurant.address)">{{ticket.restaurant.address}}</a></div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Delivery by</div>
+							<div class="field-value">{{ticket.restaurant.delivery_service ? 'Crunchbutton' : 'Restaurant'}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Relationship</div>
+							<div class="field-value">{{ticket.restaurant.formal_relationship ? 'Formal' : 'Informal'}}</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key">Notification Sent</div>
+							<div class="field-value">{{ticket.restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
 						</div>
 					</div>
 				</div>
