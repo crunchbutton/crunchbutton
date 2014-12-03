@@ -99,6 +99,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 						'to' => $t,
 						'from' => $tfrom,
 						'msg' => $msg,
+						'getEnv' => c::getEnv(),
 						'type' => 'sms'
 					]);
 
