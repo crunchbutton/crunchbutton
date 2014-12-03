@@ -14,16 +14,24 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 	$scope.params = {
 		status: 'open'
 	};
+	
+	var getTickets = function() {
+		console.debug('Updating support tickets...');
+		TicketService.shortlist($scope.params, function(tickets) {
+			TicketViewService.scope.tickets = tickets.results;
+		});
+	};
+
+	if (!TicketViewService.scope.tickets) {
+		getTickets();
+	}
 
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
 		}
 		if (!oldValue || newValue.count != oldValue.count) {
-			console.debug('Updating support tickets...');
-			TicketService.shortlist($scope.params, function(tickets) {
-				TicketViewService.scope.tickets = tickets.results;
-			});
+			getTickets();
 		}
 	});
 });

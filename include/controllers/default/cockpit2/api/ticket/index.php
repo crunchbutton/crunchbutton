@@ -27,13 +27,14 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
 			$message = $ticket->addAdminMessage([
 				'body' => $this->request()['body'],
+				'guid' => $this->request()['guid'],
 				'phone' => c::admin()->phone,
 				'id_admin' => c::admin()->id_admin
 			]);
 			if ($ticket->id_support_message) {
 				$ticket->notify();
 			}
-			echo $ticket->json();
+			echo $message->json();
 			exit;
 		}
 

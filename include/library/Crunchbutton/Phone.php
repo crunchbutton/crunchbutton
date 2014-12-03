@@ -109,9 +109,10 @@ class Crunchbutton_Phone extends Cana_Table{
 	}
 	
 	public static function name($mixed) {
-		if (is_object($mixed) && $mixed->phone) {
-			$phone = $mixed->phone;
-			
+		if (is_object($mixed)) {
+			if ($mixed->phone) {
+				$phone = $mixed->phone;
+			}
 			if ($mixed->from == 'system') {
 				$name = 'SYSTEM';
 			}
@@ -140,7 +141,7 @@ class Crunchbutton_Phone extends Cana_Table{
 		if (!$name) {
 			$name = $phone;
 		}
-		
+
 		return $name;
 
 	}

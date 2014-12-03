@@ -671,19 +671,20 @@ p {
 		content: " ";
 		z-index: 1;
 	}
+	.snap-drawer {
+		padding-top: 59px;
+		-webkit-transform: translateX(0) !important;
+	}
 	.snap-drawer-left {
 		position: absolute;
 		z-index: 2;
 		width: 222px;
 		margin-top: 5px;
+		padding-top: 62px;
 	}
 	.support-toggled .snap-drawer-right {
 		margin-right: 0;
 		
-	}
-	.snap-drawer {
-		padding-top: 63px;
-		-webkit-transform: translateX(0) !important;
 	}
 	.nav-top {
 		background: #22242a;
@@ -3164,7 +3165,7 @@ h1.driver-title {
 
 .support-chat-contents-message-time {
 	float: right;
-	color: #7f7f7f;
+	opacity: .6;
 }
 
 .support-chat-contents-message-name {
@@ -3175,7 +3176,7 @@ h1.driver-title {
 
 .support-chat-contents-message-body  {
 	clear: both;
-	color: #363636;
+	opacity: .75;
 }
 
 
@@ -3456,4 +3457,22 @@ input[type="checkbox"].switch + div:before {
 	margin-top: -.8em;
 	margin-bottom: 2em;
 	font-size: 1.2em;
+}
+
+.support-chat-contents-message-customer {
+	color: #000;
+}
+.support-chat-contents-message-driver {
+	color: #3a948e;
+}
+
+.support-chat-contents-message-support {
+	color: #e0574c;
+}
+.support-chat-contents-message-unset {
+	font-style: italic;
+}
+.support-chat-contents-message-system {
+	color: #4541e7;
+	font-style: italic;
 }
