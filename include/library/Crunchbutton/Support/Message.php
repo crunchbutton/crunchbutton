@@ -20,7 +20,20 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	
 	public function save() {
 		$this->phone = Phone::clean($this->phone);
+		$guid = $this->guid;
+		$new = $this->id_support_message ? true : false;
+
 		parent::save();
+
+		
+		if ($new) {
+			Event::emit([
+				'room' => [
+					'ticket.'.$this->id_support,
+					'tickets'
+				]
+			], 'message', $this->exports($guid));
+		}
 	}
 
 	public function notify() {
@@ -35,10 +48,16 @@ class Crunchbutton_Support_Message extends Cana_Table {
 																								ORDER BY sm.id_support_message ASC" );
 	}
 
-	public function exports() {
+	public function exports($guid = null) {
 		$out = $this->properties();
 		$out['name'] = Phone::name($this);
+		$out['first_name'] = explode(' ',$out['name'])[0];
 		$out['timestamp'] = strtotime($this->date);
+		$out['guid'] = $guid;
+
+		$out['is_support'] = $this->id_admin && $this->admin()->isSupport() ? true : false;
+		$out['is_driver'] = $this->id_admin && $this->admin()->isDriver() ? true : false;
+
 		return $out;
 	}
 

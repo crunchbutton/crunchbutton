@@ -349,6 +349,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'name' ] = $admin->firstName();
 			$messageParams[ 'phone' ] = $params[ 'phone' ];
 			$messageParams[ 'body' ] = $params[ 'body' ];
+			$messageParams[ 'guid' ] = $params[ 'guid' ];
 			return $this->addMessage( $messageParams );
 		}
 	}
@@ -429,6 +430,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$message->type = $params[ 'type' ];
 		$message->visibility = $params[ 'visibility' ];
 		$message->phone = $params[ 'phone' ];
+		$message->guid = $params[ 'guid' ];
 		$message->name = $params[ 'name' ];
 		$message->body = $params[ 'body' ];
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -440,13 +442,6 @@ class Crunchbutton_Support extends Cana_Table {
 			$this->id_admin = $message->id_admin;
 			$this->save();
 		}
-		
-		Event::emit([
-			'room' => [
-				'ticket.'.$this->id_support,
-				'ticket.all'
-			]
-		], 'ticket.message', $message->exports());
 
 		return $message;
 	}

@@ -1,4 +1,4 @@
-NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService, AccountService, SocketService) {
+NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService, AccountService, SocketService, TicketService) {
 	var service = {
 		isTyping: false,
 		socket: SocketService.socket
@@ -17,49 +17,52 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
 		}
 	});
+	
+	var notified  = new Array();
 
 	$rootScope.$on('userAuth', function(e, data) {
 
 		if (AccountService.user && AccountService.user.id_admin) {
 		
-			var notified  = new Array();
+
 			service.socket.on('user.preference', function(payload) {
 				console.debug('Recieved preference update', payload);
 				AccountService.user.prefs[payload.key] = payload.value;
 				$rootScope.$apply();
 			});
-
-			service.socket.on('ticket.message', function(payload) {
-		
-				console.debug('Recieved chat message: ', payload);
-				
-				if (notified.indexOf(payload.id_support_message) > -1) {
-					return;
-				}
-		
-				notified.push(payload.id_support_message);
-				
-				if (payload.id_support == service.scope.viewTicket) {
-					service.scope.ticket.messages.push(payload);
-					service.scope.$apply();
-					service.scroll();
-				}
-				
-				if (payload.id_admin == AccountService.user.id_admin) {
-					return;
-				}
-				
-				if (payload.id_support == service.scope.viewTicket) {
-					App.playAudio('support-message-recieved');
-				} else {
-					App.playAudio('support-message-new');
-				}
-		
-				NotificationService.notify(payload.name, payload.body, null, function() {
-					document.getElementById('support-chat-box').focus();
+			
+			
+			SocketService.listen('tickets', $rootScope)
+				.on('message', function(d) {
+					console.debug('Recieved chat message: ', d);
+					
+					if (notified.indexOf(d.id_support_message) > -1) {
+						return;
+					}
+					
+					notified.push(d.id_support_message);
+					
+					if (d.id_support == service.scope.viewTicket) {
+						service.scope.ticket.messages.push(d);
+						service.scope.$apply();
+						service.scroll();
+					}
+					
+					if (d.id_admin == AccountService.user.id_admin) {
+						return;
+					}
+					
+					if (d.id_support == service.scope.viewTicket) {
+						App.playAudio('support-message-recieved');
+					} else {
+						App.playAudio('support-message-new');
+					}
+			
+					NotificationService.notify(d.name, d.body, null, function() {
+						document.getElementById('support-chat-box').focus();
+					});
+					
 				});
-		
-			});
 
 		} else {
 			//service.socket.close();
@@ -73,34 +76,53 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		}
 		if (value == '1') {
 			console.debug('Subscribing to all tickets');
-			service.socket.emit('event.subscribe', 'ticket.all');
+			service.socket.emit('event.subscribe', 'tickets');
 		} else {
 			console.debug('Unsubscribing to all tickets');
-			service.socket.emit('event.unsubscribe', 'ticket.all');
+			service.socket.emit('event.unsubscribe', 'tickets');
 		}
 	});
 	
 	service.send = function(message) {
-		var msg = {
-			url: '/api/tickets/' + service.scope.viewTicket + '/message',
-			data: {
-				body: message
-			}
-		};
-/*
-		service.scope.ticket.messages.push({
-			body: message,
-			name: AccountService.user.firstName,
-			timestamp: new Date().getTime()
-		});
-		service.scope.$apply();
-		service.scroll();
-*/
+		var guid = App.guid();
 		
-		service.socket.emit('event.message', msg);
-		service.isTyping = false;
+		TicketService.message({
+			id_support: service.scope.viewTicket,
+			body: message,
+			guid: guid
+		}, function(d) {
+			for (var x in service.scope.ticket.messages) {
+				if (service.scope.ticket.messages[x].guid == guid) {
+					service.scope.ticket.messages[x] = d;
+					notified.push(d.id_support_message);
+					break;
+				}
+			}
+			service.scope.$apply();
+		});
+
+		service.scope.$apply(function() {
+			service.scope.ticket.messages.push({
+				body: message,
+				name: AccountService.user.firstName,
+				timestamp: new Date().getTime(),
+				send: false,
+				guid: guid
+			});
+		});
+
+		service.scroll();
 	};
-	
+
+	service.scroll = function(instant) {
+		setTimeout(function() {
+			$('.support-chat-contents-scroll').stop(true,false).animate({
+				scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
+			}, instant ? 0 : 800);			
+		}, 100);
+	};
+
+	/*
 	var typingTimer;
 	
 	service.typing = function(val) {
@@ -132,15 +154,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			}
 		}, 5000);
 	};
-
-
-	service.scroll = function(instant) {
-		setTimeout(function() {
-			$('.support-chat-contents-scroll').stop(true,false).animate({
-				scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight
-			}, instant ? 0 : 800);			
-		}, 100);
-	};
+	*/
 
 	return service;
 });

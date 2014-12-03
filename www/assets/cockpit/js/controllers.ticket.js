@@ -35,9 +35,16 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 });
 
 
-NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, MapService) {
+NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, MapService, SocketService) {
 	
 	$rootScope.title = 'Ticket #' + $routeParams.id;
+	
+	SocketService.listen('ticket.' + $routeParams.id, $scope)
+		.on('update', function(d) {
+			update();
+		});
+
+
 	var cleanup;
 	
 	var draw = function() {
@@ -79,14 +86,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$scope.map = map;
 		MapService.style(map);
 		draw();
-	});
-
-	$scope.updater = $interval(update, 5000);
-	$scope.$on('$destroy', function() {
-		$interval.cancel($scope.updater);
-		if (cleanup) {
-			cleanup();
-		}
 	});
 	
 	update();

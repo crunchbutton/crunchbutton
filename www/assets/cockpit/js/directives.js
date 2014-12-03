@@ -9,7 +9,7 @@ NGApp.directive('chatSend', function(TicketViewService) {
 					e.preventDefault();
 					element.val('');
 				} else {
-					TicketViewService.typing(element.val());
+					//TicketViewService.typing(element.val());
 				}
 			});
 		}

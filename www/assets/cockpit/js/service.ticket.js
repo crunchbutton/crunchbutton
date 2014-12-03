@@ -14,6 +14,11 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			method: 'POST',
 			params : {}
 		},
+		'message' : {
+			url: App.service + 'ticket/:id_support/message',
+			method: 'POST',
+			params : {}
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -36,6 +41,12 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	
 	service.shortlist = function(params, callback) {
 		ticketshort.query(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
+	}
+	
+	service.message = function(params, callback) {
+		tickets.message(params, function(data) {
 			callback(data);
 		});
 	}

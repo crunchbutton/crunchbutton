@@ -1,38 +1,38 @@
 
-	<div ng-controller="SideTicketCtrl" class="support-side-chat">
-		<table class="support-side-chat-table">
-			<tr><td class="support-chat-header">
-				<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
-				<a class="support-chat-header-issue" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
-				<div class="divider"></div>
-				<div class="support-chat-header-details">
+<div ng-controller="SideTicketCtrl" class="support-side-chat">
+	<table class="support-side-chat-table">
+		<tr><td class="support-chat-header">
+			<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
+			<a class="support-chat-header-issue" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
+			<div class="divider"></div>
+			<div class="support-chat-header-details">
+				
+				<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
+				<div ng-if="ticket.order">
+					{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / 
 					
-					<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
-					<div ng-if="ticket.order">
-						{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} / 
-						
-							<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
-							<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-						<br>ETA: {{ticket.order.eta.time}} minites
-					</div>					
-				</div>
-			</td></tr>
-			<tr><td class="support-chat-contents">
-				<div class="support-chat-contents-scroll">
-					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}">
-						<div class="support-chat-contents-message-name">{{message.name}}</div>
-						<div class="support-chat-contents-message-time">
-							<? /*{{message.timestamp*1000 | date: 'M/d h:mm a'}} */ ?>
-							<span am-time-ago="message.date"></span>
-						</div>
-						<div class="support-chat-contents-message-body">{{message.body}}</div>
+						<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
+						<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+					<br>ETA: {{ticket.order.eta.time}} minites
+				</div>					
+			</div>
+		</td></tr>
+		<tr><td class="support-chat-contents">
+			<div class="support-chat-contents-scroll">
+				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{'support-chat-contents-message-support': message.is_support, 'support-chat-contents-message-driver': message.is_driver, 'support-chat-contents-message-customer': (!message.is_support && !message.is_driver), 'support-chat-contents-message-unset': message.guid, 'support-chat-contents-message-system': message.from == 'system'}">
+					<div class="support-chat-contents-message-name">{{message.first_name || message.name}}</div>
+					<div class="support-chat-contents-message-time">
+						<? /*{{message.timestamp*1000 | date: 'M/d h:mm a'}} */ ?>
+						<span am-time-ago="message.date"></span>
 					</div>
+					<div class="support-chat-contents-message-body">{{message.body}}</div>
 				</div>
-			</td></tr>
-			<tr><td class="support-side-chat-row">
-				<div class="support-chat-box-wrap">
-					<textarea id="support-chat-box" class="support-chat-box" placeholder="Type someting and press enter..." chat-send></textarea>
-				</div>
-			</td></tr>
-		</table>
-	</div>
+			</div>
+		</td></tr>
+		<tr><td class="support-side-chat-row">
+			<div class="support-chat-box-wrap">
+				<textarea id="support-chat-box" class="support-chat-box" placeholder="Type someting and press enter..." chat-send></textarea>
+			</div>
+		</td></tr>
+	</table>
+</div>
