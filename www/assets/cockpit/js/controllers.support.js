@@ -36,9 +36,21 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 	});
 });
 
-NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
+NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService, SocketService) {
 	
 	var loaded = false;
+
+	SocketService.listen('ticket.' + TicketViewService.scope.viewTicket, TicketViewService.scope)
+		.on('message', function(d) {
+			for (var x in TicketViewService.scope.ticket.messages) {
+				if (TicketViewService.scope.ticket.messages[x].guid == d.guid) {
+					return;
+				}
+			}
+
+			TicketViewService.scope.ticket.messages.push(d);
+			TicketViewService.scroll();
+		});
 
 	var loadTicket = function(id) {
 		TicketService.get(id, function(ticket) {
