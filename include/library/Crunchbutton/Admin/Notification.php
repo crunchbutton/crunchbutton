@@ -215,7 +215,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				$commas = "; ";
 			}
 
-			$sms_message = '#'.$order->id_order.' sms: reps failed to pickup order';
+			$sms_message = Crunchbutton_Message_Sms::greeting() . '#'.$order->id_order.' sms: reps failed to pickup order';
 			$sms_message .= "\n";
 			$sms_message .= "R: " . $order->restaurant()->name;
 			if( $order->restaurant()->community && $order->restaurant()->community != '' ){
@@ -234,7 +234,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			foreach ($ags as $a) {
 				$to[] = $a->txt;
 			}
-			
+
 			Crunchbutton_Message_Sms::send([
 				'to' => $to,
 				'message' => $sms_message
@@ -317,11 +317,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				case Crunchbutton_Admin_Notification::TYPE_EMAIL :
 					$this->sendEmail( $order );
 					break;
-					
+
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
 					$this->sendPushIos( $order );
 					break;
-					
+
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
 					$this->sendPushAndroid( $order );
 					break;
@@ -337,10 +337,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 						$sms = $txtNumber;
 
-						$message = "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is not optimal ;)";
+						$first_name = Crunchbutton_Message_Sms::greeting( $admin->firstName() );
+
+						$message = $first_name . "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is not optimal ;)";
 
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $txtNumber, 'message' => $message , 'type' => 'admin_notification' ]);
-						
+
 						$rets = Crunchbutton_Message_Sms::send([
 							'to' => $txtNumber,
 							'from' => 'driver',
@@ -394,7 +396,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$community = '';
 		}
 
-		$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
+		$message = Crunchbutton_Message_Sms::greeting() . "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
 
 		// Make these notifications pop up on support on cockpit #3008
 		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
@@ -461,7 +463,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$sms = $this->value;
 
-		$message .= $order->message( 'sms-driver' );
+		$message = Crunchbutton_Message_Sms::greeting() . $order->message( 'sms-driver' );
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $sms,
@@ -474,16 +476,17 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$sms = $this->value;
 
-		$message = static::REPS_COCKPIT . $order->id_order;
+		$message = Crunchbutton_Message_Sms::greeting();
+		$message .= static::REPS_COCKPIT . $order->id_order;
 		$message .= "\n";
 		$message .= $order->message( 'sms-admin' );
-		
+
 		$ret = Crunchbutton_Message_Sms::send([
 			'to' => $sms,
 			'from' => 'driver',
 			'message' => $message
 		]);
-		
+
 		return $ret;
 	}
 
@@ -560,7 +563,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC";
 		$orders = Crunchbutton_Order::q($query);
-	
+
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
 			'message' => '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.',
@@ -570,11 +573,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		return $r;
 	}
-	
+
 	public function sendPushAndroid() {
-		
+
 	}
-	
+
 	public function save() {
 		if ($this->type == 'sms' || $this->type == 'fax') {
 			$this->value = Phone::clean($this->value);

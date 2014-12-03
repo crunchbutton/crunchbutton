@@ -34,12 +34,52 @@ class Crunchbutton_Support_Message extends Cana_Table {
 																								WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '" . $phone . "'
 																								ORDER BY sm.id_support_message ASC" );
 	}
-	
+
 	public function exports() {
 		$out = $this->properties();
 		$out['name'] = Phone::name($this);
 		$out['timestamp'] = strtotime($this->date);
 		return $out;
+	}
+
+	public function getName() {
+
+		if (!isset($this->_name)) {
+
+			$phone = preg_replace('/[^0-9]/','', $this->phone);
+
+			if ($this->from == 'system') {
+				$this->_name = 'SYSTEM';
+
+			} elseif (!$this->name) {
+
+				$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
+
+				if ($phone) {
+					$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phone.'"');
+
+					if (!$user->id_admin) {
+						$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phoneFormat.'"');
+					}
+
+					if (!$user->id_admin) {
+						$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
+					}
+				}
+
+				if ($user && ($user->id_admin || $user->id_user)) {
+					$this->_name = $user->phone;
+				}
+
+			} else {
+				$this->_name = $this->name;
+			}
+
+			if (!$this->_name) {
+				$this->_name = $this->phone;
+			}
+		}
+		return $this->_name;
 	}
 
 	public function notify_by_sms() {
@@ -52,8 +92,8 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		} else {
 			$rep_name = '';
 		}
-		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
-		
+		$msg = Crunchbutton_Message_Sms::greeting( $rep_name ) . $this->body;
+
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
 			'message' => $msg
