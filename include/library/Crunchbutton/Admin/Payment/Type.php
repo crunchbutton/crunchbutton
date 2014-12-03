@@ -52,4 +52,12 @@ class Crunchbutton_Admin_Payment_Type extends Cana_Table {
 		$request = new \Cana_Curl($url, null, 'get', null, $headers, null, [ 'user' => $auth, 'pass' => '' ] );
 		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
 	}
+
+	public function using_pex_date(){
+		if (!isset($this->_using_pex_date)) {
+			$this->_using_pex_date = new DateTime($this->using_pex_date, new DateTimeZone(c::config()->timezone));
+		}
+		return $this->_using_pex_date;
+	}
+
 }
