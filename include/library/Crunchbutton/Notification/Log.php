@@ -97,7 +97,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$community = '(' . $community . ')';
 				}
 
-				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name.$community."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
+				$message = Crunchbutton_Message_Sms::greeting();
+				$message .= '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name.$community."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
+
 				$message = str_split($message,160);
 
 				Crunchbutton_Message_Sms::send([

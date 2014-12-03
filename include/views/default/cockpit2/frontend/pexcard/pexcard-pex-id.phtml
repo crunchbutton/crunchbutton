@@ -13,8 +13,8 @@
 			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
 				<li class="li-input" ng-class="{'error':form.crunchbuttonCardId.$invalid}">
-					<div class="label">Crunchbutton Id (Card holder Last Name: e.g. 002):</div>
-					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Crunchbutton Id"></div>
+					<div class="label">Card Serial (e.g. Crunchbutton XXXXX):</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Card Serial (e.g. Crunchbutton XXXXX)"></div>
 					<div class="box-error">
 						<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
 						<small ng-show="form.crunchbuttonCardId.$error.minlength">Crunchbutton Id is too short. It is required to be at least 3 characters.</small>

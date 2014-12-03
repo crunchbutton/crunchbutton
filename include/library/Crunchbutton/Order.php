@@ -1390,9 +1390,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function receipt() {
+		$message = Crunchbutton_Message_Sms::greeting( $this->user()->firstName() );
+		$message .= $this->message('selfsms');
 		Crunchbutton_Message_Sms::send([
 			'to' => $this->phone,
-			'message' => $this->message('selfsms')
+			'message' => $message
 		]);
 	}
 
@@ -1521,7 +1523,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$env = c::getEnv();
 
-		$message = "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
+		$message = Crunchbutton_Message_Sms::greeting();
+		$message .= "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
@@ -1556,7 +1559,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$env = c::getEnv();
 
-		$message = 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
+		$message = Crunchbutton_Message_Sms::greeting();
+		$message .= 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
 		$message .= "\n";
@@ -2413,19 +2417,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return false;
 		}
 
-		// Pexcard stuff - #3992
-		$pexcard = $admin->pexcard();
-		if( $pexcard->id_admin_pexcard ){
-			switch ( $status ) {
-				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
-						$pexcard->addFundsOrderAccepeted( $id_order );
-					break;
-				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
-					$pexcard->removeFundsOrderCancelled( $id_order );
-					break;
-			}
-		}
-
 		(new Order_Action([
 			'id_order' => $this->id_order,
 			'id_admin' => $admin->id_admin,
@@ -2435,6 +2426,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if ($notify) {
 			$this->textCustomerAboutDriver();
+		}
+
+		// Pexcard stuff - #3992
+		$pexcard = $admin->pexcard();
+		if( $pexcard->id_admin_pexcard ){
+			switch ( $status ) {
+				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						$pexcard->addFundsOrderAccepeted( $this->id_order );
+					break;
+				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+					$pexcard->removeFundsOrderCancelled( $this->id_order );
+					break;
+			}
 		}
 
 		return true;
@@ -2524,13 +2528,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$phone = $order->phone;
 		$driver = $order->getDeliveryDriver();
 
+		$firstName = Crunchbutton_Message_Sms::greeting( $order->user()->firstName() );
+
 		if( $driver ){
 			// Check if the order was rejected and change the message
 			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = "' . Crunchbutton_Order_Action::DELIVERY_REJECTED . '" AND id_order = "' . $this->id_order . '"' );
 			if( $action->count() > 0 ){
-				$message = "Sorry, your updated driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
+				$message = $firstName . "Sorry, your updated driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			} else {
-				$message = "Your driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
+				$message = $firstName . "Your driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			}
 			Crunchbutton_Message_Sms::send( [ 'to' => $phone, 'message' => $message ] );
 		}

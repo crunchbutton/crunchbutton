@@ -69,6 +69,11 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 					$admin = $admin_pexcard->admin();
 					$card = $customer->body;
 					$card->admin_name = $admin->name;
+
+					$payment_type = $admin->payment_type();
+					$payment_type->using_pex = 1;
+					$payment_type->save();
+
 					echo json_encode( [ 'success' => $card ] );exit();
 				}
 			}
@@ -93,6 +98,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		$last_four_digits = $this->request()[ 'last_four_digits' ];
 
 		if( $crunchbutton_id ){
+
 			$cards = Crunchbutton_Pexcard_Card::card_list();
 
 			if( is_array( $cards->body ) ){
@@ -127,11 +133,19 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		$card_serial = $this->request()[ 'card_serial' ];
 		$last_four = $this->request()[ 'last_four' ];
 		$last_four = str_replace( 'X', '', $last_four );
+
 		$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 		$admin_pexcard->id_admin = $id_admin;
 		$admin_pexcard->card_serial = $card_serial;
 		$admin_pexcard->last_four = $last_four;
 		$admin_pexcard->save();
+
+		$admin = Crunchbutton_Admin::o( $id_admin );
+
+		$payment_type = $admin->payment_type();
+		$payment_type->using_pex = 1;
+		$payment_type->save();
+
 		$admin_pexcard = Cockpit_Admin_Pexcard::o( $admin_pexcard->id_admin_pexcard );
 		$admin = $admin_pexcard->admin();
 		echo json_encode( [ 'success' => [ 'name' => $admin->name, 'login' => $admin->login ] ] );

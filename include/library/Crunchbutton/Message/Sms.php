@@ -27,10 +27,10 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 			$from = $from['from'];
 		}
-		
+
 		// @todo: remove all from things elsewhere on the site
 		$from = null;
-		
+
 		if (!$to || !$message) {
 			return false;
 		}
@@ -118,4 +118,13 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 		return $ret;
 	}
+
+	public function greeting( $name = null ){
+		if( $name ){
+			return $name . ', ' . "\n";
+		}
+		$greetings = [ 'Hey, ', 'Hi, ', 'Heya, ', 'Hey! ', 'Hola ', 'Bonjour ', 'Hi! ', 'Ola, ' ];
+		return $greetings[ array_rand( $greetings, 1 ) ] . "\n";
+	}
+
 }

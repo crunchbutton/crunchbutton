@@ -50,7 +50,7 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 	public function addFundsOrderAccepeted( $id_order ){
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE ) ) > 0 ){
 			$order = Crunchbutton_Order::o( $id_order );
-			if( !Crunchbutton_Pexcard_Action::checkOrderReceivedFunds( $id_order, $this->id_admin ) ){
+			if( floatval( Crunchbutton_Pexcard_Action::checkOrderReceivedFunds( $id_order, $this->id_admin ) ) == 0 ){
 				if( ( $order->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ) ||
 						intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH ) ) > 0 ){
 					$amount = number_format( floatval( $order->price + $order->tax() ), 2 );
