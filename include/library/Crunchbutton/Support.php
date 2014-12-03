@@ -315,13 +315,20 @@ class Crunchbutton_Support extends Cana_Table {
 		$this->addMessage( $messageParams );
 	}
 
-	public function addAdminReply( $body ){
-		if( trim( $body ) != '' ){
+	public function addAdminReply($body, $guid = null){
+		$body = trim($body);
+		if ($body) {
 			$admin = Crunchbutton_Admin::o( c::admin()->id_admin );
-			$message = $this->addAdminMessage( [ 'body' => $body, 'phone' => $admin->phone, 'id_admin' => c::admin()->id_admin ] );
+			$message = $this->addAdminMessage([
+				'body' => $body,
+				'phone' => $admin->phone,
+				'id_admin' => c::admin()->id_admin,
+				'guid' => $guid
+			]);
 			if( $message->id_support_message ){
 				$message->notify();
 			}
+			return $message;
 		}
 	}
 
