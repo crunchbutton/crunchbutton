@@ -108,6 +108,43 @@ class Crunchbutton_Phone extends Cana_Table{
 		return parent::save();
 	}
 	
+	public static function name($mixed) {
+		if (is_object($mixed) && $mixed->phone) {
+			$phone = $mixed->phone;
+			
+			if ($mixed->from == 'system') {
+				$name = 'SYSTEM';
+			}
+		}
+		
+		$phone = self::clean($phone);
+
+		if (!$name && $phone) {
+	
+			$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
+			$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phone.'"');
+
+			if (!$user->id_admin) {
+				$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phoneFormat.'"');
+			}
+			
+			if (!$user->id_admin) {
+				$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
+			}
+			
+			if ($user->id_admin || $user->id_user) {
+				$name = $user->name;
+			}
+		}
+
+		if (!$name) {
+			$name = $phone;
+		}
+		
+		return $name;
+
+	}
+	
 	public static function byPhone($phone) {
 		$phone = self::clean($phone);
 

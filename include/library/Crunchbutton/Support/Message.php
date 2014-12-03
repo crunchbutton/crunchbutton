@@ -17,6 +17,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			->idVar('id_support_message')
 			->load($id);
 	}
+	
+	public function save() {
+		$this->phone = Phone::clean($this->phone);
+		parent::save();
+	}
 
 	public function notify() {
 		self::notify_by_sms();
@@ -32,7 +37,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 	public function exports() {
 		$out = $this->properties();
-		$out['name'] = $this->getName();
+		$out['name'] = Phone::name($this);
 		$out['timestamp'] = strtotime($this->date);
 		return $out;
 	}

@@ -319,27 +319,27 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'PreOnboardingCtrl',
 			templateUrl: 'assets/view/pre-onboarding.html'
 		})
-		.when('/404', {
-			action: '404',
-			controller: 'NotFoundCtrl',
-			templateUrl: 'assets/view/general-404.html'
+		.when('/home', {
+			action: 'home',
+			controller: 'HomeCtrl',
+			templateUrl: 'assets/view/general-home.html'
 		})
 		.otherwise({
-			action: 'home',
+			action: 'default',
 			controller: 'DefaultCtrl',
-			templateUrl: 'assets/view/general-home.html'
+			templateUrl: 'assets/view/general-default.html'
 		});
 	// only use html5 enabled location stuff if its not in a phonegap container
 	//$locationProvider.html5Mode(!App.isPhoneGap);
-	// @test
+
 	$locationProvider.html5Mode({
 		enabled: true,
-  	requireBase: false
+		requireBase: false
 	});
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
