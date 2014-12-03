@@ -80,13 +80,12 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 	}
 
-	public function admin(){
-		return Crunchbutton_Admin::o( $this->id_admin );
+	public function admin() {
+		return Crunchbutton_Admin::o($this->id_admin);
 	}
 
 	public function support() {
-		$message = Support::o($this->id_support);
-		return $message;
+		return Support::o($this->id_support);
 	}
 
 	public function relativeTime( $forceUTC = false ) {
