@@ -3,25 +3,25 @@
 class Cockpit_Auth extends Crunchbutton_Auth_Base {
 
 	public function init() {
+
 		//check for admin
 		if ($_SERVER['HTTP_AUTHORIZATION']) {
 			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
 		}
-		
+
 		if ($_SERVER['PHP_AUTH_USER']) {
-		
+
 			$admin = Admin::login($_SERVER['PHP_AUTH_USER']);
 
 			if ($admin->id_admin && sha1(c::crypt()->encrypt($_SERVER['PHP_AUTH_PW'])) == $admin->pass) {
 				// we have a valid login
 				c::admin($admin);
 				$_SESSION['admin'] = true;
+				$this->user($admin);
 			}
-			
-			$this->user($admin);
 		}
 	}
-	
+
 	public function postInit() {
 		if ($this->user()->id_admin) {
 			c::admin($this->user());
@@ -30,9 +30,9 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 			if (!$ghost) {
 				$ghost = $this->session()->get('_ghost');
 			}
-	
+
 			if ($this->user()->permission()->check(['global','ghost'])) {
-	
+
 				if ($ghost && $ghost != 'ME') {
 					$u = new Admin($ghost);
 					if ($u->id_admin) {
@@ -42,7 +42,7 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 				} elseif ($ghost == 'ME') {
 					$this->session()->set('_ghost',null);
 				}
-	
+
 			} else {
 				if ($ghost) {
 					$this->session()->set('_ghost',null);
@@ -97,7 +97,7 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 
 		return $this->_user;
 	}
-	
+
 	public function userObject($params = null) {
 		if ($params) {
 			return new Crunchbutton_Admin($params);
