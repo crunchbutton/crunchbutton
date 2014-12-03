@@ -108,14 +108,14 @@
 													$font_color = ( $isPermanent ? ';color:blue;' : '' );
 													$background_color = ( $isFirstWeek ? ';background-color:#45ef7f;' : '' );
 
-													$_driver = '<strong style="' . $font_color . $background_color . '">';
-													$_driver .= $driver->name . " ({$ranking} of {$highestRanking})";
-													$_driver .= '</strong>';
+													$_driver = '<div style="letter-spacing:-.09em;font-size:10px;padding:2px 0;white-space: nowrap;' . $font_color . $background_color . '">- ';
+													$_driver .= $driver->name . "<br><span style=''>({$ranking} of {$highestRanking})</span>";
+													$_driver .= '</div>';
 
 													$drivers[] = $_driver;
 												}
 												if( $hasDriver ){
-													$drivers = join( ', ', $drivers );
+													$drivers = join( '', $drivers );
 												}
 
 												?><div class="row-fluid">
@@ -134,7 +134,7 @@
 																<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
 															</span>
 															<?php if( $hasDriver ) { ?>
-																<span><strong>Drivers:</strong>&nbsp;<?php echo $drivers; ?></span>
+																<span><?php echo $drivers; ?></span>
 															<?php } ?>
 														</a>
 													</div>
