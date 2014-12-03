@@ -2433,6 +2433,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $pexcard->id_admin_pexcard ){
 			switch ( $status ) {
 				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						// Add $10 for the first accepted order - #3993
+						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
+						if( $shift->id_admin_shift_assign ){
+							$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
+						}
 						$pexcard->addFundsOrderAccepeted( $this->id_order );
 					break;
 				case Crunchbutton_Order_Action::DELIVERY_REJECTED:

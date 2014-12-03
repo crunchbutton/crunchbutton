@@ -3,9 +3,12 @@
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
-exit();
+Crunchbutton_Community_Shift::pexCardRemoveShiftFunds();
+die('hard');
+
 // echo '<pre>';var_dump( $cards );exit();
 
+echo '<pre>';var_dump( $shift );exit();
 return;
 $admin = Admin::o( 5 );
 		$pexcard = $admin->pexcard();
