@@ -60,7 +60,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		
 		$this->log( [ 'action' => 'closing support', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
 
-		self::notifyReps($this->admin->name . ' closed #' . $this->support->id_support, $support);
+		self::notifyReps($this->admin->firstName() . ' closed #' . $this->support->id_support, $support);
 	}
 	
 	public function reply() {
@@ -72,7 +72,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 			'message' => $this->admin->firstName() . ': '.$this->message
 		]);
 
-		self::notifyReps($this->admin->name . ' replied to #' . $this->support->id_support . ': ' . $this->message, $support);
+		self::notifyReps($this->admin->firstName() . ' replied to #' . $this->support->id_support . ': ' . $this->message, $support);
 	}
 	
 	public function details() {
