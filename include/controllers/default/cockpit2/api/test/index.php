@@ -2,7 +2,7 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
-
+die('hard');
 
 $cards = [
 'Bao Truong' => [ 'status' => 'active', 'date' => '22/10/2014', 'serial' => '4' ],
@@ -118,7 +118,7 @@ foreach( $cards as $name => $card ){
 
 		$date = explode( '/', $card[ 'date' ] );
 		$date = $date[ '2' ] . '-' . $date[ '1' ] . '-' . $date[ '0' ] . ' 00:00:01';
-
+echo '<pre>';var_dump( $date );exit();
 		$admin = Admin::q( 'SELECT * FROM admin WHERE name LIKE "%' . $name . '%" ' );
 		if( $admin->id_admin ){
 			$pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE card_serial = ' . intval( $card[ 'serial' ] ) );
