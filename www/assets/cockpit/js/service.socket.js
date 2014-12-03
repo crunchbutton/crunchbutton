@@ -49,12 +49,12 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 
 			this.on = function(evt, fn) {
 				var event = group + '.' + evt;
-				console.debug('Listening to ' + this.group + ' for ' + event);
+				console.debug('Listening to ' + this.group + ' for ' + event, listening[group]);
 
 				service.socket.forward(event, self.scope);	
 				scope.$on('socket:' + event, function (ev, data) {
 
-					console.debug('Recieved event', ev, data, self.group);
+					console.debug('Recieved event', ev, data, self.group, listening[group]);
 
 					scope.$apply(function() {
 						fn(data, evt);

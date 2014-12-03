@@ -41,13 +41,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 					}
 					
 					notified.push(d.id_support_message);
-					
-					if (d.id_support == service.scope.viewTicket) {
-						service.scope.ticket.messages.push(d);
-						service.scope.$apply();
-						service.scroll();
-					}
-					
+
 					if (d.id_admin == AccountService.user.id_admin) {
 						return;
 					}
@@ -93,12 +87,12 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		}, function(d) {
 			for (var x in service.scope.ticket.messages) {
 				if (service.scope.ticket.messages[x].guid == guid) {
+					d.guid = guid;
 					service.scope.ticket.messages[x] = d;
 					notified.push(d.id_support_message);
 					break;
 				}
 			}
-			service.scope.$apply();
 		});
 
 		service.scope.$apply(function() {
@@ -106,7 +100,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				body: message,
 				name: AccountService.user.firstName,
 				timestamp: new Date().getTime(),
-				send: false,
+				sending: true,
 				guid: guid
 			});
 		});
