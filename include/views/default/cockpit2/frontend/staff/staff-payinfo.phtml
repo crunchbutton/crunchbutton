@@ -70,12 +70,20 @@
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.payInfoUsingPex.$invalid}">
-					<div class="label">Using Pex</div>
+					<div class="label">Using Pex Card</div>
 					<div class="input">
 						<select ng-model="payInfo.using_pex" required name="payInfoUsingPex" ng-options="type.value as type.label for type in payment._using_pex"></select>
 					</div>
 					<div class="box-error">
 						<small ng-show="form.payInfoUsingPex.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.payInfoUsingPexDate.$invalid}">
+					<div class="label">Date started using Pex Card:</div>
+					<div class="input"><input type="date" name="payInfoUsingPexDate" ng-model="payInfo.using_pex_date" placeholder=""></div>
+					<div class="box-error">
+						<small ng-show="form.payInfoUsingPexDate.$error.required">Required.</small>
 					</div>
 				</li>
 

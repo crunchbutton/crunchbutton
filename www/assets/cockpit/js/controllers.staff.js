@@ -191,9 +191,10 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 
 } );
 
-NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
+NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoService ) {
 
 	$scope.bank = { 'showForm': true };
+	$scope.payInfo = {};
 
 	var load = function(){
 		StaffPayInfoService.load( function( json ){
@@ -205,6 +206,9 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 				$scope.payInfo.using_pex = parseInt( $scope.payInfo.using_pex );
 				$scope.ready = true;
 				$scope.payment = {};
+				if( json.using_pex_date ){
+					$scope.payInfo.using_pex_date = new Date( json.using_pex_date );
+				}
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
 				$scope.payment._using_pex = StaffPayInfoService.typesUsingPex();
 				$scope.payment._types = StaffPayInfoService.typesPayment();
@@ -214,11 +218,30 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, StaffPayInfoService ) {
 		} )
 	}
 
+	var using_pex_date = null;
+
+	$scope.$watch( 'payInfo.using_pex', function( newValue, oldValue, scope ) {
+		if( parseInt( $scope.payInfo.using_pex ) == 0 ){
+			using_pex_date = $scope.payInfo.using_pex_date;
+			$scope.payInfo.using_pex_date = new Date( '0000,00,00' );
+		} else {
+			if( using_pex_date ){
+				$scope.payInfo.using_pex_date = using_pex_date;
+			}
+		}
+
+	});
+
 	$scope.save = function(){
 		if( $scope.form.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.submitted = true;
 			return;
+		}
+		if( !isNaN( $scope.payInfo.using_pex_date.getTime() ) ){
+			$scope.payInfo.using_pex_date_formatted = $filter( 'date' )( $scope.payInfo.using_pex_date, 'yyyy-MM-dd' )
+		} else {
+			$scope.payInfo.using_pex_date_formatted = null;
 		}
 		$scope.isSaving = true;
 		StaffPayInfoService.save( $scope.payInfo, function( data ){
