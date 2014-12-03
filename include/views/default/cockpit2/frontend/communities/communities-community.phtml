@@ -12,6 +12,7 @@
 
 
 	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 	<br>
 	
 	<div>
@@ -54,19 +55,25 @@
 	<div class="divider"></div>
 	
 	<br><br>
-	<h1 class="title"><i class="fa fa-coffee"></i>Restaurants<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+	<h1 class="title"><i class="fa fa-coffee"></i>Restaurants<div class="title-loader" ng-if="loadingRestaurants"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingRestaurants}"></div>
 	<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
+	
 
 	<br><br>
-	<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
+	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>		
 	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
+	
 
 	<div class="right">
 		<p><a href="/orders?community={{community.id_community}}">View all orders</a></p>
 	</div>
 	
 	<br><br>
-	<h1 class="title"><i class="fa fa-road"></i>Drivers<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+	<h1 class="title"><i class="fa fa-road"></i>Drivers</h1>	
+	<div class="bar-loader bar-loader-drivers" ng-class="{'bar-loader-loading': loadingStaff}"></div>	
 	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
+	
 
 </div>

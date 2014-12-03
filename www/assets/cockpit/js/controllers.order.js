@@ -76,6 +76,8 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		.on('update', function(d) {
 			$scope.order = d;
 		});
+		
+	$scope.loading = true;
 	
 	var draw = function() {
 		if (!$scope.map || !$scope.order) {
@@ -120,8 +122,6 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		$interval.cancel($scope.updater);
 		cleanup();
 	});
-	
-
 	
 	update();
 });

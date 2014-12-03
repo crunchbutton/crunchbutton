@@ -21,14 +21,20 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 NGApp.controller('DeployCtrl', function ($scope, $routeParams, DeployService, MainNavigationService, $interval, SocketService) {
+	
+	$scope.loadingServers = true;
+	$scope.loadingVersions = true;
+	
 	var updateServers = function() {
 		DeployService.server.list({}, function(d) {
 			$scope.servers = d;
+			$scope.loadingServers = false;
 		});
 	};
 	var updateVersions = function() {
 		DeployService.version.list({}, function(d) {
 			$scope.versions = d;
+			$scope.loadingVersions = false;
 		});
 	};
 	

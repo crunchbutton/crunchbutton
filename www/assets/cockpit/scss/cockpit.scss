@@ -3408,14 +3408,19 @@ input[type="checkbox"].switch + div:before {
 	background-size: 2000px;
 
 	-webkit-transform: translateZ(0);
-}
-
-.bar-loader.bar-loader-search {
+	
 	height: 5px;
 	overflow: hidden;
 	width: 100%;
+}
+
+.bar-loader.bar-loader-search {
 	margin-bottom: 15px;
 	margin-top: -20px;
+}
+
+.bar-loader.bar-loader-title {
+	margin-top: -5px;
 }
 
 .bar-loader-loading {
