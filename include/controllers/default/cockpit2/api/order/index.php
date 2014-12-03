@@ -3,8 +3,6 @@
 class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-
-						
 		$restaurant = Admin::restaurantOrderPlacement();
 		
 		// list recent orders for restaurants
@@ -99,6 +97,16 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		}
 		
 		switch (c::getPagePiece(3)) {
+			case 'refund':
+				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+					header('HTTP/1.1 401 Unauthorized');
+					exit;
+				}
+				$status = $order->refund();
+
+				echo json_encode(['status' => $status]);
+				break;
+
 			case 'eta':
 				if (c::getPagePiece(4) == 'refresh') {
 					$order->eta(true);

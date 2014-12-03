@@ -4,6 +4,8 @@
 
 	<h1 class="title left"><i class="fa fa-comments-o"></i><span>Support</span> : Issue #{{ticket.id_support}}</h1>
 
+	&nbsp;&nbsp;&nbsp;<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a>
+
 	<div class="ticket-status-top" ng-click="openCloseTicket()">
 		<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
 		<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
@@ -28,52 +30,57 @@
 			<div ng-if="ticket.order.id_order" class="support-box-wrap">
 				<h1>Order <a href="/order/{{ticket.order.id_order}}">#{{ticket.order.id_order}}</a></h1>
 				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Pay / Type</div>
-							<div class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Placed At</div>
-							<div class="field-value">{{ticket.order.date | localtime | timestamp | date: "MM/dd hh:mm a"}} (<span am-time-ago="ticket.order.date"></span>)</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Status</div>
-							<div class="field-value">
+					<table class="field-container">
+						<tr class="field-row">
+							<td class="field-key">Pay / Type</td>
+							<td class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</td>
+						</tr>
+						<tr class="field-row">
+							<td class="field-key">Placed At</td>
+							<td class="field-value">{{ticket.order.date | localtime | timestamp | date: "MM/dd hh:mm a"}} (<span am-time-ago="ticket.order.date"></span>)</td>
+						</tr>
+						<tr class="field-row">
+							<td class="field-key">Status</td>
+							<td class="field-value">
 								<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
 								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-							</div>
-						</div>
-						<div class="field-row" ng-if="order.status.status != 'delivered'">
-							<div class="field-key">ETA</div>
-							<div class="field-value">
+							</td>
+						</tr>
+						<tr class="field-row" ng-if="order.status.status != 'delivered' && eta.time">
+							<td class="field-key">ETA</td>
+							<td class="field-value">
 								{{eta.time | formatPrice}} minutes
-							</div>
-						</div>
-					</div>
+							</td>
+						</tr>
+						<tr class="field-row field-row-button" ng-if="order.pay_type == 'card'">
+							<td class="field-value" colspan="2"><button class="button orange">Refund</button></td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		
 			<div ng-if="ticket.user.id_user" class="support-box-wrap">
 				<h1>Customer <a href="/customer/{{ticket.user.id_user}}">#{{ticket.user.id_user}}</a></h1>
 				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{ticket.user.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
-						</div>
-					</div>
+					<table class="field-container">
+						<tr class="field-row">
+							<td class="field-key">Name</td>
+							<td class="field-value">{{ticket.user.name}}</td>
+						</tr>
+						<tr class="field-row">
+							<td class="field-key">Phone</td>
+							<td class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></td>
+						</tr>
+						<tr class="field-row">
+							<td class="field-key">Address</td>
+							<td class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></td>
+						</tr>
+						<tr class="field-row field-row-button" ng-if="ticket.user.id_user">
+							<td class="field-value" colspan="2"><button class="button orange">Gift Card</button></td>
+						</tr>
+					</table>
 				</div>
 			</div>
-			
 			
 	
 			<div ng-if="ticket.restaurant.id_restaurant" class="support-box-wrap">
@@ -158,30 +165,7 @@
 					 
 				</div>
 			</div>
-	
-			
-			<div class="support-box-wrap" ng-if="ticket.id_support && ticket.type != 'WARNING'">
-				<h1>Resolution <a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a></h1>
-				<div class="box-content-color">
-					<div ng-if="ticket.order.id_order">
-						<div class="field-container">
-							<div class="field-row">
-								<div class="field-key">Who is to blame?</div>
-								<div class="field-value">@todo</div>
-							</div>
-						</div>
-						<div class="field-button-wrap">
-							<div class="field-button"><button class="button orange">Refund</button></div>
-						</div>
-					</div>
-					<div ng-if="ticket.user.id_user">
-						<div class="field-button-wrap">
-							<div class="field-button"><button class="button orange">Gift Card</button></div>
-						</div>
-					</div>
-					<div class="field-button-spacer"></div>
-				</div>
-			</div>
+
 		
 		</div>
 	</div>
