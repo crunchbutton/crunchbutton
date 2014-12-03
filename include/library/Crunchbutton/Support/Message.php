@@ -21,10 +21,9 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	public function save() {
 		$this->phone = Phone::clean($this->phone);
 		$guid = $this->guid;
-		$new = $this->id_support_message ? true : false;
+		$new = $this->id_support_message ? false : true;
 
 		parent::save();
-
 		
 		if ($new) {
 			Event::emit([
