@@ -10,6 +10,7 @@
 	</div>
 
 	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 	<br>
 	
 	<div>
@@ -57,8 +58,9 @@
 		</div>
 		
 
-		<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>		
+		<h1 class="title"><i class="fa fa-car"></i>Orders</h1>		
 
+		<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
 		<div class="box-content2 box-content-table">
 			<table class="tb-zebra">
 				<tr>

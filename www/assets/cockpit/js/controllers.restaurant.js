@@ -76,6 +76,7 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;
+	$scope.loadingOrders = true;
 	
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
@@ -107,7 +108,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, R
 			$scope.orders = d.results;
 			$scope.count = d.count;
 			$scope.pages = d.pages;
-			$scope.loading = false;
+			$scope.loadingOrders = false;
 		});
 	});
 });

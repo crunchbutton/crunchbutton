@@ -38,6 +38,7 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, MapService, SocketService) {
 	
 	$rootScope.title = 'Ticket #' + $routeParams.id;
+	$scope.loading = true;
 	
 	SocketService.listen('ticket.' + $routeParams.id, $scope)
 		.on('update', function(d) {
@@ -68,7 +69,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	var update = function() {
 		TicketService.get($routeParams.id, function(ticket) {
 			$scope.ticket = ticket;
-			$scope.ready = true;
+			$scope.loading = false;
 			
 			if (!cleanup) {
 				cleanup = $rootScope.$on('order-route-' + ticket.order.id_order, function(event, args) {
