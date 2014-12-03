@@ -66,6 +66,18 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
+
+
+		if( $this->request()[ 'using_pex_date_formatted' ] ){
+			$payment_type->using_pex_date = ( new DateTime( $this->request()[ 'using_pex_date_formatted' ] ) )->format( 'Y-m-d H:i:s' );
+		} else {
+			$payment_type->using_pex_date = null;
+		}
+
+		if( $payment_type->using_pex == 1 && !$payment_type->using_pex_date ){
+			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
+		}
+
 		$payment_type->legal_name_payment = $this->request()[ 'legal_name_payment' ];
 		$payment_type->address = $this->request()[ 'address' ];
 
@@ -141,6 +153,10 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
 			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin )->get( 0 );
 			$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
+			if( $payment_type->using_pex_date ){
+				$out[ 'using_pex_date' ] = $payment_type->using_pex_date()->format( 'Y,m,d' );
+			}
+
 			echo json_encode( $out );
 		} else {
 			echo json_encode( [ 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'summary_email' => $admin->email ] );

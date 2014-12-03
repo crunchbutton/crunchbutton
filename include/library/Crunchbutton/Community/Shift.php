@@ -145,6 +145,22 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query );
 	}
 
+	public function shiftDriverIsCurrentWorkingOn( $id_admin ){
+		$admin = Admin::o( $id_admin );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->setTimezone( new DateTimeZone( $admin->timezone ) );
+		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+									WHERE asa.id_admin = ' . $id_admin . '
+										AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $now->format( 'Y-m-d H:i' ) . '"
+ 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $now->format( 'Y-m-d H:i' ) . '"';
+ 		$shift = Crunchbutton_Community_Shift::q( $query );
+ 		if( $shift->id_admin_shift_assign ){
+ 			return $shift;
+ 		}
+ 		return false;
+	}
+
 	public function getCurrentShiftByAdmin( $id_admin ){
 		$query = "SELECT cs.* FROM admin_shift_assign asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
@@ -822,43 +838,21 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 	}
 
-	public function pexCardAddOrRemoveShiftFunds(){
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
+	public function pexCardRemoveShiftFunds(){
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 AND c.id_community = 6 ORDER BY c.name' );
 		foreach( $communities as $community ){
 			if( $community->timezone ){
 
-				// add funds
-				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
-				$now->modify( '- 5 minutes' );
-				$_now = $now->format( 'Y-m-d H:i' );
-				$now->modify( '+ ' . ( 15 ) . ' minutes' );
-				$_interval = $now->format( 'Y-m-d H:i' );
-				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
-																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-																													WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
-				if( $nextShifts->count() > 0 ){
-					foreach( $nextShifts as $shift ){
-						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
-						foreach( $assigments as $assignment ){
-							$admin = $assignment->admin();
-							$pexcard = $admin->pexcard();
-							if( $pexcard->id_admin_pexcard ){
-								$pexcard->addShiftStartFunds( $assigments->id_admin_shift_assign );
-							}
-						}
-					}
-				}
-
 				// remove funds
 				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
-				$now->modify( '+ 120 minutes' );
+				$now->modify( '- 120 minutes' );
 				$_now = $now->format( 'Y-m-d H:i' );
-				$now->modify( '+ ' . ( 15 ) . ' minutes' );
+				$now->modify( '+ 60 minutes' );
 				$_interval = $now->format( 'Y-m-d H:i' );
 
 				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
 																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-																													WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
+																													WHERE DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
 				if( $nextShifts->count() > 0 ){
 					foreach( $nextShifts as $shift ){
 						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
@@ -872,36 +866,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					}
 				}
 
-			}
-		}
-	}
-
-	public function removeFundsFromShift(){
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
-		foreach( $communities as $community ){
-			if( $community->timezone ){
-				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
-				$now->modify( '- 5 minutes' );
-				$_now = $now->format( 'Y-m-d H:i' );
-				$now->modify( '+ ' . ( 15 ) . ' minutes' );
-				$_interval = $now->format( 'Y-m-d H:i' );
-				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
-																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-																													WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
-				if( $nextShifts->count() > 0 ){
-					foreach( $nextShifts as $shift ){
-						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
-						foreach( $assigments as $assignment ){
-							$shift = $assignment->shift();
-							$admin = $assignment->admin();
-							$minutesToStart = $shift->minutesToStart();
-							if( $minutesToStart > 0 ){
-								$pexcard = $admin->pexcard();
-								$pexcard->addShiftStartFunds( $assigments->id_admin_shift_assign );
-							}
-						}
-					}
-				}
 			}
 		}
 	}

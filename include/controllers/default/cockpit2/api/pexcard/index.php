@@ -61,6 +61,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				}
 
 				if( $opened ){
+
 					$admin_pexcard->card_serial = $customer->body->lastName;
 					$admin_pexcard->last_four = $last_four;
 					$admin_pexcard->id_admin = $id_admin;
@@ -72,6 +73,9 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 					$payment_type = $admin->payment_type();
 					$payment_type->using_pex = 1;
+					if( !$payment_type->using_pex_date ){
+						$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
+					}
 					$payment_type->save();
 
 					echo json_encode( [ 'success' => $card ] );exit();
@@ -144,6 +148,9 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 		$payment_type = $admin->payment_type();
 		$payment_type->using_pex = 1;
+		if( !$payment_type->using_pex_date ){
+			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
+		}
 		$payment_type->save();
 
 		$admin_pexcard = Cockpit_Admin_Pexcard::o( $admin_pexcard->id_admin_pexcard );

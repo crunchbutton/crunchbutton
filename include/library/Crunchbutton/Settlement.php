@@ -230,6 +230,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 					$pay_type = Admin::o( $driver )->payment_type();
 					$pay[ $driver ][ 'using_pex' ] = $pay_type->using_pex;
+					if( $pay_type->using_pex_date ){
+						$pay[ $driver ][ 'using_pex_date' ] = $pay_type->using_pex_date()->format( 'Ymd' );
+					}
 					if( $pay_type->id_admin_payment_type ){
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
 					} else {
@@ -254,8 +257,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
 				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
 
-				// Do not reimburse drivers that are using pex card #3876
-				if( ( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || $pay[ $driver ][ 'using_pex' ] ){
+				if(
+					( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || // Do not reimburse reimbursed orders
+					( $pay[ $driver ][ 'using_pex' ] && !$pay[ $driver ][ 'using_pex_date' ] ) || // Do not reimburse drivers that are using pex card #3876
+					( $pay[ $driver ][ 'using_pex' ] && $pay[ $driver ][ 'using_pex_date' ] && intval( $pay[ $driver ][ 'using_pex_date' ] ) <= intval( $order[ 'formatted_date' ] ) )
+					 ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
 				}
 
@@ -647,6 +653,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'pay_type' ] = $order->pay_type;
 		$values[ 'restaurant' ] = $order->restaurant()->name;
 		$values[ 'date' ] = $order->date()->format( 'M jS Y g:i:s A' );
+		$values[ 'formatted_date' ] = $order->date()->format( 'Ymd' );
 		$values[ 'short_date' ] = $order->date()->format( 'M jS Y' );
 
 		return $values;
@@ -1768,7 +1775,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function shifts( $id_driver = 0 ){
 		$where = ( $id_driver == 0 ) ? '' : ' AND asa.id_admin = ' . $id_driver;
-		return Crunchbutton_Community_Shift::q( "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex
+		return Crunchbutton_Community_Shift::q( "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex, apt.using_pex_date
 																							FROM community_shift cs
 																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
 																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
