@@ -35,7 +35,9 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			return false;
 		}
 
-		if (c::getEnv() != 'live') {
+		if (c::env() == 'travis') {
+			$to = '_PHONE_';
+		} elseif (c::getEnv() != 'live') {
 			$to = c::admin()->testphone ? c::admin()->testphone : '_PHONE_';
 		}
 
