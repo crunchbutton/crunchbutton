@@ -9,7 +9,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 		MainNavigationService.link('/drivers/order/' + id_order);
 	} else {
 		if (AccountService.user.permissions.GLOBAL) {
-			MainNavigationService.link('/404');
+			MainNavigationService.link('/home');
 		} else if (AccountService.isRestaurant) {
 			MainNavigationService.link('/restaurant/order/placement/dashboard');
 		} else if (AccountService.isDriver) {
@@ -20,7 +20,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 	}
 });
 
-NGApp.controller('NotFoundCtrl', function ( $scope) {} );
+NGApp.controller('HomeCtrl', function ( $scope) {} );
 
 NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
 

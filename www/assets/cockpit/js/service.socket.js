@@ -12,18 +12,34 @@ NGApp.factory('eventSocket', function (socketFactory, $rootScope) {
 
 NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope) {
 	var service = {};
+	var listening = {};
 	service.socket = eventSocket;
 	
 	service.listen = function(group, scope) {
 		
-		service.socket.emit('event.subscribe', group);
+		if (!listening[group]) {
+			service.socket.emit('event.subscribe', group, listening[group]);
+			listening[group] = [scope.$id];
+			console.debug('Creating listener to ' + group, listening[group]);
+		} else {
+			if (listening[group].indexOf(scope.$id) >= 0) {
+				console.debug('Duplicate listener for ' + group, listening[group]);
+			} else {
+				listening[group].push(scope.$id);
+				console.debug('Adding listener to ' + group, listening[group]);
+			}
+		}
+
 
 		// @todo: test better
 		scope.$on('$destroy', function() {
-			//service.socket.emit('event.unsubscribe', group);
+			if (listening[group] && listening[group].indexOf(scope.$id) >= 0) {
+				listening[group].splice(listening[group].indexOf(scope.$id),1);
+				service.socket.emit('event.unsubscribe', group);
+				
+				console.debug('Removing listener for ' + group, listening[group]);
+			}
 		});
-		
-
 		
 		var Listener = function(group, scope) {
 			this.group = group;

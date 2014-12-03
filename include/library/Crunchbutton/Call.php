@@ -9,6 +9,19 @@ class Crunchbutton_Call extends Cana_Table {
 			->load($id);
 	}
 	
+	public function save() {
+		$new = $this->id_call ? false : true;
+
+		parent::save();
+
+		Event::emit([
+			'room' => [
+				'call.'.$this->id_call,
+				'calls'
+			]
+		], $new ? 'create' : 'update', $this->exports());
+	}
+	
 	public static function byTwilioId($id) {
 		if (!$id) {
 			return null;
