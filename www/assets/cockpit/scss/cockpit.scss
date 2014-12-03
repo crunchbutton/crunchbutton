@@ -2492,7 +2492,7 @@ b, strong{ font-weight: bold; }
 }
 
 .support-box-wrap h1 {
-	font-size: 1.8em;
+	font-size: 1.6em;
 	font-family: Source Sans Pro, Helvetica, sans-serif;
 	font-weight: 300;
 	color: #5d5f63;
@@ -2509,7 +2509,7 @@ b, strong{ font-weight: bold; }
 }
 
 .field-container .field-key, .field-container .field-value {
-	padding: .7em;
+	padding: .6em .7em .55em .7em;
 	line-height: 1.5em;
 	border-bottom: 1px solid #f1f2f7;
 	display: table-cell;
@@ -2522,14 +2522,16 @@ b, strong{ font-weight: bold; }
 	height: .3em;
 }
 
-.field-button {
-	margin: .7em;
-	line-height: 1.8em;
-}
+
+
 
 .field-container .field-row {
 	font-size: 1.2em;
 	display: table-row;
+}
+
+.field-container .field-row-button {
+	font-size: 1em;
 }
 
 .field-container .field-key {
@@ -3135,7 +3137,7 @@ h1.driver-title {
 	color: #000;
 	background: #fff;
 	height: 100%;
-	padding: 1em;
+	padding: .7em;
 }
 
 .support-chat-contents-scroll {
@@ -3159,8 +3161,42 @@ h1.driver-title {
 }
 
 .support-chat-contents-message {
-	margin-bottom: 1.4em;
+	margin-bottom: 1.1em;
 	line-height: 1.6em;
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: .5em .7em .5em .9em;
+}
+
+.support-chat-contents-message-customer {
+	color: #2c596d;
+	background: #fafeff;
+	border-color: #b5cdd7;
+	
+}
+.support-chat-contents-message-driver {
+	color: #128733;
+	background: #fafefa;
+	border-color: #a2e9b6;
+}
+
+.support-chat-contents-message-support {
+	color: #993b00;
+	background: #fffbfa;
+	border-color: #f4ba97;
+}
+.support-chat-contents-message-unset {
+	font-style: italic;
+}
+.support-chat-contents-message-system {
+	color: #454545;
+	font-style: italic;
+	border-color: #b5b5b5;
+	background-color: #f9f9f9;
+}
+
+.support-chat-contents-message-icon {
+	padding-right: .5em;
 }
 
 .support-chat-contents-message-time {
@@ -3170,7 +3206,6 @@ h1.driver-title {
 
 .support-chat-contents-message-name {
 	font-weight: bold;
-	margin-bottom: .3em;
 	float: left;
 }
 
@@ -3462,22 +3497,4 @@ input[type="checkbox"].switch + div:before {
 	margin-top: -.8em;
 	margin-bottom: 2em;
 	font-size: 1.2em;
-}
-
-.support-chat-contents-message-customer {
-	color: #000;
-}
-.support-chat-contents-message-driver {
-	color: #3a948e;
-}
-
-.support-chat-contents-message-support {
-	color: #e0574c;
-}
-.support-chat-contents-message-unset {
-	font-style: italic;
-}
-.support-chat-contents-message-system {
-	color: #4541e7;
-	font-style: italic;
 }

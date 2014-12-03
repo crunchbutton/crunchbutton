@@ -20,7 +20,21 @@
 		<tr><td class="support-chat-contents">
 			<div class="support-chat-contents-scroll">
 				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{'support-chat-contents-message-support': message.is_support, 'support-chat-contents-message-driver': message.is_driver, 'support-chat-contents-message-customer': (!message.is_support && !message.is_driver), 'support-chat-contents-message-unset': message.sending, 'support-chat-contents-message-system': message.from == 'system'}">
-					<div class="support-chat-contents-message-name">{{message.first_name || message.name}}</div>
+					
+				
+					<div class="support-chat-contents-message-name">
+						<span class="support-chat-contents-message-icon">
+							<span ng-if="message.from == 'system'">
+								<i class="fa fa-bolt"></i>
+							</span>
+							<span ng-if="message.from != 'system'">
+								<i class="fa fa-comment" ng-if="message.is_support"></i>
+								<i class="fa fa-car" ng-if="!message.is_support && message.is_driver"></i>
+								<i class="fa fa-user" ng-if="!message.is_support && !message.is_driver"></i>
+							</span>
+						</span>
+						{{message.first_name || message.name}}
+					</div>
 					<div class="support-chat-contents-message-time">
 						<? /*{{message.timestamp*1000 | date: 'M/d h:mm a'}} */ ?>
 						<span am-time-ago="message.date"></span>
