@@ -759,7 +759,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			});
 		}
 	});
-	
+
 
 	var drivers = function(){
 		DriverService.paid( function( data ){
@@ -795,7 +795,7 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	$scope.id_driver = 0;
 
 	var drivers = function(){
-		DriverService.list_payment_type( function( data ){
+		DriverService.listSimple( function( data ){
 			var drivers = [];
 			$scope.drivers = data;
 			$scope.ready = true;
