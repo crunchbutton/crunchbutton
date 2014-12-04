@@ -53,7 +53,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 							WHERE asa.id_admin = "' . $id_driver . '"';
 
 		if( $this->filters[ 'start' ] ){
-			$query .= 'AND DATE( cs.date_start ) = "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
+			$query .= 'AND DATE( cs.date_start ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
+			$query .= 'AND DATE( cs.date_start ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
 		}
 
 		$shifts = Crunchbutton_Community_Shift::q( $query );
@@ -140,9 +141,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// shifts we have to pay hourly
 	public function workedShiftsByPeriod( $id_admin, $filters ){
 		$start = ( new DateTime( $filters[ 'start' ] ) )->format( 'Y-m-d' );
+		$end = ( new DateTime( $filters[ 'end' ] ) )->format( 'Y-m-d' );
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin .
-																							' WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $start . '"' );
+																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
+																							WHERE
+																									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $start . '"
+																									AND
+																									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $end . '"' );
 	}
 
 
