@@ -50,8 +50,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function driverWeeksSummaryShifts( $id_driver ){
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM admin_shift_assign AS asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-							WHERE asa.id_admin = "' . $id_driver . '"
-								AND DATE( cs.date_start ) = "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
+							WHERE asa.id_admin = "' . $id_driver . '"';
+
+		if( $this->filters[ 'start' ] ){
+			$query .= 'AND DATE( cs.date_start ) = "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
+		}
+
 		$shifts = Crunchbutton_Community_Shift::q( $query );
 		$_shifts = [];
 		foreach( $shifts as $shift ){
