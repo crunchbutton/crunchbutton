@@ -30,12 +30,18 @@
 
 					<tr ng-if="pay_type_reimbursement">
 						<td><strong>Type</strong></td>
-						<td>Reimbursement</td>
+						<td>
+							<span ng-if="result.arbritary">Arbitrary&nbsp;</span>
+							Reimbursement
+						</td>
 					</tr>
 
 					<tr ng-if="pay_type_payment">
 						<td><strong>Type</strong></td>
-						<td>Payment</td>
+						<td>
+						<span ng-if="result.arbritary">Arbitrary&nbsp;</span>
+							Payment
+						</td>
 					</tr>
 
 					<tr ng-if="result.range_date">
