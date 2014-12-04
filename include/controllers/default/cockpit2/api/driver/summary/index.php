@@ -18,10 +18,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$driver = Admin::o( $id_driver );
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$range = [ 'end' => $now->format( 'm/d/Y' ) ];
-		$days = $now->format( 'N' ) + ( 7 * 12 ); // twelve weeks
-		$now->modify( '-' . $days . ' days' );
-		$range[ 'start' ] = $now->format( 'm/d/Y' );
+		$range = [ 'end' => null, 'start' => null ];
 
 		$payment_type = $driver->payment_type();
 		if( $payment_type->payment_type && $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
