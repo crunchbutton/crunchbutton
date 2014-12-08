@@ -47,7 +47,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 	private function _add_funds(){
 
-		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->_error();
 		}
 
@@ -183,7 +183,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 	private function _pexcard_change_card_status(){
 
-		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->_error();
 		}
 
@@ -220,7 +220,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 	private function _pex_id(){
 
-		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->_error();
 		}
 

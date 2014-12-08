@@ -9,7 +9,10 @@
 	text-decoration: underline;
 }
 </style>
-
+<?php
+$show_details = ( $this->orders->count() < 800 );
+$cache = [];
+?>
 <? if (!$this->orders->count()) : ?>
 	<div class="padded">
 		No results found
@@ -62,13 +65,13 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<?php } ?>
 
 							<?php
-							$credit = $order->hasCredit();
+							$credit = $order->credit;
 							if( $credit > 0 ){
 								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $credit, 2 ) . '</strong> credit.</div>';
 							}
 							?>
 							<?php
-							$giftcard = $order->hasGiftCard();
+							$giftcard = $order->gift_card;
 							if( $giftcard > 0 ){
 								echo '<br/><br/><i class="icon-gift"></i> Received <b>$' . number_format( $giftcard, 2 ) . '</b> gift card.';
 							}
@@ -92,11 +95,10 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<br/>
 
 					<?
-						$support = Support::getSupportForOrder($order->id);
-						if($suppor ) {
+						if( $order->id_support ) {
 
 							if( $permissionSupportCreate ){
-								echo '<i class="icon-comments"></i> <a href="/support/' . $support->id . '">View support ticket</a>';
+								echo '<i class="icon-comments"></i> <a href="/support/' . $order->id_support . '">View support ticket</a>';
 							}
 
 						}
@@ -122,6 +124,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<br/>
 
 			<?php
+			if( $show_details ){
 				$_log = '';
 				$timeToDelivery = '';
 				$logs = $order->actions();
@@ -160,20 +163,29 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 				} else {
 					echo '<i style="color:#CCC;font-size:11px;">-</i>';
 				}
+			}
 				?>
 
 				</td>
 				<td nowrap="nowrap">
-					<a href="/restaurants/<?=$order->restaurant()->id_restaurant?>">
-						<?=$order->restaurant()->name?>
+				<?php
+				if( !$cache[ 'restaurant_' . $order->id_restaurant ] ){
+					$cache[ 'restaurant_' . $order->id_restaurant ] = $order->restaurant();
+					$cache[ 'restaurant_communities' . $order->id_restaurant ] = $order->restaurant()->communityNames();
+					$cache[ 'restaurant_phone_notification' . $order->id_restaurant ] = $order->restaurant()->hasPhoneNotification();
+				}
+				$restaurant = $cache[ 'restaurant_' . $order->id_restaurant ];
+				?>
+					<a href="/restaurants/<?=$restaurant->id_restaurant?>">
+						<?=$restaurant->name?>
 					</a>
 					<br/>
-					<?=$order->restaurant()->communityNames();?>
+					<?=$cache[ 'restaurant_communities' . $order->id_restaurant ];?>
 					<hr/>
-					<?php if( $order->restaurant()->delivery_service && ( $order->restaurant()->formal_relationship || $order->restaurant()->order_notifications_sent ) ) { ?>
+					<?php if( $restaurant->delivery_service && ( $restaurant->formal_relationship || $restaurant->order_notifications_sent ) ) { ?>
 						<strong>Notification Sent to Restaurant</strong><br/><br/>
 					<?php } ?>
-					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
+					<?php if( $restaurant->confirmation || $cache[ 'restaurant_phone_notification' . $order->id_restaurant ] ){
 						if( $order->confirmed ) {
 							echo '<i class="icon-thumbs-up"></i> Confirmed!';
 						} else {
@@ -187,32 +199,34 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<?php } ?>
 					<hr/>
 					<span title="Timezone">
-						<?php $date->setTimeZone( new DateTimeZone( $order->restaurant()->timezone ) ); ?>
+						<?php $date->setTimeZone( new DateTimeZone( $restaurant->timezone ) ); ?>
 						<?=$date->format('M jS Y')?><br /><?=$date->format('g:i:s A')?> <strong>(<?php echo $date->format( 'T' ) ?>)</strong>
 						<br/>
-						<i class="icon-globe"></i> <?=$order->restaurant()->timezone?>
+						<i class="icon-globe"></i> <?=$restaurant->timezone?>
 					</span>
 				</td>
 				<td style="width: 230px; white-space: normal;">
-					<ul>
-					<? foreach ($order->dishes() as $dish) : ?>
-						<li>
-							<?=$dish->dish()->name?>
-							<? if ($dish->options()->count()) : ?>
-								<ul>
-								<? foreach ($dish->options() as $option) : ?>
-									<li><?=$option->option()->name?></li>
-								<? endforeach ; ?>
-								<? if( $dish->id_order_dish && $dish->id_dish ){
-										foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
-										?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
-									}
-								}?>
-								</ul>
-							<? endif ; ?>
-						</li>
-					<? endforeach ; ?>
-					</ul>
+					<?php if( $show_details ) { ?>
+						<ul>
+						<? foreach ($order->dishes() as $dish) : ?>
+							<li>
+								<?=$dish->dish()->name?>
+								<? if ($dish->options()->count()) : ?>
+									<ul>
+									<? foreach ($dish->options() as $option) : ?>
+										<li><?=$option->option()->name?></li>
+									<? endforeach ; ?>
+									<? if( $dish->id_order_dish && $dish->id_dish ){
+											foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
+											?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
+										}
+									}?>
+									</ul>
+								<? endif ; ?>
+							</li>
+						<? endforeach ; ?>
+						</ul>
+					<?php	} ?>
 				</td>
 				<td style="padding:0;">
 
@@ -333,13 +347,13 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<tr>
 							<td>
 								<br/>
-								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>"><i class="icon-gift"></i> Add gift card</a>
+								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $restaurant->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>"><i class="icon-gift"></i> Add gift card</a>
 							</td>
 						</tr>
 						<?php } ?>
 						<?php if( $order->id_agent ) { ?>
 							<tr>
-								<td><i class="icon-desktop"></i> <?php echo $order->agent()->os . ' ' . $order->agent()->browser ?></td>
+								<td><i class="icon-desktop"></i> <?php echo $order->os . ' ' . $order->browser ?></td>
 							</tr>
 								<?php
 							} ?>
