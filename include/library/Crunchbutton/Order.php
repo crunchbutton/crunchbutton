@@ -1057,11 +1057,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public static function find($search = []) {
-		$query = '
-			select `order`.* from `order`
-			left join restaurant using(id_restaurant)
-			where id_order is not null
-		';
+		$query = 'SELECT credit.total AS credit, promo.total AS gift_card, support.id_support, a.browser, a.os, o.* from `order` o left join restaurant using(id_restaurant)
+								LEFT JOIN( SELECT id_order_reference, SUM( value ) as total FROM credit WHERE ( credit_type = "cash" OR credit_type != "point" ) AND id_order_reference IS NOT NULL AND id_promo IS NULL GROUP BY id_order_reference ) credit ON credit.id_order_reference = o.id_order
+								LEFT JOIN( SELECT id_order_reference, SUM( value ) as total FROM promo WHERE id_order_reference IS NOT NULL GROUP BY id_order_reference ) promo ON promo.id_order_reference = o.id_order
+								LEFT JOIN ( SELECT MAX( id_support ) AS id_support, id_order FROM support WHERE id_order IS NOT NULL GROUP BY id_order ) support ON support.id_order = o.id_order
+								LEFT JOIN agent a ON a.id_agent = o.id_agent
+								WHERE o.id_order IS NOT NULL';
+
 		if ($search['env']) {
 			$query .= ' and env="'.$search['env'].'" ';
 		}
