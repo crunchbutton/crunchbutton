@@ -70,6 +70,53 @@
 
 		</div>
 
+		<form name="form" novalidate>
+
+			<h2 class="title">Add funds</h2>
+
+			<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content2">
+
+				<li class="li-input" ng-class="{'error':form.IdPexcard.$invalid}">
+					<div class="label">Card Serial</div>
+					<div class="input">
+						<select name="IdPexcard" required ng-model="pexcard.id_pexcard" ng-options="opt.id as opt.lastName for opt in payInfo.cards" ></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.IdPexcard.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.amount.$invalid}">
+					<div class="label">Amount</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="amount" required ng-model="pexcard.amount" placeholder="0.00">
+					</div>
+					<div class="box-error">
+						<small ng-show="form.amount.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.note.$invalid}">
+					<div class="label">Description</div>
+					<div class="input"><input type="text" name="note" required ng-model="pexcard.note" placeholder="Description"></div>
+					<div class="box-error">
+						<small ng-show="form.note.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="!isAdding">
+					<button class="button orange" ng-click="add_funds();">Add</button>
+					<span ng-show="saved" class="green">Funds Added!</span>
+				</li>
+
+				<li class="li-input" ng-show="isAdding">
+					<span><i class="fa fa-circle-o-notch fa-spin"></i> Adding funds</span>
+				</li>
+
+			</ul>
+
+		</form>
+
 		<div ng-if="!payInfo.cards.length">
 			This user has no pexcard.
 		</div>

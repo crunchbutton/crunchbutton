@@ -174,6 +174,28 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 		}
 	}
 
+	$scope.pexcard = {};
+
+	$scope.add_funds = function(){
+		if( $scope.form.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.submitted = true;
+			return;
+		}
+		$scope.isAdding = true;
+		PexCardService.add_funds( $scope.pexcard, function( data ){
+			if( data.error ){
+				App.alert( data.error);
+				$scope.isAdding = false;
+				return;
+			} else {
+				$scope.flash.setMessage( 'Funds Added!' );
+				$scope.pexcard = {};
+				setTimeout( function(){ load(); $scope.isAdding = false; }, 1000 );
+			}
+		} );
+	}
+
 	var load = function(){
 		StaffPayInfoService.pexcard( function( json ){
 			if( json.id_admin ){

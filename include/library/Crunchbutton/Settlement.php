@@ -1789,7 +1789,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
 																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
 																							INNER JOIN admin a ON a.id_admin = asa.id_admin
-																							WHERE DATE_FORMAT(cs.date_start, '%m/%d/%Y') = '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'" . $where );
+																							WHERE
+																								DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
+																								AND
+																								DATE_FORMAT(cs.date_start, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'"
+																							 . $where );
 	}
 
 	public function amount_per_invited_user(){

@@ -29,6 +29,10 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 		return false;
 	}
 
+	public function actions(){
+		return Crunchbutton_Pexcard_Action::actionsByCard( $this->id_admin_pexcard );
+	}
+
 	public function getByAdmin( $id_admin ){
 		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = "' . $id_admin . '"' );
 	}
@@ -86,11 +90,17 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 		}
 	}
 
+	public function addArbitraryFunds( $amount, $note ){
+		return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_ARBRITARY, 'note' => $note, 'amount' => $amount ] );
+	}
+
 	public function addFunds( $params ){
-
+		$add = false;
 		// for tests allows just daniel and david's cards
-		if( intval( $this->id_pexcard ) == 100254 || ( intval( $this->id_pexcard ) == 100296 ) ){
-
+		if( intval( $this->id_pexcard ) == 100254 || ( intval( $this->id_pexcard ) == 100296 ) || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
+			$add = true;
+		}
+		if( $add ){
 			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
 			if( $this->id_pexcard ){
 				$amount = $params[ 'amount' ];

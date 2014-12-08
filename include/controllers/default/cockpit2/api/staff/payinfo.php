@@ -165,7 +165,8 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _pexcard( $staff ){
-		$out = $staff->exports();
+		$out[ 'name' ] = $staff->name;
+		$out[ 'id_admin' ] = $staff->id_admin;
 		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin );
 		if( $cards && count( $cards ) > 0 ){
 			$out[ 'cards' ] = [];
