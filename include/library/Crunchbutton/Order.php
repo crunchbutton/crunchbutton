@@ -1065,25 +1065,25 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								WHERE o.id_order IS NOT NULL';
 
 		if ($search['env']) {
-			$query .= ' and env="'.$search['env'].'" ';
+			$query .= ' and o.env="'.$search['env'].'" ';
 		}
 		if ($search['processor']) {
-			$query .= ' and processor="'.$search['processor'].'" ';
+			$query .= ' and o.processor="'.$search['processor'].'" ';
 		}
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
-			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
+			$query .= ' and DATE(o.`date`)>="'.$s->format('Y-m-d').'" ';
 		}
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
-			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
+			$query .= ' and DATE(o.`date`)<="'.$s->format('Y-m-d').'" ';
 		}
 
 		$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );
 
 		if ($search['restaurant']) {
 			if( $hasPermissionToAllRestaurants || c::admin()->permission()->check( [ "orders-list-restaurant-{$search['restaurant']}" ] ) ){
-				$query .= ' and `order`.id_restaurant="'.$search['restaurant'].'" ';
+				$query .= ' and `o`.id_restaurant="'.$search['restaurant'].'" ';
 			} else {
 				exit;
 			}
@@ -1092,7 +1092,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if( !$hasPermissionToAllRestaurants ){
 				$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirOrders();
 				$restaurants[] = 0;
-				$query .= ' and `order`.id_restaurant IN ( ' . join( $restaurants, ',' ) . ')';
+				$query .= ' and o.id_restaurant IN ( ' . join( $restaurants, ',' ) . ')';
 			}
 		}
 
@@ -1100,7 +1100,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$query .= ' and `restaurant`.community="'.$search['community'].'" ';
 		}
 		if ($search['order']) {
-			$query .= ' and `order`.id_order="'.$search['order'].'" ';
+			$query .= ' and o.id_order="'.$search['order'].'" ';
 		}
 
 		if ($search['search']) {
@@ -1109,17 +1109,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$searches = explode(' ',$search['search']);
 			foreach ($searches as $word) {
 				if ($word{0} == '-') {
-					$qn .= ' and `order`.name not like "%'.substr($word,1).'%" ';
-					$qn .= ' and `order`.address not like "%'.substr($word,1).'%" ';
-					$qn .= ' and `order`.phone not like "%'.substr($word,1).'%" ';
+					$qn .= ' and o.name not like "%'.substr($word,1).'%" ';
+					$qn .= ' and o.address not like "%'.substr($word,1).'%" ';
+					$qn .= ' and o.phone not like "%'.substr($word,1).'%" ';
 					$qn .= ' and `restaurant`.name not like "%'.substr($word,1).'%" ';
 				} else {
 					$q .= '
-						and (`order`.name like "%'.$word.'%"
-						or `order`.id_order = "'.$word.'"
-						or `order`.address like "%'.$word.'%"
+						and (o.name like "%'.$word.'%"
+						or o.id_order = "'.$word.'"
+						or o.address like "%'.$word.'%"
 						or `restaurant`.name like "%'.$word.'%"
-						or REPLACE( `order`.phone, "-", "" ) like "%'. ( str_replace( '-' , '',  $word ) ) .'%")
+						or REPLACE( o.phone, "-", "" ) like "%'. ( str_replace( '-' , '',  $word ) ) .'%")
 					';
 				}
 			}
