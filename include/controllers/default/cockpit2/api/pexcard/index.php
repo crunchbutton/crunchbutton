@@ -18,6 +18,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_driver_active();
 				break;
 
+			case 'add-funds':
+				$this->_add_funds();
+				break;
+
 			case 'report':
 				$this->_report();
 				break;
@@ -39,6 +43,25 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				break;
 		}
 
+	}
+
+	private function _add_funds(){
+
+		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+			$this->_error();
+		}
+
+		$id_pexcard = $this->request()[ 'id_pexcard' ];
+		if( $id_pexcard ){
+			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
+			if( $admin_pexcard->id_admin_pexcard ){
+				$amount = $this->request()[ 'amount' ];
+				$note = $this->request()[ 'note' ];
+				$admin_pexcard->addArbitraryFunds( $amount, $note );
+				echo json_encode( [ 'success' => true ] );exit();
+			}
+		}
+		$this->_error( 'Card Not Found' );
 	}
 
 	private function _driver_active(){

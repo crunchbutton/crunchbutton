@@ -7,6 +7,7 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		'admin_pexcard' : { 'method': 'POST', params : { action: 'admin-pexcard' } },
 		'driver_search' : { 'method': 'POST', params : { action: 'driver-search' } },
 		'driver_active' : { 'method': 'POST', params : { action: 'driver-active' } },
+		'add_funds' : { 'method': 'POST', params : { action: 'add-funds' } },
 		'admin_pexcard_remove' : { 'method': 'POST', params : { action: 'admin-pexcard-remove' } },
 		'pex_change_card_status' : { 'method': 'POST', params : { action: 'pexcard-change-card-status' } },
 		'report' : { 'method': 'POST', params : { action: 'report' } }
@@ -26,6 +27,12 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 
 	service.report = function( params, callback ){
 		pexcard.report( params, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.add_funds = function( params, callback ){
+		pexcard.add_funds( params, function( data ){
 			callback( data );
 		} );
 	}
