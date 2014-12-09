@@ -2328,10 +2328,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function totalOrdersByPhone( $phone ){
-		// in order to test new users
-		if( Cana::env() != 'live' && $phone == '_PHONE_' ){
-			return 0;
-		}
+		$phone = trim( str_replace( '-', '', str_replace( ' ', '', $phone ) ) );
 		$query = "SELECT COUNT(*) AS total FROM `order` WHERE phone = '{$phone}'";
 		$row = Cana::db()->get( $query )->get(0);
 		if( $row->total ){
