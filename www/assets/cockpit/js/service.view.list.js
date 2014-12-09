@@ -39,14 +39,18 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		
 		scope.$watch('query.limit', inputWatch);
 		scope.$watch('query.page', watch);
-		
+
 		scope.setPage = function(page) {
 			scope.query.page = page;
 			App.scrollTop(0);
 		};
+
+		scope.sort = function(by) {
+			scope.query.sort = by;
+		};
 		
 		var updater = function(){};
-		
+
 		scope.update = function(fn) {
 			if (fn) {
 				updater = fn;
