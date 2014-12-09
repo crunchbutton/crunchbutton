@@ -887,10 +887,6 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 				id_schedule = json.success;
 				var url = '/settlement/drivers/scheduled/' + id_schedule;
 				$scope.navigation.link( url );
-				setTimeout( function(){
-					$scope.flash.setMessage( 'Payment scheduled. Starting payment!' );
-					$rootScope.$broadcast( 'do_payment' );
-				}, 500 );
 			}
 		);
 	}

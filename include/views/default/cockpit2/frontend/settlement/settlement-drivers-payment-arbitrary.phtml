@@ -22,7 +22,7 @@
 			</li>
 			<li class="li-input" ng-class="{'error':form.paymentAmount.$invalid}">
 				<div class="label">Amount:</div>
-				<div class="input"><input type="number" name="paymentAmount" ng-model="payment.amount" required ignore-mouse-wheel placeholder=""></div>
+				<div class="input"><input step="any" type="number" name="paymentAmount" ng-model="payment.amount" required ignore-mouse-wheel placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="form.paymentAmount.$error.required">Required.</small>
 				</div>
