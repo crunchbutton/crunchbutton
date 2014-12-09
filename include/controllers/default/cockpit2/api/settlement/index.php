@@ -209,6 +209,8 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 						if( !$payment_type->summary_fax ){
 							$summary_error = 'Summary fax missing';
 						}
+				case 'no summary':
+						$summary_error = false;
 					break;
 			}
 
