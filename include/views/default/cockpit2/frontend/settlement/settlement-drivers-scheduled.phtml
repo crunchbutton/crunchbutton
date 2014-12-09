@@ -1,11 +1,19 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-bank"></i>Scheduled Driver Payments Summary</h1>
+
+	<h1 class="title"><i class="fa fa-bank"></i>
+
+		<span ng-switch on="status">
+			<span ng-switch-when="deleted">Deleted </span>
+			<span ng-switch-when="archived">Archived </span>
+			<span ng-switch-default>Scheduled </span>
+		</span> Driver Payments
+	</h1>
 
 	<div ng-if="result">
 
-		<h3 class="title">
+		<h3 class="title" ng-if="status == 'scheduled'">
 			Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
 		</h3>
 
@@ -19,15 +27,15 @@
 					<th>Total of Reimbursements</th>
 					<td>{{result.total_reimbursements}}</td>
 				</tr>
-				<tr>
+				<tr ng-if="status == 'scheduled'">
 					<th>Scheduled</th>
 					<td>{{result.scheduled}}</td>
 				</tr>
-				<tr>
+				<tr ng-if="status == 'scheduled'">
 					<th>Processing</th>
 					<td>{{result.processing}}</td>
 				</tr>
-				<tr ng-class="{'orange' : result.error > 0 }">
+				<tr ng-if="status == 'scheduled'" ng-class="{'orange' : result.error > 0 }">
 					<th>Errors</th>
 					<td>{{result.error}}</td>
 				</tr>
@@ -35,7 +43,7 @@
 		</div>
 
 		<div ng-show="result.drivers">
-			
+
 			<h1 class="title left"><i class="fa fa-bank"></i>Payments</h1>
 
 			<div class="box-filter right">
@@ -43,10 +51,10 @@
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'reimbursement' }" ng-click="filter = 'reimbursement'">Reimbursement</button>
 				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'payment' }" ng-click="filter = 'payment'">Payments</button>
 			</div>
-			
+
 			<div class="divider"></div>
 
-			<div>
+			<div ng-if="status == 'scheduled'">
 				<h3 class="title">
 					Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
 				</h3>
@@ -64,10 +72,11 @@
 						<th>Type</th>
 						<th>Amount</th>
 						<th>Status</th>
+						<th ng-if="status == 'scheduled'"></th>
 						<th></th>
 					</tr>
 					<tr ng-repeat="driver in result.drivers" ng-show="!filter || filter == driver.pay_type">
-						<td><a href="/settlement/drivers/scheduled/{{driver.id_payment_schedule}}">{{driver.id_payment_schedule}}</td>
+						<td><a href="/settlement/drivers/{{status}}/{{driver.id_payment_schedule}}">{{driver.id_payment_schedule}}</td>
 						<td>{{driver.driver}}</td>
 						<td>{{driver.date}}</td>
 						<td>{{driver.pay_type}}</td>
@@ -76,6 +85,17 @@
 							{{driver.status}}
 						</td>
 						<td>
+						<td ng-if="status == 'scheduled'">
+							<ul class="ul-inputs">
+								<li class="li-input" ng-show="!isPaying">
+									<button class="button save" ng-click="archive( driver.id_payment_schedule );"><i class="fa fa-archive"></i></button>
+									<button class="button cancel" ng-click="delete( driver.id_payment_schedule )"><i class="fa fa-trash"></i></button>
+								</li>
+								<li class="li-input" ng-show="isPaying">
+									<i class="fa fa-circle-o-notch fa-spin"></i>
+								</li>
+							</ul>
+						</td>
 							{{driver.log}}
 						</td>
 					</tr>

@@ -658,6 +658,8 @@ NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, Settlemen
 	$scope.ready = false;
 	$scope.filter = false;
 
+	$scope.status = SettlementService.PAYMENT_STATUS_SCHEDULED;
+
 	$scope.update = function(){
 		SettlementService.drivers.scheduled( function( json ){
 			$scope.result = json;
@@ -671,6 +673,22 @@ NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, Settlemen
 		} );
 	}
 
+	$scope.delete = function( id_payment_schedule ){
+		if( confirm( 'Confirm delete payment ' + id_payment_schedule + '?' ) ){
+			SettlementService.drivers.delete( id_payment_schedule, function(){
+				$scope.update();
+			} );
+		}
+	}
+
+	$scope.archive = function( id_payment_schedule ){
+		if( confirm( 'Confirm archive payment ' + id_payment_schedule + '?' ) ){
+			SettlementService.drivers.archive( id_payment_schedule, function(){
+				$scope.update();
+			} );
+		}
+	}
+
 	$scope.payment = function( id_payment ){
 		$scope.navigation.link( '/settlement/drivers/scheduled/' + id_payment );
 	}
@@ -678,6 +696,38 @@ NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, Settlemen
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
 		$scope.update();
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversDeletedCtrl', function ( $scope, SettlementService ) {
+
+	$scope.ready = false;
+	$scope.filter = false;
+	$scope.status = SettlementService.PAYMENT_STATUS_DELETED;
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		SettlementService.drivers.deleted( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+		} );
+	}
+
+});
+
+NGApp.controller( 'SettlementDriversArchivedCtrl', function ( $scope, SettlementService ) {
+
+	$scope.ready = false;
+	$scope.filter = false;
+	$scope.status = SettlementService.PAYMENT_STATUS_ARCHIVED;
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		SettlementService.drivers.archived( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+		} );
 	}
 
 });

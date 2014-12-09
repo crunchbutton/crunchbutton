@@ -12,6 +12,8 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	const STATUS_PROCESSING = 'processing';
 	const STATUS_DONE = 'done';
 	const STATUS_ERROR = 'error';
+	const STATUS_ARCHIVED = 'archived';
+	const STATUS_DELETED = 'deleted';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -151,10 +153,25 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
+	public function driverByStatus( $status ){
+		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+								INNER JOIN admin a ON a.id_admin = ps.id_driver
+								WHERE
+									ps.status = "' . $status . '"
+								ORDER BY ps.id_payment_schedule DESC';
+		return Cockpit_Payment_Schedule::q( $query );
+	}
+
 	public function driverNotCompletedSchedules(){
 		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
-								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule DESC';
+								WHERE
+									( ps.status = "' . Cockpit_Payment_Schedule::STATUS_ERROR . '"
+								OR
+									ps.status = "' . Cockpit_Payment_Schedule::STATUS_PROCESSING . '"
+								OR
+									ps.status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" )
+								ORDER BY ps.id_payment_schedule DESC';
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 

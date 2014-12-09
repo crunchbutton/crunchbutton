@@ -112,6 +112,15 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'scheduled':
 								$this->_driverScheduled();
 								break;
+							case 'change-status':
+								$this->_driverChangeStatus();
+								break;
+							case 'deleted':
+								$this->_driverDeleted();
+								break;
+							case 'archived':
+								$this->_driverArchived();
+								break;
 							case 'payments':
 								$this->_driverPayments();
 								break;
@@ -599,6 +608,57 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
+	private function _driverChangeStatus(){
+		$status = trim( $this->request()[ 'status' ] );
+		$id_payment_schedule = $this->request()[ 'id_payment_schedule' ];
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule ){
+			switch ( $status ) {
+				case Cockpit_Payment_Schedule::STATUS_ARCHIVED:
+				case Cockpit_Payment_Schedule::STATUS_DELETED:
+					$schedule->status = $status;
+					$schedule->log = "Payment {$status}";
+					$schedule->status_date = date( 'Y-m-d H:i:s' );
+					if( $schedule->save() ){
+						echo json_encode( [ 'success' => true ] );exit();
+					}
+				break;
+			}
+		}
+		echo json_encode( [ 'error' => true ] );
+	}
+
+	private function _driverByStatus( $status ){
+		$schedule = new Cockpit_Payment_Schedule;
+		$schedules = $schedule->driverByStatus( $status );
+		$out = [ 'drivers' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total_payments' => 0, 'total_reimbursements' => 0 ];
+		foreach( $schedules as $_schedule ){
+			$data = $_schedule->exports();
+			if( !$data[ 'amount' ] ){
+				$data[ 'amount' ] = 0;
+			}
+			$data[ 'date' ] = $_schedule->date()->format( 'M jS Y g:i:s A' );
+			$out[ 'drivers' ][] = $data;
+			$out[ $_schedule->status ]++;
+			if( $_schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+				$out[ 'total_reimbursements' ]++;
+			} else {
+				$out[ 'total_payments' ]++;
+			}
+		}
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
+		echo json_encode( $out );
+	}
+
+	private function _driverDeleted(){
+		$this->_driverByStatus( Cockpit_Payment_Schedule::STATUS_DELETED );
+	}
+
+	private function _driverArchived(){
+		$this->_driverByStatus( Cockpit_Payment_Schedule::STATUS_ARCHIVED );
+	}
+
 	private function _driverScheduled(){
 		if( c::getPagePiece( 4 ) ){
 			$settlement = new Settlement;
@@ -626,7 +686,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				} else {
 					$out[ 'total_payments' ]++;
 				}
-
 			}
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
