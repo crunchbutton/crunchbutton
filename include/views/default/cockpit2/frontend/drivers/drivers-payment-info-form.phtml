@@ -10,7 +10,7 @@
 		<div class="ul-inputs box-content2">
 			<ul ng-class="{'submitted':basicSubmitted}">
 				<li class="li-input" ng-class="{'error':formBasic.basicLegalName.$invalid}">
-					<div class="label">Legal Name:</div>
+					<div class="label">"Legal Name (as it appears on your checks):</div>
 					<div class="input"><input type="text" name="basicLegalName" ng-model="basicInfo.legal_name_payment" required placeholder="Legal Name" ng-maxlength="250"></div>
 					<div class="box-error">
 						<small ng-show="formBasic.basicLegalName.$error.required">Required.</small>
@@ -53,6 +53,7 @@
 			<ul ng-class="{'submitted':bankSubmitted}" ng-show="bank.showForm">
 				<li class="li-input" ng-class="{'error':formBank.accountNumber.$invalid}">
 					<div class="label">Account Number:</div>
+					<div class="notes">This is NOT your debit card number - it's the long number from your checks - see below<br/></div>
 					<div class="input"><input type="tel" name="accountNumber" ng-model="bank.account_number" required></div>
 					<div class="box-error">
 						<small ng-show="formBank.accountNumber.$error.required">Required.</small>
@@ -70,6 +71,9 @@
 				</li>
 				<li class="li-input" ng-show="isTokenizing">
 					<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
+				</li>
+				<li>
+					<img src="/assets/cockpit/images/driver-payment-check.gif" />
 				</li>
 			</ul>
 		</div>
