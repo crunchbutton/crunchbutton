@@ -118,6 +118,15 @@
 								<li>
 									<button type="button" onclick="community.closeAll();" class="btn close_all_restaurants_save btn-blue">Save changes</button>
 								</li>
+								<li>
+									<?php
+									if( $community[ 'community' ]->close_all_restaurants && $community[ 'community' ]->close_all_restaurants_id_admin  ){
+										$admin = Admin::o( $community[ 'community' ]->close_all_restaurants_id_admin );
+										if( $admin->id_admin ){
+											echo 'Closed by ' . $admin->name;
+										}
+									} ?>
+								</li>
 							</ul>
 						</div>
 						<div class="span6">
@@ -133,6 +142,15 @@
 								</li>
 								<li>
 									<button type="button" onclick="community.close3rdParty();" class="close_3rd_party_delivery_restaurants_save btn btn-blue">Save changes</button>
+								</li>
+								<li>
+									<?php
+									if( $community[ 'community' ]->close_3rd_party_delivery_restaurants && $community[ 'community' ]->close_3rd_party_delivery_restaurants_id_admin  ){
+										$admin = Admin::o( $community[ 'community' ]->close_3rd_party_delivery_restaurants_id_admin );
+										if( $admin->id_admin ){
+											echo 'Closed by ' . $admin->name;
+										}
+									} ?>
 								</li>
 							</ul>
 						</div>
