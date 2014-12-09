@@ -1,0 +1,2 @@
+ALTER TABLE `restaurant_payment_type` CHANGE `payment_method` `payment_method` enum('check','deposit','no payment') DEFAULT NULL;
+ALTER TABLE `restaurant_payment_type` CHANGE `summary_method` `summary_method` enum('fax','email','no summary') DEFAULT NULL;

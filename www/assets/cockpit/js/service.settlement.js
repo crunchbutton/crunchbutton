@@ -261,7 +261,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 			}).
 			error( function(data, status, headers, config ) {
 				callback( false );
-			} );
+		} );
 	}
 
 	service.pay_types = function(){

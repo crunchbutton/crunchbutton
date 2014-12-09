@@ -403,9 +403,7 @@
 									<li class="input">
 										<span>Summary Method</span>
 										<span class="pull-right span9">
-											<?php
-												$options = array( 'fax', 'email' );
-												?>
+												<?php $options = array( 'fax', 'email', 'no summary' ); ?>
 											<select name="summary_method" id="summary_method" class="uniform">
 												<option value="">None</option>
 												<? foreach ($options as $option) {
@@ -432,9 +430,7 @@
 									<li class="input">
 										<span>Payment Method</span>
 										<span class="pull-right">
-											<?php
-												$options = array( 'check', 'deposit' );
-												?>
+											<?php $options = array( 'check', 'deposit', 'no payment' ); ?>
 											<select name="payment_method" id="payment_method" class="uniform">
 												<? foreach ($options as $option) {
 													$selected = ( $option == $this->payment->payment_method ) ? 'selected="selected"' : ''; ?>

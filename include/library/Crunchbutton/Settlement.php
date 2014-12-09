@@ -163,6 +163,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		} else {
 			$q .= ' AND ( rpt.payment_method = "check" OR rpt.payment_method = "deposit" ) ';
 		}
+		$q .= ' AND rpt.payment_method != "' . Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_NO_PAYMENT . '" ';
 		if( $filters[ 'id_restaurant' ] ){
 			$q .= ' AND restaurant.id_restaurant = "' . $filters[ 'id_restaurant' ] . '"';
 		}
@@ -1248,16 +1249,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 						}
 					}
 				} else {
-					$schedule->log = 'Restaurant doesn\'t have a payment method.';
-					$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
-					$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
-					$message .= "\n". 'amount: ' . $schedule->amount;
-					$message .= "\n". $schedule->log;
-					$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
-					$schedule->status_date = date( 'Y-m-d H:i:s' );
-					$schedule->save();
-					$this->log( 'payRestaurant: Error', $schedule->properties() );
-					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+					if( $payment_method != Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_NO_PAYMENT ){
+						$schedule->log = 'Restaurant doesn\'t have a payment method.';
+						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+						$message .= "\n". 'amount: ' . $schedule->amount;
+						$message .= "\n". $schedule->log;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						$this->log( 'payRestaurant: Error', $schedule->properties() );
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+					}
 				}
 
 			} else {
