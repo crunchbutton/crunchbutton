@@ -41,17 +41,17 @@
 					<td><strong>Status</strong></td>
 					<td ng-class="{ 'orange': result.status != 'done', 'green': result.status == 'done' }">
 						{{result.status}}
-						<span ng-if="result.status != 'done'" >
+						<span ng-if="( result.status == 'error' || result.status == 'archived' )" >
 							<br/>
 							<strong ng-click="do_payment()" class="orange link">Try send payment</strong>
 						</span>
 					</td>
 				</tr>
-				<tr ng-if="result.status == 'error' && result.log">
-					<td><strong>Error log</strong></td>
+				<tr ng-if="result.log">
+					<td><strong>Log</strong></td>
 					<td class="orange">{{result.log}}</td>
 				</tr>
-				<tr ng-if="result.status == 'error' && result.status_date">
+				<tr ng-if="result.status_date">
 					<td><strong>Last try</strong></td>
 					<td class="orange">{{result.status_date}}</td>
 				</tr>

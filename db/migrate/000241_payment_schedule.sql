@@ -1,0 +1,1 @@
+ALTER TABLE `payment_schedule` CHANGE `status` `status` enum('scheduled','processing','done','error','deleted','archived') DEFAULT NULL;

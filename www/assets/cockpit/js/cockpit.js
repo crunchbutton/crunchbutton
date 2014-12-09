@@ -116,6 +116,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementRestaurantsScheduledViewCtrl',
 			templateUrl: 'assets/view/settlement-restaurants-payment.html'
 		})
+		.when('/settlement/restaurants/archived/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
+		.when('/settlement/restaurants/deleted/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
 		.when('/settlement/restaurants/payment/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsPaymentCtrl',
@@ -141,6 +151,26 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementDriversScheduledCtrl',
 			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
 			reloadOnSearch: false
+		})
+		.when('/settlement/drivers/archived', {
+			action: 'settlement',
+			controller: 'SettlementDriversArchivedCtrl',
+			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
+		})
+		.when('/settlement/drivers/deleted', {
+			action: 'settlement',
+			controller: 'SettlementDriversDeletedCtrl',
+			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
+		})
+		.when('/settlement/drivers/deleted/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payment.html'
+		})
+		.when('/settlement/drivers/archived/:id', {
+			action: 'settlement',
+			controller: 'SettlementDriversScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-drivers-payment.html'
 		})
 		.when('/settlement/drivers/scheduled/:id', {
 			action: 'settlement',

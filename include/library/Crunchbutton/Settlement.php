@@ -1276,8 +1276,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$this->log( 'payDriver', $schedule->properties() );
 		if( $schedule->id_payment_schedule ){
 
-			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
-					$schedule->status == Cockpit_Payment_Schedule::STATUS_ERROR ){
+			if( !$schedule->id_payment &&
+					( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
+						$schedule->status == Cockpit_Payment_Schedule::STATUS_ERROR ||
+						$schedule->status == Cockpit_Payment_Schedule::STATUS_ARCHIVED ) ){
 
 				// Save the processing date
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_PROCESSING;

@@ -11,6 +11,13 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	service.BALANCED_STATUS_SUCCEEDED = 'succeeded';
 	service.BALANCED_STATUS_FAILED = 'failed';
 
+	service.PAYMENT_STATUS_SCHEDULED = 'scheduled';
+	service.PAYMENT_STATUS_PROCESSING = 'processing';
+	service.PAYMENT_STATUS_DONE = 'done';
+	service.PAYMENT_STATUS_DELETED = 'deleted';
+	service.PAYMENT_STATUS_ARCHIVED = 'archived';
+	service.PAYMENT_STATUS_ERROR = 'error';
+
 	service.pay_type_options = [ { 'name': 'All', 'value' : 'all' }, { 'name': 'Check', 'value' : 'check' }, { 'name': 'Deposit', 'value' : 'deposit' } ];
 	service.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
@@ -36,6 +43,8 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'transfer_driver' : { 'method': 'POST', params : { action: 'transfer-driver' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
 		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } },
+		'archived' : { 'method': 'POST', params : { action: 'archived' } },
+		'deleted' : { 'method': 'POST', params : { action: 'deleted' } },
 		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
 		'do_err_payments' : { 'method': 'POST', params : { action: 'do-err-payments' } },
@@ -44,7 +53,8 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } },
-		'balanced_status' : { 'method': 'POST', params : { action: 'balanced-status' } }
+		'balanced_status' : { 'method': 'POST', params : { action: 'balanced-status' } },
+		'change_status' : { 'method': 'POST', params : { action: 'change-status' } }
 	}	);
 
 	service.restaurants.begin = function( params, callback ){
@@ -171,6 +181,18 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		} );
 	}
 
+	service.drivers.archived = function( callback ){
+		settlement.drivers.archived( function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.deleted = function( callback ){
+		settlement.drivers.deleted( function( json ){
+			callback( json );
+		} );
+	}
+
 	service.drivers.do_payment = function( id_payment_schedule, callback ){
 		settlement.drivers.do_payment( { 'id_payment_schedule' : id_payment_schedule }, function( json ){
 			callback( json );
@@ -215,6 +237,18 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	service.drivers.balanced_status = function( id_payment, callback ){
 		settlement.drivers.balanced_status( { 'id_payment' : id_payment }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.delete = function( id_payment_schedule, callback ){
+		settlement.drivers.change_status( { 'id_payment_schedule' : id_payment_schedule, 'status' : service.PAYMENT_STATUS_DELETED }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.archive = function( id_payment_schedule, callback ){
+		settlement.drivers.change_status( { 'id_payment_schedule' : id_payment_schedule, 'status' : service.PAYMENT_STATUS_ARCHIVED }, function( json ){
 			callback( json );
 		} );
 	}
