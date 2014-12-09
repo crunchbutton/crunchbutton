@@ -142,14 +142,20 @@
 												<?php } ?>
 											</td>
 											<td>
-												<?php
-													$note = $admin->note();
-													$note_data = [];
-													if( $note->id_admin_note ){
-														$note_data = $note->exports();
-														echo $note_data[ 'text' ];
-													}
-										 		?>
+									<?php
+										$driver = $admin;
+										$note = $driver->note();
+										$note_data = [];
+										if( $note->id_admin_note ){
+											$note_data = $note->exports();
+										}
+									?>
+									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+
+									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
+										<i class="icon-spinner icon-spin"></i>
+									</div>
+									<div style="display:none;" id_admin="<?php echo $driver->id_admin; ?>" class="admin-note-text" id="admin-note-text-<?php echo $driver->id_admin; ?>"><?php echo nl2br( $note_data[ 'text' ] ); ?></div>
 											</td>
 										</tr>
 										<?php }
@@ -218,14 +224,20 @@
 												<?php } ?>
 											</td>
 											<td>
-												<?php
-													$note = $admin->note();
-													$note_data = [];
-													if( $note->id_admin_note ){
-														$note_data = $note->exports();
-														echo $note_data[ 'text' ];
-													}
-										 		?>
+<?php
+										$driver = $admin;
+										$note = $driver->note();
+										$note_data = [];
+										if( $note->id_admin_note ){
+											$note_data = $note->exports();
+										}
+									?>
+									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+
+									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
+										<i class="icon-spinner icon-spin"></i>
+									</div>
+									<div style="display:none;" id_admin="<?php echo $driver->id_admin; ?>" class="admin-note-text" id="admin-note-text-<?php echo $driver->id_admin; ?>"><?php echo nl2br( $note_data[ 'text' ] ); ?></div>
 											</td>
 										</tr>
 										<?php
@@ -281,14 +293,20 @@
 													<?php } ?>
 											</td>
 											<td>
-												<?php
-													$note = $admin->note();
-													$note_data = [];
-													if( $note->id_admin_note ){
-														$note_data = $note->exports();
-														echo $note_data[ 'text' ];
-													}
-										 		?>
+									<?php
+										$driver = $admin;
+										$note = $driver->note();
+										$note_data = [];
+										if( $note->id_admin_note ){
+											$note_data = $note->exports();
+										}
+									?>
+									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+
+									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
+										<i class="icon-spinner icon-spin"></i>
+									</div>
+									<div style="display:none;" id_admin="<?php echo $driver->id_admin; ?>" class="admin-note-text" id="admin-note-text-<?php echo $driver->id_admin; ?>"><?php echo nl2br( $note_data[ 'text' ] ); ?></div>
 											</td>
 											</tr>
 										<?php
@@ -318,5 +336,6 @@
 <script type="text/javascript">
 $( document ).ready( function(){
 	shift.summary.assign.init();
+	shift.status.init();
 } );
 </script>
