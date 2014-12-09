@@ -46,7 +46,11 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		};
 
 		scope.sort = function(by) {
-			scope.query.sort = by;
+			if (scope.query.sort == by) {
+				scope.query.sort = '-' + by;
+			} else {
+				scope.query.sort = by;
+			}
 		};
 		
 		var updater = function(){};
