@@ -6,7 +6,7 @@
 			<th>Name</th>
 			<th>Phone</th>
 			<th>Address</th>
-			<th>Orders</th>
+			<th><a ng-click="sort('orders')">Orders</th>
 			<th>Last&nbsp;Order</th>
 		</tr>
 		<tr ng-repeat="customer in customers track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/customer/{{customer.id_user}}">

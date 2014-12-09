@@ -20,6 +20,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		$sort = $this->request()['sort'] ? c::db()->escape($this->request()['sort']) : null;
 		
 		if ($page == 1) {
 			$offset = '0';
@@ -60,9 +61,18 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		while ($c = $r->fetch()) {
 			$count++;
 		}
+		
+		switch ($sort) {
+			case 'orders':
+				$q .= ' ORDER BY orders DESC, `user`.id_user DESC, `order`.date ASC ';
+				break;
+			default:
+				$q .= ' ORDER BY `user`.id_user DESC, `order`.date ASC ';
+				break;
+			
+		}
 
 		$q .= '
-			ORDER BY `user`.id_user DESC, `order`.date ASC
 			LIMIT '.$offset.', '.$limit.'
 		';
 		
