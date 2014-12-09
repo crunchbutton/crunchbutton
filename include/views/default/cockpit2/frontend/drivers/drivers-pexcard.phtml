@@ -13,8 +13,8 @@
 			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
 				<li class="li-input" ng-class="{'error':form.crunchbuttonCardId.$invalid}">
-					<div class="label">Card Serial (e.g. Crunchbutton XXXXX):</div>
-					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Card Serial (e.g. Crunchbutton XXXXX)"></div>
+					<div class="label">Card Serial (the numbers after "CRUNCHBUTTON" on your card):</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Card Serial (the numbers after 'CRUNCHBUTTON' on your card)"></div>
 					<div class="box-error">
 						<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
 					</div>
@@ -98,7 +98,7 @@
 				<ul ng-show="activateOption" class="ul-inputs">
 
 					<li class="li-input" ng-show="!isActivating">
-						<button class="button save" ng-click="active();">Active card</button>
+						<button class="button save" ng-click="active();">Make My Card Active</button>
 					</li>
 
 					<li class="li-input" ng-show="isActivating">

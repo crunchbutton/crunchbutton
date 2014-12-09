@@ -266,10 +266,10 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 			PexCardService.driver_active( $scope.card.id, function( json ){
 				if( json.success ){
 					$scope.activateOption = false;
-					$scope.card = json.success;
 					$scope.crunchbutton_card_id = null;
 					$scope.last_four_digits = null;
-					$scope.flash.setMessage( 'Card activated!', 'success' );
+					$scope.card = null;
+					$scope.flash.setMessage( 'Your PEX Card is Active! :D! Activate another PEX card', 'success' );
 				} else {
 					$scope.flash.setMessage( 'Error activating card!', 'error' );
 					$scope.isActivating = false;
@@ -797,7 +797,6 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 	});
 
 	StaffService.has_pexcard( $scope.account.user.id_admin, function( json ) {
-		console.log('json',json);
 		if( json.success ){
 			$scope.pexcard = json.success;
 		}
