@@ -344,6 +344,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							$shiftDateStart = $shift->dateStart( c::config()->timezone );
 						}
 
+
 						if( $shiftDateStart && ( $order->date() < $shiftDateStart ) ){
 							$message = $first_name . ' ';
 							$message .= Crunchbutton_Admin_Notification::REPS_COCKPIT . $order->id_order;
@@ -498,6 +499,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			'from' => 'driver',
 			'message' => $message
 		]);
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'sms' => $sms, 'message' => $message, 'type' => 'admin_notification' ]);
 
 		return $ret;
 	}
