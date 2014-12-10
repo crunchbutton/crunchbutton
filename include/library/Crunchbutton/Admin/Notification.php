@@ -332,14 +332,26 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				case 1:
 					// Change 1st driver phone call to a text message #2812
 					$txtNumber = $admin->getTxtNumber();
+
 					if( $txtNumber ){
-						$env = c::getEnv();
 
 						$sms = $txtNumber;
 
 						$first_name = Crunchbutton_Message_Sms::greeting( $admin->firstName() );
 
-						$message = $first_name . "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is not optimal ;)";
+						$shift = Crunchbutton_Community_Shift::currentDriverShift( $admin->id_admin );
+						if( $shift->id_community_shift ){
+							$shiftDateStart = $shift->dateStart( c::config()->timezone );
+						}
+
+						if( $shiftDateStart && ( $order->date() < $shiftDateStart ) ){
+							$message = $first_name . ' ';
+							$message .= Crunchbutton_Admin_Notification::REPS_COCKPIT . $order->id_order;
+							$message .= "\n";
+							$message .= $order->message( 'sms-admin' );
+						} else {
+							$message = $first_name . "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is not optimal ;)";
+						}
 
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $txtNumber, 'message' => $message , 'type' => 'admin_notification' ]);
 
