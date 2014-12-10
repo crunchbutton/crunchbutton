@@ -865,9 +865,22 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						}
 					}
 				}
-
 			}
 		}
+	}
+
+	public function currentDriverShift( $id_admin ){
+		$admin = Admin::o( $id_admin );
+		$now = new DateTime( 'now', $admin->timezone() );
+		$now = $now->format( 'Y-m-d H:i:s' );
+		$shift = Crunchbutton_Community::q( 'SELECT * FROM community_shift cs
+																								INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+																								WHERE
+																									cs.date_start <= "' . $now . '"
+																								AND
+																									cs.date_end >=  "' . $now . '"
+																								AND asa.id_admin = ' . $id_admin . ' LIMIT 1' );
+		return $shift;
 	}
 
 	public function warningDriversBeforeTheirShift(){
