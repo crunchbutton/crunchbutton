@@ -41,7 +41,7 @@ $current_shift = $this->community->currentShift();
 					<strong>Drivers</strong>
 					<ul class="padded separate-sections">
 						<?php foreach( $drivers as $driver ) {
-							$is_assigned = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $current_shift->id_community_shift ) ) ? 'assigned-drivers' : 'not-assigned-drivers';
+							$is_assigned = ( $current_shift->id_community_shift && Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $current_shift->id_community_shift ) ) ? 'assigned-drivers' : 'not-assigned-drivers';
 							?>
 						<li class="input">
 								<label style="text-align:left;">
