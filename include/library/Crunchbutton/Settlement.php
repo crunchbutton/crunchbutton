@@ -268,6 +268,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
 
 				if(
+					( $order[ 'do_not_reimburse_driver' ] == 1 ) ||
 					( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || // Do not reimburse reimbursed orders
 					( $pay[ $driver ][ 'using_pex' ] && !$pay[ $driver ][ 'using_pex_date' ] ) || // Do not reimburse drivers that are using pex card #3876
 					( $pay[ $driver ][ 'using_pex' ] && $pay[ $driver ][ 'using_pex_date' ] && intval( $pay[ $driver ][ 'using_pex_date' ] ) <= intval( $order[ 'formatted_date' ] ) )
@@ -524,6 +525,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47254475
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47283481
 	public function orderReimburseDriver( $arr ){
+		// do_not_reimburse_driver
 		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'credit' ] * $arr[ 'delivery_service' ] * ( 1 - $arr[ 'formal_relationship' ] );
 	}
 
@@ -620,6 +622,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'refunded' ] = ( $order->refunded > 0 ) ? 1: 0;
 		$values[ 'do_not_pay_restaurant' ] = ( $order->do_not_pay_restaurant > 0 ) ? 1: 0;
 		$values[ 'do_not_pay_driver' ] = ( $order->do_not_pay_driver > 0 ) ? 1: 0;
+		$values[ 'do_not_reimburse_driver' ] = ( $order->do_not_reimburse_driver > 0 ) ? 1: 0;
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
