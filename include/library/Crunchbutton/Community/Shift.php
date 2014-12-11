@@ -453,10 +453,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function communitiesWithDeliveryService(){
-		return Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c
-																				INNER JOIN restaurant_community rc ON c.id_community = rc.id_community
-																				INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1
-																			ORDER BY c.name ASC' );
+		return Crunchbutton_Community::q( 'SELECT * FROM (
+																				SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c WHERE c.id_community = ' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '
+																				UNION ALL
+																				SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c
+																					INNER JOIN restaurant_community rc ON c.id_community = rc.id_community
+																					INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1 ) drivers ORDER BY drivers.name' );
 	}
 
 	public function deliveredOrdersByAdminAtTheShift( $id_admin ){
@@ -546,7 +548,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$driversWillReceiveTheNotification = [];
 
 		// Get the communities with active and delivery_service restaurants
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
 		foreach( $communities as $community ){
 
 			// Check if the community has shift for current week
@@ -685,8 +687,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$now->modify( '+ 1 day' );
 
-		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin ) FROM admin_shift_assign asa INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift  WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '" AND cs.active = 1' );
+		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin )
+																									FROM admin_shift_assign asa
+																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift AND cs.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '"
+																									WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '" AND cs.active = 1' );
+
 		foreach( $adminsWithShifts as $admin ){
+
 			$id_admin = $admin->id_admin;
 			$admin = Admin::o( $id_admin );
 
@@ -891,7 +898,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
 
 		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us at _PHONE_!';
 

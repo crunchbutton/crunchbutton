@@ -259,6 +259,7 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function drivers(){
+
 		return Admin::q( 'SELECT a.* FROM admin a
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
@@ -310,22 +311,27 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
-			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%"';
+			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%" AND g.name !="' . Crunchbutton_Admin::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"';
 			$result = c::db()->get( $query );
 			$this->_isDriver = ( $result->_items[0]->Total > 0 );
 		}
 		return $this->_isDriver;
 	}
 
-	public function isSupport() {
-		if (!isset($this->_isSupport)) {
-			$result = c::db()->get('
-				SELECT COUNT(*) AS c FROM admin_group ag
-				LEFT JOIN `group` g using (id_group)
-				WHERE ag.id_admin = ' . $this->id_admin . '
-				AND g.name="'.Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ).'"
-			');
-			$this->_isSupport = $result->get(0)->c ? true : false;
+	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {
+		if ( !isset( $this->_isSupport ) ) {
+			$result = c::db()->get('SELECT COUNT(*) AS c FROM admin_group ag
+																LEFT JOIN `group` g using (id_group)
+																WHERE ag.id_admin = ' . $this->id_admin . '
+																AND g.name= "' . Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) . '"');
+			if( !$onlyReturnTrueIfTheyAreWorking ){
+				$this->_isSupport = $result->get( 0 )->c ? true : false;
+				return $this->_isSupport;
+			}
+			// Check if they are working based on their shift
+			// https://github.com/crunchbutton/crunchbutton/issues/2638#issuecomment-64863807
+			$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin );
+			$this->_isSupport = ( $shift->count() && $shift->id_community_shift ) ? true : false;
 		}
 		return $this->_isSupport;
 	}
