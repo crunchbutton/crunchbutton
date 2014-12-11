@@ -1,6 +1,10 @@
 <?php
 
 class Crunchbutton_Community extends Cana_Table {
+
+	const CUSTOMER_SERVICE_ID_COMMUNITY = 92;
+	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
+
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
 		$force = preg_replace('/[^a-z\-]+/','',$force);
