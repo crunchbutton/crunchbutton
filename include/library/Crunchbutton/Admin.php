@@ -353,13 +353,12 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function isWorking(){
-		$now = new DateTime( 'now', $this->timezone() );
-		$now = $now->format( 'YmdHi' );
-		$hours = Admin_Hour::q( "SELECT * FROM admin_hour WHERE
-															id_admin = {$this->id_admin} AND
- 															DATE_FORMAT( date_start, '%Y%m%d%H%i' ) <= {$now} AND
-  														DATE_FORMAT( date_end, '%Y%m%d%H%i' ) >= {$now} ");
-		return ( $hours->count() > 0 );
+		// Based on their shifts #2638
+		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin );
+		if( !$shift ){
+			return false;
+		}
+		return true;
 	}
 
 	public function workingHoursWeek(){
