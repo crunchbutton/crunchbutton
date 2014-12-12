@@ -1,7 +1,7 @@
 <?php
 
 class Controller_drivers_assign extends Crunchbutton_Controller_Account {
-	
+
 	public function init() {
 
 		if ( !c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-assign' ] ) ) {
@@ -11,7 +11,7 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 		c::view()->page = 'drivers';
 
 		switch ( c::getPagePiece( 2 ) ){
-			
+
 			case 'driver':
 					$this->driver();
 				break;
@@ -100,7 +100,7 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 			$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
 			foreach ( $communities as $community ) {
 				if( $community->driverDeliveryHere( $admin->id_admin ) ){
-					$adminCommunities[ $community->id_community ] = true;	
+					$adminCommunities[ $community->id_community ] = true;
 				}
 			}
 			c::view()->admin_communities = $adminCommunities;
