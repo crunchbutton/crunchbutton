@@ -274,17 +274,20 @@ class Crunchbutton_Settlement extends Cana_Model {
 					( $pay[ $driver ][ 'using_pex' ] && $pay[ $driver ][ 'using_pex_date' ] && intval( $pay[ $driver ][ 'using_pex_date' ] ) <= intval( $order[ 'formatted_date' ] ) )
 					 ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
+					$order[ 'pay_info' ][ 'standard_reimburse' ] = 0;
 				}
 
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
 
-				$pay[ $driver ][ 'orders' ][] = $order;
-
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
+					$order[ 'pay_info' ][ 'tip' ] = 0;
+					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 					continue;
 				}
+
+				$pay[ $driver ][ 'orders' ][] = $order;
 
 				$pay[ $driver ][ 'subtotal' ] += $order[ 'pay_info' ][ 'subtotal' ];
 				$pay[ $driver ][ 'tax' ] += $order[ 'pay_info' ][ 'tax' ];
@@ -341,7 +344,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 				$tip = 0;
 				foreach( $pay[ $id_driver ][ 'orders' ] as $id_order => $order ){
-
 					if( !$order[ 'driver_paid' ] || $recalculatePaidOrders ){
 						$tip += $order[ 'pay_info' ][ 'tip' ];
 					}
@@ -525,7 +527,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47254475
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47283481
 	public function orderReimburseDriver( $arr ){
-		// do_not_reimburse_driver
 		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'credit' ] * $arr[ 'delivery_service' ] * ( 1 - $arr[ 'formal_relationship' ] );
 	}
 
