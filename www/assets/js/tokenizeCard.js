@@ -122,7 +122,15 @@ App.tokenizeCard_balanced = function(card, completed) {
 				break;
 
 			case 400:
-				res.error = 'Missing card information';
+				var description = 'Missing card information';
+				if( response.errors && response.errors[0] && response.errors[0].description ){
+					if( response.errors[0].description.indexOf( '[number]' ) ){
+						description = 'Not a valid credit card number';
+					}
+				}
+
+				res.error = description;
+
 				break;
 
 			case 402:
