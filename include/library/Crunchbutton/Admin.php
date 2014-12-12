@@ -311,7 +311,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
-			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%" AND g.name !="' . Crunchbutton_Admin::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"';
+			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%" AND g.name !="' . Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"';
 			$result = c::db()->get( $query );
 			$this->_isDriver = ( $result->_items[0]->Total > 0 );
 		}
