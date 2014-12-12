@@ -131,6 +131,10 @@
 													} else {
 														echo 'Not using pex card';
 													}
+													$ordersPerHour = $admin->ordersPerHour();
+													if( $ordersPerHour ){
+														echo "<br>$ordersPerHour orders/hour";
+													}
 												?>
 											</td>
 											<td style="background:#009c48;color:#FFF;text-align:center;"><strong><?php echo $preference->ranking; ?></strong> of <?php echo $highestRanking; ?></td>
@@ -213,6 +217,10 @@
 													} else {
 														echo 'Not using pex card';
 													}
+													$ordersPerHour = $admin->ordersPerHour();
+													if( $ordersPerHour ){
+														echo "<br>$ordersPerHour orders/hour";
+													}
 												?>
 											</td>
 											<td>-</td>
@@ -281,6 +289,10 @@
 														echo 'Using pex card';
 													} else {
 														echo 'Not using pex card';
+													}
+													$ordersPerHour = $admin->ordersPerHour();
+													if( $ordersPerHour ){
+														echo "<br>$ordersPerHour orders/hour";
 													}
 												?>
 												</td>

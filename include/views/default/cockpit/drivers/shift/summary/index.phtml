@@ -108,8 +108,14 @@
 													$font_color = ( $isPermanent ? ';color:blue;' : '' );
 													$background_color = ( $isFirstWeek ? ';background-color:#45ef7f;' : '' );
 
+													$ordersPerHour = $driver->ordersPerHour();
+
 													$_driver = '<div style="letter-spacing:-.09em;font-size:11px;padding:2px 0;white-space: nowrap;' . $font_color . $background_color . '">- ';
 													$_driver .= $driver->name;
+													if( $ordersPerHour ){
+														$_driver .= ": $ordersPerHour o/h";
+													}
+
 													$_driver .= '</div>';
 
 													$drivers[] = $_driver;
@@ -201,6 +207,9 @@
 	.shift span{
 		display: block;
 		margin: 5px 0;
+	}
+	#modal-shift{
+		width: 780px !important;
 	}
 </style>
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
