@@ -283,6 +283,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					$order[ 'pay_info' ][ 'tip' ] = 0;
+					$order[ 'pay_info' ][ 'delivery_fee' ] = 0;
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
 
@@ -1551,6 +1552,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ '_total_cash_orders_' ] = 0;
 
 			$orders = $schedule->orders();
+
 			$_orders = [];
 			$summary[ 'orders_count' ] = 0;
 			$summary[ 'orders_not_included' ] = 0;
@@ -1576,9 +1578,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'name' => $variables[ 'name' ],
 																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
 																										'date' => $variables[ 'short_date' ],
-																										'tip' => $variables[ 'tip' ],
+																										'tip' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'tip' ],
 																										'restaurant' => $variables[ 'restaurant' ],
-																										'delivery_fee' => $variables[ 'delivery_fee' ],
+																										'delivery_fee' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee' ],
 																										'pay_type' => $type,
 																										'total_reimburse' => $_total_reimburse,
 																										'total_payment' => $_total_payment
