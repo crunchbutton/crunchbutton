@@ -2221,6 +2221,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 			$this->refunded = 1;
 			$this->do_not_reimburse_driver = 1;
+			$this->do_not_pay_driver = 1;
 			$this->save();
 			return (object)['status' => true];
 		}
