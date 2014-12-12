@@ -284,10 +284,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					$order[ 'pay_info' ][ 'tip' ] = 0;
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
-					continue;
 				}
 
 				$pay[ $driver ][ 'orders' ][] = $order;
+
+				if( $order[ 'do_not_pay_driver' ] == 1 ){
+					continue;
+				}
 
 				$pay[ $driver ][ 'subtotal' ] += $order[ 'pay_info' ][ 'subtotal' ];
 				$pay[ $driver ][ 'tax' ] += $order[ 'pay_info' ][ 'tax' ];
