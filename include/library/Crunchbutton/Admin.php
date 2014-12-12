@@ -4,6 +4,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	const CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING = 'schedule-sms';
 	const CONFIG_VEHICLE_KEY = 'vehicle';
+	const CONFIG_ORDER_PER_HOUR_KEY = 'orders-per-hour';
 
 	const VEHICLE_BIKE = 'bike';
 	const VEHICLE_CAR = 'car';
@@ -65,6 +66,18 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function saveVehicle( $vehicle ){
 		$this->setConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY, $vehicle );
+	}
+
+	public function ordersPerHour(){
+		$orders = $this->getConfig( Cockpit_Admin::CONFIG_ORDER_PER_HOUR_KEY );
+		if( $orders ){
+			return $orders->value;
+		}
+		return null;
+	}
+
+	public function saveOrdersPerHour( $orders ){
+		$this->setConfig( Cockpit_Admin::CONFIG_ORDER_PER_HOUR_KEY, $orders );
 	}
 
 	public static function login($login, $inactive = false) {

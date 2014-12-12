@@ -431,6 +431,28 @@ shift.status.init = function(){
 		} );
 	} );
 
+	$( '.orders-per-hour' ).each( function(){
+		var el = $( this );
+		el.on( 'blur', function() {
+			var el = $( this );
+			var data = { 'id_admin': el.attr( 'id_admin' ), 'orders': el.val() };
+			$( '#admin-orders-updating-' + el.attr( 'id_admin' ) ).show();
+			$.ajax( {
+				url: '/api/drivers/shift/driver-orders-per-hour/',
+				method: 'POST',
+				data: data,
+				dataType: 'json',
+			} ).done( function( data ) {
+				$( '#admin-orders-updating-' + el.attr( 'id_admin' ) ).hide();
+				if( data.success ){
+
+				} else {
+					alert( 'Oops, error! ' + data.error );
+				}
+			} );
+		} );
+	} );
+
 	$( '.admin-note-text' ).each( function(){
 		var el = $( this );
 		var id_admin = $( this ).attr( 'id_admin' );

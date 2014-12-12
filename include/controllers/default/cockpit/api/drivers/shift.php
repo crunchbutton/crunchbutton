@@ -17,7 +17,11 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'driver-note-update':
-			$this->driverNoteUpdate();
+				$this->driverNoteUpdate();
+				break;
+
+			case 'driver-orders-per-hour':
+				$this->driverOrdersPerHour();
 				break;
 
 			default:
@@ -34,6 +38,18 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 			$value = ( $value && $value > 0 ) ? 1 : 0;
 			$admin->setConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING, $value );
 			echo json_encode( [ 'success' => 'success' ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
+	public function driverOrdersPerHour(){
+		$id_admin = $this->request()[ 'id_admin' ];
+		$admin = Admin::o( $id_admin );
+		if( $admin->id_admin ){
+			$orders = $this->request()[ 'orders' ];
+			$admin->saveOrdersPerHour( $orders );
+			echo json_encode( [ 'success' => true ] );
 		} else {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 		}
