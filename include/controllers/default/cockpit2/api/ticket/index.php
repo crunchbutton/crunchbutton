@@ -7,14 +7,14 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}
-		
+
 		$ticket = Support::o(c::getPagePiece(2));
 
 		if (!$ticket->id_support) {
 			header('HTTP/1.0 404 Not Found');
 			exit;
 		}
-		
+
 		if (get_class($ticket) != 'Crunchbutton_Support') {
 			$ticket = $ticket->get(0);
 		}

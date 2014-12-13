@@ -36,10 +36,10 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 
 
 NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, MapService, SocketService) {
-	
+
 	$rootScope.title = 'Ticket #' + $routeParams.id;
 	$scope.loading = true;
-	
+
 	SocketService.listen('ticket.' + $routeParams.id, $scope)
 		.on('update', function(d) {
 			update();
@@ -47,7 +47,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 
 	var cleanup;
-	
+
 	var draw = function() {
 		if (!$scope.map || !$scope.ticket) {
 			return;
@@ -70,27 +70,29 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		TicketService.get($routeParams.id, function(ticket) {
 			$scope.ticket = ticket;
 			$scope.loading = false;
-			
+
 			if (!cleanup) {
-				cleanup = $rootScope.$on('order-route-' + ticket.order.id_order, function(event, args) {
-					$scope.$apply(function() {
-						$scope.eta = args;
+				if( ticket && ticket.order ){
+					cleanup = $rootScope.$on('order-route-' + ticket.order.id_order, function(event, args) {
+						$scope.$apply(function() {
+							$scope.eta = args;
+						});
+						console.debug('Got route update: ', args);
 					});
-					console.debug('Got route update: ', args);
-				});
+				}
 			}
 			draw();
 		});
 	};
-	
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
 		draw();
 	});
-	
+
 	update();
-	
+
 	$rootScope.$broadcast('triggerViewTicket', $routeParams.id);
 
 });

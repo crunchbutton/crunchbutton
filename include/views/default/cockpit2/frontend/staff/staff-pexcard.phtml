@@ -89,7 +89,7 @@
 				<li class="li-input" ng-class="{'error':form.amount.$invalid}">
 					<div class="label">Amount</div>
 					<div class="input">
-						<input type="number" ignore-mouse-wheel name="amount" required ng-model="pexcard.amount" placeholder="0.00">
+						<input type="number" step="any" ignore-mouse-wheel name="amount" required ng-model="pexcard.amount" placeholder="0.00">
 					</div>
 					<div class="box-error">
 						<small ng-show="form.amount.$error.required">Required.</small>
