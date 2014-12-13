@@ -33,12 +33,12 @@ class Crunchbutton_Support extends Cana_Table {
 			'message' => $message
 		]);
 	}
-	
+
 	// @todo: remove the getusers function in favor of getsupport
 	public static function getSupport() {
 		return Admin::q('
 			select a.* FROM admin a
-			left join admin_group ag using(id_admin) 
+			left join admin_group ag using(id_admin)
 			left join `group` g using(id_group)
 			where g.name="'.Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ).'"
 		');
@@ -726,18 +726,28 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 		return $hasCreatePermission;
 	}
-	
+
 	public function exports() {
 		$out = $this->properties();
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
 		$out['driver'] = ($this->order()->id_order && $this->order()->driver()->id_admin) ? $this->order()->driver()->exports() : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
-		
+
+		// Check if the ticket belongs to a driver with pexcard #3990
+		$admin = Admin::getByPhone( $this->clearPhone( $this->phone ) );
+		if( $admin->id_admin && $admin->isDriver() ){
+			$pexcard = $admin->pexcard();
+			if( $pexcard->id_admin_pexcard ){
+				$out[ 'pexcard' ] = $pexcard->exports();
+				$out[ 'pexcard' ][ 'name' ] = $admin->name;
+			}
+		}
+
 		foreach ($this->messages() as $message) {
 			$out['messages'][] = $message->exports();
 		}
-		
+
 		return $out;
 	}
 

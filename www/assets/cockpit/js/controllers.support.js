@@ -14,7 +14,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 	$scope.params = {
 		status: 'open'
 	};
-	
+
 	var getTickets = function() {
 		console.debug('Updating support tickets...');
 		TicketService.shortlist($scope.params, function(tickets) {
@@ -37,7 +37,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 });
 
 NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService, SocketService) {
-	
+
 	var loaded = false;
 
 	SocketService.listen('ticket.' + TicketViewService.scope.viewTicket, TicketViewService.scope)
@@ -63,9 +63,9 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
 		loadTicket(ticket == 'refresh' ? TicketViewService.scope.ticket : ticket);
 	});
-	
+
 	$scope.send = TicketViewService.send;
-	
+
 	loadTicket(TicketViewService.scope.viewTicket);
 });
 
@@ -73,6 +73,57 @@ NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewServi
 	TicketViewService.scope = $scope;
 	$scope.setViewTicket = TicketViewService.setViewTicket;
 });
+
+NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
+
+	$scope.add_funds = function(){
+		if( $scope.ticket && $scope.ticket.pexcard && $scope.ticket.pexcard.id_pexcard ){
+			if( $scope.form.$invalid ){
+				App.alert( 'Please fill in all required fields' );
+				$scope.submitted = true;
+				return;
+			}
+			$scope.pexcard.id_pexcard = $scope.ticket.pexcard.id_pexcard;
+			$scope.isAdding = true;
+			PexCardService.add_funds( $scope.pexcard, function( data ){
+				if( data.error ){
+					App.alert( data.error);
+					$scope.isAdding = false;
+					return;
+				} else {
+					$scope.isAdding = false;
+					$scope.flash.setMessage( 'Funds Added!' );
+					$scope.pexcard = {};
+					$scope.isLoadingBalance = true;
+					setTimeout( function(){ $scope.current_balanced(); }, 3000 );
+				}
+			} );
+		} else {
+			App.alert( 'Oops, it seems the driver doesn\'t have a PexCard!' );
+		}
+	}
+
+	$scope.current_balanced = function(){
+		if( $scope.ticket && $scope.ticket.pexcard && $scope.ticket.pexcard.card_serial ){
+
+			$scope.isLoadingBalance = true;
+
+			PexCardService.pex_id( $scope.ticket.pexcard.card_serial,
+				function( json ){
+					$scope.isLoadingBalance = false;
+					if( json.id ){
+						$scope.card = json;
+					} else {
+						$scope.flash.setMessage( json.error, 'error' );
+					}
+				}
+			);
+		} else {
+			App.alert( 'Oops, it seems the driver doesn\'t have a PexCard!' );
+		}
+	}
+
+} );
 
 
 NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, TicketViewService, CallService) {
@@ -94,7 +145,7 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, Tick
 			});
 		}
 	});
-	
+
 	TicketService.list($scope.ticketparams, function(d) {
 		$scope.lotsoftickets = d.results;
 	});
