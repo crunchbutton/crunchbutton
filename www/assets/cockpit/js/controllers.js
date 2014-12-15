@@ -1,5 +1,5 @@
 NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
-	if (!AccountService.user.id_admin) {
+	if (!AccountService || !AccountService.user || !AccountService.user.id_admin) {
 		MainNavigationService.link('/login');
 		return;
 	}
