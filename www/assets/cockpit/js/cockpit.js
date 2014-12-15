@@ -490,6 +490,55 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.$apply( 'windowHeight' );
 	});
 
+	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+		// Store the actual page
+console.log('routeChangeSuccess');
+		MainNavigationService.page = $route.current.action;
+		App.rootScope.current = MainNavigationService.page;
+
+		$rootScope.title = makeTitle();
+		App.track('page', $route.current.action);
+
+		$('body').removeClass(function (index, css) {
+			return (css.match (/\bpage-\S+/g) || []).join(' ');
+		}).addClass('page-' + MainNavigationService.page);
+
+		$('.nav-top').addClass('at-top');
+
+		App.scrollTop($rootScope.scrollTop);
+		if( App.span && App.snap.close ){
+			App.snap.close();
+		}
+
+		$rootScope.scrollTop = 0;
+	});
+
+	$scope.$on( '$routeChangeStart', function (event, next, current) {
+		console.log('routeChangeStart',$rootScope.account.isLoggedIn());
+		if (!$rootScope.account.isLoggedIn()) {
+			var isAllowed = false;
+			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
+				console.log('$location.url()',$location.url());
+			 if( $location.url().indexOf( allowed ) >= 0 ){
+				isAllowed = true;
+			 }
+			} );
+			if( $location.url().indexOf( '/drivers/' ) >= 0 ){
+				isAllowed = false;
+			}
+			if( !isAllowed  ) {
+				setTimeout(function() {
+					MainNavigationService.link( '/login' );
+				}, 10);
+
+			}
+		} else {
+			if( $location.url() == '/login') {
+				MainNavigationService.link( '/' );
+			}
+		}
+	});
+
 	$rootScope.$on( 'configLoaded', function(e, data) {
 
 		$rootScope.isLive = ( App.config.env == 'live' );
@@ -497,46 +546,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.config = App.config.site;
 
 		$rootScope.account.checkUser();
-
-		$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-			// Store the actual page
-			MainNavigationService.page = $route.current.action;
-			App.rootScope.current = MainNavigationService.page;
-
-			$rootScope.title = makeTitle();
-			App.track('page', $route.current.action);
-
-			$('body').removeClass(function (index, css) {
-				return (css.match (/\bpage-\S+/g) || []).join(' ');
-			}).addClass('page-' + MainNavigationService.page);
-
-			$('.nav-top').addClass('at-top');
-
-			App.scrollTop($rootScope.scrollTop);
-			App.snap.close();
-			$rootScope.scrollTop = 0;
-		});
-
-		$scope.$on( '$routeChangeStart', function (event, next, current) {
-			if (!$rootScope.account.isLoggedIn()) {
-				var isAllowed = false;
-				angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
-				 if( $location.url().indexOf( allowed ) >= 0 ){
-					isAllowed = true;
-				 }
-				} );
-				if( !isAllowed  ) {
-					setTimeout(function() {
-						MainNavigationService.link( '/login' );
-					}, 10);
-
-				}
-			} else {
-				if( $location.url() == '/login') {
-					MainNavigationService.link( '/' );
-				}
-			}
-		});
 
 		// Litle hack to don't show the templates till angularjs finish running
 		$scope.angularLoaded = true;
@@ -625,7 +634,7 @@ App.scrollTop = function(top) {
  * Sends a tracking item to google, or to google ads if its an order
  */
 App.track = function() {
-	if (App.config.env != 'live') {
+	if (App && App.config && App.config.env != 'live') {
 		return;
 	}
 

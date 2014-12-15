@@ -48,7 +48,9 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 
 
 		$location.path( path || '/' );
-		App.snap.close();
+		if( App.snap && App.snap.close ){
+			App.snap.close();
+		}
 	}
 
 	return service;
