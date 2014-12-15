@@ -609,10 +609,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$message = Crunchbutton_Message_Sms::greeting() . 'The following communities doesn\'t have shifts for the current week: ' . join( ', ', $communitiesWithoutShift );
 
-			Crunchbutton_Message_Sms::send([
-				'to' => Crunchbutton_Support::getUsers(),
-				'message' => $message
-			]);
+			Crunchbutton_Message_Sms::send( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message ] );
 		}
 
 		echo "\n";
@@ -624,10 +621,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			echo "Sending sms to support users...\n";
 
-			$rets = Crunchbutton_Message_Sms::send([
-				'to' => Crunchbutton_Support::getUsers(),
-				'message' => $message
-			]);
+			$rets = Crunchbutton_Message_Sms::send( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message ] );
 
 			foreach ($rets as $ret) {
 				if (!$ret->sid) {
@@ -650,7 +644,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$num = ( $txt != '' ) ? $txt : $phone;
 
 				$cs_message = 'Driver notificaton: ' . str_replace( '|', '<br>',  $message );
-				Crunchbutton_Support::createNewWarning(  [ 'body' => $cs_message, 'phone' => $num ] );
+				// Crunchbutton_Support::createNewWarning(  [ 'body' => $cs_message, 'phone' => $num ] );
 
 				if (strpos( $message, '|') > 0) {
 					$message = str_replace('|', "\n", $message);
@@ -833,7 +827,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message ] );
 
 				if( $driver->phone ){
-					Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone ] );
+					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone ] );
 				}
 
 				// Send the email
