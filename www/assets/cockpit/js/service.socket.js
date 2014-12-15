@@ -1,5 +1,6 @@
 
 NGApp.factory('eventSocket', function (socketFactory, $rootScope) {
+
 //	$rootScope.$on('userAuth', function(e, data) {
 	var myIoSocket = io.connect('https://chat.cockpit.la');
 
@@ -14,9 +15,9 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 	var service = {};
 	var listening = {};
 	service.socket = eventSocket;
-	
+
 	service.listen = function(group, scope) {
-		
+
 		if (!listening[group]) {
 			service.socket.emit('event.subscribe', group, listening[group]);
 			listening[group] = [scope.$id];
@@ -36,22 +37,22 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 			if (listening[group] && listening[group].indexOf(scope.$id) >= 0) {
 				listening[group].splice(listening[group].indexOf(scope.$id),1);
 				service.socket.emit('event.unsubscribe', group);
-				
+
 				console.debug('Removing listener for ' + group, listening[group]);
 			}
 		});
-		
+
 		var Listener = function(group, scope) {
 			this.group = group;
 			this.scope = scope;
-			
+
 			var self = this;
 
 			this.on = function(evt, fn) {
 				var event = group + '.' + evt;
 				console.debug('Listening to ' + this.group + ' for ' + event, listening[group]);
 
-				service.socket.forward(event, self.scope);	
+				service.socket.forward(event, self.scope);
 				scope.$on('socket:' + event, function (ev, data) {
 
 					console.debug('Recieved event', ev, data, self.group, listening[group]);
@@ -67,8 +68,10 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 
 		return new Listener(group, scope);
 	};
-	
+
+
 	service.socket.on('connect', function (data) {
+
 		console.debug('Connected to socket.io');
 
 		service.socket.emit('auth', {
@@ -76,19 +79,30 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 			phpsessid: $.cookie('PHPSESSID'),
 			host: location.host
 		});
-		
-		service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin);
-		
-		if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
-			console.debug('Subscribing to all tickets');
-			service.socket.emit('event.subscribe', 'ticket.all');
-		} else {
-			console.debug('Unsubscribing to all tickets');
-			service.socket.emit('event.unsubscribe', 'ticket.all');
+
+		var subscribe = function(){
+
+			if( AccountService && AccountService.user && AccountService.user.id_admin ){
+
+				service.socket.emit( 'event.subscribe', 'user.preference.' + AccountService.user.id_admin);
+				if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
+					console.debug('Subscribing to all tickets');
+					service.socket.emit('event.subscribe', 'ticket.all');
+				} else {
+					console.debug('Unsubscribing to all tickets');
+					service.socket.emit('event.unsubscribe', 'ticket.all');
+				}
+
+			} else {
+				setTimeout( function(){ subscribe() }, 100 );
+			}
 		}
+
+		subscribe();
+
 	});
-	
-	
+
+
 	$rootScope.$on('user-preference', function(e, data) {
 		if (!service.socket) {
 			return;
@@ -104,8 +118,8 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 			}
 		});
 	});
-	
-	
+
+
 	return service;
 });
 

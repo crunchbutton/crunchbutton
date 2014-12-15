@@ -48,7 +48,6 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 	};
 
 	$rootScope.$on('userAuth', function(e, data) {
-		console.debug('USERAUTH', data);
 
 		service.user = data;
 
@@ -61,17 +60,17 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 			}
 			if (service.user.permissions && service.user.permissions.RESTAURANT) {
 				service.isRestaurant = true;
-	
+
 				for (var x in service.user.permissions) {
 					if (x.indexOf('RESTAURANT-') == 0) {
 						service.restaurants.push(x.replace(/[^0-9]/g,''));
 					}
 				}
-	
+
 				// only one restaurant for now
 				service.restaurant = service.restaurants[0];
 			}
-	
+
 			if (service.user.groups) {
 				for (var x in service.user.groups) {
 					if (service.user.groups[x].indexOf('drivers-') == 0) {
@@ -80,7 +79,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 					}
 				}
 			}
-	
+
 			if (data && data.id_admin) {
 				var name = service.user.name.split(' ');
 				service.user.firstName = name[0];
@@ -88,13 +87,13 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 				for (var x in name) {
 					service.user.initials += name[x].charAt(0);
 				}
-	
+
 				$.totalStorage('hasLoggedIn',true);
 			}
 		}
 
 		App.snap.close();
-		$rootScope.reload();
+
 	});
 
 	return service;
