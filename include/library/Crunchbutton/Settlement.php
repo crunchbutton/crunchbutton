@@ -274,7 +274,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 					( $pay[ $driver ][ 'using_pex' ] && $pay[ $driver ][ 'using_pex_date' ] && intval( $pay[ $driver ][ 'using_pex_date' ] ) <= intval( $order[ 'formatted_date' ] ) )
 					 ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
-					$order[ 'pay_info' ][ 'standard_reimburse' ] = 0;
 				}
 
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
