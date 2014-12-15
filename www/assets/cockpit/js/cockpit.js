@@ -490,9 +490,25 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.$apply( 'windowHeight' );
 	});
 
+	$rootScope.$on( 'configLoaded', function(e, data) {
+
+		$rootScope.isLive = ( App.config.env == 'live' );
+		$rootScope.isBeta = !$rootScope.isLive;
+		$rootScope.config = App.config.site;
+
+		$rootScope.account.checkUser();
+
+		// Litle hack to don't show the templates till angularjs finish running
+		$scope.angularLoaded = true;
+
+		$rootScope.configLoaded = true;
+
+	} );
+
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+
 		// Store the actual page
-console.log('routeChangeSuccess');
+
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 
@@ -514,43 +530,41 @@ console.log('routeChangeSuccess');
 	});
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
-		console.log('routeChangeStart',$rootScope.account.isLoggedIn());
-		if (!$rootScope.account.isLoggedIn()) {
-			var isAllowed = false;
-			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
-				console.log('$location.url()',$location.url());
-			 if( $location.url().indexOf( allowed ) >= 0 ){
-				isAllowed = true;
-			 }
-			} );
-			if( $location.url().indexOf( '/drivers/' ) >= 0 ){
-				isAllowed = false;
-			}
-			if( !isAllowed  ) {
-				setTimeout(function() {
-					MainNavigationService.link( '/login' );
-				}, 10);
 
-			}
-		} else {
-			if( $location.url() == '/login') {
-				MainNavigationService.link( '/' );
+		var run = function(){
+			if( $rootScope.configLoaded ){
+				if (!$rootScope.account.isLoggedIn()) {
+					var isAllowed = false;
+					angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
+					 if( $location.url().indexOf( allowed ) >= 0 ){
+						isAllowed = true;
+					 }
+					} );
+					if( $location.url().indexOf( '/drivers/' ) >= 0 ){
+						isAllowed = false;
+					}
+					if( !isAllowed  ) {
+						// Force login page
+						if( App.isPhoneGap ){
+							MainNavigationService.link( '/login' );
+						} else {
+							window.location.href = '/login';
+						}
+
+					}
+				} else {
+					if( $location.url() == '/login') {
+						MainNavigationService.link( '/' );
+					}
+				}
+			} else {
+				setTimeout( function(){ run() }, 100 );
 			}
 		}
+
+		run();
+
 	});
-
-	$rootScope.$on( 'configLoaded', function(e, data) {
-
-		$rootScope.isLive = ( App.config.env == 'live' );
-		$rootScope.isBeta = !$rootScope.isLive;
-		$rootScope.config = App.config.site;
-
-		$rootScope.account.checkUser();
-
-		// Litle hack to don't show the templates till angularjs finish running
-		$scope.angularLoaded = true;
-
-	} );
 
 });
 
