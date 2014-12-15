@@ -30,14 +30,6 @@ if (App.isPhoneGap) {
 }
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
-App.NGinit = function() {
-	$('body').attr('ng-controller', 'AppController');
-	angular.bootstrap(document,['NGApp']);
-	if (App.config.env == 'live') {
-		$('.footer').addClass('footer-hide');
-	}
-};
-
 var NGApp = angular.module('NGApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap'], function( $httpProvider ) {
 /*
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
@@ -88,6 +80,7 @@ NGApp.config(function($compileProvider){
 });
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
+
 	$routeProvider
 
 		/* Settlement */
@@ -371,6 +364,17 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService) {
 
+	var url = App.service + 'config?init=1';
+	$http.get( url, {
+		cache: false
+	} ).success( function ( response ) {
+		App._remoteConfig = true;
+		App.init( response );
+	} ).error( function(){
+		App._remoteConfig = false;
+		App.init( {} );
+	} );
+
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -388,10 +392,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.supportToggle = function() {
 		$rootScope.supportToggled = !$rootScope.supportToggled;
 	};
-
-	$rootScope.isLive = ( App.config.env == 'live' );
-	$rootScope.isBeta = !$rootScope.isLive;
-	$rootScope.config = App.config.site;
 
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){
@@ -478,46 +478,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		return $route.current.title || camelCase($route.current.action.replace(/-/g,' '));
 	};
 
-	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		// Store the actual page
-		MainNavigationService.page = $route.current.action;
-		App.rootScope.current = MainNavigationService.page;
-
-		$rootScope.title = makeTitle();
-		App.track('page', $route.current.action);
-
-		$('body').removeClass(function (index, css) {
-			return (css.match (/\bpage-\S+/g) || []).join(' ');
-		}).addClass('page-' + MainNavigationService.page);
-
-		$('.nav-top').addClass('at-top');
-
-		App.scrollTop($rootScope.scrollTop);
-		App.snap.close();
-		$rootScope.scrollTop = 0;
-	});
-
-	$scope.$on( '$routeChangeStart', function (event, next, current) {
-		if (!$rootScope.account.isLoggedIn()) {
-			var isAllowed = false;
-			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
-			 if( $location.url().indexOf( allowed ) >= 0 ){
-				isAllowed = true;
-			 }
-			} );
-			if( !isAllowed  ) {
-				setTimeout(function() {
-					MainNavigationService.link( '/login' );
-				}, 10);
-
-			}
-		} else {
-			if( $location.url() == '/login') {
-				MainNavigationService.link( '/' );
-			}
-		}
-	});
-
 	// Make the window's size available to all scope
 	$rootScope.windowWidth = $window.outerWidth;
 	$rootScope.windowHeight = $window.outerHeight;
@@ -530,10 +490,58 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.$apply( 'windowHeight' );
 	});
 
-	// Litle hack to don't show the templates till angularjs finish running
-	$scope.angularLoaded = true;
+	$rootScope.$on( 'configLoaded', function(e, data) {
 
-	$rootScope.account.checkUser();
+		$rootScope.isLive = ( App.config.env == 'live' );
+		$rootScope.isBeta = !$rootScope.isLive;
+		$rootScope.config = App.config.site;
+
+		$rootScope.account.checkUser();
+
+		$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+			// Store the actual page
+			MainNavigationService.page = $route.current.action;
+			App.rootScope.current = MainNavigationService.page;
+
+			$rootScope.title = makeTitle();
+			App.track('page', $route.current.action);
+
+			$('body').removeClass(function (index, css) {
+				return (css.match (/\bpage-\S+/g) || []).join(' ');
+			}).addClass('page-' + MainNavigationService.page);
+
+			$('.nav-top').addClass('at-top');
+
+			App.scrollTop($rootScope.scrollTop);
+			App.snap.close();
+			$rootScope.scrollTop = 0;
+		});
+
+		$scope.$on( '$routeChangeStart', function (event, next, current) {
+			if (!$rootScope.account.isLoggedIn()) {
+				var isAllowed = false;
+				angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
+				 if( $location.url().indexOf( allowed ) >= 0 ){
+					isAllowed = true;
+				 }
+				} );
+				if( !isAllowed  ) {
+					setTimeout(function() {
+						MainNavigationService.link( '/login' );
+					}, 10);
+
+				}
+			} else {
+				if( $location.url() == '/login') {
+					MainNavigationService.link( '/' );
+				}
+			}
+		});
+
+		// Litle hack to don't show the templates till angularjs finish running
+		$scope.angularLoaded = true;
+
+	} );
 
 });
 
@@ -642,6 +650,9 @@ App.processConfig = function(json, user) {
 	if (json.timezones) {
 		moment.tz.load(json.timezones);
 	}
+
+	App.rootScope.$broadcast( 'configLoaded' );
+
 };
 
 /**
@@ -717,7 +728,10 @@ App.init = function(config) {
 
 	// process the config, and startup angular
 	App.processConfig(config || App.config);
-	App.NGinit();
+
+	if ( App.config.env == 'live' ) {
+		$( '.footer' ).addClass( 'footer-hide' );
+	}
 
 	window.addEventListener( 'pageshow', function(){
 		// the first pageshow should be ignored

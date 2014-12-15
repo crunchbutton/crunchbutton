@@ -27,9 +27,9 @@ NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
 NGApp.controller('SideMenuCtrl', function ($scope, $rootScope, AccountService) {
 	$scope.setupPermissions = function() {}
 	$scope.menu = {};
-	
+
 	//$scope.menu.toggle = $.totalStorage('menu.toggle');
-	
+
 	var fixToggle = function() {
 		if (!AccountService.user || !AccountService.user.permissions) {
 			$scope.menu.toggle = '';
@@ -43,15 +43,15 @@ NGApp.controller('SideMenuCtrl', function ($scope, $rootScope, AccountService) {
 	$rootScope.$on('userAuth', function(e, data) {
 		fixToggle();
 	});
-	
+
 	//$.totalStorage('menu.toggle', $scope.menu.toggle);
-	
+
 	/*
 	$scope.$watch('menu.toggle', function() {
 		$.totalStorage('menu.toggle', $scope.menu.toggle);
 	});
 	*/
-	
+
 	fixToggle();
 });
 

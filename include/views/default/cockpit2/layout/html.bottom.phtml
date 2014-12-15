@@ -1,24 +1,11 @@
 </head>
 <? //  bgcolor="#202228" ?>
-<body class="no-init">
+<body class="no-init" ng-controller="AppController">
 <div class="loader-wrap">
 	<div class="loader-frame"><div class="loader">&nbsp;</div></div>
 </div>
-<?=$this->display('layout/html.body')?>	
+<?=$this->display('layout/html.body')?>
 </body>
-
-
-<script type="text/javascript">
-$(function() {
-	App.request( App.service + 'config?init=1', function(r) {
-		App._remoteConfig = true;
-		App.init(r);
-	}, function() {
-		App._remoteConfig = false;
-		App.init({});
-	});
-});
-</script>
 
 <audio id="support-message-new">
 	<source src="/assets/cockpit/audio/message-creation.wav"></source>
@@ -41,7 +28,7 @@ $(function() {
 			var facebookService = angular.element('html').injector().get('FacebookService');
 			FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
 		};
-		
+
 		(function(d, s, id) {
 		var js, fjs = d.getElementsByTagName(s)[0];
 		if (d.getElementById(id)) return;
