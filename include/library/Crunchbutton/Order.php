@@ -135,7 +135,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$price_delivery_markup = $price;
 				if( $delivery_service_markup ){
 					$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
-					$price_delivery_markup = number_format( $price_delivery_markup, 2 );
+					$price_delivery_markup = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price_delivery_markup );
 				}
 				$subtotal += $price;
 				$subtotal_plus_delivery_service_markup += $price_delivery_markup;
@@ -147,7 +147,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$price_delivery_markup = $price;
 						if( $delivery_service_markup ){
 							$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
-							$price_delivery_markup = number_format( $price_delivery_markup, 2 );
+							$price_delivery_markup = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price_delivery_markup );
 						}
 						$subtotal_plus_delivery_service_markup += $price_delivery_markup;
 						$subtotal += $price;
