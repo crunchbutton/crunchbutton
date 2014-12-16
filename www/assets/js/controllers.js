@@ -1082,6 +1082,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	// Alias to method AccountSignOut.do()
 	$scope.signout = AccountSignOut.signout;
 	$scope.facebook = AccountModalService.facebookOpen;
+	$scope.modal = AccountModalService;
 	$scope.orders = [];
 
 	// Alias to OrdersService methods

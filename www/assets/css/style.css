@@ -1453,7 +1453,7 @@ h1.about-header {
 	font-weight:600;
 	margin-bottom:10px;
 }
-.signout-button,.signup-add-facebook-button {
+.signout-button,.signup-add-facebook-button, .create-an-account {
 	border-radius:4px;
 	border:1px solid #cb5921;
 	padding:6px 10px 6px 12px;
@@ -1476,6 +1476,9 @@ h1.about-header {
 }
 .signup-add-facebook-button {
 	width:155px;
+}
+.create-an-account{
+	width:125px;
 }
 .signin-box-header {
 	float:right;
