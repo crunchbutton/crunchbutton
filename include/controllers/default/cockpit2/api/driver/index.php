@@ -39,6 +39,15 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'all-admins':
+				$out = [];
+				$drivers = Admin::q( 'SELECT * FROM admin ORDER BY name ASC' );
+				foreach( $drivers as $driver ){
+					$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name ];
+				}
+				echo json_encode( $out );
+				break;
+
 			case 'list-payment-type':
 				$out = [];
 				$drivers = Admin::drivers();

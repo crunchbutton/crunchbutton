@@ -845,7 +845,7 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	$scope.id_driver = 0;
 
 	var drivers = function(){
-		DriverService.listSimple( function( data ){
+		DriverService.listAllAdmins( function( data ){
 			var drivers = [];
 			$scope.drivers = data;
 			$scope.ready = true;
