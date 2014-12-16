@@ -400,6 +400,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->location_lon = $params['lon'];
 
 		$user->name = $this->name;
+		$user->email = $params['email'];;
 		$user->phone = $this->phone;
 
 		if ($this->delivery_type == 'delivery') {

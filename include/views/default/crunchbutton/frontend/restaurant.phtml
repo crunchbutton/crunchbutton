@@ -225,9 +225,12 @@
 					<label>Name</label>
 					<div class="input-item"><input class="needsclick" type="text" name="pay-name" tabindex="2" ng-model="order.form.name"></div><div class="divider"></div>
 
+					<label>Email</label>
+					<div class="input-item"><input class="needsclick" type="text" name="pay-email" tabindex="3" ng-model="order.form.email"></div><div class="divider"></div>
+
 					<label>Phone #</label>
 					<div class="input-item">
-					<input type="tel" class="needsclick" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone"></div><div class="divider"></div>
+					<input type="tel" class="needsclick" name="pay-phone" tabindex="4" ng-format-phone ng-model="order.form.phone"></div><div class="divider"></div>
 
 					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
 					<div ng-show="order.form.delivery_type=='delivery'" class="input-item">
