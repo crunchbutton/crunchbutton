@@ -6,6 +6,7 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 	var drivers = $resource( App.service + 'driver/:action/:id_admin', { action: '@action', id_admin: '@id_admin' }, {
 				// list methods
 				'listSimple' : { 'method': 'GET', params : { 'action' : 'all' }, isArray: true },
+				'listAllAdmins' : { 'method': 'GET', params : { 'action' : 'all-admins' }, isArray: true },
 				'list_payment_type' : { 'method': 'GET', params : { 'action' : 'list-payment-type' }, isArray: true },
 				'paid' : { 'method': 'GET', params : { 'action' : 'paid' }, isArray: true },
 				'summary' : { 'method': 'GET', params : { 'action' : 'summary' } }
@@ -44,6 +45,12 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 
 	service.listSimple = function( callback ){
 		drivers.listSimple( function( data ){
+			callback( data );
+		} );
+	}
+
+	service.listAllAdmins = function( callback ){
+		drivers.listAllAdmins( function( data ){
 			callback( data );
 		} );
 	}
