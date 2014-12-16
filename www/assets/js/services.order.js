@@ -104,6 +104,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.form.autotip = 0;
 		service.form.tip = service._lastTipNormalize(tip);
 		service.form.name = service.account.user.name;
+		service.form.email = service.account.user.email;
 		service.form.phone = $filter( 'formatPhone' )( service.account.user.phone );
 		service.form.address = service.account.user.address;
 		// Use the last notes #2102
@@ -418,6 +419,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		var order = {
 			address: service.form.address,
+			email: service.form.email,
 			phone: service.form.phone,
 			name: service.form.name,
 			cart: service.cart.getCart(),
@@ -460,6 +462,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		if (!App.phone.validate(order.phone)) {
 			errors['phone'] = 'Please enter a valid phone #.';
+		}
+		if ( order.email && !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( order.email ) ){
+			errors['email'] = 'Please enter a valid email.';
 		}
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors['address'] = 'Please enter an address.';
@@ -656,7 +661,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			order.phone = order.phone.replace(/-/g, '');
 
 			var url = App.service + 'order';
-
+console.log('order',order);
 			$http( {
 				method: 'POST',
 				url: url,

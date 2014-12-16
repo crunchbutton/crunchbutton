@@ -223,8 +223,13 @@
 						</div>
 
 						<div class="payment-form-group form-group">
+							<i class="fa fa-envelope-o payment-form-icon form-icon form-field"></i>
+							<input ng-focus="softKeyboard($event);" type="text" name="pay-email" tabindex="3" ng-model="order.form.email" class="payment-form-input form-input form-field" placeholder="email">
+						</div>
+
+						<div class="payment-form-group form-group">
 							<i class="fa fa-phone payment-form-icon form-icon form-field"></i>
-							<input ng-focus="softKeyboard($event);" type="tel" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone" class="payment-form-input form-input form-field" placeholder="phone number">
+							<input ng-focus="softKeyboard($event);" type="tel" name="pay-phone" tabindex="4" ng-format-phone ng-model="order.form.phone" class="payment-form-input form-input form-field" placeholder="phone number">
 						</div>
 
 						<div class="payment-form-group form-group">
