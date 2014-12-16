@@ -317,7 +317,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// Find out if the user posted a gift card code at the notes field and get its value
 		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
-
 			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
 			if( $totalOrdersByPhone < 1 ){
 				$words = explode( ' ', $this->notes );
@@ -515,11 +514,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		// If the payment succeds then redeem the gift card
 		if ( trim( $this->notes ) != '' ){
+
 			if( $this->giftCardInviter ){
 
 				// remove the code from notes
 				$__order = Order::o( $this->id_order );
-				$__order->notes = str_replace( $this->giftCardInviter[ 'word'], '', $__order->notes );
+				$__order->notes = str_replace( $this->giftCardInviter[ 'word' ], '', $__order->notes );
 				$__order->save();
 
 				$referral = new Crunchbutton_Referral();
@@ -587,6 +587,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$this->notes = $giftcards[ 'notes' ];
 			}
 		}
+
+		$this->removeCouponCodesInTheNotes();
 
 		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
@@ -705,6 +707,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		*************************************************************************
 		*/
 		return true;
+	}
+
+	public function removeCouponCodesInTheNotes(){
+		// fix for #4256
+		if ( trim( $this->notes ) != '' ){
+			$words = explode( ' ', $this->notes );
+			$words = array_unique( $words );
+			$reward = new Crunchbutton_Reward;
+			foreach( $words as $word ){
+				$inviter = $reward->validateInviteCode( $word );
+				if( $inviter ){
+					$this->notes = str_replace( $word, '', $this->notes );
+				}
+			}
+			$this->save();
+		}
 	}
 
 	public function calcFinalPriceMinusUsersCredit(){
