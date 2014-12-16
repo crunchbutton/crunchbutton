@@ -588,8 +588,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		$this->removeCouponCodesInTheNotes();
-
 		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
 		$this->debitFromUserCredit( $user->id_user );
@@ -706,22 +704,26 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		*************************************************************************
 		*/
+
+		$this->removeCouponCodesInTheNotes();
+
 		return true;
 	}
 
 	public function removeCouponCodesInTheNotes(){
 		// fix for #4256
-		if ( trim( $this->notes ) != '' ){
-			$words = explode( ' ', $this->notes );
+		$_order = Crunchbutton_Order::o( $this->id_order );
+		if ( trim( $_order->notes ) != '' ){
+			$words = explode( ' ', $_order->notes );
 			$words = array_unique( $words );
 			$reward = new Crunchbutton_Reward;
 			foreach( $words as $word ){
 				$inviter = $reward->validateInviteCode( $word );
 				if( $inviter ){
-					$this->notes = str_replace( $word, '', $this->notes );
+					$_order->notes = str_replace( $word, '', $_order->notes );
 				}
 			}
-			$this->save();
+			$_order->save();
 		}
 	}
 
