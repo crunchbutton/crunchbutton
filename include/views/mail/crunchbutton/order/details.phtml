@@ -1,4 +1,4 @@
-<?php  
+<?php
 $delivery_service_markup = ( $order->delivery_service_markup ) ? $order->delivery_service_markup : 0;
 $isRestaurant = !$user;
 if( $isDriverCockpit ){
@@ -16,7 +16,7 @@ if( $version == 'restaurant' ){
 if( $version == 'customer' ){
 	$user = true;
 	$isRestaurant = false;
-	$isDriverCockpit = false;	
+	$isDriverCockpit = false;
 }
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
@@ -37,10 +37,10 @@ if( $version == 'customer' ){
 				$food = $dish->dish()->name;
 				$price = $dish->dish()->price;
 				$regular_price = $dish->dish()->price;
-				// add the delivery markup 
+				// add the delivery markup
 				if( $delivery_service_markup > 0 && $price > 0 ){
 					$price = $price + number_format( ( $dish->dish()->price * $delivery_service_markup / 100 ), 2 );
-					$price = number_format( $price, 2 );
+					$price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price, 2 );
 				}
 				$regular_price = number_format( $regular_price, 2 );
 
@@ -54,7 +54,7 @@ if( $version == 'customer' ){
 
 				$selectOptions = '';
 
-				if ($options->count()) {					
+				if ($options->count()) {
 
 					foreach ($dish->options() as $option) {
 						if ($option->option()->type == 'select') {
@@ -62,9 +62,9 @@ if( $version == 'customer' ){
 						}
 						$price += $option->option()->price;
 						$regular_price += $option->option()->price;
-						// add the delivery markup 
+						// add the delivery markup
 						if( $delivery_service_markup > 0 && $price > 0 ){
-							$option_price = number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );	
+							$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
 							$price = $price + $option_price;
 						}
 						if($option->option()->id_option_parent) {
@@ -91,7 +91,7 @@ if( $version == 'customer' ){
 				}
 
 				$withoutDefaultOptions = '';
-				if( $dish->id_order_dish && $dish->id_dish ){ 
+				if( $dish->id_order_dish && $dish->id_dish ){
 					$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
 					$commas = ' ';
 					if( $optionsNotChoosen->count() ){
@@ -117,7 +117,7 @@ if( $version == 'customer' ){
 				}
 
 				if( $selectOptions != '' ){
-					
+
 					$selectOptions .= '.';
 				}
 
@@ -128,11 +128,11 @@ if( $version == 'customer' ){
 				<?=$food?>
 			</td>
 			<td style="width: 1%;" class="fooditem">
-				$<?php 
+				$<?php
 				if( $isRestaurant ){
 					echo number_format( $regular_price, 2 );
 				} else {
-					echo number_format( $price, 2 );	
+					echo number_format( $price, 2 );
 				}
 				?>
 			</td>
@@ -148,17 +148,17 @@ if( $version == 'customer' ){
 		<td></td>
 		<td style="text-align:right">Subtotal</td>
 		<td>
-		$<?php 
+		$<?php
 		if( $isRestaurant ){
 			// legacy
 			if( intval( $delivery_service_markup ) > 0 && !$order->price_plus_delivery_markup ){
 				echo number_format( $order->price - $order->delivery_service_markup_value, 2);
 			} else {
 				echo number_format( $order->price, 2 );
-			}	
+			}
 		} else {
 			if( $order->price_plus_delivery_markup ){
-				echo number_format( $order->price_plus_delivery_markup, 2 );		
+				echo number_format( $order->price_plus_delivery_markup, 2 );
 			} else {
 				echo number_format( $order->price, 2 );
 			}
@@ -181,7 +181,7 @@ if( $version == 'customer' ){
 	<?php
 	// change fax for 3rd party restaurants #2962
 	$showTipAndDeliveryFee = !( $viewer == 'restaurant' && $order->restaurant()->delivery_service );
-	
+
 	if( $showTipAndDeliveryFee ){
 		if ( $order->pay_type == 'card' && $order->tip ) : ?>
 			<tr>
@@ -194,9 +194,9 @@ if( $version == 'customer' ){
 				</td>
 				<?php } ?>
 			</tr>
-		<? endif ; 
+		<? endif ;
 	}
-	
+
 	if( $showTipAndDeliveryFee ){
 		 if ( $order->restaurant()->delivery_fee ) : ?>
 			<tr>
@@ -209,7 +209,7 @@ if( $version == 'customer' ){
 				</td>
 				<?php } ?>
 			</tr>
-		<? endif ; 
+		<? endif ;
 	}
 	?>
 
@@ -225,17 +225,17 @@ if( $version == 'customer' ){
 			<?php } ?>
 		</tr>
 	<? endif ; ?>
-	
+
 	<tr>
 		<td></td>
 		<td style="text-align:right">Tax</td>
 		<td>
-		$<?php 
+		$<?php
 		$tax = $order->tax();
 		if( $isRestaurant ){
 			echo number_format( $tax, 2 );
 		} else {
-			echo number_format( $tax, 2 );	
+			echo number_format( $tax, 2 );
 		}
 		?>
 		</td>
@@ -250,7 +250,7 @@ if( $version == 'customer' ){
 		<td></td>
 		<td style="text-align:right">Total</td>
 		<td>
-		$<?php 
+		$<?php
 		if( $isRestaurant ){
 			// legacy
 			if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
@@ -280,7 +280,7 @@ if( $version == 'customer' ){
 		</td>
 		<?php } ?>
 	</tr>
-	
+
 	<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
 	<?php if( $user && $order->chargedByCredit() > 0 ) { ?>
 	<tr style="font-weight:bold;">

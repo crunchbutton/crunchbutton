@@ -1025,7 +1025,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 							$price_original = $price;
 							if( $price > 0 ){
 								$price = $price + ( $price * $delivery_service_markup / 100 );
-								$price = number_format( $price, 2 );
+								$price = $this->roundDeliveryMarkupPrice( $price );
 								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;
 								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'markup' ] = number_format( $price - $price_original, 2 );
 							}
@@ -1037,7 +1037,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								// if( $price > 0 ){
 								// The markup should be applied even to subtract prices: #2434
 									$price = $price + ( $price * $delivery_service_markup / 100 );
-									$price = number_format( $price, 2 );
+									$price = $this->roundDeliveryMarkupPrice( $price );
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'markup' ] = number_format( $price - $price_original, 2 );
 								// }
@@ -1128,6 +1128,28 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 
 		return $out;
+	}
+
+	// See #4323
+	public function roundDeliveryMarkupPrice( $price ){
+		$nearests = [ 29, 49, 79, 99 ];
+		$price = number_format( $price, 2 );
+		if( $price > 0 ){
+			$price .= '';
+			$cents = 0;
+			$price = explode( '.' ,  $price );
+			if( $price[ 1 ] ){
+				$cents = intval( $price[ 1 ] );
+				foreach( $nearests as $nearest ){
+					if( $nearest > $cents ){
+						$cents = $nearest;
+						break;
+					}
+				}
+			}
+			$price = floatval( $price[ 0 ] . '.' . $cents );
+		}
+		return $price;
 	}
 
 	public function hasDeliveryService(){
@@ -1457,7 +1479,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$this->phone = Phone::clean($this->phone);
 		return parent::save();
 	}
-	
+
 	public function load($stuff) {
 		parent::load($stuff);
 		if (!$this->timezone) {
