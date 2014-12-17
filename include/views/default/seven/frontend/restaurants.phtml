@@ -24,7 +24,7 @@
 			</div>
 			<div class="restaurants-orange" ng-instant="pushMessage = (pushMessage > 12 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
 		</div>
-		
+
 		<div ng-if="allClosed">
 			<div class="bubble-tail bubble-tail-green bubble-animated">
 				<div class="text" ng-switch="pushMessage">
@@ -34,23 +34,28 @@
 					<span class="single-line" ng-switch-when="5">And we'll add it!</span>
 					<span ng-switch-when="6">Don't stay hungry!</span>
 					<span class="single-line" ng-switch-when="7"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
-					<span ng-switch-default class="single-line">Wahhhhhh!!!&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					<span ng-switch-default class="single-line">
+						<span ng-if="community_closed" class="small">
+							{{community_closed}}
+						</span>
+						<span ng-if="!community_closed">Wahhhhhh!!!&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					</span>
 				</div>
 				<div class="bubble-tail-spacer"></div>
 			</div>
 			<div class="restaurants-orange restaurants-orange-sad" ng-instant="pushMessage = (pushMessage > 6 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
 		</div>
-		
+
 		<div class="divider"></div>
 		<br>
-		
+
 		<? /*
 		<div class="restaurants-tagline">
 			<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
 		</div>
 		*/?>
 	</div>
-	
+
 	<div ng-show="image" class="community-image"></div>
 
 
@@ -60,7 +65,7 @@
 <div ng-if="restaurants">
 
 	<div class="restaurants-items">
-		
+
 	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
 			<div class="restaurant-list-divider" ng-if="restaurant._divider"></div>
@@ -74,11 +79,11 @@
 
 				<div class="restaurants-closed" ng-if="restaurant._tag == 'force_close'">
 					<h2 class="restaurants-name">{{restaurant.name}}</h2>
-					<div class="restaurants-opensin">Temporarily closed {{restaurant._closedDueTo}}</div>			
+					<div class="restaurants-opensin">Temporarily closed {{restaurant._closedDueTo}}</div>
 				</div>
 
 				<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
-					
+
 					<div class="restaurants-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="{{restaurant._open}}">
 						<div class="ladda-label">
 							<div class="restaurants-pic meal-pic" style="background: url({{restaurant.img}});"></div>
@@ -90,7 +95,7 @@
 								<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
 								<div class="meal-item-tag about-to-open" ng-switch-when="opening">Opens {{restaurant._opensIn_formatted}} </div>
 							</div>
-							
+
 							<div class="meal-item-tag-bottom" ng-if="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>
 
 						</div>
