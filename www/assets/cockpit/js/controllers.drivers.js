@@ -162,41 +162,9 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	$scope.update();
 } );
 
-NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams, StaffService, $rootScope) {
+NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams, StaffService, ViewListService ) {
 
-	$scope.loading = true;
-
-	StaffService.get($routeParams.id, function(staff) {
-		$rootScope.title = staff.name + ' | Payments';
-	});
-
-	$scope.show_all_weeks = function(){
-		$scope.showing_all_weeks = true;
-		for( x in $scope.summary.weeks ){
-			$scope.summary.weeks[ x ].show_week = true;
-		}
-	}
-
-	$scope.show_week = function( week, days ){
-		$scope.summary.weeks;
-		$scope.summary.recent.show = false;
-		for( x in $scope.summary.weeks ){
-			if( $scope.summary.weeks[ x ].yearweek == week ){
-				$scope.summary.weeks[ x ].show_week = true;
-				if( days ){
-					$scope.summary.weeks[ x ].show_days = true;
-				}
-			}
-		}
-	}
-
-	list = function(){
-		$scope.loading = true;
-		DriverService.summary( $scope.id_admin, function( data ){
-			$scope.summary = data;
-			$scope.loading = false;
-		} );
-	}
+	angular.extend( $scope, ViewListService );
 
 	if( $scope.account.isLoggedIn() ){
 		$scope.id_admin = parseInt( $scope.account.user.id_admin );
@@ -205,7 +173,20 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 				$scope.id_admin = parseInt( $routeParams.id );
 			}
 		}
-		list();
+		$scope.view( {
+			scope: $scope,
+			watch: { type: 'all' },
+			update: function() {
+		// 		var data = {};
+		// angular.extend( data, query );
+		// data.id_admin = id_admin;
+				$scope.query.id_admin = $scope.id_admin;
+				DriverService.summary( $scope.query, function( data ){
+					$scope.summary = data;
+					$scope.complete( data );
+				} );
+			}
+		} );
 	}
 
 } );

@@ -2,64 +2,43 @@
 
 <div class="content-padding">
 
+	<h1 class="title">
+		<i class="fa fa-bank"></i>Payments
+		<div class="title-loader" ng-if="loading">
+			<i class="fa fa-refresh fa-spin"></i>
+		</div>
+	</h1>
 
-	<h1 class="title left" ng-style="{true: {width: '100%'}, false: {}}[loading]"><i class="fa fa-bank"></i>Payments<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
-
-	<div class="box-filter right" ng-if="summary.payments">
-		<button class="button green" ng-class="{ 'inactive' : $parent.filter }" ng-click="$parent.filter = false">All</button>
-		<button class="button button-big green" ng-class="{ 'inactive' : $parent.filter != 'Reimbursement' }" ng-click="$parent.filter = 'Reimbursement'">Reimbursement</button>
-		<button class="button button-big green" ng-class="{ 'inactive' : $parent.filter != 'Payment' }" ng-click="$parent.filter = 'Payment'">Payments</button>
-	</div>
-
-	<div class="divider"></div>
-
-	<div class="box-content2 box-content-table" ng-if="summary.payments">
-		<table class="tb-zebra">
+	<div class="box-content2 box-content-table">
+		<table>
 			<tr>
 				<th>Type</th>
-				<th>Period</th>
-				<th>Amount</th>
-				<th>Status</th>
-				<th>Transfer Initiated</th>
-				<th>Est. In Account</th>
-			</tr>
-			<tr ng-repeat="payment in summary.payments" ng-show="!filter || filter == payment.type">
 				<td>
-					<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
-					<span ng-if="payment.total_cash_orders" class="note">
-						<br>
-						*Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
-					</span>
+					<select ng-model="query.type" name="searchType" tabindex="2">
+						<option value="all">All</option>
+						<option value="payment">Payments</option>
+						<option value="reimbursement">Reimbusement</option>
+					</select>
 				</td>
-				<td>{{payment.range_date}}</td>
-				<td positive-or-negative-color="{{payment.amount}}">
-					${{payment.amount | formatPrice}}
-					<span ng-if="payment.total_cash_orders">*</span>
-				</td>
-				<td>
-					<span ng-class="{
-						'span-driver-summary-paid': payment.status == 'Paid',
-						'span-driver-summary-pending': payment.status == 'Pending',
-						'span-driver-summary-pending': payment.status == 'Error',
-						'span-driver-summary-processing': payment.status == 'Processing'
-					}">
-					<span ng-switch="payment.status">
-						<span ng-switch-when="Pending">Not Yet Paid</span>
-						<span ng-switch-when="Error">Payment Error!*</span>
-						<span ng-switch-default>{{payment.status}}</span>
-					</span>
-				</td>
-				<td>{{payment.send_date}}</td>
-				<td>{{payment.paid_date}}</td>
 			</tr>
 		</table>
 	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="divider"></div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-driver-summary.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+
 
 	<div ng-if="summary.has_error" class="box-content2">
 		<p>* <span class="link orange" ng-click="navigation.link( '/drivers/docs/payment' );">Please upload correct deposit info</span></p>
 	</div>
 
-	<div ng-if="!summary.payments && !loading" class="box-content2">
+	<div ng-if="!summary.results && !loading" class="box-content2">
 		<p>Not payments yet. Go deliver some food!</p>
 	</div>
 

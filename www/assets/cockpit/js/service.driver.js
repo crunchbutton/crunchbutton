@@ -25,8 +25,8 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 		} );
 	}
 
-	service.summary = function( id_admin, callback ){
-		drivers.summary( { id_admin: id_admin }, function( data ){
+	service.summary = function( query, callback ){
+		drivers.summary( query, function( data ){
 			callback( data );
 		} );
 	}
