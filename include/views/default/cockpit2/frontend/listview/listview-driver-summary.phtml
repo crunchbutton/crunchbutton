@@ -1,0 +1,41 @@
+<div class="box-content2 box-content-table" ng-if="summary.results">
+	<table class="tb-zebra">
+		<tr>
+			<th>Type</th>
+			<th>Period</th>
+			<th>Amount</th>
+			<th>Status</th>
+			<th>Transfer Initiated</th>
+			<th>Est. In Account</th>
+		</tr>
+		<tr ng-repeat="payment in summary.results" ng-show="!filter || filter == payment.type">
+			<td>
+				<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
+				<span ng-if="payment.total_cash_orders" class="note">
+					<br>
+					*Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
+				</span>
+			</td>
+			<td>{{payment.range_date}}</td>
+			<td positive-or-negative-color="{{payment.amount}}">
+				${{payment.amount | formatPrice}}
+				<span ng-if="payment.total_cash_orders">*</span>
+			</td>
+			<td>
+				<span ng-class="{
+					'span-driver-summary-paid': payment.status == 'Paid',
+					'span-driver-summary-pending': payment.status == 'Pending',
+					'span-driver-summary-pending': payment.status == 'Error',
+					'span-driver-summary-processing': payment.status == 'Processing'
+				}">
+				<span ng-switch="payment.status">
+					<span ng-switch-when="Pending">Not Yet Paid</span>
+					<span ng-switch-when="Error">Payment Error!*</span>
+					<span ng-switch-default>{{payment.status}}</span>
+				</span>
+			</td>
+			<td>{{payment.send_date}}</td>
+			<td>{{payment.paid_date}}</td>
+		</tr>
+	</table>
+</div>

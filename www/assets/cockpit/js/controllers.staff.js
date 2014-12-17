@@ -73,7 +73,8 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 });
 
 NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
-	angular.extend($scope, ViewListService);
+
+	angular.extend( $scope, ViewListService );
 
 	$scope.view({
 		scope: $scope,
