@@ -1,23 +1,24 @@
 
 NGApp.factory('ViewListService', function($location, $timeout) {
-	
+
 	var service = {};
-	
+
 	service.view = function(params) {
 		var scope = params.scope;
 
 		var query = $location.search();
+
 		scope.query = {
 			limit: query.limit || (App.isMobile() ? 5 : 20),
 			page: query.page || 1
 		};
 		scope.query.page = parseInt(scope.query.page);
-		
+
 		var watch = function() {
 			$location.search(scope.query);
 			update();
 		};
-		
+
 		// @todo: this breaks linking to pages
 		var inputWatch = function() {
 			if (scope.query.page != 1) {
@@ -33,10 +34,10 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 				scope.$watch('query.' + x, inputWatch);
 			}
 		};
-		
+
 		scope.count = 0;
 		scope.pages = 0;
-		
+
 		scope.$watch('query.limit', inputWatch);
 		scope.$watch('query.page', watch);
 
@@ -52,7 +53,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 				scope.query.sort = by;
 			}
 		};
-		
+
 		var updater = function(){};
 
 		scope.update = function(fn) {
@@ -62,10 +63,10 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 				update();
 			}
 		};
-		
-		
+
+
 		scope.loader = false;
-		
+
 		scope.complete = function(d) {
 			scope.count = d.count;
 			scope.pages = d.pages;
@@ -86,12 +87,12 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			scope.loading = true;
 			updater();
 		};
-		
+
 		scope.focus('#search');
 
 		scope.watch(params.watch);
 		scope.update(params.update);
 	}
-	
+
 	return service;
 });
