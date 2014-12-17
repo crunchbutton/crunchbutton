@@ -1,5 +1,5 @@
-<?php 
-$restaurants = $this->restaurants; 
+<?php
+$restaurants = $this->restaurants;
 ?>
 
 <?php if( count( $restaurants ) > 0 ) { ?>
@@ -25,10 +25,10 @@ $restaurants = $this->restaurants;
 		<th width="250"></th>
 		<th width="50"></th>
 	</tr>
-<?php foreach( $restaurants as $restaurant ) { 
+<?php foreach( $restaurants as $restaurant ) {
 
 	$permission = c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit']);
-	
+
 	$active = ( !$restaurant->active ) ? 'class="inactive"' : '';
 	?>
 	<tr <?php echo $active; ?>>
@@ -57,7 +57,7 @@ $restaurants = $this->restaurants;
 			<?php } ?>
 		</td>
 		<td>
-			<?php 
+			<?php
 				if( $restaurant->open_for_business ){
 					$status = 'close';
 					$label = 'Force close';
@@ -69,6 +69,7 @@ $restaurants = $this->restaurants;
 				}
 			?>
 			<?php if( $permission ) { ?>
+			<input type="text" maxlength="44" style="width:140px;" placeholder="Force close tagline" value="<?php echo $restaurant->force_close_tagline; ?>" name="force_close_tagline" id="force_close_tagline-<?php echo $restaurant->id_restaurant; ?>" />
 			<button class="btn btn-<?php echo $color; ?>" onclick="community.quickClose( <?php echo $restaurant->id_restaurant; ?>, '<?php echo $status; ?>' )"><?php echo $label; ?></button>
 			<?php } ?>
 		</td>
@@ -90,6 +91,6 @@ $restaurants = $this->restaurants;
 	</tr>
 <?php } ?>
 </table>
-<?php } else { 
+<?php } else {
 	echo 'There are no restaurants.';
 } ?>

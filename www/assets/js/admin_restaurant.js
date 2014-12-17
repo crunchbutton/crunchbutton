@@ -1376,6 +1376,7 @@ var DOM_MAP = {
 				'input#restaurant-name' : ['name'],
 				'input#restaurant-permalink' : ['permalink'],
 				'input#restaurant-short-description' : ['short_description'],
+				'input#restaurant-force-close-tagline' : ['force_close_tagline'],
 				'input#restaurant-message' : ['message'],
 				'input#restaurant-phone' : ['phone'],
 				'input#restaurant-email' : ['email'],

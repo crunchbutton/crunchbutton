@@ -25,8 +25,15 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				} else {
 
 				}
+
 				$data[ 'top_name' ] = $restaurant->top()->top_name;
 				$data[ '_short_description' ] = ( $data[ 'short_description' ] ? $data[ 'short_description' ] : (  $data[ 'top_name' ] ? 'Top Order: ' . $data[ 'top_name' ] : ''  ) );
+
+				if( intval( $restaurant->open_for_business ) == 0 && trim( $restaurant->force_close_tagline ) ){
+					$data[ 'short_description' ] = $restaurant->force_close_tagline;
+					$data[ '_short_description' ] = $restaurant->force_close_tagline;
+				}
+
 				$config['restaurants'][] = $data;
 			}
 			if( $_all_closed && count( $community_closed_message ) == 1 ){

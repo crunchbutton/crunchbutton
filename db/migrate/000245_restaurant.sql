@@ -1,0 +1,1 @@
+ALTER TABLE  `restaurant` ADD  `force_close_tagline` varchar(44) DEFAULT NULL;
