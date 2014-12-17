@@ -313,11 +313,13 @@ community.restaurants = function(){
 };
 
 community.quickClose = function( id_restaurant, status ){
+	var tagline = $( '#force_close_tagline-' + id_restaurant );
 	var status = ( status == 'open' ) ? 'open' : 'close';
 	$.ajax( {
+		type: 'POST',
+		data: { 'force_close_tagline' : tagline.val() },
 		url: '/api/restauranthours/' + id_restaurant + '/' + status,
 		complete: function( request ) {
-			console.log('request',request);
 			if( request.success ){
 				community.restaurants();
 			} else {
