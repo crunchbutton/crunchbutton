@@ -988,6 +988,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out['id_community'] = null;
 		}
 
+		// See - #4250
+		$thirdPartyClosed = false;
+		if( strrpos( $this->permalink, 'drive-' ) !== false && $community && $community->get( 0 ) ){
+			$thirdPartyClosed = $community->get( 0 )->allThirdPartyDeliveryRestaurantsClosed();
+			if( $thirdPartyClosed ){
+				$out[ 'name' ] = $thirdPartyClosed;
+			}
+		}
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
