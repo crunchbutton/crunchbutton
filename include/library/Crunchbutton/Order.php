@@ -2341,6 +2341,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function expectedBy() {
+
+		// See #4306
+		if( $this->restaurant()->delivery_service ){
+			return $this->expectedByStealthFax();
+		}
+
 		$time = clone $this->date();
 		$multipleOf = 15;
 		$minutes = round( ( ( $time->format( 'i' ) + $this->restaurant()->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
