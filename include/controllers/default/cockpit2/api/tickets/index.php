@@ -26,7 +26,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				AND s.status="'.($status == 'closed' ? 'closed' : 'open').'"
 			';
 		}
-		
+
 		if ($admin != 'all') {
 			$q .= '
 				AND s.id_admin="'.$admin.'"
@@ -38,7 +38,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
 			$q .= ' AND s.phone="'.$phone.'"';
 		}
-		
+
 		if ($search) {
 			$q .= Crunchbutton_Query::search([
 				'search' => stripslashes($search),
@@ -53,7 +53,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				]
 			]);
 		}
-		
+
 		$q .= '
 			GROUP BY s.id_support
 		';
@@ -92,6 +92,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			if (!$o->name) {
 				$o->name = Phone::name($o);
 			}
+			$support = Support::o( $o->id_support );
+			$o->message = $support->lastMessage()->body;
 			$d[] = $o;
 		}
 
