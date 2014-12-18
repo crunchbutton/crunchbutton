@@ -14,6 +14,11 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			method: 'POST',
 			params : {}
 		},
+		'openClose' : {
+			url: App.service + 'ticket/:id_support/open-close',
+			method: 'POST',
+			params : {}
+		},
 		'message' : {
 			url: App.service + 'ticket/:id_support/message',
 			method: 'POST',
@@ -24,7 +29,7 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			params : {}
 		}
 	});
-	
+
 	// @todo: there is a bug when calling the same service using resourcefactory. it cancels it out
 	var ticketshort = ResourceFactory.createResource( App.service + 'tickets/:id_support', { id_support: '@id_support'}, {
 		'query' : {
@@ -32,19 +37,19 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			params : {}
 		}
 	});
-	
+
 	service.list = function(params, callback) {
 		tickets.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
-	
+
 	service.shortlist = function(params, callback) {
 		ticketshort.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
-	
+
 	service.message = function(params, callback) {
 		tickets.message(params, function(data) {
 			callback(data);
@@ -56,7 +61,13 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			callback(data);
 		});
 	}
-	
+
+	service.openClose = function(id_support, callback) {
+		tickets.openClose({id_support: id_support}, function(data) {
+			callback(data);
+		});
+	}
+
 	$rootScope.$on('tickets', function(e, data) {
 		$rootScope.supportMessages = {
 			count: data,
