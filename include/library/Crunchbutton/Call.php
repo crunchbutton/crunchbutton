@@ -8,7 +8,7 @@ class Crunchbutton_Call extends Cana_Table {
 			->idVar('id_call')
 			->load($id);
 	}
-	
+
 	public function save() {
 		$new = $this->id_call ? false : true;
 
@@ -21,14 +21,28 @@ class Crunchbutton_Call extends Cana_Table {
 			]
 		], $new ? 'create' : 'update', $this->exports());
 	}
-	
+
+	public function exports(){
+		$out = $this->properties();
+		$out[ 'name' ] = 'unknown';
+		if( $this->id_admin_from ){
+			$admin = Admin::o( $this->id_admin_from );
+			$out[ 'name' ] = $admin->name;
+		}
+		if( $this->id_user_from ){
+			$user = User::o( $this->id_user_from );
+			$out[ 'name' ] = $user->name;
+		}
+		return $out;
+	}
+
 	public static function byTwilioId($id) {
 		if (!$id) {
 			return null;
 		}
 		return self::q('select * from `call` where twilio_id="'.c::db()->escape($id).'" limit 1')->get(0);
 	}
-	
+
 	public static function logFromTwilio($data) {
 		$call = self::byTwilioId($data['CallSid']);
 		if (!$call->id_call) {
@@ -76,7 +90,7 @@ class Crunchbutton_Call extends Cana_Table {
 		} elseif ($this->direction == 'inbound') {
 			$this->id_admin_from = Admin::q('select * from admin where active=1 and phone="'.$this->from.'" limit 1')->get(0)->id_admin;
 			$this->id_user_from = Admin::q('select * from user where active=1 and phone="'.$this->from.'" order by id_user desc limit 1')->get(0)->id_user;
-			
+
 			$this->id_support = Admin::q('
 				select support.* from support
 				left join support_message using(id_support)
