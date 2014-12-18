@@ -68,6 +68,17 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 		});
 	};
 
+	$scope.add_note = function(){
+		if( $scope.message_text ){
+			$scope.send( $scope.message_text, true, function(){
+				$scope.message_text = '';
+				loadTicket(TicketViewService.scope.viewTicket );
+			} );
+		} else {
+			App.alert( 'Please type something!' );
+		}
+	}
+
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
 		loadTicket(ticket == 'refresh' ? TicketViewService.scope.ticket : ticket);
 	});

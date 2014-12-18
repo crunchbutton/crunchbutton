@@ -426,6 +426,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'phone' ] = $params[ 'phone' ];
 			$messageParams[ 'body' ] = $body;
 			$message = $this->addMessage( $messageParams );
+			return $message;
 		}
 	}
 

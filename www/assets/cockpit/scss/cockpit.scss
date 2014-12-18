@@ -1196,7 +1196,7 @@ input {
 				margin-right: 0;
 			}
 
-	.li-input .button.save{
+	.li-input .button.save, .button.save{
 		background: #48b1a7;
 	}
 
@@ -3188,7 +3188,7 @@ h1.driver-title {
 .support-chat-contents-message-unset {
 	font-style: italic;
 }
-.support-chat-contents-message-system {
+.support-chat-contents-message-system, .support-chat-contents-message-note {
 	color: #454545;
 	font-style: italic;
 	border-color: #b5b5b5;
