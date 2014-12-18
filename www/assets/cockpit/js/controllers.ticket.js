@@ -85,6 +85,10 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		});
 	};
 
+	$scope.openCloseTicket = function(){
+		TicketService.openClose( $routeParams.id, function() { update(); } );
+	}
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
