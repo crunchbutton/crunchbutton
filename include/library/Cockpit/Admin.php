@@ -120,13 +120,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$start = $date->getTimestamp();
 
 				if ($start <= time() ) {
+					$now = new DateTime( 'now' , new DateTimeZone($this->timezone));
 					$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
-					$end = $date->getTimestamp();
-
+					$diff = $now->diff( $date );
 					$shift['current'] = true;
 					$out['working'] = true;
-					$out['shift_ends'] = $end - time();
-
+					$out['shift_ends'] = number_format( $diff->h ) . ':' . number_format( $diff->i );
 				} else {
 					$shift['current'] = false;
 				}
