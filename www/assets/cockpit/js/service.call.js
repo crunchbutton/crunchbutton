@@ -14,12 +14,22 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 			method: 'POST',
 			params : {}
 		},
+		'make_call' : {
+			url: App.service + 'call/make-call',
+			method: 'POST',
+			params : {}
+		},
+		'send_sms' : {
+			url: App.service + 'call/send-sms',
+			method: 'POST',
+			params : {}
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
 		}
 	});
-	
+
 	service.list = function(params, callback) {
 		call.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
@@ -31,11 +41,31 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 			callback(data);
 		});
 	}
-	
+
+	service.make_call = function( params, callback ){
+		call.make_call(params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.send_sms = function( params, callback ){
+		call.send_sms(params, function(data) {
+			callback(data);
+		});
+	}
+
 	service.post = function(params, callback) {
 		customer.save(params, function(data) {
 			callback(data);
 		});
+	}
+
+	service.call_to = function(){
+		var to = [];
+		to.push( { to: 'customer', label: 'Customer' } );
+		to.push( { to: 'driver', label: 'Driver' } );
+		to.push( { to: 'restaurant', label: 'Restaurant' } );
+		return to;
 	}
 
 	$rootScope.$on('userAuth', function(e, data) {

@@ -69,7 +69,6 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	}
 
 	$rootScope.$on('tickets', function(e, data) {
-		console.log('data',data);
 		$rootScope.supportMessages = {
 			count: data.tickets,
 			timestamp: data.timestamp,

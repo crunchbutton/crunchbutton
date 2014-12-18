@@ -22,6 +22,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 			method: 'GET',
 			isArray:true
 		},
+		'phones' : {
+			url: App.service + 'staff/phones',
+			method: 'GET',
+			isArray:true
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -38,6 +43,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 		staff.load({id_admin: id_admin}, function(data) {
 			callback(data);
 		});
+	}
+
+	service.phones = function( callback ){
+		staff.phones( {}, function( data ){
+			callback( data );
+		} );
 	}
 
 	service.locations = function(id_admin, callback) {
