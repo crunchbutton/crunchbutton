@@ -17,14 +17,14 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			->idVar('id_support_message')
 			->load($id);
 	}
-	
+
 	public function save() {
 		$this->phone = Phone::clean($this->phone);
 		$guid = $this->guid;
 		$new = $this->id_support_message ? false : true;
 
 		parent::save();
-		
+
 		if ($new) {
 			Event::emit([
 				'room' => [
@@ -54,6 +54,10 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$out['timestamp'] = strtotime($this->date);
 		$out['guid'] = $guid;
 
+		$out['is_note'] = ( $this->type == 'note' );
+		if( $out['is_note'] ){
+			$out['name'] = $this->admin()->firstName();
+		}
 		$out['is_support'] = $this->id_admin && $this->admin()->isSupport() ? true : false;
 		$out['is_driver'] = $this->id_admin && $this->admin()->isDriver() ? true : false;
 

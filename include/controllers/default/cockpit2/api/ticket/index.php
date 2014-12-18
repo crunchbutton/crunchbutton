@@ -39,12 +39,19 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
-			$message = $ticket->addAdminReply($this->request()['body'], $this->request()['guid']);
-			if ($message->id_support_message) {
-				Message_Incoming_Support::notifyReps($message->admin()->firstName() . ' replied to #' . $message->id_support . ': ' . $message->body, $message->support());
+			$note = $this->request()[ 'note' ];
+			if( $note ){
+				$message = $ticket->addNote($this->request()['body']);
+			} else {
+				$message = $ticket->addAdminReply($this->request()['body'], $this->request()['guid']);
+				if ($message->id_support_message) {
+					Message_Incoming_Support::notifyReps($message->admin()->firstName() . ' replied to #' . $message->id_support . ': ' . $message->body, $message->support());
+				}
 			}
-			echo $message->json();
-			exit;
+			if( $message ){
+				echo $message->json();
+				exit;
+			}
 		}
 
 		header('HTTP/1.0 409 Conflict');
