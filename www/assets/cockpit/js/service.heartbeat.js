@@ -10,7 +10,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	var heartbeat = $resource(App.service + 'heartbeat', {}, {
 		'load' : { 'method': 'GET', params : {} }
 	});
-	
+
 	service.load = function(callback) {
 		if (LocationService.location && LocationService.location.latitude && LocationService.location.longitude) {
 			params = LocationService.location;
@@ -24,23 +24,22 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 
 	service.check = function() {
 		// Just run if the user is loggedin
-		console.debug('Checking heartbeat...');
 		if (AccountService.isLoggedIn()) {
-		
+
 			// reboot the interval
 			$interval.cancel(service.repeat);
 			service.repeat = $interval(service.check, service.every);
 
 			service.load(function(data) {
 				service.date = new Date;
-				
+
 				if (App.isPhoneGap && parent.plugins && parent.plugins.pushNotification) {
 					var complete = function(){};
 					PushService.badges = parseInt(data.tickets) + parseInt(data.orders['new']);
 					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
 				}
-				
-				$rootScope.$broadcast('tickets', data.tickets);
+
+				$rootScope.$broadcast('tickets', { 'tickets': data.tickets, 'timestamp': data.timestamp } );
 				$rootScope.$broadcast('totalOrders', data.orders['total']);
 				$rootScope.$broadcast('newOrders', data.orders['new']);
 				$rootScope.$broadcast('acceptedOrders', data.orders['accepted']);
@@ -53,7 +52,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 
 	// wait for us to be logged in
 	$rootScope.$on('userAuth', service.check);
-	
+
 	// check as soon as we come back
 	$rootScope.$on('appResume', service.check);
 
@@ -63,7 +62,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
 		}
 	});
-	
+
 	// check when told to
 	$rootScope.$on('updateHeartbeat', service.check);
 

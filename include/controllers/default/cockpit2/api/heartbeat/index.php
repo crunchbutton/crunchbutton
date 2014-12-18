@@ -8,6 +8,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		// we are both posting and getting
 		$r = [
 			'tickets' => 0,
+			'timestamp' => 0,
 			'orders' => [
 				'total' => 0,
 				'new' => 0,
@@ -24,8 +25,14 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 			$q = 'SELECT count(*) as c from support where status="open"';
 			$q = c::db()->get($q);
 			$tickets = $q->get(0)->c;
+
+			// get the last support message #4337
+			$q = 'SELECT UNIX_TIMESTAMP( date ) AS timestamp FROM support INNER JOIN support_message ON support_message.id_support = support.id_support WHERE status = "open" ORDER BY id_support_message DESC LIMIT 1';
+			$q = c::db()->get($q);
+			$timestamp = $q->get(0)->timestamp;
 		}
 
+		$r['timestamp'] = $timestamp;
 		$r['tickets'] = $tickets;
 
 
@@ -44,12 +51,12 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 					break;
 			}
 		}
-		
+
 
 		// location reporting
 		$lat = $this->request()['lat'] ? $this->request()['lat'] : $this->request()['latitude'];
 		$lon = $this->request()['lon'] ? $this->request()['lon'] : $this->request()['longitude'];
-		
+
 		if ($lat && $lon && c::admin()->id_admin) {
 			(new Admin_Location([
 				'id_admin' => c::admin()->id_admin,
@@ -63,7 +70,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 
 		echo json_encode($r);
 		exit;
-		
+
 
 	}
 }
