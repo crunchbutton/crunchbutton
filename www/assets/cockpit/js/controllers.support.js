@@ -6,6 +6,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/support.html',
 			title: 'Support',
 			reloadOnSearch: false
+		})
+		.when('/support/phone', {
+			action: 'support',
+			controller: 'SupportPhoneCtrl',
+			templateUrl: 'assets/view/support-phone.html',
+			title: 'Support',
+			reloadOnSearch: false
 		});
 }]);
 
@@ -29,8 +36,6 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 		if (!newValue) {
 			return;
 		}
-		console.log('newValue',newValue);
-		console.log('oldValue',oldValue);
 		if (!oldValue || newValue.count != oldValue.count || newValue.timestamp != oldValue.timestamp ) {
 			getTickets();
 		}
@@ -128,6 +133,62 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 
 } );
 
+NGApp.controller('SupportPhoneCtrl', function( $scope, StaffService, CallService, MainNavigationService) {
+
+	$scope.call = { staff : '', to : 'customer', _to: CallService.call_to() };
+	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to() };
+
+	$scope.$watch( 'call.staff', function( newValue, oldValue, scope ) {
+		$scope.call.phone = newValue;
+	}	);
+
+	$scope.$watch( 'sms.staff', function( newValue, oldValue, scope ) {
+		var values = newValue.split( '##' );
+		$scope.sms.phone = values[0];
+		$scope.sms.name = values[1];
+	}	);
+
+	StaffService.phones( function( response ){
+		$scope.staff = response;
+	} );
+
+	$scope.formCallSending = false;
+	$scope.formSMSSending = false;
+
+	$scope.sms.send = function(){
+		if( $scope.formSMS.$invalid ){
+			$scope.formSMSSubmitted = true;
+			return;
+		}
+		$scope.formSMSSending = true;
+		CallService.send_sms( $scope.sms, function( json ){
+			$scope.formSMSSending = false;
+			if( json.success ){
+				MainNavigationService.link('/ticket/' + json.success);
+			} else {
+				App.alert( json.error );
+			}
+		} );
+	}
+
+	$scope.call.make = function(){
+		if( $scope.formCall.$invalid ){
+			$scope.formCallSubmitted = true;
+			return;
+		}
+		$scope.formCallSending = true;
+		CallService.make_call( $scope.call, function( json ){
+			$scope.formCallSending = false;
+			if( json.success ){
+				App.alert( json.success );
+			} else {
+				App.alert( json.error );
+			}
+		} );
+	}
+
+
+} );
 
 NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, TicketViewService, CallService) {
 	$scope.ticketparams = {
@@ -141,8 +202,7 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, Tick
 		if (!newValue) {
 			return;
 		}
-		if (!oldValue || newValue.count != oldValue.count) {
-			console.debug('Updating support tickets...');
+		if (!oldValue || newValue.count != oldValue.count || newValue.timestamp != oldValue.timestamp ) {
 			TicketService.list($scope.ticketparams, function(d) {
 				$scope.lotsoftickets = d.results;
 			});

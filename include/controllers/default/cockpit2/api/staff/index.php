@@ -10,6 +10,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (c::getPagePiece(2)) {
+
+			if( c::getPagePiece(2) == 'phones' ){
+				$this->_phones();
+			}
+
 			$staff = Admin::o(c::getPagePiece(2));
 
 			if (!$staff->id_admin) {
@@ -81,6 +86,15 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 */
 		echo json_encode($out);
+	}
+
+	private function _phones(){
+		$out = [];
+		$staffs = Admin::q( 'SELECT * FROM admin WHERE active = 1 AND phone IS NOT NULL ORDER BY name ASC' );
+		foreach( $staffs as $staff ){
+			$out[] = [ 'phone' => $staff->phone, 'name' => $staff->name ];
+		}
+		echo json_encode( $out );exit;
 	}
 
 	private function _list() {
