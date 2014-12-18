@@ -150,7 +150,6 @@
 						<div class="field-row">
 							<div class="field-key">Shift ends in</div>
 							<div class="field-value">
-							{{ticket.order.driver.shift_ends/60/60 | formatPrice}}
 								<span ng-if="ticket.order.driver.working">{{ticket.order.driver.shift_ends }}</span>
 								<span ng-if="!ticket.order.driver.working">Shift ended</span>
 							</div>
