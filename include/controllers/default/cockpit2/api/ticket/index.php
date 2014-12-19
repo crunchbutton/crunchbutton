@@ -8,7 +8,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 
-		$ticket = Support::o(c::getPagePiece(2));
+		$ticket = Support::o( c::getPagePiece( 2 ) );
 
 		if (!$ticket->id_support) {
 			header('HTTP/1.0 404 Not Found');
@@ -53,9 +53,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 				exit;
 			}
 		}
-
 		header('HTTP/1.0 409 Conflict');
 		exit;
-
 	}
 }
