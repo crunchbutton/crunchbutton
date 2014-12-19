@@ -43,8 +43,8 @@ class Crunchbutton_User_Auth extends Cana_Table {
 													AND auth='%s'
 													AND active=1
 												LIMIT 1",
-		addslashes( $email ),
-		addslashes( $password ) );
+		c::db()->escape( $email ),
+		c::db()->escape( $password ) );
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
@@ -212,8 +212,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 													type='local'
 													AND reset_code='%s'
 													AND active=1
-												LIMIT 1",
-		@mysql_real_escape_string( $code ) );
+												LIMIT 1", c::db()->escape( $code ) );
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
