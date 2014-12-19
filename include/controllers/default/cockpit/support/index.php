@@ -110,7 +110,6 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 					case 'link-order':
 						if ( $support->permissionToEdit() ) {
-
 							$order = Order::o( $_POST[ 'id_order' ] );
 							if( $order->id_order ){
 								$support->id_order = $order->id_order;

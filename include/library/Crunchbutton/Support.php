@@ -745,7 +745,9 @@ class Crunchbutton_Support extends Cana_Table {
 			}
 		}
 
-		foreach ($this->messages() as $message) {
+		$messages = Crunchbutton_Support_Message::byPhone( $this->phone );
+
+		foreach ( $messages as $message ) {
 			$out['messages'][] = $message->exports();
 		}
 

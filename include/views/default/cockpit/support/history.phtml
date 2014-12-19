@@ -6,96 +6,89 @@ $first = true;
 <div class="chat-scroll" style="height: 600px;overflow: auto;">
 <ul class="chat-box">
 	<?php
-	// foreach ( $supports as $support ) {
-		// $messages = $support->messages();
-		?>
-		<?php
-		foreach( $messages as $message ){
-			$first = false;
-			$date = $message->date();
-			switch ( $message->from ) {
-				case Crunchbutton_Support_Message::TYPE_FROM_CLIENT:
-					?>
-						<li class="arrow-box-left">
+	foreach( $messages as $message ){
+		$first = false;
+		$date = $message->date();
+		switch ( $message->from ) {
+			case Crunchbutton_Support_Message::TYPE_FROM_CLIENT:
+				?>
+					<li class="arrow-box-left">
+						<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
+						<div class="info">
+							<span class="name"><strong>
+								<?php if( $message->name ) { echo $message->name; } else { echo '<i>No name</i>'; } ?>
+							</strong> <span class="badge badge-blue">user</span></span>
+							<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
+							<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+							</span>
+						</div>
+					<?php echo nl2br( $message->body ); ?>
+					</li>
+				<?php
+				break;
+			case Crunchbutton_Support_Message::TYPE_FROM_REP:
+				switch ( $message->type ) {
+					case Crunchbutton_Support_Message::TYPE_SMS:
+						?>
+						<li class="arrow-box-right gray">
 							<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
 							<div class="info">
-								<span class="name"><strong>
-									<?php if( $message->name ) { echo $message->name; } else { echo '<i>No name</i>'; } ?>
-								</strong> <span class="badge badge-blue">user</span></span>
-								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
-								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
-								</span>
-							</div>
-						<?php echo nl2br( $message->body ); ?>
-						</li>
-					<?php
-					break;
-				case Crunchbutton_Support_Message::TYPE_FROM_REP:
-					switch ( $message->type ) {
-						case Crunchbutton_Support_Message::TYPE_SMS:
-							?>
-							<li class="arrow-box-right gray">
-								<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
-								<div class="info">
-									<span class="name">
-										<strong>
-											<?php echo $message->admin()->name; ?>
-										</strong>
-										<span class="badge badge-green">SMS</span> <?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
-									</span>
-									<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
-								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
-								</span>
-								</div>
-								<?php echo nl2br( $message->body ); ?>
-							</li>
-							<?php
-							break;
-
-						case Crunchbutton_Support_Message::TYPE_NOTE:
-							?>
-							<li class="box-note">
-								<div class="info">
-									<span class="name">
-										<strong>
-											<?php echo $message->admin()->name; ?>
-										</strong>
-										<span class="badge badge-green">NOTE</span>
-									</span>
-									<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
-								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
-								</span>
-								</div>
-								<?php echo nl2br( $message->body ); ?>
-							</li>
-							<?php
-							break;
-					}
-
-					?>
-					<?php
-					break;
-				case Crunchbutton_Support_Message::TYPE_FROM_SYSTEM:
-					?>
-						<li class="box-note-system">
-							<div class="info">
 								<span class="name">
-									<strong>System</strong>
-									<span class="badge badge-gray">Log</span>
-									<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
+									<strong>
+										<?php echo $message->admin()->name; ?>
+									</strong>
+									<span class="badge badge-green">SMS</span> <?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
 								</span>
 								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
-								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
-								</span>
+							<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+							</span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
 						</li>
-					<?php
-					break;
-			}
+						<?php
+						break;
+					case Crunchbutton_Support_Message::TYPE_NOTE:
+						?>
+						<li class="box-note">
+							<div class="info">
+								<span class="name">
+									<strong>
+										<?php echo $message->admin()->name; ?>
+									</strong>
+									<span class="badge badge-green">NOTE</span>
+								</span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
+							<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+							</span>
+							</div>
+							<?php echo nl2br( $message->body ); ?>
+						</li>
+						<?php
+						break;
+				}
+				?>
+				<?php
+				break;
+			case Crunchbutton_Support_Message::TYPE_FROM_SYSTEM:
+				?>
+					<li class="box-note-system">
+						<div class="info">
+							<span class="name">
+								<strong>System</strong>
+								<span class="badge badge-gray">Log</span>
+								<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
+							</span>
+							<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br><?=$date->format('M jS Y - g:i:s A');?></span><br/>
+							<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+							</span>
+						</div>
+						<?php echo nl2br( $message->body ); ?>
+					</li>
+				<?php
+				break;
 		}
-	// }
-	?>
+	}
+?>
 </ul>
 </div>
 <script type="text/javascript">
