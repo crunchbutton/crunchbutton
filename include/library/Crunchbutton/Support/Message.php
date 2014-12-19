@@ -53,8 +53,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$out['first_name'] = explode(' ',$out['name'])[0];
 		$out['timestamp'] = strtotime($this->date);
 		$out['guid'] = $guid;
-
-		$out['is_note'] = ( $this->type == 'note' );
+		$out['is_note'] = ( $this->type == 'note' && $this->from != 'system' );
 		if( $out['is_note'] ){
 			$out['name'] = $this->admin()->firstName();
 		}
