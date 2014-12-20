@@ -52,6 +52,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$out['name'] = Phone::name($this);
 		$out['first_name'] = explode(' ',$out['name'])[0];
 		$out['timestamp'] = strtotime($this->date);
+		$out['hour'] = $this->date()->format( 'H:i' );
 		$out['guid'] = $guid;
 		$out['is_note'] = ( $this->type == 'note' && $this->from != 'system' );
 		if( $out['is_note'] ){
@@ -60,6 +61,21 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$out['is_support'] = $this->id_admin && $this->admin()->isSupport() ? true : false;
 		$out['is_driver'] = $this->id_admin && $this->admin()->isDriver() ? true : false;
 
+		return $out;
+	}
+
+	public function exportsNote(){
+		$out = $this->properties();
+		unset( $out[ 'id_support_message' ] );
+		unset( $out[ 'id_support' ] );
+		unset( $out[ 'id_admin' ] );
+		unset( $out[ 'from' ] );
+		unset( $out[ 'type' ] );
+		unset( $out[ 'visibility' ] );
+		unset( $out[ 'phone' ] );
+		$out['date'] = $this->date()->format( 'M jS Y g:i:s A T' );
+		$out['hour'] = $this->date()->format( 'H:i' );
+		$out['name'] = $this->admin()->firstName();
 		return $out;
 	}
 

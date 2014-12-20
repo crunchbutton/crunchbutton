@@ -40,8 +40,6 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 			getTickets();
 		}
 	});
-
-
 });
 
 NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService, SocketService) {
@@ -55,7 +53,6 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 					return;
 				}
 			}
-
 			TicketViewService.scope.ticket.messages.push(d);
 			TicketViewService.scroll();
 		});
@@ -68,15 +65,22 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 		});
 	};
 
+	var sendingNote = false;
+
 	$scope.add_note = function(){
-		if( $scope.message_text ){
-			$scope.send( $scope.message_text, true, function(){
-				$scope.message_text = '';
-				loadTicket(TicketViewService.scope.viewTicket );
-			} );
-		} else {
-			App.alert( 'Please type something!' );
+		if( !sendingNote ){
+			sendingNote = true;
 		}
+		if ( sendingNote ) {
+			if( $scope.message_text ){
+				$scope.send( $scope.message_text, true, function(){
+					$scope.message_text = '';
+					loadTicket(TicketViewService.scope.viewTicket );
+				} );
+			} else {
+				App.alert( 'Please type something!' );
+			}
+		};
 	}
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {

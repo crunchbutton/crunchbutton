@@ -729,11 +729,22 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function exports() {
+
+		$out = [];
+
+
 		$out = $this->properties();
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
 		$out['driver'] = ($this->order()->id_order && $this->order()->driver()->id_admin) ? $this->order()->driver()->exports() : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
+
+		// Export the comments
+		$out[ 'comments' ] = [];
+		$comments = $this->comments();
+		foreach( $comments as $comment ){
+			$out[ 'comments' ][] = $comment->exportsNote();
+		}
 
 		// Check if the ticket belongs to a driver with pexcard #3990
 		$admin = Admin::getByPhone( $this->clearPhone( $this->phone ) );
@@ -752,6 +763,10 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 
 		return $out;
+	}
+
+	public function comments(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE sm.id_support = "' . $this->id_support . '" AND sm.type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND `from` != "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" ORDER BY sm.id_support_message DESC' );
 	}
 
 }

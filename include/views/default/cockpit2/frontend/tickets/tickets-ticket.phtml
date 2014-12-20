@@ -26,7 +26,6 @@
 				</div>
 			</div>
 
-
 			<div ng-if="ticket.order.id_order" class="support-box-wrap">
 				<h1>Order <a href="/order/{{ticket.order.id_order}}">#{{ticket.order.id_order}}</a></h1>
 				<div class="box-content-color">
@@ -166,6 +165,50 @@
 				</div>
 			</div>
 
+			<div ng-if="ticket.id_support">
+				<div class="support-box-wrap">
+					<h1>Comments</h1>
+					<div ng-if="ticket.comments">
+						<div class="box-content-color comments-box">
+							<div class="field-container">
+								<div class="field-row" ng-repeat="comment in ticket.comments">
+									<div class="field-key">{{comment.name}} @ <span title="{{comment.date}}">{{comment.hour}}</span></div>
+									<div class="field-value">{{comment.body}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<table class="field-container">
+					<tr class="field-row field-container">
+						<td colspan="2">
+							<div class="comments-box">
+								<textarea id="support-comment" ng-model="comment_text" class="support-comment"></textarea>
+							</div>
+						</td>
+					</tr>
+					<tr class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
+						<td class="field-two-rows field-left">
+							<button ng-click="close_and_comment();" class="button" ng-class="{ 'orange': ticket.status == 'open' }">
+								Close & Comment
+							</button>
+						</td>
+						<td class="field-two-rows field-right">
+							<button ng-click="comment();" class="button orange">
+								Comment
+							</button>
+						</td>
+					</tr>
+					<tr ng-if="isCommentSaving">
+						<td colspan="2">
+							<button class="button">
+								<i class="fa fa-circle-o-notch fa-spin"></i> Saving</span>
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
 
 		</div>
 	</div>

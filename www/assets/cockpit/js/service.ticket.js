@@ -51,7 +51,7 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	}
 
 	service.message = function(params, callback) {
-		tickets.message(params, function(data) {
+		tickets.message( params, function(data) {
 			callback(data);
 		});
 	}
