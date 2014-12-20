@@ -37,7 +37,6 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			echo $ticket->json();
 			exit;
 		}
-
 		if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
 			$note = $this->request()[ 'note' ];
 			if( $note ){

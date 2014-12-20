@@ -2431,6 +2431,9 @@ b, strong{ font-weight: bold; }
 	background: #fff;
 	margin-bottom: 25px;
 }
+.comments-box {
+	margin-bottom: 10px;
+}
 
 
 
@@ -2540,11 +2543,25 @@ b, strong{ font-weight: bold; }
 	white-space: nowrap;
 }
 
+.field-container .field-row-button .field-two-rows {
+	width: 50% !important;
+}
+	.field-container .field-row-button .field-two-rows .button {
+		width: 100% !important;
+	}
+
 .field-container .field-value {
 	color: #2a2c2f;
 	text-align: right;
+}
 
-
+.field-container .field-left{
+	text-align: left;
+	padding-right: 2px;
+}
+.field-container .field-right{
+	text-align: right;
+	padding-left: 2px;
 }
 
 .order-contents {
@@ -3159,6 +3176,14 @@ h1.driver-title {
 	padding: .5em;
 	box-sizing: border-box;
 }
+	.support-comment{
+		border: 2px solid #b9b9b9 !important;
+		height: 70px;
+		width: 100%;
+		border: 0;
+		padding: .5em;
+		box-sizing: border-box;
+	}
 
 .support-chat-contents-message {
 	margin-bottom: 1.1em;

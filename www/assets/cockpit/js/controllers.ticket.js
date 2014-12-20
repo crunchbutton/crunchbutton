@@ -46,6 +46,38 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		});
 
 
+	$scope.isCommentSaving = false;
+
+	var saveComment = function( close ){
+		if( close && $scope.ticket.status != 'open' ){
+			return;
+		}
+		if( $scope.comment_text ){
+			$scope.isCommentSaving = true;
+			TicketService.message( { 'id_support': $routeParams.id, 'body': $scope.comment_text, 'note': true }, function(){
+				$scope.comment_text = '';
+				$scope.isCommentSaving = false;
+				if( close ){
+					if( $scope.ticket.status == 'open' ){
+						$scope.openCloseTicket();
+					}
+				} else {
+					update();
+				}
+			} );
+		} else {
+			App.alert( 'Please type something!' );
+		}
+	}
+
+	$scope.comment = function(){
+		saveComment( false );
+	}
+
+	$scope.close_and_comment = function(){
+		saveComment( true );
+	}
+
 	var cleanup;
 
 	var draw = function() {
