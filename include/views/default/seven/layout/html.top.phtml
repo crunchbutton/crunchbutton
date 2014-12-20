@@ -16,7 +16,7 @@
 <?=$this->display('layout/html.servertime')?>
 
 <? if (c::config()->bundle) : ?>
-	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Cana_Util::gitVersion()?>&s=seven">
+	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Deploy_Server::currentVersion()?>&s=seven">
 <? else : ?>
 	<?=$this->display('bundle/css', ['set' => ['style' => ['seven']]])?>
 <? endif ; ?>
