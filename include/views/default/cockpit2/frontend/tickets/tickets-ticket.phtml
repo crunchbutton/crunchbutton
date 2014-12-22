@@ -45,19 +45,59 @@
 						<tr class="field-row">
 							<td class="field-key">Status</td>
 							<td class="field-value">
-								<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
-								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+								<span ng-if="ticket.order.status"><b>{{ticket.order.status.status}}</b> <span am-time-ago="ticket.order.status.timestamp*1000"></span></span>
+								<span ng-if="!ticket.order.status">{{ticket.order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 							</td>
 						</tr>
-						<tr class="field-row" ng-if="order.status.status != 'delivered' && eta.time">
+						<tr class="field-row" ng-if="ticket.order.status.status != 'delivered' && eta.time">
 							<td class="field-key">ETA</td>
 							<td class="field-value">
 								{{eta.time | formatPrice}} minutes
 							</td>
 						</tr>
-						<tr class="field-row field-row-button" ng-if="order.pay_type == 'card'">
-							<td class="field-value" colspan="2"><button class="button orange">Refund</button></td>
+						<tr class="field-row field-row-button" ng-if="isRefunding">
+							<td class="field-value" colspan="2">
+								<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
+							</td>
 						</tr>
+						<tr class="field-row field-row-button" ng-if="ticket.order.pay_type == 'card' && !ticket.order.refunded && !isRefunding">
+							<td class="field-value" colspan="2">
+								<button ng-click="refund();" class="button orange">Refund</button>
+							</td>
+						</tr>
+						<tbody ng-show="ticket.order.refunded">
+							<tr class="field-row">
+								<td class="field-key">Order Refunded</td>
+								<td class="field-value">Yes</td>
+							</tr>
+							<tr class="field-row link no-underline" ng-click="do_not_reimburse_driver()">
+								<td class="field-key">
+									<i ng-if="!ticket.order.do_not_reimburse_driver" class="fa fa-square-o"></i>
+									<i ng-if="ticket.order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
+								</td>
+								<td class="field-value">
+									Do Not Reimburse Driver?
+								</td>
+							</tr>
+							<tr class="field-row link no-underline" ng-click="do_not_pay_driver()">
+								<td class="field-key">
+									<i ng-if="!ticket.order.do_not_pay_driver" class="fa fa-square-o"></i>
+									<i ng-if="ticket.order.do_not_pay_driver" class="fa fa-check-square-o"></i>
+								</td>
+								<td class="field-value">
+									Do Not Pay Driver?
+								</td>
+							</tr>
+							<tr class="field-row link no-underline" ng-click="do_not_pay_restaurant()">
+								<td class="field-key">
+									<i ng-if="!ticket.order.do_not_pay_restaurant" class="fa fa-square-o"></i>
+									<i ng-if="ticket.order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+								</td>
+								<td class="field-value">
+									Pay restaurant despite refund <br>(e.g. this refund was our fault)
+								</td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
 			</div>
@@ -207,7 +247,7 @@
 					<tr ng-if="isCommentSaving">
 						<td colspan="2">
 							<button class="button">
-								<i class="fa fa-circle-o-notch fa-spin"></i> Saving</span>
+								<i class="fa fa-circle-o-notch fa-spin"></i> Saving
 							</button>
 						</td>
 					</tr>
