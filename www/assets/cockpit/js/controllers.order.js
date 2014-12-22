@@ -15,10 +15,10 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 
 NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService) {
 	angular.extend($scope, ViewListService);
-	
+
 //	var query = $location.search();
 //	$scope.query.view = 'list';
-	
+
 	SocketService.listen('orders', $scope)
 		.on('update', function(d) {
 			for (var x in $scope.orders) {
@@ -30,7 +30,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 		}).on('create', function(d) {
 			$scope.update();
 		});
-		
+
 	var draw = function() {
 		if (!$scope.map || !$scope.orders) {
 			return;
@@ -43,7 +43,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			scope: $scope
 		});
 	};
-	
+
 	$scope.$on('mapInitialized', function(event, map) {
 		console.log('INIT');
 		$scope.map = map;
@@ -71,14 +71,14 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 });
 
 NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService, SocketService) {
-	
+
 	SocketService.listen('order.' + $routeParams.id, $scope)
 		.on('update', function(d) {
 			$scope.order = d;
 		});
-		
+
 	$scope.loading = true;
-	
+
 	var draw = function() {
 		if (!$scope.map || !$scope.order) {
 			return;
@@ -103,13 +103,13 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 			draw();
 		});
 	};
-	
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
 		draw();
 	});
-	
+
 	var cleanup = $rootScope.$on('order-route-' + $routeParams.id, function(event, args) {
 		$scope.$apply(function() {
 			$scope.eta = args;
@@ -122,6 +122,71 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		$interval.cancel($scope.updater);
 		cleanup();
 	});
-	
+
+	$scope.isRefunding = false;
+
+	$scope.refund = function(){
+
+		if( $scope.isRefunding ){
+			return;
+		}
+
+		var question = 'Are you sure you want to refund this order?';
+		if( parseFloat( $scope.order.credit ) > 0 ){
+			question += "\n";
+			question += 'A gift card was used at this order the refund value will be $' + $scope.order.charged + ' + $' + $scope.order.credit + ' as gift card.' ;
+		}
+
+		if ( confirm( question ) ){
+
+			$scope.isRefunding = true;
+			OrderService.refund( $scope.order.id_order, function( result ){
+
+				$scope.isRefunding = false;
+
+				if( result.success ){
+					$rootScope.reload();
+				} else {
+					console.log( result.responseText );
+					var er = result.errors ? "<br>" + result.errors : 'See the console.log!';
+					App.alert('Refunding fail! ' + er);
+				}
+			} );
+		}
+	}
+
+	$scope.do_not_pay_driver = function(){
+		OrderService.do_not_pay_driver( $scope.order.id_order, function( result ){
+			if( result.success ){
+				$scope.flash.setMessage( 'Saved!' );
+				$scope.order.do_not_pay_driver = ( $scope.order.do_not_pay_driver ? 0 : 1 );
+			} else {
+				$scope.flash.setMessage( 'Error!' );
+			}
+		} );
+	}
+
+	$scope.do_not_pay_restaurant = function(){
+		OrderService.do_not_pay_restaurant( $scope.order.id_order, function( result ){
+			if( result.success ){
+				$scope.flash.setMessage( 'Saved!' );
+				$scope.order.do_not_pay_restaurant = ( $scope.order.do_not_pay_restaurant ? 0 : 1 );
+			} else {
+				$scope.flash.setMessage( 'Error!' );
+			}
+		} );
+	}
+
+	$scope.do_not_reimburse_driver = function(){
+		OrderService.do_not_reimburse_driver( $scope.order.id_order, function( result ){
+			if( result.success ){
+				$scope.flash.setMessage( 'Saved!' );
+				$scope.order.do_not_reimburse_driver = ( $scope.order.do_not_reimburse_driver ? 0 : 1 );
+			} else {
+				$scope.flash.setMessage( 'Error!' );
+			}
+		} );
+	}
+
 	update();
 });

@@ -10,14 +10,14 @@
 	</div>
 
 	<div class="divider"></div>
-	
+
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-	
+
 	<br>
 
 	<div>
 		<div class="support-boxes-column">
-	
+
 			<div ng-if="order.id_order" class="support-box-wrap">
 				<h1>Order #{{order.id_order}}</h1>
 				<div class="box-content-color">
@@ -47,10 +47,51 @@
 								{{eta.time | formatPrice}} minutes
 							</div>
 						</div>
+						<div class="field-row field-row-button" ng-if="isRefunding">
+							<div class="field-value" colspan="2">
+								<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
+							</div>
+						</div>
+						<div class="field-row field-row-button" ng-if="order.pay_type == 'card' && !order.refunded && !isRefunding">
+							<div class="field-value" colspan="2">
+								<button ng-click="refund();" class="button orange">Refund</button>
+							</div>
+						</div>
+						<div class="field-row" ng-if="order.refunded">
+							<div class="field-key">Order Refunded</div>
+							<div class="field-value">Yes</div>
+						</div>
+						<div class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="order.refunded">
+							<div class="field-key">
+								<i ng-if="!order.do_not_reimburse_driver" class="fa fa-square-o"></i>
+								<i ng-if="order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
+							</div>
+							<div class="field-value">
+								Do Not Reimburse Driver?
+							</div>
+						</div>
+						<div class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="order.refunded">
+							<div class="field-key">
+								<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
+								<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
+							</div>
+							<div class="field-value">
+								Do Not Pay Driver?
+							</div>
+						</div>
+						<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="order.refunded">
+							<div class="field-key">
+								<i ng-if="!order.do_not_pay_restaurant" class="fa fa-square-o"></i>
+								<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+							</div>
+							<div class="field-value">
+								Pay restaurant despite refund <br>(e.g. this refund was our fault)
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-	
+
 			<div ng-if="order.user.id_user" class="support-box-wrap">
 				<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
 				<div class="box-content-color">
@@ -70,8 +111,8 @@
 					</div>
 				</div>
 			</div>
-			
-	
+
+
 			<div ng-if="order.restaurant.id_restaurant" class="support-box-wrap">
 				<h1>Restaurant <a href="/restaurant/{{order.restaurant.id_restaurant}}">#{{order.restaurant.id_restaurant}}</a></h1>
 				<div class="box-content-color">
@@ -91,10 +132,10 @@
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
 		<div class="support-boxes-column">
-	
+
 			<div class="support-box-wrap" ng-if="order.driver.id_admin">
 				<h1>Location</h1>
 				<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
@@ -103,7 +144,7 @@
 				<div class="divider"></div>
 				<br><br>
 			</div>
-	
+
 			<div ng-if="order.driver.id_admin" class="support-box-wrap">
 				<h1>Driver <a href="/staff/{{order.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
 				<div class="box-content-color">
@@ -134,10 +175,10 @@
 							</div>
 						</div>
 					</div>
-					 
+
 				</div>
 			</div>
-	
+
 		</div>
 	</div>
 

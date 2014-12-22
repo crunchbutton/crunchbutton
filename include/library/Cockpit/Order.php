@@ -9,6 +9,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['id'] = $this->uuid;
 
 		$date = new DateTime( $this->date, new DateTimeZone( $this->restaurant()->timezone ) );
+		$out['do_not_pay_restaurant'] = ( $out['do_not_pay_restaurant'] ? 1 : 0 );
+		$out['do_not_pay_driver'] = ( $out['do_not_pay_driver'] ? 1 : 0 );
+		$out['do_not_reimburse_driver'] = ( $out['do_not_reimburse_driver'] ? 1 : 0 );
 		$out['date_formated'] = $date->format( 'g:i a, M dS, Y' );
 		$out['time_formated' ] = $date->format( 'g:i' );
 		$out['_restaurant_name'] = $this->restaurant()->name;
@@ -23,7 +26,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
-		$out['charged'] = $this->charged();
+		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
 		$credit = $this->chargedByCredit();
 		if( $credit > 0 ){
@@ -68,6 +71,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 		if( $out[ '_stealth_notification' ] ){
 			$out[ '_instructions_fax' ] = 'Remember: do NOT give the fax to the customer';
 		}
+
+		$out[ 'refunded' ] = intval( $out[ 'refunded' ] );
 
 		$out[ '_dishes' ] = [];
 

@@ -27,7 +27,11 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 		'query' : {
 			method: 'GET',
 			params : {}
-		}
+		},
+		'refund' : { url: App.service + 'order/:id_order/refund', method: 'GET', params : {} },
+		'do_not_reimburse_driver' : { url: App.service + 'order/:id_order/do_not_reimburse_driver', method: 'GET', params : {} },
+		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
+		'do_not_pay_restaurant' : { url: App.service + 'order/:id_order/do_not_pay_restaurant', method: 'GET', params : {} }
 	});
 
 	service.list = function(params, callback) {
@@ -41,14 +45,38 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			callback(data);
 		});
 	}
-	
+
 	service.put = function(params, callback) {
 		order.put(params, function(data) {
 			if (!callback) { return; }
 			callback(data);
 		});
 	}
-	
+
+	service.refund = function( id_order, callback ){
+		order.refund( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
+	service.do_not_reimburse_driver = function( id_order, callback ){
+		order.do_not_reimburse_driver( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
+	service.do_not_pay_driver = function( id_order, callback ){
+		order.do_not_pay_driver( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
+	service.do_not_pay_restaurant = function( id_order, callback ){
+		order.do_not_pay_restaurant( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
 	service.saveeta = function(params, callback) {
 		order.saveeta(params, function(data) {
 			callback(data);
@@ -65,7 +93,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			eta.time += args.legs[x].duration.value/60;
 			eta.distance += args.legs[x].distance.value * 0.000621371;
 		}
-		
+
 		if (args.order.status.status == 'accepted' ||args.order.status.status == 'transferred') {
 			if (args.restaurant.formal_relationship == 1 || args.restaurant.order_notifications_sent) {
 				eta.time += 5;
@@ -73,14 +101,14 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 				eta.time += 15;
 			}
 		}
-		
+
 		service.saveeta({
 			id_order: args.order.id_order,
 			time: eta.time,
 			distance: eta.distance,
 			method: 'google-route-js'
 		}, function(){});
-		
+
 		$rootScope.$broadcast('order-route-' + args.order.id_order, eta);
 	});
 

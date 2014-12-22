@@ -4,7 +4,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 		$restaurant = Admin::restaurantOrderPlacement();
-		
+
 		// list recent orders for restaurants
 		// @todo: move this over to orders php
 		if (c::getPagePiece(2) == 'restaurant-list-last') {
@@ -27,7 +27,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			} else {
 				echo json_encode(['error' => 'invalid object']);
 			}
-			
+
 			exit;
 		}
 
@@ -77,8 +77,8 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}
-		
-		
+
+
 		// update an order
 		if ($this->method() == 'put') {
 
@@ -90,21 +90,55 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					$changed = true;
 				}
 			}
-			
+
 			if ($changed) {
 				$order->save();
 			}
 		}
-		
+
 		switch (c::getPagePiece(3)) {
+
 			case 'refund':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 					header('HTTP/1.1 401 Unauthorized');
 					exit;
 				}
 				$status = $order->refund();
+				if( $status ){
+					echo json_encode( [ 'success' => true ] );
+				} else {
+					echo json_encode( [ 'error' => true ] );
+				}
+				break;
 
-				echo json_encode(['status' => $status]);
+			case 'do_not_reimburse_driver':
+				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+					header('HTTP/1.1 401 Unauthorized');
+					exit;
+				}
+				$order->do_not_reimburse_driver = ( $order->do_not_reimburse_driver == 1 ? 0 : 1 );
+				$order->save();
+				echo json_encode( [ 'success' => true ] );
+				break;
+
+			case 'do_not_pay_driver':
+				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+					header('HTTP/1.1 401 Unauthorized');
+					exit;
+				}
+				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? 0 : 1 );
+				$order->save();
+				echo json_encode( [ 'success' => true ] );
+				break;
+
+			case 'do_not_pay_restaurant':
+				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+					header('HTTP/1.1 401 Unauthorized');
+					exit;
+				}
+				$order->do_not_pay_restaurant = ( $order->do_not_pay_restaurant == 1 ? 0 : 1 );
+				$order->save();
+				echo json_encode( [ 'success' => true ] );
 				break;
 
 			case 'eta':
