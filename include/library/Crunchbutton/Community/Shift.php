@@ -33,7 +33,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 												INNER JOIN restaurant_community rc ON rc.id_community = cs.id_community
 												INNER JOIN `order` o ON o.id_restaurant = rc.id_restaurant
-											WHERE o.id_order = ' . $id_order . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = 1 ');
+											WHERE o.id_order = ' . $id_order . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = 1 AND a.active = 1 ');
 	}
 
 	public function duration( $timeIn = 'hours' ){
@@ -914,7 +914,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 					foreach( $nextShifts as $shift ){
 
-						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
+						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0 AND active = 1' );
 
 						foreach( $assigments as $assignment ){
 
@@ -990,4 +990,3 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 	}
 }
-
