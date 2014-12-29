@@ -94,6 +94,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			}
 			$support = Support::o( $o->id_support );
 			$o->message = $support->lastMessage()->body;
+			$o->date = $support->lastMessage()->date();
 			$d[] = $o;
 		}
 
