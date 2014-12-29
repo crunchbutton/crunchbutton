@@ -25,7 +25,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 
 	public function cacheServe($id) {
 
-		$git = Cana_Util::gitVersion();
+		$git = Deploy_Server::currentVersion();
 		$v = $git ? $git : $_REQUEST['v'];
 		
 		$headrs = apache_request_headers();

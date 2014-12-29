@@ -1,6 +1,6 @@
 <?php
 
-class Cockpit_Deploy_Server extends Cana_Table {
+class Crunchbutton_Deploy_Server extends Cana_Table {
 	public function exports() {
 		$ex = $this->properties();
 		$ex['version'] = $this->version() ? $this->version()->exports() : null;
@@ -8,16 +8,26 @@ class Cockpit_Deploy_Server extends Cana_Table {
 	}
 	
 	public static function byName($name) {
-		return Cockpit_Deploy_Server::q('select * from deploy_server where name="'.$name.'"')->get(0);
+		return Crunchbutton_Deploy_Server::q('select * from deploy_server where name="'.$name.'"')->get(0);
 	}
-	
+
 	public static function currentVersion() {
-		return md5(self::byName($_SERVER['SERVER_NAME'])->version()->version);
+		$server = self::byName($_SERVER['SERVER_NAME']);
+		if ($server) {
+			$version = $server->version();
+		}
+		if ($version) {
+			$v = $version->version;
+		}
+		if (!$v) {
+			$v = Cana_Util::gitVersion();
+		}
+		return md5($v);
 	}
 
 	public function version() {
 		if (!isset($this->_version)) {
-			$this->_version = Cockpit_Deploy_Version::q('
+			$this->_version = Crunchbutton_Deploy_Version::q('
 				select * from deploy_version
 				where status="success"
 				and id_deploy_server="'.$this->id_deploy_server.'"
@@ -30,7 +40,7 @@ class Cockpit_Deploy_Server extends Cana_Table {
 	
 	public function versions() {
 		if (!isset($this->_versions)) {
-			$this->_versions = Cockpit_Deploy_Version::q('
+			$this->_versions = Crunchbutton_Deploy_Version::q('
 				select * from deploy_version
 				where id_deploy_server="'.$this->id_deploy_server.'"
 				order by date desc

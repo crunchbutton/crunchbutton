@@ -39,13 +39,13 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		}
 		
 		// css
-		$files[] = 'css/bundle.css?s=cockpit&_export=1&v='.Cana_Util::gitVersion();
+		$files[] = 'css/bundle.css?s=cockpit&_export=1&v='.Deploy_Server::currentVersion();
 		
 		// javascript
-		$files[] = 'js/bundle.js?s=cockpit&v='.Cana_Util::gitVersion();
+		$files[] = 'js/bundle.js?s=cockpit&v='.Deploy_Server::currentVersion();
 		
 		echo json_encode([
-			'version' => Cana_Util::gitVersion(),
+			'version' => Deploy_Server::currentVersion(),
 			'files' => $files,
 			'force' => false
 		]);

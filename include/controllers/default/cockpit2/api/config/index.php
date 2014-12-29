@@ -20,7 +20,7 @@ $user[ 'using_pex' ] = true;
 				$config = [
 					'user' => $user,
 					'env' => c::env(),
-					'version' => Cana_Util::gitVersion(),
+					'version' => Deploy_Server::currentVersion(),
 					'site' => c::config()->site->exposedConfig()
 				];
 

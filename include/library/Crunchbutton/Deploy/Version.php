@@ -1,6 +1,6 @@
 <?php
 
-class Cockpit_Deploy_Version extends Cana_Table {
+class Crunchbutton_Deploy_Version extends Cana_Table {
 	public function exports() {
 		$ex = $this->properties();
 		$ex['timestamp'] = strtotime($this->date);
@@ -16,7 +16,7 @@ class Cockpit_Deploy_Version extends Cana_Table {
 
 	public function server() {
 		if (!isset($this->_server)) {
-			$this->_server = Cockpit_Deploy_Server::o($this->id_deploy_server);
+			$this->_server = Crunchbutton_Deploy_Server::o($this->id_deploy_server);
 		}
 		return $this->_server;
 	}
