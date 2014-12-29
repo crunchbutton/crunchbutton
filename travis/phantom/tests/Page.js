@@ -57,7 +57,7 @@ describe('Page', function() {
 		});
 
 	    runs(function() {
-			expect(content.match(/bundle.cssx/i)).toBeTruthy();
+			expect(content.match(/bundle.css/i)).toBeTruthy();
 	    });
     });
     
