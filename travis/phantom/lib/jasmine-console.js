@@ -32,7 +32,7 @@ jasmine.ConsoleReporter = function(printFn, doneCallback, showColors, verbose) {
   }
 
   function newline() {
-    printFn("\n");
+    //printFn("\n");
   }
 
   function started() {

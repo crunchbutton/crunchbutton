@@ -26,8 +26,8 @@ var list = fs.list(tests);
 for (var x = 0; x < list.length; x++){
 	if (!fs.isDirectory(list[x]) && list[x].charAt(0) != '_') {
 		console.log('Reading file: ' + tests + list[x]);
-		//phantom.injectJs(tests + list[x]);
-		require(tests + list[x]);
+		phantom.injectJs(tests + list[x]);
+		//require(tests + list[x]);
 	}       
 }
 
