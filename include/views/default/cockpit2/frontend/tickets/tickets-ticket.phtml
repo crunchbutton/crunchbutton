@@ -193,7 +193,7 @@
 						<div class="field-row">
 							<div class="field-key">Shift ends in</div>
 							<div class="field-value">
-								<span ng-if="ticket.order.driver.working">{{ticket.order.driver.shift_ends }}</span>
+								<span ng-if="ticket.order.driver.working" title="{{ticket.order.driver.shift_ends_formatted}}">{{ticket.order.driver.shift_ends}}</span>
 								<span ng-if="!ticket.order.driver.working">Shift ended</span>
 							</div>
 						</div>

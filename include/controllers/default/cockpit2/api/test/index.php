@@ -4,6 +4,9 @@ class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		$admin = Admin::o( 5 );
+
+		echo '<pre>';var_dump( $admin->exports() );exit();
+
 		// echo '<pre>';var_dump( Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin ) );exit();
 		echo '<pre>';var_dump( $admin->isSupport( true ) );exit();;
 		exit();
