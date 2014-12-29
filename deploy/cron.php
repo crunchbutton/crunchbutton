@@ -8,7 +8,7 @@ ini_set('display_errors',true);
 require_once('../include/crunchbutton.php');
 
 $host = gethostname();
-$que = Cockpit_Deploy_Version::getQue($host);
+$que = Crunchbutton_Deploy_Version::getQue($host);
 
 foreach ($que as $q) {
 	$q->status = 'deploying';
