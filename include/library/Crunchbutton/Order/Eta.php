@@ -8,7 +8,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 			->idVar('id_order_eta')
 			->load($id);
 	}
-	
+
 	public function exports() {
 		return [
 			'distance' => $this->distance,
@@ -16,10 +16,10 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 			'date' => $this->date
 		];
 	}
-	
+
 	public static function create($order, $method = null) {
 		// right now we only have one method. google
-		
+
 		$method = 'google-directions-php';
 
 		$ret = self::_methodGoogle($order);
@@ -35,7 +35,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 
 		return $eta;
 	}
-	
+
 	private static function _methodGoogle($order) {
 		$status = $order->status()->last()['status'];
 
@@ -46,7 +46,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 		} else {
 			$ret = self::_getGoogleEta($order);
 			$time = $ret->time;
-			
+
 			if ($status == 'accepted' || $status == 'transferred') {
 				if ($order->restaurant()->formal_relationship == 1 || $order->restaurant()->order_notifications_sent) {
 					$time += 5;
@@ -55,21 +55,26 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 				}
 			}
 		}
-		
+
 		return (object)[
 			'time' => $time,
 			'distance' => $ret->distance
 		];
 	}
-	
+
 	private static function _getGoogleEta($order) {
 
 		$status = $order->status()->last()['status'];
-		
+
+		// if it doesn't have a driver there is no way to know the distance
+		if( !$order->driver()->id_admin ){
+			return;
+		}
+
 		$driver = $order->driver()->location()->lat.','.$order->driver()->location()->lon;
 		$customer = urlencode($order->address);
 		$restaurant = $order->restaurant()->loc_lat.','.$order->restaurant()->loc_long;
-		
+
 		$url = 'https://maps.googleapis.com/maps/api/directions/json?';
 
 		if ($status == 'pickedup') {
@@ -79,7 +84,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 			$url .= 'origin='.$driver.'&destination='.$customer.'&waypoints='.$restaurant;
 		}
 
-		$url = 'https://maps.googleapis.com/maps/api/directions/json?origin=33.9848,-118.446&destination=1120%20princeton,%20marina%20del%20rey%20ca%2090292&waypoints=33.1751,-96.6778';
+		// $url = 'https://maps.googleapis.com/maps/api/directions/json?origin=33.9848,-118.446&destination=1120%20princeton,%20marina%20del%20rey%20ca%2090292&waypoints=33.1751,-96.6778';
 
 		$res = @json_decode(@file_get_contents($url));
 		$eta = 0;
@@ -96,7 +101,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 			'time' => $eta,
 			'distance' => $distance
 		];
-		
+
 		//&key=API_KEY
 	}
 
