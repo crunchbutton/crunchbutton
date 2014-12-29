@@ -6,11 +6,11 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		if ($this->method() != 'get') {
 			exit;
 		}
-		
+
 		// manual query is faster than using the Order->exports
-		
+
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
-		
+
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
@@ -18,14 +18,14 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$phone = $this->request()['phone'] ? c::db()->escape($this->request()['phone']) : null;
 		$restaurant = $this->request()['restaurant'] ? c::db()->escape($this->request()['restaurant']) : null;
 		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
-		
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
 			$offset = ($page-1) * $limit;
 		}
 
-		
+
 		/*
 		$q = '
 			SELECT
@@ -41,7 +41,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			WHERE order_action.type != "delivery-rejected"
 		';
 		*/
-		
+
 		$q = '
 			SELECT
 				-WILD-
@@ -53,53 +53,72 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN community ON community.id_community=restaurant_community.id_community
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
-		
+
 		if (!c::admin()->permission()->check(['global', 'orders-all', 'orders-list-page'])) {
 			// Order::deliveryOrders( $lastHours );
 			$q .= '
 				AND order_admin.id_admin = "'.c::admin()->id_admin.'"
 			';
 		}
-		
+
 		if ($user) {
 			$q .= '
 				AND `order`.id_user="'.$user.'"
 			';
 		}
-		
+
 		if ($phone) {
 			$q .= '
 				AND `order`.phone="'.$phone.'"
 			';
 		}
-		
+
 		if ($community) {
 			$q .= '
 				AND community.id_community="'.$community.'"
 			';
 		}
-		
+
 		if ($restaurant) {
 			$q .= '
 				AND restaurant.id_restaurant="'.$restaurant.'"
 			';
 		}
-		
+
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
-				'search' => stripslashes($search),
-				'fields' => [
-					'restaurant.name' => 'like',
-					'admin.name' => 'like',
-					'order.phone' => 'like',
-					'order.name' => 'like',
-					'order.address' => 'like',
-					'order.notes' => 'like',
-					'order.id_order' => 'liker'
-				]
-			]);
+
+			// Keys
+			switch ( true ) {
+
+				// Keys
+				case ( strpos( $search, 'phone:' ) !== false ):
+					$phone = str_replace( 'phone:' , '', $search );
+					$phone = str_replace( '-' , '', $phone );
+					$q .= 'AND order.phone = "' . $phone . '"';
+					break;
+
+				case ( strpos( $search, 'customer:' ) !== false ):
+					$id_user = str_replace( 'customer:' , '', $search );
+					$q .= 'AND order.id_user = "' . $id_user . '"';
+					break;
+
+				default:
+					$q .= Crunchbutton_Query::search([
+						'search' => stripslashes($search),
+						'fields' => [
+							'restaurant.name' => 'like',
+							'admin.name' => 'like',
+							'order.phone' => 'like',
+							'order.name' => 'like',
+							'order.address' => 'like',
+							'order.notes' => 'like',
+							'order.id_order' => 'liker'
+						]
+					]);
+					break;
+			}
 		}
-		
+
 		$q .= '
 			GROUP BY `order`.id_order
 		';
@@ -115,7 +134,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			ORDER BY `order`.id_order DESC
 			LIMIT '.$offset.', '.$limit.'
 		';
-		
+
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
