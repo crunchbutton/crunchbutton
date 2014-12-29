@@ -2365,6 +2365,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return 0;
 	}
 
+	public function totalOrdersByCustomer( $id_user ){
+		$query = "SELECT COUNT(*) AS total FROM `order` WHERE id_user = '{$id_user}'";
+		$row = Cana::db()->get( $query )->get(0);
+		if( $row->total ){
+			return $row->total;
+		}
+		return 0;
+	}
+
 	public function restaurantsUserHasPermissionToSeeTheirOrders(){
 		$restaurants_ids = [];
 		$_permissions = new Crunchbutton_Admin_Permission();
