@@ -52,7 +52,18 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$out['name'] = Phone::name($this);
 		$out['first_name'] = explode(' ',$out['name'])[0];
 		$out['timestamp'] = strtotime($this->date);
-		$out['relative'] = $this->relativeTime();
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		if( Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $this->date() ) ) ){
+			$out['relative'] = $this->date()->format( 'M jS g:i a' );
+		} else {
+			$out['relative'] = $this->relativeTime( true );
+		}
+
+
+
+
 		$out['hour'] = $this->date()->format( 'H:i' );
 		$out['guid'] = $guid;
 		$out['is_note'] = ( $this->type == 'note' && $this->from != 'system' );

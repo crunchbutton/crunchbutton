@@ -3,6 +3,7 @@
 class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
+
 		$restaurant = Admin::restaurantOrderPlacement();
 
 		// list recent orders for restaurants

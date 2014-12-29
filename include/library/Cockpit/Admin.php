@@ -102,8 +102,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_deliveries;
 	}
 
-	public function exports($params = []) {
-		$out = parent::exports($params);
+	public function exports( $params = [] ) {
+		$out = parent::exports( $params );
 		$out['shifts'] = [];
 		$out['working'] = false;
 		if ($this->location()) {
@@ -113,7 +113,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
 
 		if ($next) {
+
 			foreach ($next as $shift) {
+
 				$shift = $shift->exports();
 
 				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
@@ -125,7 +127,17 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					$diff = $now->diff( $date );
 					$shift['current'] = true;
 					$out['working'] = true;
-					$out['shift_ends'] = number_format( $diff->h ) . ':' . number_format( $diff->i );
+
+					$out['shift_ends'] = $diff->h;
+					$out['shift_ends_formatted'] = $diff->h;
+					if( $diff->i ){
+						$out['shift_ends'] .= '' . str_replace(  '0.', '.', strval( number_format( $diff->i / 60, 2 ) ) );
+						if( $diff->h ){
+							$out['shift_ends_formatted'] .= ' hour' . ( ( $diff->h > 1 ) ? 's' : '' );
+							$out['shift_ends_formatted'] .= ' and ';
+						}
+						 $out['shift_ends_formatted'] .= str_pad( $diff->i, '0', 2 ) . ' minute' . ( $diff->i > 1 ? 's' : '' ) ;
+					}
 				} else {
 					$shift['current'] = false;
 				}

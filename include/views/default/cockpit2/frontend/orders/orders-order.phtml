@@ -28,12 +28,25 @@
 						</div>
 						<div class="field-row">
 							<div class="field-key">Placed At</div>
-							<div class="field-value">{{order.date}} (<span am-time-ago="order.date"></span>)</div>
+							<div class="field-value">
+								{{order._date_formatted}}
+								<div ng-if="!order._outsideOf24h">
+									(<span am-time-ago="order.date"></span>)
+								</div>
+							</div>
 						</div>
 						<div class="field-row">
 							<div class="field-key">Status</div>
 							<div class="field-value">
-								<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
+								<span ng-if="order.status"><b>{{order.status.status}}</b>
+									<br/>
+									<span ng-if="!order.status._outside_of_24h">
+										<span am-time-ago="order.status.timestamp*1000"></span>
+									</span>
+									<span ng-if="order.status._outside_of_24h">
+										{{order.status._date_formatted}}
+									</span>
+								</span>
 								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 							</div>
 						</div>
@@ -43,7 +56,7 @@
 						</div>
 						<div class="field-row" ng-if="order.status.status != 'delivered'">
 							<div class="field-key">ETA</div>
-							<div class="field-value">
+							<div class="field-value" ng-if="eta.time">
 								{{eta.time | formatPrice}} minutes
 							</div>
 						</div>

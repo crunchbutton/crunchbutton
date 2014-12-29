@@ -109,7 +109,7 @@
 					</a>
 					<div class="support-chat-contents-message-time">
 						<? /*{{message.timestamp*1000 | date: 'M/d h:mm a'}} */ ?>
-						<span am-time-ago="message.date"></span>
+						<span>{{message.relative}}</span>
 					</div>
 					<div class="support-chat-contents-message-body">{{message.body}}</div>
 				</div>

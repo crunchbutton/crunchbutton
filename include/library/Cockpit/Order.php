@@ -12,7 +12,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['do_not_pay_restaurant'] = ( $out['do_not_pay_restaurant'] ? 1 : 0 );
 		$out['do_not_pay_driver'] = ( $out['do_not_pay_driver'] ? 1 : 0 );
 		$out['do_not_reimburse_driver'] = ( $out['do_not_reimburse_driver'] ? 1 : 0 );
-		$out['date_formated'] = $date->format( 'g:i a, M dS, Y' );
+		$out['date_formated'] = $date->format( 'M dS g:i a' );
 		$out['time_formated' ] = $date->format( 'g:i' );
 		$out['_restaurant_name'] = $this->restaurant()->name;
 		$out['_restaurant_permalink'] = $this->restaurant()->permalink;
@@ -175,9 +175,17 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ '_dishes' ][] = [ 'name' => $food, 'price' => [ 'regular' => $regular_price, 'marked_up' => $price ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions, 'select_options' => $selectOptions ] ];
 		}
 
-		$out['status'] = $this->status()->last();
+		$status = $this->status()->last();
+		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
+		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
+
+		$status[ '_outside_of_24h' ] = Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $date ) );
+		$status[ '_date_formatted' ] = $status_date->format( 'M jS Y g:i:s A' );
+
+		$out['status'] = $status;
 		$out['eta'] = $this->eta()->exports();
 		$driver = $this->status()->driver();
+
 		if( $driver ){
 			$out['driver'] = $driver->exports();
 		}

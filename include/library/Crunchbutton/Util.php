@@ -47,6 +47,10 @@ class Crunchbutton_Util extends Cana_Model {
 				 + ( $interval->y * 60 * 60 * 24 * 365 );
 	}
 
+	public static function intervalMoreThan24Hours( $interval ){
+		return ( Crunchbutton_Util::intervalToSeconds( $interval ) > ( 60 * 60 * 24 ) );
+	}
+
 	public static function inverseColor( $color ){
 		$r = dechex( 255 - hexdec( substr( $color, 0, 2 ) ) );
 		$r = ( strlen( $r ) > 1 ) ? $r : '0' . $r;
