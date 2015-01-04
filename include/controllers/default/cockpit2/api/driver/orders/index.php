@@ -4,7 +4,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		$lastHours = 1200; // last 12 hours
+		$lastHours = 12; // last 12 hours
 
 		if( c::getPagePiece( 3 ) ){
 
