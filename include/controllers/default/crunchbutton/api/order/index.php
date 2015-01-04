@@ -27,7 +27,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					echo json_encode(['status' => 'false', 'errors' => $order->get(0)->refund()->errors]);
 					exit;
 				} else {
-					$order->status = 'success';
+					echo json_encode(['status' => 'success']);
+					exit;
 				}
 				break;
 
