@@ -84,11 +84,13 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 										<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay restaurant despite refund (e.g. this refund was our fault)
 									</div>
 
+<?php if( $order->delivery_service ) { ?>
 
 							<div style="<?php if( !$order->refunded ) { echo 'display:none;';} ?>" class="pointer do_not_reimburse_driver-<?php echo $order->uuid; ?> refunded-<?php echo $order->uuid; ?> do_not_reimburse_driver" data-value="<?php if( $order->do_not_reimburse_driver ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
 								<span><?php if( $order->do_not_reimburse_driver ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span>
-								Do Not Reimburse Driver?
+								Do Not Pay Driver Anything
 							</div>
+<?php } ?>
 
 						<?php } ?>
 
@@ -195,7 +197,11 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					} ?>
 					<?php if( $permissionNotification ) { ?>
 						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend <strong>restaurant</strong> <br/>notification(s)</a> <br/><br/>
-						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification_drivers" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend <strong>driver</strong>  <br/>notification(s)</a>
+
+						<?php if( $order->delivery_service ) { ?>
+
+							<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification_drivers" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend <strong>driver</strong>  <br/>notification(s)</a>
+						<?php } ?>
 					<?php } ?>
 					<hr/>
 					<span title="Timezone">

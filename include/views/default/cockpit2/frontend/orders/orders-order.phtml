@@ -74,7 +74,7 @@
 							<div class="field-key">Order Refunded</div>
 							<div class="field-value">Yes</div>
 						</div>
-						<div class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="order.refunded">
+						<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="order.refunded">
 							<div class="field-key">
 								<i ng-if="!order.do_not_reimburse_driver" class="fa fa-square-o"></i>
 								<i ng-if="order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
@@ -83,7 +83,8 @@
 								Do Not Reimburse Driver?
 							</div>
 						</div>
-						<div class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="order.refunded">
+
+						<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="order.refunded">
 							<div class="field-key">
 								<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
 								<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
