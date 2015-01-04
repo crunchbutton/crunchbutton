@@ -61,9 +61,15 @@
 							<div class="customer-pointer">
 								{{order.name}}
 							</div>
+
 							<div class="phone-pointer">
 								<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
 							</div>
+
+							<div ng-if="order.address" class="customer-address">
+								{{order.address}}
+							</div>
+
 						</div>
 						<div class="divider"></div>
 					</div>
