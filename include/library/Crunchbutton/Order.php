@@ -2740,6 +2740,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function ordersExports() {
 		$out = $this->exports();
+		$out[ 'delivery_service' ] = intval( $out[ 'delivery_service' ] );
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['_community_name'] = $this->restaurant()->community()->name;
