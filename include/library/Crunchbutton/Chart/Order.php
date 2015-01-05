@@ -430,8 +430,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		$now->modify( '-2 weeks' );
 		$this->dayFrom = $now->format( 'Y-m-d' );
 
-		$this->dayFrom = ( $_REQUEST[ 'from' ] ? $this->allDays[ $_REQUEST[ 'from' ] ] : $this->dayFrom );
-		$this->dayTo = ( $_REQUEST[ 'to' ] ? $this->allDays[ $_REQUEST[ 'to' ] ] : $this->dayTo );
+		$this->dayFrom = ( $_REQUEST[ 'from' ] ? $this->allDays[ $_REQUEST[ 'from' ] - 1 ] : $this->dayFrom );
+		$this->dayTo = ( $_REQUEST[ 'to' ] ? $this->allDays[ $_REQUEST[ 'to' ] - 1 ] : $this->dayTo );
 
 		$this->from_day = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : ( count( $this->allDays ) - 15 ) );
 		$this->to_day = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : count( $this->allDays ) );
@@ -449,6 +449,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
