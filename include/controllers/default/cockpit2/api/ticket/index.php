@@ -32,7 +32,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			} else {
 				$ticket->status = Crunchbutton_Support::STATUS_OPEN;
 				$ticket->save();
-				$ticket->addSystemMessage( c::admin()->name . ' open this ticket' );
+				$ticket->addSystemMessage( c::admin()->name . ' opened this ticket' );
 			}
 			echo $ticket->json();
 			exit;
