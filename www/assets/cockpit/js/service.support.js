@@ -5,6 +5,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	};
 	service.setViewTicket = function(id) {
 		service.scope.viewTicket = id;
+		$rootScope.navigation.link( '/ticket/' + id );
 	};
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
