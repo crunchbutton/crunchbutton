@@ -8,6 +8,13 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 
+		// Creates a new ticket for a certain order
+		if ( c::getPagePiece(2) == 'create' && $this->method() == 'post' && $this->request()['id_order'] ) {
+			$support = Crunchbutton_Support::createNewTicket(  [ 'id_order' => $this->request()['id_order'], 'body' => 'Ticket created from admin panel.' ] );
+			echo $support->json();
+			exit;
+		}
+
 		$ticket = Support::o( c::getPagePiece( 2 ) );
 
 		if (!$ticket->id_support) {
@@ -52,6 +59,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 				exit;
 			}
 		}
+
 		header('HTTP/1.0 409 Conflict');
 		exit;
 	}

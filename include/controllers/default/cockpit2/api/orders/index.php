@@ -51,6 +51,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
 			LEFT JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
 			LEFT JOIN community ON community.id_community=restaurant_community.id_community
+			LEFT JOIN ( SELECT MAX( id_support ) AS id_support, id_order FROM support WHERE id_order IS NOT NULL GROUP BY id_order ) support ON support.id_order = `order`.id_order
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
 
@@ -139,6 +140,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			`order`.*,
+			support.id_support,
 			restaurant.name as _restaurant_name,
 			restaurant.permalink as _restaurant_permalink,
 			community.name as _community_name,
@@ -149,7 +151,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		', $q));
 
 		while ($o = $r->fetch()) {
-			$o->status = Order::o($o->id_order)->status()->last();
+			$o->status = Order::o( $o->id_order )->status()->last();
 			$data[] = $o;
 		}
 
