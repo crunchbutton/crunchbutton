@@ -81,6 +81,11 @@ class Crunchbutton_Support extends Cana_Table {
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
+	public function lastValidOpenMessage(){
+		echo 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( ( `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ) OR `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" AND type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND visibility = "' . Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL . '" )  ORDER BY date DESC, id_support_message DESC LIMIT 1 ';exit;
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( ( `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ) OR `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" AND type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND visibility = "' . Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL . '" )  ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
+	}
+
 	public function lastCustomerMessage(){
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
@@ -373,7 +378,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$supports = Crunchbutton_Support::q( 'SELECT s.* FROM support s WHERE s.status =  "' . Crunchbutton_Support::STATUS_OPEN . '" ORDER BY id_support ASC' );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		foreach ( $supports as $support ) {
-			$lastCustomerMessage = $support->lastCustomerMessage();
+			$lastCustomerMessage = $support->lastValidOpenMessage();
 			$close = false;
 			if( $lastCustomerMessage->id_support_message ){
 				$support_date = $lastCustomerMessage->date()->get(0);
