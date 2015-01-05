@@ -2,9 +2,9 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
-$cron = new Crunchbutton_Cron_Job_DriversRemindMinutesAboutTheirShift();
-echo '<pre>';var_dump( $cron->run() );exit();
-
+// $cron = new Crunchbutton_Cron_Job_DriversRemindMinutesAboutTheirShift();
+// echo '<pre>';var_dump( $cron->run() );exit();
+die('hard');
 		$admin = Admin::o( 5 );
 
 		echo '<pre>';var_dump( $admin->exports() );exit();
