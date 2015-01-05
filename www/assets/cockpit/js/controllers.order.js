@@ -13,7 +13,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService) {
+NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService) {
 	angular.extend($scope, ViewListService);
 
 //	var query = $location.search();
@@ -43,6 +43,25 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			scope: $scope
 		});
 	};
+
+	$scope.ticket = function( id_order, id_support ){
+		if( id_support ){
+			ticket( id_support );
+		} else {
+			TicketService.create( { 'id_order': id_order }, function( json ){
+				if( json.id_support ){
+					ticket( json.id_support );
+				} else {
+					App.alert( 'Fail creating a new ticket!' );
+				}
+			} );
+		}
+	}
+
+	var ticket = function( id_support ){
+		var url = '/ticket/' + id_support;
+		$scope.navigation.link( url );
+	}
 
 	$scope.$on('mapInitialized', function(event, map) {
 		console.log('INIT');
