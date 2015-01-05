@@ -82,7 +82,6 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function lastValidOpenMessage(){
-		echo 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( ( `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ) OR `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" AND type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND visibility = "' . Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL . '" )  ORDER BY date DESC, id_support_message DESC LIMIT 1 ';exit;
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( ( `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ) OR `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" AND type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND visibility = "' . Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL . '" )  ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
