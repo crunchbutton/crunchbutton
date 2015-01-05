@@ -914,7 +914,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 					foreach( $nextShifts as $shift ){
 
-						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0 AND active = 1' );
+						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa INNER JOIN admin a ON a.id_admin = asa.id_admin WHERE asa.id_community_shift = ' . $shift->id_community_shift . ' AND asa.warned = 0 AND a.active = 1' );
 
 						foreach( $assigments as $assignment ){
 
