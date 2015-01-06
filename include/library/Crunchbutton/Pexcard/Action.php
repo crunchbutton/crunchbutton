@@ -8,6 +8,13 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	const ACTION_ORDER_CANCELLED = 'order-cancelled';
 	const ACTION_ARBRITARY = 'arbritary';
 
+	const STATUS_SCHEDULED = 'scheduled';
+	const STATUS_PROCESSING = 'processing';
+	const STATUS_DONE = 'done';
+	const STATUS_ERROR = 'error';
+
+	const MAX_TRIES = 1;
+
 	const TYPE_CREDIT = 'credit';
 	const TYPE_DEBIT = 'debit';
 
@@ -59,6 +66,61 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		}
 		// havent received funds
 		return true;
+	}
+
+	public function que( $force = false ){
+		if( $force || $this->status == Crunchbutton_Pexcard_Action::STATUS_SCHEDULED ){
+			$this->tries = ( !$this->tries ) ? 0 : $this->tries;
+			if( $this->tries < Crunchbutton_Pexcard_Action::MAX_TRIES ){
+
+				$this->status = Crunchbutton_Pexcard_Action::STATUS_PROCESSING;
+				$this->status_date = date( 'Y-m-d H:i:s' );
+				$this->tries = ( $this->tries + 1 );
+				$this->save();
+				$action = $this;
+
+				Cana::timeout( function() use( $action ) {
+
+					$pexcard = $action->pexcard();
+					try {
+						$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
+						if( $card->body && $card->body->id ){
+							$action->status = Crunchbutton_Pexcard_Action::STATUS_DONE;
+							$action->response = json_encode( $card->body );
+							$action->status_date = date( 'Y-m-d H:i:s' );
+							$action->save();
+			 	 		} else {
+			 	 			$this->error( $card->Message );
+			 	 		}
+					} catch ( Exception $e ) {
+						$action->que();
+					}  finally {
+						if( $action->status != Crunchbutton_Pexcard_Action::STATUS_DONE ){
+							$action->que();
+						}
+					}
+				}, 3 * 1000 );
+			} else {
+				$this->error( 'Exceeded the maximum (' . Crunchbutton_Pexcard_Action::MAX_TRIES . ') tries to add funds.' );
+			}
+		}
+	}
+
+	public function error( $error ){
+		$pexcard = $this->pexcard();
+		$message = 'Pexcard funds error: ' . $error . "\n";
+		$message .= 'Amount: ' . $this->amount . "\n";
+		$message .= 'Action: ' . $this->action . "\n";
+		$message .= 'Card Serial: ' . $pexcard->card_serial . "\n";
+		$message .= 'Last four: ' . $pexcard->last_four;
+		Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+	}
+
+	public function pexcard(){
+		if( !$this->_pexcard ){
+			$this->_pexcard = Cockpit_Admin_Pexcard::o( $this->id_admin_pexcard );
+		}
+		return $this->_pexcard;
 	}
 
 	public function date() {
