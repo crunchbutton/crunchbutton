@@ -106,6 +106,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out = parent::exports( $params );
 		$out['shifts'] = [];
 		$out['working'] = false;
+		$out['working_today'] = false;
 		if ($this->location()) {
 			$out['location'] = $this->location()->exports();
 		}
@@ -120,6 +121,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
 				$start = $date->getTimestamp();
+
+				$today = new DateTime( 'now' , new DateTimeZone( $this->timezone ) );
+
+				if( $date->format( 'Ymd' ) == $today->format( 'Ymd' ) ){
+					$out['working_today'] = true;
+				}
 
 				if ($start <= time() ) {
 					$now = new DateTime( 'now' , new DateTimeZone($this->timezone));

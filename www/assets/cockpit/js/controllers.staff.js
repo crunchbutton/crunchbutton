@@ -82,7 +82,8 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 			search: '',
 			type: 'all',
 			status: 'active',
-			working: 'all'
+			working: 'all',
+			pexcard: 'all'
 		},
 		update: function() {
 			StaffService.list($scope.query, function(d) {
