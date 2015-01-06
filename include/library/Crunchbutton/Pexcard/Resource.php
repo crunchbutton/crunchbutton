@@ -29,7 +29,6 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 							'spendbytransactionreport' => 'admin/SpendByTransactionReport',
 							'businessfundingreport' => 'admin/BusinessFundingReport',
 							'cardfundingreport' => 'admin/CardFundingReport',
-							'cardfundingreport' => 'admin/CardFundingReport',
 		 				];
 		if( $urls[ $point ] ){
 			return Crunchbutton_Pexcard_Resource::uri() . $urls[ $point ];
