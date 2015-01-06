@@ -112,7 +112,73 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 			$card = $this->pexcard();
 			// Check if the card could receive funds
 			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
-					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ){
+					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
+				$this->_error = Crunchbutton_Pexcard_Monitor::balancedExcededLimit( $card, $params[ 'amount' ], $params[ 'note' ] );
+				return false;
+			}
+
+			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
+			if( $this->id_pexcard ){
+				$amount = $params[ 'amount' ];
+				if( floatval( $amount ) != 0 ){
+					$card = Crunchbutton_Pexcard_Card::fund( $this->id_pexcard, $amount );
+				}
+
+				if( $card->body && $card->body->id ){
+					$action = new Crunchbutton_Pexcard_Action();
+					switch ( $params[ 'action' ] ) {
+						case Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED:
+						case Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED:
+							$action->id_admin_shift_assign = $params[ 'id_admin_shift_assign' ];
+							break;
+						case Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED:
+						case Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED:
+							$action->id_order = $params[ 'id_order' ];
+							break;
+						default:
+							$action->id_admin = c::user()->id_admin;
+							break;
+					}
+					$action->amount = $amount;
+					if( $action->amount > 0 ){
+						$action->type = Crunchbutton_Pexcard_Action::TYPE_CREDIT;
+					} else {
+						$action->type = Crunchbutton_Pexcard_Action::TYPE_DEBIT;
+					}
+					$action->id_admin_pexcard = $this->id_admin_pexcard;
+					$action->id_driver = $this->id_admin;
+					$action->date = date( 'Y-m-d H:i:s' );
+					$action->note = $params[ 'note' ];
+					$action->response = json_encode( $card->body );
+					$action->save();
+					$action = Crunchbutton_Pexcard_Action::o( $action->id_pexcard_action );
+					return $action;
+				} else {
+					$message = 'Pexcard funds error: ' . $card->Message . "\n";
+					$message .= 'Amount: ' . $params[ 'amount' ] . "\n";
+					$message .= 'Action: ' . $params[ 'action' ] . "\n";
+					$message .= 'Card Serial: ' . $this->card_serial . "\n";
+					$message .= 'Last four: ' . $this->last_four;
+					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public function old_addFunds( $params ){
+		$add = false;
+		// for tests allows just daniel and david's cards
+		if( intval( $this->id_pexcard ) == 100254 || ( intval( $this->id_pexcard ) == 100296 ) || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
+			$add = true;
+		}
+		if( $add ){
+
+			$card = $this->pexcard();
+			// Check if the card could receive funds
+			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
+					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
 				$this->_error = Crunchbutton_Pexcard_Monitor::balancedExcededLimit( $card, $params[ 'amount' ], $params[ 'note' ] );
 				return false;
 			}
