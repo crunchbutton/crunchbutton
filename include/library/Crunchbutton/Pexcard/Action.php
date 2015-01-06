@@ -68,20 +68,32 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		return true;
 	}
 
+	public function monitor(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '-5 minutes' );
+		$fiveMinutesAgo = $now->format( 'Y-m-d H:i:s' );
+		$actions = Crunchbutton_Pexcard_Action::q( 'SELECT * FROM pexcard_action WHERE status = "' . Crunchbutton_Pexcard_Action::STATUS_PROCESSING . '" AND status_date < "' . $fiveMinutesAgo . '"' );
+		foreach( $actions as $action ){
+			$action->status = Crunchbutton_Pexcard_Action::STATUS_ERROR;
+			$action->status_date = date( 'Y-m-d H:i:s' );
+			$action->response = 'Error trying to add fund!';
+			$action->save();
+			$action->error( $action->response );
+		}
+	}
+
 	public function que( $force = false ){
 		if( $force || $this->status == Crunchbutton_Pexcard_Action::STATUS_SCHEDULED ){
 			$this->tries = ( !$this->tries ) ? 0 : $this->tries;
 			if( $this->tries < Crunchbutton_Pexcard_Action::MAX_TRIES ){
-
 				$this->status = Crunchbutton_Pexcard_Action::STATUS_PROCESSING;
 				$this->status_date = date( 'Y-m-d H:i:s' );
 				$this->tries = ( $this->tries + 1 );
 				$this->save();
-
-				$action = $this;
-
-				// Cana::timeout( function() use( $action ) {
-					$pexcard = $action->pexcard();
+				$id_pexcard_action = $this->id_pexcard_action;
+				Cana::timeout( function() use( $id_pexcard_action, $support ) {
+					$action = Crunchbutton_Pexcard_Action::o( $id_pexcard_action );
+					$pexcard = Cockpit_Admin_Pexcard::o( $action->id_admin_pexcard );
 					try {
 						$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
 						if( $card->body && $card->body->id ){
@@ -94,14 +106,14 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 			 	 		}
 					} catch ( Exception $e ) {
 						$action->que();
-					}  finally {
-						if( $action->status != Crunchbutton_Pexcard_Action::STATUS_DONE ){
+					} finally {
+						if( $action->status != $action->STATUS_DONE ){
 							$action->que();
 						}
 					}
-				// } );
+				} );
 			} else {
-				$this->error( 'Exceeded the maximum (' . Crunchbutton_Pexcard_Action::MAX_TRIES . ') tries to add funds.' );
+				$this->error( 'Exceeded the maximum (' . $action->MAX_TRIES . ') tries to add funds.' );
 			}
 		}
 	}
@@ -109,7 +121,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	public function error( $error ){
 		$pexcard = $this->pexcard();
 		$message = 'Pexcard funds error: ' . $error . "\n";
-		$message .= 'Amount: ' . $this->amount . "\n";
+		$message .= 'Amount: $' . $this->amount . "\n";
 		$message .= 'Action: ' . $this->action . "\n";
 		$message .= 'Card Serial: ' . $pexcard->card_serial . "\n";
 		$message .= 'Last four: ' . $pexcard->last_four;
@@ -117,8 +129,11 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	}
 
 	public function pexcard(){
+		Log::debug(['test' => 3]);
 		if( !$this->_pexcard ){
+			Log::debug(['test' => 4]);
 			$this->_pexcard = Cockpit_Admin_Pexcard::o( $this->id_admin_pexcard );
+			Log::debug(['test' => 5]);
 		}
 		return $this->_pexcard;
 	}

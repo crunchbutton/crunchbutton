@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 /**
  * Cana application class
- * 
+ *
  * @author		Devin Smith <devin@cana.la>
  * @date		2009.09.17
- * 
+ *
  *
  * This is the main application that is called by all controllers. The Cana class
  * is accesed staticly and used as a global application object. Upon a request, this
@@ -17,7 +17,7 @@
  */
 
 class Cana extends Cana_Model {
-	
+
 	/**
 	 * Private variables all have public accessor methods
 	 */
@@ -37,7 +37,7 @@ class Cana extends Cana_Model {
 		}
 		self::app()->init($params);
 	}
-		
+
 
 	/**
 	 * Exception handler
@@ -54,8 +54,8 @@ class Cana extends Cana_Model {
 		self::view()->exception = $exception;
 		self::app()->displayPage('error');
 	}
-	
-	
+
+
 	/**
 	 * Error handler
 	 *
@@ -69,11 +69,11 @@ class Cana extends Cana_Model {
 		    case E_USER_ERROR:
 		    	throw new Exception('<b>['.$errno.']</b> '.$errstr.'<br />Fatal error on line '.$errline.' in file '.$errfile);
 		        break;
-		
+
 		    case E_USER_WARNING:
 		        throw new Exception('<b>['.$errno.'] '.$errstr.'<br />');
 		        break;
-		
+
 		    case E_USER_NOTICE:
 		    default:
 		    	echo '<b>['.$errno.']</b> '.$errstr.'<br />Notice on line '.$errline.' in file '.$errfile.'<br />';
@@ -81,46 +81,46 @@ class Cana extends Cana_Model {
 	    }
 	    return true;
 	}
-	
+
 	/**
 	 * Accessor methods
 	 */
 	public static function db() {
 		return self::app()->db();
 	}
-	
+
 	public static function dbWrite() {
 		return self::app()->dbWrite();
 	}
-	
+
 	public static function auth() {
 		return self::app()->auth();
 	}
-	
+
 	public static function acl() {
 		return self::app()->acl();
 	}
-	
+
 	public static function view() {
 		return self::app()->view();
 	}
-	
+
 	public static function config() {
 		return self::app()->config();
-	} 
-	
+	}
+
 	public static function constant() {
 		return self::app()->constant();
 	}
-	
+
 	public static function env() {
 		return self::app()->env();
 	}
-	
+
 	public static function browser() {
 		return self::app()->browser();
 	}
-	
+
 	public static function app($app = null) {
 		if (is_null($app)) {
 			return self::$_app;
@@ -128,7 +128,7 @@ class Cana extends Cana_Model {
 			self::$_app = $app;
 		}
 	}
-	
+
 	public static function getPagePiece($piece = 0) {
 		$pages = self::app()->pages();
 		return isset($pages[$piece]) ? $pages[$piece] : null;
@@ -137,7 +137,7 @@ class Cana extends Cana_Model {
 	public static function factory($a = null, $b = null) {
 		return self::app()->factory($a, $b);
 	}
-	
+
 	public static function factoryCount() {
 		return self::app()->factoryCount();
 	}
@@ -145,17 +145,17 @@ class Cana extends Cana_Model {
 	public static function extend() {
 		return (new ReflectionMethod(self::app(), 'extend'))->invokeArgs(self::app(), func_get_args());
 	}
-	
+
 	public function timeout($func, $ms = null, $async = true) {
 		$closure = new SuperClosure($func);
 		$encoded = base64_encode(serialize($closure));
-		
+
 		if ($ms) {
 			$sleep = ' -s='.$ms;
 		}
 
 		$env = ' -e=' . ( c::getEnv(false) );
-		
+
 		if (file_exists('/usr/local/bin/php')) {
 			$v = 'local';
 		} else {
@@ -171,11 +171,11 @@ class Cana extends Cana_Model {
 			print_r($o);
 		}
 	}
-	
+
 	public function __call($name, $arguments) {
 		return (new ReflectionMethod(self::app(), $name))->invokeArgs(self::app(), $arguments);
 	}
-	
+
 	public static function __callStatic($name, $arguments) {
 		return (new ReflectionMethod(self::app(), $name))->invokeArgs(self::app(), $arguments);
 	}

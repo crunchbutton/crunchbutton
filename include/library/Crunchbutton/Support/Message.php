@@ -39,11 +39,15 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		self::notify_by_sms();
 	}
 
- 	public function byPhone( $phone ){
+ 	public function byPhone( $phone, $id_support = false ){
+
  		$phone = str_replace( '-', '', $phone );
+
+ 		$where = ( $id_support ) ? ' OR sm.id_support = "' . $id_support . '" ' : '';
+
  		return Crunchbutton_Support_Message::q( "SELECT sm.* FROM support_message sm
 																							INNER JOIN support s ON s.id_support = sm.id_support
-																								WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '" . $phone . "'
+																								WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '" . $phone . "' " . $where . "
 																								ORDER BY sm.id_support_message ASC" );
 	}
 
@@ -52,7 +56,6 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$out['name'] = Phone::name($this);
 		$out['first_name'] = explode(' ',$out['name'])[0];
 		$out['timestamp'] = strtotime($this->date);
-
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
 		if( Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $this->date() ) ) ){
