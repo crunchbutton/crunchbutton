@@ -19,6 +19,13 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 		return $this->_admin;
 	}
 
+	public function pexcard(){
+		if( !$this->_pexcard ){
+			$this->_pexcard = $this->load_card_info();
+		}
+		return $this->_pexcard;
+	}
+
 	public function load_card_info(){
 		if( $this->id_pexcard ){
 			$card = Crunchbutton_Pexcard_Card::details( $this->id_pexcard );
@@ -101,6 +108,15 @@ class Cockpit_Admin_Pexcard extends Cana_Table {
 			$add = true;
 		}
 		if( $add ){
+
+			$card = $this->pexcard();
+			// Check if the card could receive funds
+			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
+					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ){
+				$this->_error = Crunchbutton_Pexcard_Monitor::balancedExcededLimit( $card, $params[ 'amount' ], $params[ 'note' ] );
+				return false;
+			}
+
 			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
 			if( $this->id_pexcard ){
 				$amount = $params[ 'amount' ];
