@@ -77,10 +77,10 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 				$this->status_date = date( 'Y-m-d H:i:s' );
 				$this->tries = ( $this->tries + 1 );
 				$this->save();
+
 				$action = $this;
 
-				Cana::timeout( function() use( $action ) {
-
+				// Cana::timeout( function() use( $action ) {
 					$pexcard = $action->pexcard();
 					try {
 						$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
@@ -99,7 +99,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 							$action->que();
 						}
 					}
-				}, 3 * 1000 );
+				// } );
 			} else {
 				$this->error( 'Exceeded the maximum (' . Crunchbutton_Pexcard_Action::MAX_TRIES . ') tries to add funds.' );
 			}
