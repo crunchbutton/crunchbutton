@@ -50,13 +50,9 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->_error();
 		}
-
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
-
 		if( $id_pexcard ){
-
 			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard )->get( 0 );
-
 			if( $admin_pexcard->id_admin_pexcard ){
 				$amount = $this->request()[ 'amount' ];
 				$note = $this->request()[ 'note' ];
@@ -66,7 +62,6 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				} else {
 					$this->_error( $admin_pexcard->_error );
 				}
-
 			}
 		}
 		$this->_error( 'Card Not Found' );
