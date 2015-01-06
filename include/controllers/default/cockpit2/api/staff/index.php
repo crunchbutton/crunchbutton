@@ -105,6 +105,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : '';
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
 		$working = $this->request()['working'] ? c::db()->escape($this->request()['working']) : 'all';
+		$pexcard = $this->request()['pexcard'] ? c::db()->escape($this->request()['pexcard']) : 'all';
 		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
 
 		if ($page == 1) {
@@ -118,6 +119,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			SELECT -WILD- FROM admin
 		';
 
+		$q .= '
+				INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
+				';
+
 		if ($type == 'driver') {
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
@@ -130,7 +135,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				';
 			}
 		}
-
 
 		$q .='
 			WHERE 1=1
@@ -148,6 +152,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			';
 		}
 
+		if ( $pexcard != 'all' ) {
+			$q .= '
+				AND apt.using_pex = "'.($pexcard == 'yes' ? '1' : '0').'"
+			';
+		}
 
 		if ($search) {
 			$q .= Crunchbutton_Query::search([
@@ -181,15 +190,22 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		// do the query
 		$data = [];
-		$r = c::db()->query(str_replace('-WILD-','admin.*', $q));
+		$r = c::db()->query(str_replace('-WILD-','admin.*, apt.using_pex', $q));
 		while ($s = $r->fetch()) {
+
 			$staff = Admin::o($s)->exports(['permissions', 'groups']);
 
-			if (($working == 'yes' && $staff->working) || ($working == 'no' && !$staff->working)) {
+			$staff['pexcard'] = ( $s->using_pex ) ? true : false;
+
+			if ( 	( $working == 'yes' && $staff[ 'working' ] ) ||
+						( $working == 'no' && !$staff[ 'working' ] ) ||
+						( $working == 'today' && $staff[ 'working_today' ] ) ) {
 				$count++;
 			}
 
-			if (($working == 'yes' && !$staff->working) || ($working == 'no' && $staff->working)) {
+			if ( 	( $working == 'yes' && !$staff[ 'working' ] ) ||
+						( $working == 'no' && $staff[ 'working' ] ) ||
+						( $working == 'today' && !$staff[ 'working_today' ] ) ) {
 				continue;
 			}
 

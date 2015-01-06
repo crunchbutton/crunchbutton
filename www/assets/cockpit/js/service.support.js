@@ -17,6 +17,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		if (service.scope.viewTicket) {
 			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
 		}
+
 	});
 
 	var notified  = new Array();

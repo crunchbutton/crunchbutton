@@ -5,7 +5,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="8"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
 			</tr>
 
 			<tr>
@@ -28,6 +28,15 @@
 				<td>
 					<select ng-model="query.working" name="searchType" tabindex="4">
 						<option value="all">All</option>
+						<option value="today">Today</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					</select>
+				</td>
+			<th>Using Pex Card</th>
+				<td>
+					<select ng-model="query.pexcard" name="searchType" tabindex="5">
+						<option value="all">All</option>
 						<option value="yes">Yes</option>
 						<option value="no">No</option>
 					</select>
@@ -35,7 +44,7 @@
 			</tr>
 		</table>
 	</div>
-	
+
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
