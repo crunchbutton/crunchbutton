@@ -212,6 +212,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'PexCardLogViewCtrl',
 			templateUrl: 'assets/view/pexcard-log-view.html'
 		})
+		.when('/pexcard/card/driver/:id', {
+			action: 'pexcard',
+			driver: true,
+			controller: 'PexCardIdCtrl',
+			templateUrl: 'assets/view/pexcard-pex-id.html'
+		})
 		.when('/pexcard/card/:id?', {
 			action: 'pexcard',
 			controller: 'PexCardIdCtrl',

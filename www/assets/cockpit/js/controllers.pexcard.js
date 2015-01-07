@@ -37,12 +37,14 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 
 } );
 
-NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, PexCardService, DriverOnboardingService ) {
+NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, $route, PexCardService, DriverOnboardingService ) {
 
 	$scope.submitted = false;
 	$scope.isSearching = false;
 
 	$scope.status = PexCardService.status;
+
+	$scope._id_admin = false;
 
 	$scope.search = function() {
 
@@ -66,6 +68,11 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, PexCardServi
 				$scope.submitted = false;
 				if( json.id ){
 					$scope.card = json;
+					if( $scope._id_admin ){
+						$scope.card.id_admin = $scope._id_admin;
+					}
+					console.log('$scope._id_admin',$scope._id_admin);
+					console.log('$scope.card',$scope.card);
 				} else {
 					$scope.flash.setMessage( json.error, 'error' );
 					$scope.crunchbutton_card_id = '';
@@ -148,11 +155,18 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, PexCardServi
 	DriverOnboardingService.pexcard( function( json ){ $scope.drivers = json; } );
 
 	if( $routeParams.id ){
-		setTimeout( function() {
-			$scope.crunchbutton_card_id = parseInt( $routeParams.id );
-			App.rootScope.$safeApply();
-			$scope.search();
-		}, 500 );
+		if( $route.current.driver ){
+			setTimeout( function() {
+				$scope._id_admin = parseInt( $routeParams.id );
+				console.log('$scope._id_admin',$scope._id_admin);
+			}, 50 );
+		} else {
+			setTimeout( function() {
+				$scope.crunchbutton_card_id = parseInt( $routeParams.id );
+				App.rootScope.$safeApply();
+				$scope.search();
+			}, 500 );
+		}
 	}
 
 } );
