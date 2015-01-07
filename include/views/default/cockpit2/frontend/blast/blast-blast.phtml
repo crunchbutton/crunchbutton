@@ -1,0 +1,41 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-bullhorn"></i>{{blast.id_blast}}</h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<th>Content</th>
+				<td>{{blast.content}}</td>
+			</tr>
+			<tr>
+				<th>Date</th>
+				<td>{{blast.date}}</td>
+			</tr>
+			<tr>
+				<th>Users</th>
+				<td>{{blast.progress}} / {{blast.users.length}}</td>
+			</tr>
+			<tr>
+				<th>Status</th>
+				<td>{{blast.status}}</td>
+			</tr>
+		</table>
+	</div>
+
+	<h1 class="title"><i class="fa fa-phone"></i>Users</h1>
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>Number</th>
+				<th>Message</th>
+			</tr>
+			<tr ng-repeat="user in blast.users">
+				<td><a href ng-click="callText(user.phone)">{{user.phone}}</td>
+				<td>{{user.message}}</td>
+			</tr>
+		</table>
+	</div>
+
+</div>
