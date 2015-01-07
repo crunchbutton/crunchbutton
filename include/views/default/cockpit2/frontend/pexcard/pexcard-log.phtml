@@ -1,0 +1,49 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<h1 class="title"><i class="fa fa-credit-card"></i>Pex Card<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+			<tr>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" name="searchType" tabindex="2">
+						<option value="all">All</option>
+						<option value="scheduled">Scheduled</option>
+						<option value="processing">Processing</option>
+						<option value="done">Done</option>
+						<option value="error">Error</option>
+					</select>
+				</td>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" name="searchType" tabindex="3">
+						<option value="all">All</option>
+						<option value="credit">Credit</option>
+						<option value="debit">Debit</option>
+					</select>
+				</td>
+				<th>Action</th>
+				<td>
+					<select ng-model="query._action" name="searchType" tabindex="4">
+						<option value="all">All</option>
+						<option value="arbritary">Arbritary</option>
+						<option value="shift">Shift</option>
+						<option value="shift-started">Shift started</option>
+						<option value="shift-finished">Shift finished</option>
+						<option value="order">Order</option>
+						<option value="order-started">Order accepted</option>
+						<option value="order-finished">Order cancelled</option>
+					</select>
+				</td>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-pexcard-log.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+</div>

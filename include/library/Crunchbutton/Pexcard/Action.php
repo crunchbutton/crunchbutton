@@ -138,11 +138,69 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		return $this->_pexcard;
 	}
 
+	public function status_date() {
+		if (!isset($this->_status_date)) {
+			$this->_status_date = new DateTime($this->status_date, new DateTimeZone(c::config()->timezone));
+		}
+		return $this->_status_date;
+	}
+
 	public function date() {
 		if (!isset($this->_date)) {
-			$this->_date = new DateTime($this->timestamp, new DateTimeZone(c::config()->timezone));
-			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 		}
 		return $this->_date;
 	}
+
+	public function exports(){
+
+		$out = $this->properties();
+
+		$driver = Admin::o( $out[ 'id_driver' ] );
+		$out[ 'driver' ] = $driver->name;
+		$out[ 'login' ] = $driver->login;
+
+		$pexcard = $this->pexcard();
+
+		$out[ 'card_serial' ] = $pexcard->card_serial;
+		$out[ 'last_four' ] = $pexcard->last_four;
+
+		$out[ 'date_formated' ] = $this->date()->format( 'M jS Y g:i:s A T' );
+
+		if( $out[ 'status_date' ] ){
+			$out[ 'status_date_formated' ] = $this->status_date()->format( 'M jS Y g:i:s A T' );
+		}
+
+		if( $out[ 'response' ] ){
+			$out[ 'response' ] = json_decode( $out[ 'response' ] );
+		}
+
+		if( $out[ 'id_admin' ] ){
+			$out[ 'admin' ] = [];
+			$admin = Admin::o( $out[ 'id_admin' ] );
+			$out[ 'admin' ][ 'name' ] = $admin->name;
+			$out[ 'admin' ][ 'login' ] = $admin->login;
+		}
+
+		if( $out[ 'id_order' ] ){
+			$out[ 'order' ] = [];
+			$order = Order::o( $out[ 'id_order' ] );
+			$out[ 'order' ][ 'restaurant' ] = $order->restaurant()->name;
+			$out[ 'order' ][ 'customer' ] = $order->name;
+		}
+
+		if( $out[ 'id_admin_shift_assign' ] ){
+			$out[ 'shift' ] = [];
+			$shift = Crunchbutton_Admin_Shift_Assign::o( $out[ 'id_admin_shift_assign' ] )->shift();
+			$out[ 'shift' ][ 'community' ] = $shift->community()->name;
+			$out[ 'shift' ][ 'period' ] = $shift->startEndToStringCommunityTz();
+		}
+
+		unset( $out[ 'date' ] );
+		unset( $out[ 'status_date' ] );
+
+		return $out;
+
+	}
+
 }

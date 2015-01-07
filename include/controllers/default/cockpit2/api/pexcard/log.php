@@ -1,0 +1,150 @@
+<?php
+
+class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
+
+	public function init() {
+
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+			$this->_error();
+		}
+
+		if( $this->request()['id_pexcard_action'] ){
+			$this->_load_action( $this->request()['id_pexcard_action'] );
+		}
+
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
+		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
+		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
+		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
+		$action = $this->request()['_action'] ? c::db()->escape($this->request()['_action']) : 'all';
+		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+
+		if ($page == 1) {
+			$offset = '0';
+		} else {
+			$offset = ($page-1) * $limit;
+		}
+
+
+		$q = '
+			SELECT -WILD- FROM
+				pexcard_action pa
+				INNER JOIN admin_pexcard ap ON ap.id_admin_pexcard = pa.id_admin_pexcard
+				INNER JOIN admin a ON a.id_admin = pa.id_driver
+				WHERE 1 = 1
+		';
+
+		if ($status != 'all') {
+			$q .= '
+				AND pa.status = "' . $status  . '"
+			';
+		}
+
+		if ($type != 'all') {
+			$q .= '
+				AND pa.type = "' . $type . '"
+			';
+		}
+
+		if ($action != 'all') {
+
+			switch ( true ) {
+
+				case ( $action == 'shift' ):
+					$q .= '
+						AND ( pa.action = "' . Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED . '" OR pa.action = "' . Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED . '" )
+					';
+					break;
+
+				case ( $action == 'order' ):
+					$q .= '
+						AND ( pa.action = "' . Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED . '" OR pa.action = "' . Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED . '" )
+					';
+					break;
+
+				default:
+					$q .= '
+						AND ( pa.action = "' . $action . '" )
+					';
+					break;
+			}
+		}
+
+
+		if ($search) {
+			$q .= Crunchbutton_Query::search([
+				'search' => stripslashes($search),
+				'fields' => [
+					'a.name' => 'like',
+					'pa.amount' => 'like',
+					'pa.note' => 'like',
+					'ap.id_pexcard' => 'like',
+					'ap.card_serial' => 'like',
+					'ap.last_four' => 'like'
+				]
+			]);
+		}
+
+
+		// get the count
+		$count = 0;
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		while ($c = $r->fetch()) {
+			$count++;
+		}
+
+		$q .= '
+			ORDER BY pa.id_pexcard_action DESC
+			LIMIT '.$offset.', '.$limit . '
+		';
+
+		// do the query
+		$d = [];
+		$r = c::db()->query(str_replace('-WILD-','
+				pa.id_pexcard_action,
+				pa.status,
+				a.name AS `driver`,
+				a.login,
+				pa.id_order,
+				pa.id_admin_shift_assign,
+				pa.id_admin,
+				pa.amount,
+				pa.action,
+				pa.type,
+				pa.note,
+				pa.status,
+				ap.id_pexcard,
+				ap.card_serial,
+				ap.last_four
+			', $q));
+
+		while ($o = $r->fetch()) {
+			$d[] = $o;
+		}
+
+		echo json_encode([
+			'count' => intval($count),
+			'pages' => ceil($count / $limit),
+			'page' => $page,
+			'results' => $d
+		]);
+
+		exit;
+	}
+
+
+	private function _load_action( $id_pexcard_action ){
+		$action = Crunchbutton_Pexcard_Action::o( $id_pexcard_action );
+		if( $action->id_pexcard_action ){
+			echo json_encode( [ 'success' => $action->exports() ] ); exit();
+		} else {
+			$this->_error();
+		}
+	}
+
+	private function _error( $error = 'invalid request' ){
+		echo json_encode( [ 'error' => $error ] );
+		exit();
+	}
+
+}

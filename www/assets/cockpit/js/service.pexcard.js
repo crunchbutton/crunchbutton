@@ -10,7 +10,9 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		'add_funds' : { 'method': 'POST', params : { action: 'add-funds' } },
 		'admin_pexcard_remove' : { 'method': 'POST', params : { action: 'admin-pexcard-remove' } },
 		'pex_change_card_status' : { 'method': 'POST', params : { action: 'pexcard-change-card-status' } },
-		'report' : { 'method': 'POST', params : { action: 'report' } }
+		'report' : { 'method': 'POST', params : { action: 'report' } },
+		'logs' : { 'method': 'GET', params : { action: 'log' } },
+		'action' : { 'method': 'GET', params : { action: 'log' } }
 	}	);
 
 	service.pex_id = function( id, callback ){
@@ -18,6 +20,14 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 			callback( data );
 		} );
 	}
+
+	service.action = function( id_pexcard_action, callback ){
+		pexcard.action( { 'id_pexcard_action': id_pexcard_action }, function( data ){
+			callback( data );
+		} );
+	}
+
+
 
 	service.driver_search = function( params, callback ){
 		pexcard.driver_search( params, function( data ){
@@ -59,6 +69,12 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		pexcard.admin_pexcard_remove( { id_pexcard: id_pexcard }, function( data ){
 			callback( data );
 		} );
+	}
+
+	service.logs = function(params, callback) {
+		pexcard.logs(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
 	}
 
 	return service;
