@@ -4,7 +4,7 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global'] ) ){
 			$this->_error();
 		}
 
@@ -83,6 +83,7 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 
 		// do the query
 		$d = [];
+
 		$r = c::db()->query(str_replace('-WILD-','*', $q));
 
 		while ($o = $r->fetch()) {
