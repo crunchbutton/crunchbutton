@@ -156,3 +156,37 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, PexCardServi
 	}
 
 } );
+
+
+NGApp.controller('PexCardLogViewCtrl', function ($scope, $routeParams, PexCardService) {
+
+	$scope.loading = true;
+
+	PexCardService.action( $routeParams.id, function( action ){
+		$scope.action = action.success;
+		$scope.loading = false;
+	} );
+
+} );
+
+NGApp.controller('PexCardLogCtrl', function ($scope, PexCardService, ViewListService) {
+
+	angular.extend( $scope, ViewListService );
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'all',
+			status: 'all',
+			type: 'all',
+			_action: 'all'
+		},
+		update: function() {
+			PexCardService.logs($scope.query, function(d) {
+				$scope.logs = d.results;
+				$scope.complete(d);
+			});
+		}
+	});
+});

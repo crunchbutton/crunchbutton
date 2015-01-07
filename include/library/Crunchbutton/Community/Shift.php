@@ -379,7 +379,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $this->_date_end;
 	}
 
-	public function startEndToStringCommunityTz(  ){
+	public function startEndToStringCommunityTz(){
 		return [ 'start' => $this->dateStartFriendly(), 'end' => $this->dateEndFriendly() ];
 	}
 
