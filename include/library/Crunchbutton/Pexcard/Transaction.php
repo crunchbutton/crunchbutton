@@ -31,11 +31,16 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		return true;
 	}
 
-	public function getOrderExpenses( $start, $end ){
+	public function getOrderExpenses( $start, $end, $only_card = true ){
+
+		$where = ( $only_card ) ? 'AND o.pay_type = "' . Crunchbutton_Order::PAY_TYPE_CREDIT_CARD . '"' : '';
+
 		$expenses = c::db()->get( 'SELECT SUM( o.final_price - o.delivery_fee ) amount,
 																			a.id_admin,
+																			a.login,
 																			COUNT(1) AS orders,
-																			a.name AS driver
+																			a.name AS driver,
+																			a.email
 																			FROM `order` o
 																					INNER JOIN order_action oa ON o.id_order = oa.id_order
 																					INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
@@ -44,8 +49,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																						apt.using_pex = 1
 																					AND
 																						oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
-																					AND
-																						o.pay_type = "' . Crunchbutton_Order::PAY_TYPE_CREDIT_CARD . '"
+																					' . $where . '
 																					AND
 																						DATE_FORMAT( o.date, "%m/%d/%Y" ) >= "' . $start . '"
 																					AND
@@ -59,9 +63,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$expenses = c::db()->get( 'SELECT lastName AS card_serial, cardNumber AS last_four, SUM( amount ) AS amount
 																												FROM pexcard_transaction
 																													WHERE
-																														DATE_FORMAT( transactionTime, "%m/%d/%Y" ) >= "' . $start . '"
-																													AND
-																														DATE_FORMAT( transactionTime, "%m/%d/%Y" ) <= "' . $end . '"
+																														DATE_FORMAT( transactionTime, "%m/%d/%Y" ) BETWEEN "' . $start . '" AND "' . $end . '"
 																												GROUP BY lastName, cardNumber
 																												ORDER BY amount DESC' );
 		return $expenses;
@@ -70,7 +72,15 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function processExpenses( $start, $end ){
 		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $start, $end );
 		$order_expenses = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $start, $end );
+		$order_expenses_cash_card = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $start, $end, false );
 		$drivers_expenses = [];
+
+		$_cash_order_expenses = [];
+
+		foreach ( $order_expenses_cash_card as $order_expense ) {
+			$_cash_order_expenses[ $order_expense->id_admin ] = floatval( number_format( $order_expense->amount, 2 ) );
+		}
+
 		foreach( $order_expenses as $order_expense ){
 			$cards = Cockpit_Admin_Pexcard::getByAdmin( $order_expense->id_admin );
 			if( $cards->count() ){
@@ -85,16 +95,16 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 						}
 					}
 					$card_amount += $amount;
-					$_cards[] = [ 'card_serial' => $card->card_serial, 'last_four' => $card->last_four, 'amount' => $amount ] ;
 				}
-				$drivers_expenses[] = [ 'id_admin' => $order_expense->id_admin, 'driver' => $order_expense->driver, 'card_amount' => number_format( $card_amount, 2 ), 'orders_amount' => number_format( $order_expense->amount, 2 ), 'orders' => $order_expense->orders, 'cards' => $_cards ];
+				$diff = floatval( floatval( number_format( $card_amount, 2 ) ) - floatval( number_format( $order_expense->amount, 2 ) ) );
+				$drivers_expenses[] = [ 'id_admin' => intval( $order_expense->id_admin ), 'driver' => $order_expense->driver, 'email' => $order_expense->email, 'pexcard_amount' => floatval( number_format( $card_amount, 2 ) ), 'card_cash_amount' => $_cash_order_expenses[ $order_expense->id_admin ], 'card_amount' => floatval( number_format( $order_expense->amount, 2 ) ), 'diff' => $diff, 'orders' => intval( $order_expense->orders ) ];
 			}
 		}
 
 		$card_expenses = [];
 		foreach( $pex_expenses as $pex_expense ){
 			if( !$pex_expense->used ){
-				$card_expenses[] = [ 'card_serial' => $pex_expense->card_serial, 'last_four' => $pex_expense->last_four, 'amount' => number_format( $pex_expense->amount, 2 ) ];
+				$card_expenses[ $pex_expense->card_serial ] = [ 'card_serial' => $pex_expense->card_serial, 'last_four' => $pex_expense->last_four, 'amount' => number_format( $pex_expense->amount, 2 ) ];
 			}
 		}
 		return [ 'drivers_expenses' => $drivers_expenses, 'card_expenses' => $card_expenses ];
