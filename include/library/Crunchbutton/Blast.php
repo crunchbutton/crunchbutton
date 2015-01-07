@@ -41,6 +41,9 @@ class Crunchbutton_Blast extends Cana_Table {
 			$this->_runChunk();
 			
 			if ($this->progress() == $this->users()->count()) {
+				echo 'progress: '.$this->progress()."\n";
+				echo 'users: '.$this->users()->count()."\n";
+
 				$this->status = 'complete';
 				$this->save();
 			} else {
