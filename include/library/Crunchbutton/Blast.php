@@ -26,7 +26,7 @@ class Crunchbutton_Blast extends Cana_Table {
 			select blast.* from blast
 			where
 				status="new"
-				date <= NOW()
+				and date <= NOW()
 			order by date desc
 		');
 		return $que;
