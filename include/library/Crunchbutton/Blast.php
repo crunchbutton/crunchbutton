@@ -21,6 +21,17 @@ class Crunchbutton_Blast extends Cana_Table {
 		return $this->_users;
 	}
 	
+	public static function getQue() {
+		$que = self::q('
+			select blast.* from blast
+			where
+				status="new"
+				date <= NOW()
+			order by date desc
+		');
+		return $que;
+	}
+	
 	public function run() {
 		if ($this->status != 'canceled' && $this->status != 'complete' && $this->status != 'failed') {
 			
