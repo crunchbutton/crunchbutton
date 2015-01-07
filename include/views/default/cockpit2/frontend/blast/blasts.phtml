@@ -1,0 +1,64 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-bullhorn"></i>Blasts</h1>
+	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingBlasts}"></div>
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>ID</th>
+				<th>Content</th>
+				<th>Date</th>
+				<th>Users</th>
+				<th>Status</th>
+				<th>Updated</th>
+			</tr>
+			<tr ng-repeat="blast in blasts">
+				<td><a href="/blast/{{blast.id_blast}}">{{blast.id_blast}}</a></td>
+				<td>{{blast.content}}</td>
+				<td>{{blast.date}}</td>
+				<td>({{blast.progress}} / {{blast.users}})</td>
+				<td>{{blast.status}}</td>
+				<td><span ng-if="blast.updated"><span am-time-ago="blast.updated*1000"></span></span></td>
+
+			</tr>
+		</table>
+	</div>
+	
+	<div>
+		<h1 class="title"><i class="fa fa-bolt"></i>Create a new Blast</h1>
+		<div class="box-content2 box-content-table">
+			<table>
+				<tr>
+					<th>Content</th>
+					<td><input type="text" ng-model="blast.content" ng-change="sample()"></td>
+				</tr>
+				<tr>
+					<th>Scheduled Date</th>
+					<td><input type="datetime" ng-model="blast.date"></td>
+				</tr>
+				<tr>
+					<th>Data</th>
+					<td>
+						<textarea ng-model="blast.data" ng-change="sample()"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<button class="button orange" ng-click="save()">Blast<span ng-if="saving">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span></button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div ng-repeat="sample in samples">
+							{{sample.phone}} => {{sample.message}}
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+
+</div>
