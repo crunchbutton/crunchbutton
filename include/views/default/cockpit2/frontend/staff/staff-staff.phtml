@@ -119,6 +119,7 @@
 			<tr><td><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></td></tr>
 			<tr><td><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></td></tr>
 			<tr ng-if="staff.pexcard"><td><a href="/staff/{{staff.login}}/pexcard">Pexcard / Add funds</a></td></tr>
+			<tr ng-if="!staff.pexcard"><td><a href="/pexcard/card/driver/{{staff.id_admin}}">Pexcard</a></td></tr>
 		</table>
 	</div>
 
