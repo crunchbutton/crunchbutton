@@ -83,7 +83,6 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 
 		// do the query
 		$d = [];
-
 		$r = c::db()->query(str_replace('-WILD-','*', $q));
 
 		while ($o = $r->fetch()) {
