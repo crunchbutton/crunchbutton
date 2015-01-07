@@ -32,7 +32,7 @@
 				<th>Message</th>
 			</tr>
 			<tr ng-repeat="user in blast.users">
-				<td><a href="/deploy/version/{{version.id_deploy_version}}">{{user.phone}}</td>
+				<td><a href ng-click="callText(user.phone)">{{user.phone}}</td>
 				<td>{{user.message}}</td>
 			</tr>
 		</table>
