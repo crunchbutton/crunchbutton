@@ -51,32 +51,22 @@
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
-					<td>Driver ID</td>
 					<td>Driver Name</td>
 					<td>Number of Orders</td>
-					<td>Orders Spent</td>
-					<td>Card Spent</td>
-					<td>Card Serial</td>
-					<td>Card Last Four</td>
+					<td>Card Orders Spent</td>
+					<td>Pex Card Spent</td>
+					<td>Diff</td>
+					<td>Card and Cash Orders Spent</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="driver in result.drivers_expenses">
-					<td>{{driver.id_admin}}</td>
-					<td>{{driver.driver}}</td>
+					<td><a href="/staff/{{driver.login}}">{{driver.driver}}</a></td>
 					<td>{{driver.orders}}</td>
-					<td>$ {{driver.orders_amount | formatPrice}}</td>
-					<td>$ {{driver.card_amount | formatPrice}}</td>
-					<td>
-						<div ng-repeat="card in driver.cards">
-							<a href="/pexcard/card/{{card.card_serial}}">{{card.card_serial}}</a>
-						</div>
-					</td>
-					<td>
-						<div ng-repeat="card in driver.cards">
-							{{card.last_four}}
-						</div>
-					</td>
+					<td positive-or-negative-color="{{driver.card_amount}}">$ {{driver.card_amount | formatPrice}}</td>
+					<td positive-or-negative-color="{{driver.pexcard_amount}}">$ {{driver.pexcard_amount | formatPrice}}</td>
+					<td positive-or-negative-color="{{driver.diff}}">$ {{driver.diff | formatPrice}}</td>
+					<td positive-or-negative-color="{{driver.card_cash_amount}}">$ {{driver.card_cash_amount | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
