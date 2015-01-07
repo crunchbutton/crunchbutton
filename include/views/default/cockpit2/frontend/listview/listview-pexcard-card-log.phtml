@@ -1,0 +1,29 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Changed by</th>
+			<th>Staff</th>
+			<th>Using pex</th>
+			<th>Card Serial</th>
+			<th>Type</th>
+			<th>Date</th>
+		</tr>
+		<tr ng-repeat="l in logs track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{l.login}}">
+		<td>{{l.admin_name}}</td>
+			<td>{{l.staff_name}}</td>
+			<td class="tb-center">
+				<span ng-if="l.type == 'using_pex'">
+					<span ng-if="l.value">Yes</span>
+					<span ng-if="!l.value">No</span>
+				</span>
+				<span ng-if="l.type != 'using_pex'">-</span>
+			</td>
+			<td>
+				<span ng-if="l.card_serial">{{l.card_serial}}</span>
+				<span ng-if="!l.card_serial">-</span>
+			</td>
+			<td>{{l.type}}</td>
+			<td>{{l.date}}</td>
+		</tr>
+	</table>
+</div>

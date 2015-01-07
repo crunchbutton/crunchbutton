@@ -177,13 +177,31 @@ NGApp.controller('PexCardLogCtrl', function ($scope, PexCardService, ViewListSer
 		scope: $scope,
 		watch: {
 			search: '',
-			type: 'all',
 			status: 'all',
 			type: 'all',
 			_action: 'all'
 		},
 		update: function() {
 			PexCardService.logs($scope.query, function(d) {
+				$scope.logs = d.results;
+				$scope.complete(d);
+			});
+		}
+	});
+});
+
+NGApp.controller('PexCardCardLogCtrl', function ($scope, PexCardService, ViewListService) {
+
+	angular.extend( $scope, ViewListService );
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'all',
+		},
+		update: function() {
+			PexCardService.cardlog($scope.query, function(d) {
 				$scope.logs = d.results;
 				$scope.complete(d);
 			});

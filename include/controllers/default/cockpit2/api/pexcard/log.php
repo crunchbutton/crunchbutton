@@ -87,11 +87,8 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 
 
 		// get the count
-		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
-		while ($c = $r->fetch()) {
-			$count++;
-		}
+		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q));
+		$count = intval( $r->_items[0]->c );
 
 		$q .= '
 			ORDER BY pa.id_pexcard_action DESC
@@ -102,6 +99,7 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 		$d = [];
 		$r = c::db()->query(str_replace('-WILD-','
 				pa.id_pexcard_action,
+				pa.date,
 				pa.status,
 				a.name AS `driver`,
 				a.login,
@@ -119,6 +117,8 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 			', $q));
 
 		while ($o = $r->fetch()) {
+			$date = new DateTime($o->date, new DateTimeZone(c::config()->timezone));;
+			$o->date = $date->format( 'M jS Y g:i:s A T' );
 			$d[] = $o;
 		}
 

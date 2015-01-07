@@ -1,6 +1,6 @@
 <?php
 
-class Cockpit_Admin_Pexcard extends Cana_Table {
+class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	const CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START = 'pex-amount-shift-start';
 	const CONFIG_KEY_PEX_SHIFT_ENABLE = 'pex-card-funds-shift-enable';

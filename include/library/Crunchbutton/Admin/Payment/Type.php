@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Admin_Payment_Type extends Cana_Table {
+class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Trackchange {
 
 	const PAYMENT_METHOD_DEPOSIT = 'deposit';
 	const PAYMENT_TYPE_HOURS = 'hours';
