@@ -112,6 +112,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _report(){
+
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
 
