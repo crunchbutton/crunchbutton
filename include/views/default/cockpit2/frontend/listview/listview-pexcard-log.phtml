@@ -4,6 +4,7 @@
 			<th>#</th>
 			<th>Driver</th>
 			<th>Card Serial / Last Four</th>
+			<th>Date</th>
 			<th>Type</th>
 			<th>Amount</th>
 			<th class="tb-center">Order</th>
@@ -16,6 +17,7 @@
 			<td><a href="/pexcard/log/{{l.id_pexcard_action}}">{{l.id_pexcard_action}}</a></td>
 			<td><a href="/staff/{{l.login}}">{{l.driver}}</a></td>
 			<td><a href="/pexcard/card/{{l.card_serial}}">{{l.card_serial}} / {{l.last_four}}</a></td>
+			<td>{{l.date}}</td>
 			<td>{{l.type}}</td>
 			<td positive-or-negative-color="{{l.amount}}">${{l.amount | formatPrice}}</td>
 			<td class="tb-center"><span ng-if="l.id_order"><i class="fa fa-check"></i></span></td>

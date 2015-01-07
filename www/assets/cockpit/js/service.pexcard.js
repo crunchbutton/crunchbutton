@@ -12,6 +12,7 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		'pex_change_card_status' : { 'method': 'POST', params : { action: 'pexcard-change-card-status' } },
 		'report' : { 'method': 'POST', params : { action: 'report' } },
 		'logs' : { 'method': 'GET', params : { action: 'log' } },
+		'cardlog' : { 'method': 'GET', params : { action: 'cardlog' } },
 		'action' : { 'method': 'GET', params : { action: 'log' } }
 	}	);
 
@@ -26,8 +27,6 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 			callback( data );
 		} );
 	}
-
-
 
 	service.driver_search = function( params, callback ){
 		pexcard.driver_search( params, function( data ){
@@ -69,6 +68,12 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		pexcard.admin_pexcard_remove( { id_pexcard: id_pexcard }, function( data ){
 			callback( data );
 		} );
+	}
+
+	service.cardlog = function(params, callback) {
+		pexcard.cardlog(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
 	}
 
 	service.logs = function(params, callback) {

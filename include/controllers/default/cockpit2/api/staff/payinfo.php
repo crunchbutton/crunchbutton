@@ -67,7 +67,6 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 
 		$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
 
-
 		if( $this->request()[ 'using_pex_date_formatted' ] ){
 			$payment_type->using_pex_date = ( new DateTime( $this->request()[ 'using_pex_date_formatted' ] ) )->format( 'Y-m-d H:i:s' );
 		} else {

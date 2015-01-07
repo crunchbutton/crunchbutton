@@ -13,7 +13,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	const STATUS_DONE = 'done';
 	const STATUS_ERROR = 'error';
 
-	const MAX_TRIES = 1;
+	const MAX_TRIES = 3;
 
 	const TYPE_CREDIT = 'credit';
 	const TYPE_DEBIT = 'debit';
