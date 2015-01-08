@@ -13,8 +13,34 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		'report' : { 'method': 'POST', params : { action: 'report' } },
 		'logs' : { 'method': 'GET', params : { action: 'log' } },
 		'cardlog' : { 'method': 'GET', params : { action: 'cardlog' } },
-		'action' : { 'method': 'GET', params : { action: 'log' } }
+		'action' : { 'method': 'GET', params : { action: 'log' } },
 	}	);
+
+	var config = $resource( App.service + 'config/pexcard/:action', { action: '@action' }, {
+				// list methods
+				'config' : { 'method': 'GET', params : { 'action' : 'config' } },
+				'config_save' : { 'method': 'POST', params : { 'action' : 'config' } },
+				'config_value' : { 'method': 'POST', params : { 'action' : 'config-value' } },
+			}
+		);
+
+	service.config = {
+		load: function( callback ){
+			config.config( function( data ){
+				callback( data );
+			} );
+		},
+		value: function( key, callback ){
+			config.config_value( { key: key }, function( data ){
+				callback( data );
+			} );
+		},
+		save: function( params, callback ){
+			config.config_save( params, function( data ){
+				callback( data );
+			} );
+		}
+	}
 
 	service.pex_id = function( id, callback ){
 		pexcard.pex_id( { 'id': id }, function( data ){
@@ -80,6 +106,13 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		pexcard.logs(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
+	}
+
+	service.yesNo = function(){
+		var methods = [];
+		methods.push( { value: 0, label: 'No' } );
+		methods.push( { value: 1, label: 'Yes' } );
+		return methods;
 	}
 
 	return service;

@@ -1,0 +1,52 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title"><i class="fa fa-angellist"></i>Pex Card Config</h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+		<div class="ul-inputs">
+			<p><strong>Settings</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':form.pexAmountShiftStart.$invalid}">
+					<div class="label">How much should be transfered to the driver's card when their shift starts:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="pexAmountShiftStart" ng-model="config.pex_amount_shift_start" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.pexAmountShiftStart.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input">
+					<div class="label">Enable funds when shift starts:</div>
+					<div class="input">
+						<select ng-model="config.pex_card_funds_shift_enable" name="pexCardFundsShiftEnable" ng-options="type.value as type.label for type in yesNo"></select>
+					</div>
+				</li>
+				<li class="li-input">
+					<div class="label">Enable funds for card orders:</div>
+					<div class="input">
+						<select ng-model="config.pex_card_funds_order_enable" name="pexCardFundsOrderEnable" ng-options="type.value as type.label for type in yesNo"></select>
+					</div>
+				</li>
+				<li class="li-input">
+					<div class="label">Enable funds for cash orders:</div>
+					<div class="input">
+						<select ng-model="config.pex_card_funds_order_enable_for_cash" name="pexCardFundsOrderEnableForCash" ng-options="type.value as type.label for type in yesNo"></select>
+					</div>
+				</li>
+			</ul>
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

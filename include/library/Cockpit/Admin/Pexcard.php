@@ -2,10 +2,10 @@
 
 class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
-	const CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START = 'pex-amount-shift-start';
-	const CONFIG_KEY_PEX_SHIFT_ENABLE = 'pex-card-funds-shift-enable';
-	const CONFIG_KEY_PEX_ORDER_ENABLE = 'pex-card-funds-order-enable';
-	const CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH = 'pex-card-funds-order-enable-for-cash';
+	const CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START = 'pex_amount_shift_start';
+	const CONFIG_KEY_PEX_SHIFT_ENABLE = 'pex_card_funds_shift_enable';
+	const CONFIG_KEY_PEX_ORDER_ENABLE = 'pex_card_funds_order_enable';
+	const CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH = 'pex_card_funds_order_enable_for_cash';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -236,6 +236,16 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		$admin_pexcard = new Cockpit_Admin_Pexcard;
 		$admin_pexcard->id_pexcard = $id_pexcard;
 		return $admin_pexcard;
+	}
+
+	public function loadSettings(){
+		if( !$this->_config ){
+			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'pex_%'" );
+			foreach ( $configs as $config ) {
+				$this->_config[ $config->key ] = $config->value;
+			}
+		}
+		return $this->_config;
 	}
 
 }

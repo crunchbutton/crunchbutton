@@ -183,6 +183,46 @@ NGApp.controller('PexCardLogViewCtrl', function ($scope, $routeParams, PexCardSe
 
 } );
 
+NGApp.controller('PexConfigCtrl', function ($scope, PexCardService) {
+
+	$scope.yesNo = PexCardService.yesNo();
+
+	var load = function(){
+		PexCardService.config.load( function( json ){
+			if( !json.error ){
+				$scope.config = json;
+				$scope.ready = true;
+			}
+		} )
+	}
+
+	$scope.save = function(){
+		if( $scope.form.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.submitted = true;
+			return;
+		}
+		$scope.isSaving = true;
+		PexCardService.config.save( $scope.config, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.basicInfo = data;
+				$scope.saved = true;
+				$scope.flash.setMessage( 'Information saved!' );
+				setTimeout( function() { $scope.saved = false; }, 1500 );
+			}
+		} );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+} );
+
 NGApp.controller('PexCardLogCtrl', function ($scope, PexCardService, ViewListService) {
 
 	angular.extend( $scope, ViewListService );
