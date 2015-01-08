@@ -19,7 +19,11 @@
 			</tr>
 			<tr>
 				<th>Status</th>
-				<td>{{blast.status}}</td>
+				<td class="deploy-status-{{blast.status}}">
+					{{blast.status}}
+					<span ng-if="blast.status=='deploying'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
+					<span ng-if="blast.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(blast.id_blast)"><i class="fa fa-times-circle"></i></a></span>
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -28,10 +32,12 @@
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
+				<th>Sent</th>
 				<th>Number</th>
 				<th>Message</th>
 			</tr>
 			<tr ng-repeat="user in blast.users">
+				<td><i class="fa fa-check" ng-if="user.sent"></td>
 				<td><a href ng-click="callText(user.phone)">{{user.phone}}</td>
 				<td>{{user.message}}</td>
 			</tr>

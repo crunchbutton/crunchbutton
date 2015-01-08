@@ -1,5 +1,14 @@
 <?php
+$que = Crunchbutton_Blast::getQue();
 
+foreach ($que as $q) {
+	$q->run();
+}
+exit;
+				echo 'progress: '.$blast->progress()."\n";
+				echo 'users: '.$blast->users()->count()."\n";
+
+exit;
 $data = 'phone,code
 _PHONE_,BKN1
 _PHONE_,BKN2';
