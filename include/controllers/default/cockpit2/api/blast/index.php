@@ -10,6 +10,16 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 		}
 
 		switch ($this->method()) {
+			case 'delete':
+				$blast = Blast::o(c::getPagePiece(2));
+				if (!$blast->id_blast) {
+					header('HTTP/1.0 404 Not Found');
+					exit;
+				}
+				$blast->status = 'canceled';
+				$blast->save();
+				break;
+
 			case 'get':
 				$blast = Blast::o(c::getPagePiece(2));
 				if (!$blast->id_blast) {
