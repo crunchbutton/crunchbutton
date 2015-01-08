@@ -3448,9 +3448,9 @@ input[type="checkbox"].switch + div:before {
 	color: #289337;
 }
 .deploy-status-failed, .deploy-status-error {
-	color: #c33636;
+	color: #c33636 !important;
 }
-.deploy-status-deploying {
+.deploy-status-deploying, .deploy-status-blasting {
 	font-weight: bold;
 }
 

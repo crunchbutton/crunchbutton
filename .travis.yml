@@ -37,6 +37,9 @@ before_script:
 script:
   - phpunit --configuration travis/phpunit.xml --coverage-text
   - phantomjs travis/phantom/run.js
+  
+notifications:
+  webhooks: https://cockpit.la/api/travisci/build
 
 #addons:
 #  sauce_connect:

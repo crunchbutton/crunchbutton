@@ -73,4 +73,8 @@ NGApp.controller('BlastCtrl', function ($scope, $routeParams, BlastService, $roo
 		});
 	
 	updateBlast();
+	
+	$scope.cancel = function(id) {
+		BlastService.cancel(id, updateBlasts);
+	};
 });
