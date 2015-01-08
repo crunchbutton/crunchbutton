@@ -7,8 +7,6 @@ php:
 env:
   - TRAVIS=1
   
-sudo: false
-  
 # install:
 
 before_script:
