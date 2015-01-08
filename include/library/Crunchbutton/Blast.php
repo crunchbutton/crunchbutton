@@ -16,7 +16,12 @@ class Crunchbutton_Blast extends Cana_Table {
 			return;
 		}
 		if (!isset($this->_users)) {
-			$this->_users = Blast_User::q('select * from blast_user where id_blast="'.$this->id_blast.'"');
+			$this->_users = Blast_User::q('
+				select blast_user.*, blast_user_log.id_blast_user_log as sent from blast_user
+				left join blast_user_log using(id_blast_user)
+				where blast_user.id_blast="'.$this->id_blast.'"
+				group by blast_user.id_blast_user
+			');
 		}
 		return $this->_users;
 	}
@@ -39,7 +44,7 @@ class Crunchbutton_Blast extends Cana_Table {
 			$this->save();
 			
 			$this->_runChunk();
-			
+
 			if ($this->progress() == $this->users()->count()) {
 				echo 'progress: '.$this->progress()."\n";
 				echo 'users: '.$this->users()->count()."\n";

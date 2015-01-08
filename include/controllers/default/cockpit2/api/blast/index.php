@@ -16,16 +16,24 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 					header('HTTP/1.0 404 Not Found');
 					exit;
 				}
-				if (c::getPagePiece(3) == 'users') {
-					echo $blast->users()->json();
-					exit;
-				} else {
-					$out = $blast->exports();
-					foreach ($blast->users() as $user) {
-						$out['users'][] = $user->exports();
-					}
-					echo json_encode($out);
-					exit;
+				switch (c::getPagePiece(3)) {
+					case 'users':
+						echo $blast->users()->json();
+						exit;
+						break;
+						
+					case 'run':
+						$blast->run();
+						exit;
+						break;
+						
+					default:
+						$out = $blast->exports();
+						foreach ($blast->users() as $user) {
+							$out['users'][] = $user->exports();
+						}
+						echo json_encode($out);
+						exit;
 				}
 				break;
 
