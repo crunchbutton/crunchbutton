@@ -220,6 +220,8 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 	$scope.bank = { 'showForm': true };
 	$scope.payInfo = {};
 
+	$scope.yesNo = StaffPayInfoService.typesUsingPex();
+
 	var load = function(){
 		StaffPayInfoService.load( function( json ){
 			if( json.id_admin ){
