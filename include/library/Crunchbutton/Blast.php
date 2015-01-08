@@ -30,7 +30,9 @@ class Crunchbutton_Blast extends Cana_Table {
 		$que = self::q('
 			select blast.* from blast
 			where
-				status="new"
+				status!="canceled"
+				and status!="complete"
+				and status!="failed"
 				and date <= NOW()
 			order by date desc
 		');
