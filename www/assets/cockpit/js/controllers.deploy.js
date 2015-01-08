@@ -102,6 +102,12 @@ NGApp.controller('DeployServerCtrl', function ($scope, $routeParams, SocketServi
 	DeployService.server.get($routeParams.id, function(d) {
 		$scope.server = d;
 		
+	
+		SocketService.listen('travisci.builds', $scope)
+			.on('update', function(d) {
+				$scope.updateCommits();
+			});
+		
 		SocketService.listen('deploy.server.' + d.id_deploy_server + '.versions', $scope)
 			.on('update', function(d) {
 				for (var x in $scope.versions) {
