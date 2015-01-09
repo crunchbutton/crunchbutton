@@ -7,9 +7,9 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 
 		// $this->processAndValidateCSVData();
 
-		$this->insertData();
+		// $this->insertData();
 
-		// die('hard');
+		die('hard');
 
 
 	}
