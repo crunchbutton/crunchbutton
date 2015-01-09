@@ -9,6 +9,8 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 
 		$this->insertData();
 
+		// die('hard');
+
 
 	}
 
@@ -28,16 +30,16 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Tom Fekete' => [ 'status' => 'active', 'date' => '19/11/2014', 'serial' => '195', 'id_admin' => '398' ],
 'Aaron Kim' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '25', 'id_admin' => '594' ],
 'Sarah Goldstein' => [ 'status' => 'active', 'date' => '01/11/2014', 'serial' => '56', 'id_admin' => '608' ],
-// 'Jeff Jacquay' => [ 'status' => '', 'date' => 'n/a', 'serial' => '30', 'id_admin' => '598' ],
+// // 'Jeff Jacquay' => [ 'status' => '', 'date' => 'n/a', 'serial' => '30', 'id_admin' => '598' ],
 'Nick Klimek' => [ 'status' => 'active', 'date' => '01/11/2014', 'serial' => '79', 'id_admin' => '620' ],
 'Jane Vezina' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '88', 'id_admin' => '560' ],
 'Jacob Lubben' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '51', 'id_admin' => '450' ],
-// 'John Barry' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '', 'id_admin' => '514' ],
+// // 'John Barry' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '', 'id_admin' => '514' ],
 'Greer Bohanon' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '68', 'id_admin' => '610' ],
 'Matthew Trnka' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '90', 'id_admin' => '619' ],
 'Luke Schmiegel' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '99', 'id_admin' => '607' ],
 'Colton Reed' => [ 'status' => 'active', 'date' => '04/11/2014', 'serial' => '66', 'id_admin' => '632' ],
-// 'Zsatasia Green' => [ 'status' => 'active', 'date' => '04/11/2014', 'serial' => '27', 'id_admin' => '597' ],
+'Zsatasia Green' => [ 'status' => 'active', 'date' => '04/11/2014', 'serial' => '27', 'id_admin' => '597' ], // -> here
 'Alec Root' => [ 'status' => 'active', 'date' => '04/11/2014', 'serial' => '61', 'id_admin' => '312' ],
 'Emory Johnson' => [ 'status' => 'active', 'date' => '07/11/2014', 'serial' => '84', 'id_admin' => '622' ],
 'Adam Bezemek' => [ 'status' => 'active', 'date' => '04/11/2014', 'serial' => '16', 'id_admin' => '578' ],
@@ -47,7 +49,7 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Casey Domek' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '85', 'id_admin' => '624' ],
 'Robert Warren' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '78', 'id_admin' => '641' ],
 'Sara Lind' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '86', 'id_admin' => '557' ],
-// 'Josh Peterson' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '91', 'id_admin' => '703' ],
+'Josh Peterson' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '91', 'id_admin' => '703' ], // -> here
 'James Gwinn' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '73', 'id_admin' => '617' ],
 'Deshawn Alan' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '74', 'id_admin' => '634' ],
 'Jesse Little' => [ 'status' => 'active', 'date' => '06/11/2014', 'serial' => '24', 'id_admin' => '659' ],
@@ -132,7 +134,7 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'TJ Corrigan' => [ 'status' => 'active', 'date' => '06/12/2014', 'serial' => '31', 'id_admin' => '359' ],
 'Elizabeth Nyambura' => [ 'status' => 'active', 'date' => '06/12/2014', 'serial' => '222', 'id_admin' => '488' ],
 'Tesiana Elie' => [ 'status' => 'active', 'date' => '06/12/2014', 'serial' => '11', 'id_admin' => '826' ],
-// 'Mike Sheldon' => [ 'status' => 'active', 'date' => '06/12/2014', 'serial' => '240', 'id_admin' => '838' ],
+'Mike Sheldon' => [ 'status' => 'active', 'date' => '06/12/2014', 'serial' => '240', 'id_admin' => '838' ], // -> here
 'Sabrina McConnell' => [ 'status' => 'active', 'date' => '07/12/2014', 'serial' => '152', 'id_admin' => '825' ],
 'Sara Radak' => [ 'status' => 'active', 'date' => '08/12/2014', 'serial' => '123', 'id_admin' => '833' ],
 'Marquitta Pittman' => [ 'status' => 'active', 'date' => '08/12/2014', 'serial' => '161', 'id_admin' => '742' ],
@@ -187,7 +189,7 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 
 					if( $pexcard->id_admin_pexcard ){
 						if( $pexcard->id_admin != $admin->id_admin ){
-							die( $name );
+							// die( $name );
 						}
 					}
 
