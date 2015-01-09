@@ -15,7 +15,10 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 	public function insertData() {
 
 		$cards = [
-// 'David Klumpp' => [ 'status' => '', 'date' => 'n/a', 'serial' => '', 'id_admin' => '3' ],
+'Jeff Jacquay' => [ 'status' => 'active', 'date' => '01/01/2015', 'serial' => '30', 'id_admin' => '598' ],
+'Kimberly Gonzalez' => [ 'status' => 'active', 'date' => '01/01/2015', 'serial' => '104', 'id_admin' => '564' ],
+'David Klumpp' => [ 'status' => '', 'date' => 'n/a', 'serial' => '', 'id_admin' => '3' ],
+/*
 'Bao Truong' => [ 'status' => 'active', 'date' => '22/10/2014', 'serial' => '4', 'id_admin' => '512' ],
 'Brandon Shundoff' => [ 'status' => 'active', 'date' => '23/10/2014', 'serial' => '8', 'id_admin' => '570' ],
 'Monte J. Ely' => [ 'status' => 'active', 'date' => '25/10/2014', 'serial' => '5', 'id_admin' => '515' ],
@@ -28,7 +31,6 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Tom Fekete' => [ 'status' => 'active', 'date' => '19/11/2014', 'serial' => '195', 'id_admin' => '398' ],
 'Aaron Kim' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '25', 'id_admin' => '594' ],
 'Sarah Goldstein' => [ 'status' => 'active', 'date' => '01/11/2014', 'serial' => '56', 'id_admin' => '608' ],
-'Jeff Jacquay' => [ 'status' => '', 'date' => '01/01/2015', 'serial' => '30', 'id_admin' => '598' ],
 'Nick Klimek' => [ 'status' => 'active', 'date' => '01/11/2014', 'serial' => '79', 'id_admin' => '620' ],
 'Jane Vezina' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '88', 'id_admin' => '560' ],
 'Jacob Lubben' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '51', 'id_admin' => '450' ],
@@ -165,7 +167,7 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Stephan Goodwin' => [ 'status' => 'active', 'date' => '18/12/2014', 'serial' => '239', 'id_admin' => '879' ],
 'Leosha Jackson' => [ 'status' => 'active', 'date' => '18/12/2014', 'serial' => '117', 'id_admin' => '840' ],
 'Nick Cerini' => [ 'status' => 'active', 'date' => '07/01/2015', 'serial' => '128', 'id_admin' => '878' ],
-'Jaime Herrera' => [ 'status' => 'active', 'date' => '07/01/2015', 'serial' => '927', 'id_admin' => '871' ],
+'Jaime Herrera' => [ 'status' => 'active', 'date' => '07/01/2015', 'serial' => '927', 'id_admin' => '871' ], */
 		];
 
 		$customers = Crunchbutton_Pexcard_Card::card_list();
@@ -191,7 +193,7 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 
 			$saved = false;
 
-			if( $card[ 'status' ] == 'active' && is_numeric( $card[ 'serial' ] ) && strlen( $card[ 'date' ] ) == 10 ){
+			if( $card[ 'status' ] == 'active' && is_numeric( $card[ 'serial' ] ) ){
 
 				$date = explode( '/', $card[ 'date' ] );
 				$date = $date[ '2' ] . '-' . $date[ '1' ] . '-' . $date[ '0' ] . ' 00:00:01';
