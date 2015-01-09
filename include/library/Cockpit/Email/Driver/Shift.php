@@ -13,8 +13,8 @@ class Cockpit_Email_Driver_Shift extends Crunchbutton_Email {
 
 			$params['to'] 				= $email . ', Crunchbutton Copy <_USERNAME_>';
 			$params['subject'] 		= "You're scheduled for the following shifts";
-			$params['from'] 			= 'Tech Support <tech@_DOMAIN_>';
-			$params['reply']			= 'Tech Support <tech@_DOMAIN_>';
+			$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
+			$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
 
 			$this->buildView( $params );
 

@@ -8,9 +8,9 @@ class Crunchbutton_Email_Payment_Summary extends Crunchbutton_Email {
 
 		$params['to'] = $params[ 'summary' ]['summary_email'].', Crunchbutton Copy <_USERNAME_>';
 		$params['subject'] = $params[ 'summary' ][ 'notes' ];
-		$params['from'] = 'Crunchbutton <tech@_DOMAIN_>';
-		$params['reply'] = 'Tech Support <tech@_DOMAIN_>';
-		$params['reply'] = 'Tech Support <tech@_DOMAIN_>';
+		$params['from'] = 'Crunchbutton <support@_DOMAIN_>';
+		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
+		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
 
 		$this->buildView( $params );
 		$this->view()->subject = $params[ 'summary' ]['notes'];
