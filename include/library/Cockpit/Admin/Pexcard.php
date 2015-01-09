@@ -6,6 +6,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	const CONFIG_KEY_PEX_SHIFT_ENABLE = 'pex_card_funds_shift_enable';
 	const CONFIG_KEY_PEX_ORDER_ENABLE = 'pex_card_funds_order_enable';
 	const CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH = 'pex_card_funds_order_enable_for_cash';
+	const CONFIG_KEY_PEX_BUSINESS_CARD = 'pex_business_card';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -71,7 +72,21 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		}
 	}
 
+	public function isBusinessCard(){
+		$businessCardList = Cockpit_Admin_Pexcard::businessCardList();
+		foreach ( $businessCardList as $card) {
+			if( $card == intval( $this->card_serial ) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function removeFundsShiftFinished( $id_admin_shift_assign ){
+		// #4281
+		if( $this->isBusinessCard() ){
+			return;
+		}
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ) ) > 0 ){
 			if( !Crunchbutton_Pexcard_Action::checkShiftReturnedFunds( $id_admin_shift_assign ) ){
 				$card = $this->load_card_info();
@@ -238,10 +253,23 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		return $admin_pexcard;
 	}
 
+	public function businessCardList(){
+		$cards = [];
+		$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '" . Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD . "'" );
+		foreach ( $configs as $config ) {
+			$cards[] = intval( $config->value );
+		}
+		return $cards;
+	}
+
 	public function loadSettings(){
 		if( !$this->_config ){
 			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'pex_%'" );
+			$this->_config = [ 'cards' => [] ];
 			foreach ( $configs as $config ) {
+				if( $config->key == Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD ){
+					$this->_config[ 'cards' ][] = [ 'id_config' => $config->id_config, 'value' => $config->value ];
+				}
 				$this->_config[ $config->key ] = $config->value;
 			}
 		}

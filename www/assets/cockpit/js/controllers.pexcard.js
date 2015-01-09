@@ -187,13 +187,57 @@ NGApp.controller('PexConfigCtrl', function ($scope, PexCardService) {
 
 	$scope.yesNo = PexCardService.yesNo();
 
+	$scope.business = { serial: '' };
+
 	var load = function(){
 		PexCardService.config.load( function( json ){
 			if( !json.error ){
 				$scope.config = json;
+				$scope.business.cards = json.cards;
+				console.log('$scope.business.cards',$scope.business.cards);
 				$scope.ready = true;
 			}
-		} )
+		} );
+	}
+
+	$scope.add = function(){
+
+		if( $scope.idAdding ){
+			return;
+		}
+
+		if( $scope.formBusiness.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.businessSubmitted = true;
+			return;
+		}
+		$scope.idAdding = true;
+		PexCardService.config.add_business( { 'serial' : $scope.business.serial }, function( data ){
+			$scope.idAdding = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.business.serial = '';
+				$scope.business.cards = data.cards;
+				$scope.saved = true;
+				$scope.flash.setMessage( 'Business card addedd!' );
+			}
+		} );
+	}
+
+	$scope.remove = function( id_config ){
+		if( confirm( 'Confirm remove the Business Card?' ) ){
+			PexCardService.config.remove_business( { 'id_config' : id_config }, function( data ){
+				if( data.error ){
+					App.alert( data.error);
+					return;
+				} else {
+					$scope.business.cards = data.cards;
+					$scope.flash.setMessage( 'Business card removed!' );
+				}
+			} );
+		}
 	}
 
 	$scope.save = function(){
