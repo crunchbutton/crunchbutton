@@ -7,9 +7,9 @@ class Crunchbutton_Email_Order_Stealthfax extends Crunchbutton_Email {
 
 		$params['to'] = $params['email'].', Crunchbutton Copy <_USERNAME_>';
 		$params['subject'] = 'Customer Order #'.$params['order']->id_order;		
-		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <tech@_DOMAIN_>';
-		$params['reply'] = 'Tech Support <tech@_DOMAIN_>';
-		$params['reply'] = 'Tech Support <tech@_DOMAIN_>';
+		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <support@_DOMAIN_>';
+		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
+		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
 
 		$this->buildView($params);
 		$this->view()->subject = $params['subject'];

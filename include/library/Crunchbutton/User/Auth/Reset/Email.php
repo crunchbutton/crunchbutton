@@ -8,8 +8,8 @@ class Crunchbutton_User_Auth_Reset_Email extends Crunchbutton_Email {
 		
 		$params['to'] 				= $params['email'];
 		$params['subject'] 		= 'Crunchbutton password reset';		
-		$params['from'] 			= '<tech@_DOMAIN_>';
-		$params['reply']			= 'Tech Support <tech@_DOMAIN_>';
+		$params['from'] 			= '<support@_DOMAIN_>';
+		$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
 
 		$this->buildView($params);
 		$this->view()->subject		= $params['subject'];
