@@ -46,6 +46,41 @@
 		</div>
 	</form>
 
+	<form name="formBusiness" novalidate>
+		<div class="ul-inputs">
+			<p><strong>Business Pex Card</strong><br><br></p>
+			<ul ng-class="{'submitted':businessSubmitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':formBusiness.serial.$invalid}">
+					<div class="label">Serial Card:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="serial" ng-model="business.serial" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="formBusiness.serial.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input">
+					<button class="button green" ng-click="add();">Add</button>
+				</li>
+			</ul>
+			<p><br><br></p>
+			<div class="box-content2 box-content-table">
+				<table class="tb-zebra">
+					<tr>
+						<th>Business Pex Card Serial</th>
+						<th></th>
+					</tr>
+					<tr ng-repeat="card in business.cards">
+						<td>{{card.value}}</td>
+						<td>
+							<span class="orange link" ng-click="remove(card.id_config)">Remove</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</form>
+
 </div>
 
 <spinner-loading></spinner-loading>

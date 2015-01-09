@@ -21,6 +21,8 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 				'config' : { 'method': 'GET', params : { 'action' : 'config' } },
 				'config_save' : { 'method': 'POST', params : { 'action' : 'config' } },
 				'config_value' : { 'method': 'POST', params : { 'action' : 'config-value' } },
+				'add_business' : { 'method': 'POST', params : { 'action' : 'add-business' } },
+				'remove_business' : { 'method': 'POST', params : { 'action' : 'remove-business' } },
 			}
 		);
 
@@ -32,6 +34,16 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		},
 		value: function( key, callback ){
 			config.config_value( { key: key }, function( data ){
+				callback( data );
+			} );
+		},
+		add_business: function( params, callback ){
+			config.add_business( params, function( data ){
+				callback( data );
+			} );
+		},
+		remove_business: function( params, callback ){
+			config.remove_business( params, function( data ){
 				callback( data );
 			} );
 		},

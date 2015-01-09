@@ -15,6 +15,12 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 			case 'config-value':
 				$this->_configValue();
 				break;
+			case 'add-business':
+				$this->_addBusiness();
+				break;
+			case 'remove-business':
+				$this->_removeBusiness();
+				break;
 			default:
 				$this->_configExport();
 				break;
@@ -41,6 +47,28 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 				$this->_configExport();
 				break;
 		}
+	}
+
+	private function _addBusiness(){
+		if( intval( $this->request()[ 'serial' ] ) ){
+			$config = new Crunchbutton_Config;
+			$config->id_site = null;
+			$config->key = Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD;
+			$config->exposed = 0;
+			$config->value = intval( $this->request()[ 'serial' ] );
+			$config->save();
+		}
+		$this->_configExport();
+	}
+
+	private function _removeBusiness(){
+		if( intval( $this->request()[ 'id_config' ] ) ){
+			$config = Crunchbutton_Config::o( $this->request()[ 'id_config' ] );
+			if( $config->id_config ){
+				$config->delete();
+			}
+		}
+		$this->_configExport();
 	}
 
 	private function _configSave(){
