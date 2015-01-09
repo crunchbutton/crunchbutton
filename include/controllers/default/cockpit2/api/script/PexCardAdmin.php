@@ -7,9 +7,7 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 
 		// $this->processAndValidateCSVData();
 
-		// $this->insertData();
-
-		die('hard');
+		$this->insertData();
 
 
 	}
@@ -30,11 +28,11 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Tom Fekete' => [ 'status' => 'active', 'date' => '19/11/2014', 'serial' => '195', 'id_admin' => '398' ],
 'Aaron Kim' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '25', 'id_admin' => '594' ],
 'Sarah Goldstein' => [ 'status' => 'active', 'date' => '01/11/2014', 'serial' => '56', 'id_admin' => '608' ],
-// // 'Jeff Jacquay' => [ 'status' => '', 'date' => 'n/a', 'serial' => '30', 'id_admin' => '598' ],
+'Jeff Jacquay' => [ 'status' => '', 'date' => '01/01/2015', 'serial' => '30', 'id_admin' => '598' ],
 'Nick Klimek' => [ 'status' => 'active', 'date' => '01/11/2014', 'serial' => '79', 'id_admin' => '620' ],
 'Jane Vezina' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '88', 'id_admin' => '560' ],
 'Jacob Lubben' => [ 'status' => 'active', 'date' => '02/11/2014', 'serial' => '51', 'id_admin' => '450' ],
-// // 'John Barry' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '', 'id_admin' => '514' ],
+'John Barry' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '', 'id_admin' => '514' ],
 'Greer Bohanon' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '68', 'id_admin' => '610' ],
 'Matthew Trnka' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '90', 'id_admin' => '619' ],
 'Luke Schmiegel' => [ 'status' => 'active', 'date' => '03/11/2014', 'serial' => '99', 'id_admin' => '607' ],
@@ -93,8 +91,8 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Joseph Finnerty Dahl' => [ 'status' => 'active', 'date' => '17/11/2014', 'serial' => '167', 'id_admin' => '687' ],
 'Brisa Pedroza' => [ 'status' => 'active', 'date' => '17/11/2014', 'serial' => '148', 'id_admin' => '704' ],
 'Michael Fergus' => [ 'status' => 'active', 'date' => '18/11/2014', 'serial' => '143', 'id_admin' => '697' ],
-// 'Feliccia Brown' => [ 'status' => 'active', 'date' => '18/11/2014', 'serial' => '', 'id_admin' => '718' ],
-// 'Kimberly Gonzalez' => [ 'status' => '', 'date' => 'n/a', 'serial' => '104', 'id_admin' => '564' ],
+'Feliccia Brown' => [ 'status' => 'active', 'date' => '18/11/2014', 'serial' => '', 'id_admin' => '718' ],
+'Kimberly Gonzalez' => [ 'status' => '', 'date' => '01/01/2015', 'serial' => '104', 'id_admin' => '564' ],
 'Brandon Guthrie' => [ 'status' => 'active', 'date' => '19/11/2014', 'serial' => '122', 'id_admin' => '571' ],
 'Daniella Silva' => [ 'status' => 'active', 'date' => '19/11/2014', 'serial' => '156', 'id_admin' => '707' ],
 'Amy Huynh' => [ 'status' => 'active', 'date' => '19/11/2014', 'serial' => '126', 'id_admin' => '722' ],
@@ -171,6 +169,23 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 		];
 
 		$customers = Crunchbutton_Pexcard_Card::card_list();
+
+		foreach( $cards as $name => $card ){
+			if( trim( $card[ 'serial' ] ) == '' && $card[ 'id_admin' ] ){
+				$admin = Admin::o( $card[ 'id_admin' ] );
+				if( $admin->id_admin ){
+					$pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = ' . $admin->id_admin );
+					if( $pexcard->id_admin_pexcard ){
+						$pexcard->id_admin = null;
+						$pexcard->save();
+					}
+					$payment_type = $admin->payment_type();
+					$payment_type->using_pex = 0;
+					$payment_type->using_pex_date = null;
+					$payment_type->save();
+				}
+			}
+		}
 
 		foreach( $cards as $name => $card ){
 
