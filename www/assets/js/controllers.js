@@ -767,7 +767,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.$on( 'orderLoaded', function(e, data) {
 		$scope.order.loaded = order.loaded;
 		$scope.order.showForm = order.showForm;
-
 		// watch form changes and stores it
 		$scope.$watch( 'order.form', function( newValue, oldValue, scope ) {
 			if( order.startStoreEntederInfo && !order.account.user.id_user ){
@@ -827,10 +826,18 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.$safeApply();
 	});
 
+	$scope.$watch( 'order.form.phone', function( newValue, oldValue, scope ) {
+		if( !$scope.user.id_user ){
+			giftcard.notes_field.lastValidation = '';
+			$scope.checkGiftCard();
+		}
+		console.log('$scope.user.id_user',$scope.user.id_user);
+	});
+
 	$scope.checkGiftCard = function(){
 		if( validateGiftCard ){
 			giftcard.notes_field.content = $scope.order.form.notes;
-			giftcard.notes_field.start();
+			giftcard.notes_field.start( $scope.order.form.phone );
 		}
 	}
 
@@ -881,6 +888,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 
 		var process = function(){
+
 			order.init();
 
 			// Update some gift cards variables
