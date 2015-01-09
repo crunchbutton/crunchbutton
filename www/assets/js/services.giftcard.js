@@ -184,7 +184,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		$rootScope.$broadcast( 'giftCardUpdate' );
 	}
 
-	service.notes_field.start = function(){
+	service.notes_field.start = function( phone ){
 
 		service.notes_field.hasGiftCards = false;
 		service.notes_field.giftcards.success = [];
@@ -206,10 +206,16 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		if( !service.notes_field.running ){
 			service.notes_field.running = true;
 			var url = App.service + 'giftcard/validate-words';
+
+			var data = { 'words': words };
+			if( phone ){
+				data.phone = phone;
+			}
+
 			$http( {
 				method: 'POST',
 				url: url,
-				data: $.param( { 'words' : words } ),
+				data: $.param( data ),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				} ).success( function( data ) {
 					if( data.success ){

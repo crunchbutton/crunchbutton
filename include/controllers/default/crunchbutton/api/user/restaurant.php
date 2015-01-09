@@ -10,6 +10,7 @@ class Controller_api_user_restaurant extends Crunchbutton_Controller_Rest {
 
 			// gift card
 			$words = $this->request()['words'];
+			$phone = $this->request()['phone'];
 			$words = explode( ' ', $words );
 			$words = array_unique( $words );
 			$reward = new Crunchbutton_Reward;
@@ -23,9 +24,12 @@ class Controller_api_user_restaurant extends Crunchbutton_Controller_Rest {
 				$valid = $reward->validateInviteCode( $word );
 				if( $valid ){
 					$value = $reward->getReferredDiscountAmount();
-					if( $value ){
-						$giftcard = [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ];
-						break;
+					$totalOrdersByPhone = Order::totalOrdersByPhone( $phone );
+					if( !c::user()->id_user && $totalOrdersByPhone == 0 ){
+						if( $value ){
+							$giftcard = [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ];
+							break;
+						}
 					}
 				}
 				else {

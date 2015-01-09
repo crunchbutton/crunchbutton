@@ -416,7 +416,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 				}
 
 				if ( c::getPagePiece(2) == 'validate-words' ) {
+
+
 					$words = $this->request()['words'];
+					$phone = $this->request()['phone'];
 
 					$words = explode( ' ', $words );
 
@@ -432,12 +435,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 						// At first check if it is an user's invite code - rewards: two way gift cards #2561
 						$reward = new Crunchbutton_Reward;
-						$valid = $reward->validateInviteCode( $word );
-						if( $valid ){
-							$value = $reward->getReferredDiscountAmount();
-							if( $value ){
-								echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
-								exit;
+						$totalOrdersByPhone = Order::totalOrdersByPhone( $phone );
+						if( !c::user()->id_user && $totalOrdersByPhone == 0 ){
+							$valid = $reward->validateInviteCode( $word );
+							if( $valid ){
+								$value = $reward->getReferredDiscountAmount();
+								if( $value ){
+									echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
+									exit;
+								}
 							}
 						}
 

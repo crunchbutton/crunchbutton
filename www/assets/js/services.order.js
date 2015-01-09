@@ -960,7 +960,7 @@ console.log('order',order);
 			method: 'POST',
 			url: url,
 			cache: false,
-			data: $.param( { 'words' : service.form.notes } ),
+			data: $.param( { 'words' : service.form.notes, phone: service.form.phone  } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 				if( success ){
