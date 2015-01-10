@@ -2,7 +2,7 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title"><i class="fa fa-angellist"></i>Pex Card Config</h1>
+	<h1 class="title"><i class="fa fa-credit-card"></i>Pex Card Config</h1>
 
 	<div class="divider"></div>
 
@@ -60,10 +60,9 @@
 					</div>
 				</li>
 				<li class="li-input">
-					<button class="button green" ng-click="add();">Add</button>
+					<button class="button green" ng-click="add_business();">Add</button>
 				</li>
 			</ul>
-			<p><br><br></p>
 			<div class="box-content2 box-content-table">
 				<table class="tb-zebra">
 					<tr>
@@ -71,9 +70,43 @@
 						<th></th>
 					</tr>
 					<tr ng-repeat="card in business.cards">
-						<td>{{card.value}}</td>
+						<td><a href="/pexcard/card/{{card.value}}">{{card.value}}</a></td>
 						<td>
-							<span class="orange link" ng-click="remove(card.id_config)">Remove</span>
+							<span class="orange link" ng-click="remove_business(card.id_config)">Remove</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</form>
+
+	<form name="formTest" novalidate>
+		<div class="ul-inputs">
+			<p><strong>Test Pex Card</strong><br><br></p>
+			<ul ng-class="{'submitted':testSubmitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':formTest.serial.$invalid}">
+					<div class="label">Serial Card:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="serial" ng-model="test.serial" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="formTest.serial.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input">
+					<button class="button green" ng-click="add_test();">Add</button>
+				</li>
+			</ul>
+			<div class="box-content2 box-content-table">
+				<table class="tb-zebra">
+					<tr>
+						<th>Test Pex Card Serial</th>
+						<th></th>
+					</tr>
+					<tr ng-repeat="card in test.cards">
+						<td><a href="/pexcard/card/{{card.value}}">{{card.value}}</a></td>
+						<td>
+							<span class="orange link" ng-click="remove_test(card.id_config)">Remove</span>
 						</td>
 					</tr>
 				</table>

@@ -187,20 +187,21 @@ NGApp.controller('PexConfigCtrl', function ($scope, PexCardService) {
 
 	$scope.yesNo = PexCardService.yesNo();
 
-	$scope.business = { serial: '' };
+	$scope.business = { 'serial': '' };
+	$scope.test = { 'serial': '' };
 
 	var load = function(){
 		PexCardService.config.load( function( json ){
 			if( !json.error ){
 				$scope.config = json;
-				$scope.business.cards = json.cards;
-				console.log('$scope.business.cards',$scope.business.cards);
+				$scope.business.cards = json.cards.business;
+				$scope.test.cards = json.cards.test;
 				$scope.ready = true;
 			}
 		} );
 	}
 
-	$scope.add = function(){
+	$scope.add_business = function(){
 
 		if( $scope.idAdding ){
 			return;
@@ -219,22 +220,63 @@ NGApp.controller('PexConfigCtrl', function ($scope, PexCardService) {
 				return;
 			} else {
 				$scope.business.serial = '';
-				$scope.business.cards = data.cards;
+				$scope.business.cards = data.cards.business;
 				$scope.saved = true;
 				$scope.flash.setMessage( 'Business card addedd!' );
 			}
 		} );
 	}
 
-	$scope.remove = function( id_config ){
+	$scope.remove_business = function( id_config ){
 		if( confirm( 'Confirm remove the Business Card?' ) ){
 			PexCardService.config.remove_business( { 'id_config' : id_config }, function( data ){
 				if( data.error ){
 					App.alert( data.error);
 					return;
 				} else {
-					$scope.business.cards = data.cards;
+					$scope.business.cards = data.cards.business;
 					$scope.flash.setMessage( 'Business card removed!' );
+				}
+			} );
+		}
+	}
+
+	$scope.add_test = function(){
+
+		if( $scope.idAdding ){
+			return;
+		}
+
+		if( $scope.formTest.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.testSubmitted = true;
+			return;
+		}
+		$scope.idAdding = true;
+		console.log('$scope.test',$scope.test);
+		PexCardService.config.add_test( { 'serial' : $scope.test.serial }, function( data ){
+			$scope.idAdding = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.test.serial = '';
+				$scope.test.cards = data.cards.test;
+				$scope.saved = true;
+				$scope.flash.setMessage( 'Test card addedd!' );
+			}
+		} );
+	}
+
+	$scope.remove_test = function( id_config ){
+		if( confirm( 'Confirm remove the Test Card?' ) ){
+			PexCardService.config.remove_test( { 'id_config' : id_config }, function( data ){
+				if( data.error ){
+					App.alert( data.error);
+					return;
+				} else {
+					$scope.test.cards = data.cards.test;
+					$scope.flash.setMessage( 'Test card removed!' );
 				}
 			} );
 		}
