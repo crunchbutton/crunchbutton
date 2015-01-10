@@ -7,6 +7,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	const CONFIG_KEY_PEX_ORDER_ENABLE = 'pex_card_funds_order_enable';
 	const CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH = 'pex_card_funds_order_enable_for_cash';
 	const CONFIG_KEY_PEX_BUSINESS_CARD = 'pex_business_card';
+	const CONFIG_KEY_PEX_TEST_CARD = 'pex_test_card';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -82,6 +83,16 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		return false;
 	}
 
+	public function isTestCard(){
+		$testCardList = Cockpit_Admin_Pexcard::testCardList();
+		foreach ( $testCardList as $card) {
+			if( $card == intval( $this->card_serial ) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function removeFundsShiftFinished( $id_admin_shift_assign ){
 		// #4281
 		if( $this->isBusinessCard() ){
@@ -117,9 +128,11 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function addFunds( $params ){
+
 		$add = false;
-		// for tests allows just daniel and david's cards
-		if( intval( $this->id_pexcard ) == 100254 || ( intval( $this->id_pexcard ) == 100296 ) || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
+
+		// Test cards #4278
+		if( $this->isTestCard() || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
 			$add = true;
 		}
 		if( $add ){
@@ -177,72 +190,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		}
 	}
 
-	public function old_addFunds( $params ){
-		$add = false;
-		// for tests allows just daniel and david's cards
-		if( intval( $this->id_pexcard ) == 100254 || ( intval( $this->id_pexcard ) == 100296 ) || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
-			$add = true;
-		}
-		if( $add ){
-
-			$card = $this->pexcard();
-			// Check if the card could receive funds
-			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
-					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
-				$this->_error = Crunchbutton_Pexcard_Monitor::balancedExcededLimit( $card, $params[ 'amount' ], $params[ 'note' ] );
-				return false;
-			}
-
-			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
-			if( $this->id_pexcard ){
-				$amount = $params[ 'amount' ];
-				if( floatval( $amount ) != 0 ){
-					$card = Crunchbutton_Pexcard_Card::fund( $this->id_pexcard, $amount );
-				}
-
-				if( $card->body && $card->body->id ){
-					$action = new Crunchbutton_Pexcard_Action();
-					switch ( $params[ 'action' ] ) {
-						case Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED:
-						case Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED:
-							$action->id_admin_shift_assign = $params[ 'id_admin_shift_assign' ];
-							break;
-						case Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED:
-						case Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED:
-							$action->id_order = $params[ 'id_order' ];
-							break;
-						default:
-							$action->id_admin = c::user()->id_admin;
-							break;
-					}
-					$action->amount = $amount;
-					if( $action->amount > 0 ){
-						$action->type = Crunchbutton_Pexcard_Action::TYPE_CREDIT;
-					} else {
-						$action->type = Crunchbutton_Pexcard_Action::TYPE_DEBIT;
-					}
-					$action->id_admin_pexcard = $this->id_admin_pexcard;
-					$action->id_driver = $this->id_admin;
-					$action->date = date( 'Y-m-d H:i:s' );
-					$action->note = $params[ 'note' ];
-					$action->response = json_encode( $card->body );
-					$action->save();
-					$action = Crunchbutton_Pexcard_Action::o( $action->id_pexcard_action );
-					return $action;
-				} else {
-					$message = 'Pexcard funds error: ' . $card->Message . "\n";
-					$message .= 'Amount: ' . $params[ 'amount' ] . "\n";
-					$message .= 'Action: ' . $params[ 'action' ] . "\n";
-					$message .= 'Card Serial: ' . $this->card_serial . "\n";
-					$message .= 'Last four: ' . $this->last_four;
-					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
-				}
-			} else {
-				return false;
-			}
-		}
-	}
-
 	public function getByPexcard( $id_pexcard ){
 		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_pexcard = "' . $id_pexcard . '" LIMIT 1' );
 		if( $admin_pexcard->id_admin_pexcard ){
@@ -255,7 +202,16 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function businessCardList(){
 		$cards = [];
-		$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '" . Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD . "'" );
+		$configs = Crunchbutton_Config::q( "SELECT * FROM config c INNER JOIN admin_pexcard ap ON c.value = ap.card_serial WHERE c.`key` = '" . Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD . "'" );
+		foreach ( $configs as $config ) {
+			$cards[] = intval( $config->value );
+		}
+		return $cards;
+	}
+
+	public function testCardList(){
+		$cards = [];
+		$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '" . Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD . "'" );
 		foreach ( $configs as $config ) {
 			$cards[] = intval( $config->value );
 		}
@@ -264,14 +220,22 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function loadSettings(){
 		if( !$this->_config ){
-			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'pex_%'" );
-			$this->_config = [ 'cards' => [] ];
+			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'pex_%' ORDER BY value ASC" );
+			$this->_config = [ 'cards' => [ 'business' => [], 'test' => [] ] ];
 			foreach ( $configs as $config ) {
 				if( $config->key == Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD ){
-					$this->_config[ 'cards' ][] = [ 'id_config' => $config->id_config, 'value' => $config->value ];
+					$this->_config[ 'cards' ][ 'business' ][] = [ 'id_config' => intval( $config->id_config ), 'value' => intval( $config->value ) ];
 				}
 				$this->_config[ $config->key ] = $config->value;
 			}
+			foreach ( $configs as $config ) {
+				if( $config->key == Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD ){
+					$this->_config[ 'cards' ][ 'test' ][] = [ 'id_config' => intval( $config->id_config ), 'value' => intval( $config->value ) ];
+				}
+				$this->_config[ $config->key ] = $config->value;
+			}
+			unset( $this->_config[ Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD ] );
+			unset( $this->_config[ Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD ] );
 		}
 		return $this->_config;
 	}
