@@ -788,7 +788,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	 * @return Crunchbutton_Restaurant
 	 */
 	public function restaurant() {
-		return Restaurant::o($this->id_restaurant);
+		if( !$this->_restaurant ){
+			$this->_restaurant = Restaurant::o($this->id_restaurant);
+		}
+		return $this->_restaurant;
 	}
 
 	public function user() {

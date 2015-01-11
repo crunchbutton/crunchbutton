@@ -1477,7 +1477,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function payment_type(){
-		return Crunchbutton_Restaurant_Payment_Type::byRestaurant( $this->id_restaurant );
+		if( !$this->_payment_type ){
+			$this->_payment_type = Crunchbutton_Restaurant_Payment_Type::byRestaurant( $this->id_restaurant );
+		}
+		return $this->_payment_type;
 	}
 
 	public function save() {
