@@ -133,6 +133,13 @@ class Crunchbutton_Credit extends Cana_Table
 		return 0;
 	}
 
+	public function creditByOrderPaidByGroupped( $id_order ) {
+		$query = 'SELECT SUM(`value`) as credit, paid_by FROM credit WHERE id_order = ' . $id_order . ' AND type = "' . Crunchbutton_Credit::TYPE_DEBIT . '" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) GROUP BY paid_by';
+		$row = Cana::db()->get( $query );
+		return $row;
+	}
+
+
 	public function debitHistory(){
 		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE id_credit_debited_from="'.$this->id_credit.'"  AND ( credit_type IS NULL OR credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
 	}

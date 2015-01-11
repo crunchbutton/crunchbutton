@@ -247,6 +247,29 @@ class Crunchbutton_Util extends Cana_Model {
 		}
 	}
 
+	public function microtime_float(){
+		list($usec, $sec) = explode(" ", microtime());
+		return ((float)$usec + (float)$sec);
+	}
+
+	public function startTimer(){
+		$this->time_start = $this->microtime_float();
+	}
+
+	public function stopTimer(){
+		if( $this->time_start ){
+			$time = $this->microtime_float() - $this->time_start;
+			$this->time_start = null;
+			echo '<pre>';
+			echo "\ntime: ";
+			echo number_format( $time, 3 );
+			echo "\nmemory: ";
+			echo round( memory_get_usage() / 1048576.2 ) . 'MB';
+			exit;
+			return $time;
+		}
+	}
+
 	public static function randomPass( $length = 6 ){
 		$characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
 		$pass = '';

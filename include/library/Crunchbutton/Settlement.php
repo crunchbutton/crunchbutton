@@ -20,6 +20,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function __construct( $filters = [] ) {
 		$this->filters = $filters;
+		ini_set( 'memory_limit', '-1' );
 	}
 
 	public function startRestaurant(){
