@@ -1,6 +1,6 @@
 // CartService service
 NGApp.factory('CartService', function () {
-	
+
 	var service = {
 		restaurants : {},
 		id_restaurant : null
@@ -43,7 +43,7 @@ NGApp.factory('CartService', function () {
 			dish = App.cache('Dish', item);
 		dish_options = dish.options(),
 		options = [];
-		
+
 		var expanded = true;
 		if (arguments[1]) {
 			options = arguments[1].options;
@@ -81,7 +81,7 @@ NGApp.factory('CartService', function () {
 		service.restaurants[ service.id_restaurant ].items[id] = {
 			id: item,
 			options: options,
-			
+
 			/* Template viewer stuff */
 			details: {
 				id: id,
@@ -166,7 +166,7 @@ NGApp.factory('CartService', function () {
 	}
 	service.customizeItemPrice = function (price, force) {
 		if (price != '0.00' || force) {
-			return ' (' + ((price < 0) ? 'minus $' : '+ $') + parseFloat(Math.abs(price)).toFixed(2) + ')';
+			return ' (' + ((price < 0) ? 'minus $' : '+ ') + parseFloat(Math.abs(price)).toFixed(2) + ')';
 		}
 		return '';
 	}
@@ -230,7 +230,7 @@ NGApp.factory('CartService', function () {
 		for (var x in service.restaurants[ service.id_restaurant ].items) {
 			total += parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].price);
 			if( App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].markup ){
-				total -= parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].markup);	
+				total -= parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].markup);
 			}
 			options = service.restaurants[ service.id_restaurant ].items[x].options;
 			for (var xx in options) {

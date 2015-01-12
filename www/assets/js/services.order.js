@@ -56,9 +56,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 
 	service.init = function () {
-		if (App.config.ab && App.config.ab.dollarSign == 'show') {
-			service.info.dollarSign = '$';
-		}
+		// remove $ signs from prices #4370
+		// if (App.config.ab && App.config.ab.dollarSign == 'show') {
+		// service.info.dollarSign = '$';
+		// }
 		// Tip stuff
 		if (service.account.user && service.account.user.last_tip) {
 			var tip = service.account.user.last_tip;
@@ -876,7 +877,6 @@ console.log('order',order);
 				autotipValue = autotipValue.toFixed( 2 );
 			}
 		}
-		console.log('autotipValue',autotipValue);
 		service.form.autotip = autotipValue;
 	}
 	service._autotipText = function () {

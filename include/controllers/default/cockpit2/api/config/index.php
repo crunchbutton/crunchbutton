@@ -14,7 +14,8 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				if( $payment_type->using_pex ){
 					$user[ 'using_pex' ] = true;
 				}
-$user[ 'using_pex' ] = true;
+
+				// $user[ 'using_pex' ] = true;
 
 
 				$config = [
