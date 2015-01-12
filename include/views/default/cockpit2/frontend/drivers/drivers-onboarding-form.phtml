@@ -90,6 +90,36 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.driveriPhoneType.$invalid}" ng-show="driver.phone_type=='iPhone'">
+				<div class="label">iPhone type:</div>
+				<div class="input">
+					<select name="driveriPhoneType" ng-required="driver.phone_type=='iPhone'" ng-model="driver.iphone_type" ng-options="opt as opt for opt in iphone_options" ></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.driveriPhoneType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverAndroidType.$invalid}" ng-show="driver.phone_type=='Android'">
+				<div class="label">Android type:</div>
+				<div class="input">
+					<select name="driverAndroidType" ng-required="driver.phone_type=='Android'" ng-model="driver.android_type" ng-options="opt as opt for opt in android_options" ></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.driverAndroidType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverAndroidVersion.$invalid}" ng-show="driver.phone_type=='Android'">
+				<div class="label">Android type:</div>
+				<div class="input">
+					<select name="driverAndroidVersion" ng-required="driver.phone_type=='Android'" ng-model="driver.android_version" ng-options="opt as opt for opt in android_versions" ></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.driverAndroidVersion.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.driverCarrierType.$invalid}">
 				<div class="label">Cell Carrier:</div>
 				<select name="driverCarrierType" required ng-model="driver.carrier_type" ng-options="opt as opt for opt in carrier_types" class="cart-customize-select"></select>

@@ -66,6 +66,19 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 
 				$json = $driver->exports();
 				$driver_info = $driver->driver_info()->exports();
+
+				$driver_info[ 'iphone_type' ] = '';
+				$driver_info[ 'android_type' ] = '';
+				$driver_info[ 'android_version' ] = '';
+
+				if( $driver_info[ 'phone_type' ] == 'Android' ){
+					$driver_info[ 'android_type' ] = $driver_info[ 'phone_subtype' ];
+					$driver_info[ 'android_version' ] = $driver_info[ 'phone_version' ];
+				}
+				if( $driver_info[ 'phone_type' ] == 'iPhone' ){
+					$driver_info[ 'iphone_type' ] = $driver_info[ 'phone_subtype' ];
+				}
+
 				$json = array_merge( $json, $driver_info );
 
 				$payment_type = $driver->payment_type();
