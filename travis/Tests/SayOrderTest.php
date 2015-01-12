@@ -1,6 +1,14 @@
 <?php
 
 class SayTest extends PHPUnit_Framework_TestCase { //ExampleTest
+	
+	public static function setUpBeforeClass() {
+	
+		(new Restaurant([
+			'name' => 'UNIT TEST RESTAURANT',
+			'active' => 1
+		]))->save();
+	}
 
 	public function testSay() { //lowercase test, uppercase wtvr
 		
