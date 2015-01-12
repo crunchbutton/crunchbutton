@@ -494,29 +494,29 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			case 'Sunday':
 				// Sent on Sun at 1 PM PDT
 				if( $time >= 1300 && $time <= 1359 ){
-					$driversMessage = 'Hey [name]! Remember to fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule.|Due tomorrow at 5 PM PT. If you have any questions, just text back.';
+					$driversMessage = 'Hey [name]! Remember to fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit.la/schedule.|Due tomorrow at 5 PM PT. If you have any questions, just text back.';
 					$warningDrivers = true;
 				}
 				// Sent on Sun at 6 PM PDT
 				else if ( $time >= 1800 && $time <= 1859 ){
-					$driversMessage = '[name], Don’t forget: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Got a question? Text us back.';
+					$driversMessage = '[name], Don’t forget: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit.la/schedule. Got a question? Text us back.';
 					$warningDrivers = true;
 				}
 				break;
 			case 'Monday':
 				// Sent on Mon at 10 AM PDT
 				if( $time >= 1000 && $time <= 1559 ){
-					$driversMessage = '[name], Remember: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PT';
+					$driversMessage = '[name], Remember: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit.la/schedule. Due tonight at 5 PM PT';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 4 PM PDT
 				else if( $time >= 1600 && $time <= 1654 ){
-					$driversMessage = '[name], Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. If you have any questions, just text back.';
+					$driversMessage = '[name], Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit.la/schedule. If you have any questions, just text back.';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 4:55 PM PDT
 				else if( $time >= 1655 && $time <= 1659 ){
-					$driversMessage = '[name], Reminder: your shift preferences are due in 5 min!! cockpit._DOMAIN_/schedule. Got a question? Text us back.';
+					$driversMessage = '[name], Reminder: your shift preferences are due in 5 min!! cockpit.la/schedule. Got a question? Text us back.';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 5 PM PDT - alert CS

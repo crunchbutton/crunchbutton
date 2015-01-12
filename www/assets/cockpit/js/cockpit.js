@@ -259,6 +259,9 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsScheduleCtrl',
 			templateUrl: 'assets/view/drivers-shifts-schedule.html'
 		})
+		.when('/schedule', {
+			redirectTo: '/drivers/shifts/schedule'
+		})
 		/* Driver summaries and payments information */
 		.when('/drivers/summary', {
 			action: 'drivers-summary',
