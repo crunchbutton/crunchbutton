@@ -4,27 +4,15 @@ class SayTest extends PHPUnit_Framework_TestCase { //ExampleTest
 	
 	public static function setUpBeforeClass() {
 	
-		(new Restaurant([
-			'name' => 'UNIT TEST RESTAURANT',
-			'active' => 1
-		]))->save();
-		(new User([
-			'name' => 'USER',
-			'active' => 1
-		]))->save();
-		(new Community([
-			'name' => 'COMMUNITY',
-			'active' => 1
-		]))->save();
+		(new Order([
+
+
+]))->save();
 	}
 
 	public function testSay() { //lowercase test, uppercase wtvr
 		
-		(new Order([
-'id_restaurant' => '1'
-
-]))->save();
-
+		
 $data = file_get_contents($GLOBALS['host-crunchbutton'].'api/order/1/say');
 
 $this->assertTrue($data == '<?xml version="1.0" encoding="UTF-8"?><Response>
@@ -34,10 +22,7 @@ $this->assertTrue($data == '<?xml version="1.0" encoding="UTF-8"?><Response>
 	//new one to fill
 	public function testSayOrder() { //lowercase test, uppercase wtvr
 		
-		(new Order([
-'id_restaurant' => '1'
-
-]))->save();
+		
 
 $data = file_get_contents($GLOBALS['host-crunchbutton'].'api/order/1/sayorder');
 
@@ -50,10 +35,7 @@ $this->assertTrue($data == '<?xml version="1.0" encoding="UTF-8"?><Response>
 
 public function testSayOrderOnly() { //lowercase test, uppercase wtvr
 		
-		(new Order([
-'id_restaurant' => '1'
-
-]))->save();
+		
 
 $data = file_get_contents($GLOBALS['host-crunchbutton'].'api/order/1/sayorderonly');
 
@@ -65,10 +47,7 @@ $this->assertTrue($data == '<?xml version="1.0" encoding="UTF-8"?><Response>
 	
 	public function testDoConfirm() { //lowercase test, uppercase wtvr
 		
-		(new Order([
-'id_restaurant' => '1'
-
-]))->save();
+		
 
 $data = file_get_contents($GLOBALS['host-crunchbutton'].'api/order/1/doconfirm');
 
