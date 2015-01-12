@@ -4,9 +4,9 @@ error_reporting(E_ALL ^ (E_NOTICE | E_STRICT));
 ini_set('display_errors',true);
 putenv('PHPUNIT=1');
 
-if (trim(`whoami`) == 'mmeyers')) {
+if (trim(`whoami`) == 'mmeyers') {
 	$_GLOBALS['host-crunchbutton'] = 'http://localhost:8888/';
-} elseif (trim(`whoami`) == 'arzynik')) {
+} elseif (trim(`whoami`) == 'arzynik') {
 	$_GLOBALS['host-crunchbutton'] = 'http://crunchbutton.localhost/';
 } else {
 	$_GLOBALS['host-crunchbutton'] = 'http://localhost/';
