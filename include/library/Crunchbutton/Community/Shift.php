@@ -981,10 +981,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 									'to' => $num,
 									'message' => $message
 								]);
-
 								$assignment->warned = 1;
 								$assignment->save();
-
 								foreach ($rets as $ret) {
 									if (!$ret->sid) {
 										echo 'Error Sending sms to: '.$ret->to;
