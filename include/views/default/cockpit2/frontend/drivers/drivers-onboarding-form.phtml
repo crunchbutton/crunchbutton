@@ -1,6 +1,6 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-if="ready">
+<div class="content-padding" ng-show="ready">
 
 	<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
 
@@ -180,6 +180,14 @@
 			<li class="li-input">
 				<div class="label">Desired Weekly Hours:</div>
 				<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.weekly_hours" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Sometimes order volume is really high and we reach out to drivers who aren't scheduled to help out and deliver more food so we don't have to shut down the community.
+				<br>
+				How down would you be to help out in a scenario like that?</div>
+				<div class="input">
+				<textarea name="driverDownToHelpOut" ng-model="driver.down_to_help_out"></textarea>
 			</li>
 
 		</ul>

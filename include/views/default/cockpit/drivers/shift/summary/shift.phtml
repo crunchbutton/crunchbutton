@@ -138,7 +138,9 @@
 												?>
 											</td>
 											<td style="background:#009c48;color:#FFF;text-align:center;"><strong><?php echo $preference->ranking; ?></strong> of <?php echo $highestRanking; ?></td>
-											<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
+											<td>
+												<?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?>
+											</td>
 											<td><?php echo $totalShifts; ?></td>
 											<td>
 												<?php if( $shift->isRecurring() ) { ?>
@@ -154,8 +156,11 @@
 											$note_data = $note->exports();
 										}
 									?>
-									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
-
+									<textarea style="width:100%;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+									<?php
+										$driver_info = $admin->driver_info();
+										echo '<br>' . $driver_info->down_to_help_out;
+									?>
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
 									</div>
@@ -241,7 +246,10 @@
 										}
 									?>
 									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
-
+									<?php
+										$driver_info = $admin->driver_info();
+										echo '<br>' . $driver_info->down_to_help_out;
+									?>
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
 									</div>
@@ -314,6 +322,10 @@
 										}
 									?>
 									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+									<?php
+										$driver_info = $admin->driver_info();
+										echo '<br>' . $driver_info->down_to_help_out;
+									?>
 
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
