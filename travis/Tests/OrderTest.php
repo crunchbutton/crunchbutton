@@ -13,7 +13,8 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 			'delivery_fee' => '1.5',
 			'confirmation' => 0,
 			'community' => 'test',
-			'timezone' => 'America/Los_Angeles'
+			'timezone' => 'America/Los_Angeles',
+			'open_for_business' => true
 		]);
 		$r->save();
 
@@ -92,6 +93,6 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 		//exit;
 
 
-		$this->assertTrue(true);
+		$this->assertTrue($charge === true);
 	}
 }
