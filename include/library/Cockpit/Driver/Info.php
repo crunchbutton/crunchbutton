@@ -37,7 +37,65 @@ class Cockpit_Driver_Info extends Cana_Table {
 	}
 
 	public function phoneTypes(){
-		return [ Cockpit_Driver_Info::PHONE_TYPE_IPHONE, Cockpit_Driver_Info::PHONE_TYPE_ANDROID, Cockpit_Driver_Info::PHONE_TYPE_BLACKBERRY, Cockpit_Driver_Info::PHONE_TYPE_DUMBPHONE, Cockpit_Driver_Info::PHONE_TYPE_OTHER ];
+		return [ 	Cockpit_Driver_Info::PHONE_TYPE_IPHONE,
+							Cockpit_Driver_Info::PHONE_TYPE_ANDROID,
+							Cockpit_Driver_Info::PHONE_TYPE_BLACKBERRY,
+							Cockpit_Driver_Info::PHONE_TYPE_DUMBPHONE,
+							Cockpit_Driver_Info::PHONE_TYPE_OTHER ];
+	}
+
+	public function iPhoneTypes(){
+		return [	'3G',
+							'3GS',
+							'4',
+							'4S',
+							'5',
+							'5C',
+							'5S',
+							'6',
+							'6 Plus',
+							'Other'  ];
+	}
+
+	public function androidTypes(){
+
+		$types = [ 	'Samsung Galaxy S3',
+								'Samsung Galaxy S4',
+								'Samsung Galaxy Note3',
+								'Samsung Galaxy S5',
+								'Motorola Moto G',
+								'Samsung Galaxy Tab3 7.0',
+								'Samsung Galaxy S3 Mini',
+								'Samsung Galaxy Note2',
+								'Samsung Galaxy S Duos 2',
+								'Samsung Galaxy S2',
+								'Samsung Galaxy S4 Mini',
+								'Samsung Galaxy Grand',
+								'Samsung Galaxy Y',
+								'Samsung Galaxy Grand2',
+								'Samsung Galaxy Core',
+								'Samsung Galaxy Grand Neo',
+								'Samsung Galaxy S',
+								'Samsung Galaxy Win',
+								'Samsung Galaxy Star Advance',
+								'Samsung Galaxy Ace' ];
+		sort( $types );
+		$types[] = 'Other';
+		return $types;
+	}
+
+	public function androidVersion(){
+		$types = [ 	'Froyo (2.2)',
+								'Gingerbread (2.3.3 - 2.3.7)',
+								'Ice Cream Sandwich (4.0.3 - 4.0.4)',
+								'Jelly Bean (4.1.x)',
+								'Jelly Bean (4.2.x)',
+								'Jelly Bean (4.3.x)',
+								'KitKat (4.4)' ];
+
+		asort( $types );
+		$types[] = 'Other';
+		return $types;
 	}
 
 	public function phoneTypeDefault(){

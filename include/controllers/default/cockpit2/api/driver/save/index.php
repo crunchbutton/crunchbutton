@@ -125,6 +125,18 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver_info = $driver->driver_info();
 
 		$driver_info->phone_type = $this->request()[ 'phone_type' ];
+
+		$driver_info->phone_subtype = null;
+		$driver_info->phone_version = null;
+
+		if( $driver_info->phone_type == 'iPhone' ){
+			$driver_info->phone_subtype = $this->request()[ 'iphone_type' ];
+		}
+		if( $driver_info->phone_type == 'Android' ){
+			$driver_info->phone_subtype = $this->request()[ 'android_type' ];
+			$driver_info->phone_version = $this->request()[ 'android_version' ];
+		}
+
 		$driver_info->cell_carrier = $this->request()[ 'cell_carrier' ];
 		$driver_info->cell_carrier = ( $this->request()[ 'carrier_type' ] == Cockpit_Driver_Info::CARRIER_TYPE_OTHER ? $this->request()[ 'carrier_type_other' ] : $this->request()[ 'carrier_type' ] );
 		$driver_info->address = $this->request()[ 'address' ];

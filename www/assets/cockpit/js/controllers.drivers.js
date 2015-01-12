@@ -610,7 +610,16 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		} );
 
 		DriverOnboardingService.phone_types( function( json ){
+
 			$scope.phone_types = json.options;
+			$scope.phones_default = json.default;
+			$scope.iphone_options = json.iphone_options;
+			$scope.android_options = json.android_options;
+			$scope.android_versions = json.android_versions;
+
+			$scope.iphone_type = json.default;
+			$scope.android_type = json.default;
+			$scope.android_version = json.default;
 		} );
 
 		DriverOnboardingService.carrier_types( function( json ){
