@@ -11,7 +11,7 @@ App.AB = {
 			},
 			{
 				name: 'tagline-no-free',
-				tagline: 'Order the top food %s. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'		
+				tagline: 'Order the top food %s. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'
 			}
 		],
 		slogan: [
@@ -52,7 +52,7 @@ App.AB = {
 		],
 		dollarSign: [
 			{
-				name : 'show'
+				name : 'hide'
 			},
 			{
 				name : 'hide'
@@ -68,7 +68,7 @@ App.AB = {
 		if (clear) {
 			App.config.ab = {};
 		}
-		
+
 		// Creates the ab object case it don't exist
 		if( App.config && !App.config.ab ){
 			App.config.ab = {};

@@ -145,7 +145,7 @@
 
 						<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
 							<li ng-bind-once ng-repeat="dish in category.dishes()" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
-								<span class="dish-item-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span><br />
+								<span class="dish-item-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span><br />
 								<span class="dish-item-description">{{dish.description}}</span>
 							</li>
 						</ul>
@@ -164,7 +164,7 @@
 					<div ng-repeat="category in restaurant.categories()">
 						<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
 							<li ng-repeat="dish in category.dishes() | filter: {top: 1}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
-								<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
+								<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
 								<span class="dish-item-description">{{dish.description}}</span>
 							</li>
 						</ul>
@@ -255,14 +255,14 @@
 								</div>
 
 								<div ng-if="giftcard.hasValue && order.form.pay_type == 'cash' ">
-									Pay with a card, NOT CASH, to use your ${{giftcard.value}} gift card!</span>
+									Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
 								</div>
 
 								<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 									<!-- Gift card success -->
 									<div ng-repeat="success in giftcard.giftcards.success">
 										<div ng-show="!success.error">
-											Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
+											Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.
 										</div>
 										<div ng-show="success.error == 'other restaurant'">
 											The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
@@ -410,11 +410,11 @@
 		<div class="payment-wrap">
 			<div class="payment-ribbon" ng-class="{'backface':!isIOs}">
 				<div class="payment-ribbon-content">
-					<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>${{order.info.subtotal}}</span>
-					<span class="restaurant-payment-item">Tax: ${{order.info.taxes}}</span>
-					<span class="restaurant-payment-item" ng-show="order.form.pay_type!='cash' && order.info.tip!='0.00'">Tip: ${{order.info.tip}}</span>
-					<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00'">Delivery Fee: ${{order.info.delivery}}</span>
-					<span class="restaurant-payment-item" ng-show="order.info.fee!='0.00'">Service Fee: ${{order.info.fee}}</span>
+					<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>{{AB.dollar}}{{order.info.subtotal}}</span>
+					<span class="restaurant-payment-item">Tax: {{AB.dollar}}{{order.info.taxes}}</span>
+					<span class="restaurant-payment-item" ng-show="order.form.pay_type!='cash' && order.info.tip!='0.00'">Tip: {{AB.dollar}}{{order.info.tip}}</span>
+					<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00'">Delivery Fee: {{AB.dollar}}{{order.info.delivery}}</span>
+					<span class="restaurant-payment-item" ng-show="order.info.fee!='0.00'">Service Fee: {{AB.dollar}}{{order.info.fee}}</span>
 					<span class="restaurant-payment-item" ng-show="credit.hasValue && order.form.pay_type == 'card'">Credit: -$
 						<span ng-show="order.total() <= credit.number">{{order.info.total}}</span>
 						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
@@ -428,7 +428,7 @@
 		<div class="divider"></div>
 
 		<div ng-if="credit.hasValue && order.form.pay_type == 'cash' && order.total() >= credit.number">
-			<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your ${{credit.value}} gift card</div>
+			<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
 		</div>
 	</div>
 
