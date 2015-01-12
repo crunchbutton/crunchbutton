@@ -867,16 +867,16 @@ console.log('order',order);
 	}
 	service._autotip = function () {
 		var subtotal = service.totalbreakdown().subtotal;
-		var autotipValue
 		if (subtotal === 0) {
 			autotipValue = 0;
 		} else {
 			// autotip formula - see github/#940
-			autotipValue = Math.ceil(4 * (subtotal * 0.107 + 0.85)) / 4;
+			autotipValue = Math.ceil( 2 * (subtotal * 0.11 + 0.95 ) ) / 2;
 			if( !isNaN( autotipValue ) ){
 				autotipValue = autotipValue.toFixed( 2 );
 			}
 		}
+		console.log('autotipValue',autotipValue);
 		service.form.autotip = autotipValue;
 	}
 	service._autotipText = function () {
