@@ -587,8 +587,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 			if( driver.pexcard_date ){
 				$scope.driver.pexcard_date = new Date( driver.pexcard_date );
+			} else {
+				$scope.driver.pexcard_date = new Date();
 			}
-
 
 			if( !$scope.driver.id_admin ){
 				$scope.driver.notify = true;
@@ -657,7 +658,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			return;
 		}
 
-		$scope.driver.pexcard_date = $filter( 'date' )( $scope.driver.pexcard_date, 'yyyy-MM-dd' );
+		if( $scope.driver.pexcard_date ){
+			$scope.driver.pexcard_date = $filter( 'date' )( $scope.driver.pexcard_date, 'yyyy-MM-dd' );
+		}
 
 		$scope.isSaving = true;
 
