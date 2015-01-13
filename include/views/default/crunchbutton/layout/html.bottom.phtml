@@ -36,7 +36,7 @@ if (App) {
 </head>
 
 <body class="bg no-init">
-<?=$this->display('layout/html.body')?>	
+<?=$this->display('layout/html.body')?>
 </body>
 
 <audio id="get-food-audio">
@@ -52,13 +52,26 @@ $(function() {
 	App.init();
 });
 </script>
-
+<?php
+	switch ( c::env() ) {
+		case 'local':
+			$facebook = c::config()->facebook->{ 'crunchbutton.localhost' };
+			break;
+		case 'beta':
+			$facebook = c::config()->facebook->{ 'beta.crunchr.co' };
+			break;
+		case 'live':
+		default:
+			$facebook = c::config()->facebook->{ 'crunchbutton.com' };
+			break;
+	}
+?>
 <script type="text/javascript">
 	$(function() {
 		window.fbAsyncInit = function() {
-			console.debug('Init facebook <?=Cana::config()->facebook->app?>');
+			console.debug('Init facebook <?=$facebook->app;?>');
 			FB.init({
-				appId: '<?=Cana::config()->facebook->app?>',
+				appId: '<?=$facebook->app;?>',
 				cookie: true,
 				xfbml: true,
 				oauth: true
@@ -66,7 +79,7 @@ $(function() {
 			var facebookService = angular.element('html').injector().get('FacebookService');
 			FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
 		};
-		
+
 		(function(d, s, id) {
 		var js, fjs = d.getElementsByTagName(s)[0];
 		if (d.getElementById(id)) return;
