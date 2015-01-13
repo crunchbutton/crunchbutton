@@ -44,18 +44,14 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 		});
 	};
 
-	$scope.ticket = function( id_order, id_support ){
-		if( id_support ){
-			ticket( id_support );
-		} else {
-			TicketService.create( { 'id_order': id_order }, function( json ){
-				if( json.id_support ){
-					ticket( json.id_support );
-				} else {
-					App.alert( 'Fail creating a new ticket!' );
-				}
-			} );
-		}
+	$scope.ticket = function(id_order) {
+		OrderService.ticket(id_order, function(json) {
+			if (json.id_support) {
+				ticket(json.id_support);
+			} else {
+				App.alert('Fail retrieving support ticket!' );
+			}
+		});
 	}
 
 	var ticket = function( id_support ){
