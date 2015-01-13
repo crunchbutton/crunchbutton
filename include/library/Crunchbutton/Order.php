@@ -2252,8 +2252,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return (object)['status' => false];
 	}
 
-	public function getSupport() {
+	public function getSupport($create = false) {
 		$support = Support::getSupportForOrder($this->id_order);
+		if (!$support && $create) {
+			$support = Crunchbutton_Support::createNewTicket([
+				'id_order' => $this->id_order,
+				'body' => 'Ticket created from admin panel.'
+			]);
+		}
 		return $support;
 	}
 

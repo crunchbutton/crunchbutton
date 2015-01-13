@@ -26,21 +26,6 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 
 
-		/*
-		$q = '
-			SELECT
-				`order`.*,
-				restaurant.name as _restaurant_name,
-				restaurant.community as _community_name,
-				admin.name as _driver_name,
-				admin.id_admin as _driver_id
-			FROM `order`
-			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
-			LEFT JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
-			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
-			WHERE order_action.type != "delivery-rejected"
-		';
-		*/
 
 		$q = '
 			SELECT
@@ -51,9 +36,10 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
 			LEFT JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
 			LEFT JOIN community ON community.id_community=restaurant_community.id_community
-			LEFT JOIN ( SELECT MAX( id_support ) AS id_support, id_order FROM support WHERE id_order IS NOT NULL GROUP BY id_order ) support ON support.id_order = `order`.id_order
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
+		
+//			LEFT JOIN ( SELECT MAX( id_support ) AS id_support, id_order FROM support WHERE id_order IS NOT NULL GROUP BY id_order ) support ON support.id_order = `order`.id_order
 
 		if (!c::admin()->permission()->check(['global', 'orders-all', 'orders-list-page'])) {
 			// Order::deliveryOrders( $lastHours );
@@ -138,9 +124,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		// do the query
 		$data = [];
-		$r = c::db()->query(str_replace('-WILD-','
+		$query = str_replace('-WILD-','
 			`order`.*,
-			support.id_support,
 			restaurant.name as _restaurant_name,
 			restaurant.permalink as _restaurant_permalink,
 			community.name as _community_name,
@@ -148,7 +133,9 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			community.id_community as _community_id,
 			admin.name as _driver_name,
 			admin.id_admin as _driver_id
-		', $q));
+		', $q);
+
+		$r = c::db()->query($query);
 
 		while ($o = $r->fetch()) {
 			$o->status = Order::o( $o->id_order )->status()->last();
