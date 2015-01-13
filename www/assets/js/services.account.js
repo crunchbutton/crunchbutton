@@ -1,12 +1,12 @@
 // AccountService service
 NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService ){
-	
-	var service = { 
-				callback : false, 
-				user : false, 
+
+	var service = {
+				callback : false,
+				user : false,
 				form : {
-					email : '', 
-					password : ''	
+					email : '',
+					password : ''
 				}
 			};
 
@@ -15,14 +15,14 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	// reset the erros
 	service.errorReset = function(){
-		service.errors = [];		
+		service.errors = [];
 	}
 
-	service.errorsList = { 
-			'enter-email-phone': 'Please enter a valid email or phone.', 
-			'enter-password': 'Please enter your password.', 
-			'login-incorrect': 'Your log in information was incorrect.', 
-			'already-registred': 'It seems that the email is already registered!', 
+	service.errorsList = {
+			'enter-email-phone': 'Please enter a valid email or phone.',
+			'enter-password': 'Please enter your password.',
+			'login-incorrect': 'Your log in information was incorrect.',
+			'already-registred': 'It seems that the email is already registered!',
 			'not-registred': 'Sorry, that email/phone is not registered with us.',
 			'enter-code':'Please enter the reset code.',
 			'code-invalid':'Sorry, this code is invalid.',
@@ -45,7 +45,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.isLogged = function(){
 		if( App.config.user && App.config.user.id_user != '' ){
-			service.user = App.config.user;	
+			service.user = App.config.user;
 		}
 		if( service.user ){
 			if( service.user.id_user != '' ){
@@ -181,7 +181,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 					$rootScope.$broadcast('userCreated', service.user);
 					$rootScope.$broadcast('userAuth', service.user);
 				}
-			}		
+			}
 		});
 	}
 
@@ -245,16 +245,16 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 
 // AccountHelpService service
-NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService, AccountModalService ){ 
+NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService, AccountModalService ){
 
 	// It starts invisible
-	var service = { 
-			visible : false, 
-			success : { 
-				visible : false, 
-				facebook : { 
-					visible : false 
-				} 
+	var service = {
+			visible : false,
+			success : {
+				visible : false,
+				facebook : {
+					visible : false
+				}
 			}
 		};
 
@@ -328,7 +328,7 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 
 // AccountModalService service
 NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookService ){
-	
+
 	var service = {
 		header : true,
 		signin : true,
@@ -389,7 +389,7 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 
 // AccountFacebookService service
 NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
-	
+
 	var service = {};
 
 	service.facebook = FacebookService;
@@ -409,11 +409,11 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 } );
 
 NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, AccountFacebookService, AccountService, MainNavigationService ){
-	
+
 	var service = {};
-	
+
 	service.facebook = AccountFacebookService;
-	
+
 	// When the user confirms the signout
 	service.signoutConfirmed = function( button ){
 		// PhoneGap send the button user pressed 1 == OK
@@ -444,8 +444,8 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 		};
 
 		if ( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ) {
-			try { 
-				service.facebook.signout(); 
+			try {
+				service.facebook.signout();
 			} catch(e) {
 				console.log('e',e);
 			}
@@ -479,7 +479,7 @@ NGApp.factory( 'AccountResetService', function( $http, $location, AccountService
 
 	// reset the erros
 	service.errorReset = function(){
-		service.errors = [];		
+		service.errors = [];
 	}
 
 	service.form.code = $location.path().replace( '/reset', '' );
@@ -490,7 +490,7 @@ NGApp.factory( 'AccountResetService', function( $http, $location, AccountService
 		if( service.form.code == '' ){
 			service.errors.push( AccountService.errorsList[ 'enter-code' ] );
 			$( '#account-reset-code' ).focus();
-			return;	
+			return;
 		}
 		var url = App.service + 'user/code-validate';
 		$http( {
@@ -522,7 +522,7 @@ NGApp.factory( 'AccountResetService', function( $http, $location, AccountService
 		if( service.form.password == '' ){
 			service.errors.push( AccountService.errorsList[ 'enter-password' ] );
 			$( '#account-reset-password' ).focus();
-			return;	
+			return;
 		}
 		var url = App.service + 'user/change-password';
 		$http( {

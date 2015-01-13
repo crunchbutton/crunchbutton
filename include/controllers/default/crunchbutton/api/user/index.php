@@ -290,6 +290,10 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					// log in from the app
 					$fb = c::auth()->facebook(new Crunchbutton_Auth_Facebook($_REQUEST['fbrtoken']));
 					$user = c::user();
+					if( !$user->email && $fb->fbuser()->email ){
+						$user->email = $fb->fbuser()->email;
+						$user->save();
+					}
 					if ( $fb->fbuser()->id ) {
 						$fb_user = User::facebook( $fb->fbuser()->id );
 						if ( $user->id_user && $fb_user->id_user && $fb_user->id_user != $user->id_user ) {

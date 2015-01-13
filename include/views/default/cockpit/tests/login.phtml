@@ -4,7 +4,7 @@
 var FBAPP = {};
 FBAPP.processStatus = function(session) {
 	if (session.status === 'connected' && session.authResponse) {
-	
+
 		$('.login').hide();
 		$('.logout').show();
 
@@ -52,7 +52,6 @@ FBAPP.localLogout = function() {
 
 $(function() {
 	$('.login, .logout, .user').hide();
-
 	window.fbAsyncInit = function() {
 		FB.init({
 			appId: '<?=Cana::config()->facebook->app?>',
@@ -61,7 +60,7 @@ $(function() {
 			oauth: true
 		});
 
-		FB.getLoginStatus(FBAPP.processStatus);					
+		FB.getLoginStatus(FBAPP.processStatus);
 		FB.Event.subscribe('auth.statusChange', FBAPP.processStatus);
 	};
 
