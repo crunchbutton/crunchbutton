@@ -15,11 +15,8 @@
 					<div>
 						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
 					</div>
-					<div class="link no-underline" ng-click="ticket( order.id_order, order.id_support );">
-						<i class="fa fa-comments-o"></i>
-						<span ng-if="!order.id_support"> Create </span>
-						<span ng-if="order.id_support"> View </span>
-						support ticket
+					<div class="link no-underline" ng-click="ticket(order.id_order);">
+						<i class="fa fa-comments-o"></i> Ticket
 					</div>
 				<?php /* Info */ ?>
 			</td>
