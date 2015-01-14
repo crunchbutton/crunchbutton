@@ -31,7 +31,7 @@ class Crunchbutton_Support extends Cana_Table {
 			'to' => Crunchbutton_Support::getUsers(),
 			'from' => 'customer',
 			'message' => $message,
-			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
 	}
 
@@ -507,7 +507,7 @@ class Crunchbutton_Support extends Cana_Table {
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
 			'message' => $message,
-			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
 
 		$this->makeACall();
