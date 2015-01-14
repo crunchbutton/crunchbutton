@@ -9,11 +9,11 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 			->idVar('id_phone_log')
 			->load($id);
 	}
-	
-	public static function log($to, $from, $type = 'message', $direction = 'outgoing') {
+
+	public static function log($to, $from, $type = 'message', $direction = 'outgoing', $reason = '') {
 		$to = Phone::byPhone($to)->id_phone;
 		$from = Phone::byPhone($from)->id_phone;
-		
+
 		if (!$to || !$from) {
 			return false;
 		}
@@ -23,13 +23,14 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 			'id_phone_from' => $from,
 			'date' => date('Y-m-d H:i:s'),
 			'type' => $type,
-			'direction' => $direction
+			'direction' => $direction,
+			'reason' => $reason
 		]);
 		$log->save();
 
 		return $log;
 	}
-	
+
 	public function from() {
 		return Phone::o($this->id_phone_from);
 	}

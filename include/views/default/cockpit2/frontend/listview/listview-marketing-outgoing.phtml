@@ -1,0 +1,23 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>From</th>
+			<th>To</th>
+			<th>Type</th>
+			<th>Reason</th>
+			<th>Subject</th>
+			<th>Date</th>
+		</tr>
+		<tr ng-repeat="l in logs track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{l.login}}">
+			<td>{{l.from}}</td>
+			<td>{{l.to}}</td>
+			<td>{{l.type}}</td>
+			<td>{{l.reason}}</td>
+			<td>
+				<span ng-if="l.type == 'email'">{{l.subject}}</span>
+				<span ng-if="l.type == 'text'">-</span>
+			</td>
+			<td>{{l.date}}</td>
+		</tr>
+	</table>
+</div>

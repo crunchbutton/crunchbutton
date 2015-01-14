@@ -178,7 +178,8 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 		]);
 	}
 

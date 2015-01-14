@@ -105,7 +105,8 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
-			'message' => $sms_error
+			'message' => $sms_error,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 		]);
 
 	}

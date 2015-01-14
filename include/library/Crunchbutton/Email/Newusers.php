@@ -3,13 +3,14 @@
 
 class Crunchbutton_Email_Newusers extends Crunchbutton_Email {
 	private $_mailConfig;
-	
+
 	public function __construct( $params ) {
-		
+
 		$params['to'] 				= $params['email'].', Crunchbutton Copy <_USERNAME_>';
-		$params['subject'] 		= $params['subject'];		
+		$params['subject'] 		= $params['subject'];
 		$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
 		$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
+		$params['reason']			= Crunchbutton_Email_Address::REASON_NEW_USER;
 
 		$this->buildView($params);
 		$this->view()->subject	= $params['subject'];
@@ -22,6 +23,6 @@ class Crunchbutton_Email_Newusers extends Crunchbutton_Email {
 			'user' => $params['user']
 		]]);
 
-		parent::__construct($params);				
+		parent::__construct($params);
 	}
 }

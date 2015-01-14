@@ -10,7 +10,7 @@ class Crunchbutton_Blast extends Cana_Table {
 			->idVar('id_blast')
 			->load($id);
 	}
-	
+
 	public function users() {
 		if (!$this->id_blast) {
 			return;
@@ -25,7 +25,7 @@ class Crunchbutton_Blast extends Cana_Table {
 		}
 		return $this->_users;
 	}
-	
+
 	public static function getQue() {
 		$que = self::q('
 			select blast.* from blast
@@ -38,13 +38,13 @@ class Crunchbutton_Blast extends Cana_Table {
 		');
 		return $que;
 	}
-	
+
 	public function run() {
 		if ($this->status != 'canceled' && $this->status != 'complete' && $this->status != 'failed') {
-			
+
 			$this->status = 'blasting';
 			$this->save();
-			
+
 			$this->_runChunk();
 
 			if ($this->progress() == $this->users()->count()) {
@@ -60,7 +60,7 @@ class Crunchbutton_Blast extends Cana_Table {
 			}
 		}
 	}
-	
+
 	public function save() {
 		$new = $this->id_blast ? false : true;
 
@@ -73,7 +73,7 @@ class Crunchbutton_Blast extends Cana_Table {
 			]
 		], $new ? 'create' : 'update', $this->exports());
 	}
-	
+
 	private function _runChunk() {
 
 		$users = Blast_User::q('
@@ -89,7 +89,8 @@ class Crunchbutton_Blast extends Cana_Table {
 
 			$status = Crunchbutton_Message_Sms::send([
 				'to' => $user->phone,
-				'message' => $user->message()
+				'message' => $user->message(),
+				'reason' => Crunchbutton_Message_Sms::REASON_BLAST
 			]);
 
 			$log = new Blast_User_Log([
@@ -100,10 +101,10 @@ class Crunchbutton_Blast extends Cana_Table {
 
 			$log->save();
 		}
-		
+
 		return $ran;
 	}
-	
+
 	public function progress() {
 		if (!isset($this->_progress)) {
 			$users = Blast_User::q('
@@ -116,7 +117,7 @@ class Crunchbutton_Blast extends Cana_Table {
 		}
 		return $this->_progress;
 	}
-	
+
 	public function importData($data) {
 		$data = self::parseCsv($data);
 		foreach ($data as $item) {
@@ -132,17 +133,17 @@ class Crunchbutton_Blast extends Cana_Table {
 			}
 		}
 	}
-	
+
 	public static function parseCsv($data) {
 		$parser = new Cana_Csv(['useHeaders' => true]);
 		$out = $parser->parse($data);
 		return $out;
 	}
-	
+
 	public function exports() {
 		$data = $this->properties();
 		$data['progress'] = $this->progress();
-		
+
 		return $data;
 	}
 }
