@@ -14,6 +14,11 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			method: 'PUT',
 			params : {}
 		},
+		'ticket' : {
+			url: App.service + 'order/:id_order/ticket',
+			method: 'GET',
+			params : {}
+		},
 		'saveeta' : {
 			url: App.service + 'order/:id_order/eta',
 			method: 'POST',
@@ -42,6 +47,12 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 
 	service.get = function(id_order, callback) {
 		order.load({id_order: id_order}, function(data) {
+			callback(data);
+		});
+	}
+	
+	service.ticket = function(id_order, callback) {
+		order.ticket({id_order: id_order}, function(data) {
 			callback(data);
 		});
 	}

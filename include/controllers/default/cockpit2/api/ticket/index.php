@@ -9,8 +9,13 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		// Creates a new ticket for a certain order
-		if ( c::getPagePiece(2) == 'create' && $this->method() == 'post' && $this->request()['id_order'] ) {
-			$support = Crunchbutton_Support::createNewTicket(  [ 'id_order' => $this->request()['id_order'], 'body' => 'Ticket created from admin panel.' ] );
+		if (c::getPagePiece(2) == 'create' && $this->method() == 'post' && $this->request()['id_order']) {
+			$order = Order::o($this->request()['id_order']);
+			if (!$order->id_order) {
+				header('HTTP/1.0 404 Not Found');
+				exit;
+			}
+			$support = $order->getSupport(true);
 			echo $support->json();
 			exit;
 		}
