@@ -617,7 +617,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$message = Crunchbutton_Message_Sms::greeting() . 'The following communities doesn\'t have shifts for the current week: ' . join( ', ', $communitiesWithoutShift );
 
-			Crunchbutton_Message_Sms::send( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message ] );
+			Crunchbutton_Message_Sms::send( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING ] );
 		}
 
 		echo "\n";
@@ -629,7 +629,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			echo "Sending sms to support users...\n";
 
-			$rets = Crunchbutton_Message_Sms::send( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message ] );
+			$rets = Crunchbutton_Message_Sms::send( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING ] );
 
 			foreach ($rets as $ret) {
 				if (!$ret->sid) {
@@ -663,7 +663,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				// #4060 - dont send from driver number
 				$rets = Crunchbutton_Message_Sms::send([
 					'to' => $num,
-					'message' => $message
+					'message' => $message,
+					'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 				]);
 
 				foreach ($rets as $ret) {
@@ -758,7 +759,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		// #4060 - dont send from driver number
 		$rets = Crunchbutton_Message_Sms::send([
 			'to' => $num,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT
 		]);
 
 		foreach ($rets as $ret) {
@@ -832,7 +834,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				echo "\n";
 
 				// Send the sms
-				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message ] );
+				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ] );
 
 				if( $driver->phone ){
 					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone ] );
@@ -979,7 +981,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								// #4060 - dont send from driver number
 								$rets = Crunchbutton_Message_Sms::send([
 									'to' => $num,
-									'message' => $message
+									'message' => $message,
+									'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT
 								]);
 								$assignment->warned = 1;
 								$assignment->save();

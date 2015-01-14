@@ -1,0 +1,1 @@
+ALTER TABLE `phone_log` ADD `reason` varchar(255) DEFAULT NULL;

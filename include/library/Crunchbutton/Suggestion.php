@@ -8,7 +8,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 			->idVar('id_suggestion')
 			->load($id);
 	}
-	
+
 	public function queNotify() {
 		$suggestion = $this;
 		Log::debug( [ 'suggestion' => $suggestion->id_suggestion, 'action' => 'queNotify', 'type' => 'suggestion' ]);
@@ -16,7 +16,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 			$suggestion->notify();
 		});
 	}
-	
+
 	public function notify() {
 		$env = c::getEnv();
 		$phones = c::config()->suggestion->{$env}->phone;
@@ -32,26 +32,27 @@ class Crunchbutton_Suggestion extends Cana_Table {
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phones,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_SUGGESTION
 		]);
 	}
-	
+
 	public static function find($search = []) {
 		$query = 'SELECT `suggestion`.* FROM `suggestion` LEFT JOIN restaurant USING(id_restaurant) WHERE id_suggestion IS NOT NULL ';
-		
+
 		if ($search['type']) {
 			$query .= ' and type="'.$search['type'].'" ';
 		}
-		
+
 		if ($search['status']) {
 			$query .= ' and status="'.$search['status'].'" ';
 		}
-		
+
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
 			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
 		}
-		
+
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
 			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';

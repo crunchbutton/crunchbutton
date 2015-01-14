@@ -64,7 +64,7 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 	public function sms() {
 
 		$message = "Hey drivers.\nStarting Monday, Sept. 8, we are going to reimburse you for orders directly through our system every day, rather than weekly or through Abacus. So please, before this date, go online and RE-enter your direct deposit info at http://cockpit.la/drivers/docs/payment . Please note that salary payment will still be every Friday.";
-		
+
 		$drivers = Crunchbutton_Admin::drivers();
 		foreach ($drivers as $driver) {
 			if (!Controller_Api_Test_Broadcast::FOR_REAL && $driver->id_admin != 5) {
@@ -72,11 +72,12 @@ class Controller_Api_Test_Broadcast extends Crunchbutton_Controller_RestAccount 
 			}
 			$to[] = $driver->txt;
 		}
-		
+
 		Crunchbutton_Message_Sms::send([
 			'to' => $to,
 			'from' => 'driver',
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_BROADCAST
 		]);
 
 		echo "\n--------------\n";

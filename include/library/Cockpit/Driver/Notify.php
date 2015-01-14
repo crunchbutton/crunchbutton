@@ -89,7 +89,8 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SETUP
 		]);
 
 		// Send email

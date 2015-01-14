@@ -104,7 +104,8 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 				Crunchbutton_Message_Sms::send([
 					'to' => $sendSMSTo,
-					'message' => $message
+					'message' => $message,
+					'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 				]);
 			}
 /*
@@ -207,7 +208,8 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 				Crunchbutton_Message_Sms::send([
 					'to' => $sendSMSTo,
-					'message' => $message
+					'message' => $message,
+					'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 				]);
 			}
 

@@ -276,7 +276,8 @@ class Crunchbutton_Promo extends Cana_Table
 
 				Crunchbutton_Message_Sms::send([
 					'to' => $phone,
-					'message' => $message
+					'message' => $message,
+					'reason' => Crunchbutton_Message_Sms::REASON_GIFT_CARD_REDEEMED
 				]);
 
 			}
@@ -387,7 +388,8 @@ class Crunchbutton_Promo extends Cana_Table
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_GIFT_CARD
 		]);
 
 	}
