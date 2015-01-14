@@ -52,6 +52,7 @@
 			<thead>
 				<tr>
 					<td>Driver Name</td>
+					<td>Email</td>
 					<td>Number of Orders</td>
 					<td>Card Orders Spent</td>
 					<td>Pex Card Spent</td>
@@ -62,6 +63,7 @@
 			<tbody>
 				<tr ng-repeat="driver in result.drivers_expenses">
 					<td><a href="/staff/{{driver.login}}">{{driver.driver}}</a></td>
+					<td><a href="mailto:{{driver.email}}">{{driver.email}}</a></td>
 					<td>{{driver.orders}}</td>
 					<td positive-or-negative-color="{{driver.card_amount}}">$ {{driver.card_amount | formatPrice}}</td>
 					<td positive-or-negative-color="{{driver.pexcard_amount}}">$ {{driver.pexcard_amount | formatPrice}}</td>
