@@ -32,7 +32,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$a->save();
-		
+
 		$u = new User([
 			'name' => $name,
 			'phone' => '_PHONE_',
@@ -40,7 +40,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$u->save();
-		
+
 		$d = new Dish([
 			'name' => $name,
 			'price' => '10',
@@ -77,7 +77,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 		Admin::q('select * from admin where name="'.$name.'"')->delete();
 		Dish::q('select * from dish where name="'.$name.'"')->delete();
 	}
-	
+
 	public function setUp() {
 		$name = get_called_class();
 
@@ -91,7 +91,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 	public function testDriverAccept() {
 
 		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true);
-		var_dump($status);
+		// var_dump($status);
 		$this->assertTrue($status === true);
 	}
 }
