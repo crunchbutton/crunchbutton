@@ -646,7 +646,7 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public static function getSupportForOrder($id_order) {
-		$s = self::q('SELECT * FROM `support` WHERE `id_order`="'.$id_order.'" ORDER BY `id_support` DESC LIMIT 1');
+		$s = self::q('SELECT * FROM `support` WHERE `id_order`="'.$id_order.'" ORDER BY `id_support` DESC LIMIT 1')->get(0);
 		return $s->id ? $s : false;
 	}
 
