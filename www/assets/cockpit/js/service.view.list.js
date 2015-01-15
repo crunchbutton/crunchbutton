@@ -88,7 +88,9 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			updater();
 		};
 
-		scope.focus('#search');
+		if (!App.isPhoneGap) {
+			scope.focus('#search');
+		}
 
 		scope.watch(params.watch);
 		scope.update(params.update);
