@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 

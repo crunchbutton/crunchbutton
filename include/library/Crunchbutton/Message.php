@@ -1,5 +1,4 @@
-<?
-
+<?php
 class Crunchbutton_Message extends Cana_Model {
 	public static function formatNumber($num) {
 		$num = preg_replace('/[^0-9]/','',$num);
@@ -9,7 +8,7 @@ class Crunchbutton_Message extends Cana_Model {
 		if (strlen($num) != 10) {
 			return false;
 		}
-		
+
 		return '+1'.$num;
 	}
 }
