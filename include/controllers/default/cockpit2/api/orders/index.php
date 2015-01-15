@@ -25,8 +25,6 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			$offset = ($page-1) * $limit;
 		}
 
-
-
 		$q = '
 			SELECT
 				-WILD-
@@ -38,7 +36,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN community ON community.id_community=restaurant_community.id_community
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
-		
+
 //			LEFT JOIN ( SELECT MAX( id_support ) AS id_support, id_order FROM support WHERE id_order IS NOT NULL GROUP BY id_order ) support ON support.id_order = `order`.id_order
 
 		if (!c::admin()->permission()->check(['global', 'orders-all', 'orders-list-page'])) {

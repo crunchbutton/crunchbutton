@@ -505,7 +505,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	var makeTitle = function() {
-		return $route.current.title || camelCase($route.current.action.replace(/-/g,' '));
+		var title = ( $route.current && $route.current.action ? camelCase($route.current.action.replace(/-/g,' ') ) : $route.current.title );
+		return title;
 	};
 
 	// Make the window's size available to all scope

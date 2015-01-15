@@ -8,7 +8,7 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 			$this->_error();
 		}
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
+		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 50;
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
 		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
@@ -84,6 +84,7 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 		// do the query
 		$d = [];
 		$r = c::db()->query(str_replace('-WILD-','*', $q));
+		// echo str_replace('-WILD-','*', $q);exit;
 
 		while ($o = $r->fetch()) {
 			$date = new DateTime($o->timestamp, new DateTimeZone(c::config()->timezone));;
