@@ -331,14 +331,12 @@ NGApp.controller('PexCardLogCtrl', function ($scope, PexCardService, ViewListSer
 });
 
 NGApp.controller('PexCardCardLogCtrl', function ($scope, PexCardService, ViewListService) {
-
 	angular.extend( $scope, ViewListService );
-
 	$scope.view({
 		scope: $scope,
 		watch: {
 			search: '',
-			type: 'all',
+			type: 'card_assign',
 		},
 		update: function() {
 			PexCardService.cardlog($scope.query, function(d) {
