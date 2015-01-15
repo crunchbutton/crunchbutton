@@ -45,7 +45,8 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 
 		$certs = c::config()->dirs->root.'ssl/';
 
-		if ($env == 'live') {
+		// @todo: change this after aproved
+		if (1==2 && $env == 'live') {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
 				$certs.'aps_production_com.crunchbutton.cockpit.pem'
