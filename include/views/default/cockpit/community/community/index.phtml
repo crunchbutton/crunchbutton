@@ -125,6 +125,10 @@
 										if( $admin->id_admin ){
 											echo 'Closed by ' . $admin->name;
 										}
+										if( $community[ 'community' ]->close_all_restaurants ){
+											$date = new DateTime( $community[ 'community' ]->close_all_restaurants_date, new DateTimeZone(c::config()->timezone));
+											echo ' at ' . $date->format( 'M jS Y g:i:s A T' );
+										}
 									} ?>
 								</li>
 							</ul>
@@ -149,6 +153,10 @@
 										$admin = Admin::o( $community[ 'community' ]->close_3rd_party_delivery_restaurants_id_admin );
 										if( $admin->id_admin ){
 											echo 'Closed by ' . $admin->name;
+										}
+										if( $community[ 'community' ]->close_3rd_party_delivery_restaurants_date ){
+											$date = new DateTime( $community[ 'community' ]->close_3rd_party_delivery_restaurants_date, new DateTimeZone(c::config()->timezone));
+											echo ' at ' . $date->format( 'M jS Y g:i:s A T' );
 										}
 									} ?>
 								</li>
