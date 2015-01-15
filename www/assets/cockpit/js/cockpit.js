@@ -26,7 +26,7 @@ var App = {
 App.localStorage = App.isPhoneGap;
 
 if (App.isPhoneGap) {
-	App.service = 'http://cockpit.la/api/';
+	App.service = 'https://cockpit.la/api/';
 }
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
