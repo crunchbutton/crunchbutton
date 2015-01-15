@@ -10,10 +10,10 @@ class Controller_api_download extends Crunchbutton_Controller_Rest {
 
 		// trim whitespace
 		$num = trim($input);
-		
+
 		// get rid of non numbers
 		$num = preg_replace('/[^\d]/','',$input);
-		
+
 		// trincate
 		$num = substr($num, 0, 10);
 
@@ -24,10 +24,11 @@ class Controller_api_download extends Crunchbutton_Controller_Rest {
 			echo json_encode(['error' => 'invalid phone number', 'status' => false]);
 			exit;
 		}
-		
+
 		Crunchbutton_Message_Sms::send([
 			'to' => $num,
-			'message' => "YAY! Crunchbutton for iPhone!\nhttp://_DOMAIN_/app"
+			'message' => "YAY! Crunchbutton for iPhone!\nhttp://_DOMAIN_/app",
+			'reason' => Crunchbutton_Message_Sms::REASON_APP_DOWNLOAD
 		]);
 
 		echo json_encode(['status' => true]);

@@ -108,7 +108,8 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
-			'message' => $msg
+			'message' => $msg,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 		]);
 
 	}

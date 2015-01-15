@@ -12,7 +12,7 @@ class Crunchbutton_Log extends Cana_Table {
 		$log->data = json_encode( $data );
 		$log->date = date('Y-m-d H:i:s');
 		$log->save();
-		
+
 		if ($log->level == 'critical') {
 			// send notifications
 
@@ -20,7 +20,7 @@ class Crunchbutton_Log extends Cana_Table {
 			$body = 'Critical error! Type: ' . $log->type . "\n";
 			if( $info->id_order ){
 				$id_order = $info->id_order;
-			} 
+			}
 			if( $info->action ){
 				$body .= $info->action;
 			} else {
@@ -42,12 +42,13 @@ class Crunchbutton_Log extends Cana_Table {
 			c::timeout(function() use ($nums, $b) {
 				Crunchbutton_Message_Sms::send([
 					'to' => $nums,
-					'message' => $b
+					'message' => $b,
+					'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 				]);
 			});
 		}
 	}
-	
+
 
 	public static function find($search = []) {
 		$query = '
@@ -58,7 +59,7 @@ class Crunchbutton_Log extends Cana_Table {
 		if ($search['type']) {
 			$query .= ' and `type`="'.$search['type'].'" ';
 		}
-		
+
 		if ($search['level']) {
 			$query .= ' and level="'.$search['level'].'" ';
 		}
@@ -103,7 +104,7 @@ class Crunchbutton_Log extends Cana_Table {
 		$logs = self::q($query);
 		return $logs;
 	}
-	
+
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));

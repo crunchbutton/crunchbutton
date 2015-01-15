@@ -1458,7 +1458,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at http://cockpit.la/drivers/docs/payment. Text if you have questions!';
 				if( $driver->phone ){
-					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message ] );
+					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SETTLEMENT_FAIL ] );
 					Crunchbutton_Support::createNewWarning( [ 'phone' => $driver->phone, 'body' => $message ] );
 				}
 				if( $driver->email ){

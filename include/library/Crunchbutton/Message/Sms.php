@@ -1,6 +1,22 @@
-<?
+<?php
 
 class Crunchbutton_Message_Sms extends Crunchbutton_Message {
+
+	const REASON_SUPPORT = 'support';
+	const REASON_BROADCAST = 'broadcast';
+	const REASON_APP_DOWNLOAD = 'app download';
+	const REASON_SUPPORT_WARNING = 'support warning';
+	const REASON_SUPPORT_SUGGESTION = 'support suggestion';
+	const REASON_PASSWORD_RESET = 'password reset';
+	const REASON_DRIVER_SETUP = 'driver setup notify';
+	const REASON_DRIVER_ORDER = 'driver new order';
+	const REASON_DRIVER_SHIFT = 'driver shift';
+	const REASON_BLAST = 'blast';
+	const REASON_CUSTOMER_ORDER = 'customer new order';
+	const REASON_CUSTOMER_DRIVER = 'customer about driver';
+	const REASON_GIFT_CARD = 'gift card';
+	const REASON_GIFT_CARD_REDEEMED = 'gift card redeemed';
+	const REASON_SETTLEMENT_FAIL = 'settlement fail';
 
 	public static function number($t = null) {
 		if ($t) {
@@ -17,12 +33,20 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		$break = false;
 		$ret = [];
 
+		$reason = '';
+
 		if (is_array($from)) {
+
 			$to = $from['to'];
+
 			$message = $from['message'];
 
 			if (isset($from['break'])) {
 				$break = $from['break'] ? true : false;
+			}
+
+			if( isset( $from['reason'] ) ){
+				$reason = $from['reason'];
 			}
 
 			$from = $from['from'];
@@ -107,7 +131,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 					$ret[] = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg);
 
-					Phone_Log::log($t, $tfrom, 'message', 'outgoing');
+					Phone_Log::log($t, $tfrom, 'message', 'outgoing', $reason);
 
 				} catch (Exception $e) {
 

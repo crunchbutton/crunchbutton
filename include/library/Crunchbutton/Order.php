@@ -1420,7 +1420,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$message .= $this->message('selfsms');
 		Crunchbutton_Message_Sms::send([
 			'to' => $this->phone,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
 		]);
 	}
 
@@ -1559,7 +1560,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			Crunchbutton_Message_Sms::send([
 				'to' => Crunchbutton_Support::getUsers(),
-				'message' => $message
+				'message' => $message,
+				'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 			]);
 
 		} else {
@@ -1603,7 +1605,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			Crunchbutton_Message_Sms::send([
 				'to' => Crunchbutton_Support::getUsers(),
-				'message' => $message
+				'message' => $message,
+				'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 			]);
 
 		} else {
@@ -2588,7 +2591,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			} else {
 				$message = $firstName . "Your driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			}
-			Crunchbutton_Message_Sms::send( [ 'to' => $phone, 'message' => $message ] );
+			Crunchbutton_Message_Sms::send( [ 'to' => $phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_DRIVER ] );
 		}
 	}
 

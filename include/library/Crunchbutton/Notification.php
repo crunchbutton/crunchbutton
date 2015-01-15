@@ -132,7 +132,8 @@ class Crunchbutton_Notification extends Cana_Table
 				Crunchbutton_Message_Sms::send([
 					'to' => $sms,
 					'from' => 'restaurant',
-					'message' => $message
+					'message' => $message,
+					'reason' => Crunchbutton_Message_Sms::CUSTOMER_ORDER
 				]);
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
@@ -225,7 +226,8 @@ class Crunchbutton_Notification extends Cana_Table
 
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 		]);
 	}
 

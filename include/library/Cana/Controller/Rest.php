@@ -11,7 +11,7 @@ class Cana_Controller_Rest extends Cana_Controller {
         }
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
-	        
+
 	        $contentType = explode(';',trim($_SERVER['CONTENT_TYPE']));
 	        $contentType = trim($contentType[0]);
 
