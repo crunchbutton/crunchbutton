@@ -588,7 +588,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			'to' => $this->value,
 			'message' => '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.',
 			'count' => $orders->count() ? $orders->count() : 1,
-			'id' => 'order-'.$order->id
+			'id' => 'order-'.$order->id,
+			'category' => 'order-new-test'
 		]);
 
 		return $r;
