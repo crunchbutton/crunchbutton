@@ -29,9 +29,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 	};
 
 	service.login = function( username, password, callback ) {
-		console.log(username, password);
 		user.login( { 'username': username, 'password': password }, function( json ){
-			console.log(arguments);
 			if( json && json.id_admin ){
 				$rootScope.$broadcast( 'userAuth', json );
 				callback( true );
