@@ -87,7 +87,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 		
 		switch (msg.identifier) {
 			case 'i11': // accept an order
-				var order = msg.alert.replace.replace(/^#([0-9]+).*$/,'$1');
+				var order = msg.alert.replace(/^#([0-9]+).*$/,'$1');
 				DriverOrdersService.accept(order, function(json) {
 					console.debug('ACCEPT RESPONSE', json);
 					if (json.status) {
@@ -98,7 +98,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 					}
 				});
 			case 'i22': // view an order
-				var order = msg.alert.replace.replace(/^#([0-9]+).*$/,'$1');
+				var order = msg.alert.replace(/^#([0-9]+).*$/,'$1');
 				MainNavigationService.link('/drivers/order/' + order);
 				return;
 				break;
