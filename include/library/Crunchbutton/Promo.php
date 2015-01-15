@@ -276,7 +276,8 @@ class Crunchbutton_Promo extends Cana_Table
 
 				Crunchbutton_Message_Sms::send([
 					'to' => $phone,
-					'message' => $message
+					'message' => $message,
+					'reason' => Crunchbutton_Message_Sms::REASON_GIFT_CARD_REDEEMED
 				]);
 
 			}
@@ -387,9 +388,32 @@ class Crunchbutton_Promo extends Cana_Table
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
-			'message' => $message
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_GIFT_CARD
 		]);
+	}
 
+	public function createGiftCard( $value, $params = [] ){
+			$giftcard = new Crunchbutton_Promo;
+			if( isset( $params[ 'note' ] ) ){
+				$giftcard->note = $params[ 'note' ];
+			}
+			if( isset( $params[ 'issued' ] ) ){
+				$giftcard->issued = $params[ 'issued' ];
+			}
+			if( isset( $params[ 'type' ] ) ){
+				$giftcard->type = $params[ 'type' ];
+			} else {
+				$giftcard->type = 'gift_card';
+			}
+			$giftcard->paid_by = 'CRUNCHBUTTON';
+			$giftcard->code = Crunchbutton_Promo::promoCodeGenerator();
+			$giftcard->value = $value;
+
+			$giftcard->active = 1;
+			$giftcard->date = date( 'Y-m-d H:i:s' );
+			$giftcard->save();
+			return $giftcard;
 	}
 
 	public static function find($search = []) {

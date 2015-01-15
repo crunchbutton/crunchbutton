@@ -9,6 +9,13 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
 		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
 		$admin = $this->request()['admin'] ? c::db()->escape($this->request()['admin']) : 'all';
+		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+
+		if ($page == 1) {
+			$offset = '0';
+		} else {
+			$offset = ($page-1) * $limit;
+		}
 
 		$q = '
 			SELECT
@@ -67,7 +74,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			ORDER BY s.datetime DESC
-			LIMIT '.$limit.'
+			LIMIT '.$offset.', '.$limit.'
 		';
 
 		// do the query

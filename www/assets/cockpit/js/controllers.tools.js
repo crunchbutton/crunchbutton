@@ -7,5 +7,4 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('ToolsCtrl', function () {
-});
+NGApp.controller('ToolsCtrl', function () {});

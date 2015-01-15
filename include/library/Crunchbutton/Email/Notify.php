@@ -3,23 +3,24 @@
 
 class Crunchbutton_Email_Notify extends Crunchbutton_Email {
 	private $_mailConfig;
-	
+
 	public function __construct($params) {
-		
+
 		$params['to'] 				= 'Crunchbutton Copy <_USERNAME_>, nick@_DOMAIN_, david@_DOMAIN_, judd@_DOMAIN_';
 		$params['subject'] 		= 'Customer support SMS';
 		$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
 		$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
+		$params['reason']			= Crunchbutton_Email_Address::REASON_NOTIFY_CS;
 
 		$this->buildView($params);
 		$this->view()->subject	= $params['subject'];
 		$this->view()->email		= $params['email'];
 		$this->view()->message	= $params['message'];
-		
+
 		// BDC-TODO
 		$params['messageHtml'] = $this->view()->render('promo/index',['display' => true, 'set' => ['content' => $params['message']]]);
 		$params['messageHtml'] = $this->view()->render('promo/index',['display' => true, 'set' => ['content' => $params['message']]]);
 
-		parent::__construct($params);				
+		parent::__construct($params);
 	}
 }

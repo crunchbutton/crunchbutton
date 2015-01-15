@@ -197,6 +197,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 			$staff['pexcard'] = ( $s->using_pex ) ? true : false;
 
+			if( $staff['pexcard'] ){
+				$pexcard = Cockpit_Admin_Pexcard::getByAdmin( $staff[ 'id_admin' ] );
+				$pexcard = $pexcard->get( 0 );
+				$staff['pexcard'] = [ 'card_serial' => $pexcard->card_serial, 'last_four' => $pexcard->last_four ];
+			}
+
 			if ( 	( $working == 'yes' && $staff[ 'working' ] ) ||
 						( $working == 'no' && !$staff[ 'working' ] ) ||
 						( $working == 'today' && $staff[ 'working_today' ] ) ) {

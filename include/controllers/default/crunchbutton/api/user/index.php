@@ -215,7 +215,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 							Crunchbutton_Message_Sms::send([
 								'to' => $phone,
-								'message' => $message
+								'message' => $message,
+								'reason' => Crunchbutton_Message_Sms::REASON_PASSWORD_RESET
 							]);
 
 						}

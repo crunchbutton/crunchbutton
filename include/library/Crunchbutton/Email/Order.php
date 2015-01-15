@@ -2,24 +2,25 @@
 
 class Crunchbutton_Email_Order extends Crunchbutton_Email {
 	private $_mailConfig;
-	
+
 	public function __construct($params) {
-		
+
 		$params['to'] = $params['email'].', Crunchbutton Copy <_USERNAME_>';
-		$params['subject'] = 'Customer Order #'.$params['order']->id_order;		
+		$params['subject'] = 'Customer Order #'.$params['order']->id_order;
 		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
+		$params['reason']			= Crunchbutton_Email_Address::REASON_ORDER;
 
 		$this->buildView($params);
 		$this->view()->subject = $params['subject'];
 		$this->view()->email = $params['email'];
-		
+
 		if( $params['cockpit_url'] ){
-			$this->view()->cockpit_url	= $params['cockpit_url'];	
+			$this->view()->cockpit_url	= $params['cockpit_url'];
 		}
-		
+
 		$this->view()->message = $params['message'];
-		
+
 		if( $params['version'] ){
 			$version = $params['version'];
 		} else {
@@ -33,6 +34,6 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 			'version' => $version
 		]]);
 
-		parent::__construct($params);				
+		parent::__construct($params);
 	}
 }

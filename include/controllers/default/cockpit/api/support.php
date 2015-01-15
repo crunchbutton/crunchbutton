@@ -33,7 +33,8 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 					Crunchbutton_Message_Sms::send([
 						'from' => 'driver',
 						'to' => $phone,
-						'message' => $message
+						'message' => $message,
+						'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 					] );
 				}
 				echo json_encode( [ 'success' => true ] );

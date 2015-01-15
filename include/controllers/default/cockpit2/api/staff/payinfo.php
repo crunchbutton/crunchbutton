@@ -118,9 +118,6 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		if( !$payment_type->payment_method ){
 			$payment_type->payment_method = Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT;
 		}
-		if( $payment_type->payment_type ){
-			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
-		}
 		if( $this->request()[ 'legal_name_payment' ] ){
 			$payment_type->legal_name_payment = $this->request()[ 'legal_name_payment' ];
 		}

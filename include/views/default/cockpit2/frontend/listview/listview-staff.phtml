@@ -9,6 +9,7 @@
 			<th class="tb-center">Working</th>
 			<th class="tb-center">Working Today</th>
 			<th class="tb-center">Pex Card</th>
+			<th class="tb-center">Serial / Last four</th>
 			<th> </th>
 		</tr>
 		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
@@ -31,6 +32,9 @@
 			</td>
 			<td class="tb-center">
 				<span ng-if="s.pexcard"><i class="fa fa-check"></i></span>
+			</td>
+			<td class="tb-center">
+				<span ng-if="s.pexcard">{{s.pexcard.card_serial}} / {{s.pexcard.last_four}}</span>
 			</td>
 			<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
 		</tr>
