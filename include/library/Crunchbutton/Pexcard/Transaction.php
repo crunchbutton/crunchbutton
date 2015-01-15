@@ -18,6 +18,16 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		return Crunchbutton_Pexcard_Transaction::q( 'SELECT * FROM pexcard_transaction WHERE transactionId = "' . $transactionId . '"' )->get( 0 );
 	}
 
+	public function loadTransactions(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$end = $now->format( 'm/d/Y' );
+		$now->modify( '-300 days' );
+		$start = $now->format( 'm/d/Y' );
+		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
+	}
+
+
+
 	public function saveTransactionsByPeriod( $start, $end ){
 		$start = new DateTime( $start );
 		$end = new DateTime( $end );
@@ -59,7 +69,6 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function getExpensesByPeriod( $start, $end ){
-		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
 		$expenses = c::db()->get( 'SELECT lastName AS card_serial, cardNumber AS last_four, SUM( amount ) AS amount
 																												FROM pexcard_transaction
 																													WHERE
