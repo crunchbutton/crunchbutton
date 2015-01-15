@@ -67,6 +67,8 @@ NGApp.controller('LegalCtrl', function ($scope) {
 });
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
+	
+	$scope.loggingIn = false;
 
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 	$scope.login = function() {
@@ -86,12 +88,14 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 			});
 			return;
 		}
+		$scope.loggingIn = true;
 		AccountService.login( $scope.username, $scope.password, function( status ) {
 			if( status ){
 				MainNavigationService.link( '/' );
 			} else {
 				$scope.error = true;
 			}
+			$scope.loggingIn = false;
 		} );
 	}
 

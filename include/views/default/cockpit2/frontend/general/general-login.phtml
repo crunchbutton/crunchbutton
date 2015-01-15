@@ -17,7 +17,7 @@
 			<span ng-switch-default>cockpit<span class="dot">.</span><span class="green">la</span></span>
 		</div>
 
-		<div class="dialog-message dialog-message-error" ng-show="error">
+		<div class="dialog-message dialog-message-error" ng-show="error && !loggingIn">
 			Invalid username or password
 		</div>
 	
