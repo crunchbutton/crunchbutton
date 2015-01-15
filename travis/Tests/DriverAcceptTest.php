@@ -90,7 +90,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 
 	public function testDriverAccept() {
 
-		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true);
+		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $this->driver);
 		// var_dump($status);
 		$this->assertTrue($status === true);
 	}

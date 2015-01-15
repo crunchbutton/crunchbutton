@@ -13,7 +13,6 @@ class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
-
 		if (!$_SERVER['SERVER_NAME']) {
 			$cli = true;
 			// get the env send by parameter
@@ -21,10 +20,12 @@ class Crunchbutton_App extends Cana_App {
 			if ($a->e) {
 				$cliEnv = $a->e;
 			}
-
 			// set hostname by path
 			if (preg_match('/^\/Users\//',dirname(__FILE__))) {
 				$_SERVER['SERVER_NAME'] = 'crunchbutton.localhost';
+
+			} elseif ( $_SERVER[ 'USER' ] == 'vagrant' ){
+				$_SERVER['SERVER_NAME'] = 'dev.la';
 
 			} elseif (preg_match('/^\/home\/beta.crunchbutton/',dirname(__FILE__))) {
 				$_SERVER['SERVER_NAME'] = 'beta.crunchr.co';
@@ -63,7 +64,6 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$db = 'fail';
 		}
-
 
 		// overwrite if we specify the db
 		if ($cliEnv) {
