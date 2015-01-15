@@ -21,12 +21,10 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function loadTransactions(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$end = $now->format( 'm/d/Y' );
-		$now->modify( '-300 days' );
+		$now->modify( '-7 days' );
 		$start = $now->format( 'm/d/Y' );
 		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
 	}
-
-
 
 	public function saveTransactionsByPeriod( $start, $end ){
 		$start = new DateTime( $start );
