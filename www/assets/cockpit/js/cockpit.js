@@ -552,7 +552,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('.nav-top').addClass('at-top');
 
 		App.scrollTop($rootScope.scrollTop);
-		if( App.span && App.snap.close ){
+		if( App.snap && App.snap.close ){
 			App.snap.close();
 		}
 
