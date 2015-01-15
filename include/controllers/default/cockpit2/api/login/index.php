@@ -6,7 +6,7 @@ class Controller_api_login extends Crunchbutton_Controller_Rest {
 		if ($user) {
 			echo c::admin()->json();
 		} else {
-			echo json_encode(['error' => 'invalid login']);
+			echo json_encode(['error' => 'invalid login', 'request' => $this->request()]);
 		}
 	}
 }
