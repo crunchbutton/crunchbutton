@@ -284,7 +284,10 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 
 		if( $support && $support->id_support ){
-			$support->status = Crunchbutton_Support::STATUS_OPEN;
+			$open = isset( $params[ 'dont_open_ticket' ] ) ? false : true;
+			if( $open ){
+				$support->status = Crunchbutton_Support::STATUS_OPEN;
+			}
 		} else {
 			$support = new Crunchbutton_Support();
 			$support->type = Crunchbutton_Support::TYPE_WARNING;
