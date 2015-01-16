@@ -153,8 +153,10 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		if( $name ){
 			return $name . ', ' . "\n";
 		}
-		$greetings = [ 'Hey, ', 'Hi, ', 'Heya, ', 'Hey! ', 'Hola ', 'Bonjour ', 'Hi! ', 'Ola, ' ];
-		return $greetings[ array_rand( $greetings, 1 ) ] . "\n";
+		return '';
+		// find a way to never have to use a greeting in SMS; always use first name #4372
+		// $greetings = [ 'Hey, ', 'Hi, ', 'Heya, ', 'Hey! ', 'Hola ', 'Bonjour ', 'Hi! ', 'Ola, ' ];
+		// return $greetings[ array_rand( $greetings, 1 ) ] . "\n";
 	}
 
 }

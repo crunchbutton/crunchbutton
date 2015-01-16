@@ -172,8 +172,6 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 			return;
 		}
 
-		$message = Crunchbutton_Message_Sms::greeting() . $message;
-
 		$message .= ' E: ' . $env;
 
 		Crunchbutton_Message_Sms::send([

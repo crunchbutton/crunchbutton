@@ -1550,8 +1550,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$env = c::getEnv();
 
-		$message = Crunchbutton_Message_Sms::greeting();
-		$message .= "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
+		$message = "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
@@ -1587,8 +1586,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$env = c::getEnv();
 
-		$message = Crunchbutton_Message_Sms::greeting();
-		$message .= 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
+		$message = 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
 		$message .= "\n";
