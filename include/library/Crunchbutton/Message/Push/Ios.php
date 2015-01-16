@@ -6,6 +6,7 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 		$sound = 'www/edm.wav';
 		$count = 1;
 		$id = 'push';
+		$category = '';
 
 		if (is_array($to)) {
 
@@ -21,6 +22,10 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 			
 			if (isset($to['id'])) {
 				$id = $to['id'];
+			}
+			
+			if (isset($to['category'])) {
+				$category = $to['category'];
 			}
 			
 			$to = $to['to'];
@@ -40,7 +45,8 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 
 		$certs = c::config()->dirs->root.'ssl/';
 
-		if ($env == 'live') {
+		// @todo: change this after aproved
+		if (1==2 && $env == 'live') {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
 				$certs.'aps_production_com.crunchbutton.cockpit.pem'
@@ -68,6 +74,11 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 			$msg->setExpiry(30);
 	
 			$msg->setBadge($count);
+			
+			if ($category) {
+				$msg->setCategory($category);
+			}
+
 	
 			$push->add($msg);
 		}

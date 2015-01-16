@@ -1,7 +1,7 @@
 
 
 
-NGApp.factory('PushService', function($http) {
+NGApp.factory('PushService', function($http, MainNavigationService, DriverOrdersService) {
 
 	var service = {
 		id: null,
@@ -84,6 +84,25 @@ NGApp.factory('PushService', function($http) {
 		var complete = function() {
 
 		};
+		
+		switch (msg.identifier) {
+			case 'i11': // accept an order
+				var order = msg.alert.replace(/^#([0-9]+).*$/,'$1');
+				DriverOrdersService.accept(order, function(json) {
+					console.debug('ACCEPT RESPONSE', json);
+					if (json.status) {
+						
+					} else {
+						var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+						App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
+					}
+				});
+			case 'i22': // view an order
+				var order = msg.alert.replace(/^#([0-9]+).*$/,'$1');
+				MainNavigationService.link('/drivers/order/' + order);
+				return;
+				break;
+		}
 
 		// iOS
 		if (msg.alert) {
