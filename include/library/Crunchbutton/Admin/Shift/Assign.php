@@ -29,6 +29,10 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		return false;
 	}
 
+	public function isPermanent(){
+		return Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $this->id_admin, $this->id_community_shift );
+	}
+
 	public function shift(){
 		if( !$this->_shift ){
 			$this->_shift = Crunchbutton_Community_Shift::o( $this->id_community_shift );
