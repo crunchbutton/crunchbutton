@@ -485,8 +485,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 
 	// Make the window's size available to all scope
-	$rootScope.windowWidth = $window.outerWidth;
-	$rootScope.windowHeight = $window.outerHeight;
+	$rootScope.windowWidth = $('body').width();
+	$rootScope.windowHeight = $('body').height();
 
 	// Window resize event
 	angular.element( $window ).bind( 'resize',function(){
