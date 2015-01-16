@@ -27,13 +27,21 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 				}
 				break;
 			case 'send-sms':
-				$message = Crunchbutton_Message_Sms::greeting() . $this->request()[ 'message' ];
+				$message = $this->request()[ 'message' ];
 				$phones = explode( ';', $this->request()[ 'phones' ] );
 				foreach( $phones as $phone ){
+					$admin = Crunchbutton_Admin::getByPhone( $phone );
+					if( $admin->id_admin ){
+						$name = $admin->firstName();
+					} else {
+						$name = '';
+					}
+					$_message = Crunchbutton_Message_Sms::greeting( $name ) . $message;
+
 					Crunchbutton_Message_Sms::send([
 						'from' => 'driver',
 						'to' => $phone,
-						'message' => $message,
+						'message' => $_message,
 						'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 					] );
 				}

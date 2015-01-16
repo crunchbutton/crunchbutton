@@ -685,7 +685,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		echo $log."\n";
 		echo "\n";
 
-		$messagePattern = Crunchbutton_Message_Sms::greeting() . "Remember: you're scheduled to drive for Crunchbutton tomorrow, %s, from %s\nRemember to charge your phone!";
+		$messagePattern = "Remember: you're scheduled to drive for Crunchbutton tomorrow, %s, from %s\nRemember to charge your phone!";
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$now->modify( '+ 1 day' );
@@ -719,8 +719,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					$next = $i + 1;
 					if( $hours[ $next ] ){
 						$secs = Crunchbutton_Util::intervalToSeconds( $hours[ $i ][ 'end' ]->diff( $hours[ $next ][ 'start' ] ) );
+						$_message = Crunchbutton_Message_Sms::greeting( $admin->firstName() ) . $messagePattern;
 						if( $secs > 0 ){
-							$message = sprintf( $messagePattern, $now->format( 'M jS Y' ), $hours[ $i ][ 'startEnd' ] );
+							$message = sprintf( $_message, $now->format( 'M jS Y' ), $hours[ $i ][ 'startEnd' ] );
 							Crunchbutton_Community_Shift::shiftMessageWarning( $message, $admin );
 						} else {
 							$_shift = new Crunchbutton_Community_Shift;
@@ -728,7 +729,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 							$_shift->date_end = $hours[ $next ][ 'end' ]->format( 'Y-m-d H:i:s' );
 							$_shift->id_community = $id_community;
 							$_shift->_timezone = $timezone;
-							$message = sprintf( $messagePattern, $now->format( 'M jS Y' ), $_shift->startEndToString() );
+							$message = sprintf( $_message, $now->format( 'M jS Y' ), $_shift->startEndToString() );
 							$hours[ $next ][ 'merged' ] = true;
 							Crunchbutton_Community_Shift::shiftMessageWarning( $message, $admin );
 						}
