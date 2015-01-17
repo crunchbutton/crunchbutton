@@ -79,15 +79,19 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		$to_add = $ids_admin;
 
 		$assigneds = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign WHERE id_community_shift = "' . $id_community_shift . '"  ORDER BY id_admin' );
-
 		foreach( $assigneds as $assigned ){
 			// about the shift
-			$key = array_search( $assigned->id_admin, $to_add );
-			if( $key !== false ){
-				unset( $to_add[ $key ] );
+			if( count( $to_add ) > 0 ){
+				$key = array_search( $assigned->id_admin, $to_add );
+				if( $key !== false ){
+					unset( $to_add[ $key ] );
+				} else {
+					$to_remove[] = $assigned;
+				}
 			} else {
 				$to_remove[] = $assigned;
 			}
+
 			// about permanency
 			if( count( $ids_admin_permanently ) > 0 ){
 				$key = array_search( $assigned->id_admin, $ids_admin_permanently );
@@ -114,21 +118,28 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		if( count( $to_remove_permanency ) > 0 ){
 			foreach( $to_remove_permanency as $remove ){
 				$shift = $remove->shift();
+
 				$id_father = $shift->id_community_shift_father;
-				$id_admin = $remove->id_admin;
-				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-				// Remove permanency
-				Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShiftFather( $id_admin, $id_father );
+				if( !$id_father && $shift->recurring ){
+					$id_father = $shift->id_community_shift;
+				}
 
-				// Remove next shifts assignments for the permanency
-				$remove_assignment_after = ( $now->format( 'YmdHis' ) > $shift->dateEnd()->format( 'YmdHis' ) ? $now : $shift->dateEnd() ) ;
+				if( $id_father ){
+					$id_admin = $remove->id_admin;
+					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+					// Remove permanency
+					Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShiftFather( $id_admin, $id_father );
 
-				$assignments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa
-																															INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift AND cs.id_community_shift_father = ' . $id_father . '
-																															WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) > "' . $remove_assignment_after->format( 'Y-m-d' ) . '" AND asa.id_admin = "' . $id_admin . '" AND asa.warned = "0"' );
+					// Remove next shifts assignments for the permanency
+					$remove_assignment_after = ( $now->format( 'YmdHis' ) > $shift->dateEnd()->format( 'YmdHis' ) ? $now : $shift->dateEnd() ) ;
 
-				foreach( $assignments as $assignment ){
-					$assignment->delete();
+					$assignments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa
+																																INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift AND cs.id_community_shift_father = ' . $id_father . '
+																																WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) > "' . $remove_assignment_after->format( 'Y-m-d' ) . '" AND asa.id_admin = "' . $id_admin . '" AND asa.warned = "0"' );
+
+					foreach( $assignments as $assignment ){
+						$assignment->delete();
+					}
 				}
 			}
 		}
