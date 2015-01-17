@@ -457,7 +457,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function getDrivers(){
-		return Crunchbutton_Admin::q( 'SELECT a.* FROM admin a INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin AND asa.id_community_shift = ' . $this->id_community_shift . ' WHERE a.active = 1' );
+		return Crunchbutton_Admin::q('
+			SELECT admin.* FROM admin
+			LEFT JOIN admin_shift_assign ON admin_shift_assign.id_admin = admin.id_admin
+			LEFT JOIN community_shift ON community_shift.id_community_shift = admin_shift_assign.id_community_shift
+			WHERE
+				admin.active=1
+				AND community_shift.active=1
+				AND community_shift.id_community_shift='.$this->id_community_shift.'
+		');
 	}
 
 	public function communitiesWithDeliveryService(){
