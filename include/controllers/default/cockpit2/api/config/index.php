@@ -8,6 +8,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$user = c::user()->exports();
 				if( c::user()->id_admin ){
 					$user[ 'invite_code' ] = c::user()->inviteCode();
+					$user['working'] = c::user()->isWorking();
 				}
 
 				$payment_type = c::user()->payment_type();
