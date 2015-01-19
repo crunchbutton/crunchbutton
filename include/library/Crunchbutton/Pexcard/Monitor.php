@@ -3,7 +3,7 @@
 class Crunchbutton_Pexcard_Monitor extends Crunchbutton_Pexcard_Resource {
 
 	const BALANCE_LIMIT = 500;
-	const TRANSFER_LIMIT = 300;
+	const TRANSFER_LIMIT = 250;
 
 	public function checkBalanceLimit(){
 		$cards = Crunchbutton_Pexcard_Card::card_list();
