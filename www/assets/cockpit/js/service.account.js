@@ -46,6 +46,10 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 			MainNavigationService.link('/login');
 		});
 	};
+	
+	$rootScope.$on('adminWorking', function(e, data) {
+		service.user.working = data;
+	});
 
 	$rootScope.$on('userAuth', function(e, data) {
 
