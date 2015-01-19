@@ -54,7 +54,7 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, $route, PexC
 			return;
 		}
 
-		if( $scope.form.$invalid ){
+		if( $scope && $scope.form && $scope.form.$invalid ){
 			$scope.submitted = true;
 			$scope.isSearching = false;
 			return;

@@ -90,7 +90,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 		$eta = 0;
 		$distance = 0;
 
-		if ($res) {
+		if ($res && $res->routes[0] && $res->routes[0]->legs) {
 			foreach ($res->routes[0]->legs as $leg) {
 				$eta += $leg->duration->value/60;
 				$distance += $leg->distance->value * 0.000621371;
