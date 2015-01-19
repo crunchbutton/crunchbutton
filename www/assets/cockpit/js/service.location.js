@@ -1,8 +1,7 @@
 
 // we have to be nice to the battery with both geolocation, and ajax requests
 
-NGApp.factory('LocationService', function($http, $resource, $rootScope) {
-
+NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountService) {
 
 	if (App.isPhoneGap && parent.window.plugins && parent.window.plugins.backgroundGeoLocation) {
 
@@ -87,23 +86,31 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 		if (watcher) {
 			return;
 		}
+		
+		var webLocationTrack = function(pos) {
+			var trackedPos = pos.coords;
+			trackedPos.timestamp = pos.timestamp;
 
-		if (parent.window.navigator.geolocation) {
-			watcher = parent.window.navigator.geolocation.watchPosition(function(pos) {
-				var trackedPos = pos.coords;
-				trackedPos.timestamp = pos.timestamp;
+			console.debug('Got foreground drivers location: ', trackedPos, Math.random());
+			$rootScope.$broadcast('location', trackedPos);
 
-				console.debug('Got drivers location: ', trackedPos, Math.random());
-				$rootScope.$broadcast('location', trackedPos);
+			track(trackedPos, false);
+		};
 
-				track(trackedPos, false);
-
-			}, function() {
+		if (!bgGeo && parent.window.navigator.geolocation) {
+			watcher = parent.window.navigator.geolocation.watchPosition(webLocationTrack, function() {
 				//alert('Your location services are off, or you declined location permissions. Please enable this.');
 			}, { enableHighAccuracy: true });
 		}
 		if (App.isPhoneGap && bgGeo) {
-			bgGeo.start();
+			watcher = true;
+			parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
+				webLocationTrack(pos);
+				bgGeo.start();
+			}, function() {
+				App.alert('Please enable location services for Cockpit. As a driver, your location will only be tracked while you are on shift.')
+			});
+			
 		}
 	};
 	
@@ -128,10 +135,22 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 			bgGeo.stop();
 		}
 	}
-
+/*
 	$rootScope.$on('userAuth', function(e, data) {
 		// start watching if there is a user and their docs are filled out
 		if (data && data.id_admin) {
+			startWatch();
+		} else {
+			stopWatch();
+		}
+	});
+	*/
+	
+	$rootScope.$watch('account.user.working', function(value) {
+		console.debug('Got a change in user working:', arguments);
+
+		if (value && AccountService.isDriver) {
+			console.debug('Starting tracking because user is working and a driver.');
 			startWatch();
 		} else {
 			stopWatch();

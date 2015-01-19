@@ -289,6 +289,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversPaymentCtrl',
 			templateUrl: 'assets/view/drivers-payment.html'
 		})
+		.when('/drivers/welcome', {
+			action: 'drivers-welcome',
+			controller: 'DriversWelcomeCtrl',
+			templateUrl: 'assets/view/drivers-welcome.html'
+		})
 		/* other */
 		.when('/login', {
 			action: 'login',
