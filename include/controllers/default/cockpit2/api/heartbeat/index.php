@@ -51,6 +51,8 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 					break;
 			}
 		}
+		
+		$r['working'] = c::user()->isWorking();
 
 
 		// location reporting
