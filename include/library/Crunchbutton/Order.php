@@ -2481,6 +2481,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
 						// Add $10 for the first accepted order - #3993
 						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
+						Log::debug( [ 'action 1' => $shift->id_admin_shift_assign, 'type' => 'pexcard' ] );
 						if( $shift->id_admin_shift_assign ){
 							$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
 						}
