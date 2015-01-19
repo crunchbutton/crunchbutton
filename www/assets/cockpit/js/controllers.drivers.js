@@ -997,3 +997,5 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 
 NGApp.controller('DriversHelpCtrl', function() {});
 NGApp.controller('DriversHelpCreditCardCtrl', function() {});
+
+NGApp.controller('DriversWelcomeCtrl', function() {});
