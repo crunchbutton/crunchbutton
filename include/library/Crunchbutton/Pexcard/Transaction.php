@@ -53,6 +53,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																					INNER JOIN order_action oa ON o.id_order = oa.id_order
 																					INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
 																					INNER JOIN admin a ON oa.id_admin = a.id_admin
+																					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = 0
 																					WHERE
 																						apt.using_pex = 1
 																					AND
@@ -104,7 +105,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 					$card_amount += $amount;
 				}
 				$diff = floatval( floatval( number_format( $card_amount, 2 ) ) - floatval( number_format( $order_expense->amount, 2 ) ) );
-				$drivers_expenses[] = [ 'id_admin' => intval( $order_expense->id_admin ), 'driver' => $order_expense->driver, 'email' => $order_expense->email, 'pexcard_amount' => floatval( number_format( $card_amount, 2 ) ), 'card_cash_amount' => $_cash_order_expenses[ $order_expense->id_admin ], 'card_amount' => floatval( number_format( $order_expense->amount, 2 ) ), 'diff' => $diff, 'orders' => intval( $order_expense->orders ) ];
+				$drivers_expenses[] = [ 'id_admin' => intval( $order_expense->id_admin ), 'login' => $order_expense->login,  'driver' => $order_expense->driver, 'email' => $order_expense->email, 'pexcard_amount' => floatval( number_format( $card_amount, 2 ) ), 'card_cash_amount' => $_cash_order_expenses[ $order_expense->id_admin ], 'card_amount' => floatval( number_format( $order_expense->amount, 2 ) ), 'diff' => $diff, 'orders' => intval( $order_expense->orders ) ];
 			}
 		}
 
