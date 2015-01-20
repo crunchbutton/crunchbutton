@@ -998,4 +998,8 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 NGApp.controller('DriversHelpCtrl', function() {});
 NGApp.controller('DriversHelpCreditCardCtrl', function() {});
 
-NGApp.controller('DriversWelcomeCtrl', function() {});
+NGApp.controller('DriversWelcomeHomeCtrl', function() {});
+NGApp.controller('DriversWelcomeInfoCtrl', function() {});
+NGApp.controller('DriversWelcomeLocationCtrl', function() {});
+NGApp.controller('DriversWelcomePushCtrl', function() {});
+NGApp.controller('DriversWelcomeWahooCtrl', function() {});

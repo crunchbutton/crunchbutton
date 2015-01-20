@@ -289,10 +289,32 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversPaymentCtrl',
 			templateUrl: 'assets/view/drivers-payment.html'
 		})
+		
+		/* driver welcome shit */
 		.when('/drivers/welcome', {
-			action: 'drivers-welcome',
-			controller: 'DriversWelcomeCtrl',
-			templateUrl: 'assets/view/drivers-welcome.html'
+			action: 'drivers-welcome-home',
+			controller: 'DriversWelcomeHomeCtrl',
+			templateUrl: 'assets/view/drivers-welcome-home.html'
+		})
+		.when('/drivers/welcome/info', {
+			action: 'drivers-welcome-info',
+			controller: 'DriversWelcomeInfoCtrl',
+			templateUrl: 'assets/view/drivers-welcome-info.html'
+		})
+		.when('/drivers/welcome/location', {
+			action: 'drivers-welcome-location',
+			controller: 'DriversWelcomeLocationCtrl',
+			templateUrl: 'assets/view/drivers-welcome-location.html'
+		})
+		.when('/drivers/welcome/push', {
+			action: 'drivers-welcome-push',
+			controller: 'DriversWelcomePushCtrl',
+			templateUrl: 'assets/view/drivers-welcome-push.html'
+		})
+		.when('/drivers/welcome/wahoo', {
+			action: 'drivers-welcome-wahoo',
+			controller: 'DriversWelcomeWahooCtrl',
+			templateUrl: 'assets/view/drivers-welcome-wahoo.html'
 		})
 		/* other */
 		.when('/login', {
