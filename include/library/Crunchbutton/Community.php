@@ -88,6 +88,23 @@ class Crunchbutton_Community extends Cana_Table {
 		$out[ 'image' ] = intval( $out[ 'image' ] );
 		$out[ 'close_all_restaurants' ] = intval( $out[ 'close_all_restaurants' ] );
 		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
+
+		if( $out[ 'close_all_restaurants_id_admin' ] ){
+			$admin = Admin::o( $out[ 'close_all_restaurants_id_admin' ] );
+			$out[ 'close_all_restaurants_admin' ] = $admin->name;
+			$date = new DateTime( $out[ 'close_all_restaurants_date' ], new DateTimeZone( c::config()->timezone ) );
+			$out[ 'close_all_restaurants_date' ] = $date->format( 'M jS Y g:i:s A T' );
+		}
+
+		if( $out[ 'close_3rd_party_delivery_restaurants_id_admin' ] ){
+			$admin = Admin::o( $out[ 'close_3rd_party_delivery_restaurants_id_admin' ] );
+			$out[ 'close_3rd_party_delivery_restaurants_admin' ] = $admin->name;
+			$date = new DateTime( $out[ 'close_3rd_party_delivery_restaurants_date' ], new DateTimeZone( c::config()->timezone ) );
+			$out[ 'close_3rd_party_delivery_restaurants_date' ] = $date->format( 'M jS Y g:i:s A T' );
+		}
+
+
+
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
 		}
@@ -130,7 +147,14 @@ class Crunchbutton_Community extends Cana_Table {
 		if( $alias ){
 			return $alias[ 'name_alt' ];
 		}
-		return false;
+		return $this->name_alt;
+	}
+
+	public function aliases(){
+		if( !$this->_aliases ){
+			$this->_aliases = Crunchbutton_Community_Alias::q( 'SELECT * FROM community_alias WHERE id_community = ' . $this->id_community . ' ORDER BY alias ASC' );
+		}
+		return $this->_aliases;
 	}
 
 	public function prep(){
@@ -141,7 +165,7 @@ class Crunchbutton_Community extends Cana_Table {
 		if( $alias ){
 			return $alias[ 'prep' ];
 		}
-		return false;
+		return $this->prep;
 	}
 
 	public function __construct($id = null) {

@@ -9,7 +9,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		})
 		.when('/community/edit/:id', {
 			action: 'community',
-			controller: 'CommunityEditCtrl',
+			controller: 'CommunityFormCtrl',
+			templateUrl: 'assets/view/communities-form.html'
+		})
+		.when('/community/new', {
+			action: 'community',
+			controller: 'CommunityFormCtrl',
 			templateUrl: 'assets/view/communities-form.html'
 		})
 		.when('/community/:id', {
@@ -40,10 +45,11 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 });
 
 
-NGApp.controller('CommunityEditCtrl', function ($scope, $routeParams, $rootScope, CommunityService ) {
+NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope, CommunityService ) {
 
 	$scope.ready = false;
 	$scope.isSaving = false;
+	$scope.isSavingAlias = false;
 
 	$scope.save = function(){
 
@@ -59,9 +65,9 @@ NGApp.controller('CommunityEditCtrl', function ($scope, $routeParams, $rootScope
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-				// TODO:::: >>>>>
-				// check why this isn't redirecting!!
+				$scope.community = json;
 				$scope.navigation.link( '/community/edit/' + json.permalink );
+				load_alias();
 			}
 		} );
 	}
@@ -70,15 +76,64 @@ NGApp.controller('CommunityEditCtrl', function ($scope, $routeParams, $rootScope
 		$rootScope.navigation.back();
 	}
 
-	CommunityService.get( $routeParams.id, function( d ) {
-
+	var load = function(){
 		$scope.timezones = CommunityService.timezones();
 		$scope.yesNo = CommunityService.yesNo();
-
-		$rootScope.title = d.name + ' | Community';
-		$scope.community = d;
 		$scope.ready = true;
-	});
+	}
+
+	var load_alias = function(){
+		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink  };
+		CommunityService.alias.list( $routeParams.id, function( json ){
+			$scope.aliases = json;
+		} );
+	}
+
+	$scope.remove_alias = function( id_community_alias ){
+		if( confirm( 'Confirm remove the alias?' ) ){
+			CommunityService.alias.remove( { 'id_community_alias' : id_community_alias, permalink: $scope.community.permalink }, function( data ){
+				if( data.error ){
+					App.alert( data.error);
+					return;
+				} else {
+					load_alias();
+					$scope.flash.setMessage( 'Alias removed!' );
+				}
+			} );
+		}
+	}
+
+	$scope.add_alias = function(){
+
+		if( $scope.formAlias.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSavingAlias = true;
+
+		CommunityService.alias.add( $scope.alias, function( json ){
+			$scope.isSavingAlias = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				load_alias();
+			}
+		} );
+	}
+
+	if( $routeParams.id ){
+		CommunityService.get( $routeParams.id, function( d ) {
+			$rootScope.title = d.name + ' | Community';
+			$scope.community = d;
+			load_alias();
+			load();
+		});
+	} else {
+		$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0 };
+		load();
+	}
+
 });
 
 

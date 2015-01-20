@@ -42,6 +42,13 @@ class Crunchbutton_Community_Alias extends Cana_Table {
 		return false;
 	}
 
+	public function exports(){
+		$out = $this->properties();
+		unset( $out[ 'id_community' ] );
+		unset( $out[ 'id' ] );
+		return $out;
+	}
+
 	public static function all( $just_fields = false ) {
 		 $res = Cana::db()->query('
 				SELECT

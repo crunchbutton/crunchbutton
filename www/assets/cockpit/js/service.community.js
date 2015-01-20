@@ -26,6 +26,32 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		},
 	});
 
+	var aliases = $resource( App.service + 'community/:permalink/aliases/:action', { permalink: '@permalink', action: '@action' }, {
+				// list methods
+				'list' : { 'method': 'GET', params : { 'action' : null }, isArray: true },
+				'add' : { 'method': 'POST', params : { 'action' : 'add' } },
+				'remove' : { 'method': 'POST', params : { 'action' : 'remove' } }
+			}
+		);
+
+	service.alias = {
+		list: function( permalink, callback ){
+			aliases.list( { permalink: permalink }, function( data ){
+				callback( data );
+			} );
+		},
+		add: function( params, callback ){
+			aliases.add( params, function( data ){
+				callback( data );
+			} );
+		},
+		remove: function( params, callback ){
+			aliases.remove( params, function( data ){
+				callback( data );
+			} );
+		}
+	}
+
 	service.list = function(params, callback) {
 		community.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
