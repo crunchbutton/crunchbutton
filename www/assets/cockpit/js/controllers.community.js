@@ -45,7 +45,7 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 });
 
 
-NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope, CommunityService ) {
+NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope, CommunityService, MapService ) {
 
 	$scope.ready = false;
 	$scope.isSaving = false;
@@ -71,6 +71,18 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			}
 		} );
 	}
+
+	$scope.$watch( 'community.loc_lat', function( newValue, oldValue, scope ) {
+		update_map();
+	});
+
+	$scope.$watch( 'community.loc_lon', function( newValue, oldValue, scope ) {
+		update_map();
+	});
+
+	$scope.$watch( 'community.range', function( newValue, oldValue, scope ) {
+		update_map();
+	});
 
 	$scope.cancel = function(){
 		$rootScope.navigation.back();
@@ -103,6 +115,26 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 		}
 	}
 
+	var update_map = function(){
+
+		if (!$scope.map || !$scope.community || !$scope.community.range || !$scope.community.loc_lon || !$scope.community.loc_lat) {
+			return;
+		}
+
+		MapService.trackCommunity({
+			map: $scope.map,
+			community: $scope.community,
+			scope: $scope,
+			id: 'community-location'
+		});
+	}
+
+	$scope.$on('mapInitialized', function(event, map) {
+		$scope.map = map;
+		MapService.style(map);
+		update_map();
+	});
+
 	$scope.add_alias = function(){
 
 		if( $scope.formAlias.$invalid ){
@@ -126,6 +158,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 		CommunityService.get( $routeParams.id, function( d ) {
 			$rootScope.title = d.name + ' | Community';
 			$scope.community = d;
+			update_map();
 			load_alias();
 			load();
 		});
