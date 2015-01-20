@@ -2573,8 +2573,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$order = Crunchbutton_Order::o( $this->id_order );
 
-		Log::debug( [ 'action 1' => $order->id_order, 'type' => 'order' ] );
-
 		if( !$order->id_order ){
 			return;
 		}
@@ -2584,12 +2582,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$phone = $order->phone;
 		$driver = $order->getDeliveryDriver();
 
-		Log::debug( [ 'action 2' => $phone, 'type' => 'order' ] );
-		Log::debug( [ 'action 3' => $driver->name, 'type' => 'order' ] );
-
 		$firstName = Crunchbutton_Message_Sms::greeting( $order->user()->firstName() );
-
-		Log::debug( [ 'action 4' => $firstName, 'type' => 'order' ] );
 
 		if( $driver ){
 			// Check if the order was rejected and change the message
@@ -2599,12 +2592,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			} else {
 				$message = $firstName . "Your driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			}
-			Log::debug( [ 'action 5' => $message, 'type' => 'order' ] );
 			Crunchbutton_Message_Sms::send( [ 'to' => $phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_DRIVER ] );
-			Log::debug( [ 'action 6' => $message, 'type' => 'order' ] );
 		}
-
-
 	}
 
 	public function hasGiftCardIssued(){
