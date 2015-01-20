@@ -220,6 +220,7 @@ class Crunchbutton_Support extends Cana_Table {
 		// Params to create the new Support message
 		$messageParams[ 'phone' ] = $params[ 'phone' ];
 		$messageParams[ 'body' ] = $params[ 'body' ];
+		$messageParams['media'] = $params['media'];
 		$support->addCustomerMessage( $messageParams );
 		return Crunchbutton_Support::o( $support->id_support );
 	}
@@ -320,6 +321,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$messageParams[ 'name' ] = $params[ 'name' ];
 		$messageParams[ 'phone' ] = $params[ 'phone' ];
 		$messageParams[ 'body' ] = $params[ 'body' ];
+		$messageParams[ 'media' ] = $params[ 'media' ];
 		$this->addMessage( $messageParams );
 	}
 
@@ -365,6 +367,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'phone' ] = $params[ 'phone' ];
 			$messageParams[ 'body' ] = $params[ 'body' ];
 			$messageParams[ 'guid' ] = $params[ 'guid' ];
+			$messageParams[ 'media' ] = $params[ 'media' ];
 			return $this->addMessage( $messageParams );
 		}
 	}
@@ -449,6 +452,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$message->guid = $params[ 'guid' ];
 		$message->name = $params[ 'name' ];
 		$message->body = $params[ 'body' ];
+		$message->media = $params[ 'media' ];
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$message->date = $today->format( 'Y-m-d H:i:s' );
 		$message->save();

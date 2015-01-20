@@ -28,7 +28,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		return Phone::dirty($num);
 	}
 
-	public static function send($from, $to = null, $message = null) {
+	public static function send($from, $to = null, $message = null, $media = null) {
 
 		$break = false;
 		$ret = [];
@@ -48,6 +48,10 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			if( isset( $from['reason'] ) ){
 				$reason = $from['reason'];
 			}
+			
+			if( isset( $from['media'] ) ){
+				$media = $from['media'];
+			}
 
 			$from = $from['from'];
 		}
@@ -62,6 +66,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		if (c::env() == 'travis') {
 			$to = '_PHONE_';
 		} elseif (c::getEnv() != 'live') {
+			$to = c::admin()->testphone ? c::admin()->testphone : '_PHONE_';
 			$to = c::admin()->testphone ? c::admin()->testphone : '_PHONE_';
 		}
 
@@ -129,7 +134,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 						'type' => 'sms'
 					]);
 
-					$ret[] = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg);
+					$ret[] = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg, $media ? $media : null);
 
 					Phone_Log::log($t, $tfrom, 'message', 'outgoing', $reason);
 
