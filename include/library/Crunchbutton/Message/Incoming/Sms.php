@@ -7,6 +7,16 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 		$to = Phone::clean($request['To']);
 		$body = trim($request['Body']);
 		$admin = Admin::getByPhone($from, true);
+		
+		Log::debug([
+			'type' => 'incoming-sms',
+			'action' => 'message received',
+			'id_admin' => $admin->id_admin,
+			'name' => $admin->name,
+			'from' => $from,
+			'body' => $body,
+			'request' => $request
+		]);
 
 		if (!$from || !$body) {
 			// error
@@ -25,14 +35,6 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 
 		// routing for drivers and support
 		if ($admin->id_admin) {
-			Log::debug([
-				'type' => 'driver-sms',
-				'action' => 'message received',
-				'id_admin' => $admin->id_admin,
-				'name' => $admin->name,
-				'from' => $from,
-				'body' => $body
-			]);
 			
 			$params['admin'] = $admin;
 
