@@ -2570,7 +2570,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function textCustomerAboutDriver(){
+
 		$order = Crunchbutton_Order::o( $this->id_order );
+
 		if( !$order->id_order ){
 			return;
 		}
