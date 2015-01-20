@@ -43,6 +43,10 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 			case 'post':
 
+				if (!c::admin()->permission()->check(['global'])) {
+					header('HTTP/1.1 401 Unauthorized');
+					exit;
+				}
 
 
 				switch ( c::getPagePiece(3) ) {
