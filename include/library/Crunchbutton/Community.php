@@ -83,6 +83,11 @@ class Crunchbutton_Community extends Cana_Table {
 		$out = $this->properties();
 		$out[ 'name_alt' ] = $this->name_alt();
 		$out[ 'prep' ] = $this->prep();
+		$out[ 'active' ] = intval( $out[ 'active' ] );
+		$out[ 'private' ] = intval( $out[ 'private' ] );
+		$out[ 'image' ] = intval( $out[ 'image' ] );
+		$out[ 'close_all_restaurants' ] = intval( $out[ 'close_all_restaurants' ] );
+		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
 		}

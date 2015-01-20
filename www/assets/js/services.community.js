@@ -7,7 +7,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 
 	service.removeCommunityStyle = function(){
 		if( service.style ){
-			angular.element( 'html' ).removeClass( service.style );	
+			angular.element( 'html' ).removeClass( service.style );
 		}
 	}
 
@@ -18,7 +18,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 	}
 
 	service.route = function( id, success, error ){
-		
+
 		var parts = id.toLowerCase().split( '/' );
 		var alias = false;
 		var restaurant = false;
