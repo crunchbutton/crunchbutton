@@ -22,7 +22,6 @@ class Crunchbutton_Notification extends Cana_Table
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
 
-
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send notification', 'value' => $this->value, 'notification type' => $this->type, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
 
 		switch ($this->type) {
@@ -126,14 +125,13 @@ class Crunchbutton_Notification extends Cana_Table
 
 			case 'sms':
 
-				$message = Crunchbutton_Message_Sms::greeting( $order->user()->firstName() );
-				$message .= $order->message('sms');
+				$message = $order->message('sms');
 
 				Crunchbutton_Message_Sms::send([
 					'to' => $sms,
 					'from' => 'restaurant',
 					'message' => $message,
-					'reason' => Crunchbutton_Message_Sms::CUSTOMER_ORDER
+					'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
 				]);
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
@@ -158,7 +156,6 @@ class Crunchbutton_Notification extends Cana_Table
 				$log->type = 'twilio';
 				$log->id_order = $order->id_order;
 				$log->save();
-
 
 				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
