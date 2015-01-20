@@ -37,22 +37,6 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.communityPrep.$invalid}">
-				<div class="label">Preposition:</div>
-				<div class="input"><input type="text" name="communityPrep" ng-model="community.prep" required placeholder="Prep"></div>
-				<div class="box-error">
-					<small ng-show="form.communityPrep.$error.required">Required.</small>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':form.communityAlternativeName.$invalid}">
-				<div class="label">Alternative name:</div>
-				<div class="input"><input type="text" name="communityAlternativeName" ng-model="community.name_alt" required placeholder="Alternative name"></div>
-				<div class="box-error">
-					<small ng-show="form.communityAlternativeName.$error.required">Required.</small>
-				</div>
-			</li>
-
 			<li class="li-input" ng-class="{'error':form.communityActive.$invalid}">
 				<div class="label">Active:</div>
 				<div class="input">
@@ -82,9 +66,9 @@
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-			<li class="li-input" ng-class="{'error':form.communityDriverGroup.$invalid}">
+			<li class="li-input" ng-show="community.driver_group">
 				<div class="label">Driver group name:</div>
-				<div class="input"><input type="text" name="communityDriverGroup" ng-model="community.driver_group" readonly="readonly"></div>
+				<div class="input">{{community.driver_group}}</div>
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.communityTimezone.$invalid}">
@@ -142,6 +126,13 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-show="community.close_all_restaurants">
+				<div class="label">
+					<span ng-show="community.close_all_restaurants_admin">Closed by {{community.close_all_restaurants_admin}} </span>
+					<span ng-show="community.close_all_restaurants_date">at {{community.close_all_restaurants_date}}.</span>
+				</div>
+			</li>
+
 			<br/>
 
 			<li class="li-input" ng-class="{'error':form.communityClose3rdPartyRestaurants.$invalid}">
@@ -159,6 +150,13 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-show="community.close_3rd_party_delivery_restaurants">
+				<div class="label">
+					<span ng-show="community.close_3rd_party_delivery_restaurants_admin">Closed by {{community.close_3rd_party_delivery_restaurants_admin}} </span>
+					<span ng-show="community.close_3rd_party_delivery_restaurants_date">at {{community.close_3rd_party_delivery_restaurants_date}}.</span>
+				</div>
+			</li>
+
 		</ul>
 
 	</form>
@@ -173,7 +171,100 @@
 		</li>
 	</ul>
 
+	<br><br><br>
+
+	<div ng-show="alias.id_community">
+
+		<h2 class="title left"><span>Aliases</span></h2>
+
+		<div class="divider"></div>
+
+		<form name="formAlias" novalidate>
+
+			<div class="ul-inputs">
+
+				<ul ng-class="{'submitted':testSubmitted}" class="box-content2">
+
+					<li class="li-input" ng-class="{'error':formAlias.aliasAlias.$invalid}">
+						<div class="label">Alias:</div>
+						<div class="input"><input type="text" name="aliasAlias" ng-model="alias.alias" required placeholder="Alias"></div>
+						<div class="box-error">
+							<small ng-show="formAlias.aliasAlias.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':formAlias.aliasNameAlt.$invalid}">
+						<div class="label">Alternative name:</div>
+						<div class="input"><input type="text" name="aliasNameAlt" ng-model="alias.name_alt" required placeholder="Alternative name"></div>
+						<div class="box-error">
+							<small ng-show="formAlias.aliasNameAlt.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':formAlias.aliasPrep.$invalid}">
+						<div class="label">Preposition:</div>
+						<div class="input"><input type="text" name="aliasPrep" ng-model="alias.prep" required placeholder="Preposition"></div>
+						<div class="box-error">
+							<small ng-show="formAlias.aliasPrep.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':formAlias.aliasTop.$invalid}">
+						<div class="label">Top:</div>
+						<div class="input">
+							<select name="aliasTop" ng-model="alias.top" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="formAlias.aliasTop.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':formAlias.aliasSort.$invalid}">
+						<div class="label">Sort:</div>
+						<div class="input">
+							<input type="number" ignore-mouse-wheel name="aliasSort" ng-model="alias.sort" required>
+						</div>
+						<div class="box-error">
+							<small ng-show="formAlias.aliasSort.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSavingAlias">
+						<button class="button green" ng-click="add_alias();">Add</button>
+					</li>
+					<li class="li-input" ng-show="isSavingAlias">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+				<div class="box-content2 box-content-table">
+					<table class="tb-zebra">
+						<tr>
+							<th>Alias</th>
+							<th>Preposition</th>
+							<th>Alternative name</th>
+							<th>Top</th>
+							<th>Sort</th>
+							<th></th>
+						</tr>
+						<tr ng-repeat="a in aliases">
+							<td>{{a.alias}}</td>
+							<td>{{a.prep}}</td>
+							<td>{{a.name_alt}}</td>
+							<td>{{a.top}}</td>
+							<td>{{a.sort}}</td>
+							<td>
+								<span class="orange link" ng-click="remove_alias(a.id_community_alias)">Remove</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+
+	</div>
+
 </div>
+
 
 <spinner-loading></spinner-loading>
 <hack-expand-content></hack-expand-content>

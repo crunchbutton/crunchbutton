@@ -44,9 +44,8 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		if( App.isNarrowScreen() || App.transitionForDesktop ){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 		}
+
 		$location.search({});
-
-
 		$location.path( path || '/' );
 		if( App.snap && App.snap.close ){
 			App.snap.close();
