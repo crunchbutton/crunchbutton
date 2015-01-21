@@ -115,9 +115,14 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
+		$import = $this->request()['import'];
 
 		if( !$start || !$end ){
 			$this->_error();
+		}
+
+		if( $import ){
+			Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
 		}
 
 		$report = Crunchbutton_Pexcard_Transaction::processExpenses( $start, $end );
