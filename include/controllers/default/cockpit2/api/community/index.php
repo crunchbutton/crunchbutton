@@ -33,6 +33,15 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						echo json_encode( $out );exit;
 						break;
 
+					case 'closelog':
+						$aliases = $community->forceCloseLog();
+						$out = [];
+						foreach( $aliases as $alias ){
+							$out[] = $alias->exports();
+						}
+						echo json_encode( $out );exit;
+						break;
+
 					default:
 						echo $community->json();
 						exit();

@@ -34,6 +34,20 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			}
 		);
 
+	var closelog = $resource( App.service + 'community/:permalink/closelog', { action: '@action' }, {
+				// list methods
+				'list' : { 'method': 'GET', params : { 'action' : null }, isArray: true }
+			}
+		);
+
+	service.closelog = {
+		list: function( permalink, callback ){
+			closelog.list( { permalink: permalink }, function( data ){
+				callback( data );
+			} );
+		}
+	}
+
 	service.alias = {
 		list: function( permalink, callback ){
 			aliases.list( { permalink: permalink }, function( data ){

@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Community extends Cana_Table {
+class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 
 	const CUSTOMER_SERVICE_ID_COMMUNITY = 92;
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
@@ -396,6 +396,69 @@ class Crunchbutton_Community extends Cana_Table {
 		$percent = intval( $total * 100 / $all );
 
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
+	}
+
+	public function forceCloseLog(){
+		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
+																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
+																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" )
+																																	AND cc.new_value = 1
+																																	ORDER BY cc.id_community_change DESC' );
+		$out = [];
+		foreach( $force_closed_times as $force_close ){
+			$output = [];
+			$closed_at = $force_close->date();
+			$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+			$output[ 'closed_by' ] = $force_close->admin()->name;
+
+			if( $force_close->field == 'close_all_restaurants' ){
+				$output[ 'type' ] = 'Close All Restaurants';
+			} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
+				$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
+			}
+
+			$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
+
+			$open = $this->_openedAt( $force_close->id_community_change_set, $force_close->field );
+			if( $open ){
+				$opened_at = $open->date();
+				$output[ 'opened_at' ] = $opened_at->format( 'M jS Y g:i:s A T' );
+				$output[ 'opened_by' ] = $open->admin()->name;
+				$interval = $opened_at->diff( $closed_at );
+				$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
+			} else {
+				$output[ 'how_long' ] = 'It is still closed!';
+			}
+			$out[] = $output;
+		}
+		echo json_encode( $out );exit;
+	}
+
+	private function _closedNote( $id_community_change_set, $field ){
+		$field = $field . '_note';
+		$note = Crunchbutton_Community_Changeset::q( 'SELECT
+																											ccs.*, cc.field, cc.new_value FROM community_change cc
+																											INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
+																											AND cc.field = "' . $field . '"
+																											AND ccs.id_community_change_set = ' . $id_community_change_set . '
+																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
+		if( $note->new_value ){
+			return $note->new_value;
+		}
+		return false;
+	}
+
+	private function _openedAt( $id_community_change_set, $field ){
+		$opened = Crunchbutton_Community_Changeset::q( 'SELECT
+																											ccs.*, cc.field FROM community_change cc
+																											INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
+																											AND cc.field = "' . $field . '"
+																											AND cc.new_value = 0 AND ccs.id_community_change_set > ' . $id_community_change_set . '
+																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
+		if( $opened->id_community_change_set ){
+			return $opened;
+		}
+		return false;
 	}
 
 	public function currentShift(){

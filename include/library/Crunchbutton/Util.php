@@ -78,7 +78,7 @@ class Crunchbutton_Util extends Cana_Model {
 		if ($places < 0) { $places = 0; }
 		$mult = pow(10, $places);
 		return ceil($value * $mult) / $mult;
- 	}
+	}
 
 	public static function encodeTitle($title) {
 
@@ -110,7 +110,7 @@ class Crunchbutton_Util extends Cana_Model {
 		$www_path = realpath( $file_path . '/../../../www/' );
 		$upload_path = $www_path . '/upload';
 		if ( !file_exists( $upload_path ) ) {
-    	@mkdir( $upload_path, 0777, true );
+			@mkdir( $upload_path, 0777, true );
 		}
 		return realpath( $upload_path );
 	}
@@ -268,6 +268,25 @@ class Crunchbutton_Util extends Cana_Model {
 			exit;
 			return $time;
 		}
+	}
+
+	function format_interval( $difference, $accuracy = 2 ) {
+		$intervals = array('y' => ' year', 'm' => ' month', 'd ' => 'day', 'h' => 'hour', 'i' => ' minute', 's' => ' second');
+		$i = 0;
+		$result = '';
+		foreach ( $intervals as $interval => $name ) {
+			if ($difference->$interval > 1) {
+				$result .= $difference->$interval . $intervals[$interval] . 's ';
+				$i++;
+			} elseif ($difference->$interval == 1) {
+				$result .= $difference->$interval . $intervals[$interval] . ' ';
+				$i++;
+			}
+			if ($i == $accuracy) {
+				break;
+			}
+		}
+		return $result;
 	}
 
 	public static function randomPass( $length = 6 ){
