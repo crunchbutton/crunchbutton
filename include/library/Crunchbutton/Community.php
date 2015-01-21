@@ -453,7 +453,7 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 																											ccs.*, cc.field FROM community_change cc
 																											INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
 																											AND cc.field = "' . $field . '"
-																											AND cc.new_value = 0 AND ccs.id_community_change_set > ' . $id_community_change_set . '
+																											AND ( cc.new_value = 0 OR cc.new_value IS NULL ) AND ccs.id_community_change_set > ' . $id_community_change_set . '
 																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
 		if( $opened->id_community_change_set ){
 			return $opened;
