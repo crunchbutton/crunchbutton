@@ -17,16 +17,77 @@
 		<div class="span6">
 			<div class="box">
 				<div class="box-header">
-					<span class="title">Promo code</span>
+					<span class="title">Essential Information</span>
 				</div>
 				<div class="box-content ">
 					<ul class="box-list">
 						<li>
-							<span>Value</span>
+							<span><strong>Value</strong></span>
 							<span class="pull-right">
 								<input type="number" name="value" maxlength="5" id="value" value="" />
 							</span>
 						</li>
+						<li>
+							<span><strong>Paid by</strong></span>
+							<span class="pull-right">
+								<select name="paid_by" id="paid_by" class="uniform">
+									<option value=""></option>
+									<option selected="selected" value="crunchbutton">crunchbutton</option>
+									<option value="restaurant">restaurant</option>
+									<option value="promotional">promotional</option>
+									<option value="other_restaurant">other_restaurant</option>
+								</select>
+							</span>
+						</li>
+						
+					</ul>
+				</div>
+				
+			</div>
+		
+		<?php if( $this->user ) { ?>
+		<!--notification box-->
+		<div class="box">
+				<div class="box-header">
+					<span class="title">Notifications</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Notify by email (<?php  echo $this->user->email; ?>)</span>
+							<span class="pull-right">
+								<input type="checkbox" name="notify_by_email" id="notify_by_email" class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Notify by phone (<?php  echo $this->user->phone; ?>)</span>
+							<span class="pull-right">
+								<input type="checkbox" name="notify_by_sms" id="notify_by_sms" class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Add as credit</span>
+							<span class="pull-right">
+								<input type="checkbox" name="add_as_credit" id="add_as_credit">
+							</span>
+							<hr />
+							<div class="note large">
+								If you check this option the user will receive the credit without the need to redeem it. The user will not be notified.
+							</div>
+						</li>
+					</ul>
+				</div>
+				
+			</div>
+			<?php } ?>
+<!--end notification box-->
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Promo code</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						
 						<li>
 							<span>Number of giftcards</span>
 							<span class="pull-right">
@@ -43,18 +104,6 @@
 							<span class="pull-right">
 								<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
 								<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
-							</span>
-						</li>
-						<li>
-							<span>Notify by email (<?php  echo $this->user->email; ?>)</span>
-							<span class="pull-right">
-								<input type="checkbox" name="notify_by_email" id="notify_by_email" class="iButton-icons">
-							</span>
-						</li>
-						<li>
-							<span>Notify by phone (<?php  echo $this->user->phone; ?>)</span>
-							<span class="pull-right">
-								<input type="checkbox" name="notify_by_sms" id="notify_by_sms" class="iButton-icons">
 							</span>
 						</li>
 						<li>
@@ -96,18 +145,7 @@
 								</select>
 							</span>
 						</li>
-						<li>
-							<span>Paid by</span>
-							<span class="pull-right">
-								<select name="paid_by" id="paid_by" class="uniform">
-									<option value=""></option>
-									<option value="crunchbutton">crunchbutton</option>
-									<option value="restaurant">restaurant</option>
-									<option value="promotional">promotional</option>
-									<option value="other_restaurant">other_restaurant</option>
-								</select>
-							</span>
-						</li>
+						
 						<li id="list_id_restaurant_paid_by" style="display:none;">
 							<label>Restaurant that paid the credit</label>
 							<span>
@@ -119,18 +157,6 @@
 								</select>
 							</span>
 						</li>
-						<?php if( $this->user ) { ?>
-						<li>
-							<span>Add as credit</span>
-							<span class="pull-right">
-								<input type="checkbox" name="add_as_credit" id="add_as_credit">
-							</span>
-							<hr />
-							<div class="note large">
-								If you check this option the user will receive the credit without the need to redeem it. The user will not be notified.
-							</div>
-						</li>
-						<?php } ?>
 					</ul>
 				</div>
 			</div>
