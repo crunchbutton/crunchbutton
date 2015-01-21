@@ -125,6 +125,9 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver_info = $driver->driver_info();
 
 		$driver_info->phone_type = $this->request()[ 'phone_type' ];
+		if( $driver_info->down_to_help_out != $this->request()[ 'down_to_help_out' ] ){
+			$driver->addNote( $this->request()[ 'down_to_help_out' ] );
+		}
 		$driver_info->down_to_help_out = $this->request()[ 'down_to_help_out' ];
 
 		$driver_info->phone_subtype = null;
