@@ -182,6 +182,18 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		update();
 	});
 
+	var load_alias = function(){
+		CommunityService.alias.list( $routeParams.id, function( json ){
+			$scope.aliases = json;
+		} );
+	}
+
+	var load_closelog = function(){
+		CommunityService.closelog.list( $routeParams.id, function( json ){
+			$scope.closelogs = json;
+		} );
+	}
+
 	var update = function() {
 		if (!$scope.map || !$scope.community) {
 			return;
@@ -199,6 +211,9 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		$rootScope.title = d.name + ' | Community';
 		$scope.community = d;
 		$scope.loading = false;
+
+		load_alias();
+		load_closelog();
 
 		update();
 

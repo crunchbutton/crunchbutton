@@ -40,7 +40,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	public function load($stuff) {
 		parent::load($stuff);
 		$this->media = $this->media ? json_decode($this->media) : null;
-		
+		//print_r($this->media);
 		return $this;
 	}
 
