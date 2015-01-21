@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-<script type="application/ld+json">
+<!--<script type="application/ld+json">
 {
    "@context": "http://schema.org",
    "@type": "WebSite",
@@ -11,8 +11,19 @@
      "query-input": "required name=search_term_string"
    }
 }
-</script>
+</script>-->
+
+
 </head>
+<body>
+	<div itemscope itemtype="http://schema.org/WebSite">
+  <meta itemprop="url" content="http://dev.crunchr.co/?__seo=1"/>
+  <form itemprop="potentialAction" itemscope itemtype="http://schema.org/SearchAction">
+    <meta itemprop="target" content="http://dev.crunchr.co/?__seo=1&q={search_term_string}"/>
+    <input itemprop="query-input" type="text" name="search_term_string" required/>
+    <input type="submit"/>
+  </form>
+</div>
 <?
 	$bot = c::app()->isBot() || $_REQUEST['__seo'];
 	
@@ -289,4 +300,5 @@
 $ = null;
 </script>
 <? endif ; ?>
+</body>
 </html>
