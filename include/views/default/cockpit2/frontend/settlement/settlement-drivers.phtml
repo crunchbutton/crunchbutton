@@ -409,6 +409,7 @@
 									<td>ID Order</td>
 									<td>ID User</td>
 									<td>Customer Name</td>
+									<td>Amount</td>
 									<td>Date</td>
 								</tr>
 							</thead>
@@ -417,6 +418,7 @@
 									<td>{{invite.id_order}}</td>
 									<td>{{invite.user.id_user}}</td>
 									<td>{{invite.user.name}}</td>
+									<td>$ {{invite.admin_credit | formatPrice}}</td>
 									<td>{{invite.date}}</td>
 								</tr>
 							</tbody>

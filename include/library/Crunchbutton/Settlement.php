@@ -368,13 +368,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$invites = $this->driverInvites();
 			if( $invites ){
 				foreach( $invites as $id_admin => $invites ){
+					$admin_credit = 0;
+					foreach( $invites as $_invite ){
+						$admin_credit += $_invite[ 'admin_credit' ];
+					}
 					if( !$pay[ $id_admin ] ){
 						$admin = Crunchbutton_Admin::o( $id_admin );
-						$pay[ $id_admin ] = [ 'id_admin' => $id_admin, 'name' => $admin->name ];
+						$pay[ $id_admin ] = [ 'id_admin' => $id_admin, 'name' => $admin->name, 'invites_total_payment' => 0 ];
 					}
 					$pay[ $id_admin ][ 'invites' ] = $invites;
 					$pay[ $id_admin ][ 'invites_total' ] = count( $invites );
-					$pay[ $id_admin ][ 'invites_total_payment' ] = max( 0, ( $amount_per_invited_user * $pay[ $id_admin ][ 'invites_total' ] ) );
+
+					$pay[ $id_admin ][ 'invites_total_payment' ] = max( 0, $admin_credit );
 					$pay[ $id_admin ][ 'total_payment' ] += $pay[ $id_admin ][ 'invites_total_payment' ];
 					if( !$pay[ $id_admin ][ 'total_spent' ] ){
 						$pay[ $id_admin ][ 'total_spent' ] = 0;
@@ -861,7 +866,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule_referral = new Cockpit_Payment_Schedule_Referral;
 						$schedule_referral->id_payment_schedule = $id_payment_schedule;
 						$schedule_referral->id_referral = $invite[ 'id_referral' ];
-						$schedule_referral->amount = $this->amount_per_invited_user();
+						$schedule_referral->amount = $invite[ 'admin_credit' ];
 						$schedule_referral->save();
 						$this->log( 'scheduleReferralPayment', $schedule_referral->properties() );
 					}
@@ -899,7 +904,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$key = intval( $_driver[ 'id_admin' ] );
 
 			if( ( $key > 0 ) && array_key_exists( $key, $id_drivers ) ){
-
 				$notes = $id_drivers[ $key ][ 'notes' ];
 				$adjustment = $id_drivers[ $key ][ 'adjustment' ];
 				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];

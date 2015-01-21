@@ -107,6 +107,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out['shifts'] = [];
 		$out['working'] = false;
 		$out['working_today'] = false;
+		$out['referral_admin_credit'] = floatval( $this->referral_admin_credit );
+		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
+
 		if ($this->location()) {
 			$out['location'] = $this->location()->exports();
 		}

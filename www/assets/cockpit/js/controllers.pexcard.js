@@ -15,6 +15,14 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 	$scope.result = null;
 
 	$scope.report = function(){
+		report( false );
+	}
+
+	$scope.import_data = function(){
+		report( true );
+	}
+
+	var report = function( import_data ){
 
 		$scope.result = false;
 
@@ -26,13 +34,13 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 		$scope.isProcessing = true;
 
 		var params = { 'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
-										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy') };
+										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
+										'import': import_data };
 
 		PexCardService.report( params, function( json ){
 			$scope.isProcessing = false;
 			$scope.result = json;
 		} );
-
 	}
 
 } );

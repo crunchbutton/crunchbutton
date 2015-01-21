@@ -24,6 +24,7 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 				SELECT -WILD-
 				FROM
 				  (SELECT
+				  				s.id_admin AS `id_driver`,
 				          s.name AS `staff_name`,
 				          a.name AS `admin_name`,
 				          aptcs.timestamp,
@@ -40,6 +41,7 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 				   UNION
 
 				   SELECT
+				   				s.id_admin AS `id_driver`,
 	                s.name AS `staff_name`,
 	                a.name AS `admin_name`,
 	                apcs.timestamp,
@@ -87,8 +89,15 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 		// echo str_replace('-WILD-','*', $q);exit;
 
 		while ($o = $r->fetch()) {
+			$driver = Admin::o( $o->id_driver );
+			$communities = [];
+			$_communities = $driver->communitiesHeDeliveriesFor();
+			foreach ( $_communities as $community ) {
+				$communities[] = $community->name;
+			}
 			$date = new DateTime($o->timestamp, new DateTimeZone(c::config()->timezone));;
 			$o->date = $date->format( 'M jS Y g:i:s A T' );
+			$o->communities = join( $communities, ', ' );
 			unset( $o->timestamp );
 			$d[] = $o;
 		}
