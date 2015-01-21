@@ -17,6 +17,13 @@ foreach( $messages as $message ){
 						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?></span>
 					</div>
 				<?php echo nl2br( $message->body ); ?>
+				<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 				</li>
 			<?php
 			break;
@@ -35,6 +42,13 @@ foreach( $messages as $message ){
 								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
+							<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 						</li>
 					<?php
 					break;
@@ -52,6 +66,13 @@ foreach( $messages as $message ){
 								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
+							<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 						</li>
 					<?php
 					break;
@@ -71,6 +92,13 @@ foreach( $messages as $message ){
 						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
 					</div>
 					<?php echo nl2br( $message->body ); ?>
+					<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 				</li>
 			<?php
 			break;

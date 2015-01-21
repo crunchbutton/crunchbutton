@@ -82,6 +82,7 @@
 		</td></tr>
 		<tr><td class="support-chat-contents">
 			<div class="support-chat-contents-scroll">
+				
 				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 				'support-chat-contents-message-support': message.is_support,
 				'support-chat-contents-message-driver': message.is_driver,
@@ -111,7 +112,14 @@
 						<? /*{{message.timestamp*1000 | date: 'M/d h:mm a'}} */ ?>
 						<span>{{message.relative}}</span>
 					</div>
-					<div class="support-chat-contents-message-body">{{message.body}}</div>
+					<div class="support-chat-contents-message-body">{{message.body}}
+						<div ng-repeat="image in message.media"> 
+							<img class="support-side-image" src="{{image}}">
+						</div>
+					
+				
+					</div>
+					
 				</div>
 			</div>
 		</td></tr>
