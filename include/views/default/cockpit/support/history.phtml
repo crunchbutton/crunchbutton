@@ -23,6 +23,14 @@ $first = true;
 							</span>
 						</div>
 					<?php echo nl2br( $message->body ); ?>
+					<!--put mms stuff here-->
+					<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 					</li>
 				<?php
 				break;
@@ -44,6 +52,13 @@ $first = true;
 							</span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
+							<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 						</li>
 						<?php
 						break;
@@ -62,6 +77,13 @@ $first = true;
 							</span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
+							<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 						</li>
 						<?php
 						break;
@@ -83,6 +105,13 @@ $first = true;
 							</span>
 						</div>
 						<?php echo nl2br( $message->body ); ?>
+						<?php
+					if ($message->media) : ?>
+    <? foreach ($message->media as $media) : ?>
+        <img src="<?=$media?>" class="support-image-history">
+    <? endforeach; ?>
+<? endif ; ?>
+
 					</li>
 				<?php
 				break;

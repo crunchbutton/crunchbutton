@@ -1,0 +1,55 @@
+<?php
+
+class Crunchbutton_Community_Changeset extends Cana_Table {
+
+	public function community() {
+		if (!isset($this->_community)) {
+			$this->_community = Community::o($this->id_community);
+		}
+		return $this->_community;
+	}
+
+	public function changes() {
+		if (!isset($this->_changes)) {
+			$this->_changes = Crunchbutton_Community_Change::q('
+				SELECT * FROM community_change
+				WHERE
+					id_community_change_set="'.$this->id_community_change_set.'"
+			');
+		}
+		return $this->_changes;
+	}
+
+	public function admin() {
+		if (!isset($this->_admin)) {
+			$this->_admin = Admin::o($this->id_admin);
+		}
+		return $this->_admin;
+	}
+
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->timestamp, new DateTimeZone(c::config()->timezone));
+		}
+		return $this->_date;
+	}
+
+	public function user() {
+		if (!isset($this->_user)) {
+			$this->_user = User::o($this->id_user);
+		}
+		return $this->_user;
+	}
+
+	public function author() {
+		return $this->admin()->id_admin ? $this->admin() : $this->user();
+	}
+
+	public function __construct($id = null) {
+		parent::__construct();
+		$this
+			->table('community_change_set')
+			->idVar('id_community_change_set')
+			->load($id);
+	}
+}
