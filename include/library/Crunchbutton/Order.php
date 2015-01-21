@@ -331,7 +331,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $totalOrdersByPhone <= 1 && $inviter ){
 						// get the value of the discount
 						$value = $reward->getReferredDiscountAmount();
-						$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word ];
+						$admin_credit = $reward->adminRefersNewUserCreditAmount();
+						$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
 						if( $value ){
 							$this->giftcardValue = $value;
 							break;
@@ -528,6 +529,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$referral->id_user_inviter = $this->giftCardInviter[ 'id_user'];
 				$referral->id_user_invited = $this->id_user;
 				$referral->id_order = $this->id_order;
+				$referral->admin_credit = $this->giftCardInviter[ 'admin_credit'];
 				$referral->invite_code = $this->giftCardInviter[ 'word'];
 				$referral->new_user = 1;
 				$referral->date = date('Y-m-d H:i:s');

@@ -1,0 +1,1 @@
+ALTER TABLE `referral` ADD `admin_credit` float DEFAULT NULL;
