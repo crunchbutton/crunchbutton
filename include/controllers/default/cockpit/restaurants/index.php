@@ -149,6 +149,8 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 						return;
 					}
 					if ($_FILES['image']) {
+						$current_image = '/home/i.crunchbutton/www/image/' . $restaurant->image;
+
 						$rand = rand ( 0, date( 'Ymd' ) );
 						$ext = pathinfo( $_FILES['image']['name'], PATHINFO_EXTENSION );
 						$image_name = $restaurant->permalink . $rand . '.'. $ext;
@@ -157,6 +159,10 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 							$restaurant->image = $image_name;
 							$restaurant->save();
 							chmod($file,0777);
+							// remove the old image
+							if (file_exists($current_image)){
+								unlink( $current_image );
+							}
 						}
 					}
 					c::view()->display('restaurants/image');
