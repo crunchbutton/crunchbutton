@@ -69,7 +69,8 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			$this->support = Support::createNewSMSTicket([
 				'phone' => $params['from'],
 				'id_order' => $this->order->id_order,
-				'body' => $params['body']
+				'body' => $params['body'],
+				'media' => $params['media']
 			]);
 			$created = true;
 
@@ -83,7 +84,8 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			$this->support->addCustomerMessage([
 				'name' => $this->order->name,
 				'phone' => $params['from'],
-				'body' => $params['body']
+				'body' => $params['body'],
+				'media' => $params['media']
 			]);
 			$this->support->save();
 		}
@@ -124,7 +126,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		}
 
 		$message .= ': '.htmlspecialchars($params['body']);
-		Crunchbutton_Message_Incoming_Support::notifyReps($message, $this->support);
+		Crunchbutton_Message_Incoming_Support::notifyReps($message, $this->support, $params['media']);
 
 		// notify reps if support is late at night
 		$this->support->makeACall();

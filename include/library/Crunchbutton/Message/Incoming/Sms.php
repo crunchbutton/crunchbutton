@@ -7,7 +7,19 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 		$to = Phone::clean($request['To']);
 		$body = trim($request['Body']);
 		$admin = Admin::getByPhone($from, true);
-		
+		$numMedia = trim($request['NumMedia']);
+
+		if ($numMedia) {
+
+			for ($x = 0; $x < $numMedia; $x++) {
+
+				$m = trim($request['MediaUrl'.$x]);
+				if ($m) {
+					$media[] = $m;
+				}
+			}
+		}
+
 		Log::debug([
 			'type' => 'incoming-sms',
 			'action' => 'message received',
@@ -15,10 +27,10 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			'name' => $admin->name,
 			'from' => $from,
 			'body' => $body,
-			'request' => $request
+			'media' => json_encode($media)
 		]);
 
-		if (!$from || !$body) {
+		if (!$from || (!$body && !$media)) {
 			// error
 			header('HTTP/1.0 400 Bad Request');
 			exit;
@@ -26,6 +38,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 		
 		$params = [
 			'body' => $body,
+			'media' => $media,
 			'from' => $from,
 			'to' => $to,
 			'sid' => $request['SmsMessageSid']

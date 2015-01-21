@@ -23,6 +23,8 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$guid = $this->guid;
 		$new = $this->id_support_message ? false : true;
 
+		$this->media = $this->media ? json_encode($this->media) : null;
+
 		parent::save();
 
 		if ($new) {
@@ -33,6 +35,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 				]
 			], 'message', $this->exports($guid));
 		}
+	}
+	
+	public function load() {
+		parent::load();
+		$this->media = $this->media ? json_decode($this->media) : null;
 	}
 
 	public function notify() {
