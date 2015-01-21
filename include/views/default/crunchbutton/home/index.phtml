@@ -1,3 +1,15 @@
+<script type="application/ld+json">
+{
+   "@context": "http://schema.org",
+   "@type": "WebSite",
+   "url": "http://dev.crunchr.co/?__seo=1",
+   "potentialAction": {
+     "@type": "SearchAction",
+     "target": "http://dev.crunchr.co/?__seo=1/search?q={search_term_string}",
+     "query-input": "required name=search_term_string"
+   }
+}
+</script>
 <?
 	$bot = c::app()->isBot() || $_REQUEST['__seo'];
 	
@@ -193,6 +205,21 @@
 			<div class="bubble-tail bubble-tail-green">
 				<div class="text">
 					<h1 class="restaurants-push-tagline"><b>Push a button</b><br>Get food delivered</h1>
+				</div>
+				<div><!--adding the search bar here-->
+				<script>
+  (function() {
+    var cx = '000532366889398702007:4m46z7qdzta';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<gcse:search></gcse:search>
 				</div>
 			</div>
 			<div class="restaurants-orange"></div>
