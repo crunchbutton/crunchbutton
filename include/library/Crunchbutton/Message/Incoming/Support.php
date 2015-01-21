@@ -17,6 +17,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		$this->admin = $params['admin'];
 		$this->body = $params['body'];
 		$this->from = $params['from'];
+		$this->media = $params['media'];
 		$response = [];
 
 		/*
@@ -64,7 +65,11 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	}
 
 	public function reply() {
-		$this->support->addAdminMessage( [ 'phone' => $this->from, 'body' => $this->message ] );
+		$this->support->addAdminMessage( [
+			'phone' => $this->from,
+			'body' => $this->message,
+			'media' => $this->media
+		] );
 		$this->log( [ 'action' => 'saving the answer', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
 
 		Crunchbutton_Message_Sms::send([
@@ -100,7 +105,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		return $response;
 	}
 
-	public static function notifyReps($message, $support = null) {
+	public static function notifyReps($message, $support = null, $media = null) {
 		$to = [];
 
 		$adminsg[] = Crunchbutton_Support::getSupport();
@@ -120,6 +125,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		Crunchbutton_Message_Sms::send([
 			'to' => $to,
 			'message' => $message,
+			'media' => $media,
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
 	}
