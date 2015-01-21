@@ -242,7 +242,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
-			templateUrl: 'assets/view/drivers-orders.html'
+			templateUrl: 'assets/view/drivers-orders.html',
+			back: false
 		})
 		.when('/drivers/order/:id', {
 			action: 'drivers-order',
@@ -252,12 +253,14 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/shifts', {
 			action: 'drivers-shifts',
 			controller: 'DriversShiftsCtrl',
-			templateUrl: 'assets/view/drivers-shifts.html'
+			templateUrl: 'assets/view/drivers-shifts.html',
+			back: false
 		})
 		.when('/drivers/shifts/schedule', {
 			action: 'drivers-shift-preferences',
 			controller: 'DriversShiftsScheduleCtrl',
-			templateUrl: 'assets/view/drivers-shifts-schedule.html'
+			templateUrl: 'assets/view/drivers-shifts-schedule.html',
+			back: false
 		})
 		.when('/schedule', {
 			action: 'redirecting',
@@ -267,7 +270,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/summary', {
 			action: 'drivers-summary',
 			controller: 'DriversSummaryCtrl',
-			templateUrl: 'assets/view/drivers-summary.html'
+			templateUrl: 'assets/view/drivers-summary.html',
+			back: false
 		})
 		.when('/drivers/summary/:id', {
 			action: 'drivers-summary',
@@ -294,27 +298,32 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/welcome', {
 			action: 'drivers-welcome-home',
 			controller: 'DriversWelcomeHomeCtrl',
-			templateUrl: 'assets/view/drivers-welcome-home.html'
+			templateUrl: 'assets/view/drivers-welcome-home.html',
+			back: false
 		})
 		.when('/drivers/welcome/info', {
 			action: 'drivers-welcome-info',
 			controller: 'DriversWelcomeInfoCtrl',
-			templateUrl: 'assets/view/drivers-welcome-info.html'
+			templateUrl: 'assets/view/drivers-welcome-info.html',
+			back: true
 		})
 		.when('/drivers/welcome/location', {
 			action: 'drivers-welcome-location',
 			controller: 'DriversWelcomeLocationCtrl',
-			templateUrl: 'assets/view/drivers-welcome-location.html'
+			templateUrl: 'assets/view/drivers-welcome-location.html',
+			back: true
 		})
 		.when('/drivers/welcome/push', {
 			action: 'drivers-welcome-push',
 			controller: 'DriversWelcomePushCtrl',
-			templateUrl: 'assets/view/drivers-welcome-push.html'
+			templateUrl: 'assets/view/drivers-welcome-push.html',
+			back: true
 		})
 		.when('/drivers/welcome/wahoo', {
 			action: 'drivers-welcome-wahoo',
 			controller: 'DriversWelcomeWahooCtrl',
-			templateUrl: 'assets/view/drivers-welcome-wahoo.html'
+			templateUrl: 'assets/view/drivers-welcome-wahoo.html',
+			back: true
 		})
 		/* other */
 		.when('/login', {
@@ -335,7 +344,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/help', {
 			action: 'drivers-help',
 			controller: 'DriversHelpCtrl',
-			templateUrl: 'assets/view/drivers-help.html'
+			templateUrl: 'assets/view/drivers-help.html',
+			back: false
 		})
 		.when('/drivers/help/credit-card', {
 			action: 'drivers-help',
@@ -345,7 +355,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/profile', {
 			action: 'profile',
 			controller: 'ProfileCtrl',
-			templateUrl: 'assets/view/general-profile.html'
+			templateUrl: 'assets/view/general-profile.html',
+			back: false
 		})
 		/* Driver onBoarding Routes */
 		.when('/drivers/onboarding', {
@@ -372,7 +383,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/docs', {
 			action: 'drivers-documents',
 			controller: 'DriversDocsFormCtrl',
-			templateUrl: 'assets/view/drivers-docs-form.html'
+			templateUrl: 'assets/view/drivers-docs-form.html',
+			back: false
 		})
 		.when('/drivers/docs/payment', {
 			action: 'drivers-documents',
@@ -382,7 +394,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/docs/pexcard', {
 			action: 'drivers-pex-card',
 			controller: 'DriversPexCardCtrl',
-			templateUrl: 'assets/view/drivers-pexcard.html'
+			templateUrl: 'assets/view/drivers-pexcard.html',
+			back: false
 		})
 		.when('/setup/:phone', {
 			action: 'drivers-setup',
@@ -402,7 +415,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/home', {
 			action: 'home',
 			controller: 'HomeCtrl',
-			templateUrl: 'assets/view/general-home.html'
+			templateUrl: 'assets/view/general-home.html',
+			back: false
 		})
 		.otherwise({
 			action: 'default',
@@ -497,7 +511,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.back = function() {
+		$('body').addClass('back');
 		history.back();
+		setTimeout(function(){
+			$('body').removeClass('back');
+		},600);
 	};
 
 	$rootScope.closePopup = function() {
@@ -567,6 +585,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 		// Store the actual page
 
+		$rootScope.hasBack = $route.current.back === false ? false : true;
+		//$('#ng-view').removeClass('view-animate');
+		
+
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 
@@ -578,16 +600,23 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}).addClass('page-' + MainNavigationService.page);
 
 		$('.nav-top').addClass('at-top');
+		
+		$('html, body, .snap-content-inner').scrollTop(0);
 
 		App.scrollTop($rootScope.scrollTop);
 		if( App.snap && App.snap.close ){
 			App.snap.close();
 		}
+		
+		setTimeout(function() {
+			//$('#ng-view').addClass('view-animate');
+		},200);
 
 		$rootScope.scrollTop = 0;
 	});
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
+		
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
