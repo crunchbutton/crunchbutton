@@ -2969,33 +2969,6 @@ b, strong{ font-weight: bold; }
 }
 
 
-/*
-
-.view-animate {
-
-}
-
-.view-animate.ng-enter, .view-animate.ng-leave {
--webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) .5s;
-display:block;
-width:100%;
-position:absolute !important;
-}
-
-.view-animate.ng-enter {
-z-index: 99998;
-}
-.view-animate.ng-leave {
-z-index: 99999;
-
-}
-.view-animate.ng-enter.ng-enter-active {
-opacity: 1;
-}
-.view-animate.ng-leave.ng-leave-active {
-opacity: 0;
-}
-*/
 
 
 .fade-in-enter {
@@ -3566,6 +3539,85 @@ input[type="checkbox"].switch + div:before {
 	margin-bottom: 2em;
 	font-size: 1.2em;
 }
+
+
+.welcome-title {
+	font-size: 2em;
+	text-align: center;
+	padding-bottom: 2em;
+}
+
+.drivers-welcome {
+	
+	background: $navColor;
+
+	color: white;
+	
+}
+
+.drivers-welcome-logo {
+	background: url(../images/logo.png) no-repeat;
+	height: 12em;
+	width: 12em;
+	background-size: 100%;
+	margin: 0 auto;
+	padding-bottom: 5em;
+}
+
 .support-side-image {
 	max-width: 250px;
+}
+
+
+
+
+
+@media screen and (max-width: 1024px) {
+	.view-animate.ng-enter, .view-animate.ng-leave {
+		display: block;
+		width: 100%;
+		position: absolute;
+	}
+
+
+	.view-animate.ng-leave {
+		-webkit-animation: slideOutLeft 0.5s both cubic-bezier(0.23,1,0.32,1);
+		z-index: 9999;
+	}
+	.view-animate.ng-enter {  
+		-webkit-animation: slideInRight 0.5s both cubic-bezier(0.23,1,0.32,1);
+		z-index: 8888;
+	}
+
+	body.back .view-animate.ng-leave {
+		-webkit-animation: slideInLeft 0.5s both cubic-bezier(0.23,1,0.32,1);
+		z-index: 9999;
+	}
+	body.back .view-animate.ng-enter {
+		-webkit-animation: slideOutRight 0.5s both cubic-bezier(0.23,1,0.32,1);
+		z-index: 8888;
+	}
+
+	// cubic-bezier(0.250, 0.460, 0.450, 0.940)
+
+
+
+	@-webkit-keyframes slideInRight {
+		from    { -webkit-transform: translateX(100%); }
+		to      { -webkit-transform: translateX(0); }
+	}
+
+	@-webkit-keyframes slideOutLeft {
+		to      { -webkit-transform: translateX(-100%); }
+	}
+
+	@-webkit-keyframes slideInLeft {
+		from    { -webkit-transform: translateX(0); }
+		to      { -webkit-transform: translateX(100%); }
+	}
+
+	@-webkit-keyframes slideOutRight {
+		from    { -webkit-transform: translateX(-100%); }
+		to      { -webkit-transform: translateX(0); }
+	}
 }
