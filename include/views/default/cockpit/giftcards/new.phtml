@@ -15,18 +15,50 @@
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="span6">
+			
+			
+			
+			
+			
+				<div class="box">
+				<div class="box-header">
+					<span class="title">Essential Information</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span><strong>Value</strong></span>
+							<span class="pull-right">
+								<input type="number" name="value" maxlength="5" id="value" value="" />
+							</span>
+						</li>
+						<li>
+							<span><strong>Paid by</strong></span>
+							<span class="pull-right">
+								<select name="paid_by" id="paid_by" class="uniform">
+									<option value=""></option>
+									<option value="crunchbutton">crunchbutton</option>
+									<option value="restaurant">restaurant</option>
+									<option value="promotional">promotional</option>
+									<option value="other_restaurant">other_restaurant</option>
+								</select>
+							</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			
+			
+			
+			
 			<div class="box">
 				<div class="box-header">
 					<span class="title">Promo code</span>
 				</div>
 				<div class="box-content ">
 					<ul class="box-list">
-						<li>
-							<span>Value</span>
-							<span class="pull-right">
-								<input type="number" name="value" maxlength="5" id="value" value="" />
-							</span>
-						</li>
+						
 						<li>
 							<span>Number of giftcards</span>
 							<span class="pull-right">
@@ -96,18 +128,7 @@
 								</select>
 							</span>
 						</li>
-						<li>
-							<span>Paid by</span>
-							<span class="pull-right">
-								<select name="paid_by" id="paid_by" class="uniform">
-									<option value=""></option>
-									<option value="crunchbutton">crunchbutton</option>
-									<option value="restaurant">restaurant</option>
-									<option value="promotional">promotional</option>
-									<option value="other_restaurant">other_restaurant</option>
-								</select>
-							</span>
-						</li>
+						
 						<li id="list_id_restaurant_paid_by" style="display:none;">
 							<label>Restaurant that paid the credit</label>
 							<span>
