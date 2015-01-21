@@ -37,9 +37,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		}
 	}
 	
-	public function load() {
-		parent::load();
+	public function load($stuff) {
+		parent::load($stuff);
 		$this->media = $this->media ? json_decode($this->media) : null;
+		
+		return $this;
 	}
 
 	public function notify() {
