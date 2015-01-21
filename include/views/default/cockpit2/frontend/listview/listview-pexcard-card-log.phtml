@@ -6,6 +6,7 @@
 			<th ng-if="query.type == 'using_pex'">Using pex</th>
 			<th ng-if="query.type == 'card_assign'">Card Serial</th>
 			<th>Type</th>
+			<th>Community</th>
 			<th>Date</th>
 		</tr>
 		<tr ng-repeat="l in logs track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{l.login}}">
@@ -23,6 +24,7 @@
 				<span ng-if="!l.card_serial">-</span>
 			</td>
 			<td>{{l.type}}</td>
+			<td>{{l.communities}}</td>
 			<td>{{l.date}}</td>
 		</tr>
 	</table>
