@@ -1,2 +1,2 @@
-ALTER TABLE `support_messsage` ADD `media` TEXT DEFAULT NULL;
+ALTER TABLE `support_message` ADD `media` TEXT DEFAULT NULL;
 
