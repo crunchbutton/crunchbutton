@@ -13,7 +13,7 @@ class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAcco
 		}
 
 
-		$this->year = ( c::getPagePiece( 3 ) ? c::getPagePiece( 3 ) : Controller_Api_Script_InfoFor1099::YEAR );
+		$this->year = ( c::getPagePiece( 3 ) ? c::getPagePiece( 3 ) : Controller_Api_Script_Infopayroll::YEAR );
 
 		$this->inforFor1099();
 
