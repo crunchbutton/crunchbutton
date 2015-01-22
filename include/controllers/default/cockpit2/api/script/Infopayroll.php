@@ -2,7 +2,7 @@
 
 // Make Info for 1099s #4488
 
-class Controller_Api_Script_InfoFor1099 extends Crunchbutton_Controller_RestAccount {
+class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAccount {
 
 	const YEAR = 2015;
 
