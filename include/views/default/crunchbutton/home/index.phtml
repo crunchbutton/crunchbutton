@@ -192,16 +192,17 @@
 				
 				<h4>The best restaurants, curated by our expert team of reps</h4>
 				<p>
-					
 					<? $restaurants = Restaurant::byRange([
 						'lat' => c::db()->escape($this->community->loc_lat),
 						'lon' => c::db()->escape($this->community->loc_lon),
 						'range' => c::db()->escape(5),
 					]); ?>
 					<? foreach ($restaurants as $restaurant) : ?>
+						<? if (!stripos($$restaurant->name, 'TEST')) :?>
 						<b><a href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>"><?=$restaurant->name?></a></b><br>
 						<i><?=$restaurant->short_description?></i>
 						<br><br>
+					<? endif; ?>
 					<? endforeach ; ?>
 					
 				</p>
@@ -252,8 +253,10 @@
 				<h4>The best curated menus for your community or college</h4>
 				<p>
 					Get the best local delivery food from 
-					<? foreach (Community_Alias::q('select * from community') as $community) : ?>
+					<? foreach (Community_Alias::q('select * from community WHERE name not LIKE "%test%"') as $community) : ?> 
+						
 						<b><a href="/<?=$community->permalink?>"><?=$community->name?></a></b>, 
+					
 					<? endforeach ; ?>
 					.
 					<br /><br />
