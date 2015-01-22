@@ -32,6 +32,7 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 
 		$list = [];
 		foreach( $drivers as $driver ){
+
 			if( $count >= $start && $count < $end ){
 				$data = $driver->exports( [ 'permissions', 'groups' ] );
 				$data[ 'vehicle' ] = $driver->vehicle();
