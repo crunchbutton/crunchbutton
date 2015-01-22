@@ -2,6 +2,8 @@
 
 class Cockpit_Order extends Crunchbutton_Order {
 
+	const I_AM_5_MINUTES_AWAY = 'i-am-5-minutes-away';
+
 	public function exports(){
 
 		$out = $this->properties();
@@ -189,8 +191,31 @@ class Cockpit_Order extends Crunchbutton_Order {
 		if( $driver ){
 			$out['driver'] = $driver->exports();
 		}
-
 		return $out;
+	}
+
+	public function textCustomer( $text ){
+
+		switch ( $text ) {
+			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
+				$pattern = "%s, this is %s from Crunchbutton. I'm just 5 min away with your food!";
+				$driver = $this->driver();
+				if( $driver->id_admin ){
+					$message = sprintf( $pattern, $this->name, $driver->firstName() );
+					Crunchbutton_Message_Sms::send( [
+						'to' => $this->phone,
+						'message' => $message,
+						'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_NOTIFIES_CUSTOMER
+					] );
+					Log::debug([ 'order' => $this->id_order, 'action' => 'driver notifies a customer', 'message' => $message , 'type' => 'driver-customer' ] );
+				}
+				break;
+
+			default:
+				// other messages here!
+				break;
+		}
+
 	}
 
 

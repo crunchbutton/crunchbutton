@@ -12,6 +12,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				'avg_time_last' : {'method': 'GET', params : {'action' : 'times' } },
 				'avg_time_current' : {'method': 'GET', params : {'action' : 'times' } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
+				'text_customer_5_min_away' : { 'method': 'POST', params : { 'action' : 'text-customer-5-min-away' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
 				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } },
@@ -32,28 +33,28 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 			callback( orders );
 		} );
 	}
-	
+
 	$rootScope.$on('totalOrders', function(e, data) {
 		$rootScope.totalDriverOrders = {
 			count: data,
 			time: new Date
 		};
 	});
-	
+
 	$rootScope.$on('newOrders', function(e, data) {
 		$rootScope.newDriverOrders = {
 			count: data,
 			time: new Date
 		};
 	});
-	
+
 	$rootScope.$on('acceptedOrders', function(e, data) {
 		$rootScope.acceptedDriverOrders = {
 			count: data,
 			time: new Date
 		};
 	});
-	
+
 	$rootScope.$on('pickedupOrders', function(e, data) {
 		$rootScope.pickedupOrders = {
 			count: data,
@@ -61,7 +62,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		};
 	});
 
-	
+
 	service.revThisShift = function( callback ){
 		orders.revenue( {}, function( json ){ $rootScope.driverRevenue = { revenue: json.totalCurrent }; } );
 	}
@@ -70,7 +71,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		orders.revenue_last( {}, function( json ){ $rootScope.driverRevenueLast = { revenue: json.totalLast }; } );
 
 	}
-	
+
 	service.timeLastShift = function( callback ){
 		orders.avg_time_last( {}, function( json ){ $rootScope.driverTimeLast = { time: json.total_last }; } );
 	}
@@ -82,7 +83,11 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	service.outstandingOrders = function( callback ){
 		orders.outstanding_Order( {}, function( json ){ $rootScope.driverOutstandingOrders = { count: json.total }; } );
 	}
-		
+
+	service.text_customer_5_min_away = function( id_order, callback ){
+		orders.text_customer_5_min_away( { 'id_order': id_order }, function( json ){ callback( json ); } );
+	}
+
 	service.accept = function( id_order, callback ){
 		orders.accept( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}
@@ -110,20 +115,20 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 			callback( order );
 		} );
 	}
-	
+
 
 	//Driver fee
 	service.driver_take = function( callback ){
 		var totalTake = 0;
 		var id_order = $routeParams.id;
-		orders.get( { 'id_order': id_order }, function( order ) { 
+		orders.get( { 'id_order': id_order }, function( order ) {
 			totalTake = (1 * order._tip) + (1 * order.delivery_fee);
 			$rootScope.driverTake = { total: totalTake };
 			if (callback) {
 				callback( order );
 			}
 		} );
-		
+
 	}
 
 	return service;

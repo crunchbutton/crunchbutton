@@ -31,6 +31,24 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService, Mai
 		} );
 	}
 
+	$scope.text_customer_5_min_away_sending = null;
+
+	$scope.text_customer_5_min_away = function(){
+		if( 'Confirm send message to customer?' ){
+			$scope.text_customer_5_min_away_sending = true;
+			DriverOrdersService.text_customer_5_min_away( $scope.order.id_order,
+				function( json ){
+					if( json.status ) {
+						App.alert( 'Message sent!' );
+					} else {
+						App.alert( 'Message not sent!' );
+					}
+					$scope.text_customer_5_min_away_sending = true;
+				}
+			);
+		}
+	}
+
 	$scope.accept = function() {
 		$scope.makeBusy();
 		DriverOrdersService.accept( $scope.order.id_order,

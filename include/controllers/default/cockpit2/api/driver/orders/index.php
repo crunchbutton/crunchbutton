@@ -78,6 +78,10 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 							case 'undo':
 								$res['status'] = $order->undoStatus();
 								break;
+
+							case 'text-customer-5-min-away':
+								$order->textCustomer( Cockpit_Order::I_AM_5_MINUTES_AWAY );
+								break;
 						}
 
 						$ret['status'] = $order->status()->last();
