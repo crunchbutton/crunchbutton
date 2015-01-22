@@ -8,6 +8,10 @@ class Controller_Api_Script_InfoFor1099 extends Crunchbutton_Controller_RestAcco
 
 	public function init() {
 
+		if( !c::admin()->permission()->check( [ 'global' ] ) ){
+			return false;
+		}
+
 
 		$this->year = ( c::getPagePiece( 3 ) ? c::getPagePiece( 3 ) : Controller_Api_Script_InfoFor1099::YEAR );
 
