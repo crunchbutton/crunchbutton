@@ -14,7 +14,7 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<h2>
-		<a href="/drivers/onboarding/docs">Documents</a> | 
+		<a href="/drivers/onboarding/docs">Documents</a> |
 		<a href="/drivers/onboarding/new">Create a new driver</a>
 	</h2>
 	<br><br>
@@ -26,6 +26,7 @@
 				<th>Login</th>
 				<th>Vehicle</th>
 				<th>Community</th>
+				<th>Created by</th>
 				<th></th>
 			</tr>
 			<tr ng-repeat="driver in drivers" ng-attr-tabindex="{{$index+1}}" tab-select="/drivers/onboarding/{{driver.id_admin}}">
@@ -42,6 +43,9 @@
 					<span class="staff-community-repeat" ng-repeat="community in driver.communities">
 						{{community}}
 					</span>
+				</td>
+				<td>
+					{{driver.author}}
 				</td>
 				<td>
 					<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
@@ -64,7 +68,7 @@
 			</tr>
 		</tbody>
 	</table>
-	
+
 	<div class="divider"></div>
 
 </div>

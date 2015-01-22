@@ -914,10 +914,21 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $driver_info;
 	}
 
+	public function author(){
+		if( !$this->_author && $this->id_admin_author ){
+			$this->_author = Admin::o( $this->id_admin_author );
+		}
+		return $this->_author;
+	}
+
 	public function save() {
 		$this->phone = Phone::clean($this->phone);
 		$this->txt = Phone::clean($this->txt);
 		$this->testphone = Phone::clean($this->testphone);
+		// if it is a new record saves the author
+		if( !$this->id_admin && c::admin()->id_admin ){
+			$this->id_admin_author = c::admin()->id_admin;
+		}
 		return parent::save();
 	}
 
