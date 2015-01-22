@@ -8,11 +8,11 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name : ['My Application'],
+  app_name : ['Cockpit Event Server'],
   /**
    * Your New Relic license key.
    */
-  license_key : 'license key here',
+  license_key : '4627d008d409d9b3b49be537f8350daf482402af ',
   logging : {
     /**
      * Level at which to log. 'trace' is most useful to New Relic when diagnosing
