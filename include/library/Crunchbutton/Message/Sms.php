@@ -10,6 +10,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 	const REASON_PASSWORD_RESET = 'password reset';
 	const REASON_DRIVER_SETUP = 'driver setup notify';
 	const REASON_DRIVER_ORDER = 'driver new order';
+	const REASON_DRIVER_NOTIFIES_CUSTOMER = 'driver notifies customer';
 	const REASON_DRIVER_SHIFT = 'driver shift';
 	const REASON_BLAST = 'blast';
 	const REASON_CUSTOMER_ORDER = 'customer new order';
@@ -48,7 +49,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			if( isset( $from['reason'] ) ){
 				$reason = $from['reason'];
 			}
-			
+
 			if( isset( $from['media'] ) ){
 				$media = $from['media'];
 			}
