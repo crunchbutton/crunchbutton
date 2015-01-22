@@ -28,11 +28,11 @@ if( $isDriverCockpit ){
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr>
 		<td style="border: 0; padding: 5px;">
-			<h1 title="<?=$order->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton'?>"><?=$order->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton'?></h1>
+			<h1 title="<?php echo $order->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton'; ?>"><?php echo $order->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton'; ?></h1>
 		</td>
 		<td style="border: 0; padding: 5px; text-align: right;">
-			<span class="order-num">Order #<?=$order->id_order?></span><br />
-			<?=$order->date()->format('M jS, h:i a')?>
+			<span class="order-num">Order #<?php echo $order->id_order; ?></span><br />
+			<?php echo $order->date()->format('M jS, h:i a'); ?>
 		</td>
 	</tr>
 </table>
@@ -42,9 +42,9 @@ if( $isDriverCockpit ){
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>
-			<? if ($order->delivery_type == 'delivery') : ?>
+			<?php if ($order->delivery_type == 'delivery') { ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/delivery.png')?>" class="icon-big"></td>
+					<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/delivery.png'); ?>" class="icon-big"></td>
 					<td class="text-size-mid">
 						<?php if( $icon == 'restaurant' && $restaurant->delivery_service && $restaurant->formal_relationship ) { ?>
 							Order for Crunchbutton Pickup
@@ -53,35 +53,35 @@ if( $isDriverCockpit ){
 						<?php } ?>
 					</td>
 				</tr></table>
-			<? else : ?>
+			<?php } else { ?>
 				<table cellpadding="0" cellspacing="0"><tr>
 
-					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/takeout.png')?>" class="icon-big"></td>
+					<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/takeout.png'); ?>" class="icon-big"></td>
 					<td class="text-size-mid">Order for Takeout</td>
 				</tr></table>
-			<? endif ; ?>
+			<?php } ?>
 		</td>
 		<td>
-			<? if ($order->pay_type == 'card') : ?>
+			<?php if ($order->pay_type == 'card') { ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/card.png')?>" class="icon-big"></td>
+					<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/card.png'); ?>" class="icon-big"></td>
 					<td class="text-size-mid">Prepaid by card</td>
 				</tr></table>
-			<? else : ?>
+			<?php } else { ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/cash.png')?>" class="icon-big"></td>
+					<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/cash.png'); ?>" class="icon-big"></td>
 					<td class="text-size-mid">Cash order</td>
 				</tr></table>
-			<? endif ; ?>
+			<?php } ?>
 		</td>
 		<td>
 			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/timer.png')?>" class="icon-big"></td>
+				<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/timer.png'); ?>" class="icon-big"></td>
 				<td class="text-size-mid">
 						<?php if( $icon == 'restaurant' && $restaurant->delivery_service && $restaurant->formal_relationship ) { ?>
 							Make food, we'll pick it up!
 						<?php } else { ?>
-							Expected by <?=$order->expectedBy()->format('h:i')?></td>
+							Expected by <?php echo $order->expectedBy()->format('h:i'); ?></td>
 						<?php } ?>
 			</tr></table>
 		</td>
@@ -91,17 +91,17 @@ if( $isDriverCockpit ){
 
 
 
-<? if ($order->notes) : ?>
+<?php if ($order->notes) { ?>
 	<div class="xhatch separator-small"></div>
 
 	<table class="notes" cellpadding="0" cellspacing="0">
 		<tr>
-			<td valign="top"><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/note.png')?>" class="icon-note"></td>
+			<td valign="top"><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/note.png'); ?>" class="icon-note"></td>
 			<td style="margin: 0; padding: 22px 0 0 0;" valign="top"><div class="arrow-left"></div></td>
-			<td style="width: 100%; padding-right: 0; "><table style="width: 100%"><tr><td class="notes-content"><?=nl2br($order->notes)?></td></tr></table></td>
+			<td style="width: 100%; padding-right: 0; "><table style="width: 100%"><tr><td class="notes-content"><?php echo nl2br($order->notes); ?></td></tr></table></td>
 		</tr>
 	</table>
-<? endif ; ?>
+<?php } ?>
 
 <div class="xhatch separator-small"></div>
 
@@ -110,35 +110,35 @@ if( $isDriverCockpit ){
 	<tr>
 		<td style="width: 50%">
 			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/customer.png')?>" class="icon-big"></td>
-				<td class="text-size-mid"><?=$order->name?><br />
+				<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/customer.png'); ?>" class="icon-big"></td>
+				<td class="text-size-mid"><?php echo $order->name; ?><br />
 				<?php echo $order->phone(); ?>
 				</td>
 			</tr></table>
 		</td>
 		<td>
 			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/restaurant.png')?>" class="icon-big"></td>
-				<td class="text-size-mid"><?=$order->restaurant()->name?><br /><?=$order->restaurant()->phone?></td>
+				<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/restaurant.png'); ?>" class="icon-big"></td>
+				<td class="text-size-mid"><?php echo $order->restaurant()->name; ?><br /><?php echo $order->restaurant()->phone; ?></td>
 			</tr></table>
 		</td>
 	</tr>
 	<tr>
 		<td style="width: 50%">
-			<? if ($order->delivery_type == 'delivery') : ?>
+			<?php if ($order->delivery_type == 'delivery') { ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/map.png')?>" class="icon-big"></td>
-					<td class="text-size-mid"><?=nl2br(strip_tags($order->address))?></td>
+					<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/map.png'); ?>" class="icon-big"></td>
+					<td class="text-size-mid"><?php echo nl2br(strip_tags($order->address)); ?></td>
 				</tr></table>
-			<? endif ; ?>
+			<?php }  ?>
 		</td>
 		<td style="width: 50%">
-			<? if ($order->_print && $order->delivery_type == 'takeout') : ?>
+			<?php if ($order->_print && $order->delivery_type == 'takeout') { ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/map.png')?>" class="icon-big"></td>
-					<td class="text-size-mid"><?=nl2br(strip_tags($order->restaurant()->address))?></td>
+					<td><img src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/map.png'); ?>" class="icon-big"></td>
+					<td class="text-size-mid"><?php echo nl2br(strip_tags($order->restaurant()->address)); ?></td>
 				</tr></table>
-			<? endif ; ?>
+			<?php } ?>
 		</td>
 	</tr>
 
@@ -165,14 +165,14 @@ if( $this->cockpit_url ){
 
 ;?>
 <br /><br />
-<? if (!$order->_print) : ?>
+<?php if (!$order->_print) { ?>
 	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
 		<tr>
-			<td style="text-align: left;" class="text-size-small"><? if ($order->pay_type == 'card') : ?>Card on file. Signature not required.<? endif ; ?></td>
-			<td style="text-align: right;" class="text-size-small">Crunchbutton support: call or text <?=c::config()->phone->restaurant?></td>
+			<td style="text-align: left;" class="text-size-small"><?php  if ($order->pay_type == 'card') { ?>Card on file. Signature not required.<?php } ?></td>
+			<td style="text-align: right;" class="text-size-small">Crunchbutton support: call or text <?php echo c::config()->phone->restaurant; ?></td>
 		</tr>
 	</table>
-<? endif ; ?>
+<?php } ?>
 
 
 <?php
@@ -187,23 +187,23 @@ if( $this->cockpit_url ) { ?>
 
 <div class="xhatch separator-big" style="text-align:right!important;">
 <?php if( $icon != '' ) { ?>
-	<img style="margin:4px 4px 0 0" src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/ico-'. $icon . '.png')?>">
+	<img style="margin:4px 4px 0 0" src="<?php echo $this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/ico-'. $icon . '.png'); ?>">
 <?php } ?>
 </div>
 
-<? if (!$user && $order->restaurant()->customer_receipt) : ?>
+<?php if (!$user && $order->restaurant()->customer_receipt) { ?>
 	<br /><br />
 	<div style="border-top: 1px dashed black"> </div>
 	<br /><br />
 
 	<h2 align="center">Customer Copy</h2>
 	<br /><br />
-	<h1 style="text-align: center"><?=$order->restaurant()->name?></h1>
+	<h1 style="text-align: center"><?php echo $order->restaurant()->name; ?></h1>
 	<br /><br />
-	<?=$this->display('order/details',['set' => ['order' => $order]])?>
-<? endif ; ?>
+	<?php echo $this->display('order/details',['set' => ['order' => $order]]); ?>
+<?php } ?>
 
 
-<? if ($order->_print) : ?>
+<?php if ($order->_print) { ?>
 <script>window.print();</script>
-<? endif ; ?>
+<?php } ?>
