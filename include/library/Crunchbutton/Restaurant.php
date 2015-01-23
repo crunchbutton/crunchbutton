@@ -20,6 +20,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			->load($id);
 	}
 
+	public function deliveryItSelf(){
+		if( $this->delivery ){
+			if( $this->delivery_service ){
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public static function permalink($permalink) {
 		return self::q('select * from restaurant where permalink="'.$permalink.'"')->get(0);
 	}

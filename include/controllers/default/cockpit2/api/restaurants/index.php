@@ -44,7 +44,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				break;
 		}
 	}
-	
+
 	private function _query() {
 
 		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
@@ -71,22 +71,22 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			';
 		}
 		$q .='
-			WHERE 
+			WHERE
 				restaurant.name IS NOT NULL
 		';
-		
+
 		if ($status != 'all') {
 			$q .= '
 				AND active="'.($status == 'active' ? '1' : '0').'"
 			';
 		}
-		
+
 		if ($community) {
 			$q .= '
 				AND restaurant_community.id_community="'.$community.'"
 			';
 		}
-		
+
 		if ($search) {
 			$q .= Crunchbutton_Query::search([
 				'search' => stripslashes($search),
@@ -100,11 +100,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				]
 			]);
 		}
-		
+
 		$q .= '
 			GROUP BY restaurant.id_restaurant
 		';
-		
+
 		// get the count
 		$count = 0;
 		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
@@ -116,7 +116,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			ORDER BY restaurant.name ASC
 			LIMIT '.$offset.', '.$limit.'
 		';
-		
+
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
@@ -127,6 +127,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		while ($s = $r->fetch()) {
 			$restaurant = Restaurant::o($s);
 			$out = $s;
+			$out->delivery_is_self = $restaurant->deliveryItSelf();
 			$out->communities = [];
 			foreach ($restaurant->communities() as $community) {
 				$out->communities[] = $community->properties();
