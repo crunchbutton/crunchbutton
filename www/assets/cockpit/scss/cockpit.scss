@@ -3042,11 +3042,13 @@ h1.driver-title {
 	margin-top: .7em;
 }
 
+.page-welcome .nav-top,
 .page-login .nav-top {
 	background: none;
 	border-bottom: none;
 }
 
+.page-welcome .nav-top .logo,
 .page-login .nav-top .logo {
 	display: none;
 }
@@ -3054,6 +3056,7 @@ h1.driver-title {
 	width: 12em;
 }
 
+.page-welcome .nav-top .menu,
 .page-login .nav-top .menu {
 	opacity: .5;
 }
