@@ -3551,11 +3551,11 @@ input[type="checkbox"].switch + div:before {
 }
 
 .drivers-welcome {
-	
+
 	background: $navColor;
 
 	color: white;
-	
+
 }
 
 .drivers-welcome-logo {
@@ -3587,7 +3587,7 @@ input[type="checkbox"].switch + div:before {
 		-webkit-animation: slideOutLeft 0.5s both cubic-bezier(0.23,1,0.32,1);
 		z-index: 9999;
 	}
-	.view-animate.ng-enter {  
+	.view-animate.ng-enter {
 		-webkit-animation: slideInRight 0.5s both cubic-bezier(0.23,1,0.32,1);
 		z-index: 8888;
 	}
@@ -3623,4 +3623,8 @@ input[type="checkbox"].switch + div:before {
 		from    { -webkit-transform: translateX(-100%); }
 		to      { -webkit-transform: translateX(0); }
 	}
+}
+
+.delivery_is_self, .delivery_is_self td{
+	color: #458cc8 !important;
 }
