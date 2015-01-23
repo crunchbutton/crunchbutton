@@ -42,7 +42,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 
 		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
 			<? $date = $order->date(); ?>
-			<tr class="list-order-item">
+			<tr class="list-order-item <?php if( $order->restaurant()->deliveryItSelf() ){ echo 'deliverThemSelves"'; } ?>" >
 				<td>
 					<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
 					<br/>

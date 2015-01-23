@@ -38,6 +38,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			} else{
 				$payment = new Crunchbutton_Restaurant_Payment_Type();
 				$payment->id_restaurant = $id_restaurant;
+				$payment->formal_relationship = 1;
 				$payment->save();
 				return $payment;
 			}
