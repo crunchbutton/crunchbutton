@@ -1,0 +1,91 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-newspaper-o"></i>First time user gift codes used per school per day</h1>
+
+		<div class="divider"></div>
+
+		<navigation-back></navigation-back>
+
+		<form name="form" novalidate>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content2">
+
+			<li class="li-input" ng-class="{'error':form.rangeStart.$invalid}">
+				<div class="label">Date start:</div>
+				<div class="input"><input type="date" name="rangeStart" ng-model="range.start" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeStart.$error.required">Required.</small>
+					<small ng-show="form.rangeStart.$error.date">Enter a valid start date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.rangeEnd.$invalid}">
+				<div class="label">Date end:</div>
+				<div class="input"><input type="date" name="rangeEnd" ng-model="range.end" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeEnd.$error.required">Required.</small>
+					<small ng-show="form.rangeEnd.$error.date">Enter a valid end date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isProcessing">
+				<button class="button save" ng-click="report();">Report</button>
+			</li>
+
+			<li class="li-input" ng-show="isProcessing">
+				<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<div ng-if="result">
+
+		<h2 class="title">
+			<span>By Community</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td>Community</td>
+					<td>Day</td>
+					<td>Users</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="c in result.communities">
+					<td>{{c.community}}</td>
+					<td>{{c.day}}</td>
+					<td>{{c.users}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h2 class="title">
+			<span>By Day</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td>Community</td>
+					<td>Day</td>
+					<td>Users</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="d in result.communities">
+					<td>{{d.community}}</td>
+					<td>{{d.day}}</td>
+					<td>{{d.users}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+</div>
