@@ -92,7 +92,7 @@ class Crunchbutton_Reward extends Cana_Table{
 			$cents = $amount * 100;
 			$points = $this->calcPointsPerCents( $cents );
 			$points = $this->calcOrdersOver( $cents, $points );
-			return $points;
+			return intval( $points );
 		}
 		return 0;
 	}
