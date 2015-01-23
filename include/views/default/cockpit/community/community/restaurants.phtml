@@ -29,9 +29,9 @@ $restaurants = $this->restaurants;
 
 	$permission = c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit']);
 
-	$active = ( !$restaurant->active ) ? 'class="inactive"' : '';
+	$active = ( !$restaurant->active ) ? 'inactive' : '';
 	?>
-	<tr <?php echo $active; ?>>
+	<tr class="<?php echo $active; ?> <?php if( $restaurant->deliveryItSelf() ){ echo 'deliverThemSelves"'; } ?>">
 		<td>
 			<?php echo $restaurant->name; ?>
 			<?php if( !$restaurant->active ){
