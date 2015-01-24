@@ -22,11 +22,11 @@
 			<div class="box-content padded">
 				<select id="community-id" class="chosen-select" style="width:480px;">
 					<option value="" selected></option>
-					<?php  
+					<?php
 					$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();
 					foreach ( $communities as $community ) {
 						$selected = ( $id_community == $community->id_community ) ? 'selected="selected"' : '';
-						?><option <?php echo $selected; ?> value="<?php echo $community->id_community; ?>"><?php echo $community->name; ?></option><?php 
+						?><option <?php echo $selected; ?> value="<?php echo $community->id_community; ?>"><?php echo $community->name; ?></option><?php
 					}
 					?>
 				</select>
@@ -46,14 +46,6 @@
 									<br/>
 									<a class="shift-previous" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
 								</div>
-									<div class="span8 padded" style="text-align:center;">
-										<h5>
-											From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
-											<?php if( $this->current ) { ?>
-												<div style="color:green;">Current week</div>
-											<?php } ?>
-										</h5>
-									</div>
 								<div class="span2 padded" style="text-align:right;">
 									<br/>
 									<a class="shift-next" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
@@ -67,7 +59,7 @@
 			<?php if( $ajax ) { ?>
 			<div class="box">
 				<div class="box-header">
-						<div class="row-fluid">								
+						<div class="row-fluid">
 							<div style="text-align:center;">
 								<h5>
 									From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
@@ -79,7 +71,7 @@
 
 						<table width="100%">
 						<tr>
-							<?php foreach( $this->days as $day ) { 
+							<?php foreach( $this->days as $day ) {
 								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 							?>
 								<th width="14%" style="background:<?php echo $dark; ?>">
@@ -96,14 +88,14 @@
 						</tr>
 						<?php $dark = ''; ?>
 						<tr>
-							<?php foreach( $this->days as $day ) { 
+							<?php foreach( $this->days as $day ) {
 								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 								$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $id_community, $day->format( 'Y-m-d' ) );
 							?>
 								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
 									<div class="row-fluid padded">
-										<?php 
-										foreach( $segments as $segment ) { 
+										<?php
+										foreach( $segments as $segment ) {
 											?><div class="row-fluid">
 											<a class="modal-hours-edit" href="/drivers/shift/community/edit/<?php echo $segment->id_community_shift; ?>" title="Edit hours">
 												<?php if( $segment->id_community_shift_father || $segment->recurring > 0 ){ ?>
@@ -125,7 +117,7 @@
 									</div>
 								</td>
 						<?php } ?>
-						</tr>	
+						</tr>
 					</table>
 					<div class="divider"></div>
 				</div>
@@ -134,9 +126,9 @@
 			<?php } ?>
 
 			<div class="padded">
-			
+
 			<!-- <button class="btn btn-blue" onclick="shift.community.copyAll( '<?php echo $id_community; ?>', '<?php echo $this->week; ?>', '<?php echo $this->year; ?>' );"><i class="icon-copy"></i> Copy the hours from the previous week</button> -->
-			
+
 			<button style="margin-left:20px;" class="btn btn-default" onclick="shift.community.toggleTimezone();"><i class="icon-time"></i> Show hours in&nbsp;
 			<span class="pst-timezone">community timezone</span>
 			<span class="community-timezone">PST timezone</span>
