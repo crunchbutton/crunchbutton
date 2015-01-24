@@ -31,8 +31,6 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		},
 	});
 
-
-
 	var aliases = $resource( App.service + 'community/:permalink/aliases/:action', { permalink: '@permalink', action: '@action' }, {
 				// list methods
 				'list' : { 'method': 'GET', params : { 'action' : null }, isArray: true },
