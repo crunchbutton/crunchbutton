@@ -42,6 +42,12 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 			});
 		}
 	});
+
+
+ 	CommunityService.closed( function( json ){
+ 		$scope.closed_communities = json;
+	} )
+
 });
 
 
