@@ -255,7 +255,12 @@
 				<tbody>
 					<tr ng-repeat="dish in order._dishes">
 						<td class="fooditem order-contents-item-qty">1</td>
-						<td class="fooditem dish-name">{{dish.name}} {{dish.options.select_options}} {{dish.options.with_option}} {{dish.options.without_default_options}} </td>
+						<td class="fooditem dish-name">
+						{{dish.name}}
+						<div>{{dish.options.select_options}}</div>
+						<div>{{dish.options.with_option}}</div>
+						<div>{{dish.options.without_default_options}}</div>
+						</td>
 						<td class="fooditem dish-price">
 							${{dish.price.regular | formatPrice}}
 						</td>
