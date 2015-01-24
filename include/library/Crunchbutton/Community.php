@@ -103,7 +103,13 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 			$out[ 'close_3rd_party_delivery_restaurants_date' ] = $date->format( 'M jS Y g:i:s A T' );
 		}
 
-
+		$next_sort = Crunchbutton_Community_Alias::q( 'SELECT MAX(sort) AS sort FROM community_alias WHERE id_community = ' . $this->id_community );
+		if( $next_sort->sort ){
+			$sort = $next_sort->sort + 1;
+		} else {
+			$sort = 1;
+		}
+		$out['next_sort'] = $sort;
 
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();

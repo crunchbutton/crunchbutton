@@ -28,7 +28,7 @@
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.communityPermalink.$invalid}">
-				<div class="label">Permalink:</div>
+				<div class="label">Permalink (must be lowercase):</div>
 				<div class="input"><input type="text" name="communityPermalink" ng-model="community.permalink" required placeholder="Permalink" ng-minlength="2" ng-maxlength="255" ></div>
 				<div class="box-error">
 					<small ng-show="form.communityPermalink.$error.required">Required.</small>
@@ -41,13 +41,6 @@
 				<div class="label">Active:</div>
 				<div class="input">
 					<select name="communityActive" required ng-model="community.active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':form.communityPrivate.$invalid}">
-				<div class="label">Private:</div>
-				<div class="input">
-					<select name="communityPrivate" required ng-model="community.private" ng-options="opt.value as opt.label for opt in yesNo" ></select>
 				</div>
 			</li>
 
@@ -79,8 +72,15 @@
 				</div>
 			</li>
 
+			<li class="li-input">
+				<div class="label">Address:</div>
+				<div class="input">
+					<textarea ng-model="community.address"></textarea>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.communityLocLat.$invalid}">
-				<div class="label">Latitude:</div>
+				<div class="label">Latitude (automagically calculated):</div>
 				<div class="input"><input type="text" name="communityLocLat" ng-model="community.loc_lat" required placeholder="Latitude"></div>
 				<div class="box-error">
 					<small ng-show="form.communityLocLat.$error.required">Required.</small>
@@ -88,7 +88,7 @@
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.communityLocLong.$invalid}">
-				<div class="label">Longitude:</div>
+				<div class="label">Longitude (automagically calculated):</div>
 				<div class="input"><input type="text" name="communityLocLong" ng-model="community.loc_lon" required placeholder="Longitude"></div>
 				<div class="box-error">
 					<small ng-show="form.communityLocLong.$error.required">Required.</small>
@@ -101,10 +101,6 @@
 				<div class="box-error">
 					<small ng-show="form.communityRange.$error.required">Required.</small>
 				</div>
-			</li>
-
-			<li ng-show="map">
-				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="width:80%; height: 450px;" options="{streetViewControl: false}"></map>
 			</li>
 
 		</ul>
@@ -123,7 +119,7 @@
 			</li>
 
 			<li class="li-input" ng-show="community.close_all_restaurants" ng-class="{'error':form.communityCloseAllRestaurantsNote.$invalid}">
-				<div class="label">Close All Restaurants Note:</div>
+				<div class="label">Close All Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
 				<div class="input"><input type="text" name="communityCloseAllRestaurantsNote" ng-model="community.close_all_restaurants_note" ng-required="community.close_all_restaurants"></div>
 				<div class="box-error">
 					<small ng-show="form.communityCloseAllRestaurantsNote.$error.required">Required.</small>
@@ -147,7 +143,7 @@
 			</li>
 
 			<li class="li-input" ng-show="community.close_3rd_party_delivery_restaurants" ng-class="{'error':form.communityClose3rdPartyRestaurantsNote.$invalid}">
-				<div class="label">Close 3rd Party Delivery Restaurants Note:</div>
+				<div class="label">Close 3rd Party Delivery Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
 				<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"></div>
 				<div class="box-error">
 					<small ng-show="form.communityClose3rdPartyRestaurantsNote.$error.required">Required.</small>
@@ -187,7 +183,7 @@
 
 			<div class="ul-inputs">
 
-				<ul ng-class="{'submitted':testSubmitted}" class="box-content2">
+				<ul ng-class="{'submitted':formAliasSubmitted}" class="box-content2">
 
 					<li class="li-input" ng-class="{'error':formAlias.aliasAlias.$invalid}">
 						<div class="label">Alias:</div>
@@ -206,7 +202,7 @@
 					</li>
 
 					<li class="li-input" ng-class="{'error':formAlias.aliasPrep.$invalid}">
-						<div class="label">Preposition:</div>
+						<div class="label">Preposition (at, in, etc. e.g. "the best delivery at Yale"):</div>
 						<div class="input"><input type="text" name="aliasPrep" ng-model="alias.prep" required placeholder="Preposition"></div>
 						<div class="box-error">
 							<small ng-show="formAlias.aliasPrep.$error.required">Required.</small>
@@ -214,7 +210,7 @@
 					</li>
 
 					<li class="li-input" ng-class="{'error':formAlias.aliasTop.$invalid}">
-						<div class="label">Top:</div>
+						<div class="label">Display Location after preposition on Community Error Page? (only do this for one alias per community, and only when community has launched):</div>
 						<div class="input">
 							<select name="aliasTop" ng-model="alias.top" ng-options="opt.value as opt.label for opt in yesNo" ></select>
 						</div>
@@ -223,10 +219,10 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formAlias.aliasSort.$invalid}">
+					<li class="li-input" ng-class="{'error':formAlias.aliasSort.$invalid}" ng-show="alias.top">
 						<div class="label">Sort:</div>
 						<div class="input">
-							<input type="number" ignore-mouse-wheel name="aliasSort" ng-model="alias.sort" required>
+							<input type="number" ignore-mouse-wheel name="aliasSort" ng-model="alias.sort" ng-required="alias.top">
 						</div>
 						<div class="box-error">
 							<small ng-show="formAlias.aliasSort.$error.required">Required.</small>
