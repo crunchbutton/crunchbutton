@@ -19,4 +19,34 @@
 
 	<ng-include src="'assets/view/listview-communities.html'"></ng-include>
 	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+
+	<br><br>
+	<h1 class="title"><i class="fa fa fa-list"></i>Closed Communities</h1>
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>Type</th>
+				<th>Closed at</th>
+				<th>Closed By</th>
+				<th>Closed Notes</th>
+				<th>How long</th>
+			</tr>
+			<tbody ng-repeat="c in closed_communities">
+				<tr>
+					<td colspan="5">
+						<strong>
+						<a href="/community/{{c.permalink}}">{{c.name}}</a></strong>
+					</td>
+				</tr>
+				<tr ng-repeat="l in c.log">
+					<td>{{l.type}}</td>
+					<td>{{l.closed_at}}</td>
+					<td>{{l.closed_by}}</td>
+					<td>{{l.note}}</td>
+					<td>{{l.how_long}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
 </div>
