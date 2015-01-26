@@ -263,6 +263,18 @@
 					<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download Doc</a>
 				</span>
 			</td>
+			<td class="td-medium driver-docs-card">
+
+			<div ng-if="doc.status" class="pointer" ng-click="approve(doc.status)">
+				<span ng-if="doc.status.approved">
+					<i class="fa fa-check-square-o"></i> {{doc.status.approved}}
+				</span>
+				<span ng-if="!doc.status.approved">
+					<i class="fa fa-square-o"></i> Approve
+				</span>
+			</div>
+
+			</td>
 			<td class="td-download">
 				<!-- upload directive -->
 				<div class="upbutton" driver-docs-upload>
@@ -284,6 +296,9 @@
 			<td class="td-medium driver-docs-card" ng-click="edit(driver.id_admin)">
 				<h2 class="driver-docs-card driver-docs-name"><b>{{doc.name}}</b></h2>
 				<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download-card" href="{{doc.status.url}}" target="_blank"><b>Download Doc</b></a></span>
+			</td>
+			<td class="td-medium driver-docs-card" ng-click="approve(doc)">
+				<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download-card" href="{{doc.status.url}}" target="_blank"><b>Approve</b></a></span>
 			</td>
 			<td class="td-medium td-download">
 				<div class="upbutton" driver-docs-upload>
