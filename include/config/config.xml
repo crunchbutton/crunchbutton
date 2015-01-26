@@ -10,15 +10,15 @@
 	<powered>Sex &amp; Drugs</powered>
 	<db>
 		<live>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
+			<user>crunchthree</user>
+			<pass>yumm!35sthr33s0me</pass>
 			<db>crunchbutton</db>
-			<host>_IP_</host>
+			<host>96.126.99.119</host>
 			<prefix></prefix>
 		</live>
 		<beta>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
+			<user>crunchthree</user>
+			<pass>yumm!35sthr33s0me</pass>
 			<db>crunchbutton_dev</db>
 			<host>96.126.99.119</host>
 			<prefix></prefix>
