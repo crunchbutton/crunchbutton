@@ -37,6 +37,8 @@ NGApp.controller('SideMenuCtrl', function ($scope, $rootScope, AccountService) {
 			$scope.menu.toggle = 'admin';
 		} else if (AccountService.isDriver) {
 			$scope.menu.toggle = 'driver';
+		} else if(AccountService.isMarketingRep) {
+			$scope.menu.toggle = 'marketing-rep';
 		}
 	};
 
@@ -67,7 +69,7 @@ NGApp.controller('LegalCtrl', function ($scope) {
 });
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
-	
+
 	$scope.loggingIn = false;
 
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
