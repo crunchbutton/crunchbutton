@@ -15,6 +15,7 @@
 			<db>crunchbutton</db>
 			<host>96.126.99.119</host>
 			<prefix></prefix>
+			<encrypted>true</encrypted>
 		</live>
 		<beta>
 			<user>***REMOVED***</user>
