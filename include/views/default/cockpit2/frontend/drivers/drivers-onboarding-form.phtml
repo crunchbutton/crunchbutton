@@ -212,6 +212,9 @@
 
 	</form>
 
+	<br><br><br>
+
+<!--
 	<div ng-if="driver.id_admin">
 		<h2 class="title">Documents</h2>
 		<table class="tb-grid">
@@ -243,30 +246,53 @@
 			</tbody>
 		</table>
 	</div>
+-->
+	<h1 class="title"><i class="fa fa-briefcase"></i>Documents</h1>
 
-	<form name="docs" ng-if="driver.id_admin">
-
-		<h3 class="title">Upload zone</h3>
-
-		<ul class="ul-inputs box-content2">
-			<li class="li-input">
-				<div class="label">Select the file type:</div>
-				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
-			</li>
-			<li ng-show="doc_uploaded">
-				<input ng-file-select name="file" type="file" />
-			</li>
-			<li ng-show="uploader.progress"  class="li-input">
-				<span class="sp-label sp-label-info">
-					Progress {{uploader.progress}}%
+	<table class="tb-grid driver-docs-grid">
+		<tr ng-repeat="doc in documents" ng-if="doc.url">
+			<td class="documents-check ">
+				<i class="fa fa-check-circle documents-check-good" ng-show="doc.status && doc.status.file.substring(9, 14) !== 'blank'"></i>
+				<i class="fa fa-check-circle documents-check-bad" ng-show="!doc.status || doc.status.file.substring(9, 14) == 'blank'"></i>
+			</td>
+			<td ng-click="edit(driver.id_admin)" class="td-medium driver-docs-name">
+				<h2 class="driver-docs-name"><b>{{doc.name}}</b></h2>
+				<a class="docs-download-form" href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
+				<!-- if he already have this doc, show the download link -->
+				<span ng-show="doc.status && doc.status.file.substring(9, 14) !== 'blank'" title="Sent at {{doc.status.date_formated}}">
+					<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download Doc</a>
 				</span>
-			</li>
-			<li ng-show="doc_uploaded"  class="li-input">
-				<button class="button" ng-click="uploader.uploadAll();">Upload</button>
-			</li>
-		</ul>
+			</td>
+			<td class="td-download">
+				<!-- upload directive -->
+				<div class="upbutton" driver-docs-upload>
+					<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
+					<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document}]}">
+				</div>
+			</td>
+		</tr>
+	</table>
 
-	</form>
+	<h1 class="title" ><i class="fa fa-picture-o"></i><span>Identification</span></h1>
+
+	<table class="tb-grid driver-docs-grid">
+		<tr ng-repeat="doc in documents" ng-if="!doc.url">
+			<td class="documents-check">
+				<i class="fa fa-check-circle documents-check-good" ng-show="doc.status"></i>
+				<i class="fa fa-check-circle documents-check-bad" ng-show="!doc.status"></i>
+			</td>
+			<td class="td-medium driver-docs-card" ng-click="edit(driver.id_admin)">
+				<h2 class="driver-docs-card driver-docs-name"><b>{{doc.name}}</b></h2>
+				<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download-card" href="{{doc.status.url}}" target="_blank"><b>Download Doc</b></a></span>
+			</td>
+			<td class="td-medium td-download">
+				<div class="upbutton" driver-docs-upload>
+					<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
+					<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document}]}">
+				</div>
+			</td>
+		</tr>
+	</table>
 
 	<ul class="ul-inputs">
 		<li class="li-input" ng-show="!isSaving">

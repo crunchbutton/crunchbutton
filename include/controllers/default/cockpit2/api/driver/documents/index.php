@@ -70,7 +70,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 							Log::debug( [ 'action' => 'upload file error', 'error' => '"www/upload/drivers-doc/" folder doens`t exist!', 'type' => 'drivers-onboarding'] );
 							$this->_error( '"www/upload/drivers-doc/" folder doens`t exist!' );
 						}
-
+/*
 						if ( copy( $_FILES[ 'file' ][ 'tmp_name' ], $file ) ) {
 							chmod( $file, 0777 );
 						} else {
@@ -78,7 +78,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						}
 
 						Log::debug( [ 'action' => 'upload file success', 'file name' => $name, 'type' => 'drivers-onboarding'] );
-
+*/
 						echo json_encode( ['success' => $name, 'id_driver_document' => $_POST['id_driver_document']] );
 						exit;
 					} else {
@@ -101,7 +101,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				}
 
 				$id_driver_document = $this->request()[ 'id_driver_document' ];
-				
+
 				if( $id_admin && $id_driver_document ){
 					$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $id_driver_document );
 					if( !$docStatus->id_driver_document_status ){
