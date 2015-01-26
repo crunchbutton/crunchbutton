@@ -6,6 +6,16 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
+		.when('/staff/marketing/new', {
+			action: 'staff',
+			controller: 'StaffMarketingFormCtrl',
+			templateUrl: 'assets/view/staff-marketing-form.html'
+		})
+		.when('/staff/marketing/:id', {
+			action: 'staff',
+			controller: 'StaffMarketingFormCtrl',
+			templateUrl: 'assets/view/staff-marketing-form.html'
+		})
 		.when('/staff/:id', {
 			action: 'staff',
 			controller: 'StaffInfoCtrl',
@@ -212,6 +222,149 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 	if( $scope.account.isLoggedIn() ){
 		load();
 	}
+
+} );
+
+NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, StaffService, CommunityService ) {
+
+	$scope.ready = false;
+	$scope.submitted = false;
+	$scope.isSaving = false;
+	$scope.action = null;
+
+	var docs = function(){
+		StaffService.marketing.docs.list( $scope.staff.id_admin, function( data ){
+			$scope.documents = data;
+		} );
+	}
+
+	$scope.approve = function( doc ){
+		var approve = ( doc.approved ) ? false : true;
+		StaffService.marketing.docs.approve( doc.id_driver_document_status, approve, function( data ){
+			docs();
+		} );
+	}
+
+	$scope.remove = function( id_driver_document_status ){
+		if( confirm( 'Confirm remove document?' ) ){
+			StaffService.marketing.docs.remove( id_driver_document_status, function( data ){
+				docs();
+			} );
+		}
+	}
+
+	var logs = function(){
+		DriverOnboardingService.logs( $routeParams.id, function( data ){
+			$scope.logs = data;
+		} );
+	}
+
+	var start = function(){
+
+		$scope.action = ( $routeParams.id == 'new' ) ? 'new' : 'edit';
+
+		if( $scope.action == 'edit' ){
+
+			StaffService.marketing.load( $routeParams.id, function( staff ){
+				if( !staff.id_admin ){
+					$scope.navigation.link( '/staff/marketing/new' );
+					return;
+				}
+				$scope.staff = staff;
+				docs();
+			} );
+		}
+
+		CommunityService.listSimple( function( data ){
+			$scope.communities = data;
+			$scope.ready = true;
+		} );
+
+		$scope._yesNo = StaffService.yesNo();
+
+	}
+
+	// method save that saves the driver
+	$scope.save = function(){
+
+		if( $scope.isSaving ){
+			return;
+		}
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			$scope.isSaving = false;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		StaffService.marketing.save( $scope.staff, function( json ){
+
+			if( json.success ){
+
+				var url = '/staff/marketing/' + json.success.id_admin;
+
+				if( $scope.staff.id_admin ){
+					$scope.reload();
+				} else {
+					$scope.navigation.link( url );
+				}
+
+				setTimeout( function(){
+					App.alert( 'Marketing rep saved!' );
+				}, 500 );
+
+				$scope.isSaving = false;
+
+			} else {
+				App.alert( 'Marketing rep not saved: ' + json.error , 'error' );
+				$scope.isSaving = false;
+			}
+		} );
+	}
+
+	$scope.cancel = function(){
+		$scope.navigation.link( '/staff/' );
+	}
+
+
+	// this is a listener to upload error
+	$scope.$on( 'driverDocsUploadedError', function(e, data) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	} );
+
+	// this is a listener to upload success
+	$scope.$on( 'driverDocsUploaded', function(e, data) {
+		var id_driver_document = data.id_driver_document;
+		var response = data.response;
+		if( response.success ){
+			var doc = { id_admin : $scope.staff.id_admin, id_driver_document : id_driver_document, file : response.success };
+			StaffService.marketing.docs.save( doc, function( json ){
+				if( json.success ){
+					App.alert( 'File saved!' );
+					docs();
+				} else {
+					App.alert( 'File not saved: ' + json.error );
+				}
+			} );
+		} else {
+			App.alert( 'File not saved! ');
+		}
+	});
+
+
+	// Upload control stuff
+	$scope.doc_uploaded = 0;
+	var uploader = $scope.uploader = new FileUploader({
+		url: '/api/driver/documents/upload/'
+	});
+
+	$scope.download = function( id_driver_document_status ){
+		StaffService.marketing.docs.download( id_driver_document_status );
+	}
+
+	start();
 
 } );
 

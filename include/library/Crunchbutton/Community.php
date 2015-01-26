@@ -182,7 +182,6 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 			->load($id);
 	}
 
-
 	function groupOfDrivers(){
 		if (!isset($this->_groupOfDrivers)) {
 			$group = Crunchbutton_Group::byName($this->driverGroup());
@@ -192,6 +191,17 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 			$this->_groupOfDrivers = $group;
 		}
 		return $this->_groupOfDrivers;
+	}
+
+	function groupOfMarketingReps(){
+		if (!isset($this->_groupOfMarketingReps)) {
+			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = "' . $this->id_community . '" AND type = "' . Crunchbutton_Group::TYPE_MARKETING_REP . '" ORDER BY id_group DESC LIMIT 1 ' );
+			if (!$group->id_group) {
+				$group = Crunchbutton_Group::createMarketingRepGroup( $this->id_community );
+			}
+			$this->_groupOfMarketingReps = $group;
+		}
+		return $this->_groupOfMarketingReps;
 	}
 
 	public function communityByDriverGroup( $group ){
@@ -345,6 +355,13 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 			$this->save();
 		}
 		return $this->driver_group;
+	}
+
+	public function marketingRepGroup(){
+		if( !$this->_marketing_rep_group ){
+			$this->_marketing_rep_group = Crunchbutton_Group::marketingRepGroupOfCommunity( $this->id_community );
+		}
+		return $this->_marketing_rep_group;
 	}
 
 	/**

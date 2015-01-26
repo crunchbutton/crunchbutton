@@ -1,4 +1,4 @@
-NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
+NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource) {
 
 	var service = {};
 
@@ -67,6 +67,74 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams) {
 		staff.status({id_admin: id_admin}, function(data) {
 			callback(data);
 		});
+	}
+
+	// Create a private resource 'staff'
+	var marketing = $resource( App.service + 'staff/marketing/:id_admin/:action', { id_admin: '@id_admin', action: '@action' }, {
+				'load' : { 'method': 'GET', params : { action: '' } },
+				'save' : { 'method': 'POST', params : { action: 'save' } }
+			}
+		);
+
+	// documents resource
+	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document/:id_driver_document_status/:page/:disapprove', { id_admin: '@id_admin', id_driver_document: '@id_driver_document', id_driver_document_status: '@id_driver_document_status', page: '@page', disapprove:'@disapprove' }, {
+				'status' : { 'method': 'GET', params : { action : 'marketing-rep' }, isArray: true },
+				'save' : { 'method': 'POST', params : { action : 'save' } },
+				'pendency' : { 'method': 'GET', params : { action : 'pendency' } },
+				'list' : { 'method': 'GET', params : { action : 'list' } },
+				'approve' : { 'method': 'GET', params : { action : 'approve' } },
+				'remove' : { 'method': 'GET', params : { action : 'remove' } }
+			}
+		);
+
+	service.marketing = {
+		load: function( id_admin, callback ){
+			marketing.load( { id_admin: id_admin }, function( data ) {
+				callback( data );
+			});
+		},
+		save: function( staff, callback ){
+			marketing.save( staff, function( json ){
+				callback( json );
+			} );
+		},
+		docs: {
+			list: function( id_admin, callback ){
+							if( id_admin ){
+								documents.status( { 'id_admin': id_admin }, function( docs ){
+									callback( docs );
+								} );
+							}
+						},
+			save: function( doc, callback ){
+							documents.save( doc, function( doc ){
+								callback( doc );
+							} );
+						},
+			approve: function( id_driver_document_status, approve, callback ){
+				var disapprove = ( approve ) ? null : 'disapprove';
+				documents.approve( { id_driver_document_status: id_driver_document_status, disapprove: disapprove }, function( data ){
+					callback( data );
+				} );
+			},
+
+			remove: function( id_driver_document_status, callback ){
+				documents.remove( { id_driver_document_status: id_driver_document_status }, function( data ){
+					callback( data );
+				} );
+			},
+			download: function( id_driver_document_status ){
+				var url =  App.service + 'driver/documents/download/' + id_driver_document_status;
+				$window.open( url );
+			}
+		}
+	}
+
+	service.yesNo = function(){
+		var options = [];
+		options.push( { value: '0', label: 'No' } );
+		options.push( { value: '1', label: 'Yes' } );
+		return options;
 	}
 
 	return service;

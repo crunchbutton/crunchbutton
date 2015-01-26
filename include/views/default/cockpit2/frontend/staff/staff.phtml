@@ -14,6 +14,7 @@
 					<select ng-model="query.type" name="searchType" tabindex="2">
 						<option value="all">All</option>
 						<option value="driver">Drivers</option>
+						<option value="marketing-rep">Marketing reps</option>
 					</select>
 				</td>
 				<th>Status</th>
@@ -46,6 +47,11 @@
 	</div>
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<h2>
+		<a href="/staff/marketing/new">Create a new marketing rep</a>
+	</h2>
+	<br><br>
 
 	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
 	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
