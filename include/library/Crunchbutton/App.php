@@ -93,6 +93,7 @@ class Crunchbutton_App extends Cana_App {
 		try {
 			parent::init($params);
 		} catch (Exception $e) {
+			print_r($e);
 			$this->dbError();
 		}
 
