@@ -18,10 +18,11 @@
 		</live>
 		<beta>
 			<user>crunchthree</user>
-			<pass>yumm!35sthr33s0me</pass>
+			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
 			<host>96.126.99.119</host>
 			<prefix></prefix>
+			<encrypted>true</encrypted>
 		</beta>
 		<local>
 			<user>root</user>
