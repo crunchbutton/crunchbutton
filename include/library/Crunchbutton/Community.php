@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
+class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	const CUSTOMER_SERVICE_ID_COMMUNITY = 92;
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
