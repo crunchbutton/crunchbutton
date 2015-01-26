@@ -345,7 +345,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'drivers-help',
 			controller: 'DriversHelpCtrl',
 			templateUrl: 'assets/view/drivers-help.html',
-			back: false
+			back: false,
+            reloadOnSearch: false
 		})
 		.when('/drivers/help/credit-card', {
 			action: 'drivers-help',
