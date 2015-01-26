@@ -4,6 +4,7 @@
 			<th>Name</th>
 			<th>Phone</th>
 			<th>Login</th>
+			<th>Type</th>
 			<th ng-if="!community">Community</th>
 			<th class="tb-center">Active</th>
 			<th class="tb-center">Working</th>
@@ -17,6 +18,7 @@
 			<td><a href="/staff/{{s.login}}">{{s.name}}</a></td>
 			<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
 			<td>{{s.login}}</td>
+			<td>{{s.type}}</td>
 			<td ng-if="!community">
 				<span class="staff-community-repeat" ng-repeat="community in s.communities">
 					{{community}}

@@ -41,6 +41,10 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$this->_list();
 				break;
 
+			case 'list-marketing':
+				$this->_listMarketing();
+				break;
+
 			case 'remove':
 				$this->_remove();
 				break;
@@ -148,7 +152,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					}
 
 					$needToSendDocs = false;
-					$docs = Cockpit_Driver_Document::all();
+					$docs = Cockpit_Driver_Document::driver();
 					foreach( $docs as $doc ){
 						if( $doc->required ){
 
@@ -169,6 +173,48 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						}
 					}
 					echo json_encode( [ 'needToSendDocs' => $needToSendDocs ] );
+				break;
+
+			case 'marketing-rep':
+				$id_admin = false;
+
+				if( c::getPagePiece( 4 ) ){
+					$admin = Crunchbutton_Admin::o( c::getPagePiece( 4 ) );
+					if( $admin->id_admin ){
+						$id_admin = $admin->id_admin;
+					}
+				}
+				if( !$admin->id_admin ){
+					$this->_error();
+				}
+
+				// Check if the logged user has permission to see the admin's docs
+				$user = c::user();
+				$hasPermission = ( c::admin()->permission()->check( [ 'global' ] ) || ( $id_admin == $user->id_admin ) );
+
+				$payment_type = $admin->payment_type();
+
+				// shows the regular list
+				$list = [];
+				$docs = Cockpit_Driver_Document::marketing_rep();
+				foreach( $docs as $doc ){
+					$out = $doc->exports();;
+					if( $id_admin && $hasPermission ){
+						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );
+						if( $docStatus->id_driver_document_status ){
+							$admin = $docStatus->admin_approved();
+							$out[ 'status' ] = $docStatus->exports();
+							if( $admin->id_admin ){
+								$out[ 'status' ][ 'approved' ] = $admin->name;
+							} else {
+								$out[ 'status' ][ 'approved' ] = false;
+							}
+
+						}
+					}
+					$list[] = $out;
+				}
+				echo json_encode( $list );
 				break;
 
 			default:
@@ -195,7 +241,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 
 				// shows the regular list
 				$list = [];
-				$docs = Cockpit_Driver_Document::all();
+				$docs = Cockpit_Driver_Document::driver();
 				foreach( $docs as $doc ){
 					if( !$doc->showDocument( $vehicle ) ){
 						continue;

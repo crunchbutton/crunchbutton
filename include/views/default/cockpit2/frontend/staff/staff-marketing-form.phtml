@@ -1,0 +1,148 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-automobile"></i><span>Marketing Rep Onboarding</span></h1>
+
+	<div class="divider"></div>
+
+	<navigation-back></navigation-back>
+
+	<h2 class="title">
+		<span ng-if="!staff.id_admin">Add rep</span>
+		<span ng-if="staff.id_admin">Edit rep</span>
+	</h2>
+
+	<form name="form" novalidate>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input" ng-class="{'error':form.staffName.$invalid}">
+				<div class="label">Name:</div>
+				<div class="input"><input type="text" name="staffName" ng-model="staff.name" required placeholder="Name" ng-minlength="5" ng-maxlength="40" ></div>
+				<div class="box-error">
+					<small ng-show="form.staffName.$error.required">Required.</small>
+					<small ng-show="form.staffName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
+					<small ng-show="form.staffName.$error.maxlength">Name cannot be longer than 40 characters.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.staffLogin.$invalid}">
+				<div class="label">Login:</div>
+				<div class="input"><input type="text" name="staffLogin" ng-readonly="staff.id_admin" required placeholder="Login" ng-model="staff.login"></div>
+				<div class="box-error">
+					<small ng-show="form.staffLogin.$error.required">Required.</small>
+					<small ng-show="form.staffLogin.$error.isUnique">This login is already in use!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-if="staff.id_admin">
+				<div class="label">Password:</div>
+				<div class="input"><input type="text" name="staffPass" ng-model="staff.pass"></div>
+				<small class="tip">Leave it blank if you don't wanna change it.</small>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.staffPhone.$invalid}">
+				<div class="label">Phone:</div>
+				<div class="input"><input type="text" name="staffPhone" ng-model="staff.phone" required placeholder="Phone"></div>
+				<div class="box-error">
+					<small ng-show="form.staffPhone.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.staffIdCommunity.$invalid}">
+				<div class="label">Community:</div>
+				<select name="staffIdCommunity" required ng-model="staff.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.staffIdCommunity.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.staffEmail.$invalid}">
+				<div class="label">Email:</div>
+				<div class="input"><input type="email" name="staffEmail" ng-model="staff.email" placeholder="Email"></div>
+				<div class="box-error">
+					<small ng-show="form.staffEmail.$invalid">Enter a valid email.</small>
+				</div>
+			</li>
+
+		</ul>
+
+		<br/><br/><br/>
+
+		<h2 class="title">Earnings - Referral Code</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input">
+				<div class="label">How much a marketing rep earns from new customer referrals:</div>
+				<div class="input"><input type="number" ignore-mouse-wheel ng-model="staff.referral_admin_credit" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Credit amount to customer:</div>
+				<div class="input"><input type="number" ignore-mouse-wheel ng-model="staff.referral_customer_credit" placeholder=""></div>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<br><br><br>
+
+	<div ng-if="staff.id_admin">
+
+		<h1 class="title"><i class="fa fa-briefcase"></i>Documents</h1>
+
+		<table class="tb-grid driver-docs-grid">
+			<tr ng-repeat="doc in documents" ng-if="doc.url">
+				<td class="documents-check ">
+					<i class="fa fa-check-circle documents-check-good" ng-show="doc.status && doc.status.file.substring(9, 14) !== 'blank'"></i>
+					<i class="fa fa-check-circle documents-check-bad" ng-show="!doc.status || doc.status.file.substring(9, 14) == 'blank'"></i>
+				</td>
+				<td ng-click="edit(staff.id_admin)" class="td-medium driver-docs-name">
+					<h2 class="driver-docs-name"><b>{{doc.name}}</b></h2>
+					<a class="docs-download-form" href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
+					<!-- if he already have this doc, show the download link -->
+					<span ng-show="doc.status && doc.status.file.substring(9, 14) !== 'blank'" title="Sent at {{doc.status.date_formated}}">
+						<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download Doc</a>
+					</span>
+				</td>
+				<td class="td-medium driver-docs-card">
+
+				<div ng-if="doc.status" class="pointer" ng-click="approve(doc.status)">
+					<span ng-if="doc.status.approved">
+						<i class="fa fa-check-square-o"></i> {{doc.status.approved}}
+					</span>
+					<span ng-if="!doc.status.approved">
+						<i class="fa fa-square-o"></i> Approve
+					</span>
+				</div>
+
+				</td>
+				<td class="td-download">
+					<!-- upload directive -->
+					<div class="upbutton" driver-docs-upload>
+						<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
+						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document}]}">
+					</div>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+	<ul class="ul-inputs">
+		<li class="li-input" ng-show="!isSaving">
+			<button class="button save" ng-click="save();">Save</button>
+			<button class="button cancel" ng-click="cancel()">Cancel</button>
+		</li>
+		<li class="li-input" ng-show="isSaving">
+			<i class="fa fa-circle-o-notch fa-spin"></i>
+		</li>
+	</ul>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

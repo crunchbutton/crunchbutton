@@ -7,6 +7,9 @@ class Cockpit_Driver_Document extends Cana_Table {
 	const ID_INDY_CONTRACTOR_AGREEMENT_ORDER = 1;
 	const ID_INDY_CONTRACTOR_AGREEMENT_HOURLY = 6;
 
+	const TYPE_DRIVER = 'driver';
+	const TYPE_MARKETING_REP = 'marketing-rep';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -42,8 +45,12 @@ class Cockpit_Driver_Document extends Cana_Table {
 		return false;
 	}
 
-	public function all(){
-		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document ORDER BY `order` ASC' );
+	public function driver(){
+		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document WHERE type = "' . Cockpit_Driver_Document::TYPE_DRIVER . '" ORDER BY `order` ASC' );
+	}
+
+	public function marketing_rep(){
+		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document WHERE type = "' . Cockpit_Driver_Document::TYPE_MARKETING_REP . '" ORDER BY `order` ASC' );
 	}
 
 	public function exports(){

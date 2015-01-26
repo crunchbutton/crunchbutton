@@ -136,6 +136,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
+		if( $type == 'marketing-rep'  ){
+			$q .= '
+				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
+				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = "' . Crunchbutton_Group::TYPE_DRIVER . '"
+			';
+		}
+
 		$q .='
 			WHERE 1=1
 		';
@@ -193,7 +200,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$r = c::db()->query(str_replace('-WILD-','admin.*, apt.using_pex', $q));
 		while ($s = $r->fetch()) {
 
-			$staff = Admin::o($s)->exports(['permissions', 'groups']);
+			$admin = Admin::o($s);
+
+			$staff = $admin->exports(['permissions', 'groups']);
 
 			$staff['pexcard'] = ( $s->using_pex ) ? true : false;
 
@@ -218,6 +227,30 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$unset = ['email','timezone','testphone','txt'];
 			foreach ($unset as $un) {
 				unset($staff[$un]);
+			}
+
+			$staff[ 'isMarketingRep' ] = $admin->isMarketingRep();
+			$staff[ 'isSupport' ] = $admin->isSupport();
+			$staff[ 'isDriver' ] = $admin->isDriver();
+
+			if( $staff[ 'isDriver' ] ){
+				$staff[ 'type' ] = 'Driver';
+			}
+
+			if( $staff[ 'isSupport' ] ){
+				$commas = '';
+				if( $staff[ 'type' ] ){
+					$commas = ', ';
+				}
+				$staff[ 'type' ] = $commas . 'Support';
+			}
+
+			if( $staff[ 'isMarketingRep' ] ){
+				$commas = '';
+				if( $staff[ 'type' ] ){
+					$commas = ', ';
+				}
+				$staff[ 'type' ] = $commas . 'Marketing Rep';
 			}
 
 			$data[] = $staff;

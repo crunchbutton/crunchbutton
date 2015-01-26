@@ -335,6 +335,15 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->_isDriver;
 	}
 
+	public function isMarketingRep(){
+		if (!isset($this->_isMarketingRep)) {
+			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND type = "' . Crunchbutton_Group::TYPE_MARKETING_REP . '"';
+			$result = c::db()->get( $query );
+			$this->_isMarketingRep = ( $result->_items[0]->Total > 0 );
+		}
+		return $this->_isMarketingRep;
+	}
+
 	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {
 		if ( !isset( $this->_isSupport ) ) {
 			$result = c::db()->get('SELECT COUNT(*) AS c FROM admin_group ag
@@ -930,6 +939,16 @@ class Crunchbutton_Admin extends Cana_Table {
 			$this->id_admin_author = c::admin()->id_admin;
 		}
 		return parent::save();
+	}
+
+	public function getMarketingRepGroups(){
+		$_groups = [];
+		$groups = $this->groups();
+		foreach( $groups as $group ){
+			if( $group->type == Crunchbutton_Group::TYPE_MARKETING_REP ){
+				return $group->id_community;
+			}
+		}
 	}
 
 	// return the last added pexcard

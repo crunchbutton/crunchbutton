@@ -725,7 +725,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		var id_driver_document = data.id_driver_document;
 		var response = data.response;
 		if( response.success ){
-			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : id_driver_document, file : response.success };
+			var doc = { id_admin : $scope.driver.id_admin, id_driver_document : id_driver_document, file : response.success };
 			DriverOnboardingService.docs.save( doc, function( json ){
 				if( json.success ){
 					App.alert( 'File saved!' );

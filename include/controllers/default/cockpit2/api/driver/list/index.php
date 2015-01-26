@@ -28,7 +28,7 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 		$end = $start + $resultsPerPage;
 		$count = 1;
 
-		$docs = Cockpit_Driver_Document::all();
+		$docs = Cockpit_Driver_Document::driver();
 
 		$list = [];
 		foreach( $drivers as $driver ){

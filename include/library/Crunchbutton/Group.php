@@ -3,9 +3,18 @@
 class Crunchbutton_Group extends Cana_Table {
 
 	const DRIVER_GROUPS_PREFIX = 'drivers-';
+	const MARKETING_REP_GROUPS_PREFIX = 'mktrep-';
+	const MARKETING_REP_GROUP = 'marketing-rep';
+
+	const TYPE_MARKETING_REP = 'marketing-rep';
+	const TYPE_DRIVER = 'marketing-rep';
 
 	public function driverGroupOfCommunity( $community ){
 		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( str_replace( "'", '', str_replace( '"', '', str_replace( ".", '', $community ) ) ) ) ), 0, 20);
+	}
+
+	public function marketingRepGroupOfCommunity( $community ){
+		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::MARKETING_REP_GROUPS_PREFIX . strtolower( str_replace( "'", '', str_replace( '"', '', str_replace( ".", '', $community ) ) ) ) ), 0, 20);
 	}
 
 	public function __construct($id = null) {
@@ -59,6 +68,22 @@ class Crunchbutton_Group extends Cana_Table {
 		$group->name = $name;
 		$group->description = $description;
 		$group->save();
+		return $group;
+	}
+
+	public function createMarketingRepGroup( $id_community ){
+		$community = Crunchbutton_Community::o( $id_community );
+		if( $community->id_community ){
+			$name = $community->marketingRepGroup();
+			$description = $community->name . ' mkt rep group';
+
+			$group = new Crunchbutton_Group();
+			$group->name = $name;
+			$group->description = $description;
+			$group->type = Crunchbutton_Group::TYPE_MARKETING_REP;
+			$group->id_community = $id_community;
+			$group->save();
+		}
 		return $group;
 	}
 
