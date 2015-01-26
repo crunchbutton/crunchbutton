@@ -127,12 +127,12 @@ class Crunchbutton_Notification extends Cana_Table
 
 				$message = $order->message('sms');
 
-				Crunchbutton_Message_Sms::send([
-					'to' => $sms,
-					'from' => 'restaurant',
-					'message' => $message,
-					'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
-				]);
+				$sms = Crunchbutton_Message_Sms::send([
+								'to' => $sms,
+								'from' => 'restaurant',
+								'message' => $message,
+								'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
+							]);
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
@@ -143,6 +143,16 @@ class Crunchbutton_Notification extends Cana_Table
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'sms - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
 				}
+
+
+				$log = new Notification_Log;
+				$log->id_notification = $this->id_notification;
+				$log->status = 'success';
+				$log->type = 'twilio';
+				$log->date = date('Y-m-d H:i:s');
+				$log->id_order = $order->id_order;
+				$log->save();
+
 				break;
 
 			case 'phone':
@@ -195,6 +205,15 @@ class Crunchbutton_Notification extends Cana_Table
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'email - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
 				}
+
+				$log = new Notification_Log;
+				$log->id_notification = $this->id_notification;
+				$log->status = 'success';
+				$log->type = 'email';
+				$log->date = date('Y-m-d H:i:s');
+				$log->id_order = $order->id_order;
+				$log->save();
+
 				break;
 		}
 	}

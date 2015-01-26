@@ -1,0 +1,1 @@
+ALTER TABLE `notification_log` CHANGE `type` `type` enum('confirm','twilio','phaxio','maxcall','email') DEFAULT NULL;

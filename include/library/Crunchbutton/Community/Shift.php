@@ -196,7 +196,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$day = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
 		$weekday = $day->format( 'w' );
-		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE recurring = 1 AND DATE_FORMAT( date_start, "%w" ) = "' . $weekday . '"' );
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE recurring = 1 AND active = 1 AND DATE_FORMAT( date_start, "%w" ) = "' . $weekday . '"' );
 		// Create the recurring events
 		foreach( $shifts as $shift ){
 			if( $shift->dateStart()->format( 'Ymd' ) < $day->format( 'Ymd' ) ){
@@ -295,12 +295,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function removeRecurringChildren( $id_community_shift_father ){
 		$now =  new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		c::db()->query( 'DELETE FROM community_shift WHERE id_community_shift_father = ' . $id_community_shift_father . ' AND date_start >= "' . $now->format( 'Y-m-d' ) . '"' );
+		c::db()->query( 'DELETE FROM community_shift WHERE id_community_shift_father = ' . $id_community_shift_father . ' AND DATE_FORMAT( date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' ) . '"' );
 	}
 
 	public function remove( $id_community_shift ){
 
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+
 		if( $shift->recurring ){
 			// If it is a recurring remove its childen
 			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift );
@@ -308,7 +309,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		// If it has a father, just desactive the event - to avoid it the be re created again
 		if( $shift->id_community_shift_father ){
-			c::db()->query( "UPDATE community_shift SET active = 0 WHERE id_community_shift = " . $id_community_shift );
+			c::db()->query( "UPDATE community_shift SET active = 0 WHERE id_community_shift = " . $shift->id_community_shift_father );
+			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift_father );
 		} else {
 			c::db()->query( "DELETE FROM community_shift WHERE id_community_shift = " . $id_community_shift );
 		}

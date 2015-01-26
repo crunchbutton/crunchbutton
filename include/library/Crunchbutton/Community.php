@@ -103,7 +103,13 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 			$out[ 'close_3rd_party_delivery_restaurants_date' ] = $date->format( 'M jS Y g:i:s A T' );
 		}
 
-
+		$next_sort = Crunchbutton_Community_Alias::q( 'SELECT MAX(sort) AS sort FROM community_alias WHERE id_community = ' . $this->id_community );
+		if( $next_sort->sort ){
+			$sort = $next_sort->sort + 1;
+		} else {
+			$sort = 1;
+		}
+		$out['next_sort'] = $sort;
 
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
@@ -396,6 +402,70 @@ class Crunchbutton_Community extends Crunchbutton_Community_Trackchange {
 		$percent = intval( $total * 100 / $all );
 
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
+	}
+
+	public function closedSince(){
+
+		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
+																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
+																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" )
+																																	AND cc.new_value = 1
+																																	ORDER BY cc.id_community_change DESC' );
+		$out = [];
+		if( $force_closed_times->count() ){
+			foreach( $force_closed_times as $force_close ){
+				$output = [];
+				$closed_at = $force_close->date();
+				$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+				$output[ 'closed_by' ] = $force_close->admin()->name;
+				if( $force_close->field == 'close_all_restaurants' ){
+					$output[ 'type' ] = 'Close All Restaurants';
+				} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
+					$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
+				}
+				$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
+				$open = $this->_openedAt( $force_close->id_community_change_set, $force_close->field );
+				if( !$open ){
+					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+					$interval = $now->diff( $closed_at );
+					$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
+					$out[] = $output;
+				}
+			}
+		}
+		// if the community was closed before we start logging it
+		else {
+			if( $this->close_all_restaurants ){
+				$output = [];
+				$closed_at = new DateTime( $this->close_all_restaurants_date, new DateTimeZone( c::config()->timezone ) );
+				$output[ 'type' ] = 'Close All Restaurants';
+				$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+				$output[ 'closed_by' ] = Admin::o( $this->close_all_restaurants_id_admin )->name;
+				$output[ 'note' ] = $this->close_all_restaurants_note;
+				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+				$interval = $now->diff( $closed_at );
+				$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
+				$out[] = $output;
+			}
+			if( $this->close_3rd_party_delivery_restaurants ){
+				$output = [];
+				if( $this->close_3rd_party_delivery_restaurants_date ){
+					$closed_at = new DateTime( $this->close_3rd_party_delivery_restaurants_date, new DateTimeZone( c::config()->timezone ) );
+					$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+					$interval = $now->diff( $closed_at );
+					$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
+				} else {
+					$output[ 'closed_at' ] = '-';
+				}
+				$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
+				$output[ 'closed_by' ] = Admin::o( $this->close_3rd_party_delivery_restaurants_id_admin )->name;
+				$output[ 'note' ] = $this->close_3rd_party_delivery_restaurants_note;
+				$out[] = $output;
+			}
+		}
+
+		return $out;
 	}
 
 	public function forceCloseLog(){

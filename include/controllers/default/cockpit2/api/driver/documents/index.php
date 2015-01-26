@@ -101,7 +101,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				}
 
 				$id_driver_document = $this->request()[ 'id_driver_document' ];
-				
+
 				if( $id_admin && $id_driver_document ){
 					$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $id_driver_document );
 					if( !$docStatus->id_driver_document_status ){

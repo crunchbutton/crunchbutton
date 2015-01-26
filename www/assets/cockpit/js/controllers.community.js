@@ -42,6 +42,12 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 			});
 		}
 	});
+
+
+ 	CommunityService.closed( function( json ){
+ 		$scope.closed_communities = json;
+	} )
+
 });
 
 
@@ -72,16 +78,19 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 		} );
 	}
 
-	$scope.$watch( 'community.loc_lat', function( newValue, oldValue, scope ) {
-		update_map();
-	});
+	$scope.$watch( 'community.address', function( newValue, oldValue, scope ) {
+		var address = newValue;
+		if( address ){
+			g = new google.maps.Geocoder();
+			g.geocode( {address:address},function(data,s) {
+				if(s === 'ZERO_RESULTS') { return; }
+				if(s !== 'OK') { return; }
 
-	$scope.$watch( 'community.loc_lon', function( newValue, oldValue, scope ) {
-		update_map();
-	});
-
-	$scope.$watch( 'community.range', function( newValue, oldValue, scope ) {
-		update_map();
+				if( !data || !data.length ) { return; }
+				$scope.community.loc_lat = data[0].geometry.location.lat();
+				$scope.community.loc_lon = data[0].geometry.location.lng();
+		});
+		}
 	});
 
 	$scope.cancel = function(){
@@ -95,7 +104,8 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 	}
 
 	var load_alias = function(){
-		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink  };
+		console.log('$scope.community.next_sort',$scope.community.next_sort);
+		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink, sort: $scope.community.next_sort };
 		CommunityService.alias.list( $routeParams.id, function( json ){
 			$scope.aliases = json;
 		} );
@@ -108,37 +118,17 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 					App.alert( data.error);
 					return;
 				} else {
-					load_alias();
+					community();
 					$scope.flash.setMessage( 'Alias removed!' );
 				}
 			} );
 		}
 	}
 
-	var update_map = function(){
-
-		if (!$scope.map || !$scope.community || !$scope.community.range || !$scope.community.loc_lon || !$scope.community.loc_lat) {
-			return;
-		}
-
-		MapService.trackCommunity({
-			map: $scope.map,
-			community: $scope.community,
-			scope: $scope,
-			id: 'community-location'
-		});
-	}
-
-	$scope.$on('mapInitialized', function(event, map) {
-		$scope.map = map;
-		MapService.style(map);
-		update_map();
-	});
-
 	$scope.add_alias = function(){
 
 		if( $scope.formAlias.$invalid ){
-			$scope.submitted = true;
+			$scope.formAliasSubmitted = true;
 			return;
 		}
 
@@ -149,23 +139,29 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-				load_alias();
+				community();
 			}
+			$scope.formAliasSubmitted = false;
 		} );
 	}
 
-	if( $routeParams.id ){
-		CommunityService.get( $routeParams.id, function( d ) {
-			$rootScope.title = d.name + ' | Community';
-			$scope.community = d;
-			update_map();
-			load_alias();
+
+	var community = function(){
+		if( $routeParams.id ){
+			CommunityService.get( $routeParams.id, function( d ) {
+				$rootScope.title = d.name + ' | Community';
+				$scope.community = d;
+				load_alias();
+				load();
+			});
+		} else {
+			$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0 };
 			load();
-		});
-	} else {
-		$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0 };
-		load();
+		}
 	}
+
+	community();
+
 
 });
 
