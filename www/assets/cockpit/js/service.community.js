@@ -9,7 +9,7 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			}
 		);
 
-	var community = ResourceFactory.createResource(App.service + 'communities/:id_community/', { id_community: '@id_community', action: '@action' }, {
+	var community = ResourceFactory.createResource(App.service + 'communities/:id_community/:action', { id_community: '@id_community', action: '@action' }, {
 		'load' : {
 			url: App.service + 'community/:id_community',
 			method: 'GET',
@@ -23,6 +23,11 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			url: App.service + 'community/:id_community/:action',
 			method: 'POST',
 			params : { 'action' : 'save' }
+		},
+		'closed' : {
+			method: 'GET',
+			params : { 'action': 'closed' },
+			isArray: true
 		},
 	});
 
@@ -66,6 +71,12 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		}
 	}
 
+	service.closed = function( callback ) {
+		community.closed( function(data) {
+			callback( data );
+		});
+	}
+
 	service.list = function(params, callback) {
 		community.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
@@ -79,7 +90,6 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 	}
 
 	service.save = function(params, callback) {
-		console.log('params',params);
 		community.save(params,  function(data) {
 			callback(data);
 		});

@@ -278,8 +278,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			if( $now->format( 'l' ) == 'Thursday' ){
 				$thursday = $now;
 			} else {
-				$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
-				$thursday->modify( '+ 1 week' );
+				$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone ) );
 			}
 			$start_date = $thursday->format( 'Y/m/d' );
 			$day = $thursday;

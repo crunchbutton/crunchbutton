@@ -136,12 +136,12 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 
 						$community->active = $this->request()[ 'active' ];
-						$community->image = $this->request()[ 'image' ];
 						$community->loc_lat = $this->request()[ 'loc_lat' ];
 						$community->loc_lon = $this->request()[ 'loc_lon' ];
 						$community->name = $this->request()[ 'name' ];
 						$community->permalink = $this->request()[ 'permalink' ];
-						$community->private = $this->request()[ 'private' ];
+						$community->private = 0;
+						$community->image = $this->request()[ 'image' ];
 						$community->range = $this->request()[ 'range' ];
 						$community->timezone = $this->request()[ 'timezone' ];
 

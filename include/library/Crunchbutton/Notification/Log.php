@@ -10,6 +10,10 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		return Order::o($this->id_order);
 	}
 
+	public function notificationOrder( $id_order, $id_notification ){
+		return self::q('SELECT * FROM notification_log WHERE id_order = "' . $id_order . '" AND id_notification="' . $id_notification . '"')->count();
+	}
+
 	public function tries() {
 		return self::q('select * from notification_log where id_order="'.$this->id_order.'"')->count();
 	}

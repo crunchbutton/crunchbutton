@@ -711,36 +711,40 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		$scope.navigation.link( '/drivers/onboarding/' );
 	}
 
+	$scope.setDocument = function( id_driver_document ){
+		$scope.doc_uploaded = id_driver_document
+	}
+
+	// this is a listener to upload error
+	$scope.$on( 'driverDocsUploadedError', function(e, data) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	} );
+
+	// this is a listener to upload success
+	$scope.$on( 'driverDocsUploaded', function(e, data) {
+		var id_driver_document = data.id_driver_document;
+		var response = data.response;
+		if( response.success ){
+			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : id_driver_document, file : response.success };
+			DriverOnboardingService.docs.save( doc, function( json ){
+				if( json.success ){
+					App.alert( 'File saved!' );
+					docs();
+				} else {
+					App.alert( 'File not saved: ' + json.error );
+				}
+			} );
+		} else {
+			App.alert( 'File not saved! ');
+		}
+	});
+
+
 	// Upload control stuff
 	$scope.doc_uploaded = 0;
 	var uploader = $scope.uploader = new FileUploader({
 		url: '/api/driver/documents/upload/'
 	});
-
-
-	uploader.onSuccessItem = function(fileItem, response, status, headers) {
-		$scope.$apply();
-
-		if( response.success ){
-			var doc = { id_admin : $scope.driver.id_admin, id_driver_document : $scope.doc_uploaded, file : response.success };
-			DriverOnboardingService.docs.save( doc, function( json ){
-				if( json.success ){
-					docs();
-					logs();
-					$scope.flash.setMessage( 'File saved!' );
-				} else {
-					$scope.flash.setMessage( 'File not saved: ' + json.error );
-				}
-			} );
-			uploader.clearQueue();
-		} else {
-			$scope.flash.setMessage( 'File not saved: ' + json.error );
-		}
-	};
-
-	uploader.onErrorItem = function (fileItem, response, status, headers) {
-		App.alert( 'Upload error, please try again or send us a message.' );
-	};
 
 	$scope.download = function( id_driver_document_status ){
 		DriverOnboardingService.docs.download( id_driver_document_status );
@@ -853,14 +857,14 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : id_driver_document, file : response.success };
 			DriverOnboardingService.docs.save( doc, function( json ){
 				if( json.success ){
-					$scope.flash.setMessage( 'File saved!' );
+					App.alert( 'File saved!' );
 					docs();
 				} else {
-					$scope.flash.setMessage( 'File not saved: ' + json.error );
+					App.alert( 'File not saved: ' + json.error );
 				}
 			} );
 		} else {
-			$scope.flash.setMessage( 'File not saved! ');
+			App.alert( 'File not saved! ');
 		}
 	});
 
@@ -944,7 +948,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 			} else {
 				$scope.basicInfo = data;
 				$scope.saved = true;
-				$scope.flash.setMessage( 'Information saved!' );
+				App.alert( 'Information saved!' );
 				setTimeout( function() { $scope.saved = false; }, 1500 );
 			}
 		} );
@@ -975,7 +979,6 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 										account_number: $scope.bank.account_number,
 										routing_number: $scope.bank.routing_number };
 		StaffPayInfoService.bankAccount( payload, function( json ){
-			console.debug('Saving bank info response: ', arguments);
 			if( json.href ){
 				json.id_admin = $scope.basicInfo.id_admin;
 				json.legal_name_payment = $scope.basicInfo.legal_name_payment;
@@ -991,7 +994,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 						$scope.bank.account_number = '';
 						$scope.bank.routing_number = '';
 						$scope.bank.showForm = false;
-						$scope.flash.setMessage( 'Bank information saved!' );
+						App.alert( 'Bank information saved!' );
 						setTimeout( function() { $scope.saved = false; }, 1500 );
 					}
 				} );
