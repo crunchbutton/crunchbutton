@@ -6,9 +6,15 @@
 			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
 				<i class="fa fa-truck"></i>
 			</div>
+
+			<div class="menu-tab" ng-if="account.isMarketingRep || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'marketing-rep')}" ng-click="menu.toggle='marketing-rep'">
+				<i class="fa fa-male"></i>
+			</div>
+
 			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
 				<i class="fa fa-dashboard"></i>
 			</div>
+			<div class="divider"></div>
 			<? /*
 			<li ng-click="navigation.link('/drivers/dashboard')" ng-class="{'nav-active': (navigation.page == 'drivers-dashboard')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -19,6 +25,55 @@
 				</table>
 			</li>
 			*/ ?>
+
+			<div ng-if="menu.toggle=='marketing-rep'">
+				<a href="/profile" class="menu-link" ng-class="{'nav-active': (navigation.page == 'profile')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-user"></i></td>
+							<td class="side-menu-label">Profile</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<a href="/drivers/docs" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
+							<td class="side-menu-label">Documents</a></td>
+						</tr>
+					</table>
+				</a>
+
+
+				<a href="/drivers/summary" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.isDriver) && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-summary')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-bank"></i></td>
+							<td class="side-menu-label">Payments</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<a href="/drivers/help" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-help')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-support"></i></td>
+							<td class="side-menu-label">FAQ</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
+							<td class="side-menu-label">Sign Out</a></td>
+						</tr>
+					</table>
+				</a>
+
+			</div>
 
 			<div ng-if="menu.toggle=='driver'">
 				<a href="/profile" class="menu-link" ng-class="{'nav-active': (navigation.page == 'profile')}">
@@ -198,7 +253,7 @@
 						</tr>
 					</table>
 				</a>
-				
+
 				<a href="/tools" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'pexcard' || navigation.page == 'blasts' || navigation.page == 'tools' || navigation.page == 'config' || navigation.page == 'config-rewards')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>

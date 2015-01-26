@@ -16,6 +16,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		isDriver: false,
 		isSupport: false,
 		isAdmin: false,
+		isMarketingRep: false,
 		restaurants: []
 	};
 
@@ -46,7 +47,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 			MainNavigationService.link('/login');
 		});
 	};
-	
+
 	$rootScope.$on('adminWorking', function(e, data) {
 		service.user.working = data;
 	});
@@ -83,6 +84,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 					}
 				}
 			}
+
+			service.isMarketingRep = service.user.isMarketingRep;
 
 			if (data && data.id_admin) {
 				var name = service.user.name.split(' ');
