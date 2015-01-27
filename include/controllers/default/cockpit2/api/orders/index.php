@@ -125,6 +125,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$query = str_replace('-WILD-','
 			`order`.*,
 			restaurant.name as _restaurant_name,
+			restaurant.phone as _restaurant_phone,
 			restaurant.permalink as _restaurant_permalink,
 			community.name as _community_name,
 			community.permalink as _community_permalink,
