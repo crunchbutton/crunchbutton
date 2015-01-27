@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Dish_Option extends Cana_Table {
+class Crunchbutton_Dish_Option extends Cana_Table_Trackchange {
 	public function byDishOption($dish, $option) {
 
 	}
