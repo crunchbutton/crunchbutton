@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Support extends Cana_Table {
+class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	const TYPE_SMS = 'SMS';
 	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
