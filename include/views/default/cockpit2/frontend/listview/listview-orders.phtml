@@ -29,6 +29,9 @@
 				<?php /* Restaurant */ ?>
 				<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
 				<a href="/community/{{order._community_permalink}}" ng-if="!community">{{order._community_name}}</a>
+				<div>
+					<a href ng-click="callText(order._restaurant_phone)">{{order._restaurant_phone | formatPhone}}</a>
+				</div>
 				<?php /* Restaurant */ ?>
 			</td>
 			<td>
