@@ -1,0 +1,58 @@
+<div class="top-pad"></div>
+
+<div class="content-padding content-padding-notop">
+
+	<div ng-show="ready">
+
+		<div class="dialog-message dialog-message-nice">
+			<b>In order to get paid, please:</b>
+			<div class="docs-list-spacer"></div>
+			<div class="dialog-subtext">
+				<i class="fa fa-check-circle" ng-class="{'documents-check-bad': !status.docs, 'documents-check-green': status.docs}"></i>&nbsp;&nbsp;Sign and upload all documents<br>
+				<i class="fa fa-check-circle" ng-class="{'documents-check-bad': !status.paymentinfo, 'documents-check-green': status.paymentinfo}"></i>&nbsp;&nbsp;Fill out your payment information.
+			</div>
+				<span ng-if="status.docs && status.paymentinfo"><br>You're all set!</span>
+		</div>
+
+		<br>
+
+		<h1 class="title"><i class="fa fa-briefcase"></i>Documents</h1>
+
+		<h2 class="title driver-docs-text">
+			To complete the documents section, please visit <a href="https://cockpit.la" target="_system">https://cockpit.la</a> from a computer using Chrome as your browser. Download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_system">Hellosign</a>.
+		</h2>
+
+		<table class="tb-grid driver-docs-grid">
+			<tr ng-repeat="doc in documents" ng-if="doc.url">
+				<td class="documents-check ">
+					<i class="fa fa-check-circle documents-check-good" ng-show="doc.status && doc.status.file.substring(9, 14) !== 'blank'"></i>
+					<i class="fa fa-check-circle documents-check-bad" ng-show="!doc.status || doc.status.file.substring(9, 14) == 'blank'"></i>
+				</td>
+				<td ng-click="edit(staff.id_admin)" class="td-medium driver-docs-name">
+					<h2 class="driver-docs-name"><b>{{doc.name}}</b></h2>
+					<a class="docs-download-form" href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
+					<!-- if he already have this doc, show the download link -->
+					<span ng-show="doc.status && doc.status.file.substring(9, 14) !== 'blank'" title="Sent at {{doc.status.date_formated}}">
+						<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download Doc</a>
+					</span>
+				</td>
+				<td class="td-download">
+					<!-- upload directive -->
+					<div class="upbutton" driver-docs-upload>
+						<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
+						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document}]}">
+					</div>
+				</td>
+			</tr>
+		</table>
+
+		<h1 class="title" ><i class="fa fa-bank"></i><span style="font-size: 1.5em;"><strong>MOST IMPORTANT: Payment Information</strong></span></h1>
+		<h2 class="title driver-docs-text">
+			To complete your onboarding and GET PAID, please enter your <a href="/staff/marketing-rep/docs/payment">payment information</a>.
+		</h2>
+
+	</div>
+
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

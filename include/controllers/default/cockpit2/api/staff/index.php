@@ -4,11 +4,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
-		}
-
 		if (c::getPagePiece(2)) {
 
 			if( c::getPagePiece(2) == 'phones' ){
@@ -20,6 +15,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			if (!$staff->id_admin) {
 				$staff = Admin::login(c::getPagePiece(2), true);
 			}
+
 			if (!$staff->id_admin) {
 				header('HTTP/1.0 404 Not Found');
 				exit;
@@ -27,6 +23,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 			switch (c::getPagePiece(3)) {
 				case 'locations':
+					$this->_permissionDenied();
 					$this->_locations($staff);
 					break;
 
@@ -35,10 +32,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					break;
 
 				case 'has_pexcard':
+					$this->_permissionDenied();
 					$this->_has_pexcard($staff);
 					break;
 
 				default:
+					$this->_permissionDenied();
 					$this->_view($staff);
 					break;
 			}
@@ -47,6 +46,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$this->_list();
 		}
 
+	}
+
+	private function _permissionDenied(){
+		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
+			header('HTTP/1.1 401 Unauthorized');
+			exit;
+		}
 	}
 
 	private function _locations($staff) {

@@ -158,7 +158,6 @@ class Crunchbutton_Reward extends Cana_Table{
 				return floatval( $admin->referral_customer_credit );
 			}
 		}
-
 		$settings = $this->loadSettings();
 		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
 	}
