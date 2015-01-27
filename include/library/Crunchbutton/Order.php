@@ -2321,6 +2321,39 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return Agent::o($this->id_agent);
 	}
 
+	public function isNativeApp(){
+		$agent = $this->agent();
+		if( $agent->id_agent ){
+			return $agent->isNativeApp();
+		}
+		return false;
+	}
+
+	public function isIPhone(){
+		$agent = $this->agent();
+		if( $agent->id_agent ){
+			return $agent->isIPhone();
+		}
+		return false;
+	}
+
+	public function hasUserAlreadyOrderedUsingNativeApp(){
+		return Crunchbutton_Agent::hasUserAlreadyOrderedUsingNativeApp( $this->phone );
+	}
+
+	// Issue #4262
+	public function sendNativeAppLink(){
+		if( $this->isIPhone() && !$this->hasUserAlreadyOrderedUsingNativeApp() ){
+			$message = "Enjoy your food, " . $this->name . ", and, next time, order faster with our app! \nhttp://_DOMAIN_/app";
+			$num = $this->phone;
+			Crunchbutton_Message_Sms::send( [
+				'to' => $num,
+				'message' => $message,
+				'reason' => Crunchbutton_Message_Sms::REASON_APP_DOWNLOAD
+			] );
+		}
+	}
+
 	public function community() {
 		return Community::o($this->id_community);
 	}
