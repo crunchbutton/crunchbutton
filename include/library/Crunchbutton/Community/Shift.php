@@ -521,12 +521,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 				// Sent on Mon at 4 PM PDT
 				else if( $time >= 1600 && $time <= 1654 ){
-					$driversMessage = '[name], Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit.la/schedule. If you have any questions, just text back.';
+					$driversMessage = '[name], Due in 1 hour, if you have not already: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit.la/schedule. If you have any questions, just text back.';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 4:55 PM PDT
 				else if( $time >= 1655 && $time <= 1659 ){
-					$driversMessage = '[name], Reminder: your shift preferences are due in 5 min!! cockpit.la/schedule. Got a question? Text us back.';
+					$driversMessage = '[name], Reminder, if you have not already: your shift preferences are due in 5 min!! cockpit.la/schedule. Got a question? Text us back.';
 					$warningDrivers = true;
 				}
 				// Sent on Mon at 5 PM PDT - alert CS
