@@ -63,7 +63,7 @@
 													Make it permanent?
 												<?php } ?>
 											</td>
-											<td>Notes</td>
+											<td style="width:200px;">Notes</td>
 										</tr>
 									</thead>
 									<tbody>
@@ -156,7 +156,7 @@
 											$note_data = $note->exports();
 										}
 									?>
-									<textarea style="width:100%;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+									<textarea style="width:100px; height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
 									</div>
@@ -241,7 +241,7 @@
 											$note_data = $note->exports();
 										}
 									?>
-									<textarea style="width:100px;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+									<textarea style="width:100%;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
 									</div>

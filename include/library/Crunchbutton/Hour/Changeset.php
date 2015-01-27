@@ -1,20 +1,20 @@
 <?php
 //die('wasssuppp');
-class Crunchbutton_Dish_Changeset extends Cana_Table {
+class Crunchbutton_Hour_Changeset extends Cana_Table {
 
-	public function dish() {
-		if (!isset($this->_dish)) {
-			$this->_dish = Dish::o($this->id_dish);
+	public function hour() {
+		if (!isset($this->_hour)) {
+			$this->_hour = Hour::o($this->id_hour);
 		}
-		return $this->_dish;
+		return $this->_hour;
 	}
 
 	public function changes() {
 		if (!isset($this->_changes)) {
-			$this->_changes = Crunchbutton_Dish_Change::q('
-				SELECT * FROM dish_change
+			$this->_changes = Crunchbutton_Hour_Change::q('
+				SELECT * FROM hour_change
 				WHERE
-					id_dish_change_set="'.$this->id_dish_change_set.'"
+					id_hour_change_set="'.$this->id_hour_change_set.'"
 			');
 		}
 		return $this->_changes;
@@ -30,8 +30,8 @@ class Crunchbutton_Dish_Changeset extends Cana_Table {
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
-			->table('dish_change_set')
-			->idVar('id_dish_change_set')
+			->table('hour_change_set')
+			->idVar('id_hour_change_set')
 			->load($id);
 	}
 }
