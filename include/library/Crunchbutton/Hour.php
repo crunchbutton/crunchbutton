@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Hour extends Cana_Table {
+class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
