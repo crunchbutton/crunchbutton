@@ -597,6 +597,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	}
 
 	var start = function(){
+
 		DriverOnboardingService.get( $routeParams.id, function( driver ){
 
 			$scope._yesNo = DriverOnboardingService.yesNo();
@@ -681,25 +682,18 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		}
 
 		$scope.isSaving = true;
-
 		DriverOnboardingService.save( $scope.driver, function( json ){
-
 			if( json.success ){
-
 				var url = '/drivers/onboarding/' + json.success.id_admin;
-
 				if( $scope.driver.id_admin ){
 					$scope.reload();
 				} else {
 					$scope.navigation.link( url );
 				}
-
 				setTimeout( function(){
 					$scope.flash.setMessage( 'Driver saved!' );
 				}, 500 );
-
 				$scope.isSaving = false;
-
 			} else {
 				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
 				$scope.isSaving = false;
@@ -818,8 +812,10 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 	});
 
 	var docs = function(){
+
 		// Load the docs
 		DriverOnboardingService.docs.list( $scope.account.user.id_admin, function( data ){
+
 			$scope.documents = data;
 			$scope.ready = true;
 
@@ -871,9 +867,6 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 	$scope.download = function( id_driver_document_status ){
 		DriverOnboardingService.docs.download( id_driver_document_status );
 	}
-
-
-
 
 } );
 

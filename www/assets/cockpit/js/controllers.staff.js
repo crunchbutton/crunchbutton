@@ -30,8 +30,26 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'staff',
 			controller: 'StaffPexCardCtrl',
 			templateUrl: 'assets/view/staff-pexcard.html'
+		})
+		.when('/staff/marketing-rep/faq', {
+			action: 'marketing-rep-help',
+			controller: 'StaffMarketingFaqCtrl',
+			templateUrl: 'assets/view/staff-marketing-rep-help.html'
+		})
+		.when('/staff/marketing-rep/docs', {
+			action: 'marketing-rep-docs',
+			controller: 'StaffMarketingDocsCtrl',
+			templateUrl: 'assets/view/staff-marketing-docs.html'
+		})
+		.when('/staff/marketing-rep/docs/payment', {
+			action: 'marketing-rep-docs',
+			controller: 'DriversPaymentFormCtrl',
+			templateUrl: 'assets/view/drivers-payment-info-form.html'
 		});
 }]);
+
+
+NGApp.controller('StaffMarketingFaqCtrl',function(){});
 
 NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $location, StaffService, MapService) {
 	$scope.staff = null;
@@ -224,6 +242,75 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 	}
 
 } );
+
+NGApp.controller( 'StaffMarketingDocsCtrl', function ( $scope, $routeParams, $filter, FileUploader, StaffService, CommunityService ) {
+
+	$scope.status = {};
+
+	var docs = function(){
+
+		if( $scope.account && $scope.account.user && $scope.account.user.id_admin ){
+			StaffService.status( $scope.account.user.id_admin, function(data) {
+				if (data.payment == true) {
+					$scope.status.paymentinfo = true;
+				}
+			});
+			StaffService.marketing.docs.list( $scope.account.user.id_admin, function( data ){
+				$scope.documents = data;
+				$scope.ready = true;
+				$scope.status.docs = true;
+				angular.forEach($scope.documents, function(doc, x) {
+					if ($scope.documents[x].url && (!$scope.documents[x].status || $scope.documents[x].status.file.substring(9, 14) == 'blank')) {
+						$scope.status.docs = false;
+					}
+				});
+			} );
+
+		}
+		else {
+			setTimeout( function(){ docs() }, 100 );
+		}
+	}
+
+	// this is a listener to upload error
+	$scope.$on( 'driverDocsUploadedError', function(e, data) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	} );
+
+	// this is a listener to upload success
+	$scope.$on( 'driverDocsUploaded', function(e, data) {
+		var id_driver_document = data.id_driver_document;
+		var response = data.response;
+		if( response.success ){
+			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : id_driver_document, file : response.success };
+			StaffService.marketing.docs.save( doc, function( json ){
+				if( json.success ){
+					App.alert( 'File saved!' );
+					docs();
+				} else {
+					App.alert( 'File not saved: ' + json.error );
+				}
+			} );
+		} else {
+			App.alert( 'File not saved! ');
+		}
+	});
+
+
+	// Upload control stuff
+	$scope.doc_uploaded = 0;
+	var uploader = $scope.uploader = new FileUploader({
+		url: '/api/driver/documents/upload/'
+	});
+
+	$scope.download = function( id_driver_document_status ){
+		StaffService.marketing.docs.download( id_driver_document_status );
+	}
+
+	docs();
+
+} );
+
 
 NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, StaffService, CommunityService ) {
 
