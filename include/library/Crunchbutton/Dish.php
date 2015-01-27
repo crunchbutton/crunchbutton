@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Dish extends Cana_Table {
+class Crunchbutton_Dish extends Cana_Table_Trackchange {
 	public function exports() {
 		$out = $this->properties();
 		$out['price'] = number_format($out['price'],2);
