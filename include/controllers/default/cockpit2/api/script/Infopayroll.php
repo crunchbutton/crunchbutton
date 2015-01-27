@@ -35,13 +35,14 @@ class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAcco
 
 		$payments = c::db()->get( $query );
 		$out = [];
-		$out[] = join( ';', [	'ID', 'Name', 'Address', 'SSN','Amount' ] );
+		$out[] = join( ',', [	'ID', 'Name', 'Address', 'SSN','Amount' ] );
 		foreach( $payments as $payment ){
 			$driver = Admin::o( $payment->id_driver );
 			$address = $driver->payment_type()->address;
 			$address = str_replace( "\n", "", $address );
+			$address = str_replace( ",", ";", $address );
 			$ssn = $driver->ssn();
-			$out[] = join( ';', [	$payment->id_driver,
+			$out[] = join( ',', [	$payment->id_driver,
 														$payment->name,
 														$address,
 														$ssn,
