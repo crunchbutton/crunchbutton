@@ -373,7 +373,7 @@ shift.summary.assign.init = function(){
 		var checkbox = $( this );
 		if( !checkbox.is( ':checked' ) ){
 			var id = checkbox.val();
-			$( '#form-id_admin_permanently-' + id ).iCheck( 'uncheck' );
+			// $( '#form-id_admin_permanently-' + id ).iCheck( 'uncheck' );
 		}
 	} );
 }
