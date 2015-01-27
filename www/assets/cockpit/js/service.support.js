@@ -51,9 +51,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 					}
 
 					if (d.id_support == service.scope.viewTicket) {
-						App.playAudio('support-message-recieved');
+						//App.playAudio('support-message-recieved');
 					} else {
-						App.playAudio('support-message-new');
+						//App.playAudio('support-message-new');
 					}
 
 					NotificationService.notify(d.name, d.body, null, function() {
