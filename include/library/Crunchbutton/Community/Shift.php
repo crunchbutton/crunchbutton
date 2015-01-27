@@ -989,6 +989,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 								$message = Crunchbutton_Message_Sms::greeting( $admin->firstName() ) . $message;
 
+								Log::debug( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'message' => $message, 'type' => 'driver-remind' ] );
+
 								// #4060 - dont send from driver number
 								$rets = Crunchbutton_Message_Sms::send([
 									'to' => $num,
