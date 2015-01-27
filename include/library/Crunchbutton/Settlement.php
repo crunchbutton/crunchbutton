@@ -129,10 +129,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// get orders we have to pay
 	public static function orders( $filters ){
+
+		// Settlement Not Including Orders After Midnight #4414
+		$start = new DateTime( $filters[ 'start' ] );
+		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+		$end->modify( '+ 28 hours' );
+
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-									WHERE DATE(o.date) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
-										AND DATE(o.date) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
+									WHERE DATE(o.date) >= "' . $start->format('Y-m-d') . '"
+										AND DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $end->format('Y-m-d H:i') . '"
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
