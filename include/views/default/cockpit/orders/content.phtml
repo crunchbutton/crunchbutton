@@ -180,6 +180,8 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<?=$restaurant->name?>
 					</a>
 					<br/>
+						<?php echo $restaurant->phone() ?>
+					<br/>
 					<?=$cache[ 'restaurant_communities' . $order->id_restaurant ];?>
 					<hr/>
 					<?php if( $restaurant->delivery_service && ( $restaurant->formal_relationship || $restaurant->order_notifications_sent ) ) { ?>
