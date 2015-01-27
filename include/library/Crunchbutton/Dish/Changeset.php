@@ -1,8 +1,8 @@
 <?php
-
+//die('wasssuppp');
 class Crunchbutton_Dish_Changeset extends Cana_Table {
 
-	public function restaurant() {
+	public function dish() {
 		if (!isset($this->_dish)) {
 			$this->_dish = Dish::o($this->id_dish);
 		}
