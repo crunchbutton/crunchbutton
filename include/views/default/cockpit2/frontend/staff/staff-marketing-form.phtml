@@ -36,10 +36,13 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-if="staff.id_admin">
+			<li class="li-input" ng-class="{'error':form.staffPass.$invalid}">
 				<div class="label">Password:</div>
-				<div class="input"><input type="text" name="staffPass" ng-model="staff.pass"></div>
-				<small class="tip">Leave it blank if you don't wanna change it.</small>
+				<div class="input"><input type="text" ng-required="!staff.id_admin" name="staffPass" ng-model="staff.pass"></div>
+				<small  ng-if="staff.id_admin" class="tip">Leave it blank if you don't wanna change it.</small>
+				<div class="box-error">
+					<small ng-show="form.staffLogin.$error.required">Required.</small>
+				</div>
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.staffPhone.$invalid}">

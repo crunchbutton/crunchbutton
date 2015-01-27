@@ -4,7 +4,7 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 
 	public function init() {
 
-		switch ( c::getPagePiece( 4 ) ) {
+		switch ( c::getPagePiece( 3 ) ) {
 			case 'save':
 				$this->_save();
 				break;
@@ -14,6 +14,12 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 				if( !$staff->isMarketingRep() ){
 					$this->_error();
 				}
+
+				if( c::getPagePiece( 4 ) == 'save' ){
+					$this->_save();
+					exit();
+				}
+
 				if( $staff->id_admin ){
 					$out = $staff->exports();
 					$out[ 'id_community' ] = $staff->getMarketingRepGroups();
@@ -28,9 +34,9 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 
 	private function _save() {
 
-		$id_admin = c::getPagePiece( 3 );
 		$user = c::user();
-		$hasPermission = ( c::admin()->permission()->check( ['global'] ) || ( $id_admin == $user->id_admin ) );
+		$hasPermission = ( $user->permission()->check( ['global'] ) );
+
 		if( !$hasPermission ){
 			$this->_error();
 			exit;
@@ -43,13 +49,13 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 		$newStaff = false;
 
 		// saves a new driver
-		if( !$id_admin ){
+		if( c::getPagePiece( 3 ) == 'save' ){
 			$newStaff = true;
 			$staff = new Cockpit_Admin();
 			// create the new driver as inactive
 			$staff->active = 1;
 		} else {
-			$staff = Cockpit_Admin::o( $id_admin );
+			$staff = Cockpit_Admin::o( c::getPagePiece( 3 ) );
 			if( !$staff->isMarketingRep() ){
 				$this->_error();
 			}
