@@ -366,7 +366,7 @@ shift.summary.assign.init = function(){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
 			var id = checkbox.val();
-			$( '#form-id_admin-' + id ).iCheck( 'check' );
+			// $( '#form-id_admin-' + id ).iCheck( 'check' );
 		}
 	} );
 	$( '[name="form-id_admin"]' ).on( 'ifChanged', function( event, obj ){
