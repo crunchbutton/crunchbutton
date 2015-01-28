@@ -1425,6 +1425,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'message' => $message,
 			'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
 		]);
+		$this->sendNativeAppLink();
 	}
 
 	public function que( $sendReceipt = true ) {
@@ -2341,9 +2342,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return Crunchbutton_Agent::hasUserAlreadyOrderedUsingNativeApp( $this->phone );
 	}
 
+	public function wasLinkAlreadySent(){
+		return Crunchbutton_Phone_Log::wasAppLinkAlreadySent( $this->phone );
+	}
+
 	// Issue #4262
 	public function sendNativeAppLink(){
-		if( $this->isIPhone() && !$this->hasUserAlreadyOrderedUsingNativeApp() ){
+		if( $this->isIPhone() && !$this->hasUserAlreadyOrderedUsingNativeApp() && !$this->wasLinkAlreadySent() ){
 			$message = "Enjoy your food, " . $this->name . ", and, next time, order faster with our app! \nhttp://_DOMAIN_/app";
 			$num = $this->phone;
 			Crunchbutton_Message_Sms::send( [
@@ -2351,6 +2356,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'message' => $message,
 				'reason' => Crunchbutton_Message_Sms::REASON_APP_DOWNLOAD
 			] );
+		} else {
+			Log::debug( [ 'action' => 'send native app link', 'phone' => $this->phone(), 'isPhone' => $this->isIPhone(), 'has used native app' => $this->hasUserAlreadyOrderedUsingNativeApp(), 'link already sent' =>$this->wasLinkAlreadySent(), 'type' => 'native app link' ] );
 		}
 	}
 
@@ -2516,7 +2523,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
 						// Add $10 for the first accepted order - #3993
 						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
-						Log::debug( [ 'action 1' => $shift->id_admin_shift_assign, 'type' => 'pexcard' ] );
 						if( $shift->id_admin_shift_assign ){
 							$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
 						}
