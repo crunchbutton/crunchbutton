@@ -34,33 +34,36 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				AccountService.user.prefs[payload.key] = payload.value;
 				$rootScope.$apply();
 			});
+			
+			if (AccountService.isSupport) {
 
 
-			SocketService.listen('tickets', $rootScope)
-				.on('message', function(d) {
-					console.debug('Recieved chat message: ', d);
+				SocketService.listen('tickets', $rootScope)
+					.on('message', function(d) {
+						console.debug('Recieved chat message: ', d);
 
-					if (notified.indexOf(d.id_support_message) > -1) {
-						return;
-					}
+						if (notified.indexOf(d.id_support_message) > -1) {
+							return;
+						}
 
-					notified.push(d.id_support_message);
+						notified.push(d.id_support_message);
 
-					if (d.id_admin == AccountService.user.id_admin) {
-						return;
-					}
+						if (d.id_admin == AccountService.user.id_admin) {
+							return;
+						}
 
-					if (d.id_support == service.scope.viewTicket) {
-						//App.playAudio('support-message-recieved');
-					} else {
-						//App.playAudio('support-message-new');
-					}
+						if (d.id_support == service.scope.viewTicket) {
+							//App.playAudio('support-message-recieved');
+						} else {
+							//App.playAudio('support-message-new');
+						}
 
-					NotificationService.notify(d.name, d.body, null, function() {
-						document.getElementById('support-chat-box').focus();
+						NotificationService.notify(d.name, d.body, null, function() {
+							document.getElementById('support-chat-box').focus();
+						});
+
 					});
-
-				});
+			}
 
 		} else {
 			//service.socket.close();
