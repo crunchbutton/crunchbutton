@@ -1,0 +1,247 @@
+<style>
+.container {
+    width:90%;
+    margin: auto;
+    height:auto;
+}
+.formgroup {
+    line-height: 1.42857;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    display: table;
+    font-weight: 200;
+    height:36px;
+    width:58%;
+}
+.label {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 7px;
+    width: 33.33333%;
+    float:left;
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    display: block;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    line-height: 1.42857;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 600;
+    height:30px;
+    
+}
+.textbox {
+    width: 50%;
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.42857;
+    float:left;
+    margin-bottom:15px;
+}
+.form-control {
+    font-weight: lighter;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    height: 36px;
+    padding-left: 12px;
+    padding-right: 12px;
+    display: block;
+    width: 100%;
+    height: 34px;/*not sure about this one*/
+    padding: 6px 12px; /*not sure about this one*/
+    font-size: 16px;/*not sure about this one*/
+    line-height: 1.42857;
+    color: #555;/*not sure about this one*/
+    vertical-align: middle;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    text-transform: none;
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+h2 {
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+.button-bottom {
+    width: 11em;   
+}
+   
+em {
+    font-style:italic;
+    font-weight:300;
+}
+</style>
+<div class="container">
+    <div class="restaurant-item-title text-your-order">
+        Application
+    </div>
+    <h2>
+        We'll get back to you to schedule a quick phone call once we receive your application
+    </h2>
+    <!--form goes here-->
+    <form action="#" method="post">
+        <div class="form-group">
+            <label class="label">
+                First Name:
+            </label>
+            <div class="textbox">
+                <input type="text" name="firstName" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                Last Name:
+            </label>
+            <div class="textbox">
+                <input type="text" name="lastName" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                What school are you near?
+            </label>
+            <div class="textbox">
+                <select class="form-control" name="university">
+                   <option></option> 
+                    <option value="Yale University">
+                        Yale University
+                    </option>
+                    <option value="Brown University">
+                        Brown University
+                    </option>
+                    <option value="University of Southern California">
+                        University of Southern California
+                    </option> <option value="Colgate University">Colgate University</option> <option value="College of the Holy Cross">College of the Holy Cross</option> <option value="St Olaf College">St Olaf College</option> <option value="Boston University">Boston University</option> <option value="University of North Carolina - Chapel Hill">University of North Carolina - Chapel Hill</option> <option value="Washington State University">Washington State University</option> <option value="University of Dayton">University of Dayton</option> <option value="University of Oregon">University of Oregon</option> <option value="University of Illinois - Urbana">University of Illinois - Urbana</option> <option value="Cal Poly SLO">Cal Poly SLO</option> <option value="Ohio State University">Ohio State University</option> <option value="Michigan State University">Michigan State University</option> <option value="University of Nebraska">University of Nebraska</option> <option value="Indiana University">Indiana University</option> <option value="UC Riverside">UC Riverside</option> <option value="UC Irvine">UC Irvine</option> <option value="Virginia Tech University">Virginia Tech University</option> <option value="UC San Diego">UC San Diego</option> <option value="University of Arizona">University of Arizona</option> <option value="University of Arkansas">University of Arkansas</option> <option value="Oberlin College">Oberlin College</option> <option value="Rutgers University">Rutgers University</option> <option value="Auburn University">Auburn University</option> <option value="University of Maine">University of Maine</option> <option value="Baylor University">Baylor University</option> <option value="Virginia Commonwealth University">Virginia Commonwealth University</option> <option value="Southern Methodist University">Southern Methodist University</option> <option value="Boise State University">Boise State University</option> <option value="University of Kentucky">University of Kentucky</option> <option value="North Carolina State">North Carolina State</option> <option value="Purdue University">Purdue University</option> <option value="UNC - Charlotte">UNC - Charlotte</option> <option value="University of South Carolina">University of South Carolina</option> <option value="Clemson University">Clemson University</option> <option value="University of West Virginia">University of West Virginia</option> <option value="Princeton University">Princeton University</option> <option value="UC San Diego">UC San Diego</option> <option value="Ohio University">Ohio University</option> <option value="Northwestern University">Northwestern University</option> <option value="UCLA">UCLA</option> <option value="Southern Methodist University">Southern Methodist University</option> <option value="University of South Carolina">University of South Carolina</option> <option value="West Virginia University">West Virginia University</option> <option value="Princeton University">Princeton University</option> <option value="Northwestern University">Northwestern University</option> <option value="Arizona State University">Arizona State University</option> <option value="Boston College">Boston College</option> <option value="University of Chicago">University of Chicago</option> <option value="University of Wyoming">University of Wyoming</option> <option value="University of Connecticut">University of Connecticut</option> <option value="Ohio University">Ohio University</option> <option value="University of Michigan">University of Michigan</option> <option value="University of Virginia">University of Virginia</option> <option value="Tufts University">Tufts University</option> <option value="Lehigh University">Lehigh University</option> <option value="Loyola Marymount University">Loyola Marymount University</option> <option value="Illinois State University">Illinois State University</option> <option value="University of Alabama">University of Alabama</option> <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                Cell Phone Number:
+            </label>
+            <div class="textbox">
+                <input type="text" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                What type of phone do you have?
+            </label>
+            <div class="textbox">
+                <input type="radio" name="phone-type" value="iPhone">iPhone<br>
+                <input type="radio" name="phone-type" value="Android">Android<br>
+                <input type="radio" name="phone-type" value="OtherSmartPhone">Other Smartphone<br>
+                <input type="radio" name="phone-type" value="Non-Smartphone">Non-Smartphone<br>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                Who is your carrier?
+            </label>
+            <div class="textbox">
+                <input type="radio" name="carrier" value="Verizon">Verizon<br>
+                <input type="radio" name="carrier" value="ATandT"> AT&amp;T<br>
+                <input type="radio" name="carrier" value="Sprint">Sprint<br>
+                <input type="radio" name="carrier" value="T-Mobile">T-Mobile<br>
+                <input type="radio" name="carrier" value="Other">Other:
+                    <input type="text" name="other-carrier">
+            </div>
+        </div>
+
+         <div class="form-group">
+            <label class="label">
+                Email:
+            </label>
+            <div class="textbox">
+                <input type="text" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                Car or bike?
+            </label>
+            <div class="textbox">
+                <input type="radio" name="transport" value="car">Car<br>
+                <input type="radio" name="transport" value="bike">Bike<br>
+                <input type="radio" name="transport" value="both">Both<br>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                How many hours per week would you like to work?<br>
+                    <em>
+                        No commitment necessary - just a general approximation
+                    </em><br>
+            </label>
+            <div class="textbox">
+                <input type="radio" name="hours" value="5">5-10<br>
+                <input type="radio" name="hours" value="10">10-20<br>
+                <input type="radio" name="hours" value="20">20-30<br>
+                <input type="radio" name="hours" value="30">30+<br>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                Applicant Type:<br>
+                    <em>
+                        Only select student if you're a student at the college we're operating at
+                    </em>
+            </label>
+            <div class="textbox">
+                <input type="radio" name="applicant" value="student">Student<br>
+                <input type="radio" name="applicant" value="non-student">Non-Student<br><br><br>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="label">
+                How did you find out about us?
+            </label>
+            <div class="textbox">
+                <input type="radio" name="source" value="craigslist">Craigslist<br>
+                <input type="radio" name="source" value="school-job-list">School Job Board<br>
+                <input type="radio" name="source" value="friend">Through a Friend<br>
+                <input type="radio" name="source" value="campus-marketing">Marketing on Campus<br>
+                <input type="radio" name="source" value="cb-website">Via Crunchbutton Website<br>
+                <input type="radio" name="carrier" value="other">Other:
+                    <input type="text" name="other-source">
+            </div>
+        </div>
+
+
+        <button class="button-bottom button-orange button-bottom-click">
+            <div>
+                Submit
+            </div>
+        </button>
+    </form>
+</div>
