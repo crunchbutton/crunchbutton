@@ -62,6 +62,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		if (service.user) {
 			if (service.user.permissions && service.user.permissions.GLOBAL) {
 				service.isAdmin = true;
+				service.isSupport = true;
 			}
 			if (service.user.permissions && service.user.permissions.RESTAURANT) {
 				service.isRestaurant = true;
