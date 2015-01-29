@@ -181,6 +181,13 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function orders(){
+
+		if( c::admin()->permission()->check( ['global', 'settlement' ] ) ){
+			return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order pso
+																								INNER JOIN `order` o ON pso.id_order = o.id_order
+																								WHERE pso.id_payment_schedule = "' . $this->id_payment_schedule . '" AND ( o.do_not_pay_driver = 0 OR o.do_not_pay_driver IS NULL ) ORDER BY o.id_order DESC' );
+		}
+
 		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
 	}
 

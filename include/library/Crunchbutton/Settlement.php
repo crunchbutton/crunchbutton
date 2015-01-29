@@ -1623,29 +1623,28 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 
 			$index = 0;
-
-			$summary[ 'calcs' ] = [ 'total_reimburse' => $total_reimburse,
-															'total_payment' => $total_payment,
-															'tax' => $calcs[ $index ][ 'tax' ],
-															'delivery_fee' => $calcs[ $index ][ 'delivery_fee' ],
-															'tip' => $calcs[ $index ][ 'tip' ],
-															'customer_fee' => $calcs[ $index ][ 'customer_fee' ],
-															'markup' => $calcs[ $index ][ 'markup' ],
-															'credit_charge' => $calcs[ $index ][ 'credit_charge' ],
-															'restaurant_fee' => $calcs[ $index ][ 'restaurant_fee' ],
-															'gift_card' => $calcs[ $index ][ 'gift_card' ],
-															'subtotal' => $calcs[ $index ][ 'subtotal' ],
+			$summary[ 'calcs' ] = [ 'total_reimburse' => floatval( $total_reimburse ),
+															'total_payment' => floatval( $total_payment ),
+															'tax' => floatval( $calcs[ $index ][ 'tax' ] ),
+															'delivery_fee' => floatval( $calcs[ $index ][ 'delivery_fee' ] ),
+															'tip' => floatval( $calcs[ $index ][ 'tip' ] ),
+															'customer_fee' => floatval( $calcs[ $index ][ 'customer_fee' ] ),
+															'markup' => floatval( $calcs[ $index ][ 'markup' ] ),
+															'credit_charge' => floatval( $calcs[ $index ][ 'credit_charge' ] ),
+															'restaurant_fee' => floatval( $calcs[ $index ][ 'restaurant_fee' ] ),
+															'gift_card' => floatval( $calcs[ $index ][ 'gift_card' ] ),
+															'subtotal' => floatval( $calcs[ $index ][ 'subtotal' ] ),
 														];
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
 
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
 				$summary[ 'total_payment' ] = max( $summary[ 'amount' ], 0 );
-				$summary[ 'calcs' ][ 'total_payment' ] = $summary[ 'total_payment' ];
+				$summary[ 'calcs' ][ 'total_payment' ] = floatval( $summary[ 'total_payment' ] );
 			}
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
 				$summary[ 'total_reimburse' ] = max( $summary[ 'amount' ], 0 );
-				$summary[ 'calcs' ][ 'total_reimburse' ] = $summary[ 'total_reimburse' ];
+				$summary[ 'calcs' ][ 'total_reimburse' ] = floatval( $summary[ 'total_reimburse' ] );
 			}
 
 			return $summary;
