@@ -46,14 +46,18 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 			case 'v4':
 				$urls = [
-					'ping' => [ 'point' => '/Details/Ping', 'method' => 'GET'  ],
-					'businessprofile' => [ 'point' => '/Business/Profile', 'method' => 'GET', 'auth' => 'token'  ],
+					'ping' => [ 'point' => 'Details/Ping', 'method' => 'GET'  ],
 
+					'businessprofile' => [ 'point' => 'Business/Profile', 'method' => 'GET', 'auth' => 'token'  ],
+					'businessadmin' => [ 'point' => 'Business/Admin', 'method' => 'GET', 'auth' => 'token'  ],
+
+					'createcard' => [ 'point' => 'Card/Create', 'method' => 'POST', 'auth' => 'token'  ],
+
+					'detailsaccount' => [ 'point' => 'Details/AccountDetails', 'method' => 'GET', 'auth' => 'token'  ],
 
 					'cardlist' => 'admin/cardlist',
 					'carddetails' => 'admin/carddetails',
 					'fund' => 'admin/fund',
-					'createcard' => 'admin/createcard',
 					'changecardstatus' => 'admin/changecardstatus',
 					'spendbytransactionreport' => 'admin/SpendByTransactionReport',
 					'businessfundingreport' => 'admin/BusinessFundingReport',
@@ -78,10 +82,10 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
 			case 'v4':
-				return Crunchbutton_Pexcard_Resource::request_v4( $point, $params = [], $auth = true, $json = true );
+				return Crunchbutton_Pexcard_Resource::request_v4( $point, $params, $auth, $json );
 				break;
 			default:
-				return Crunchbutton_Pexcard_Resource::request_v3( $point, $params = [], $auth = true, $json = true );
+				return Crunchbutton_Pexcard_Resource::request_v3( $point, $params, $auth, $json );
 				break;
 		}
 	}
@@ -104,6 +108,13 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 		$url = Crunchbutton_Pexcard_Resource::uri() . $point[ 'point' ];
 
 		if( !$params ){
+			$params = [];
+		}
+
+		if( strtolower( $method ) == 'get' ){
+			foreach ( $params  as $key => $value ) {
+				$url .= '/' . $value;
+			}
 			$params = [];
 		}
 
@@ -140,8 +151,6 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 			if( strtolower( $method ) == 'post' ){
 				$request->sendsForm();
 			}
-
-			// echo '<pre>';var_dump( $request );exit();
 
 			return $request->send();
 		}

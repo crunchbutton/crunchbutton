@@ -11,7 +11,12 @@ class Crunchbutton_Pexcard_Business extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function profile(){
-		return Crunchbutton_Pexcard_Resource::request( 'businessprofile', [], true );
+		return Crunchbutton_Pexcard_Resource::request( 'businessprofile' );
+	}
+
+	public function admin( $BusinessAdminId = null ){
+		$params = ( $BusinessAdminId ? [ 'BusinessAdminId' => $BusinessAdminId ] : [] );
+		return Crunchbutton_Pexcard_Resource::request( 'businessadmin', $params );
 	}
 
 	public function transactions( $start, $end ){
