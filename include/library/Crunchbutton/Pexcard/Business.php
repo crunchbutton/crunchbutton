@@ -10,6 +10,10 @@ class Crunchbutton_Pexcard_Business extends Crunchbutton_Pexcard_Resource {
 		return Crunchbutton_Pexcard_Business::transactions( $start, $end );
 	}
 
+	public function profile(){
+		return Crunchbutton_Pexcard_Resource::request( 'businessprofile', [], true );
+	}
+
 	public function transactions( $start, $end ){
 		$transactions = Crunchbutton_Pexcard_Resource::request( 'businessfundingreport', [ 'StartTime' => $start, 'EndTime' => $end ] );
 		if( $transactions->body ){
