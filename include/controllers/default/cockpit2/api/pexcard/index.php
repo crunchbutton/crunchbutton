@@ -14,6 +14,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_driver_search();
 				break;
 
+// TEST IT
 			case 'driver-active':
 				$this->_driver_active();
 				break;
@@ -52,11 +53,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		}
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
 		if( $id_pexcard ){
-			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard )->get( 0 );
+			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 			if( $admin_pexcard->id_admin_pexcard ){
 				$amount = $this->request()[ 'amount' ];
 				$note = $this->request()[ 'note' ];
-
 				if( $admin_pexcard->addArbitraryFunds( $amount, $note ) ){
 					echo json_encode( [ 'success' => true ] );exit();
 				} else {
@@ -143,9 +143,15 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 					if( intval( $card->lastName ) == intval( $crunchbutton_id ) ){
 						$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
 						if( !$admin_pexcard->id_admin ){
-							foreach( $card->cards as $_card ){
+							if( $card->cards ){
+								$_cards = $card->cards;
+							} else {
+								$_cards = Crunchbutton_Pexcard_Details::cards( $card->id );
+							}
+							foreach( $_cards as $_card ){
 								$card_number = str_replace( 'X', '', $_card->cardNumber );
 								if( intval( $card_number ) == intval( $last_four_digits ) ){
+									$card->cards = $_cards;
 									echo json_encode( $card );exit;
 								}
 							}
@@ -235,12 +241,15 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$crunchbutton_id = $this->request()[ 'id' ];
+
 		if( $crunchbutton_id ){
 			$cards = Crunchbutton_Pexcard_Card::card_list();
 			if( is_array( $cards->body ) ){
 				foreach( $cards->body as $card ){
 					if( $card->lastName == $crunchbutton_id ){
 						$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
+						$card = Crunchbutton_Pexcard_Card::details( $card->id );
+						$card = $card->body;
 						if( $admin_pexcard->id_admin ){
 							$card->id_admin = intval( $admin_pexcard->id_admin );
 							$card->admin_name = $admin_pexcard->admin()->name;

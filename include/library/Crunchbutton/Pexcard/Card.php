@@ -6,11 +6,61 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 	const CARD_STATUS_BLOCKED = 'BLOCKED';
 
 	public function card_list(){
-		return Crunchbutton_Pexcard_Resource::request( 'cardlist', [] );
+		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
+			case 'v4':
+				$_cards = ( object ) [ 'body' => [] ];
+				$_cards->body = [];
+				$cards = Crunchbutton_Pexcard_Details::account();
+				if( $cards->body && $cards->body->CHAccountList ){
+					foreach( $cards->body->CHAccountList as $card ){
+						$_cards->body[] = ( object ) [ 	'id' => $card->AccountId,
+																						'firstName' => $card->FirstName,
+																						'lastName' => $card->LastName,
+																						'ledgerBalance' => $card->LedgerBalance,
+																						'availableBalance' => $card->AvailableBalance,
+																						'status' => $card->AccountStatus,
+																						'cards' => false ];
+					}
+				}
+				return $_cards;
+				break;
+
+			default:
+				return Crunchbutton_Pexcard_Resource::request( 'cardlist', [] );
+				break;
+		}
 	}
 
 	public function details( $id ){
-		return Crunchbutton_Pexcard_Resource::request( 'carddetails', [ 'id' => $id ] );
+
+		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
+			case 'v4':
+				$card = Crunchbutton_Pexcard_Details::account( $id );
+				$card = $card->body;
+				$name = explode( ' ' , $card->ProfileAddress->ContactName );
+				$details = ( object ) [ 'body' => [] ];
+				$details->body = ( object ) [	'id' => $card->AccountId,
+																		 	'firstName' => $name[ 0 ],
+																		 	'lastName' => $name[ 1 ],
+																		 	'ledgerBalance' => $card->LedgerBalance,
+																		 	'availableBalance' => $card->AvailableBalance,
+																		 	'status' => $card->AccountStatus,
+																		 	'businessId' => $card->AccountStatus,
+																		 	'cards' => []
+																		 ];
+				foreach( $card->CardList as $card ){
+					$details->body->cards[] = ( object ) [ 'id' => $card->CardId, 'cardNumber' => $card->Last4CardNumber, 'status' => $card->CardStatus  ];
+				}
+				return $details;
+				break;
+			default:
+				return Crunchbutton_Pexcard_Resource::request( 'carddetails', [ 'id' => $id ] );
+				break;
+		}
+	}
+
+	public function activate_card( $id ){
+		return Crunchbutton_Pexcard_Resource::request( 'activatecard', [ 'id' => $id, '' ] );
 	}
 
 	public function create( $params = [] ){
@@ -39,7 +89,15 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function change_status( $id, $status ){
-		return Crunchbutton_Pexcard_Resource::request( 'changecardstatus', [ 'id' => $id, 'status' => $status ] );
+		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
+			case 'v4':
+					return Crunchbutton_Pexcard_Resource::request( 'changecardstatus', [ 'id' => $id, 'status' => $status ] );
+				break;
+
+			default:
+				return Crunchbutton_Pexcard_Resource::request( 'changecardstatus', [ 'id' => $id, 'Status' => $status ] );
+				break;
+		}
 	}
 
 	public function card_block( $id ){

@@ -49,16 +49,22 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 					'ping' => [ 'point' => 'Details/Ping', 'method' => 'GET'  ],
 
 					'businessprofile' => [ 'point' => 'Business/Profile', 'method' => 'GET', 'auth' => 'token'  ],
-					'businessadmin' => [ 'point' => 'Business/Admin', 'method' => 'GET', 'auth' => 'token'  ],
+					'businessadmin' => [ 'point' => 'Business/Admin/:id', 'method' => 'GET', 'auth' => 'token'  ],
 
 					'createcard' => [ 'point' => 'Card/Create', 'method' => 'POST', 'auth' => 'token'  ],
 
-					'detailsaccount' => [ 'point' => 'Details/AccountDetails', 'method' => 'GET', 'auth' => 'token'  ],
+					'detailsaccount' => [ 'point' => 'Details/AccountDetails/:id', 'method' => 'GET', 'auth' => 'token'  ],
+
+
+					'activatecard' => [ 'point' => 'Card/Activate/:id', 'method' => 'POST', 'auth' => 'token'  ],
+					'fund' => [ 'point' => 'Card/Fund/:id', 'method' => 'POST', 'auth' => 'token'  ],
+					'changecardstatus' => [ 'point' => 'Card/Status', 'method' => 'PUT', 'auth' => 'token' ],
 
 					'cardlist' => 'admin/cardlist',
+
 					'carddetails' => 'admin/carddetails',
-					'fund' => 'admin/fund',
-					'changecardstatus' => 'admin/changecardstatus',
+
+
 					'spendbytransactionreport' => 'admin/SpendByTransactionReport',
 					'businessfundingreport' => 'admin/BusinessFundingReport',
 					'cardfundingreport' => 'admin/CardFundingReport',
@@ -104,26 +110,44 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 		$method = $point[ 'method' ];
 		$auth = ( $point[ 'auth' ] ) ? $point[ 'auth' ] : $auth;
+		$point = $point[ 'point' ];
 
-		$url = Crunchbutton_Pexcard_Resource::uri() . $point[ 'point' ];
 
 		if( !$params ){
 			$params = [];
 		}
 
-		if( strtolower( $method ) == 'get' ){
+		if( strpos( $point,  ':' ) ){
+			foreach( $params as $key => $value ){
+				$pattern = ":{$key}";
+				$point = str_replace( $pattern, $value, $point );
+			}
+		}
+
+		if( strtolower( $method ) == 'get' || strtolower( $method ) == 'put' ){
 			foreach ( $params  as $key => $value ) {
 				$url .= '/' . $value;
+				break;
 			}
-			$params = [];
+			if( strtolower( $method ) == 'get' ){
+				$params = [];
+			}
 		}
+
+		$url = Crunchbutton_Pexcard_Resource::uri() . $point;
 
 		if( $url ){
 
-			if( strtolower( $method ) == 'post' ){
-				$request = \Httpful\Request::post( $url );
-			} else {
-				$request = \Httpful\Request::get( $url );
+			switch ( strtolower( $method ) ) {
+				case 'post':
+					$request = \Httpful\Request::post( $url );
+					break;
+				case 'put':
+					$request = \Httpful\Request::put( $url );
+					break;
+				case 'get':
+					$request = \Httpful\Request::get( $url );
+					break;
 			}
 
 			if( $auth ){

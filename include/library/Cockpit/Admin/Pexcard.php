@@ -136,18 +136,12 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function addFunds( $params ){
 
-		Log::debug( [ 'action 5' => $params, 'type' => 'pexcard' ] );
-
 		$add = false;
-
-		Log::debug( [ 'action 6' => $this->isTestCard(), 'type' => 'pexcard' ] );
 
 		// Test cards #4278
 		if( $this->isTestCard() || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
 			$add = true;
 		}
-
-		Log::debug( [ 'action 7' => $add, 'type' => 'pexcard' ] );
 
 		if( $add ){
 
@@ -160,6 +154,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 			}
 
 			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
+
 			if( $this->id_pexcard ){
 				$amount = $params[ 'amount' ];
 

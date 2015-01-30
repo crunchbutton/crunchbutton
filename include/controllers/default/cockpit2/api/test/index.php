@@ -12,6 +12,12 @@ class Controller_api_test extends Cana_Controller {
 
 	public function init(){
 
+		// $funds = Crunchbutton_Pexcard_Card::fund( 6203, -10.00 );
+		// $this->e( $funds );
+
+		$pexcard = Cockpit_Admin_Pexcard::getByPexcard( 6203 );
+		echo '<pre>';var_dump( $pexcard->addArbitraryFunds( 10.00, 'testing' ) );exit();;
+
 
 		// $pex = new Crunchbutton_Pexcard_Resource;
 		// $this->e( $pex->ping() );
@@ -23,10 +29,30 @@ class Controller_api_test extends Cana_Controller {
 		// $this->e( $business->admin() );
 		// $this->e( $business->admin( 1051 ) );
 
-		$details = new Crunchbutton_Pexcard_Details;
-		$this->e( $details->account() );
+		// $details = new Crunchbutton_Pexcard_Details;
+		// $this->e( $details->account( 6202 ) );
+		// $this->e( $details->account() );
 
 
+		// $card = Crunchbutton_Pexcard_Details::cards( 6202 );
+		// $this->e( $card );
+
+
+
+		$this->e( Crunchbutton_Pexcard_Card::details( 6203 ) );
+
+		// $status = Crunchbutton_Pexcard_Card::change_status( 6282, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
+		// $status = Crunchbutton_Pexcard_Card::activate_card( 6203 );
+		// $this->e( $status );
+
+
+
+		$cards = Crunchbutton_Pexcard_Card::card_list();
+		foreach( $cards->body as $card ){
+			$_cards = Crunchbutton_Pexcard_Details::cards( $card->id );
+			echo '<pre>';var_dump( $_cards );exit();
+		}
+echo '<pre>';var_dump( $cards );exit();
 		$card = new Crunchbutton_Pexcard_Card;
 		$card_create = $card->create( [ 'FirstName' => 'Daniel',
 																						'LastName' => 'Camargo',
