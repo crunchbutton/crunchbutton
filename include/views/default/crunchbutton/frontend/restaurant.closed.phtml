@@ -1,7 +1,17 @@
 <div class="restaurant-closed-container zoom-anim-dialog small-container mfp-hide" ng-controller="RestaurantClosedCtrl">
 	<div class="signin-form-container">
 		<h1 ng-bind="restaurant.name"></h1>
-		<p>is currently closed. It will be open during the following hours (<span ng-bind="restaurant._tzabbr"></span>):<br /><br />
-		<div ng-bind-html-unsafe="closedMessage"></div>
+		<p>
+			<span ng-if="!acceptingOrders">
+				<span ng-if="restaurant.delivery">is temporarily unavailable for delivery, but is usualy available durring the following hours</span>
+				<span ng-if="!restaurant.delivery">is temporarily closed but is usualy available during the following hours</span>
+			</span>
+			<span ng-if="acceptingOrders">
+				<span ng-if="restaurant.delivery">is currently unavailable for delivery. Delivery is available during the following hours</span>
+				<span ng-if="!restaurant.delivery">is currently closed. It will be open during the following hours</span>
+			</span>
+			&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):<br /><br />
+			<span ng-bind-html-unsafe="closedMessage"></span>
+		</p>
 	</div>
 </div>
