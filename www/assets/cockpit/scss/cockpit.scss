@@ -3547,28 +3547,7 @@ input[type="checkbox"].switch + div:before {
 }
 
 
-.welcome-title {
-	font-size: 2em;
-	text-align: center;
-	padding-bottom: 2em;
-}
 
-.drivers-welcome {
-
-	background: $navColor;
-
-	color: white;
-
-}
-
-.drivers-welcome-logo {
-	background: url(../images/logo.png) no-repeat;
-	height: 12em;
-	width: 12em;
-	background-size: 100%;
-	margin: 0 auto;
-	padding-bottom: 5em;
-}
 
 .support-side-image {
 	width: 250px;
@@ -3630,4 +3609,87 @@ input[type="checkbox"].switch + div:before {
 
 .delivery_is_self, .delivery_is_self td{
 	color: #458cc8 !important;
+}
+
+body[class*=" page-drivers-welcome-"] .bg {
+	background: $navColor;
+	color: white;
+}
+
+body[class*=" page-drivers-welcome-"] .snap-drawers {
+	display: none;
+}
+
+body[class*=" page-drivers-welcome-"] .nav-top {
+	background: none;
+	border-bottom: none;
+}
+
+body[class*=" page-drivers-welcome-"] .nav-top .logo, body[class*=" page-drivers-welcome-"] .nav-top .notifications, body[class*=" page-drivers-welcome-"] .nav-top .menu {
+	display: none;
+}
+
+
+@media screen and (min-height: 620px) {
+	.drivers-welcome {
+		font-size: 1.2em;
+	}
+}
+
+
+.drivers-welcome .welcome-title {
+	font-size: 1.8em;
+	text-align: center;
+	padding-bottom: 2em;
+}
+
+
+.drivers-welcome-logo {
+	background: url(../images/logo.png) no-repeat;
+	height: 12em;
+	width: 12em;
+	background-size: 100%;
+	margin: 0 auto;
+	padding-bottom: 5em;
+}
+
+
+
+.welcome-icon {
+	font-size: 8em;
+	text-align: center;
+	margin-bottom: .4em;
+}
+
+.drivers-welcome p {
+	line-height: 1.8em;
+}
+
+.drivers-welcome .button {
+	margin-top: 2em;
+	font-size: 1.3em;
+}
+
+.welcome-button {
+	position: absolute;
+	bottom: 1.5em;
+	width: 90%;
+	left: 50%;
+    -webkit-transform: translate(-50%, 0);
+	transform: translate(-50%, 0);
+}
+
+#ng-view {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right:0;
+}
+
+
+.drivers-welcome .top-pad {
+	height: 37px;
 }
