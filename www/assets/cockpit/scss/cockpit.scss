@@ -3662,7 +3662,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .logo, body[class*=" page-drivers
 }
 
 .drivers-welcome p {
-	line-height: 1.9em;
+	line-height: 1.8em;
 }
 
 .drivers-welcome .button {
@@ -3675,7 +3675,8 @@ body[class*=" page-drivers-welcome-"] .nav-top .logo, body[class*=" page-drivers
 	bottom: 1.5em;
 	width: 90%;
 	left: 50%;
-    transform: translate(-50%, 0);
+    -webkit-transform: translate(-50%, 0);
+	transform: translate(-50%, 0);
 }
 
 #ng-view {
@@ -3686,4 +3687,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .logo, body[class*=" page-drivers
 	bottom: 0;
 	left: 0;
 	right:0;
+}
+
+
+.drivers-welcome .top-pad {
+	height: 37px;
 }
