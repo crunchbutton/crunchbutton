@@ -1012,8 +1012,43 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 NGApp.controller('DriversHelpCtrl', function() {});
 NGApp.controller('DriversHelpCreditCardCtrl', function() {});
 
-NGApp.controller('DriversWelcomeHomeCtrl', function() {});
+
+NGApp.controller('DriversWelcomeHomeCtrl', function() {
+	
+});
 NGApp.controller('DriversWelcomeInfoCtrl', function() {});
-NGApp.controller('DriversWelcomeLocationCtrl', function() {});
-NGApp.controller('DriversWelcomePushCtrl', function() {});
-NGApp.controller('DriversWelcomeWahooCtrl', function() {});
+
+NGApp.controller('DriversWelcomeLocationCtrl', function(MainNavigationService, LocationService, $scope, $rootScope) {
+	var complete = function() {
+		MainNavigationService.link('/drivers/welcome/push');
+		$rootScope.$apply();
+	};
+	var l;
+	$scope.locateit = function() {
+		l.start();
+		if (App.isPhoneGap) {
+			LocationService.register(complete);
+		} else {
+			complete();
+		}
+	};
+	setTimeout(function(){
+		l = Ladda.create($('.welcome-button .ladda-button').get(0));
+	},700);
+});
+
+NGApp.controller('DriversWelcomePushCtrl', function(MainNavigationService, PushService, $scope) {
+	var complete = function() {
+		MainNavigationService.link('/drivers/welcome/wahoo');
+	};
+	$scope.pushit = function() {
+		if (App.isPhoneGap) {
+			PushService.register(complete);
+		} else {
+			complete();
+		}
+	};;
+});
+NGApp.controller('DriversWelcomeWahooCtrl', function() {
+
+});

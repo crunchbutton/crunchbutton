@@ -15,67 +15,74 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 	document.addEventListener('pushnotification', function(e) {
 		service.receive(e.msg);
 	}, false);
+	
+	service.register = function(complete) {
 
-	parent.plugins.pushNotification.register(
-		function(id) {
-			service.id = id;
-			console.debug('Push id: ' + id);
+		parent.plugins.pushNotification.register(
+			function(id) {
+				service.id = id;
+				console.debug('Push id: ' + id);
 
-			$http({
-				method: 'POST',
-				url: App.service + 'config',
-				data: {key: 'push-ios', value: service.id},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			});
-		},
-		function() {
-			console.error('Failed registering push notifications', arguments);
-		},
-		{
-			'badge': 'true',
-			'sound': 'true',
-			'alert': 'true',
-			'ecb': 'pushnotification',
-			'categories': [
-				{
-					'identifier': 'order-new-test',
-					'actions': [
-						{
-							'title': 'Accept',
-							'identifier': 'i11',
-							'authentication': 'false',
-							'mode': 'background'
-						},
-						{
-							'title': 'View',
-							'identifier': 'i22',
-							'authentication': 'false',
-							'mode': 'foreground'
-						}
-					]
-				},
-				{
-					'identifier': 'support-message-test',
-					'actions': [
-						{
-							'title': 'Close',
-							'identifier': 'i44',
-							'authentication': 'false',
-							'destructive': 'true',
-							'mode': 'background'
-						},
-						{
-							'title': 'View',
-							'identifier': 'i33',
-							'authentication': 'false',
-							'mode': 'foreground'
-						}
+				$http({
+					method: 'POST',
+					url: App.service + 'config',
+					data: {key: 'push-ios', value: service.id},
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				});
+				
+				complete();
+			},
+			function() {
+				console.error('Failed registering push notifications', arguments);
+				App.alert('Failed to enable Push notifications. Please go to your push notification settings on your device and enable them for Cockpit.');
+				complete();
+			},
+			{
+				'badge': 'true',
+				'sound': 'true',
+				'alert': 'true',
+				'ecb': 'pushnotification',
+				'categories': [
+					{
+						'identifier': 'order-new-test',
+						'actions': [
+							{
+								'title': 'Accept',
+								'identifier': 'i11',
+								'authentication': 'false',
+								'mode': 'background'
+							},
+							{
+								'title': 'View',
+								'identifier': 'i22',
+								'authentication': 'false',
+								'mode': 'foreground'
+							}
+						]
+					},
+					{
+						'identifier': 'support-message-test',
+						'actions': [
+							{
+								'title': 'Close',
+								'identifier': 'i44',
+								'authentication': 'false',
+								'destructive': 'true',
+								'mode': 'background'
+							},
+							{
+								'title': 'View',
+								'identifier': 'i33',
+								'authentication': 'false',
+								'mode': 'foreground'
+							}
 
-					]
-				}
-			]
-		}
-	);
+						]
+					}
+				]
+			}
+		);
+	};
 
 	
 	service.receive = function(msg) {
