@@ -1,6 +1,8 @@
 <?php
 
-class Crunchbutton_Phone extends Cana_Table{
+class Crunchbutton_Phone extends Cana_Table {
+	
+	const DAYS_THRESHOLD = '2';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -24,7 +26,7 @@ class Crunchbutton_Phone extends Cana_Table{
 				phone.id_phone is not null
 				and phone_log.direction="outgoing"
 				and phone_log.id_phone_to="'.$this->id_phone.'"
-				and datediff(now(), date) < 30
+				and datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 				group by phone.id_phone
 			
 			union
@@ -36,7 +38,7 @@ class Crunchbutton_Phone extends Cana_Table{
 				phone.id_phone is not null
 				and phone_log.direction="incoming"
 				and phone_log.id_phone_from="'.$this->id_phone.'"
-				and datediff(now(), date) < 30
+				and datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 				group by phone.id_phone
 				
 			order by date desc
@@ -57,7 +59,7 @@ class Crunchbutton_Phone extends Cana_Table{
 		$r = c::db()->query('
 			select count(*) c, phone_log.id_phone_from, phone.phone from phone_log
 			left join phone on phone.id_phone=phone_log.id_phone_from
-			where datediff(now(), date) < 30
+			where datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 			group by phone_log.id_phone_from order by c asc
 		');
 
