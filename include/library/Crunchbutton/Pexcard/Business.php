@@ -15,7 +15,7 @@ class Crunchbutton_Pexcard_Business extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function admin( $BusinessAdminId = null ){
-		$params = ( $BusinessAdminId ? [ 'BusinessAdminId' => $BusinessAdminId ] : [] );
+		$params = [ 'id' => $BusinessAdminId ];
 		return Crunchbutton_Pexcard_Resource::request( 'businessadmin', $params );
 	}
 
