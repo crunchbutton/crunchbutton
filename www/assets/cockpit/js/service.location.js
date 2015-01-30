@@ -81,6 +81,20 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	};
 
 	var watcher = null;
+	
+	service.register = function(complete) {
+
+		parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
+			complete();
+		}, function() {
+			App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services</b>. Your location will only be tracked while you are on shift.')
+			complete();
+		}, {
+			enableHighAccuracy: false,
+			timeout: 5000,
+			maximumAge: 3600000
+		});
+	};
 
 	var startWatch = function() {
 		if (watcher) {
