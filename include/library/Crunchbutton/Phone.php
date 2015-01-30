@@ -1,6 +1,8 @@
 <?php
 
-class Crunchbutton_Phone extends Cana_Table{
+class Crunchbutton_Phone extends Cana_Table {
+	
+	const DAYS_THRESHOLD = '2';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -24,7 +26,7 @@ class Crunchbutton_Phone extends Cana_Table{
 				phone.id_phone is not null
 				and phone_log.direction="outgoing"
 				and phone_log.id_phone_to="'.$this->id_phone.'"
-				and datediff(now(), date) < 30
+				and datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 				group by phone.id_phone
 			
 			union
@@ -36,7 +38,7 @@ class Crunchbutton_Phone extends Cana_Table{
 				phone.id_phone is not null
 				and phone_log.direction="incoming"
 				and phone_log.id_phone_from="'.$this->id_phone.'"
-				and datediff(now(), date) < 30
+				and datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 				group by phone.id_phone
 				
 			order by date desc
@@ -54,33 +56,32 @@ class Crunchbutton_Phone extends Cana_Table{
 	
 	// get the phone number that was used the least in the last 30 days
 	public static function least() {
-		$r = c::db()->query('
-			select count(*) c, phone_log.id_phone_from, phone.phone from phone_log
-			left join phone on phone.id_phone=phone_log.id_phone_from
-			where datediff(now(), date) < 30
-			group by phone_log.id_phone_from order by c asc
-		');
-
-		$logs = [];
-		while ($c = $r->fetch()) {
-			$logs[$c->phone] = $c->c;
-		}
-
-		$numbers = self::numbers();
 		
+		$numbers = self::numbers();
 		$use = null;
 
 		foreach ($numbers as $number) {
-			if (!array_key_exists($number, $logs)) {
-				$use = $number;
-				break;
-			}
+			$logs[$number] = 0;
+			$q = ' phone.phone="'.$number.'" ';
+			$phones .= $phones ? ' OR '.$q : $q;
 		}
 		
-		if (!$use) {
-			$use = $logs[0]->phone;
+		$query = '
+			select count(*) c, phone_log.id_phone_from, phone.phone from phone_log
+			left join phone on phone.id_phone=phone_log.id_phone_from
+			where datediff(now(), date) < '.self::DAYS_THRESHOLD.'
+			and ('.$phones.')
+			group by phone_log.id_phone_from order by c asc
+		';
+
+		$r = c::db()->query($query);
+		while ($c = $r->fetch()) {
+			$logs[$c->phone] = $c->c;
 		}
 		
+		asort($logs);
+		$use = key($logs);
+
 		return $use ? $use : self::clean(c::config()->phone->support);
 	}
 	
