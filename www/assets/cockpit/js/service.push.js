@@ -29,7 +29,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 					data: {key: 'push-ios', value: service.id},
 					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				});
-				
+
 				complete();
 			},
 			function() {

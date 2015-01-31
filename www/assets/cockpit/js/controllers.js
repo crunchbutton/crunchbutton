@@ -1,4 +1,4 @@
-NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
+NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
 	if (!AccountService || !AccountService.user || !AccountService.user.id_admin) {
 		MainNavigationService.link('/login');
 		return;
@@ -8,6 +8,14 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 	if( !isNaN( parseInt( id_order ) ) ){
 		MainNavigationService.link('/drivers/order/' + id_order);
 	} else {
+		if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
+			setTimeout(function(){
+				MainNavigationService.link('/drivers/welcome');
+				$rootScope.$apply();
+			},100);
+			return;
+		}
+
 		if (AccountService.user.permissions.GLOBAL) {
 			MainNavigationService.link('/home');
 		} else if (AccountService.isRestaurant) {
@@ -121,14 +129,14 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 		};
 
 		if ($scope.$$phase) {
-			$scope.title = title;
+			$scope.alertTitle = title;
 			$scope.message = message;
 			$scope.complete = complete;
 			App.dialog.show('.notification-alert-container');
 
 		} else {
 			$rootScope.$apply(function(scope) {
-				scope.title = title;
+				scope.alertTitle = title;
 				scope.message = message;
 				$scope.complete = complete;
 				App.dialog.show('.notification-alert-container');
