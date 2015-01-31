@@ -112,15 +112,9 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function addShiftStartFunds( $id_admin_shift_assign ){
 
-		Log::debug( [ 'action 2' => Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ), 'type' => 'pexcard' ] );
-		Log::debug( [ 'action 3' => Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START ), 'type' => 'pexcard' ] );
-
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ) ) > 0 ){
 			$config = Crunchbutton_Config::getConfigByKey( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START );
 			if( $config->value ){
-
-				Log::debug( [ 'action 4' => Crunchbutton_Pexcard_Action::checkShiftReceivedFunds( $id_admin_shift_assign ), 'type' => 'pexcard' ] );
-
 				// Make sure the haven't received funds yet
 				if( !Crunchbutton_Pexcard_Action::checkShiftReceivedFunds( $id_admin_shift_assign ) ){
 					$amount = number_format( floatval( $config->value ), 2 );
@@ -146,6 +140,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		if( $add ){
 
 			$card = $this->pexcard();
+
 			// Check if the card could receive funds
 			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
 					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){

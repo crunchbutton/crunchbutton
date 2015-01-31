@@ -3,14 +3,78 @@
 class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 	public function transactions( $start, $end ){
-		$transactions = Crunchbutton_Pexcard_Resource::request( 'spendbytransactionreport', [ 'StartTime' => $start, 'EndTime' => $end ] );
-		if( $transactions->body ){
-			return $transactions->body->transactions;
-		}
-		else if( $transactions->message ){
-			return $transactions->message;
-		} else {
-			return false;
+		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
+			case 'v4':
+				$start = explode( '/' , $start );
+				$start = $start[2] . '-' . $start[0] . '-' . $start[1] . 'T00:00:01';
+				$end = explode( '/' , $end );
+				$end = $end[2] . '-' . $end[0] . '-' . $end[1] . 'T23:59:59';
+				$params = [ 'StartDate' => $start, 'EndDate' => $end, 'IncludePendings' => 'true' ];
+				$transactions = Crunchbutton_Pexcard_Resource::request( 'spendbytransactionreport', $params );
+				if( $transactions->body && $transactions->body->TransactionList ){
+
+
+					$_transactions = [];
+					$transactions = $transactions->body->TransactionList;
+					foreach( $transactions as $transaction ){
+
+						$pexcard = Cockpit_Admin_Pexcard::getByPexcard( $transaction->TransferToOrFromAccountId );
+						if( $pexcard->id_admin_pexcard ){
+							$serial = $pexcard->card_serial;
+							$last_four = $pexcard->last_four;
+						} else {
+							$serial = null;
+							$last_four = null;
+						}
+
+						$_transactions[] = ( object ) [ 'id' => $transaction->TransactionId,
+																						'acctId' => $transaction->AcctId,
+																						'transactionTime' => $transaction->TransactionTime,
+																						'settlementTime' => $transaction->SettlementTime,
+
+																						'transactionCode' => null,
+
+																						'firstName' => 'Crunchbutton',
+																						'middleName' => null,
+																						'lastName' => $serial,
+																						'cardNumber' => $last_four,
+
+																						'spendCategory' => null,
+																						'description' => $transaction->Description,
+																						'amount' => $transaction->TransactionAmount,
+
+																						'transferToOrFromAccountId' => $transaction->TransferToOrFromAccountId,
+																						'transactionType' => $transaction->TransactionType,
+																						'isPending' => $transaction->IsPending,
+																						'isDecline' => $transaction->IsDecline,
+																						'transactionNotes' => $transaction->TransactionNotes,
+																						'paddingAmount' => $transaction->paddingAmount,
+																						'merchantName' => $transaction->MerchantName,
+																						'merchantCity' => $transaction->MerchantCity,
+																						'merchantState' => $transaction->MerchantState,
+																						'merchantCountry' => $transaction->MerchantCountry,
+																						'MCCCode' => $transaction->MCCCode,
+																						'authTransactionId' => $transaction->AuthTransactionId,
+																					];
+					}
+					return $_transactions;
+				} if( $transactions->message ){
+					return $transactions->message;
+				} else {
+					return false;
+				}
+				break;
+			case 'v3':
+				$transactions = Crunchbutton_Pexcard_Resource::request( 'spendbytransactionreport', [ 'StartTime' => $start, 'EndTime' => $end ] );
+				if( $transactions->body ){
+					return $transactions->body->transactions;
+				}
+				else if( $transactions->message ){
+					return $transactions->message;
+				} else {
+					return false;
+				}
+				break;
 		}
 	}
 
@@ -72,6 +136,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																												FROM pexcard_transaction
 																													WHERE
 																														DATE_FORMAT( transactionTime, "%m/%d/%Y" ) BETWEEN "' . $start . '" AND "' . $end . '"
+																														AND transactionType != "Transfer"
 																												GROUP BY lastName, cardNumber
 																												ORDER BY amount DESC' );
 		return $expenses;
@@ -121,29 +186,46 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function saveTransaction( $transaction ){
 
 		if( $transaction->id ){
+
 			$_transaction = Crunchbutton_Pexcard_Transaction::getByTransactionId( $transaction->id );
+
+			// if it is not new some fields may need to be updated
 			if( !$_transaction->id_pexcard_transaction ){
 				$_transaction = new Crunchbutton_Pexcard_Transaction();
-
-				$transactionTime = date( 'Y-m-d H:i:s', strtotime( $transaction->transactionTime ) );
-				$settlementTime = date( 'Y-m-d H:i:s', strtotime( $transaction->settlementTime ) );
-
-				$_transaction->transactionId = $transaction->id;
-				$_transaction->acctId = $transaction->acctId;
-				$_transaction->transactionTime = $transactionTime;
-				$_transaction->settlementTime = $settlementTime;
-				$_transaction->transactionCode = $transaction->transactionCode;
-				$_transaction->firstName = $transaction->firstName;
-				$_transaction->middleName = $transaction->middleName;
-				$_transaction->lastName = $transaction->lastName;
-				$_transaction->transactionCode = $transaction->transactionCode;
-				$_transaction->cardNumber = $transaction->cardNumber;
-				$_transaction->spendCategory = $transaction->spendCategory;
-				$_transaction->description = $transaction->description;
-				$_transaction->amount = ( $transaction->amount * -1 );
-				$_transaction->save();
-
 			}
+
+			$transactionTime = date( 'Y-m-d H:i:s', strtotime( $transaction->transactionTime ) );
+			$settlementTime = date( 'Y-m-d H:i:s', strtotime( $transaction->settlementTime ) );
+
+			$_transaction->transactionId = $transaction->id;
+			$_transaction->acctId = $transaction->acctId;
+			$_transaction->transactionTime = $transactionTime;
+			$_transaction->settlementTime = $settlementTime;
+			$_transaction->transactionCode = $transaction->transactionCode;
+			$_transaction->firstName = $transaction->firstName;
+			$_transaction->middleName = $transaction->middleName;
+			$_transaction->lastName = $transaction->lastName;
+			$_transaction->transactionCode = $transaction->transactionCode;
+			$_transaction->cardNumber = $transaction->cardNumber;
+			$_transaction->spendCategory = $transaction->spendCategory;
+			$_transaction->description = $transaction->description;
+			$_transaction->amount = ( $transaction->amount * -1 );
+
+			// v4 api fields
+			$_transaction->transferToOrFromAccountId = $transaction->transferToOrFromAccountId;
+			$_transaction->transactionType = $transaction->transactionType;
+			$_transaction->isPending = ( $transaction->isPending ) ? 1 : 0;
+			$_transaction->isDecline = ( $transaction->isDecline ) ? 1 : 0;
+			$_transaction->paddingAmount = $transaction->paddingAmount;
+			$_transaction->merchantName = $transaction->merchantName;
+			$_transaction->merchantCity = $transaction->merchantCity;
+			$_transaction->merchantState = $transaction->merchantState;
+			$_transaction->merchantCountry = $transaction->merchantCountry;
+			$_transaction->MCCCode = $transaction->MCCCode;
+			$_transaction->authTransactionId = $transaction->authTransactionId;
+
+			$_transaction->save();
+
 			return $_transaction;
 		}
 		return false;
