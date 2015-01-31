@@ -3603,7 +3603,7 @@ input[type="checkbox"].switch + div:before {
 
 	@-webkit-keyframes slideOutRight {
 		from    { -webkit-transform: translateX(-100%); }
-		to      { -webkit-transform: translateX(0); }
+		/* to      { -webkit-transform: translateX(0); } */
 	}
 }
 
@@ -3626,6 +3626,11 @@ body[class*=" page-drivers-welcome-"] .nav-top {
 }
 
 body[class*=" page-drivers-welcome-"] .nav-top .logo, body[class*=" page-drivers-welcome-"] .nav-top .notifications, body[class*=" page-drivers-welcome-"] .nav-top .menu {
+	display: none;
+}
+
+/* @todo: #4594 */
+body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	display: none;
 }
 
