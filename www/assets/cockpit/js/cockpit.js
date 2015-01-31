@@ -513,10 +513,24 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.back = function() {
 		$('body').addClass('back');
-		history.back();
+		
+		//history.back();
+		history.go(-1);
+    	navigator.app.backHistory();
+		
+
+		setTimeout(function(){
+			$rootScope.$safeApply();
+		},100);
+
 		setTimeout(function(){
 			$('body').removeClass('back');
-		},600);
+			$rootScope.$safeApply();
+		},1000);
+		
+		setTimeout(function(){
+			$rootScope.$safeApply();
+		},1200);
 	};
 
 	$rootScope.closePopup = function() {
@@ -1044,3 +1058,30 @@ App.playAudio = function(audio) {
 	audio.currentTime = 0;
 	audio.play();
 }
+
+
+function handleOpenURL(url) {
+	// only happens if being pased from a url in the native app
+
+	var handler = 'cockpit://';
+
+	if (!App.isPhoneGap || url.indexOf(handler) < 0) {
+		return;
+	}
+
+	url = url.replace(handler, '');
+	url = url.replace(/^\//,'');
+	url = '/' + url;
+	url = url.split('?');
+	url = url[0];
+
+	if (App._init) {
+		// already launched. just nav
+		App.go(url);
+	} else {
+		// launching with url params
+		$(window).on('nginit', function() {
+			App.go(url);
+		});
+	}
+};
