@@ -1018,28 +1018,31 @@ NGApp.controller('DriversWelcomeHomeCtrl', function() {
 });
 NGApp.controller('DriversWelcomeInfoCtrl', function() {});
 
-NGApp.controller('DriversWelcomeLocationCtrl', function(MainNavigationService, LocationService, $scope, $rootScope) {
+NGApp.controller('DriversWelcomeLocationCtrl', function($location, LocationService, $scope, $rootScope) {
 	var complete = function() {
-		MainNavigationService.link('/drivers/welcome/push');
-		$rootScope.$apply();
+		$location.path('/drivers/welcome/push');
+		//history.pushState({}, 'next', '/drivers/welcome/push');
+		$rootScope.$safeApply();
 	};
 	var l;
 	$scope.locateit = function() {
-		l.start();
 		if (App.isPhoneGap) {
 			LocationService.register(complete);
 		} else {
 			complete();
 		}
+		l.start();
 	};
 	setTimeout(function(){
 		l = Ladda.create($('.welcome-button .ladda-button').get(0));
 	},700);
 });
 
-NGApp.controller('DriversWelcomePushCtrl', function(MainNavigationService, PushService, $scope) {
+NGApp.controller('DriversWelcomePushCtrl', function($rootScope, $location, PushService, $scope) {
 	var complete = function() {
-		MainNavigationService.link('/drivers/welcome/wahoo');
+		$location.path('/drivers/welcome/wahoo');
+		//history.pushState({}, 'next', '/drivers/welcome/wahoo');
+		$rootScope.$safeApply();
 	};
 	$scope.pushit = function() {
 		if (App.isPhoneGap) {
@@ -1050,5 +1053,5 @@ NGApp.controller('DriversWelcomePushCtrl', function(MainNavigationService, PushS
 	};;
 });
 NGApp.controller('DriversWelcomeWahooCtrl', function() {
-
+	//$.totalStorage('isDriverWelcomeSetup', '1');
 });
