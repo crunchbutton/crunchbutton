@@ -6,7 +6,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 	// I created this method so I can fake live
 	public function env(){
-		// return 'live';
+		return 'live';
 		return ( c::getEnv() == 'live' ) ? 'live' : 'beta';
 	}
 
@@ -47,25 +47,15 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 			case 'v4':
 				$urls = [
 					'ping' => [ 'point' => 'Details/Ping', 'method' => 'GET'  ],
-
 					'businessprofile' => [ 'point' => 'Business/Profile', 'method' => 'GET', 'auth' => 'token'  ],
 					'businessadmin' => [ 'point' => 'Business/Admin/:id', 'method' => 'GET', 'auth' => 'token'  ],
-
 					'createcard' => [ 'point' => 'Card/Create', 'method' => 'POST', 'auth' => 'token'  ],
-
 					'detailsaccount' => [ 'point' => 'Details/AccountDetails/:id', 'method' => 'GET', 'auth' => 'token'  ],
-
-
 					'activatecard' => [ 'point' => 'Card/Activate/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'fund' => [ 'point' => 'Card/Fund/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'changecardstatus' => [ 'point' => 'Card/Status', 'method' => 'PUT', 'auth' => 'token' ],
+					'spendbytransactionreport' => [ 'point' => 'Details/TransactionDetails?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
 
-					'cardlist' => 'admin/cardlist',
-
-					'carddetails' => 'admin/carddetails',
-
-
-					'spendbytransactionreport' => 'admin/SpendByTransactionReport',
 					'businessfundingreport' => 'admin/BusinessFundingReport',
 					'cardfundingreport' => 'admin/CardFundingReport',
 					];
@@ -129,9 +119,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 				$url .= '/' . $value;
 				break;
 			}
-			if( strtolower( $method ) == 'get' ){
-				$params = [];
-			}
+			$params = [];
 		}
 
 		$url = Crunchbutton_Pexcard_Resource::uri() . $point;
