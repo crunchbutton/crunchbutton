@@ -13,11 +13,11 @@ class Controller_api_test extends Cana_Controller {
 	public function init(){
 
 
-		Crunchbutton_Pexcard_Transaction::loadTransactions();
-		die('hard');
+		// Crunchbutton_Pexcard_Transaction::loadTransactions();
+		// die('hard');
 
-		$transactions = Crunchbutton_Pexcard_Transaction::transactions( '01/01/2015', '01/30/2015' );
-		echo json_encode( $transactions );exit;
+		// $transactions = Crunchbutton_Pexcard_Transaction::transactions( '01/01/2015', '01/30/2015' );
+		// echo json_encode( $transactions );exit;
 
 		// Crunchbutton_Pexcard_Monitor::checkBalanceLimit();
 
