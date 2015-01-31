@@ -13,6 +13,9 @@ class Controller_api_test extends Cana_Controller {
 	public function init(){
 
 
+		// $token = Crunchbutton_Pexcard_Token::getToken();
+		// echo '<pre>';var_dump( $token );exit();
+
 		// Crunchbutton_Pexcard_Transaction::loadTransactions();
 		// die('hard');
 
@@ -22,7 +25,7 @@ class Controller_api_test extends Cana_Controller {
 		// Crunchbutton_Pexcard_Monitor::checkBalanceLimit();
 
 		// $pexcard = Cockpit_Admin_Pexcard::getByPexcard( 6203 );
-		// echo '<pre>';var_dump( $pexcard->addArbitraryFunds( 10, 'testing' ) );exit();;
+		// echo '<pre>';var_dump( $pexcard->addArbitraryFunds( -110, 'just testing 1' ) );exit();;
 
 		// $funds = Crunchbutton_Pexcard_Card::addArbitraryFunds( 6203, 10.00 );
 		// echo '<pre>';var_dump( $funds );exit();
@@ -35,8 +38,8 @@ class Controller_api_test extends Cana_Controller {
 		// $pex = new Crunchbutton_Pexcard_Resource;
 		// $this->e( $pex->ping() );
 
-		// $business = new Crunchbutton_Pexcard_Business;
-		// $this->e( $business->profile() );
+		$business = new Crunchbutton_Pexcard_Business;
+		$this->e( $business->profile() );
 
 		// $business = new Crunchbutton_Pexcard_Business;
 		// $this->e( $business->admin() );

@@ -6,7 +6,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 	// I created this method so I can fake live
 	public function env(){
-		return 'live';
+		// return 'live';
 		return ( c::getEnv() == 'live' ) ? 'live' : 'beta';
 	}
 
@@ -20,6 +20,14 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 	public function api_version(){
 		return c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->apiversion;
+	}
+
+	public function username(){
+		return c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->username;
+	}
+
+	public function password(){
+		return c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->password;
 	}
 
 
@@ -55,9 +63,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 					'fund' => [ 'point' => 'Card/Fund/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'changecardstatus' => [ 'point' => 'Card/Status', 'method' => 'PUT', 'auth' => 'token' ],
 					'spendbytransactionreport' => [ 'point' => 'Details/TransactionDetails?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
-
-					'businessfundingreport' => 'admin/BusinessFundingReport',
-					'cardfundingreport' => 'admin/CardFundingReport',
+					'token' => [ 'point' => 'Token', 'method' => 'POST', 'auth' => 'basic' ],
 					];
 				if( $urls[ $point ] ){
 					return $urls[ $point ];
@@ -87,14 +93,22 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 	}
 
 	public static function token(){
-		return c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->token;
+		return Crunchbutton_Pexcard_Token::getToken();
+	}
+
+	public function basic(){
+		$clientid = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->clientid;
+		$clientsecret = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->clientsecret;
+		return  base64_encode( $clientid . ':' . $clientsecret );
 	}
 
 	// api version 4
 	public static function request_v4( $point, $params = [], $auth = true, $json = true ){
 
-		$user = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->username;
-		$pass = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->password;
+		$_point = $point;
+		$_params = $params;
+		$_auth = $auth;
+		$_json = $json;
 
 		$point = Crunchbutton_Pexcard_Resource::url( $point );
 
@@ -146,8 +160,12 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 						$request->addHeader( 'Authorization', 'token ' . Crunchbutton_Pexcard_Resource::token() );
 						break;
 
+					case 'basic':
+						$request->addHeader( 'Authorization', 'basic ' . Crunchbutton_Pexcard_Resource::basic() );
+						break;
+
 					default:
-						$params = array_merge( [ 'userName' => $user, 'password' => $pass ], $params );
+						$params = array_merge( [ 'userName' => Crunchbutton_Pexcard_Resource::username(), 'password' => $pass ], Crunchbutton_Pexcard_Resource::password() );
 						break;
 				}
 			}
@@ -164,16 +182,24 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 				$request->sendsForm();
 			}
 
-			return $request->send();
+			$response = $request->send();
+
+			if( $response && $response->body && $response->body->Message == 'Token expired or does not exist' ){
+				// Desactive the current token
+				Crunchbutton_Pexcard_Token::desactiveToken();
+				// Create a new one
+				Crunchbutton_Pexcard_Token::getToken();
+				// Call the method again
+				return Crunchbutton_Pexcard_Resource::request_v4( $_point, $_params, $_auth, $_json );
+			}
+
+			return $response;
 		}
 		return false;
 	}
 
 	// api version 3
 	public static function request_v3( $point, $params = [], $auth = true, $json = true ){
-
-		$user = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->username;
-		$pass = c::config()->pexcard->{Crunchbutton_Pexcard_Resource::env()}->password;
 
 		$url = Crunchbutton_Pexcard_Resource::url( $point );
 
@@ -182,7 +208,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 			$request = \Httpful\Request::post( $url );
 
 			if( $auth ){
-				$params = array_merge( [ 'userName' => $user, 'password' => $pass ], $params );
+				$params = array_merge( [ 'userName' => Crunchbutton_Pexcard_Resource::username(), 'password' => $pass ], Crunchbutton_Pexcard_Resource::password() );
 			}
 
 			if( count( $params ) ){
