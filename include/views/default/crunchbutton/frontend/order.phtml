@@ -28,7 +28,13 @@
 				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 				<br />
-				<div class="order-details-highlight">You just earned {{Math.floor(order.reward.points)}} points! <strong>Double</strong> it by creating an account.<br><br></div>
+				<div class="order-details-highlight">
+				You just earned <strong>{{Math.floor(order.reward.points)}}</strong> points!
+				<span ng-if="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
+					<br>You are {{account.user.points.away_free_delivery}} points away from a free delivery.<br>
+				</span>
+				Want more points? Share this order to double it! Find out more ways to get free delivery here.</div>
+				</div>
 				<div class="divider dots"></div>
 			</div>
 

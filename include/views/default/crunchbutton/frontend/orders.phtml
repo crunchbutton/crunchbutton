@@ -26,13 +26,22 @@
 	</ul>
 
 	<div>
+		<a href="#code"></a>
 		<div class="invite-code-container field-container" ng-show="referral.enabled">
+			<?php /* ?>
 			<div class="restaurant-item-title">Crunch Credit Invites</div>
 			<p>
 				For every NEW customer who orders with a credit card, we'll award you Crunch Credit.
 			</p>
 			<div ng-if="account.user.points">
-				You have {{account.user.points}} points.
+				You have {{account.user.points.total}} points.
+			</div>
+			<?php */ ?>
+			<div ng-if="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
+				<div>You are {{account.user.points.away_free_delivery}} points away from a free delivery.</div>
+				<div>Earn points by ordering food, sharing your order, or referring friends.</div>
+				<div>Share this family and friends code and both of you get your next delivery on us.</div>
+				<div><strong>{{account.user.invite_code}}</strong></div>
 			</div>
 			<div class="divider"></div>
 			<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">

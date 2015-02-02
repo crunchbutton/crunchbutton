@@ -276,6 +276,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
+		if( service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message ){
+			delivery = 0;
+		}
 		delivery = App.ceil(delivery);
 		return delivery;
 	}
