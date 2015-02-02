@@ -48,8 +48,10 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 																		 	'businessId' => $card->AccountStatus,
 																		 	'cards' => []
 																		 ];
-				foreach( $card->CardList as $card ){
-					$details->body->cards[] = ( object ) [ 'id' => $card->CardId, 'cardNumber' => $card->Last4CardNumber, 'status' => $card->CardStatus  ];
+				if( $card->CardList ){
+					foreach( $card->CardList as $card ){
+						$details->body->cards[] = ( object ) [ 'id' => $card->CardId, 'cardNumber' => $card->Last4CardNumber, 'status' => $card->CardStatus  ];
+					}
 				}
 				return $details;
 				break;
@@ -59,8 +61,21 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 		}
 	}
 
+	public function isOpen( $id ){
+		$response = Crunchbutton_Pexcard_Card::details( $id );
+		if( $response->body && $response->body->status == Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN ){
+			return true;
+		}
+		return false;
+	}
+
 	public function activate_card( $id ){
-		return Crunchbutton_Pexcard_Resource::request( 'activatecard', [ 'id' => $id, '' ] );
+		Crunchbutton_Pexcard_Resource::request( 'activatecard', [ 'id' => $id ] );
+		// Check if the card is open
+		if( Crunchbutton_Pexcard_Card::isOpen( $id ) ){
+			return true;
+		}
+		return false;
 	}
 
 	public function create( $params = [] ){
@@ -91,6 +106,7 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 	public function change_status( $id, $status ){
 		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
 			case 'v4':
+					Crunchbutton_Pexcard_Card::activate_card( $id );
 					return Crunchbutton_Pexcard_Resource::request( 'changecardstatus', [ 'id' => $id, 'status' => $status ] );
 				break;
 

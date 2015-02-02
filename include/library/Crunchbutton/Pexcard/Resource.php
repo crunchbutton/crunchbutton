@@ -61,7 +61,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 					'detailsaccount' => [ 'point' => 'Details/AccountDetails/:id', 'method' => 'GET', 'auth' => 'token'  ],
 					'activatecard' => [ 'point' => 'Card/Activate/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'fund' => [ 'point' => 'Card/Fund/:id', 'method' => 'POST', 'auth' => 'token'  ],
-					'changecardstatus' => [ 'point' => 'Card/Status', 'method' => 'PUT', 'auth' => 'token' ],
+					'changecardstatus' => [ 'point' => 'Card/Status/:id', 'method' => 'PUT', 'auth' => 'token' ],
 					'spendbytransactionreport' => [ 'point' => 'Details/TransactionDetails?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
 					'token' => [ 'point' => 'Token', 'method' => 'POST', 'auth' => 'basic' ],
 					];
@@ -133,7 +133,9 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 				$url .= '/' . $value;
 				break;
 			}
-			$params = [];
+			if( strtolower( $method ) == 'get' ){
+				$params = [];
+			}
 		}
 
 		$url = Crunchbutton_Pexcard_Resource::uri() . $point;
@@ -171,7 +173,11 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 			}
 
 			if( $params && count( $params ) ){
-				$request->body( $params );
+				if( strtolower( $method ) == 'put' ){
+					$request->body( json_encode( $params ) );
+				} else {
+					$request->body( $params );
+				}
 			}
 
 			if( $json ){
@@ -180,6 +186,10 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 			if( strtolower( $method ) == 'post' ){
 				$request->sendsForm();
+			}
+
+			if( strtolower( $method ) == 'put' ){
+				$request->sendsJson();
 			}
 
 			$response = $request->send();

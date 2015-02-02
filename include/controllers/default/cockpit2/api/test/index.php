@@ -12,7 +12,7 @@ class Controller_api_test extends Cana_Controller {
 
 	public function init(){
 
-
+// echo '<pre>';var_dump( c::user()->id_admin );exit();
 		// $token = Crunchbutton_Pexcard_Token::getToken();
 		// echo '<pre>';var_dump( $token );exit();
 
@@ -38,8 +38,8 @@ class Controller_api_test extends Cana_Controller {
 		// $pex = new Crunchbutton_Pexcard_Resource;
 		// $this->e( $pex->ping() );
 
-		$business = new Crunchbutton_Pexcard_Business;
-		$this->e( $business->profile() );
+		// $business = new Crunchbutton_Pexcard_Business;
+		// $this->e( $business->profile() );
 
 		// $business = new Crunchbutton_Pexcard_Business;
 		// $this->e( $business->admin() );
@@ -55,10 +55,12 @@ class Controller_api_test extends Cana_Controller {
 
 
 
-		$this->e( Crunchbutton_Pexcard_Card::details( 6203 ) );
+		echo '<pre>';var_dump( Crunchbutton_Pexcard_Card::details( 6210 ) );exit();
 
-		// $status = Crunchbutton_Pexcard_Card::change_status( 6282, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
-		// $status = Crunchbutton_Pexcard_Card::activate_card( 6203 );
+		// $status = Crunchbutton_Pexcard_Card::change_status( 6283, 'Active' );
+		// echo '<pre>';var_dump( $status );exit();
+		// echo '<pre>';var_dump( Crunchbutton_Pexcard_Card::activate_card( 6208 ) );exit();;
+		// echo '<pre>';var_dump( $status );exit();
 		// $this->e( $status );
 
 
