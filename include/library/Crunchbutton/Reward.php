@@ -1,5 +1,4 @@
 <?php
-
 class Crunchbutton_Reward extends Cana_Table{
 
 	const CONFIG_KEY_POINTS_PER_CENTS_VALUE = 'reward_points_per_cents_value';
@@ -21,6 +20,7 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_ORDER_TWICE_SAME_WEEK_OPERATION = 'reward_points_order_twice_week_operation';
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_VALUE = 'reward_points_order_2_days_row_value';
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION = 'reward_points_order_2_days_row_operation';
+	const CONFIG_KEY_MAX_CAP_POINTS = 'reward_points_max_cap_points';
 
 	public function validateInviteCode( $code ){
 		$code = trim( $code );

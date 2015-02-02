@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'reward_points_max_cap_points','25000');
