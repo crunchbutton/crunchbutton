@@ -42,6 +42,19 @@
 				</li>
 			</ul>
 
+			<p><strong>Reward: Rules </strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':form.rewardPointsMaxCapPoints.$invalid}">
+					<div class="label">Points to get free delivery:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rewardPointsMaxCapPoints" ng-model="config.reward_points_max_cap_points" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsMaxCapPoints.$error.required">Required.</small>
+					</div>
+				</li>
+			</ul>
+
 			<p><strong>Reward: Two way gift cards</strong><br><br></p>
 			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.rewardPointsGetReferredValue.$invalid}">
