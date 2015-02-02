@@ -14,7 +14,6 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_driver_search();
 				break;
 
-// TEST IT
 			case 'driver-active':
 				$this->_driver_active();
 				break;
@@ -72,17 +71,28 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
 
 		if( $id_pexcard ){
-			$id_admin = $this->request()[ 'id_admin' ];
-			$id_admin = c::admin()->id_admin;
+
+			$id_admin = c::user()->id_admin;
+
 			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 			if( !$admin_pexcard->id_admin ){
 				$opened = false;
 				$customer = Crunchbutton_Pexcard_Card::details( $id_pexcard );
-				if( $customer->body && $customer->body->cards ){
-					foreach( $customer->body->cards as $card ){
+				if ( Crunchbutton_Pexcard_Resource::api_version() == 'v4' ) {
+					$opened = Crunchbutton_Pexcard_Card::activate_card( $id_pexcard );
+					$_cards = Crunchbutton_Pexcard_Details::cards( $id_pexcard );
+					foreach( $_cards as $card ){
 						$last_four = str_replace( 'X', '', $card->cardNumber );
 						Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
 						$opened = true;
+					}
+				} else {
+					if( $customer->body && $customer->body->cards ){
+						foreach( $customer->body->cards as $card ){
+							$last_four = str_replace( 'X', '', $card->cardNumber );
+							Crunchbutton_Pexcard_Card::change_status( $card->id, Crunchbutton_Pexcard_Card::CARD_STATUS_OPEN );
+							$opened = true;
+						}
 					}
 				}
 
@@ -142,12 +152,14 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				foreach( $cards->body as $card ){
 					if( intval( $card->lastName ) == intval( $crunchbutton_id ) ){
 						$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
+
 						if( !$admin_pexcard->id_admin ){
 							if( $card->cards ){
 								$_cards = $card->cards;
 							} else {
 								$_cards = Crunchbutton_Pexcard_Details::cards( $card->id );
 							}
+
 							foreach( $_cards as $_card ){
 								$card_number = str_replace( 'X', '', $_card->cardNumber );
 								if( intval( $card_number ) == intval( $last_four_digits ) ){
@@ -176,6 +188,11 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		$card_serial = $this->request()[ 'card_serial' ];
 		$last_four = $this->request()[ 'last_four' ];
 		$last_four = str_replace( 'X', '', $last_four );
+
+		// Activate the card
+		if ( Crunchbutton_Pexcard_Resource::api_version() == 'v4' ) {
+			Crunchbutton_Pexcard_Card::activate_card( $id_pexcard );
+		}
 
 		$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 		$admin_pexcard->id_admin = $id_admin;
