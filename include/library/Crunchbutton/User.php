@@ -239,7 +239,21 @@ class Crunchbutton_User extends Cana_Table {
 
 		$out['tipper'] = $this->tipper();
 
-		$out[ 'points' ] = Crunchbutton_Credit::points( $this->id_user );
+
+		// Reward stuff
+		$reward = new Crunchbutton_Reward;
+		$reward = $reward->loadSettings();
+		$out[ 'points' ] = [];
+		$out[ 'points' ][ 'free_delivery' ] = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
+		$out[ 'points' ][ 'total' ] = Crunchbutton_Credit::points( $this->id_user );
+		if( $out[ 'points' ][ 'free_delivery' ] > 0 && $out[ 'points' ][ 'free_delivery' ] < $out[ 'points' ][ 'total' ] ){
+			$out[ 'points' ][ 'show' ] = $out[ 'points' ][ 'free_delivery' ];
+			$out[ 'points' ][ 'free_delivery_message' ] = true;
+		} else {
+			$out[ 'points' ][ 'free_delivery_message' ] = false;
+			$out[ 'points' ][ 'show' ] = $out[ 'points' ][ 'total' ];
+			$out[ 'points' ][ 'away_free_delivery' ] = $out[ 'points' ][ 'free_delivery' ] - $out[ 'points' ][ 'total' ];
+		}
 
 		return $out;
 	}

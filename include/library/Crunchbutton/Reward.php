@@ -1,4 +1,5 @@
 <?php
+
 class Crunchbutton_Reward extends Cana_Table{
 
 	const CONFIG_KEY_POINTS_PER_CENTS_VALUE = 'reward_points_per_cents_value';
