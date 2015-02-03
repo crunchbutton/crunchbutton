@@ -59,6 +59,13 @@
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
+			<li class="li-input" ng-class="{'error':form.communityDriverRestaurant.$invalid}">
+				<div class="label">Driver restaurant:</div>
+				<div class="input">
+					<select name="communityDriverRestaurant" ng-model="community.id_driver_restaurant" ng-options="opt.id_restaurant as opt.name for opt in restaurants" ></select>
+				</div>
+			</li>
+
 			<li class="li-input" ng-show="community.driver_group">
 				<div class="label">Driver group name:</div>
 				<div class="input">{{community.driver_group}}</div>
