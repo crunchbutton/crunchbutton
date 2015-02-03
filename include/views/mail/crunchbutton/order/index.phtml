@@ -81,8 +81,11 @@ if( $isDriverCockpit ){
 						<?php if( $icon == 'restaurant' && $restaurant->delivery_service && $restaurant->formal_relationship ) { ?>
 							Make food, we'll pick it up!
 						<?php } else { ?>
-							Estimated by <?php echo $order->expectedBy()->format('h:i'); ?></td>
+							Estimated by <?php
+							$estimated_by = $order->restaurant()->calc_delivery_estimated_time( $order->date()->format( 'Y-m-d H:i:s' ), true );
+							echo $estimated_by->format('h:i'); ?>
 						<?php } ?>
+						</td>
 			</tr></table>
 		</td>
 	</tr>
@@ -205,5 +208,5 @@ if( $this->cockpit_url ) { ?>
 
 
 <?php if ($order->_print) { ?>
-<script>window.print();</script>
+<script>//window.print();</script>
 <?php } ?>

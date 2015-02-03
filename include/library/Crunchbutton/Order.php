@@ -2070,8 +2070,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['_restaurant_address'] = $this->restaurant()->address;
 			$out['_restaurant_delivery_estimated_time'] = $this->restaurant()->delivery_estimated_time;
 			$out['_restaurant_pickup_estimated_time'] = $this->restaurant()->pickup_estimated_time;
-			$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $date->format( 'Y-m-d H:i:s' ) );
-			$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $date->format( 'Y-m-d H:i:s' ) );
+			$calc_delivery_estimated_time = $this->restaurant()->calc_delivery_estimated_time( $date->format( 'Y-m-d H:i:s' ), true );
+			$out['_restaurant_delivery_estimated_time_formated'] = $calc_delivery_estimated_time->format( 'g:i a' );
+			$calc_pickup_estimated_time = $this->restaurant()->calc_pickup_estimated_time( $date->format( 'Y-m-d H:i:s' ), true );
+			$out['_restaurant_pickup_estimated_time_formated'] = $calc_pickup_estimated_time->format( 'g:i a' );
 			$out['user'] = $this->user()->uuid;
 			$out['_message'] = nl2br($this->orderMessage('web'));
 			$out['charged'] = $this->charged();
