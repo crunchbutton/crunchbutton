@@ -11,7 +11,7 @@ class Cockpit_Email_Driver_Broadcast extends Crunchbutton_Email {
 
 		if( $driver->email ){
 
-			$params['to'] 				= $driver->email.', Crunchbutton Copy <_USERNAME_>';
+			$params['to'] 				= $driver->email;
 			$params['subject'] 		= $params['subject'];
 			$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
 			$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';

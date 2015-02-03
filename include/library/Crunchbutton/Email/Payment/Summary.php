@@ -6,7 +6,7 @@ class Crunchbutton_Email_Payment_Summary extends Crunchbutton_Email {
 
 	public function __construct( $params ) {
 
-		$params['to'] = $params[ 'summary' ]['summary_email'].', Crunchbutton Copy <_USERNAME_>';
+		$params['to'] = $params[ 'summary' ]['summary_email'];
 		$params['subject'] = $params[ 'summary' ][ 'notes' ];
 		$params['from'] = 'Crunchbutton <support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
