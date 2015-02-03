@@ -1453,11 +1453,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_comment;
 	}
 
-	public function calc_pickup_estimated_time( $datetime = null ){
+	public function calc_pickup_estimated_time( $datetime = null, $dateObject = false ){
 		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $this->pickup_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
+		if( $dateObject ){
+			$time->modify( ' + ' . $minutes . ' minutes' );
+			return $time;
+		}
 		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
 	}
 
@@ -1475,11 +1479,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		*/
 	}
 
-	public function calc_delivery_estimated_time( $datetime = null ){
+	public function calc_delivery_estimated_time( $datetime = null, $dateObject = false ){
 		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $this->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
+		if( $dateObject ){
+			$time->modify( ' + ' . $minutes . ' minutes' );
+			return $time;
+		}
 		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
 	}
 
