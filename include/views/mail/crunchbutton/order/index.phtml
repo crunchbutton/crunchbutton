@@ -81,7 +81,7 @@ if( $isDriverCockpit ){
 						<?php if( $icon == 'restaurant' && $restaurant->delivery_service && $restaurant->formal_relationship ) { ?>
 							Make food, we'll pick it up!
 						<?php } else { ?>
-							Expected by <?php echo $order->expectedBy()->format('h:i'); ?></td>
+							Estimated by <?php echo $order->expectedBy()->format('h:i'); ?></td>
 						<?php } ?>
 			</tr></table>
 		</td>
