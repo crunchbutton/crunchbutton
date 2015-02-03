@@ -574,7 +574,20 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$id_admin = $admin->id_admin;
 				$nextShift =Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
 				if( $nextShift->id_community ){
-					$message = 'Reopening ' . $nextShift->dateStart( $this->timezone )->format( 'H:i A \o\n D' );
+					$message = 'Reopening ';
+					$message .= $nextShift->dateStart( $this->timezone )->format( 'H' );
+					if( $nextShift->dateStart( $this->timezone )->format( 'i' ) != '00' ){
+						$message .= ':' . $nextShift->dateStart( $this->timezone )->format( 'i' );
+					}
+					$message .= $nextShift->dateStart( $this->timezone )->format( 'A' );
+					$message .= '-';
+					$message .= $nextShift->dateEnd( $this->timezone )->format( 'H' );
+					if( $nextShift->dateEnd( $this->timezone )->format( 'i' ) != '00' ){
+						$message .= ':' . $nextShift->dateEnd( $this->timezone )->format( 'i' );
+					}
+					$message .= $nextShift->dateEnd( $this->timezone )->format( 'A' );
+					$message .= ' on ';
+					$message .= $nextShift->dateStart( $this->timezone )->format( 'D' );
 				} else {
 					$message = 'Temporally closed';
 				}
