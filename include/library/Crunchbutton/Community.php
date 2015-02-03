@@ -435,7 +435,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$output = [];
 				$closed_at = $force_close->date();
 				$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
-				$output[ 'closed_by' ] = $force_close->admin()->name;
+				$closed_by = $force_close->admin()->name;
+				if( !$closed_by ){
+					// it probably was closed by auto shutdown
+					$closed_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
+				}
+			$output[ 'closed_by' ] = $closed_by;
 				if( $force_close->field == 'close_all_restaurants' ){
 					$output[ 'type' ] = 'Close All Restaurants';
 				} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
@@ -497,7 +502,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$output = [];
 			$closed_at = $force_close->date();
 			$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
-			$output[ 'closed_by' ] = $force_close->admin()->name;
+			$closed_by = $force_close->admin()->name;
+			if( !$closed_by ){
+				// it probably was closed by auto shutdown
+				$closed_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
+			}
+			$output[ 'closed_by' ] = $closed_by;
 
 			if( $force_close->field == 'close_all_restaurants' ){
 				$output[ 'type' ] = 'Close All Restaurants';
