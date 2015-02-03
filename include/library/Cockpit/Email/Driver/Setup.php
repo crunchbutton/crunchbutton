@@ -11,7 +11,7 @@ class Cockpit_Email_Driver_Setup extends Crunchbutton_Email {
 
 		if( $admin->email ){
 
-			$params['to'] 				= $admin->email.', Crunchbutton Copy <_USERNAME_>';
+			$params['to'] 				= $admin->email;
 			$params['subject'] 		= 'Access info';
 			$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
 			$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
