@@ -2677,14 +2677,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function driverInstructionsPaymentStatus(){
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
 		if( $this->restaurant()->formal_relationship == 1 ){
-				if( $driver->id_admin && $driver->hasPexCard() ){
-					return 'Pay restaurant with your own cash, not PEX';
-				} else {
-					return 'Pay the restaurant with cash';
-				}
+			if( $driver->id_admin && $driver->hasPexCard() ){
+				return 'Pay restaurant with your own cash, not PEX';
 			} else {
-				return 'Do not pay the restaurant';
+				return 'Pay the restaurant with cash';
 			}
+			return 'Do not pay the restaurant';
 		} else {
 			// Clarify Cash/Credit Orders #4481
 			$driver = c::user();
