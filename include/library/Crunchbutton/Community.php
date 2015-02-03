@@ -582,6 +582,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$this->close_3rd_party_delivery_restaurants = true;
 				$this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
 				$this->close_3rd_party_delivery_restaurants_note = $message;
+				$this->driver_restaurant_name = $message;
 				$this->save();
 
 				$ticket = 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";
@@ -592,12 +593,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$ticket .= 'Because it has no next shift with drivers.';
 				}
 
-				echo $ticket . "\n\n\n\n";
-
 				Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-closed' ] );
 				Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
 			}
 		}
+	}
+
+	public function driverRestaurant(){
+		if( $this->id_driver_restaurant ){
+			return Restaurant::o( $this->id_driver_restaurant );
+		}
+		return false;
 	}
 
 	private function _openedAt( $id_community_change_set, $field ){

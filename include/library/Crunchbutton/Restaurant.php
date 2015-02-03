@@ -1098,13 +1098,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$next_open_time = $this->next_open_time( true );
 			if( $next_open_time ){
 				$next_open_time_restaurant_tz = $this->next_open_time();
-
 				$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
 				$out[ 'next_open_time_message' ] = $this->next_open_time_message();
 			}
-
 		}
-
 
 		$out['closed_message'] = $this->closed_message();
 
@@ -1114,12 +1111,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		$out['id_community'] = $this->community()->id_community;
-
 		// Remove ignored methods
 		foreach ( $ignore as $property => $val ) {
 			unset( $out[ $property ] );
 		}
+
+		$out['id_community'] = intval( $this->community()->id_community );
 
 		$comment = $this->comment();
 
