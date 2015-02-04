@@ -2,6 +2,13 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+
+		$user = c::user();
+
+		$points = Crunchbutton_Credit::points( $user->id_user );;
+echo '<pre>';var_dump( $points );exit();
+		echo '<pre>';var_dump( User_Auth::userHasAuth( $user->id_user ) );exit();;
+
 exit;
 
 			Log::critical([
@@ -9,8 +16,8 @@ exit;
 				'host' => $_SERVER['__HTTP_HOST'],
 				'type' => 'notification'
 			]);
-		
-	
+
+
 	exit;
 		$b = ['cock'];
 
@@ -22,14 +29,14 @@ exit;
 		$order = new Order(635);
 		$order->que();
 		exit;
-		
+
 
 		c::timeout(function() {
 			mail('_EMAIL','asdasdsad','fdfdfd');
 		});
 		exit;
 
-		
+
 		$r = Restaurant::o(11);
 		echo $r->phone();
 		exit;
