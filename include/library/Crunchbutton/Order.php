@@ -2675,7 +2675,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'self-reply' => $this->deliveryReply(c::admin())
 		];
 	}
-
+/*
 	public function driverInstructionsPaymentStatus(){
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
 		if( $this->restaurant()->formal_relationship == 1 ){
@@ -2701,6 +2701,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					return 'Pay the restaurant with cash';
 				}
 			}
+		}
+	}
+*/
+	public function driverInstructionsPaymentStatus(){
+		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
+		if( $this->restaurant()->formal_relationship == 1 ){
+			if( $this->pay_type == 'cash' ){
+				return 'Pay the restaurant';
+			} else {
+				return 'Do not pay the restaurant';
+			}
+		} else {
+			return 'Pay the restaurant';
 		}
 	}
 
