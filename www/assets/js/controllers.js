@@ -1174,7 +1174,7 @@ NGApp.controller( 'AccountSevenCtrl', function ( $scope, $http, AccountModalServ
 	}
 	$scope.$on( 'facebookIdAlreadyUsed', function(e, data) {
 		$scope.facebook.facebook.wait = false;
-		$scope.account.errors.push( 'Sorry, It seems the facebook user is already related with other user.' );
+		$scope.account.errors.push( 'It seems this facebook user is already associated with another user.' );
 	} );
 });
 
