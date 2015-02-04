@@ -80,7 +80,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngAnimate' ] );
+var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngAnimate', 'ngResource' ] );
 
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
@@ -206,6 +206,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'jobs',
 			controller: 'JobsCtrl',
 			templateUrl: 'assets/view/jobs.html'
+		})
+        .when('/drivers/apply', {
+			action: 'apply',
+			controller: 'ApplyCtrl',
+			templateUrl: 'assets/view/apply.html'
+		})
+        .when('/thankyou', {
+			action: 'thankyou',
+			controller: 'ThankyouCtrl',
+			templateUrl: 'assets/view/thankyou.html'
 		})
 		.when('/owners', {
 			action: 'owners',
