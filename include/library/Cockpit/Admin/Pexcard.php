@@ -112,15 +112,9 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function addShiftStartFunds( $id_admin_shift_assign ){
 
-		Log::debug( [ 'action 2' => Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ), 'type' => 'pexcard' ] );
-		Log::debug( [ 'action 3' => Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START ), 'type' => 'pexcard' ] );
-
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ) ) > 0 ){
 			$config = Crunchbutton_Config::getConfigByKey( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START );
 			if( $config->value ){
-
-				Log::debug( [ 'action 4' => Crunchbutton_Pexcard_Action::checkShiftReceivedFunds( $id_admin_shift_assign ), 'type' => 'pexcard' ] );
-
 				// Make sure the haven't received funds yet
 				if( !Crunchbutton_Pexcard_Action::checkShiftReceivedFunds( $id_admin_shift_assign ) ){
 					$amount = number_format( floatval( $config->value ), 2 );
@@ -136,22 +130,17 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function addFunds( $params ){
 
-		Log::debug( [ 'action 5' => $params, 'type' => 'pexcard' ] );
-
 		$add = false;
-
-		Log::debug( [ 'action 6' => $this->isTestCard(), 'type' => 'pexcard' ] );
 
 		// Test cards #4278
 		if( $this->isTestCard() || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
 			$add = true;
 		}
 
-		Log::debug( [ 'action 7' => $add, 'type' => 'pexcard' ] );
-
 		if( $add ){
 
 			$card = $this->pexcard();
+
 			// Check if the card could receive funds
 			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
 					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
@@ -160,6 +149,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 			}
 
 			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
+
 			if( $this->id_pexcard ){
 				$amount = $params[ 'amount' ];
 
