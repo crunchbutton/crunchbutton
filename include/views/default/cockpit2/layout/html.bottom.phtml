@@ -13,31 +13,3 @@
 <audio id="support-message-recieved">
 	<source src="/assets/cockpit/audio/message-inbound.wav"></source>
 </audio>
-
-<? /*
-<script type="text/javascript">
-	$(function() {
-		window.fbAsyncInit = function() {
-			console.debug('Init facebook <?=Cana::config()->facebook->app?>');
-			FB.init({
-				appId: '<?=Cana::config()->facebook->app?>',
-				cookie: true,
-				xfbml: true,
-				oauth: true
-			});
-			var facebookService = angular.element('html').injector().get('FacebookService');
-			FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
-		};
-
-		(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s); js.id = id;
-		js.src = '//connect.facebook.net/en_US/all<?=strpos($_SERVER['__HTTP_HOST'],'localhost') !== false ? '/debug' : ''?>.js';
-		fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
-	});
-
-
-</script>
-*/?>
