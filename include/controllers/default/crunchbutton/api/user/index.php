@@ -96,12 +96,22 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					$user_auth->active = 1;
 					$user_auth->save();
 
+					// Reward
+					$reward = new Crunchbutton_Reward;
+					$points = $reward->makeAccountAfterOrder( $user->id_user );
+
+					if( floatval( $points ) > 0 ){
+						$order = $user->lastOrder();
+						$reward->saveReward( [  'id_user' => $user->id_user, 'id_order' => $order->id_order, 'points' => $points, 'note' => 'points by creating an account' ] );
+					}
+
 					// This line will create a phone user auth just if the user already has an email auth
 					if( $user->phone ){
 						User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 					}
 
 					$user = c::auth()->doAuthByLocalUser( $params );
+
 					echo c::user()->json();
 				}
 

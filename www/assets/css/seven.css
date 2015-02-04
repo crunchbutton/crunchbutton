@@ -3633,7 +3633,7 @@ select {
     height:30px;
     float:none;
     line-height:1.1;
-    
+
 }
 .textbox {
     width: 50%;
@@ -3663,7 +3663,7 @@ select {
     display: block;
     width: 100%;
     height: 34px;
-    padding: 6px 12px; 
+    padding: 6px 12px;
     font-size: 16px;
     line-height: 1.42857;
     color: #555;
@@ -3687,13 +3687,13 @@ h2 {
     margin-bottom: 15px;
 }
 .button-bottom {
-    width: 11em; 
+    width: 11em;
     background-color:rgb(247, 128, 83);
     color:white;
     border-radius:4px;
-    border:none;  
+    border:none;
 }
-   
+
 em {
     font-style:italic;
     font-weight:300;
@@ -3710,3 +3710,93 @@ label span{
         padding-right:.5em;
     }
 
+
+.social-button {
+	text-align:center;
+	border-radius:3px;
+	display:block;
+	padding:0;
+	text-shadow:1px 1px 0px rgba(0,0,0,.75);
+	color:#fff;
+	cursor:pointer;
+	padding:0 5px 0 5px;
+	box-shadow:0 2px 3px rgba(182,182,182,0.75);
+}
+
+.social-button-share {
+	margin: 0 auto;
+}
+
+.social-button-invite {
+	float: left;
+	width: 110px;
+	margin-right: 15px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.twitter-button {
+	color: #333;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	background-color: white;
+	background-image: -moz-linear-gradient(top, #ffffff, #dedede);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dedede));
+	background-image: -ms-linear-gradient(top, #ffffff, #dedede);
+	background-image: linear-gradient(top, #ffffff, #dedede);
+	background-image: -o-linear-gradient(top, #ffffff, #dedede);
+	border: #ccc solid 1px;
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#dedede');
+}
+
+.twitter-button .fa-twitter {
+	color: #00acee;
+}
+
+.social-button-invite .fa-twitter, .social-button-invite .fa-facebook {
+	padding: 3px;
+}
+
+.social-button-share {
+	margin-bottom: 15px;
+	margin-top: 25px;
+	width: 160px;
+}
+
+.social-button-text,
+.social-button i {
+	padding: 6px 3px;
+	float: left;
+}
+
+.social-button-invite .social-button-text {
+	padding: 7px 6px 7px 6px;
+	font-size: 12px;
+}
+
+.twitter-button .social-button-text {
+	border-left: 1px solid #ccc;
+}
+
+.facebook-button {
+	border:1px solid #2b4171;
+	background-color:#3c5a97;
+	background-image:-webkit-gradient(linear,left top,left bottom,from(rgb(64,97,159)),to(rgb(54,82,141)));
+	background-image:-webkit-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:-moz-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:-o-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:-ms-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f',EndColorStr='#36528d');
+}
+
+.social-button i {
+	margin-right:7px;
+	font-size:20px;
+}
+
+.social-button-text {
+	padding-left:13px;
+	border-left:1px solid #2c4272;
+	box-shadow:inset 1px 0 0 rgba(255,255,255,.1);
+	padding-top:7px;
+}

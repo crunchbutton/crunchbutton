@@ -107,7 +107,7 @@
 
 			${{order.charged | formatPrice}}
 
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+			<div class="credit" ng-show="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<br><br>
 

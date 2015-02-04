@@ -384,6 +384,15 @@
 						<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
 					</p>
 				</div>
+
+				<div class="divider"></div>
+
+				<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
+					<p>
+						You have <strong>{{points.free_delivery}}</strong> points! This delivery fee is on us.<br />
+					</p>
+				</div>
+
 				<div class="divider"></div>
 
 				<div class="order-icon"><div class="icon-notes" ng-show="order.form.notes"></div></div>
