@@ -74,7 +74,8 @@ $(function() {
 				appId: '<?=$facebook->app;?>',
 				cookie: true,
 				xfbml: true,
-				oauth: true
+				oauth: true,
+				version: 'v2.2'
 			});
 			var facebookService = angular.element('html').injector().get('FacebookService');
 			FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
@@ -84,7 +85,7 @@ $(function() {
 		var js, fjs = d.getElementsByTagName(s)[0];
 		if (d.getElementById(id)) return;
 		js = d.createElement(s); js.id = id;
-		js.src = '//connect.facebook.net/en_US/all<?=strpos($_SERVER['__HTTP_HOST'],'localhost') !== false ? '/debug' : ''?>.js';
+		js.src = '//connect.facebook.com/en_US/sdk<?=strpos($_SERVER['__HTTP_HOST'],'localhost') !== false ? '/debug' : ''?>.js';
 		fjs.parentNode.insertBefore(js, fjs);
 		}(document, 'script', 'facebook-jssdk'));
 	});
