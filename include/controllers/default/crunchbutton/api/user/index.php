@@ -309,6 +309,16 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						}
 					}
 					c::auth()->facebook()->check();
+					
+					// log them in as the facebook user instead of the previous user they were logged in as.
+					// @todo: merge account info if this is the case as previous user data could be lost
+					if ($fb->fbuser()->id) {
+						$fb_user = User::facebook($fb->fbuser()->id);
+						if ($user->id_user && $fb_user->id_user && $fb_user->id_user != $user->id_user) {
+							c::auth()->setUser($fb_user);
+						}
+					}
+					
 					c::auth()->fbauth();
 					echo c::user()->json();
 					break;
