@@ -2675,45 +2675,27 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'self-reply' => $this->deliveryReply(c::admin())
 		];
 	}
-/*
+
 	public function driverInstructionsPaymentStatus(){
-		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
+		// Clarify Cash/Credit Orders #4481
 		if( $this->restaurant()->formal_relationship == 1 ){
-			if( $driver->id_admin && $driver->hasPexCard() ){
-				return 'Pay restaurant with your own cash, not PEX';
-			} else {
-				return 'Pay the restaurant with cash';
-			}
-			return 'Do not pay the restaurant';
-		} else {
-			// Clarify Cash/Credit Orders #4481
-			$driver = c::user();
 			if( $this->pay_type == 'cash' ){
+				$driver = c::user();
 				if( $driver->id_admin && $driver->hasPexCard() ){
 					return 'Pay restaurant with your own cash, not PEX';
 				} else {
 					return 'Pay the restaurant with cash';
 				}
 			} else {
-				if( $driver->id_admin && $driver->hasPexCard() ){
-					return 'Pay the restaurant with PEX card';
-				} else {
-					return 'Pay the restaurant with cash';
-				}
-			}
-		}
-	}
-*/
-	public function driverInstructionsPaymentStatus(){
-		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
-		if( $this->restaurant()->formal_relationship == 1 ){
-			if( $this->pay_type == 'cash' ){
-				return 'Pay the restaurant';
-			} else {
 				return 'Do not pay the restaurant';
 			}
 		} else {
-			return 'Pay the restaurant';
+			$driver = c::user();
+			if( $driver->id_admin && $driver->hasPexCard() ){
+				return 'Pay the restaurant with PEX card';
+			} else {
+				return 'Pay the restaurant';
+			}
 		}
 	}
 
