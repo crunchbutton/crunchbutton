@@ -1053,5 +1053,5 @@ NGApp.controller('DriversWelcomePushCtrl', function($rootScope, $location, PushS
 	};;
 });
 NGApp.controller('DriversWelcomeWahooCtrl', function() {
-	//$.totalStorage('isDriverWelcomeSetup', '1');
+	$.totalStorage('isDriverWelcomeSetup', '1');
 });

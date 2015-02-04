@@ -4,6 +4,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	const CUSTOMER_SERVICE_ID_COMMUNITY = 92;
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
+	const AUTO_SHUTDOWN_COMMUNITY_LOGIN = 'autoshutdowncommunity';
 
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
@@ -434,7 +435,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$output = [];
 				$closed_at = $force_close->date();
 				$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
-				$output[ 'closed_by' ] = $force_close->admin()->name;
+				$closed_by = $force_close->admin()->name;
+				if( !$closed_by ){
+					// it probably was closed by auto shutdown
+					$closed_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
+				}
+			$output[ 'closed_by' ] = $closed_by;
 				if( $force_close->field == 'close_all_restaurants' ){
 					$output[ 'type' ] = 'Close All Restaurants';
 				} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
@@ -496,7 +502,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$output = [];
 			$closed_at = $force_close->date();
 			$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
-			$output[ 'closed_by' ] = $force_close->admin()->name;
+			$closed_by = $force_close->admin()->name;
+			if( !$closed_by ){
+				// it probably was closed by auto shutdown
+				$closed_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
+			}
+			$output[ 'closed_by' ] = $closed_by;
 
 			if( $force_close->field == 'close_all_restaurants' ){
 				$output[ 'type' ] = 'Close All Restaurants';
@@ -531,6 +542,89 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
 		if( $note->new_value ){
 			return $note->new_value;
+		}
+		return false;
+	}
+
+	public function shutDownCommunities(){
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
+		foreach( $communities as $community ){
+			$community->shutDownCommunity();
+		}
+	}
+
+	public function shutDownCommunity(){
+
+		if( !$this->id_community || $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ){
+			return;
+		}
+
+		// check if the community has any restaurant open
+		$restaurants = $this->restaurants();
+		$has3rdPartyDeliveryRestaurantsOpen = false;
+		foreach( $restaurants as $restaurant ){
+			if( $restaurant->open() ){
+				if( intval( $restaurant->delivery_service ) == 1 ){
+					$has3rdPartyDeliveryRestaurantsOpen = true;
+				}
+			}
+		}
+
+		if( $has3rdPartyDeliveryRestaurantsOpen ){
+			$drivers = $this->getDriversOfCommunity();
+			$hasDriverWorking = false;
+			foreach( $drivers as $driver ){
+				if( $driver->isWorking() ){
+					$hasDriverWorking = true;
+				}
+			}
+			$close3rdParyDeliveryRestaurants = ( $has3rdPartyDeliveryRestaurantsOpen && !$hasDriverWorking );
+			if( $close3rdParyDeliveryRestaurants ){
+				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
+				$id_admin = $admin->id_admin;
+				$nextShift =Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+				if( $nextShift->id_community ){
+					$message = 'Reopening ';
+					$message .= $nextShift->dateStart( $this->timezone )->format( 'H' );
+					if( $nextShift->dateStart( $this->timezone )->format( 'i' ) != '00' ){
+						$message .= ':' . $nextShift->dateStart( $this->timezone )->format( 'i' );
+					}
+					$message .= $nextShift->dateStart( $this->timezone )->format( 'A' );
+					$message .= '-';
+					$message .= $nextShift->dateEnd( $this->timezone )->format( 'H' );
+					if( $nextShift->dateEnd( $this->timezone )->format( 'i' ) != '00' ){
+						$message .= ':' . $nextShift->dateEnd( $this->timezone )->format( 'i' );
+					}
+					$message .= $nextShift->dateEnd( $this->timezone )->format( 'A' );
+					$message .= ' on ';
+					$message .= $nextShift->dateStart( $this->timezone )->format( 'D' );
+				} else {
+					$message = 'Temporally closed';
+				}
+				// Close the community
+				$this->close_3rd_party_delivery_restaurants = true;
+				$this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
+				$this->close_3rd_party_delivery_restaurants_note = $message;
+				$this->driver_restaurant_name = $message;
+				$this->save();
+
+				$ticket = 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";
+				$ticket .= 'The community message was set to: "' . $message . '"' . "\n";
+				if( $nextShift->id_community ){
+					$ticket .= 'that is when the next shift will start.';
+				} else {
+					$ticket .= 'Because it has no next shift with drivers.';
+				}
+
+				Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-closed' ] );
+				Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+			}
+		}
+	}
+
+	public function driverRestaurant(){
+		if( $this->id_driver_restaurant ){
+			return Restaurant::o( $this->id_driver_restaurant );
 		}
 		return false;
 	}

@@ -1098,13 +1098,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$next_open_time = $this->next_open_time( true );
 			if( $next_open_time ){
 				$next_open_time_restaurant_tz = $this->next_open_time();
-
 				$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
 				$out[ 'next_open_time_message' ] = $this->next_open_time_message();
 			}
-
 		}
-
 
 		$out['closed_message'] = $this->closed_message();
 
@@ -1114,12 +1111,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		$out['id_community'] = $this->community()->id_community;
-
 		// Remove ignored methods
 		foreach ( $ignore as $property => $val ) {
 			unset( $out[ $property ] );
 		}
+
+		$out['id_community'] = intval( $this->community()->id_community );
 
 		$comment = $this->comment();
 
@@ -1456,11 +1453,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_comment;
 	}
 
-	public function calc_pickup_estimated_time( $datetime = null ){
+	public function calc_pickup_estimated_time( $datetime = null, $dateObject = false ){
 		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $this->pickup_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
+		if( $dateObject ){
+			$time->modify( ' + ' . $minutes . ' minutes' );
+			return $time;
+		}
 		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
 	}
 
@@ -1478,11 +1479,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		*/
 	}
 
-	public function calc_delivery_estimated_time( $datetime = null ){
+	public function calc_delivery_estimated_time( $datetime = null, $dateObject = false ){
 		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $this->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
+		if( $dateObject ){
+			$time->modify( ' + ' . $minutes . ' minutes' );
+			return $time;
+		}
 		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
 	}
 

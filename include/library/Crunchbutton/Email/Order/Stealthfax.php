@@ -5,7 +5,7 @@ class Crunchbutton_Email_Order_Stealthfax extends Crunchbutton_Email {
 	
 	public function __construct($params) {
 
-		$params['to'] = $params['email'].', Crunchbutton Copy <_USERNAME_>';
+		$params['to'] = $params['email'];
 		$params['subject'] = 'Customer Order #'.$params['order']->id_order;		
 		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';

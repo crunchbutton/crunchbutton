@@ -2070,8 +2070,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['_restaurant_address'] = $this->restaurant()->address;
 			$out['_restaurant_delivery_estimated_time'] = $this->restaurant()->delivery_estimated_time;
 			$out['_restaurant_pickup_estimated_time'] = $this->restaurant()->pickup_estimated_time;
-			$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $date->format( 'Y-m-d H:i:s' ) );
-			$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $date->format( 'Y-m-d H:i:s' ) );
+			$calc_delivery_estimated_time = $this->restaurant()->calc_delivery_estimated_time( $date->format( 'Y-m-d H:i:s' ), true );
+			$out['_restaurant_delivery_estimated_time_formated'] = $calc_delivery_estimated_time->format( 'g:i a' );
+			$calc_pickup_estimated_time = $this->restaurant()->calc_pickup_estimated_time( $date->format( 'Y-m-d H:i:s' ), true );
+			$out['_restaurant_pickup_estimated_time_formated'] = $calc_pickup_estimated_time->format( 'g:i a' );
 			$out['user'] = $this->user()->uuid;
 			$out['_message'] = nl2br($this->orderMessage('web'));
 			$out['charged'] = $this->charged();
@@ -2675,15 +2677,25 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function driverInstructionsPaymentStatus(){
-		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
+		// Clarify Cash/Credit Orders #4481
 		if( $this->restaurant()->formal_relationship == 1 ){
 			if( $this->pay_type == 'cash' ){
-				return 'Pay the restaurant';
+				$driver = c::user();
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'Pay restaurant with your own cash, not PEX';
+				} else {
+					return 'Pay the restaurant with cash';
+				}
 			} else {
 				return 'Do not pay the restaurant';
 			}
 		} else {
-			return 'Pay the restaurant';
+			$driver = c::user();
+			if( $driver->id_admin && $driver->hasPexCard() ){
+				return 'Pay the restaurant with PEX card';
+			} else {
+				return 'Pay the restaurant';
+			}
 		}
 	}
 
