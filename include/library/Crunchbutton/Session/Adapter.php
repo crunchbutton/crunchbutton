@@ -66,7 +66,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 
 	public function gc($maxlifetime) {
 		// only delete if there is no token
-		Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
+		//Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
 	}
 	
 	public function generateAndSaveToken() {
