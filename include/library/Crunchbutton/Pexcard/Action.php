@@ -96,7 +96,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 					$pexcard = Cockpit_Admin_Pexcard::o( $action->id_admin_pexcard );
 					try {
 						$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
-						if( $card->body && $card->body->id ){
+						if( $card->body && ( $card->body->id || $card->body->AccountId ) ){
 							$action->status = Crunchbutton_Pexcard_Action::STATUS_DONE;
 							$action->response = json_encode( $card->body );
 							$action->status_date = date( 'Y-m-d H:i:s' );
@@ -129,11 +129,8 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	}
 
 	public function pexcard(){
-		Log::debug(['test' => 3]);
 		if( !$this->_pexcard ){
-			Log::debug(['test' => 4]);
 			$this->_pexcard = Cockpit_Admin_Pexcard::o( $this->id_admin_pexcard );
-			Log::debug(['test' => 5]);
 		}
 		return $this->_pexcard;
 	}

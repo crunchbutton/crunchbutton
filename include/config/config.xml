@@ -48,12 +48,20 @@
 	</defaults>
 	<pexcard>
 		<beta>
+			<apiversion>v4</apiversion>
 			<username>_USERNAME_</username>
 			<password>_PASSWORD_</password>
+			<clientid>_KEY_</clientid>
+			<clientsecret>_KEY_</clientsecret>
 		</beta>
 		<live>
+			<apiversion>v3</apiversion>
 			<username>_USERNAME_</username>
 			<password>_PASSWORD_</password>
+			<clientid></clientid>
+			<clientsecret></clientsecret>
+			<authorization></authorization>
+			<token></token>
 		</live>
 	</pexcard>
 	<github>

@@ -1,0 +1,11 @@
+ALTER TABLE `pexcard_transaction` ADD `transferToOrFromAccountId` int(11) unsigned DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `transactionType` varchar(50) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `isPending` int(1) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `isDecline` int(1) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `paddingAmount` float DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `merchantName` varchar(100) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `merchantCity` varchar(100) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `merchantState` varchar(100) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `merchantCountry` varchar(100) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `MCCCode` varchar(100) DEFAULT NULL;
+ALTER TABLE `pexcard_transaction` ADD `authTransactionId` int(11) unsigned DEFAULT NULL;
