@@ -12,6 +12,63 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 	};
 });
 
+NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
+	$scope.apply = {};
+	$scope.errors = {};
+    $scope.post = function(){
+    	$scope.errors = {};
+    	if (!$scope.apply.firstName) {
+    		$scope.errors.firstName = true;
+    	} 
+    	if (!$scope.apply.lastName) {
+    		$scope.errors.lastName = true;
+    	} 
+    	if (!$scope.apply.email) {
+    		$scope.errors.email = true;
+    	} 
+    	if (!$scope.apply.university) {
+    		$scope.errors.university = true;
+    	} 
+    	if (!$scope.apply.number) {
+    		$scope.errors.number = true;
+    	} 
+    	if (!$scope.apply.phone) {
+    		$scope.errors.phone = true;
+    	} 
+    	if (!$scope.apply.carrier) {
+    		$scope.errors.carrier = true;
+    	} 
+    	if ($scope.apply.carrier == 'Other') {
+    		if (!$scope.apply.otherCarrier){
+    		$scope.errors.otherCarrier = true;
+    		}
+    	} 
+    	if (!$scope.apply.transport) {
+    		$scope.errors.transport = true;
+    	} 
+    	if (!$scope.apply.hours) {
+    		$scope.errors.hours = true;
+    	} 
+    	if (!$scope.apply.applicant) {
+    		$scope.errors.applicant = true;
+    	} 
+    	if (!$scope.apply.source) {
+    		$scope.errors.source = true;
+    	} 
+    	if ($scope.apply.source == 'other') {
+    		if (!$scope.apply.otherSource){
+    		$scope.errors.otherSource = true;
+    		}
+    	} 
+
+    	if (jQuery.isEmptyObject($scope.errors)) {
+    			ApplyService.post($scope.apply, function(data){
+    				$location.path( '/thankyou' );
+        		console.log(data);
+    			})
+    	}
+    };
+});
 /**
  * splash page
  */
@@ -32,6 +89,16 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
  * jobs page
  */
 NGApp.controller('JobsCtrl', function ($scope) {
+	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	$scope.reps = reps;
+	$scope.devs = devs;
+});
+
+/**
+ * thank you page
+ */
+NGApp.controller('ThankyouCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
 	$scope.reps = reps;
@@ -235,6 +302,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		var restaurant = this.restaurant;
 
 		var checkHours = function(){
+			if (restaurant.permalink.match(/^(launching|drive|drivers|driving)-.*/)){
+				$location.path('/drivers/apply');
+				return;
+			}
 			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
 				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
