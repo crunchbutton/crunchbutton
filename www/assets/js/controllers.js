@@ -302,6 +302,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		var restaurant = this.restaurant;
 
 		var checkHours = function(){
+			if (restaurant.permalink.match(/^(launching|drive|drivers|driving)-.*/)){
+				$location.path('/drivers/apply');
+				return;
+			}
 			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
 				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
