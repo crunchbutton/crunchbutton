@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+<? /*
 <script type="application/ld+json">
 {
    "@context": "http://schema.org",
@@ -12,10 +13,10 @@
    }
 }
 </script>
-
-
+*/ ?>
 </head>
 <body>
+	<? /*
 	<div itemscope itemtype="http://schema.org/WebSite">
   <meta itemprop="url" content="http://dev.crunchr.co/?__seo=1"/>
   <form itemprop="potentialAction" itemscope itemtype="http://schema.org/SearchAction">
@@ -24,6 +25,7 @@
     <input type="submit"/>
   </form>
 </div>
+*/ ?>
 <?
 	$bot = c::app()->isBot() || $_REQUEST['__seo'];
 	
@@ -221,6 +223,7 @@
 				<div class="text">
 					<h1 class="restaurants-push-tagline"><b>Push a button</b><br>Get food delivered</h1>
 				</div>
+				<? /*
 				<div><!--adding the search bar here-->
 				<script>
   (function() {
@@ -236,6 +239,7 @@
 </script>
 <gcse:search></gcse:search>
 				</div>
+				<? */ ?>
 			</div>
 			<div class="restaurants-orange"></div>
 			<div class="divider"></div>			
