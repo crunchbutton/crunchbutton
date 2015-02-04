@@ -86,7 +86,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
 			if( $this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
@@ -99,6 +98,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				]);
 			}
 		}
+
 		if( $this->delivery_type == self::SHIPPING_TAKEOUT ){
 			if( $this->restaurant()->takeout == 0 && $this->restaurant()->delivery == 1 ){
 				$this->delivery_type = self::SHIPPING_DELIVERY;
@@ -151,7 +151,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						}
 						$subtotal_plus_delivery_service_markup += $price_delivery_markup;
 						$subtotal += $price;
-	//                    $subtotal += $option->option()->optionPrice($d['options']);
+						// $subtotal += $option->option()->optionPrice($d['options']);
 						$dish->_options[] = $option;
 					}
 				}
@@ -226,7 +226,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );
 		}
 
-
 		$this->order = json_encode($params['cart']);
 
 		if (!c::user()->id_user) {
@@ -275,7 +274,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if ($errors) {
-		// Log the order - validation error
+			// Log the order - validation error
 			Log::debug([
 				'action' 				=> 'validation error',
 				'address' 			=> $params['address'],
@@ -365,12 +364,39 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'$this->notes' => $this->notes
 		]);
 
+		$delivery_free = false;
+
+		// Point redemption system improvements for customer-customer referrals #4248
+		// If the user has more than 25000 points the code bellow will give him credits
+		// of the same amount of the delivery order
+		if ( $this->delivery_type == 'delivery' && $this->delivery_fee ) {
+			$reward = new Crunchbutton_Reward;
+			$reward = $reward->loadSettings();
+			$user_points = Crunchbutton_Credit::points( $user->id_user );
+			if( $user_points >= intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] ) ){
+				$delivery_free = true;
+				// Add credit
+				$credit = new Crunchbutton_Credit();
+				$credit->id_user = $this->id_user;
+				$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+				$credit->id_restaurant = $this->id_restaurant;
+				$credit->id_promo = null;
+				$credit->date = date('Y-m-d H:i:s');
+				$credit->value = $this->delivery_fee;
+				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+				$credit->paid_by = 'CRUNCHBUTTON';
+				$credit->note = 'Reward: delivery free';
+				$credit->save();
+			}
+		}
+
+
 		// process the payment
 		$res = $this->verifyPayment();
 
 		// failed to process the card
 		if ($res !== true) {
-			Log::debug([
+			Log::debug( [
 				'action' 				=> 'credit card error',
 				'address' 			=> $params['address'],
 				'phone' 				=> $params['phone'],
@@ -386,12 +412,44 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'errors' 				=> $res['errors'],
 				'cart' 					=> $params['cart'],
 				'type' 					=> 'order-log'
-			]);
+			] );
+
+			// Remove the delivery free credit
+			if( $delivery_free ){
+				$credit = new Crunchbutton_Credit();
+				$credit->id_user = $this->id_user;
+				$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
+				$credit->id_restaurant = $this->id_restaurant;
+				$credit->id_promo = null;
+				$credit->date = date('Y-m-d H:i:s');
+				$credit->value = $this->delivery_fee;
+				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+				$credit->paid_by = 'CRUNCHBUTTON';
+				$credit->note = 'Reward: removed delivery free';
+				$credit->save();
+			}
+
 			return $res['errors'];
 
 		// successfully processed the card
 		} else {
 			$this->txn = $this->transaction();
+		}
+
+		// Remove the user points if they were used to get free delivery
+		if( $delivery_free ){
+			$user_points = Crunchbutton_Credit::points( $user->id_user );
+			$credit = new Crunchbutton_Credit();
+			$credit->id_user = $this->id_user;
+			$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
+			$credit->id_restaurant = null;
+			$credit->id_promo = null;
+			$credit->date = date('Y-m-d H:i:s');
+			$credit->value = $user_points;
+			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
+			$credit->paid_by = 'CRUNCHBUTTON';
+			$credit->note = 'Reward: removed delivery free';
+			$credit->save();
 		}
 
 		$user->location_lat = $params['lat'];
@@ -512,7 +570,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
 
-		Log::debug([ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ]);
+		Log::debug( [ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ] );
 
 		// If the payment succeds then redeem the gift card
 		if ( trim( $this->notes ) != '' ){
@@ -641,18 +699,24 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			// rewards: earn points when an order has been placed #2458
 			$points = $reward->processOrder( $order->id_order );
 			if( floatval( $points ) > 0 ){
-				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
+				if( User_Auth::userHasAuth( $order->id_user ) ){
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
+				}
 			}
 			// rewards: 4x points when ordering 2 days in a row #3434
 			$points = $reward->orderTwoDaysInARow( $order->id_user );
 			if( floatval( $points ) > 0 ){
-				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+				if( User_Auth::userHasAuth( $order->id_user ) ){
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+				}
 			}
 			if( !$points ){
 				// rewards: 2x points when ordering in same week #3432
 				$points = $reward->orderTwiceSameWeek( $order->id_user );
 				if( floatval( $points ) > 0 ){
-					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+					if( User_Auth::userHasAuth( $order->id_user ) ){
+						$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+					}
 				}
 			}
 		}
@@ -2102,13 +2166,21 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$out['summary'] = $this->orderMessage('summary');
 
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
-		if( $credit->id_credit ){
+		if( $out['user_has_auth'] ){
+			$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+			if( $credit->id_credit ){
+				$reward = new Crunchbutton_Reward;
+				$points = $reward->processOrder( $this->id_order );
+				$shared = $reward->orderWasAlreadyShared( $this->id_order );
+				$out['reward'] = array( 'points' => $points, 'shared' => $shared );
+			}
+		} else {
 			$reward = new Crunchbutton_Reward;
 			$points = $reward->processOrder( $this->id_order );
-			$shared = $reward->orderWasAlreadyShared( $this->id_order );
-			$out['reward'] = array( 'points' => $points, 'shared' => $shared );
+			$out['reward'] = array( 'points' => $points );
 		}
+
+
 
 		return $out;
 	}
