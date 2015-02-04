@@ -129,11 +129,29 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 			} else {
 				$ignore = [];
 			}
-			$json = json_encode($restaurant->exports( $ignore, $where));
+			$json = $restaurant->exports( $ignore, $where);
 		} else {
-			$json = json_encode(['error' => 'invalid object']);
+			$json = ['error' => 'invalid object'];
 		}
-		echo $json;
+
+		// change driver restaurant name when auto shutting down community #4514
+		$community = $restaurant->community();
+		if( $community->allThirdPartyDeliveryRestaurantsClosed() || $community->allRestaurantsClosed() ){
+			if( $community->allThirdPartyDeliveryRestaurantsClosed() || $community->allRestaurantsClosed() ){
+				// Check if the community was auto shutdown
+				$autoShutdownAdmin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
+				$id_admin = $autoShutdownAdmin->id_admin;
+				if( $id_admin == $community->close_3rd_party_delivery_restaurants_id_admin || $id_admin == $community->close_all_restaurants_id_admin ){
+					$driverRestaurant = $community->driverRestaurant();
+					if( $driverRestaurant->id_restaurant == $restaurant->id_restaurant ){
+						$json[ 'name' ] = $community->driver_restaurant_name;
+					}
+				}
+			}
+		}
+
+
+		echo json_encode( $json );exit;
 	}
 
 	public function init() {

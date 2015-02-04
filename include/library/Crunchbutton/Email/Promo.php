@@ -6,7 +6,7 @@ class Crunchbutton_Email_Promo extends Crunchbutton_Email {
 
 	public function __construct($params) {
 
-		$params['to'] 				= $params['email'].', Crunchbutton Copy <_USERNAME_>';
+		$params['to'] 				= $params['email'];
 		$params['subject'] 		= $params['subject'];
 		$params['from'] 			= ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton - Gift card').' <giftcard@_DOMAIN_>';
 		$params['reply']			= 'Crunchbutton - Gift card<giftcard@_DOMAIN_>';

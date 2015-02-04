@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD  `driver_restaurant_name` varchar(150) DEFAULT NULL;
