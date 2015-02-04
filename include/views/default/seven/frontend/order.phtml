@@ -36,7 +36,9 @@
 
 			<div class="divider dots spacer-two-two"></div>
 			<div class="content-padding order-buttons">
-				<p>Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>.</p>
+				<p>
+					Create an account and earn {{Math.floor(order.reward.points)}} points towards a free delivery and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
+				</p>
 				<br>
 				<div class="button-pushable">
 					<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
@@ -53,6 +55,20 @@
 			<div class="content-padding order-buttons">
 				<div class="button-pushable">
 					<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+				</div>
+				<div>
+					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
+						<br/>
+						You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
+					</p>
+					<p ng-if="!account.user.points.free_delivery_message">
+						<br/>
+						You just earned <strong>{{order.reward.points}}</strong> points! You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
+						<br/><br/>
+						Want more points? Share this order to double it!
+						<br/><br/>
+						Find out more ways to get free <a href="/orders/#credit">delivery here</a>.
+					</p>
 				</div>
 				<? /*
 				<div ng-if="order._new && referral.invite_url && referral.enabled">
@@ -204,7 +220,7 @@
 			</p>
 
 
-			<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+			<div class="credit" ng-if="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<div class="divider spacer-two-two"></div>
 			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>

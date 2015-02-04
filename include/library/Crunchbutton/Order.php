@@ -449,6 +449,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
 			$credit->paid_by = 'CRUNCHBUTTON';
 			$credit->note = 'Reward: removed delivery free';
+			$this->reward_delivery_free = 1;
 			$credit->save();
 		}
 

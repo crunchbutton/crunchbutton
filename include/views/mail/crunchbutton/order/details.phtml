@@ -290,7 +290,18 @@ if( $version == 'customer' ){
 	<?php if( $user && $order->chargedByCredit() > 0 ) { ?>
 	<tr style="font-weight:bold;">
 		<td></td>
-		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
+		<td style="text-align:right">
+			<?php
+			if( $order->pay_type == 'card' ) { ?>
+				<?php if( $order->reward_delivery_free ) { ?>
+					Delivery paid by Crunchbutton
+				<?php } else { ?>
+					Gift Card
+				<?php } ?>
+			<?php } else { ?>
+				Already Paid by Gift Card
+			<?php } ?>
+		</td>
 		<td>$<?php echo number_format($order->chargedByCredit(),2); ?></td>
 	</tr>
 
