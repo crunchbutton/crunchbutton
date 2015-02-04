@@ -78,7 +78,7 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 		$staff->referral_admin_credit = $this->request()[ 'referral_admin_credit' ];
 		$staff->referral_customer_credit = $this->request()[ 'referral_customer_credit' ];
 
-		// Double check unique login
+		// Check unique login
 		$login = trim( $this->request()[ 'login' ] );
 		$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $login . '"' );
 		if( $admin->count() == 0 && !$staff->id_admin ){
@@ -86,6 +86,19 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 		} else {
 			if( $admin->id_admin != $staff->id_admin ){
 				$this->_error( 'this login is already in use' );
+			}
+		}
+
+		// Check unique referral code
+		$invite_code = trim( $this->request()[ 'invite_code' ] );
+		$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
+		if( $admin->count() == 0 ){
+			$staff->invite_code = $invite_code;
+		} else {
+			if( $admin->id_admin != $staff->id_admin ){
+				$this->_error( 'this invite code is already in use' );
+			} else {
+				$staff->invite_code = $invite_code;
 			}
 		}
 

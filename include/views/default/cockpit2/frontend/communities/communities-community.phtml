@@ -38,6 +38,55 @@
 							<div class="field-value">{{community.timezone}}</div>
 						</div>
 						<div class="field-row">
+							<div class="field-key">&nbsp;</div>
+							<div class="field-value">&nbsp;</div>
+						</div>
+						<div class="field-row">
+							<div class="field-key"><strong>3rd Party Delivery Restaurants</strong></div>
+							<div class="field-value">
+								<span ng-if="community.close_3rd_party_delivery_restaurants"><strong>Closed</strong></span>
+								<span ng-if="!community.close_3rd_party_delivery_restaurants">Open</span>
+							</div>
+						</div>
+						<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
+							<div class="field-key">Closed by</div>
+							<div class="field-value">{{community.close_3rd_party_delivery_restaurants_admin}}</div>
+						</div>
+						<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
+							<div class="field-key">Closed at</div>
+							<div class="field-value">{{community.close_3rd_party_delivery_restaurants_date}}</div>
+						</div>
+						<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
+							<div class="field-key">Message</div>
+							<div class="field-value">{{community.close_3rd_party_delivery_restaurants_note}}</div>
+						</div>
+
+						<div class="field-row">
+							<div class="field-key">&nbsp;</div>
+							<div class="field-value">&nbsp;</div>
+						</div>
+
+						<div class="field-row">
+							<div class="field-key"><strong>All Restaurants</strong></div>
+							<div class="field-value">
+								<span ng-if="community.close_all_restaurants"><strong>Closed</strong></span>
+								<span ng-if="!community.close_all_restaurants">Open</span>
+							</div>
+						</div>
+						<div class="field-row" ng-if="community.close_all_restaurants">
+							<div class="field-key">Closed by</div>
+							<div class="field-value">{{community.close_all_restaurants_admin}}</div>
+						</div>
+						<div class="field-row" ng-if="community.close_all_restaurants">
+							<div class="field-key">Closed at</div>
+							<div class="field-value">{{community.close_all_restaurants_date}}</div>
+						</div>
+						<div class="field-row" ng-if="community.close_all_restaurants">
+							<div class="field-key">Message</div>
+							<div class="field-value">{{community.close_all_restaurants_note}}</div>
+						</div>
+
+						<div class="field-row">
 							<div class="field-key">
 								<a href="/community/edit/{{community.permalink}}">Edit</a>
 							</div>

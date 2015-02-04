@@ -144,6 +144,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->image = $this->request()[ 'image' ];
 						$community->range = $this->request()[ 'range' ];
 						$community->timezone = $this->request()[ 'timezone' ];
+						$community->id_driver_restaurant = $this->request()[ 'id_driver_restaurant' ];
 
 						if( intval( $this->request()[ 'close_all_restaurants' ] ) != intval( $community->close_all_restaurants ) ){
 							$community->close_all_restaurants = intval( $this->request()[ 'close_all_restaurants' ] );

@@ -145,12 +145,16 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 		} );
 	}
 
+	$scope.restaurants = new Array();
 
 	var community = function(){
 		if( $routeParams.id ){
 			CommunityService.get( $routeParams.id, function( d ) {
 				$rootScope.title = d.name + ' | Community';
 				$scope.community = d;
+				angular.forEach( d._restaurants, function( restaurant, id_restaurant ) {
+					$scope.restaurants.push( { 'id_restaurant' : restaurant.id_restaurant, 'name' : restaurant.name } );
+				} );
 				load_alias();
 				load();
 			});
