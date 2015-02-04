@@ -143,7 +143,7 @@ class Crunchbutton_User extends Cana_Table {
 			$user = false;
 		} else {
 			// we have a valid facebook authed user
-			$user = $fbuser->get(0);
+			$user = $fbuser;
 		}
 
 		return $user;
