@@ -37,11 +37,15 @@
 				You have {{account.user.points.total}} points.
 			</div>
 			<?php */ ?>
+			<a id="credit"></a>
 			<div ng-if="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
-				<div>You are {{account.user.points.away_free_delivery}} points away from a free delivery.</div>
-				<div>Earn points by ordering food, sharing your order, or referring friends.</div>
-				<div>Share this family and friends code and both of you get your next delivery on us.</div>
+				<div>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</div><br/>
+				<div>Earn points by ordering food, sharing your order, or referring friends.</div><br/>
+				<div>Share this family and friends code and both of you get your next delivery on us.</div><br/>
 				<div><strong>{{account.user.invite_code}}</strong></div>
+			</div>
+			<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
+				You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
 			</div>
 			<div class="divider"></div>
 			<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">
