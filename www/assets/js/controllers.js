@@ -883,6 +883,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
 	};
 
+
+
 	var giftcard = GiftCardService;
 	$scope.giftcard = { giftcards : {} };
 	// Event will be called when the gift card changes
@@ -893,6 +895,14 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.giftcard.removed = giftcard.notes_field.removed;
 		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
 		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
+
+		if( giftcard.notes_field.giftcards && giftcard.notes_field.giftcards.success && giftcard.notes_field.giftcards.success[0] && giftcard.notes_field.giftcards.success[0].delivery_free ){
+			order.removeDeliveryFee();
+			$scope.order.updateTotal();
+		} else {
+			order.restoreDeliveryFee();
+			$scope.order.updateTotal();
+		}
 		$scope.giftcard.hasValue = ( parseFloat( giftcard.notes_field.value ) > 0 );
 		$scope.$safeApply();
 	});
@@ -902,7 +912,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			giftcard.notes_field.lastValidation = '';
 			$scope.checkGiftCard();
 		}
-		console.log('$scope.user.id_user',$scope.user.id_user);
 	});
 
 	$scope.checkGiftCard = function(){
