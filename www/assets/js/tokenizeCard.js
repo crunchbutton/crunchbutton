@@ -1,7 +1,8 @@
 App.tokenizeCard = function( card, complete ) {
 console.log('App.tokenizeCard');
 	var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
-console.log('processor',processor);
+	console.debug('Processor: ', processor);
+
 	var legacy_card = {
 		card_number: card.number,
 		expiration_month: card.expiration_month,
@@ -10,7 +11,7 @@ console.log('processor',processor);
 	};
 
 	if (App.isPhoneGap) {
-		card = legacy_card;
+		//card = legacy_card;
 	}
 
 	switch(processor) {
@@ -82,6 +83,7 @@ App.tokenizeCard_stripe = function( card, complete ) {
 App.tokenizeCard_balanced = function(card, completed) {
 
 	var handleResponse = function(response) {
+		console.debug('Recieved response from balanced: ', response);
 		var res = {
 			status: false
 		};
@@ -167,6 +169,8 @@ App.tokenizeCard_balanced = function(card, completed) {
 		}
 		completed(res);
 	};
+	
+	console.debug('Sending card to balanced...');
 
 	balanced.card.create(card, handleResponse);
 };
