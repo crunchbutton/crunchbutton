@@ -258,14 +258,24 @@
 									Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
 								</div>
 
+								<div ng-repeat="success in giftcard.giftcards.success">
+									<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+										<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
+										<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free</span>
+									</div>
+								</div>
+
+
 								<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 									<!-- Gift card success -->
 									<div ng-repeat="success in giftcard.giftcards.success">
-										<div ng-show="!success.error">
-											Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.
-										</div>
-										<div ng-show="success.error == 'other restaurant'">
-											The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+										<div ng-if="!success.delivery_free">
+											<div ng-show="!success.error">
+												Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.
+											</div>
+											<div ng-show="success.error == 'other restaurant'">
+												The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+											</div>
 										</div>
 									</div>
 									<!-- Gift card errors -->
@@ -387,12 +397,6 @@
 
 				<div class="divider"></div>
 
-				<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
-					<p class="delivery-free">
-						You have <strong>{{points.free_delivery}}</strong> points! This delivery fee is on us.<br />
-					</p>
-				</div>
-
 				<div class="divider"></div>
 
 				<div class="order-icon"><div class="icon-notes" ng-show="order.form.notes"></div></div>
@@ -439,7 +443,18 @@
 		<div ng-if="credit.hasValue && order.form.pay_type == 'cash' && order.total() >= credit.number">
 			<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
 		</div>
+
+		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
+			<p class="delivery-free">
+				<strong ng-if="order.form.pay_type == 'card'">You have {{points.free_delivery}} points! This delivery fee is on us.</strong>
+				<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
+				<br/>
+			</p>
+		</div>
+
 	</div>
+
+
 
 	<div class="divider bottom-spacer"></div>
 
