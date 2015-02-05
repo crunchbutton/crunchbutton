@@ -63,6 +63,8 @@
 </div>
 
 <div ng-if="restaurants">
+	
+	
 
 	<div class="restaurants-items">
 
@@ -74,7 +76,7 @@
 
 				<div class="restaurants-closed" ng-if="restaurant._tag == 'closed'">
 					<h2 class="restaurants-name">{{restaurant.name}}</h2>
-					<div class="restaurants-opensin" ng-if="restaurant._openIn > 0" >Opens {{restaurant._opensIn_formatted}}</div>
+					<div class="restaurants-opensin" ng-if="restaurant._openIn > 0" >Available {{restaurant._opensIn_formatted}}</div>
 				</div>
 
 				<div class="restaurants-closed" ng-if="restaurant._tag == 'force_close'">
@@ -93,7 +95,7 @@
 							<div ng-switch on="restaurant._tag">
 								<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 								<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
-								<div class="meal-item-tag about-to-open" ng-switch-when="opening">Opens {{restaurant._opensIn_formatted}} </div>
+								<div class="meal-item-tag about-to-open" ng-switch-when="opening">Available {{restaurant._opensIn_formatted}} </div>
 							</div>
 
 							<div class="meal-item-tag-bottom" ng-if="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>

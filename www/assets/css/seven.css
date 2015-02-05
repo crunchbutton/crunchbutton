@@ -1450,21 +1450,6 @@ p {
 	width: 100%;
 }
 
-.delivery-free{
-	padding: .6em 0 0 .4em;
-	font-size: 1.2em;
-	color: #424242;
-	text-transform: uppercase;
-	font-weight: 700;
-}
-.order-code{
-	padding: .6em 0 0 .4em;
-	font-size: 2em;
-	color: #424242;
-	text-transform: uppercase;
-	font-weight: 700;
-}
-
 .orders-oranges {
 	background: url(../images/micro/orders-oranges.svg) no-repeat;
 	background-position: top center;
@@ -3625,82 +3610,54 @@ select {
 }
 
 /*Application form styles:*/
-.container {
-    width:90%;
-    margin: auto;
-    height:auto;
-}
-.label {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-top: 7px;
-    width: 33.33333%;
-    position: relative;
-    min-height: 1px;
-    padding-right: 15px;
-    display: block;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    font-weight: 600;
-    height:30px;
-    float:none;
-    line-height:1.1;
-
-}
 .textbox {
-    width: 50%;
-    position: relative;
-    min-height: 1px;
-    padding-left: 15px;
-    padding-right: 15px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    display: block;
-    -webkit-font-smoothing: antialiased;
-    line-height: 1.42857;
-    float:left;
-    margin-bottom:15px;
+	line-height: 2em;
 }
-.textbox div {
-    color:red;
+.textbox label {
+	cursor: pointer;
+	margin-left: 1em;
+}
+.form-group {
+    line-height: 1.6em;
+    margin-bottom: 2em;
+	display: inline-block;
+	vertical-align: top;
+}
+@media screen and (min-width: 769px) {
+	.form-group {
+    	width: 40%;
+	}
+	.form-group:nth-child(even) {
+		margin-left:7em;
+	}
 }
 .form-control {
-    font-weight: lighter;
     -webkit-box-shadow: none;
     box-shadow: none;
-    height: 36px;
-    padding-left: 12px;
-    padding-right: 12px;
-    display: block;
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px;
-    font-size: 16px;
-    line-height: 1.42857;
+    padding: .2em .5em;
     color: #555;
-    vertical-align: middle;
+    line-height: 1.4em;
     background-color: #fff;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    text-transform: none;
-    -webkit-appearance: textfield;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
-h2 {
-    line-height: 1.4;
-    margin-bottom: 15px;
+.form-control-large {
+    width: 100%;
+    font-size: 1.6em;
+    border-radius: 4px;
 }
+.form-control-small {
+    width: 50%;
+    font-size: 1.2em;
+    border-radius: 3px;
+}
+.form-control-select {
+	-webkit-appearance: menulist-button;
+}
+
+
 .button-bottom {
     width: 11em;
     background-color:rgb(247, 128, 83);
@@ -3709,18 +3666,61 @@ h2 {
     border:none;
 }
 
-em {
+i {
     font-style:italic;
     font-weight:300;
 }
-label span{
+
+.form-required {
     color:red;
 }
 
- .restaurant-item-title {
-        font-weight:bold;
-        font-size:1.5em;
-        color:rgb(247, 128, 83);
-        padding-left:.5em;
-        padding-right:.5em;
-    }
+.apply-item-title {
+	 font-weight:bold;
+	 font-size:1.5em;
+	 color:rgb(247, 128, 83);
+}
+
+.stamp-loader {
+    height: 16.7em;
+	width: 16.7em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 14.8em;
+}
+
+.stamp-loader-button {
+    height: 100%;
+	width: 100%;
+	background-size: 100%;
+	background: url(../images/micro/stamp-loader-button.svg);
+}
+
+.stamp-loader-words {
+	margin-top: -100%;
+    height: 100%;
+	width: 100%;
+	background-size: 100%;
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+	background: url(../images/micro/stamp-loader-words.svg);
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.delivery-free{
+	padding: .6em 0 0 .4em;
+	font-size: 1.2em;
+	color: #424242;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+.order-code{
+	padding: .6em 0 0 .4em;
+	font-size: 2em;
+	color: #424242;
+	text-transform: uppercase;
+	font-weight: 700;
+}
