@@ -258,14 +258,23 @@
 									Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
 								</div>
 
+								<div ng-repeat="success in giftcard.giftcards.success">
+									<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+										{{success.message}}
+									</div>
+								</div>
+
+
 								<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 									<!-- Gift card success -->
 									<div ng-repeat="success in giftcard.giftcards.success">
-										<div ng-show="!success.error">
-											Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.
-										</div>
-										<div ng-show="success.error == 'other restaurant'">
-											The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+										<div ng-if="!success.delivery_free">
+											<div ng-show="!success.error">
+												Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.
+											</div>
+											<div ng-show="success.error == 'other restaurant'">
+												The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+											</div>
 										</div>
 									</div>
 									<!-- Gift card errors -->
