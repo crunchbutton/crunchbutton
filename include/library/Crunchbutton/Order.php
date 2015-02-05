@@ -329,13 +329,75 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					Log::debug([ 'inviter' => $inviter ]);
 					if( $totalOrdersByPhone <= 1 && $inviter ){
 						// get the value of the discount
-						$value = $reward->getReferredDiscountAmount();
-						$admin_credit = $reward->adminRefersNewUserCreditAmount();
-						$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
-						if( $value ){
-							$this->giftcardValue = $value;
-							break;
+						if( $inviter[ 'id_admin' ] ){
+							$value = $reward->getReferredDiscountAmount();
+							$admin_credit = $reward->adminRefersNewUserCreditAmount();
+							$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
+							if( $value ){
+								$this->giftcardValue = $value;
+								break;
+							}
+						} elseif( $inviter[ 'id_user' ] ){
+
+							$referral = new Crunchbutton_Referral();
+							$referral->id_admin_inviter = null;
+							$referral->id_user_inviter = $inviter[ 'id_user'];
+							$referral->id_user_invited = $this->id_user;
+							$referral->admin_credit = null;
+							$referral->invite_code = $word;
+							$referral->new_user = 1;
+							$referral->date = date('Y-m-d H:i:s');
+							$referral->save();
+
+							$settings = $reward->loadSettings();
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Cash Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																							] );
+							}
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_VALUE ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_POINT,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Points Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																							] );
+							}
+
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_REFER_NEW_USER_AMOUNT ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $inviter[ 'id_user'],
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Cash Invited ID: ' . $this->id_user . ' code: ' . $word,
+																							] );
+							}
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_REFER_NEW_USER_VALUE ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $inviter[ 'id_user'],
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_POINT,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Points Invited ID: ' . $this->id_user . ' code: ' . $word,
+																							] );
+							}
+
 						}
+
 					}
 				}
 			}
@@ -596,9 +658,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 				$reward = new Crunchbutton_Reward;
 				// the new user earns discount
-				if( $this->giftCardInviter[ 'id_user'] ){
-					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_user'] . ' code: ' . $this->giftCardInviter[ 'word'];
-				} else if( $this->giftCardInviter[ 'id_admin'] ){
+				if( $this->giftCardInviter[ 'id_admin'] ){
 					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_admin'] . ' code: ' . $this->giftCardInviter[ 'word'];
 				}
 
@@ -609,31 +669,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 																				'note' => $notes,
 																			] );
 
-				if( $this->giftCardInviter[ 'id_user'] ){
-					$credits_amount = $reward->refersNewUserCreditAmount();
-					if( $credits_amount ){
-						// the regular user that indicates his friend earns money too - configurable option
-						$reward->saveRewardAsCredit( [ 	'id_user' => $this->giftCardInviter[ 'id_user'],
-																						'value' => $credits_amount,
-																						'id_order' => null,
-																						'id_referral' => $referral->id_referral,
-																						'note' => 'Invited ID: ' . $this->id_user . ' code: ' . $this->giftCardInviter[ 'word'],
-																					] );
-					}
-				} else if( $this->giftCardInviter[ 'id_admin'] ){
+				if( $this->giftCardInviter[ 'id_admin'] ){
 					$credits_amount = $reward->adminRefersNewUserCreditAmount();
 					Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
-				}
-
-				// Give points to the user that invites the new user
-				$points = $reward->getReferNewUser();
-				if( floatval( $points ) > 0 ){
-					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->giftCardInviter[ 'id_user'], 'points' => $points, 'note' => 'points by referrer new user O#' . $this->id_order . ' U#' . $this->id_user ] );
-				}
-				// Give points to the user that was invited
-				$points = $reward->getRefered();
-				if( floatval( $points ) > 0 ){
-					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $this->giftCardInviter[ 'id_user'] ] );
 				}
 			} else {
 				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );

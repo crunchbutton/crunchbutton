@@ -272,6 +272,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 * @return float
 	 */
 	service._breackDownDelivery = function () {
+		if( service._removeDeliveryFee ){
+			return 0;
+		}
 		var delivery = 0;
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
@@ -282,6 +285,19 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		delivery = App.ceil(delivery);
 		return delivery;
 	}
+
+	service.removeDeliveryFee = function(){
+		service._removeDeliveryFee = true;
+		service._breackDownDelivery();
+	}
+
+	service.restoreDeliveryFee = function(){
+		service._removeDeliveryFee = false;
+		service._breackDownDelivery();
+	}
+
+
+
 	/**
 	 * Crunchbutton service
 	 *
