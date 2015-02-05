@@ -387,8 +387,8 @@
 
 				<div class="divider"></div>
 
-				<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
-					<p>
+				<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
+					<p class="delivery-free">
 						You have <strong>{{points.free_delivery}}</strong> points! This delivery fee is on us.<br />
 					</p>
 				</div>

@@ -2,7 +2,7 @@
 
 
 	<div ng-controller="AccountSevenCtrl" modal-reset="resetModal()">
-	
+
 		<div ng-show="tab == 'facebook'" class="dialog-padding account-modal">
 			<p ng-show="account.user">
 				We got your account right here! Link your account with facebook here so you never have to enter your info again!
@@ -12,7 +12,7 @@
 				<b class="account-modal-bold">Get your Crunchbutton account!</b><br>
 				Log in or sign up using the same awesome button.
 			</p>
-			
+
 			<div class="divider spacer-one-two"></div>
 
 			<div class="button-pushable">
@@ -32,19 +32,19 @@
 			<div class="dialog-padding account-modal">
 				<span ng-click="changeTab( 'facebook' )" class="back-link cursor"><span>&laquo;</span> BACK</span>
 				<p>Not a fan of facebook? Don’t worry. We won't tell anyone. <b>Log in</b> or <b>sign up</b> below.</p>
-				
+
 				<div class="divider spacer-one-two"></div>
 
 				<form name="accountForm">
 					<div class="support-form-group form-group">
 						<input type="email" ng-focus="softKeyboardModal($event)" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="account.enter()">
 					</div>
-					
+
 					<div class="support-form-group form-group">
 						<input type="password" ng-focus="softKeyboardModal($event)" class="form-input form-field" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" placeholder="password" ng-enter="account.enter()">
 					</div>
 				</form>
-			
+
 				<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
 
 				<span ng-show="!account.user" class="help cursor" ng-click="changeTab( 'reset' )">Forgot Password</span>
@@ -62,10 +62,10 @@
 		<div ng-show="tab == 'reset'">
 			<div class="dialog-padding account-modal">
 				<span ng-click="changeTab('form')" class="back-link cursor"><span>&laquo;</span> BACK</span>
-				
+
 				<div ng-show="!help.success.visible">
 					<p>Forgot your password? Let's get you a new one!</p>
-				
+
 					<div class="divider spacer-one-onehalf"></div>
 
 					<form name="accountReset" class="form">
@@ -75,9 +75,9 @@
 					</form>
 				</div>
 
-				<div class="dialog-message dialog-message-error" ng-repeat="error in help.errors">{{error}}</div>	
+				<div class="dialog-message dialog-message-error" ng-repeat="error in help.errors">{{error}}</div>
 				<div class="dialog-message dialog-message-success" ng-show="help.success.visible">
-					Please check your email or phone. 
+					Please check your email or phone.
 					<br/>
 					You will receive a password reset link that will expire in 24 hours.
 				</div>

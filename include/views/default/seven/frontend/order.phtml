@@ -53,22 +53,29 @@
 				<div class="divider dots spacer-two-two"></div>
 			</div>
 			<div class="content-padding order-buttons">
-				<div class="button-pushable">
-					<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
-				</div>
 				<div>
-					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
+					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free">
 						<br/>
 						You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
 					</p>
-					<p ng-if="!account.user.points.free_delivery_message">
+					<div ng-if="!account.user.points.free_delivery_message">
 						<br/>
-						You just earned <strong>{{order.reward.points}}</strong> points! You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
+						<p class="delivery-free">
+							You just earned <strong>{{order.reward.points}}</strong> points!
+							<span></span>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
+						</p>
 						<br/><br/>
-						Want more points? Share this order to double it!
+						<p>
+							Want more points? Share this order to double it!
+							<br/><br/>
+							Find out more ways to get free <a href="/orders/#credit">delivery here</a>.
+						</p>
 						<br/><br/>
-						Find out more ways to get free <a href="/orders/#credit">delivery here</a>.
-					</p>
+						<div class="button-pushable">
+							<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+						</div>
+
+					</div>
 				</div>
 				<? /*
 				<div ng-if="order._new && referral.invite_url && referral.enabled">
