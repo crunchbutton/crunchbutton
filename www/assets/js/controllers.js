@@ -884,6 +884,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	};
 
 
+	var using_delivery_free = false;
 
 	var giftcard = GiftCardService;
 	$scope.giftcard = { giftcards : {} };
@@ -897,9 +898,11 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
 
 		if( giftcard.notes_field.giftcards && giftcard.notes_field.giftcards.success && giftcard.notes_field.giftcards.success[0] && giftcard.notes_field.giftcards.success[0].delivery_free ){
+			using_delivery_free = true;
 			order.removeDeliveryFee();
 			$scope.order.updateTotal();
 		} else {
+			using_delivery_free = false;
 			order.restoreDeliveryFee();
 			$scope.order.updateTotal();
 		}
@@ -1104,6 +1107,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 
 	AccountService.updatePoints( function( points ){
 		$scope.account.user.points = points;
+		$scope.account.user.invite_code = points.invite_code;
 	} );
 
 	$scope.Math = window.Math;

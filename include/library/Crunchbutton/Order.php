@@ -431,7 +431,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// Point redemption system improvements for customer-customer referrals #4248
 		// If the user has more than 25000 points the code bellow will give him credits
 		// of the same amount of the delivery order
-		if ( $this->delivery_type == 'delivery' && $this->delivery_fee ) {
+		if ( $this->delivery_type == 'delivery' && $this->delivery_fee && $this->pay_type == 'card' ) {
 			$reward = new Crunchbutton_Reward;
 			$reward = $reward->loadSettings();
 			$user_points = Crunchbutton_Credit::points( $user->id_user );
