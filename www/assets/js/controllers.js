@@ -19,47 +19,47 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     	$scope.errors = {};
     	if (!$scope.apply.firstName) {
     		$scope.errors.firstName = true;
-    	} 
+    	}
     	if (!$scope.apply.lastName) {
     		$scope.errors.lastName = true;
-    	} 
+    	}
     	if (!$scope.apply.email) {
     		$scope.errors.email = true;
-    	} 
+    	}
     	if (!$scope.apply.university) {
     		$scope.errors.university = true;
-    	} 
+    	}
     	if (!$scope.apply.number) {
     		$scope.errors.number = true;
-    	} 
+    	}
     	if (!$scope.apply.phone) {
     		$scope.errors.phone = true;
-    	} 
+    	}
     	if (!$scope.apply.carrier) {
     		$scope.errors.carrier = true;
-    	} 
+    	}
     	if ($scope.apply.carrier == 'Other') {
     		if (!$scope.apply.otherCarrier){
     		$scope.errors.otherCarrier = true;
     		}
-    	} 
+    	}
     	if (!$scope.apply.transport) {
     		$scope.errors.transport = true;
-    	} 
+    	}
     	if (!$scope.apply.hours) {
     		$scope.errors.hours = true;
-    	} 
+    	}
     	if (!$scope.apply.applicant) {
     		$scope.errors.applicant = true;
-    	} 
+    	}
     	if (!$scope.apply.source) {
     		$scope.errors.source = true;
-    	} 
+    	}
     	if ($scope.apply.source == 'other') {
     		if (!$scope.apply.otherSource){
     		$scope.errors.otherSource = true;
     		}
-    	} 
+    	}
 
     	if (jQuery.isEmptyObject($scope.errors)) {
     			ApplyService.post($scope.apply, function(data){
@@ -1084,11 +1084,18 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$location.path( '/' );
 		return;
 	}
+
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
+
+
+
+	AccountService.updatePoints( function( points ){
+		$scope.account.user.points = points;
+	} );
 
 	$scope.Math = window.Math;
 

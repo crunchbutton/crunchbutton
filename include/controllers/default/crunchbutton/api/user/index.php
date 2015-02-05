@@ -16,6 +16,25 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 				}
 				break;
+
+			case 'points':
+				$user = c::user();
+				// Reward stuff
+				$reward = new Crunchbutton_Reward;
+				$reward = $reward->loadSettings();
+				$out = [];
+				$out[ 'free_delivery' ] = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
+				$out[ 'total' ] = Crunchbutton_Credit::points( $user->id_user );
+				if( $out[ 'free_delivery' ] > 0 && $out[ 'free_delivery' ] < $out[ 'total' ] ){
+					$out[ 'show' ] = $out[ 'free_delivery' ];
+					$out[ 'free_delivery_message' ] = true;
+				} else {
+					$out[ 'free_delivery_message' ] = false;
+					$out[ 'show' ] = $out[ 'total' ];
+					$out[ 'away_free_delivery' ] = $out[ 'free_delivery' ] - $out[ 'total' ];
+				}
+				echo json_encode( $out );exit;
+				break;
 			// Verify if the login was already taken
 			case 'verify':
 				switch ($this->method()) {
@@ -308,7 +327,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$user->email = $fb->fbuser()->email;
 						$user->save();
 					}
-					
+
 					// log them in as the facebook user instead of the previous user they were logged in as.
 					// @todo: merge account info if this is the case as previous user data could be lost
 					if ($fb->fbuser()->id) {
