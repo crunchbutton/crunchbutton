@@ -1104,6 +1104,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 
 	AccountService.updatePoints( function( points ){
 		$scope.account.user.points = points;
+		$scope.account.user.invite_code = points.invite_code;
 	} );
 
 	$scope.Math = window.Math;

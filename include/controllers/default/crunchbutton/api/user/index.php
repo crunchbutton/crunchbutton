@@ -23,6 +23,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				$reward = new Crunchbutton_Reward;
 				$reward = $reward->loadSettings();
 				$out = [];
+				$out[ 'invite_code' ] = $user->invite_code;
 				$out[ 'free_delivery' ] = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
 				$out[ 'total' ] = Crunchbutton_Credit::points( $user->id_user );
 				if( $out[ 'free_delivery' ] > 0 && $out[ 'free_delivery' ] <= $out[ 'total' ] ){
