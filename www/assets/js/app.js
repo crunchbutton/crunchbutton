@@ -664,6 +664,9 @@ App.track = function() {
 * @param id_community - Integer or String (that is a valid integer)
 */
 App.trackCommunity = function (id_community) {
+	if (App.config.env != 'live') {
+		return;
+	}
 	if(!isNaN(parseInt(id_community))) {
 		if (typeof( ga ) == 'function')  {
 			ga('set', COMMUNITY_DIMENSION, id_community.toString());
@@ -772,7 +775,7 @@ App.processConfig = function(json, user) {
 	App.setLoggedIn( App.config && App.config.user && App.config.user.uuid ? true : false);
 	App.AB.init();
 	// grab community if we have it (we'll overwrite it if the user searches for something different)
-	if(App.config.user && App.config.user.last_order && App.config.last_order.communities) {
+	if(App.config.user && App.config.user.last_order && App.config.user.last_order.communities) {
 		if(App.config.user.last_order.communities.length >= 1) {
 			App.trackCommunity(App.config.user.last_order.communities[0]);
 		}
