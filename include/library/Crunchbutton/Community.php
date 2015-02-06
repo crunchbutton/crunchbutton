@@ -89,6 +89,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$out[ 'image' ] = intval( $out[ 'image' ] );
 		$out[ 'close_all_restaurants' ] = intval( $out[ 'close_all_restaurants' ] );
 		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
+		$out[ 'auto_close' ] = intval( $out[ 'auto_close' ] );
 
 		if( $out[ 'close_all_restaurants_id_admin' ] ){
 			$admin = Admin::o( $out[ 'close_all_restaurants_id_admin' ] );
@@ -552,7 +553,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function shutDownCommunities(){
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE auto_close = 1' );
 		foreach( $communities as $community ){
 			$community->shutDownCommunity();
 		}
@@ -570,38 +571,44 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function reopenAutoClosedCommunity(){
+
+		if( !$this->auto_close ){ return; }
+
 		if( !$this->id_community || !$this->allThirdPartyDeliveryRestaurantsClosed() || !$this->allRestaurantsClosed() ){
 			$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 			$id_admin = $admin->id_admin;
 			if( $this->close_all_restaurants_id_admin == $id_admin || $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin ){
 
 				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+				if( $nextShift->id_community_shift ){
+					$date_start = $nextShift->dateStart( $this->timezone );
+					$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
+					$date_end = $nextShift->dateEnd( $this->timezone );
+					$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
 
-				$date_start = $nextShift->dateStart( $this->timezone );
-				$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
-				$date_end = $nextShift->dateEnd( $this->timezone );
-				$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
+					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
-				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+					if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
 
-				if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
+						// Open the community
+						$this->close_3rd_party_delivery_restaurants = 0;
+						$this->close_3rd_party_delivery_restaurants_id_admin = null;
+						$this->close_3rd_party_delivery_restaurants_note = null;
+						$this->driver_restaurant_name = null;
+						$this->save();
 
-					// Open the community
-					$this->close_3rd_party_delivery_restaurants = 0;
-					$this->close_3rd_party_delivery_restaurants_id_admin = null;
-					$this->close_3rd_party_delivery_restaurants_note = null;
-					$this->driver_restaurant_name = null;
-					$this->save();
-
-					$ticket = 'The community ' . $this->name . ' was auto reopened.';
-					Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
-					Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+						$ticket = 'The community ' . $this->name . ' was auto reopened.';
+						Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+					}
 				}
 			}
 		}
 	}
 
 	public function shutDownCommunity(){
+
+		if( !$this->auto_close ){ return; }
 
 		if( !$this->id_community || $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ){
 			return;
