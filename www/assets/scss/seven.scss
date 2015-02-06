@@ -1387,11 +1387,6 @@ p {
 	font-size: 1.1em;
 }
 
-
-.facebook {
-	display: none !important;
-}
-
 .footer .social {
 	float: right;
 	margin-top: 10px;
@@ -3610,28 +3605,28 @@ select {
 }
 
 /*Application form styles:*/
-.textbox {
+.drivers-apply .textbox {
 	line-height: 2em;
 }
-.textbox label {
+.drivers-apply .textbox label {
 	cursor: pointer;
 	margin-left: 1em;
 }
-.form-group {
+.drivers-apply .form-group {
     line-height: 1.6em;
     margin-bottom: 2em;
 	display: inline-block;
 	vertical-align: top;
 }
 @media screen and (min-width: 769px) {
-	.form-group {
+	.drivers-apply .form-group {
     	width: 40%;
 	}
-	.form-group:nth-child(even) {
+	.drivers-apply .form-group:nth-child(even) {
 		margin-left:7em;
 	}
 }
-.form-control {
+.drivers-apply .form-control {
     -webkit-box-shadow: none;
     box-shadow: none;
     padding: .2em .5em; 
@@ -3643,22 +3638,22 @@ select {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-.form-control-large {
+.drivers-apply .form-control-large {
     width: 100%;
     font-size: 1.6em;
     border-radius: 4px;
 }
-.form-control-small {
+.drivers-apply .form-control-small {
     width: 50%;
     font-size: 1.2em;
     border-radius: 3px;
 }
-.form-control-select {
+.drivers-apply .form-control-select {
 	-webkit-appearance: menulist-button;
 }
 
 
-.button-bottom {
+.drivers-apply .button-bottom {
     width: 11em; 
     background-color:rgb(247, 128, 83);
     color:white;
@@ -3671,11 +3666,11 @@ i {
     font-weight:300;
 }
 
-.form-required {
+.drivers-apply .form-required {
     color:red;
 }
 
-.apply-item-title {
+.drivers-apply .apply-item-title {
 	 font-weight:bold;
 	 font-size:1.5em;
 	 color:rgb(247, 128, 83);
@@ -3709,3 +3704,41 @@ i {
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+/*
+@mixin transform($transforms) {
+	-moz-transform: $transforms;
+	-o-transform: $transforms;
+	-ms-transform: $transforms;
+	-webkit-transform: $transforms;
+	transform: $transforms;
+}
+
+@mixin rotate ($deg) {
+	@include transform(rotate(#{$deg}deg));
+}
+
+@for $i from 1 through 100 {
+	.char#{$i} {
+		@include rotate(($i*6-100));
+	}
+}
+
+.stamp-loader-lettering {
+	margin-left: 100px;
+	position: absolute;
+    height: 100%;
+	width: 100%;
+}
+
+.stamp-loader-lettering span {
+	font-size: 26px;
+	height: 100px;
+	position: absolute;
+	width: 20px;
+	transform-origin: bottom center;
+	text-transform: uppercase;
+	font-familt: "Museo Slab";
+	
+}
+*/
