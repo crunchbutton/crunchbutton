@@ -657,8 +657,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= $date_end->format( 'A' );
 					$message .= ' on ';
 					$message .= $date_start->format( 'D' );
+					$message .= '!';
 				} else {
-					$message = 'Temporally closed';
+					$message = 'Temporally closed!';
 				}
 
 				// Close the community
