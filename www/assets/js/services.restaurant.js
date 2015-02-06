@@ -251,6 +251,11 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					if (success) {
 						success(list);
 					}
+					var community = getMostCommonCommunity(restaurants);
+					if(typeof community != undefined) {
+						// overwrite user's community with last set community
+						App.trackCommunity(community);
+					}
 					return list;
 				}
 			});
@@ -267,6 +272,41 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		service.forceLoad = true;
 		restaurants = false;
 	});
+	function mostCommonElement (arr) {
+		var counts, count, elem, maxCount, maxValue;
+		counts = {};
+		for(var i = 0; i < arr.length; i++) {
+			if(!counts[arr[i]]) {
+				counts[arr[i]] = 0;
+			}
+			counts[arr[i]]++;
+		}
+		for(elem in counts) {
+			if(counts.hasOwnProperty(elem)) {
+				count = counts[elem];
+				if(count > maxCount) {
+					maxCount = count;
+					maxValue = elem;
+				}
+			}
+		}
+		return maxValue;
+	}
+
+	// pulls out the most common community from all the passed in restaurants
+	function getMostCommonCommunity (restaurants) {
+		var restaurant, id_community, count;
+		var communities = {};
+		var maxCount = 0;
+		var mostFrequentCommunity = undefined;
+		try {
+			communities = restaurants.map(function (restaurant) { return restaurant.community;});
+			return mostCommonElement(communities);
+
+		} catch (e) {
+			console.log('error with getting community from restaurant', e)
+		}
+	}
 
 	return service;
 });
