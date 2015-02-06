@@ -19,12 +19,8 @@ class Cana_Db_PostgreSQL_Db {
 		}
 
 		if (!$args['dsn']) {
-			$args['dsn'] = 'pgsql:host='.$args['host'].';dbname='.$args['database'].';user='.$args['user'].';password='.$args['pass'];
+			$args['dsn'] = 'pgsql:host='.$args['host'].';dbname='.$args['db'].';user='.$args['user'].';password='.$args['pass'];
 		}
-		
-		$r =pg_connect ('host='.$args['host'].' dbname='.$args['database'].' user='.$args['user'].' password='.$args['pass']);
-		
-		//die($args['dsn']);
 
 		$db = new \PDO($args['dsn']);
 		$this->_driver = $db->getAttribute(\PDO::ATTR_DRIVER_NAME);
