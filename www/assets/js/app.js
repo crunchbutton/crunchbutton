@@ -203,10 +203,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'AboutCtrl',
 			templateUrl: 'assets/view/about.html'
 		})
-		.when('/jobs', {
-			action: 'jobs',
-			controller: 'JobsCtrl',
-			templateUrl: 'assets/view/jobs.html'
+		.when('/work', {
+			action: 'work',
+			controller: 'WorkCtrl',
+			templateUrl: 'assets/view/work.html'
 		})
         .when('/drivers/apply', {
 			action: 'apply',

@@ -13,12 +13,12 @@
 
 <div class="content-padding" ng-controller="SupportCtrl">
 	<br />
-	<h4>So, what exactly do you do?</h4>
-	<p>We get the best food in your community delivered straight to your door. Place an order, and we save it for next time, along with your delivery and payment info. Reorder your favorites with a single tap :)</p>
+	<h4>So, what is Crunchbutton?</h4>
+	<p>Crunchbutton lets you order the best food in your area delivered straight to your door. Place an order, and we save it for next time, along with your delivery and payment info. Come back and reorder your favorites with just one click.</p>
 	<br /><br />
 	<h4>Hey! I need help with my order!</h4>
-	<p ng-show="!account.user.id_user"><a ng-click="navigation.signin()">Sign in to see your previous orders</a> and contact the restaurant you ordered from.</p>
-	<p ng-show="account.user.id_user">Please visit <a ng-click="navigation.link('/orders','push')">My Orders</a> and contact the restaurant you ordered from.</p>
+	<p ng-show="!account.user.id_user"><a ng-click="navigation.signin()">Sign in to see your previous orders</a> and contact the number on the order details page.</p>
+	<p ng-show="account.user.id_user">Please visit <a ng-click="navigation.link('/orders','push')">My Orders</a> and contact the number on the order details page.</p>
 	<br /><br />
 	<h4>Need to contact Crunchbutton?</h4>
 	<p>Call or text us at <a href="sms:+16467831444" target="_system">(646) 783-1444</a> or email us at <a href="mailto:{{customers}}">{{customers}}</a>.</p>
@@ -55,14 +55,23 @@
 	<p>We thought this might happen. Luckily, Crunchbutton saves your address, phone, and payment info, so all you have to do is click what you want and hit the big, red "Get Food" button. Try to be awake when the delivery guy calls.</p>
 	<br /><br />
 	<h4>I want to put a restaurant on Crunchbutton.</h4>
-	<p>Good idea! <a ng-click="navigation.link('/owners','push')">Get more info and contact us.</a></p>
+	<p>Good idea! <a ng-click="navigation.link('/owners','push')">Get more info and contact us</a>.</p>
 	<br /><br />
+	
+	<h4>I want to drive for Crunchbutton</h4>
+	<p>Cool! <a ng-click="navigation.link('/drivers/apply','push')">Fill out an application here</a>.</p>
+	<br /><br />
+	
 	<h4>I know I can order food online, but can I order by US mail?</h4>
-	<p>Why yes you can! Give us one week's notice, and we will get you your food! Send a check or money order to:<br /><br />
-	Crunchbutton<br />
-	1120 Princeton Dr STE 7<br />
-	Marina Del Rey, CA 90292</p>
+	<p>Why yes you can! Give us one week's notice, and we will get you your food! Send a check or money order to: 
+	Crunchbutton, 1120 Princeton Dr STE 7, Marina Del Rey, CA 90292</p>
+	<br /><br />
+	
+	<h4>I know I can order food by US mail, but can I order by teleportation?</h4>
+	<p>Why yes you can! Send a check or money order to Crunchbutton, 1120 Princeton Dr STE 7, Marina Del Rey, CA 90292, give us 25 years to develop the appropriate technology, and we will get you your food!<br />
+	
 	<br /><br /><br /><br />
+	
 	Visit our <a ng-click="navigation.link('/legal','push')">legal page</a> for legal and privacy information.
 	<br /><br /><br /><br /><br /><br /><br />
 	<center><div class="fa fa-heart faq-heart"></div></center>

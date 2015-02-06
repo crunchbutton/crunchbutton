@@ -86,9 +86,9 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 });
 
 /**
- * jobs page
+ * work page
  */
-NGApp.controller('JobsCtrl', function ($scope) {
+NGApp.controller('WorkCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
 	$scope.reps = reps;
