@@ -587,11 +587,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$giftCardAdded = true;
 					}
 				}
-				$this->notes = $giftcards[ 'notes' ];
+				$_order = Order::o( $this->id_order );
+				$_order->notes = $giftcards[ 'notes' ];
+				$_order->save();
+				$this->notes = $_order->notes;
 			}
 		}
 
-		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
 		$this->debitFromUserCredit( $user->id_user );
 		if ( $params['make_default'] == 'true' ) {
