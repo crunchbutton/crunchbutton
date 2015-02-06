@@ -8,6 +8,7 @@
  */
 
 var REDIRECT = false;
+var COMMUNITY_DIMENSION = 'dimension1';
 
 if (top.frames.length != 0 || window != top || top.location != location) {
 	top.location.href = location.href;
@@ -657,6 +658,19 @@ App.track = function() {
 	}
 };
 
+/**
+* sets the user's community on Google Analytics so we can segment on community.
+* will not raise or error on invalid communities.
+* @param id_community - Integer or String (that is a valid integer)
+*/
+App.trackCommunity = function (id_community) {
+	if(!isNaN(parseInt(id_community))) {
+		if (typeof( ga ) == 'function')  {
+			ga('set', COMMUNITY_DIMENSION, id_community.toString());
+		}
+	}
+}
+
 
 /**
  * controls the busy state of the app
@@ -757,6 +771,12 @@ App.processConfig = function(json, user) {
 	}
 	App.setLoggedIn( App.config && App.config.user && App.config.user.uuid ? true : false);
 	App.AB.init();
+	// grab community if we have it (we'll overwrite it if the user searches for something different)
+	if(App.config.user && App.config.user.last_order && App.config.last_order.communities) {
+		if(App.config.user.last_order.communities.length >= 1) {
+			App.trackCommunity(App.config.user.last_order.communities[0]);
+		}
+	}
 };
 
 /**
