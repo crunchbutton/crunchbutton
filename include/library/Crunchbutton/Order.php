@@ -2690,8 +2690,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				return 'Do not pay the restaurant';
 			}
 		} else {
+			$driver = c::user();
 			if( $this->pay_type == 'cash' ){
-				$driver = c::user();
 				if( $driver->id_admin && $driver->hasPexCard() ){
 					return 'Pay restaurant with your own cash, not PEX';
 				} else {
