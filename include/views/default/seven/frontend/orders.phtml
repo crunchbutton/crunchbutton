@@ -1,21 +1,21 @@
 <div class="top-pad"></div>
 
-	
-<div class="content-padding">
-	<div class="orders-oranges animated-resize"></div>
-	<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
-	
-</div>
-
 <div ng-show="!orders.list">
 	<div class="content-padding">
 		<div class="stamp-loader">
 			<div class="stamp-loader-button"></div>
 			<div class="stamp-loader-words"></div>
 		</div>
-		
 	</div>
 </div>
+	
+<div class="content-padding" ng-show="orders.list">
+	<div class="orders-oranges animated-resize"></div>
+	<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
+	
+</div>
+
+
 
 <div ng-show="orders.list.length == 0">
 	<div class="content-padding">
