@@ -731,7 +731,7 @@ NGApp.directive('splashPositionFix', function() {
 					while( !ok ){
 						var test_top = bottomText.bottom() + top + minDistance;
 						if( test_top <= windowHeight ){
-							bottomText.setTop( top );
+							bottomText.setTop( top > 0 ? top : 0 );
 							ok = true;
 						}
 						top -= step;
