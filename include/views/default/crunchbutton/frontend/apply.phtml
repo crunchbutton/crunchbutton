@@ -76,9 +76,9 @@
 			<div class="textbox">
 				<div ng-if="errors.phone">Please enter your phone type:</div>
 				<input type="radio" ng-model="apply.phone" name="phone" value="iPhone" id="apply-phone-iphone"><label for="apply-phone-iphone">iPhone</label><br>
-				<input type="radio" ng-model="apply.phone" name="phone" value="Android">Android<br>
-				<input type="radio" ng-model="apply.phone" name="phone" value="OtherSmartPhone">Other Smartphone<br>
-				<input type="radio" ng-model="apply.phone" name="phone" value="Non-Smartphone">Non-Smartphone<br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="Android" id="apply-phone-android"><label for="apply-phone-android">Android</label><br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="OtherSmartPhone" id="apply-phone-other"><label for="apply-phone-other">Other Smartphone</label><br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="Non-Smartphone" id="apply-phone-dumb"><label for="apply-phone-dumb">Non-Smartphone</label><br>
 			</div>
 		</div>
 
@@ -87,11 +87,11 @@
 
 			<div class="textbox">
 				<div ng-if="errors.carrier">Please enter your carrier:</div>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="Verizon" >Verizon<br>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="ATandT"> AT&amp;T<br>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="Sprint" >Sprint<br>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="T-Mobile" >T-Mobile<br>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" >Other:
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Verizon" id="apply-carrier-verizon"><label for="apply-carrier-verizon">Verizon</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="ATandT" id="apply-carrier-att"><label for="apply-carrier-att">AT&amp;T</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Sprint" id="apply-carrier-sprint"><label for="apply-carrier-sprint">Sprint</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="T-Mobile" id="apply-carrier-tmobile"><label for="apply-carrier-tmobile">T-Mobile</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" id="apply-carrier-other"><label for="apply-carrier-other">Other:</label>
 				<div ng-if="errors.otherCarrier">Please specify your carrier:</div>
 				<input ng-click="apply.carrier='Other'" class="form-control form-control-small" type="text" name="otherCarrier" ng-model="apply.otherCarrier">
 			</div>
@@ -102,9 +102,9 @@
 
 			<div class="textbox">
 				<div ng-if="errors.transport">Please enter your mode of transport:</div>
-				<input type="radio" name="transport" ng-model="apply.transport" value="car" >Car<br>
-				<input type="radio" name="transport" ng-model="apply.transport" value="bike" >Bike<br>
-				<input type="radio" name="transport" ng-model="apply.transport" value="both" >Both<br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="car" id="apply-trans-car"><label for="apply-trans-car">Car</label><br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="bike" id="apply-trans-bike"><label for="apply-trans-bike">Bike</label><br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="both" id="apply-trans-both"><label for="apply-trans-both">Both</label><br>
 			</div>
 		</div>
 
@@ -117,10 +117,10 @@
 			<div class="textbox">
 				<div ng-if="errors.hours">Please enter your number of preferred hours:</div>
 				<br>
-				<input type="radio" name="hours" ng-model="apply.hours" value="5" >5-10<br>
-				<input type="radio" name="hours" ng-model="apply.hours" value="10" >10-20<br>
-				<input type="radio" name="hours" ng-model="apply.hours" value="20" >20-30<br>
-				<input type="radio" name="hours" ng-model="apply.hours" value="30" >30+<br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="5" id="apply-hours-5"><label for="apply-hours-5">5-10</label><br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="10" id="apply-hours-10"><label for="apply-hours-10">10-20</label><br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="20" id="apply-hours-20"><label for="apply-hours-20">20-30</label><br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="30" id="apply-hours-30"><label for="apply-hours-30">30+</label><br>
 			</div>
 		</div>
 
@@ -133,8 +133,8 @@
 			<div class="textbox">
 				<div ng-if="errors.applicant">Please choose student or non-student:</div>
 				<br>
-				<input type="radio" ng-model="apply.applicant" name="applicant" value="student" >Student<br>
-				<input type="radio" ng-model="apply.applicant" name="applicant" value="non-student" >Non-Student<br><br><br>
+				<input type="radio" ng-model="apply.applicant" name="applicant" value="student" id="apply-applicant-student"><label for="apply-applicant-student">Student</label><br>
+				<input type="radio" ng-model="apply.applicant" name="applicant" value="non-student" id="apply-applicant-non-student"><label for="apply-applicant-non-student">Non-Student</label><br><br><br>
 			</div>
 		</div>
 
@@ -143,12 +143,12 @@
 
 			<div class="textbox">
 				<div ng-if="errors.source">Please enter how you found out about us:</div>
-				<input type="radio" ng-model="apply.source" name="source" value="craigslist" >Craigslist<br>
-				<input type="radio" ng-model="apply.source" name="source" value="school-job-list" >School Job Board<br>
-				<input type="radio" ng-model="apply.source" name="source" value="friend" >Through a Friend<br>
-				<input type="radio" ng-model="apply.source" name="source" value="campus-marketing" >Marketing on Campus<br>
-				<input type="radio" ng-model="apply.source" name="source" value="cb-website" >Via Crunchbutton Website<br>
-				<input type="radio" ng-model="apply.source" name="source" value="other" >Other:
+				<input type="radio" ng-model="apply.source" name="source" value="craigslist" id="apply-source-craigslist"><label for="apply-source-craigslist">Craigslist</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="school-job-list" id="apply-source-school"><label for="apply-source-school">School Job Board</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="friend" id="apply-source-friend"><label for="apply-source-friend">Through a Friend</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="campus-marketing" id="apply-source-marketing"><label for="apply-source-marketing">Marketing on Campus</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="cb-website" id="apply-source-website"><label for="apply-source-website">Via Crunchbutton Website</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:</label>
 				<div ng-if="errors.otherSource">Please specify how you found out about us:</div>
 				<input ng-click="apply.source='other'" class="form-control form-control-small" type="text" ng-model="apply.otherSource" name="otherSource">
 			</div>
