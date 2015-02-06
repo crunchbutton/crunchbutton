@@ -1,9 +1,9 @@
 <?php
 
 class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
-	
+
 	public function init() {
-		
+
 
 		if (!c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) {
 			return ;
@@ -63,7 +63,7 @@ class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
 	private function form_notifications(){
 	if( c::getPagePiece(3) ){
 			c::view()->admin = Crunchbutton_Admin::o( c::getPagePiece(3) );
-			c::view()->display( 'permissions/users/notifications' );	
+			c::view()->display( 'permissions/users/notifications' );
 		}
 	}
 
@@ -73,7 +73,7 @@ class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
 			$permissions = new Crunchbutton_Admin_Permission();
 			c::view()->permissions = $permissions->all();
 			c::view()->elements = $permissions->elements();
-			c::view()->display( 'permissions/users/permissions' );	
+			c::view()->display( 'permissions/users/permissions' );
 		}
 	}
 

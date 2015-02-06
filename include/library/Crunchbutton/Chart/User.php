@@ -99,7 +99,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-new-users-per-active-user-by-community' => array(
 														'title' => 'New Users per Active Users',
-														'tags' => array( 'main' ),
+														'tags' => array( 'main','reps' ),
 														'charts' => array(
 																'users-new-per-active-users-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'newPerActiveByDay' ),
 																'users-new-per-active-users-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'newPerActiveByWeek', 'default' => true ),
