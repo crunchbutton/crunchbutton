@@ -16,12 +16,8 @@
 	<h4>So, what is Crunchbutton?</h4>
 	<p>Crunchbutton lets you order the best food in your area delivered straight to your door. Place an order, and we save it for next time, along with your delivery and payment info. Come back and reorder your favorites with just one click.</p>
 	<br /><br />
-	<h4>Hey! I need help with my order!</h4>
-	<p ng-show="!account.user.id_user"><a ng-click="navigation.signin()">Sign in to see your previous orders</a> and contact the number on the order details page.</p>
-	<p ng-show="account.user.id_user">Please visit <a ng-click="navigation.link('/orders','push')">My Orders</a> and contact the number on the order details page.</p>
-	<br /><br />
 	<h4>Need to contact Crunchbutton?</h4>
-	<p>Call or text us at <a href="sms:+16467831444" target="_system">(646) 783-1444</a> or email us at <a href="mailto:{{customers}}">{{customers}}</a>.</p>
+	<p>Problem with your order? Need help with your homework? Text or call us at <a href="sms:+16467831444" target="_system">(646) 783-1444</a> or email us at <a href="mailto:{{customers}}">{{customers}}</a>.</p>
 	<br /><br />
 	<button class="button green" ng-click="support.dialog()">Send us a message</button>
 </div>
