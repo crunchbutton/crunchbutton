@@ -13,6 +13,9 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 });
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
+	
+	$scope.communities = App.communities;
+	
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
