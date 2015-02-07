@@ -959,6 +959,24 @@ App.init = function(config) {
 		});
 	}
 	*/
+	
+	// setup for system links
+	if (App.isPhoneGap) {
+		$(document).on('click', 'a[target=_system]', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
+			return false;
+		});
+
+		document.body.oncopy = function() {
+			if (!parent.navigator || !parent.navigator.splashscreen) {
+				return;
+			}
+			parent.navigator.splashscreen.show();
+			parent.navigator.splashscreen.hide();
+		}
+	}
 };
 
 App.handleUrl = function(url) {
