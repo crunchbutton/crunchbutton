@@ -1154,7 +1154,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * @todo: change to account page
  */
 
-NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
+NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -1176,9 +1176,11 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	if( OrdersService.reload ){
 		OrdersService.load();
 	} else {
-		$scope.orders.list = OrdersService.list;
-		// Check if the orders list need to be updated #1988
-		OrdersService.checkUpdate();
+		$timeout(function() {
+			$scope.orders.list = OrdersService.list;
+			// Check if the orders list need to be updated #1988
+			OrdersService.checkUpdate();
+		},10);
 	}
 
 	$scope.$on( 'OrdersLoaded', function(e, data) {
