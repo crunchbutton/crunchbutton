@@ -207,7 +207,7 @@
 			<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<div class="divider spacer-two-two"></div>
-			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
+			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_system" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
 		</div>
 
 	</div>
