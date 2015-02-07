@@ -433,20 +433,17 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				backwards = '/location';
 				break;
 		}
-		if ( backwards ) {
-			App.go( backwards, 'pop' );
+		if (!backwards && App.previousPages.length > 1) {
+			App.previousPages.pop();
+			backwards = App.previousPages.pop();
+			console.log('setting to', backwards);
+		}
+		if (backwards) {
+			console.log('going to', backwards);
+			App.go(backwards, 'pop');
 		} else {
-			//App.goingBack = $location.path();
-			App.go( false, 'pop' );
-			setTimeout(function() {
-				history.back();
-			},10);
-			setTimeout(function(){
-				App.go( false, 'push' );
-				App.rootScope.$safeApply();
-			},500);
-
-			
+			console.log('going back');
+			history.back();
 		}
 	};
 
@@ -482,12 +479,15 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	});
 	*/
+	
+	App.previousPages = [];
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
+		App.previousPages.push($route.current.$$route.originalPath);
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
