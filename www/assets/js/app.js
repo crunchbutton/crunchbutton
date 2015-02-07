@@ -426,9 +426,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.snap.close();
 		var backwards = false;
 		switch( $route.current.action ) {
-			case 'order':
-				backwards = '/orders';
-				break;
 			case 'restaurant':
 				backwards = '/food-delivery';
 				break;
@@ -439,7 +436,17 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		if ( backwards ) {
 			App.go( backwards, 'pop' );
 		} else {
-			history.back();
+			//App.goingBack = $location.path();
+			App.go( false, 'pop' );
+			setTimeout(function() {
+				history.back();
+			},10);
+			setTimeout(function(){
+				App.go( false, 'push' );
+				App.rootScope.$safeApply();
+			},500);
+
+			
 		}
 	};
 
@@ -549,7 +556,9 @@ App.go = function( url, transition ){
 	// Remove the animation from rootScope #2827 before start the new one
 	App.rootScope.animationClass = '';
 	if( !App.transitionAnimationEnabled ){
-		App.location.path( url || '/' );
+			if (url !== false) {
+			App.location.path( url || '/' );
+		}
 		App.rootScope.$safeApply();
 		return;
 	}
@@ -560,11 +569,15 @@ App.go = function( url, transition ){
 			App.rootScope.$safeApply();
 			// @todo: do some tests to figure out if we need this or not
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-			App.location.path( url || '/' );
+			if (url !== false) {
+				App.location.path( url || '/' );
+			}
 			App.rootScope.$safeApply();
 		}, 1 );
 	} else {
-		App.location.path( url || '/' );
+		if (url !== false) {
+			App.location.path( url || '/' );
+		}
 		App.rootScope.$safeApply();
 	}
 };

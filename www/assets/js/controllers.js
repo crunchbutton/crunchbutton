@@ -69,7 +69,9 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     				$location.path( '/thankyou' );
         		console.log(data);
     			})
-    	}
+    	} else {
+			App.alert('Please fill out all of the fields.');
+		}
     };
 });
 /**
