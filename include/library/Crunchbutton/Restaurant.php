@@ -244,8 +244,20 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $merchant;
 	}
 
+	public function activeDrivers(){
+		$community = $this->community()->get( 0 );
+		$activeDrivers = 0;
+		$drivers = $community->getDriversOfCommunity();
+		foreach( $drivers as $driver ){
+			if( $driver->isWorking() ){
+				$activeDrivers++;
+			}
+		}
+		return $activeDrivers;
+	}
+
 	// Smart ETA MVP #4600
-	public function smartETA(){
+	public function smartETA( $array = false ){
 
 		if( !$this->hasDeliveryService() ){
 			return 0;
@@ -259,22 +271,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// 30 min + (15X + 7Y - 8Z) / N
 
 		// N = # of active drivers
-		$activeDrivers = 0;
-		$activeDrivers = 0;
-		$community = $this->community()->get( 0 );
-		$drivers = $community->getDriversOfCommunity();
-		foreach( $drivers as $driver ){
-			if( $driver->isWorking() ){
-				$activeDrivers++;
-			}
-		}
+		$activeDrivers = $this->activeDrivers();
+
 
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
 		// Z = # of additional orders from the same restaurant accepted by the same driver
 		$ordersPlacedButNotPickedUp = 0;
 		$ordersPickedUpButNotDelivered = 0;
-		$additionalOrdersFromTheSameRestaurantAcceptedByTheSameDriver = 0;
+		$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver = 0;
 		$orders = Order::q( 'SELECT o.* FROM `order` o
 													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
@@ -290,19 +295,26 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if( $lastStatus[ 'status' ] == 'pickedup' ){
 				$ordersPickedUpButNotDelivered++;
 			}
-			if( $lastStatus[ 'status' ] == 'accepted' ){
-				$additionalOrdersFromTheSameRestaurantAcceptedByTheSameDriver++;
+			if( $order->id_restaurant == $this->id_restaurant && $lastStatus[ 'status' ] == 'accepted' ){
+				$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver++;
 			}
 		}
 
 		if( $activeDrivers ){
 			$eta = 30 + ( ( 15 * $ordersPlacedButNotPickedUp ) +
 										( 7 * $ordersPickedUpButNotDelivered ) +
-										( 8 * $additionalOrdersFromTheSameRestaurantAcceptedByTheSameDriver ) ) / $activeDrivers;
+										( 8 * $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ) ) / $activeDrivers;
 		}
 
 		if( $eta < 40 ){
 			$eta = 40;
+		}
+		if( $array ){
+			return [ 	'eta' => $eta,
+								'activeDrivers' => $activeDrivers,
+								'ordersPlacedButNotPickedUp' => $ordersPlacedButNotPickedUp,
+								'ordersPickedUpButNotDelivered' => $ordersPickedUpButNotDelivered,
+								'additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver' => $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ];
 		}
 		return intval( $eta );
 	}

@@ -36,11 +36,20 @@
 					</tr>
 				</table>
 			</li>
+
 			<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
 						<td class="side-menu-label">Help</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/work')" ng-class="{'nav-active': (navigation.page == 'jobs')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
+						<td class="side-menu-label">Work with Us</a></td>
 					</tr>
 				</table>
 			</li>
@@ -115,7 +124,7 @@
 							<li class="dropdown-divider"></li>
 							<li><a ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
 							<li><a ng-click="navigation.link('/about')"><i class="fa fa-lightbulb-o"></i>About</a></li>
-							<li><a ng-click="navigation.link('/jobs')"><i class="fa fa-briefcase"></i>Jobs</a></li>
+							<li><a ng-click="navigation.link('/work')"><i class="fa fa-briefcase"></i>Work with us</a></li>
 
 							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user"><i class="fa fa-sign-in"></i>Log In</a></li>
 							<li><a ng-click="signout.signout()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>

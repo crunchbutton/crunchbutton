@@ -13,6 +13,9 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 });
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
+	
+	$scope.communities = App.communities;
+	
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
@@ -66,7 +69,9 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     				$location.path( '/thankyou' );
         		console.log(data);
     			})
-    	}
+    	} else {
+			App.alert('Please fill out all of the fields.');
+		}
     };
 });
 /**
@@ -86,9 +91,9 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 });
 
 /**
- * jobs page
+ * work page
  */
-NGApp.controller('JobsCtrl', function ($scope) {
+NGApp.controller('WorkCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
 	$scope.reps = reps;
@@ -1149,7 +1154,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * @todo: change to account page
  */
 
-NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
+NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -1171,9 +1176,11 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	if( OrdersService.reload ){
 		OrdersService.load();
 	} else {
-		$scope.orders.list = OrdersService.list;
-		// Check if the orders list need to be updated #1988
-		OrdersService.checkUpdate();
+		$timeout(function() {
+			$scope.orders.list = OrdersService.list;
+			// Check if the orders list need to be updated #1988
+			OrdersService.checkUpdate();
+		},10);
 	}
 
 	$scope.$on( 'OrdersLoaded', function(e, data) {

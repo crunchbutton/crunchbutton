@@ -203,10 +203,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'AboutCtrl',
 			templateUrl: 'assets/view/about.html'
 		})
-		.when('/jobs', {
-			action: 'jobs',
-			controller: 'JobsCtrl',
-			templateUrl: 'assets/view/jobs.html'
+		.when('/work', {
+			action: 'work',
+			controller: 'WorkCtrl',
+			templateUrl: 'assets/view/work.html'
 		})
         .when('/drivers/apply', {
 			action: 'apply',
@@ -426,9 +426,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.snap.close();
 		var backwards = false;
 		switch( $route.current.action ) {
-			case 'order':
-				backwards = '/orders';
-				break;
 			case 'restaurant':
 				backwards = '/food-delivery';
 				break;
@@ -436,9 +433,16 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				backwards = '/location';
 				break;
 		}
-		if ( backwards ) {
-			App.go( backwards, 'pop' );
+		if (!backwards && App.previousPages.length > 1) {
+			App.previousPages.pop();
+			backwards = App.previousPages.pop();
+			console.log('setting to', backwards);
+		}
+		if (backwards) {
+			console.log('going to', backwards);
+			App.go(backwards, 'pop');
 		} else {
+			console.log('going back');
 			history.back();
 		}
 	};
@@ -475,12 +479,15 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	});
 	*/
+	
+	App.previousPages = [];
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
+		App.previousPages.push($route.current.$$route.originalPath);
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -549,7 +556,9 @@ App.go = function( url, transition ){
 	// Remove the animation from rootScope #2827 before start the new one
 	App.rootScope.animationClass = '';
 	if( !App.transitionAnimationEnabled ){
-		App.location.path( url || '/' );
+			if (url !== false) {
+			App.location.path( url || '/' );
+		}
 		App.rootScope.$safeApply();
 		return;
 	}
@@ -560,11 +569,15 @@ App.go = function( url, transition ){
 			App.rootScope.$safeApply();
 			// @todo: do some tests to figure out if we need this or not
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-			App.location.path( url || '/' );
+			if (url !== false) {
+				App.location.path( url || '/' );
+			}
 			App.rootScope.$safeApply();
 		}, 1 );
 	} else {
-		App.location.path( url || '/' );
+		if (url !== false) {
+			App.location.path( url || '/' );
+		}
 		App.rootScope.$safeApply();
 	}
 };
@@ -946,6 +959,24 @@ App.init = function(config) {
 		});
 	}
 	*/
+	
+	// setup for system links
+	if (App.isPhoneGap) {
+		$(document).on('click', 'a[target=_system]', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
+			return false;
+		});
+
+		document.body.oncopy = function() {
+			if (!parent.navigator || !parent.navigator.splashscreen) {
+				return;
+			}
+			parent.navigator.splashscreen.show();
+			parent.navigator.splashscreen.hide();
+		}
+	}
 };
 
 App.handleUrl = function(url) {
