@@ -19,6 +19,18 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				echo json_encode( $export );
 				break;
 
+			case 'eta':
+				$out = [];
+				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 AND delivery_service = 1 ORDER BY name ASC' );
+				foreach( $restaurants as $restaurant ){
+					if( $restaurant->open() ){
+						$community = $restaurant->community()->name;
+						$drivers = $restaurant->activeDrivers();
+						$out[] = array_merge( [ 'restaurant' => $restaurant->name, 'community' => $community ], $restaurant->smartETA( true ) );
+					}
+				}
+				echo json_encode( $out );exit;
+				break;
 			// Simple list returns just the name and id
 			case 'list':
 				$restaurants = Crunchbutton_Restaurant::active();
