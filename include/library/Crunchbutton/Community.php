@@ -606,6 +606,18 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
+	public function activeDrivers(){
+		$totalDrivers = 0;
+		$drivers = $this->getDriversOfCommunity();
+		$hasDriverWorking = false;
+		foreach( $drivers as $driver ){
+			if( $driver->isWorking() ){
+				$totalDrivers++;
+			}
+		}
+		return $totalDriversByCommunity;
+	}
+
 	public function shutDownCommunity(){
 
 		if( !$this->auto_close ){ return; }
@@ -626,13 +638,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 
 		if( $has3rdPartyDeliveryRestaurantsOpen ){
-			$drivers = $this->getDriversOfCommunity();
-			$hasDriverWorking = false;
-			foreach( $drivers as $driver ){
-				if( $driver->isWorking() ){
-					$hasDriverWorking = true;
-				}
+			if( $this->activeDrivers() > 0 ){
+				$hasDriverWorking = true;
+			} else {
+				$hasDriverWorking = false;
 			}
+
 			$close3rdParyDeliveryRestaurants = ( $has3rdPartyDeliveryRestaurantsOpen && !$hasDriverWorking );
 			if( $close3rdParyDeliveryRestaurants ){
 				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
