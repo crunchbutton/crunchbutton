@@ -311,15 +311,14 @@
 
 						<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 							<i class="fa payment-form-icon form-icon form-field"></i>
-							<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select></div>
-							<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year"></select></div>
+							<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select></div>
+							<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year"></select></div>
 						</div>
 
 						<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 							<i class="fa fa-thumbs-up payment-form-icon form-icon form-field"></i>
 							<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-							<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
-
+							<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
 						</div>
 					</div>
 

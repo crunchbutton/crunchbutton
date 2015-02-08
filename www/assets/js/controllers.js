@@ -299,10 +299,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.activeCssStyle = App.activeButtonsEnable;
 
 	$scope.display = function($event){
-
+console.log($scope.loadingRestaurant, $scope);
 		if ( $scope.loadingRestaurant ) {
 			return;
 		}
+		console.log('LOADIT');
 		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
 
@@ -790,15 +791,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.tooglePayment = function( type ){
 		return order.tooglePayment( type );
 	}
-	$scope.order._years = function(){
-		return order._years();
-	}
-	$scope.order._months = function(){
-		return order._months();
-	}
-	$scope.order._tips = function(){
-		return order._tips();
-	}
+	$scope.order._years = order._years();
+	
+	$scope.order._months = order._months();
+	
+	$scope.order._tips = order._tips();
+
 	$scope.showCreditPayment = function(){
 		$scope.order.tooglePayment( 'card' );
 		$scope.order.showForm = true;
