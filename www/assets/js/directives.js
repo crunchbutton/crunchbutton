@@ -366,8 +366,14 @@ NGApp.directive('ngSpinner', function () {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
 			setTimeout( function(){
-				var spinner = Ladda.create(elem.get(0));
-				elem.data( 'spinner', spinner);
+				var spinner;
+				spinner = elem.data('spinner');
+
+				if (!spinner) {
+					var spinner = Ladda.create(elem.get(0));
+					elem.data('spinner', spinner);
+				}
+				
 				if ( attr.spinnerAutostart && attr.spinnerAutostart != 'false' ) {
 					$( elem ).click(function() {
 						spinner.start();
