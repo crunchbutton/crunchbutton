@@ -489,6 +489,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.track('page', $route.current.action);
 		App.previousPages.push($route.current.$$route.originalPath);
 
+		if (App.isPhoneGap && cordova && cordova.plugins && cordova.plugins.Keyboard) {
+			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
+		}
+
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page);
@@ -962,6 +966,10 @@ App.init = function(config) {
 	
 	// setup for system links
 	if (App.isPhoneGap) {
+		if (cordova && cordova.plugins && cordova.plugins.Keyboard) {
+			cordova.plugins.Keyboard.disableScroll(true);
+		}
+		
 		$(document).on('click', 'a[target=_system]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
