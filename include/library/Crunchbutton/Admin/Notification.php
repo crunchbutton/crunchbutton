@@ -193,8 +193,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		if ($group->id_group) {
 
-			$ags = Crunchbutton_Admin::q('SELECT admin.* FROM admin LEFT JOIN admin_group using(id_admin) WHERE id_group="'.$group->id_group.'"');
-
 			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 			$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' http://cbtn.io/' . $order->id_order;
@@ -231,12 +229,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			// Reps failed to pickup order texts changes #2802
 			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message ] );
 
-			foreach ($ags as $a) {
-				$to[] = $a->txt;
-			}
-
 			Crunchbutton_Message_Sms::send([
-				'to' => $to,
+				'to' => Crunchbutton_Support::getUsers(),
 				'message' => $sms_message,
 				'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 			]);
@@ -416,25 +410,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		// Make these notifications pop up on support on cockpit #3008
 		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 
-		foreach( $users as $user ){
-
-			if( $user->id_admin ){
-				$name = $user->firstName();
-			} else {
-				$name = '';
-			}
-
-			$_message = Crunchbutton_Message_Sms::greeting( $name ) . $message;
-
-			Crunchbutton_Message_Sms::send([
-				'to' => $user->txt,
-				'message' => $_message,
-				'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
-			]);
-		}
-
-
-
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
+		]);
 	}
 
 	public function host_callback(){

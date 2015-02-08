@@ -55,6 +55,13 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			}
 
 			$from = $from['from'];
+
+		}
+
+		// CONTINUE HERE @@@@
+		if( is_array($to) && count( $to ) == 0 && ( $reason == Crunchbutton_Message_Sms::REASON_SUPPORT || $reason == Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING ) ){
+			$to = [];
+			$to[ 'Daniel' ] = '***REMOVED***';
 		}
 
 		// @todo: remove all from things elsewhere on the site

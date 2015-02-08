@@ -36,7 +36,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			], 'message', $this->exports($guid));
 		}
 	}
-	
+
 	public function load($stuff) {
 		parent::load($stuff);
 		$this->media = $this->media ? json_decode($this->media) : null;
@@ -114,6 +114,10 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			$rep_name = '';
 		}
 		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
+
+		if( !$this->admin()->isWorking() ){
+			$phone = [];
+		}
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,
