@@ -299,11 +299,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.activeCssStyle = App.activeButtonsEnable;
 
 	$scope.display = function($event){
-console.log($scope.loadingRestaurant, $scope);
-		if ( $scope.loadingRestaurant ) {
+
+		if ( $scope.loadingRestaurant || $rootScope.navigation.page != 'restaurants') {
 			return;
 		}
-		console.log('LOADIT');
+
 		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
 
