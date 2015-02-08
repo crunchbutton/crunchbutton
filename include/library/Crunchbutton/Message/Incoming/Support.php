@@ -108,7 +108,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	public static function notifyReps($message, $support = null, $media = null) {
 		$to = [];
 
-		$adminsg[] = Crunchbutton_Support::getSupport();
+		$adminsg[] = Crunchbutton_Support::getUsers();
 
 		if ($support && $support->id_order && $support->order()->id_order) {
 			$adminsg[] = $support->order()->restaurant()->adminReceiveSupportSMS();

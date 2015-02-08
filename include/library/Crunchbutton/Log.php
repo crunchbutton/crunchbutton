@@ -30,10 +30,6 @@ class Crunchbutton_Log extends Cana_Table {
 			// Make these notifications pop up on support on cockpit #3008
 			Crunchbutton_Support::createNewWarning( [ 'id_order' => $id_order, 'body' => $body ] );
 
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$nums[] = $supportPhone;
-			}
-
 			$b = $args[0]['action'] ? $args[0]['action'] : $log->data;
 			$find = array(',"', '{', '}');
 			$replace = array(",\n\t\"", "{\n\t", "\n}");
@@ -41,7 +37,7 @@ class Crunchbutton_Log extends Cana_Table {
 
 			c::timeout(function() use ($nums, $b) {
 				Crunchbutton_Message_Sms::send([
-					'to' => $nums,
+					'to' => Crunchbutton_Support::getUsers(),
 					'message' => $b,
 					'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 				]);

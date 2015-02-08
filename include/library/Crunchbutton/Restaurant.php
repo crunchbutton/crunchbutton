@@ -1502,7 +1502,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 							 WHERE ap.permission = '{$permission}'
 								 AND ap.id_admin IS NOT NULL) admin
 						WHERE txt IS NOT NULL";
-		return Admin::q( $query );
+		$sendSMSTo = [];
+		$usersToReceiveSMS = Admin::q( $query );
+		foreach( $usersToReceiveSMS as $user ){
+			if( $user->isWorking() ){
+				$sendSMSTo[ $user->name ] = $user->txt;
+			}
+		}
+		return $sendSMSTo;
 	}
 
 	public function adminWithSupportAccess(){
