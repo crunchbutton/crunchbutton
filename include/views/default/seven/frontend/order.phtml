@@ -160,24 +160,21 @@
 
 			<div class="divider spacer-one-two"></div>
 
-
 			<span ng-if="order.delivery_type == 'delivery'">
-
-				<a href="{{order.mapLink}}" target="_blank"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
-
+				<a href="{{order.mapLink}}" target="_system"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
 			</span>
+
 			<span ng-if="order.delivery_type == 'takeout'">
-
-				<a href="{{order.mapLink}}" target="_blank"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
-
+				<a href="{{order.mapLink}}" target="_system"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
 			</span>
 
 			<div class="divider spacer-two-two"></div>
+			<br><br>
 
 			<span ng-if="order.delivery_type == 'delivery'">
 				<div class="order-icon"><div class="icon-map-home"></div></div>
 				<div class="order-info">
-					<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order.address | nl2br"></span></a></p>
+					<p class="order-info-address"><a href="{{order.mapLink}}" target="_system"><span ng-bind-html-unsafe="order.address | nl2br"></span></a></p>
 					<br />
 				</div>
 				<div class="divider"></div>
@@ -185,7 +182,7 @@
 
 			<div class="order-icon"><div class="icon-map-restaurant"></div></div>
 			<div class="order-info">
-				<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
+				<p class="order-info-address"><a href="{{order.mapLink}}" target="_system"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
 			</div>
 			<div class="divider"></div>
 
@@ -207,7 +204,7 @@
 			<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<div class="divider spacer-two-two"></div>
-			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
+			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_system" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
 		</div>
 
 	</div>

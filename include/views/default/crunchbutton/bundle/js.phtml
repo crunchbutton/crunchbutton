@@ -1,3 +1,5 @@
+
+
 <script src="/assets/js/snap.js"></script>
 <script src="/assets/js/date.js"></script>
 <script src="/assets/js/jquery.totalstorage.js"></script>
@@ -22,6 +24,8 @@
 <? foreach ($scripts as $script) : ?>
 	<script src="/assets/js/<?=$script?>.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <? endforeach ; ?>
+
+<script src="/assets/js/angular-lettering.js"></script>
 
 <script src="/assets/js/datetime.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/js/base.js?v=<?=Deploy_Server::currentVersion()?>"></script>
@@ -69,7 +73,7 @@
 <script src="/assets/js/services.creditcard.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/js/services.referral.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/js/services.phonegap.js?v=<?=Deploy_Server::currentVersion()?>"></script>
-
+<script src="/assets/js/services.apply.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script type="application/x-javascript">
 	addEventListener('touchstart',function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);
 </script>

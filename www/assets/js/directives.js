@@ -366,8 +366,14 @@ NGApp.directive('ngSpinner', function () {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
 			setTimeout( function(){
-				var spinner = Ladda.create(elem.get(0));
-				elem.data( 'spinner', spinner);
+				var spinner;
+				spinner = elem.data('spinner');
+
+				if (!spinner) {
+					var spinner = Ladda.create(elem.get(0));
+					elem.data('spinner', spinner);
+				}
+				
 				if ( attr.spinnerAutostart && attr.spinnerAutostart != 'false' ) {
 					$( elem ).click(function() {
 						spinner.start();
@@ -731,7 +737,7 @@ NGApp.directive('splashPositionFix', function() {
 					while( !ok ){
 						var test_top = bottomText.bottom() + top + minDistance;
 						if( test_top <= windowHeight ){
-							bottomText.setTop( top );
+							bottomText.setTop( top > 0 ? top : 0 );
 							ok = true;
 						}
 						top -= step;

@@ -123,12 +123,14 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												),
 												'group-orders-per-weekday-by-community' => array(
 														'title' => 'Orders per Weekday by Community',
+														'tags' => array( 'reps' ),
 														'charts' => array(
 																'orders-per-weekday-by-community' => array( 'title' => '', 'type' => 'column-community', 'method' => 'perWeekdayByCommunity' )
 															)
 												),
 												'group-orders-per-hour-by-community' => array(
 														'title' => 'Orders per Hour by Community',
+														'tags' => array( 'reps' ),
 														'charts' => array(
 																'orders-per-hour-by-community' => array( 'title' => '', 'type' => 'column-community', 'method' => 'perHourByCommunity' )
 															)
