@@ -45,7 +45,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		');
 	}
 
-	public function getUsers(){
+	public function getUsers( $forceAll = false ){
 		$support = array();
 		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
 		if( $group->id_group ){
@@ -53,8 +53,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			if ( $users->count() > 0 ) {
 				foreach ( $users as $user ) {
 					// Check all the places where we send text message to CS and send it just to drivers that are current working.
-					if( $user->name && $user->txt && $user->isWorking() ){
-						$support[ $user->name ] = $user->txt;
+					if( $user->name && $user->txt ){
+						if( $forceAll || $user->isWorking() ){
+							$support[ $user->name ] = $user->txt;
+						}
 					}
 				}
 			}
