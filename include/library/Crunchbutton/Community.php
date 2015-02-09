@@ -631,7 +631,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$has3rdPartyDeliveryRestaurantsOpen = false;
 		foreach( $restaurants as $restaurant ){
 			if( $restaurant->open( $dt ) ){
-			// if( $restaurant->open() ){
 				if( intval( $restaurant->delivery_service ) == 1 ){
 					$has3rdPartyDeliveryRestaurantsOpen = true;
 				}
