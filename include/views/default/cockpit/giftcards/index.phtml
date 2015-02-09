@@ -95,15 +95,16 @@
 				<?php if (c::admin()->permission()->check(['global','gift-card-all', 'gift-card-create', 'gift-card-create-all'])) { ?>
 				&nbsp;&nbsp;&nbsp;
 				<div class="btn-group">
-					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						 Create / Send &nbsp;&nbsp;&nbsp;<span class="caret"></span>
+					<button class="btn btn-default" >
+						 <a href="/giftcards/new">Create a new code</a>&nbsp;&nbsp;&nbsp;<!--<span class="caret"></span>-->
 					</button>
+                    <!--
 					<ul class="dropdown-menu">
 						<li><a href="/giftcards/new">Create a new code</a></li>
 						<li class="divider"></li>
 						<li><a href="/giftcards/email">Send by email</a></li>
 						<li><a href="/giftcards/sms">Send by sms</a></li>
-					</ul>
+					</ul>-->
 				</div>
 				<?php } ?>
 				&nbsp;&nbsp;&nbsp;
