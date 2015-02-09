@@ -638,11 +638,31 @@ App.scrollTop = function(top) {
  * Sends a tracking item to google, or to google ads if its an order
  */
 App.track = function() {
+
+	var event_uri = App.service + '/events?category=app&action=' + encodeURIComponent(arguments[0]);
+	var data = undefined;
+	var future;
+	if(typeof arguments[1] == 'string') {
+		event_uri = event_uri + '&label=' + arguments[1]; 
+	} else {
+		data = arguments[1];
+	}
+	if(App._trackingCommunity) {
+		event_uri = event_uri + '&community=' + App._trackingCommunity;
+	}
+	if(data) {
+		future = $http.post(event_uri, data)
+	} else {
+		future = $http.post(event_uri);
+	}
+	future.success(function (resp) { console.log('stored event', resp)})
+		  .error(function (resp) { console.log('ERROR STORING EVENT', resp)});
 	if (App.config.env != 'live') {
 		return;
 	}
 
 	if (arguments[0] == 'Ordered') {
+		$http.post(App.service + '/events?action=' + arguments[0], arguments[1]);
 		if (typeof( ga ) == 'function') {
 			var trans = {
 				id: arguments[1].id,
@@ -674,7 +694,9 @@ App.track = function() {
 
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
+		return;
 	}
+
 
 	if (typeof( ga ) == 'function') {
 		ga('send', 'event', 'app', arguments[0], arguments[1]);
@@ -687,15 +709,18 @@ App.track = function() {
 * @param id_community - Integer or String (that is a valid integer)
 */
 App.trackCommunity = function (id_community) {
-	if (App.config.env != 'live') {
-		return;
-	}
+
 	if(!isNaN(parseInt(id_community))) {
 		var community_name = App.communities[id_community];
+		App._trackingCommunity = id_community.toString();
+		if (App.config.env != 'live') {
+			return;
+		}
 		if (typeof( ga ) == 'function')  {
 			ga('set', COMMUNITY_DIMENSION, community_name);
 		}
 	}
+
 }
 
 
