@@ -309,7 +309,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 		var checkHours = function(){
 			if (restaurant.permalink.match(/^(launching|drive|drivers|driving)-.*/)){
-				$location.path('/drivers/apply');
+				App.go('/drivers/apply', 'push' );
 				return;
 			}
 			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
