@@ -45,15 +45,18 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		');
 	}
 
-	public function getUsers(){
+	public function getUsers( $forceAll = false ){
 		$support = array();
 		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
 		if( $group->id_group ){
-			$users = Crunchbutton_Admin_Group::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
+			$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 			if ( $users->count() > 0 ) {
 				foreach ( $users as $user ) {
+					// Check all the places where we send text message to CS and send it just to drivers that are current working.
 					if( $user->name && $user->txt ){
-						$support[ $user->name ] = $user->txt;
+						if( $forceAll || $user->isWorking() ){
+							$support[ $user->name ] = $user->txt;
+						}
 					}
 				}
 			}

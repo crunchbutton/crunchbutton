@@ -22,7 +22,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					if( !$hasPermission && $tag == 'reps' ){
 						if( $_REQUEST[ 'community' ] ){
 							$community = Crunchbutton_Community::o( $_REQUEST[ 'community' ] );
-							$community = $community->name;
+							$community = str_replace( ' ' , '-', strtolower( $community->name ) );
 						}
 						$hasPermission = c::admin()->permission()->check( [ 'metrics-communities-all', "metrics-communities-{$community}", "metrics-restaurant-{$_REQUEST[ 'restaurant' ]}" ] );
 					}
@@ -33,7 +33,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 			if( !$hasTag ){
 				$hasPermission = c::admin()->permission()->check( [ 'metrics-no-grouped-charts' ] );
 			}
-
 		}
 
 		if( !$hasPermission ){

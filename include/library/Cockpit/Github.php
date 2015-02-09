@@ -1,8 +1,8 @@
 <?php
 	
 class Cockpit_Github extends Cana_Model {
-	public static function commits($user, $repo) {
-		return c::github()->api('repo')->commits()->all($user, $repo, ['sha' => 'master']);
+	public static function commits($user, $repo, $branch = 'master') {
+		return c::github()->api('repo')->commits()->all($user, $repo, ['sha' => $branch]);
 	}
 	
 	public static function createTag($user, $repo, $tag, $sha = '', $body = '') {

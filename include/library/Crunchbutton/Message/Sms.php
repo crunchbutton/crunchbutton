@@ -55,6 +55,13 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 			}
 
 			$from = $from['from'];
+
+		}
+
+		// If there is no cs working text everyone
+		// https://github.com/crunchbutton/crunchbutton/issues/4475#issuecomment-73421357
+		if( is_array($to) && count( $to ) == 0 && ( $reason == Crunchbutton_Message_Sms::REASON_SUPPORT || $reason == Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING ) ){
+			$to = Crunchbutton_Support::getUsers( true );
 		}
 
 		// @todo: remove all from things elsewhere on the site

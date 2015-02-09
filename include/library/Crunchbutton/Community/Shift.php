@@ -94,13 +94,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function nextAssignedShiftByCommunity( $id_community ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			$community = Crunchbutton_Community::o( $id_community );
+			$now->setTimezone( new DateTimeZone( $community->timezone ) );
 			$now_formated = $now->format( 'Y-m-d H:i:s' );
 			$query = 'SELECT cs.* FROM community_shift cs
 									INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
 									INNER JOIN admin a ON asa.id_admin = a.id_admin AND a.active = 1
 								WHERE
 									cs.id_community = "' . $id_community . '"
-									AND DATE_FORMAT( cs.date_start, "%Y-%m-%d H:i:s" ) >= "' . $now_formated . '"
+									AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i:%s" ) >= "' . $now_formated . '"
 									AND cs.active = 1
 								ORDER BY cs.date_start ASC LIMIT 1';
 			$shift = Crunchbutton_Community_Shift::q( $query );
@@ -108,6 +110,28 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				return $shift;
 			}
 	}
+
+	public function currentAssignedShiftByCommunity( $id_community ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			$community = Crunchbutton_Community::o( $id_community );
+			$now->setTimezone( new DateTimeZone( $community->timezone ) );
+			$now_formated = $now->format( 'Y-m-d H:i:s' );
+			$query = 'SELECT cs.* FROM community_shift cs
+									INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+									INNER JOIN admin a ON asa.id_admin = a.id_admin AND a.active = 1
+								WHERE
+									cs.id_community = "' . $id_community . '"
+									AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i:%s" ) <= "' . $now_formated . '"
+									AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i:%s" ) >= "' . $now_formated . '"
+									AND cs.active = 1
+								ORDER BY cs.date_start ASC LIMIT 1';
+			$shift = Crunchbutton_Community_Shift::q( $query );
+			if( $shift->id_community ){
+				return $shift;
+			}
+	}
+
+
 
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
@@ -162,19 +186,22 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query );
 	}
 
-	public function shiftDriverIsCurrentWorkingOn( $id_admin ){
+	public function shiftDriverIsCurrentWorkingOn( $id_admin, $dt = null ){
 		$admin = Admin::o( $id_admin );
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$now->setTimezone( new DateTimeZone( $admin->timezone ) );
-		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
-								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
-									WHERE asa.id_admin = ' . $id_admin . '
-										AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $now->format( 'Y-m-d H:i' ) . '"
- 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $now->format( 'Y-m-d H:i' ) . '"';
- 		$shift = Crunchbutton_Community_Shift::q( $query );
- 		if( $shift->id_admin_shift_assign ){
- 			return $shift;
- 		}
+		if( $admin->timezone ){
+			$time = ( $dt ? $dt : 'now' );
+			$now = new DateTime( $time, new DateTimeZone( c::config()->timezone ) );
+			$now->setTimezone( new DateTimeZone( $admin->timezone ) );
+			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+									INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+										WHERE asa.id_admin = ' . $id_admin . '
+											AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $now->format( 'Y-m-d H:i' ) . '"
+	 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $now->format( 'Y-m-d H:i' ) . '"';
+	 		$shift = Crunchbutton_Community_Shift::q( $query );
+	 		if( $shift->id_admin_shift_assign ){
+	 			return $shift;
+	 		}
+		}
  		return false;
 	}
 
@@ -691,7 +718,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$rets = Crunchbutton_Message_Sms::send([
 					'to' => $num,
 					'message' => $message,
-					'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
+					'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT
 				]);
 
 				foreach ($rets as $ret) {

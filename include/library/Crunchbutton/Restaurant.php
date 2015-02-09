@@ -244,6 +244,81 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $merchant;
 	}
 
+	public function activeDrivers(){
+		$community = $this->community()->get( 0 );
+		$activeDrivers = 0;
+		$drivers = $community->getDriversOfCommunity();
+		foreach( $drivers as $driver ){
+			if( $driver->isWorking() ){
+				$activeDrivers++;
+			}
+		}
+		return $activeDrivers;
+	}
+
+	// Smart ETA MVP #4600
+	public function smartETA( $array = false ){
+
+		if( !$this->hasDeliveryService() ){
+			return 0;
+		}
+
+		// N = # of active drivers
+		// X = # of orders placed but not picked up
+		// Y = # of orders picked up but not delivered
+		// Z = # of additional orders from the same restaurant accepted by the any driver
+		// Estimated ETA:
+		// 30 min + (15X + 7Y - 8Z) / N
+
+		// N = # of active drivers
+		$activeDrivers = $this->activeDrivers();
+
+
+		// X = # of orders placed but not picked up
+		// Y = # of orders picked up but not delivered
+		// Z = # of additional orders from the same restaurant accepted by the same driver
+		$ordersPlacedButNotPickedUp = 0;
+		$ordersPickedUpButNotDelivered = 0;
+		$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver = 0;
+		$orders = Order::q( 'SELECT o.* FROM `order` o
+													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
+													WHERE o.delivery_type = "delivery"
+														AND o.delivery_service = 1
+														AND o.date >= now() - INTERVAL 1 DAY
+													ORDER BY o.id_order DESC' );
+		foreach( $orders as $order ){
+			$lastStatus = $order->deliveryLastStatus();
+			if( $lastStatus[ 'status' ] == 'new' || $lastStatus[ 'status' ] == 'accepted' ){
+				$ordersPlacedButNotPickedUp++;
+			}
+			if( $lastStatus[ 'status' ] == 'pickedup' ){
+				$ordersPickedUpButNotDelivered++;
+			}
+			if( $order->id_restaurant == $this->id_restaurant && $lastStatus[ 'status' ] == 'accepted' ){
+				$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver++;
+			}
+		}
+
+		if( $activeDrivers ){
+			$eta = 30 + ( ( 15 * $ordersPlacedButNotPickedUp ) +
+										( 7 * $ordersPickedUpButNotDelivered ) +
+										( 8 * $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ) ) / $activeDrivers;
+		}
+
+		if( $eta < 40 ){
+			$eta = 40;
+		}
+		if( $array ){
+			return [ 	'eta' => $eta,
+								'activeDrivers' => $activeDrivers,
+								'ordersPlacedButNotPickedUp' => $ordersPlacedButNotPickedUp,
+								'ordersPickedUpButNotDelivered' => $ordersPickedUpButNotDelivered,
+								'additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver' => $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ];
+		}
+		return intval( $eta );
+	}
+
 	public function saveStripeBankAccount( $bank_account ){
 		$payment_type = $this->payment_type();
 		try{
@@ -1141,6 +1216,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
+		// start eta
+		$out[ 'eta' ] = $this->smartETA();
+
 
 		return $out;
 	}
@@ -1424,7 +1502,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 							 WHERE ap.permission = '{$permission}'
 								 AND ap.id_admin IS NOT NULL) admin
 						WHERE txt IS NOT NULL";
-		return Admin::q( $query );
+		$sendSMSTo = [];
+		$usersToReceiveSMS = Admin::q( $query );
+		foreach( $usersToReceiveSMS as $user ){
+			if( $user->isWorking() ){
+				$sendSMSTo[ $user->name ] = $user->txt;
+			}
+		}
+		return $sendSMSTo;
 	}
 
 	public function adminWithSupportAccess(){
@@ -1480,10 +1565,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function calc_delivery_estimated_time( $datetime = null, $dateObject = false ){
-		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
-		$minutes = round( ( ( $time->format( 'i' ) + $this->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
-		$minutes -= $time->format( 'i' );
+		if( $this->smartETA() ){
+			$minutes = $this->smartETA();
+		} else {
+			$multipleOf = 15;
+			$minutes = round( ( ( $time->format( 'i' ) + $this->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
+			$minutes -= $time->format( 'i' );
+		}
 		if( $dateObject ){
 			$time->modify( ' + ' . $minutes . ' minutes' );
 			return $time;

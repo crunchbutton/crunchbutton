@@ -587,11 +587,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$giftCardAdded = true;
 					}
 				}
-				$this->notes = $giftcards[ 'notes' ];
+				$_order = Order::o( $this->id_order );
+				$_order->notes = $giftcards[ 'notes' ];
+				$_order->save();
+				$this->notes = $_order->notes;
 			}
 		}
 
-		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
 		$this->debitFromUserCredit( $user->id_user );
 		if ( $params['make_default'] == 'true' ) {
@@ -2691,10 +2693,18 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		} else {
 			$driver = c::user();
-			if( $driver->id_admin && $driver->hasPexCard() ){
-				return 'Pay the restaurant with PEX card';
+			if( $this->pay_type == 'cash' ){
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'Pay restaurant with your own cash, not PEX';
+				} else {
+					return 'Pay the restaurant with cash';
+				}
 			} else {
-				return 'Pay the restaurant';
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'Pay the restaurant with PEX card';
+				} else {
+					return 'Pay the restaurant';
+				}
 			}
 		}
 	}

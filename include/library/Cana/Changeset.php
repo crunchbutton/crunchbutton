@@ -20,14 +20,14 @@ class Cana_Changeset extends Cana_Model {
 				}
 			}
 		}
-		
+
 		if (isset($options['custom'])) {
 			foreach ($options['custom'] as $key => $customOption) {
 				$oldVals[$key] = $customOption['old'];
 				$newVals[$key] = $customOption['new'];
 			}
 		}
-		
+
 		$time = isset($options['timestamp']) ? $options['timestamp'] : date('Y-m-d H:i:s');
 
 		// set
@@ -38,6 +38,9 @@ class Cana_Changeset extends Cana_Model {
 			$set->id_admin = c::admin()->id_admin;
 		} elseif (c::user()->id_user) {
 			$set->id_user = c::user()->id_user;
+			// there is some case where the change is made by a cron task
+		} elseif ( isset($options['id_admin']) ){
+			$set->id_admin = $options['id_admin'];
 		}
 		$set->{$object->idVar()} = $object->{$object->idVar()};
 
@@ -50,7 +53,7 @@ class Cana_Changeset extends Cana_Model {
 				$change->strip();
 				$change->{$set->idVar()} = $set->{$set->idVar()};
 				$change->field = $field;
-				
+
 				$change->new_value = $newVals[$field];
 				$change->old_value = $oldVals[$field];
 				$change->save();
