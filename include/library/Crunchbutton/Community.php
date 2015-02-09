@@ -552,10 +552,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function shutDownCommunities(){
+	public function shutDownCommunities( $dt = null ){
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE auto_close = 1' );
 		foreach( $communities as $community ){
-			$community->shutDownCommunity();
+			$community->shutDownCommunity( $dt );
 		}
 		// Call the method that reopen auto closed communities with drivers
 		Crunchbutton_Community::reopenAutoClosedCommunities();
@@ -606,19 +606,19 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
-	public function activeDrivers(){
+	public function activeDrivers( $dt = null ){
 		$totalDrivers = 0;
 		$drivers = $this->getDriversOfCommunity();
 		$hasDriverWorking = false;
 		foreach( $drivers as $driver ){
-			if( $driver->isWorking() ){
+			if( $driver->isWorking( $dt ) ){
 				$totalDrivers++;
 			}
 		}
-		return $totalDriversByCommunity;
+		return $totalDrivers;
 	}
 
-	public function shutDownCommunity(){
+	public function shutDownCommunity( $dt = null ){
 
 		if( !$this->auto_close ){ return; }
 
@@ -630,7 +630,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$restaurants = $this->restaurants();
 		$has3rdPartyDeliveryRestaurantsOpen = false;
 		foreach( $restaurants as $restaurant ){
-			if( $restaurant->open() ){
+			if( $restaurant->open( $dt ) ){
+			// if( $restaurant->open() ){
 				if( intval( $restaurant->delivery_service ) == 1 ){
 					$has3rdPartyDeliveryRestaurantsOpen = true;
 				}
@@ -638,7 +639,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 
 		if( $has3rdPartyDeliveryRestaurantsOpen ){
-			if( $this->activeDrivers() > 0 ){
+			if( $this->activeDrivers( $dt ) > 0 ){
 				$hasDriverWorking = true;
 			} else {
 				$hasDriverWorking = false;
@@ -672,6 +673,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				} else {
 					$message = 'Temporally closed!';
 				}
+
+				echo $message;
+				echo "\n";
 
 				// Close the community
 				$this->close_3rd_party_delivery_restaurants = true;
