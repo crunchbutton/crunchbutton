@@ -8,8 +8,10 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		page : '',
 		buttons : {
 			location: false,
-			menu: true
-		}
+			menu: true,
+			back: false
+		},
+		navStack: []
 	};
 	
 	service.menu = App.toggleMenu;
@@ -54,25 +56,12 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	service.control = function() {
-		switch (service.page) {
-			case 'restaurant':
-			case 'order':
-				service.buttons.location = true;
-				service.buttons.back = true;
-				service.buttons.menu = false;
-				if( OrderViewService.newOrder ){
-					service.buttons.back = false;
-					service.buttons.menu = true;
-				}
-
-				break;
-			default:
-				service.buttons.back = false;
-				service.buttons.location = ( service.page != 'location' );
-				service.buttons.menu = true;
-
-
-				break;
+		if (service.page == 'location' || service.page == 'restaurants' || service.navStack.length < 2) {
+			service.buttons.back = false;
+			service.buttons.menu = true;
+		} else {
+			service.buttons.back = true;
+			service.buttons.menu = false;
 		}
 	}
 

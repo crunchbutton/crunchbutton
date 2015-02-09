@@ -291,20 +291,26 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					// log in from the app
 					$fb = c::auth()->facebook(new Crunchbutton_Auth_Facebook($_REQUEST['fbrtoken']));
 					$user = c::user();
-					if( !$user->email && $fb->fbuser()->email ){
+
+					// if we have a user and they do not have an email, save it as the facebook email
+					if ($user->id_user && !$user->email && $fb->fbuser()->email) {
 						$user->email = $fb->fbuser()->email;
 						$user->save();
 					}
-					if ( $fb->fbuser()->id ) {
-						$fb_user = User::facebook( $fb->fbuser()->id );
-						if ( $user->id_user && $fb_user->id_user && $fb_user->id_user != $user->id_user ) {
-								echo json_encode(['error' => 'facebook id already in use']);
-								exit;
+					
+					// log them in as the facebook user instead of the previous user they were logged in as.
+					// @todo: merge account info if this is the case as previous user data could be lost
+					if ($fb->fbuser()->id) {
+						$fb_user = User::facebook($fb->fbuser()->id);
+						if ($user->id_user && $fb_user->id_user && $fb_user->id_user != $user->id_user) {
+							c::auth()->setUser($fb_user);
 						}
 					}
+
 					c::auth()->facebook()->check();
 					c::auth()->fbauth();
 					echo c::user()->json();
+
 					break;
 				}
 				echo c::user()->json();

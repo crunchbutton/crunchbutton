@@ -2,13 +2,13 @@
 NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService ){
 
 	var service = {
-				callback : false,
-				user : false,
-				form : {
-					email : '',
-					password : ''
-				}
-			};
+		callback : false,
+		user : false,
+		form : {
+			email : '',
+			password : ''
+		}
+	};
 
 	// array with the errors
 	service.errors = [];
@@ -397,7 +397,12 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 
 	service.auth = function() {
 		service.facebook.wait = true;
-		FB.login(service.facebook.processStatus, { scope: App.facebookScope });
+
+		if (window.facebookConnectPlugin) {
+			window.facebookConnectPlugin.login(App.facebookScope.split(','), service.facebook.processStatus, service.facebook.processStatus);
+		} else if (window.FB) {
+			window.FB.login(service.facebook.processStatus, { scope: App.facebookScope });
+		}
 	}
 
 	service.signout = function( callback ){

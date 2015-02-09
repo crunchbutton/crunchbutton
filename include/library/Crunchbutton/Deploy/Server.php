@@ -53,7 +53,7 @@ class Crunchbutton_Deploy_Server extends Cana_Table {
 		if (!isset($this->_commits)) {
 			$this->_commits = [];
 			$repo = explode('/', $this->repo);
-			$logs = Github::commits($repo[0], $repo[1]);
+			$logs = Github::commits($repo[0], $repo[1], $repo[2]);
 			if ($logs) {
 				$travis = new Travis;
 				$status = $travis->status($repo[0],$repo[1]);

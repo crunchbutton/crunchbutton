@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD  `auto_close` tinyint(1) DEFAULT 1;
