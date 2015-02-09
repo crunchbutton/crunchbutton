@@ -9,9 +9,10 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			'no_payment_method' : { 'method': 'GET', params : { 'action' : 'no-payment-method' }, isArray: true },
 			'paid_list' : { 'method': 'GET', params : { 'action' : 'paid-list' }, isArray: true },
 			'order_placement' : { 'method': 'GET', params : { 'action' : 'order-placement' } },
+			'eta' : { 'method': 'GET', params : { 'action' : 'eta' }, isArray: true },
 		}
 	);
-	
+
 	var restaurant = ResourceFactory.createResource(App.service + 'restaurants/:id_restaurant', { id_restaurant: '@id_restaurant'}, {
 		'load' : {
 			url: App.service + 'restaurant/:id_restaurant',
@@ -23,13 +24,14 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			params : {}
 		}
 	});
-	
+
 	service.list = function(params, callback) {
 		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
-	
+
+
 	service.get = function(id_restaurant, callback) {
 		restaurant.load({id_restaurant: id_restaurant}, function(data) {
 			callback(data);
@@ -56,6 +58,12 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 
 	service.paid_list = function( callback ){
 		restaurants.paid_list( function( data ){
+			callback( data );
+		} );
+	}
+
+	service.eta = function( callback ){
+		restaurants.eta( function( data ){
 			callback( data );
 		} );
 	}

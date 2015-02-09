@@ -25,6 +25,8 @@
 
 	<div class="restaurant-message" ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
 
+	<div ng-if="restaurant.eta" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
+
 	<div ng-show="restaurant.image" class="restaurant-pic-wrapper {{AB.restaurantPage}}">
 		<div class="restaurant-pic" style="background: url({{restaurant.img}});"></div>
 	</div>

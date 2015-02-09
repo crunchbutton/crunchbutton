@@ -52,7 +52,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					// Check if the community was auto shutdown
 					$autoShutdownAdmin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 					$id_admin = $autoShutdownAdmin->id_admin;
-					if( $id_admin == $community->close_3rd_party_delivery_restaurants_id_admin || $id_admin == $community->close_all_restaurants_id_admin ){
+					if( $id_admin == $community->close_3rd_party_delivery_restaurants_id_admin ){
 						$driverRestaurant = $community->driverRestaurant();
 						if( $driverRestaurant->id_restaurant ){
 							for( $i = 0; $i < count( $config['restaurants'] ); $i++ ){

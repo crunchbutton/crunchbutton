@@ -1,0 +1,162 @@
+<div class="top-pad"></div>
+<div class="content-padding drivers-apply">
+	<div class="apply-item-title text-your-order" name="userForm">
+		Driver Application
+	</div>
+	<p>
+		<br>
+		We'll get back to you to schedule a quick phone call once we receive your application.<br>
+		All fields are required.
+		<br><br>
+	</p>
+	<!--form goes here-->
+	<form>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> First Name:</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.firstName">Please enter your first name:</div>
+				<input type="text" ng-model="apply.firstName" name="firstName" class="form-control form-control-large">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Last Name:</h4>
+			
+			<div class="textbox">
+				<div ng-if="errors.lastName">Please enter your last name:</div>
+				<input type="text" ng-model="apply.lastName" name="lastName" class="form-control form-control-large" >
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Email:</h4>
+			
+			<div class="textbox">
+				<div ng-if="errors.email">Please enter your email:</div>
+				<input type="text" class="form-control form-control-large" ng-model="apply.email" name="email" >
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> What school are you near?</h4>
+			
+			<div class="textbox">
+				<div ng-if="errors.university">Please enter your nearest school:</div>
+				<select class="form-control form-control-large form-control form-control-large-select" ng-model="apply.university" name="university" >
+					<option></option> 
+					<option value="Yale University">
+						Yale University
+					</option>
+					<option value="Brown University">
+						Brown University
+					</option>
+					<option value="University of Southern California">
+						University of Southern California
+					</option> <option value="Colgate University">Colgate University</option> <option value="College of the Holy Cross">College of the Holy Cross</option> <option value="St Olaf College">St Olaf College</option> <option value="Boston University">Boston University</option> <option value="University of North Carolina - Chapel Hill">University of North Carolina - Chapel Hill</option> <option value="Washington State University">Washington State University</option> <option value="University of Dayton">University of Dayton</option> <option value="University of Oregon">University of Oregon</option> <option value="University of Illinois - Urbana">University of Illinois - Urbana</option> <option value="Cal Poly SLO">Cal Poly SLO</option> <option value="Ohio State University">Ohio State University</option> <option value="Michigan State University">Michigan State University</option> <option value="University of Nebraska">University of Nebraska</option> <option value="Indiana University">Indiana University</option> <option value="UC Riverside">UC Riverside</option> <option value="UC Irvine">UC Irvine</option> <option value="Virginia Tech University">Virginia Tech University</option> <option value="UC San Diego">UC San Diego</option> <option value="University of Arizona">University of Arizona</option> <option value="University of Arkansas">University of Arkansas</option> <option value="Oberlin College">Oberlin College</option> <option value="Rutgers University">Rutgers University</option> <option value="Auburn University">Auburn University</option> <option value="University of Maine">University of Maine</option> <option value="Baylor University">Baylor University</option> <option value="Virginia Commonwealth University">Virginia Commonwealth University</option> <option value="Southern Methodist University">Southern Methodist University</option> <option value="Boise State University">Boise State University</option> <option value="University of Kentucky">University of Kentucky</option> <option value="North Carolina State">North Carolina State</option> <option value="Purdue University">Purdue University</option> <option value="UNC - Charlotte">UNC - Charlotte</option> <option value="University of South Carolina">University of South Carolina</option> <option value="Clemson University">Clemson University</option> <option value="University of West Virginia">University of West Virginia</option> <option value="Princeton University">Princeton University</option> <option value="UC San Diego">UC San Diego</option> <option value="Ohio University">Ohio University</option> <option value="Northwestern University">Northwestern University</option> <option value="UCLA">UCLA</option> <option value="Southern Methodist University">Southern Methodist University</option> <option value="University of South Carolina">University of South Carolina</option> <option value="West Virginia University">West Virginia University</option> <option value="Princeton University">Princeton University</option> <option value="Northwestern University">Northwestern University</option> <option value="Arizona State University">Arizona State University</option> <option value="Boston College">Boston College</option> <option value="University of Chicago">University of Chicago</option> <option value="University of Wyoming">University of Wyoming</option> <option value="University of Connecticut">University of Connecticut</option> <option value="Ohio University">Ohio University</option> <option value="University of Michigan">University of Michigan</option> <option value="University of Virginia">University of Virginia</option> <option value="Tufts University">Tufts University</option> <option value="Lehigh University">Lehigh University</option> <option value="Loyola Marymount University">Loyola Marymount University</option> <option value="Illinois State University">Illinois State University</option> <option value="University of Alabama">University of Alabama</option> <option value="Other">Other</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Cell Phone Number:</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.number">Please enter your number:</div>
+				<input type="tel" class="form-control form-control-large" ng-model="apply.number" name="number" >
+			</div>
+		</div>
+		
+		<div class="form-group"></div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> What type of phone do you have?</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.phone">Please enter your phone type:</div>
+				<input type="radio" ng-model="apply.phone" name="phone" value="iPhone" id="apply-phone-iphone"><label for="apply-phone-iphone">iPhone</label><br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="Android" id="apply-phone-android"><label for="apply-phone-android">Android</label><br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="Windows" id="apply-phone-windows"><label for="apply-phone-windows">Windows</label><br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="OtherSmartPhone" id="apply-phone-other"><label for="apply-phone-other">Other Smartphone</label><br>
+				<input type="radio" ng-model="apply.phone" name="phone" value="Non-Smartphone" id="apply-phone-dumb"><label for="apply-phone-dumb">Non-Smartphone</label><br>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Who is your carrier?</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.carrier">Please enter your carrier:</div>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Verizon" id="apply-carrier-verizon"><label for="apply-carrier-verizon">Verizon</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="ATandT" id="apply-carrier-att"><label for="apply-carrier-att">AT&amp;T</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Sprint" id="apply-carrier-sprint"><label for="apply-carrier-sprint">Sprint</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="T-Mobile" id="apply-carrier-tmobile"><label for="apply-carrier-tmobile">T-Mobile</label><br>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" id="apply-carrier-other"><label for="apply-carrier-other">Other:</label>
+				<div ng-if="errors.otherCarrier">Please specify your carrier:</div>
+				<input ng-click="apply.carrier='Other'" class="form-control form-control-small" type="text" name="otherCarrier" ng-model="apply.otherCarrier">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Car or bike?</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.transport">Please enter your mode of transport:</div>
+				<input type="radio" name="transport" ng-model="apply.transport" value="car" id="apply-trans-car"><label for="apply-trans-car">Car</label><br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="bike" id="apply-trans-bike"><label for="apply-trans-bike">Bike</label><br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="both" id="apply-trans-both"><label for="apply-trans-both">Both</label><br>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> How many hours per week would you like to work?</h4>
+			<p>
+				<i>No commitment necessary - just a general approximation</i>
+			</p>
+
+			<div class="textbox">
+				<div ng-if="errors.hours">Please enter your number of preferred hours:</div>
+				<br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="5" id="apply-hours-5"><label for="apply-hours-5">5-10</label><br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="10" id="apply-hours-10"><label for="apply-hours-10">10-20</label><br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="20" id="apply-hours-20"><label for="apply-hours-20">20-30</label><br>
+				<input type="radio" name="hours" ng-model="apply.hours" value="30" id="apply-hours-30"><label for="apply-hours-30">30+</label><br>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Applicant Type:</h4>
+			<p>
+				<i>Select student if you're a student at the college we're operating at</i>
+			</p>
+
+			<div class="textbox">
+				<div ng-if="errors.applicant">Please choose student or non-student:</div>
+				<br>
+				<input type="radio" ng-model="apply.applicant" name="applicant" value="student" id="apply-applicant-student"><label for="apply-applicant-student">Student</label><br>
+				<input type="radio" ng-model="apply.applicant" name="applicant" value="non-student" id="apply-applicant-non-student"><label for="apply-applicant-non-student">Non-Student</label><br><br><br>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<h4><span class="form-required">*</span> How did you find out about us?</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.source">Please enter how you found out about us:</div>
+				<input type="radio" ng-model="apply.source" name="source" value="craigslist" id="apply-source-craigslist"><label for="apply-source-craigslist">Craigslist</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="school-job-list" id="apply-source-school"><label for="apply-source-school">School Job Board</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="friend" id="apply-source-friend"><label for="apply-source-friend">Through a Friend</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="campus-marketing" id="apply-source-marketing"><label for="apply-source-marketing">Marketing on Campus</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="cb-website" id="apply-source-website"><label for="apply-source-website">Via Crunchbutton Website</label><br>
+				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:</label>
+				<div ng-if="errors.otherSource">Please specify how you found out about us:</div>
+				<input ng-click="apply.source='other'" class="form-control form-control-small" type="text" ng-model="apply.otherSource" name="otherSource">
+			</div>
+		</div>
+
+		
+		<button class="button lightorange button-bottom " ng-click="post()">Submit</button>
+		
+	</form>
+</div>

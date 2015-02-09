@@ -106,7 +106,7 @@ class Crunchbutton_User extends Cana_Table {
 				and user_auth.`type`="facebook"
 				and user.active=1
 				and user_auth.active=1
-			');
+			')->get(0);
 	}
 
 	public static function facebookCreate($id, $auth = false) {
@@ -143,7 +143,7 @@ class Crunchbutton_User extends Cana_Table {
 			$user = false;
 		} else {
 			// we have a valid facebook authed user
-			$user = $fbuser->get(0);
+			$user = $fbuser;
 		}
 
 		return $user;

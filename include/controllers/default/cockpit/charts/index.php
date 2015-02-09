@@ -8,12 +8,12 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 			return ;
 		}
 		switch ( c::getPagePiece(1) ) {
-			
+
 			case 'cohort':
 				switch ( c::getPagePiece(2) ) {
 					case 'new':
 							$this->cohort_new();
-							break;	
+							break;
 					case 'remove':
 							$this->cohort_remove();
 							break;
@@ -23,15 +23,15 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 				}
 
 				break;
-			
+
 			default:
 				$this->overview();
 				break;
 		}
 	}
-	
+
 	public function overview() {
-	
+
 		// select count(*) as users from `session` where date_activity>DATE_SUB(NOW(),INTERVAL 10 MINUTE);
 
 		$data = [
@@ -53,7 +53,7 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 					where
 						env="live"
 						and date > date_sub(now(), interval 1 week)
-				')->c			
+				')->c
 			]
 		];
 
@@ -64,13 +64,13 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 		$chartChurn = new Crunchbutton_Chart_Churn();
 		$chartGift = new Crunchbutton_Chart_Giftcard();
 		$chartOrder = new Crunchbutton_Chart_Order();
-		
+
 		$graphs = [];
 
 		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-main'] ) ) {
 
-			$graphs[ 'Main' ] = array_merge( 
-																								$chartUsers->getGroups( 'main' ), 
+			$graphs[ 'Main' ] = array_merge(
+																								$chartUsers->getGroups( 'main' ),
 																								$chartRevenue->getGroups( 'main' ),
 																								$chartGift->getGroups( 'main' ),
 																								$chartOrder->getGroups( 'main' ),
@@ -80,8 +80,8 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 
 		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-investors'] ) ) {
 
-			$graphs[ 'For Investors' ] = array_merge( 
-																								$chartUsers->getGroups( 'investors' ), 
+			$graphs[ 'For Investors' ] = array_merge(
+																								$chartUsers->getGroups( 'investors' ),
 																								$chartRevenue->getGroups( 'investors' ),
 																								$chartChurn->getGroups( 'investors' ),
 																								$chartGift->getGroups( 'investors' ),
@@ -90,26 +90,25 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 		}
 
 		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-detailed-analytics'] ) ) {
-			
-			$graphs[ 'Detailed Analytics' ] = array_merge( 
-																								$chartUsers->getGroups( 'detailed-analytics' ), 
+
+			$graphs[ 'Detailed Analytics' ] = array_merge(
+																								$chartUsers->getGroups( 'detailed-analytics' ),
 																								$chartRevenue->getGroups( 'detailed-analytics' ),
 																								$chartChurn->getGroups( 'detailed-analytics' ),
 																								$chartGift->getGroups( 'detailed-analytics' ),
 																								$chartOrder->getGroups( 'detailed-analytics' )
 																							);
 		}
-		
+
 		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-no-grouped-charts'] ) ) {
-			$graphs[ 'Old Graphs' ] = array_merge( 
-																								$chartUsers->getGroups(), 
+			$graphs[ 'Old Graphs' ] = array_merge(
+																								$chartUsers->getGroups(),
 																								$chartRevenue->getGroups(),
 																								$chartChurn->getGroups(),
 																								$chartGift->getGroups(),
 																								$chartOrder->getGroups()
 																							);
 		}
-
 		c::view()->graphs = $graphs;
 		c::view()->display('charts/index');
 	}

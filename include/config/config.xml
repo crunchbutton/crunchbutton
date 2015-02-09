@@ -39,6 +39,13 @@
 			<host>localhost</host>
 			<prefix></prefix>
 		</travis>
+		<metrics>
+			<type>postgresql</type>
+			<user>***REMOVED***</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton</db>
+			<host>***REMOVED***</host>
+		</metrics>
 	</db>
 	<defaults>
 		<page>home</page>

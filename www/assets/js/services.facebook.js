@@ -77,6 +77,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// process status is called any time a status change event is triggered with facebook
 	service.processStatus = function(status) {
+		console.log(status);
 
 		if (status.status === 'connected' && status.authResponse) {
 

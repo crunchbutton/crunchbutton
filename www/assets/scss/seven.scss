@@ -246,7 +246,7 @@ html {
 .home-top {
 	background: #90562f url(../images/micro/bg-sandwich.jpg);
 	background-position: top right;
-	background-size: cover;
+	background-size: 200%;
 	padding: 0 0 60px 0;
 	color: #fff;
 }
@@ -1387,11 +1387,6 @@ p {
 	font-size: 1.1em;
 }
 
-
-​.facebook {
-	display: none !important;
-}
-
 .footer .social {
 	float: right;
 	margin-top: 10px;
@@ -1906,6 +1901,8 @@ select.form-input {
 	display: table;
 	width: 100%;
 	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 	white-space:nowrap;
 	margin-bottom: .45em;
 }
@@ -2526,6 +2523,17 @@ sup {
 	.staff-orite {
 		display: none;
 	}
+}
+
+.location-gorillia {
+	background: url(../images/micro/gorillia.svg) no-repeat;
+	background-position: top center;
+	width: 18em;
+	height: 18em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 4em;
+	margin-bottom: 2em;
 }
 
 .about-green-orange {
@@ -3605,4 +3613,177 @@ select {
 		margin-bottom: 20px;
 		margin-top: 0;
 	}
+}
+
+/*Application form styles:*/
+.drivers-apply .textbox {
+	line-height: 2em;
+}
+.drivers-apply .textbox label {
+	cursor: pointer;
+	margin-left: 1em;
+}
+.drivers-apply .form-group {
+    line-height: 1.6em;
+    margin-bottom: 2em;
+	display: inline-block;
+	vertical-align: top;
+}
+@media screen and (min-width: 769px) {
+	.drivers-apply .form-group {
+    	width: 40%;
+	}
+	.drivers-apply .form-group:nth-child(even) {
+		margin-left:7em;
+	}
+}
+.drivers-apply .form-control {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: .2em .5em;
+    color: #555;
+    line-height: 1.4em;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.drivers-apply .form-control-large {
+    width: 100%;
+    font-size: 1.6em;
+    border-radius: 4px;
+}
+.drivers-apply .form-control-small {
+    width: 50%;
+    font-size: 1.2em;
+    border-radius: 3px;
+}
+.drivers-apply .form-control-select {
+	-webkit-appearance: menulist-button;
+}
+
+.drivers-apply .button-bottom {
+    width: 11em;
+    background-color:rgb(247, 128, 83);
+    color:white;
+    border-radius:4px;
+    border:none;
+}
+
+i {
+    font-style:italic;
+    font-weight:300;
+}
+
+.drivers-apply .form-required {
+    color:red;
+}
+
+.drivers-apply .apply-item-title {
+	 font-weight:bold;
+	 font-size:1.5em;
+	 color:rgb(247, 128, 83);
+}
+
+.stamp-loader {
+    height: 16.7em;
+	width: 16.7em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 14.8em;
+}
+
+.stamp-loader-button {
+    height: 100%;
+	width: 100%;
+	background-size: 100%;
+	background: url(../images/micro/stamp-loader-button.svg);
+}
+
+.stamp-loader-words {
+	margin-top: -100%;
+    height: 100%;
+	width: 100%;
+	background-size: 100%;
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+	background: url(../images/micro/stamp-loader-words.svg);
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.restaurant-message{
+	font-size:1.5em;
+	margin-bottom:.5em;
+}
+
+/*
+@mixin transform($transforms) {
+	-moz-transform: $transforms;
+	-o-transform: $transforms;
+	-ms-transform: $transforms;
+	-webkit-transform: $transforms;
+	transform: $transforms;
+}
+
+@mixin rotate ($deg) {
+	@include transform(rotate(#{$deg}deg));
+}
+
+@for $i from 1 through 100 {
+	.char#{$i} {
+		@include rotate(($i*6-100));
+	}
+}
+
+.stamp-loader-lettering {
+	margin-left: 100px;
+	position: absolute;
+    height: 100%;
+	width: 100%;
+}
+
+.stamp-loader-lettering span {
+	font-size: 26px;
+	height: 100px;
+	position: absolute;
+	width: 20px;
+	transform-origin: bottom center;
+	text-transform: uppercase;
+	font-familt: "Museo Slab";
+
+}
+*/
+
+.popular-location:not(:last-of-type):after {
+	content: ", ";
+	padding-right: .2em;
+	padding-left: .1em;
+}
+
+
+@-webkit-keyframes shakeit {
+	0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+	10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+	30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+	40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+	50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+	70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+	80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.shake {
+
+	-webkit-animation-name: shakeit;
+	-webkit-animation-duration: 0.8s;
+	-webkit-transform-origin:50% 50%;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
 }

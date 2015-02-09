@@ -136,6 +136,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 
 						$community->active = $this->request()[ 'active' ];
+						$community->auto_close = $this->request()[ 'auto_close' ];
 						$community->loc_lat = $this->request()[ 'loc_lat' ];
 						$community->loc_lon = $this->request()[ 'loc_lon' ];
 						$community->name = $this->request()[ 'name' ];
