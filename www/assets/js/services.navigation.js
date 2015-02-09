@@ -10,7 +10,8 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 			location: false,
 			menu: true,
 			back: false
-		}
+		},
+		navStack: []
 	};
 	
 	service.menu = App.toggleMenu;
@@ -55,7 +56,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	service.control = function() {
-		if (service.page == 'location' || service.page == 'restaurants') {
+		if (service.page == 'location' || service.page == 'restaurants' || service.navStack.length < 2) {
 			service.buttons.back = false;
 			service.buttons.menu = true;
 		} else {

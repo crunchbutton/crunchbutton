@@ -433,9 +433,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				backwards = '/location';
 				break;
 		}
-		if (!backwards && App.previousPages.length > 1) {
-			App.previousPages.pop();
-			backwards = App.previousPages.pop();
+		if (!backwards && MainNavigationService.navStack.length > 1) {
+			MainNavigationService.navStack.pop();
+			backwards = MainNavigationService.navStack.pop();
 			console.log('setting to', backwards);
 		}
 		if (backwards) {
@@ -479,19 +479,25 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	});
 	*/
-	
-	App.previousPages = [];
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
-		App.previousPages.push($route.current.$$route.originalPath);
+		MainNavigationService.navStack.push($route.current.$$route.originalPath);
 
-		if (App.isPhoneGap && cordova && cordova.plugins && cordova.plugins.Keyboard) {
-			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
+		if (App.isPhoneGap) {
+			if (cordova && cordova.plugins) {
+				if (cordova.plugins.Keyboard) {
+					cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
+					//cordova.plugins.Keyboard.disableScroll(true);
+				}
+			}
 		}
+
+		
+		
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -966,10 +972,6 @@ App.init = function(config) {
 	
 	// setup for system links
 	if (App.isPhoneGap) {
-		if (cordova && cordova.plugins && cordova.plugins.Keyboard) {
-			cordova.plugins.Keyboard.disableScroll(true);
-		}
-		
 		$(document).on('click', 'a[target=_system]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
