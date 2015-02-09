@@ -300,9 +300,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.display = function($event){
 
-		if ( $scope.loadingRestaurant ) {
+		if ( $scope.loadingRestaurant || $rootScope.navigation.page != 'restaurants') {
 			return;
 		}
+
 		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
 
@@ -790,15 +791,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.tooglePayment = function( type ){
 		return order.tooglePayment( type );
 	}
-	$scope.order._years = function(){
-		return order._years();
-	}
-	$scope.order._months = function(){
-		return order._months();
-	}
-	$scope.order._tips = function(){
-		return order._tips();
-	}
+	$scope.order._years = order._years();
+	
+	$scope.order._months = order._months();
+	
+	$scope.order._tips = order._tips();
+
 	$scope.showCreditPayment = function(){
 		$scope.order.tooglePayment( 'card' );
 		$scope.order.showForm = true;
