@@ -56,6 +56,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	service.control = function() {
+		service.buttons.location = service.page != 'location';
 		if (service.page == 'location' || service.page == 'restaurants' || service.navStack.length < 2) {
 			service.buttons.back = false;
 			service.buttons.menu = true;
