@@ -454,6 +454,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.$safeApply = function(fn) {
+		if (!this.$root) {
+			return;
+		}
 		var phase = this.$root.$$phase;
 		if (phase == '$apply' || phase == '$digest') {
 			if (fn && (typeof(fn) === 'function')) {

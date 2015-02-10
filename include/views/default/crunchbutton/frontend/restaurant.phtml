@@ -161,7 +161,7 @@
 			<div ng-bind-once ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-bind-once ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
+					<li ng-bind-once ng-repeat="dish in category.dishes()" data-id_dish="{{dish.id_dish}}" add-to-cart class="dish-item">
 						<span class="dish-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span>
 						<span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span>
 					</li>
