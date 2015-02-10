@@ -644,6 +644,7 @@ App.track = function() {
 	var future;
 	if(typeof arguments[1] == 'string') {
 		event_uri = event_uri + '&label=' + arguments[1]; 
+		data = arguments[2];
 	} else {
 		data = arguments[1];
 	}
