@@ -722,6 +722,8 @@ App.trackCommunity = function (id_community) {
 		if (typeof( ga ) == 'function')  {
 			ga('set', COMMUNITY_DIMENSION, community_name);
 		}
+	} else {
+		console.log('could not parse community: ', community);
 	}
 
 }
