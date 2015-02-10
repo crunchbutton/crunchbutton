@@ -651,18 +651,17 @@ App.track = function() {
 		event_uri = event_uri + '&community=' + App._trackingCommunity;
 	}
 	if(data) {
-		future = $http.post(event_uri, data)
+		future = $.post(event_uri, data)
 	} else {
-		future = $http.post(event_uri);
+		future = $.post(event_uri);
 	}
-	future.success(function (resp) { console.log('stored event', resp)})
-		  .error(function (resp) { console.log('ERROR STORING EVENT', resp)});
+	future.done(function (resp) { console.log('stored event', resp)})
+		  .fail(function (jqXHR, textStatus, errorThrown) { console.log('ERROR STORING EVENT', errorThrown, textStatus)});
 	if (App.config.env != 'live') {
 		return;
 	}
 
 	if (arguments[0] == 'Ordered') {
-		$http.post(App.service + '/events?action=' + arguments[0], arguments[1]);
 		if (typeof( ga ) == 'function') {
 			var trans = {
 				id: arguments[1].id,
