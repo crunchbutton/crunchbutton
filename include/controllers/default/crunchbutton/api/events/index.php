@@ -70,7 +70,7 @@ class Controller_api_events extends Crunchbutton_Controller_Rest {
     		echo json_encode(["error" => "action is required"]);
     	}
     	if($this->method() == 'post') {
-    		$data = $this->$request();
+    		$data = $this->request();
     	}
     	$resp = Crunchbutton_Analytics_Event::storeEvent($category, $label, $action, $community, $data);
     	// TODO: Ask Devin about which function sets content type to application/json
