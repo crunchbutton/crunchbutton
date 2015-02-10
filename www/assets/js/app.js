@@ -694,8 +694,9 @@ App.trackCommunity = function (id_community) {
 		return;
 	}
 	if(!isNaN(parseInt(id_community))) {
+		var community_name = App.communities[id_community];
 		if (typeof( ga ) == 'function')  {
-			ga('set', COMMUNITY_DIMENSION, id_community.toString());
+			ga('set', COMMUNITY_DIMENSION, community_name);
 		}
 	}
 }
