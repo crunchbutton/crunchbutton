@@ -714,7 +714,7 @@ App.track = function() {
 App.trackCommunity = function (id_community) {
 
 	if(!isNaN(parseInt(id_community))) {
-		var community_name = App.communities[id_community];
+		var community_name = App.community_name_by_id[id_community];
 		App._trackingCommunity = id_community.toString();
 		if (App.config.env != 'live') {
 			return;
@@ -723,7 +723,7 @@ App.trackCommunity = function (id_community) {
 			ga('set', COMMUNITY_DIMENSION, community_name);
 		}
 	} else {
-		console.log('could not parse community: ', community);
+		console.log('could not parse community: ', id_community);
 	}
 
 }
@@ -1018,6 +1018,15 @@ App.init = function(config) {
 			parent.navigator.splashscreen.hide();
 		}
 	}
+	var community_name_by_id = {};
+	var community;
+	for(community_name in App.communities) {
+		if(App.communities.hasOwnProperty(community_name)) {
+			community = App.communities[community_name];
+			community_name_by_id[community.id_community] = community_name;
+		}
+	}
+	App.community_name_by_id = community_name_by_id;
 };
 
 App.handleUrl = function(url) {
