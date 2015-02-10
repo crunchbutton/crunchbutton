@@ -714,13 +714,17 @@ App.track = function() {
 App.trackCommunity = function (id_community) {
 
 	if(!isNaN(parseInt(id_community))) {
-		var community_name = App.community_name_by_id[id_community];
-		App._trackingCommunity = id_community.toString();
-		if (App.config.env != 'live') {
-			return;
-		}
-		if (typeof( ga ) == 'function')  {
-			ga('set', COMMUNITY_DIMENSION, community_name);
+		try {
+			var community_name = App.community_name_by_id[id_community];
+			App._trackingCommunity = id_community.toString();
+			if (App.config.env != 'live') {
+				return;
+			}
+			if (typeof( ga ) == 'function')  {
+				ga('set', COMMUNITY_DIMENSION, community_name);
+			}
+		} catch(e) {
+			console.log('ERROR track community: ', e);
 		}
 	} else {
 		console.log('could not parse community: ', id_community);
@@ -941,7 +945,15 @@ App.init = function(config) {
 			$(this).removeClass('button-bottom-click');
 		}
 	}, '.button-bottom');
-
+	var community_name_by_id = {};
+	var community;
+	for(community_name in App.communities) {
+		if(App.communities.hasOwnProperty(community_name)) {
+			community = App.communities[community_name];
+			community_name_by_id[community.id_community] = community_name;
+		}
+	}
+	App.community_name_by_id = community_name_by_id;
 	// process the config, and startup angular
 	App.processConfig(config || App.config);
 	App.AB.init();
@@ -1018,15 +1030,6 @@ App.init = function(config) {
 			parent.navigator.splashscreen.hide();
 		}
 	}
-	var community_name_by_id = {};
-	var community;
-	for(community_name in App.communities) {
-		if(App.communities.hasOwnProperty(community_name)) {
-			community = App.communities[community_name];
-			community_name_by_id[community.id_community] = community_name;
-		}
-	}
-	App.community_name_by_id = community_name_by_id;
 };
 
 App.handleUrl = function(url) {
