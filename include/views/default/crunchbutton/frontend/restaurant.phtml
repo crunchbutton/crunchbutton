@@ -322,9 +322,9 @@
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
-							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select>
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7">{{order.form.card.month}}</select>
 
-							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select>
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8"></select>
 
 							<div class="divider"></div>
 						</div>
@@ -335,7 +335,7 @@
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
 						<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip" tabindex="9"></select>
+						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip" tabindex="9"></select>
 						<div class="divider"></div>
 					</div>
 				</div>
