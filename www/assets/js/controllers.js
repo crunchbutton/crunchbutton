@@ -15,6 +15,7 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
 	
 	$scope.communities = App.communities;
+
 	
 	$scope.apply = {};
 	$scope.errors = {};
@@ -74,6 +75,72 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 		}
     };
 });
+
+NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $location) {
+
+	$scope.communities = App.communities;
+	//console.log($scope.communities);
+
+	$scope.apply = {};
+	$scope.errors = {};
+	$scope.post = function(){
+		$scope.errors = {};
+		if (!$scope.apply.firstName) {
+			$scope.errors.firstName = true;
+		}
+		if (!$scope.apply.lastName) {
+			$scope.errors.lastName = true;
+		}
+		if (!$scope.apply.email) {
+			$scope.errors.email = true;
+		}
+		if (!$scope.apply.university) {
+			$scope.errors.university = true;
+		}
+		if (!$scope.apply.number) {
+			$scope.errors.number = true;
+		}
+		if (!$scope.apply.phone) {
+			$scope.errors.phone = true;
+		}
+		if (!$scope.apply.carrier) {
+			$scope.errors.carrier = true;
+		}
+		if ($scope.apply.carrier == 'Other') {
+			if (!$scope.apply.otherCarrier){
+				$scope.errors.otherCarrier = true;
+			}
+		}
+		if (!$scope.apply.transport) {
+			$scope.errors.transport = true;
+		}
+		if (!$scope.apply.hours) {
+			$scope.errors.hours = true;
+		}
+		if (!$scope.apply.applicant) {
+			$scope.errors.applicant = true;
+		}
+		if (!$scope.apply.source) {
+			$scope.errors.source = true;
+		}
+		if ($scope.apply.source == 'other') {
+			if (!$scope.apply.otherSource){
+				$scope.errors.otherSource = true;
+			}
+		}
+
+		if (jQuery.isEmptyObject($scope.errors)) {
+			ApplyService.post($scope.apply, function(data){
+				$location.path( '/thankyou' );
+				console.log(data);
+			})
+		} else {
+			App.alert('Please fill out all of the fields.');
+		}
+	};
+});
+
+
 /**
  * splash page
  */

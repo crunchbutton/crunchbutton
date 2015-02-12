@@ -211,7 +211,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
         .when('/drivers/apply', {
 			action: 'apply',
 			controller: 'ApplyCtrl',
-			templateUrl: 'assets/view/apply.html'
+			templateUrl: 'assets/view/drivers.apply.html'
+		})
+        .when('/reps/apply', {
+			action: 'reps-apply',
+			controller: 'repsApplyCtrl',
+			templateUrl: 'assets/view/reps.apply.html'
 		})
         .when('/thankyou', {
 			action: 'thankyou',
