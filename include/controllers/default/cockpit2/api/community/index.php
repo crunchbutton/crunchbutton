@@ -183,6 +183,8 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->save();
 
 						if( $community->id_community ){
+							// force driver group creation
+							Crunchbutton_Group::getDeliveryGroupByCommunity($community->driver_group);
 							echo $community->json();
 						} else {
 							$this->_error( 'error' );
