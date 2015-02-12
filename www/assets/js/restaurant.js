@@ -101,11 +101,11 @@ var Restaurant = function(id) {
 
 	}
 
-	self.tagfy = function( tag ){
+	self.tagfy = function( tag, force ){
 		if( tag ){
 			self._tag = tag;
 			if( tag == 'opening' ){
-				if( self._opensIn && self._opensIn_formatted != '' ){
+				if( ( self._opensIn && self._opensIn_formatted != '' ) || force ){
 					self._tag = tag;
 				} else {
 					self._tag = 'closed';
