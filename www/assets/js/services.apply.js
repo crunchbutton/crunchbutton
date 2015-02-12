@@ -15,7 +15,6 @@ NGApp.factory('ApplyService', function($resource) {
 	
 	service.post = function(params, callback) {
 		apply.save(params, function(data) {
-			//alert('yo');
 			callback(data);
 		});
 	}
