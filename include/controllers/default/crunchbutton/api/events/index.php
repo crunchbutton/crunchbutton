@@ -65,9 +65,11 @@ class Controller_api_events extends Crunchbutton_Controller_Rest {
     	if(!$category) {
     		// 400 here
     		echo json_encode(["error" => "category is required"]);
+    		return;
     	}
     	if(!$action) {
     		echo json_encode(["error" => "action is required"]);
+    		return;
     	}
     	if($this->method() == 'post') {
     		$data = $this->request();
