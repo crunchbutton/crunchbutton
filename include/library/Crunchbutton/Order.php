@@ -1281,18 +1281,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 				}
 			}
-
-			// legacy - lets keep it here for while
-			$community = $order->restaurant()->community;
-			if( $community ){
-				$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
-				if( $group->id_group ){
-					$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
-					foreach( $drivers as $driver ){
-						$driversToNotify[ $driver->id_admin ] = $driver;
-					}
-				}
-			}
 		}
 
 		$driverAlreadyNotified = [];
