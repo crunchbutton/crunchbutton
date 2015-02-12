@@ -1772,6 +1772,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$summary[ 'summary_email' ] = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
 
+		$params[ 'summary' ][ 'notes' ] = ( $params[ 'summary' ][ 'notes' ] ? $params[ 'summary' ][ 'notes' ] : 'Payment' );
+
 		if( !$summary[ 'summary_email' ] ){
 			return false;
 		}
