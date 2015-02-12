@@ -131,8 +131,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			}
 	}
 
-
-
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $date . '" AND cs.active = 1 ORDER BY c.name, cs.date_start ASC' );
@@ -264,11 +262,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
 						foreach( $permanentlys as $permanently ){
 							if( $permanently->id_admin ){
-								$assignment = new Crunchbutton_Admin_Shift_Assign();
-								$assignment->id_admin = $permanently->id_admin;
-								$assignment->id_community_shift = $newShift->id_community_shift;
-								$assignment->date = date('Y-m-d H:i:s');
-								$assignment->save();
+								if( !Crunchbutton_Admin_Shift_Assign_Permanently_Removed::wasRemoved( $newShift->id_community_shift, $permanently->id_admin ) ){
+									$assignment = new Crunchbutton_Admin_Shift_Assign();
+									$assignment->id_admin = $permanently->id_admin;
+									$assignment->id_community_shift = $newShift->id_community_shift;
+									$assignment->date = date('Y-m-d H:i:s');
+									$assignment->save();
+								}
 							}
 						}
 					} else {
@@ -279,11 +279,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 							foreach( $permanentlys as $permanently ){
 								if( $permanently->id_admin ){
 									if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $permanently->id_admin, $checkShift->id_community_shift ) ){
-										$assignment = new Crunchbutton_Admin_Shift_Assign();
-										$assignment->id_admin = $permanently->id_admin;
-										$assignment->id_community_shift = $checkShift->id_community_shift;
-										$assignment->date = date('Y-m-d H:i:s');
-										$assignment->save();
+										if( !Crunchbutton_Admin_Shift_Assign_Permanently_Removed::wasRemoved( $checkShift->id_community_shift, $permanently->id_admin ) ){
+											$assignment = new Crunchbutton_Admin_Shift_Assign();
+											$assignment->id_admin = $permanently->id_admin;
+											$assignment->id_community_shift = $checkShift->id_community_shift;
+											$assignment->date = date('Y-m-d H:i:s');
+											$assignment->save();
+										}
 									}
 								}
 							}
