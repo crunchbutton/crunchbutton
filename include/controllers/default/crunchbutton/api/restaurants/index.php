@@ -42,7 +42,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					$data[ '_short_description' ] = $restaurant->force_close_tagline;
 				}
 
-				$config['restaurants'][] = $data;
+				if( $data[ '_open' ] || $restaurant->show_when_closed ){
+					$config['restaurants'][] = $data;
+				}
 			}
 
 			// change driver restaurant name when auto shutting down community #4514
