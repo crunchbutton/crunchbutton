@@ -7,13 +7,13 @@ class Crunchbutton_Email_Payment_Summary extends Crunchbutton_Email {
 	public function __construct( $params ) {
 
 		$params['to'] = $params[ 'summary' ]['summary_email'];
-		$params['subject'] = $params[ 'summary' ][ 'notes' ];
+		$params['subject'] = $params[ 'summary' ][ 'note' ];
 		$params['from'] = 'Crunchbutton <support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
 
 		$this->buildView( $params );
-		$this->view()->subject = $params[ 'summary' ]['notes'];
+		$this->view()->subject = $params['subject'] ;
 		$this->view()->email = $params[ 'summary' ]['summary_email'];
 
 		if( $params[ 'summary' ][ 'type' ] == Cockpit_Payment_Schedule::TYPE_DRIVER ){
