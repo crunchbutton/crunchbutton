@@ -7,4 +7,8 @@
 		<canvas id="bar" class="chart chart-bar" data="data" legend="false" labels="labels" colours="colours"></canvas> 
 
 	</div>
+	<div ng-repeat='community in selected_communities'>
+		{{community.name}}
+		<div ng-repeat='typ in chart_type'> Chart type: {{typ}} </div>
+	</div>
 </div>
