@@ -23,6 +23,11 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				'options' : { 'method': 'GET' }
 			}
 		);
+    
+    var tshirt_sizes = $resource( App.service + 'driver/onboarding/tshirt_sizes', {}, {
+				'options' : { 'method': 'GET' }
+			}
+		);
 
 	var carrier_types = $resource( App.service + 'driver/onboarding/carrier_types', {}, {
 				'options' : { 'method': 'GET' }
@@ -48,6 +53,12 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 
 	service.phone_types = function( callback ){
 		phone_types.options( {}, function( json ){
+			callback( json );
+		} );
+	}
+    
+    service.tshirt_sizes = function( callback ){
+		tshirt_sizes.options( {}, function( json ){
 			callback( json );
 		} );
 	}

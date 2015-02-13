@@ -1434,7 +1434,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
 						$this->driverPaymentError( $schedule->id_payment_schedule );
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 						return false;
 					}
 				} else {
@@ -1448,7 +1448,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$schedule->save();
 					$this->log( 'payDriver: Error', $schedule->properties() );
 					$this->driverPaymentError( $schedule->id_payment_schedule );
-					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 				}
 			} else {
 				return false;
@@ -1766,22 +1766,21 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$env = c::getEnv();
 
-		if( $env != 'live' ){
-			return;
+		$summary[ 'summary_email' ] = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
+
+		$summary[ 'note' ] = ( $summary[ 'note' ] ? $summary[ 'note' ] : 'Payment' );
+
+		if( !$summary[ 'summary_email' ] ){
+			return false;
 		}
 
-		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
-		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );
-
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
-
 		if ( $mail->send() ) {
 			$payment = Crunchbutton_Payment::o( $id_payment );
 			$payment->summary_sent_date = date('Y-m-d H:i:s');
 			$payment->save();
 			return true;
 		}
-
 		return false;
 	}
 
