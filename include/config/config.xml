@@ -65,10 +65,8 @@
 			<apiversion>v3</apiversion>
 			<username>_USERNAME_</username>
 			<password>_PASSWORD_</password>
-			<clientid></clientid>
-			<clientsecret></clientsecret>
-			<authorization></authorization>
-			<token></token>
+			<clientid>_KEY_</clientid>
+			<clientsecret>_KEY_</clientsecret>
 		</live>
 	</pexcard>
 	<github>
