@@ -513,9 +513,9 @@ class Crunchbutton_App extends Cana_App {
 		if (!isset($this->_metricsDB)) {
 			$this->_metricsDB = new Cana_Db_PostgreSQL_Db($this->config()->db->metrics);
 		}
-		die('asd');
-		var_dump($this->_metricsDB);
-		exit;
+		//die('asd');
+		//var_dump($this->_metricsDB);
+		//exit;
 		return $this->_metricsDB;
 	}
 }
