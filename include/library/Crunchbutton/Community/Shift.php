@@ -708,7 +708,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$num = ( $txt != '' ) ? $txt : $phone;
 
 				$cs_message = 'Driver notificaton: ' . str_replace( '|', '<br>',  $message );
-				Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => $cs_message, 'phone' => $num ] );
+				// Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => $cs_message, 'phone' => $num ] );
 
 				if (strpos( $message, '|') > 0) {
 					$message = str_replace('|', "\n", $message);
