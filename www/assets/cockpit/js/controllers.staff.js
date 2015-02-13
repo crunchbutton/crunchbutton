@@ -104,8 +104,10 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 
 	angular.extend( $scope, ViewListService );
 
+	// activate viewlist service
 	$scope.view({
 		scope: $scope,
+		// set of variables in the query string that should trigger changes
 		watch: {
 			search: '',
 			type: 'all',
@@ -113,6 +115,7 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 			working: 'all',
 			pexcard: 'all'
 		},
+		//$scope.query comes from viewlist
 		update: function() {
 			StaffService.list($scope.query, function(d) {
 				$scope.staff = d.results;
