@@ -247,12 +247,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function activeDrivers(){
 		$community = $this->community()->get( 0 );
 		$activeDrivers = 0;
-		$drivers = $community->getDriversOfCommunity();
-		foreach( $drivers as $driver ){
-			if( $driver->isWorking() ){
-				$activeDrivers++;
+		if( $community->id_community ){
+			$drivers = $community->getDriversOfCommunity();
+			foreach( $drivers as $driver ){
+				if( $driver->isWorking() ){
+					$activeDrivers++;
+				}
 			}
 		}
+
 		return $activeDrivers;
 	}
 
