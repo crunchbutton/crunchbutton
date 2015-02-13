@@ -1434,7 +1434,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
 						$this->driverPaymentError( $schedule->id_payment_schedule );
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 						return false;
 					}
 				} else {
@@ -1448,7 +1448,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$schedule->save();
 					$this->log( 'payDriver: Error', $schedule->properties() );
 					$this->driverPaymentError( $schedule->id_payment_schedule );
-					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 				}
 			} else {
 				return false;
