@@ -23,7 +23,7 @@
 			// should handle days in month correctly on weird months
 			$this->assertEqual(Metrics_Helpers::convertTime('+1M', date_create('2015-01-05'), Metrics_Helper::END_PERIOD), date_create_from_format($complexFormat, '2015-02-28 23:59:59'));
 			// should deal with spanning start and end of years with months
-			$this->assertEqual(Metrics_Helpers::convertTime('-3M', date_create('2015-02-05'), Metrics_Helper::END_PERIOD), date_create_from_foramt($complexFormat, 
+			$this->assertEqual(Metrics_Helpers::convertTime('-3M', date_create('2015-02-05'), Metrics_Helper::END_PERIOD), date_create_from_format($complexFormat, '2014-12-31 23:59:59'));
 		}
 	}
 ?>
