@@ -74,12 +74,17 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		$id_community_shift = $this->request()[ 'id_community_shift' ];
 		$ids_admin_permanently = $this->request()[ 'id_admin_permanently' ];
 
+		$ids_admin = $this->request()[ 'id_admin' ];
+		$id_community_shift = $this->request()[ 'id_community_shift' ];
+		$ids_admin_permanently = $this->request()[ 'id_admin_permanently' ];
+
 		$to_remove = [];
 		$to_remove_permanency = [];
 		$to_add = $ids_admin;
 
 		$assigneds = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign WHERE id_community_shift = "' . $id_community_shift . '"  ORDER BY id_admin' );
 		foreach( $assigneds as $assigned ){
+
 			// about the shift
 			if( count( $to_add ) > 0 ){
 				$key = array_search( $assigned->id_admin, $to_add );
@@ -97,11 +102,8 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				$key = array_search( $assigned->id_admin, $ids_admin_permanently );
 				if( $key === false ){
 					if( $assigned->isPermanent() ){
-						unset( $ids_admin_permanently[ $key ] );
-					}
-				} else {
-					if( $assigned->isPermanent() ){
 						$to_remove_permanency[] = $assigned;
+						// unset( $ids_admin_permanently[ $key ] );
 					}
 				}
 			} else {
@@ -111,6 +113,10 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 
 		if( count( $to_remove ) > 0 ){
 			foreach( $to_remove as $remove ){
+				if( $remove->isPermanent() ){
+					// prevent the shift to be added again
+					$removed = Crunchbutton_Admin_Shift_Assign_Permanently_Removed::add( $remove->id_community_shift, $remove->id_admin );
+				}
 				$remove->delete();
 			}
 		}
@@ -144,7 +150,6 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-
 		if( count( $to_add ) > 0 ){
 			foreach( $to_add as $id_admin ){
 				Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift, false );
@@ -154,6 +159,14 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		if( count( $ids_admin_permanently ) > 0 ){
 			foreach( $ids_admin_permanently as $id_admin ){
 				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );
+				if( count( $to_add ) > 0 ){
+					$key = array_search( $id_admin, $to_add );
+					if( $key === false ){
+						Crunchbutton_Admin_Shift_Assign_Permanently_Removed::add( $id_community_shift, $id_admin );
+					}
+				} else {
+					Crunchbutton_Admin_Shift_Assign_Permanently_Removed::add( $id_community_shift, $id_admin );
+				}
 			}
 		}
 

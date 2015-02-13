@@ -42,24 +42,36 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					$data[ '_short_description' ] = $restaurant->force_close_tagline;
 				}
 
-				$config['restaurants'][] = $data;
+				if( $data[ '_open' ] || $restaurant->show_when_closed ){
+					$config['restaurants'][] = $data;
+				}
 			}
 
 			// change driver restaurant name when auto shutting down community #4514
 			if( count( $communities ) == 1 && $id_community ){
 				$community = Community::o( $id_community );
+				$driverRestaurant = $community->driverRestaurant();
 				if( $community->allThirdPartyDeliveryRestaurantsClosed() || $community->allRestaurantsClosed() ){
 					// Check if the community was auto shutdown
-					$autoShutdownAdmin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
-					$id_admin = $autoShutdownAdmin->id_admin;
-					if( $id_admin == $community->close_3rd_party_delivery_restaurants_id_admin ){
-						$driverRestaurant = $community->driverRestaurant();
+					// $autoShutdownAdmin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
+					// $id_admin = $autoShutdownAdmin->id_admin;
+					// if( $id_admin == $community->close_3rd_party_delivery_restaurants_id_admin ){
 						if( $driverRestaurant->id_restaurant ){
 							for( $i = 0; $i < count( $config['restaurants'] ); $i++ ){
 								if( $config['restaurants'][ $i ][ 'id_restaurant' ] == $driverRestaurant->id_restaurant ){
 									$config['restaurants'][ $i ][ 'name' ] = $community->driver_restaurant_name;
 								}
 							}
+						// }
+					}
+				}
+
+				if( $driverRestaurant->id_restaurant ){
+					for( $i = 0; $i < count( $config['restaurants'] ); $i++ ){
+						if( $config['restaurants'][ $i ][ 'id_restaurant' ] == $driverRestaurant->id_restaurant ){
+							$config['restaurants'][ $i ][ 'driver_restaurant' ] = true;
+						} else {
+							$config['restaurants'][ $i ][ 'driver_restaurant' ] = false;
 						}
 					}
 				}

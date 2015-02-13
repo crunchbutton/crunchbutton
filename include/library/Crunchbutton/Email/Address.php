@@ -7,6 +7,7 @@ class Crunchbutton_Email_Address extends Cana_Table{
 	const REASON_ORDER = 'Order';
 	const REASON_PROMO = 'Promo';
 	const REASON_RULES = 'Rules';
+	const REASON_CRON_ERROR = 'Cron Error';
 
 	public function __construct($id = null) {
 		parent::__construct();

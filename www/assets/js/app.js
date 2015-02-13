@@ -211,7 +211,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
         .when('/drivers/apply', {
 			action: 'apply',
 			controller: 'ApplyCtrl',
-			templateUrl: 'assets/view/apply.html'
+			templateUrl: 'assets/view/drivers.apply.html'
+		})
+        .when('/reps/apply', {
+			action: 'reps-apply',
+			controller: 'repsApplyCtrl',
+			templateUrl: 'assets/view/reps.apply.html'
 		})
         .when('/thankyou', {
 			action: 'thankyou',
@@ -433,9 +438,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				backwards = '/location';
 				break;
 		}
-		if (!backwards && App.previousPages.length > 1) {
-			App.previousPages.pop();
-			backwards = App.previousPages.pop();
+		if (!backwards && MainNavigationService.navStack.length > 1) {
+			MainNavigationService.navStack.pop();
+			backwards = MainNavigationService.navStack.pop();
 			console.log('setting to', backwards);
 		}
 		if (backwards) {
@@ -454,6 +459,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.$safeApply = function(fn) {
+		if (!this.$root) {
+			return;
+		}
 		var phase = this.$root.$$phase;
 		if (phase == '$apply' || phase == '$digest') {
 			if (fn && (typeof(fn) === 'function')) {
@@ -479,19 +487,25 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	});
 	*/
-	
-	App.previousPages = [];
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
-		App.previousPages.push($route.current.$$route.originalPath);
+		MainNavigationService.navStack.push($route.current.$$route.originalPath);
 
-		if (App.isPhoneGap && cordova && cordova.plugins && cordova.plugins.Keyboard) {
-			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
+		if (App.isPhoneGap) {
+			if (cordova && cordova.plugins) {
+				if (cordova.plugins.Keyboard) {
+					cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
+					//cordova.plugins.Keyboard.disableScroll(true);
+				}
+			}
 		}
+
+		
+		
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -632,6 +646,26 @@ App.scrollTop = function(top) {
  * Sends a tracking item to google, or to google ads if its an order
  */
 App.track = function() {
+
+	var event_uri = App.service + '/events?category=app&action=' + encodeURIComponent(arguments[0]);
+	var data = undefined;
+	var future;
+	if(typeof arguments[1] == 'string') {
+		event_uri = event_uri + '&label=' + arguments[1]; 
+		data = arguments[2];
+	} else {
+		data = arguments[1];
+	}
+	if(App._trackingCommunity) {
+		event_uri = event_uri + '&community=' + App._trackingCommunity;
+	}
+	if(data) {
+		future = $.post(event_uri, data)
+	} else {
+		future = $.post(event_uri);
+	}
+	future.done(function (resp) { console.log('stored event', resp)})
+		  .fail(function (jqXHR, textStatus, errorThrown) { console.log('ERROR STORING EVENT', errorThrown, textStatus)});
 	if (App.config.env != 'live') {
 		return;
 	}
@@ -668,7 +702,9 @@ App.track = function() {
 
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
+		return;
 	}
+
 
 	if (typeof( ga ) == 'function') {
 		ga('send', 'event', 'app', arguments[0], arguments[1]);
@@ -681,14 +717,24 @@ App.track = function() {
 * @param id_community - Integer or String (that is a valid integer)
 */
 App.trackCommunity = function (id_community) {
-	if (App.config.env != 'live') {
-		return;
-	}
+
 	if(!isNaN(parseInt(id_community))) {
-		if (typeof( ga ) == 'function')  {
-			ga('set', COMMUNITY_DIMENSION, id_community.toString());
+		try {
+			var community_name = App.community_name_by_id[id_community];
+			App._trackingCommunity = id_community.toString();
+			if (App.config.env != 'live') {
+				return;
+			}
+			if (typeof( ga ) == 'function')  {
+				ga('set', COMMUNITY_DIMENSION, community_name);
+			}
+		} catch(e) {
+			console.log('ERROR track community: ', e);
 		}
+	} else {
+		console.log('could not parse community: ', id_community);
 	}
+
 }
 
 
@@ -904,7 +950,15 @@ App.init = function(config) {
 			$(this).removeClass('button-bottom-click');
 		}
 	}, '.button-bottom');
-
+	var community_name_by_id = {};
+	var community;
+	for(community_name in App.communities) {
+		if(App.communities.hasOwnProperty(community_name)) {
+			community = App.communities[community_name];
+			community_name_by_id[community.id_community] = community_name;
+		}
+	}
+	App.community_name_by_id = community_name_by_id;
 	// process the config, and startup angular
 	App.processConfig(config || App.config);
 	App.AB.init();
@@ -966,10 +1020,6 @@ App.init = function(config) {
 	
 	// setup for system links
 	if (App.isPhoneGap) {
-		if (cordova && cordova.plugins && cordova.plugins.Keyboard) {
-			cordova.plugins.Keyboard.disableScroll(true);
-		}
-		
 		$(document).on('click', 'a[target=_system]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();

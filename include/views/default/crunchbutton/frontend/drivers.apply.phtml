@@ -44,17 +44,10 @@
 			
 			<div class="textbox">
 				<div ng-if="errors.university">Please enter your nearest school:</div>
-				<select class="form-control form-control-large form-control form-control-large-select" ng-model="apply.university" name="university" >
+				<select class="form-control form-control-large form-control form-control-select" ng-model="apply.university" name="university" >
 					<option></option> 
-					<option value="Yale University">
-						Yale University
-					</option>
-					<option value="Brown University">
-						Brown University
-					</option>
-					<option value="University of Southern California">
-						University of Southern California
-					</option> <option value="Colgate University">Colgate University</option> <option value="College of the Holy Cross">College of the Holy Cross</option> <option value="St Olaf College">St Olaf College</option> <option value="Boston University">Boston University</option> <option value="University of North Carolina - Chapel Hill">University of North Carolina - Chapel Hill</option> <option value="Washington State University">Washington State University</option> <option value="University of Dayton">University of Dayton</option> <option value="University of Oregon">University of Oregon</option> <option value="University of Illinois - Urbana">University of Illinois - Urbana</option> <option value="Cal Poly SLO">Cal Poly SLO</option> <option value="Ohio State University">Ohio State University</option> <option value="Michigan State University">Michigan State University</option> <option value="University of Nebraska">University of Nebraska</option> <option value="Indiana University">Indiana University</option> <option value="UC Riverside">UC Riverside</option> <option value="UC Irvine">UC Irvine</option> <option value="Virginia Tech University">Virginia Tech University</option> <option value="UC San Diego">UC San Diego</option> <option value="University of Arizona">University of Arizona</option> <option value="University of Arkansas">University of Arkansas</option> <option value="Oberlin College">Oberlin College</option> <option value="Rutgers University">Rutgers University</option> <option value="Auburn University">Auburn University</option> <option value="University of Maine">University of Maine</option> <option value="Baylor University">Baylor University</option> <option value="Virginia Commonwealth University">Virginia Commonwealth University</option> <option value="Southern Methodist University">Southern Methodist University</option> <option value="Boise State University">Boise State University</option> <option value="University of Kentucky">University of Kentucky</option> <option value="North Carolina State">North Carolina State</option> <option value="Purdue University">Purdue University</option> <option value="UNC - Charlotte">UNC - Charlotte</option> <option value="University of South Carolina">University of South Carolina</option> <option value="Clemson University">Clemson University</option> <option value="University of West Virginia">University of West Virginia</option> <option value="Princeton University">Princeton University</option> <option value="UC San Diego">UC San Diego</option> <option value="Ohio University">Ohio University</option> <option value="Northwestern University">Northwestern University</option> <option value="UCLA">UCLA</option> <option value="Southern Methodist University">Southern Methodist University</option> <option value="University of South Carolina">University of South Carolina</option> <option value="West Virginia University">West Virginia University</option> <option value="Princeton University">Princeton University</option> <option value="Northwestern University">Northwestern University</option> <option value="Arizona State University">Arizona State University</option> <option value="Boston College">Boston College</option> <option value="University of Chicago">University of Chicago</option> <option value="University of Wyoming">University of Wyoming</option> <option value="University of Connecticut">University of Connecticut</option> <option value="Ohio University">Ohio University</option> <option value="University of Michigan">University of Michigan</option> <option value="University of Virginia">University of Virginia</option> <option value="Tufts University">Tufts University</option> <option value="Lehigh University">Lehigh University</option> <option value="Loyola Marymount University">Loyola Marymount University</option> <option value="Illinois State University">Illinois State University</option> <option value="University of Alabama">University of Alabama</option> <option value="Other">Other</option>
+					<option ng-repeat="community in communities | orderBy: 'name'" value="{{community.name}}">{{community.name}}</option>
+					<option value="Other">Other</option>
 				</select>
 			</div>
 		</div>
@@ -156,7 +149,7 @@
 		</div>
 
 		
-		<button class="button lightorange button-bottom " ng-click="post()">Submit</button>
+		<button class="button lightorange button-bottom" ng-click="post()">Submit</button>
 		
 	</form>
 </div>
