@@ -91,7 +91,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 				$this->tries = ( $this->tries + 1 );
 				$this->save();
 				$id_pexcard_action = $this->id_pexcard_action;
-				Cana::timeout( function() use( $id_pexcard_action, $support ) {
+				// Cana::timeout( function() use( $id_pexcard_action, $support ) {
 					$action = Crunchbutton_Pexcard_Action::o( $id_pexcard_action );
 					$pexcard = Cockpit_Admin_Pexcard::o( $action->id_admin_pexcard );
 					try {
@@ -111,7 +111,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 							$action->que();
 						}
 					}
-				} );
+				// } );
 			} else {
 				$this->error( 'Exceeded the maximum (' . $action->MAX_TRIES . ') tries to add funds.' );
 			}
