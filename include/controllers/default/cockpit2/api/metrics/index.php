@@ -23,10 +23,23 @@ class MetricsHttpException extends Exception {
 // currently only negative relative times are supported and they only indicate relative to current time, forced to start of current period.
 // e.g. -7d means the start of the day 7 days ago, -3w means the start of the week 3 weeks ago, etc.
 class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
+	// date format for mysql groupings
+	public static function periodSQLFormats() {
+		return  [
+		'Y' => '%Y',
+		'M' => '%Y-%m', // month
+		'w' => '%Y-%U', // starting Sunday
+		'd' => '%Y-%m-%d',
+		'h' => '%Y-%m-%d %H',
+		'm' => '%Y-%m-%d %H:%i', // minute
+		's' => '%Y-%m-%d %H:%i:%s'
+		];
+	}
+
 	public function init() {
 		try {
 			// selected communities = split string on , for community=
-			$allowedCommunities = $this->availableCommunities();
+			$allowedCommunities = Cockpit_Metrics::availableCommunities();
 		} catch (MetricsHttpException $e) {
 			// Ask Devin how to error out here
 			echo "ERROR: " . $e->$status_code . " msg: " . $e->$message;
@@ -41,25 +54,10 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		} catch (MetricsDateException $e) {
 			echo "ERROR: with end date" . $e->$message;
 		}
-	}
-	public function availableCommunities() {
-		$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
-
-		if( !$hasPermissionFullPermission ){
-			$_communities = [];
-			foreach ( $communities as $community ) {
-				$permission_name = strtolower( $community->name );
-				$permission_name = str_replace( ' ' , '-', $permission_name );
-				$permission_name = "metrics-communities-{$permission_name}";
-				if( c::admin()->permission()->check( [ $permission_name ] ) ){
-					$_communities[] = $community;
-				}
-			}
-		} else {
-			$_communities = $communities;
+		foreach(Cockpit_Metrics::availableCommunities() as $community) {
+			$commNames[] = $community->name;
 		}
-		return $_communities;
+		print_r($commNames);
 	}
 
 	// constructs a query grouping orders by $period, Assumes sanitized inputs and is NOT safe from SQL injection.

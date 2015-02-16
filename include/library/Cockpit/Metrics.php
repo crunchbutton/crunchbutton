@@ -75,6 +75,31 @@ class Cockpit_Metrics {
 			return MetricsDateHelper::modifyDateByPeriod($startDate, $n, $period, $atStart);
 		}
 	}
+
+	/**
+	 * returns all communities user has access to for metrics.
+	 * @return array of arrays of community properties
+	 **/
+	public function availableCommunities($simple = true) {
+		$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
+
+		if( !$hasPermissionFullPermission ){
+			$_communities = [];
+			foreach ( $communities as $community ) {
+				$permission_name = strtolower( $community->name );
+				$permission_name = str_replace( ' ' , '-', $permission_name );
+				$permission_name = "metrics-communities-{$permission_name}";
+				if( c::admin()->permission()->check( [ $permission_name ] ) ){
+					$_communities[] = $community;
+				}
+			}
+		} else {
+			$_communities = $communities;
+		}
+		return $communities;
+	}
+
 }
 
 // wraps together a set of functions (publicly accessible via modifyDate) for
