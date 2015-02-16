@@ -113,6 +113,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		$out['next_sort'] = $sort;
 
+		if( $out[ 'dont_warn_till' ] ){
+			$out[ 'dont_warn_till' ] = [ 	'y' => $this->dontWarnTill()->format( 'Y' ), 'm' => $this->dontWarnTill()->format( 'm' ), 'd' => $this->dontWarnTill()->format( 'd' ), 'h' => $this->dontWarnTill()->format( 'H' ), 'i' => $this->dontWarnTill()->format( 'i' ) ];
+		} else {
+			$out[ 'dont_warn_till' ] = null;
+		}
+
+
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
 		}
@@ -121,18 +128,24 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function allRestaurantsClosed(){
 		if( $this->close_all_restaurants > 0 ){
-			return $this->close_all_restaurants_note;
+			return $this->close_all_restaurants;
 		}
 		return false;
 	}
 
 	public function allThirdPartyDeliveryRestaurantsClosed(){
 		if( $this->close_3rd_party_delivery_restaurants > 0 ){
-			return $this->close_3rd_party_delivery_restaurants_note;
+			return $this->close_3rd_party_delivery_restaurants;
 		}
 		return false;
 	}
 
+	public function dontWarnTill(){
+		if( $this->dont_warn_till ){
+			return new DateTime( $this->dont_warn_till, new DateTimeZone( c::config()->timezone ) );
+		}
+		return null;
+	}
 
 	public static function permalink($permalink) {
 		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
@@ -568,13 +581,51 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		foreach( $communities as $community ){
 			$community->reopenAutoClosedCommunity();
 		}
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin != "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin != "' . $id_admin . '"' );
+		foreach( $communities as $community ){
+			$community->checkIfClosedCommunityHasDrivers();
+		}
+	}
+
+	public function checkIfClosedCommunityHasDrivers(){
+
+		if( $this->id_community && ( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ) ){
+
+			$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
+			$id_admin = $admin->id_admin;
+
+			if( $this->close_all_restaurants_id_admin != $id_admin && $this->close_3rd_party_delivery_restaurants_id_admin != $id_admin ){
+
+				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+				if( $nextShift->id_community_shift ){
+					$createTicket = true;
+					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+					$dont_warn_till = $this->dontWarnTill();
+					// echo '<pre>';var_dump( $dont_warn_till->format( 'YmdHis' ), $now->format( 'YmdHis' ) );exit();
+					if( $dont_warn_till && $dont_warn_till->format( 'YmdHis' ) >= $now->format( 'YmdHis' ) ){
+						if( $createTicket ){
+							$createTicket = false;
+						}
+					}
+					$date_start = $nextShift->dateStart( $this->timezone );
+					$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
+					$date_end = $nextShift->dateEnd( $this->timezone );
+					$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
+					if( $createTicket && $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
+						$ticket = 'Hey! You should probably reopen ' . $this->name . ', which is currently closed, because there\'s a driver scheduled for right now!! But please double check to make sure this wasn\'t done on purpose. If it was done on purpose because the community is overwhelmed, then hustle to get us an additional driver! Do whatever it takes!';
+						Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+					}
+				}
+			}
+		}
 	}
 
 	public function reopenAutoClosedCommunity(){
 
 		if( !$this->auto_close ){ return; }
 
-		if( !$this->id_community || !$this->allThirdPartyDeliveryRestaurantsClosed() || !$this->allRestaurantsClosed() ){
+		if( $this->id_community && ( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ) ){
 			$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 			$id_admin = $admin->id_admin;
 			if( $this->close_all_restaurants_id_admin == $id_admin || $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin ){
