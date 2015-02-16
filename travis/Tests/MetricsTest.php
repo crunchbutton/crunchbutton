@@ -4,8 +4,6 @@
 	 **/
 	class MetricsHelperTest extends PHPUnit_Framework_TestCase {
 		public function testRelativeTimeConversion () {
-			// force import of all the names in API metrics
-			new Controller_api_metrics();
 			$end = date_create_from_format('Y-m-d', '2015-02-01');
 			/* $this->assertEqual(Metrics_Helpers::convertTime('now', $end), $end); */
 			$this->assertEqual(Cockpit_Metrics::getStartDate('-1d', $end), date_create_from_format('Y-m-d', '2015-01-31'));
