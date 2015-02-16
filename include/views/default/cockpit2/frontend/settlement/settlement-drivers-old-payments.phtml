@@ -1,0 +1,106 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-if="ready">
+
+	<div ng-if="result">
+
+		<h1 class="title left"><i class="fa fa-bank"></i>
+			<span>{{result.driver.name}}</span>
+		</h1>
+
+		<div class="divider"></div>
+
+			<navigation-back></navigation-back>
+
+			<table class="tb-grid tb-zebra">
+				<tbody>
+					<tr ng-if="result.driver.delivery_fee" positive-or-negative-color="{{result.driver.delivery_fee}}">
+						<td>Delivery Fee</td>
+						<td>${{result.driver.delivery_fee | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.driver.tax" positive-or-negative-color="{{result.driver.tax}}">
+						<td>Tax</td>
+						<td>${{result.driver.tax | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.driver.markup" positive-or-negative-color="{{result.driver.markup}}">
+						<td>Minus Crunchbutton Fees You Collected in Cash</td>
+						<td>${{result.driver.markup | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.driver.total_payment" positive-or-negative-color="{{result.driver.total_payment}}">
+						<td>Total Payment</td>
+						<td>${{result.driver.total_payment | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.driver.total_reimburse" positive-or-negative-color="{{result.driver.total_reimburse}}">
+						<td>Total Reimbursement</td>
+						<td>${{result.driver.total_reimburse | formatPrice}}</td>
+					</tr>
+					<tr ng-if="result.driver.total_reimburse" positive-or-negative-color="{{result.driver.total_reimburse}}">
+						<td>Note</td>
+						<td>[We can put some message here!]</td>
+					</tr>
+				</tbody>
+			</table>
+
+		<br/>
+
+		<table class="tb-grid tb-zebra">
+			<thead ng-if="result.driver.orders.length">
+				<tr>
+					<td colspan="9" class="title">Orders</td>
+				</tr>
+			</thead>
+			<thead ng-if="result.orders.length">
+				<tr>
+					<td class="hide-tiny-screen">#</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</thead>
+			<thead>
+				<tr>
+					<td class="hide-tiny-screen">#</td>
+					<td>
+						<span class="hide-tiny-screen">Customer</span>
+						<span class="show-tiny-screen">Order #/<br>Customer</span>
+					</td>
+					<td>Restaurant</td>
+					<td>Date</td>
+					<td>Type</td>
+					<td>Tip</td>
+					<td>Delivery Fee</td>
+					<td>Reimburse</td>
+					<td>Pay</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="order in result.driver.orders">
+					<td class="hide-tiny-screen">{{order.id_order}}</td>
+					<td>
+						<span class="hide-tiny-screen">{{order.name}}</span>
+						<span class="show-tiny-screen">#{{order.id_order}}<br>{{order.name}}</span>
+					</td>
+					<td>{{order.restaurant}}</td>
+					<td>{{order.date}}</td>
+					<td>{{order.pay_type}}</td>
+					<td><span>${{order.tip | formatPrice}}</span></td>
+					<td><span>${{order.delivery_fee | formatPrice}}</span></td>
+					<td>${{order.total_reimburse | formatPrice}}</td>
+					<td> ${{order.total_payment | formatPrice}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div ng-if="!result.driver">
+			Nothing here.
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

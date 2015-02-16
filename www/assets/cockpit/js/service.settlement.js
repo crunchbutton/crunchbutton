@@ -47,6 +47,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'deleted' : { 'method': 'POST', params : { action: 'deleted' } },
 		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
+		'old_payments' : { 'method': 'POST', params : { action: 'old-payments' } },
 		'do_err_payments' : { 'method': 'POST', params : { action: 'do-err-payments' } },
 		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
 		'schedule_arbitrary_payment' : { 'method': 'POST', params : { action: 'schedule-arbitrary-payment' } },
@@ -108,7 +109,6 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	service.restaurants.download_summary = function( id_payment ){
 		window.open( App.service + 'settlement/restaurants/download-summary/' + $routeParams.id );
 	}
-
 
 	service.restaurants.view_summary = function( callback ){
 		var url = App.service + 'settlement/restaurants/view-summary/' + $routeParams.id;
@@ -231,6 +231,12 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	service.drivers.send_summary = function( callback ){
 		settlement.drivers.send_summary( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.old_payments = function( id_driver, callback ){
+		settlement.drivers.old_payments( { 'id_driver' : id_driver  }, function( json ){
 			callback( json );
 		} );
 	}

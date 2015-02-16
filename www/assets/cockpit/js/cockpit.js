@@ -145,6 +145,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
 			reloadOnSearch: false
 		})
+		.when('/settlement/drivers/old-payments/:id?', {
+			action: 'settlement',
+			controller: 'SettlementDriversOldPaymentsCtrl',
+			templateUrl: 'assets/view/settlement-drivers-old-payments.html',
+		})
 		.when('/settlement/drivers/archived', {
 			action: 'settlement',
 			controller: 'SettlementDriversArchivedCtrl',
@@ -293,7 +298,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversPaymentCtrl',
 			templateUrl: 'assets/view/drivers-payment.html'
 		})
-		
+
 		/* driver welcome shit */
 		.when('/drivers/welcome', {
 			action: 'drivers-welcome-home',
@@ -520,11 +525,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.back = function() {
 		$('body').addClass('back');
-		
+
 		//history.back();
 		history.go(-1);
     	navigator.app.backHistory();
-		
+
 
 		setTimeout(function(){
 			$rootScope.$safeApply();
@@ -534,7 +539,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			$('body').removeClass('back');
 			$rootScope.$safeApply();
 		},1000);
-		
+
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},1200);
@@ -609,7 +614,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 		$rootScope.hasBack = $route.current.back === false ? false : true;
 		//$('#ng-view').removeClass('view-animate');
-		
+
 
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
@@ -622,14 +627,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}).addClass('page-' + MainNavigationService.page);
 
 		$('.nav-top').addClass('at-top');
-		
+
 		$('html, body, .snap-content-inner').scrollTop(0);
 
 		App.scrollTop($rootScope.scrollTop);
 		if( App.snap && App.snap.close ){
 			App.snap.close();
 		}
-		
+
 		setTimeout(function() {
 			//$('#ng-view').addClass('view-animate');
 		},200);
@@ -638,7 +643,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
-		
+
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
