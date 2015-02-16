@@ -319,7 +319,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if ( trim( $this->notes ) != '' ){
 			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
 			if( $totalOrdersByPhone < 1 ){
-				$words = explode( ' ', $this->notes );
+				$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $this->notes );
+				$words = explode( ' ', $words );
 				$words = array_unique( $words );
 				foreach( $words as $word ){
 					$giftCardAdded = false;
@@ -719,7 +720,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// fix for #4256
 		$_order = Crunchbutton_Order::o( $this->id_order );
 		if ( trim( $_order->notes ) != '' ){
-			$words = explode( ' ', $_order->notes );
+			$words = str_replace( "\n", ' ', $this->notes );
+			$words = explode( ' ', $words );
 			$words = array_unique( $words );
 			$reward = new Crunchbutton_Reward;
 			foreach( $words as $word ){
