@@ -181,15 +181,15 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 
 						$dont_warn_till = $this->request()[ 'dont_warn_till_fmt' ];
-						if( $dont_warn_till && $community->close_all_restaurants && $community->close_3rd_party_delivery_restaurants ){
+						if( $dont_warn_till && ( $community->close_all_restaurants || $community->close_3rd_party_delivery_restaurants ) ){
 							$dont_warn_till = new DateTime( $dont_warn_till, new DateTimeZone( c::config()->timezone ) );
 							$community->dont_warn_till = $dont_warn_till->format( 'Y-m-d H:i:s' );
 						} else {
 							$community->dont_warn_till = null;
 						}
 
-						if( $this->request()[ 'dont_warn_till_enabled' ] == '0' ){
-							// $community->dont_warn_till = null;
+						if( intval( $this->request()[ 'dont_warn_till_enabled' ] ) == 0 ){
+							$community->dont_warn_till = null;
 						}
 
 
