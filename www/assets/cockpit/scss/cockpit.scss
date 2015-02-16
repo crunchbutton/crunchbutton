@@ -1158,6 +1158,16 @@ input {
 .li-input textarea{
 	height: 50px;
 }
+	.li-input .small input,
+	.li-input .small select,
+	.li-input .small textarea{
+		border: 2px solid $green;
+		color: $textColor;
+		padding:.48em;
+		font-size: 1.1em;
+		border-radius: 0;
+		width: 30%;
+	}
 
 .submitted .li-input.error .label{
 	color: $orange;
@@ -3718,7 +3728,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
     font-weight: 600;
     height:30px;
     font-size:1em;
-    
+
 }
 
 .driverlabel span{
@@ -3751,7 +3761,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
     display: block;
     width: 100%;
     height: 34px;
-    padding: 6px 12px; 
+    padding: 6px 12px;
     font-size: 16px;
     line-height: 1.42857;
     color: #555;

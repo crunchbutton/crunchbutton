@@ -147,8 +147,6 @@
 				</div>
 			</li>
 
-			<br/>
-
 			<li class="li-input" ng-class="{'error':form.communityClose3rdPartyRestaurants.$invalid}">
 				<div class="label">Close 3rd Party Delivery Restaurants:</div>
 				<div class="input">
@@ -168,6 +166,17 @@
 				<div class="label">
 					<span ng-show="community.close_3rd_party_delivery_restaurants_admin">Closed by {{community.close_3rd_party_delivery_restaurants_admin}} </span>
 					<span ng-show="community.close_3rd_party_delivery_restaurants_date">at {{community.close_3rd_party_delivery_restaurants_date}}.</span>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants"  ng-class="{'error': form.dontWarnTill.$invalid}">
+				<div class="label">If it is closed and it has drivers doesn't warn CS till (PST):</div>
+				<div class="input">
+					<select name="dontWarnTillEnabled" ng-model="community.dont_warn_till_enabled" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					<br>
+				</div>
+				<div class="input" ng-show="community.dont_warn_till_enabled">
+					<input type="datetime-local" ng-disabled="!community.dont_warn_till_enabled" ng-required="community.dont_warn_till_enabled" name="dontWarnTill" ng-model="community.dont_warn_till" placeholder="">
 				</div>
 			</li>
 
