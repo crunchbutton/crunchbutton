@@ -47,6 +47,25 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $this->driversProcess( $orders );
 	}
 
+	public function paidOrdersByDriverBeforeSettlement( $id_driver ){
+
+		$order = Order::o( $this->id_order_start() );
+
+		$query = 'SELECT o.* FROM `order` o
+									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+									INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
+									WHERE DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $order->date()->format('Y-m-d H:i') . '"
+										AND oa.id_admin = "' . $id_driver . '"
+										AND o.name NOT LIKE "%test%"
+										AND r.name NOT LIKE "%test%"
+									ORDER BY o.date ASC';
+		$_orders = Order::q( $query );
+		foreach ( $_orders as $order ) {
+			$orders[] = $this->orderExtractVariables( $order );
+		}
+		return $this->driversProcess( $orders, true );
+	}
+
 	// https://github.com/crunchbutton/crunchbutton/issues/3234
 	public function driverWeeksSummaryShifts( $id_driver ){
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM admin_shift_assign AS asa
@@ -131,8 +150,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public static function orders( $filters ){
 
 		// Settlement Not Including Orders After Midnight #4414
-		$start = new DateTime( $filters[ 'start' ] );
-		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+		$start = DateTime::createFromFormat( 'm/d/Y', $filters[ 'start' ], new DateTimeZone( c::config()->timezone ) );
+		$end = DateTime::createFromFormat( 'm/d/Y H:i:s', $filters[ 'end' ] .  ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
 		$end->modify( '+ 28 hours' );
 
 		$query = 'SELECT o.* FROM `order` o
@@ -241,6 +260,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				// }
 
 				$driver = $order[ 'id_admin' ];
+
 				if( !$pay[ $driver ] ){
 					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'total_spent' => 0, 'orders' => [], 'invites_total' => 0, 'invites_total_payment' => 0 ];
 					$pay[ $driver ][ 'id_admin' ] = $driver;

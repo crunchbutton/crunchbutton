@@ -106,6 +106,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'do-payment':
 								$this->_driverDoPayment();
 								break;
+							case 'old-payments':
+								$this->_driverOldPayments();
+								break;
 							case 'schedule':
 								$this->_driverSchedule();
 								break;
@@ -465,6 +468,77 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		} else {
 			echo json_encode( [ 'error' => 'Payment not found!' ] );
 		}
+	}
+
+	private function _driverOldPayments(){
+		$id_driver = $this->request()['id_driver'];
+		if( !$id_driver ){
+			$this->_error();
+		}
+
+		$settlement = new Settlement;
+
+		$orders = $settlement->paidOrdersByDriverBeforeSettlement( $id_driver );
+
+		$out = [];
+
+		foreach ( $orders as $key => $val ) {
+
+			if( !$orders[ $key ][ 'name' ] ){
+				continue;
+			}
+
+			$driver = $orders[ $key ];
+
+			$driver[ 'orders' ] = [];
+			$driver[ 'not_included' ] = 0;
+			if( $orders[ $key ][ 'orders' ] ){
+				foreach( $orders[ $key ][ 'orders' ] as $order ){
+					$_order = [];
+					$_order[ 'id_order' ] = $order[ 'id_order' ];
+					$_order[ 'name' ] = $order[ 'name' ];
+					$_order[ 'restaurant' ] = $order[ 'restaurant' ];
+					$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
+					$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
+					$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
+					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
+					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
+					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
+					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
+					$_order[ 'date' ] = $order[ 'date' ];
+					$_order[ 'refunded' ] = $order[ 'refunded' ];
+					$_order[ 'included' ] = !$order[ 'do_not_pay_driver' ];
+					if( !$_order[ 'included' ] ){
+						$driver[ 'not_included' ]++;
+					}
+					$driver[ 'orders' ][] = $_order;
+					$total_orders++;
+				}
+			}
+			$driver[ 'total_payment_without_adjustment' ] = $driver[ 'total_payment' ];
+			$driver[ 'adjustment' ] = 0;
+			$driver[ 'adjustment_notes' ] = '';
+			$driver[ 'standard_reimburse' ] = ( $driver[ 'standard_reimburse' ] ? $driver[ 'standard_reimburse' ] : 0 );
+			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
+			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
+			$driver[ 'pay' ] = true;
+
+			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
+
+			if( !$driver[ 'pay_type' ] || !$driver[ 'pay_type' ][ 'payment_type' ] ){
+				$driver[ 'pay_type' ] = [ 'payment_type' => '-' ];
+			}
+
+			if( $id_driver ){
+				if( $id_driver == $driver[ 'id_admin' ] ){
+					$out[ 'driver' ] = $driver;
+				}
+			} else {
+				$out[ 'driver' ] = $driver;
+			}
+		}
+		echo json_encode( $out );exit;
+
 	}
 
 	private function _driverBegin(){
