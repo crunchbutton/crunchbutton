@@ -30,5 +30,18 @@
 			// should deal with spanning start and end of years with months
 			$this->assertEqual(Cockpit_Metrics::getEndDate('-3M', date_create('2015-02-05')), date_create_from_format($complexFormat, '2014-12-31 23:59:59'));
 		}
+		public function testGroupByIndex() {
+			// should work for numbers with no dups
+			$data = [
+				[1, 2, 3],
+				[4, 5, 6],
+				[7, 8, 9],
+				[10, 1, 2]
+			];
+			$this->assertEqual(Cockpit_Metrics::groupByIndex($data, 0), [1 => [[1, 2, 3]], 4 => [[4, 5, 6]], 7 => [[7, 8, 9]], 10 => [[10, 1, 2]]]);
+			// random doc example
+			$ret = Cockpit_Metrics::groupByIndex([[2, 'a', 3], [4, 'c', 5], [1, 'a', 16], []], 1);
+			$this->assertEqual($ret, ['a' => [[2, 'a', 3], [1, 'a', 16]], 'c' => [[4, 'c', 5]], null => [[]]]);
+		}
 	}
 ?>

@@ -3,19 +3,10 @@
 class MetricsDateException extends Exception {
 }
 
+/**
+ * class that wraps up a number of utility functions for easily dealing with metric data.
+ **/
 class Cockpit_Metrics {
-	// date format for mysql groupings
-	public static function periodSQLFormats() {
-	   return  [
-		'Y' => '%Y',
-		'M' => '%Y-%m', // month
-		'w' => '%Y-%U', // starting Sunday
-		'd' => '%Y-%m-%d',
-		'h' => '%Y-%m-%d %H',
-		'm' => '%Y-%m-%d %H:%i', // minute
-		's' => '%Y-%m-%d %H:%i:%s'
-		];
-	}
 
 	/**
 	* groupByIndex groups the given array of arrays by the values in groupIndex
@@ -25,8 +16,8 @@ class Cockpit_Metrics {
 	* @return array $groupedArrays - groups of arrays by the values found at $groupIndex
 	*
 	* example:
-	* 	$ret = Cockpit_Metrics::groupByIndex([[2, 'a', 3], [4, 'c', 5], [1, 'a', 16], []]);
-	* 	$ret == ['a' => [[2, 'a', 3], [1, 'a', 16]], 'c' => [[4, 'c', 5], null => [[]]];
+	* 	$ret = Cockpit_Metrics::groupByIndex([[2, 'a', 3], [4, 'c', 5], [1, 'a', 16], []], 1);
+	* 	$ret == ['a' => [[2, 'a', 3], [1, 'a', 16]], 'c' => [[4, 'c', 5]], null => [[]]];
 	*/
 	public static function groupByIndex($arrays, $groupIndex, $defaultGroup = null) {
 		$output = [];
