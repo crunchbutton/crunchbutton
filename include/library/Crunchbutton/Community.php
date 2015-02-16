@@ -601,7 +601,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$createTicket = true;
 					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 					$dont_warn_till = $this->dontWarnTill();
-					// echo '<pre>';var_dump( $dont_warn_till->format( 'YmdHis' ), $now->format( 'YmdHis' ) );exit();
 					if( $dont_warn_till && $dont_warn_till->format( 'YmdHis' ) >= $now->format( 'YmdHis' ) ){
 						if( $createTicket ){
 							$createTicket = false;
