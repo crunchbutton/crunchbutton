@@ -39,6 +39,13 @@
 			<host>localhost</host>
 			<prefix></prefix>
 		</travis>
+		<metrics>
+			<type>postgresql</type>
+			<user>***REMOVED***</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton</db>
+			<host>***REMOVED***</host>
+		</metrics>
 	</db>
 	<defaults>
 		<page>home</page>
@@ -55,13 +62,11 @@
 			<clientsecret>_KEY_</clientsecret>
 		</beta>
 		<live>
-			<apiversion>v3</apiversion>
+			<apiversion>v4</apiversion>
 			<username>_USERNAME_</username>
 			<password>_PASSWORD_</password>
-			<clientid></clientid>
-			<clientsecret></clientsecret>
-			<authorization></authorization>
-			<token></token>
+			<clientid>_KEY_</clientid>
+			<clientsecret>_KEY_</clientsecret>
 		</live>
 	</pexcard>
 	<github>

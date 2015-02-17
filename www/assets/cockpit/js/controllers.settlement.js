@@ -732,6 +732,26 @@ NGApp.controller( 'SettlementDriversArchivedCtrl', function ( $scope, Settlement
 
 });
 
+NGApp.controller( 'SettlementDriversOldPaymentsCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+
+	load = function(){
+		SettlementService.drivers.old_payments( id_driver, function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+		} );
+	}
+
+	var id_driver = 0;
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		id_driver = ( $routeParams.id ? $routeParams.id : $scope.account.id_admin );
+		load();
+	}
+});
+
 NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
 
 	$scope.ready = false;

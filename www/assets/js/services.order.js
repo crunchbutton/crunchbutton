@@ -1,5 +1,5 @@
 //OrderService Service
-NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService, OrderViewService ) {
+NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService, OrderViewService , MainNavigationService) {
 
 	var service = {};
 	service.location = LocationService;
@@ -721,7 +721,10 @@ console.log('order',order);
 						}, 'validation error - php');
 					} else {
 
+						// order success
 						App.vibrate();
+						
+						MainNavigationService.navStack = [MainNavigationService.navStack.pop()];
 
 						if (json.token) {
 							$.cookie( 'token', json.token );

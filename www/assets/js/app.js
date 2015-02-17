@@ -8,6 +8,7 @@
  */
 
 var REDIRECT = false;
+var COMMUNITY_DIMENSION = 'dimension1';
 
 if (top.frames.length != 0 || window != top || top.location != location) {
 	top.location.href = location.href;
@@ -197,20 +198,30 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'HelpCtrl',
 			templateUrl: 'assets/view/help.html'
 		})
+		.when('/free-food', {
+			action: 'free-food',
+			controller: 'FreeFoodCtrl',
+			templateUrl: 'assets/view/free-food.html'
+		})
 		.when('/about', {
 			action: 'about',
 			controller: 'AboutCtrl',
 			templateUrl: 'assets/view/about.html'
 		})
-		.when('/jobs', {
-			action: 'jobs',
-			controller: 'JobsCtrl',
-			templateUrl: 'assets/view/jobs.html'
+		.when('/work', {
+			action: 'work',
+			controller: 'WorkCtrl',
+			templateUrl: 'assets/view/work.html'
 		})
         .when('/drivers/apply', {
 			action: 'apply',
 			controller: 'ApplyCtrl',
-			templateUrl: 'assets/view/apply.html'
+			templateUrl: 'assets/view/drivers.apply.html'
+		})
+        .when('/reps/apply', {
+			action: 'reps-apply',
+			controller: 'repsApplyCtrl',
+			templateUrl: 'assets/view/reps.apply.html'
 		})
         .when('/thankyou', {
 			action: 'thankyou',
@@ -425,9 +436,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.snap.close();
 		var backwards = false;
 		switch( $route.current.action ) {
-			case 'order':
-				backwards = '/orders';
-				break;
 			case 'restaurant':
 				backwards = '/food-delivery';
 				break;
@@ -435,9 +443,16 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				backwards = '/location';
 				break;
 		}
-		if ( backwards ) {
-			App.go( backwards, 'pop' );
+		if (!backwards && MainNavigationService.navStack.length > 1) {
+			MainNavigationService.navStack.pop();
+			backwards = MainNavigationService.navStack.pop();
+			console.log('setting to', backwards);
+		}
+		if (backwards) {
+			console.log('going to', backwards);
+			App.go(backwards, 'pop');
 		} else {
+			console.log('going back');
 			history.back();
 		}
 	};
@@ -449,6 +464,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.$safeApply = function(fn) {
+		if (!this.$root) {
+			return;
+		}
 		var phase = this.$root.$$phase;
 		if (phase == '$apply' || phase == '$digest') {
 			if (fn && (typeof(fn) === 'function')) {
@@ -480,6 +498,19 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		MainNavigationService.page = $route.current.action;
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
+		MainNavigationService.navStack.push($route.current.$$route.originalPath);
+
+		if (App.isPhoneGap) {
+			if (cordova && cordova.plugins) {
+				if (cordova.plugins.Keyboard) {
+					cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
+					//cordova.plugins.Keyboard.disableScroll(true);
+				}
+			}
+		}
+
+
+
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -548,7 +579,9 @@ App.go = function( url, transition ){
 	// Remove the animation from rootScope #2827 before start the new one
 	App.rootScope.animationClass = '';
 	if( !App.transitionAnimationEnabled ){
-		App.location.path( url || '/' );
+			if (url !== false) {
+			App.location.path( url || '/' );
+		}
 		App.rootScope.$safeApply();
 		return;
 	}
@@ -559,11 +592,15 @@ App.go = function( url, transition ){
 			App.rootScope.$safeApply();
 			// @todo: do some tests to figure out if we need this or not
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-			App.location.path( url || '/' );
+			if (url !== false) {
+				App.location.path( url || '/' );
+			}
 			App.rootScope.$safeApply();
 		}, 1 );
 	} else {
-		App.location.path( url || '/' );
+		if (url !== false) {
+			App.location.path( url || '/' );
+		}
 		App.rootScope.$safeApply();
 	}
 };
@@ -614,6 +651,26 @@ App.scrollTop = function(top) {
  * Sends a tracking item to google, or to google ads if its an order
  */
 App.track = function() {
+
+	var event_uri = App.service + '/events?category=app&action=' + encodeURIComponent(arguments[0]);
+	var data = undefined;
+	var future;
+	if(typeof arguments[1] == 'string') {
+		event_uri = event_uri + '&label=' + arguments[1];
+		data = arguments[2];
+	} else {
+		data = arguments[1];
+	}
+	if(App._trackingCommunity) {
+		event_uri = event_uri + '&community=' + App._trackingCommunity;
+	}
+	if(data) {
+		future = $.post(event_uri, data)
+	} else {
+		future = $.post(event_uri);
+	}
+	future.done(function (resp) { console.log('stored event', resp)})
+		  .fail(function (jqXHR, textStatus, errorThrown) { console.log('ERROR STORING EVENT', errorThrown, textStatus)});
 	if (App.config.env != 'live') {
 		return;
 	}
@@ -650,12 +707,40 @@ App.track = function() {
 
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
+		return;
 	}
+
 
 	if (typeof( ga ) == 'function') {
 		ga('send', 'event', 'app', arguments[0], arguments[1]);
 	}
 };
+
+/**
+* sets the user's community on Google Analytics so we can segment on community.
+* will not raise or error on invalid communities.
+* @param id_community - Integer or String (that is a valid integer)
+*/
+App.trackCommunity = function (id_community) {
+
+	if(!isNaN(parseInt(id_community))) {
+		try {
+			var community_name = App.community_name_by_id[id_community];
+			App._trackingCommunity = id_community.toString();
+			if (App.config.env != 'live') {
+				return;
+			}
+			if (typeof( ga ) == 'function')  {
+				ga('set', COMMUNITY_DIMENSION, community_name);
+			}
+		} catch(e) {
+			console.log('ERROR track community: ', e);
+		}
+	} else {
+		console.log('could not parse community: ', id_community);
+	}
+
+}
 
 
 /**
@@ -757,6 +842,12 @@ App.processConfig = function(json, user) {
 	}
 	App.setLoggedIn( App.config && App.config.user && App.config.user.uuid ? true : false);
 	App.AB.init();
+	// grab community if we have it (we'll overwrite it if the user searches for something different)
+	if(App.config.user && App.config.user.last_order && App.config.user.last_order.communities) {
+		if(App.config.user.last_order.communities.length >= 1) {
+			App.trackCommunity(App.config.user.last_order.communities[0]);
+		}
+	}
 };
 
 /**
@@ -864,7 +955,15 @@ App.init = function(config) {
 			$(this).removeClass('button-bottom-click');
 		}
 	}, '.button-bottom');
-
+	var community_name_by_id = {};
+	var community;
+	for(community_name in App.communities) {
+		if(App.communities.hasOwnProperty(community_name)) {
+			community = App.communities[community_name];
+			community_name_by_id[community.id_community] = community_name;
+		}
+	}
+	App.community_name_by_id = community_name_by_id;
 	// process the config, and startup angular
 	App.processConfig(config || App.config);
 	App.AB.init();
@@ -923,6 +1022,24 @@ App.init = function(config) {
 		});
 	}
 	*/
+
+	// setup for system links
+	if (App.isPhoneGap) {
+		$(document).on('click', 'a[target=_system]', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
+			return false;
+		});
+
+		document.body.oncopy = function() {
+			if (!parent.navigator || !parent.navigator.splashscreen) {
+				return;
+			}
+			parent.navigator.splashscreen.show();
+			parent.navigator.splashscreen.hide();
+		}
+	}
 };
 
 App.handleUrl = function(url) {

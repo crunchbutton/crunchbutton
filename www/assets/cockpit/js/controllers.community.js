@@ -51,13 +51,17 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 });
 
 
-NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope, CommunityService, MapService ) {
+NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, MapService ) {
 
 	$scope.ready = false;
 	$scope.isSaving = false;
 	$scope.isSavingAlias = false;
 
 	$scope.save = function(){
+		console.log('$scope.community.dont_warn_till_enabled',$scope.community.dont_warn_till_enabled);
+		if( !$scope.community.dont_warn_till_enabled ){
+			$scope.community.dont_warn_till = null;
+		}
 
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
@@ -66,12 +70,16 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 
 		$scope.isSaving = true;
 
+		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
+			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
+		}
+
 		CommunityService.save( $scope.community, function( json ){
 			$scope.isSaving = false;
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-				$scope.community = json;
+				community();
 				$scope.navigation.link( '/community/edit/' + json.permalink );
 				load_alias();
 			}
@@ -104,7 +112,6 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 	}
 
 	var load_alias = function(){
-		console.log('$scope.community.next_sort',$scope.community.next_sort);
 		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink, sort: $scope.community.next_sort };
 		CommunityService.alias.list( $routeParams.id, function( json ){
 			$scope.aliases = json;
@@ -152,6 +159,18 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			CommunityService.get( $routeParams.id, function( d ) {
 				$rootScope.title = d.name + ' | Community';
 				$scope.community = d;
+				if( $scope.community.dont_warn_till ){
+					var dont_warn_till = new Date( 	$scope.community.dont_warn_till.y,
+																					( $scope.community.dont_warn_till.m -1 ),
+																					$scope.community.dont_warn_till.d,
+																					$scope.community.dont_warn_till.h,
+																					$scope.community.dont_warn_till.i );
+					$scope.community.dont_warn_till = dont_warn_till;
+					$scope.community.dont_warn_till_enabled = 1;
+				} else {
+					$scope.community.dont_warn_till = null;
+					$scope.community.dont_warn_till_enabled = 0;
+				}
 				angular.forEach( d._restaurants, function( restaurant, id_restaurant ) {
 					$scope.restaurants.push( { 'id_restaurant' : restaurant.id_restaurant, 'name' : restaurant.name } );
 				} );

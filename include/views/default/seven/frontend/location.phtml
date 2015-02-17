@@ -71,7 +71,7 @@
 				<div class="divider spacer-one-two"></div>
 
 				<div class="button-pushable">
-					<button class="button orange" ng-click="navigation.link('/jobs','push')"><b>bring crunchbutton to you!</b></button>
+					<button class="button orange" ng-click="navigation.link('/work','push')"><b>bring crunchbutton to you!</b></button>
 				</div>
 
 				
@@ -108,8 +108,8 @@
 	
 	<div class="content-padding">
 		<br /><br /><br />
-		<h4>Order the best local delivery food</h4>
-		<p>We find the top delivery restaurants in your area, curate their menus, and make it easy for you to order with a single click.</p>
+		<h4>Order your favorite restaurants, delivered</h4>
+		<p>Crunchbutton lets you order the best restaurants in your area delivered straight to your door. Place an order, and we save it for next time, along with your delivery and payment info. Come back and reorder your favorites with just one click.</p>
 	</div>
 	
 	
@@ -136,33 +136,54 @@
 	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 10 ? 0 : (orangeMessage + 1))" instant-pass-thru></div>
 	<div class="divider"></div>
 	
-	<div class="content-padding">
-		<br /><br />
-		<h4>Are you a delivery foodie?</h4>
-		<p>Join our marketing intern program and get a free pink gorilla suit! Also maybe some money too. We are always looking for great people. Developer? Designer? Give us a ring!</p>
+	<div class="content-padding" ng-controller="SupportCtrl">
 		<br />
-		<button class="button lightorange" ng-click="navigation.link('/jobs','push')">Work with us</button>
+
+		<h4>Delivery drivers</h4>
+		<p>
+			What's better than getting delivery food? Delivering the food! If you have a smartphone, car, and auto insurance, send us a message!
+		</p>
+		<br />
+		<a href ng-click="navigation.link('/drivers/apply','push')"><button class="button lightorange">apply now</button></a>
+		<br /><br /><br /><br />
+
+		<h4>Community Representative</h4>
+		<p>
+			No one knows more about your college or community than you. You know what's "cool", and that's why we’re going to work with you! Scout for local awesome restaurants to sign up, and play a significant role in orchestrating marketing campaigns.
+		</p>
+		<br />
+		<a href="mailto:{{reps}}"><button class="button lightorange">join up</button></a>
+		<br /><br /><br /><br />
+
+		<h4>Rockstar Developers &amp; Designers</h4>
+		<p>Look at this beautiful website! It's almost perfect! You know what would make it better? Your magical touch! Join our small team of developers located in Los Angeles and let's get shit done!</p>
+		<br />
+		<a href="mailto:{{devs}}"><button class="button lightorange">rock out</button></a>
 	</div>
 	
-	<div class="content-padding">
-		<br />
-		<h4>Restaurant owner?</h4>
-		<p>We are always looking for the next popular sandwich. Apply today and reach campuses nationwide!</p>
-		<br />
-		<button class="button green" ng-click="navigation.link('/owners','push')">Add your restaurant</button>
+	<div class="divider dots spacer-two-one"></div>
+
+	<div class="content-padding" ng-controller="SupportCtrl">	
+		<h4>Who are you?!</h4>
+		<p>We're people! People who love food so much that we want to share our passion without asking you to even leave your homes.</p>
+		<br>
+		<button class="button green" ng-click="navigation.link('/about','push')">Meet the team</button>
+		<br><br><br>
 	</div>
 	
-	<div class="divider dots spacer-two-two"></div>
+	<div class="location-gorillia animated-resize" ></div>
+	<div class="divider"></div>
+	
 	
 	<div class="content-padding">
 		<h4>We’re expanding!</h4>
-		<p>We may not be everywhere yet, but the communities we are in love us! Take a look at some of our most popular locations.</p>
+		<p>We may not be everywhere yet, but the communities we are in love us! Browse some of the food from or most popular locations:</p>
 		<br /><br /><br />
-		<div class="popular-locations">
-			<div class="map map-new-haven"></div>
-			<div class="map map-dc"></div>
-			<div class="map map-providence"></div>
-			<div class="map map-venice"></div>
-		</div>
+		<p>
+			<span class="popular-location" ng-repeat="alias in topCommunities">
+				<a href ng-click="openCity(alias.alias)" permalink="{{alias.alias}}">{{alias.name}}</span>
+			</span>
+		</p>
 	</div>
+	<br><br><br>
 </div>

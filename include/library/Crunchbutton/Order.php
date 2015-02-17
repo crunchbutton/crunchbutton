@@ -318,7 +318,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if ( trim( $this->notes ) != '' ){
 			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
 			if( $totalOrdersByPhone < 1 ){
-				$words = explode( ' ', $this->notes );
+				$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $this->notes );
+				$words = explode( ' ', $words );
 				$words = array_unique( $words );
 				foreach( $words as $word ){
 					$giftCardAdded = false;
@@ -684,11 +685,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$giftCardAdded = true;
 					}
 				}
-				$this->notes = $giftcards[ 'notes' ];
+				$_order = Order::o( $this->id_order );
+				$_order->notes = $giftcards[ 'notes' ];
+				$_order->save();
+				$this->notes = $_order->notes;
 			}
 		}
 
-		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
 		$this->debitFromUserCredit( $user->id_user );
 		if ( $params['make_default'] == 'true' ) {
@@ -820,7 +823,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// fix for #4256
 		$_order = Crunchbutton_Order::o( $this->id_order );
 		if ( trim( $_order->notes ) != '' ){
-			$words = explode( ' ', $_order->notes );
+			$words = str_replace( "\n", ' ', $this->notes );
+			$words = explode( ' ', $words );
 			$words = array_unique( $words );
 			$reward = new Crunchbutton_Reward;
 			foreach( $words as $word ){
@@ -1377,18 +1381,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			foreach( $communities as $community ){
 				if( $community->id_community ){
 					$drivers = $community->getDriversOfCommunity();
-					foreach( $drivers as $driver ){
-						$driversToNotify[ $driver->id_admin ] = $driver;
-					}
-				}
-			}
-
-			// legacy - lets keep it here for while
-			$community = $order->restaurant()->community;
-			if( $community ){
-				$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
-				if( $group->id_group ){
-					$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 					foreach( $drivers as $driver ){
 						$driversToNotify[ $driver->id_admin ] = $driver;
 					}
@@ -2211,12 +2203,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$reward = new Crunchbutton_Reward;
 				$points = $reward->processOrder( $this->id_order );
 				$shared = $reward->orderWasAlreadyShared( $this->id_order );
-				$out['reward'] = array( 'points' => $points, 'shared' => $shared );
+				$out['reward'] = array( 'points' => number_format( $points, 0, '.', ',' ), 'shared' => $shared );
 			}
 		} else {
 			$reward = new Crunchbutton_Reward;
 			$points = $reward->processOrder( $this->id_order );
-			$out['reward'] = array( 'points' => $points );
+			$out['reward'] = array( 'points' => number_format( $points, 0, '.', ',' ) );
 		}
 
 
@@ -2802,10 +2794,18 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		} else {
 			$driver = c::user();
-			if( $driver->id_admin && $driver->hasPexCard() ){
-				return 'Pay the restaurant with PEX card';
+			if( $this->pay_type == 'cash' ){
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'Pay restaurant with your own cash, not PEX';
+				} else {
+					return 'Pay the restaurant with cash';
+				}
 			} else {
-				return 'Pay the restaurant';
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'Pay the restaurant with PEX card';
+				} else {
+					return 'Pay the restaurant';
+				}
 			}
 		}
 	}

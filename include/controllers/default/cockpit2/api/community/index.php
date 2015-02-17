@@ -136,6 +136,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 
 						$community->active = $this->request()[ 'active' ];
+						$community->auto_close = $this->request()[ 'auto_close' ];
 						$community->loc_lat = $this->request()[ 'loc_lat' ];
 						$community->loc_lon = $this->request()[ 'loc_lon' ];
 						$community->name = $this->request()[ 'name' ];
@@ -156,7 +157,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								$community->close_all_restaurants_date =  null;
 							}
 						}
-						if( $community->close_all_restaurants && $community->close_all_restaurants_note != $this->request()[ 'close_all_restaurants_note' ] ){
+						if( $community->close_all_restaurants && $this->request()[ 'close_all_restaurants_note' ] ){
 							$community->close_all_restaurants_note = $this->request()[ 'close_all_restaurants_note' ];
 						} else {
 							$community->close_all_restaurants_note = '';
@@ -173,15 +174,31 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							}
 
 						}
-						if( $community->close_3rd_party_delivery_restaurants && $community->close_3rd_party_delivery_restaurants_note != $this->request()[ 'close_3rd_party_delivery_restaurants_note' ] ){
+						if( $community->close_3rd_party_delivery_restaurants && $this->request()[ 'close_3rd_party_delivery_restaurants_note' ] ){
 							$community->close_3rd_party_delivery_restaurants_note = $this->request()[ 'close_3rd_party_delivery_restaurants_note' ];
 						} else {
 							$community->close_3rd_party_delivery_restaurants_note = '';
 						}
 
+						$dont_warn_till = $this->request()[ 'dont_warn_till_fmt' ];
+						if( $dont_warn_till && ( $community->close_all_restaurants || $community->close_3rd_party_delivery_restaurants ) ){
+							$dont_warn_till = new DateTime( $dont_warn_till, new DateTimeZone( c::config()->timezone ) );
+							$community->dont_warn_till = $dont_warn_till->format( 'Y-m-d H:i:s' );
+						} else {
+							$community->dont_warn_till = null;
+						}
+
+						if( intval( $this->request()[ 'dont_warn_till_enabled' ] ) == 0 ){
+							$community->dont_warn_till = null;
+						}
+
+
+
 						$community->save();
 
 						if( $community->id_community ){
+							// force driver group creation
+							Crunchbutton_Group::getDeliveryGroupByCommunity($community->driver_group);
 							echo $community->json();
 						} else {
 							$this->_error( 'error' );

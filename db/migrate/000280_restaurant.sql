@@ -1,0 +1,1 @@
+ALTER TABLE `restaurant` ADD  `show_when_closed` tinyint(1) DEFAULT 1;

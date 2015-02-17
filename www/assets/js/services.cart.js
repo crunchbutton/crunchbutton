@@ -105,6 +105,9 @@ NGApp.factory('CartService', function () {
 			id_dish: dish.id_dish,
 			name: dish.name
 		});
+		
+		
+		App.rootScope.$safeApply();
 	}
 	service.clone = function (item) {
 		var

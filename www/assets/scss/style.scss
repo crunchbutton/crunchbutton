@@ -3082,108 +3082,73 @@ h1.about-header {
 
 
 /*Application form styles:*/
-.container {
-    width:90%;
-    margin: auto;
-    height:auto;
+.drivers-apply .textbox {
+	line-height: 2em;
 }
-.label {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-top: 7px;
-    width: 33.33333%;
-    float:left;
-    position: relative;
-    min-height: 1px;
-    padding-right: 15px;
-    display: block;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    line-height: 1.42857;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    font-weight: 600;
-    height:30px;
-    
+.drivers-apply .textbox label {
+	cursor: pointer;
+	margin-left: 1em;
 }
-.textbox {
-    width: 50%;
-    position: relative;
-    min-height: 1px;
-    padding-left: 15px;
-    padding-right: 15px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    display: block;
-    -webkit-font-smoothing: antialiased;
-    line-height: 1.42857;
-    float:left;
-    margin-bottom:15px;
+.drivers-apply .form-group {
+    line-height: 1.6em;
+    margin-bottom: 2em;
+	display: inline-block;
+	vertical-align: top;
 }
-.textbox div {
-    color:red;
+@media screen and (min-width: 769px) {
+	.drivers-apply .form-group {
+    	width: 40%;
+	}
+	.drivers-apply .form-group:nth-child(even) {
+		margin-left:7em;
+	}
 }
-.form-control {
-    font-weight: lighter;
+.drivers-apply .form-control {
     -webkit-box-shadow: none;
     box-shadow: none;
-    height: 36px;
-    padding-left: 12px;
-    padding-right: 12px;
-    display: block;
-    width: 100%;
-    height: 34px;
-    padding: 6px 12px; 
-    font-size: 16px;
-    line-height: 1.42857;
+    padding: .2em .5em; 
     color: #555;
-    vertical-align: middle;
+    line-height: 1.4em;
     background-color: #fff;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    text-transform: none;
-    -webkit-appearance: textfield;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
-h2 {
-    line-height: 1.4;
-    margin-bottom: 15px;
+.drivers-apply .form-control-large {
+    width: 100%;
+    font-size: 1.2em;
+    border-radius: 4px;
 }
-.button-bottom {
-    width: 11em;   
+.drivers-apply .form-control-small {
+    width: 50%;
+    font-size: 1.2em;
+    border-radius: 3px;
+}
+.drivers-apply .form-control-select {
+	-webkit-appearance: menulist-button;
+}
+
+
+.drivers-apply .button-bottom {
+    width: 11em; 
+    background-color:rgb(247, 128, 83);
+    color:white;
+    border-radius:4px;
+    border:none;  
 }
    
-em {
+i {
     font-style:italic;
     font-weight:300;
 }
-label span{
+
+.drivers-apply .form-required {
     color:red;
 }
 
-@media only screen and (max-width: 400px)  {
-    .restaurant-item-title {
-        font-weight:bold;
-        font-size:1.5em;
-        color:rgb(247, 128, 83);
-    }
-    .label {
-        float:none;
-        line-height:1.1;
-    }
-    .button-bottom {
-        background-color:rgb(247, 128, 83);
-        color:white;
-        border-radius:4px;
-        border:none;
-    }
+.drivers-apply .apply-item-title {
+	 font-weight:bold;
+	 font-size:1.5em;
+	 color:rgb(247, 128, 83);
 }

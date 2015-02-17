@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD  `dont_warn_till` datetime DEFAULT null;
