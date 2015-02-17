@@ -1,0 +1,1 @@
+ALTER TABLE `analytics_event` DROP FOREIGN KEY `analytics_event_ibfk_2`;
