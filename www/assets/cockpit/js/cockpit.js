@@ -400,9 +400,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			back: false
 		})
 		.when('/drivers/docs/payment', {
-			action: 'drivers-documents',
-			controller: 'DriversPaymentFormCtrl',
-			templateUrl: 'assets/view/drivers-payment-info-form.html'
+			redirectTo: '/drivers/docs/'
+			// action: 'drivers-documents',
+			// controller: 'DriversPaymentFormCtrl',
+			// templateUrl: 'assets/view/drivers-payment-info-form.html'
 		})
 		.when('/drivers/docs/pexcard', {
 			action: 'drivers-pex-card',
