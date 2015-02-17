@@ -17,8 +17,12 @@ NGApp.config(['$routeProvider', function ($routeProvider) {
 NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, ViewListService, $http) {
 	// pretty straightforward, we always want the charts to have zero as base
 	Chart.defaults.global.scaleBeginAtZero = true;
+	Chart.defaults.global.animation = false;
+	Chart.defaults.global.maintainAspectRatio = false;
+	Chart.defaults.global.responsive = true;
 	console.log('METRICSCTRL');
 	angular.extend($scope, ViewListService);
+	$scope.showCharts = 0;
 	$scope.sortMethods = [
 		{'kind': 'min', 'description': 'Minimum Value'},
 		{'kind': 'max', 'description': 'Maximum Value'},
@@ -57,7 +61,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if (timer) {
 			$timeout.cancel(timer);
 		}
-		timer = $timeout($scope.refreshData, 100);
+		timer = $timeout($scope.refreshData, 1000);
 	}
 	// TODO: Figure out how to avoid the multiple refreshes here!
 	$scope.$watch('settings.start', refreshOnTimer);
@@ -77,6 +81,10 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	}
 	$scope.updateChartOption = function (chartOption) {
 		var type = chartOption.type;
+		if (!type) {
+			console.debug('not loading chart data - no type selected');
+			return;
+		}
 		// only reference current loaded array, in case data gets reset before the load is finished.
 		var loaded = $scope.loadedChartTypes;
 		var chartData = $scope.chartData;
@@ -112,6 +120,9 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			// fill if we have no sort order yet
 			if (!$scope.orderedCommunities) {
 				$scope.orderedCommunities = Object.keys($scope.allowedCommunities).map(function (k) { return $scope.allowedCommunities[k]; });
+			}
+			if (!$scope.selectedCommunities) {
+				$scope.selectedCommunities = $scope.orderedCommunities;
 			}
 			loaded[type] = true;
 			finalCallback();
@@ -165,6 +176,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		charts: [
 			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'}
 		],
+		chartWidth: 500,
+		chartHeight: 500,
 		period: 'd',
 		start: '-45d',
 		end: 'now'
