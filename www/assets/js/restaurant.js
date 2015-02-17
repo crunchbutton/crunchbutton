@@ -124,7 +124,7 @@ var Restaurant = function(id) {
 				self._tag = 'force_close';
 			}
 		}
-		if( self._open && self._closesIn !== 'false' && self._closesIn <= 15 ){
+		if( self._open && self._closesIn !== 'false' && self._closesIn !== false && self._closesIn <= 15 ){
 			self._tag = 'closing';
 		}
 		// if the restaurant does not have a closed message it has no hours for the week
