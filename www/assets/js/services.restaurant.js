@@ -34,7 +34,9 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		for ( var x in list ) {
 			if( list[ x ].openRestaurantPage( now, true ) ){
 				list[ x ]._maximized = true;
-				areAllTheRestaurantsMinimized = false;
+				if( !list[ x ].driver_restaurant ){
+					areAllTheRestaurantsMinimized = false;
+				}
 				if( !list[ x ]._open ){
 					list[ x ].tagfy( 'opening' );
 				} else {
@@ -54,7 +56,14 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 				list.sort(
 					sort_by( {
+						name: 'driver_restaurant',
+						reverse: true
+					}, {
 						name: '_hasHours',
+						reverse: true
+					}, {
+						name: '_weight',
+						primer: parseFloat,
 						reverse: true
 					}, {
 						name: '_opensIn',
@@ -72,16 +81,13 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 						primer: parseFloat,
 						reverse: false
 					}, {
-						name: '_weight',
-						primer: parseFloat,
-						reverse: true
-					}, {
 						name: 'name',
 						reverse: false
 					} )
 				);
 			}
 		} else {
+
 			list.sort(
 				sort_by( {
 					name: '_maximized',
@@ -116,8 +122,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 
 		if( areAllTheRestaurantsMinimized ){
-			// Number of restaurants that will have the opening tag is 3 #2456
-			var tagRestaurantsAsClosing = 3;
+			var tagRestaurantsAsClosing = 5;
 			var divider = false;
 			for ( var x in list ) {
 				if( divider ){
@@ -128,7 +133,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					continue;
 					break;
 				}
-				list[x].tagfy( 'opening' );
+				list[x].tagfy( 'opening', list[x].driver_restaurant );
 				list[x]._maximized = true;
 				tagRestaurantsAsClosing--;
 				if( tagRestaurantsAsClosing === 0 ){
@@ -251,6 +256,13 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					if (success) {
 						success(list);
 					}
+					var community = getMostCommonCommunity(restaurants);
+					if(community != null) {
+						// overwrite user's community with last set community
+						App.trackCommunity(community);
+					} else {
+						console.log('no community found in restaurants: ', restaurants);
+					}
 					return list;
 				}
 			});
@@ -267,6 +279,41 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		service.forceLoad = true;
 		restaurants = false;
 	});
+	function mostCommonElement (arr) {
+		var counts, count, elem, maxCount, maxValue;
+		counts = {};
+		for(var i = 0; i < arr.length; i++) {
+			if(!counts[arr[i]]) {
+				counts[arr[i]] = 0;
+			}
+			counts[arr[i]]++;
+		}
+		for(elem in counts) {
+			if(counts.hasOwnProperty(elem)) {
+				count = counts[elem];
+				if(count > maxCount || !maxCount) {
+					maxCount = count;
+					maxValue = elem;
+				}
+			}
+		}
+		return maxValue;
+	}
+
+	// pulls out the most common community from all the passed in restaurants
+	function getMostCommonCommunity (restaurants) {
+		var restaurant, id_community, count;
+		var communities = {};
+		var maxCount = 0;
+		var mostFrequentCommunity = undefined;
+		try {
+			communities = restaurants.map(function (restaurant) { return restaurant.id_community;});
+			return mostCommonElement(communities);
+
+		} catch (e) {
+			console.log('error with getting community from restaurant', e)
+		}
+	}
 
 	return service;
 });

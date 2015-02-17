@@ -28,10 +28,12 @@
 				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 				<br />
+
 				<div class="order-details-highlight">
-					Create an account and earn {{Math.floor(order.reward.points)}} points towards a free delivery.
+					Create an account and earn {{order.reward.points}} points towards a free delivery.
 					<br />
 				</div>
+
 			</div>
 
 			<div ng-show="account.user.has_auth">
@@ -119,7 +121,7 @@
 	<br>
 
 
-	<a href="/printorder/{{ order.uuid }}" target="_blank" class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
+	<a href="/printorder/{{ order.uuid }}" target="_system" class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
 
 
 	<div class="divider"></div>

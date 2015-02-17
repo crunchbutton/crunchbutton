@@ -132,6 +132,29 @@
 									} ?>
 								</li>
 							</ul>
+							<br>
+							<br>
+							<strong>If it is closed and it has drivers doesn't warn CS till (PST):</strong>
+							<ul class="padded separate-sections">
+								<?php
+									$dont_warn_till = $community[ 'community' ]->dont_warn_till;
+									if( $dont_warn_till ){
+										$dont_warn_till = $community[ 'community' ]->dontWarnTill()->format( 'Y-m-d\TH:i' );
+										$active = ( $community[ 'community' ]->dontWarnTill()->format( 'Y' ) > 0 );
+									}
+									?>
+								<li class="input">
+									<label style="text-align:left;">
+										<input type="checkbox" onchange="community.dontWarnTillActive();" name="dont_warn_till_active" id="dont_warn_till_active" <?php if( $active ){ echo 'checked="checked"'; } ?> > Actived
+									</label>
+								</li>
+								<li class="input">
+									<input style="width:100%" <?php if( !$active ){ echo 'disabled="disabled"'; } ?> type="datetime-local" name="dont_warn_till" id="dont_warn_till" value="<?php echo $dont_warn_till; ?>">
+								</li>
+								<li>
+									<button type="button" onclick="community.dontWarnTill();" class="btn dont_warn_till_save btn-blue">Save changes</button>
+								</li>
+							</ul>
 						</div>
 						<div class="span6">
 							<strong>Close 3rd party delivery restaurants</strong>
@@ -330,6 +353,39 @@ community.quickClose = function( id_restaurant, status ){
 		complete: function( request ) {
 			if( request.success ){
 				community.restaurants();
+			} else {
+				alert( 'Oops! Please try again!' );
+			}
+		}
+	} );
+};
+community.dont_warn_till_old_val = null;
+community.dontWarnTillActive = function(){
+	var input = $('#dont_warn_till_active');
+	if( !input.is(':checked') ){
+		community.dont_warn_till_old_val = $('#dont_warn_till').val();
+		$('#dont_warn_till').val( '' );
+		$('#dont_warn_till').prop('disabled', true);
+	} else {
+		$('#dont_warn_till').val( community.dont_warn_till_old_val );
+		$('#dont_warn_till').prop('disabled', false);
+	}
+};
+
+community.dontWarnTill = function(){
+	var dont_warn_till = $('#dont_warn_till');
+	var save = true;
+	var data = {
+			'id_community': '<?php echo $community[ 'community' ]->id_community; ?>',
+			'dont_warn_till': dont_warn_till.val()
+		};
+	$.ajax( {
+		type: 'POST',
+		url: '/api/community/dont-warn-till',
+		data: data,
+		complete: function( request ) {
+			if( request.success ){
+				alert( 'Saved!' )
 			} else {
 				alert( 'Oops! Please try again!' );
 			}

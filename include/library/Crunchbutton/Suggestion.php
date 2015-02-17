@@ -18,8 +18,6 @@ class Crunchbutton_Suggestion extends Cana_Table {
 	}
 
 	public function notify() {
-		$env = c::getEnv();
-		$phones = c::config()->suggestion->{$env}->phone;
 
 		$message =
 			($this->user()->name ? $this->user()->name : 'A guest').
@@ -31,7 +29,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 			"\n\n (". $env . ")";
 
 		Crunchbutton_Message_Sms::send([
-			'to' => $phones,
+			'to' => Crunchbutton_Support::getUsers(),
 			'message' => $message,
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_SUGGESTION
 		]);

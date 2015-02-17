@@ -13,6 +13,10 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 });
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
+
+	$scope.communities = App.communities;
+
+
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
@@ -66,9 +70,77 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     				$location.path( '/thankyou' );
         		console.log(data);
     			})
-    	}
+    	} else {
+			App.alert('Please fill out all of the fields.');
+		}
     };
 });
+
+NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $location) {
+
+	$scope.communities = App.communities;
+	//console.log($scope.communities);
+
+	$scope.apply = {};
+	$scope.errors = {};
+	$scope.post = function(){
+		$scope.errors = {};
+		if (!$scope.apply.firstName) {
+			$scope.errors.firstName = true;
+		}
+		if (!$scope.apply.lastName) {
+			$scope.errors.lastName = true;
+		}
+		if (!$scope.apply.email) {
+			$scope.errors.email = true;
+		}
+		if (!$scope.apply.university) {
+			$scope.errors.university = true;
+		}
+		if (!$scope.apply.number) {
+			$scope.errors.number = true;
+		}
+		if (!$scope.apply.phone) {
+			$scope.errors.phone = true;
+		}
+		if (!$scope.apply.carrier) {
+			$scope.errors.carrier = true;
+		}
+		if ($scope.apply.carrier == 'Other') {
+			if (!$scope.apply.otherCarrier){
+				$scope.errors.otherCarrier = true;
+			}
+		}
+		if (!$scope.apply.transport) {
+			$scope.errors.transport = true;
+		}
+		if (!$scope.apply.hours) {
+			$scope.errors.hours = true;
+		}
+		if (!$scope.apply.applicant) {
+			$scope.errors.applicant = true;
+		}
+		if (!$scope.apply.source) {
+			$scope.errors.source = true;
+		}
+		if ($scope.apply.source == 'other') {
+			if (!$scope.apply.otherSource){
+				$scope.errors.otherSource = true;
+			}
+		}
+
+		if (jQuery.isEmptyObject($scope.errors)) {
+			ApplyService.post($scope.apply, function(data){
+				$location.path( '/thankyou' );
+				console.log(data);
+			})
+		} else {
+			App.alert('Please fill out all of the fields.');
+		}
+	};
+});
+
+
 /**
  * splash page
  */
@@ -86,9 +158,9 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 });
 
 /**
- * jobs page
+ * work page
  */
-NGApp.controller('JobsCtrl', function ($scope) {
+NGApp.controller('WorkCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
 	$scope.reps = reps;
@@ -128,6 +200,54 @@ NGApp.controller('LegalCtrl', function ($scope) {
 	$scope.join = join;
 	$scope.goodbye = goodbye;
 });
+
+/**
+ * help page
+ */
+NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralService, FacebookService ) {
+
+	if( !AccountService.isLogged() ){
+		$location.path( '/' );
+		return;
+	}
+
+	$scope.account = AccountService;
+
+	$scope.referral = {
+		invite_url : ReferralService.invite_url,
+		value : ReferralService.value,
+		limit : ReferralService.limit,
+		invites : ReferralService.invites,
+		enabled : ReferralService.enabled
+	}
+
+	$scope.referral.cleaned_url = function(){
+		return ReferralService.cleaned_url();
+	}
+
+	// Load the invite_url
+	if( !ReferralService.invite_url ){
+		ReferralService.getStatus();
+	}
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.referral.invites = ReferralService.invites;
+		$scope.referral.limit = ReferralService.limit;
+		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.value = ReferralService.value;
+		$scope.referral.enabled = ReferralService.enabled;
+	});
+
+	$scope.referral.facebook = function(){
+		FacebookService.postInvite( $scope.referral.invite_url );
+	}
+
+	$scope.referral.twitter = function(){
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+	}
+
+});
+
 
 /**
  * help page
@@ -295,15 +415,16 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.display = function($event){
 
-		if ( $scope.loadingRestaurant ) {
+		if ( $scope.loadingRestaurant || $rootScope.navigation.page != 'restaurants') {
 			return;
 		}
+
 		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
 
 		var checkHours = function(){
 			if (restaurant.permalink.match(/^(launching|drive|drivers|driving)-.*/)){
-				$location.path('/drivers/apply');
+				App.go('/drivers/apply', 'push' );
 				return;
 			}
 			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
@@ -785,15 +906,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.tooglePayment = function( type ){
 		return order.tooglePayment( type );
 	}
-	$scope.order._years = function(){
-		return order._years();
-	}
-	$scope.order._months = function(){
-		return order._months();
-	}
-	$scope.order._tips = function(){
-		return order._tips();
-	}
+	$scope.order._years = order._years();
+
+	$scope.order._months = order._months();
+
+	$scope.order._tips = order._tips();
+
 	$scope.showCreditPayment = function(){
 		$scope.order.tooglePayment( 'card' );
 		$scope.order.showForm = true;
@@ -873,6 +991,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// watch cart changes
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
 		$scope.order.updateTotal();
+		$scope.order._tips = order._tips();
 	}, true);
 
 	// Alias to ServiceAccount.user
@@ -1174,7 +1293,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * @todo: change to account page
  */
 
-NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
+NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -1196,9 +1315,11 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	if( OrdersService.reload ){
 		OrdersService.load();
 	} else {
-		$scope.orders.list = OrdersService.list;
-		// Check if the orders list need to be updated #1988
-		OrdersService.checkUpdate();
+		$timeout(function() {
+			$scope.orders.list = OrdersService.list;
+			// Check if the orders list need to be updated #1988
+			OrdersService.checkUpdate();
+		},10);
 	}
 
 	$scope.$on( 'OrdersLoaded', function(e, data) {

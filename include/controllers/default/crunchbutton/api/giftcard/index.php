@@ -422,6 +422,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					$words = $this->request()['words'];
 					$phone = $this->request()['phone'];
 
+					$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $words);
 					$words = explode( ' ', $words );
 
 					$words = array_unique( $words );

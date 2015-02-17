@@ -1,0 +1,24 @@
+<div class="main-content-readable">
+
+	<h1 class="about-header">Free food</h1>
+	<p>
+		Invite your friends and earn a free delivery in Crunch Credit for every new friend who orders!
+	</p>
+	<br /><br />
+		<div>
+			<div>Earn points by ordering food, sharing your order, or referring friends.</div>
+			<div>Share this family and friends code and both of you get your next delivery on us.</div>
+			<div><strong>{{account.user.invite_code}}</strong></div>
+		</div>
+		<div class="divider"></div>
+		<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">
+			<i class="fa fa-twitter"></i><span class="social-button-text">Tweet</span>
+		</div>
+		<div class="social-button facebook-button social-button-invite" ng-click="referral.facebook();">
+			<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
+		</div>
+		<div class="divider"></div>
+		Invite URL: <input type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
+		<div class="divider"></div>
+	</div>
+</div>

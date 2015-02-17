@@ -12,7 +12,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
 	public static function uri(){
 		if( Crunchbutton_Pexcard_Resource::env() == 'live' ){
-			return 'https://coreapi.pexcard.com/v3/';
+			return 'https://coreapi.pexcard.com/' . Crunchbutton_Pexcard_Resource::api_version() . '/';
 		} else {
 			return 'https://corebeta.pexcard.com/api/' . Crunchbutton_Pexcard_Resource::api_version() . '/';
 		}

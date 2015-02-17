@@ -35,7 +35,7 @@ class Crunchbutton_Group extends Cana_Table {
 	}
 
 	public function normalizeDriverGroup( $community ){
-		return substr( $community, 0, 20 );
+		return substr( $community, 0, 120 );
 	}
 
 	public function getDeliveryGroupByCommunity( $community ){

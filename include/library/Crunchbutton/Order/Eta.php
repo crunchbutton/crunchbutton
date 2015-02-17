@@ -45,6 +45,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 			$time = 0;
 		} else {
 			$ret = self::_getGoogleEta($order);
+
 			$time = $ret->time;
 
 			if ($status == 'accepted' || $status == 'transferred') {

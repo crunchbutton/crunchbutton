@@ -37,10 +37,16 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
 		$id_community_shift_father = $shift->recurringId();
 		if( $id_community_shift_father ){
-			$permanently = new Crunchbutton_Admin_Shift_Assign_Permanently();
-			$permanently->id_community_shift = $id_community_shift_father;
-			$permanently->id_admin = $id_admin;
-			$permanently->save();
+			$permanently = Crunchbutton_Admin_Shift_Assign_Permanently::q( 'SELECT * FROM admin_shift_assign_permanently WHERE id_community_shift = "' . $id_community_shift_father . '" AND id_admin = "' . $id_admin . '"'  );
+			if( $permanently->id_admin_shift_assign_permanently ){
+				return $permanently;
+			} else {
+				$permanently = new Crunchbutton_Admin_Shift_Assign_Permanently();
+				$permanently->id_community_shift = $id_community_shift_father;
+				$permanently->id_admin = $id_admin;
+				$permanently->save();
+				return $permanently;
+			}
 		}
 	}
 

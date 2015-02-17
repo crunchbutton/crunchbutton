@@ -3,6 +3,11 @@
  THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS.
 </div>
 */ ?>
+<style>
+	.toggle-active {
+		margin-top:0;
+	}
+</style>
 
 <div ng-show="restaurant">
 	<div class="giftcard-badge-container" ng-show="credit.hasValue">
@@ -24,6 +29,10 @@
 	</div>
 
 	<div class="restaurant-message" ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
+	<br>
+	<br>
+
+	<div ng-if="restaurant.eta" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
 
 	<div ng-show="restaurant.image" class="restaurant-pic-wrapper {{AB.restaurantPage}}">
 		<div class="restaurant-pic" style="background: url({{restaurant.img}});"></div>
@@ -159,7 +168,7 @@
 			<div ng-bind-once ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-bind-once ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
+					<li ng-bind-once ng-repeat="dish in category.dishes()" data-id_dish="{{dish.id_dish}}" add-to-cart class="dish-item">
 						<span class="dish-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span>
 						<span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span>
 					</li>
@@ -329,9 +338,9 @@
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
-							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select>
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7">{{order.form.card.month}}</select>
 
-							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select>
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8"></select>
 
 							<div class="divider"></div>
 						</div>
@@ -342,7 +351,7 @@
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
 						<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip" tabindex="9"></select>
+						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip" tabindex="9"></select>
 						<div class="divider"></div>
 					</div>
 				</div>

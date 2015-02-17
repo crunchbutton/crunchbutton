@@ -33,7 +33,7 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 		}
 		$message = 'Error creating a pex card token' . "\n";
 		$message .= 'It is important, please contact Daniel or Devin';
-		// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+		Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 	}
 
 	public function __construct($id = null) {

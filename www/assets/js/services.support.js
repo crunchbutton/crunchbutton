@@ -1,5 +1,5 @@
 // Support
-NGApp.factory( 'SupportService', function( $http, AccountService ){
+NGApp.factory( 'SupportService', function( $http, AccountService, $rootScope){
 
 	var service = {
 		minimized : true,
@@ -98,7 +98,11 @@ NGApp.factory( 'SupportService', function( $http, AccountService ){
 				url: url,
 				data: $.param( { name: service.form.name, phone: service.form.phone, message: service.form.message } ),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-				} ).success( function( data ) { service.thanks = true; service.isSending = false; }	);
+				} ).success( function( data ) {
+					service.thanks = true;
+					service.isSending = false;
+					$rootScope.$safeApply();
+			});
 		}
 	}
 

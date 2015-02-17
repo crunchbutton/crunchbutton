@@ -83,7 +83,8 @@ class Crunchbutton_Promo extends Cana_Table
 	public function validateNotesField( $notes, $id_restaurant = false ){
 		$return = array();
 		$giftcards = array();
-		$words = explode( ' ',  $notes);
+		$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $notes );
+		$words = explode( ' ',  $words);
 		foreach( $words as $word ){
 			$code = preg_replace( '/[^a-zA-Z 0-9]+/', '', $word );
 			$giftcard = Crunchbutton_Promo::byCode( $code );

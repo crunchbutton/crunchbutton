@@ -36,7 +36,11 @@
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
-							<div class="meal-item-tag-closed" ng-switch-when="opening">Available {{restaurant._opensIn_formatted}}</div>
+							<div ng-switch-when="opening">
+								<div class="meal-item-tag-closed" ng-if="restaurant._opensIn_formatted">
+									Available {{restaurant._opensIn_formatted}}
+								</div>
+							</div>
 							<div class="meal-item-tag-closed" ng-switch-when="closed">
 								<span ng-if="restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
 								<span ng-if="!restaurant._opensIn_formatted">Available in a few hours</span>
@@ -49,7 +53,7 @@
 				<div class="meal-item-spacer"></div>
 			</div>
 			<button class="show-more-restaurants" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
-				Show more
+				Show more Restaurants
 			</button>
 		</div>
 	</div>
