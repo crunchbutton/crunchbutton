@@ -59,7 +59,7 @@
 						</tr>
 					</table>
 				</li>
-								
+
 				<li ng-instant="test.card()" ng-show="debug()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -93,24 +93,24 @@
 </div>
 
 <div class="wrapper">
-	
+
 	<div id="snap-content" class="snap-content">
 		<div class="navs" data-position="fixed" ng-controller="MainHeaderCtrl">
 			<div class="nav nav-top">
 				<div class="content<?=$e?>">
-	
+
 					<div class="logo"><a href="javascript:;" ng-instant="navigation.home()"><div class="logo-img"></div></a></div>
-	
+
 					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
-					
+
 					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon config-icon-desktop-hide" ng-instant="navigation.link('/location')"></div>
 					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-click="navigation.menu()"></div>
-	
+
 					<div class="signin-box-header">
 						<div ng-show="account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
 						<div ng-show="!account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
 					</div>
-	
+
 				</div>
 			</div>
 			<div class="nav nav-cart" ng-click="cartScroll()">
@@ -146,6 +146,7 @@
 				<? endif ; ?>
 
 				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
+					<a ng-show="account.user.id_user" href="javascript:;" ng-click="navigation.link('/free-food')">Free food</a>
 					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
 					<? if (c::config()->site->config('apply-to-drive')->val()) : ?>
 						<a href="https://docs.google.com/forms/d/1zmBx0XOxXi8UpqKX3n7lzXHJUbJqsMrjomqprYBRh0E/viewform?edit_requested=true">Apply to Drive</a>
@@ -188,7 +189,7 @@
 <? /*
 @sky-loader
 <div class="order-sky-loader">
-	<div id="Stage" class="EDGE-977700350">	
+	<div id="Stage" class="EDGE-977700350">
 		<div id="Stage_sky-pie" class="edgeLoad-EDGE-977700350"></div>
 		<div id="Stage_sky-burger" class="edgeLoad-EDGE-977700350"></div>
 	</div>
