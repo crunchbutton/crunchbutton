@@ -1773,11 +1773,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if( $community->id_community ){
 				$allRestaurantsClosed = $community->allRestaurantsClosed();
 				if( $allRestaurantsClosed ){
-					$closed_message = $allRestaurantsClosed;
+					$closed_message = $community->close_all_restaurants_note;
 				}
 				$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
 				if( !$closed_message && $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
-					$closed_message = $allThirdPartyDeliveryRestaurantsClosed;
+					$closed_message = $community->close_3rd_party_delivery_restaurants_note;
 				}
 			}
 
