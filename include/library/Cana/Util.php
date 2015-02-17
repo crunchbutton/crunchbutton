@@ -14,7 +14,7 @@ class Cana_Util extends Cana_Model {
 		return trim($v);
 	}
 
-	
+
 	public static function avsort(&$array, $key, $reverse = false, $function = 'strcasecmp') {
 		if (is_array($array))
 			foreach ($array as $item)
@@ -31,7 +31,7 @@ class Cana_Util extends Cana_Model {
 
 		return $reverse ? array_reverse($array) : $array;
 	}
-	
+
 	public static function subtract_minutes( $time, $minutes ) {
 		$h = floor( $time / 100 );
 		$m = $time - ( 100 * $h );
@@ -47,9 +47,9 @@ class Cana_Util extends Cana_Model {
 	public static function formatMinutes( $minutes ){
 		$hours = floor( $minutes / 60 );
 		if( $hours > 0 ){
-			$formated = $hours . ( ( $hours > 1 )	? ' hours' : 'hour' );
+			$formated = $hours . ( ( $hours > 1 )	? ' hours' : ' hour' );
 		} else {
-			$formated = $minutes . ( ( $minutes > 1 )	? ' minutes' : 'minute' );
+			$formated = $minutes . ( ( $minutes > 1 )	? ' minutes' : ' minute' );
 		}
 		return [ 'minutes' => $minutes, 'formatted' => $formated ];
 	}
@@ -75,7 +75,7 @@ class Cana_Util extends Cana_Model {
 		if( $h >= 24 ){
 			$h -= 24;
 		}
-		$mintute_formated = ':' . str_pad( $m, 2, '0', STR_PAD_LEFT ); 
+		$mintute_formated = ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
 		return $h . $mintute_formated;
 	}
 
@@ -92,13 +92,13 @@ class Cana_Util extends Cana_Model {
 			}
 		}
 		unset($table);
-		array_multisort($tn, SORT_ASC, SORT_NUMERIC, $temp_num); 
+		array_multisort($tn, SORT_ASC, SORT_NUMERIC, $temp_num);
 		array_multisort($ts, SORT_ASC, SORT_STRING, $temp_str);
 		return array_merge($temp_num, $temp_str);
 	}
 
 	public static function convertBytes($bytesIn,  $from = 'bytes', $to = 'bytes') {
-	
+
 		if (preg_replace('/[a-z]/i','',$bytesIn) != trim($bytesIn)) {
 			$bytes = preg_replace('/[a-z]/i','',$bytesIn);
 			$fromTest = preg_replace('/[0-9\.]/i','',trim($bytesIn));
@@ -106,7 +106,7 @@ class Cana_Util extends Cana_Model {
 		} else {
 			$bytes = $bytesIn;
 		}
-		
+
 		$lower = function($i) {
 			return strtolower(substr($i,0,1));
 		};
@@ -114,7 +114,7 @@ class Cana_Util extends Cana_Model {
 		$to = $lower($to);
 
 		$pows = array_flip(['b','k','m','g','t','p']);
-		$bytes = $pows[$from] ? $bytes*(pow(1024,$pows[$from])) : $bytes;		
+		$bytes = $pows[$from] ? $bytes*(pow(1024,$pows[$from])) : $bytes;
 		$bytes = $pows[$to] ? $bytes/(pow(1024,$pows[$to])) : $bytes;
 		return round($bytes,2);
 	}

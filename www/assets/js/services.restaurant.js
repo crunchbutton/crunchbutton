@@ -122,7 +122,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 
 		if( areAllTheRestaurantsMinimized ){
-			// Number of restaurants that will have the opening tag is 3 #2456
 			var tagRestaurantsAsClosing = 5;
 			var divider = false;
 			for ( var x in list ) {
