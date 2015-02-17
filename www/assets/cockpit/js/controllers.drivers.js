@@ -802,19 +802,6 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 	$scope.status = {};
 	$scope.pexcard = false;
 
-
-	StaffService.status( $scope.account.user.id_admin, function(data) {
-		if (data.payment == true) {
-			$scope.status.paymentinfo = true;
-		}
-	});
-
-	StaffService.has_pexcard( $scope.account.user.id_admin, function( json ) {
-		if( json.success ){
-			$scope.pexcard = json.success;
-		}
-	});
-
 	var docs = function(){
 
 		// Load the docs
@@ -828,17 +815,13 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 
 			angular.forEach($scope.documents, function(doc, x) {
 				if ($scope.documents[x].url && (!$scope.documents[x].status || $scope.documents[x].status.file.substring(9, 14) == 'blank')) {
-					console.log($scope.documents[x]);
 					$scope.status.docs = false;
 				} else if (!$scope.documents[x].url && !$scope.documents[x].status) {
-					console.log($scope.documents[x]);
 					$scope.status.identification = false;
 				}
 			});
 		} );
 	}
-
-	docs();
 
 	$scope.setDocument = function( id_driver_document ){
 		$scope.doc_uploaded = id_driver_document
@@ -871,6 +854,26 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 	$scope.download = function( id_driver_document_status ){
 		DriverOnboardingService.docs.download( id_driver_document_status );
 	}
+
+	var loadInfo = function(){
+		if( $scope.account && $scope.account.user && $scope.account.user.id_admin ){
+			StaffService.status( $scope.account.user.id_admin, function(data) {
+				if (data.payment == true) {
+					$scope.status.paymentinfo = true;
+				}
+			});
+			StaffService.has_pexcard( $scope.account.user.id_admin, function( json ) {
+				if( json.success ){
+					$scope.pexcard = json.success;
+				}
+			});
+			docs();
+		} else {
+			setTimeout( function(){ loadInfo(); }, 500 );
+		}
+	}
+
+	loadInfo();
 
 } );
 
