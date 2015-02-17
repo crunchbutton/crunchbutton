@@ -13,57 +13,57 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 });
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
-	
+
 	$scope.communities = App.communities;
 
-	
+
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
     	$scope.errors = {};
     	if (!$scope.apply.firstName) {
     		$scope.errors.firstName = true;
-    	} 
+    	}
     	if (!$scope.apply.lastName) {
     		$scope.errors.lastName = true;
-    	} 
+    	}
     	if (!$scope.apply.email) {
     		$scope.errors.email = true;
-    	} 
+    	}
     	if (!$scope.apply.university) {
     		$scope.errors.university = true;
-    	} 
+    	}
     	if (!$scope.apply.number) {
     		$scope.errors.number = true;
-    	} 
+    	}
     	if (!$scope.apply.phone) {
     		$scope.errors.phone = true;
-    	} 
+    	}
     	if (!$scope.apply.carrier) {
     		$scope.errors.carrier = true;
-    	} 
+    	}
     	if ($scope.apply.carrier == 'Other') {
     		if (!$scope.apply.otherCarrier){
     		$scope.errors.otherCarrier = true;
     		}
-    	} 
+    	}
     	if (!$scope.apply.transport) {
     		$scope.errors.transport = true;
-    	} 
+    	}
     	if (!$scope.apply.hours) {
     		$scope.errors.hours = true;
-    	} 
+    	}
     	if (!$scope.apply.applicant) {
     		$scope.errors.applicant = true;
-    	} 
+    	}
     	if (!$scope.apply.source) {
     		$scope.errors.source = true;
-    	} 
+    	}
     	if ($scope.apply.source == 'other') {
     		if (!$scope.apply.otherSource){
     		$scope.errors.otherSource = true;
     		}
-    	} 
+    	}
 
     	if (jQuery.isEmptyObject($scope.errors)) {
     			ApplyService.post($scope.apply, function(data){
@@ -859,9 +859,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		return order.tooglePayment( type );
 	}
 	$scope.order._years = order._years();
-	
+
 	$scope.order._months = order._months();
-	
+
 	$scope.order._tips = order._tips();
 
 	$scope.showCreditPayment = function(){
@@ -943,6 +943,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// watch cart changes
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
 		$scope.order.updateTotal();
+		$scope.order._tips = order._tips();
 	}, true);
 
 	// Alias to ServiceAccount.user
