@@ -20,6 +20,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	Chart.defaults.global.animation = false;
 	Chart.defaults.global.maintainAspectRatio = false;
 	Chart.defaults.global.responsive = true;
+	Chart.defaults.global.scaleFontSize = 10;
 	console.log('METRICSCTRL');
 	angular.extend($scope, ViewListService);
 	$scope.showCharts = 0;
@@ -45,6 +46,18 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'symbol': 'M', 'description': 'Months'},
 		{'symbol': 'Y', 'description': 'Years'}
 	]
+	$scope.settings = {
+		charts: [
+			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'},
+			{'type': 'new-users'},
+			{'type': 'gross-revenue'}
+		],
+		chartWidth: 100,
+		chartHeight: 100,
+		period: 'd',
+		start: '-30d',
+		end: '-15d'
+	};
 	var defaultOptions = {
 		communities: 'active',
 		start: '-14d',
@@ -195,16 +208,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		$scope.orderedCommunities = ordered;
 	}
-	$scope.settings = {
-		charts: [
-			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'}
-		],
-		chartWidth: 500,
-		chartHeight: 500,
-		period: 'd',
-		start: '-45d',
-		end: 'now'
-	};
+
 	$http.get(App.service + 'metrics/permissions').success(function (data) {
 		console.debug('got allowed communities');
 		var allowedCommunities = {};
@@ -225,13 +229,14 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		console.error('ERROR getting community metrics permissions', err);
 	});
 	$http.get(App.service + 'metrics/available').success(function (data) {
-		$scope.availableCharts = data;
+		$scope.availableCharts = {};
+		data.map(function (e) { $scope.availableCharts[e.type] = e; });
 		console.log('got available charts: ', data);
 		if ($scope.orderedCommunities) {
 			$scope.refreshData();
 		}
 	}).error(function (err) {
-		$scope.availableCharts = [];
+		$scope.availableCharts = {};
 		console.error('ERROR getting available charts', err);
 	});
 	var allowedKeys = Object.keys(defaultOptions);

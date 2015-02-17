@@ -18,7 +18,7 @@
 			<input type='number' ng-model='settings.chartWidth'>
 			<input type='number' ng-model='settings.chartHeight'>
 			<div ng-repeat='chartOption in settings.charts'>
-				<select ng-options='chart.type as chart.description for chart in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select>
+				<select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select>
 				<select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select>
 				<select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select>
 				<select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select>
@@ -30,18 +30,19 @@
 		<input type='checkbox' checkbox-group>
 		<label>{{community.name}}</label>
 	</div> -->
-	<div ng-repeat='community in orderedCommunities'>
+	<div ng-repeat='community in orderedCommunities' >
 		{{community.name}}
-		<div ng-repeat='chart in settings.charts'>
-			<div ng-if='showCharts % 2 == 1' style="width:{{settings.chartWidth}};height:{{settings.chartHeight}}">
-				<canvas class="chart chart-line" data="chartData[community.id_community][chart.type].data"
-					options="chartData[community.id_community][chart.type].options"
-					labels="chartData[community.id_community][chart.type].labels"
+		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;">
+			<div ng-if='showCharts % 2 == 0'>
+				<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
+				<canvas class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
+					options="chartData[community.id_community][chartOption.type].options"
+					labels="chartData[community.id_community][chartOption.type].labels"
 					legend="false"></canvas>
 			</div>
-			<div ng-show='showCharts % 2 == 0'>chart type: {{chart.type}} ({{chart.format}})
-			data:{{chartData[community.id_community][chart.type].data}} options:{{chartData[community.id_communiy][chart.type].options}}
-			{{chartData[community.id_community][chart.type]}}
+			<div ng-if='showCharts % 2 == 1'>chart type: {{chartOption.type}} ({{chartOption.format}})
+			data:{{chartData[community.id_community][chartOption.type].data}} options:{{chartData[community.id_communiy][chartOption.type].options}}
+			{{chartData[community.id_community][chartOption.type]}}
 </div>
 		</div>
 	</div>
