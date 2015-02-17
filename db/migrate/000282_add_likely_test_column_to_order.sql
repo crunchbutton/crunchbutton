@@ -1,4 +1,4 @@
-ALTER TABLE `order` MODIFY `likely_test` tinyint DEFAULT NULL;
+ALTER TABLE `order` ADD `likely_test` tinyint DEFAULT NULL;
 
 -- reset our likely_test scenario
 UPDATE `order` O
