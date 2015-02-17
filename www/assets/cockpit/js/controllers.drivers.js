@@ -646,7 +646,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope.carrier_types = json.options;
 			$scope.carrier_type_other = json.other;
 		} );
-        
+
         DriverOnboardingService.tshirt_sizes( function( json ){
 			$scope.tshirt_sizes = json.tshirt_options;
 		} );
@@ -1018,7 +1018,7 @@ NGApp.controller('DriversFeedbackCtrl', function($scope, FeedbackService) {
 	$scope.feedback = {};
 	$scope.errors = {};
     $scope.post = function(){
-    	
+
     	$scope.errors = {};
     	if (!$scope.feedback.message) {
     		$scope.errors.message = true;
@@ -1026,17 +1026,17 @@ NGApp.controller('DriversFeedbackCtrl', function($scope, FeedbackService) {
     	if (jQuery.isEmptyObject($scope.errors)) {
     		console.log($scope.feedback);
     			FeedbackService.post($scope.feedback, function(data){
-    				
+
         		console.log(data);
     			})
     	}
-    } 
+    }
 });
 NGApp.controller('DriversHelpCreditCardCtrl', function() {});
 
 
 NGApp.controller('DriversWelcomeHomeCtrl', function() {
-	
+
 });
 NGApp.controller('DriversWelcomeInfoCtrl', function() {});
 
