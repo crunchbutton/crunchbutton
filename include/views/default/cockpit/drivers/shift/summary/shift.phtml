@@ -242,6 +242,11 @@
 										}
 									?>
 									<textarea style="width:100%;height:80px;" name="form-note" id_admin="<?php echo $driver->id_admin; ?>" id="admin-note-<?php echo $driver->id_admin; ?>" placeholder="loading"></textarea>
+												<div <?php if( !$note_data[ 'date' ] ){ echo 'style="display:none;"'; } ?> class="admin-note-updated" id="admin-note-updated-<?php echo $driver->id_admin; ?>">
+													Updated at <span id="note-updated-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'date' ]; ?></span>
+													<br/>
+													by <span id="note-added_by-<?php echo $driver->id_admin; ?>"><?php echo $note_data[ 'added_by' ]; ?></span>
+												</div>
 									<div class="admin-note-updating" id="admin-note-updating-<?php echo $driver->id_admin; ?>">
 										<i class="icon-spinner icon-spin"></i>
 									</div>
