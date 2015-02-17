@@ -220,6 +220,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		// [{community: XYZ, id_community: XYZ}, ...]
 		$scope.allowedCommunities = allowedCommunities;
+		$scope.multiSelectCommunities = data;
 		if ($scope.availableCharts) {
 			$scope.refreshData();
 		}
