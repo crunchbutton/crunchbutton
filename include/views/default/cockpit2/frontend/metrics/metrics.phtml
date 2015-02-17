@@ -7,6 +7,10 @@
 			<!-- changes here are handled by explicit watch in controller so we can set a timeout -->
 			<input type='text' ng-model='settings.start'>
 			<input type='text' ng-model='settings.end'>
+			<button ng-click='unselectAllCommunities()'>Unselect All Communities</button>
+			<div ng-repeat='community in allowedCommunities'>
+				{{community.name}}<input type='checkbox' ng-model='community.selected' ng-change='orderSelectedCommunities()'><br>
+			</div>
 			<select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select>
 			<button name='refresh' ng-click='refreshData()'>Refresh</button>
 			<button name='addChart' ng-click='addChart()'>Add Chart</button>
@@ -26,7 +30,7 @@
 		<input type='checkbox' checkbox-group>
 		<label>{{community.name}}</label>
 	</div> -->
-	<div ng-repeat='community in selectedCommunities'>
+	<div ng-repeat='community in orderedCommunities'>
 		{{community.name}}
 		<div ng-repeat='chart in settings.charts'>
 			<div ng-if='showCharts % 2 == 1' style="width:{{settings.chartWidth}};height:{{settings.chartHeight}}">
