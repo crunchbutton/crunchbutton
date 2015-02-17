@@ -134,43 +134,66 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			$scope.settings.charts.splice(index, 1);
 		}
 		if (chartOption.orderMethod && chartOption.orderDirection) {
-			$scope.updateChartOrders();
+			$scope.updateChartOrders(null, true);
 		}
 	}
-	$scope.updateChartOrders = function (chartOption) {
+	/**
+	 * Orders communities by the selected chart order method and direction
+	 **/
+	$scope.updateChartOrders = function (chartOption, clearOthers) {
 		var communityOrdering;
+		// grab current chart ordering if we're just updating with no specified chart
+		if (!chartOption && !clearOthers) {
+			var co;
+			for (var i = 0; i < $scope.settings.charts.length; i++) {
+				co = $scope.settings.charts[i];
+				if (co.orderMethod && co.orderDirection) {
+					chartOption = co;
+					break;
+				}
+			}
+		}
 		if (chartOption) {
 			if (!chartOption.orderDirection) {
 				chartOption.orderDirection = 'desc';
 			}
-			communityOrdering = MetricsService.orderChartData(
+			$scope.communityOrdering = MetricsService.orderChartData(
 				$scope.chartData,
 				chartOption.type,
 				chartOption.orderMethod,
 				chartOption.orderDirection
 			);
 		} else {
-			communityOrdering = Object.keys($scope.allowedCommunities);
+			$scope.communityOrdering = Object.keys($scope.allowedCommunities);
 		}
+		if (clearOthers) {
+			// clear other orders from other options for clarity
+			$scope.settings.charts.forEach(function (opt) {
+				if (opt !== chartOption) {
+					delete(opt.orderMethod);
+					delete(opt.orderDirection);
+				}
+			});
+		}
+		$scope.orderSelectedCommunities()
+	}
+	$scope.orderSelectedCommunities = function () {
 		var ordered = [];
+		var selectedMap = {};
+		$scope.selectedCommunities.forEach(function (e) { selectedMap[e.community_id] = e; });
 		var cID, comm;
-		for (var i = 0; i < communityOrdering.length; i++) {
-			cID = communityOrdering[i];
-			comm = $scope.allowedCommunities[cID];
-			if (!cID || !comm) {
-				console.error('found invalid community ID!', cID, comm);
-			} else {
+		for (var i = 0; i < $scope.communityOrdering.length; i++) {
+			cID = $scope.communityOrdering[i];
+			if (!cID) {
+				console.error('found invalid community ID!', comm);
+				continue;
+			}
+			comm = $scope.selectedMap[cID];
+			if (comm) {
 				ordered.push(comm);
 			}
 		}
 		$scope.orderedCommunities = ordered;
-		// clear other orders from other options for clarity
-		$scope.settings.charts.forEach(function (opt) {
-			if (opt !== chartOption) {
-				delete(opt.orderMethod);
-				delete(opt.orderDirection);
-			}
-		});
 	}
 	$scope.settings = {
 		charts: [
