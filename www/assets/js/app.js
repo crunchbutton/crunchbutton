@@ -198,6 +198,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'HelpCtrl',
 			templateUrl: 'assets/view/help.html'
 		})
+		.when('/free-food', {
+			action: 'free-food',
+			controller: 'FreeFoodCtrl',
+			templateUrl: 'assets/view/free-food.html'
+		})
 		.when('/about', {
 			action: 'about',
 			controller: 'AboutCtrl',
@@ -504,8 +509,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}
 		}
 
-		
-		
+
+
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -651,7 +656,7 @@ App.track = function() {
 	var data = undefined;
 	var future;
 	if(typeof arguments[1] == 'string') {
-		event_uri = event_uri + '&label=' + arguments[1]; 
+		event_uri = event_uri + '&label=' + arguments[1];
 		data = arguments[2];
 	} else {
 		data = arguments[1];
@@ -1017,7 +1022,7 @@ App.init = function(config) {
 		});
 	}
 	*/
-	
+
 	// setup for system links
 	if (App.isPhoneGap) {
 		$(document).on('click', 'a[target=_system]', function(e) {

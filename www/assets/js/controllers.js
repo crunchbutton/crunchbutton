@@ -204,6 +204,54 @@ NGApp.controller('LegalCtrl', function ($scope) {
 /**
  * help page
  */
+NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralService, FacebookService ) {
+
+	if( !AccountService.isLogged() ){
+		$location.path( '/' );
+		return;
+	}
+
+	$scope.account = AccountService;
+
+	$scope.referral = {
+		invite_url : ReferralService.invite_url,
+		value : ReferralService.value,
+		limit : ReferralService.limit,
+		invites : ReferralService.invites,
+		enabled : ReferralService.enabled
+	}
+
+	$scope.referral.cleaned_url = function(){
+		return ReferralService.cleaned_url();
+	}
+
+	// Load the invite_url
+	if( !ReferralService.invite_url ){
+		ReferralService.getStatus();
+	}
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.referral.invites = ReferralService.invites;
+		$scope.referral.limit = ReferralService.limit;
+		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.value = ReferralService.value;
+		$scope.referral.enabled = ReferralService.enabled;
+	});
+
+	$scope.referral.facebook = function(){
+		FacebookService.postInvite( $scope.referral.invite_url );
+	}
+
+	$scope.referral.twitter = function(){
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+	}
+
+});
+
+
+/**
+ * help page
+ */
 NGApp.controller('HelpCtrl', function ($scope) {
 	var customers = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
 	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
