@@ -154,7 +154,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		var globalMax = 0;
 		var min, max;
 		// TODO: do not hard code number of steps
-		steps = steps || 10;
+		steps = steps || 4;
 		eachKV(data, function (k, v) {
 			if(!v[type] || !v[type].data || !v[type].data[0]) {
 				// seeing communities with no data for this chart but that have data for other charts

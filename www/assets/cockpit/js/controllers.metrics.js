@@ -63,6 +63,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		timer = $timeout($scope.refreshData, 1000);
 	}
+	$scope.unselectAllCommunities = function () {
+		console.log('unselect ALL communities');
+		Object.keys($scope.allowedCommunities).forEach(function (k) { $scope.allowedCommunities[k].selected = false; });
+		$scope.orderSelectedCommunities();
+	}
 	// TODO: Figure out how to avoid the multiple refreshes here!
 	$scope.$watch('settings.start', refreshOnTimer);
 	$scope.$watch('settings.end', refreshOnTimer);
@@ -121,9 +126,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			if (!$scope.orderedCommunities) {
 				$scope.orderedCommunities = Object.keys($scope.allowedCommunities).map(function (k) { return $scope.allowedCommunities[k]; });
 			}
-			if (!$scope.selectedCommunities) {
-				$scope.selectedCommunities = $scope.orderedCommunities;
-			}
 			loaded[type] = true;
 			finalCallback();
 		}, function (err) { console.log('error on chartOption: ', chartOption, 'error: ', err) });
@@ -179,8 +181,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	}
 	$scope.orderSelectedCommunities = function () {
 		var ordered = [];
-		var selectedMap = {};
-		$scope.selectedCommunities.forEach(function (e) { selectedMap[e.community_id] = e; });
 		var cID, comm;
 		for (var i = 0; i < $scope.communityOrdering.length; i++) {
 			cID = $scope.communityOrdering[i];
@@ -188,8 +188,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 				console.error('found invalid community ID!', comm);
 				continue;
 			}
-			comm = $scope.selectedMap[cID];
-			if (comm) {
+			comm = $scope.allowedCommunities[cID];
+			if (comm.selected) {
 				ordered.push(comm);
 			}
 		}
@@ -211,6 +211,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var comm;
 		for (var i = 0; i < data.length; i++) {
 			comm = data[i];
+			comm.selected = +comm.active === 1 || comm.active === true;
 			allowedCommunities[comm.id_community] = comm;
 		}
 		// [{community: XYZ, id_community: XYZ}, ...]
@@ -218,6 +219,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if ($scope.availableCharts) {
 			$scope.refreshData();
 		}
+		console.log($scope.allowedCommunities);
 	}).error(function (err) {
 		$scope.allowedCommunities = {};
 		console.error('ERROR getting community metrics permissions', err);
