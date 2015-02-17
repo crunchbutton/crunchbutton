@@ -18,6 +18,10 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						break;
 					case 'close-3rd':
 						$this->close3rdParty();
+						break;
+					case 'dont-warn-till':
+						$this->dontWarnTill();
+						break;
 				}
 
 			break;
@@ -25,6 +29,23 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( [ 'error' => 'invalid object' ] );
 			break;
 		}
+	}
+
+	public function dontWarnTill(){
+		$id_community = $this->request()[ 'id_community' ];
+		$community = Crunchbutton_Community::o( $id_community );
+		if( $community->id_community ){
+			$dont_warn_till = $this->request()[ 'dont_warn_till' ];
+			$dont_warn_till = str_replace( 'T' , ' ', $dont_warn_till );
+			$dont_warn_till .= ':00';
+			$community->dont_warn_till = $dont_warn_till;
+			$community->save();
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+
+		exit;
 	}
 
 	public function closeAll(){
