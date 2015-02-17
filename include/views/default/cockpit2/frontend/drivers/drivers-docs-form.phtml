@@ -72,11 +72,12 @@
 			</tr>
 		</table>
 
-
-		<h1 class="title" ><i class="fa fa-bank"></i><span style="font-size: 1.5em;"><strong>MOST IMPORTANT: Payment Information</strong></span></h1>
-		<h2 class="title driver-docs-text">
-			To complete your onboarding and GET PAID, please enter your <a href="/drivers/docs/payment">payment information</a>.
-		</h2>
+		<div ng-class="{'box-red':!status.paymentinfo}">
+			<h1 class="title" ><span class="contrast" style="font-size: 1.5em;"><i class="fa fa-bank"></i><strong>MOST IMPORTANT: Payment Information</strong></span></h1>
+			<h2 class="title driver-docs-text">
+				<a href="/drivers/docs/payment" class="contrast">IN ORDER TO GET PAID YOU MUST FILL THIS OUT</a>
+			</h2>
+		</div>
 
 		<div>
 			<div class="divider"></div><br/><br/>

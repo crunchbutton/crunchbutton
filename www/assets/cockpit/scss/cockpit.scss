@@ -3780,6 +3780,14 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
     box-sizing: border-box;
 }
 
+.box-red{
+	background:#d54a2d;
+	padding:1em;
+}
+	.box-red .contrast{
+		color:#FFF !important;
+	}
+
 .drivercontain {
     width: 90%;
 }
