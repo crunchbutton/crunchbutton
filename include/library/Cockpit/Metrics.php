@@ -39,8 +39,20 @@ class Cockpit_Metrics {
 	public static function getStartDate($timeString, $startDate = null) {
 		return self::convertTime($timeString, self::START_PERIOD, $startDate);
 	}
+
 	public static function getEndDate($timeString, $startDate = null) {
 		return self::convertTime($timeString, self::END_PERIOD, $startDate);
+	}
+
+	public static function availableMetrics() {
+		return [
+			['type' => 'users', 'format' => 'line', 'description'=> 'Unique Users'],
+			['type' => 'new-users', 'format' => 'line', 'description'=> 'New Users'],
+			['type' => 'orders-by-hour', 'format' => 'line', 'description'=> 'Orders by Time of Day'],
+			['type' => 'orders', 'format' => 'line', 'description'=> 'All Orders'],
+			['type' => 'refunded', 'format' => 'line', 'description'=> 'Refunded Orders'],
+			['type' => 'gross-revenue', 'format' => 'line', 'description'=> 'Gross Revenue']
+		];
 	}
 
 	// converts $timeString to a naive datetime using rules described by Metrics API below.

@@ -3,12 +3,32 @@
 <div class="content-padding">
 	<h1 class="title"><i class="fa fa-bar-chart"></i>Metrics<div class="title-loader" ng-if="loading"></h1>
 	<div class="box-content2">
-
-		<canvas id="bar" class="chart chart-bar" data="data" legend="false" labels="labels" colours="colours"></canvas> 
-
+		<form>
+			<!-- changes here are handled by explicit watch in controller so we can set a timeout -->
+			<input type='text' ng-model='settings.start'>
+			<input type='text' ng-model='settings.end'>
+			<select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select>
+			<button name='refresh' ng-click='refreshData()'>Refresh</button>
+			<button name='addChart' ng-click='addChart()'>Add Chart</button>
+			<div ng-repeat='chartOption in settings.charts'>
+				<select ng-options='chart.type as chart.description for chart in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select>
+				<select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption)'></select>
+				<select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption)'></select>
+				<select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select>
+				<button name='removeChart' ng-click='removeChartOption(chartOption)'>X</button>
+			</div>
+		</form>
 	</div>
-	<div ng-repeat='community in selected_communities'>
+<!--	<div ng-repeat='community in allowedCommunities'>
+		<input type='checkbox' checkbox-group>
+		<label>{{community.name}}</label>
+	</div> -->
+	<div ng-repeat='community in orderedCommunities'>
 		{{community.name}}
-		<div ng-repeat='typ in chart_type'> Chart type: {{typ}} </div>
+		<div ng-repeat='chart in settings.charts'>
+			chart type: {{chart.type}} ({{chart.format}})
+			data:{{chartData[community.id_community][chart.type].data}} options:{{chartData[community.id_communiy][chart.type].options}}
+			{{chartData[community.id_community][chart.type]}}
+		</div>
 	</div>
 </div>

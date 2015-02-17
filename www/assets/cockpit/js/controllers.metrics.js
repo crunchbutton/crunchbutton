@@ -1,4 +1,5 @@
-NGApp.config(['$routeProvider', function($routeProvider) {
+/* global NGApp, App, Chart, angular */
+NGApp.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider
 		.when('/metrics', {
 			action: 'metrics',
@@ -13,25 +14,198 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, ViewListService) {
-	angular.extend( $scope, ViewListService );
+NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, ViewListService, $http) {
+	// pretty straightforward, we always want the charts to have zero as base
+	Chart.defaults.global.scaleBeginAtZero = true;
+	console.log('METRICSCTRL');
+	angular.extend($scope, ViewListService);
+	$scope.sortMethods = [
+		{'kind': 'min', 'description': 'Minimum Value'},
+		{'kind': 'max', 'description': 'Maximum Value'},
+		{'kind': 'avg', 'description': 'Average Value'},
+		{'kind': 'first', 'description': 'Last Value'},
+		{'kind': 'last', 'description': 'First Value'}
+	];
+	$scope.sortDirections = [
+		{'kind': 'asc', 'description': 'Ascending'},
+		{'kind': 'desc', 'description': 'Descending'}
+	];
+	$scope.setScales = [
+		{'kind': true, 'description': 'Use uniform scale'},
+		{'kind': false, 'description': 'Scale each chart individually'}
+	];
+	$scope.availablePeriods = [
+		{'symbol': 'h', 'description': 'Hours'},
+		{'symbol': 'd', 'description': 'Days'},
+		{'symbol': 'w', 'description': 'Weeks'},
+		{'symbol': 'M', 'description': 'Months'},
+		{'symbol': 'Y', 'description': 'Years'}
+	]
 	var defaultOptions = {
-			communities: 'active',
-			start: '-14d',
-			end: 'now',
-			period: 'day',
-			charts: 'daily-order,new-users,existing-users'
+		communities: 'active',
+		start: '-14d',
+		end: 'now',
+		period: 'day',
+		charts: 'daily-order,new-users,existing-users'
+	};
+	var resetData = function () {
+		$scope.loadedChartTypes = {};
+		$scope.chartData = {};
+	};
+	var timer = null;
+	var refreshOnTimer = function () {
+		if (timer) {
+			$timeout.cancel(timer);
+		}
+		timer = $timeout($scope.refreshData, 100);
 	}
+	// TODO: Figure out how to avoid the multiple refreshes here!
+	$scope.$watch('settings.start', refreshOnTimer);
+	$scope.$watch('settings.end', refreshOnTimer);
+	resetData();
+	$scope.refreshData = function () {
+		console.log('REFRESH DATA');
+		resetData();
+		// make sure we don't double refresh
+		$timeout.cancel(timer);
+		$scope.settings.charts.forEach(function (chartOption) {
+			$scope.updateChartOption(chartOption);
+		});
+	}
+	$scope.addChart = function () {
+		$scope.settings.charts.push({});
+	}
+	$scope.updateChartOption = function (chartOption) {
+		var type = chartOption.type;
+		// only reference current loaded array, in case data gets reset before the load is finished.
+		var loaded = $scope.loadedChartTypes;
+		var chartData = $scope.chartData;
+		function finalCallback() {
+			// grab current chart option (so we don't overwrite any sorts on a late call)
+			var opt;
+			for (var i = 0; i < $scope.settings.charts.length; i++) {
+				opt = $scope.settings.charts[i];
+				if (opt.type === type) {
+					if (opt.uniformScale) {
+						MetricsService.joinChartScales(chartData, type);
+					} else {
+						MetricsService.resetScales(chartData, type);
+					}
+					// we assume these get cleared if we switch to another option
+					if (opt.orderMethod && opt.orderDirection) {
+						$scope.updateChartOrders(opt);
+					}
+					break;
+				}
+			}
+			console.log('ChartData after callback finished: ', $scope.chartData);
+		}
+		if (loaded[type]) {
+			finalCallback();
+			return;
+		}
+		MetricsService.getChartData(type, chartData, $scope.settings).then(function (result) {
+			if ($scope.chartData !== chartData) {
+				console.debug('chart data changed since load. Not processing further.');
+				return;
+			}
+			// fill if we have no sort order yet
+			if (!$scope.orderedCommunities) {
+				$scope.orderedCommunities = Object.keys($scope.allowedCommunities).map(function (k) { return $scope.allowedCommunities[k]; });
+			}
+			loaded[type] = true;
+			finalCallback();
+		}, function (err) { console.log('error on chartOption: ', chartOption, 'error: ', err) });
+	};
+	$scope.removeChartOption = function (chartOption) {
+		var index = $scope.settings.charts.indexOf(chartOption);
+		if (index > -1) {
+			$scope.settings.charts.splice(index, 1);
+		}
+		if (chartOption.orderMethod && chartOption.orderDirection) {
+			$scope.updateChartOrders();
+		}
+	}
+	$scope.updateChartOrders = function (chartOption) {
+		var communityOrdering;
+		if (chartOption) {
+			if (!chartOption.orderDirection) {
+				chartOption.orderDirection = 'desc';
+			}
+			communityOrdering = MetricsService.orderChartData(
+				$scope.chartData,
+				chartOption.type,
+				chartOption.orderMethod,
+				chartOption.orderDirection
+			);
+		} else {
+			communityOrdering = Object.keys($scope.allowedCommunities);
+		}
+		var ordered = [];
+		var cID, comm;
+		for (var i = 0; i < communityOrdering.length; i++) {
+			cID = communityOrdering[i];
+			comm = $scope.allowedCommunities[cID];
+			if (!cID || !comm) {
+				console.error('found invalid community ID!', cID, comm);
+			} else {
+				ordered.push(comm);
+			}
+		}
+		$scope.orderedCommunities = ordered;
+		// clear other orders from other options for clarity
+		$scope.settings.charts.forEach(function (opt) {
+			if (opt !== chartOption) {
+				delete(opt.orderMethod);
+				delete(opt.orderDirection);
+			}
+		});
+	}
+	$scope.settings = {
+		charts: [
+			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'}
+		],
+		period: 'd',
+		start: '-45d',
+		end: 'now'
+	};
+	$http.get(App.service + 'metrics/permissions').success(function (data) {
+		console.debug('got allowed communities');
+		var allowedCommunities = {};
+		var comm;
+		for (var i = 0; i < data.length; i++) {
+			comm = data[i];
+			allowedCommunities[comm.id_community] = comm;
+		}
+		// [{community: XYZ, id_community: XYZ}, ...]
+		$scope.allowedCommunities = allowedCommunities;
+		if ($scope.availableCharts) {
+			$scope.refreshData();
+		}
+	}).error(function (err) {
+		$scope.allowedCommunities = {};
+		console.error('ERROR getting community metrics permissions', err);
+	});
+	$http.get(App.service + 'metrics/available').success(function (data) {
+		$scope.availableCharts = data;
+		console.log('got available charts: ', data);
+		if ($scope.orderedCommunities) {
+			$scope.refreshData();
+		}
+	}).error(function (err) {
+		$scope.availableCharts = [];
+		console.error('ERROR getting available charts', err);
+	});
 	var allowedKeys = Object.keys(defaultOptions);
 	var dataKey = 'crunchbutton-metrics-preferences';
 	var rawStorageData = localStorage.getItem(dataKey);
 	var queryData = $location.search() || {};
 	var storedData = null;
-	if(rawStorageData) {
+	if (rawStorageData) {
 		try {
 			storedData = JSON.parse(storedData);
 		} catch (e) {
-			log_error('EXCEPTION parsing stored data', e);
+			console.error('EXCEPTION parsing stored data', e);
 		}
 	}
 	storedData = storedData || {};
@@ -40,18 +214,18 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var k, data;
 		var dataLength = arguments.length;
 		var outputData = {};
-		for(var i=0; i < keys.length; i++) {
+		for (var i = 0; i < keys.length; i++) {
 			k = keys[i];
 			// for each key, try to pull from each
-			for(var j=0; j < arguments.length; j++) {
+			for (var j = 0; j < arguments.length; j++) {
 				data = arguments[j];
-				if(data && data[k] != null) {
+				if (data && (data[k] !== null && data[k] !== undefined)) {
 					outputData[k] = data[k];
 					break;
 				}
 			}
-			if(outputData[k] === null || outputData[k] === undefined) {
-				log_error('ERROR: found no valid data for key: ', k);
+			if (outputData[k] === null || outputData[k] === undefined) {
+				console.error('ERROR: found no valid data for key: ', k);
 			}
 		}
 		return outputData;
@@ -59,27 +233,28 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	var options = mergeOptions(allowedKeys, queryData, storedData, defaultOptions);
 	function getSelectedCommunities(communityString) {
 		var communities = [];
-		if(communityString === 'active') {
+		var community, i;
+		if (communityString === 'active') {
 			var names = Object.keys(App.communities);
-			var name, community;
-			for(var i = 0; i < names.length; i++) {
+			var name;
+			for (i = 0; i < names.length; i++) {
 				name = names[i];
 				community = App.communities[names[i]];
-				if(community && community.active) {
+				if (community && community.active) {
 					communities.push(community);
 				}
 			}
 		} else {
-			communityList = communityString.split(/,/);
-			for(var i = 0; i < communityList.length; i++) {
-				var id_community = parseInt(communityList[i]);
-				if(!isNaN(id_community)) {
+			var communityList = communityString.split(/,/);
+			for (i = 0; i < communityList.length; i++) {
+				var id_community = parseInt(communityList[i], 10);
+				if (!isNaN(id_community)) {
 					community = App.communities[App.community_name_by_id[id_community]];
-					if(community) {
+					if (community) {
 						communities.push(community);
 					}
 				} else {
-					log_error('got non numeric community id: ', id_community);
+					console.error('got non numeric community id: ', id_community);
 				}
 			}
 		}
@@ -89,10 +264,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		scope: $scope,
 		watch: options
 	});
-	var initVars = function() {
-		$scope.data = [];
-		$scope.labels = [];
-	}
 	
 	// doesnt seem to work. not sure why
 	$scope.colours = {
@@ -104,26 +275,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		pointHighlightStroke: "rgba(70,191,189,0.8)"
 	};
 	
-	initVars();
-
-	MetricsService.get({id_metrics: 'example', 'days': 4000}, function(response) {
-		initVars();
-		var keys = [];
-		for (var i in response.data) {
-			for (var x in response.data[i]) {
-				keys.push(x);
-			}
-			break;
-		}
-		console.log(keys);
-		for (var i in response.data) {
-			$scope.data.push(response.data[i][keys[0]]);
-			$scope.labels.push(response.data[i][keys[1]]);
-		}
-		$scope.data = [$scope.data];
-		console.log($scope.data);
-	});
-
 });
 
 NGApp.controller('MetricsViewCtrl', function () {
