@@ -148,7 +148,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					 	$timeToDelivery = ( $timeToDelivery->days * 24 * 60 ) + ( $timeToDelivery->h * 60 ) + ( $timeToDelivery->i );
 						$timeToDelivery .= ' minutes';
 					}
-						$_log .= '<span style="color:' . $color . '">' . $log->type . ' by ' . $log->name . '</span> : ';
+						$_log .= '<span style="color:' . $color . '">' . $log->type . ' by ' . $log->name . ' [' . $log->phone . ']</span> : ';
 
 						$_log .= '<span class="restaurant-tz">';
 						$_log .= $_date->format( 'g:i:s A T' );
