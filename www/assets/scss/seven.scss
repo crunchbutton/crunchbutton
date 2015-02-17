@@ -3787,3 +3787,19 @@ i {
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-timing-function: linear;
 }
+
+@media screen and (min-width: 1025px) {
+	.col-box {
+		display: flex;
+		flex-direction: row;
+		flex-flow: row wrap;
+		justify-content: space-between;
+	}
+	.col-box .two-col {
+		width: 46%;
+	}
+}
+
+.page-help .col-box .two-col {
+	margin-bottom: 2em;
+}
