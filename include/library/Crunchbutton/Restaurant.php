@@ -1771,8 +1771,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);
 			if( $community->id_community ){
-				$allRestaurantsClosed = $community->allRestaurantsClosed();
-				if( $allRestaurantsClosed ){
+				if( $community->allRestaurantsClosed() ){
 					$closed_message = $community->close_all_restaurants_note;
 				}
 				$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
