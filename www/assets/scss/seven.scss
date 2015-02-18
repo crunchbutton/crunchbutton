@@ -62,6 +62,8 @@ a:active {
 
 input[type="text"], input[type="tel"], input[type="password"], textarea, select {
 	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 
 ::selection {
