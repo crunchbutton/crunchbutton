@@ -52,8 +52,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			{'type': 'new-users'},
 			{'type': 'gross-revenue'}
 		],
-		chartWidth: 100,
-		chartHeight: 100,
 		period: 'd',
 		start: '-30d',
 		end: '-15d'
@@ -304,11 +302,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		return communities;
 	}
-	$scope.view({
-		scope: $scope,
-		watch: options
-	});
-	
 	// doesnt seem to work. not sure why
 	$scope.colours = {
 		fillColor: "rgba(70,191,189,0.2)",
