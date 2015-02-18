@@ -34,14 +34,35 @@ class Cana_Changeset extends Cana_Model {
 		$set = Cana_Table::fromTable((isset($options['set']['table']) ? $options['set']['table'] : $object->table().'_change_set'), (isset($options['set']['id']) ? $options['set']['id'] : $object->idVar().'_change_set'), $object->db());
 		$set->strip();
 		$set->timestamp = $time;
-		if (c::admin()->id_admin) {
-			$set->id_admin = c::admin()->id_admin;
+
+		if (isset($options['author_id'])) {
+			$authorVar = $options['author_id'];
+		} elseif (c::admin()->id_admin) {
+			$authorVar = 'id_admin';
 		} elseif (c::user()->id_user) {
-			$set->id_user = c::user()->id_user;
-			// there is some case where the change is made by a cron task
-		} elseif ( isset($options['id_admin']) ){
-			$set->id_admin = $options['id_admin'];
+			$authorVar = 'id_user';
+		} elseif (isset($options['id_admin'])) {
+			$authorVar = 'id_admin';
 		}
+			
+		if ($authorVar) {
+			if (isset($options['author'])) {
+				$author = $options['author'];
+			} elseif (c::admin()->id_admin) {
+				$author = c::admin()->id_admin;
+			} elseif (c::user()->id_user) {
+				$author = c::user()->id_user;
+				// there is some case where the change is made by a cron task
+			} elseif (isset($options['id_admin']) ){
+				$author = $options['id_admin'];
+			}
+			
+			if ($author) {
+				$set->{$authorVar} = $author;
+			}
+		}
+		
+
 		$set->{$object->idVar()} = $object->{$object->idVar()};
 
 		// changes. only save set if theres at least one change
