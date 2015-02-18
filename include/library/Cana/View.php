@@ -88,7 +88,7 @@ class Cana_View extends Cana_Model {
 
 		if ($this->_rendering || !isset($params['display'])) {
 			
-			ob_start();
+			ob_start(null, 256);
 			include($file);
 			$page = $this->outputFilter(ob_get_contents(),$params);
 			ob_end_clean();
@@ -96,12 +96,12 @@ class Cana_View extends Cana_Model {
 		} else {
 			
 			$this->_rendering = true;
-			ob_start();
+			ob_start(null, 256);
 			include($file);
 			$this->content = $this->outputFilter(ob_get_contents(),$params);
 			ob_end_clean();
 
-			ob_start();
+			ob_start(null, 256);
 			include($layout);
 			$page = $this->outputFilter(ob_get_contents(),$params);
 			ob_end_clean();
