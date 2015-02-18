@@ -48,6 +48,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	]
 	$scope.settings = {
 		separateCharts: true,
+		maxCombinedCommunities: 5,
 		charts: [
 			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'},
 			{'type': 'new-users'},
