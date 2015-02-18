@@ -312,7 +312,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 	 * @param {chartData} chartData - chartData structured as stated above {key => {type => {labels: [], data: [[]]}}}
 	 * @returns combinedChartData - mapping of {type => {labels: [], data: [[],
 	 *     []], keys: []}} where keys are the keys (in the same order as data) that
-	 *     ended up in the sereis
+	 *     ended up in the series. Maintains order of keys as inputted.
 	 **/
 	service.combineChartData = function combineChartData(keys, chartData) {
 		var key, data;
@@ -324,11 +324,11 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 				if(data.hasOwnProperty(type)) {
 					// TODO: Check if labels do not match up
 					if (!out[type]) {
-						out[type] = {labels: data[type].labels, data: [], series: []}
+						out[type] = {'labels': data[type].labels, 'data': [], 'keys': []}
 					}
 					// [[1, 2, 3, 4]] to comply with chartJS style
 					out[type].data.push(data[type].data[0]);
-					out[type].series.push(key);
+					out[type].keys.push(key);
 				}
 			}
 		}
