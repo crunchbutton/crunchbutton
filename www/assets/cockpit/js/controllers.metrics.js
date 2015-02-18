@@ -46,13 +46,17 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'symbol': 'M', 'description': 'Months'},
 		{'symbol': 'Y', 'description': 'Years'}
 	]
+	$scope.chartFormats = [
+		{'kind': 'line', 'description': 'Line Chart'},
+		{'kind': 'bar', 'description': 'Bar Chart'}
+	]
 	$scope.settings = {
 		separateCharts: true,
 		maxCombinedCommunities: 5,
 		charts: [
-			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'},
-			{'type': 'new-users'},
-			{'type': 'gross-revenue'}
+			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
+			{'type': 'new-users', 'format': 'line'},
+			{'type': 'gross-revenue', 'format': 'line'}
 		],
 		period: 'd',
 		start: '-30d',
@@ -95,7 +99,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		});
 	}
 	$scope.addChart = function () {
-		$scope.settings.charts.push({});
+		$scope.settings.charts.push({'format': 'line'});
 	}
 	$scope.updateChartOption = function (chartOption) {
 		var type = chartOption.type;
