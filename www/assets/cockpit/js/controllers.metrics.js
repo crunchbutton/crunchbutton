@@ -97,6 +97,9 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.settings.charts.forEach(function (chartOption) {
 			$scope.updateChartOption(chartOption);
 		});
+		if (!$scope.settings.separateCharts) {
+			$scope.calculateCombinedData();
+		}
 	}
 	$scope.addChart = function () {
 		$scope.settings.charts.push({'format': 'line'});
