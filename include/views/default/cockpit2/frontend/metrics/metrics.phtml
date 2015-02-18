@@ -22,24 +22,35 @@
 				<select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select>
 				<select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select>
 				<select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select>
+				<select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select>
 				<button name='removeChart' ng-click='removeChartOption(chartOption)'>X</button>
 			</div>
 		</form>
 	</div>
 	<div  ng-if='settings.separateCharts' ng-repeat='community in orderedCommunities'>
 		{{community.name}}
-		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;">
+		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;" ng-switch on='chartOption.format'>
 			<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
-			<canvas class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
+			<canvas ng-switch-when='line' class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
+				options="chartData[community.id_community][chartOption.type].options"
+				labels="chartData[community.id_community][chartOption.type].labels"
+				legend="false"></canvas>
+			<canvas ng-switch-when='bar' class="chart chart-bar" data="chartData[community.id_community][chartOption.type].data"
 				options="chartData[community.id_community][chartOption.type].options"
 				labels="chartData[community.id_community][chartOption.type].labels"
 				legend="false"></canvas>
 		</div>
 	</div>
-	<div ng-if='!settings.separateCharts' ng-repeat='chartOption in settings.charts'>
+	<div ng-if='!settings.separateCharts' ng-repeat='chartOption in settings.charts' ng-switch on='chartOption.format'>
 		<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
-		<canvas ng-if='orderedCommunities.length <= settings.maxCombinedCommunities'
+		<canvas ng-switch-when='line' ng-if='orderedCommunities.length <= settings.maxCombinedCommunities'
 			class="chart chart-line" data="combinedChartData[chartOption.type].data"
+			options="combinedChartData[chartOption.type].options"
+			labels="combinedChartData[chartOption.type].labels"
+			series="combinedChartData[chartOption.type].series"
+			legend="true"></canvas>
+		<canvas ng-switch-when='bar' ng-if='orderedCommunities.length <= settings.maxCombinedCommunities'
+			class="chart chart-bar" data="combinedChartData[chartOption.type].data"
 			options="combinedChartData[chartOption.type].options"
 			labels="combinedChartData[chartOption.type].labels"
 			series="combinedChartData[chartOption.type].series"
