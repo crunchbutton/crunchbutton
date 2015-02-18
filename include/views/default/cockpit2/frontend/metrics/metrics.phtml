@@ -30,7 +30,7 @@
 		<input type='checkbox' checkbox-group>
 		<label>{{community.name}}</label>
 	</div> -->
-	<div ng-repeat='community in orderedCommunities' >
+	<div ng-repeat='community in orderedCommunities' ng-if='separateChartPerCommunity'>
 		{{community.name}}
 		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;">
 			<div ng-if='showCharts % 2 == 0'>
@@ -43,7 +43,19 @@
 			<div ng-if='showCharts % 2 == 1'>chart type: {{chartOption.type}} ({{chartOption.format}})
 			data:{{chartData[community.id_community][chartOption.type].data}} options:{{chartData[community.id_communiy][chartOption.type].options}}
 			{{chartData[community.id_community][chartOption.type]}}
-</div>
+			</div>
+		</div>
+	</div>
+	<div ng-if='!separateChartsPerCommunity' ng-repeat='chartOption in settings.charts'>
+		<div ng-if='showCharts % 2 == 0'>
+			<canvas class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
+				options="combinedChartData[chartOption.type].options"
+				labels="combinedChartData[chartOption.type].labels"
+				series="combinedChartData[chartOption.type].series"
+				legend="false"></canvas>
+		</div>
+		<div ng-if='showCharts % 2 == 1'>chart type: {{chartOption.type}} ({{chartOption.format}}) data: combinedChartData[chartOption.type].data
+			options: combinedChartData[chartOption.type].options, labels: combinedChartData[chartOption.type].labels
 		</div>
 	</div>
 </div>

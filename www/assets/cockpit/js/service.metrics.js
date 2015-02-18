@@ -305,5 +305,35 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		});
 		return deferred.promise;
 	};
+
+	/**
+	 * combines chart data for multiple series into a single series
+	 * @param {array} keys - the keys for individual series to combine
+	 * @param {chartData} chartData - chartData structured as stated above {key => {type => {labels: [], data: [[]]}}}
+	 * @returns combinedChartData - mapping of {type => {labels: [], data: [[],
+	 *     []], keys: []}} where keys are the keys (in the same order as data) that
+	 *     ended up in the sereis
+	 **/
+	service.combineChartData = function combineChartData(keys, chartData) {
+		var key, data;
+		var out = {};
+		for (var i = 0; i < keys.length; i++) {
+			key = keys[i];
+			data = chartData[key];
+			for (var type in data) {
+				if(data.hasOwnProperty(type)) {
+					// TODO: Check if labels do not match up
+					if (!out[type]) {
+						out[type] = {labels: data[type].labels, data: [], series: []}
+					}
+					// [[1, 2, 3, 4]] to comply with chartJS style
+					out[type].data.push(data[type].data[0]);
+					out[type].series.push(key);
+				}
+			}
+		}
+		return out;
+	}
+
 	return service;
 });
