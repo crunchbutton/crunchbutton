@@ -7,10 +7,12 @@
 			<!-- changes here are handled by explicit watch in controller so we can set a timeout -->
 			<input type='text' ng-model='settings.start'>
 			<input type='text' ng-model='settings.end'>
+			<div>Communities:
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
 				on-item-click='orderSelectedCommunities()'
 				on-cose='orderSelectedCommunities()'
-				max-labels="3"></div>
+				max-labels='3' style='height:10px'></div>
+			</div>
 			<select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select>
 			<button name='refresh' ng-click='refreshData()'>Refresh</button>
 			<button name='addChart' ng-click='addChart()'>Add Chart</button>
