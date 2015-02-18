@@ -1,3 +1,5 @@
+$link: #d74924;
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -50,7 +52,7 @@ table {
 }
 
 a {
-	color: #d74924;
+	color: $link;
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -2528,11 +2530,11 @@ sup {
 .location-gorillia {
 	background: url(../images/micro/gorillia.svg) no-repeat;
 	background-position: top center;
-	width: 18em;
-	height: 18em;
+	width: 20em;
+	height: 20em;
 	background-size: 100%;
 	margin: 0 auto;
-	margin-top: 4em;
+	margin-top: 2em;
 	margin-bottom: 2em;
 }
 
@@ -2554,7 +2556,7 @@ sup {
 .about-join-bubble-wrap {
 	margin: 0 auto;
 	width: 17.7em;
-	margin-top: 7em;
+	margin-top: 5em;
 }
 .bubble-curved {
 	background-position: top center !important;
@@ -3793,10 +3795,13 @@ i {
 		display: flex;
 		flex-direction: row;
 		flex-flow: row wrap;
-		justify-content: space-between;
+		justify-content: space-between;	
 	}
 	.col-box .two-col {
 		width: 46%;
+	}
+	.col-box .three-col {
+		width: 32%;
 	}
 	.staff {
 		margin-bottom: 5em;
@@ -3804,8 +3809,38 @@ i {
 	.about-join-team-wrap {
 		width: 40%;
 	}
+	.home-buttons .button {
+		color: $link;
+		background: none;
+		padding: 0;
+		margin: 0;
+		text-align: left;
+		text-decoration: underline;
+		font-size: 1.2em;
+		text-transform: none;
+		font-weight: regular;
+	}
+	.home-buttons .button::after {
+		content: "   ❯";
+	}
+	.hide-desktop {
+		display: none;
+	}
+}
+@media screen and (max-width: 1024px) {
+	.hide-mobile {
+		display: none;
+	}
 }
 
 .page-help .col-box .two-col {
 	margin-bottom: 2em;
+}
+
+.location-map {
+	background: url(../images/micro/map-white.svg) no-repeat;
+	width: 30.0em;
+	height: 18.7em;
+	background-size: 100%;
+	margin: 0 auto;
 }
