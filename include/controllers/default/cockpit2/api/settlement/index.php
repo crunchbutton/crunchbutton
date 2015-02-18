@@ -661,12 +661,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$end = $this->request()['end'];
 		$pay_type = $this->request()['pay_type'];
 
-		$start = explode( '-', $start );
-		$start = $start[ 1 ] . '/' . $start[ 2 ] . '/' . $start[ 2 ] ;
-
-		$end = explode( '-', $end );
-		$end = $end[ 1 ] . '/' . $end[ 2 ] . '/' . $end[ 2 ] ;
-
 		$_id_drivers = explode( ',', $this->request()['id_drivers'] );
 
 		$id_drivers = [];
