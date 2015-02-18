@@ -16,7 +16,7 @@
 			<select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select>
 			<button name='refresh' ng-click='refreshData()'>Refresh</button>
 			<button name='addChart' ng-click='addChart()'>Add Chart</button>
-			<button ng-click='showCharts = showCharts + 1'>Show/Hide Charts</button>
+			<button ng-click='toggleCombinedView()'>Show/Hide Combined</button>
 			<div ng-repeat='chartOption in settings.charts'>
 				<select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select>
 				<select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select>
@@ -26,36 +26,23 @@
 			</div>
 		</form>
 	</div>
-<!--	<div ng-repeat='community in allowedCommunities'>
-		<input type='checkbox' checkbox-group>
-		<label>{{community.name}}</label>
-	</div> -->
-	<div ng-repeat='community in orderedCommunities' ng-if='separateChartPerCommunity'>
+	<div  ng-if='settings.separateCharts' ng-repeat='community in orderedCommunities'>
 		{{community.name}}
 		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;">
-			<div ng-if='showCharts % 2 == 0'>
-				<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
-				<canvas class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
-					options="chartData[community.id_community][chartOption.type].options"
-					labels="chartData[community.id_community][chartOption.type].labels"
-					legend="false"></canvas>
-			</div>
-			<div ng-if='showCharts % 2 == 1'>chart type: {{chartOption.type}} ({{chartOption.format}})
-			data:{{chartData[community.id_community][chartOption.type].data}} options:{{chartData[community.id_communiy][chartOption.type].options}}
-			{{chartData[community.id_community][chartOption.type]}}
-			</div>
-		</div>
-	</div>
-	<div ng-if='!separateChartsPerCommunity' ng-repeat='chartOption in settings.charts'>
-		<div ng-if='showCharts % 2 == 0'>
+			<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
 			<canvas class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
-				options="combinedChartData[chartOption.type].options"
-				labels="combinedChartData[chartOption.type].labels"
-				series="combinedChartData[chartOption.type].series"
+				options="chartData[community.id_community][chartOption.type].options"
+				labels="chartData[community.id_community][chartOption.type].labels"
 				legend="false"></canvas>
 		</div>
-		<div ng-if='showCharts % 2 == 1'>chart type: {{chartOption.type}} ({{chartOption.format}}) data: combinedChartData[chartOption.type].data
-			options: combinedChartData[chartOption.type].options, labels: combinedChartData[chartOption.type].labels
-		</div>
+	</div>
+	<div ng-if='!settings.separateCharts' ng-repeat='chartOption in settings.charts'>
+		<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
+		<canvas ng-show='orderedCommunities.length <= settings.maxCombinedCommunities'
+			class="chart chart-line" data="combinedChartData[chartOption.type].data"
+			options="combinedChartData[chartOption.type].options"
+			labels="combinedChartData[chartOption.type].labels"
+			series="combinedChartData[chartOption.type].series"
+			legend="true"></canvas>
 	</div>
 </div>

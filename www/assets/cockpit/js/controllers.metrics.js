@@ -47,6 +47,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'symbol': 'Y', 'description': 'Years'}
 	]
 	$scope.settings = {
+		separateCharts: true,
 		charts: [
 			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc'},
 			{'type': 'new-users'},
@@ -205,8 +206,43 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			}
 		}
 		$scope.orderedCommunities = ordered;
+		// If we change the selected communities or community order, need to recalculate combined Charts
+		// TODO: Figure out how to make this more natural
+		if (!$scope.settings.separateCharts) {
+			$scope.calculateCombinedData();
+		}
 	}
-
+	$scope.toggleCombinedView = function () {
+		$scope.settings.separateCharts = !$scope.settings.separateCharts
+		if (!$scope.settings.separateCharts) {
+			$scope.calculateCombinedData();
+		}
+	}
+	$scope.calculateCombinedData = function (maxSize) {
+		// We *assume* communities are already ordered by this point!
+		maxSize = maxSize || 5;
+		var selectedCommunities = $scope.orderedCommunities;
+		var selectedCommunityIDs = selectedCommunities.map(function (c) { return c.id_community; });
+		var combinedChartData = MetricsService.combineChartData(selectedCommunityIDs, $scope.chartData);
+		var labels, keys, series, comm;
+		var allowedCommunities = $scope.allowedCommunities;
+		Object.keys(combinedChartData).forEach(function (type) {
+			keys = combinedChartData[type].keys.slice(0, maxSize);
+			combinedChartData[type].data = combinedChartData[type]['data'].slice(0, maxSize);
+			combinedChartData[type].keys = keys;
+			series = [];
+			for (var i = 0; i < keys.length; i++) {
+				comm = allowedCommunities[keys[i]];
+				if (comm && comm.name) {
+					series.push(comm.name);
+				} else {
+					series.push('Community: ' + key);
+				}
+			}
+			combinedChartData[type].series = series;
+		})
+		$scope.combinedChartData = combinedChartData;
+	}
 	$http.get(App.service + 'metrics/permissions').success(function (data) {
 		console.debug('got allowed communities');
 		var allowedCommunities = {};
@@ -302,16 +338,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		return communities;
 	}
-	// doesnt seem to work. not sure why
-	$scope.colours = {
-		fillColor: "rgba(70,191,189,0.2)",
-		strokeColor: "rgba(70,191,189,1)",
-		pointColor: "rgba(70,191,189,1)",
-		pointStrokeColor: "#fff",
-		pointHighlightFill: "#fff",
-		pointHighlightStroke: "rgba(70,191,189,0.8)"
-	};
-	
 });
 
 NGApp.controller('MetricsViewCtrl', function () {
