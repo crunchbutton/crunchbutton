@@ -3808,3 +3808,14 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .driver-feedback .form-group textarea{
     height:100px;
 }
+
+.multiSelectButton {
+    display: inline !important;
+    width: 40% !important;
+    max-height: 50px;
+    padding: 1px;
+}
+.multiSelect .buttonLabel {
+    font-size: 10px;
+    padding: 1px;
+}
