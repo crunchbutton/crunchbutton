@@ -257,7 +257,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				ON `order`.id_community = community.id_community
 			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($communities, 'community') . '
-				AND `order`.likely_test = FALSE OR `order`.likely_test IS NULL AND `order`.refunded = TRUE
+				AND (`order`.likely_test = FALSE OR `order`.likely_test IS NULL) AND `order`.refunded = TRUE
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'count');
