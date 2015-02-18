@@ -38,11 +38,15 @@
 	</div>
 	<div ng-if='!settings.separateCharts' ng-repeat='chartOption in settings.charts'>
 		<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
-		<canvas ng-show='orderedCommunities.length <= settings.maxCombinedCommunities'
+		<canvas ng-if='orderedCommunities.length <= settings.maxCombinedCommunities'
 			class="chart chart-line" data="combinedChartData[chartOption.type].data"
 			options="combinedChartData[chartOption.type].options"
 			labels="combinedChartData[chartOption.type].labels"
 			series="combinedChartData[chartOption.type].series"
 			legend="true"></canvas>
+		<div ng-if='orderedCommunities.length > settings.maxCombinedCommunities'>
+			<p>Too many communities to show combined chart.</p>
+			<p>(select at most {{settings.maxCombinedCommunities}})</p>
+		</div>
 	</div>
 </div>
