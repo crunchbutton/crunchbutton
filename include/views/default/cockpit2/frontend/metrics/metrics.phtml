@@ -17,8 +17,6 @@
 			<button name='refresh' ng-click='refreshData()'>Refresh</button>
 			<button name='addChart' ng-click='addChart()'>Add Chart</button>
 			<button ng-click='showCharts = showCharts + 1'>Show/Hide Charts</button>
-			<input type='number' ng-model='settings.chartWidth'>
-			<input type='number' ng-model='settings.chartHeight'>
 			<div ng-repeat='chartOption in settings.charts'>
 				<select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select>
 				<select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select>
