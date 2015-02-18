@@ -188,7 +188,6 @@ class MetricsDateHelper {
 		return MetricsDateHelper::_modifyByPeriod($date, $n, 'day');
 	}
 	public static function _modifyWeeks($date, $n, $atStart) {
-		echo 'modify WEEKS<br>\n';
 		$daysFromSunday = $date->format('w');
 		if($atStart) {
 			// force to start on Sunday
