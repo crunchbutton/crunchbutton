@@ -150,8 +150,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public static function orders( $filters ){
 
 		// Settlement Not Including Orders After Midnight #4414
-		$start = DateTime::createFromFormat( 'm/d/Y', $filters[ 'start' ], new DateTimeZone( c::config()->timezone ) );
-		$end = DateTime::createFromFormat( 'm/d/Y H:i:s', $filters[ 'end' ] .  ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+		$start = new DateTime( $filters[ 'start' ] );
+		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
 		$end->modify( '+ 28 hours' );
 
 		$query = 'SELECT o.* FROM `order` o
