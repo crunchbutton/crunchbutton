@@ -24,13 +24,6 @@ body {
 	line-height: 1;
 	font-size: 10px;
 	color: #312f38;
-	/*
-	-webkit-transition: font-size 0.2s;
-	-moz-transition: font-size 0.2s;
-	-ms-transition: font-size 0.2s;
-	-o-transition: font-size 0.2s;
-	transition: font-size 0.2s;
-	*/
 	letter-spacing: .03em;
 }
 body, input, textarea, button {
@@ -3783,7 +3776,6 @@ font-familt: "Museo Slab";
 }
 
 .shake {
-
 	-webkit-animation-name: shakeit;
 	-webkit-animation-duration: 0.8s;
 	-webkit-transform-origin:50% 50%;
