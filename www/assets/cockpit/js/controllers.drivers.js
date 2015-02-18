@@ -1029,8 +1029,8 @@ NGApp.controller('DriversFeedbackCtrl', function($scope, FeedbackService) {
     	if (jQuery.isEmptyObject($scope.errors)) {
     		console.log($scope.feedback);
     			FeedbackService.post($scope.feedback, function(data){
-
-        		console.log(data);
+					$scope.finished = true;
+        		//console.log(data);
     			})
     	}
     }
