@@ -544,6 +544,16 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	$scope.reps = reps;
+	
+	
+	$scope.rage = function() {
+		App.vibrate();
+		$('.location-gorillia').addClass('shake');
+		setTimeout(function() {
+			$('.location-gorillia').removeClass('shake');
+		},800);
+		
+	};
 
 
 	var account = AccountService;
