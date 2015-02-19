@@ -59,16 +59,14 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			echo "ERROR: " . $e->$status_code . " msg: " . $e->$message;
 			exit();
 		}
-		try {
+		if($_REQUEST['start']) {
 			$startDate = Cockpit_Metrics::getStartDate($_REQUEST['start']);
-		} catch (MetricsDateException $e) {
-			/* echo "ERROR: with start date" . $e->getMessage(); */
+		} else {
 			$startDate = Cockpit_Metrics::getStartDate('-60d');
 		}
-		try {
+		if ($_REQUEST['end']) {
 			$endDate = Cockpit_Metrics::getEndDate($_REQUEST['end']);
-		} catch (MetricsDateException $e) {
-			/* echo "ERROR: with end date" . $e->getMessage(); */
+		} else {
 			$endDate = Cockpit_Metrics::getEndDate('-0d');
 		}
 		if(!$_REQUEST['communities']) {
