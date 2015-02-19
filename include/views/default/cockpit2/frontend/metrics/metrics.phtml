@@ -3,27 +3,40 @@
 <div class="content-padding">
 	<h1 class="title"><i class="fa fa-bar-chart"></i>Metrics<div class="title-loader" ng-if="loading"></h1>
 	<div class="box-content2">
-		<form>
-			<!-- changes here are handled by explicit watch in controller so we can set a timeout -->
-			<input type='text' ng-model='settings.start'>
-			<input type='text' ng-model='settings.end'>
-			<div>Communities:
+		<form ng-submit='refreshData()'>
+			<div class="ul-inputs">
+			<div>
+				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' ng-model='settings.start' ng-change='needsRefresh=1'></span>
+				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' ng-model='settings.end' ng-change='needsRefresh=1'></span>
+				<button name='refresh' ng-click='refreshData()'><i class="fa fa-refresh"></i></button>
+			</div>
+			<div class="label">Communities:</div>
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
 				on-item-click='orderSelectedCommunities()'
 				on-cose='orderSelectedCommunities()'
 				max-labels='3' style='height:10px'></div>
-			</div>
-			<select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select>
-			<button name='refresh' ng-click='refreshData()'>Refresh</button>
-			<button name='addChart' ng-click='addChart()'>Add Chart</button>
-			<button ng-click='toggleCombinedView()'>Show/Hide Combined</button>
-			<div ng-repeat='chartOption in settings.charts'>
-				<select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select>
-				<select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select>
-				<select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select>
-				<select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select>
-				<select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select>
-				<button name='removeChart' ng-click='removeChartOption(chartOption)'>X</button>
+			<div class="label">Period</div><div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select></div>
+			<div class="label">Manage Charts</div>
+			<button name='addChart' ng-click='addChart()'>Add Chart&nbsp;<i class="fa fa-lg fa-plus"></i></button>
+			<table>
+				<thead>
+					<tr>
+						<th></th><th>Data</th><th colspan=2>Sort</th><th ng-show='settings.separateCharts'>Scale</th><th>Type</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr style="padding-top:1px;padding-bottom:1px;" ng-repeat='chartOption in settings.charts'>
+						<td><i class="fa fa-lg fa-{{chartOption.format || 'line'}}-chart"></i></td>
+						<td><select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select></td>
+						<td><select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select></td>
+						<td><select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select></td>
+						<td ng-show='settings.separateCharts'><select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select></td>
+						<td><select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select></td>
+						<td><i class="fa fa-lg fa-times" ng-click='removeChartOption(chartOption)'></i></td>
+					</tr>
+				</tbody>
+			</table>
+			<button ng-click='toggleCombinedView()' ng-switch on='settings.separateCharts'><span ng-switch-when='true'>Combine Charts</span><span ng-switch-when='false'>Split Charts</span></button>
 			</div>
 		</form>
 	</div>
