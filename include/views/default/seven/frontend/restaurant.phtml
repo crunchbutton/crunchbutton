@@ -50,7 +50,7 @@
 			<div restaurant-is-closed></div>
 
 			<!-- cart -->
-			<div class="cart-items">
+			<div class="cart-items restaurant-side-bar">
 				<div ng-show="restaurant._open">
 
 					<div ng-show="!order.cart.hasItems()" class="restaurant-box">
@@ -190,7 +190,7 @@
 			<div class="divider"></div>
 
 			<!-- payment and user info -->
-			<form class="payment-form" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
+			<form class="payment-form restaurant-side-bar" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
 				
 				<div class="divider dots spacer-one-one"></div>
 
@@ -339,7 +339,7 @@
 
 			<!-- stored user info -->
 
-			<div class="delivery-payment-info" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
+			<div class="delivery-payment-info restaurant-side-bar" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
 
 				<div class="divider dots spacer-one-one"></div>
 					<div class="content-padding">

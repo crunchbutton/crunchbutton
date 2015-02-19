@@ -861,28 +861,30 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}, 1000 * 35 );
 	}
 
-	$scope.$on( '$destroy', function(){
-		// Kills the timer when the controller is changed
-		if( typeof( updateRestaurantStatus ) !== 'undefined' && updateRestaurantStatus ){
-			try{ $timeout.cancel( updateRestaurantStatus ); } catch(e){}
-		}
-		if( typeof( forceReloadTimer ) !== 'undefined' && forceReloadTimer ){
-			try{ $timeout.cancel( forceReloadTimer ); } catch(e){}
-		}
-	} );
-
-	$rootScope.$on( 'appResume', function(e, data) {
-		var checkDateTime = function(){
-			if( dateTime && dateTime.getNow && dateTime.getNow() ){
-				updateStatus();
-			} else {
-				setTimeout( function(){
-					checkDateTime();
-				}, 50 );
+	if (!App.minimalMode) {
+		$scope.$on( '$destroy', function(){
+			// Kills the timer when the controller is changed
+			if( typeof( updateRestaurantStatus ) !== 'undefined' && updateRestaurantStatus ){
+				try{ $timeout.cancel( updateRestaurantStatus ); } catch(e){}
 			}
-		}
-		checkDateTime();
-	});
+			if( typeof( forceReloadTimer ) !== 'undefined' && forceReloadTimer ){
+				try{ $timeout.cancel( forceReloadTimer ); } catch(e){}
+			}
+		} );
+
+		$rootScope.$on( 'appResume', function(e, data) {
+			var checkDateTime = function(){
+				if( dateTime && dateTime.getNow && dateTime.getNow() ){
+					updateStatus();
+				} else {
+					setTimeout( function(){
+						checkDateTime();
+					}, 50 );
+				}
+			}
+			checkDateTime();
+		});
+	}
 
 	// Set the id_restaurant
 	order.cart.setRestaurant( $routeParams.id );

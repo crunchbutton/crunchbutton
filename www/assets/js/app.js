@@ -52,8 +52,11 @@ var App = {
 	transitionForDesktop : false,
 	cachedObjectsExpiresIn : 86400, // 86400 seconds is 24 hours
 	enableSplash: true,
-	useTransform: true
+	useTransform: true,
+	minimalMode: false
 };
+
+App.useTransform = !App.minimalMode;
 
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
@@ -81,7 +84,12 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngAnimate', 'ngResource' ] );
+var modules = [ 'ngRoute', 'ngResource' ];
+if (!App.minimalMode) {
+	modules.push('ngAnimate')
+}
+
+var NGApp = angular.module('NGApp', modules);
 
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
