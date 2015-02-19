@@ -1773,23 +1773,107 @@ p {
 	opacity: .8; */
 }
 
-@media screen and (min-width: 769px) {
-	.cart-items, .restaurant-items {
-		width: 49%;
-		font-size: 10px;
-		clear: none;
+@media screen and (min-width: 1025px) {
+	.cart-item-customize-name, .cart-item-customize-price {
+		color: #fff;
+	}
+	.custom-checkbox.checked {
+		color: #f8885e;
+	}
+	.cart-items, .restaurant-items, .delivery-payment-info, .payment-form {
+		font-size: .84em;
+	}
+	.cart-items .restaurant-title {
+		color: #fff;
+	}
+	.cart-items, .delivery-payment-info, .payment-form {
+		float: right;
+		width: 30em;
+		background: #373737;
+		padding: 1.5em;
+		color: #fff;
 	}
 	.cart-items {
-		float: right;
+
 	}
 	.restaurant-items {
+		padding-top: 1.5em;
 		float: left;
-		margin-top: 0;
+		width: 66%;
+	}
+	.restaurant-content-body {
+		margin-top: -12em !important;
+		-webkit-filter: brightness(0.999);
+		background: #fffef8;
+		padding: 0 0 1.5em 1.5em !important;
+	}
+	.restaurant-name {
+		margin-top: -30em;
+	}
+	.restaurant-name h1, .restaurant-name h2 {
+		color: #000000;
+		background: rgba(255,255,255,.8);
+		text-shadow: none;
+		font-family: "ff-kava-web-pro", "Open Sans", sans-serif;
+		font-weight: normal;
+		padding: .2em .2em .12em .2em;
+		display: inline-block;
+		width: auto;
+		white-space: pre-line;
+	}
+	.restaurant-name h1 {
+		font-size: 4.6em;
+	}
+	.restaurant-name h2 {
+		font-size: 3em;
+	}
+	.restaurant-pic {
+		height: 50em;
+		-webkit-filter: brightness(0.90) contrast(125%);
+		
+	}
+	.restaurant-pic-overlay {
+		display: none;
 	}
 	.restaurant-menu-category:first-child .restaurant-category {
 		padding-top: 0;
 	}
+	
+	.dish-item-name {
+		color: #d9462f;
+		text-decoration: underline;
+		line-height: 1.8em;
+	}
+	.dish-item {
+		border: 0;
+		border-radius: 0;
+		color: inherit;
+		background: none;
+		padding: 0;
+		margin-top: 2.1em;
+	}
+	.dish-item-description {
+		color: #333333;
+	}
+	.dish-item-price {
+		color: #d9462f;
+	}
+	
+	
 }
+/* wierd stuff i was playing with
+@media only screen and (-webkit-min-device-pixel-ratio:1.5), only screen and (min-device-pixel-ratio:1.5) {
+	.resturant-dishes {
+		font-size: 2em;
+	}
+	.dish-item {
+		-webkit-transform-origin: 0 0;
+		transform: scaleX(.5) scaleY(.5);
+		border-radius: 8px;
+	}
+
+}
+*/
 
 
 
@@ -3595,11 +3679,12 @@ select {
 
 @media screen and (min-width: 1025px) {
 	.content-padding {
-		padding: 10px 0 10px 0;
+		padding-top: 10px;
+		padding-bottom: 10px;
 	}
 	.restaurants-items,
 	.nav .content,
-	.page-restaurant .content,
+	.restaurant-content-padding,
 	.page-cafe .content,
 	.content-padding {
 		/*max-width: 767px;*/
