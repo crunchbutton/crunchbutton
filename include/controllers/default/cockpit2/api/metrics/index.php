@@ -14,14 +14,35 @@ class MetricsHttpException extends Exception {
 
 // Metrics API
 //
+// *** CLIENT API: ***
 // @param communities - comma separated list of communities or special community name ('active', 'all')
-// @param start - UNIX timestamp or relative time period (e.g., '-7d', '-3h', see list of valid time suffixes below)
-// @param end - UNIX timestamp or relative time period
+// @param start - UNIX timestamp, date string or relative time period (e.g., '-7d', '-3h', see list of valid time suffixes below)
+// @param end - UNIX timestamp, date string or relative time period
 // @param period - period of time to group on (valid: 'hour', 'day', 'week', 'month', 'year')
+// @param type - the type of metric requested
+//
+// Outputs JSON in object format {id_community => {labels => [], data => []}} 
+// where labels are the same for all communities (with data backfilled to zero 
+// for missing values).
 //
 // valid time suffixes: s (second), m (minute), h (hour), d (day), w (week), M (month), y (year)
 // currently only negative relative times are supported and they only indicate relative to current time, forced to start of current period.
 // e.g. -7d means the start of the day 7 days ago, -3w means the start of the week 3 weeks ago, etc.
+//
+// Available charts: GET /api/metrics/available
+// Available communities for metrics: GET /api/metrics/permissions
+//
+// *** INTERNAL STRUCTURE ***
+// SQL Queries are built by hand (sorry!) but using a few shared filters via a single input/output functions. To add a new chart you need to:
+// 1. Add the chart to Cockpit_Metrics::availableMetrics()
+// 2. define a function that takes in $communities, $startDate, $endDate and $period and add it into the switch statement in funcForQueryType
+//
+// Useful helpers:
+//  - _buildDateFilter (constructs an appropriate stirng for the where filter for dates)
+//  - _buildOrderFilter (adds in filters for likely_test and also not refunded)
+//  - _buildCommunityFilter (REQUIRED! Makes sure that only communities available to user are returned)
+//  - formatQueryResults - takes raw Cana objects and converts them back into the desired format
+//  - prettifyLabels - transforms SQL labels for dates into dates that look good for the front end
 class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 	const MySQLDateFormat = 'Y-m-d H:i:s';
 	// date format for mysql groupings
@@ -161,7 +182,20 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'final_price');
 	}
 
-	public static function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $defaultValue = 0) {
+	/**
+	 * formatQueryResults takes in a Cana Tabe iterator and groups it by the specified column, backfilling labels via labelCol
+	 * @param $queryResult - Cana Iterator
+	 * @param $groupCol - the name of the column to group data on
+	 * @param $labelCol - name of the column to pull labels from (should be able to be lexicographically sorted)
+	 * @param $dataCol - column with actual data and/or numeric values
+	 * @param $fillValue - value to substitute in for missing labels
+	 *
+	 * @return {$groupKey => {data => <ARRAY OF DATA>, labels => <ARRAY OF LABELS>}}
+	 * where labels are shared between *all* group keys (same object) and data 
+	 * is backfilled to match up with labels. Labels will be lexicogrpahically 
+	 * sorted from lowest to highest.
+	 **/
+	public static function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0) {
 		$rows = [];
 		while($r = $queryResult->fetch()) {
 			$rows[] = (array) $r;
