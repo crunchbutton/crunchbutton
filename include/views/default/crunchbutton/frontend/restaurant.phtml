@@ -25,8 +25,8 @@
 	</div>
 
 	<div class="restaurant-message">
-		<div ng-if="restaurant.eta">Delivery estimate: {{restaurant.eta}} minutes</div>
-		<div ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
+		<div ng-bind-html-unsafe="restaurant.message" class="restaurant-message-message" ng-show="restaurant.message"></div>
+		<div ng-if="restaurant.eta" class="restaurant-message-eta">Delivery estimate: {{restaurant.eta}} minutes</div>
 	</div>
 
 	<div ng-show="restaurant.image" class="restaurant-pic-wrapper {{AB.restaurantPage}}">
