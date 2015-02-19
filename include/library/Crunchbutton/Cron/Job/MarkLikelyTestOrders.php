@@ -3,7 +3,7 @@ class Crunchbutton_Cron_Job_MarkLikelyTestOrders extends Crunchbutton_Cron_Log {
     // description: mark likely test orders in database
     // class: Crunchbutton_Cron_Job_MarkLikelyTestOrders
     // interval: minute
-    // interval_unit: 20
+    // interval_unit: 10
     public function run() {
         // updates orders that meet our likely test criteria and have not been changed recently.
         $queryResult = c::db()->query("UPDATE `order` O
