@@ -31,5 +31,5 @@ To report development issues, please make sure you provide as much information a
 <br><img src="https://cloud.githubusercontent.com/assets/10369508/6260328/05d47404-b792-11e4-9799-4ee9a0f3e542.png"><br>
 <br>Then take a screenshot of what's there. See #4 for instructions on screenshots. 
 
-
+<br><em>If a developer has a question, please make sure to respond ASAP, or it will just get closed and not addressed properly.</em><br>
 **It is always better to provide too much information than too little.**
