@@ -1193,9 +1193,9 @@ App.verifyConnection = {
 		}
 	},
 	check: function ( callback ) {
-		var networkState = navigator.connection.type;
+		var networkState = (navigator && navigator.connection && navigator.connection.type) ? navigator.connection.type : null;
 		var online = true;
-		if ( networkState == Connection.NONE ) {
+		if (networkState !== null && networkState == Connection.NONE ) {
 			// If the app starts without internet, force reload it.
 			App.verifyConnection.forceReload = true;
 			App.verifyConnection.goOffline();
