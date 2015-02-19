@@ -162,7 +162,14 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
-		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'count');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
+	}
+	public static function _getMySQLQuery($query) {
+		// TODO: Secure this with admin only
+		if ($_REQUEST['showSQL']) {
+			echo $query;
+		}
+		return c::db()->query($query);
 	}
 	public static function _grossRevenueQuery($communities, $startDate, $endDate, $period) {
 		$periodFormat = self::_getPeriodFormat($period);
@@ -179,7 +186,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
-		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'final_price');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'final_price');
 	}
 
 	/**
@@ -275,7 +282,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
-		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'count');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
 	public static function _refundedOrdersQuery($communities, $startDate, $endDate, $period) {
 		$periodFormat = self::_getPeriodFormat($period);
@@ -292,7 +299,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				AND (`order`.likely_test = FALSE OR `order`.likely_test IS NULL) AND `order`.refunded = TRUE
 			GROUP BY id_community, date_group
 			';
-		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'count');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
 	public static function _newUsersQuery($communities, $startDate, $endDate, $period) {
 		$periodFormat = self::_getPeriodFormat($period);
@@ -317,7 +324,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
-		return self::formatQueryResults(c::db()->query($q), 'id_community', 'date_group', 'count');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
 
 	public static function _ordersByHourQuery($communities, $startDate, $endDate, $period) {
@@ -335,6 +342,6 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, hour_of_day
 			';
-		return self::formatQueryResults(c::db()->query($q), 'id_community', 'hour_of_day', 'count');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'count');
 	}
 }
