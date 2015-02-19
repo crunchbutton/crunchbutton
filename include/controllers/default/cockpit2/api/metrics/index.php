@@ -219,6 +219,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		$out = [];
 		foreach($grouped as $key => $rows) {
 			$data = [];
+			$labelMap = [];
 			foreach($rows as $row) {
 				$labelMap[$row[$labelCol]] = $row;
 			}
@@ -231,7 +232,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 						$data[] = floatval($row[$dataCol]);
 					}
 				} else {
-					$data[] = $defaultValue;
+					$data[] = $fillValue;
 				}
 			}
 			$out[$key] = ['labels' => $allLabels, 'data' => [$data]];
