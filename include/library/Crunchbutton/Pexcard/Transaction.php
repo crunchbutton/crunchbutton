@@ -122,7 +122,6 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function getOrderExpenses( $start, $end, $only_card = true ){
 
 		$where = ( $only_card ) ? 'AND o.pay_type = "' . Crunchbutton_Order::PAY_TYPE_CREDIT_CARD . '"' : '';
-
 		$expenses = c::db()->get( 'SELECT SUM( o.final_price - o.delivery_fee ) amount,
 																			a.id_admin,
 																			a.login,
@@ -140,9 +139,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																						oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 																					' . $where . '
 																					AND
-																						DATE_FORMAT( o.date, "%m/%d/%Y" ) >= "' . $start . '"
+																						DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) >= "' . $start . '"
 																					AND
-																						DATE_FORMAT( o.date, "%m/%d/%Y" ) <= "' . $end . '"
+																						DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) <= "' . $end . '"
 																					GROUP BY a.id_admin ORDER BY driver' );
 		return $expenses;
 	}
@@ -151,7 +150,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$expenses = c::db()->get( 'SELECT lastName AS card_serial, cardNumber AS last_four, SUM( amount ) AS amount
 																												FROM pexcard_transaction
 																													WHERE
-																														DATE_FORMAT( transactionTime, "%m/%d/%Y" ) BETWEEN "' . $start . '" AND "' . $end . '"
+																														DATE_FORMAT( transactionTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
 																														AND transactionType != "Transfer"
 																												GROUP BY lastName, cardNumber
 																												ORDER BY amount DESC' );
@@ -159,9 +158,33 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function processExpenses( $start, $end ){
-		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $start, $end );
-		$order_expenses = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $start, $end );
-		$order_expenses_cash_card = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $start, $end, false );
+
+		$sameDay = false;
+		if( $start == $end ){
+			$sameDay = true;
+		}
+
+		$start = explode( '/' , $start );
+		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+
+		$end = explode( '/' , $end );
+		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 04:00:00', new DateTimeZone( c::config()->timezone ) );
+		if( $sameDay ){
+			$end->modify( '+ 24 hours' );
+		}
+
+		$pst_start = $start->format( 'Y-m-d H:i' );
+		$pst_end = $end->format( 'Y-m-d H:i' );
+
+		$start->setTimezone( new DateTimeZone( 'America/New_York' ) );
+		$end->setTimezone( new DateTimeZone( 'America/New_York' ) );
+
+		$est_start = $start->format( 'Y-m-d H:i' );
+		$est_end = $end->format( 'Y-m-d H:i' );
+
+		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $est_start, $est_end );
+		$order_expenses = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $pst_start, $pst_end );
+		$order_expenses_cash_card = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $pst_start, $pst_end, false );
 		$drivers_expenses = [];
 
 		$_cash_order_expenses = [];
