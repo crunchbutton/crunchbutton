@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Admin extends Cana_Table {
+class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	const CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING = 'schedule-sms';
 	const CONFIG_VEHICLE_KEY = 'vehicle';
@@ -963,6 +963,10 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function __construct($id = null) {
 		parent::__construct();
+		$this->changeOptions([
+			'author_id' => 'id_author'
+		]);
+		
 		$this
 			->table('admin')
 			->idVar('id_admin')

@@ -144,6 +144,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->private = 0;
 						$community->image = $this->request()[ 'image' ];
 						$community->range = $this->request()[ 'range' ];
+						$community->is_auto_closed = intval( $this->request()[ 'is_auto_closed' ] );
 						$community->timezone = $this->request()[ 'timezone' ];
 						$community->id_driver_restaurant = $this->request()[ 'id_driver_restaurant' ];
 
@@ -174,7 +175,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							}
 
 						}
-						if( $community->close_3rd_party_delivery_restaurants && $this->request()[ 'close_3rd_party_delivery_restaurants_note' ] ){
+						if( ( $community->close_3rd_party_delivery_restaurants || $community->is_auto_closed ) && $this->request()[ 'close_3rd_party_delivery_restaurants_note' ] ){
 							$community->close_3rd_party_delivery_restaurants_note = $this->request()[ 'close_3rd_party_delivery_restaurants_note' ];
 						} else {
 							$community->close_3rd_party_delivery_restaurants_note = '';

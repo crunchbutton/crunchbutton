@@ -90,6 +90,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$out[ 'close_all_restaurants' ] = intval( $out[ 'close_all_restaurants' ] );
 		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
 		$out[ 'auto_close' ] = intval( $out[ 'auto_close' ] );
+		$out[ 'is_auto_closed' ] = intval( $out[ 'is_auto_closed' ] );
 
 		if( $out[ 'close_all_restaurants_id_admin' ] ){
 			$admin = Admin::o( $out[ 'close_all_restaurants_id_admin' ] );
@@ -137,7 +138,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $this->close_3rd_party_delivery_restaurants > 0 ){
 			return $this->close_3rd_party_delivery_restaurants;
 		}
-		return false;
+		return $this->isAutoClosed();
 	}
 
 	public function dontWarnTill(){
@@ -508,7 +509,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function forceCloseLog(){
 		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
 																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" )
+																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" OR cc.field = "is_auto_closed" )
 																																	AND cc.new_value = 1
 																																	ORDER BY cc.id_community_change DESC' );
 		$out = [];
@@ -527,6 +528,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$output[ 'type' ] = 'Close All Restaurants';
 			} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
 				$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
+			} else if ( $force_close->field == 'is_auto_closed' ){
+				$output[ 'type' ] = 'Auto Closed';
 			}
 
 			$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
@@ -552,6 +555,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	private function _closedNote( $id_community_change_set, $field ){
+		$field = ( $field == 'is_auto_closed' ? 'close_3rd_party_delivery_restaurants' : $field );
 		$field = $field . '_note';
 		$note = Crunchbutton_Community_Changeset::q( 'SELECT
 																											ccs.*, cc.field, cc.new_value FROM community_change cc
@@ -627,7 +631,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $this->id_community && ( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ) ){
 			$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 			$id_admin = $admin->id_admin;
-			if( $this->close_all_restaurants_id_admin == $id_admin || $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin ){
+			if( $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin || $this->isAutoClosed() ){
 
 				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 				if( $nextShift->id_community_shift ){
@@ -641,10 +645,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
 
 						// Open the community
+						$this->is_auto_closed = 0;
 						$this->close_3rd_party_delivery_restaurants = 0;
-						$this->close_3rd_party_delivery_restaurants_id_admin = null;
-						$this->close_3rd_party_delivery_restaurants_note = null;
-						$this->driver_restaurant_name = null;
+						$this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
 						$this->save();
 
 						$ticket = 'The community ' . $this->name . ' was auto reopened.';
@@ -666,6 +669,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			}
 		}
 		return $totalDrivers;
+	}
+
+	public function isAutoClosed(){
+		return ( intval( $this->is_auto_closed ) == 1 );
 	}
 
 	public function shutDownCommunity( $dt = null ){
@@ -727,10 +734,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				echo "\n";
 
 				// Close the community
-				$this->close_3rd_party_delivery_restaurants = true;
+				$this->is_auto_closed = 1;
+				$this->close_3rd_party_delivery_restaurants = 1;
 				$this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
 				$this->close_3rd_party_delivery_restaurants_note = $message;
-				$this->driver_restaurant_name = $message;
 				$this->save();
 
 				$ticket = 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";

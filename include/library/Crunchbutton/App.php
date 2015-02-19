@@ -275,6 +275,10 @@ class Crunchbutton_App extends Cana_App {
 		foreach ($stack as $theme) {
 			$this->controllerStack($theme);
 		}
+		
+		if ($this->isCockpit()) {
+			$this->config()->viewfilter = false;
+		}
 
 		if (!$this->isCompat()) {
 			$params['layout'] =  'layout/compat';
