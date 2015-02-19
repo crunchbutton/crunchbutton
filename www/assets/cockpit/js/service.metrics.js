@@ -1,6 +1,4 @@
-/* global NGApp */
-/* global App */
-/* global _ */
+/* global NGApp, App, moment */
 NGApp.factory('MetricsService', function ($resource, $http, $q) {
 
 	var service = {};
@@ -116,7 +114,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		console.log('sign is ', sign, 'with direction: ', direction);
 		var sortData = [];
 		// need to convert to an array of data (vs. object) so we can sort it
-		eachKV(data, function (k, v) { if(v[on] && v[on].data) { sortData.push({'key': k, 'data': v[on].data[0]}); } });
+		eachKV(data, function (k, v) { if (v[on] && v[on].data) { sortData.push({'key': k, 'data': v[on].data[0]}); } });
 		var func;
 		switch (method) {
 		case 'min':
@@ -156,7 +154,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		// TODO: do not hard code number of steps
 		steps = steps || 4;
 		eachKV(data, function (k, v) {
-			if(!v[type] || !v[type].data || !v[type].data[0]) {
+			if (!v[type] || !v[type].data || !v[type].data[0]) {
 				// seeing communities with no data for this chart but that have data for other charts
 				return;
 			}
@@ -177,7 +175,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			console.log('scale start', globalMin, 'scale end', globalMax, 'steps', steps, 'scale step width', scaleStepWidth);
 		}
 		eachKV(data, function (k, v) {
-			if(!v[type]) {
+			if (!v[type]) {
 				return;
 			}
 			if (!v[type].options) {
@@ -218,20 +216,19 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 	 **/
 	function objsToString(objs, keyMap) {
 		keyMap = keyMap || {};
-		var str = '';
+		var strs = [];
 		var serializeKV = function (k, v) {
 				var key = k in keyMap ? keyMap[k] : k;
 				if (key && v !== undefined) {
-					str = str + k + ':' + v + ',';
+					strs[strs.length - 1].push(key + ':' + v);
 				}
 			};
 		for (var i = 0; i < objs.length; i++) {
-			if (str) {
-				str = str + ';';
-			}
+			strs.push([]);
 			eachKV(objs[i], serializeKV);
 		}
-		return str;
+		joined = strs.map(function (a) { return a.join(','); });
+		return joined.join(';');
 	}
 	function objsFromString(str, keyMap) {
 		keyMap = keyMap || {};
@@ -259,10 +256,12 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		'type': 't',
 		'orderMethod': 'om',
 		'orderDirection': 'od',
-		'uniformScale': 'us'
+		'uniformScale': 'us',
 	};
 	var deserializeKeyMap = {};
 	eachKV(serializeKeyMap, function (k, v) { deserializeKeyMap[v] = k; });
+	serializeKeyMap.$$hashKey = false;
+	deserializeKeyMap.$$hashKey = false;
 	service.serializeChartOptions = function serializeChartOptions(chartOptions) {
 		return objsToString(chartOptions, serializeKeyMap);
 	};
@@ -321,10 +320,10 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			key = keys[i];
 			data = chartData[key];
 			for (var type in data) {
-				if(data.hasOwnProperty(type)) {
+				if (data.hasOwnProperty(type)) {
 					// TODO: Check if labels do not match up
 					if (!out[type]) {
-						out[type] = {'labels': data[type].labels, 'data': [], 'keys': []}
+						out[type] = {'labels': data[type].labels, 'data': [], 'keys': []};
 					}
 					// [[1, 2, 3, 4]] to comply with chartJS style
 					out[type].data.push(data[type].data[0]);
@@ -332,6 +331,33 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 				}
 			}
 		}
+		return out;
+	};
+	service._DATEFORMAT = 'YYYY-MM-DD';
+	service.serializeDate = function (dt) {
+		if (dt) {
+			return moment(dt).format(service._DATEFORMAT);
+		} else {
+			return '';
+		}
+	};
+	service.deserializeDate = function (s) { if (s) { return moment(s); } };
+	service.serializeSettings = function (settings, communityMap) {
+		var serializable = {};
+		var communities = [];
+		serializable.charts = service.serializeChartOptions(settings.charts);
+		['start', 'end'].forEach(function (k) { serializable[k] = service.serializeDate(settings[k]); });
+		['separateCharts', 'period'].forEach(function (k) { serializable[k] = settings[k]; });
+		eachKV(communityMap, function (cID, comm) { if (comm.selected) { communities.push(cID); } });
+		serializable.communities = communities;
+		return serializable;
+	}
+	service.deserializeSettings = function (serialized) {
+		['start', 'end'].forEach(function (k) { if (serialized[k]) out[k] = service.deserializeDate(serialized[k]); });
+		['period'].forEach(function (k) { if (serialized[k]) out[k] = serialized[k]; });
+		['separateCharts'].forEach(function (k) { if (serialized[k]) out[k] = (serialized[k] === "true" || serialized[k] === true); });
+		out.charts = service.deserializeChartOptions(serialized.charts) || [];
+		out.communities = serialized.communities;
 		return out;
 	}
 
