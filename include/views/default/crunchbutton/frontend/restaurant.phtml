@@ -25,17 +25,16 @@
 	</div>
 
 	<div class="restaurant-message">
+		<div ng-if="restaurant.eta">Delivery estimate: {{restaurant.eta}} minutes</div>
 		<div ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
-		<br><br>
 	</div>
-
-	<div ng-if="restaurant.eta" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
 
 	<div ng-show="restaurant.image" class="restaurant-pic-wrapper {{AB.restaurantPage}}">
 		<div class="restaurant-pic" style="background: url({{restaurant.img}});"></div>
 	</div>
 
-	<div ng-show="restaurant.message" class="main-content-readable">
+	<div ng-show="restaurant.message || restaurant.eta" class="main-content-readable">
+		<div class="restaurant-message-mobile" ng-if="restaurant.eta">Delivery estimate: {{restaurant.eta}} minutes</div>
 		<div class="restaurant-message-mobile" ng-bind-html-unsafe="restaurant.message"></div>
 	</div>
 
@@ -66,6 +65,7 @@
 		<div class="cart-items {{AB.restaurantPage}}" ng-show="order.loaded">
 			<div ng-show="restaurant._open">
 				<div class="restaurant-item-title text-your-order">
+					<br ng-show="restaurant.message || restaurant.eta">
 					Your Order
 					<span suggestion-tool-tip type="mobile"></span>
 				</div>
