@@ -24,9 +24,10 @@
 		</div>
 	</div>
 
-	<div class="restaurant-message" ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
-	<br>
-	<br>
+	<div class="restaurant-message">
+		<div ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
+		<br><br>
+	</div>
 
 	<div ng-if="restaurant.eta" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
 
@@ -60,6 +61,7 @@
 
 	<!-- main-content-readable-margin -->
 	<div class="main-content-readable">
+
 		<!-- cart -->
 		<div class="cart-items {{AB.restaurantPage}}" ng-show="order.loaded">
 			<div ng-show="restaurant._open">

@@ -5,20 +5,43 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function transactions( $start, $end ){
 		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
 			case 'v4':
+				return Crunchbutton_Pexcard_Transaction::allCardHolderTransactions( $start, $end );
+				break;
+			case 'v3':
+				$transactions = Crunchbutton_Pexcard_Resource::request( 'spendbytransactionreport', [ 'StartTime' => $start, 'EndTime' => $end ] );
+				if( $transactions->body ){
+					return $transactions->body->transactions;
+				}
+				else if( $transactions->message ){
+					return $transactions->message;
+				} else {
+					return false;
+				}
+				break;
+		}
+	}
+
+	public function allCardHolderTransactions( $start, $end ){
+
+		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
+
+			case 'v4':
 				$start = explode( '/' , $start );
 				$start = $start[2] . '-' . $start[0] . '-' . $start[1] . 'T00:00:01';
 				$end = explode( '/' , $end );
 				$end = $end[2] . '-' . $end[0] . '-' . $end[1] . 'T23:59:59';
-				$params = [ 'StartDate' => $start, 'EndDate' => $end, 'IncludePendings' => 'true' ];
-				$transactions = Crunchbutton_Pexcard_Resource::request( 'spendbytransactionreport', $params );
-				if( $transactions->body && $transactions->body->TransactionList ){
 
+				$params = [ 'StartDate' => $start, 'EndDate' => $end, 'IncludePendings' => 'true' ];
+				$transactions = Crunchbutton_Pexcard_Resource::request( 'allcardholdertransactions', $params );
+
+				if( $transactions->body && $transactions->body->TransactionList ){
 
 					$_transactions = [];
 					$transactions = $transactions->body->TransactionList;
 					foreach( $transactions as $transaction ){
 
-						$pexcard = Cockpit_Admin_Pexcard::getByPexcard( $transaction->TransferToOrFromAccountId );
+						$pexcard = Cockpit_Admin_Pexcard::getByPexcard( $transaction->AcctId );
+
 						if( $pexcard->id_admin_pexcard ){
 							$serial = $pexcard->card_serial;
 							$last_four = $pexcard->last_four;
@@ -64,18 +87,11 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 					return false;
 				}
 				break;
-			case 'v3':
-				$transactions = Crunchbutton_Pexcard_Resource::request( 'spendbytransactionreport', [ 'StartTime' => $start, 'EndTime' => $end ] );
-				if( $transactions->body ){
-					return $transactions->body->transactions;
-				}
-				else if( $transactions->message ){
-					return $transactions->message;
-				} else {
-					return false;
-				}
-				break;
 		}
+	}
+
+	public function loadTransactionDetails( $id, $start, $end ){
+		return Crunchbutton_Pexcard_Resource::request( 'transactiondetails', [ 'id' => $id, 'StartTime' => $start, 'EndTime' => $end  ] );
 	}
 
 	public function getByTransactionId( $transactionId ){
