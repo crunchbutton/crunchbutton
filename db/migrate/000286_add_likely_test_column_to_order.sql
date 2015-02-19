@@ -1,9 +1,5 @@
 ALTER TABLE `order` ADD `likely_test` tinyint DEFAULT NULL;
 
--- reset our likely_test scenario
-UPDATE `order` O
-SET likely_test = NULL;
-
 -- then this will run on a cron job
 UPDATE `order` O
 JOIN community ON community.id_community = O.id_community
