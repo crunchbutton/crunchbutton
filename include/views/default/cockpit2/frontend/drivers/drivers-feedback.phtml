@@ -1,11 +1,12 @@
 <div class="top-pad"></div>
 <div class="content-padding">
 <div class="drivercontain">
-    <h1 class="title left"><i class="fa fa-quote-left"></i><span>Feedback</span></h1>
+    <h1 ng-if="!finished" class="title left"><i ng-if="!finished" class="fa fa-quote-left"></i><span ng-if="!finished">Feedback</span></h1>
     <div class="divider"></div>
-   <h2>Help Us Help You</h2>
+<h1 class="title left" ng-if="finished">Thank you, your feedback has been submitted!</h1>
+   <h2 ng-if="!finished">Help Us Help You</h2>
    <br>
-    <form>
+    <form ng-if="!finished">
     <div class="driver-feedback">
  <div class="form-group">
             <label class="driverlabel">
@@ -37,7 +38,7 @@
             </div>
         </div>
         
-    <button ng-click="post()" type="submit" class="button orange">Submit</button>
+    <button ng-click="post()" type="submit" class="button orange" name="submit">Submit</button>
     </div><!--close driver-feedback div-->
   </form>
 
