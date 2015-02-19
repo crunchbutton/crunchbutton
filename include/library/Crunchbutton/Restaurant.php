@@ -1060,6 +1060,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return array
 	 */
 	public function exports($ignore = [], $where = []) {
+
+		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
+
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
@@ -1077,13 +1080,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// See - #4250
-		$thirdPartyClosed = false;
-		if( strrpos( $this->permalink, 'drive-' ) !== false && $community && $community->get( 0 ) ){
-			$thirdPartyClosed = $community->get( 0 )->allThirdPartyDeliveryRestaurantsClosed();
-			if( $thirdPartyClosed ){
-				$out[ 'name' ] = $thirdPartyClosed;
+		if( !$isAdmin ){
+			$thirdPartyClosed = false;
+			if( strrpos( $this->permalink, 'drive-' ) !== false && $community && $community->get( 0 ) ){
+				$thirdPartyClosed = $community->get( 0 )->allThirdPartyDeliveryRestaurantsClosed();
+				if( $thirdPartyClosed ){
+					$out[ 'name' ] = $community->get( 0 )->close_3rd_party_delivery_restaurants_note;
+				}
 			}
 		}
+
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
@@ -1143,8 +1149,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 			}
 		}
-
-		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
 
 		// Issue #1051 - potentially urgent security issue
 		if( !$isAdmin ){
@@ -1221,7 +1225,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// start eta
 		$out[ 'eta' ] = $this->smartETA();
-
 
 		return $out;
 	}
