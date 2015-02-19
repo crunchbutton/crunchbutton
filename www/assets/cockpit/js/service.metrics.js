@@ -288,7 +288,10 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		var deferred = $q.defer();
 		console.log('chartType: ', chartType);
 		var url = App.service + 'metrics/?type=' + chartType;
-		['period', 'start', 'end'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + settings[k]; } });
+		// add strings to URL
+		['period'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + settings[k]; } });
+		// add dates to URL
+		['start', 'end'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + moment(settings[k]).format(service._DATEFORMAT); } });
 		$http.get(url).success(function (data) {
 			console.log('successful getting data from url: ' + url);
 			for (var key in data) {
