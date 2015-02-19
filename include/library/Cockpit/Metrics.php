@@ -69,13 +69,16 @@ class Cockpit_Metrics {
 			return $startDate;
 		} elseif (is_numeric($timeString)) {
 			return date_create('@' . $timeString);
-		} else {
+		} elseif (_MetricsDateHelper::isKnownPeriod(substr($timeString, -1))) {
 			$period = substr($timeString, -1);
 			$n = substr($timeString, 0, strlen($timeString) - 1);
 			if(!is_numeric($n)) {
 				throw new MetricsDateException('time delta must be expressed as numeric value');
 			}
-			return MetricsDateHelper::modifyDateByPeriod($startDate, $n, $period, $atStart);
+			return _MetricsDateHelper::modifyDateByPeriod($startDate, $n, $period, $atStart);
+		} else {
+			// TODO: Try to figure out how to catch invalid dates here!
+			return date_create($timeString);
 		}
 	}
 
@@ -110,7 +113,10 @@ class Cockpit_Metrics {
 // start of that period.
 // Valid identifiers are those as specified by the Metrics API. specify $n == 0
 // to move to edge of the current period. Expects naive-ish datetimes.
-class MetricsDateHelper {
+class _MetricsDateHelper {
+	public static function isKnownPeriod($period) {
+		return in_array($period, ['Y', 'M', 'w', 'd', 'h', 'm', 's']);
+	}
 	// adjusts the date by the specified period, setting the date to either the start or end of the period depending on the value of $atStart
 	// see travis/Tests/MetricsTest.php for detailed examples of how this function works.
 	// but in essence modifyDateByPeriod(date_create('2014-05-10'), -3, 'Y', START_PERIOD) == date_create('2011-05-10');
@@ -122,25 +128,25 @@ class MetricsDateHelper {
 		$atStart = $atStart == Cockpit_Metrics::START_PERIOD;
 		switch($period) {
 		case 'Y':
-			return MetricsDateHelper::_modifyYears($date, $n, $atStart);
+			return _MetricsDateHelper::_modifyYears($date, $n, $atStart);
 			break;
 		case 'M':
-			return MetricsDateHelper::_modifyMonths($date, $n, $atStart);
+			return _MetricsDateHelper::_modifyMonths($date, $n, $atStart);
 			break;
 		case 'w':
-			return MetricsDateHelper::_modifyWeeks($date, $n, $atStart);
+			return _MetricsDateHelper::_modifyWeeks($date, $n, $atStart);
 			break;
 		case 'd':
-			return MetricsDateHelper::_modifyDays($date, $n, $atStart);
+			return _MetricsDateHelper::_modifyDays($date, $n, $atStart);
 			break;
 		case 'h':
-			return MetricsDateHelper::_modifyHours($date, $n, $atStart);
+			return _MetricsDateHelper::_modifyHours($date, $n, $atStart);
 			break;
 		case 'm':
-			return MetricsDateHelper::_modifyMinutes($date, $n, $atStart);
+			return _MetricsDateHelper::_modifyMinutes($date, $n, $atStart);
 			break;
 		case 's':
-			return MetricsDateHelper::_modifySeconds($date, $n, $atStart);
+			return _MetricsDateHelper::_modifySeconds($date, $n, $atStart);
 			break;
 		default:
 			// not sure if we can really include the modifier with the date b/c otherwise won't be sanitized;
@@ -159,7 +165,7 @@ class MetricsDateHelper {
 	// each modify function adjusts the date by the given period of time and resets it to the start of the period
 	public static function _modifySeconds($date, $n, $atStart) {
 		$date = $date->setTime($date->format('H'), $date->format('m'), $date->format('s'));
-		return MetricsDateHelper::_modifyByPeriod($date, $n, 'second');
+		return _MetricsDateHelper::_modifyByPeriod($date, $n, 'second');
 	}
 	public static function _modifyMinutes($date, $n, $atStart) {
 		if($atStart) {
@@ -168,7 +174,7 @@ class MetricsDateHelper {
 			$seconds = 59;
 		}
 		$date = $date->setTime($date->format('H'), $date->format('m'), $seconds);
-		return MetricsDateHelper::_modifyByPeriod($date, $n, 'minute');
+		return _MetricsDateHelper::_modifyByPeriod($date, $n, 'minute');
 	}
 	public static function _modifyHours($date, $n, $atStart) {
 		$hours = $date->format('H');
@@ -177,7 +183,7 @@ class MetricsDateHelper {
 		} else {
 			$date = $date->setTime($hours, 59, 59);
 		}
-		return MetricsDateHelper::_modifyByPeriod($date, $n, 'hour');
+		return _MetricsDateHelper::_modifyByPeriod($date, $n, 'hour');
 	}
 	public static function _modifyDays($date, $n, $atStart) {
 		if($atStart) {
@@ -185,20 +191,20 @@ class MetricsDateHelper {
 		} else {
 			$date = $date->setTime(23, 59, 59);
 		}
-		return MetricsDateHelper::_modifyByPeriod($date, $n, 'day');
+		return _MetricsDateHelper::_modifyByPeriod($date, $n, 'day');
 	}
 	public static function _modifyWeeks($date, $n, $atStart) {
 		$daysFromSunday = $date->format('w');
 		if($atStart) {
 			// force to start on Sunday
-			$date = MetricsDateHelper::_modifyByPeriod($date, -$daysFromSunday, 'day');
+			$date = _MetricsDateHelper::_modifyByPeriod($date, -$daysFromSunday, 'day');
 			$date = $date->setTime(0, 0, 0);
 		} else {
 			// force to Saturday
-			$date = MetricsDateHelper::_modifyByPeriod($date, (6 - $daysFromSunday), 'day');
+			$date = _MetricsDateHelper::_modifyByPeriod($date, (6 - $daysFromSunday), 'day');
 			$date = $date->setTime(23, 59, 59);
 		}
-		$date = MetricsDateHelper::_modifyByPeriod($date, $n, 'week');
+		$date = _MetricsDateHelper::_modifyByPeriod($date, $n, 'week');
 		return $date;
 	}
 	public static function _modifyMonths($date, $n, $atStart) {
