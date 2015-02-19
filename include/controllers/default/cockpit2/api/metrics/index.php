@@ -239,6 +239,46 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		}
 		return $out;
 	}
+	public static function maybeStripLeadingYear($labels) {
+		$years = [];
+		$stripped = [];
+		foreach($labels as $l) {
+			$split = explode($l, '-', 2);
+			if(count($split) != 2 || strlen($split[0]) != 4) {
+				// we expect formatting like '2015-01-5'
+				return clone $labels;
+			}
+			$years[$split[0]] = 1;
+			$stripped[] = $split[1];
+			if(count($years) > 1) {
+				return clone $labels;
+			}
+		}
+		return $stripped;
+	}
+	// converts labels output from the periodSQLFormat into a human format that the front end can display
+	public static function prettifyLabels($labels, $period) {
+		if (count($labels) == 0) {
+			return $labels;
+		}
+		switch($period) {
+		case 'M':
+			$stripped = maybeStripLeadingYear($labels);
+			if ($stripped[0] == $labels[0]) {
+			}
+		case 'd':
+			// for day, we just strip off the 2015- part if we can
+			return maybeStripLeadingYear($labels);
+		case 'w':
+			// TODO: make something work with week
+		case 'Y':
+		case 'm':
+		case 's':
+		case 'h':
+		default:
+			return clone $labels;
+		}
+	}
 	public static function funcForQueryType($type, $communities, $startDate, $endDate, $period) {
 		switch($type) {
 		case 'users':
