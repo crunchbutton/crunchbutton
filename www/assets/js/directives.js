@@ -365,6 +365,9 @@ NGApp.directive('ngSpinner', function () {
 	return {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
+			if (App.minimalMode) {
+				return;
+			}
 			setTimeout( function(){
 				var spinner;
 				spinner = elem.data('spinner');

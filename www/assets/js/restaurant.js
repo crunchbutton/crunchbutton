@@ -83,6 +83,11 @@ var Restaurant = function(id) {
 		for (x in data) {
 			self[x] = data[x];
 		}
+		if (App.minimalMode) {
+			self.img = null;
+			self.image = null;
+			self.img64 = null;
+		}
 
 		self.categories();
 
