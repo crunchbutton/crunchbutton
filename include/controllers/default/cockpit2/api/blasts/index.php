@@ -11,6 +11,7 @@ class Controller_api_blasts extends Crunchbutton_Controller_RestAccount {
 			select blast.*, count(*) users from blast
 			left join blast_user using(id_blast)
 			group by blast.id_blast
+			order by blast.id_blast DESC
 			limit 20
 		');
 

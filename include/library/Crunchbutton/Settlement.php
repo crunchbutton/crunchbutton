@@ -150,8 +150,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public static function orders( $filters ){
 
 		// Settlement Not Including Orders After Midnight #4414
-		$start = DateTime::createFromFormat( 'm/d/Y', $filters[ 'start' ], new DateTimeZone( c::config()->timezone ) );
-		$end = DateTime::createFromFormat( 'm/d/Y H:i:s', $filters[ 'end' ] .  ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+		$start = new DateTime( $filters[ 'start' ] );
+		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
 		$end->modify( '+ 28 hours' );
 
 		$query = 'SELECT o.* FROM `order` o
@@ -1850,5 +1850,30 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	private function log( $method, $message ){
 		Log::debug( [ 'method' => $method, 'id_admin' => c::user()->id_admin, 'message' => $message, 'env' => c::getEnv(), 'type' => 'settlement' ] );
+	}
+
+	public function revertPaymentByPaymentId( $id_payment ){
+		$schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment = "' . $id_payment . '" LIMIT 1' );
+		if( $schedule->id_payment_schedule ){
+			Crunchbutton_Settlement::revertPaymentByScheduleId( $schedule->id_payment_schedule );
+		}
+	}
+
+	public function revertPaymentByScheduleId( $id_payment_schedule ){
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule ){
+			c::db()->query( 'DELETE FROM payment_schedule_order WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			c::db()->query( 'DELETE FROM payment_schedule_referral WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			c::db()->query( 'DELETE FROM payment_schedule_shift WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			if( $schedule->id_payment ){
+				$transactions = Crunchbutton_Order_Transaction::q( 'SELECT * FROM payment_order_transaction WHERE id_payment = "' . $schedule->id_payment . '"' );
+				foreach ( $transactions as $transaction ) {
+					c::db()->query( 'DELETE FROM order_transaction WHERE id_order_transaction = "' . $transaction->id_order_transaction . '"' );
+				}
+				c::db()->query( 'DELETE FROM payment_order_transaction WHERE id_payment = "' . $schedule->id_payment . '"' );
+				c::db()->query( 'DELETE FROM payment WHERE id_payment = "' . $schedule->id_payment . '"' );
+			}
+			c::db()->query( 'DELETE FROM payment_schedule WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+		}
 	}
 }

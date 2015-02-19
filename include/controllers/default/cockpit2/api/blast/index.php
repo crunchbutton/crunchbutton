@@ -31,12 +31,12 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 						echo $blast->users()->json();
 						exit;
 						break;
-						
+
 					case 'run':
 						$blast->run();
 						exit;
 						break;
-						
+
 					default:
 						$out = $blast->exports();
 						foreach ($blast->users() as $user) {
@@ -53,7 +53,7 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 					$sample = [];
 					$max = 10;
 					$i = 0;
-					
+
 					$blast = new Blast([
 						'content' => $this->request()['content']
 					]);
@@ -88,7 +88,7 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 				}
 				break;
 		}
-		
+
 		echo $blast->json();
 		exit;
 	}

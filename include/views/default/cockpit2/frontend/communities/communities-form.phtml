@@ -125,6 +125,16 @@
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
+			<li class="li-input" ng-class="{'error':form.communityAutoClose.$invalid}">
+				<div class="label">Is current Auto Closed:</div>
+				<div class="input">
+					<span ng-show="community.is_auto_closed">
+						<select name="communityIsAutoClose" ng-model="community.is_auto_closed" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</span>
+					<span ng-show="!community.is_auto_closed">No</span>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.communityCloseAllRestaurants.$invalid}">
 				<div class="label">Close All Restaurants:</div>
 				<div class="input">
@@ -154,9 +164,9 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-show="community.close_3rd_party_delivery_restaurants" ng-class="{'error':form.communityClose3rdPartyRestaurantsNote.$invalid}">
+			<li class="li-input" ng-show="community.close_3rd_party_delivery_restaurants || community.is_auto_closed" ng-class="{'error':form.communityClose3rdPartyRestaurantsNote.$invalid}">
 				<div class="label">Close 3rd Party Delivery Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
-				<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"></div>
+				<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants || community.is_auto_closed"></div>
 				<div class="box-error">
 					<small ng-show="form.communityClose3rdPartyRestaurantsNote.$error.required">Required.</small>
 				</div>
