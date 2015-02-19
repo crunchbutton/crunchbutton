@@ -2,16 +2,20 @@
 
 
 class Crunchbutton_Analytics_Event extends Cana_Table {
+	const maxIntervalSeconds = 1800;  // 30 minutes of inactivity creates a new sequence
+	// give enough space to generate earlier sessions
+	const nullInitialSequence = 10000;
 	public static function buildEvent($category, $action, $label = null, $community = null, $data = null) {
+		$session = c::auth()->session();
 		$me = new Crunchbutton_Analytics_Event();
 		$me->category = $category;
 		$me->action = $action;
 		$me->label = $label;
 		$me->ts = date('Y-m-d H:i:s');
+		$me->sequence = self::getSequenceNumber($session);
 		if(!is_null($data)) {
 			$me->json_data = json_encode($data);
 		}
-		$session = c::auth()->session();
 		if($session) {
 			$me->id_session = $session->id_session;
 			$me->id_user = $session->id_user;
@@ -25,6 +29,24 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 			$me->ip = $headers['REMOTE_ADDR'];
 		}
 		return $me;
+	}
+	public static function getSequenceNumber($session = null) {
+		$session = $session || c::auth()->session();
+		if(!$session || !$session->id_session) {
+			return self::nullInitialSequence;
+		}
+		$lastEvent = self::q('SELECT ts, sequence FROM `analytics_event` WHERE id_session = ' . $session->id_session . ' ORDER BY ts DESC LIMIT 1');
+		$now = date('Y-m-d H:i:s');
+		if (is_null($lastEvent->sequence)) {
+			// leave some space for earlier events
+			$sequence = self::nullInitialSequence;
+		} else {
+			$sequence = $lastEvent->sequence;
+		}
+		if ($now.getTimestamp() - $lastSession->ts.getTimestamp() > self::maxIntervalSeconds) {
+			$sequence = $sequence + 1;
+		}
+		return $sequence;
 	}
 	public static function storeEvent($category, $action, $label = null, $community = null, $data = null) {
 		$me = Crunchbutton_Analytics_Event::buildEvent($category, $action, $label, $community, $data);
