@@ -1,4 +1,4 @@
-/* global NGApp, App, Chart, angular */
+/* global NGApp, App, Chart, angular, moment */
 NGApp.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider
 		.when('/metrics', {
@@ -22,7 +22,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	Chart.defaults.global.responsive = true;
 	Chart.defaults.global.scaleFontSize = 10;
 	console.log('METRICSCTRL');
-	angular.extend($scope, ViewListService);
 	$scope.showCharts = 0;
 	$scope.sortMethods = [
 		{'kind': 'min', 'description': 'Minimum Value'},
@@ -40,28 +39,33 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': false, 'description': 'Scale each chart individually'}
 	];
 	$scope.availablePeriods = [
-		{'symbol': 'h', 'description': 'Hours'},
-		{'symbol': 'd', 'description': 'Days'},
-		{'symbol': 'w', 'description': 'Weeks'},
-		{'symbol': 'M', 'description': 'Months'},
-		{'symbol': 'Y', 'description': 'Years'}
+		{'symbol': 'h', 'description': 'By Hour'},
+		{'symbol': 'd', 'description': 'By Day'},
+		{'symbol': 'w', 'description': 'By Week'},
+		{'symbol': 'M', 'description': 'By Month'},
+		{'symbol': 'Y', 'description': 'By Year'}
 	]
 	$scope.chartFormats = [
 		{'kind': 'line', 'description': 'Line Chart'},
 		{'kind': 'bar', 'description': 'Bar Chart'}
 	]
 	$scope.settings = {
-		separateCharts: true,
+		separateCharts: false,
 		maxCombinedCommunities: 5,
 		charts: [
 			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
 			{'type': 'new-users', 'format': 'line'},
 			{'type': 'gross-revenue', 'format': 'line'}
 		],
+		start: moment().subtract(14, 'days').toDate(),
+		end: new Date(),
 		period: 'd',
-		start: '-30d',
-		end: '-15d'
 	};
+	// TODO: Figure out how to hide startDate better!
+	$scope.persistenceString = '';
+	$scope.updatePersistenceString = function () {
+		$scope.persistenceString = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities);
+	}
 	var defaultOptions = {
 		communities: 'active',
 		start: '-14d',
@@ -86,8 +90,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.orderSelectedCommunities();
 	}
 	// TODO: Figure out how to avoid the multiple refreshes here!
-	$scope.$watch('settings.start', refreshOnTimer);
-	$scope.$watch('settings.end', refreshOnTimer);
 	resetData();
 	$scope.refreshData = function () {
 		console.log('REFRESH DATA');
@@ -102,7 +104,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 	}
 	$scope.addChart = function () {
-		$scope.settings.charts.push({'format': 'line'});
+		$scope.settings.charts.push({'format': 'line', 'uniformScale': false});
 	}
 	$scope.updateChartOption = function (chartOption) {
 		var type = chartOption.type;
@@ -132,6 +134,10 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 				}
 			}
 			console.log('ChartData after callback finished: ', $scope.chartData);
+			if (!$scope.orderedCommunities) {
+				$scope.orderSelectedCommunities();
+			}
+			$scope.updatePersistenceString();
 		}
 		if (loaded[type]) {
 			finalCallback();
@@ -219,6 +225,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if (!$scope.settings.separateCharts) {
 			$scope.calculateCombinedData();
 		}
+		$scope.updatePersistenceString();
 	}
 	$scope.toggleCombinedView = function () {
 		$scope.settings.separateCharts = !$scope.settings.separateCharts
@@ -229,9 +236,19 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.calculateCombinedData = function (maxSize) {
 		// We *assume* communities are already ordered by this point!
 		maxSize = maxSize || 5;
+		if (!$scope.orderedCommunities || !$scope.chartData) {
+			console.log('not all data prepped - not calculating combined data');
+			return;
+		}
+		console.log('calculating combined data');
 		var selectedCommunities = $scope.orderedCommunities;
 		var selectedCommunityIDs = selectedCommunities.map(function (c) { return c.id_community; });
 		var combinedChartData = MetricsService.combineChartData(selectedCommunityIDs, $scope.chartData);
+		if (Object.keys(combinedChartData).length === 0) {
+			console.warn('got no combined chart data back from metrics service!');
+		} else {
+			console.log('setting types for combinedChartData', combinedChartData);
+		}
 		var labels, keys, series, comm;
 		var allowedCommunities = $scope.allowedCommunities;
 		Object.keys(combinedChartData).forEach(function (type) {
