@@ -51,18 +51,19 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 					return Crunchbutton_Pexcard_Resource::uri() . $urls[ $point ];
 				}
 				break;
-
 			case 'v4':
 				$urls = [
 					'ping' => [ 'point' => 'Details/Ping', 'method' => 'GET'  ],
 					'businessprofile' => [ 'point' => 'Business/Profile', 'method' => 'GET', 'auth' => 'token'  ],
-					'businessadmin' => [ 'point' => 'Business/Admin/:id', 'method' => 'GET', 'auth' => 'token'  ],
+					'businessprofile' => [ 'point' => 'Business/Profile', 'method' => 'GET', 'auth' => 'token'  ],
 					'createcard' => [ 'point' => 'Card/Create', 'method' => 'POST', 'auth' => 'token'  ],
 					'detailsaccount' => [ 'point' => 'Details/AccountDetails/:id', 'method' => 'GET', 'auth' => 'token'  ],
 					'activatecard' => [ 'point' => 'Card/Activate/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'fund' => [ 'point' => 'Card/Fund/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'changecardstatus' => [ 'point' => 'Card/Status/:id', 'method' => 'PUT', 'auth' => 'token' ],
 					'spendbytransactionreport' => [ 'point' => 'Details/TransactionDetails?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
+					'transactiondetails' => [ 'point' => 'Details/TransactionDetails/:id?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
+					'allcardholdertransactions' => [ 'point' => 'Details/AllCardholderTransactions?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
 					'token' => [ 'point' => 'Token', 'method' => 'POST', 'auth' => 'basic' ],
 					];
 				if( $urls[ $point ] ){
