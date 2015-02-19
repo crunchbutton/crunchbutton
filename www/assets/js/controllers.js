@@ -253,9 +253,11 @@ NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralServi
  * help page
  */
 NGApp.controller('HelpCtrl', function ($scope) {
-	var customers = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
+	var happy_customers = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
 	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
-	$scope.customers = customers;
+	var angry_customers = 'moc.nottubhcnurc@sremotsucyrgna'.split('').reverse().join('');
+	$scope.happy_customers = happy_customers;
+	$scope.angry_customers = angry_customers;
 	$scope.join = join;
 });
 
