@@ -30,20 +30,23 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 		}
 		return $me;
 	}
-	public static function getSequenceNumber($session = null) {
-		$session = $session || c::auth()->session();
+	public static function getSequenceNumber($session) {
 		if(!$session || !$session->id_session) {
 			return self::nullInitialSequence;
 		}
-		$lastEvent = self::q('SELECT ts, sequence FROM `analytics_event` WHERE id_session = ' . $session->id_session . ' ORDER BY ts DESC LIMIT 1');
-		$now = date('Y-m-d H:i:s');
+		$lastEvent = c::db()->query('SELECT * FROM `analytics_event` WHERE id_session = "' . $session->id_session . '" ORDER BY sequence DESC, ts DESC LIMIT 1')->fetch();
+		$now = date_create()->getTimestamp();
+		if (is_null($lastEvent->ts)) {
+			return self::nullInitialSequence;
+		}
 		if (is_null($lastEvent->sequence)) {
 			// leave some space for earlier events
 			$sequence = self::nullInitialSequence;
 		} else {
 			$sequence = $lastEvent->sequence;
 		}
-		if ($now.getTimestamp() - $lastSession->ts.getTimestamp() > self::maxIntervalSeconds) {
+		$lastTs = date_create($lastEvent->ts)->getTimestamp();
+		if (($now - $lastTs) > self::maxIntervalSeconds) {
 			$sequence = $sequence + 1;
 		}
 		return $sequence;
