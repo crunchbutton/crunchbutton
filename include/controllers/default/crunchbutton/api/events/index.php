@@ -13,6 +13,7 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 		$me->label = $label;
 		$me->ts = date('Y-m-d H:i:s');
 		$me->sequence = self::getSequenceNumber($session);
+		$me->id_community = $community;
 		if(!is_null($data)) {
 			$me->json_data = json_encode($data);
 		}
