@@ -646,8 +646,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 						// Open the community
 						$this->is_auto_closed = 0;
-						$this->close_3rd_party_delivery_restaurants = 0;
-						$this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
+						// $this->close_3rd_party_delivery_restaurants = 0;
+						// $this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
 						$this->save();
 
 						$ticket = 'The community ' . $this->name . ' was auto reopened.';
@@ -735,8 +735,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 				// Close the community
 				$this->is_auto_closed = 1;
-				$this->close_3rd_party_delivery_restaurants = 1;
-				$this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
+				// $this->close_3rd_party_delivery_restaurants = 1;
+				// $this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
 				$this->close_3rd_party_delivery_restaurants_note = $message;
 				$this->save();
 
