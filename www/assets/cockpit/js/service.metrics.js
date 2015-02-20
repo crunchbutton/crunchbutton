@@ -227,7 +227,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			strs.push([]);
 			eachKV(objs[i], serializeKV);
 		}
-		joined = strs.map(function (a) { return a.join(','); });
+		var joined = strs.map(function (a) { return a.join(','); });
 		return joined.join(';');
 	}
 	function objsFromString(str, keyMap) {
@@ -354,15 +354,16 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		eachKV(communityMap, function (cID, comm) { if (comm.selected) { communities.push(cID); } });
 		serializable.communities = communities;
 		return serializable;
-	}
+	};
 	service.deserializeSettings = function (serialized) {
-		['start', 'end'].forEach(function (k) { if (serialized[k]) out[k] = service.deserializeDate(serialized[k]); });
-		['period'].forEach(function (k) { if (serialized[k]) out[k] = serialized[k]; });
-		['separateCharts'].forEach(function (k) { if (serialized[k]) out[k] = (serialized[k] === "true" || serialized[k] === true); });
+    var out = {};
+		['start', 'end'].forEach(function (k) { if (serialized[k]) { out[k] = service.deserializeDate(serialized[k]); }});
+		['period'].forEach(function (k) { if (serialized[k]) { out[k] = serialized[k]; }});
+		['separateCharts'].forEach(function (k) { if (serialized[k]) { out[k] = (serialized[k] === "true" || serialized[k] === true); } });
 		out.charts = service.deserializeChartOptions(serialized.charts) || [];
 		out.communities = serialized.communities;
 		return out;
-	}
+	};
 
 	return service;
 });
