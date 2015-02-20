@@ -56,7 +56,7 @@ var App = {
 	minimalMode: false
 };
 
-App.useTransform = !App.minimalMode;
+App.useTransform = true;
 
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
@@ -86,7 +86,8 @@ App.NGinit = function() {
 
 var modules = [ 'ngRoute', 'ngResource' ];
 if (!App.minimalMode) {
-	modules.push('ngAnimate')
+	modules.push('ngAnimate');
+	modules.push('angular-ladda');
 }
 
 var NGApp = angular.module('NGApp', modules);
@@ -167,6 +168,13 @@ NGApp.config( function( $provide, $httpProvider ) {
 	});
 	$httpProvider.interceptors.push( 'httpInterceptor' );
 } );
+
+NGApp.config(function (laddaProvider) {
+	laddaProvider.setOption({ 
+		style: 'expand-left'
+	});
+});
+	
 
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
