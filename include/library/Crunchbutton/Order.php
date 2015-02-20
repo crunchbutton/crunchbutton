@@ -2520,7 +2520,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						if( $shift->id_admin_shift_assign ){
 							$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
 						}
-						$pexcard->addFundsOrderAccepeted( $this->id_order );
+						// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
+						$loadCard = true;
+						if( $this->pay_type == 'card' && $this->restaurant()->formal_relationship ){
+							$loadCard = false;
+						}
+						if( $loadCard ){
+							$pexcard->addFundsOrderAccepeted( $this->id_order );
+							Log::debug([ 'actions' => 'pex card LOADED', 'id_order' => $this->id_order, 'type' => 'pexcard-load' ]);
+						} else {
+							Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $this->id_order, 'type' => 'pexcard-load' ]);
+						}
 					break;
 				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
 					$pexcard->removeFundsOrderCancelled( $this->id_order );
