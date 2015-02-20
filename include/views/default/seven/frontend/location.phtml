@@ -11,7 +11,7 @@
 						<td style="width: 100%;"><input class="location-address needsclick" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-focus="softKeyboard($event);" geo-complete-enter="letsEat()" id="input-location-address" ng-model="location.form.address" geo-complete >
 						</td>
 						<td>				
-							<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
+							<button class="location-detect" ladda="loading" data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
 								<span class="fa fa-location-arrow "></span>
 								<div class="ladda-spinner"></div>
 							</button>
