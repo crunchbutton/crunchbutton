@@ -547,7 +547,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	$scope.reps = reps;
 	
-	$scope.loading = false;
+	$scope.loadingLocation = false;
+	$scope.loadingGetfood = false;
 	
 	
 	$scope.rage = function() {
@@ -609,11 +610,11 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	// on connection error - reset
 	$rootScope.$on( 'connectionError', function(e, data) {
 		$scope.isProcessing = false;
-		$scope.loading = false;
+		$scope.loadingLocation = $scope.loadingGetfood = false;
 	} );
 
 	$scope.$on( 'locationError', function(e, data) {
-		$scope.loading = false;
+		$scope.loadingLocation = $scope.loadingGetfood = false;
 		// If the entered address does not have zip code show the enter zip code message #1763
 		var entered = $scope.location.position.pos().entered();
 		var isStreet = $scope.location.position.pos().valid( 'order' );
@@ -633,7 +634,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
-		$scope.loading = true;
+		$scope.loadingLocation = true;
 		var pos = PositionsService.pos();
 		if( pos.type() == 'user' ){
 			var entered = $scope.location.position.pos().entered();
@@ -696,7 +697,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 
 		if ( $scope.location.form.address == '' ) {
-			$scope.loading = true;
+			$scope.loadingLocation = $scope.loadingGetfood = true;
 			$scope.location.getLocationByBrowser(
 			// Success, got location
 			function(loc) {
@@ -712,7 +713,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 					// Error not served
 					function(){
 						var error = function() {
-							$scope.loading = false;
+							$scope.loadingLocation = $scope.loadingGetfood = false;
 							$scope.$broadcast( 'locationNotServed' );
 						}
 					}
@@ -720,7 +721,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			},
 			// Error, user doesn't shared his location
 			function(){
-				$scope.loading = false;
+				$scope.loadingLocation = $scope.loadingGetfood = false;
 				$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
 				$scope.warningPlaceholder = true;
 				// the user might be typing his login/pass - so blur it
@@ -731,7 +732,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 		} else {
 			// Start the spinner
-			$scope.loading = true;
+			$scope.loadingGetfood = true;
 			// If the address searching is already in process ignores this request.
 			if( $scope.isProcessing ){
 				// To prevent any kind of problem, set this variable to false after 2 secs.
@@ -756,7 +757,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 				},
 				// Address not ok
 				function() {
-					$scope.loading = false;
+					$scope.loadingLocation = $scope.loadingGetfood = false;
 					var oopsText = App.isPhoneGap ? 'Oops! Please enter an address' : '&#9785; Oops! Please enter a street name, number, and city';
 					$('.location-address').val('').attr('placeholder',$('<div>').html(oopsText).text());
 					$scope.warningPlaceholder = true;
@@ -773,9 +774,10 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.locEat = function() {
 		var error = function(){
 			$scope.$broadcast( 'locationNotServed' );
-			$scope.loading = false;
+			$scope.loadingLocation = $scope.loadingGetfood = false;
 		}
-		$scope.loading = true;
+		$scope.loadingLocation = true;
+
 		$scope.location.getLocationByBrowser( function(loc) {
 			// As it should return a new loc we can remove the previous geolocation
 			// that way we don't have two equals location
