@@ -252,6 +252,10 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 			var button = elem.find('button')[0];
 			
 			scope.init = true;
+			
+			if (!window.Ladda) {
+				return;
+			}
 
 			var l = Ladda.create(button);		
 

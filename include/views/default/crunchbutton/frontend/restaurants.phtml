@@ -28,8 +28,8 @@
 
 			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
-				<div class="meal-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333">
-					<div class="ladda-label">
+				<div class="meal-item-content">
+					<div class="ladda-label" ng-spinner="loadingRestaurant[restaurant.id_restaurant]" data-spinner-color="#333333" data-spinner-scale=".5">
 						<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
 						<h2 class="meal-restaurant">{{restaurant.name}}</h2>
 						<h3 class="meal-food">{{restaurant._short_description}}</h3>
@@ -48,7 +48,6 @@
 							<div class="meal-item-tag-closed" ng-switch-when="force_close">Temporarily closed {{restaurant._closedDueTo}}</div>
 						</div>
 					</div>
-					<span class="ladda-spinner"></span>
 				</div>
 				<div class="meal-item-spacer"></div>
 			</div>

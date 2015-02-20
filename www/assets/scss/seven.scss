@@ -3936,3 +3936,45 @@ font-familt: "Museo Slab";
 	background-size: 100%;
 	margin: 0 auto;
 }
+
+
+
+@mixin transform($transforms) {
+	-moz-transform: $transforms;
+	-o-transform: $transforms;
+	-ms-transform: $transforms;
+	-webkit-transform: $transforms;
+	transform: $transforms;
+}
+
+@mixin scale ($deg) {
+	@include transform(scale($deg));
+}
+
+@mixin transition($transition) {
+	-moz-transition: $transition;
+	-o-transition: $transition;
+	-ms-transition: $transition;
+	-webkit-transition: $transition;
+	transition: $transition;
+}
+
+.inline-spinner {
+	opacity: 0;
+	position: absolute;
+	pointer-events: none;
+	overflow: hidden;
+	@include scale(2.5);
+}
+.inline-spinner-wrapper .inline-spinner, .inline-spinner-wrapper .inline-spinner-content {
+	@include transition(all 0.2s);
+}
+
+.inline-spinner-wrapper.loading .inline-spinner {
+	opacity: 1;
+	@include scale(1);
+}
+
+.inline-spinner-wrapper.loading .inline-spinner-content {
+	opacity: 0;
+}
