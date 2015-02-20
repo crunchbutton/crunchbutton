@@ -21,18 +21,20 @@
 			<table>
 				<thead>
 					<tr>
-						<th></th><th>Data</th><th colspan=2>Sort</th><th ng-show='settings.separateCharts'>Scale</th><th>Type</th>
+						<th></th><th></th><th>Data</th><th colspan=2>Sort</th><th ng-show='settings.separateCharts'>Scale</th><th>Type</th><th></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr style="padding-top:1px;padding-bottom:1px;" ng-repeat='chartOption in settings.charts'>
-						<td><i class="fa fa-lg fa-{{chartOption.format || 'line'}}-chart"></i></td>
+						<td style="padding-left:3px;padding-right:3px"><i class="fa fa-lg fa-times" ng-click='removeChartOption(chartOption)'></i></td>
+						<td style="padding-left:3px;padding-right:3px"><i class="fa fa-lg fa-{{chartOption.format || 'line'}}-chart"></i></td>
 						<td><select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select></td>
 						<td><select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select></td>
 						<td><select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select></td>
 						<td ng-show='settings.separateCharts'><select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select></td>
 						<td><select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select></td>
-						<td><i class="fa fa-lg fa-times" ng-click='removeChartOption(chartOption)'></i></td>
+						<td style="padding-left:2px;padding-right:2px"></td>
+						<td><a download="metrics-{{chartOption.type}}.csv" href="#" id='metrics-export-{{chartOption.type}}' ng-click="exportDataToCSV($event, chartOption)"><i class="fa fa-lg fa-download"></i>Export</a></td>
 					</tr>
 				</tbody>
 			</table>

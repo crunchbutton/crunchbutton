@@ -14,7 +14,7 @@ NGApp.config(['$routeProvider', function ($routeProvider) {
 		});
 }]);
 
-NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, ViewListService, $http) {
+NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, ViewListService, CSVService, $http) {
 	// pretty straightforward, we always want the charts to have zero as base
 	Chart.defaults.global.scaleBeginAtZero = true;
 	Chart.defaults.global.animation = false;
@@ -39,11 +39,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': false, 'description': 'Scale each chart individually'}
 	];
 	$scope.availablePeriods = [
-		{'symbol': 'h', 'description': 'By Hour'},
-		{'symbol': 'd', 'description': 'By Day'},
-		{'symbol': 'w', 'description': 'By Week'},
-		{'symbol': 'M', 'description': 'By Month'},
-		{'symbol': 'Y', 'description': 'By Year'}
+		{'symbol': 'h', 'description': 'By Hour', 'title': 'Hour'},
+		{'symbol': 'd', 'description': 'By Day', 'title': 'Day'},
+		{'symbol': 'w', 'description': 'By Week', 'title': 'Week'},
+		{'symbol': 'M', 'description': 'By Month', 'title': 'Month'},
+		{'symbol': 'Y', 'description': 'By Year', 'title': 'Year'}
 	];
 	$scope.chartFormats = [
 		{'kind': 'line', 'description': 'Line Chart'},
@@ -360,6 +360,100 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		return communities;
 	}
+	var NA = 'NA';
+	// columnsToRows -  converts a mapping of column => data into a set of
+	// rows, based on given columnNames. Order is preserved and
+	// non-existent columns are converted to NA
+	function columnsToRows(columns) {
+		var r, c, col, row;
+		var length = 0;
+		var colArrays = [];
+		var numColumns = columns.length;
+		for (var i = 0; i < numColumns; i++) {
+			col = columns[i];
+			if(col) {
+				if (length < col.length) {
+					length = col.length;
+				}
+			}
+			colArrays.push(col);
+		}
+		out = [];
+		for (r = 0; r < length; r++) {
+			row = [];
+			for (c = 0; c < numColumns; c++) {
+				col = colArrays[c];
+				cell = col ? col[r] : null;
+				// let CSVService handle undefined or null here
+				row.push(cell);
+			}
+			out.push(row);
+		}
+		return out;
+	}
+	// grabs the first non-empty labels it can find
+	function getLabels (chartData, chartTypes) {
+		var keys = Object.keys(chartData);
+		var data, group, labels;
+		for (var k = 0; k < keys.length; k++) {
+			group = chartData[keys[k]];
+			for (var c = 0; c < chartTypes.length; c++) {
+				data = group[chartTypes[c]];
+				if (data && data.labels && data.labels.length > 0) {
+					return data.labels;
+				}
+			}
+			labels = data && data.labels || [];
+			if (labels.length > 0) {
+			}
+		}
+	}
+	function periodNameForSymbol (symbol) {
+		for (i = 0; i < $scope.availablePeriods.length; i++) {
+			if ($scope.availablePeriods[i].symbol === symbol) {
+				return $scope.availablePeriods[i].title;
+			}
+		}
+		return 'Unknown Period';
+	}
+	$scope.exportDataToCSV = function ($event, chart) {
+		var i, j, comm, data, k;
+		console.log('starting export');
+		var exportData = [];
+		// these are arrays because most of the helper code can handle multiple
+		// chart types / complex arrays, however joining up labels is
+		// problematic so for now we've defaulted to just allowing per-chart
+		// export (where backend API guarantee is that all objects will have
+		// the same labels in the same order)
+		var chartNames = [($scope.availableCharts[chart.type] && $scope.availableCharts[chart.type].description) || 'Unknown Column'];
+		var chartTypes = [chart.type];
+		var emptyRowData = chartTypes.map(function () { return ''; });
+		var periodName = periodNameForSymbol($scope.settings.period);
+		var labels = getLabels($scope.chartData, chartTypes);
+		// Order of CSV is <community>, <date/time>, <chart1>, <chart2>, etc.
+		// e.g., ["Community", "Hour", "All Orders", "New User Orders"]
+		var columnNames = ['Community', periodName].concat(chartNames);
+		exportData.push(columnNames);
+		$scope.orderedCommunities.forEach(function (community) {
+			var name = community.name;
+			var id_community = community.id_community;
+			var chartTypeData = $scope.chartData[id_community];
+			var columns = chartTypes.map(function (type) { return chartTypeData[type] && chartTypeData[type].data && chartTypeData[type].data[0]; });
+			var rows = columnsToRows(columns);
+			if (rows.length === 0) {
+				console.log('no data to export for community ', community);
+				labels.forEach(function (label) {
+					exportData.push([name, label].concat(emptyRowData));
+				});
+			} else {
+				rows.forEach(function (row, idx) {
+					exportData.push([name, labels[idx]].concat(row));
+				});
+			}
+		});
+		var anchor = $event.target;
+		return CSVService.addCSVToAnchor(anchor, exportData);
+	};
 });
 
 NGApp.controller('MetricsViewCtrl', function () {
