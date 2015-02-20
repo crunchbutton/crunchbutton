@@ -444,7 +444,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		restaurant.isActive(
 			function( active ){
 				if( active ){
-					$scope.loadingRestaurant = false;
 					checkHours();
 				} else {
 					$scope.loadingRestaurant = false;
