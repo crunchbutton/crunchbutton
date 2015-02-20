@@ -86,7 +86,8 @@
 
 				<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
 
-					<div class="restaurants-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="{{restaurant._open}}">
+
+					<div ladda="loadingRestaurant" class="restaurants-item-content" data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="{{restaurant._open}}">
 						<div class="ladda-label">
 							<div class="restaurants-pic meal-pic" style="background: url({{restaurant.img}});"></div>
 							<h2 class="restaurants-name">{{restaurant.name}}</h2>

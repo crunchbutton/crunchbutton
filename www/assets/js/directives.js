@@ -365,6 +365,7 @@ NGApp.directive('ngSpinner', function () {
 	return {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
+			return;
 			if (App.minimalMode) {
 				return;
 			}
