@@ -421,8 +421,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			return;
 		}
 
-		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
+		
+		$scope.loadingRestaurant = [];
+		$scope.loadingRestaurant[restaurant.id_restaurant] = true;
 
 		var checkHours = function(){
 			if (restaurant.permalink.match(/^(launching|drive|drivers|driving)-.*/)){

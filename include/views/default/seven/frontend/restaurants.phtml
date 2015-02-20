@@ -63,9 +63,6 @@
 </div>
 
 <div ng-if="restaurants">
-
-
-
 	<div class="restaurants-items">
 
 	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
@@ -87,7 +84,7 @@
 				<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
 
 
-					<div ladda="loadingRestaurant" class="restaurants-item-content" data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="{{restaurant._open}}">
+					<div ng-spinner="loadingRestaurant[restaurant.id_restaurant]" class="restaurants-item-content" data-spinner-color="#333333" data-spinner-scale=".5">
 						<div class="ladda-label">
 							<div class="restaurants-pic meal-pic" style="background: url({{restaurant.img}});"></div>
 							<h2 class="restaurants-name">{{restaurant.name}}</h2>
@@ -104,7 +101,6 @@
 							<div class="meal-item-tag-bottom" ng-if="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>
 
 						</div>
-						<span class="ladda-spinner"></span>
 					</div>
 				</div>
 			</div>

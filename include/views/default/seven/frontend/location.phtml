@@ -11,17 +11,15 @@
 						<td style="width: 100%;"><input class="location-address needsclick" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-focus="softKeyboard($event);" geo-complete-enter="letsEat()" id="input-location-address" ng-model="location.form.address" geo-complete >
 						</td>
 						<td>				
-							<button class="location-detect" ladda="loading" data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
-								<span class="fa fa-location-arrow "></span>
-								<div class="ladda-spinner"></div>
+							<button class="location-detect" ng-click="locEat()">
+								<span class="fa fa-location-arrow" ng-spinner="loading == true" data-spinner-color="#fff" data-spinner-scale="1.5" data-spinner-css='{"margin-left": "25%"}'></span>
 							</button>
 						</td>
 					</tr>
 				</table>
 				<div class="button-pushable find-restaurants">
-					<button class="button orange find-restaurants button-letseat-form ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
-						<div class="ladda-label">Find Restaurants!</div>
-						<span class="ladda-spinner"></span>
+					<button class="button orange find-restaurants button-letseat-form" ng-click="letsEat()">
+						<div ng-spinner="loading" data-spinner-color="#fff" data-spinner-scale="1.6">Find Restaurants!</div>
 					</button>
 				</div>
 			</div>

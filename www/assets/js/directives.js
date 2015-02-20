@@ -361,29 +361,68 @@ NGApp.directive( 'ngBindOnce', function( $timeout ) {
 	}
 } );
 
-NGApp.directive('ngSpinner', function () {
+NGApp.directive('ngSpinner', function ($compile) {
 	return {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
-			return;
 			if (App.minimalMode) {
+				//return;
+			}
+			if (!attr.ngSpinner) {
 				return;
 			}
-			setTimeout( function(){
-				var spinner;
-				spinner = elem.data('spinner');
+			
+			var color = attr.spinnerColor || '#000';
+			var scale = attr.spinnerScale || 1;
+			var css = null;
+			try {
+				if (attr.spinnerCss) {
+					css = JSON.parse(attr.spinnerCss);
+				}
+			} catch(e) {
+				console.error('Invalid css for ng-spinner');
+			}
 
-				if (!spinner) {
-					var spinner = Ladda.create(elem.get(0));
-					elem.data('spinner', spinner);
+			
+			var spun = false;
+
+			var spin = '<svg width="'+(elem.width())+'px" height="'+(elem.height())+'px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-default"><rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(0 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(30 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.08333333333333333s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(60 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.16666666666666666s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(90 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.25s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(120 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.3333333333333333s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(150 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.4166666666666667s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(180 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.5s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(210 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.5833333333333334s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(240 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.6666666666666666s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(270 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.75s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(300 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.8333333333333334s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(330 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.9166666666666666s" repeatCount="indefinite"/></rect></svg>';
+			var spinner = angular.element('<div class="inline-spinner"></div>');
+			var scaler = angular.element('<div class="inline-spinner-scaler"></div>');
+			var spinnerWrapper = angular.element('<div class="inline-spinner-wrapper"></div>');
+
+			scope.$watch(attr.ngSpinner, function(val) {
+				console.log(attr.ngSpinner, val);
+				if (val) {
+					if (!spun) {
+						spun = true;
+						spinner.append(spin);
+					}
+					spinnerWrapper.addClass('loading');
+				} else {
+					spinnerWrapper.removeClass('loading');
 				}
-				
-				if ( attr.spinnerAutostart && attr.spinnerAutostart != 'false' ) {
-					$( elem ).click(function() {
-						spinner.start();
-					} );
-				}
-			}, 1 );
+			});
+
+			scaler.css({
+				'margin-top': '-' + (elem.height()) + 'px',
+				'height': elem.height(),
+				'width': elem.width(),
+				'transform': 'scale('+scale+')'
+			});
+
+			if (css) {
+				scaler.css(css);
+			}
+
+			scaler.append(spinner);
+			
+            //spinner.insertAfter(elem);
+			//$compile(spinnerWrapper)(scope);
+			elem.replaceWith(spinnerWrapper);
+			spinnerWrapper.append(elem);
+			spinnerWrapper.append(scaler);
+			elem.addClass('inline-spinner-content');
 		}
 	};
 });
