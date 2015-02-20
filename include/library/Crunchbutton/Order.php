@@ -2164,6 +2164,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if (!$this->refunded){
 
+			$this->tellDriverTheOrderWasCanceled();
+
 			// Refund the gift
 			$this->refundGiftFromOrder();
 
