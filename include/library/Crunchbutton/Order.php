@@ -2151,6 +2151,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $this->_refundedAmount;
 	}
 
+	public function tellDriverTheOrderWasCanceled(){
+		$driver = $this->getDeliveryDriver();
+		if( $driver->id_admin && $driver->phone ){
+			$message = 'Sorry, ' . $this->restaurant()->name . ' order #' . $this->id_order . ' from ' . $this->name . ' was canceled! :(';
+			Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
+			Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_ORDER_CANCELED ] );
+		}
+	}
+
 	public function refund() {
 
 		if (!$this->refunded){
