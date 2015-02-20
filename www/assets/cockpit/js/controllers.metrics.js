@@ -44,11 +44,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'symbol': 'w', 'description': 'By Week'},
 		{'symbol': 'M', 'description': 'By Month'},
 		{'symbol': 'Y', 'description': 'By Year'}
-	]
+	];
 	$scope.chartFormats = [
 		{'kind': 'line', 'description': 'Line Chart'},
 		{'kind': 'bar', 'description': 'Bar Chart'}
-	]
+	];
 	$scope.settings = {
 		separateCharts: false,
 		maxCombinedCommunities: 5,
@@ -65,7 +65,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.persistenceString = '';
 	$scope.updatePersistenceString = function () {
 		$scope.persistenceString = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities);
-	}
+	};
 	var defaultOptions = {
 		communities: 'active',
 		start: '-14d',
@@ -83,12 +83,12 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			$timeout.cancel(timer);
 		}
 		timer = $timeout($scope.refreshData, 1000);
-	}
+	};
 	$scope.unselectAllCommunities = function () {
 		console.log('unselect ALL communities');
 		Object.keys($scope.allowedCommunities).forEach(function (k) { $scope.allowedCommunities[k].selected = false; });
 		$scope.orderSelectedCommunities();
-	}
+	};
 	// TODO: Figure out how to avoid the multiple refreshes here!
 	resetData();
 	$scope.refreshData = function () {
@@ -102,10 +102,10 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if (!$scope.settings.separateCharts) {
 			$scope.calculateCombinedData();
 		}
-	}
+	};
 	$scope.addChart = function () {
 		$scope.settings.charts.push({'format': 'line', 'uniformScale': false});
-	}
+	};
 	$scope.updateChartOption = function (chartOption) {
 		var type = chartOption.type;
 		if (!type) {
@@ -154,7 +154,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			}
 			loaded[type] = true;
 			finalCallback();
-		}, function (err) { console.log('error on chartOption: ', chartOption, 'error: ', err) });
+		}, function (err) { console.log('error on chartOption: ', chartOption, 'error: ', err); });
 	};
 	$scope.removeChartOption = function (chartOption) {
 		var index = $scope.settings.charts.indexOf(chartOption);
@@ -164,7 +164,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if (chartOption.orderMethod && chartOption.orderDirection) {
 			$scope.updateChartOrders(null, true);
 		}
-	}
+	};
 	/**
 	 * Orders communities by the selected chart order method and direction
 	 **/
@@ -203,8 +203,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 				}
 			});
 		}
-		$scope.orderSelectedCommunities()
-	}
+		$scope.orderSelectedCommunities();
+	};
 	$scope.orderSelectedCommunities = function () {
 		var ordered = [];
 		var cID, comm;
@@ -226,13 +226,13 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			$scope.calculateCombinedData();
 		}
 		$scope.updatePersistenceString();
-	}
+	};
 	$scope.toggleCombinedView = function () {
-		$scope.settings.separateCharts = !$scope.settings.separateCharts
+		$scope.settings.separateCharts = !$scope.settings.separateCharts;
 		if (!$scope.settings.separateCharts) {
 			$scope.calculateCombinedData();
 		}
-	}
+	};
 	$scope.calculateCombinedData = function (maxSize) {
 		// We *assume* communities are already ordered by this point!
 		maxSize = maxSize || 5;
@@ -253,7 +253,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var allowedCommunities = $scope.allowedCommunities;
 		Object.keys(combinedChartData).forEach(function (type) {
 			keys = combinedChartData[type].keys.slice(0, maxSize);
-			combinedChartData[type].data = combinedChartData[type]['data'].slice(0, maxSize);
+			combinedChartData[type].data = combinedChartData[type].data.slice(0, maxSize);
 			combinedChartData[type].keys = keys;
 			series = [];
 			for (var i = 0; i < keys.length; i++) {
@@ -261,13 +261,13 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 				if (comm && comm.name) {
 					series.push(comm.name);
 				} else {
-					series.push('Community: ' + key);
+					series.push('Community: ' + keys[i]);
 				}
 			}
 			combinedChartData[type].series = series;
-		})
+		});
 		$scope.combinedChartData = combinedChartData;
-	}
+	};
 	$http.get(App.service + 'metrics/permissions').success(function (data) {
 		console.debug('got allowed communities');
 		var allowedCommunities = {};
