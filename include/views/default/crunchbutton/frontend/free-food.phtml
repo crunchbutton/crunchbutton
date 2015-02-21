@@ -6,9 +6,11 @@
 	</p>
 	<br /><br />
 		<div>
-			<div>Earn points by ordering food, sharing your order, or referring friends.</div>
-			<div>Share this family and friends code and both of you get your next delivery on us.</div>
-			<div><strong>{{account.user.invite_code}}</strong></div>
+			<p>
+				Earn points by ordering food, sharing your order, or referring friends.<br>
+				Share this family and friends code and both of you get your next delivery on us.<br>
+				<b>{{account.user.invite_code}}</b>
+			</p>
 		</div>
 		<div class="divider"></div>
 		<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">
@@ -18,7 +20,9 @@
 			<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
 		</div>
 		<div class="divider"></div>
-		Invite URL: <input type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
+		<div class="field-container">
+			Invite URL:&nbsp;&nbsp;&nbsp;<input  type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
+		</div>
 		<div class="divider"></div>
 	</div>
 </div>
