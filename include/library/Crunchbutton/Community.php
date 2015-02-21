@@ -585,7 +585,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function reopenAutoClosedCommunities(){
 		$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 		$id_admin = $admin->id_admin;
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '"' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = "1"' );
 		foreach( $communities as $community ){
 			$community->reopenAutoClosedCommunity();
 		}
@@ -632,13 +632,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 		if( !$this->auto_close ){ return; }
 
-		if( $this->id_community && ( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ) ){
+		if( $this->id_community && ( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed ) ){
+
 			$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 			$id_admin = $admin->id_admin;
+
 			if( $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin || $this->isAutoClosed() ){
 
 				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+
 				if( $nextShift->id_community_shift ){
+
 					$date_start = $nextShift->dateStart( $this->timezone );
 					$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
 					$date_end = $nextShift->dateEnd( $this->timezone );
@@ -650,8 +654,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 						// Open the community
 						$this->is_auto_closed = 0;
-						// $this->close_3rd_party_delivery_restaurants = 0;
-						// $this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
 						$this->save();
 
 						$ticket = 'The community ' . $this->name . ' was auto reopened.';
