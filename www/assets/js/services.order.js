@@ -707,7 +707,8 @@ console.log('order',order);
 						// order success
 						App.vibrate();
 						
-						MainNavigationService.navStack = [MainNavigationService.navStack.pop()];
+						MainNavigationService.navStack = [];
+						MainNavigationService.control();
 
 						if (json.token) {
 							$.cookie( 'token', json.token );
