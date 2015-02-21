@@ -140,11 +140,11 @@
 					    </ul>
 					</div>
 
-					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
-					<div title="Menu" class="menu drop" ng-show="navigation.buttons.menu" ng-toggle="menudropdown"></div>
-					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-click="back()"></div>
+					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-if="navigation.buttons.menu"></div>
+					<div title="Menu" class="menu drop" ng-if="navigation.buttons.menu" ng-toggle="menudropdown"></div>
+					<div title="Back" ng-if="navigation.buttons.back" class="nav-back hide-before-init" ng-click="back()"></div>
 
-					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-show="order.info.totalItems && ((navigation.page == 'restaurant' && order.restaurant._open) || navigation.page != 'restaurant')" ng-class="{ 'animation-blink' : cart.blink}">
+					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-if="order.info.totalItems && ((navigation.page == 'restaurant' && order.restaurant._open) || navigation.page != 'restaurant')" ng-class="{ 'animation-blink' : cart.blink}">
 						<div class="fa fa-shopping-cart"></div>
 						<div class="nav-cart-count">{{order.info.totalItems}}</div>
 					</div>
