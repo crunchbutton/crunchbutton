@@ -373,7 +373,7 @@
 				&nbsp;
 				<span ng-show="order.form.pay_type=='card'">by card</span>
 			</div>
-			<div ng-show="points.free_delivery_message" class="points-message-edit-info"><strong>You have 25000 points! This delivery fee is on us.</strong></div>
+			<div ng-show="points.free_delivery_message" class="points-message-edit-info"><strong>You have {{points.free_delivery}} points! This delivery fee is on us.</strong></div>
 		</div>
 
 	</form>
@@ -383,7 +383,7 @@
 	<!-- stored user info -->
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
 
-		<div ng-show="points.free_delivery_message" class="points-message-stored-info"><strong>You have 25000 points! This delivery fee is on us.</strong></div>
+		<div ng-show="points.free_delivery_message" class="points-message-stored-info"><strong>You have {{points.free_delivery}} points! This delivery fee is on us.</strong></div>
 
 		<div>
 			<label>Your phone number:&nbsp;</label>
