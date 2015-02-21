@@ -1720,7 +1720,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	// return the restaurant's hours
 	public function hours( $gmt = false ) {
 
-		$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+		$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false ) || ( strpos( $_SERVER['HTTP_HOST'], 'dev' ) !== false )  ) ? true : false;
 		if( !$isCockpit ){
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);
@@ -1735,7 +1735,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					return [];
 				}
 			}
-
 		}
 
 		return Hour::hoursByRestaurant( $this, $gmt );
