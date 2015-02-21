@@ -547,7 +547,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$interval = $opened_at->diff( $closed_at );
 				$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
 			} else {
-				$output[ 'how_long' ] = 'It is still closed!';
+				if( !$this->$force_close->field ){
+					$output[ 'how_long' ] = 'No records, probably variable was changed directly at database.';
+				} else {
+					$output[ 'how_long' ] = 'It is still closed!';
+				}
 			}
 			$out[] = $output;
 		}
