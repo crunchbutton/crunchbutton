@@ -354,7 +354,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.animationClass = '';
 
 	$rootScope.debug = function() {
-		return ( App.config && App.config.user && App.config.user.debug );
+		return ( App.config && App.config.user && App.config.user.debug == '1' );
 	};
 
 	$rootScope.test = App.test;
