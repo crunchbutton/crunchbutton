@@ -36,8 +36,8 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 		$community = Crunchbutton_Community::o( $id_community );
 		if( $community->id_community ){
 			$dont_warn_till = $this->request()[ 'dont_warn_till' ];
-			$dont_warn_till = str_replace( 'T' , ' ', $dont_warn_till );
-			$dont_warn_till .= ':00';
+			$dont_warn_till = new DateTime( $dont_warn_till, new DateTimeZone( c::config()->timezone ) );
+			$dont_warn_till = $dont_warn_till->format( 'Y-m-d H:i:s' );
 			$community->dont_warn_till = $dont_warn_till;
 			$community->save();
 			echo json_encode( [ 'success' => true ] );
