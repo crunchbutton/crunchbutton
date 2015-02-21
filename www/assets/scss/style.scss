@@ -3180,9 +3180,10 @@ i {
 	transition: $transition;
 }
 
+
+
 .inline-spinner {
 	opacity: 0;
-	position: absolute;
 	pointer-events: none;
 	overflow: hidden;
 	@include scale(2.5);
@@ -3198,4 +3199,8 @@ i {
 
 .inline-spinner-wrapper.loading .inline-spinner-content {
 	opacity: 0;
+}
+
+.points-message-edit-info {
+	text-align: center;
 }

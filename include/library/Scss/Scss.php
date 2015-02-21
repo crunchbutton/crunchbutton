@@ -3714,7 +3714,7 @@ class scss_parser {
 			$s = $this->seek();
 			// self
 			if ($this->literal("&", false)) {
-				$parts[] = scssc::$selfSelector;
+				$parts[] = Scss_Scss::$selfSelector;
 				continue;
 			}
 

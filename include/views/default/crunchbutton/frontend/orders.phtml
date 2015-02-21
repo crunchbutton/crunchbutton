@@ -38,10 +38,12 @@
 			</div>
 			<?php */ ?>
 			<div ng-if="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
-				<div>You are {{account.user.points.away_free_delivery}} points away from a free delivery.</div>
-				<div>Earn points by ordering food, sharing your order, or referring friends.</div>
-				<div>Share this family and friends code and both of you get your next delivery on us.</div>
-				<div><strong>{{account.user.invite_code}}</strong></div>
+				<p>
+					You are <b>{{account.user.points.away_free_delivery}}</b> points away from a free delivery.<br>
+					Earn points by ordering food, sharing your order, or referring friends.<br>
+					Share this family and friends code and both of you get your next delivery on us.<br>
+					<b>{{account.user.invite_code}}</b>
+				</p>
 			</div>
 			<div class="divider"></div>
 			<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">

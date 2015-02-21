@@ -365,10 +365,7 @@ NGApp.directive('ngSpinner', function ($compile) {
 	return {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
-			if (App.minimalMode) {
-				//return;
-			}
-			if (!attr.ngSpinner) {
+			if (App.minimalMode || !attr.ngSpinner) {
 				return;
 			}
 			
@@ -383,16 +380,16 @@ NGApp.directive('ngSpinner', function ($compile) {
 				console.error('Invalid css for ng-spinner');
 			}
 
-			
 			var spun = false;
 
 			var spin = '<svg width="'+(elem.width())+'px" height="'+(elem.height())+'px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-default"><rect x="0" y="0" width="100" height="100" fill="none" class="bk"></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(0 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(30 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.08333333333333333s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(60 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.16666666666666666s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(90 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.25s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(120 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.3333333333333333s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(150 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.4166666666666667s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(180 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.5s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(210 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.5833333333333334s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(240 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.6666666666666666s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(270 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.75s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(300 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.8333333333333334s" repeatCount="indefinite"/></rect><rect  x="46.5" y="40" width="7" height="20" rx="5" ry="5" fill="'+color+'" transform="rotate(330 50 50) translate(0 -30)">  <animate attributeName="opacity" from="1" to="0" dur="1s" begin="0.9166666666666666s" repeatCount="indefinite"/></rect></svg>';
 			var spinner = angular.element('<div class="inline-spinner"></div>');
 			var scaler = angular.element('<div class="inline-spinner-scaler"></div>');
+			var user = angular.element('<div class="inline-spinner-user"></div>');
+			var spinwrap = angular.element('<div class="inline-spinner-spinwrap"></div>');
 			var spinnerWrapper = angular.element('<div class="inline-spinner-wrapper"></div>');
 
 			scope.$watch(attr.ngSpinner, function(val) {
-				console.log(attr.ngSpinner, val);
 				if (val) {
 					if (!spun) {
 						spun = true;
@@ -405,23 +402,23 @@ NGApp.directive('ngSpinner', function ($compile) {
 			});
 
 			scaler.css({
-				'margin-top': '-' + (elem.height()) + 'px',
+				'transform': 'scale('+scale+')',
+				'margin-top': '-' + elem.height() + 'px',
 				'height': elem.height(),
-				'width': elem.width(),
-				'transform': 'scale('+scale+')'
+				'width': elem.width()
 			});
 
 			if (css) {
-				scaler.css(css);
+				user.css(css);
 			}
 
+			spinwrap.append(user);
+			user.append(scaler);
 			scaler.append(spinner);
-			
-            //spinner.insertAfter(elem);
-			//$compile(spinnerWrapper)(scope);
+
 			elem.replaceWith(spinnerWrapper);
 			spinnerWrapper.append(elem);
-			spinnerWrapper.append(scaler);
+			spinnerWrapper.append(spinwrap);
 			elem.addClass('inline-spinner-content');
 		}
 	};

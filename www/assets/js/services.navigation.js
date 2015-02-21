@@ -43,11 +43,15 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	/* the transitions type could be push, fade, pop or none */
-	service.link = function( path, transition ){
+	service.link = function( path, transition , clearstack){
 		if( App.isNarrowScreen() || App.transitionForDesktop ){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 		}
 		$location.path( path || '/' );
+		if (clearstack) {
+			service.navStack = [];
+			service.control();
+		}
 		App.snap.close();
 	}
 
