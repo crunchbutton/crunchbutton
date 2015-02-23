@@ -250,16 +250,22 @@
 				<thead>
 					<td class="topitem order-contents-item-qty">Qty</td>
 					<td class="topitem itemname">Item</td>
+					<td class="topitem itemname"></td>
 					<td class="topitem itemprice">Store Price</td>
 				</thead>
 				<tbody>
-					<tr ng-repeat="dish in order._dishes">
-						<td class="fooditem order-contents-item-qty">1</td>
+					<tr ng-repeat="dish in order._dishes_qty">
+						<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
 						<td class="fooditem dish-name">
 						{{dish.name}}
 						<div>{{dish.options.select_options}}</div>
 						<div>{{dish.options.with_option}}</div>
 						<div>{{dish.options.without_default_options}}</div>
+						</td>
+						<td class="fooditem dish-price-unity">
+							<span ng-if="dish.quantity > 1">
+								{{dish.quantity}} * ${{dish.price.regular_unity | formatPrice}}
+							</span>
 						</td>
 						<td class="fooditem dish-price">
 							${{dish.price.regular | formatPrice}}

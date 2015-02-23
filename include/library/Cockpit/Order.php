@@ -177,6 +177,30 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ '_dishes' ][] = [ 'name' => $food, 'price' => [ 'regular' => $regular_price, 'marked_up' => $price ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions, 'select_options' => $selectOptions ] ];
 		}
 
+		// driver suggestion: quantity column to make ordering easier #4779
+		$_dishes = [];
+		foreach( $out[ '_dishes' ] as $_dish ){
+			$token = trim( str_replace( ' ' , '', strtolower( $_dish[ 'name' ] ) ) ) . md5( serialize( $_dish ) );
+			if( !$_dishes[ $token ] ){
+				$_dishes[ $token ] = [ 'dish' => $_dish, 'quantity' => 0 ];
+			}
+			$_dishes[ $token ][ 'quantity' ]++;
+		}
+
+		// sort
+		ksort( $_dishes );
+
+		// kept the _dishes for legacy reasons (native app and other places where it is used)
+		$out[ '_dishes_qty' ] = [];
+		foreach( $_dishes as $_dish ){
+			$dish = array_merge( $_dish[ 'dish' ], [ 'quantity' => $_dish[ 'quantity' ] ] );
+			$dish[ 'price' ][ 'regular_unity' ] = floatval( $dish[ 'price' ][ 'regular' ] );
+			$dish[ 'price' ][ 'marked_up_unity' ] = floatval( $dish[ 'price' ][ 'marked_up' ] );
+			$dish[ 'price' ][ 'regular' ] = ( $dish[ 'price' ][ 'regular_unity' ] * $dish[ 'quantity' ] );
+			$dish[ 'price' ][ 'marked_up' ] = ( $dish[ 'price' ][ 'marked_up_unity' ] * $dish[ 'quantity' ] );
+			$out[ '_dishes_qty' ][] = $dish;
+		}
+
 		$status = $this->status()->last();
 		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
 		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
