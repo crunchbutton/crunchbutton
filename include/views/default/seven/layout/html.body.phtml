@@ -141,7 +141,6 @@
 					</div>
 
 					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-if="navigation.buttons.menu"></div>
-					<div title="Menu" class="menu drop" ng-if="navigation.buttons.menu" ng-toggle="menudropdown"></div>
 					<div title="Back" ng-if="navigation.buttons.back" class="nav-back hide-before-init" ng-click="back()"></div>
 
 					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-if="order.info.totalItems && ((navigation.page == 'restaurant' && order.restaurant._open) || navigation.page != 'restaurant')" ng-class="{ 'animation-blink' : cart.blink}">
@@ -150,6 +149,15 @@
 					</div>
 
 					<div title="Crunchbutton" class="logo animated-resize" ng-click="navigation.home()"></div>
+					
+					<div class="desktop-top-nav hide-mobile hide-before-init">
+						<a href="/work"><u>We're hiring!</u></a>
+						<a href="/location">Home</a>
+						<a href="/help">Help</a>
+						<a href="/orders" ng-if="account.user.id_user">Account</a>
+						<a ng-click="navigation.signin()" ng-if="!account.user.id_user">Log In</a>
+						<a ng-click="signout.signout()" ng-if="account.user.id_user">Log Out</a>
+					</div>
 
 				</div>
 			</div>
