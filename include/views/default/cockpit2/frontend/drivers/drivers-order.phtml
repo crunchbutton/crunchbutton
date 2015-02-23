@@ -245,27 +245,29 @@
 		</div>
 		<br>
 
+		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
+		<div ng-if="account.user.id_admin == 1 ||
+								account.user.id_admin == 2 ||
+								account.user.id_admin == 3 ||
+								account.user.id_admin == 5">
+			<h3><strong>Issue #4779 - Regular view</strong></h3><br><br>
+		</div>
+
 		<div class="order-contents">
 			<table width="100%" celpadding="0" cellspacing="0" class="detail">
 				<thead>
 					<td class="topitem order-contents-item-qty">Qty</td>
 					<td class="topitem itemname">Item</td>
-					<td class="topitem itemname"></td>
 					<td class="topitem itemprice">Store Price</td>
 				</thead>
 				<tbody>
-					<tr ng-repeat="dish in order._dishes_qty">
-						<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
+					<tr ng-repeat="dish in order._dishes">
+						<td class="fooditem order-contents-item-qty">1</td>
 						<td class="fooditem dish-name">
 						{{dish.name}}
 						<div>{{dish.options.select_options}}</div>
 						<div>{{dish.options.with_option}}</div>
 						<div>{{dish.options.without_default_options}}</div>
-						</td>
-						<td class="fooditem dish-price-unity">
-							<span ng-if="dish.quantity > 1">
-								{{dish.quantity}} * ${{dish.price.regular_unity | formatPrice}}
-							</span>
 						</td>
 						<td class="fooditem dish-price">
 							${{dish.price.regular | formatPrice}}
@@ -313,6 +315,86 @@
 					</tr>
 				</tbody>
 			</table>
+		</div>
+
+		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
+		<div ng-if="account.user.id_admin == 1 ||
+								account.user.id_admin == 2 ||
+								account.user.id_admin == 3 ||
+								account.user.id_admin == 5">
+			<h3><strong>Issue #4779 - New view - with quantity</strong></h3><br><br>
+
+			<div class="order-contents">
+				<table width="100%" celpadding="0" cellspacing="0" class="detail">
+					<thead>
+						<td class="topitem order-contents-item-qty">Qty</td>
+						<td class="topitem itemname">Item</td>
+						<td class="topitem itemname"></td>
+						<td class="topitem itemprice">Store Price</td>
+					</thead>
+					<tbody>
+						<tr ng-repeat="dish in order._dishes_qty">
+							<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
+							<td class="fooditem dish-name">
+							{{dish.name}}
+							<div>{{dish.options.select_options}}</div>
+							<div>{{dish.options.with_option}}</div>
+							<div>{{dish.options.without_default_options}}</div>
+							</td>
+							<td class="fooditem dish-price-unity">
+								<span ng-if="dish.quantity > 1">
+									{{dish.quantity}} * ${{dish.price.regular_unity | formatPrice}}
+								</span>
+							</td>
+							<td class="fooditem dish-price">
+								${{dish.price.regular | formatPrice}}
+							</td>
+						</tr>
+						<tr class="class">
+							<td></td>
+							<td class="dish-price">Subtotal</td>
+							<td class="dish-price">
+								${{order.price | formatPrice}}
+							</td>
+						</tr>
+						<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
+						<tr ng-if="order._tip">
+							<td></td>
+							<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="order.tip_type != 'number'"></span></td>
+							<td style="text-align:right; font-size:24px;color:#666;">${{order._tip | formatPrice}}</td>
+						</tr>
+
+						<tr ng-if="order.delivery_fee">
+							<td></td>
+							<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
+							<td style="text-align:right; font-size:24px;color:#666;">${{order.delivery_fee | formatPrice}}</td>
+						</tr>
+						<tr ng-if="order.service_fee">
+							<td></td>
+							<td style="text-align:right">Service Fee</td>
+							<td>${{order.service_fee | formatPrice}}</td>
+							<php if( $isDriverCockpit ) {  />
+						</tr>
+						-->
+						<tr>
+							<td></td>
+							<td></td>
+							<td class="dish-price">Tax</td>
+							<td class="dish-price">
+								${{order._tax | formatPrice}}
+							</td>
+						</tr>
+						<tr class="order-total-row">
+							<td></td>
+							<td></td>
+							<td class="order-total-text">Total</td>
+							<td class="dish-price order-total-text">
+								${{order._final_price | formatPrice}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 	</div>
