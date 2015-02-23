@@ -3900,6 +3900,30 @@ font-familt: "Museo Slab";
 	.hide-desktop {
 		display: none;
 	}
+	.payment-form-toggle {
+		background: transparent;
+		@include transition(all 0.2s);
+	}
+	.nav .logo {
+		float: left;
+	}
+	.nav .menu, .nav .nav-cart, .nav .nav-back {
+		display: none;
+	}
+	.nav {
+		height: 4em;
+		padding-top: 10px;
+	}
+	.desktop-top-nav {
+		float: right;
+	}
+	.desktop-top-nav a {
+		color: #fff;
+		text-decoration: none;
+		display: inline-block;
+		margin: 1em 1.2em 0 1.2em;
+		font-size: 1.2em;
+	}
 }
 @media screen and (max-width: 1024px) {
 	.hide-mobile {
