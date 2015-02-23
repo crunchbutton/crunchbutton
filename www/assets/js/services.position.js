@@ -15,7 +15,7 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 		$rootScope.$broadcast( 'NewLocationAdded', true );
 	}
 
-	service.storeLocations = function(){		
+	service.storeLocations = function(){
 		// Duplicated positions should not be saved at cookie
 		var keys = {};
 		service.locs.reverse();
@@ -32,7 +32,7 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 		for( x in service.locs ){
 			// Stores just the served and not repeated locations
 			if( service.locs[x].storeAtCookie() ){
-				locs.push( service.locs[x].toCookie() );	
+				locs.push( service.locs[x].toCookie() );
 			}
 		}
 
@@ -213,7 +213,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		if (service.initied && !force) {
 			return;
 		}
-		
+
 		// 1) set bounding to maxmind results if we have them
 		if (App.config && App.config.loc && App.config.loc.lat && App.config.loc.lon) {
 			service.bounding = App.config.loc;
@@ -252,20 +252,20 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			}
 			service.loadRestaurantsPage = true;
 		}
-		
+
 		if (service.initied) {
 			return;
 		}
-		
+
 		service.initied = true;
 
-		if ( App.isPhoneGap ) {	
+		if ( App.isPhoneGap ) {
 			if ( parseInt( service.position.locs.length ) > 0 ) {
 				service.restaurantsService.list(
 					// success - has restaurants
 					function () { App.go( '/food-delivery'); },
 					// no restaurant
-					function () {} 
+					function () {}
 				);
 			}
 		// 4) get a more specific bounding location result from google
@@ -281,7 +281,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		}
 	}
 
-	// TODO I changed this method just to make it work, it is not ready yet		
+	// TODO I changed this method just to make it work, it is not ready yet
 	// callback for google location api
 	service.googleCallback = function () {
 
@@ -303,6 +303,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							// Success
 							function () {
 								service.loadRestaurantsPage = true;
+								App.go( '/food-delivery');
 							},
 							// Error
 							function () {
@@ -344,6 +345,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					// Success
 					function () {
 						service.loadRestaurantsPage = true;
+						App.go( '/food-delivery');
 					},
 					// Error
 					function () {
@@ -352,7 +354,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			},
 			// Error
 			function () {});
-		} else 
+		} else
 		// 6) if there is no previously used locations of any kind
 		if (!service.position.locs.length) {
 			service.getLocationByBrowser(function ( loc ) {
@@ -366,6 +368,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 						service.restaurantsService.list(
 							function () {
 								service.loadRestaurantsPage = true;
+								App.go( '/food-delivery');
 							},
 							function () {
 								$rootScope.$broadcast( 'locationNotServed',  true );
@@ -500,7 +503,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 	service.doGeocodeWithBound = function(address, latLong, success, error) {
 		// Create a cicle bounding box
-		var circle = new google.maps.Circle( { center: latLong, radius: service.boundingBoxMeters } ); 
+		var circle = new google.maps.Circle( { center: latLong, radius: service.boundingBoxMeters } );
 		var bounds = circle.getBounds();
 
 		// Send the request out to google

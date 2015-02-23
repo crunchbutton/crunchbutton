@@ -15,7 +15,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		var failureFn = function(error) {
 			console.log('BackgroundGeoLocation error');
 		}
-		
+
 		bgGeo.configure(callbackFn, failureFn, {
 			url: App.service + 'driver/location',
 			params: {
@@ -27,13 +27,13 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			},
 			desiredAccuracy: 10,
 			stationaryRadius: 20,
-			distanceFilter: 30, 
+			distanceFilter: 30,
 			notificationTitle: 'Background tracking',
 			notificationText: 'ENABLED',
 			activityType: 'AutomotiveNavigation',
 			debug: false
 		});
-		
+
 	}
 
 	var locationService = $resource( App.service + 'driver/:action', { action: '@action' }, {
@@ -64,10 +64,10 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 //		if (updated && updated + 60000 > d) {
 			//return;
 //		}
-		
+
 		service.location = trackedPos;
 		service.updated = d;
-		
+
 		if (report) {
 			locationService.track(trackedPos, function(json) {
 				console.debug('Tracked drivers location: ', trackedPos, d);
@@ -81,7 +81,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	};
 
 	var watcher = null;
-	
+
 	service.register = function(complete) {
 
 		parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
@@ -100,7 +100,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		if (watcher) {
 			return;
 		}
-		
+
 		var webLocationTrack = function(pos) {
 			var trackedPos = pos.coords;
 			trackedPos.timestamp = pos.timestamp;
@@ -124,10 +124,10 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			}, function() {
 				App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services</b>. Your location will only be tracked while you are on shift.')
 			});
-			
+
 		}
 	};
-	
+
 	// check to make sure we are sending the location
 	var checkWatch = function() {
 		var d = new Date;
@@ -138,9 +138,9 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			startWatch();
 		}
 	};
-	
+
 	setInterval(checkWatch, 100000);
-	
+
 	var stopWatch = function() {
 		parent.window.navigator.geolocation.clearWatch(watcher);
 		watcher = null;
@@ -159,7 +159,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		}
 	});
 	*/
-	
+
 	$rootScope.$watch('account.user.working', function(value) {
 		console.debug('Got a change in user working:', arguments);
 
