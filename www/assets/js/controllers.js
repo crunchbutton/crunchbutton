@@ -436,6 +436,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				RestaurantService.basicInfo = restaurant;
 				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
 			} else {
+				$scope.loadingRestaurant = false;
 				$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
 				$scope.restaurants = restaurants.getStatus();
 			}
