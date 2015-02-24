@@ -27,12 +27,17 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function tellCustomerService( $message ){
+
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
 			'from' => 'customer',
 			'message' => $message,
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
+
+
+		Log::debug( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message, 'type' => 'support-tell-cs' ] );
+
 	}
 
 	// @todo: remove the getusers function in favor of getsupport
