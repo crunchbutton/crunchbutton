@@ -784,4 +784,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return Crunchbutton_Community_Shift::currentShiftByCommunity( $this->id_community )->get( 0 );
 	}
 
+	public function driverRestaurantName(){
+		if( $this->close_all_restaurants && trim( $this->close_all_restaurants_note ) != '' ){
+			return $this->close_all_restaurants_note;
+		}
+		if( $this->close_3rd_party_delivery_restaurants  && trim( $this->close_3rd_party_delivery_restaurants_note ) != '' ){
+			return $this->close_3rd_party_delivery_restaurants_note;
+		}
+		if( $this->is_auto_closed && $this->driver_restaurant_name ){
+			return $this->driver_restaurant_name;
+		}
+		return 'Temporarily closed';
+	}
 }
