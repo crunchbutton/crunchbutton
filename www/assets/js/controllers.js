@@ -321,11 +321,13 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService, RestaurantService, CommunityAliasService ) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, PositionsService, RestaurantsService, LocationService, RestaurantService, CommunityAliasService ) {
 
 	$scope.restaurants = false;
 
 	$scope.loadingRestaurant = false;
+	
+	$scope.entered = PositionsService.pos().entered() || account.user.address;
 
 	var showMoreStage = 1; // stage 1: show top 6 maximized, stage 2: show all maximized, stage 3: show all - #2456
 
@@ -690,6 +692,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	var proceed = function() {
 		App.go( '/' + restaurants.permalink, 'push' );
+		AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
 		$scope.location.form.address = '';
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
