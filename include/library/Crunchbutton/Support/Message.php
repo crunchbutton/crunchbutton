@@ -116,7 +116,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
 
 		if( !$this->admin()->isWorking() ){
-			$phone = [];
+			$phone = Crunchbutton_Support::getUsers();
 		}
 
 		Crunchbutton_Message_Sms::send([
