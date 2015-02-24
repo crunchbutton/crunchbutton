@@ -1293,9 +1293,43 @@ App.share = function(params) {
 
 	var pic = params.picture || 'http://crunchbutton.com/assets/images/facebook-like.png';
 
-	if (App.isPhoneGap && App.iOS()) {
-		var description = params.caption + ".\r\n" + params.description.replace(/(<br \/>)|(\n)/g,'');
-		CDV.FB.share([params.url, params.name, '', description, pic], params.success, params.fail);
+	if (App.isPhoneGap && App.iOS() && window.facebookConnectPlugin) {
+		facebookConnectPlugin.showDialog({
+			method: 'feed',
+			user_message_prompt: 'Crunchbutton',
+			link: params.url,
+			href: params.url,
+			picture: pic,
+			name: params.name,
+			caption:params.caption,
+			description: params.description,
+			attachment: {
+				name: 'Crunchbutton',
+				caption: ' ',
+				description: params.url,
+				href: params.url,
+				media:[{
+					type: 'image',
+					src: pic,
+					href: params.url
+				}],
+			},
+			action_links: [{ text: 'Crunchbutton', href: 'https://crunchbutton.com' } ],
+			description: params.description
+		}, function(response) {
+			console.log(response);
+			if (response && response.post_id) {
+				if (typeof params.success === 'function') {
+					params.success(response);
+				}
+			} else {
+				if (typeof params.fail === 'function') {
+					params.fail(response);
+				}
+			}
+		});
+		
+		
 
 	} else {
 		FB.ui({
