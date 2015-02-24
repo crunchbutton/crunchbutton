@@ -1,0 +1,17 @@
+
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+    <h2>Recent Locations</h2><br>
+
+    <h1 class="title left"><i class="fa fa-user"></i>{{staff.name}}</h1>
+    <div class="divider"></div>
+
+<h3 ng-if="!staff.locations">You have no locations!</h3>
+        <div class="support-box-wrap" ng-if="staff.locations">
+            <map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+
+            </map>
+        </div>
+</div>

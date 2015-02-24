@@ -1036,6 +1036,56 @@ NGApp.controller('DriversFeedbackCtrl', function($scope, FeedbackService) {
     }
 });
 NGApp.controller('DriversHelpCreditCardCtrl', function() {});
+NGApp.controller('DriversLocationsCtrl', function($rootScope, $scope, $routeParams, $location, StaffService, MapService) {
+
+
+		$scope.staff = null;
+		$scope.map = null;
+		$scope.loading = true;
+		var marker;
+
+		StaffService.get($rootScope.account.user.id_admin, function(staff) {
+			$rootScope.title = staff.name + ' | Staff';
+			$scope.staff = staff;
+			$scope.loading = false;
+		});
+
+		StaffService.locations($rootScope.account.user.id_admin, function(d) {
+			$scope.locations = d;
+			update();
+		});
+
+		$scope.$watch('staff', function() {
+			console.log('staff');
+			update();
+		});
+
+		$scope.$watch('map', function() {
+			console.log('map');
+			//update();
+		});
+
+		var update = function() {
+			if (!$scope.map || !$scope.staff || !$scope.locations) {
+				return;
+			}
+
+			MapService.trackStaff({
+				map: $scope.map,
+				staff: $scope.staff,
+				locations: $scope.locations,
+				scope: $scope,
+				id: 'staff-locations'
+			});
+
+		};
+
+		$scope.$on('mapInitialized', function(event, map) {
+			$scope.map = map;
+			MapService.style(map);
+			//update();
+		});
+});
 
 
 NGApp.controller('DriversWelcomeHomeCtrl', function() {

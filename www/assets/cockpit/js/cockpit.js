@@ -360,6 +360,13 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			back: false,
             reloadOnSearch: false
 		})
+		.when('/drivers/drivers-locations', {
+			action: 'drivers-locations',
+			controller: 'DriversLocationsCtrl',
+			templateUrl: 'assets/view/drivers-locations.html',
+			back: false,
+			reloadOnSearch: false
+		})
 		.when('/drivers/help/credit-card', {
 			action: 'drivers-help',
 			controller: 'DriversHelpCreditCardCtrl',
