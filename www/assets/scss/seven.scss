@@ -622,7 +622,7 @@ p {
 	z-index: 9999999;
 	font-size: 1em;
 	margin-top: 45px;
-	margin-left: 15px;
+	margin-left: 865px;
 }
 .dropdown .dropdown-menu{
 	min-width: 160px;
@@ -640,7 +640,7 @@ p {
 .dropdown.dropdown-tip:before {
 	position: absolute;
 	top: -6px;
-	left: 9px;
+	left: 79%;
 	content: '';
 	border-left: 7px solid transparent;
 	border-right: 7px solid transparent;
@@ -652,7 +652,7 @@ p {
 .dropdown.dropdown-tip:after {
 	position: absolute;
 	top: -5px;
-	left: 10px;
+	left: 80%;
 	content: '';
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
@@ -797,9 +797,6 @@ p {
 		bottom: 0;
 		left: 0;
 		overflow: hidden;
-	}
-	.footer {
-		display: none;
 	}
 	.snap-content-inner {
 		position:absolute;
@@ -1845,7 +1842,7 @@ p {
 		color: inherit;
 		background: none;
 		padding: 0;
-		margin-top: 2.1em;
+		margin-bottom: 2.1em;
 	}
 	.dish-item-description {
 		color: #333333;
@@ -3941,9 +3938,13 @@ font-familt: "Museo Slab";
 	.restaurants-top-tag strong {
 		display: none;
 	}
+
 }
 @media screen and (max-width: 1024px) {
 	.hide-mobile {
+		display: none;
+	}
+	.footer {
 		display: none;
 	}
 }

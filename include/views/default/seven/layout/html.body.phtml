@@ -117,26 +117,11 @@
 				<div class="content">
 					<div class="hide-before-init dropdown dropdown-tip" ng-show="menudropdown">
 						<ul class="dropdown-menu">
-							<li><a ng-click="navigation.link('/splash')" ng-show="!account.user.id_user"><i class="fa fa-rocket"></i>Get Started!</a></li>
-							<li><a ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user"><i class="fa fa-cutlery"></i>Food</a></li>
-							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user && account.user.name"><i class="fa fa-truck"></i>My Orders</a></li>
-							<li><a ng-click="navigation.link('/location')" ng-show="account.user.id_user"><i class="fa fa-map-marker"></i>Change Location</a></li>
-							<li class="dropdown-divider"></li>
-							<li><a ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
-							<li><a ng-click="navigation.link('/about')"><i class="fa fa-lightbulb-o"></i>About</a></li>
-							<li><a ng-click="navigation.link('/work')"><i class="fa fa-briefcase"></i>Work with us</a></li>
 
-							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user"><i class="fa fa-sign-in"></i>Log In</a></li>
-							<li><a ng-click="signout.signout()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>
-
-							<li class="dropdown-divider"></li>
-							<li><a ng-click="navigation.link('/download')"><i class="fa fa-mobile-phone"></i>Download for iPhone</a></li>
-
-							<li class="dropdown-divider" ng-show="account.user.debug"></li>
-							<li><a ng-click="App.test.card()" ng-show="debug()"><i class="fa fa-circle-o"></i>TEST: card</a></li>
-							<li><a ng-click="App.test.clearloc()" ng-show="debug()"><i class="fa fa-circle-o"></i>TEST: clear location</a></li>
-							<li><a ng-click="navigation.link('/')" ng-show="debug()"><i class="fa fa-circle-o"></i>TEST: go home</a></li>
-							<li><a ng-click="App.test.card()" ng-show="debug()"><i class="fa fa-circle-o"></i>TEST: card</a></li>
+							<li><a ng-click="test.card()" ng-show="debug()"><i class="fa fa-circle-o"></i>test card</a></li>
+							<li><a ng-click="test.clearloc()" ng-show="debug()"><i class="fa fa-circle-o"></i>clear location</a></li>
+							<li><a ng-click="test.reload()" ng-show="debug()"><i class="fa fa-circle-o"></i>reload page</a></li>
+							<li class="dropdown-divider" ng-show="debug()"></li>
 					    </ul>
 					</div>
 
@@ -157,6 +142,7 @@
 						<a href="/orders" ng-if="account.user.id_user">Account</a>
 						<a ng-click="navigation.signin()" ng-if="!account.user.id_user">Log In</a>
 						<a ng-click="signout.signout()" ng-if="account.user.id_user">Log Out</a>
+						<a ng-toggle="menudropdown" ng-show="debug()"><i class="fa fa-bug"></i></a>
 					</div>
 
 				</div>
