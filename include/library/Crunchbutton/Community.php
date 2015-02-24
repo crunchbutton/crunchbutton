@@ -708,6 +708,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			}
 
 			$close3rdParyDeliveryRestaurants = ( $has3rdPartyDeliveryRestaurantsOpen && !$hasDriverWorking );
+
 			if( $close3rdParyDeliveryRestaurants ){
 				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 				$id_admin = $admin->id_admin;
@@ -741,9 +742,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 				// Close the community
 				$this->is_auto_closed = 1;
-				// $this->close_3rd_party_delivery_restaurants = 1;
-				// $this->close_3rd_party_delivery_restaurants_id_admin = $id_admin;
-				$this->close_3rd_party_delivery_restaurants_note = $message;
+				$this->driver_restaurant_name = $message;
 				$this->save();
 
 				$ticket = 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";
