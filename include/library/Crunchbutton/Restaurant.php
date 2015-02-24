@@ -1111,7 +1111,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 
 			// To make sure it will be ignored at cockpit
-			$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+			$isCockpit = Crunchbutton_Util::isCockpit();;
 			if( $isCockpit ){
 				$ignore[ 'delivery_service_markup_prices' ] = true;
 			}
@@ -1170,7 +1170,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_notifications'][$notification->id_notification] = $notification->exports();
 			}
 		}
-
+		$isCockpit = Crunchbutton_Util::isCockpit();;
 		if( $isCockpit ){
 			foreach ($this->hours() as $hours) {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
@@ -1720,7 +1720,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	// return the restaurant's hours
 	public function hours( $gmt = false ) {
 
-		$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false ) || ( strpos( $_SERVER['HTTP_HOST'], 'dev' ) !== false )  ) ? true : false;
+		$isCockpit = Crunchbutton_Util::isCockpit();;
 		if( !$isCockpit ){
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);
@@ -1779,6 +1779,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$allThirdPartyDeliveryRestaurantsClosed = $community->allThirdPartyDeliveryRestaurantsClosed();
 				if( !$closed_message && $this->delivery_service && $allThirdPartyDeliveryRestaurantsClosed ){
 					$closed_message = $community->close_3rd_party_delivery_restaurants_note;
+				}
+				if( !$closed_message && $this->delivery_service && $community->is_auto_closed ){
+					$closed_message = $community->driver_restaurant_name;
 				}
 			}
 
@@ -1979,4 +1982,5 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
+
 }

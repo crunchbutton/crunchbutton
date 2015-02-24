@@ -14,7 +14,6 @@ class Cana_Util extends Cana_Model {
 		return trim($v);
 	}
 
-
 	public static function avsort(&$array, $key, $reverse = false, $function = 'strcasecmp') {
 		if (is_array($array))
 			foreach ($array as $item)

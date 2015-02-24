@@ -1,6 +1,14 @@
 <?php
 
 class Crunchbutton_Util extends Cana_Model {
+
+	public static function isCockpit(){
+		return ( $_REQUEST[ 'cockpit' ] ||
+						( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ||
+						( strpos( $_SERVER['HTTP_HOST'], 'dev.la' ) !== false )  ||
+						( strpos( $_SERVER['HTTP_HOST'], 'dev.pit' ) !== false ) ) ? true : false;
+	}
+
 	public function frontendTemplates($export = false) {
 		$files = [];
 
