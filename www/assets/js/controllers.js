@@ -1,11 +1,20 @@
 /**
  * splash page
  */
-NGApp.controller('DownloadCtrl', function ($scope, $http) {
+NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService) {
+	if (App.isAndroid()) {
+		$scope.downloadLink = 'https://play.google.com/store/apps/details?id=com.crunchbutton';
+	} else {
+		$scope.downloadLink = 'https://itunes.apple.com/app/id721780390';
+	}
+
 	$scope.text = {
 		number: '',
 		sent: false,
 		send: function() {
+			if (AccountService.user.phone && !$scope.text.number) {
+				$scope.text.number = AccountService.user.phone;
+			}
 			$http.post(App.service + 'download?num=' + $scope.text.number.replace(/-/g,''));
 			$scope.text.sent = true;
 		}
