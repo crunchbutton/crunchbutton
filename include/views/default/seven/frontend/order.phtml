@@ -36,7 +36,9 @@
 
 			<div class="divider dots spacer-two-two"></div>
 			<div class="content-padding order-buttons">
-				<p>Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>.</p>
+				<p>Create an account to reorder your favorite food anywhere, including
+					<span ng-if="isPhoneGap"><a href target="_system">crunchbutton.com</a> on your desktop.</span>
+					our <span ng-if="!isPhoneGap"><a href="/download">iOS and Android apps</a>.</p>
 				<br>
 				<div class="button-pushable">
 					<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
