@@ -1052,7 +1052,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	/**
 	 * Returns an array with all the information for a Restaurant.
 	 *
-	 * This is usualy used to JSON encode and send to the browser
+	 * This is usually used to JSON encode and send to the browser
 	 *
 	 * @param array $ignore An indexed array of what items not to ad to the export array
 	 * @param array $where  Adds a layer to filter the SQL WHERE statements
