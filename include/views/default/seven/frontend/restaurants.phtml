@@ -1,65 +1,79 @@
 <div class="top-pad"></div>
 
-<div class="restaurants-bubble-wrap">
-	<div ng-if="!image">
-		<div ng-if="!allClosed">
-			<div class="bubble-tail bubble-tail-green bubble-animated">
-				<div class="text" ng-switch="pushMessage">
-					<span ng-switch-when="1">We choose<br>the best food...</span>
-					<span ng-switch-when="2">From the best restaurants...</span>
-					<span ng-switch-when="3">So you don't<br> have to!</span>
-					<span ng-switch-when="4">Screw huge<br> menus!</span>
-					<span class="single-line" ng-switch-when="5">Screw gross food!!</span>
-					<span ng-switch-when="6">We only have awesome stuff!</span>
-					<span class="single-line" ng-switch-when="7">Got a suggestion?</span>
-					<span ng-switch-when="8">Want to work<br> for us?</span>
-					<span class="single-line" ng-switch-when="9">Send us a text!</span>
-					<span ng-switch-when="10">We are always looking for...</span>
-					<span ng-switch-when="11" class="single-line">Awesome people...</span>
-					<span class="single-line" ng-switch-when="12">And great food!</span>
-					<span class="single-line" ng-switch-when="13"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-					<span ng-switch-default class="restaurants-push-tagline"><b>Push a button</b><br>Get food delivered</span>
-				</div>
-				<div class="bubble-tail-spacer"></div>
-			</div>
-			<div class="restaurants-orange" ng-instant="pushMessage = (pushMessage > 12 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
-		</div>
-
-		<div ng-if="allClosed">
-			<div class="bubble-tail bubble-tail-green bubble-animated">
-				<div class="text" ng-switch="pushMessage">
-					<span ng-switch-when="2">There are no open restaurants</span>
-					<span ng-switch-when="3" class="small">Know of something awesome in your area?</span>
-					<span class="single-line" ng-switch-when="4">Send us a txt...</span>
-					<span class="single-line" ng-switch-when="5">And we'll add it!</span>
-					<span ng-switch-when="6">Don't stay hungry!</span>
-					<span class="single-line" ng-switch-when="7"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
-					<span ng-switch-default class="single-line">
-						<span ng-if="community_closed" class="small">
-							{{community_closed}}
-						</span>
-						<span ng-if="!community_closed">Wahhhhhh!!!&nbsp;&nbsp;&nbsp;&nbsp;</span>
-					</span>
-				</div>
-				<div class="bubble-tail-spacer"></div>
-			</div>
-			<div class="restaurants-orange restaurants-orange-sad" ng-instant="pushMessage = (pushMessage > 6 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
-		</div>
-
-		<div class="divider"></div>
-		<br>
-
-		<? /*
-		<div class="restaurants-tagline">
-			<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
-		</div>
-		*/?>
+<div class="restaurants-top-wrap content-padding">
+	<div class="restaurants-top-tag hide-mobile">
+		<h4 ng-bind-html-unsafe="slogan"></h4>
+		<p ng-bind-html-unsafe="tagline"></p>
+		<p><br>{{entered}} - <a href="/location">Change</a></p>
 	</div>
 
-	<div ng-show="image" class="community-image"></div>
+	<div class="restaurants-bubble-wrap">
+		<div ng-if="!image">
+			<div ng-if="!allClosed">
+				<div class="bubble-tail bubble-tail-green bubble-animated">
+					<div class="text" ng-switch="pushMessage">
+						<span ng-switch-when="1">We choose<br>the best food...</span>
+						<span ng-switch-when="2">From the best restaurants...</span>
+						<span ng-switch-when="3">So you don't<br> have to!</span>
+						<span ng-switch-when="4">Screw huge<br> menus!</span>
+						<span class="single-line" ng-switch-when="5">Screw gross food!!</span>
+						<span ng-switch-when="6">We only have awesome stuff!</span>
+						<span class="single-line" ng-switch-when="7">Got a suggestion?</span>
+						<span ng-switch-when="8">Want to work<br> for us?</span>
+						<span class="single-line" ng-switch-when="9">Send us a text!</span>
+						<span ng-switch-when="10">We are always looking for...</span>
+						<span ng-switch-when="11" class="single-line">Awesome people...</span>
+						<span class="single-line" ng-switch-when="12">And great food!</span>
+						<span class="single-line" ng-switch-when="13"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+						<span ng-switch-default class="restaurants-push-tagline">
+							<span class="hide-desktop"><b>Push a button</b><br>Get food delivered</span>
+							<span class="hide-mobile">Choose a <br><b>restaurant</b></span>
+						</span>
+						
+					</div>
+					<div class="bubble-tail-spacer"></div>
+				</div>
+				<div class="restaurants-orange" ng-instant="pushMessage = (pushMessage > 12 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
+			</div>
+
+			<div ng-if="allClosed">
+				<div class="bubble-tail bubble-tail-green bubble-animated">
+					<div class="text" ng-switch="pushMessage">
+						<span ng-switch-when="2">There are no open restaurants</span>
+						<span ng-switch-when="3" class="small">Know of something awesome in your area?</span>
+						<span class="single-line" ng-switch-when="4">Send us a txt...</span>
+						<span class="single-line" ng-switch-when="5">And we'll add it!</span>
+						<span ng-switch-when="6">Don't stay hungry!</span>
+						<span class="single-line" ng-switch-when="7"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
+						<span ng-switch-default class="single-line">
+							<span ng-if="community_closed" class="small">
+								{{community_closed}}
+							</span>
+							<span ng-if="!community_closed">Wahhhhhh!!!&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						</span>
+					</div>
+					<div class="bubble-tail-spacer"></div>
+				</div>
+				<div class="restaurants-orange restaurants-orange-sad" ng-instant="pushMessage = (pushMessage > 6 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
+			</div>
+
+			<div class="divider"></div>
+			<br>
+
+			<? /*
+			<div class="restaurants-tagline">
+				<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
+			</div>
+			*/?>
+		</div>
+
+		<div ng-show="image" class="community-image"></div>
 
 
+		<div class="divider"></div>
+	</div>
 	<div class="divider"></div>
+	
 </div>
 
 <div ng-if="restaurants">

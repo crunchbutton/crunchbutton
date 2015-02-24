@@ -19,7 +19,7 @@ body, .bg {
 ol, ul {
 	list-style: none;
 }
-b {
+b, strong {
 	font-weight: bold;
 }
 table {
@@ -1336,7 +1336,7 @@ p {
 .restaurants-bubble-wrap {
 	width: 30em;
 	margin: 0 auto;
-	margin-top: -10px;
+	margin-top: -20px;
 }
 .restaurants-bubble-wrap h1 {
 	line-height: 1.4em;
@@ -3686,10 +3686,6 @@ select {
 		max-width: 1024px;
 		margin: 0 auto;
 	}
-	.restaurants-bubble-wrap {
-		margin-bottom: 20px;
-		margin-top: 0;
-	}
 }
 
 /*Application form styles:*/
@@ -3929,6 +3925,20 @@ font-familt: "Museo Slab";
 		
 	}
 	.restaurant-pic-overlay {
+		display: none;
+	}
+	.restaurants-bubble-wrap {
+		margin-right:8em;
+		float: right;
+		margin-bottom: 5px;
+		margin-top: -10px;
+	}
+	.restaurants-top-tag {
+		margin-left: 2.6em;
+		margin-top: 1em;
+		float: left;
+	}
+	.restaurants-top-tag strong {
 		display: none;
 	}
 }
