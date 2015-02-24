@@ -2992,12 +2992,20 @@ transition: all 0.2s;
 }
 
 
-.app-store {
-	background: url(../images/micro/app-store.svg) no-repeat;
-	width: 16.9em;
+.app-store, .play-store {
+	width: 12.8em;
 	height: 5em;
 	background-size: 100%;
 	cursor: pointer;
+	display: inline-block;
+}
+.app-store {
+	background: url(../images/micro/app-store.svg) no-repeat;
+}
+
+.play-store {
+	background: url(../images/micro/google-play-store.svg) no-repeat;
+	margin-left: 1em;
 }
 
 
