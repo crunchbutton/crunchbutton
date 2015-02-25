@@ -27,15 +27,35 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	public function restaurantNextOpenTimeMessage( $restaurant, $utc = false ){
 		$nexOpen = Hour::restaurantNextOpenTime( $restaurant, $utc = false );
 		$day = new DateTime( 'now', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
-		$day->modify( '+ 1 day' );
-		$tomorrow = new DateTime( $day->format( 'Y-m-d' ) . '23:59:59', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
-		$isTomorrow = ( $nexOpen < $tomorrow );
 
-		return array(	'day' => $nexOpen->format( 'l' ), 
-									'hour' => intval( $nexOpen->format( 'h' ) ),
-									'min' => $nexOpen->format( 'i' ),
-									'tomorrow' => ( $isTomorrow ? 'Tomorrow' : false ),
-									'ampm' => strtoupper( $nexOpen->format( 'a' ) ) );
+		$tomorrow = new DateTime( $day->format( 'Y-m-d' ) . '23:59:59', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
+		$isToday = ( $nexOpen->format( 'YmdHis' ) < $tomorrow->format( 'YmdHis' ) );
+		$tomorrow->modify( '+ 1 day' );
+		$isTomorrow = ( !$isToday && $nexOpen->format( 'YmdHis' ) < $tomorrow->format( 'YmdHis' ) );
+
+		$message = 'Reopening ' . $nexOpen->format( 'g' );
+		if( $nexOpen->format( 'i' ) != '00' ){
+			$message .= ':' . $nexOpen->format( 'i' );
+		}
+		$message .= $nexOpen->format( 'A' );
+		if( $isToday ){
+			$message .= ' Today';
+		} else if( $isTomorrow ){
+			$message .= ' Tomorrow';
+		} else {
+			$message .= ' on ';
+			$message .= $nexOpen->format( 'D' );
+		}
+		$message .= '!';
+
+		$result = array(	'day' => $nexOpen->format( 'l' ),
+											'hour' => intval( $nexOpen->format( 'h' ) ),
+											'min' => $nexOpen->format( 'i' ),
+											'today' => ( $isToday ? 'Today' : false ),
+											'tomorrow' => ( $isTomorrow ? 'Tomorrow' : false ),
+											'ampm' => strtoupper( $nexOpen->format( 'a' ) ),
+											'message' => $message );
+		return $result;
 	}
 
 	public function restaurantNextOpenTime( $restaurant, $utc = false ){
@@ -64,7 +84,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$minutes = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
 			if( $minutes > 0 ){
 				return $minutes;
-			} 
+			}
 		}
 		return false;
 	}
@@ -77,7 +97,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$minutes = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
 			if( $minutes > 0 ){
 				return $minutes;
-			} 
+			}
 		}
 		return false;
 	}
@@ -100,10 +120,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 			if( $dt ){
 				$open  = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_open,  new DateTimeZone( $restaurant->timezone ) );
-				$close = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );	
+				$close = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );
 			} else {
 				$open  = new DateTime( 'today ' . $hour->time_open,  new DateTimeZone( $restaurant->timezone ) );
-				$close = new DateTime( 'today ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );	
+				$close = new DateTime( 'today ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );
 			}
 
 			// if closeTime before openTime, then closeTime should be for tomorrow
@@ -120,11 +140,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public function hoursOpenedByRestaurantWeekDay( $restaurant, $day ){
-		
+
 		$hours_opened = [];
 
 		$hours = Hour::getByRestaurantWeek( $restaurant, false );
-		$day = new DateTime( $day, new DateTimeZone( $restaurant->timezone ) );	
+		$day = new DateTime( $day, new DateTimeZone( $restaurant->timezone ) );
 
 		foreach ( $hours as $hour ) {
 			if( $hour->status == 'open' ){
@@ -147,7 +167,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					$to_hour = intval( explode( ':', $to[ 1 ] )[0] );
 					for( $i = $from_hour; $i <= $to_hour; $i++ ){
 						$hours_opened[ $i ]	= true;
-					}	
+					}
 				}
 			}
 		}
@@ -186,7 +206,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public function getRestaurantRegularPlusHolidayHours( $restaurant ){
-		
+
 		// Get the restaurant's regular hours
 		$hours = $restaurant->hours();
 
@@ -213,7 +233,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		$sd = is_null($sd) ? new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) ) : $sd;
 
 		$getDay = clone $sd;
-		
+
 
 		// step back two days
 		$getDay->modify( '-2 day' );
@@ -240,9 +260,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 					$diff_before = Util::intervalToSeconds( $start->diff( $end ) );
 
-					// Convert to UTC/UTC case it is needed 
+					// Convert to UTC/UTC case it is needed
 					if( $utc ){
-						$start->setTimezone( new DateTimeZone( 'UTC' ) );	
+						$start->setTimezone( new DateTimeZone( 'UTC' ) );
 						$end->setTimezone( new DateTimeZone( 'UTC' ) );
 					}
 
@@ -270,9 +290,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					if( $times[ 'notes' ] ){
 						$data[ 'notes' ] = $times[ 'notes' ];
 					}
-					$_hours_utc[] = ( object ) $data;	
+					$_hours_utc[] = ( object ) $data;
 				}
-			}			
+			}
 		}
 
 		if( $next24hours ){
@@ -284,13 +304,13 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			// less 5 minutes to compensate the javascript at frontend
 			// without this 5 minutes it could export the hours starting at the minute 8 and at javascript it is at the minute 7:40 - it would show the wrongly closed message
 			$now->modify( '-5 minutes' );
-			
+
 			$now_plus_24 = clone $sd;
 			$now_plus_24->modify( '+1 day' );
 			$now_plus_24->modify( '-5 minutes' );
 
 			foreach ( $_hours_utc as $hour ) {
-				
+
 				$data = false;
 
 				$from = new DateTime( $hour->from, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
@@ -299,7 +319,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				// case 1
 				if( $from <= $now && $to <= $now_plus_24 && $to > $now ){
 					$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $hour->to );
-				} 
+				}
 				// case 2
 				else if( $from <= $now && $to >= $now_plus_24 ){
 					$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
@@ -329,12 +349,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			// Return the whole week
 			return $_hours_utc;
 		}
-		
+
 	}
 
 	// Legacy method
 	public function hoursStartingMondayUTC( $hours ){
-		
+
 		if( count( $hours ) == 0 ){
 			return $hours;
 		}
@@ -370,7 +390,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		foreach( $_hours_utc as $day => $segments ){
 
 			foreach( $segments as $times ){
-				
+
 				$open_dayshours = array_search( $times[ 'open_day' ], $weekdays ) * 2400;
 				$close_dayshours = array_search( $times[ 'close_day' ], $weekdays ) * 2400;
 				preg_match( '/(\d+):(\d+)/', $times[ 'open' ], $hour_open );
@@ -386,7 +406,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					$hour_close = ( $hour_close - 16800 );
 					$_hours[] = [ 'open' => $hour_open, 'close' => 16800 ];
 					if( $hour_close != '0' ){
-						$_hours[] = [ 'open' => 0, 'close' => $hour_close ];	
+						$_hours[] = [ 'open' => 0, 'close' => $hour_close ];
 					}
 				} else {
 					$_hours[] = [ 'open' => $hour_open, 'close' => $hour_close ];
@@ -396,12 +416,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 		$_hours = Cana_Util::sort_col( $_hours, 'open' );
 
-		// Merge the regular hours 
+		// Merge the regular hours
 		foreach( $_hours as $key => $val ){
 			$getNext = false;
 			foreach( $_hours as $keyNext => $valNext ){
 				if( $getNext ){
-					if( $_hours[ $keyNext ][ 'open' ] <= $_hours[ $key ][ 'close' ] 
+					if( $_hours[ $keyNext ][ 'open' ] <= $_hours[ $key ][ 'close' ]
 							&& $_hours[ $keyNext ][ 'close' ] - $_hours[ $key ][ 'open' ] < 3600 ) {
 						$_hours[ $key ][ 'close' ] = $_hours[ $keyNext ][ 'close' ];
 						unset( $_hours[ $keyNext ] );
@@ -427,7 +447,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		}
 
 		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
-		
+
 		// Convert to hours starting at monday - it is easy to merge -- example a time like 234 indicating 2:34 AM
 		$hoursStartFinish = [];
 		foreach( $hours as $day => $segments ){
@@ -448,13 +468,13 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Get the monday and sunday of the current week
 		$monday = date( 'Y-m-d', strtotime( 'monday this week' ) );
 		$sunday = date( 'Y-m-d', strtotime( 'sunday this week' ) );
-		
+
 		// Get the hollidays of the current week
-		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override 
-																															WHERE id_restaurant = {$restaurant->id_restaurant} 
+		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override
+																															WHERE id_restaurant = {$restaurant->id_restaurant}
 																															AND (
 																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$monday}' AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$sunday}' )
-																															OR 
+																															OR
 																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) < '{$monday}' AND DATE_FORMAT( date_end, '%Y-%m-%d' ) > '{$monday}' )	) " );
 		$hoursStartFinishOverrideClose = [];
 		if( $overrides->count() ){
@@ -463,7 +483,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 				$monday = new DateTime( date( 'Y-m-d H:i:s', strtotime( 'monday this week' ) ), new DateTimeZone( $restaurant->timezone ) );
 				$date_start = new DateTime( $override->date_start, new DateTimeZone( $restaurant->timezone ) );
-				
+
 				// Limit the override to this week
 				if( $date_start < $monday ){
 					$date_start = $monday;
@@ -482,7 +502,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 				$hour_close = ( $dayshours + intval( $date_end->format( 'H' ) ) * 100 ) + intval( $date_end->format( 'i' ) );
 				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
-					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close, '_start' => $date_start->format( 'Y-m-d H:i:s' ), '_data_end' => $date_end->format( 'Y-m-d H:i:s' ), 'notes' => $override->notes ];	
+					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close, '_start' => $date_start->format( 'Y-m-d H:i:s' ), '_data_end' => $date_end->format( 'Y-m-d H:i:s' ), 'notes' => $override->notes ];
 				} else if( $override->type == 'open' ){
 					// Merge the override open hours at the open/close array
 					$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
@@ -493,13 +513,13 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Sort the hours
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
 
-		// Merge the regular hours 
+		// Merge the regular hours
 		// this foreach returns a array with the hours merged like: [ [ 'open' => 100, 'close' => 2300 ], [ 'open' => 3830, 'close' => 5050 ] ]
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
 			foreach( $hoursStartFinish as $keyNext => $valNext ){
 				if( $getNext ){
-					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ] 
+					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ]
 							&& $hoursStartFinish[ $keyNext ][ 'close' ] - $hoursStartFinish[ $key ][ 'open' ] < 3600 ) {
 						$hoursStartFinish[ $key ][ 'close' ] = $hoursStartFinish[ $keyNext ][ 'close' ];
 						unset( $hoursStartFinish[ $keyNext ] );
@@ -529,7 +549,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				// case 2
 				if( $force_close_start > $regular_start && $force_close_end < $regular_end ){
 					$hoursStartFinish[ $keyOpen ][ 'close' ] = Cana_Util::sum_minutes( $force_close_start, 1 );
-					$hoursStartFinish[] = [ 'open' => Cana_Util::sum_minutes( $force_close_end, 1 ), 'close' => $regular_end ];	
+					$hoursStartFinish[] = [ 'open' => Cana_Util::sum_minutes( $force_close_end, 1 ), 'close' => $regular_end ];
 				} else
 				// case 3
 				if( $force_close_start <= $regular_start && $force_close_end <= $regular_end && $force_close_end > $regular_start ){
@@ -554,7 +574,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$getNext = false;
 			foreach( $hoursStartFinish as $keyNext => $valNext ){
 				if( $getNext ){
-					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ] 
+					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ]
 							&& $hoursStartFinish[ $keyNext ][ 'close' ] - $hoursStartFinish[ $key ][ 'open' ] < 3600 ) {
 						$hoursStartFinish[ $key ][ 'close' ] = $hoursStartFinish[ $keyNext ][ 'close' ];
 						unset( $hoursStartFinish[ $keyNext ] );
@@ -579,7 +599,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				if( $hour[ 'open' ] != $last_close ){
 					$_to = Cana_Util::subtract_minutes( $hour[ 'open' ], 1 );
 					$_from = Cana_Util::sum_minutes( $last_close, 1 );
-					$_hours[] = array( 'from' => $_from , 'to' => $_to, 'status' => 'close' );						
+					$_hours[] = array( 'from' => $_from , 'to' => $_to, 'status' => 'close' );
 				}
 			}
 			$last_close = $hour[ 'close' ];
@@ -589,7 +609,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// check if it is closing at 16800 -- sunday 24:00
 		if( $last_close && $last_close < 16800 ){
 			$_from = Cana_Util::sum_minutes( $last_close, 1 );
-			$_hours[] = array( 'from' => $_from , 'to' => 16800, 'status' => 'close' );	
+			$_hours[] = array( 'from' => $_from , 'to' => 16800, 'status' => 'close' );
 		}
 
 		// Put the closed message notes
@@ -626,9 +646,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					$close = $atSundayItWillClose;
 				}
 				if( !$hours[ $weekday ] ){
-					$hours[ $weekday ] = [];        
+					$hours[ $weekday ] = [];
 				}
-				$hours[ $weekday ][] = array( Cana_Util::format_time( $open ), Cana_Util::format_time( $close ) );        
+				$hours[ $weekday ][] = array( Cana_Util::format_time( $open ), Cana_Util::format_time( $close ) );
 			}
 			return $hours;
 		}
@@ -659,12 +679,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				$to = $atSundayItWillClose;
 			}
 
-			$data = array( 'from' => Cana_Util::format_time( $from ), 'to' => Cana_Util::format_time( $to ), 'status' => $status, 'to_days' => $to_days );	
+			$data = array( 'from' => Cana_Util::format_time( $from ), 'to' => Cana_Util::format_time( $to ), 'status' => $status, 'to_days' => $to_days );
 			if( $notes ){
 				$data[ 'notes' ] = $notes;
 			}
 			if( !$hours[ $weekday ] ){
-				$hours[ $weekday ] = [];	
+				$hours[ $weekday ] = [];
 			}
 			$hours[ $weekday ][] = $data;
 		}
@@ -699,7 +719,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public function restaurantClosedMessage( $restaurant ){
-		
+
 		$_hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
 
 		// Remove the closes status
@@ -711,7 +731,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 			// re-index the array
 			$_hours[ $day ] = array_values( $_hours[ $day ] );
-		}	
+		}
 		// remove the days without hours
 		foreach ( $_hours as $day => $hours ) {
 			if( count( $hours ) == 0 ){
@@ -728,7 +748,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				if( $index == 0 ){
 					$index_prev = count( $weekdays ) - 1;
 				} else if( $index == ( count( $weekdays ) - 1 ) ){
-					$index_prev = 0;	
+					$index_prev = 0;
 				} else {
 					$index_prev--;
 				}
@@ -756,7 +776,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				$segments[] = $from . ' - ' . $to;
 			}
 			$_partial[ $day ] = join( ', ', $segments );
-		}	
+		}
 
 		$_group = [];
 		// Group the days with the same hour
@@ -792,10 +812,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$_sequence_index++;
 					}
 				} else {
-					$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );	
+					$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
 				}
 
-				$nextShouldBe = ( ( $index + 1 ) < ( count( $weekdays ) ) ) ? ( $index + 1 ) : 0; 
+				$nextShouldBe = ( ( $index + 1 ) < ( count( $weekdays ) ) ) ? ( $index + 1 ) : 0;
 			}
 			$_sequences = [];
 			foreach ( $_in_sequences as $key => $value ) {
@@ -807,10 +827,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				$data = [];
 				$keys = array_keys( $_in_sequences[ $key ] );
 				$_sequences[ array_shift( $_in_sequences[ $key ] ) ] = ucfirst( array_shift( $keys ) ) . $separator . ucfirst( array_pop( $keys ) );
-			}	
+			}
 			foreach ( $_no_sequences as $key => $value ) {
 				$_sequences[ $_no_sequences[ $key ] ] = ucfirst( $key );
-			}	
+			}
 			ksort( $_sequences );
 			$_group[ $hours ] = join( ', ', $_sequences );
 		}
@@ -819,7 +839,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Organize the messy
 		foreach( $_group as $hours => $days ){
 			if( trim( $hours ) != '' ){
-				$_organized[] = $days . ': ' . $hours;	
+				$_organized[] = $days . ': ' . $hours;
 			}
 		}
 		return join( ' <br/> ', $_organized );

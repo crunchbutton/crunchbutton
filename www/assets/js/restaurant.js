@@ -112,8 +112,10 @@ var Restaurant = function(id) {
 			if( tag == 'opening' ){
 				if( ( self._opensIn && self._opensIn_formatted != '' ) || force ){
 					self._tag = tag;
+					self._nextOpenTag();
 				} else {
 					self._tag = 'closed';
+					self._nextOpenTag();
 				}
 			} else {
 				self._tag = tag;
@@ -125,8 +127,10 @@ var Restaurant = function(id) {
 		// Add the tags
 		if( !self._open ){
 			self._tag = 'closed';
+			self._nextOpenTag();
 			if( self._closedDueTo ){
 				self._tag = 'force_close';
+				self._nextOpenTag();
 			}
 		}
 		if( self._open && self._closesIn !== 'false' && self._closesIn !== false && self._closesIn <= 15 ){
@@ -135,12 +139,19 @@ var Restaurant = function(id) {
 		// if the restaurant does not have a closed message it has no hours for the week
 		if( self.closed_message == '' ){
 			self._tag = 'force_close';
+			self._nextOpenTag();
 		}
 		// if it has not tag, check if it is takeout only
 		if( self._tag == '' ){
 			if( self.takeout == '1' && self.delivery != '1' ){
 				self._tag = 'takeout';
 			}
+		}
+	}
+
+	self._nextOpenTag = function(){
+		if( self.next_open_time_message && self.next_open_time_message.message ){
+			self._tag = 'next_open';
 		}
 	}
 
@@ -219,6 +230,7 @@ var Restaurant = function(id) {
 		} else {
 			// if it doesn't have hours it is forced to be closed
 			self._tag = 'force_close';
+			self._nextOpenTag();
 			self._closedDueTo = ( self._community_closed ? self._community_closed : ' ' ); // There is no reason, leave it blank
 		}
 	}
