@@ -76,6 +76,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	var resetData = function () {
 		$scope.loadedChartTypes = {};
 		$scope.chartData = {};
+		$scope.combinedChartData = {};
 	};
 	var timer = null;
 	var refreshOnTimer = function () {
