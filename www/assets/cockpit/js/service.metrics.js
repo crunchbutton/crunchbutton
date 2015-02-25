@@ -8,6 +8,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 	var log_info = 'info' in console ? console.info : console.log;
 	var log_warn = 'warn' in console ? console.warn : console.log;
 	var log_error = 'error' in console ? console.error : console.log;
+	var ALL_COMMUNITIES_SELECTED = 'all';
 	var relativeTimeRegex = /[1-9][0-9]*hmdMsw$/;
 	// validateTime checks that time matches expectations and can be sent to backend
 	// Formats:
@@ -345,23 +346,32 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 	};
 	service.deserializeDate = function (s) { if (s) { return moment(s); } };
-	service.serializeSettings = function (settings, communityMap) {
+	service.serializeSettings = function (settings, communityMap, availableCommunities) {
 		var serializable = {};
 		var communities = [];
 		serializable.charts = service.serializeChartOptions(settings.charts);
 		['start', 'end'].forEach(function (k) { serializable[k] = service.serializeDate(settings[k]); });
 		['separateCharts', 'period'].forEach(function (k) { serializable[k] = settings[k]; });
 		eachKV(communityMap, function (cID, comm) { if (comm.selected) { communities.push(cID); } });
-		serializable.communities = communities;
+		// if they haven't explicitly chosen communities, we want to make sure that new communities get added in each time
+		if (communities.length === Object.keys(availableCommunities).length) {
+			serializable.communities = ALL_COMMUNITIES_SELECTED;
+		} else {
+			serializable.communities = communities;
+		}
 		return serializable;
 	};
-	service.deserializeSettings = function (serialized) {
+	service.deserializeSettings = function (serialized, availableCommunities) {
     var out = {};
 		['start', 'end'].forEach(function (k) { if (serialized[k]) { out[k] = service.deserializeDate(serialized[k]); }});
 		['period'].forEach(function (k) { if (serialized[k]) { out[k] = serialized[k]; }});
 		['separateCharts'].forEach(function (k) { if (serialized[k]) { out[k] = (serialized[k] === "true" || serialized[k] === true); } });
 		out.charts = service.deserializeChartOptions(serialized.charts) || [];
-		out.communities = serialized.communities;
+		if (serialized.communities === ALL_COMMUNITIES_SELECTED) {
+			out.communities = Object.keys(availableCommunities).map(function (comm) { return comm.id_community; });
+		} else {
+			out.communities = serialized.communities;
+		}
 		return out;
 	};
 

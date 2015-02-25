@@ -64,7 +64,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	// TODO: Figure out how to hide startDate better!
 	$scope.persistenceString = '';
 	$scope.updatePersistenceString = function () {
-		$scope.persistenceString = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities);
+		$scope.persistenceString = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities, $scope.allowedCommunities);
 	};
 	var defaultOptions = {
 		communities: 'active',
