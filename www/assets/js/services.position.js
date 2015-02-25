@@ -304,7 +304,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							function () {
 								service.loadRestaurantsPage = true;
 								if (App.page == 'location') {
-									App.go( '/food-delivery');
+									// #4911
+									//App.go( '/food-delivery');
 								}
 							},
 							// Error
@@ -348,7 +349,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					function () {
 						service.loadRestaurantsPage = true;
 						if (App.page == 'location') {
-							App.go( '/food-delivery');
+							// #4911
+							//App.go( '/food-delivery');
 						}
 					},
 					// Error
@@ -373,7 +375,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							function () {
 								service.loadRestaurantsPage = true;
 								if (App.page == 'location') {
-									App.go( '/food-delivery');
+									// #4911
+									//App.go( '/food-delivery');
 								}
 							},
 							function () {
