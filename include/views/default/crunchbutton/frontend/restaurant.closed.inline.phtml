@@ -23,10 +23,10 @@
 				<span ng-if="!restaurant.delivery">Pickup is usually available during the following hours</span>
 			</span>
 			<span ng-if="restaurant.open_for_business != '0'">
-				<span ng-if="restaurant.delivery">Delivery is available during the following hours</span>
+				<span ng-if="restaurant.delivery">Delivery will be available:</span>
 				<span ng-if="!restaurant.delivery">It will be open during the following hours</span>
 			</span>
-			&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):<br> 
+<!--			&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):--><br>
 			<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
 		</span>
 	</div>
