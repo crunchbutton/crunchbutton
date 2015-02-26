@@ -101,6 +101,14 @@
 	animation-name: $name;
 }
 
+@mixin animation-delay ($delay) {
+	-webkit-animation-delay: $delay;
+	-moz-animation-delay: $delay;
+	-ms-animation-delay: $delay;
+	-o-animation-delay: $delay;
+	animation-delay: $delay;
+}
+
 @mixin animation-iteration-count ($count) {
 	-webkit-animation-iteration-count: $count;
 	-moz-animation-iteration-count: $count;
