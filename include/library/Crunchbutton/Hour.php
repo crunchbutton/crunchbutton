@@ -33,7 +33,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		$tomorrow->modify( '+ 1 day' );
 		$isTomorrow = ( !$isToday && $nexOpen->format( 'YmdHis' ) < $tomorrow->format( 'YmdHis' ) );
 
-		$message = 'Reopening ' . $nexOpen->format( 'g' );
+		$message = 'Available at ' . $nexOpen->format( 'g' );
 		if( $nexOpen->format( 'i' ) != '00' ){
 			$message .= ':' . $nexOpen->format( 'i' );
 		}
