@@ -42,6 +42,11 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     	if (!$scope.apply.university) {
     		$scope.errors.university = true;
     	}
+		if ($scope.apply.university == 'Other') {
+			if (!$scope.apply.otherUniversity){
+				$scope.errors.otherUniversity = true;
+			}
+		}
     	if (!$scope.apply.number) {
     		$scope.errors.number = true;
     	}
@@ -105,6 +110,11 @@ NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $locati
 		}
 		if (!$scope.apply.university) {
 			$scope.errors.university = true;
+		}
+		if ($scope.apply.university == 'Other') {
+			if (!$scope.apply.otherUniversity){
+				$scope.errors.otherUniversity = true;
+			}
 		}
 		if (!$scope.apply.number) {
 			$scope.errors.number = true;

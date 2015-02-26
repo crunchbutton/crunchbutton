@@ -43,11 +43,13 @@
 			<h4><span class="form-required">*</span> What school are you near?</h4>
 			
 			<div class="textbox">
-				<div ng-if="errors.university">Please enter your nearest school:</div>
+				<div ng-if="errors.university || errors.otherUniversity">Please enter your nearest school:</div>
 				<select class="form-control form-control-large form-control form-control-select" ng-model="apply.university" name="university" >
 					<option></option> 
 					<option ng-repeat="community in communities | orderBy: 'name'" value="{{community.name}}">{{community.name}}</option>
-					<option value="Other">Other</option>
+					<option ng-model="apply.university" value="Other">Other</option>
+					<input ng-click="apply.source='otherU'" ng-if="apply.university=='Other'" class="form-control form-control-small" type="text" ng-model="apply.otherUniversity" name="otherUniversity">
+
 				</select>
 			</div>
 		</div>
