@@ -3,19 +3,19 @@
 <div class="content-padding">
 	<h1 class="title"><i class="fa fa-bar-chart"></i>Metrics<div class="title-loader" ng-if="loading"></h1>
 	<div class="box-content2">
-		<form ng-submit='refreshData()'>
+		<form>
 			<div class="ul-inputs">
 			<div>
 				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' ng-model='settings.start' ng-change='needsRefresh=1'></span>
 				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' ng-model='settings.end' ng-change='needsRefresh=1'></span>
-				<button name='refresh' ng-click='refreshData()'><i class="fa fa-refresh"></i></button>
+				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh"></i></button>
 			</div>
 			<div class="label">Communities:</div>
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
 				on-item-click='orderSelectedCommunities()'
 				on-cose='orderSelectedCommunities()'
 				max-labels='3' style='height:10px'></div>
-			<div class="label">Period</div><div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData()'></select></div>
+			<div class="label">Period</div><div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
 			<div class="label">Manage Charts</div>
 			<button name='addChart' ng-click='addChart()'>Add Chart&nbsp;<i class="fa fa-lg fa-plus"></i></button>
 			<table>

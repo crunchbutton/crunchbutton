@@ -81,11 +81,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.combinedChartData = {};
 	};
 	var timer = null;
-	var refreshOnTimer = function () {
+	var refreshOnTimer = function (reason) {
 		if (timer) {
 			$timeout.cancel(timer);
 		}
-		timer = $timeout($scope.refreshData, 1000);
+		timer = $timeout(function () { $scope.refreshData('timed ' + reason); }, 1000);
 	};
 	$scope.unselectAllCommunities = function () {
 		console.log('unselect ALL communities');
@@ -94,8 +94,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	};
 	// TODO: Figure out how to avoid the multiple refreshes here!
 	resetData();
-	$scope.refreshData = function () {
-		console.log('REFRESH DATA');
+	$scope.refreshData = function (reason) {
+		console.info('REFRESH DATA BECAUSE OF: ', reason);
 		resetData();
 		// make sure we don't double refresh
 		$timeout.cancel(timer);
@@ -294,9 +294,9 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$http.get(App.service + 'metrics/available').success(function (data) {
 		$scope.availableCharts = {};
 		data.map(function (e) { $scope.availableCharts[e.type] = e; });
-		console.log('got available charts: ', data);
+		// console.log('got available charts: ', data);
 		if ($scope.orderedCommunities) {
-			$scope.refreshData();
+			$scope.refreshData('got available charts');
 		}
 	}).error(function (err) {
 		$scope.availableCharts = {};
