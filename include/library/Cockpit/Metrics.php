@@ -189,7 +189,7 @@ class _MetricsDateHelper {
 		} else {
 			$seconds = 59;
 		}
-		$date = $date->setTime($date->format('H'), $date->format('m'), $seconds);
+		$date = $date->setTime($date->format('H'), $date->format('i'), $seconds);
 		return _MetricsDateHelper::_modifyByPeriod($date, $n, 'minute');
 	}
 	public static function _modifyHours($date, $n, $atStart) {

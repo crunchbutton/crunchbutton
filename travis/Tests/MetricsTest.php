@@ -13,6 +13,7 @@
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('h', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:00:00'));
 			$this->assertEquals(Cockpit_Metrics::endOfPeriod('h', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:59:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('m', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:22:00'));
+			$this->assertEquals(Cockpit_Metrics::endOfPeriod('m', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:22:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('M', $complexEnd), date_create_from_format($complexFormat, '2015-08-01 00:00:00'));
 			$this->assertEquals(Cockpit_Metrics::endOfPeriod('M', $complexEnd), date_create_from_format($complexFormat, '2015-08-31 23:59:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('W', $complexEnd), date_create_from_format($complexFormat, '2015-08-02 00:00:00'));
