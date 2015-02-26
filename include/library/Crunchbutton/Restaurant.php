@@ -124,8 +124,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return Cana_Iterator
 	 */
 	public function community() {
-		$communities = $this->communities();
-		return $communities;
+		if( !$this->_communities ){
+			$this->_communities = $this->communities();
+		}
+		return $this->_communities;
 	}
 
 	public function communityNames(){
@@ -1063,6 +1065,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
 
+		$isCockpit = Crunchbutton_Util::isCockpit();;
+
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
@@ -1080,7 +1084,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// See - #4250
-		if( !$isAdmin ){
+		if( !$isCockpit ){
 			$thirdPartyClosed = false;
 			if( strrpos( $this->permalink, 'drive-' ) !== false && $community && $community->get( 0 ) ){
 				$thirdPartyClosed = $community->get( 0 )->allThirdPartyDeliveryRestaurantsClosed();
@@ -1089,7 +1093,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 			}
 		}
-
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
@@ -1111,7 +1114,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 
 			// To make sure it will be ignored at cockpit
-			$isCockpit = Crunchbutton_Util::isCockpit();;
 			if( $isCockpit ){
 				$ignore[ 'delivery_service_markup_prices' ] = true;
 			}
@@ -1170,7 +1172,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_notifications'][$notification->id_notification] = $notification->exports();
 			}
 		}
-		$isCockpit = Crunchbutton_Util::isCockpit();;
+// remove this @@@
+		$isCockpit = false;
 		if( $isCockpit ){
 			foreach ($this->hours() as $hours) {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
@@ -1249,6 +1252,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$price = floatval( $price[ 0 ] . '.' . $cents );
 		}
 		return $price;
+	}
+
+	public function assignedShiftHours(){
+		$community = $this->community()->get( 0 );
+		if( $community->id_community ){
+			return $community->assignedShiftHours();
+		}
+		return false;
+	}
+
+	public function isCommunityAutoClosed(){
+		$community = $this->community()->get( 0 );
+		if( $community->id_community && $community->isAutoClosed() ){
+			return true;
+		}
+		return false;
 	}
 
 	public function hasDeliveryService(){
@@ -1720,7 +1739,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	// return the restaurant's hours
 	public function hours( $gmt = false ) {
 
-		$isCockpit = Crunchbutton_Util::isCockpit();;
+		$isCockpit = Crunchbutton_Util::isCockpit();
 		if( !$isCockpit ){
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);

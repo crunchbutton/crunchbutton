@@ -171,11 +171,8 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				}
 			}
 		}
-
 		return $hours_opened;
-
 	}
-
 
 	public function hoursByRestaurant( $restaurant, $gmt = false ){
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
@@ -207,16 +204,33 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public function getRestaurantRegularPlusHolidayHours( $restaurant ){
 
-		// Get the restaurant's regular hours
-		$hours = $restaurant->hours();
+		// If the restaurant is 3rd party delivery and the community is auto close
+		// due to it has no driver get the commuinity shift hours
+		if( $restaurant->delivery_service && $restaurant->isCommunityAutoClosed() ){
+			$hours = $restaurant->assignedShiftHours();
+		} else {
+			// Get the restaurant's regular hours
+			$hours = $restaurant->hours();
+		}
 
 		// empty array to store the merged hours
 		$_hours = [];
 
 		// Convert the hours to a simple array
-		foreach ( $hours as $hour ) {
-			$_hours[ $hour->day ][] = [ $hour->time_open, $hour->time_close ];
+		if( $hours && count( $hours ) ){
+			foreach ( $hours as $hour ) {
+				if( !isset( $_hours[ trim( $hour->day ) ] ) ){
+					$_hours[ trim( $hour->day ) ] = [];
+				}
+				$_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
+			}
 		}
+
+		uksort( $_hours,
+			function( $a, $b ) {
+				$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+				return( $weekdays[ $a ] > $weekdays[ $b ] );
+			} );
 
 		// Merge the restaurant hours with the holidays
 		return Hour::mergeHolidays( $_hours, $restaurant );
@@ -434,9 +448,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 		}
 
-		// echo '<pre>'; var_dump( $_hours ); exit;
 		return $_hours;
-
 	}
 
 	// This method merge restaurant hours with the holidays

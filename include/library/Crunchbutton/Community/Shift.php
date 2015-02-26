@@ -937,6 +937,60 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 	}
 
+	// Return the assigned shifts for the next week
+	public function assignedShiftHours( $id_community ){
+
+		$hours = [];
+
+		$community = Crunchbutton_Community::o( $id_community );
+
+		if( $community->id_community ){
+
+			$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
+			$now->modify( '- 2 hours' );
+			$from = $now->format( 'Y-m-d' );
+			$now->modify( '+ 7 days' );
+			$to = $now->format( 'Y-m-d' );
+
+			$query = 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
+									INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+									WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $to . '" AND cs.id_community = "' . $community->id_community . '"';
+
+			$nextShifts = Crunchbutton_Community_Shift::q( $query );
+
+			foreach( $nextShifts as $shift ){
+
+				$start = $shift->dateStart();
+				$end = $shift->dateEnd();
+
+				$day = strtolower( $start->format( 'D' ) );
+				$time_open = $shift->dateStart()->format( 'H:i' );
+				$time_close = $shift->dateEnd()->format( 'H:i' );
+
+				$new_day = false;
+
+				if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) ){
+					$new_day = true;
+					$new_day_time_open = '00:01';
+					$new_day_time_close = $time_close;
+					$time_close = '23:59';
+				}
+
+				$hours[] = ( object )[ 	'day' => $day,
+																'time_open' => $time_open,
+																'time_close' => $time_close ];
+
+				if( $new_day ){
+					$hours[] = ( object )[ 	'day' => strtolower( $end->format( 'D' ) ),
+																	'time_open' => $new_day_time_open,
+																	'time_close' => $new_day_time_close ];
+				}
+
+			}
+		}
+		return $hours;
+	}
+
 	public function currentDriverShift( $id_admin ){
 		$admin = Admin::o( $id_admin );
 		$now = new DateTime( 'now', $admin->timezone() );
