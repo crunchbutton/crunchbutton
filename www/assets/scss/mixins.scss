@@ -1,30 +1,25 @@
+$engines: (-webkit-, -moz-, -o-, '');
 
-@mixin transform($transforms) {
-	-webkit-transform: $transforms;
-	-moz-transform: $transforms;
-	-ms-transform: $transforms;
-	-o-transform: $transforms;
-	transform: $transforms;
+@mixin transform($val) {
+	@each $engine in $engines {
+		#{$engine}transform: $val;
+	}
 }
 
-@mixin transform-origin($transforms) {
-	-webkit-transform-origin: $transforms;
-	-moz-transform-origin: $transforms;
-	-ms-transform-origin: $transforms;
-	-o-transform-origin: $transforms;
-	transform-origin: $transforms;
+@mixin transform-origin($val) {
+	@each $engine in $engines {
+		#{$engine}transform-origin: $val;
+	}
 }
 
 @mixin scale ($deg) {
 	@include transform(scale($deg));
 }
 
-@mixin transition($transition) {
-	-webkit-transition: $transition;
-	-moz-transition: $transition;
-	-ms-transition: $transition;
-	-o-transition: $transition;
-	transition: $transition;
+@mixin transition($val) {
+	@each $engine in $engines {
+		#{$engine}transition: $val;
+	}
 }
 
 @mixin appearance($appearance) {
@@ -33,12 +28,10 @@
 	appearance: $appearance;
 }
 
-@mixin text-size-adjust($size) {
-	-webkit-text-size-adjust: $size;
-	-moz-text-size-adjust: $size;
-	-ms-text-size-adjust: $size;
-	-o-text-size-adjust: $size;
-	text-size-adjust: $size;
+@mixin text-size-adjust($val) {
+	@each $engine in $engines {
+		#{$engine}text-size-adjust: $val;
+	}
 }
 
 @mixin noselect() {
@@ -55,12 +48,10 @@
 	@include transform(translate3d(0,0,0));
 }
 
-@mixin backface-visibility($visibility) {
-	-webkit-backface-visibility: $visibility;
-	-moz-backface-visibility: $visibility;
-	-ms-backface-visibility: $visibility;
-	-o-backface-visibility: $visibility;
-	backface-visibility: $visibility;
+@mixin backface-visibility($val) {
+	@each $engine in $engines {
+		#{$engine}backface-visibility: $val;
+	}
 }
 
 @mixin keyframes($name){
@@ -81,70 +72,50 @@
 	}
 }
 
-	
-	
-	
-	
 @mixin animation-duration($val) {
-	-webkit-animation-duration: $val;
-	-moz-animation-duration: $val;
-	-ms-animation-duration: $val;
-	-o-animation-duration: $val;
-	animation-duration: $val;
+	@each $engine in $engines {
+		#{$engine}animation-duration: $val;
+	}
 }
 
-@mixin animation-name ($name) {
-	-webkit-animation-name: $name;
-	-moz-animation-name: $name;
-	-ms-animation-name: $name;
-	-o-animation-name: $name;
-	animation-name: $name;
+@mixin animation-name ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-name: $val;
+	}
 }
 
-@mixin animation-delay ($delay) {
-	-webkit-animation-delay: $delay;
-	-moz-animation-delay: $delay;
-	-ms-animation-delay: $delay;
-	-o-animation-delay: $delay;
-	animation-delay: $delay;
+@mixin animation-delay ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-delay: $val;
+	}
 }
 
-@mixin animation-iteration-count ($count) {
-	-webkit-animation-iteration-count: $count;
-	-moz-animation-iteration-count: $count;
-	-ms-animation-iteration-count: $count;
-	-o-animation-iteration-count: $count;
-	animation-iteration-count: $count;
+@mixin animation-iteration-count ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-iteration-count: $val;
+	}
 }
 
-@mixin animation-timing-function ($fn) {
-	-webkit-animation-timing-function: $fn;
-	-moz-animation-timing-function: $fn;
-	-ms-animation-timing-function: $fn;
-	-o-animation-timing-function: $fn;
-	animation-timing-function: $fn;
+@mixin animation-timing-function ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-timing-function: $val;
+	}
 }
 
-@mixin animation($animation) {
-	-webkit-animation: $animation;
-	-moz-animation: $animation;
-	-ms-animation: $animation;
-	-o-animation: $animation;
-	animation: $animation;
+@mixin animation($val) {
+	@each $engine in $engines {
+		#{$engine}animation: $val;
+	}
 }
 
-@mixin box-sizing ($size) {
-	-webkit-box-sizing: $size;
-	-moz-box-sizing: $size;
-	-ms-box-sizing: $size;
-	-o-box-sizing: $size;
-	box-sizing: $size;
+@mixin box-sizing ($val) {
+	@each $engine in $engines {
+		#{$engine}box-sizing: $val;
+	}
 }
 
-@mixin box-shadow ($shadow) {
-	-webkit-box-shadow: $shadow;
-	-moz-box-shadow: $shadow;
-	-ms-box-shadow: $shadow;
-	-o-box-shadow: $shadow;
-	box-shadow: $shadow;
+@mixin box-shadow ($val) {
+	@each $engine in $engines {
+		#{$engine}box-shadow: $val;
+	}
 }
