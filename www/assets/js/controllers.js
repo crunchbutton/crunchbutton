@@ -42,6 +42,11 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     	if (!$scope.apply.university) {
     		$scope.errors.university = true;
     	}
+		if ($scope.apply.university == 'Other') {
+			if (!$scope.apply.otherUniversity){
+				$scope.errors.otherUniversity = true;
+			}
+		}
     	if (!$scope.apply.number) {
     		$scope.errors.number = true;
     	}
@@ -106,25 +111,13 @@ NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $locati
 		if (!$scope.apply.university) {
 			$scope.errors.university = true;
 		}
-		if (!$scope.apply.number) {
-			$scope.errors.number = true;
-		}
-		if (!$scope.apply.phone) {
-			$scope.errors.phone = true;
-		}
-		if (!$scope.apply.carrier) {
-			$scope.errors.carrier = true;
-		}
-		if ($scope.apply.carrier == 'Other') {
-			if (!$scope.apply.otherCarrier){
-				$scope.errors.otherCarrier = true;
+		if ($scope.apply.university == 'Other') {
+			if (!$scope.apply.otherUniversity){
+				$scope.errors.otherUniversity = true;
 			}
 		}
-		if (!$scope.apply.transport) {
-			$scope.errors.transport = true;
-		}
-		if (!$scope.apply.hours) {
-			$scope.errors.hours = true;
+		if (!$scope.apply.number) {
+			$scope.errors.number = true;
 		}
 		if (!$scope.apply.applicant) {
 			$scope.errors.applicant = true;
@@ -137,7 +130,6 @@ NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $locati
 				$scope.errors.otherSource = true;
 			}
 		}
-
 		if (jQuery.isEmptyObject($scope.errors)) {
 			ApplyService.post($scope.apply, function(data){
 				$location.path( '/thankyou' );

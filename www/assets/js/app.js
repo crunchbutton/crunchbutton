@@ -504,9 +504,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
+		App.page = MainNavigationService.page;
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
-		MainNavigationService.navStack.push($route.current.$$route.originalPath);
+		if ($route.current.$$route && $route.current.$$route.originalPath) {
+			MainNavigationService.navStack.push($route.current.$$route.originalPath);
+		}
 
 		if (App.isPhoneGap) {
 			if (cordova && cordova.plugins) {
