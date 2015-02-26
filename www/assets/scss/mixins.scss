@@ -1,0 +1,121 @@
+$engines: (-webkit-, -moz-, -ms-, -o-, '');
+
+@mixin transform($val) {
+	@each $engine in $engines {
+		#{$engine}transform: $val;
+	}
+}
+
+@mixin transform-origin($val) {
+	@each $engine in $engines {
+		#{$engine}transform-origin: $val;
+	}
+}
+
+@mixin scale ($deg) {
+	@include transform(scale($deg));
+}
+
+@mixin transition($val) {
+	@each $engine in $engines {
+		#{$engine}transition: $val;
+	}
+}
+
+@mixin appearance($appearance) {
+	-webkit-appearance: $appearance;
+	-moz-appearance: $appearance;
+	appearance: $appearance;
+}
+
+@mixin text-size-adjust($val) {
+	@each $engine in $engines {
+		#{$engine}text-size-adjust: $val;
+	}
+}
+
+@mixin noselect() {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+@mixin gpu() {
+	@include transform(translate3d(0,0,0));
+}
+
+@mixin backface-visibility($val) {
+	@each $engine in $engines {
+		#{$engine}backface-visibility: $val;
+	}
+}
+
+@mixin keyframes($name){
+	@-webkit-keyframes #{$name} {
+		@content;
+	}
+	@-moz-keyframes #{$name} {
+		@content;
+	}
+	@-ms-keyframes #{$name} {
+		@content;
+	}
+	@-o-keyframes #{$name} {
+		@content;
+	}
+	@keyframes #{$name} {
+		@content;
+	}
+}
+
+@mixin animation-duration($val) {
+	@each $engine in $engines {
+		#{$engine}animation-duration: $val;
+	}
+}
+
+@mixin animation-name ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-name: $val;
+	}
+}
+
+@mixin animation-delay ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-delay: $val;
+	}
+}
+
+@mixin animation-iteration-count ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-iteration-count: $val;
+	}
+}
+
+@mixin animation-timing-function ($val) {
+	@each $engine in $engines {
+		#{$engine}animation-timing-function: $val;
+	}
+}
+
+@mixin animation($val) {
+	@each $engine in $engines {
+		#{$engine}animation: $val;
+	}
+}
+
+@mixin box-sizing ($val) {
+	@each $engine in $engines {
+		#{$engine}box-sizing: $val;
+	}
+}
+
+@mixin box-shadow ($val) {
+	@each $engine in $engines {
+		#{$engine}box-shadow: $val;
+	}
+}

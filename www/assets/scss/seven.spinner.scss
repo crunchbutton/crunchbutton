@@ -1,26 +1,4 @@
 
-
-
-@mixin transform($transforms) {
-	-moz-transform: $transforms;
-	-o-transform: $transforms;
-	-ms-transform: $transforms;
-	-webkit-transform: $transforms;
-	transform: $transforms;
-}
-
-@mixin scale ($deg) {
-	@include transform(scale($deg));
-}
-
-@mixin transition($transition) {
-	-moz-transition: $transition;
-	-o-transition: $transition;
-	-ms-transition: $transition;
-	-webkit-transition: $transition;
-	transition: $transition;
-}
-
 .inline-spinner {
 	opacity: 0;
 	position: absolute;
