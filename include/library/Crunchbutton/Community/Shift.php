@@ -971,12 +971,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$end = $shift->dateEnd();
 
 				$day = strtolower( $start->format( 'D' ) );
-				$time_open = $shift->dateStart()->format( 'H:i' );
-				$time_close = $shift->dateEnd()->format( 'H:i' );
+				$time_open = $start->format( 'H:i' );
+				$time_close = $end->format( 'H:i' );
 
 				$new_day = false;
 
-				if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) ){
+				if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) && $end->format( 'Hi' ) != '0000' ){
 					$new_day = true;
 					$new_day_time_open = '00:01';
 					$new_day_time_close = $time_close;
