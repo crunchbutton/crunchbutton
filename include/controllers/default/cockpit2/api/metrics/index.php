@@ -82,11 +82,13 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		}
 		if($_REQUEST['start']) {
 			$startDate = Cockpit_Metrics::getStartDate($_REQUEST['start']);
+			$startDate = Cockpit_Metrics::startOfPeriod($_REQUEST['period'], $startDate);
 		} else {
 			$startDate = Cockpit_Metrics::getStartDate('-60d');
 		}
 		if ($_REQUEST['end']) {
 			$endDate = Cockpit_Metrics::getEndDate($_REQUEST['end']);
+			$endDate = Cockpit_Metrics::endOfPeriod($_REQUEST['period'], $endDate);
 		} else {
 			$endDate = Cockpit_Metrics::getEndDate('-0d');
 		}
