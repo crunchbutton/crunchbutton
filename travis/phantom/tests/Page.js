@@ -35,6 +35,7 @@ describe('Page', function() {
 		});
 
 	    runs(function() {
+			console.log(content);
 			expect(content.match(/facebook-jssdk/i)).toBeTruthy();
 	    });
     });
