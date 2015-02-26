@@ -3,7 +3,7 @@
 	 * @group Metrics
 	 **/
 	class MetricsHelperTest extends PHPUnit_Framework_TestCase {
-		public function testRelativeTimeConversion () {
+		public function testPeriodManipulation() {
 			$end = date_create_from_format('Y-m-d', '2015-02-01');
 			// test out some start and end stuff
 			$complexFormat = 'Y-m-d H:i:s';
@@ -19,7 +19,13 @@
 			$this->assertEquals(Cockpit_Metrics::endOfPeriod('W', $complexEnd), date_create_from_format($complexFormat, '2015-08-08 23:59:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('Y', $complexEnd), date_create_from_format($complexFormat, '2015-01-01 00:00:00'));
 			$this->assertEquals(Cockpit_Metrics::endOfPeriod('Y', $complexEnd), date_create_from_format($complexFormat, '2015-12-31 23:59:59'));
+		}
 
+		public function testRelativeTimeCalculation() {
+			$end = date_create_from_format('Y-m-d', '2015-02-01');
+			// test out some start and end stuff
+			$complexFormat = 'Y-m-d H:i:s';
+			$complexEnd = date_create_from_format($complexFormat, '2015-08-05 10:22:36');
 			// test out some sample intervals
 			$this->assertEquals(Cockpit_Metrics::getStartDate('-1d', $end), date_create_from_format('Y-m-d', '2015-01-31'));
 			$this->assertEquals(Cockpit_Metrics::getStartDate('-5h', $end), date_create_from_format('Y-m-d H:i', '2015-01-31 19:00'));
@@ -34,6 +40,7 @@
 			// should deal with spanning start and end of years with months
 			$this->assertEquals(Cockpit_Metrics::getEndDate('-3M', date_create('2015-02-05')), date_create_from_format($complexFormat, '2014-12-31 23:59:59'));
 		}
+
 		public function testGroupByIndex() {
 			// should work for numbers with no dups
 			$data = [
