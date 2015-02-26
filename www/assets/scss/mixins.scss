@@ -1,4 +1,4 @@
-$engines: (-webkit-, -moz-, -o-, '');
+$engines: (-webkit-, -moz-, -ms-, -o-, '');
 
 @mixin transform($val) {
 	@each $engine in $engines {
