@@ -13,7 +13,7 @@ class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
-		Crunchbutton_Headers;
+		new Crunchbutton_Headers;
 
 		if (!$_SERVER['SERVER_NAME']) {
 			$cli = true;
