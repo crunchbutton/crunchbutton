@@ -685,7 +685,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 		if( !$this->auto_close ){ return; }
 
-		if( !$this->id_community || $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() ){
+		if( !$this->id_community ||
+				$this->allThirdPartyDeliveryRestaurantsClosed() ||
+				$this->allRestaurantsClosed() ){
 			return;
 		}
 
@@ -781,6 +783,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function currentShift(){
 		return Crunchbutton_Community_Shift::currentShiftByCommunity( $this->id_community )->get( 0 );
+	}
+
+	public function assignedShiftHours(){
+		if( !$this->_assigned_shift_hours ){
+			$this->_assigned_shift_hours = Crunchbutton_Community_Shift::assignedShiftHours( $this->id_community );
+		}
+		return $this->_assigned_shift_hours;
 	}
 
 	public function driverRestaurantName(){
