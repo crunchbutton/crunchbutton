@@ -50,7 +50,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': 'bar', 'description': 'Bar Chart'}
 	];
 	$scope.settings = {
-		separateCharts: false,
+		separateCharts: true,
 		maxCombinedCommunities: 5,
 		charts: [
 			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
