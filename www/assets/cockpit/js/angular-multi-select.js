@@ -129,13 +129,13 @@ angular.module('multi-select', ['ng']).directive('multiSelect', ['$sce', '$timeo
                     if (typeof $scope.maxHeight !== 'undefined') {
                         return 'max-height: ' + $scope.maxHeight + '; overflow-y:scroll';
                     }
-                }
+                };
 
                 // A little hack so that AngularJS ng-repeat can loop using start and end index like a normal loop
                 // http://stackoverflow.com/questions/16824853/way-to-ng-repeat-defined-number-of-times-instead-of-repeating-over-array
                 $scope.numberToArray = function(num) {
                     return new Array(num);
-                }
+                };
 
                 $scope.updateFilter = function() {
                     // we check by looping from end of array
@@ -194,18 +194,18 @@ angular.module('multi-select', ['ng']).directive('multiSelect', ['$sce', '$timeo
                     for (var i = 0; i < element[0].getElementsByTagName('FORM')[0].elements.length; i++) {
                         $scope.formElements.push(element[0].getElementsByTagName('FORM')[0].elements[i]);
                     }
-                }
+                };
 
                 // check if an item has $scope.groupProperty (be it true or false)
                 $scope.isGroupMarker = function(item, type) {
                     if (typeof item[$scope.groupProperty] !== 'undefined' && item[$scope.groupProperty] === type) return true;
                     return false;
-                }
+                };
 
                 $scope.removeGroupEndMarker = function(item) {
                     if (typeof item[$scope.groupProperty] !== 'undefined' && item[$scope.groupProperty] === false) return false;
                     return true;
-                }
+                };
 
 
                 // Show or hide a helper element 
@@ -249,7 +249,7 @@ angular.module('multi-select', ['ng']).directive('multiSelect', ['$sce', '$timeo
                         }
                         return false;
                     }
-                }
+                };
 
                 // call this function when an item is clicked
                 $scope.syncItems = function(item, e, ng_repeat_index) {

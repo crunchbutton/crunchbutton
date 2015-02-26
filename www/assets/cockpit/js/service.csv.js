@@ -30,6 +30,7 @@
  * and details.  addCSVById is a simple wrapper around addCSVToAnchor that
  * allows passing by a CSS ID rather than the object itself.
  */
+/* global NGApp */
 NGApp.factory('CSVService', function () {
 	var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 	var fromCharCode = String.fromCharCode;
@@ -157,7 +158,7 @@ NGApp.factory('CSVService', function () {
 		var i, j, cell, row;
 		for (i = 0; i < numCols; i++) {
 			row = matrix[i];
-			if (row.length != numRows) {
+			if (row.length !== numRows) {
 				throw new Error('mismatched number of rows on column ' + i + '(expected: ' + numRows + ', but saw: ' + row.length + ' rows)');
 			}
 			for (j = 0; j < numRows; j++) {

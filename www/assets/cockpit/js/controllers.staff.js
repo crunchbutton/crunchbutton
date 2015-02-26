@@ -142,7 +142,7 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 	var list = function(){
 		$scope.searched = true;
 		$scope.isSearching = true;
-		var search = { 'type': $scope.search.type, 'name': $scope.search.name, 'status': $scope.search.status, 'page': $scope.page }
+		var search = { 'type': $scope.search.type, 'name': $scope.search.name, 'status': $scope.search.status, 'page': $scope.page };
 		StaffService.list( search, function( data ){
 			$scope.isSearching = false;
 			$scope.pages = data.pages;
@@ -151,28 +151,28 @@ NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
 			$scope.staff = data.results;
 			$scope.count = data.count;
 		} );
-	}
+	};
 
 	var waiting = false;
 
 	$scope.doSearch = function(){
 		$scope.page = 1;
 		list();
-	}
+	};
 
 	$scope.nextPage = function(){
 		$scope.page = $scope.next;
 		list();
-	}
+	};
 
 	$scope.prevPage = function(){
 		$scope.page = $scope.prev;
 		list();
-	}
+	};
 
 	$scope.payinfo = function( id_admin ){
 		$scope.navigation.link( '/staff/payinfo/' + id_admin );
-	}
+	};
 
 });
 
@@ -182,11 +182,11 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 
 	$scope.open_card = function( id_card ){
 		change_card_status( id_card, PexCardService.status.OPEN );
-	}
+	};
 
 	$scope.block_card = function( id_card ){
 		change_card_status( id_card, PexCardService.status.BLOCKED );
-	}
+	};
 
 	var change_card_status = function( id_card, status ){
 		if( confirm( 'Confirm change card status to ' + status + '?' ) ){
@@ -205,7 +205,7 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 				}
 			);
 		}
-	}
+	};
 
 	$scope.pexcard = {};
 

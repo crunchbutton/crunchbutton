@@ -361,12 +361,12 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 		var withinEps = Math.abs(daysDiff - Math.round(daysDiff)) < datePrecision;
 		if (withinEps) {
-			return parseInt(Math.round(daysDiff)).toString() + 'd';
+			return parseInt(Math.round(daysDiff), 10).toString() + 'd';
 		} else if (daysDiff > 0) {
 			// go to lowest value
-			return parseInt(Math.floor(daysDiff)).toString() + 'd';
+			return parseInt(Math.floor(daysDiff), 10).toString() + 'd';
 		} else {
-			return parseInt(Math.ceil(daysDiff)).toString() + 'd';
+			return parseInt(Math.ceil(daysDiff), 10).toString() + 'd';
 		}
 	};
 	service.deserializeDate = function (s, atStart) {
@@ -387,7 +387,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			if (!momentNames[period]) {
 				throw new Error('assertion failure - matched relative time regex with unknown period. Dt was' + s + 'and period was ' + period);
 			}
-			var val = parseInt(s.slice(0, -1));
+			var val = parseInt(s.slice(0, -1), 10);
 			if (isNaN(val)) {
 				throw new Error('invalid delta value. Input value was: ', s);
 			}
@@ -445,8 +445,6 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			out.communities = Object.keys(availableCommunities);
 		} else if (serialized.communities) {
 			out.communities = serialized.communities.split(/,/g);
-		} else {
-			// do nothing and don't put anything on the output as communities
 		}
 		return out;
 	};
