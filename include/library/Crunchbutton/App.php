@@ -74,8 +74,8 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// redirect bad urls
-		die ('no db');
 		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
+			die ('no db');
 			header('HTTP/1.1 301 Moved Permanently');
 			header('Location: https://_DOMAIN_/');
 			exit;
