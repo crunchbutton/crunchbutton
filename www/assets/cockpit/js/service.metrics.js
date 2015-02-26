@@ -292,14 +292,27 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		// add strings to URL
 		['period'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + settings[k]; } });
 		// add dates to URL
-		['start', 'end'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + moment(settings[k]).format(service._DATEFORMAT); } });
-		$http.get(url).success(function (data) {
+		['start', 'end'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + moment(settings[k]).format(service.DATE_FORMAT); } });
+		$http.get(url).success(function (resp) {
 			console.log('successful getting data from url: ' + url);
+			var data = resp.data;
+			var labels = resp.meta.labels;
+			// TODO: Display that start and end dates are different (if they are)
+			var startDate = moment(resp.meta.startDate, service.RESPONSE_DATE_FORMAT);
+			var endDate = moment(resp.meta.endDate, service.RESPONSE_DATE_FORMAT);
+			var showEmpty = settings.showEmpty;
+			var identity = function (e) { return e; };
 			for (var key in data) {
-				if (!chartData[key]) {
-					chartData[key] = {};
+				if (showEmpty || data[key].some(identity)) {
+					if (!chartData[key]) {
+						chartData[key] = {};
+					}
+					chartData[key][chartType] = {
+						// have to wrap for internal (and ChartJS) assumptions about chart data
+						'data': [data[key]],
+						'labels': labels
+					};
 				}
-				chartData[key][chartType] = data[key];
 			}
 			deferred.resolve(data);
 		}).error(function (err) {
@@ -342,7 +355,8 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		return d1.diff(d2) / msInDay;
 	}
 	var datePrecision = 0.00000001;
-	service._DATEFORMAT = 'YYYY-MM-DD';
+	service.DATE_FORMAT = 'YYYY-MM-DD';
+	service.RESPONSE_DATE_FORMAT = 'YYYY-MM-DD HH-II-SS';
 	service.serializeDate = function (dt, useDelta) {
 		if (!dt) {
 			return '';
@@ -353,7 +367,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			return 'now';
 		}
 		if (!useDelta) {
-			return dt.format(service._DATEFORMAT);
+			return dt.format(service.DATE_FORMAT);
 		}
 		var withinEps = Math.abs(daysDiff - Math.round(daysDiff)) < datePrecision;
 		if (withinEps) {

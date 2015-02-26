@@ -44,33 +44,6 @@ class MetricsHttpException extends Exception {
 //  - formatQueryResults - takes raw Cana objects and converts them back into the desired format
 //  - prettifyLabels - transforms SQL labels for dates into dates that look good for the front end
 class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
-	const MySQLDateFormat = 'Y-m-d H:i:s';
-	// date format for mysql groupings
-	public static function periodSQLFormats($isMySQL = true) {
-		if($isMySQL) {
-			return [
-				'Y' => '%Y',
-				'M' => '%Y-%m', // month
-				'w' => '%Y-w%U', // starting Sunday
-				'd' => '%Y-%m-%d',
-				'h' => '%Y-%m-%d %H',
-				'm' => '%Y-%m-%d %H:%i', // minute
-				's' => '%Y-%m-%d %H:%i:%s'
-			];
-		} else {
-			// POSTGRES!
-			return [
-				'Y' => 'YYYY',
-				'M' => 'YYYY-MM', // month
-				'w' => 'IYYY', // starting Sunday
-				'd' => 'YYYY-MM-DD',
-				'h' => 'YYYY-MM-DD HH24',
-				'm' => 'YYYY-MM-DD HH24:MI', // minute
-				's' => 'YYYY-MM-DD HH24:MI:SS'
-			];
-		}
-	}
-
 	public function init() {
 		try {
 			// selected communities = split string on , for community=
@@ -100,8 +73,10 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		}
 		$period = $_REQUEST['period'] ? $_REQUEST['period'] : 'd';
 		$chartType = $_REQUEST['type'] ? $_REQUEST['type'] : 'orders';
-		echo json_encode(self::funcForQueryType($chartType, $communities, $startDate, $endDate, $period));
+		$metricContainer = new _Community_Metric_Container($chartType, $communities, $startDate, $endDate, $period);
+		echo json_encode($metricContainer->getData());
 	}
+
 	/**
 	 * returns a filtered set of community IDs for the given set of
 	 * communityIDs (or retrieves all active communities if none passed). 
@@ -130,6 +105,48 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		}
 		return $allowed;
 	}
+}
+
+class _Community_Metric_Container {
+	public $chartType;
+	public $communities;
+	public $startDate;
+	public $endDate;
+	public $period;
+	public function __construct($chartType, $communities, $startDate, $endDate, $period) {
+		$this->chartType = $chartType;
+		$this->communities = $communities;
+		$this->startDate = $startDate;
+		$this->endDate = $endDate;
+		$this->period = $period;
+	}
+	const MySQLDateFormat = 'Y-m-d H:i:s';
+	// date format for mysql groupings
+	public static function periodSQLFormats($isMySQL = true) {
+		if($isMySQL) {
+			return [
+				'Y' => '%Y',
+				'M' => '%Y-%m', // month
+				'w' => '%Y-w%U', // starting Sunday
+				'd' => '%Y-%m-%d',
+				'h' => '%Y-%m-%d %H',
+				'm' => '%Y-%m-%d %H:%i', // minute
+				's' => '%Y-%m-%d %H:%i:%s'
+			];
+		} else {
+			// POSTGRES!
+			return [
+				'Y' => 'YYYY',
+				'M' => 'YYYY-MM', // month
+				'w' => 'IYYY', // starting Sunday
+				'd' => 'YYYY-MM-DD',
+				'h' => 'YYYY-MM-DD HH24',
+				'm' => 'YYYY-MM-DD HH24:MI', // minute
+				's' => 'YYYY-MM-DD HH24:MI:SS'
+			];
+		}
+	}
+
 	public static function _getPeriodFormat($period, $isMySQL = true) {
 		if(!isset(self::periodSQLFormats($isMySQL)[$period])) {
 			throw new MetricsHttpException(400, 'invalid period ' . $period);
@@ -149,16 +166,16 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 	public static function _buildDateFilter($startDate, $endDate, $dateColumn = 'date') {
 		return '( ' . $dateColumn . ' >= "' . $startDate->format(self::MySQLDateFormat) . '" AND ' . $dateColumn . ' <= "' . $endDate->format(self::MySQLDateFormat) . '" )';
 	}
-	public static function _buildOrdersQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _buildOrdersQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			SELECT
 				id_community,
 				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
 				COUNT(*) count
 			FROM `order`
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
@@ -174,16 +191,16 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		}
 		return c::db()->query($query);
 	}
-	public static function _grossRevenueQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _grossRevenueQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			SELECT
 				id_community,
 				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
 				ROUND(SUM(final_price), 2) final_price
 			FROM `order`
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
@@ -198,12 +215,12 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 	 * @param $dataCol - column with actual data and/or numeric values
 	 * @param $fillValue - value to substitute in for missing labels
 	 *
-	 * @return {$groupKey => {data => <ARRAY OF DATA>, labels => <ARRAY OF LABELS>}}
+	 * @return {'data' => {$groupKey => <ARRAY OF DATA>}, 'meta' => {'labels' => <ARRAY OF LABELS>, 'startDate': <ISO 80601 date>, 'endDate': <ISO 80601 date>}}
 	 * where labels are shared between *all* group keys (same object) and data 
 	 * is backfilled to match up with labels. Labels will be lexicogrpahically 
-	 * sorted from lowest to highest.
+	 * sorted from lowest to highest. Missing communities are also backfilled into data.
 	 **/
-	public static function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0) {
+	public function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0) {
 		$rows = [];
 		while($r = $queryResult->fetch()) {
 			$rows[] = (array) $r;
@@ -236,9 +253,9 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 					$data[] = $fillValue;
 				}
 			}
-			$out[$key] = ['labels' => $allLabels, 'data' => [$data]];
+			$out[$key] = $data;
 		}
-		return $out;
+		return ['data' => $out, 'meta' => ['labels' => $allLabels, 'startDate' => $this->startDate->format('Y-m-d H:i:s'), 'endDate' => $this->endDate->format('Y-m-d H:i:s')]];
 	}
 	public static function maybeStripLeadingYear($labels) {
 		$years = [];
@@ -280,55 +297,55 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			return clone $labels;
 		}
 	}
-	public static function funcForQueryType($type, $communities, $startDate, $endDate, $period) {
-		switch($type) {
+	public function getData() {
+		switch($this->chartType) {
 		case 'users':
-			return self::_uniqueUsersQuery($communities, $startDate, $endDate, $period);
+			return $this->_uniqueUsersQuery();
 			break;
 		case 'new-users':
-			return self::_newUsersQuery($communities, $startDate, $endDate, $period);
+			return $this->_newUsersQuery();
 			break;
 		case 'new-orders':
-			return self::_newOrdersQuery($communities, $startDate, $endDate, $period);
+			return $this->_newOrdersQuery();
 			break;
 		case 'new-users-gross-revenue':
-			return self::_firstOrderRevenueQuery($communities, $startDate, $endDate, $period, 'gross-revenue');
+			return $this->_firstOrderRevenueQuery('gross-revenue');
 			break;
 		case 'new-users-delivery-tips':
-			return self::_firstOrderRevenueQuery($communities, $startDate, $endDate, $period, 'tips');
+			return $this->_firstOrderRevenueQuery('tips');
 			break;
 		case 'new-users-delivery-fee':
-			return self::_firstOrderRevenueQuery($communities, $startDate, $endDate, $period, 'delivery-fee');
+			return $this->_firstOrderRevenueQuery('delivery-fee');
 			break;
 		case 'repeat-users':
-			return self::_repeatUserQuery($communities, $startDate, $endDate, $period);
+			return $this->_repeatUserQuery();
 			break;
 		case 'repeat-orders':
-			return self::_repeatOrderQuery($communities, $startDate, $endDate, $period);
+			return $this->_repeatOrderQuery();
 			break;
 		case 'repeat-users-gross-revenue':
-			return self::_repeatRevenueQuery($communities, $startDate, $endDate, $period, 'gross-revenue');
+			return $this->_repeatRevenueQuery('gross-revenue');
 			break;
 		case 'repeat-users-delivery-tips':
-			return self::_repeatRevenueQuery($communities, $startDate, $endDate, $period, 'tips');
+			return $this->_repeatRevenueQuery('tips');
 			break;
 		case 'repeat-users-delivery-fee':
-			return self::_repeatRevenueQuery($communities, $startDate, $endDate, $period, 'delivery-fee');
+			return $this->_repeatRevenueQuery('delivery-fee');
 			break;
 		case 'orders-by-hour':
-			return self::_ordersByHourQuery($communities, $startDate, $endDate, $period);
+			return $this->_ordersByHourQuery();
 			break;
 		case 'orders':
-			return self::_buildOrdersQuery($communities, $startDate, $endDate, $period);
+			return $this->_buildOrdersQuery();
 			break;
 		case 'refunded':
-			return self::_refundedOrdersQuery($communities, $startDate, $endDate, $period);
+			return $this->_refundedOrdersQuery();
 			break;
 		case 'gross-revenue':
-			return self::_grossRevenueQuery($communities, $startDate, $endDate, $period);
+			return $this->_grossRevenueQuery();
 			break;
 		default:
-			throw new MetricsHttpException(400, 'invalid chart type: ' . $type);
+			throw new MetricsHttpException(400, 'invalid chart type: ' . $this->chartType);
 		}
 	}
 	public static function _buildOrderFilter($table) {
@@ -336,38 +353,38 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		$out = $out . ' AND (' . $table . '.refunded IS NULL OR ' . $table . '.refunded = FALSE)';
 		return '(' . $out . ')';
 	}
-	public static function _uniqueUsersQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _uniqueUsersQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			SELECT
 				id_community,
 				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
 				COUNT(DISTINCT phone) count
 			FROM `order`
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
-	public static function _refundedOrdersQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _refundedOrdersQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			SELECT
 				id_community,
 				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
 				COUNT(*) count
 			FROM `order`
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND (`order`.likely_test = FALSE OR `order`.likely_test IS NULL) AND `order`.refunded = TRUE
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
-	public static function _newUsersQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _newUsersQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
@@ -378,15 +395,15 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.first_order_id = `order`.id_order
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
-	public static function _repeatUserQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _repeatUserQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
@@ -397,16 +414,16 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.phone = `order`.phone
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 				AND UserWithFirstOrder.first_order_id != `order`.id_order
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
-	public static function _repeatOrderQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _repeatOrderQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
@@ -417,8 +434,8 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.phone = `order`.phone
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 				AND UserWithFirstOrder.first_order_id != `order`.id_order
 			GROUP BY id_community, date_group
@@ -448,8 +465,8 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			throw new MetricsHttpException(500, 'got unknown type: ' . $colType);
 		}
 	}
-	public static function _repeatRevenueQuery($communities, $startDate, $endDate, $period, $colType) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _repeatRevenueQuery( $colType) {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
@@ -460,8 +477,8 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.phone = `order`.phone
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 				AND UserWithFirstOrder.first_order_id != `order`.id_order
 			GROUP BY id_community, date_group
@@ -469,8 +486,8 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count', false);
 	}
 
-	public static function _newOrdersQuery($communities, $startDate, $endDate, $period) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _newOrdersQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
@@ -481,15 +498,15 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.first_order_id = `order`.id_order
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
-	public static function _firstOrderRevenueQuery($communities, $startDate, $endDate, $period, $colType) {
-		$periodFormat = self::_getPeriodFormat($period);
+	public function _firstOrderRevenueQuery( $colType) {
+		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
@@ -500,14 +517,14 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.first_order_id = `order`.id_order
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count', false);
 	}
-	public static function _ordersByHourQuery($communities, $startDate, $endDate, $period) {
+	public function _ordersByHourQuery() {
 		$q = '
 			SELECT
 				id_community,
@@ -515,8 +532,8 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 				MIN(date) start_date,
 				COUNT(*) count
 			FROM `order`
-			WHERE ' . self::_buildDateFilter($startDate, $endDate, '`order`.date') . '
-				AND ' . self::_buildCommunityFilter($communities, '`order`') . '
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, hour_of_day
 			';
