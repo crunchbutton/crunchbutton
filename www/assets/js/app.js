@@ -53,7 +53,8 @@ var App = {
 	cachedObjectsExpiresIn : 86400, // 86400 seconds is 24 hours
 	enableSplash: true,
 	useTransform: true,
-	minimalMode: false
+	minimalMode: false,
+	hasFacebook: false
 };
 
 App.useTransform = true;
@@ -322,6 +323,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.rootScope = $rootScope;
 	App.location = $location;
 	App.http = $http;
+	$rootScope.hasFacebook = App.hasFacebook;
 
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908
