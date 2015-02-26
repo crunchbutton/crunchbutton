@@ -7,7 +7,7 @@
 		<p><br>{{entered}} - <a href="/location">Change</a></p>
 	</div>
 
-	<div class="restaurants-bubble-wrap">
+	<div class="restaurants-bubble-wrap noselect">
 		<div ng-if="!image">
 			<div ng-if="!allClosed">
 				<div class="bubble-tail bubble-tail-green bubble-animated">
@@ -37,19 +37,19 @@
 			</div>
 
 			<div ng-if="allClosed">
-				<div class="bubble-tail bubble-tail-green bubble-animated">
+				<div class="bubble-tail bubble-tail-green bubble-animated noselect">
 					<div class="text" ng-switch="pushMessage">
-						<span ng-switch-when="2">There are no open restaurants</span>
-						<span ng-switch-when="3" class="small">Know of something awesome in your area?</span>
+						<span ng-switch-when="1">We will be back soon.</span>
+						<span ng-switch-when="2" class="small">Know of some awesome restaurants in your area?</span>
+						<span ng-switch-when="3">Want to become a delivery driver?</span>
 						<span class="single-line" ng-switch-when="4">Send us a txt...</span>
-						<span class="single-line" ng-switch-when="5">And we'll add it!</span>
-						<span ng-switch-when="6">Don't stay hungry!</span>
-						<span class="single-line" ng-switch-when="7"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
-						<span ng-switch-default class="single-line">
+						<span class="single-line" ng-switch-when="5">And lets do stuff!</span>
+						<span class="single-line" ng-switch-when="6"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
+						<span ng-switch-default class="restaurants-push-tagline">
 							<span ng-if="community_closed" class="small">
 								{{community_closed}}
 							</span>
-							<span ng-if="!community_closed">Wahhhhhh!!!&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span ng-if="!community_closed"><b>Wahhhhhh!!!</b><br>No delivery is available</span>
 						</span>
 					</div>
 					<div class="bubble-tail-spacer"></div>
