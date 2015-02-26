@@ -28,7 +28,7 @@ App.localStorage = App.isPhoneGap;
 if (App.isPhoneGap) {
 	App.service = 'https://cockpit.la/api/';
 }
-console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
+console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap');
 
 var NGApp = angular.module('NGApp', ['multi-select', 'chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap'], function( $httpProvider ) {
 /*
@@ -491,7 +491,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			angular.element( 'body' ).addClass( 'loading' );
 			$rootScope.isBusy = true;
 		}
-	}
+	};
 
 	$rootScope.walkTo = function( selector, adjust ){
 		adjust = adjust ? adjust : 0;
@@ -500,7 +500,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top ) + adjust;
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
 		}
-	}
+	};
 
 	$rootScope.unBusy = function(){
 		if( $rootScope.isBusy ){
@@ -509,19 +509,19 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}, 100 );
 			$rootScope.isBusy = false;
 		}
-	}
+	};
 
 	$rootScope.focus = function( selector ){
 		setTimeout( function(){
 			angular.element( selector ).focus();
 		}, 300 );
-	}
+	};
 
 	$rootScope.blur = function( selector ){
 		setTimeout( function(){
 			angular.element( selector ).blur();
 		}, 100 );
-	}
+	};
 
 	$rootScope.reload = function() {
 		$route.reload();
