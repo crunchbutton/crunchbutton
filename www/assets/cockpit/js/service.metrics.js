@@ -56,16 +56,6 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 		return true;
 	}
-	function convertURLData(watchData) {
-
-	}
-	var metrics = $resource(App.service + 'metrics/:id_metrics', { id_metrics: '@id_metrics'}, {
-		'load' : {
-			method: 'GET',
-			params : {}
-		}
-	});
-
 	function errorOnBadValue(name, value, allowed, nullAllowed) {
 		if ((value === null || value === undefined) && nullAllowed) {
 			return true;
@@ -179,9 +169,8 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			if (!v[type]) {
 				return;
 			}
-			if (!v[type].options) {
-				v[type].options = {};
-			}
+			// force a new object creation so angular knows to update
+			v[type].options = defaultChartJSOptions();
 			v[type].options.scaleOverride = true;
 			v[type].options.scaleStartValue = globalMin;
 			v[type].options.scaleStepWidth = scaleStepWidth;
@@ -196,12 +185,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			if (!v[type]) {
 				return;
 			}
-			if (v[type].options) {
-				delete(v[type].options.scaleOverride);
-				delete(v[type].options.scaleStartValue);
-				delete(v[type].options.scaleStepWidth);
-				delete(v[type].options.scaleSteps);
-			}
+			v[type].options = defaultChartJSOptions();
 		});
 	};
 	function rstrip(text, ch) {
@@ -276,6 +260,11 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		});
 		return deserialized;
 	};
+	function defaultChartJSOptions() {
+		return {
+			bezierCurve: false
+		};
+	}
 	/**
 	 * grabs chart data from backend for a single chart type
 	 * @param {string} chartType - the type of chart to request (e.g., 'users')
@@ -310,7 +299,8 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 					chartData[key][chartType] = {
 						// have to wrap for internal (and ChartJS) assumptions about chart data
 						'data': [data[key]],
-						'labels': labels
+						'labels': labels,
+						'options': defaultChartJSOptions()
 					};
 				}
 			}

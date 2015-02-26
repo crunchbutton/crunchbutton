@@ -10,7 +10,7 @@ NGApp.config(['$routeProvider', function ($routeProvider) {
 		});
 }]);
 
-NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, ViewListService, CSVService, $http) {
+NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, CSVService, $http) {
 	// pretty straightforward, we always want the charts to have zero as base
 	Chart.defaults.global.scaleBeginAtZero = true;
 	Chart.defaults.global.animation = false;
@@ -60,7 +60,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		};
 	}
 	$scope.settings = defaultSettings();
-	var allowedSettings = Object.keys($scope.settings);
 	$scope.resetSettings = function () {
 		sessionStorage.removeItem(dataKey);
 		$scope.settings = defaultSettings();
@@ -89,13 +88,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			sessionStorage.setItem(dataKey, JSON.stringify($scope.serializedSettings));
 			$location.replace();
 		}
-	};
-	var defaultOptions = {
-		communities: 'active',
-		start: '-14d',
-		end: 'now',
-		period: 'day',
-		charts: 'daily-order,new-users,existing-users'
 	};
 	var resetData = function () {
 		$scope.loadedChartTypes = {};
@@ -130,7 +122,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.addChart = function () {
 		$scope.settings.charts.push({'format': 'line', 'uniformScale': false});
 	};
-	$scope.updateChartOption = function (chartOption) {
+	$scope.updateChartOption = function (chartOption, changed) {
 		var type = chartOption.type;
 		if (!type) {
 			console.debug('not loading chart data - no type selected');
@@ -140,6 +132,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var loaded = $scope.loadedChartTypes;
 		var chartData = $scope.chartData;
 		function finalCallback() {
+			console.log('chartdata pre-change: ', chartData);
+			if ($scope.chartData !== chartData) {
+				console.info('chart data has changed since callback, not updating');
+				return;
+			}
 			// grab current chart option (so we don't overwrite any sorts on a late call)
 			var opt;
 			for (var i = 0; i < $scope.settings.charts.length; i++) {
@@ -154,9 +151,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 					if (opt.orderMethod && opt.orderDirection) {
 						$scope.updateChartOrders(opt);
 					}
+					$scope.orderSelectedCommunities();
 					break;
 				}
 			}
+			console.log('chartData post-change: ', chartData);
 			// console.debug('ChartData after callback finished: ', $scope.chartData);
 			if (!$scope.orderedCommunities) {
 				$scope.orderSelectedCommunities();
@@ -337,7 +336,6 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.availableCharts = {};
 		console.error('ERROR getting available charts', err);
 	});
-	var allowedKeys = Object.keys(defaultOptions);
 	var dataKey = 'crunchbutton-metrics-preferences';
 	function mergeSettings (settings) {
 		if (!settings || Object.keys(settings).length === 0) {
