@@ -211,29 +211,37 @@ class _Community_Metric_Container {
 	 * formatQueryResults takes in a Cana Tabe iterator and groups it by the specified column, backfilling labels via labelCol
 	 * @param $queryResult - Cana Iterator
 	 * @param $groupCol - the name of the column to group data on
-	 * @param $labelCol - name of the column to pull labels from (should be able to be lexicographically sorted)
+	 * @param $labelCol (string) - name of the column to pull labels 
+	 *    from (should be able to be lexicographically sorted, unless labels specified)
 	 * @param $dataCol - column with actual data and/or numeric values
-	 * @param $fillValue - value to substitute in for missing labels
+	 * @param $isInt (optional) - whether the valueis integral (true) or float (false)
+	 * @param $fillValue (optional) - value to substitute in for missing labels
+	 * @param $labels (optional) - ordered array of labels to pull (must exactly match 
+	 *     labels in data)
 	 *
 	 * @return {'data' => {$groupKey => <ARRAY OF DATA>}, 'meta' => {'labels' => <ARRAY OF LABELS>, 'startDate': <ISO 80601 date>, 'endDate': <ISO 80601 date>}}
 	 * where labels are shared between *all* group keys (same object) and data 
 	 * is backfilled to match up with labels. Labels will be lexicogrpahically 
 	 * sorted from lowest to highest. Missing communities are also backfilled into data.
 	 **/
-	public function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0) {
+	public function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0, $labels = null) {
 		$rows = [];
 		while($r = $queryResult->fetch()) {
 			$rows[] = (array) $r;
 		}
 		$grouped = Cockpit_Metrics::groupByIndex($rows, $groupCol);
-		// grab all the labels on every row and make sure that every grouping
-		// has not-present labels filled with the default value
-		$allLabels = [];
-		foreach($rows as $row) {
-			$allLabels[$row[$labelCol]] = 1;
+		if (!is_null($labels)) {
+			$allLabels = $labels;
+		} else {
+			// grab all the labels on every row and make sure that every grouping
+			// has not-present labels filled with the default value
+			$allLabels = [];
+			foreach($rows as $row) {
+				$allLabels[$row[$labelCol]] = 1;
+			}
+			$allLabels = array_keys($allLabels);
+			sort($allLabels);
 		}
-		$allLabels = array_keys($allLabels);
-		sort($allLabels);
 		$missingData = array_pad([], count($allLabels), $fillValue);
 		$out = [];
 		foreach($grouped as $key => $rows) {
