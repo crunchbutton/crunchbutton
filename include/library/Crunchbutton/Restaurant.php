@@ -1172,8 +1172,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_notifications'][$notification->id_notification] = $notification->exports();
 			}
 		}
-// remove this @@@
-		$isCockpit = false;
+
 		if( $isCockpit ){
 			foreach ($this->hours() as $hours) {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
