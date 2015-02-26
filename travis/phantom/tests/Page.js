@@ -8,7 +8,7 @@ describe('Page', function() {
 		page.open(phantom.url, function(status) {
 			var onPageReady = function() {
 				setTimeout(function() {
-					console.log(page.content);
+					console.log('DONE');
 					content = page.content;
 				},1200);
 			};
@@ -16,6 +16,7 @@ describe('Page', function() {
 			function checkReadyState() {
 		        setTimeout(function() {
 		            var readyState = page.evaluate(function() {
+						console.log(page.content);
 		                return document.readyState;
 		            });
 		
