@@ -239,7 +239,7 @@ class _MetricsDateHelper {
 		return $date;
 	}
 	public static function _modifyYears($date, $n, $atStart) {
-		$year = date('Y', strtotime($date));
+		$year = $date->format('Y');
 		if($atStart) {
 			return $date->setDate($year + $n, 1, 1)->setTime(0, 0, 0);
 		} else {

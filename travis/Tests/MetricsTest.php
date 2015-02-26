@@ -11,15 +11,19 @@
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('d', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 00:00:00'));
 			$this->assertEquals(Cockpit_Metrics::endOfPeriod('d', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 23:59:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('h', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:00:00'));
+			$this->assertEquals(Cockpit_Metrics::endOfPeriod('h', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:59:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('m', $complexEnd), date_create_from_format($complexFormat, '2015-08-05 10:22:00'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('M', $complexEnd), date_create_from_format($complexFormat, '2015-08-01 00:00:00'));
-			$this->assertEquals(Cockpit_Metrics::endOfPeriod('M', $complexEnd), date_create_from_format($complexFormat, '2015-08-01 00:00:00'));
+			$this->assertEquals(Cockpit_Metrics::endOfPeriod('M', $complexEnd), date_create_from_format($complexFormat, '2015-08-31 23:59:59'));
 			$this->assertEquals(Cockpit_Metrics::startOfPeriod('W', $complexEnd), date_create_from_format($complexFormat, '2015-08-02 00:00:00'));
 			$this->assertEquals(Cockpit_Metrics::endOfPeriod('W', $complexEnd), date_create_from_format($complexFormat, '2015-08-08 23:59:59'));
+			$this->assertEquals(Cockpit_Metrics::startOfPeriod('Y', $complexEnd), date_create_from_format($complexFormat, '2015-01-01 00:00:00'));
+			$this->assertEquals(Cockpit_Metrics::endOfPeriod('Y', $complexEnd), date_create_from_format($complexFormat, '2015-12-31 23:59:59'));
 
 			// test out some sample intervals
 			$this->assertEquals(Cockpit_Metrics::getStartDate('-1d', $end), date_create_from_format('Y-m-d', '2015-01-31'));
 			$this->assertEquals(Cockpit_Metrics::getStartDate('-5h', $end), date_create_from_format('Y-m-d H:i', '2015-01-31 19:00'));
+			$this->assertEquals(Cockpit_Metrics::getEndDate('+1Y', $end), date_create_from_format($complexFormat, '2016-12-31 23:59:59'));
 			$this->assertEquals(Cockpit_Metrics::getStartDate('-8M', $complexEnd), date_create_from_format($complexFormat, '2014-12-01 00:00:00'));
 			// should go to Sunday
 			$this->assertEquals(Cockpit_Metrics::getStartDate('-2W', $complexEnd), date_create_from_format($complexFormat, '2015-07-19 00:00:00'));
