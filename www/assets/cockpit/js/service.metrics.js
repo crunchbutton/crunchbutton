@@ -9,7 +9,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 	var log_warn = 'warn' in console ? console.warn : console.log;
 	var log_error = 'error' in console ? console.error : console.log;
 	var ALL_COMMUNITIES_SELECTED = 'all';
-	var relativeTimeRegex = /[1-9][0-9]*hmdMsw$/;
+	var relativeTimeRegex = /-?[1-9][0-9]*[hmdMsw]$/;
 	// validateTime checks that time matches expectations and can be sent to backend
 	// Formats:
 	//  Relative time: -7d (7 days in the past from today), -5M (5 months)
@@ -337,20 +337,85 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 		return out;
 	};
+	var msInDay = 60 * 60 * 24 * 1000;
+	function daysDifference(d1, d2) {
+		return d1.diff(d2) / msInDay;
+	}
+	var datePrecision = 0.00000001;
 	service._DATEFORMAT = 'YYYY-MM-DD';
-	service.serializeDate = function (dt) {
-		if (dt) {
-			return moment(dt).format(service._DATEFORMAT);
-		} else {
+	service.serializeDate = function (dt, useDelta) {
+		if (!dt) {
 			return '';
 		}
+		dt = moment(dt);
+		var daysDiff = daysDifference(dt, moment());
+		if (Math.abs(daysDiff) < 1) {
+			return 'now';
+		}
+		if (!useDelta) {
+			return dt.format(service._DATEFORMAT);
+		}
+		var withinEps = Math.abs(daysDiff - Math.round(daysDiff)) < datePrecision;
+		if (withinEps) {
+			return parseInt(Math.round(daysDiff)).toString() + 'd';
+		} else if (daysDiff > 0) {
+			// go to lowest value
+			return parseInt(Math.floor(daysDiff)).toString() + 'd';
+		} else {
+			return parseInt(Math.ceil(daysDiff)).toString() + 'd';
+		}
 	};
-	service.deserializeDate = function (s) { if (s) { return moment(s); } };
+	service.deserializeDate = function (s, atStart) {
+		if (!s) {
+			return null;
+		} else if (s === 'now') {
+			return moment().toDate();
+		} else if (relativeTimeRegex.test(s)) {
+			var period = s.slice(-1);
+			var momentNames = {
+				's': 'seconds',
+				'm': 'minutes',
+				'h': 'hours',
+				'd': 'days',
+				'w': 'weeks',
+				'M': 'months'
+			};
+			if (!momentNames[period]) {
+				throw new Error('assertion failure - matched relative time regex with unknown period. Dt was' + s + 'and period was ' + period);
+			}
+			var val = parseInt(s.slice(0, -1));
+			if (isNaN(val)) {
+				throw new Error('invalid delta value. Input value was: ', s);
+			}
+			var date;
+			date = moment().add(val, momentNames[period]);
+			if (atStart) {
+				return date.startOf(momentNames[period]).toDate();
+			} else {
+				return date.endOf(momentNames[period]).toDate();
+			}
+		} else {
+			console.log('Did NOT match relative format', s);
+			var dt = moment(s);
+			if (!dt || isNaN(dt.toDate())) {
+				throw new Error('could not process date string: ' + s);
+			}
+			return dt.toDate();
+		}
+	};
 	service.serializeSettings = function (settings, communityMap, availableCommunities) {
 		var serializable = {};
 		var communities = [];
 		serializable.charts = service.serializeChartOptions(settings.charts);
-		['start', 'end'].forEach(function (k) { serializable[k] = service.serializeDate(settings[k]); });
+		var endDelta = service.serializeDate(settings.end, true);
+		if (endDelta === 'now') {
+			serializable.start = service.serializeDate(settings.start, true);
+			serializable.end = endDelta;
+		} else {
+			console.log('endDelta was: ', endDelta);
+			serializable.start = service.serializeDate(settings.start, false);
+			serializable.end = service.serializeDate(settings.end, false);
+		}
 		['separateCharts', 'period'].forEach(function (k) { serializable[k] = settings[k]; });
 		eachKV(communityMap, function (cID, comm) { if (comm.selected) { communities.push(cID); } });
 		// if they haven't explicitly chosen communities, we want to make sure that new communities get added in each time
@@ -362,8 +427,9 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		return serializable;
 	};
 	service.deserializeSettings = function (serialized, availableCommunities) {
-    var out = {};
-		['start', 'end'].forEach(function (k) { if (serialized[k]) { out[k] = service.deserializeDate(serialized[k]); }});
+		var out = {};
+		out.start = service.deserializeDate(serialized.start, true);
+		out.end = service.deserializeDate(serialized.end, false);
 		['period'].forEach(function (k) { if (serialized[k]) { out[k] = serialized[k]; }});
 		['separateCharts'].forEach(function (k) { if (serialized[k]) { out[k] = (serialized[k] === "true" || serialized[k] === true); } });
 		out.charts = service.deserializeChartOptions(serialized.charts) || [];

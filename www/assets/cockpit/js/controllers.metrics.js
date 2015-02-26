@@ -65,6 +65,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.persistenceString = '';
 	$scope.updatePersistenceString = function () {
 		$scope.persistenceString = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities, $scope.allowedCommunities);
+		$scope.roundTrippedString = MetricsService.serializeSettings(MetricsService.deserializeSettings($scope.persistenceString, $scope.allowedCommunities), $scope.multiSelectCommunities, $scope.allowedCommunities);
 	};
 	var defaultOptions = {
 		communities: 'active',
