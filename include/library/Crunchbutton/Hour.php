@@ -209,6 +209,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// If the restaurant is 3rd party delivery and the community is auto close
 		// due to it has no driver get the commuinity shift hours
 		// added a config key if we need to disable it on live
+
 		if( $restaurant->delivery_service &&
 				$restaurant->isCommunityAutoClosed() &&
 				intval( Crunchbutton_Config::getVal( 'auto_close_use_community_hours' ) ) ){
