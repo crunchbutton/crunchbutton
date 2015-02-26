@@ -39,6 +39,13 @@ class Cockpit_Metrics {
 	public static function getStartDate($timeString, $startDate = null) {
 		return self::convertTime($timeString, self::START_PERIOD, $startDate);
 	}
+	public static function startOfPeriod($period, $date) {
+		return self::getStartDate('-0' . $period, $date);
+	}
+
+	public static function endOfPeriod($period, $date) {
+		return self::getEndDate('-0' . $period, $date);
+	}
 
 	public static function getEndDate($timeString, $startDate = null) {
 		return self::convertTime($timeString, self::END_PERIOD, $startDate);
