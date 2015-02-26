@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'auto_close_use_community_hours','1');
