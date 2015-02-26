@@ -7,10 +7,6 @@ NGApp.config(['$routeProvider', function ($routeProvider) {
 			templateUrl: 'assets/view/metrics.html',
 			reloadOnSearch: false
 
-		}).when('/metrics/:id', {
-			action: 'metrics',
-			controller: 'MetricsViewCtrl',
-			templateUrl: 'assets/view/metrics-view.html'
 		});
 }]);
 
@@ -24,11 +20,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	console.log('METRICSCTRL');
 	$scope.showCharts = 0;
 	$scope.sortMethods = [
+		{'kind': 'last', 'description': 'Last Value'},
 		{'kind': 'min', 'description': 'Minimum Value'},
 		{'kind': 'max', 'description': 'Maximum Value'},
 		{'kind': 'avg', 'description': 'Average Value'},
-		{'kind': 'first', 'description': 'Last Value'},
-		{'kind': 'last', 'description': 'First Value'}
+		{'kind': 'first', 'description': 'Earliest Value'},
 	];
 	$scope.sortDirections = [
 		{'kind': 'asc', 'description': 'Ascending'},
@@ -39,7 +35,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': false, 'description': 'Scale each chart individually'}
 	];
 	$scope.availablePeriods = [
-		{'symbol': 'h', 'description': 'By Hour', 'title': 'Hour'},
+		// too complicated to support this with start / end stuff for now
+		// {'symbol': 'h', 'description': 'By Hour', 'title': 'Hour'},
 		{'symbol': 'd', 'description': 'By Day', 'title': 'Day'},
 		{'symbol': 'w', 'description': 'By Week', 'title': 'Week'},
 		{'symbol': 'M', 'description': 'By Month', 'title': 'Month'},
@@ -49,24 +46,49 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': 'line', 'description': 'Line Chart'},
 		{'kind': 'bar', 'description': 'Bar Chart'}
 	];
-	$scope.settings = {
-		separateCharts: true,
-		showEmpty: false,
-		maxCombinedCommunities: 5,
-		charts: [
-			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
-			{'type': 'new-users', 'format': 'line'},
-			{'type': 'gross-revenue', 'format': 'line'}
-		],
-		start: moment().subtract(14, 'days').toDate(),
-		end: new Date(),
-		period: 'd',
+	function defaultSettings () {
+		return {
+			combineCharts: false,
+			showEmpty: false,
+			maxCombinedCommunities: 5,
+			charts: [
+				{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
+			],
+			start: moment().subtract(14, 'days').toDate(),
+			end: new Date(),
+			period: 'd',
+		};
+	}
+	$scope.settings = defaultSettings();
+	var allowedSettings = Object.keys($scope.settings);
+	$scope.resetSettings = function () {
+		sessionStorage.removeItem(dataKey);
+		$scope.settings = defaultSettings();
+		$scope.persistSettings();
+		$scope.refreshData();
+		$location.url('/metrics').replace();
 	};
-	// TODO: Figure out how to hide startDate better!
-	$scope.persistenceString = '';
-	$scope.updatePersistenceString = function () {
-		$scope.persistenceString = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities, $scope.allowedCommunities);
-		$scope.roundTrippedString = MetricsService.serializeSettings(MetricsService.deserializeSettings($scope.persistenceString, $scope.allowedCommunities), $scope.multiSelectCommunities, $scope.allowedCommunities);
+	/**
+	 * Saves settings into query string and updates with angular location.replace
+	 * @param {boolean} skipStorage (optional) - if true, does not persist
+	 * settings into sessionStorage. Useful if you want to make sure just
+	* visiting a metrics page does not overwrite your last view.
+	 **/
+	$scope.persistSettings = function (skipStorage) {
+		$scope.serializedSettings = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities, $scope.allowedCommunities);
+		// $scope.roundTrippedSerialized = MetricsService.serializeSettings(MetricsService.deserializeSettings($scope.serializedSettings, $scope.allowedCommunities), $scope.multiSelectCommunities, $scope.allowedCommunities);
+		Object.keys($scope.serializedSettings).map(function (k) {
+			var data = $scope.serializedSettings[k];
+			if (typeof data === 'string' || typeof data === 'boolean' || typeof data === 'number') {
+				$location.search(k, data);
+			} else {
+				console.warn('invalid data in persistence string (expecting only strings)', data);
+			}
+		});
+		if (!skipStorage) {
+			sessionStorage.setItem(dataKey, JSON.stringify($scope.serializedSettings));
+			$location.replace();
+		}
 	};
 	var defaultOptions = {
 		communities: 'active',
@@ -89,6 +111,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	};
 	$scope.unselectAllCommunities = function () {
 		console.log('unselect ALL communities');
+		// multiselect MUST reference the same objects as allowed comunities
 		Object.keys($scope.allowedCommunities).forEach(function (k) { $scope.allowedCommunities[k].selected = false; });
 		$scope.orderSelectedCommunities();
 	};
@@ -102,7 +125,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.settings.charts.forEach(function (chartOption) {
 			$scope.updateChartOption(chartOption);
 		});
-			$scope.calculateCombinedData();
+		$scope.calculateCombinedData();
 	};
 	$scope.addChart = function () {
 		$scope.settings.charts.push({'format': 'line', 'uniformScale': false});
@@ -134,12 +157,12 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 					break;
 				}
 			}
-			console.log('ChartData after callback finished: ', $scope.chartData);
+			// console.debug('ChartData after callback finished: ', $scope.chartData);
 			if (!$scope.orderedCommunities) {
 				$scope.orderSelectedCommunities();
 			}
-      $scope.calculateCombinedData();
-			$scope.updatePersistenceString();
+			$scope.calculateCombinedData();
+			$scope.persistSettings();
 		}
 		if (loaded[type]) {
 			finalCallback();
@@ -156,7 +179,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			}
 			loaded[type] = true;
 			finalCallback();
-		}, function (err) { console.log('error on chartOption: ', chartOption, 'error: ', err); });
+		}, function (err) { console.warn('error on chartOption: ', chartOption, 'error: ', err); });
 	};
 	$scope.removeChartOption = function (chartOption) {
 		var index = $scope.settings.charts.indexOf(chartOption);
@@ -207,7 +230,15 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		$scope.orderSelectedCommunities();
 	};
+	$scope.updateSelected = function () {
+		$scope.orderSelectedCommunities();
+		$scope.persistSettings();
+	};
 	$scope.orderSelectedCommunities = function () {
+		if (!$scope.communityOrdering) {
+			console.info('no ordering yet, cannot order anything');
+			return;
+		}
 		var ordered = [];
 		var cID, comm;
 		for (var i = 0; i < $scope.communityOrdering.length; i++) {
@@ -224,14 +255,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.orderedCommunities = ordered;
 		// If we change the selected communities or community order, need to recalculate combined Charts
 		// TODO: Figure out how to make this more natural
-		if (!$scope.settings.separateCharts) {
+		if ($scope.settings.combineCharts) {
 			$scope.calculateCombinedData();
 		}
-		$scope.updatePersistenceString();
+		$scope.persistSettings();
 	};
-	$scope.toggleCombinedView = function () {
-		$scope.settings.separateCharts = !$scope.settings.separateCharts;
-			$scope.calculateCombinedData();
 	// TODO(jtratner): find a way to NOT have to reload the data when show Empty changes (e.g., keep raw data or something...)
 	$scope.showEmptyChanged = function () {
 		$scope.refreshData('show empty changed');
@@ -280,13 +308,20 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			comm.selected = +comm.active === 1 || comm.active === true;
 			allowedCommunities[comm.id_community] = comm;
 		}
-		// [{community: XYZ, id_community: XYZ}, ...]
+		// {cID : {community: XYZ, id_community:XYZ}}
 		$scope.allowedCommunities = allowedCommunities;
+		// this is just allowedCommunities values
+		// [{community: XYZ, id_community: XYZ}, ...]
 		$scope.multiSelectCommunities = data;
-		if ($scope.availableCharts) {
-			$scope.refreshData();
+		if (getSettingsFromStorage() && !(initialQueryData && Object.keys(initialQueryData).length)) {
+			$scope.persistSettings();
 		}
-		console.log($scope.allowedCommunities);
+		addQueryDataToSettings(initialQueryData);
+		$scope.persistSettings(true);
+		if ($scope.availableCharts) {
+			$scope.refreshData('allowed communities');
+		}
+		// console.debug('allowedCommunities: ', $scope.allowedCommunities);
 	}).error(function (err) {
 		$scope.allowedCommunities = {};
 		console.error('ERROR getting community metrics permissions', err);
@@ -304,39 +339,60 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	});
 	var allowedKeys = Object.keys(defaultOptions);
 	var dataKey = 'crunchbutton-metrics-preferences';
-	var rawStorageData = localStorage.getItem(dataKey);
-	var queryData = $location.search() || {};
-	var storedData = null;
-	if (rawStorageData) {
+	function mergeSettings (settings) {
+		if (!settings || Object.keys(settings).length === 0) {
+			return;
+		}
+		var changed = false;
+		var communities = settings.communities;
+		delete(settings.communities);
+		if(communities && communities.length) {
+			console.log('settings stuff by community: ', communities);
+			$scope.unselectAllCommunities();
+			communities.forEach(function (cID) { if ($scope.allowedCommunities[cID]) { $scope.allowedCommunities[cID].selected = true; }});
+			console.log('communities found: ', communities.map(function (cID) { return $scope.allowedCommunities[cID]; }));
+		}
+		for (var k in settings) {
+			if (settings[k] !== null && settings[k] !== undefined) {
+				$scope.settings[k] = settings[k];
+				changed = true;
+			}
+		}
+		return changed;
+	}
+	function getSettingsFromStorage() {
+		var rawStorageData = sessionStorage.getItem(dataKey);
+		var storedData = null;
+		if (rawStorageData) {
+			try {
+				storedData = JSON.parse(storedData);
+			} catch (e) {
+				console.error('EXCEPTION parsing stored settings data', e);
+				return;
+			}
+		}
+		if (storedData && Object.keys(storedData).length) {
+			try {
+				return mergeSettings(MetricsService.deserializeSettings(storedData, $scope.allowedCommunities));
+			} catch (e) {
+				console.error('could not deserialize settings from local storage :-(', e);
+			}
+		}
+	}
+
+	function addQueryDataToSettings(data) {
+		if (!data || Object.keys(data).length === 0) {
+			return;
+		}
 		try {
-			storedData = JSON.parse(storedData);
+			return mergeSettings(MetricsService.deserializeSettings(data, $scope.allowedCommunities));
 		} catch (e) {
-			console.error('EXCEPTION parsing stored data', e);
+			console.error('EXCEPTION loading query data', e);
+			throw e;
 		}
 	}
-	storedData = storedData || {};
-	// combines options, starting with earliest data source and going to fallback (accepts variadic arguments
-	function mergeOptions(keys) { // + variadic data source args
-		var k, data;
-		var dataLength = arguments.length;
-		var outputData = {};
-		for (var i = 0; i < keys.length; i++) {
-			k = keys[i];
-			// for each key, try to pull from each
-			for (var j = 0; j < arguments.length; j++) {
-				data = arguments[j];
-				if (data && (data[k] !== null && data[k] !== undefined)) {
-					outputData[k] = data[k];
-					break;
-				}
-			}
-			if (outputData[k] === null || outputData[k] === undefined) {
-				console.error('ERROR: found no valid data for key: ', k);
-			}
-		}
-		return outputData;
-	}
-	var options = mergeOptions(allowedKeys, queryData, storedData, defaultOptions);
+	// capture query right now (in case we overwrite it by changes later on);
+	var initialQueryData = $location.search();
 	function getSelectedCommunities(communityString) {
 		var communities = [];
 		var community, i;
@@ -460,8 +516,4 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var anchor = $event.target;
 		return CSVService.addCSVToAnchor(anchor, exportData);
 	};
-});
-
-NGApp.controller('MetricsViewCtrl', function () {
-	// get a specific metric view
 });

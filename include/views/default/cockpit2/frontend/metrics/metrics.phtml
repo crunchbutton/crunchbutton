@@ -12,8 +12,8 @@
 			</div>
 			<div class="label">Communities:</div>
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
-				on-item-click='orderSelectedCommunities()'
-				on-cose='orderSelectedCommunities()'
+				on-item-click='updateSelected()'
+				on-close='updateSelected()'
 				max-labels='3' style='height:10px'></div>
 			<div class="label">Period</div><div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
 			<div class="label">Manage Charts</div>
@@ -21,7 +21,7 @@
 			<table>
 				<thead>
 					<tr>
-						<th></th><th></th><th>Data</th><th colspan=2>Sort</th><th ng-show='settings.separateCharts'>Scale</th><th>Type</th><th></th>
+						<th></th><th></th><th>Data</th><th colspan=2>Sort</th><th ng-show='!settings.combineCharts'>Scale</th><th>Type</th><th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -31,19 +31,20 @@
 						<td><select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select></td>
 						<td><select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select></td>
 						<td><select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select></td>
-						<td ng-show='settings.separateCharts'><select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select></td>
+						<td ng-show='!settings.combineCharts'><select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select></td>
 						<td><select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select></td>
 						<td style="padding-left:2px;padding-right:2px"></td>
 						<td><a download="metrics-{{chartOption.type}}.csv" href="#" id='metrics-export-{{chartOption.type}}' ng-click="exportDataToCSV($event, chartOption)"><i class="fa fa-lg fa-download"></i>Export</a></td>
 					</tr>
 				</tbody>
 			</table>
-			<button ng-click='toggleCombinedView()' ng-switch on='settings.separateCharts'><span ng-switch-when='true'>Combine Charts</span><span ng-switch-when='false'>Split Charts</span></button>
+			<div><input type='checkbox' ng-model='settings.combineCharts' ng-change='calculateCombinedData()'>Combine Charts</input></div>
 			<div><input type='checkbox' ng-model='settings.showEmpty' ng-change='showEmptyChanged()'>Show Empty Charts</input></div>
+			<div><button ng-click='resetSettings()'>Reset Display</button></div>
 			</div>
 		</form>
 	</div>
-	<div  ng-if='settings.separateCharts' ng-repeat='community in orderedCommunities'>
+	<div  ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities'>
 		{{community.name}}
 		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;" ng-switch on='chartOption.format'>
 			<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
@@ -57,7 +58,7 @@
 				legend="false"></canvas>
 		</div>
 	</div>
-	<div ng-if='!settings.separateCharts' ng-repeat='chartOption in settings.charts' ng-switch on='chartOption.format'>
+	<div ng-if='settings.combineCharts' ng-repeat='chartOption in settings.charts' ng-switch on='chartOption.format'>
 		<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
 		<canvas ng-switch-when='line' ng-if='orderedCommunities.length <= settings.maxCombinedCommunities'
 			class="chart chart-line" data="combinedChartData[chartOption.type].data"
@@ -77,4 +78,4 @@
 		</div>
 	</div>
 </div>
-<small>persistence: {{persistenceString}}. round tripped: {{roundTrippedString}}</small>
+<small>persistence: {{serializedSettings}}. round tripped: {{roundTrippedSerialized}}</small>
