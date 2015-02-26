@@ -1,4 +1,4 @@
-NGApp.factory('PositionsService', function ( $rootScope ) {
+NGApp.factory('PositionsService', function ( $rootScope) {
 
 	var service = {
 		bounding: null,
@@ -303,7 +303,10 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							// Success
 							function () {
 								service.loadRestaurantsPage = true;
-								App.go( '/food-delivery');
+								if (App.page == 'location') {
+									// #4911
+									//App.go( '/food-delivery');
+								}
 							},
 							// Error
 							function () {
@@ -345,7 +348,10 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					// Success
 					function () {
 						service.loadRestaurantsPage = true;
-						App.go( '/food-delivery');
+						if (App.page == 'location') {
+							// #4911
+							//App.go( '/food-delivery');
+						}
 					},
 					// Error
 					function () {
@@ -368,7 +374,10 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 						service.restaurantsService.list(
 							function () {
 								service.loadRestaurantsPage = true;
-								App.go( '/food-delivery');
+								if (App.page == 'location') {
+									// #4911
+									//App.go( '/food-delivery');
+								}
 							},
 							function () {
 								$rootScope.$broadcast( 'locationNotServed',  true );
