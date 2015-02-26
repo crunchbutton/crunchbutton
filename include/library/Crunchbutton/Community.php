@@ -678,7 +678,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function isAutoClosed(){
-		return ( intval( $this->is_auto_closed ) == 1 );
+		return ( intval( $this->is_auto_closed ) > 0 );
 	}
 
 	public function shutDownCommunity( $dt = null ){
