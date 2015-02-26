@@ -954,14 +954,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( $community->id_community ){
 
 			$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
-			$now->modify( '- 2 hours' );
-			$from = $now->format( 'Y-m-d' );
+			$now->modify( '+ 15 min' );
+			$from = $now->format( 'Y-m-d H:i' );
 			$now->modify( '+ 7 days' );
-			$to = $now->format( 'Y-m-d' );
+			$to = $now->format( 'Y-m-d H:i' );
 
 			$query = 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
 									INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-									WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $to . '" AND cs.id_community = "' . $community->id_community . '"';
+									WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $to . '" AND cs.id_community = "' . $community->id_community . '"';
 
 			$nextShifts = Crunchbutton_Community_Shift::q( $query );
 
