@@ -7,9 +7,10 @@ describe('Page', function() {
 	beforeEach(function() {
 		page.open(phantom.url, function(status) {
 			var onPageReady = function() {
-				console.log('ready');
-				console.log(page.content);
-				content = page.content;
+				setTimeout(function() {
+					console.log(page.content);
+					content = page.content;
+				},1200);
 			};
 			
 			function checkReadyState() {
