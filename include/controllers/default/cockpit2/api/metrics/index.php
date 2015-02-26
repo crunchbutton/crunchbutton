@@ -350,6 +350,9 @@ class _Community_Metric_Container {
 		case 'orders-by-hour':
 			return $this->_ordersByHourQuery();
 			break;
+		case 'orders-by-day-of-week':
+			return $this->_ordersByDayOfWeekQuery();
+			break;
 		case 'orders':
 			return $this->_buildOrdersQuery();
 			break;
@@ -552,6 +555,28 @@ class _Community_Metric_Container {
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, hour_of_day
 			';
-		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'count');
+		$hourLabels = [];
+		for($i = 0; $i < 24; $i++) {
+			$hourLabels[] = $i  . 'h';
+		}
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'count', true, 0, $hourLabels);
+	}
+	public function _ordersByDayOfWeekQuery() {
+		$q = '
+			SELECT
+				id_community,
+				DAYOFWEEK(`order`.date) day_of_week,
+				MIN(date) start_date,
+				COUNT(*) count
+			FROM `order`
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
+				AND ' . self::_buildOrderFilter('`order`') . '
+			GROUP BY id_community, day_of_week
+			';
+		$resp = self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'day_of_week', 'count', true, 0, [1, 2, 3, 4, 5, 6, 7]);
+		// replace labels that we already know are ordered here
+		$resp['meta']['labels'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		return $resp;
 	}
 }

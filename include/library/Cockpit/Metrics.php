@@ -64,7 +64,8 @@ class Cockpit_Metrics {
 			['type' => 'repeat-users-gross-revenue', 'format' => 'line', 'description' => 'Gross Revenue - Repeat Users'],
 			['type' => 'repeat-users-delivery-tips', 'format' => 'line', 'description' => 'Delivery Tips - Repeat Users'],
 			['type' => 'repeat-users-delivery-fee', 'format' => 'line', 'description' => 'Delivery Fee - Repeat Users'],
-			['type' => 'orders-by-hour', 'format' => 'line', 'description'=> 'Orders by Time of Day'],
+			['type' => 'orders-by-hour', 'format' => 'bar', 'description'=> 'Orders by Time of Day'],
+			['type' => 'orders-by-day-of-week', 'format' => 'bar', 'description'=> 'Orders by Day Of Week'],
 			['type' => 'orders', 'format' => 'line', 'description'=> 'All Orders'],
 			['type' => 'refunded', 'format' => 'line', 'description'=> 'Refunded Orders'],
 			['type' => 'gross-revenue', 'format' => 'line', 'description'=> 'Gross Revenue']
