@@ -1,4 +1,5 @@
 @import 'seven.reset';
+@import 'mixins';
 @import 'seven.spinner';
 
 $link: #d74924;
@@ -37,9 +38,7 @@ a:active {
 }
 
 input[type="text"], input[type="tel"], input[type="password"], textarea, select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+	@include appearance(none);
 }
 
 ::selection {
@@ -62,11 +61,7 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 }
 
 html {
-	-webkit-text-size-adjust: none;
-	-moz-text-size-adjust: none;
-	-ms-text-size-adjust: none;
-	-o-text-size-adjust: none;
-	text-size-adjust: none;
+	@include text-size-adjust(none);
 }
 
 * {
@@ -81,14 +76,12 @@ html {
 		padding: 10px;
 	}
 	*:not(input):not(textarea) {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: -moz-none;
-		-ms-user-select: none;
-		-o-user-select: none;
-		user-select: none;
+		@include noselect();
 	}
+}
+
+.noselect {
+	@include noselect();
 }
 
 
@@ -199,17 +192,8 @@ html {
 
 	box-sizing: border-box;
 
-	-webkit-transform: translate3d(0,0,0);
-	-moz-transform: translate3d(0,0,0);
-	-ms-transform: translate3d(0,0,0);
-	-o-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0);
-
-	-webkit-transition: all linear 0.08s;
-	-moz-transition: all linear 0.08s;
-	-ms-transition: all linear 0.08s;
-	-o-transition: all linear 0.08s;
-	transition: all linear 0.08s;
+	@include gpu();
+	@include transition(all linear 0.08s);
 }
 /* wierd issue with height only on mobile safari */
 @media screen and (max-device-width: 480px) {
@@ -366,24 +350,11 @@ p {
 	font-size: 1.3em;
 	width: 100%;
 
-	-webkit-transition: background linear 0.08s;
-	-moz-transition: background linear 0.08s;
-	-ms-transition: background linear 0.08s;
-	-o-transition: background linear 0.08s;
-	transition: background linear 0.08s;
+	@include transition(background linear 0.08s);
 }
 .button.ani-all {
-	-webkit-transform: translate3d(0,0,0);
-	-moz-transform: translate3d(0,0,0);
-	-ms-transform: translate3d(0,0,0);
-	-o-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0);
-
-	-webkit-transition: all linear 0.08s;
-	-moz-transition: all linear 0.08s;
-	-ms-transition: all linear 0.08s;
-	-o-transition: all linear 0.08s;
-	transition: all linear 0.08s;
+	@include gpu();
+	@include transition(all linear 0.08s);
 }
 
 /* colors */
@@ -520,12 +491,8 @@ p {
 	float: right;
 	margin: 8px 10px 0 0;
 
-	-webkit-transform:translate3d(0,0,0);
-	-webkit-transition: opacity 0.1s;
-	-moz-transition: opacity 0.1s;
-	-ms-transition: opacity 0.1s;
-	-o-transition: opacity 0.1s;
-	transition: opacity 0.1s;
+	@include gpu();
+	@include transition(opacity 0.1s);
 }
 
 .nav-cart-count {
@@ -553,11 +520,7 @@ p {
 		display: none;
 	}
 	.menu{
-		-webkit-transition: opacity 0.1s;
-		-moz-transition: opacity 0.1s;
-		-ms-transition: opacity 0.1s;
-		-o-transition: opacity 0.1s;
-		transition: opacity 0.1s;
+		@include transition(opacity 0.1s);
 	}
 }
 @media(max-width: 768px) {
@@ -810,11 +773,7 @@ p {
 		overflow:auto;
 		overflow-x:hidden;
 		-webkit-overflow-scrolling: touch;
-		-webkit-transform: translate3d(0,0,0);
-		-moz-transform: translate3d(0,0,0);
-		-ms-transform: translate3d(0,0,0);
-		-o-transform: translate3d(0,0,0);
-		transform: translate3d(0,0,0);
+		@include gpu();
 	}
 	.snap-content {
 		position:absolute;
@@ -838,16 +797,8 @@ p {
 		overflow:auto;
 		overflow-x:hidden;
 		-webkit-overflow-scrolling: touch;
-		-webkit-transform: translate3d(0,0,0);
-		-moz-transform: translate3d(0,0,0);
-		-ms-transform: translate3d(0,0,0);
-		-o-transform: translate3d(0,0,0);
-		transform: translate3d(0,0,0);
-		-webkit-transition: width 0.3s ease;
-		-moz-transition: width 0.3s ease;
-		-ms-transition: width 0.3s ease;
-		-o-transition: width 0.3s ease;
-		transition: width 0.3s ease;
+		@include gpu();
+		@include transition(width 0.3s ease);
 
 	}
 	.snap-drawers {
@@ -942,25 +893,10 @@ p {
 	width: 100%;
 	background: #2b2937;
 	height: 54px;
-
-	-webkit-transition:all 0.3s ease-out;
-	-moz-transition:all 0.3s ease-out;
-	-ms-transition:all 0.3s ease-out;
-	-o-transition:all 0.3s ease-out;
-	transition:all 0.3s ease-out;
-
-	-webkit-transform-origin: left bottom;
-	-moz-transform-origin: left bottom;
-	-moz-transform-origin: left bottom;
-	-ms-transform-origin: left bottom;
-	-o-transform-origin: left bottom;
-	transform-origin: left bottom;
-
-	-webkit-transform: translate3d(0,67px,0);
-	-moz-transform: translate3d(0,67px,0);
-	-ms-transform: translate3d(0,67px,0);
-	-o-transform: translate3d(0,67px,0);
-	transform: translate3d(0,67px,0);
+	
+	@include transition(all 0.3s ease-out);
+	@include transform-origin(left bottom);
+	@include transform(translate3d(0,67px,0));
 }
 
 .page-restaurant .button-bottom-show {
@@ -968,11 +904,7 @@ p {
 }
 
 .button-bottom-show {
-	-webkit-transform: translate3d(0,0,0);
-	-moz-transform: translate3d(0,0,0);
-	-ms-transform: translate3d(0,0,0);
-	-o-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0);
+	@include gpu();
 }
 
 
@@ -996,11 +928,7 @@ p {
 
 
 .page-location .nav-top, .page-restaurant .nav-top {
-	-webkit-transition: background 0.2s ease, border 0.2s ease;
-	-moz-transition: background 0.2s ease, border 0.2s ease;
-	-ms-transition: background 0.2s ease, border 0.2s ease;
-	-o-transition: background 0.2s ease, border 0.2s ease;
-	transition: background 0.2s ease, border 0.2s ease;
+	@include transition(background 0.2s ease, border 0.2s ease);
 }
 
 .page-location .nav-top.at-top, .page-restaurant .nav-top.at-top {
@@ -1116,11 +1044,7 @@ p {
 
 	box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.15);
 	/*
-	-webkit-transition: -webkit-transform 0.2s ease, box-shadow 0.2s ease;
-	-moz-transition: -moz-transform 0.2s ease, box-shadow 0.2s ease;
-	-ms-transition: -ms-transform 0.2s ease, box-shadow 0.2s ease;
-	-o-transition: -o-transform 0.2s ease, box-shadow 0.2s ease;
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	@include transition(0.2s ease, box-shadow 0.2s ease);
 	*/
 }
 
@@ -1133,14 +1057,8 @@ p {
 .restaurants-item .restaurants-open:active {
 	border: 1px solid #f78256;
 
-	-webkit-transform: translateY(2px);
-	-moz-transform: translateY(2px);
-	-ms-transform: translateY(2px);
-	-o-transform: translateY(2px);
-	transform: translateY(2px);
-
+	@include transform(translateY(2px));
 	box-shadow: 0px 0 0 0px rgba(0,0,0,0.15);
-
 }
 
 .restaurants-item {
@@ -1197,16 +1115,11 @@ p {
 	width: 27.7em;
 	clear: both;
 
-	-webkit-transition: background linear 0.08s;
-	-moz-transition: background linear 0.08s;
-	-ms-transition: background linear 0.08s;
-	-o-transition: background linear 0.08s;
-	transition: background linear 0.08s;
+	@include transition(background linear 0.08s);
 }
 .restaurants-closed:active {
 	background: #d44235;
 }
-
 
 
 @media screen and (min-width: 740px) {
@@ -1374,12 +1287,7 @@ p {
 	color: #4b4855;
 	cursor: pointer;
 	text-decoration: none;
-
-	-webkit-transition: color 0.2s ease;
-	-moz-transition: color 0.2s ease;
-	-ms-transition: color 0.2s ease;
-	-o-transition: color 0.2s ease;
-	transition: color 0.2s ease;
+	@include transition(color 0.2s ease);
 }
 .footer .social .fa:hover, .footer .social .fa:active {
 	color: #00bea0;
@@ -1972,11 +1880,9 @@ select.form-input {
 .form-group {
 	display: table;
 	width: 100%;
-	box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	white-space:nowrap;
 	margin-bottom: .45em;
+	@include box-sizing(border-box);
 }
 .form-field, .form-field.fa {
 	vertical-align: top;
@@ -2444,33 +2350,6 @@ sup {
 	display: none !important;
 }
 
-/*
-.ani-elip-one {
-opacity: 0;
--webkit-animation: ani-elip-dot 1.3s infinite;
--webkit-animation-delay: 0.0s;
-}
-
-.ani-elip-two {
-opacity: 0;
--webkit-animation: ani-elip-dot 1.3s infinite;
--webkit-animation-delay: 0.2s;
-}
-
-.ani-elip-three {
-opacity: 0;
--webkit-animation: ani-elip-dot 1.3s infinite;
--webkit-animation-delay: 0.3s;
-}
-
-@-webkit-keyframes ani-elip-dot {
-0% { opacity: 0; }
-50% { opacity: 0; }
-100% { opacity: 1; }
-}
-*/
-
-
 .payment-wrap {
 	overflow: hidden;
 	width: 20em;
@@ -2495,19 +2374,11 @@ opacity: 0;
 	margin-left: .5em;
 	margin-top: 2em;
 
-	-webkit-transform: rotate(-5deg);
-	-moz-transform: rotate(-5deg);
-	-ms-transform: rotate(-5deg);
-	-o-transform: rotate(-5deg);
-	transform: rotate(-5deg);
+	@include transform(rotate(-5deg));
 }
 
 .payment-ribbon.backface{
-	-webkit-backface-visibility: hidden;
-	-moz-backface-visibility: hidden;
-	-ms-backface-visibility: hidden;
-	-o-backface-visibility: hidden;
-	backface-visibility: hidden;
+	@include backface-visibility(hidden);
 }
 
 .account-reset-container .account-title-link,
@@ -2802,67 +2673,21 @@ opacity: 0;
 }
 
 .bubble-animated {
-
-	-webkit-animation-duration: 2.5s;
-	-webkit-animation-name: bubble-hover;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-timing-function: ease-in-out;
-
-	-moz-animation-duration: 2.5s;
-	-moz-animation-name: bubble-hover;
-	-moz-animation-iteration-count: infinite;
-	-moz-animation-timing-function: ease-in-out;
-
-	-ms-animation-duration: 2.5s;
-	-ms-animation-name: bubble-hover;
-	-ms-animation-iteration-count: infinite;
-	-ms-animation-timing-function: ease-in-out;
-
-	-o-animation-duration: 2.5s;
-	-o-animation-name: bubble-hover;
-	-o-animation-iteration-count: infinite;
-	-o-animation-timing-function: ease-in-out;
-
-	animation-duration: 2.5s;
-	animation-name: bubble-hover;
-	animation-iteration-count: infinite;
-	animation-timing-function: ease-in-out;
+	@include animation-duration(2.5s);
+	@include animation-name(bubble-hover);
+	@include animation-iteration-count(infinite);
+	@include animation-timing-function(ease-in-out);
 
 	position: absolute;
 	z-index: 10;
 	pointer-events:none;
 }
 
-@-webkit-keyframes bubble-hover {
-	0% { -webkit-transform:translateY(0); }
-	45% { -webkit-transform:translateY(-.5em); }
-	100% { -webkit-transform:translateY(0); }
+@include keyframes(bubble-hover) {
+	0% { @include transform(translateY(0)); }
+	45% { @include transform(translateY(-.5em)); }
+	100% { @include transform(translateY(0)); }
 }
-
-@-moz-keyframes bubble-hover {
-	0% { -moz-transform:translateY(0); }
-	45% { -moz-transform:translateY(-.5em); }
-	100% { -moz-transform:translateY(0); }
-}
-
-@-ms-keyframes bubble-hover {
-	0% { -ms-transform:translateY(0); }
-	45% { -ms-transform:translateY(-.5em); }
-	100% { -ms-transform:translateY(0); }
-}
-
-@-o-keyframes bubble-hover {
-	0% { -o-transform:translateY(0); }
-	45% { -o-transform:translateY(-.5em); }
-	100% { -o-transform:translateY(0); }
-}
-
-@keyframes bubble-hover {
-	0% { transform:translateY(0); }
-	45% { transform:translateY(-.5em); }
-	100% { transform:translateY(0); }
-}
-
 
 .splash-tagline {
 	margin-bottom: 2em;
@@ -2942,18 +2767,8 @@ opacity: 0;
 
 /*
 .animated-resize {
--webkit-transform: translate3d(0,0,0);
--moz-transform: translate3d(0,0,0);
--ms-transform: translate3d(0,0,0);
--o-transform: translate3d(0,0,0);
-transform: translate3d(0,0,0);
-
--webkit-transition: all 0.2s;
--moz-transition: all 0.2s;
--ms-transition: all 0.2s;
--o-transition: all 0.2s;
-transition: all 0.2s;
-}
+@include gpu();
+@include transition(all 0.2s);
 */
 
 .download-phone {
@@ -3129,23 +2944,23 @@ transition: all 0.2s;
 
 
 .image-animated {
-	-webkit-animation-duration: 5s;
-	-webkit-animation-name: image-hover;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-timing-function: ease-in-out;
-	-webkit-animation-delay: 2s;
+	@include animation-duration(5s);
+	@include animation-name(image-hover);
+	@include animation-iteration-count(infinite);
+	@include animation-timing-function(ease-in-out);
+	@include animation-delay(2s);
 }
 
-@-webkit-keyframes image-hover {
-	0% { -webkit-transform:translateY(0); }
-	22.5% { -webkit-transform:translateY(-.5em); }
-	50% { -webkit-transform:translateY(0); }
-	100% { -webkit-transform:translateY(0); }
+@include keyframes(image-hover) {
+	0% { @include transform(translateY(0)); }
+	22.5% { @include transform(translateY(-.5em)); }
+	50% { @include transform(translateY(0)); }
+	100% { @include transform(translateY(0)); }
 }
 
 .animate-cart-add {
-	-webkit-transform: translate3d(0,0,0);
-	-webkit-transition: all 0.2s ease-in;
+	@include gpu();
+	@include transition(all 0.2s ease-in);
 
 	position: absolute;
 	background: #f56b3b;
@@ -3313,7 +3128,7 @@ transition: all 0.2s;
 }
 .button.pushable.pink:active {
 	box-shadow: none;
-	-webkit-transform: translateY(3px);
+	@include transform(translateY(3px));
 }
 .cafe-start-toons {
 	background: url(../images/micro/cafe/start-toons.svg) no-repeat;
@@ -3549,17 +3364,8 @@ select {
 	opacity: 0;
 }
 .logo {
-	-webkit-transform: translate3d(0,0,0);
-	-moz-transform: translate3d(0,0,0);
-	-ms-transform: translate3d(0,0,0);
-	-o-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0);
-
-	-webkit-transition: opacity linear 0.18s;
-	-moz-transition: opacity linear 0.18s;
-	-ms-transition: opacity linear 0.18s;
-	-o-transition: opacity linear 0.18s;
-	transition: opacity linear 0.18s;
+	@include gpu();
+	@include transition(opacity linear 0.18s);
 }
 .facebook-like-link {
 	text-decoration: none !important;
@@ -3701,16 +3507,14 @@ select {
 	}
 }
 .drivers-apply .form-control {
-	-webkit-box-shadow: none;
 	box-shadow: none;
 	padding: .2em .5em;
 	color: #555;
 	line-height: 1.4em;
 	background-color: #fff;
 	border: 1px solid #ccc;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+	@include box-sizing (border-box);
+	@include box-shadow (none);
 }
 .drivers-apply .form-control-large {
 	width: 100%;
@@ -3768,14 +3572,13 @@ i {
 	height: 100%;
 	width: 100%;
 	background-size: 100%;
-	-webkit-animation:spin 4s linear infinite;
-	-moz-animation:spin 4s linear infinite;
-	animation:spin 4s linear infinite;
+	@include animation(spin 4s linear infinite);
 	background: url(../images/micro/stamp-loader-words.svg);
 }
-@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
-@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+@include keyframes(spin) {
+	100% { @include transform(rotate(360deg)) }
+}
 
 .restaurant-message{
 	font-size:1.5em;
@@ -3783,17 +3586,7 @@ i {
 }
 
 /*
-@mixin transform($transforms) {
--moz-transform: $transforms;
--o-transform: $transforms;
--ms-transform: $transforms;
--webkit-transform: $transforms;
-transform: $transforms;
-}
 
-@mixin rotate ($deg) {
-@include transform(rotate(#{$deg}deg));
-}
 
 @for $i from 1 through 100 {
 .char#{$i} {
@@ -3826,27 +3619,26 @@ font-familt: "Museo Slab";
 	padding-left: .1em;
 }
 
-
-@-webkit-keyframes shakeit {
-	0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
-	10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
-	20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
-	30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
-	40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
-	50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
-	60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
-	70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
-	80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
-	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
-	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+@include keyframes(shakeit) {
+	0% { @include transform(translate(2px, 1px) rotate(0deg)); }
+	10% { @include transform(translate(-1px, -2px) rotate(-1deg)); }
+	20% { @include transform(translate(-3px, 0px) rotate(1deg)); }
+	30% { @include transform(translate(0px, 2px) rotate(0deg)); }
+	40% { @include transform(translate(1px, -1px) rotate(1deg)); }
+	50% { @include transform(translate(-1px, 2px) rotate(-1deg)); }
+	60% { @include transform(translate(-3px, 1px) rotate(0deg)); }
+	70% { @include transform(translate(2px, 1px) rotate(-1deg)); }
+	80% { @include transform(translate(-1px, -1px) rotate(1deg)); }
+	90% { @include transform(translate(2px, 2px) rotate(0deg)); }
+	100% { @include transform(translate(1px, -2px) rotate(-1deg)); }
 }
 
 .shake {
-	-webkit-animation-name: shakeit;
-	-webkit-animation-duration: 0.5s;
-	-webkit-transform-origin:50% 50%;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-timing-function: linear;
+	@include animation-name(shakeit);
+	@include animation-duration(0.5s);
+	@include transform-origin(50% 50%);
+	@include animation-iteration-count(infinite);
+	@include animation-timing-function(linear);
 }
 
 @media screen and (min-width: 1025px) {
