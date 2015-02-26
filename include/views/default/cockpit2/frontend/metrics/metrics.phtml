@@ -39,6 +39,7 @@
 				</tbody>
 			</table>
 			<button ng-click='toggleCombinedView()' ng-switch on='settings.separateCharts'><span ng-switch-when='true'>Combine Charts</span><span ng-switch-when='false'>Split Charts</span></button>
+			<div><input type='checkbox' ng-model='settings.showEmpty' ng-change='showEmptyChanged()'>Show Empty Charts</input></div>
 			</div>
 		</form>
 	</div>

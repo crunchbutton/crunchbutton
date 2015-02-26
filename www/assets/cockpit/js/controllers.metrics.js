@@ -51,6 +51,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	];
 	$scope.settings = {
 		separateCharts: true,
+		showEmpty: false,
 		maxCombinedCommunities: 5,
 		charts: [
 			{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
@@ -231,6 +232,9 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.toggleCombinedView = function () {
 		$scope.settings.separateCharts = !$scope.settings.separateCharts;
 			$scope.calculateCombinedData();
+	// TODO(jtratner): find a way to NOT have to reload the data when show Empty changes (e.g., keep raw data or something...)
+	$scope.showEmptyChanged = function () {
+		$scope.refreshData('show empty changed');
 	};
 	$scope.calculateCombinedData = function (maxSize) {
 		// We *assume* communities are already ordered by this point!

@@ -234,6 +234,7 @@ class _Community_Metric_Container {
 		}
 		$allLabels = array_keys($allLabels);
 		sort($allLabels);
+		$missingData = array_pad([], count($allLabels), $fillValue);
 		$out = [];
 		foreach($grouped as $key => $rows) {
 			$data = [];
@@ -254,6 +255,12 @@ class _Community_Metric_Container {
 				}
 			}
 			$out[$key] = $data;
+		}
+		// backfill data for each community
+		foreach($this->communities as $id_community) {
+			if(!isset($out[$id_community])) {
+				$out[$id_community] = $missingData;
+			}
 		}
 		return ['data' => $out, 'meta' => ['labels' => $allLabels, 'startDate' => $this->startDate->format('Y-m-d H:i:s'), 'endDate' => $this->endDate->format('Y-m-d H:i:s')]];
 	}
