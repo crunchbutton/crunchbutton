@@ -45,7 +45,7 @@
 		</form>
 	</div>
 	<div  ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities'>
-		{{community.name}}
+		<h2>{{community.name}} <small>({{community.timezone}})<small></h2>
 		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;" ng-switch on='chartOption.format'>
 			<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
 			<canvas ng-switch-when='line' class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
