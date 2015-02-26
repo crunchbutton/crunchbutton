@@ -204,9 +204,14 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public function getRestaurantRegularPlusHolidayHours( $restaurant ){
 
+		Crunchbutton_Config::getVal( 'auto_close_use_community_hours' );
+
 		// If the restaurant is 3rd party delivery and the community is auto close
 		// due to it has no driver get the commuinity shift hours
-		if( $restaurant->delivery_service && $restaurant->isCommunityAutoClosed() ){
+		// added a config key if we need to disable it on live
+		if( $restaurant->delivery_service &&
+				$restaurant->isCommunityAutoClosed() &&
+				intval( Crunchbutton_Config::getVal( 'auto_close_use_community_hours' ) ) ){
 			$hours = $restaurant->assignedShiftHours();
 		} else {
 			// Get the restaurant's regular hours
