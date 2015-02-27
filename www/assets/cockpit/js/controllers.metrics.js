@@ -346,8 +346,10 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		delete(settings.communities);
 		if(communities && communities.length) {
 			console.log('settings stuff by community: ', communities);
-			$scope.unselectAllCommunities();
-			communities.forEach(function (cID) { if ($scope.allowedCommunities[cID]) { $scope.allowedCommunities[cID].selected = true; }});
+			// force selections to just those communities that are available
+			var communityMap = {}
+			communities.forEach(function (cID) { communityMap[cID] = true; });
+			Object.keys($scope.allowedCommunities).forEach(function (cID) { $scope.allowedCommunites[cID].selected = !!communityMap[cID]; });
 			console.log('communities found: ', communities.map(function (cID) { return $scope.allowedCommunities[cID]; }));
 		}
 		for (var k in settings) {
