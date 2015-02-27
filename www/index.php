@@ -15,10 +15,6 @@ ini_set('display_errors',true);
 set_time_limit(100);
 ini_set('zlib.output_compression','On');
 ini_set('zlib.output_compression_level',9);
-ini_set('max_input_vars', 100000);
-ini_set('upload_max_filesize', '32M');
-ini_set('post_max_size', '32M');
-
 
 if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
