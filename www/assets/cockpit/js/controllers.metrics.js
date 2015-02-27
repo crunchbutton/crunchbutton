@@ -104,7 +104,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.unselectAllCommunities = function () {
 		console.log('unselect ALL communities');
 		// multiselect MUST reference the same objects as allowed comunities
-		Object.keys($scope.allowedCommunities).forEach(function (k) { $scope.allowedCommunities[k].selected = false; });
+		Object.keys($scope.allowedCommunities).forEach(function (k) { if ($scope.allowedCommunities[k]) { $scope.allowedCommunities[k].selected = false; }});
 		$scope.orderSelectedCommunities();
 	};
 	// TODO: Figure out how to avoid the multiple refreshes here!
@@ -347,10 +347,11 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if(communities && communities.length) {
 			console.log('settings stuff by community: ', communities);
 			// force selections to just those communities that are available
-			var communityMap = {}
+			var communityMap = {};
 			communities.forEach(function (cID) { communityMap[cID] = true; });
-			Object.keys($scope.allowedCommunities).forEach(function (cID) { $scope.allowedCommunites[cID].selected = !!communityMap[cID]; });
+			Object.keys($scope.allowedCommunities).forEach(function (cID) { if ($scope.allowedCommunities[cID]) { $scope.allowedCommunities[cID].selected = !!communityMap[cID]; }});
 			console.log('communities found: ', communities.map(function (cID) { return $scope.allowedCommunities[cID]; }));
+			$scope.updateSelected();
 		}
 		for (var k in settings) {
 			if (settings[k] !== null && settings[k] !== undefined) {

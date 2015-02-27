@@ -6,8 +6,8 @@
 		<form>
 			<div class="ul-inputs">
 			<div>
-				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' ng-model='settings.start' ng-change='needsRefresh=1'></span>
-				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' ng-model='settings.end' ng-change='needsRefresh=1'></span>
+				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' ng-model='settings.start' ng-change='refreshOnTimer("start")'></span>
+				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' ng-model='settings.end' ng-change='refreshOnTimer("end")'></span>
 				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh fa-lg"></i></button>
 			</div>
 			<div class="label">Communities:</div>
