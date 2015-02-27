@@ -35,8 +35,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': false, 'description': 'Scale each chart individually'}
 	];
 	$scope.availablePeriods = [
-		// too complicated to support this with start / end stuff for now
-		// {'symbol': 'h', 'description': 'By Hour', 'title': 'Hour'},
+    // this is complicated for start / end, but we want to support this for dumping data
+		{'symbol': 'h', 'description': 'By Hour', 'title': 'Hour'},
 		{'symbol': 'd', 'description': 'By Day', 'title': 'Day'},
 		{'symbol': 'w', 'description': 'By Week', 'title': 'Week'},
 		{'symbol': 'M', 'description': 'By Month', 'title': 'Month'},
