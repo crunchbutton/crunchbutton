@@ -13,6 +13,8 @@ class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
+		new Crunchbutton_Headers;
+
 		if (!$_SERVER['SERVER_NAME']) {
 			$cli = true;
 			// get the env send by parameter
@@ -60,6 +62,9 @@ class Crunchbutton_App extends Cana_App {
 		// anything prefixed with beta or dev
 		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
+		// anything by heroku use remote live
+		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'live';
 		// anything else (should be nothing)
 		} else {
 			$db = 'fail';
@@ -72,6 +77,7 @@ class Crunchbutton_App extends Cana_App {
 
 		// redirect bad urls
 		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
+			die ('no db');
 			header('HTTP/1.1 301 Moved Permanently');
 			header('Location: https://_DOMAIN_/');
 			exit;

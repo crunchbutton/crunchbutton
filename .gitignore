@@ -36,3 +36,7 @@ workflow*
 !db/migrate/*.sql
 !db/dump.sql
 !.htaccess
+
+
+composer.lock
+vendor/*

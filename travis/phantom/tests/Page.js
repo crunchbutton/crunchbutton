@@ -7,7 +7,9 @@ describe('Page', function() {
 	beforeEach(function() {
 		page.open(phantom.url, function(status) {
 			var onPageReady = function() {
-				content = page.content;
+				setTimeout(function() {
+					content = page.content;
+				},1200);
 			};
 			
 			function checkReadyState() {
@@ -35,6 +37,8 @@ describe('Page', function() {
 		});
 
 	    runs(function() {
+			console.log('runs');
+			console.log(content);
 			expect(content.match(/facebook-jssdk/i)).toBeTruthy();
 	    });
     });
