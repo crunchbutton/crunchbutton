@@ -163,7 +163,7 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
  */
 NGApp.controller('WorkCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
-	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
 	$scope.devs = devs;
 });
@@ -173,7 +173,7 @@ NGApp.controller('WorkCtrl', function ($scope) {
  */
 NGApp.controller('ThankyouCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
-	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
 	$scope.devs = devs;
 });
