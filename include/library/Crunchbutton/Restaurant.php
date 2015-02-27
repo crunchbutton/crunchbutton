@@ -1065,7 +1065,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
 
-		$isCockpit = Crunchbutton_Util::isCockpit();;
+		$isCockpit = Crunchbutton_Util::isCockpit();
 
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
@@ -1153,7 +1153,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// Issue #1051 - potentially urgent security issue
-		if( !$isAdmin ){
+		if( !$isCockpit ){
 			$ignore['notifications'] = true;
 			$out[ 'notes_owner' ] = NULL;
 			$out[ 'balanced_id' ] = NULL;
@@ -1164,7 +1164,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		if (!$ignore['notifications']) {
 			$where = [];
-			if ( $isAdmin ) {
+			if ( $isCockpit ) {
 				$where['active'] = NULL;
 			}
 			foreach ($this->notifications($where) as $notification) {
