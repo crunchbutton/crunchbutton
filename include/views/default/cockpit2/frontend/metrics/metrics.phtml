@@ -8,7 +8,7 @@
 			<div>
 				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' ng-model='settings.start' ng-change='needsRefresh=1'></span>
 				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' ng-model='settings.end' ng-change='needsRefresh=1'></span>
-				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh"></i></button>
+				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh fa-lg"></i></button>
 			</div>
 			<div class="label">Communities:</div>
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
@@ -40,7 +40,6 @@
 			</table>
 			<div><input type='checkbox' ng-model='settings.combineCharts' ng-change='calculateCombinedData()'>Combine Charts</input></div>
 			<div><input type='checkbox' ng-model='settings.showEmpty' ng-change='showEmptyChanged()'>Show Empty Charts</input></div>
-			<div><button ng-click='resetSettings()'>Reset Display</button></div>
 			</div>
 		</form>
 	</div>
@@ -79,3 +78,4 @@
 	</div>
 </div>
 <small>persistence: {{serializedSettings}}. round tripped: {{roundTrippedSerialized}}</small>
+<div><small><button ng-click='resetSettings()'>Reset To Default Settings</button></small></div>
