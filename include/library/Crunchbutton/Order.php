@@ -1844,13 +1844,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				// #3925
 				if( !$this->restaurant()->formal_relationship ) {
 					$msg .= "DO NOT call the restaurant. If you have any questions about your order, text or call us back directly!\n";
+					$msg .= "\n";
+				} else {
+					// Removed the delivery estimate #3925
+					if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
+						$msg .= "Your order will arrive around ";
+						$msg .= $this->restaurant()->calc_delivery_estimated_time();
+						$msg .= "!\n\n";
+					}
 				}
-				// Start Telling Customers Estimated Delivery Time #2476
-				if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
-					$msg .= "Your order will arrive around ";
-					$msg .= $this->restaurant()->calc_delivery_estimated_time();
-					$msg .= "!\n\n";
-				}
+
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
