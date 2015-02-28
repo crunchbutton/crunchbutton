@@ -63,8 +63,8 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// anything by heroku use remote live
-		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
-			$db = 'live';
+		} elseif (preg_match('/^(heroku.(_DOMAIN_|crunchr.co))|crunchbutton.herokuapp.com$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'heroku';
 		// anything else (should be nothing)
 		} else {
 			$db = 'fail';
