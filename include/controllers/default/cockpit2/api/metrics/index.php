@@ -557,7 +557,7 @@ class _Community_Metric_Container {
 			';
 		$hourLabels = [];
 		for($i = 0; $i < 24; $i++) {
-			$hourLabels[] = $i  . 'h';
+			$hourLabels[] = sprintf("%02d", $i)  . 'h';
 		}
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'count', true, 0, $hourLabels);
 	}
