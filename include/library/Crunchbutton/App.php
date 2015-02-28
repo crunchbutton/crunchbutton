@@ -53,6 +53,9 @@ class Crunchbutton_App extends Cana_App {
 		// anything local
 		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
+		// anything by heroku use remote live
+		} elseif (preg_match('/^(heroku.(_DOMAIN_|crunchr.co))|crunchbutton.herokuapp.com$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'heroku';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
@@ -62,9 +65,6 @@ class Crunchbutton_App extends Cana_App {
 		// anything prefixed with beta or dev
 		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
-		// anything by heroku use remote live
-		} elseif (preg_match('/^(heroku.(_DOMAIN_|crunchr.co))|crunchbutton.herokuapp.com$/',$_SERVER['SERVER_NAME'])) {
-			$db = 'heroku';
 		// anything else (should be nothing)
 		} else {
 			$db = 'fail';
