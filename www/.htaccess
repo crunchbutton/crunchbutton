@@ -27,11 +27,11 @@ RewriteRule ^(.+).scss$                    index.php?__url=$1 [L,QSA]
 	AddType font/woff .woff
 	AddType image/svg+xml .svg .svgz
 
-	<IfDefine !HEROKU>
+	<IfModule mod_php5.c>
 		php_value max_input_vars 100000
 		php_value upload_max_filesize 32M
 		php_value post_max_size 32M
-	</IfDefine>
+	</IfModule>
 
 	AddOutputFilterByType DEFLATE text/plain
 	AddOutputFilterByType DEFLATE text/html
