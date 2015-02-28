@@ -523,4 +523,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var anchor = $event.target;
 		return CSVService.addCSVToAnchor(anchor, exportData);
 	};
+	// ng-change does not work for some reason...
+	$scope.$watch('setting.start', function () { refreshOnTimer('start date')});
+	$scope.$watch('settings.end', function () { refreshOnTimer('end date') });
 });
