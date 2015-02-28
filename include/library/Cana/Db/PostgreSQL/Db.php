@@ -2,8 +2,20 @@
 
 class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 	public function connect($args = null) {
+		if ($args->url) {
+			preg_match('/^(postgres:\/\/)(.*):(.*)@(.*):([0-9]+)\/(.*)$/u', $args->url, $matches);
+			$args->user = $matches[2];
+			$args->pass = $matches[3];
+			$args->host = $matches[4];
+			$args->port = $matches[5];
+			$args->db = $matches[6];
+		}
+
 		if (!$args->dsn) {
 			$args->dsn = 'pgsql:host='.$args->host.';dbname='.$args->db.';user='.$args->user.';password='.$args->pass;
+			if ($args->port) {
+				$args->dsn .= ';port='.$args->port;
+			}
 		}
 
 		$db = new \PDO($args->dsn);
