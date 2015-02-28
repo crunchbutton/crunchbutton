@@ -4,8 +4,8 @@ class Controller_test_userimage extends Crunchbutton_Controller_Account {
 		$users = User::q('
 			select `user`.* from `user` left join user_auth using(id_user)
 			where
-				user_auth.active=1
-				and user.active=1
+				user_auth.active=true
+				and user.active=true
 				and ((user_auth.type = "local" and user_auth.email LIKE "%@%") or (user_auth.type = "facebook"))
 				group by `user`.id_user
 				order by `user`.id_user

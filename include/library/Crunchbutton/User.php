@@ -104,8 +104,8 @@ class Crunchbutton_User extends Cana_Table {
 			where
 				user_auth.auth=?
 				and user_auth.`type`="facebook"
-				and user.active=1
-				and user_auth.active=1
+				and user.active=true
+				and user_auth.active=true
 			',[$id])->get(0);
 	}
 
@@ -151,7 +151,7 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function auths() {
 		if (!isset($this->_auths)) {
-			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=1');
+			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=true');
 		}
 		return $this->_auths;
 	}

@@ -33,7 +33,7 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 				left join restaurant on restaurant.id_restaurant=`order`.id_restaurant
 				left join restaurant_community on restaurant_community.id_restaurant=restaurant.id_restaurant
 				left join community on community.id_community=restaurant_community.id_community
-				where community.active=1
+				where community.active=true
 				and community.name not like "%test%"
 				and restaurant.name not like "%test%"
 				and order.name not like "%test%"
