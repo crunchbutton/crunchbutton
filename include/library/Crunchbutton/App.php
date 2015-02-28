@@ -97,7 +97,7 @@ class Crunchbutton_App extends Cana_App {
 
 		if (getenv('HEROKU')) {
 			$params['config']->db->heroku = (object)[
-				'dsn' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
+				'url' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
 				'type' => 'PostgreSQL'
 			];
 			parent::init($params);
