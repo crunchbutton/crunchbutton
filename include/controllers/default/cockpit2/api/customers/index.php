@@ -17,10 +17,11 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
 		
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$sort = $this->request()['sort'] ? c::db()->escape($this->request()['sort']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$sort = $this->request()['sort'] ? $this->request()['sort'] : null;
+		$keys = [];
 		
 		if ($sort{0} == '-') {
 			$sort = substr($sort, 1);
@@ -44,7 +45,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		';
 		
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'user.name' => 'like',
@@ -56,6 +57,8 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 					'user.id_user' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 		
 		$q .= '
@@ -64,7 +67,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		while ($c = $r->fetch()) {
 			$count++;
 		}
@@ -92,8 +95,10 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
-			LIMIT '.$offset.', '.$limit.'
+			LIMIT ?, ?
 		';
+		$keys[] = $offset;
+		$keys[] = $limit;
 		
 		// do the query
 		$data = [];
@@ -101,7 +106,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			`user`.*,
 			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = user.id_user) as _order_date,
 			COUNT(`order`.id_order) orders
-		', $q));
+		', $q), $keys);
 
 		while ($o = $r->fetch()) {
 			$u = new User($o);

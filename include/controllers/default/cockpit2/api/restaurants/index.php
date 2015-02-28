@@ -59,11 +59,12 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 	private function _query() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -95,12 +96,13 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 		if ($community) {
 			$q .= '
-				AND restaurant_community.id_community="'.$community.'"
+				AND restaurant_community.id_community=?
 			';
+			$keys[] = $community;
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'restaurant.name' => 'like',
@@ -111,6 +113,8 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					'restaurant.id_restaurant' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 		$q .= '
@@ -119,15 +123,17 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		while ($c = $r->fetch()) {
 			$count++;
 		}
 
 		$q .= '
 			ORDER BY restaurant.name ASC
-			LIMIT '.$offset.', '.$limit.'
+			LIMIT ?, ?	
 		';
+		$keys[] = $offset;
+		$keys[] = $limit;
 
 		// do the query
 		$data = [];
@@ -135,7 +141,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			restaurant.*,
 			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
 			COUNT(`order`.id_order) orders
-		', $q));
+		', $q), $keys);
 		while ($s = $r->fetch()) {
 			$restaurant = Restaurant::o($s);
 			$out = $s;

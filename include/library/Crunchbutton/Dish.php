@@ -48,7 +48,7 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 				ORDER BY
 					option.type desc,
 					dish_option.sort ASC, option.name
-			', $this->db());
+			');
 		}
 		if (gettype($this->_options) == 'array') {
 			$this->_options = i::o($this->_options);

@@ -123,15 +123,51 @@ class Cana_Table extends Cana_Model { //
 
 			$fields = [];
 			$res = $this->db()->query('SHOW COLUMNS FROM `'.$this->table().'`');
+
 			while ($row = $res->fetch()) {
 				$row->Null = $row->Null == 'YES' ? true : false;
+				if (strpos($row->Type, 'int') !== false) {
+					$row->Type = 'int';
+				}
 				$fields[] = $row;
 			}
+
 			$this->_fields = $fields;
 			$this->db()->fields($this->table(), $fields);
 		}
 		return $this->_fields;
 	}
+	
+	/*
+	public function keys() {
+		// not done with this
+		if ($keys = $this->db()->keys($this->table())) {
+			$this->_keys = $keys;
+		} else {
+			$keys = [];
+			$res = $this->db()->query('
+				select
+					table_name,column_name,referenced_table_name,referenced_column_name
+				from
+					information_schema.key_column_usage
+				where
+					referenced_table_name is not null
+					and table_schema = "'.$this->db()->database().'"
+					and table_name = "'.$this->table().'"
+			');
+
+			while ($row = $res->fetch()) {
+				$keys[] = $row;
+			}
+
+			$this->_keys = $keys;
+			$this->db()->keys($this->table(), $keys);
+		}
+
+		return $this->_keys;
+		
+	}
+	*/
 
 
 	/**
@@ -159,8 +195,8 @@ class Cana_Table extends Cana_Model { //
 				}
 
 				if (!$node) {
-					$query = 'SELECT * FROM `' . $this->table() . '` WHERE `'.$this->idVar().'`="'.$this->db()->escape($id).'" LIMIT 1';
-					$node = $this->db()->get($query)->get(0);
+					$query = 'SELECT * FROM `' . $this->table() . '` WHERE `'.$this->idVar().'`=:id LIMIT 1';
+					$node = $this->db()->get($query, ['id' => $id])->get(0);
 				}
 
 				if (!$node) {
@@ -172,8 +208,7 @@ class Cana_Table extends Cana_Model { //
 				}
 			} else {
 				// fill the object with blank properties based on the fields of that table
-				$fields = $this->fields();
-				foreach ($fields as $field) {
+				foreach ($this->fields() as $field) {
 					$this->{$field->Field} = $this->{$field->Field} ? $this->{$field->Field} : '';
 				}
 			}
@@ -191,6 +226,14 @@ class Cana_Table extends Cana_Model { //
 			}
 			if (!isset($this->id) && isset($node->$id_var)) {
 				$this->id = $node->$id_var;
+			}
+		}
+		
+		foreach ($this->fields() as $field) {
+			switch ($field->Type) {
+				case 'int':
+					$this->{$field->Field} = (int)$this->{$field->Field};
+					break;
 			}
 		}
 
@@ -237,18 +280,39 @@ class Cana_Table extends Cana_Model { //
 				}
 
 				$query .= !$numset ? ' SET' : ',';
-				$query .= ' `'.$field->Field.'`='.(is_null($this->{$field->Field}) ? 'NULL' : ('"'.$this->dbWrite()->escape($this->{$field->Field}).'"'));
+				//$query .= ' `'.$field->Field.'`='.(is_null($this->{$field->Field}) ? 'NULL' : (':'.$field->Field));
+				//var_dump($field);
+				
+				switch ($field->Type) {
+					case 'int':
+						$value = intval($this->{$field->Field});
+						break;
+
+					default:
+						$value = $this->{$field->Field};
+						break;
+				}
+				//var_dump($value);
+				$value = (!$value && $field->Null) ? null : $value;
+
+				$query .= ' `'.$field->Field.'`=:'.$field->Field;
+				//if (!is_null($this->{$field->Field})) {
+					$fs[$field->Field] = $value;
+				//}
+				
 				$numset++;
 			}
 		}
 		if (!$newItem) {
-			$query .= ' WHERE '.$this->idVar().'="'.$this->dbWrite()->escape($this->{$this->idVar()}).'"';
+			$query .= ' WHERE '.$this->idVar().'=:id';
+			$fs['id'] = $this->{$this->idVar()};
 		}
-
-		$this->dbWrite()->query($query);
+//var_dump($fs);
+		//echo $query;
+		$this->dbWrite()->query($query, $fs);
 
 		if ($newItem == 1) {
-			$this->{$this->idVar()} = $this->dbWrite()->insertId();
+			$this->dbWrite()->lastInsertId();
 		}
 		return $this;
 	}
@@ -259,8 +323,8 @@ class Cana_Table extends Cana_Model { //
 	 */
 	public function delete() {
 		if ($this->{$this->idVar()}) {
-			$query = 'DELETE FROM `'.$this->table().'` WHERE `'.$this->idVar().'` = "'.$this->dbWrite()->escape($this->{$this->idVar()}).'"';
-			$this->dbWrite()->query($query);
+			$query = 'DELETE FROM `'.$this->table().'` WHERE `'.$this->idVar().'` = ?';
+			$this->dbWrite()->query($query, [$this->{$this->idVar()}]);
 		} else {
 			throw new Exception('Cannot delete. No ID was given.<br>');
 		}
@@ -414,9 +478,9 @@ class Cana_Table extends Cana_Model { //
 		return self::o($list);
 	}
 
-	public static function q($query, $db = null) {
+	public static function q($query, $args = null, $db = null) {
 		$db = $db ? $db : Cana::db();
-		$res = $db->query($query);
+		$res = $db->query($query, $args);
 		$classname = get_called_class();
 		while ($row = $res->fetch()) {
 			$items[] = new $classname($row);

@@ -11,13 +11,14 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$user = $this->request()['user'] ? c::db()->escape($this->request()['user']) : null;
-		$phone = $this->request()['phone'] ? c::db()->escape($this->request()['phone']) : null;
-		$restaurant = $this->request()['restaurant'] ? c::db()->escape($this->request()['restaurant']) : null;
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$user = $this->request()['user'] ? $this->request()['user'] : null;
+		$phone = $this->request()['phone'] ? $this->request()['phone'] : null;
+		$restaurant = $this->request()['restaurant'] ? $this->request()['restaurant'] : null;
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -48,26 +49,30 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		if ($user) {
 			$q .= '
-				AND `order`.id_user="'.$user.'"
+				AND `order`.id_user=?
 			';
+			$keys[] = $user;
 		}
 
 		if ($phone) {
 			$q .= '
-				AND `order`.phone="'.$phone.'"
+				AND `order`.phone=?
 			';
+			$keys[] = $phone;
 		}
 
 		if ($community) {
 			$q .= '
-				AND community.id_community="'.$community.'"
+				AND community.id_community=?
 			';
+			$keys[] = $community;
 		}
 
 		if ($restaurant) {
 			$q .= '
-				AND restaurant.id_restaurant="'.$restaurant.'"
+				AND restaurant.id_restaurant=?
 			';
+			$keys[] = $restaurant;
 		}
 
 		if ($search) {
@@ -79,16 +84,18 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				case ( strpos( $search, 'phone:' ) !== false ):
 					$phone = str_replace( 'phone:' , '', $search );
 					$phone = str_replace( '-' , '', $phone );
-					$q .= 'AND order.phone = "' . $phone . '"';
+					$q .= 'AND order.phone = ? ';
+					$keys[] = $phone;
 					break;
 
 				case ( strpos( $search, 'customer:' ) !== false ):
 					$id_user = str_replace( 'customer:' , '', $search );
-					$q .= 'AND order.id_user = "' . $id_user . '"';
+					$q .= 'AND order.id_user = ? ';
+					$keys[] = $id_user;
 					break;
 
 				default:
-					$q .= Crunchbutton_Query::search([
+					$s = Crunchbutton_Query::search([
 						'search' => stripslashes($search),
 						'fields' => [
 							'restaurant.name' => 'like',
@@ -100,6 +107,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 							'order.id_order' => 'liker'
 						]
 					]);
+					$q .= $s['query'];
+					$keys = array_merge($keys, $s['keys']);
 					break;
 			}
 		}
@@ -110,15 +119,17 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		while ($c = $r->fetch()) {
 			$count++;
 		}
 
 		$q .= '
 			ORDER BY `order`.id_order DESC
-			LIMIT '.$offset.', '.$limit.'
+			LIMIT ?, ?
 		';
+		$keys[] = $offset;
+		$keys[] = $limit;
 
 		// do the query
 		$data = [];
@@ -134,7 +145,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			admin.id_admin as _driver_id
 		', $q);
 
-		$r = c::db()->query($query);
+		$r = c::db()->query($query, $keys);
 
 		while ($o = $r->fetch()) {
 			$o->status = Order::o( $o->id_order )->status()->last();

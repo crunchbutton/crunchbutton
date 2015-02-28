@@ -21,8 +21,9 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 		exit;
 		*/
 		
-		$days = $this->request()['days'] ? c::db()->escape($this->request()['days']) : 90;
-		
+		$days = $this->request()['days'] ? $this->request()['days'] : 90;
+		$keys = [];
+		$keys[] = $data;
 		
 		$data = [];
 		$q = '
@@ -38,7 +39,7 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 				and order.name not like "%test%"
 				and community.name not like "%apply%"
 				and restaurant.delivery_service=1
-				and order.date > date_sub(now(), interval '.$days.' day)
+				and order.date > date_sub(now(), interval ? day)
 				group by community.id_community
 				order by c desc
 			) t
@@ -46,7 +47,7 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 			limit 10
 		';
 
-		$r = c::db()->query($q);
+		$r = c::db()->query($q, $keys);
 		while ($o = $r->fetch()) {
 			$data[] = (array)$o;
 		}

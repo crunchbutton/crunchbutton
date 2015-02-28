@@ -4,12 +4,13 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'open';
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$admin = $this->request()['admin'] ? c::db()->escape($this->request()['admin']) : 'all';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$status = $this->request()['status'] ? $this->request()['status'] : 'open';
+		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$admin = $this->request()['admin'] ? $this->request()['admin'] : 'all';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -36,18 +37,20 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		if ($admin != 'all') {
 			$q .= '
-				AND s.id_admin="'.$admin.'"
+				AND s.id_admin=?
 			';
+			$keys['admin'] = $admin;
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			// only display support to their number
 			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
-			$q .= ' AND s.phone="'.$phone.'"';
+			$q .= ' AND s.phone=?';
+			$keys['phone'] = $phone;
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'u.name' => 'like',
@@ -59,6 +62,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 					's.id_support' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 		$q .= '
@@ -67,15 +72,17 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		while ($c = $r->fetch()) {
 			$count++;
 		}
 
 		$q .= '
 			ORDER BY s.datetime DESC
-			LIMIT '.$offset.', '.$limit.'
+			LIMIT ?, ?
 		';
+		$keys[] = $offset;
+		$keys[] = $limit;
 
 		// do the query
 		$d = [];
@@ -93,7 +100,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			u.id_user,
 			s.status,
 			sm.body as message
-		', $q));
+		', $q), $keys);
 
 		while ($o = $r->fetch()) {
 			if (!$o->name) {

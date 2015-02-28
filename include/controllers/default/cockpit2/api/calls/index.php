@@ -4,10 +4,11 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$keys = [];
 
 		$q = '
 			SELECT
@@ -25,7 +26,8 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 				$status = [$status];
 			}
 			foreach ($status as $s) {
-				$st .= ($st ? ' OR ' : '').' c.status="'.$s.'" ';
+				$st .= ($st ? ' OR ' : '').' c.status=? ';
+				$keys[] = $s;
 			}
 			$q .= '
 				AND ('.$st.')
@@ -35,13 +37,15 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			// only display support to their number
 			$q .= ' AND (
-				c.from="'.Phone::clean(c::admin()->phone).'"
-				OR c.to="'.Phone::clean(c::admin()->phone).'"
+				c.from=?
+				OR c.to=?
 			)';
+			$keys[] = Phone::clean(c::admin()->phone);
+			$keys[] = Phone::clean(c::admin()->phone);
 		}
 		
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'uf.name' => 'like',
@@ -55,6 +59,8 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 					'c.id_call' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 		
 		$q .= '
@@ -63,15 +69,16 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) co', $q));
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) co', $q), $keys);
 		while ($c = $r->fetch()) {
 			$count++;
 		}
 
 		$q .= '
 			ORDER BY c.date_start DESC
-			LIMIT '.$limit.'
+			LIMIT ?
 		';
+		$keys[] = $limit;
 
 		// do the query
 		$d = [];
@@ -96,7 +103,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			c.id_user_to,
 			c.id_admin_from,
 			c.id_admin_to
-		', $q));
+		', $q), $keys);
 
 		while ($o = $r->fetch()) {
 			if ($o->direction == 'inbound') {

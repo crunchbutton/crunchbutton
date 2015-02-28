@@ -31,7 +31,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function permalink($permalink) {
-		return self::q('select * from restaurant where permalink="'.$permalink.'"')->get(0);
+		return self::q('select * from restaurant where permalink=?', [$permalink])->get(0);
 	}
 
 	public function active(){
@@ -98,7 +98,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			];
 			$where = $this->_mergeWhere($defaultFilters, $where);
 			$sql   = "SELECT * FROM dish WHERE $where";
-			$this->_dishes = Dish::q($sql, $this->db());
+			$this->_dishes = Dish::q($sql);
 		}
 		return $this->_dishes;
 	}
@@ -1403,12 +1403,20 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public static function byRange($params) {
 		$params['range'] = $params['range'] ? $params['range'] : 2;
 		$rangeDif = $params['range']-2;
+		
+		$keys = [
+			'lata' => $params['lat'],
+			'latb' => $params['lat'],
+			'lon' => $params['lon'],
+			'range' => $params['range'],
+			'diff' => $rangeDif
+		];
 
 		$query = '
 			SELECT
 				count(*) as _weight,
 				"byrange" type,
-				((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
+				((ACOS(SIN(:lata * PI() / 180) * SIN(loc_lat * PI() / 180) + COS( :latb * PI() / 180) * COS(loc_lat * PI() / 180) * COS(( :lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
 				restaurant.*
 			FROM `restaurant`
 			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
@@ -1420,14 +1428,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				AND
 					delivery = 0
 				AND
-					`distance` <= '.$params['range'].'
+					`distance` <= :range
 				OR
 					delivery = 1
 				AND
-					`distance` <= (`delivery_radius`+'.$rangeDif.')
+					`distance` <= (`delivery_radius`+ :diff )
 			ORDER BY _weight DESC;
 		';
-		$restaurants = self::q($query);
+		$restaurants = self::q($query, $keys);
 		foreach ($restaurants as $restaurant) {
 			$sum += $restaurant->_weight;
 		}

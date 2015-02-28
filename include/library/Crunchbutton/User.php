@@ -102,11 +102,11 @@ class Crunchbutton_User extends Cana_Table {
 			select user.* from user
 			left join user_auth using(id_user)
 			where
-				user_auth.auth="'.Cana::db()->escape($id).'"
+				user_auth.auth=?
 				and user_auth.`type`="facebook"
 				and user.active=1
 				and user_auth.active=1
-			')->get(0);
+			',[$id])->get(0);
 	}
 
 	public static function facebookCreate($id, $auth = false) {

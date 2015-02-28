@@ -105,14 +105,15 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _list() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : '';
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$working = $this->request()['working'] ? c::db()->escape($this->request()['working']) : 'all';
-		$pexcard = $this->request()['pexcard'] ? c::db()->escape($this->request()['pexcard']) : 'all';
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$type = $this->request()['type'] ? $this->request()['type'] : '';
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$working = $this->request()['working'] ? $this->request()['working'] : 'all';
+		$pexcard = $this->request()['pexcard'] ? $this->request()['pexcard'] : 'all';
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -161,8 +162,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($community) {
 			$q .= '
-				AND community.id_community="'.$community.'"
+				AND community.id_community=?
 			';
+			$keys[] = $community;
 		}
 
 		if ( $pexcard != 'all' ) {
@@ -172,7 +174,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'admin.name' => 'like',
@@ -182,12 +184,14 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					'admin.id_admin' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 		// get the count
 		$count = 0;
 		if ($working == 'all') {
-			$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+			$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 			while ($c = $r->fetch()) {
 				$count = $c->c;
 			}
@@ -198,12 +202,14 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			ORDER BY `admin`.name ASC
 		';
 		if ($working == 'all') {
-			$q .= ' LIMIT '.$offset.', '.$limit;
+			$q .= ' LIMIT ?, ?';
+			$keys[] = $offset;
+			$keys[] = $limit;
 		}
 
 		// do the query
 		$data = [];
-		$r = c::db()->query(str_replace('-WILD-','admin.*, apt.using_pex', $q));
+		$r = c::db()->query(str_replace('-WILD-','admin.*, apt.using_pex', $q), $keys);
 		while ($s = $r->fetch()) {
 
 			$admin = Admin::o($s);
