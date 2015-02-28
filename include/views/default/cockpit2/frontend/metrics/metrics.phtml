@@ -5,10 +5,10 @@
 	<div class="box-content2">
 		<form>
 			<div class="ul-inputs">
-			<div>
-				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' ng-model='settings.start' ng-change='refreshOnTimer("start")'></span>
-				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' ng-model='settings.end' ng-change='refreshOnTimer("end")'></span>
-				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh fa-lg"></i></button>
+			<div style="font-size:1.4em">
+				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' style="font-size:1.2em;border-width:thin;border-style:solid;" ng-model='settings.start'></span>
+				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' style="font-size:1.2em;border-width:thin;border-style:solid;" ng-model='settings.end'></span>
+				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh fa-2x"></i></button>
 			</div>
 			<div class="label">Communities:</div>
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
