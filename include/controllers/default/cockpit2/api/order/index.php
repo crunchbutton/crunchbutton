@@ -87,7 +87,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			$changed = false;
 			foreach ($this->request() as $k => $v) {
 				if (in_array($k, $allowed)) {
-					$order->{$k} = c::db()->escape($v);
+					$order->{$k} = $v;
 					$changed = true;
 				}
 			}

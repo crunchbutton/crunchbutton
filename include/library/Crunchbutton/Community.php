@@ -9,8 +9,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
 		$force = preg_replace('/[^a-z\-]+/','',$force);
+		$keys = ['ip' => $ip];
+
 		if ($force) {
-			$forceq = ' OR (community.permalink="'.c::db()->escape($force).'") ';
+			$forceq = ' OR (community.permalink=:force) ';
+			$keys['force'] = $force;
 		}
 
 		$q = '
@@ -21,14 +24,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				AND (
 					( community.private=0 )
 					OR
-					(community.private=1 AND community_ip.ip="'.c::db()->escape($ip).'")
+					(community.private=1 AND community_ip.ip=:ip)
 					'.$forceq.'
 				)
 			group by community.id_community
 			order by name
 		';
 
-		return self::q($q);
+		return self::q($q, $keys);
 	}
 
 	public function restaurantByLoc() {
@@ -149,7 +152,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public static function permalink($permalink) {
-		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
+		return self::q('select * from community where permalink=?', [$permalink])->get(0);
 	}
 
 	public static function all_locations(){

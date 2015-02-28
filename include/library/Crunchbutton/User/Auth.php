@@ -35,17 +35,18 @@ class Crunchbutton_User_Auth extends Cana_Table {
 
 	public static function localLogin( $email, $password ) {
 		$password = static::passwordEncrypt( $password );
-		$query = sprintf(" SELECT *
-												FROM user_auth
-												WHERE
-													type='local'
-													AND email='%s'
-													AND auth='%s'
-													AND active=1
-												LIMIT 1",
-		c::db()->escape( $email ),
-		c::db()->escape( $password ) );
-		$row = Cana::db()->get( $query );
+		$query = '
+			SELECT *
+			FROM user_auth
+			WHERE
+				type="local"
+				AND email=:email
+				AND auth=:password
+				AND active=1
+			LIMIT 1
+		';
+
+		$row = Cana::db()->get($query, ['email' => $email, 'password' => $password]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 		}
@@ -206,14 +207,16 @@ class Crunchbutton_User_Auth extends Cana_Table {
 	}
 
 	public function validateResetCode( $code ){
-		$query = sprintf(" SELECT *
-												FROM user_auth
-												WHERE
-													type='local'
-													AND reset_code='%s'
-													AND active=1
-												LIMIT 1", c::db()->escape( $code ) );
-		$row = Cana::db()->get( $query );
+		$query = '
+			SELECT *
+			FROM user_auth
+			WHERE
+				type="local"
+				AND reset_code=:code
+				AND active=1
+			LIMIT 1
+		';
+		$row = Cana::db()->get( $query, ['code' => $code]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return  new Crunchbutton_User_Auth($row);;

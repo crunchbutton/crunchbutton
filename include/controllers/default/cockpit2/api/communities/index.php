@@ -4,10 +4,11 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 
 	public function init() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
+		$limit = $this->request()['limit'] ?$this->request()['limit'] : 20;
+		$search = $this->request()['search'] ?$this->request()['search'] : '';
+		$page = $this->request()['page'] ?$this->request()['page'] : 1;
+		$status = $this->request()['status'] ?$this->request()['status'] : 'all';
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -35,7 +36,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		}
 		
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'community.name' => 'like',
@@ -44,6 +45,8 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 					'community.id_community' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 		
 		$q .= '
@@ -52,15 +55,17 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		
 		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		while ($c = $r->fetch()) {
 			$count++;
 		}
 
 		$q .= '
 			ORDER BY community.name ASC
-			LIMIT '.$offset.', '.$limit.'
+			LIMIT ?, ?
 		';
+		$keys[] = $offset;
+		$keys[] = $limit;
 		
 		// do the query
 		$data = [];
@@ -68,7 +73,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			community.*,
 			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
 			COUNT(`restaurant`.id_restaurant) restaurants
-		', $q));
+		', $q), $keys);
 		while ($s = $r->fetch()) {
 			/*
 			$restaurant = Restaurant::o($s);

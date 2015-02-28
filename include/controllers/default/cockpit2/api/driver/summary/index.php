@@ -38,12 +38,15 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 		$settlement = new Settlement();
 		$driver = Admin::o( $id_driver );
+		$keys = [];
+		
+		$keys[] = $id_driver;
 
 		$out = [];
 
 		// $out = array_merge( $out, $this->_invites( $id_driver ) );
 
-		$page = $this->request()[ 'page' ] ? c::db()->escape( $this->request()[ 'page' ] ) : 1;
+		$page = $this->request()[ 'page' ] ? $this->request()[ 'page' ] : 1;
 
 		$limit = 20;
 
@@ -56,20 +59,24 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			$offset = ( $page - 1 ) * $limit;
 		}
 
-		$pay_type = c::db()->escape( $this->request()[ 'type' ] );
+		$pay_type = $this->request()[ 'type' ];
+		
+		$keys[] = $offset;
+		$keys[] = $limit;
 
 		if( $pay_type != 'all' ){
 			$where = ' AND pay_type = "' . $pay_type . '"';
+			$keys[] = $pay_type;
 		}
 
-		$query = 'SELECT COUNT( * ) AS total FROM payment_schedule WHERE id_driver = "' . $id_driver . '"' . $where;
+		$query = 'SELECT COUNT( * ) AS total FROM payment_schedule WHERE id_driver = ? ' . $where;
 		$result = c::db()->get( $query );
 		$out[ 'count' ] = intval( $result->_items[ 0 ]->total );
 		$out[ 'pages' ] = ceil( $out[ 'count' ] / $limit );
 
-		$query = 'SELECT * FROM payment_schedule WHERE id_driver = "' . $id_driver . '" ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ' . $offset . ',' . $limit;
+		$query = 'SELECT * FROM payment_schedule WHERE id_driver = ? ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ?, ?';
 
-		$payments = Cockpit_Payment_Schedule::q( $query );
+		$payments = Cockpit_Payment_Schedule::q( $query, $keys);
 		$has_error = false;
 
 		foreach( $payments as $payment ){

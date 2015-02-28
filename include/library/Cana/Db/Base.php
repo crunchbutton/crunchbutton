@@ -1,93 +1,93 @@
 <?php
 
-/**
- * Database connectivity base
- * 
- * @author		Devin Smith <devin@cana.la>
- * @date		2009.09.18
- * 
- */
-
-trait Cana_Db_Base {
-	private $_host;
-	private $_user;
-	private $_pass;
+class Cana_Db_Base {
 	private $_db;
-	private $_queries;
-	private $_conn;
-	private $_storedFields;
-	private $_prefix;
+	private $_fields;
 
-	
-	public function reconnect() {
-		$this->connect();
-		if (isset($this->_db)) {
-			$this->selectDb($this->_db);
+	public function __construct($args = []) {
+		if (!$args) {
+			throw new Exception('Invalid DB config.');
 		}
-	}
-	
-	public function get($query, $class = null) {
-
-		$items = [];
-		$res = $this->query($query);
-
-		if ($res->numRows() < 1) {
-
-			if ($class) {
-				$items[] = Cana::factory($class,$row);
-			} else {
-				$items[] = $row;
-			}
-
-		} else {
-			while ($row = $res->fetch($class)) {
-				if ($class) {
-					$items[] = Cana::factory($class,$row);
-				} else {
-					$items[] = $row;
-				}
-			}
+		
+		if (is_array($args)) {
+			$args = Cana_Model::toModel($args);
 		}
-		return new Cana_Iterator($items);
+
+		$db = $this->connect($args);
+		$this->db($db);
 	}
 
+	public function connect($args = null) {
+		throw new Exception('Invalid DB config.');
+	}
+	
+	public function exec($query) {
+		return $this->db()->exec($query);
+	}
+
+	public function query($query, $args = []) {
+		$stmt = $this->db()->prepare($query);
+
+		// if we have keyword arguments
+		if (is_object($args)) {
+			//var_dump($args); exit;
+			throw new Exception('blah');
+		}
+		if ($args && array_keys($args) !== range(0, count($args) - 1)) {
+			/*
+			foreach ($args as $key => $value) {
+				$stmt->bindValue(':'.$key, $value);
+			}
+			$args = null;
+			*/
+		}
+
+		$stmt->execute($args);
+		//$db->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql'
+		return $stmt;
+	}
+	
+	public function get($query, $args = [], $type = 'object') {
+		$stmt = $this->query($query, $args);
+		return new Cana_Iterator($stmt->fetchAll($type == 'object' ? \PDO::FETCH_OBJ : \PDO::FETCH_ASSOC));
+	}
+	
+	public function db($db = null) {
+		if (!is_null($db)) {
+			$this->_db = $db;
+		}
+		return $this->_db;
+	}
+	
 	public function fields($table, $fields = null) {
-		if (is_null($fields) && isset($this->_storedFields[$table])) {
-			return $this->_storedFields[$table];
-
-		} elseif (!is_null($fields)) {
-			$this->_storedFields[$table] = $fields;
-			return $this->_storedFields[$table];
-			
-		} else {
-			return false;
+		if ($table && $fields) {
+			$this->_fields[$table] = $fields;
 		}
+		return $this->_fields[$table];
 	}
 	
-	public function queries($query = null, $result = null) {
-		if (is_null($query)) {
-			return $this->_queries;
-		} elseif ($query && !$result) {
-			$this->_queries[md5(json_encode($query))]['query'] = $query;
-		} elseif($query && $result) {
-			$this->_queries[md5(json_encode($query))]['result'] = $result;
+	public function keys($table, $keys = null) {
+		if ($table && $keys) {
+			$this->_keys[$table] = $keys;
 		}
-		return $this;
+		return $this->_keys[$table];
 	}
 	
-	public function cached($query) {
-		return $this->_queries[md5(json_encode($query))] ? $this->_queries[md5(json_encode($query))]['result'] : false;
+	public function driver($driver = null) {
+		if (!is_null($driver)) {
+			$this->_driver = $driver;
+		}
+		return $this->_driver;
 	}
 	
-	public function __call($method, $args) {
-
-		//if (property_exists($this, '_'.$method)) {
-			if (count($args)) {
-				$this->{'_'.$method} = $args[0];
-				return $this;
-			} else {
-				return $this->{'_'.$method};
-			}
-		//}
+	public function database($database = null) {
+		if (!is_null($database)) {
+			$this->_database = $database;
+		}
+		return $this->_database;
 	}
-} 
+	
+	public function lastInsertId() {
+		return $this->db()->lastInsertId();
+	}
+}

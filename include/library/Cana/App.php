@@ -50,7 +50,7 @@ class Cana_App extends Cana_Model {
 		date_default_timezone_set($this->_config->timezone);
 		
 		try {
-			$this->buildDb($this->_env);
+			$this->_db = $this->buildDb($this->_env);
 		} catch (Exception $e) {
 			throw new Cana_Exception('Could not connect to the database');
 		}
@@ -123,9 +123,9 @@ class Cana_App extends Cana_Model {
 			$connect->pass = $this->crypt()->decrypt($connect->pass);
 		}
 
-		$this->_db = new Cana_Db($connect);
-		
-		return $this;
+		$db = new Cana_Db($connect);
+		unset($connect);
+		return $db;
 	}
 	
 	

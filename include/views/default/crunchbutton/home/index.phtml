@@ -195,9 +195,9 @@
 				<h4>The best restaurants, curated by our expert team of reps</h4>
 				<p>
 					<? $restaurants = Restaurant::byRange([
-						'lat' => c::db()->escape($this->community->loc_lat),
-						'lon' => c::db()->escape($this->community->loc_lon),
-						'range' => c::db()->escape(5),
+						'lat' => $this->community->loc_lat,
+						'lon' => $this->community->loc_lon,
+						'range' => 5,
 					]); ?>
 					<? foreach ($restaurants as $restaurant) : ?>
 						<? if (!stripos($$restaurant->name, 'TEST')) :?>

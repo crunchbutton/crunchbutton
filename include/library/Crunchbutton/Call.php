@@ -40,7 +40,7 @@ class Crunchbutton_Call extends Cana_Table {
 		if (!$id) {
 			return null;
 		}
-		return self::q('select * from `call` where twilio_id="'.c::db()->escape($id).'" limit 1')->get(0);
+		return self::q('select * from `call` where twilio_id=? limit 1',[$id])->get(0);
 	}
 
 	public static function logFromTwilio($data) {
