@@ -143,7 +143,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getByPhone( $phone, $activeOnly = false){
-		return Crunchbutton_Admin::q("SELECT * FROM admin a WHERE ".($activeOnly ? 'active=1 AND' : '')." (REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}') ORDER BY id_admin DESC LIMIT 1 ")->get(0);
+		return Crunchbutton_Admin::q("SELECT * FROM admin a WHERE ".($activeOnly ? 'active=true AND' : '')." (REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}') ORDER BY id_admin DESC LIMIT 1 ")->get(0);
 	}
 
 	public function getByPhoneSetup( $phone ){

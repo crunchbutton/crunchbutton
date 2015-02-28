@@ -42,7 +42,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 				type="local"
 				AND email=:email
 				AND auth=:password
-				AND active=1
+				AND active=true
 			LIMIT 1
 		';
 
@@ -59,7 +59,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			FROM user_auth
 			WHERE
 				id_user="'.$id_user.'"
-				AND active=1
+				AND active=true
 		');
 		$auths = [];
 		while ($row = $res->fetch()) {
@@ -106,7 +106,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			FROM user_auth
 			WHERE
 				email="' . $email . '"
-				AND active=1
+				AND active=true
 		');
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
@@ -122,7 +122,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			WHERE
 				id_user="' . $id_user . '"
 				AND type = "facebook"
-				AND active=1
+				AND active=true
 		');
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
@@ -137,7 +137,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			FROM user_auth
 			WHERE
 				id_user="' . $id_user . '"
-				AND active=1
+				AND active=true
 		');
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
@@ -153,7 +153,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			WHERE
 				id_user="' . $id_user . '"
 				AND email LIKE "%@%"
-				AND active=1
+				AND active=true
 		');
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
@@ -213,7 +213,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			WHERE
 				type="local"
 				AND reset_code=:code
-				AND active=1
+				AND active=true
 			LIMIT 1
 		';
 		$row = Cana::db()->get( $query, ['code' => $code]);

@@ -59,7 +59,7 @@ class Crunchbutton_Site extends Cana_Table {
 		$sites = Crunchbutton_Site::q('
 			SELECT *
 			FROM site
-			WHERE active=1
+			WHERE active=true
 			ORDER BY sort ASC
 		');
 		$tsite = null;

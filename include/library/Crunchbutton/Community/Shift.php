@@ -510,8 +510,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			LEFT JOIN admin_shift_assign ON admin_shift_assign.id_admin = admin.id_admin
 			LEFT JOIN community_shift ON community_shift.id_community_shift = admin_shift_assign.id_community_shift
 			WHERE
-				admin.active=1
-				AND community_shift.active=1
+				admin.active=true
+				AND community_shift.active=true
 				AND community_shift.id_community_shift='.$this->id_community_shift.'
 		');
 	}

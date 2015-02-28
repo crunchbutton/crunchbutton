@@ -20,7 +20,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			select community.* from community
 			left join community_ip on community_ip.id_community=community.id_community
 			where
-				community.active=1
+				community.active=true
 				AND (
 					( community.private=0 )
 					OR
@@ -62,7 +62,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					left join restaurant_community using(id_restaurant)
 				WHERE
 						id_community="'.$this->id_community.'"
-					and restaurant.active=1
+					and restaurant.active=true
 				ORDER by
 					restaurant_community.sort,
 					restaurant.delivery DESC

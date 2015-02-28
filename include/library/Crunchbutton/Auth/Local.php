@@ -31,7 +31,7 @@ class Crunchbutton_Auth_Local extends Cana_Model {
 			SELECT l.*, s.ip FROM login l
 			INNER JOIN session s ON s.login_id=l.id
 			WHERE s.session="'.$this->id().'"
-			AND s.active=1
+			AND s.active=true
 		';
 
 		$result = Caffeine::db()->query($query);
@@ -62,7 +62,7 @@ class Crunchbutton_Auth_Local extends Cana_Model {
 			SELECT * 
 			FROM login 
 			WHERE login=?
-			AND active=1
+			AND active=true
 		';
 		$result = Caffeine::db()->query($query, [$user]);
 		$row = $result->fetch();

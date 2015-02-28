@@ -14,7 +14,7 @@ class Crunchbutton_Admin_Auth extends Cana_Model {
 			WHERE
 				login=:email
 				AND pass=:password
-				AND active=1
+				AND active=true
 				LIMIT 1
 		';
 		return Admin::q($query, ['email' => $email, 'password' => $password])->get(0);

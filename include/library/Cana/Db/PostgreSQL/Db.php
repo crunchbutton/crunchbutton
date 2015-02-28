@@ -28,4 +28,8 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 
 		return $db;
 	}
+	
+	function getFields() {
+		//SELECT column_name FROM information_schema.columns WHERE table_name ='table';
+	}
 }
