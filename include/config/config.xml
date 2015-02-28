@@ -46,6 +46,14 @@
 			<db>crunchbutton</db>
 			<host>***REMOVED***</host>
 		</metrics>
+		<heroku>
+			<type>postgresql</type>
+			<user>lPwAJEcLx5EBXwELFpqHew==</user>
+			<pass>XAhXG4ozWMZWovONVO79aUAxCGSgYWGTiwGP6X85X38=</pass>
+			<db>dd7qohkfgjg3jg</db>
+			<host>ec2-107-22-193-11.compute-1.amazonaws.com</host>
+			<encrypted>true</encrypted>
+		</heroku>
 	</db>
 	<defaults>
 		<page>home</page>
