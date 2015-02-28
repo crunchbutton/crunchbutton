@@ -234,14 +234,20 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		$scope.persistSettings();
 	};
 	$scope.orderSelectedCommunities = function () {
-		if (!$scope.communityOrdering) {
-			console.info('no ordering yet, cannot order anything');
-			return;
+		var communityOrdering = $scope.communityOrdering;
+		if (!communityOrdering) {
+			console.info('no ordering yet, cannot order anything (just picking selected)');
+			if (!$scope.allowedCommunities) {
+				console.warn('no communities, cannot do anything');
+				return
+			}
+			// default to everything if we don't have communities, so we only display selected
+			communityOrdering = Object.keys($scope.allowedCommunities);
 		}
 		var ordered = [];
 		var cID, comm;
-		for (var i = 0; i < $scope.communityOrdering.length; i++) {
-			cID = $scope.communityOrdering[i];
+		for (var i = 0; i < communityOrdering.length; i++) {
+			cID = communityOrdering[i];
 			if (!cID) {
 				console.error('found invalid community ID!', comm);
 				continue;
