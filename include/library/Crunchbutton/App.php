@@ -53,8 +53,8 @@ class Crunchbutton_App extends Cana_App {
 		// anything local
 		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
-		// anything by heroku use remote live
-		} elseif (preg_match('/^(heroku.(_DOMAIN_|crunchr.co))|crunchbutton.herokuapp.com$/',$_SERVER['SERVER_NAME'])) {
+		// anything by heroku use its own db
+		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
@@ -77,8 +77,7 @@ class Crunchbutton_App extends Cana_App {
 
 		// redirect bad urls
 		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
-			die ('no db');
-			header('HTTP/1.1 301 Moved Permanently');
+			//header('HTTP/1.1 301 Moved Permanently');
 			header('Location: https://_DOMAIN_/');
 			exit;
 		}
@@ -96,10 +95,20 @@ class Crunchbutton_App extends Cana_App {
 		$params['postInitSkip'] = true;
 		$params['env'] = $db;
 
-		try {
+		if (getenv('HEROKU')) {
+			$config = $this->config();
+			$config->db->heroku = (object)[
+				'dsn' => getenv('HEROKU_POSTGRESQL_NAVY_URL')
+			];
+			$params['config'] = $config;
 			parent::init($params);
-		} catch (Exception $e) {
-			$this->dbError();
+
+		} else {
+			try {
+				parent::init($params);
+			} catch (Exception $e) {
+				$this->dbError();
+			}
 		}
 
 		$config = $this->config();
@@ -113,6 +122,8 @@ class Crunchbutton_App extends Cana_App {
 		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2') {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
+		
+
 
 		// set host callback by hostname
 		$config->host_callback = ($db == 'local' || $db == 'travis' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
