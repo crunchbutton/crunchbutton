@@ -35,12 +35,22 @@ class Cana_Db_Base {
 		}
 
 		if ($args && array_keys($args) !== range(0, count($args) - 1)) {
-			/*
 			foreach ($args as $key => $value) {
-				$stmt->bindValue(':'.$key, $value);
+				switch (gettype($value)) {
+					case 'integer':
+						$type = PDO::PARAM_INT;
+						break;
+					case 'string':
+						$type = PDO::PARAM_STR;
+						break;
+					default:
+						$type = null;
+						break;
+				}
+				$stmt->bindValue(':'.$key, $value, $type);
 			}
 			$args = null;
-			*/
+			
 		}
 
 		$stmt->execute($args);
