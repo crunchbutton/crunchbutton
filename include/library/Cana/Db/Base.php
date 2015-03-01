@@ -33,6 +33,7 @@ class Cana_Db_Base {
 			//var_dump($args); exit;
 			throw new Exception('blah');
 		}
+
 		if ($args && array_keys($args) !== range(0, count($args) - 1)) {
 			/*
 			foreach ($args as $key => $value) {
