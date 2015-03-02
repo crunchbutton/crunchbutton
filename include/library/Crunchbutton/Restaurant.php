@@ -1429,7 +1429,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				AND
 					delivery = false
 				AND
-					`distance` <= :range
+					distance <= :range
 				OR
 					delivery = true
 				AND
