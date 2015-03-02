@@ -1412,10 +1412,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			'diff' => $rangeDif
 		];
 
+		
+		// "byrange" type,
 		$query = '
 			SELECT
 				count(*) as _weight,
-				"byrange" as type,
 				((ACOS(SIN(:lata * PI() / 180) * SIN(loc_lat * PI() / 180) + COS( :latb * PI() / 180) * COS(loc_lat * PI() / 180) * COS(( :lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
 				restaurant.*
 			FROM `restaurant`
