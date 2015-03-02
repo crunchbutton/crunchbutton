@@ -782,6 +782,12 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			unset( $ex[ $rem ] );
 		}
 
+		$community_delivery = $this->communityDriverDelivery();
+		if( $community_delivery->id_community ){
+			$ex[ 'id_community' ] = $community_delivery->id_community;
+		}
+
+
 		return $ex;
 	}
 
