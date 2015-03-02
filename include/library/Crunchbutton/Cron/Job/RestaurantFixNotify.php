@@ -7,7 +7,7 @@ class Crunchbutton_Cron_Job_RestaurantFixNotify extends Crunchbutton_Cron_Log {
 		$orders = Order::q( 'SELECT * FROM `order` o
 													INNER JOIN (
 													SELECT DISTINCT( id_order ) FROM `order` o
-													LEFT JOIN notification n ON n.id_restaurant = o.id_restaurant AND n.active = 1
+													LEFT JOIN notification n ON n.id_restaurant = o.id_restaurant AND n.active = true
 													WHERE o.date > date_sub( now(), interval 10 minute ) ) filter ON filter.id_order = o.id_order' );
 
 		echo "start notification send fix";
