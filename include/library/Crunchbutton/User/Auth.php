@@ -58,9 +58,9 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			SELECT *
 			FROM user_auth
 			WHERE
-				id_user="'.$id_user.'"
+				id_user=?
 				AND active=true
-		');
+		', [$id_user]);
 		$auths = [];
 		while ($row = $res->fetch()) {
 			$auths[$row->id_user_auth] = new Crunchbutton_User_Auth($row);
@@ -116,14 +116,14 @@ class Crunchbutton_User_Auth extends Cana_Table {
 	}
 
 	public function userHasFacebookAuth( $id_user ){
-		$row = Cana::db()->get('
+		$row = Cana::db()->get("
 			SELECT *
 			FROM user_auth
 			WHERE
-				id_user="' . $id_user . '"
-				AND type = "facebook"
+				id_user=?
+				AND type = 'facebook'
 				AND active=true
-		');
+		", [$id_user]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return  $row->id_user_auth;
@@ -136,9 +136,9 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			SELECT *
 			FROM user_auth
 			WHERE
-				id_user="' . $id_user . '"
+				id_user=?
 				AND active=true
-		');
+		', [$id_user]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return  true;
@@ -151,10 +151,10 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			SELECT *
 			FROM user_auth
 			WHERE
-				id_user="' . $id_user . '"
+				id_user=?
 				AND email LIKE "%@%"
 				AND active=true
-		');
+		', [$id_user]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return $row->id_user_auth;
