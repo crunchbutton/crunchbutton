@@ -1422,7 +1422,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			FROM `restaurant`
 			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
 			WHERE
-				active = 1
+				active = true
 			GROUP BY restaurant.id_restaurant
 			HAVING
 					takeout = true
