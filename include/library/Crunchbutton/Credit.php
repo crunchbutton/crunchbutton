@@ -240,14 +240,14 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function points( $id_user ){
-		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = "' . $id_user . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND type = "' . Crunchbutton_Credit::TYPE_CREDIT . '"';
+		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				$points = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
 		}
-		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = "' . $id_user . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND type = "' . Crunchbutton_Credit::TYPE_DEBIT . '"';
-		$row = Cana::db()->get( $query );
+		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
+		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_CREDIT]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				$spent = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
