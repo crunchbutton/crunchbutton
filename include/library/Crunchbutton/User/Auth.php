@@ -116,14 +116,14 @@ class Crunchbutton_User_Auth extends Cana_Table {
 	}
 
 	public function userHasFacebookAuth( $id_user ){
-		$row = Cana::db()->get('
+		$row = Cana::db()->get("
 			SELECT *
 			FROM user_auth
 			WHERE
 				id_user=?
-				AND type = "facebook"
+				AND type = 'facebook'
 				AND active=true
-		', [$id_user]);
+		", [$id_user]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return  $row->id_user_auth;
