@@ -35,7 +35,12 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 	}
 	
 	public function query($query, $args = [], $type = 'object') {
+		// replace backticks
 		$query = str_replace('`','"', $query);
+		
+		// replace add single quotes to interval statements
+		$query = preg_replace('/(interval) ([0-9]+) ([a-z]+)/i','\\1 \'\\2 \\3\'', $query);
+
 		return parent::query($query, $args, $type);
 	}
 	
