@@ -137,7 +137,7 @@
 							<select id="restaurant-id-community">
 								<option value=""></option>
 								<?php
-								$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
+								$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true ORDER BY name ASC' );
 								foreach( $communities as $community ){
 									?>
 									<option value="<?php echo $community->id_community; ?>">

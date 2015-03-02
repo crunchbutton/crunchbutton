@@ -33,7 +33,7 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 	public function loadData(){
 
 		// restaurants
-		c::view()->restaurants = Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 ORDER BY name ASC' );
+		c::view()->restaurants = Restaurant::q( 'SELECT * FROM restaurant WHERE active = true ORDER BY name ASC' );
 
 		// drivers
 		c::view()->drivers = Admin::drivers();

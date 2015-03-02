@@ -9,7 +9,7 @@ class Controller_charts_restaurant extends Crunchbutton_Controller_Account {
 
 		$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all' ] );
 
-		$query = 'SELECT * FROM restaurant WHERE active = 1';
+		$query = 'SELECT * FROM restaurant WHERE active = true';
 
 		if( !$hasPermissionFullPermission ){
 			$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirMetrics();	
