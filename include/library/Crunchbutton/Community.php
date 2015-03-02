@@ -228,7 +228,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function active(){
-		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true ORDER BY name ASC' );
 	}
 
 	public function getDriversOfCommunity(){
@@ -239,8 +239,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 													SELECT DISTINCT(id_admin) FROM (
 													SELECT DISTINCT(a.id_admin)
 														FROM admin a
-														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = 1
-														LEFT JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = true
+														LEFT JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant
 														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ' . $this->id_community . '
 													UNION
@@ -249,7 +249,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '"
 														) drivers
 													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ORDER BY name ASC';
+											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC';
 		return Admin::q( $query );
 	}
 
@@ -431,7 +431,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$result = c::db()->get( $query );
 		$total = $result->_items[0]->Total;
 
-		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = 1 AND name NOT LIKE '%test%'";
+		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = true AND name NOT LIKE '%test%'";
 		$result = c::db()->get( $query );
 		$all = $result->_items[0]->Total;
 

@@ -10,7 +10,7 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 		$id_user = ( $id_user ) ? $id_user : c::user()->id_user;
 		if( $id_user ){
 			$where = ' AND ' . Crunchbutton_User_Payment_Type::processor() . '_id IS NOT NULL';
-			$payment = Crunchbutton_User_Payment_Type::q( 'SELECT * FROM user_payment_type WHERE id_user = "' . $id_user . '" AND active = 1 ' . $where . ' ORDER BY id_user_payment_type DESC LIMIT 1' );
+			$payment = Crunchbutton_User_Payment_Type::q( 'SELECT * FROM user_payment_type WHERE id_user = "' . $id_user . '" AND active = true ' . $where . ' ORDER BY id_user_payment_type DESC LIMIT 1' );
 			if( $payment->id_user_payment_type ){
 				return $payment;
 			}

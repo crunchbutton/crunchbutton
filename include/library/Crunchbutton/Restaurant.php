@@ -35,12 +35,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function active(){
-		return Crunchbutton_Restaurant::q( 'SELECT id_restaurant, name FROM restaurant WHERE active = 1 ORDER BY name ASC' );
+		return Crunchbutton_Restaurant::q( 'SELECT id_restaurant, name FROM restaurant WHERE active = true ORDER BY name ASC' );
 	}
 
 	public function with_no_payment_method(){
 		$_restaurants = [];
-		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 AND formal_relationship = 1 AND name NOT LIKE "%test%" ORDER BY name' );
+		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND formal_relationship = 1 AND name NOT LIKE "%test%" ORDER BY name' );
 		foreach( $restaurants as $restaurant ){
 			if( !$restaurant->hasPaymentType() ){
 				$_restaurants[] = $restaurant;
@@ -850,7 +850,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function adminNotifications(){
 		if (!isset($this->_admin_notifications)) {
-			$this->_admin_notifications = Crunchbutton_Notification::q( "SELECT n.* FROM notification n WHERE id_restaurant = {$this->id_restaurant} AND active = 1 AND type = 'admin' " );
+			$this->_admin_notifications = Crunchbutton_Notification::q( "SELECT n.* FROM notification n WHERE id_restaurant = {$this->id_restaurant} AND active = true AND type = 'admin' " );
 		}
 		return $this->_admin_notifications;
 	}
@@ -1277,7 +1277,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		/*
 		// Second, check if it has an admin active notification
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
-		$notification = Notification::q( "SELECT n.* FROM notification n WHERE n.id_restaurant = {$this->id_restaurant} AND n.active = 1 AND n.type = '{$type_admin}' LIMIT 1");
+		$notification = Notification::q( "SELECT n.* FROM notification n WHERE n.id_restaurant = {$this->id_restaurant} AND n.active = true AND n.type = '{$type_admin}' LIMIT 1");
 		if( $notification->id_notification ){
 			return 1;
 		}*/
@@ -1412,25 +1412,26 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			'diff' => $rangeDif
 		];
 
+		
+		// "byrange" type,
 		$query = '
 			SELECT
 				count(*) as _weight,
-				"byrange" as type,
-				((ACOS(SIN(:lata * PI() / 180) * SIN(loc_lat * PI() / 180) + COS( :latb * PI() / 180) * COS(loc_lat * PI() / 180) * COS(( :lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
+				((ACOS(SIN(:lata * PI() / 180) * SIN(loc_lat * PI() / 180) + COS( :latb * PI() / 180) * COS(loc_lat * PI() / 180) * COS(( :lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS distance,
 				restaurant.*
 			FROM `restaurant`
 			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
 			WHERE
-				active = 1
+				active = true
 			GROUP BY restaurant.id_restaurant
 			HAVING
-					takeout = 1
+					takeout = true
 				AND
-					delivery = 0
+					delivery = false
 				AND
-					`distance` <= :range
+					distance <= :range
 				OR
-					delivery = 1
+					delivery = true
 				AND
 					`distance` <= (`delivery_radius`+ :diff )
 			ORDER BY _weight DESC;
@@ -1448,7 +1449,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasPhoneNotification(){
-		$phone = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and type = "' . Crunchbutton_Notification::TYPE_PHONE . '"' );
+		$phone = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = true and type = "' . Crunchbutton_Notification::TYPE_PHONE . '"' );
 		if( $phone->id_notification ){
 			return true;
 		} else {
@@ -1457,7 +1458,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasFaxNotification(){
-		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and ( type = "' . Crunchbutton_Notification::TYPE_FAX . '" OR type = "' . Crunchbutton_Notification::TYPE_STEALTH . '" )' );
+		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = true and ( type = "' . Crunchbutton_Notification::TYPE_FAX . '" OR type = "' . Crunchbutton_Notification::TYPE_STEALTH . '" )' );
 		if( $fax->id_notification ){
 			return true;
 		} else {
@@ -1466,7 +1467,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function getCommunities(){
-		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" AND active = 1 ORDER BY community ASC' );
+		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" AND active = true ORDER BY community ASC' );
 		$communities = [];
 		foreach ( $data as $item ) {
 			$communities[] = $item->community;
@@ -1636,7 +1637,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function drivers(){
-		return Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ' . $this->id_restaurant . ' AND n.active = 1 AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '"');
+		return Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ' . $this->id_restaurant . ' AND n.active = true AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '"');
 	}
 
 	public function withDrivers(){

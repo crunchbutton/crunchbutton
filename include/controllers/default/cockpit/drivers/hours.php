@@ -10,7 +10,7 @@ class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 
 		$hasEditPermission = c::admin()->permission()->check(['global','drivers-working-hours', 'drivers-all']);
 
-		$reps = Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a.* FROM admin a INNER JOIN admin_notification an ON an.id_admin = a.id_admin AND an.active = 1 ORDER BY name ASC' );
+		$reps = Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a.* FROM admin a INNER JOIN admin_notification an ON an.id_admin = a.id_admin AND an.active = true ORDER BY name ASC' );
 
 		switch ( c::getPagePiece(2) ) {
 			
