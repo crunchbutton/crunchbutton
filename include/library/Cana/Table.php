@@ -122,12 +122,20 @@ class Cana_Table extends Cana_Model { //
 		} else {
 
 			$fields = [];
-			$res = $this->db()->query('SHOW COLUMNS FROM `'.$this->table().'`');
+			$res = $this->db()->getFields($this->table());
 
 			while ($row = $res->fetch()) {
-				$row->Null = $row->Null == 'YES' ? true : false;
-				if (strpos($row->Type, 'int') !== false) {
-					$row->Type = 'int';
+				$row = get_object_vars($row);
+				$props = [];
+
+				foreach ($row as $k => $v) {
+					$props[strtolower($k)] = $v;
+				}
+				$row = (object)$props;
+
+				$row->null = $row->null == 'YES' ? true : false;
+				if (strpos($row->type, 'int') !== false) {
+					$row->type = 'int';
 				}
 				$fields[] = $row;
 			}
@@ -209,7 +217,7 @@ class Cana_Table extends Cana_Model { //
 			} else {
 				// fill the object with blank properties based on the fields of that table
 				foreach ($this->fields() as $field) {
-					$this->{$field->Field} = $this->{$field->Field} ? $this->{$field->Field} : '';
+					$this->{$field->field} = $this->{$field->field} ? $this->{$field->field} : '';
 				}
 			}
 		}
@@ -230,9 +238,9 @@ class Cana_Table extends Cana_Model { //
 		}
 		
 		foreach ($this->fields() as $field) {
-			switch ($field->Type) {
+			switch ($field->type) {
 				case 'int':
-					$this->{$field->Field} = (int)$this->{$field->Field};
+					$this->{$field->field} = (int)$this->{$field->field};
 					break;
 			}
 		}
@@ -271,33 +279,33 @@ class Cana_Table extends Cana_Model { //
 		$numset = 0;
 
 		foreach ($fields as $field) {
-			if ($this->property($field->Field) !== false) {
+			if ($this->property($field->field) !== false) {
 
-				if ($this->{$field->Field} == '' && $field->Null) {
-					$this->{$field->Field} = null;
-				} elseif ($this->{$field->Field} == null && !$field->Null) {
-					$this->{$field->Field} = '';
+				if ($this->{$field->field} == '' && $field->null) {
+					$this->{$field->field} = null;
+				} elseif ($this->{$field->field} == null && !$field->null) {
+					$this->{$field->field} = '';
 				}
 
 				$query .= !$numset ? ' SET' : ',';
-				//$query .= ' `'.$field->Field.'`='.(is_null($this->{$field->Field}) ? 'NULL' : (':'.$field->Field));
+				//$query .= ' `'.$field->field.'`='.(is_null($this->{$field->field}) ? 'NULL' : (':'.$field->field));
 				//var_dump($field);
 				
-				switch ($field->Type) {
+				switch ($field->type) {
 					case 'int':
-						$value = intval($this->{$field->Field});
+						$value = intval($this->{$field->field});
 						break;
 
 					default:
-						$value = $this->{$field->Field};
+						$value = $this->{$field->field};
 						break;
 				}
 				//var_dump($value);
-				$value = (!$value && $field->Null) ? null : $value;
+				$value = (!$value && $field->null) ? null : $value;
 
-				$query .= ' `'.$field->Field.'`=:'.$field->Field;
-				//if (!is_null($this->{$field->Field})) {
-					$fs[$field->Field] = $value;
+				$query .= ' `'.$field->field.'`=:'.$field->field;
+				//if (!is_null($this->{$field->field})) {
+					$fs[$field->field] = $value;
 				//}
 				
 				$numset++;
@@ -334,7 +342,7 @@ class Cana_Table extends Cana_Model { //
 	public function strip() {
 		$fieldsMeta = $this->fields();
 		foreach ($fieldsMeta as $field) {
-			$fields[] = $field->Field;
+			$fields[] = $field->field;
 		}
 
 		$vars = get_object_vars($this);
