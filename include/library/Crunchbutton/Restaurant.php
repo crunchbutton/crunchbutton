@@ -1425,13 +1425,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				active = 1
 			GROUP BY restaurant.id_restaurant
 			HAVING
-					takeout = 1
+					takeout = true
 				AND
-					delivery = 0
+					delivery = false
 				AND
 					`distance` <= :range
 				OR
-					delivery = 1
+					delivery = true
 				AND
 					`distance` <= (`delivery_radius`+ :diff )
 			ORDER BY _weight DESC;
