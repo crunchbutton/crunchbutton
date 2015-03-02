@@ -190,7 +190,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $this->txt ){
 			return $this->txt;
 		}
-		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_SMS ){
 				return $notification->value;
@@ -203,7 +203,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $this->phone ){
 			return $this->phone;
 		}
-		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_PHONE ){
 				return $notification->value;
@@ -219,14 +219,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function activeNotifications(){
 		if( !$this->_activeNotifications ){
 			if( $this->id_admin ){
-				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 			}
 		}
 		return $this->_activeNotifications;
 	}
 
 	public function restaurantsHeDeliveryFor(){
-		return Restaurant::q( 'SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" AND n.active = 1 AND r.active = 1 AND n.id_admin = ' . $this->id_admin );
+		return Restaurant::q( 'SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" AND n.active = true AND r.active = true AND n.id_admin = ' . $this->id_admin );
 	}
 
 	public function driversList( $search = '' ){
@@ -235,15 +235,15 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return Admin::q( 'SELECT a.* FROM admin a
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
-													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
 														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
-														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 														) drivers
 													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ' . $where . ' ORDER BY name ASC' );
+											drivers ON drivers.id_admin = a.id_admin AND a.active = true ' . $where . ' ORDER BY name ASC' );
 	}
 
 	public function search( $search = [] ){
@@ -276,19 +276,19 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
 
-													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
 														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
-														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
 														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"
 														) drivers
 													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ORDER BY name ASC' );
+											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC' );
 	}
 
 	public function allPlacesHeDeliveryFor(){

@@ -54,7 +54,7 @@
 							if( $order->driver()->email ){
 								echo '<br/><i class="icon icon-envelope"></i> ' . $order->driver()->email;
 							}
-							$activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$order->driver()->id_admin} AND active = 1" );
+							$activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$order->driver()->id_admin} AND active = true" );
 							if ( count( $activeNotifications ) > 0 ) {
 								?>
 								<hr/>

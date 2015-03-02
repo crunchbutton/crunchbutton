@@ -21,7 +21,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 			case 'eta':
 				$out = [];
-				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 AND delivery_service = 1 ORDER BY name ASC' );
+				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND delivery_service = true ORDER BY name ASC' );
 				foreach( $restaurants as $restaurant ){
 					if( $restaurant->open() ){
 						$community = $restaurant->community()->name;
