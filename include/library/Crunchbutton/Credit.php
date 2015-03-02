@@ -22,11 +22,11 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function creditByUser( $id_user ) {
-		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user="'.$id_user.'" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? )', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}
 
 	public function debitByUser( $id_user ) {
-		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_DEBIT . '" AND id_user="'.$id_user.'" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? )', [self::TYPE_DEBIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}
 
 	public function creditByUserRestaurant( $id_user, $id_restaurant ) {
@@ -72,10 +72,12 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public static function find($search = []) {
 
-		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )';
+		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL AND ( credit_type = ? OR credit_type != ? )';
+		$keys = [Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT];
 
 		if ($search['type']) {
-			$query .= ' and type="'.$search['type'].'" ';
+			$query .= ' and type=? ';
+			$keys[] = $search['type'];
 		}
 
 		if ($search['start']) {
@@ -89,15 +91,18 @@ class Crunchbutton_Credit extends Cana_Table
 		}
 
 		if ($search['restaurant']) {
-			$query .= ' and `credit`.id_restaurant="'.$search['restaurant'].'" ';
+			$query .= ' and `credit`.id_restaurant=? ';
+			$keys[] = $search['restaurant'];
 		}
 
 		if ($search['id_order']) {
-			$query .= ' and `credit`.id_order="'.$search['id_order'].'" ';
+			$query .= ' and `credit`.id_order=? ';
+			$keys[] = $search['id_order'];
 		}
 
 		if ($search['id_user']) {
-			$query .= ' and `credit`.id_user="'.$search['id_user'].'" ';
+			$query .= ' and `credit`.id_user=? ';
+			$keys[] = $search['id_user'];
 		}
 
 		$query .= 'ORDER BY `date` DESC';
@@ -106,7 +111,7 @@ class Crunchbutton_Credit extends Cana_Table
 			$query .= ' limit '.$search['limit'].' ';
 		}
 
-		$credits = self::q($query);
+		$credits = self::q($query, $keys);
 		return $credits;
 	}
 
@@ -291,7 +296,7 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public function creditsAvailableByUserRestaurant( $id_user, $id_restaurant ){
 		$credit_available = array();
-		$credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user="'.$id_user.'" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND ( id_restaurant = '.$id_restaurant.' OR id_restaurant IS NULL )' );
+		$credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? ) AND ( id_restaurant = ? OR id_restaurant IS NULL )', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, $id_restaurant]);
 		if( $credits->count() > 0 ){
 			foreach( $credits as $credit ){
 				$left = $credit->creditLeft();

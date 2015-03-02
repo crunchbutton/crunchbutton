@@ -49,11 +49,11 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function byPhone($phone, $limit = true) {
 		$phone = preg_replace('/[^0-9]/i','',$phone);
-		return User::q('select * from user where phone="'.$phone.'" order by id_user desc'. ($limit ? ' limit 1' : ''));
+		return User::q('select * from user where phone=? order by id_user desc'. ($limit ? ' limit 1' : ''), [$phone]);
 	}
 
 	public function lastOrder() {
-		$order = Order::q('select * from `order` where id_user="'.$this->id_user.'" and id_user is not null order by date desc limit 1');
+		$order = Order::q('select * from `order` where id_user=? and id_user is not null order by date desc limit 1', [$this->id_user]);
 		return $order;
 	}
 
@@ -68,15 +68,15 @@ class Crunchbutton_User extends Cana_Table {
 					select o.date, o.id_order, o.uuid, r.name restaurant_name, r.permalink restaurant_permalink, r.timezone timezone, "compressed" type from `order` o
 					inner join restaurant r on r.id_restaurant = o.id_restaurant
 					where
-						id_user="'.$this->id_user.'"
+						id_user=?
 						and id_user is not null
 						order by date desc
 				';
 			} else {
-				$q = 'select * from `order` where id_user="'.$this->id_user.'"';
+				$q = 'select * from `order` where id_user=?';
 			}
 
-			$this->_orders = Order::q($q);
+			$this->_orders = Order::q($q, [$this->id_user]);
 		}
 		return $this->_orders;
 	}
@@ -85,8 +85,8 @@ class Crunchbutton_User extends Cana_Table {
 		return Project::q('
 			SELECT project.* FROM project
 			LEFT JOIN user_project on user_project.id_project=project.id_project
-			WHERE user_project.id_user="'.$this->id_user.'"
-		');
+			WHERE user_project.id_user=?
+		', [$this->id_user]);
 	}
 
 	public function projects() {
@@ -151,7 +151,7 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function auths() {
 		if (!isset($this->_auths)) {
-			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=true');
+			$this->_auths = User_Auth::q('select * from user_auth where id_user=? and active=true', [$this->id_user]);
 		}
 		return $this->_auths;
 	}
@@ -172,8 +172,8 @@ class Crunchbutton_User extends Cana_Table {
 	public function presets() {
 		if (!isset($this->_presets)) {
 			$this->_presets = Preset::q('
-				select * from preset where id_user="'.$this->id_user.'"
-			');
+				select * from preset where id_user=?
+			', [$this->id_user]);
 		}
 		return $this->_presets;
 	}
