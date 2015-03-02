@@ -427,7 +427,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		usort( $pay, function( $a, $b ) {
 			return $a[ 'name'] > $b[ 'name' ];
 		} );
-
 		return $pay;
 	}
 
@@ -692,7 +691,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		if( $values[ 'id_admin' ] ){
-			$admin = Admin::o( $values[ 'id_admin' ] );
+			$admin = Cockpit_Admin::o( intval( $values[ 'id_admin' ] ) );
 			$values[ 'driver' ] = $admin->name;
 		} else {
 			$values[ 'driver' ] = '';
