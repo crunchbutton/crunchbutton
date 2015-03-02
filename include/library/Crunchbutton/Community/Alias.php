@@ -17,9 +17,9 @@ class Crunchbutton_Community_Alias extends Cana_Table {
 				community_alias ca
 			INNER JOIN
 				community c ON c.id_community = ca.id_community
-			WHERE ca.alias = :alias,
+			WHERE ca.alias = :alias
 		';
-		$res = Cana::db()->query( $query, ['alias' => $alias]);
+		$res = Cana::db()->query( $query, ['alias' => $alias ] );
 		while ( $row = $res->fetch() ) {
 			return array( 'id_community' => $row->id_community, 'permalink' => $row->permalink, 'prep' => $row->prep, 'name_alt' => $row->name_alt, 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon );
 		}
