@@ -29,7 +29,18 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 		return $db;
 	}
 	
-	function getFields() {
-		//SELECT column_name FROM information_schema.columns WHERE table_name ='table';
+	function getFields($table) {
+		$res = $this->db()->query("SELECT column_name as Field, data_type as Type, is_nullable as Null, column_default as Default FROM information_schema.columns WHERE table_name = '".$table."'");
+		return $res;
+	}
+	
+	public function query($query, $args = [], $type = 'object') {
+		$query = str_replace('`','"', $query);
+		return parent::query($query, $args, $type);
+	}
+	
+	public function exec($query) {
+		$query = str_replace('`','"', $query);
+		return parent::exec($query);
 	}
 }

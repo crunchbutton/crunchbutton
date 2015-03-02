@@ -22,4 +22,9 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 
 		return $db;
 	}
+	
+	public function getFields($table) {
+		$res = $this->db()->query('SHOW COLUMNS FROM `'.$table.'`');
+		return $res;
+	}
 }
