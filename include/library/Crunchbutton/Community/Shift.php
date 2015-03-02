@@ -186,10 +186,17 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function shiftDriverIsCurrentWorkingOn( $id_admin, $dt = null ){
 		$admin = Admin::o( $id_admin );
-		if( $admin->timezone ){
+		// start using community's timezone - #4965
+		$community = $admin->communityDriverDelivery();
+		if( $community->id_community && $community->timezone ){
+			$timezone = $community->timezone;
+		} else {
+			$timezone = $admin->timezone;
+		}
+		if( $timezone ){
 			$time = ( $dt ? $dt : 'now' );
 			$now = new DateTime( $time, new DateTimeZone( c::config()->timezone ) );
-			$now->setTimezone( new DateTimeZone( $admin->timezone ) );
+			$now->setTimezone( new DateTimeZone( $timezone ) );
 			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 									INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 										WHERE asa.id_admin = ' . $id_admin . '

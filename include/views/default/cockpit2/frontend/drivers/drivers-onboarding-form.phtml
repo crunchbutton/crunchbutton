@@ -62,9 +62,19 @@
 				<div class="label">Community:</div>
 				<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
 				<div class="box-error">
+
 					<small ng-show="form.driverIdCommunity.$error.required">Required.</small>
 				</div>
 			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverTimezone.$invalid}">
+				<div class="label">Timezone:</div>
+				<div class="input">
+				<select name="driverTimezone" required ng-model="driver.timezone" ng-options="opt.value as opt.label for opt in timezones" ></select>
+
+				</div>
+			</li>
+
 
 			<li class="li-input" ng-class="{'error':form.driverEmail.$invalid}">
 				<div class="label">Email:</div>
@@ -159,7 +169,7 @@
 				<div class="input">
 				<textarea name="driverAddress" ng-model="driver.address"></textarea>
 			</li>
-                
+
            <li class="li-input">
 				<div class="label">T-shirt Size:</div>
 				<div class="input">
@@ -204,8 +214,8 @@
 					<small ng-show="form.driverPermashifts.$error.required">Required.</small>
 				</div>
 			</li>
-            
-            
+
+
 
 			<li class="li-input">
 				<div class="label">Desired Weekly Hours:</div>

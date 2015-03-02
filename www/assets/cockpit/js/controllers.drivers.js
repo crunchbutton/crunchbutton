@@ -563,6 +563,24 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	$scope.submitted = false;
 	$scope.isSaving = false;
 
+	var vehicle_default = null;
+
+	$scope._yesNo = DriverOnboardingService.yesNo();
+	$scope.timezones = CommunityService.timezones();
+	DriverOnboardingService.vehicles( function( json ){
+		if( !$scope.vehicles ){
+			$scope.vehicles = json.options;
+			vehicle_default = json.default;
+		}
+	} );
+
+	CommunityService.listSimple( function( data ){
+		if( !$scope.communities ){
+			$scope.communities = data;
+		}
+		$scope.ready = true;
+	} );
+
 	var docs = function(){
 		// Load the docs
 		DriverOnboardingService.docs.list( $routeParams.id, function( data ){
@@ -600,10 +618,8 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 		DriverOnboardingService.get( $routeParams.id, function( driver ){
 
-			$scope._yesNo = DriverOnboardingService.yesNo();
-
 			$scope.driver = driver;
-
+			console.log('$scope.driver.id_community>>>>>>',$scope.driver.id_community);
 			if( driver.pexcard_date ){
 				$scope.driver.pexcard_date = new Date( driver.pexcard_date );
 			} else {
@@ -613,24 +629,18 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			if( !$scope.driver.id_admin ){
 				$scope.driver.notify = true;
 			}
+
+			if( !$scope.driver.vehicle && vehicle_default ){
+				$scope.driver.vehicle = vehicle_default
+			}
+
 			// logs();
 			docs();
-			DriverOnboardingService.vehicles( function( json ){
-				$scope.vehicles = json.options;
-				if( !$scope.driver.vehicle ){
-					$scope.driver.vehicle = json.default;
-				}
-			} );
 
-			CommunityService.listSimple( function( data ){
-				$scope.communities = data;
-				$scope.ready = true;
-			} );
 
 		} );
 
 		DriverOnboardingService.phone_types( function( json ){
-
 			$scope.phone_types = json.options;
 			$scope.phones_default = json.default;
 			$scope.iphone_options = json.iphone_options;
@@ -647,7 +657,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope.carrier_type_other = json.other;
 		} );
 
-        DriverOnboardingService.tshirt_sizes( function( json ){
+    DriverOnboardingService.tshirt_sizes( function( json ){
 			$scope.tshirt_sizes = json.tshirt_options;
 		} );
 
@@ -696,7 +706,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 				}
 				setTimeout( function(){
 					$scope.flash.setMessage( 'Driver saved!' );
-				}, 500 );
+				}, 50 );
 				$scope.isSaving = false;
 			} else {
 				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
@@ -748,7 +758,11 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.docs.download( id_driver_document_status );
 	}
 
-	start();
+	$scope.$watch( 'ready', function( newValue, oldValue, scope ) {
+		start();
+	});
+
+
 
 } );
 

@@ -123,6 +123,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
+		if( $this->request[ 'timezone' ] ){
+			$driver->timezone = $this->request[ 'timezone' ];
+			$driver->save();
+		}
+
 
 		// Driver info
 		$driver_info = $driver->driver_info();
