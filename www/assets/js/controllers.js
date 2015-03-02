@@ -23,9 +23,20 @@ NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService) {
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
 
-	$scope.communities = App.communities;
+	var array_without_test = [];
+	for (var iiii in App.communities){
 
+		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)){
+			//do nothing
+		}
+		else{
+			//only add communities without "test" and without "no drivers"
+			array_without_test.push(App.communities[iiii]);
+		}
 
+	}
+
+	$scope.communities = array_without_test;
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
@@ -92,9 +103,19 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 
 NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $location) {
 
-	$scope.communities = App.communities;
-	//console.log($scope.communities);
+	var array_without_test = [];
+	for (var iiii in App.communities){
 
+		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)){
+			//do nothing
+		}
+		else{
+			//only add communities without "test" and without "no drivers"
+			array_without_test.push(App.communities[iiii]);
+		}
+
+	}
+	$scope.communities = array_without_test;
 	$scope.apply = {};
 	$scope.errors = {};
 	$scope.post = function(){
