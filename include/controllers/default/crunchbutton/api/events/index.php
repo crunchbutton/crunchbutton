@@ -35,7 +35,7 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 		if(!$session || !$session->id_session) {
 			return self::nullInitialSequence;
 		}
-		$lastEvent = c::db()->query('SELECT * FROM `analytics_event` WHERE id_session = "' . $session->id_session . '" ORDER BY sequence DESC, ts DESC LIMIT 1')->fetch();
+		$lastEvent = c::db()->query('SELECT * FROM `analytics_event` WHERE id_session = ? ORDER BY sequence DESC, ts DESC LIMIT 1', [$session->id_session])->fetch();
 		$now = date_create()->getTimestamp();
 		if (is_null($lastEvent->ts)) {
 			return self::nullInitialSequence;
