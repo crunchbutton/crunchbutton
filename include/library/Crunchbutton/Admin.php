@@ -326,6 +326,20 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $deliveryFor;
 	}
 
+	public function communityDriverDelivery(){
+		$adminCommunities = [];
+		$groups = $this->groups();
+		foreach ( $groups as $group ) {
+			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
+			foreach( $communities as $community ){
+				if( $community->active ){
+					return Crunchbutton_Community::o( $community->id_community );
+				}
+			}
+		}
+		return false;
+	}
+
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
 			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = "' . $this->id_admin . '" AND g.name LIKE "drivers-%" AND g.name !="' . Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"';
@@ -768,6 +782,12 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			unset( $ex[ $rem ] );
 		}
 
+		$community_delivery = $this->communityDriverDelivery();
+		if( $community_delivery->id_community ){
+			$ex[ 'id_community' ] = $community_delivery->id_community;
+		}
+
+
 		return $ex;
 	}
 
@@ -966,7 +986,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		$this->changeOptions([
 			'author_id' => 'id_author'
 		]);
-		
+
 		$this
 			->table('admin')
 			->idVar('id_admin')
