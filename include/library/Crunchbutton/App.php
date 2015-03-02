@@ -406,7 +406,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 
 			$config['topCommunities'] = [];
-			foreach (Community_Alias::q('select * from community_alias where top="1" order by `sort`') as $community_alias) {
+			foreach (Community_Alias::q('select * from community_alias where top=true order by `sort`') as $community_alias) {
 				$config['topCommunities'][] = [
 					'alias' => $community_alias->alias,
 					'name' => $community_alias->name_alt
