@@ -4,7 +4,7 @@ class Crunchbutton_Site extends Cana_Table {
 	public function config($key = null) {
 		if (!isset($this->_config)) {
 			$global = Crunchbutton_Config::q('select * from config where id_site is null');
-			$site = Crunchbutton_Config::q('select * from config where id_site="'.$this->id_site.'"');
+			$site = Crunchbutton_Config::q('select * from config where id_site=?',[$this->id_site]);
 
 			foreach ($global as $c) {
 				$this->_config[$c->key] = $c;

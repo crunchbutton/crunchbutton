@@ -780,12 +780,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public static function uuid($uuid) {
-		return self::q('select * from `order` where uuid="'.$uuid.'"');
+		return self::q('select * from `order` where uuid=?', [$uuid]);
 	}
 
 	// return an order based on its local_gid - see #3086
 	public static function gid( $gid ) {
-		return self::q( 'SELECT * FROM `order` WHERE local_gid="'.$gid.'"' );
+		return self::q( 'SELECT * FROM `order` WHERE local_gid=?', [$gid]);
 	}
 
 	/**
@@ -805,12 +805,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function accepted() {
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="accepted"');
+		$nl = Notification_Log::q('select * from notification_log where id_order=? and status="accepted"', [$this->id_order]);
 		return $nl->count() ? true : false;
 	}
 
 	public function fax_succeeds() {
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type="phaxio" and status="success"');
+		$nl = Notification_Log::q('select * from notification_log where id_order=? and type="phaxio" and status="success"', [$this->id_order]);
 		return $nl->count() ? true : false;
 	}
 
@@ -1328,7 +1328,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function driver(){
 		if( !$this->_driver && $this->id_order ){
-			$this->_driver = Admin::q( "SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = {$this->id_order} AND type != 'delivery-rejected' ORDER BY id_order_action DESC LIMIT 1" );
+			$this->_driver = Admin::q('SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = ? AND type != "delivery-rejected" ORDER BY id_order_action DESC LIMIT 1', [$this->id_order]);
 		}
 		return $this->_driver;
 	}
@@ -1363,7 +1363,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" ) ');
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" )', [$this->id_order]);
 		if( $nl->count() > 0 ){
 			// Log
 			Log::debug([ 'order' => $this->id_order, 'count' => $nl->count(), 'action' => 'confirmation call already in process', 'host' => c::config()->host_callback, 'type' => 'notification']);
@@ -1483,13 +1483,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$order->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" ) ');
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND type = "confirm" AND ( status = "created" OR status = "queued" ) ', [$order->id_order]);
 		if( $nl->count() > 0 ){
 			return;
 		}
 
 		// Query to count the number of confirmations sent
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$order->id_order.'" AND status="callback" AND `type`="confirm"');
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND status="callback" AND `type`="confirm"', [$order->id_order]);
 
 		if( $nl->count() > 0 ){ // if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification - #974
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
@@ -2097,7 +2097,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$out['summary'] = $this->orderMessage('summary');
 
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $credit->id_credit ){
 			$reward = new Crunchbutton_Reward;
 			$points = $reward->processOrder( $this->id_order );
@@ -2286,13 +2286,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	// Gets the last order tipped by the user
 	public function lastTippedOrder( $id_user = null ) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
-		return self::q('select * from `order` where id_user="'.$id_user.'" and tip is not null and tip > 0 order by id_order desc limit 0,1');
+		return self::q('select * from `order` where id_user=? and tip is not null and tip > 0 order by id_order desc limit 1 offset 0',[$id_user]);
 	}
 
 	public function lastTipByDelivery($id_user = null, $delivery ) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
-			$order = self::q('select * from `order` where id_user="'.$id_user.'" and delivery_type = "' . $delivery . '" and tip is not null order by id_order desc limit 0,1');
+			$order = self::q('select * from `order` where id_user=? and delivery_type = ? and tip is not null order by id_order desc limit 1 offset 0', [$id_user, $delivery]);
 			if( $order->tip ){
 				return $order->tip;
 			}
@@ -2303,7 +2303,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function lastDeliveredOrder($id_user = nul) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
-			$order = self::q('SELECT * FROM `order` WHERE id_user = ' . $id_user . ' AND delivery_type = "delivery" ORDER BY id_order DESC LIMIT 1');
+			$order = self::q('SELECT * FROM `order` WHERE id_user = ? AND delivery_type = "delivery" ORDER BY id_order DESC LIMIT 1', [$id_user]);
 			if( $order->id_order ){
 				return Order::o( $order->id_order );
 			}
@@ -2377,8 +2377,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( !$this->id_order ){
 			 return 0;
 		}
-		$query = 'SELECT SUM( value ) as total FROM promo WHERE id_order_reference = ' . $this->id_order;
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT SUM( value ) as total FROM promo WHERE id_order_reference = ?';
+		$row = Cana::db()->get( $query, [$this->id_order])->get(0);
 		if( $row->total ){
 			return $row->total;
 		}
@@ -2386,8 +2386,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function hasCredit(){
-		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . ' AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_promo IS NULL';
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ? AND ( credit_type = ? OR credit_type != ? ) AND id_promo IS NULL';
+		$row = Cana::db()->get( $query ,[$this->id_order, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT])->get(0);
 		if( $row->total ){
 			return $row->total;
 		}
@@ -2417,8 +2417,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function totalOrdersByPhone( $phone ){
 		$phone = trim( str_replace( '-', '', str_replace( ' ', '', $phone ) ) );
-		$query = "SELECT COUNT(*) AS total FROM `order` WHERE phone = '{$phone}'";
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE phone = ?';
+		$row = Cana::db()->get( $query, [$phone])->get(0);
 		if( intval( $row->total ) ){
 			return intval( $row->total );
 		}
@@ -2426,8 +2426,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function totalOrdersByCustomer( $id_user ){
-		$query = "SELECT COUNT(*) AS total FROM `order` WHERE id_user = '{$id_user}'";
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE id_user = ?';
+		$row = Cana::db()->get( $query, [$id_user])->get(0);
 		if( $row->total ){
 			return $row->total;
 		}
@@ -2645,7 +2645,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if( $driver ){
 			// Check if the order was rejected and change the message
-			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = "' . Crunchbutton_Order_Action::DELIVERY_REJECTED . '" AND id_order = "' . $this->id_order . '"' );
+			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = ? AND id_order = ?', [Crunchbutton_Order_Action::DELIVERY_REJECTED, $this->id_order]);
 			if( $action->count() > 0 ){
 				$message = $firstName . "Sorry, your updated driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			} else {
@@ -2657,12 +2657,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function hasGiftCardIssued(){
 		// check if it has a gift card
-		$promo = Crunchbutton_Promo::q( "SELECT * FROM promo p WHERE p.id_order_reference = {$this->id_order}" );
+		$promo = Crunchbutton_Promo::q('SELECT * FROM promo p WHERE p.id_order_reference = ', [$this->id_order]);
 		if( $promo->count() > 0 ){
 			return true;
 		}
 		// check if it has credit
-		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order} AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
+		$credit = Crunchbutton_Credit::q('SELECT * FROM credit c WHERE c.id_order_reference = ? AND ( c.credit_type = ? OR c.credit_type != ? )', [$this->id_order, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $credit->count() > 0 ){
 			return true;
 		}
@@ -2780,7 +2780,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function deliveryStatus($type = null) {
 		if (!$this->_actions) {
-			$this->_actions = Order_Action::q('select * from order_action where id_order="'.$this->id_order.'" order by timestamp');
+			$this->_actions = Order_Action::q('select * from order_action where id_order=? order by timestamp', [$this->id_order]);
 			$this->_deliveryStatus = ['accepted' => false, 'delivered' => false, 'pickedup' => false];
 			$acpt = [];
 
@@ -2819,7 +2819,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function eta($refresh = false) {
 		if (!isset($this->_eta) || $refresh) {
-			$eta = Order_Eta::q('select * from order_eta where id_order="'.$this->id_order.'" order by date desc limit 1')->get(0);
+			$eta = Order_Eta::q('select * from order_eta where id_order=? order by date desc limit 1', [$this->id_order])->get(0);
 			if (!$eta->id_order_eta || $refresh) {
 				$eta = Order_Eta::create($this);
 			}

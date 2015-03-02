@@ -22,9 +22,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			where
 				community.active=true
 				AND (
-					( community.private=0 )
+					( community.private=false )
 					OR
-					(community.private=1 AND community_ip.ip=:ip)
+					(community.private=true AND community_ip.ip=:ip)
 					'.$forceq.'
 				)
 			group by community.id_community

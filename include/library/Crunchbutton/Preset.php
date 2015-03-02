@@ -10,7 +10,7 @@ class Crunchbutton_Preset extends Cana_Table {
 
 	public function exports() {
 		$out = $this->properties();
-		$order = Order::q('select * from `order` where id_restaurant="'.$this->id_restaurant.'" and id_user="'.$this->id_user.'" order by id_order desc limit 0,1' );
+		$order = Order::q('select * from `order` where id_restaurant=? and id_user=? order by id_order desc limit 1', [$this->id_restaurant, $this->id_user]);
 		$out['delivery_type'] = $order->delivery_type;
 		$out['pay_type'] = $order->pay_type;
 		foreach ($this->dishes() as $dish) {
@@ -18,7 +18,7 @@ class Crunchbutton_Preset extends Cana_Table {
 
 			if( $order->id_order && $dish->id_dish ){
 				// Get the options that was set as default after the preset date - see #1437
-				$newOptions = Dish_Option::q( "SELECT do.*, op.id_option_parent FROM dish_option do INNER JOIN `order` o ON o.id_order = {$order->id_order} AND do.date > o.date INNER JOIN `option` op ON op.id_option = do.id_option WHERE do.id_dish = {$dish->id_dish} AND do.`default` = 1" );
+				$newOptions = Dish_Option::q('SELECT do.*, op.id_option_parent FROM dish_option do INNER JOIN `order` o ON o.id_order = ? AND do.date > o.date INNER JOIN `option` op ON op.id_option = do.id_option WHERE do.id_dish = ? AND do.`default` = 1', [$order->id_order, $dish->id_dish]);
 				foreach ( $newOptions as $newOption ) {
 					// This rule of #1437 isn't applied to select type - just checkbox
 					if( $newOption->id_option_parent ){
