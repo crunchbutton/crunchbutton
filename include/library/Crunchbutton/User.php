@@ -64,14 +64,14 @@ class Crunchbutton_User extends Cana_Table {
 
 		if (!isset($this->_orders)) {
 			if ($type == 'compact') {
-				$q = '
-					select o.date, o.id_order, o.uuid, r.name restaurant_name, r.permalink restaurant_permalink, r.timezone timezone, "compressed" type from `order` o
+				$q = "
+					select o.date, o.id_order, o.uuid, r.name as restaurant_name, r.permalink as restaurant_permalink, r.timezone as timezone, 'compressed' as type from `order` o
 					inner join restaurant r on r.id_restaurant = o.id_restaurant
 					where
 						id_user=?
 						and id_user is not null
 						order by date desc
-				';
+				";
 			} else {
 				$q = 'select * from `order` where id_user=?';
 			}
