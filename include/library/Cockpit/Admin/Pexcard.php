@@ -198,9 +198,21 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_pexcard = "' . $id_pexcard . '" LIMIT 1' );
 		if( $admin_pexcard->id_admin_pexcard ){
 			return $admin_pexcard;
+		} else {
+			$_card = Crunchbutton_Pexcard_Card::details( $id_pexcard );
+			$admin_pexcard = new Cockpit_Admin_Pexcard;
+			$admin_pexcard->id_pexcard = $id_pexcard;
+			if( $_card->body ){
+				$_card = $_card->body;
+				$admin_pexcard->last_four = $_card->cards[ 0 ]->cardNumber;
+				$admin_pexcard->card_serial = $_card->lastName;
+				$admin_pexcard->save();
+			} else {
+				$admin_pexcard->last_four = null;
+				$admin_pexcard->card_serial = null;;
+			}
 		}
-		$admin_pexcard = new Cockpit_Admin_Pexcard;
-		$admin_pexcard->id_pexcard = $id_pexcard;
+
 		return $admin_pexcard;
 	}
 
