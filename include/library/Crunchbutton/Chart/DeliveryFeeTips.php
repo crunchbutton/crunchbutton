@@ -29,8 +29,8 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 														LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 														INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 														INNER JOIN community c ON c.id_community = rc.id_community
-														WHERE o.delivery_type = "' . ORDER::SHIPPING_DELIVERY . '" 
-															AND o.pay_type = "' . ORDER::PAY_TYPE_CREDIT_CARD . '" 
+														WHERE o.delivery_type = \'' . ORDER::SHIPPING_DELIVERY . '\' 
+															AND o.pay_type = \'' . ORDER::PAY_TYPE_CREDIT_CARD . '\'
 															AND YEARWEEK(o.date) >= ' . $this->weekFrom . ' 
 															AND YEARWEEK(o.date) <= ' . $this->weekTo . '
 															AND r.delivery_service = 1' );
@@ -48,8 +48,8 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 														LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 														INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 														INNER JOIN community c ON c.id_community = rc.id_community
-														WHERE o.delivery_type = "' . ORDER::SHIPPING_DELIVERY . '" 
-															AND o.pay_type = "' . ORDER::PAY_TYPE_CASH . '" 
+														WHERE o.delivery_type = \'' . ORDER::SHIPPING_DELIVERY . '\'
+															AND o.pay_type = \'' . ORDER::PAY_TYPE_CASH . '\'
 															AND YEARWEEK(o.date) >= ' . $this->weekFrom . ' 
 															AND YEARWEEK(o.date) <= ' . $this->weekTo . '
 															AND r.delivery_service = 1
