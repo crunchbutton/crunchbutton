@@ -43,6 +43,9 @@ class Crunchbutton_App extends Cana_App {
 
 			} elseif (preg_match('/^\/home\/staging2.crunchbutton/',dirname(__FILE__))) {
 				$_SERVER['SERVER_NAME'] = 'staging2.crunchr.co';
+
+			} elseif (preg_match('/^\/app/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'heroku.crunchr.co';
 			}
 		}
 

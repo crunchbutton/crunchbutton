@@ -7,6 +7,7 @@ ini_set('display_errors',true);
 
 
 echo "Starging worker...\n";
+echo dirname(__FILE__)."\n";
 
 require_once('/app/include/crunchbutton.php');
 
