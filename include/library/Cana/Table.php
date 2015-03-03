@@ -279,44 +279,57 @@ class Cana_Table extends Cana_Model { //
 		$numset = 0;
 
 		foreach ($fields as $field) {
-			if ($this->property($field->field) !== false) {
+			if ($this->property($field->field) === false) {
+				continue;
+			}
 
-				if ($this->{$field->field} == '' && $field->null) {
-					$this->{$field->field} = null;
-				} elseif ($this->{$field->field} == null && !$field->null) {
-					$this->{$field->field} = '';
-				}
+			if ($this->{$field->field} == '' && $field->null) {
+				$this->{$field->field} = null;
+			} elseif ($this->{$field->field} == null && !$field->null) {
+				$this->{$field->field} = '';
+			}
 
-				$query .= !$numset ? ' SET' : ',';
-				//$query .= ' `'.$field->field.'`='.(is_null($this->{$field->field}) ? 'NULL' : (':'.$field->field));
-				//var_dump($field);
-				
-				switch ($field->type) {
-					case 'int':
-						$value = intval($this->{$field->field});
-						break;
+			switch ($field->type) {
+				case 'int':
+					$this->{$field->field} = intval($this->{$field->field});
+					break;
+			}
 
-					default:
-						$value = $this->{$field->field};
-						break;
-				}
-				//var_dump($value);
-				$value = (!$value && $field->null) ? null : $value;
+			$this->{$field->field} = (!$this->{$field->field} && $field->null) ? null : $this->{$field->field};
 
+			$query .= !$numset ? ($newItem ? '(' : ' SET ') : ',';
+			if ($newItem) {
+				$query .= ' `'.$field->field.'` ';
+			} else {
 				$query .= ' `'.$field->field.'`=:'.$field->field;
-				//if (!is_null($this->{$field->field})) {
-					$fs[$field->field] = $value;
-				//}
-				
+			}
+
+			$fs[$field->field] = $this->{$field->field};
+
+			$numset++;
+
+		}
+
+		if ($newItem) {
+			$query .= ' ) VALUES (';
+			$numset = 0;
+			
+			foreach ($fields as $field) {
+				if ($this->property($field->field) === false) {
+					continue;
+				}
+				$query .= !$numset ? '' : ',';
+				$query .= ' :'.$field->field;
 				$numset++;
 			}
-		}
-		if (!$newItem) {
+			
+			$query .= ')';
+		} else {
 			$query .= ' WHERE '.$this->idVar().'=:id';
 			$fs['id'] = $this->{$this->idVar()};
 		}
-//var_dump($fs);
-		//echo $query;
+//echo $query;
+//		print_r($fs);
 		$this->dbWrite()->query($query, $fs);
 
 		if ($newItem == 1) {
