@@ -8,7 +8,7 @@ set_time_limit(100);
 
 echo 'Testing...';
 
-require_once('../include/crunchbutton.php');
+require_once('/app/include/crunchbutton.php');
 
 $res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
 	'from' 		=> 'test@_DOMAIN_',
