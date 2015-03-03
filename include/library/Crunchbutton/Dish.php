@@ -83,10 +83,10 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 			$this->_ratingCount = Order::q('
 				select count(*) as c from `order`
 				left join order_dish using(id_order)
-				where id_restaurant="'.$this->id_restaurant.'"
-				and id_dish="'.$this->id_dish.'"
+				where id_restaurant=?
+				and id_dish=?
 				and env="live"
-			')->c;
+			', [$this->id_restaurant, $this->id_dish])->c;
 		}
 		return $this->_ratingCount;
 	}
