@@ -188,6 +188,22 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function exception($e) {
+		$this->config()->db = null;
+		$backtracel = "\n<br />".$e->getMessage()."\n<br /><pre>";
+		foreach($e->getTrace() as $k=>$v){
+			if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
+				$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />";
+			} else {
+				$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />";
+			}
+		}
+
+		if (getenv('HEROKU')) {
+			$stderr = fopen('php://stderr', 'w'); 
+			fwrite($stderr, $backtracel); 
+			fclose($stderr); 
+		}
+
 		if ($this->env == 'live') {
 			echo
 				'<title>Error</title><style>body {font-family: sans-serif; }.wrapper{ width: 400px; margin: 0 auto; margin-top: 25px;}</style>'.
@@ -199,15 +215,6 @@ class Crunchbutton_App extends Cana_App {
 			mail('_EMAIL','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
 			exit;
 		} else {
-			$this->config()->db = null;
-			echo "\n<br />".$e->getMessage()."\n<br /><pre>";
-			foreach($e->getTrace() as $k=>$v){
-				if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
-					$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />";
-				} else {
-					$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />";
-				}
-			}
 			echo $backtracel;
 			exit;
 		}
