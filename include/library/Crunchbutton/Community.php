@@ -177,7 +177,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function aliases(){
 		if( !$this->_aliases ){
-			$this->_aliases = Crunchbutton_Community_Alias::q( 'SELECT * FROM community_alias WHERE id_community = ' . $this->id_community . ' ORDER BY alias ASC' );
+			$this->_aliases = Crunchbutton_Community_Alias::q( 'SELECT * FROM community_alias WHERE id_community = ? ORDER BY alias ASC', [$this->id_community]);
 		}
 		return $this->_aliases;
 	}
@@ -214,7 +214,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	function groupOfMarketingReps(){
 		if (!isset($this->_groupOfMarketingReps)) {
-			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = "' . $this->id_community . '" AND type = "' . Crunchbutton_Group::TYPE_MARKETING_REP . '" ORDER BY id_group DESC LIMIT 1 ' );
+			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = ? AND type = ? ORDER BY id_group DESC LIMIT 1 ', [$this->id_community, Crunchbutton_Group::TYPE_MARKETING_REP]);
 			if (!$group->id_group) {
 				$group = Crunchbutton_Group::createMarketingRepGroup( $this->id_community );
 			}
@@ -224,7 +224,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function communityByDriverGroup( $group ){
-		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = "' . $group . '"' );
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = ?', [$group]);
 	}
 
 	public function active(){
