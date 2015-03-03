@@ -30,10 +30,10 @@ class Cana_Db_Base {
 
 		// if we have keyword arguments
 		if (is_object($args)) {
-			//var_dump($args); exit;
-			throw new Exception('blah');
+			throw new Exception('Invalid arguments for query');
 		}
 
+		/*
 		if ($args && array_keys($args) !== range(0, count($args) - 1)) {
 			foreach ($args as $key => $value) {
 				switch (gettype($value)) {
@@ -50,11 +50,11 @@ class Cana_Db_Base {
 				$stmt->bindValue(':'.$key, $value, $type);
 			}
 			$args = null;
-			
 		}
+		*/
 
 		$stmt->execute($args);
-		//$db->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql'
+
 		return $stmt;
 	}
 	

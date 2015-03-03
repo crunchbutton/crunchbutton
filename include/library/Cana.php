@@ -165,7 +165,14 @@ class Cana extends Cana_Model {
 		$cmd = c::config()->dirs->root.'cli/timeout-'.$v.'.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded)) . $env;
 
 		if ($async) {
-			exec('nohup '.$cmd.' >> /var/log/timeout 2>&1 &');
+			try {
+				exec('nohup '.$cmd.' >> /var/log/timeout 2>&1 &');
+			} catch (Exception $e) {
+				Crunchbutton_Log::error([
+					'type'         => 'timeout exception',
+					'cmd' => $cmd
+				]);
+			}
 		} else {
 			exec($cmd.' 2>&1 &', $o);
 			print_r($o);
