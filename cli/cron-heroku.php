@@ -16,9 +16,5 @@ $res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
 
 
 
-error_log('error_log');
-
-$stderr = fopen('php://stderr', 'w'); 
-fwrite($stderr,'stderror'); 
-fclose($stderr); 
+throw new Exception('exception test');
 
