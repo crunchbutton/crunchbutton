@@ -805,12 +805,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function accepted() {
-		$nl = Notification_Log::q('select * from notification_log where id_order=? and status="accepted"', [$this->id_order]);
+		$nl = Notification_Log::q("select * from notification_log where id_order=? and status='accepted'", [$this->id_order]);
 		return $nl->count() ? true : false;
 	}
 
 	public function fax_succeeds() {
-		$nl = Notification_Log::q('select * from notification_log where id_order=? and type="phaxio" and status="success"', [$this->id_order]);
+		$nl = Notification_Log::q("select * from notification_log where id_order=? and type='phaxio' and status='success'", [$this->id_order]);
 		return $nl->count() ? true : false;
 	}
 

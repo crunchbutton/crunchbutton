@@ -533,21 +533,21 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$query = 'SELECT `support`.* FROM `support` WHERE id_support IS NOT NULL ';
 
 		if ($search['type']) {
-			$query .= ' and type="'.$search['type'].'" ';
+			$query .= " and type='".$search['type']."' ";
 		}
 
 		if ($search['status']) {
-			$query .= ' and status="'.$search['status'].'" ';
+			$query .= " and status='".$search['status']."' ";
 		}
 
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
-			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
+			$query .= " and DATE(`date`)>='".$s->format('Y-m-d')."' ";
 		}
 
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
-			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
+			$query .= " and DATE(`date`)<='".$s->format('Y-m-d')."' ";
 		}
 
 		if ($search['search']) {
