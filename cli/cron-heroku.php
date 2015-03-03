@@ -1,11 +1,14 @@
+#!/usr/bin/env php
 <?php
-error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ALL);
 ini_set('display_errors',true);
 set_time_limit(100);
 
-require_once('../include/crunchbutton.php');
+
 
 echo 'Testing...';
+
+require_once('../include/crunchbutton.php');
 
 $res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
 	'from' 		=> 'test@_DOMAIN_',
