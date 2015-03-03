@@ -25,7 +25,7 @@ class Crunchbutton_Preset extends Cana_Table {
 					INNER JOIN `option` op ON op.id_option = dish_option.id_option
 					WHERE
 						dish_option.id_dish = ?
-						AND dish_option.`default` = 1
+						AND dish_option.`default` = true
 				', [$order->id_order, $dish->id_dish]);
 				foreach ( $newOptions as $newOption ) {
 					// This rule of #1437 isn't applied to select type - just checkbox
