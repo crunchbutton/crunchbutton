@@ -312,9 +312,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function getOrdersFromLastDaysByCommunity( $days = 14 ){
 		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
 					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$this->id_community}'
+					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
 					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
-		return c::db()->get( $query );
+		return c::db()->get( $query, [$this->id_community]);
 	}
 
 	public function ordersLastWeek(){
@@ -350,14 +350,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function getRestaurants(){
-		return Restaurant::q( 'SELECT * FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ' . $this->id_community . ' ORDER BY r.name' );
+		return Restaurant::q( 'SELECT * FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ? ORDER BY r.name', [$this->id_community]);
 	}
 
 	public function driverDeliveryHere( $id_admin ){
 		$group = $this->groupOfDrivers();
 
 		if( $group->id_group ){
-			$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = {$group->id_group} AND ag.id_admin = {$id_admin} LIMIT 1" );
+			$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = ? AND ag.id_admin = ? LIMIT 1", [$group->id_group, $id_admin]);
 			if( $admin_group->id_admin_group ){
 				return true;
 			}
@@ -433,9 +433,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function totalRestaurantsByCommunity(){
 
-		$query = "SELECT COUNT(*) AS Total FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$this->id_community}";
+		$query = "SELECT COUNT(*) AS Total FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?";
 
-		$result = c::db()->get( $query );
+		$result = c::db()->get( $query, [$this->id_community]);
 		$total = $result->_items[0]->Total;
 
 		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = true AND name NOT LIKE '%test%'";

@@ -2032,9 +2032,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$id_community}'
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
 								{$this->queryExcludeUsers}";
-		$result = c::db()->get( $query );
+		$result = c::db()->get( $query, [$id_community]);
 		return $result->_items[0]->Total;
 	}
 
