@@ -3,7 +3,7 @@
 class Crunchbutton_Preset extends Cana_Table {
 	public function dishes() {
 		if (!isset($this->_dishes)) {
-			$this->_dishes = Order_Dish::q('select * from order_dish where id_preset="'.$this->id_preset.'"');
+			$this->_dishes = Order_Dish::q('select * from order_dish where id_preset=?', [$this->id_preset]);
 		}
 		return $this->_dishes;
 	}
