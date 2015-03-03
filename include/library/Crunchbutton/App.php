@@ -189,18 +189,23 @@ class Crunchbutton_App extends Cana_App {
 
 	public function exception($e) {
 		$this->config()->db = null;
-		$backtracel = "\n<br />".$e->getMessage()."\n<br /><pre>";
+
 		foreach($e->getTrace() as $k=>$v){
 			if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
-				$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />";
+				$backtracels[] = "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]";
 			} else {
-				$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />";
+				$backtracels[] = "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]";
 			}
 		}
 
 		if (getenv('HEROKU')) {
 			$stderr = fopen('php://stderr', 'w'); 
-			fwrite($stderr, $backtracel); 
+			fwrite($stderr, 'PHP EXCEPTION:');
+			fwrite($stderr, $e->getMessage());
+			foreach ($backtracels as $l) {
+				fwrite($stderr, $l."\n");
+			}
+			fwrite($stderr, "\n");
 			fclose($stderr); 
 		}
 
@@ -215,7 +220,10 @@ class Crunchbutton_App extends Cana_App {
 			mail('_EMAIL','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
 			exit;
 		} else {
-			echo $backtracel;
+			echo "\n<br />".$e->getMessage()."\n<br /><pre>";
+			foreach ($backtracels as $l) {
+				echo $l.'<br>';
+			}
 			exit;
 		}
 	}
