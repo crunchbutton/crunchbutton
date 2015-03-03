@@ -2303,7 +2303,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function lastDeliveredOrder($id_user = nul) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
-			$order = self::q('SELECT * FROM `order` WHERE id_user = ? AND delivery_type = "delivery" ORDER BY id_order DESC LIMIT 1', [$id_user]);
+			$order = self::q("SELECT * FROM `order` WHERE id_user = ? AND delivery_type = 'delivery' ORDER BY id_order DESC LIMIT 1", [$id_user]);
 			if( $order->id_order ){
 				return Order::o( $order->id_order );
 			}
