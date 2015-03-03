@@ -14,4 +14,11 @@ $res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
 	'html'		=> 'this is some <b>content</b>'
 ]);
 
-throw new Exception('This is a test');
+
+
+error_log('error_log');
+
+$stderr = fopen('php://stderr', 'w'); 
+fwrite($stderr,'stderror'); 
+fclose($stderr); 
+
