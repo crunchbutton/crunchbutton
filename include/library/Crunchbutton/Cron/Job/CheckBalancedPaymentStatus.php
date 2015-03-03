@@ -5,7 +5,10 @@ class Crunchbutton_Cron_Job_CheckBalancedPaymentStatus extends Crunchbutton_Cron
 	public function run(){
 
 		$settlement = new Crunchbutton_Settlement;
+
 		$settlement->checkPaymentStatus();
+
+		$settlement->checkSucceededPaymentStatus();
 
 		// it always must call finished method at the end
 		$this->finished();

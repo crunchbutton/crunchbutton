@@ -89,7 +89,7 @@
 					<td><strong>Balanced Status</strong></td>
 					<td ng-class="result.balanced_status">
 						{{result.balanced_status}}
-						<span title="Check balanced status" class="link no-underline" ng-if="result.balanced_status != 'succeeded'" ng-click="balanced_status();"> <i class="fa fa-refresh"></i> </span>
+						<span title="Re-check balanced status" class="link no-underline" ng-click="balanced_status();"> <i class="fa fa-refresh"></i> </span>
 					</td>
 				</tr>
 				<tr ng-if="result.balanced_date_checked">
