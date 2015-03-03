@@ -101,16 +101,16 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 														FROM admin a
 														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = true
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
-														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant AND r.community = "' . $this->community . '"
+														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant AND r.community = ?
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a 
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '" 
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = ?
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 														) drivers
 													) 
 											drivers ON drivers.id_admin = a.id_admin ORDER BY name ASC';
-		return Admin::q( $query );
+		return Admin::q( $query, [$this->community, $group]);
 	}
 
 
@@ -120,9 +120,9 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 			return;
 		}
 
-		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE community = '{$this->name()}' AND name NOT LIKE '%test%'";
+		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE community = ? AND name NOT LIKE '%test%'";
 
-		$result = c::db()->get( $query );
+		$result = c::db()->get( $query, [$this->name()]);
 		$total = $result->_items[0]->Total;
 
 		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = true AND name NOT LIKE '%test%'";

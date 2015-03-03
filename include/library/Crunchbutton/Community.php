@@ -242,15 +242,15 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = true
 														LEFT JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant
-														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ' . $this->id_community . '
+														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ?
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '"
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = ?
 														) drivers
 													)
 											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC';
-		return Admin::q( $query );
+		return Admin::q( $query, [$this->id_community, $group]);
 	}
 
 	public function slug(){
