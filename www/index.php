@@ -29,11 +29,6 @@ if ($_COOKIE['__host']) {
 	$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = $_REQUEST['__host'];
 }
 
-		if (getenv('HEROKU')) {
-			echo $_SERVER['HTTP_HOST'];
-			die('heroku');
-		}
-
 if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 	header('Location: http://'.str_replace('www.','',$_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']);
 	exit;
