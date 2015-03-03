@@ -68,15 +68,15 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 	public function deliveries() {
 		if (!isset($this->_deliveries)) {
-			$o = Order::q('
+			$o = Order::q("
 				select o.*, oa.type as status, oa.timestamp as status_time from `order` o
 				left join order_action oa using (id_order)
 				where
-					id_admin="'.$this->id_admin.'"
-					and (oa.type="delivery-pickedup" or oa.type="delivery-accepted" or oa.type="delivery-delivered" or oa.type="delivery-rejected" or oa.type="delivery-transfered")
+					id_admin=?
+					and (oa.type='delivery-pickedup' or oa.type='delivery-accepted' or oa.type='delivery-delivered' or oa.type='delivery-rejected' or oa.type='delivery-transfered')
 					and o.date >= (curdate() - interval 50 day)
 				order by oa.timestamp asc
-			');
+			", [$this->id_admin]);
 			$orders = [];
 			foreach ($o as $order) {
 				if (!$orders[$order->id_order]) {
