@@ -44,11 +44,11 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 					`option`
 					LEFT JOIN dish_option using(id_option)
 				WHERE
-					id_dish="'.$this->id_dish.'"
+					id_dish=?
 				ORDER BY
 					option.type desc,
 					dish_option.sort ASC, option.name
-			');
+			', [$this->id_dish]);
 		}
 		if (gettype($this->_options) == 'array') {
 			$this->_options = i::o($this->_options);
@@ -67,7 +67,7 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 	 * @todo We should probably show a flash message about that
 	 */
 	public function delete() {
-		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish="'.$this->id_dish.'"');
+		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish=?', [$this->id_dish]);
 
 		if (!$od->count()) {
 			parent::delete();
