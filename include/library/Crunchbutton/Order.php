@@ -1042,10 +1042,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
-									oa.id_admin = "' . $id_admin . '"
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
-		return Crunchbutton_Order_Action::q( $query );
+									oa.id_admin = ?
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= ?
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= ?';
+		return Crunchbutton_Order_Action::q( $query, [$id_admin, $date_start->format( 'YmdHi' ), $date_end->format( 'YmdHi' )]);
 	}
 
 	public static function deliveredByCBDrivers( $search ){
@@ -1063,12 +1063,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if ( $search[ 'start' ] ) {
 			$s = new DateTime( $search[ 'start' ] );
-			$where .= ' AND DATE( `o.date`) >= "' . $s->format( 'Y-m-d' ) . '"';
+			$where .= ' AND DATE( `o.date`) >= \'' . $s->format( 'Y-m-d' ) . '\'';
 		}
 
 		if ( $search[ 'end' ] ) {
 			$s = new DateTime( $search[ 'end' ] );
-			$where .= ' AND DATE( `o.date` ) <= "' . $s->format( 'Y-m-d' ) . '"';
+			$where .= ' AND DATE( `o.date` ) <= \'' . $s->format( 'Y-m-d' ) . '\'';
 		}
 
 		if( $search[ 'limit' ] ){

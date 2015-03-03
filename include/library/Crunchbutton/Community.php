@@ -416,7 +416,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$from = $day->format( 'Y-m-d' );
 		$day->modify( '+6 days' );
 		$to = $day->format( 'Y-m-d' );
-		$shifts = Crunchbutton_Community_Shift::q( 'SELECT COUNT(*) AS shifts FROM community_shift cs WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND id_community = "' . $this->id_community . '" ORDER BY cs.date_start ASC' );
+		$shifts = Crunchbutton_Community_Shift::q('
+			SELECT COUNT(*) AS shifts FROM community_shift cs
+			WHERE
+				DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= ?
+				AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= ?
+				AND id_community = ?
+			ORDER BY cs.date_start ASC
+		', [$from, $to, $this->id_community]);
 		return ( $shifts->shifts > 0 );
 	}
 

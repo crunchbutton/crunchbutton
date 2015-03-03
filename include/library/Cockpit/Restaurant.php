@@ -63,11 +63,11 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		if (!isset($this->_payableOrders)) {
 			$q = 'SELECT * FROM `order`
 							WHERE id_restaurant=?
-								AND DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
-								AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
+								AND DATE(`date`) >= ?
+								AND DATE(`date`) <= ?
 								AND NAME NOT LIKE "%test%"
 							ORDER BY `pay_type` ASC, `date` ASC ';
-			$orders = Order::q($q, [$this->id_restaurant]);
+			$orders = Order::q($q, [$this->id_restaurant, (new DateTime($filters['start']))->format('Y-m-d'), (new DateTime($filters['end']))->format('Y-m-d')]);
 			$this->_payableOrders = $orders;
 		}
 		return $this->_payableOrders;
