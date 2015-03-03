@@ -31,15 +31,6 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 	}
 
 	public function save_log(){
-
-$log = new Cockpit_Community_Closed_Log;
-							$log->id_community = 1;
-							$log->day = '2015-02-27';
-							$log->hours_closed = 15;
-							$log->type = 'close_3rd_party_delivery_restaurants';
-							$log->save();
-		die('hard');
-
 		$out = [];
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
 		foreach( $communities as $community ){
@@ -55,17 +46,17 @@ $log = new Cockpit_Community_Closed_Log;
 										Cockpit_Community_Closed_Log::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS,
 										Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED,
 										Cockpit_Community_Closed_Log::TYPE_TOTAL ] as $type ){
-					if( $day[ $type ] ){
-						// if( !Cockpit_Community_Closed_Log::checkIfLogAlreadyExists( $day[ 'day' ], $day[ 'id_community' ], $type ) ){
+					$hours_closed = intval( $day[ $type ] );
+					// $hours_closed = $day[ $type ];
+					if( $hours_closed ){
+						if( !Cockpit_Community_Closed_Log::checkIfLogAlreadyExists( $day[ 'day' ], $day[ 'id_community' ], $type ) ){
 							$log = new Cockpit_Community_Closed_Log;
 							$log->id_community = $day[ 'id_community' ];
 							$log->day = $day[ 'day' ];
-							$log->hours_closed = $day[ $type ];
+							$log->hours_closed = $hours_closed;
 							$log->type = $type;
-							echo '<pre>';var_dump( $log );exit();
-							// $log->save();
-							die('hard');
-						// }
+							$log->save();
+						}
 					}
 				}
 			}
