@@ -12,7 +12,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 	// get the last payment
 	public function getLastPayment(){
 		if (!isset($this->_lastPayment)) {
-			$this->_lastPayment = Payment::q('select * from payment where id_restaurant="'.$this->id_restaurant.'" order by date desc limit 1')->get(0);
+			$this->_lastPayment = Payment::q('select * from payment where id_restaurant=? order by date desc limit 1', [$this->id_restaurant])->get(0);
 		}
 		return $this->_lastPayment;
 	}
@@ -20,7 +20,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 	// get the last sent payment
 	public function sendPayment($filters = []) {
 		if (!isset($this->_lastPayment)) {
-			$this->_lastPayment = Payment::q('select * from payment where id_restaurant="'.$this->id_restaurant.'" order by date desc limit 1')->get(0);
+			$this->_lastPayment = Payment::q('select * from payment where id_restaurant=? order by date desc limit 1', [$this->id_restaurant])->get(0);
 		}
 		return $this->_lastPayment;
 	}
@@ -62,12 +62,12 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 		if (!isset($this->_payableOrders)) {
 			$q = 'SELECT * FROM `order`
-							WHERE id_restaurant="'.$this->id_restaurant.'"
+							WHERE id_restaurant=?
 								AND DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
 								AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
 								AND NAME NOT LIKE "%test%"
 							ORDER BY `pay_type` ASC, `date` ASC ';
-			$orders = Order::q($q);
+			$orders = Order::q($q, [$this->id_restaurant]);
 			$this->_payableOrders = $orders;
 		}
 		return $this->_payableOrders;

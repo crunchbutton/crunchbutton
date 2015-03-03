@@ -141,7 +141,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function communities() {
 		if (!isset($this->_communities)) {
-			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'" ORDER BY community.name ASC');
+			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant=? ORDER BY community.name ASC', [$this->id_restaurant]);
 		}
 		return $this->_communities;
 	}
@@ -766,7 +766,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 
 	public function removeCommunity(){
-		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant="'.$this->id_restaurant.'"' );
+		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant=?', [$this->id_restaurant]);
 	}
 
 	/**
@@ -830,7 +830,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return void
 	 */
 	public function saveHours($hours) {
-		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
+		c::db()->query('delete from hour where id_restaurant=?', [$this->id_restaurant]);
 		if ($hours) {
 			foreach ($hours as $day => $times) {
 				foreach ($times as $time) {
@@ -897,9 +897,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function preset() {
 		return Preset::q('
-			select * from preset where id_restaurant="'.$this->id_restaurant.'"
+			select * from preset where id_restaurant=?
 			and id_user is null
-		');
+		', [$this->id_restaurant]);
 	}
 
 	public function cachePath() {
@@ -1395,7 +1395,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function ratingCount() {
 		if (!isset($this->_ratingCount)) {
-			$this->_ratingCount = Order::q('select count(*) as c from `order` where id_restaurant="'.$this->id_restaurant.'" and env="live"')->c;
+			$this->_ratingCount = Order::q('select count(*) as c from `order` where id_restaurant=? and env=?', [$this->id_restaurant, 'live'])->c;
 		}
 		return $this->_ratingCount;
 	}
