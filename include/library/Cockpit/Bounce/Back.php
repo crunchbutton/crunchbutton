@@ -80,7 +80,7 @@ class Cockpit_Bounce_Back extends Cana_Table {
 	}
 
 	public function checkBoundWasSent( $id_user, $id_order, $rule ){
-		$bounce = Cockpit_Bounce_Back::q( 'SELECT * FROM bounce_back WHERE id_user = "' . $id_user . '" AND id_order = "' . $id_order . '" AND rule = "' . $rule . '" ORDER BY id_bounce_back DESC LIMIT 1' );
+		$bounce = Cockpit_Bounce_Back::q( 'SELECT * FROM bounce_back WHERE id_user = ? AND id_order = ? AND rule = ? ORDER BY id_bounce_back DESC LIMIT 1', [$id_user, $id_order, $rule]);
 		if( $bounce->id_bounce_back ){
 			return true;
 		}
