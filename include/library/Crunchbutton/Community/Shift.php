@@ -178,10 +178,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$now = new DateTime( 'now', $timezone );
 		$query = 'SELECT cs.* FROM admin_shift_assign asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-							WHERE asa.id_admin = "' . $id_admin .  '" AND cs.date_start < DATE_FORMAT( "' . $now->format( 'Y-m-d' ) . '", "%Y-%m-%d" )
+							WHERE asa.id_admin = ? AND cs.date_start < DATE_FORMAT( ?, "%Y-%m-%d" )
 							ORDER BY cs.date_start DESC
 							LIMIT 1';
-		return Crunchbutton_Community_Shift::q( $query );
+		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 
 	public function shiftDriverIsCurrentWorkingOn( $id_admin, $dt = null ){
@@ -199,10 +199,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$now->setTimezone( new DateTimeZone( $timezone ) );
 			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 									INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
-										WHERE asa.id_admin = ' . $id_admin . '
-											AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $now->format( 'Y-m-d H:i' ) . '"
-	 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $now->format( 'Y-m-d H:i' ) . '"';
-	 		$shift = Crunchbutton_Community_Shift::q( $query );
+										WHERE asa.id_admin = ?
+											AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= ?
+	 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= ?';
+	 		$shift = Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d H:i' ), $now->format( 'Y-m-d H:i' )]);
 	 		if( $shift->id_admin_shift_assign ){
 	 			return $shift;
 	 		}
@@ -213,10 +213,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function getCurrentShiftByAdmin( $id_admin ){
 		$query = "SELECT cs.* FROM admin_shift_assign asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-							WHERE asa.id_admin = " . $id_admin . " AND cs.date_start <= DATE_FORMAT( NOW(), '%Y-%m-%d' )
+							WHERE asa.id_admin = ? AND cs.date_start <= DATE_FORMAT( NOW(), '%Y-%m-%d' )
 							ORDER BY cs.date_start DESC
 							LIMIT 1";
-		return Crunchbutton_Community_Shift::q( $query );
+		return Crunchbutton_Community_Shift::q( $query, [$id_admin]);
 	}
 
 	public function isRecurring(){
@@ -237,7 +237,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function shiftByCommunityDay( $id_community, $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
-		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = "' . $date . '" AND active = true ORDER BY id_community_shift ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community =? AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = ? AND active = true ORDER BY id_community_shift ASC', [$id_community, $date]);
 	}
 
 	public function createRecurringEvent( $date ){
