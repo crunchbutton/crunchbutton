@@ -288,8 +288,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$orders = Order::q( 'SELECT o.* FROM `order` o
 													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
-													WHERE o.delivery_type = "delivery"
-														AND o.delivery_service = 1
+													WHERE o.delivery_type = \'delivery\'
+														AND o.delivery_service = true
 														AND o.date >= now() - INTERVAL 1 DAY
 													ORDER BY o.id_order DESC', [$community->id_community]);
 		foreach( $orders as $order ){
