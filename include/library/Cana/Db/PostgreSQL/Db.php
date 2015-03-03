@@ -42,7 +42,7 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 		$query = preg_replace('/(interval) ([0-9]+) ([a-z]+)/i','\\1 \'\\2 \\3\'', $query);
 		
 		// replace date formats
-		$query = preg_replace_callback('/date_format\(( )?(.*),( )?("(.*)"|\'(.*)\')( )?\)/i',function($m) {
+		$query = preg_replace_callback('/date_format\(( )?(.*?),( )?("(.*?)"|\'(.*?)\')( )?\)/i',function($m) {
 			$find = ['/\%Y/', '/\%m/', '/\%d/', '/\%H/', '/\%i/', '/\%s/', '/\%W/'];
 			$replace = ['YYYY', 'MM', 'DD', 'HH24', 'MI', 'SS', 'D'];
 			$format = preg_replace($find, $replace, $m[6] ? $m[6] : $m[5]);
