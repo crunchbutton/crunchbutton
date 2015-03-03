@@ -1563,7 +1563,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function comment() {
 		if (!isset($this->_comment)) {
-			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=1 && id_restaurant='.$this->id_restaurant.'');
+			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=true AND id_restaurant=?', [$this->id_restaurant]);
 		}
 		return $this->_comment;
 	}
