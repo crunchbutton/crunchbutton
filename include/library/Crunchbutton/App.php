@@ -200,11 +200,13 @@ class Crunchbutton_App extends Cana_App {
 
 		if (getenv('HEROKU')) {
 			$stderr = fopen('php://stderr', 'w'); 
-			fwrite($stderr, 'PHP EXCEPTION:');
-			fwrite($stderr, $e->getMessage());
+			
+			fwrite($stderr, 'PHP EXCEPTION: '.$e->getMessage()."\n");
+
 			foreach ($backtracels as $l) {
 				fwrite($stderr, $l."\n");
 			}
+
 			fwrite($stderr, "\n");
 			fclose($stderr); 
 		}
