@@ -126,7 +126,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 
 	public function destroy() {
 		$this->_session = session_id();
-		Caffeine::db()->query('UPDATE session SET active=0 WHERE session="'.$this->id().'"');
+		Caffeine::db()->query('UPDATE session SET active=false WHERE session="'.$this->id().'"');
 		session_regenerate_id();
 		$this->_session = session_id();
 		$this->_user = new Crunchbutton_User;

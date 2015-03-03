@@ -1484,7 +1484,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public static function getRestaurantsByCommunity( $community, $inactive = false ){
 		if( !$inactive ){
-			$where = 'AND active = 1';
+			$where = 'AND active = true';
 		}
 		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE community = ? '.$where.' ORDER BY name ASC', [$community]);
 	}

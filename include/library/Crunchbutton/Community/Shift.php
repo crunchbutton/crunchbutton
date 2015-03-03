@@ -362,7 +362,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		// If it has a father, just desactive the event - to avoid it the be re created again
 		if( $shift->id_community_shift_father ){
-			c::db()->query( "UPDATE community_shift SET active = 0 WHERE id_community_shift = " . $shift->id_community_shift_father );
+			c::db()->query( "UPDATE community_shift SET active = false WHERE id_community_shift = " . $shift->id_community_shift_father );
 			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift_father );
 		} else {
 			c::db()->query( "DELETE FROM community_shift WHERE id_community_shift = " . $id_community_shift );

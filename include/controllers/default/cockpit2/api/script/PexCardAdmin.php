@@ -834,7 +834,7 @@ Tyson Billingslea,Georgia Southern,250,Active,2/18/2015,370,,,";
 			if( $driver ){
 				echo "'{$name}' => [ 'status' => '{$active}', 'date' => '{$date}', 'serial' => '{$serial}', 'id_admin' => '{$driver->id_admin}' ],\n";
 			} else {
-				$admins = Admin::q( 'SELECT * FROM admin WHERE name = "' . $name . '" AND active = 0' );
+				$admins = Admin::q( 'SELECT * FROM admin WHERE name = "' . $name . '" AND active = false' );
 				if( !$admins->count() ){
 					echo '<pre>';var_dump( 'Error::', $name, $serial, $active );exit();
 				}
