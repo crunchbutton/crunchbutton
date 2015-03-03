@@ -81,7 +81,9 @@ class Crunchbutton_App extends Cana_App {
 			header('Location: https://_DOMAIN_/');
 			exit;
 		}
-
+		if (getenv('HEROKU')) {
+			die('heroku');
+		}
 		// special settings for live web views
 		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
 			error_reporting(E_ERROR | E_PARSE);
