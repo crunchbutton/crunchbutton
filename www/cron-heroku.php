@@ -9,7 +9,7 @@ echo 'Testing...';
 
 $res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
 	'from' 		=> 'test@_DOMAIN_',
-	'to'		=> '_EMAIL',
+	'to'		=> 'arzynik@gmail.com',
 	'subject'	=> 'this is a test',
 	'html'		=> 'this is some <b>content</b>'
 ]);
