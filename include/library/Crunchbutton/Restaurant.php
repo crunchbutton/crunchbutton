@@ -1402,21 +1402,19 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public static function byRange($params) {
 		$params['range'] = $params['range'] ? $params['range'] : 2;
-		$rangeDif = $params['range']-2;
 		
-		$keys = [
-			'lata' => $params['lat'],
-			'latb' => $params['lat'],
-			'lon' => $params['lon'],
-			'range' => $params['range'],
-			'diff' => $rangeDif
-		];
+		$range = floatval($params['range']);
+		$rangeDif = $range-2;
+		$lat = floatval($params['lat']);
+		$lon = floatval($params['lon']);
+		
+		$calc = '((ACOS(SIN('.$lat.' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$lat.' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$lon.' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515)';
 
 		$query = '
 			SELECT
 				count(*) as _weight,
 				\'byrange\' as type,
-				((ACOS(SIN(:lata * PI() / 180) * SIN(loc_lat * PI() / 180) + COS( :latb * PI() / 180) * COS(loc_lat * PI() / 180) * COS(( :lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS distance,
+				'.$calc.' AS distance,
 				restaurant.*
 			FROM `restaurant`
 			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
@@ -1428,11 +1426,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				AND
 					delivery = false
 				AND
-					distance <= :range
+					'.$calc.' <= '.$range.'
 				OR
 					delivery = true
 				AND
-					distance <= (delivery_radius+ :diff )
+					'.$calc.' <= (delivery_radius+ '.$rangeDif.' )
 			ORDER BY _weight DESC;
 		';
 		$restaurants = self::q($query, $keys);
