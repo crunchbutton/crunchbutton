@@ -1412,11 +1412,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			'diff' => $rangeDif
 		];
 
-		
-		// "byrange" type,
 		$query = '
 			SELECT
 				count(*) as _weight,
+				\'byrange\' as type,
 				((ACOS(SIN(:lata * PI() / 180) * SIN(loc_lat * PI() / 180) + COS( :latb * PI() / 180) * COS(loc_lat * PI() / 180) * COS(( :lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS distance,
 				restaurant.*
 			FROM `restaurant`
@@ -1433,7 +1432,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				OR
 					delivery = true
 				AND
-					`distance` <= (`delivery_radius`+ :diff )
+					distance <= (delivery_radius+ :diff )
 			ORDER BY _weight DESC;
 		';
 		$restaurants = self::q($query, $keys);
@@ -1449,7 +1448,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasPhoneNotification(){
-		$phone = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = true and type = "' . Crunchbutton_Notification::TYPE_PHONE . '"' );
+		$phone = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ? AND active = true and type = ? ', [$this->id_restaurant, Crunchbutton_Notification::TYPE_PHONE]);
 		if( $phone->id_notification ){
 			return true;
 		} else {
@@ -1458,7 +1457,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasFaxNotification(){
-		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = true and ( type = "' . Crunchbutton_Notification::TYPE_FAX . '" OR type = "' . Crunchbutton_Notification::TYPE_STEALTH . '" )' );
+		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ? AND active = true and ( type = ? OR type = ?)', [$this->id_restaurant, Crunchbutton_Notification::TYPE_FAX, Crunchbutton_Notification::TYPE_STEALTH]);
 		if( $fax->id_notification ){
 			return true;
 		} else {
@@ -1488,7 +1487,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( !$inactive ){
 			$where = 'AND active = 1';
 		}
-		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}' {$where} ORDER BY name ASC" );
+		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE community = ? '.$where.' ORDER BY name ASC', [$community]);
 	}
 
 	public function restaurantsUserHasPermission(){
