@@ -2,8 +2,30 @@
 
 class Controller_api_test extends Cana_Controller {
 	public function init(){
-		echo ini_get('max_input_vars');
+		$qs = [
+			" (DATE_FORMAT( date_start, '%Y-%m-%d' ) <= 2012-12-12 AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= 1015-01-01) ",
+			"( DATE_FORMAT( date_start, '%Y-%m-%d' )", 
+			"DATE_FORMAT( date_start, '%Y-%m-%d')", 
+			"DATE_FORMAT(date_start, '%Y-%m-%d')",
+			'DATE_FORMAT(date_start, "%Y-%m-%d")',
+			'DATE_FORMAT(date_start,"%Y-%m-%d")',
+			'DATE_FORMAT(date_start,"%Y-%m-%d")',
+			'DATE_FORMAT(date_start,"%Y%m%d")',
+			" AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= "
+		];
+		foreach ($qs as $query) {
+			$query = preg_replace_callback('/date_format\(( )?(.*?),( )?("(.*?)"|\'(.*?)\')( )?\)/i',function($m) {
+				print_r($m);
+				$find = ['/\%Y/', '/\%m/', '/\%d/', '/\%H/', '/\%i/', '/\%s/', '/\%W/'];
+				$replace = ['YYYY', 'MM', 'DD', 'HH24', 'MI', 'SS', 'D'];
+				$format = preg_replace($find, $replace, $m[6] ? $m[6] : $m[5]);
+				return 'to_char('.$m[2].', \''.$format.'\')';
+			}, $query);
+			echo $query."\n";
+		}
 		exit;
+		
+		
 		// echo '<pre>';var_dump( $_REQUEST[ 'cockpit' ], $_SERVER['HTTP_HOST'] );exit();
 		// test
 		// $agent = Crunchbutton_Agent::getAgent();

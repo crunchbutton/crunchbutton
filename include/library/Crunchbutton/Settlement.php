@@ -53,13 +53,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-									INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
-									WHERE DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $order->date()->format('Y-m-d H:i') . '"
-										AND oa.id_admin = "' . $id_driver . '"
+									INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = ?
+									WHERE DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= ?
+										AND oa.id_admin = ?
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
-		$_orders = Order::q( $query );
+		$_orders = Order::q( $query, [ Crunchbutton_Order_Action::DELIVERY_DELIVERED, $order->date()->format('Y-m-d H:i'), $id_driver]);
 		foreach ( $_orders as $order ) {
 			$orders[] = $this->orderExtractVariables( $order );
 		}
@@ -73,8 +73,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 							WHERE asa.id_admin = "' . $id_driver . '"';
 
 		if( $this->filters[ 'start' ] ){
-			$query .= 'AND DATE( cs.date_start ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
-			$query .= 'AND DATE( cs.date_start ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
+			$query .= 'AND DATE( cs.date_start ) >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'';
+			$query .= 'AND DATE( cs.date_start ) <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '\'';
 		}
 
 		$shifts = Crunchbutton_Community_Shift::q( $query );
@@ -110,8 +110,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT DISTINCT(o.id_order) AS id, o.* FROM `order` o
 							INNER JOIN order_action oa ON oa.id_order = o.id_order
 							WHERE
-									DATE( o.date ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
-								AND DATE( o.date ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"
+									DATE( o.date ) >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'
+								AND DATE( o.date ) <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '\'
 								AND ( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '"
 											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
