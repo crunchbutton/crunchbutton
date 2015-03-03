@@ -1042,10 +1042,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function weight() {
 		if (!isset($this->_weight)) {
 			$res = self::q('
-				select count(*) as `weight`, `restaurant`.name from `order`
-				left join `restaurant` using(id_restaurant)
-				where id_restaurant='.$this->id_restaurant.'
-			');
+				select count(*) as weight, restaurant.name from `order`
+				left join restaurant using(id_restaurant)
+				where id_restaurant=?
+			', [$this->id_restaurant]);
 			$this->_weight = $res->weight;
 		}
 		return $this->_weight;
