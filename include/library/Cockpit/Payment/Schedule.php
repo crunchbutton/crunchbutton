@@ -154,24 +154,24 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function driverByStatus( $status ){
-		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+		$query = "SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
 								WHERE
-									ps.status = "' . $status . '"
-								ORDER BY ps.id_payment_schedule DESC';
+									ps.status = '" . $status . "'
+								ORDER BY ps.id_payment_schedule DESC";
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
 	public function driverNotCompletedSchedules(){
-		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+		$query = "SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
 								WHERE
-									( ps.status = "' . Cockpit_Payment_Schedule::STATUS_ERROR . '"
+									( ps.status = '" . Cockpit_Payment_Schedule::STATUS_ERROR . "'
 								OR
-									ps.status = "' . Cockpit_Payment_Schedule::STATUS_PROCESSING . '"
+									ps.status = '" . Cockpit_Payment_Schedule::STATUS_PROCESSING . "'
 								OR
-									ps.status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" )
-								ORDER BY ps.id_payment_schedule DESC';
+									ps.status = '" . Cockpit_Payment_Schedule::STATUS_SCHEDULED . "' )
+								ORDER BY ps.id_payment_schedule DESC";
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 

@@ -9,6 +9,8 @@ foreach (Crunchbutton_Util::frontendTemplates( false, true ) as $file) {
 	$fi = explode('/',$file);
 	array_shift($fi);
 	$fi = implode('/',$fi);
+	$fi = $fi ? $fi : $file;
+	echo $fi;
 	/*
 	<script type="text/ng-template" id="assets/view/<?=$fi?>.html">
 		<?=$this->render('frontend/'.$file, ['filter' => false])?>

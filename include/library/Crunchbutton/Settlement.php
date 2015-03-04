@@ -943,7 +943,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function doDriverErrPayments(){
-		$schedules = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE status = "' . Cockpit_Payment_Schedule::STATUS_ERROR . '"' );
+		$schedules = Cockpit_Payment_Schedule::q("SELECT * FROM payment_schedule WHERE status = '" . Cockpit_Payment_Schedule::STATUS_ERROR . "'");
 		foreach( $schedules as $_schedule ){
 			$id_payment_schedule = $_schedule->id_payment_schedule;
 			$settlement = new Crunchbutton_Settlement( $this->filters );
