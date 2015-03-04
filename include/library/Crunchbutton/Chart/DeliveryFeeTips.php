@@ -33,7 +33,7 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 															AND o.pay_type = \'' . ORDER::PAY_TYPE_CREDIT_CARD . '\'
 															AND YEARWEEK(o.date) >= ' . $this->weekFrom . ' 
 															AND YEARWEEK(o.date) <= ' . $this->weekTo . '
-															AND r.delivery_service = 1' );
+															AND r.delivery_service = true' );
 		$delivery_card = array();
 		foreach( $orders as $order ){
 			if( !$delivery_card[ $order->yearweek ] ){
@@ -52,8 +52,8 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 															AND o.pay_type = \'' . ORDER::PAY_TYPE_CASH . '\'
 															AND YEARWEEK(o.date) >= ' . $this->weekFrom . ' 
 															AND YEARWEEK(o.date) <= ' . $this->weekTo . '
-															AND r.delivery_service = 1
-															AND r.formal_relationship = 0' );
+															AND r.delivery_service = true
+															AND r.formal_relationship = false' );
 
 		$delivery_cash = array();
 		foreach( $orders as $order ){

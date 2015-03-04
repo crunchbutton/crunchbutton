@@ -988,7 +988,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$where = 'WHERE 1=1 ';
 			}
 
-			$where .= ' AND o.delivery_service = 1 ';
+			$where .= ' AND o.delivery_service = true ';
 			$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
@@ -1001,7 +1001,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
 						FROM `order` o
 						WHERE o.delivery_type = 'delivery'
-						AND o.delivery_service = 1
+						AND o.delivery_service = true
 						AND o.id_order NOT IN
 						(SELECT id_order
 						FROM order_action
@@ -1027,7 +1027,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$where = 'WHERE 1=1 ';
 		}
 
-		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND o.delivery_service = true ';
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
@@ -1078,7 +1078,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
-							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
+							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = true
 							' . $innerJoin . $where . '
 							ORDER BY o.id_order DESC ' . $limit;
 
