@@ -30,9 +30,9 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		';
 
 		if ($status != 'all') {
-			$q .= '
-				AND s.status="'.($status == 'closed' ? 'closed' : 'open').'"
-			';
+			$q .= "
+				AND s.status='".($status == 'closed' ? 'closed' : 'open')."'
+			";
 		}
 
 		if ($admin != 'all') {

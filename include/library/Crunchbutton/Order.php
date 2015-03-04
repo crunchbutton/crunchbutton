@@ -1489,7 +1489,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		// Query to count the number of confirmations sent
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND status="callback" AND `type`="confirm"', [$order->id_order]);
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND status='callback' AND `type`='confirm'", [$order->id_order]);
 
 		if( $nl->count() > 0 ){ // if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification - #974
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
