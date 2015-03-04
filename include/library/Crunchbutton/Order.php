@@ -1363,7 +1363,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" )', [$this->id_order]);
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' OR status ='success' )", [$this->id_order]);
 		if( $nl->count() > 0 ){
 			// Log
 			Log::debug([ 'order' => $this->id_order, 'count' => $nl->count(), 'action' => 'confirmation call already in process', 'host' => c::config()->host_callback, 'type' => 'notification']);
@@ -1483,7 +1483,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND type = "confirm" AND ( status = "created" OR status = "queued" ) ', [$order->id_order]);
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' )", [$order->id_order]);
 		if( $nl->count() > 0 ){
 			return;
 		}

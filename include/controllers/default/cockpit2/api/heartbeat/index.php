@@ -27,7 +27,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 			$tickets = $q->get(0)->c;
 
 			// get the last support message #4337
-			$q = 'SELECT UNIX_TIMESTAMP( date ) AS timestamp FROM support INNER JOIN support_message ON support_message.id_support = support.id_support WHERE status = "open" ORDER BY id_support_message DESC LIMIT 1';
+			$q = "SELECT UNIX_TIMESTAMP( date ) AS timestamp FROM support INNER JOIN support_message ON support_message.id_support = support.id_support WHERE status = 'open' ORDER BY id_support_message DESC LIMIT 1";
 			$q = c::db()->get($q);
 			$timestamp = $q->get(0)->timestamp;
 		}

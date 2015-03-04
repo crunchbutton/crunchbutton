@@ -29,7 +29,7 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 		$out = [ 'ok' => [], 'nope' => [] ];
 
 		// Get the payments schedule with error
-		$payments_schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE status = "' . Cockpit_Payment_Schedule::STATUS_PROCESSING . '" ORDER BY id_payment_schedule ASC' );
+		$payments_schedule = Cockpit_Payment_Schedule::q("SELECT * FROM payment_schedule WHERE status = '" . Cockpit_Payment_Schedule::STATUS_PROCESSING . "' ORDER BY id_payment_schedule ASC");
 		foreach( $payments_schedule as $payment_schedule ){
 			$nope = false;
 

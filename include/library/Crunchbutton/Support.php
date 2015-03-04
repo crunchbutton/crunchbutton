@@ -382,9 +382,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	public function pendingSupport(){
 		Crunchbutton_Support::closeTicketsOlderThanADay();
-		return Crunchbutton_Support::q( 'SELECT s.* FROM support s
-																			INNER JOIN ( SELECT MAX( id_support_message ), id_support, `from` FROM support_message GROUP BY id_support ORDER BY id_support DESC ) sm ON s.id_support = sm.id_support
-																			AND s.status = "' . Crunchbutton_Support::STATUS_OPEN . '" AND sm.from = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '"' );
+		return Crunchbutton_Support::q("SELECT s.* FROM support s
+										INNER JOIN ( SELECT MAX( id_support_message ), id_support, `from` FROM support_message GROUP BY id_support ORDER BY id_support DESC ) sm ON s.id_support = sm.id_support
+										AND s.status = '" . Crunchbutton_Support::STATUS_OPEN . "' AND sm.from = '" . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . "'");
 	}
 
 	// close all support issues that are older than a day #2487
