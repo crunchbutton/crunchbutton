@@ -14,5 +14,9 @@ require_once('/app/include/crunchbutton.php');
 while (true) {
 	// put normal cron stuff in here
 	echo "Worker running...\n";
+
+	$o = Order::q('select * from `order` order by id_order desc limit 1')->get(0);
+	print_r($o->properties());
+	
 	sleep(15);
 }
