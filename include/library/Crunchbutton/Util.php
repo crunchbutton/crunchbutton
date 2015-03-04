@@ -37,6 +37,7 @@ class Crunchbutton_Util extends Cana_Model {
 		if ($export) {
 			$files[] = 'legal';
 		}
+		natcasesort($files);
 		return $files;
 	}
 
