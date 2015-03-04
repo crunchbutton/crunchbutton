@@ -236,7 +236,13 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function credit(){
-		return Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND (  credit_type IS NULL OR credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_promo = ' . $this->id_promo  );
+		return Crunchbutton_Credit::q('
+			SELECT * FROM credit
+			WHERE
+				type = ?
+				AND (  credit_type IS NULL OR credit_type = ? OR credit_type != ? )
+				AND id_promo = ?
+		', [Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, $this->id_promo]);
 	}
 
 	public function queTrack(){
