@@ -29,9 +29,8 @@ class Crunchbutton_Acl_Base extends Cana_Model {
 				SELECT p.* FROM ".$this->_table." p
 				LEFT JOIN admin_group g ON g.id_group=p.id_group
 				WHERE
-					(g.id_admin=?
-					AND p.id_admin IS NULL)
-					OR (p.id_group='ALL' AND p.id_admin IS NULL)
+					g.id_admin=?
+					AND p.id_admin IS NULL
 			", [$this->_admin->id_admin]);
 			while($row = $res->fetch()) {
 				$this->_permissions[$row->id_group][strtoupper($row->permission)][] = $row->allow ? true : false;
