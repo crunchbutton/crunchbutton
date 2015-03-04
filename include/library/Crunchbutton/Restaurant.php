@@ -1635,11 +1635,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function drivers(){
-		return Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ' . $this->id_restaurant . ' AND n.active = true AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '"');
+		return Admin::q("SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ? AND n.active = true AND n.type = ?", [$this->id_restaurant, Crunchbutton_Notification::TYPE_ADMIN]);
 	}
 
 	public function withDrivers(){
-		return Restaurant::q( 'SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r INNER JOIN notification n ON r.id_restaurant = n.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" WHERE r.name NOT LIKE "%test%" ORDER BY r.name' );
+		return Restaurant::q("SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r INNER JOIN notification n ON r.id_restaurant = n.id_restaurant AND n.type = '" . Crunchbutton_Notification::TYPE_ADMIN . "' WHERE r.name NOT LIKE '%test%' ORDER BY r.name");
 	}
 
 	public function totalOrders(){
