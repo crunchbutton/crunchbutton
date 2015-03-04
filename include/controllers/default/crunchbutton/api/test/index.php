@@ -2,6 +2,19 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+		
+		
+foreach (Crunchbutton_Util::frontendTemplates( false, true ) as $file) {
+	echo $file."\n";
+	$fi = explode('/',$file);
+	array_shift($fi);
+	$fi = implode('/',$fi);
+	/*
+	<script type="text/ng-template" id="assets/view/<?=$fi?>.html">
+		<?=$this->render('frontend/'.$file, ['filter' => false])?>
+	</script>
+	*/
+}
 exit;
 
 			Log::critical([
