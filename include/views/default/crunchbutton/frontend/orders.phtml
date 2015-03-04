@@ -38,6 +38,7 @@
 			</div>
 			<?php */ ?>
 			<div ng-if="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
+				0 &nbsp;<span class="points"><progress max="100" value="{{points_percent}}"></progress></span>&nbsp; {{account.user.points.free_delivery}}
 				<p>
 					You are <b>{{account.user.points.away_free_delivery}}</b> points away from a free delivery.<br>
 					Earn points by ordering food, sharing your order, or referring friends.<br>
