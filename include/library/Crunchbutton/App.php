@@ -84,9 +84,7 @@ class Crunchbutton_App extends Cana_App {
 			header('Location: https://_DOMAIN_/');
 			exit;
 		}
-		if (getenv('HEROKU')) {
-			error_log('heroku');
-		}
+
 		// special settings for live web views
 		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
 			error_reporting(E_ERROR | E_PARSE);
@@ -101,10 +99,14 @@ class Crunchbutton_App extends Cana_App {
 		$params['env'] = $db;
 
 		if (getenv('HEROKU')) {
-			$params['config']->db->heroku = (object)[
-				'url' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
-				'type' => 'PostgreSQL'
-			];
+			if (getenv('HEROKU_CLI_DB') == 'heroku') {
+				$params['config']->db->heroku = (object)[
+					'url' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
+					'type' => 'PostgreSQL'
+				];
+			} else {
+				$params['env'] = $db = getenv('HEROKU_CLI_DB');
+			}
 			parent::init($params);
 
 		} else {
