@@ -73,9 +73,9 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     		$scope.errors.otherCarrier = true;
     		}
     	}
-    	if (!$scope.apply.transport) {
-    		$scope.errors.transport = true;
-    	}
+    	//if (!$scope.apply.transport) {
+    	//	$scope.errors.transport = true;
+    	//}
     	if (!$scope.apply.hours) {
     		$scope.errors.hours = true;
     	}
