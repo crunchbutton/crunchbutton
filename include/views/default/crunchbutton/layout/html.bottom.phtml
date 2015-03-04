@@ -44,14 +44,6 @@ if (App) {
 	<source src="/assets/audio/crunch.ogg"></source>
 </audio>
 
-<script type="text/javascript">
-$(function() {
-	<? foreach (c::appConfig(['extended']) as $key => $value) : ?>
-		App['<?=$key?>'] = <?=json_encode($value)?>;
-	<? endforeach ; ?>
-	App.init();
-});
-</script>
 <?php
 	switch ( c::env() ) {
 		case 'local':
