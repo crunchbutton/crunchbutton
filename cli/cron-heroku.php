@@ -12,6 +12,7 @@ echo dirname(__FILE__)."\n";
 require_once('/app/include/crunchbutton.php');
 
 while (true) {
+	// put normal cron stuff in here
 	echo "Worker running...\n";
 	sleep(15);
 }
