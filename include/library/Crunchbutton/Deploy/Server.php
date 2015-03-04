@@ -27,13 +27,13 @@ class Crunchbutton_Deploy_Server extends Cana_Table {
 
 	public function version() {
 		if (!isset($this->_version)) {
-			$this->_version = Crunchbutton_Deploy_Version::q('
+			$this->_version = Crunchbutton_Deploy_Version::q("
 				select * from deploy_version
-				where status="success"
+				where status='success'
 				and id_deploy_server=?
 				order by date desc
 				limit 1
-			',[$this->id_deploy_server])->get(0);
+			",[$this->id_deploy_server])->get(0);
 		}
 		return $this->_version;
 	}
