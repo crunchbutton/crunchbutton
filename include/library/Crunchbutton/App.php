@@ -99,14 +99,12 @@ class Crunchbutton_App extends Cana_App {
 		$params['env'] = $db;
 
 		if (getenv('HEROKU')) {
-			if (getenv('HEROKU_CLI_DB') == 'heroku') {
-				$params['config']->db->heroku = (object)[
-					'url' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
-					'type' => 'PostgreSQL'
-				];
-			} else {
-				$params['env'] = $db = getenv('HEROKU_CLI_DB');
-			}
+			$params['config']->db->heroku = (object)[
+				'url' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
+				'type' => 'PostgreSQL'
+			];
+			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
+
 			parent::init($params);
 
 		} else {
