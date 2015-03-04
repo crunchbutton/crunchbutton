@@ -382,8 +382,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 				SELECT c.* FROM community c
 				LEFT JOIN `group` g ON g.name=c.driver_group
 				LEFT JOIN admin_group ag ON ag.id_group=g.id_group
-				WHERE ag.id_admin="'.$this->id_admin.'"
-			');
+				WHERE ag.id_admin=?
+			', [$this->id_admin]);
 		}
 		return $this->_communitiesHeDeliveriesFor;
 	}
