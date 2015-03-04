@@ -24,7 +24,7 @@ class Crunchbutton_Option extends Cana_Table {
 
 	public function prices() {
 		if (!isset($this->_prices)) {
-			$this->_prices = Option_Price::q('select * from option_price where id_option="'.$this->id_option.'"');
+			$this->_prices = Option_Price::q('select * from option_price where id_option=?', [$this->id_option]);
 		}
 		return $this->_prices;
 	}
