@@ -264,4 +264,15 @@
 		<key>_KEY_</key>
 	</crypt>
 	<processor>balanced</processor>
+	<templates>
+		<live>
+			<compress>true</compress>
+		</live>
+		<beta>
+			<compress>true</compress>
+		</beta>
+		<local>
+			<compress>false</compress>
+		</local>
+	</templates>
 </data>
