@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<table class="table table-striped">
+<thead>
+    <tr>
+        <th>Name</th>
+        <th>Time</th>
+        <th>Message</th>
+        <th>Phone</th>
+    </tr>
+</thead>
+<tbody>
+<?php foreach ($messages as $message) : ?>
+<tr>
+    <td><?= $message->firstMessage()->name ?></td>
+    <td><?= $message->firstMessage()->datetime ?></td>
+    <td><?= $message->firstMessage()->body ?></td>
+    <td><?= $message->firstMessage()->phone ?></td>
+</tr>
+<?php endforeach ?>
+</tbody>
+</table>
+
