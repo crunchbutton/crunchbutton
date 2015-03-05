@@ -2,7 +2,7 @@
 
 /**
  * The view model
- * 
+ *
  * @author		Devin Smith <devin@cana.la>
  * @date		2009.09.17
  *
@@ -22,31 +22,31 @@ class Cana_View extends Cana_Model {
 	private $_useFilter = true;
 	private $_theme;
 	private $_base;
-	
+
 	public function __construct ($params = []) {
 		$this->headers 			= new Cana_Model;
 		$this->headers->http 	= new Cana_Model;
 		$this->headers->script 	= new Cana_Model;
 		$this->headers->style 	= new Cana_Model;
 		$this->pageLinks 		= new Cana_Model;
-		
+
 		if (isset($params['layout'])) {
 			$this->layout($params['layout']);
 		}
-		
+
 		if (isset($params['theme'])) {
 			$this->theme($params['theme']);
 		}
-		
+
 		if (isset($params['base'])) {
 			$this->_base = $params['base'];
 		}
-		
+
 		if (isset($params['httpHeaders'])) {
 			$this->headers->http = $params['httpHeaders'];
 		}
 	}
-	
+
 
 	/**
 	 * Include the file inside an output buffer, and return its contenrts
@@ -65,7 +65,7 @@ class Cana_View extends Cana_Model {
 				$$key = $value;
 			}
 		}
-		
+
 		$theme = $this->theme();
 		$theme = array_reverse($theme);
 
@@ -87,14 +87,14 @@ class Cana_View extends Cana_Model {
 		}
 
 		if ($this->_rendering || !isset($params['display'])) {
-			
+
 			ob_start();
 			include($file);
 			$page = $this->outputFilter(ob_get_contents(),$params);
 			ob_end_clean();
-			
+
 		} else {
-			
+
 			$this->_rendering = true;
 			ob_start();
 			include($file);
@@ -106,15 +106,15 @@ class Cana_View extends Cana_Model {
 			$page = $this->outputFilter(ob_get_contents(),$params);
 			ob_end_clean();
 			$this->_rendering = false;
-		}		
-		
+		}
+
 		if (isset($params['var'])) {
 			$this->{$params['var']} = $page;
 		}
-		return $page;	
+		return $page;
 	}
-	
-	
+
+
 	/**
 	 * Output the contents of the view after rendering it. If headers have
 	 * not been sent, we will send all our view headers.
@@ -132,8 +132,8 @@ class Cana_View extends Cana_Model {
 		}
 		echo $this->render($view,$params);
 	}
-	
-	
+
+
 	/**
 	 * Filter whitespace to remove unwanted spaces.
 	 *
@@ -143,6 +143,12 @@ class Cana_View extends Cana_Model {
 	 * @return	string
 	 */
 	private function outputFilter($content, $params) {
+
+		$env = c::env();
+		if( !c::config()->templates->{ $env }->compress ){
+			return $content;
+		}
+
 		if ((isset($params['filter']) && $params['filter']) || (!isset($params['filter']) && $this->_useFilter != false)) {
 			$find = [
 				'/^(\s?)(.*?)(\s?)$/',
@@ -159,8 +165,8 @@ class Cana_View extends Cana_Model {
 			return $content;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Accessor methods
 	 */
@@ -172,7 +178,7 @@ class Cana_View extends Cana_Model {
 			return $this->_layout;
 		}
 	}
-	
+
 	public function theme($value = null) {
 		if (!is_null($value)) {
 			$this->_theme = $value;
@@ -181,11 +187,11 @@ class Cana_View extends Cana_Model {
 			return $this->_theme;
 		}
 	}
-	
+
 	public function themeStack($value) {
 		$this->_theme[] = $value;
 	}
-	
+
 	public function useFilter($filter = null) {
 		if (!is_null($filter)) {
 			$this->_useFilter = $filter;
@@ -194,7 +200,7 @@ class Cana_View extends Cana_Model {
 			return $this->_filter;
 		}
 	}
-	
+
 	public function helper($helper, $params = []) {
 		if (isset($this->_helper[$helper])) {
 			return $this->_helper[$helper];
