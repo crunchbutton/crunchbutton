@@ -988,7 +988,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$where = 'WHERE 1=1 ';
 			}
 
-			$where .= ' AND o.delivery_service = 1 ';
+			$where .= ' AND o.delivery_service = true ';
 			$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
@@ -1001,7 +1001,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
 						FROM `order` o
 						WHERE o.delivery_type = 'delivery'
-						AND o.delivery_service = 1
+						AND o.delivery_service = true
 						AND o.id_order NOT IN
 						(SELECT id_order
 						FROM order_action
@@ -1027,7 +1027,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$where = 'WHERE 1=1 ';
 		}
 
-		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND o.delivery_service = true ';
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
@@ -1078,7 +1078,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
-							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
+							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = true
 							' . $innerJoin . $where . '
 							ORDER BY o.id_order DESC ' . $limit;
 
@@ -1363,7 +1363,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" )', [$this->id_order]);
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' OR status ='success' )", [$this->id_order]);
 		if( $nl->count() > 0 ){
 			// Log
 			Log::debug([ 'order' => $this->id_order, 'count' => $nl->count(), 'action' => 'confirmation call already in process', 'host' => c::config()->host_callback, 'type' => 'notification']);
@@ -1483,7 +1483,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order=? AND type = "confirm" AND ( status = "created" OR status = "queued" ) ', [$order->id_order]);
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' )", [$order->id_order]);
 		if( $nl->count() > 0 ){
 			return;
 		}

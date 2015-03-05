@@ -123,26 +123,26 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 		$where = ( $only_card ) ? 'AND o.pay_type = "' . Crunchbutton_Order::PAY_TYPE_CREDIT_CARD . '"' : '';
 		$expenses = c::db()->get( 'SELECT SUM( o.final_price - o.delivery_fee ) amount,
-																			a.id_admin,
-																			a.login,
-																			COUNT(1) AS orders,
-																			a.name AS driver,
-																			a.email
-																			FROM `order` o
-																					INNER JOIN order_action oa ON o.id_order = oa.id_order
-																					INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
-																					INNER JOIN admin a ON oa.id_admin = a.id_admin
-																					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = 0
-																					WHERE
-																						apt.using_pex = 1
-																					AND
-																						oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
-																					' . $where . '
-																					AND
-																						DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) >= "' . $start . '"
-																					AND
-																						DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) <= "' . $end . '"
-																					GROUP BY a.id_admin ORDER BY driver' );
+									a.id_admin,
+									a.login,
+									COUNT(1) AS orders,
+									a.name AS driver,
+									a.email
+									FROM `order` o
+											INNER JOIN order_action oa ON o.id_order = oa.id_order
+											INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
+											INNER JOIN admin a ON oa.id_admin = a.id_admin
+											INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = false
+											WHERE
+												apt.using_pex = true
+											AND
+												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
+											' . $where . '
+											AND
+												DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) >= "' . $start . '"
+											AND
+												DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) <= "' . $end . '"
+											GROUP BY a.id_admin ORDER BY driver' );
 		return $expenses;
 	}
 

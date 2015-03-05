@@ -202,9 +202,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			ORDER BY `admin`.name ASC
 		';
 		if ($working == 'all') {
-			$q .= ' LIMIT ?, ?';
-			$keys[] = $offset;
+			$q .= '
+				LIMIT ?
+				OFFSET ?
+			';
 			$keys[] = $limit;
+			$keys[] = $offset;
+			
 		}
 
 		// do the query

@@ -201,7 +201,7 @@ class Crunchbutton_Payment extends Cana_Table {
 				}
 
 				if( $search[ 'balanced_status' ] ){
-					$where .= ' AND p.balanced_status = "' . $search[ 'balanced_status' ] . '"';
+					$where .= " AND p.balanced_status = '" . $search[ 'balanced_status' ] . "'";
 				}
 
 				$query = 'SELECT p.*, a.name AS driver, ps.id_payment_schedule FROM payment p

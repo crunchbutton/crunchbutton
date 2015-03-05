@@ -529,7 +529,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 																				UNION ALL
 																				SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c
 																					INNER JOIN restaurant_community rc ON c.id_community = rc.id_community
-																					INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1 ) drivers ORDER BY drivers.name' );
+																					INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = true ) drivers ORDER BY drivers.name' );
 	}
 
 	public function deliveredOrdersByAdminAtTheShift( $id_admin ){

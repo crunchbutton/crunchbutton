@@ -26,7 +26,9 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 	var array_without_test = [];
 	for (var iiii in App.communities){
 
-		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)){
+		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)
+			|| ((App.communities[iiii]).name.indexOf('Marina')>-1) || ((App.communities[iiii]).name.indexOf('burrito')>-1)
+			|| ((App.communities[iiii]).name.indexOf('duplication')>-1)){
 			//do nothing
 		}
 		else{
@@ -35,7 +37,6 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 		}
 
 	}
-
 	$scope.communities = array_without_test;
 	$scope.apply = {};
 	$scope.errors = {};
@@ -72,9 +73,9 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     		$scope.errors.otherCarrier = true;
     		}
     	}
-    	if (!$scope.apply.transport) {
-    		$scope.errors.transport = true;
-    	}
+    	//if (!$scope.apply.transport) {
+    	//	$scope.errors.transport = true;
+    	//}
     	if (!$scope.apply.hours) {
     		$scope.errors.hours = true;
     	}
@@ -106,7 +107,9 @@ NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $locati
 	var array_without_test = [];
 	for (var iiii in App.communities){
 
-		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)){
+		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)
+		|| ((App.communities[iiii]).name.indexOf('Marina')>-1) || ((App.communities[iiii]).name.indexOf('burrito')>-1)
+		|| ((App.communities[iiii]).name.indexOf('duplication')>-1)){
 			//do nothing
 		}
 		else{
@@ -1366,6 +1369,8 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	$scope.referral.twitter = function(){
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
 	}
+	$scope.points_percent = (($scope.account.user.points.total)/($scope.account.user.points.free_delivery)*100);
+	$scope.hello = 50;
 
 });
 
