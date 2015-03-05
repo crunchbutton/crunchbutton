@@ -1,8 +1,8 @@
 <?php
 
-class Cockpit_Community_Closed_Log extends Cana_Table {
+ini_set( 'max_execution_time', 1000 );
 
-	// @todo - merge the shift hours
+class Cockpit_Community_Closed_Log extends Cana_Table {
 
 	const TYPE_ALL_RESTAURANTS = 'all_restaurants';
 	const TYPE_3RD_PARTY_DELIVERY_RESTAURANTS = 'close_3rd_party_delivery_restaurants';
@@ -18,6 +18,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 			->load($id);
 	}
 
+
 	public function checkIfLogAlreadyExists( $day, $id_community, $type ){
 		$log = Cockpit_Community_Closed_Log::q( 'SELECT * FROM community_closed_log WHERE day = "' . $day . '" AND id_community = "' . $id_community . '" AND type = "' . $type . '"' );
 		if( $log->id_community_closed_log ){
@@ -26,347 +27,203 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 		return false;
 	}
 
-public function forceCloseHoursLog( $community ){
+	public function forceCloseHoursLog( $community ){
 
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$now->modify( '- 10 week' );
+		if( !$community->timezone ){
+			return false;
+		}
 
-		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
-																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $community->id_community . '"
-																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" OR cc.field = "is_auto_closed" )
-																																	AND cc.new_value = 1
-																																	AND DATE( timestamp  ) > "' . $now->format( 'Y-m-d' ) . '"
-																																	ORDER BY cc.id_community_change DESC' );
+		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$limit_date->setTimezone( new DateTimeZone( $community->timezone ) );
+		$limit_date->modify( '- 3 days' );
+
+		$hours_closed = [];
+		$force_closed_times = $community->forceCloseLog( false );
+		foreach( $force_closed_times as $closed ){
+
+			$from = new DateTime( $closed[ 'closed_at' ], new DateTimeZone( c::config()->timezone ) );
+			$to = new DateTime( $closed[ 'opened_at' ], new DateTimeZone( c::config()->timezone ) );
+
+			if( $to->format( 'YmdHis' ) < $limit_date->format( 'YmdHis' ) ){
+				continue;
+			}
+
+			switch ( $closed[ 'type' ] ) {
+				case Crunchbutton_Community::TITLE_CLOSE_ALL_RESTAURANTS:
+					$type = Cockpit_Community_Closed_Log::TYPE_ALL_RESTAURANTS;
+					break;
+				case Crunchbutton_Community::TITLE_CLOSE_3RD_PARY_RESTAURANTS:
+					$type = Cockpit_Community_Closed_Log::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS;
+					break;
+				case Crunchbutton_Community::TITLE_CLOSE_AUTO_CLOSED:
+					$type = Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED;
+					break;
+			}
+			$hours_closed[] = [ 'from' => $from, 'to' => $to, 'type' => $type ];
+		}
+
 		$out = [];
 
-		$autoClosedAdmin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift cs WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
+		$closed_shifts = Cockpit_Community_Closed_Log::processClosedHours( $shifts, $hours_closed );
 
-		$days = [];
+		$out[ 'closed_shifts' ] = $closed_shifts;
 
-		foreach( $force_closed_times as $force_close ){
-
-
-			$closed_at = $force_close->date();
-
-			if( $force_close->field == 'close_all_restaurants' ){
-				$_type = Cockpit_Community_Closed_Log::TYPE_ALL_RESTAURANTS;
-			} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
-				$_type = Cockpit_Community_Closed_Log::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS;
-			} else if ( $force_close->field == 'is_auto_closed' ){
-				$_type = Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED;
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ), cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
+		for( $i=0; $i<count($hours_closed); $i++ ){
+			if( $hours_closed[ $i ][ 'type' ] == Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED ){
+				unset( $hours_closed[ $i ] );
 			}
-
-			$open = $community->_openedAt( $force_close->id_community_change_set, $force_close->field );
-
-			if( $open ){
-
-				$opened_at = $open->date();
-
-				if( $_type == Cockpit_Community_Closed_Log::TYPE_ALL_RESTAURANTS || $_type == Cockpit_Community_Closed_Log::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS ){
-
-					// Check if there was driver working
-					$_closed_shift = new DateTime( $closed_at->format( 'Y-m-d H:i:s' ), new DateTimeZone( c::config()->timezone ) );
-					$_closed_shift->setTimezone( new DateTimeZone( $community->timezone ) );
-					$_opened_shift = new DateTime( $opened_at->format( 'Y-m-d H:i:s' ), new DateTimeZone( c::config()->timezone ) );
-					$_opened_shift->setTimezone( new DateTimeZone( $community->timezone ) );
-
-					$query = 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM community_shift cs
-											INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
-											WHERE
-											cs.id_community = "' . $community->id_community . '"
-											AND
-											(
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) <= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											OR
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) <= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											OR
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											OR
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											)
-										ORDER BY cs.date_start';
-
-					$shifts = Crunchbutton_Community_Shift::q( $query );
-					$hours = 0;
-					// Shifts with drivers
-					foreach( $shifts as $shift ){
-
-						$shift_start = $shift->dateStart();
-						$shift_end = $shift->dateEnd();
-						$start = null;
-						$end = null;
-						$start = ( $shift_start->format( 'YmdHis' ) >= $_closed_shift->format( 'YmdHis' ) ) ? $shift_start : $_closed_shift;
-						$end = ( $shift_end->format( 'YmdHis' ) <= $_opened_shift->format( 'YmdHis' ) ) ? $shift_end : $_opened_shift;
-
-						$_output = [];
-
-						$closed_at = $force_close->date();
-						$_output[ 'closed_at' ] = $start->format( 'Y-m-d H:i:s' );
-
-						$_output[ 'type' ] = Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER;
-
-						if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) ){
-
-							$_end = new DateTime( $start->format( 'Y-m-d ' ) . '23:59:59', new DateTimeZone( $community->timezone ) );
-							$_output[ 'opened_at' ] = $opened_at->format( 'Y-m-d H:i:s' );
-							$interval = $_end->diff( $start );
-							$_output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-							$out[] = $_output;
-
-							$_output = [];
-							$_start = new DateTime( $end->format( 'Y-m-d ' ) . '00:00:01', new DateTimeZone( $community->timezone ) );
-							$_output[ 'closed_at' ] = $_start->format( 'Y-m-d H:i:s' );
-							$_output[ 'type' ] = Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER;
-							$interval = $_start->diff( $end );
-							$_output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-							$_output[ 'opened_at' ] = $end->format( 'Y-m-d H:i:s' );
-							$out[] = $_output;
-						} else {
-
-							$interval = $start->diff( $end );
-							$_output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-							$_output[ 'opened_at' ] = $end->format( 'Y-m-d H:i:s' );
-							$out[] = $_output;
-						}
-					}
-				}
-
-				$_closed_shift = new DateTime( $closed_at->format( 'Y-m-d H:i:s' ), new DateTimeZone( c::config()->timezone ) );
-				$_closed_shift->setTimezone( new DateTimeZone( $community->timezone ) );
-				$_opened_shift = new DateTime( $opened_at->format( 'Y-m-d H:i:s' ), new DateTimeZone( c::config()->timezone ) );
-				$_opened_shift->setTimezone( new DateTimeZone( $community->timezone ) );
-
-				$query = 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM community_shift cs
-											WHERE
-											cs.id_community = "' . $community->id_community . '"
-											AND
-											(
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) <= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											OR
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) <= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											OR
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											OR
-												(
-													DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_closed_shift->format( 'Y-m-d H:i' ) . '"
-												AND
-													DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_opened_shift->format( 'Y-m-d H:i' ) . '"
-												)
-											)
-										ORDER BY cs.date_start';
-
-				$shifts = Crunchbutton_Community_Shift::q( $query );
-
-				$hours = 0;
-
-				foreach( $shifts as $shift ){
-
-					$shift_start = $shift->dateStart();
-					$shift_end = $shift->dateEnd();
-					$start = null;
-					$end = null;
-					$start = ( $shift_start->format( 'YmdHis' ) >= $_closed_shift->format( 'YmdHis' ) ) ? $shift_start : $_closed_shift;
-					$end = ( $shift_end->format( 'YmdHis' ) <= $_opened_shift->format( 'YmdHis' ) ) ? $shift_end : $_opened_shift;
-
-					$_output = [];
-
-					$closed_at = $force_close->date();
-					$_output[ 'closed_at' ] = $start->format( 'Y-m-d H:i:s' );
-
-					$_output[ 'type' ] = $_type;
-
-					if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) ){
-
-						$_end = new DateTime( $start->format( 'Y-m-d ' ) . '23:59:59', new DateTimeZone( $community->timezone ) );
-						$_output[ 'opened_at' ] = $opened_at->format( 'Y-m-d H:i:s' );
-						$interval = $_end->diff( $start );
-						$_output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-						$out[] = $_output;
-
-						$_output = [];
-						$_start = new DateTime( $end->format( 'Y-m-d ' ) . '00:00:01', new DateTimeZone( $community->timezone ) );
-						$_output[ 'closed_at' ] = $_start->format( 'Y-m-d H:i:s' );
-						$_output[ 'type' ] = Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER;
-						$interval = $_start->diff( $end );
-						$_output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-						$_output[ 'opened_at' ] = $end->format( 'Y-m-d H:i:s' );
-						$out[] = $_output;
-					} else {
-
-						$interval = $start->diff( $end );
-						$_output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-						$_output[ 'opened_at' ] = $end->format( 'Y-m-d H:i:s' );
-						$out[] = $_output;
-					}
-				}
-			/*
-				if( $opened_at->format( 'Ymd' ) > $closed_at->format( 'Ymd' ) ){
-					$_type = $output[ 'type' ];
-					$_closed_base = new DateTime( $closed_at->format( 'Y-m-d H:i:s' ), new DateTimeZone( c::config()->timezone ) );
-					$_opened_base = new DateTime( $opened_at->format( 'Y-m-d H:i:s' ), new DateTimeZone( c::config()->timezone ) );
-
-					$hours = Crunchbutton_Util::interval2Hours( $_opened_base->diff( $_closed_base ) );
-
-					if( $hours > 24 ){
-						while ( $hours > 24 ) {
-
-							$_opened_at = new DateTime( $_closed_base->format( 'Y-m-d ' ) . '23:59:59', new DateTimeZone( c::config()->timezone ) );
-							$output[ 'opened_at' ] = $_opened_at->format( 'Y-m-d H:i:s' );
-							$interval = $_opened_at->diff( $closed_at );
-							$output[ 'hours' ] = ( Crunchbutton_Util::interval2Hours( $interval ) > 24 ? 24 : Crunchbutton_Util::interval2Hours( $interval ) );
-
-							$out[] = $output;
-							$output = [];
-
-							$_closed_base->modify( '+ 1 day' );
-
-							$_closed_at = new DateTime( $_closed_base->format( 'Y-m-d ' ) . '00:00:01', new DateTimeZone( c::config()->timezone ) );
-							$output[ 'closed_at' ] = $_closed_at->format( 'Y-m-d H:i:s' );
-							$output[ 'type' ] = $_type;
-
-							$hours = Crunchbutton_Util::interval2Hours( $_opened_base->diff( $_closed_base ) );
-
-							if( $hours > 24 ){
-
-								$_opened_at = new DateTime( $_closed_at->format( 'Y-m-d ' ) . '23:59:59', new DateTimeZone( c::config()->timezone ) );
-								$output[ 'opened_at' ] = $_opened_at->format( 'Y-m-d H:i:s' );
-								$interval = $_opened_at->diff( $_closed_at );
-								$output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-								$out[] = $output;
-
-								$_closed_at = new DateTime( $_opened_at->format( 'Y-m-d ' ) . '00:00:01', new DateTimeZone( c::config()->timezone ) );
-								$_closed_at->modify( '+ 1 day' );
-								$output[ 'closed_at' ] = $_closed_at->format( 'Y-m-d H:i:s' );
-								$output[ 'type' ] = $_type;
-
-								$_closed_base->modify( '+ 1 day' );
-
-							} else {
-
-								$output[ 'opened_at' ] = $_opened_base->format( 'Y-m-d H:i:s' );
-								$interval = $opened_at->diff( $_closed_at );
-								$output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-								$out[] = $output;
-							}
-						}
-
-					} else {
-						$_opened_at = new DateTime( $closed_at->format( 'Y-m-d ' ) . '23:59:59', new DateTimeZone( c::config()->timezone ) );
-						$output[ 'opened_at' ] = $_opened_at->format( 'Y-m-d H:i:s' );
-						$interval = $_opened_at->diff( $closed_at );
-						$output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-						$out[] = $output;
-						$output = [];
-						$_closed_at = new DateTime( $_opened_at->format( 'Y-m-d ' ) . '00:00:01', new DateTimeZone( c::config()->timezone ) );
-						$_closed_at->modify( '+ 1 day' );
-						$output[ 'closed_at' ] = $_closed_at->format( 'Y-m-d H:i:s' );
-						$output[ 'type' ] = $_type;
-						$output[ 'opened_at' ] = $opened_at->format( 'Y-m-d H:i:s' );
-						$interval = $opened_at->diff( $_closed_at );
-						$output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-						$out[] = $output;
-					}
-				} else {
-					$output[ 'opened_at' ] = $opened_at->format( 'Y-m-d H:i:s' );
-					$interval = $opened_at->diff( $closed_at );
-					$output[ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
-					$out[] = $output;
-				}
-				*/
-			}
+			$hours_closed[ $i ][ 'type' ] = Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER;
 		}
+		$closed_with_drivers = Cockpit_Community_Closed_Log::processClosedHours( $shifts, $hours_closed );
 
-		$_out = [];
-		foreach( $out as $segment ){
-			$date = new DateTime( $segment[ 'opened_at' ], new DateTimeZone( c::config()->timezone ) );
-			$date = $date->format( 'Y-m-d' );
-			$type = $segment[ 'type' ];
-			if( !isset( $_out[ $date ] ) ){
-				$_out[ $date ] = [ 	'id_community' => $community->id_community,
-														'day' => $date,
-														Cockpit_Community_Closed_Log::TYPE_ALL_RESTAURANTS => 0,
-														Cockpit_Community_Closed_Log::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS => 0,
-														Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER => 0,
-														Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED => 0,
-														Cockpit_Community_Closed_Log::TYPE_TOTAL => 0 ];
-			}
-			$_out[ $date ][ $type ] += $segment[ 'hours' ];
+		$out[ 'closed_with_drivers' ] = $closed_with_drivers;
 
-			if( $segment[ 'type' ] != Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER ){
-				$_out[ $date ][ 'total' ] += $segment[ 'hours' ];
-			}
-		}
-		return $_out;
+		return $out;
 	}
 
-	public function save_log(){
+	public function processClosedHours( $shifts, $hours_closed ){
+		$shifts = Cockpit_Community_Closed_Log::shifts2Array( $shifts );
+		$shifts = Cockpit_Community_Closed_Log::mergeShiftsHours( $shifts );
+		$hours_closed = Cockpit_Community_Closed_Log::mergeShiftsWithClosedHours( $shifts, $hours_closed );
+		$hours_closed = Cockpit_Community_Closed_Log::processHours( $hours_closed );
+		return $hours_closed;
+	}
+
+	public function processLog(){
 		$out = [];
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
 		foreach( $communities as $community ){
-			$_out = Cockpit_Community_Closed_Log::forceCloseHoursLog( $community );
-			$community = [ $community->id_community => $_out ];
-			if( count( $_out ) ){
-				$out = array_merge( $out, $community );
+			$hours = Cockpit_Community_Closed_Log::forceCloseHoursLog( $community );
+			$closed_shifts = $hours[ 'closed_shifts' ];
+			if( count( $closed_shifts ) ){
+				foreach( $closed_shifts as $closed_shift ) {
+					Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
+				}
 			}
-		}
-
-		foreach( $out as $community ){
-			foreach( $community as $day ){
-				foreach( [ 	Cockpit_Community_Closed_Log::TYPE_ALL_RESTAURANTS,
-										Cockpit_Community_Closed_Log::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS,
-										Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED,
-										Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER,
-										Cockpit_Community_Closed_Log::TYPE_TOTAL ] as $type ){
-					$hours_closed = floatval( $day[ $type ] );
-					if( $hours_closed ){
-						if( Cockpit_Community_Closed_Log::checkIfLogAlreadyExists( $day[ 'day' ], $day[ 'id_community' ], $type ) == false ){
-							$log = new Cockpit_Community_Closed_Log;
-							$log->id_community = $day[ 'id_community' ];
-							$log->day = $day[ 'day' ];
-							$log->hours_closed = $hours_closed;
-							$log->type = $type;
-							$log->save();
-						}
-					}
+			$closed_shifts = $hours[ 'closed_with_drivers' ];
+			if( count( $closed_shifts ) ){
+				foreach( $closed_shifts as $closed_shift ) {
+					Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
 				}
 			}
 		}
 	}
 
+	public function saveLog( $closed, $id_community ){
+		if( Cockpit_Community_Closed_Log::checkIfLogAlreadyExists( $closed[ 'day' ], $id_community, $closed[ 'type' ] ) == false ){
+			$log = new Cockpit_Community_Closed_Log;
+			$log->id_community = $id_community;
+			$log->day = $closed[ 'day' ];
+			$log->hours_closed = $closed[ 'hours' ];
+			$log->type = $closed[ 'type' ];
+			$log->save();
+		}
+	}
+
+	public function processHours( $hours ){
+		$hours_closed = [];
+		for( $i=0; $i< count( $hours ); $i++ ){
+			$day_from = $hours[ $i ][ 'from' ]->format( 'Ymd' );
+			$day_to = $hours[ $i ][ 'to' ]->format( 'Ymd' );
+			$closed_from = $hours[ $i ][ 'from' ]->format( 'YmdHis' );
+			$closed_to = $hours[ $i ][ 'to' ]->format( 'YmdHis' );
+			if( $day_from != $day_to ){
+				$_hour = $hours[ $i ];
+				$_hour[ 'to' ] = new DateTime( $day_from . ' 23:59:59', $hours[ $i ][ 'from' ]->getTimezone() );
+				$_hour[ 'type' ] = $hours[ $i ][ 'type' ];
+				$hours_closed[] = $_hour;
+				$_hour = $hours[ $i ];
+				$_hour[ 'from' ] = new DateTime( $day_to . ' 00:00:01', $hours[ $i ][ 'to' ]->getTimezone() );
+				$_hour[ 'type' ] = $hours[ $i ][ 'type' ];
+				$hours_closed[] = $_hour;
+			} else {
+				$hours_closed[] = $hours[ $i ];
+			}
+		}
+
+		for( $i=0; $i< count( $hours_closed ); $i++ ){
+			$interval = $hours_closed[ $i ][ 'from' ]->diff( $hours_closed[ $i ][ 'to' ] );
+			$hours_closed[ $i ][ 'day' ] = $hours_closed[ $i ][ 'from' ]->format( 'Y-m-d' );
+			$hours_closed[ $i ][ 'hours' ] = Crunchbutton_Util::interval2Hours( $interval );
+			unset( $hours_closed[ $i ][ 'to' ] );
+			unset( $hours_closed[ $i ][ 'from' ] );
+		}
+		return $hours_closed;
+	}
+
+	public function mergeShiftsWithClosedHours( $shifts, $hours_closed ){
+		$closed_times = [];
+		for( $i = 0; $i < count( $shifts ); $i++ ){
+			$shift_start = $shifts[ $i ]->date_start->format( 'YmdHis' );
+			$shift_end = $shifts[ $i ]->date_end->format( 'YmdHis' );
+			for( $j = 0; $j < count( $hours_closed ); $j++ ){
+				if( !$hours_closed[ $j ][ 'from' ] || !$hours_closed[ $j ][ 'to' ] ){
+					continue;
+				}
+				$closed_from = $hours_closed[ $j ][ 'from' ]->format( 'YmdHis' );
+				$closed_to = $hours_closed[ $j ][ 'to' ]->format( 'YmdHis' );
+				// { [ ] }
+				if( $closed_from < $shift_start && $closed_to > $shift_end ){
+					$closed_times[] = [ 'from' => $shifts[ $i ]->date_start, 'to' => $shifts[ $i ]->date_end, 'type' => $hours_closed[ $j ][ 'type' ] ];
+				}
+				// { [ } ]
+				else if( $closed_from < $shift_start && $closed_to > $shift_start && $closed_to < $shift_end ){
+					$closed_times[] = [ 'from' => $shifts[ $i ]->date_start, 'to' => $hours_closed[ $j ][ 'to' ], 'type' => $hours_closed[ $j ][ 'type' ] ];
+				}
+				// [ { ] }
+				else if( $closed_from > $shift_start && $closed_from < $shift_end && $closed_to > $shift_end ){
+					$closed_times[] = [ 'from' => $hours_closed[ $j ][ 'from' ], 'to' => $shifts[ $i ]->date_end, 'type' => $hours_closed[ $j ][ 'type' ] ];
+				}
+			}
+		}
+		return $closed_times;
+	}
+
+	public function mergeShiftsHours( $shifts ){
+		if( count( $shifts ) > 1 ){
+			for( $i = 0; $i < count( $shifts ); $i++ ){
+				if( !$shifts[ $i ] ){ continue; }
+				for( $j = 0; $j < count( $shifts ); $j++ ){
+					if( !$shifts[ $j ] ){ continue; }
+					if( $shifts[ $i ]->id != $shifts[ $j ]->id &&
+							$shifts[ $i ]->date_start->format( 'YmdHis' ) <= $shifts[ $j ]->date_start->format( 'YmdHis' ) &&
+						  $shifts[ $i ]->date_end->format( 'YmdHis' ) >= $shifts[ $j ]->date_end->format( 'YmdHis' ) ){
+							unset( $shifts[ $j ] );
+							return Cockpit_Community_Closed_Log::mergeShiftsHours( $shifts );
+					} else
+					if( $shifts[ $i ]->id != $shifts[ $j ]->id &&
+							$shifts[ $i ]->date_start->format( 'YmdHis' ) <= $shifts[ $j ]->date_start->format( 'YmdHis' ) &&
+							$shifts[ $i ]->date_end->format( 'YmdHis' ) <= $shifts[ $j ]->date_end->format( 'YmdHis' ) &&
+							$shifts[ $i ]->date_end->format( 'YmdHis' ) >= $shifts[ $j ]->date_start->format( 'YmdHis' ) ){
+							$shifts[ $i ]->date_end = $shifts[ $j ]->date_end;
+							unset( $shifts[ $j ] );
+						return Cockpit_Community_Closed_Log::mergeShiftsHours( $shifts );
+					}
+				}
+			}
+			usort( $shifts, function( $a, $b ) {
+				return ( $a->date_start->format( 'YmdHis' ) > $b->date_start->format( 'YmdHis' ) );
+			} );
+		}
+		for( $i=0; $i< count( $shifts ); $i++ ){
+			unset( $shifts[ $i ]->id );
+			$interval = $shifts[ $i ]->date_start->diff( $shifts[ $i ]->date_end );
+			$shifts[ $i ]->hours = Crunchbutton_Util::interval2Hours( $interval );
+		}
+		return $shifts;
+	}
+
+	public function shifts2Array( $shifts ){
+		$out = [];
+		foreach( $shifts as $shift ){
+			$_shift = [];
+			$_shift[ 'id' ] = $shift->id_community_shift;
+			$_shift[ 'date_start' ] = $shift->dateStart( c::config()->timezone );
+			$_shift[ 'date_end' ] = $shift->dateEnd( c::config()->timezone );
+			$out[] = ( object ) $_shift;
+		}
+		return $out;
+	}
 }

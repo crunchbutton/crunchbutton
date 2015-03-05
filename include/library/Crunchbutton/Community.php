@@ -6,6 +6,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
 	const AUTO_SHUTDOWN_COMMUNITY_LOGIN = 'autoshutdowncommunity';
 
+	const TITLE_CLOSE_ALL_RESTAURANTS = 'Close All Restaurants';
+	const TITLE_CLOSE_3RD_PARY_RESTAURANTS = 'Close 3rd Party Delivery Restaurants';
+	const TITLE_CLOSE_AUTO_CLOSED = 'Auto Closed';
+
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
 		$force = preg_replace('/[^a-z\-]+/','',$force);
@@ -516,13 +520,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $out;
 	}
 
-	public function forceCloseLog(){
+	public function forceCloseLog( $echo = true ){
 		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
 																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
 																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" OR cc.field = "is_auto_closed" )
 																																	AND cc.new_value = 1
 																																	ORDER BY cc.id_community_change DESC' );
 		$out = [];
+
 		foreach( $force_closed_times as $force_close ){
 			$output = [];
 			$closed_at = $force_close->date();
@@ -535,11 +540,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$output[ 'closed_by' ] = $closed_by;
 
 			if( $force_close->field == 'close_all_restaurants' ){
-				$output[ 'type' ] = 'Close All Restaurants';
+				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_ALL_RESTAURANTS;
 			} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
-				$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
+				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_3RD_PARY_RESTAURANTS;
 			} else if ( $force_close->field == 'is_auto_closed' ){
-				$output[ 'type' ] = 'Auto Closed';
+				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_AUTO_CLOSED;
 			}
 
 			$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
@@ -565,7 +570,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			}
 			$out[] = $output;
 		}
-		echo json_encode( $out );exit;
+		if( $echo ){
+			echo json_encode( $out );exit;
+		}
+		return $out;
 	}
 
 	private function _closedNote( $id_community_change_set, $field ){
