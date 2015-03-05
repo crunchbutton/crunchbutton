@@ -2620,9 +2620,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								ac.id_order = {$this->id_order}
 							AND ( ac.type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "'
 										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "'
-										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "' )";
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_REJECTED . "'
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "' )
+							ORDER BY id_order_action DESC LIMIT 1";
 		$action = Crunchbutton_Order_Action::q( $query );
 		if( $action->count() > 0 ){
+			$action = $action->get( 0 );
+			if( $action->type == Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+				return false;
+			}
 			return true;
 		}
 		return false;
