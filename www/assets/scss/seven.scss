@@ -3767,3 +3767,30 @@ font-familt: "Museo Slab";
 	display: block;
 	bottom: 0;
 }
+
+
+/*points progress bar*/
+.points progress[value] {
+  /*-webkit-appearance: progress-bar;*/
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20em;
+  height: 1.5em;
+}
+.points progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+.points progress[value]::-webkit-progress-value {
+  background-image:
+  -webkit-linear-gradient(-45deg,
+		  transparent 33%, rgba(0, 0, 0, .1) 33%,
+		  rgba(0,0, 0, .1) 66%, transparent 66%),
+  -webkit-linear-gradient(top,
+		  rgba(255, 255, 255, .25),
+		  rgba(0, 0, 0, .25)),
+  -webkit-linear-gradient(left, #ec5d2f, #ec5d2f);
+  border-radius: 10px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}

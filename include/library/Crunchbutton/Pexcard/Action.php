@@ -72,7 +72,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '-5 minutes' );
 		$fiveMinutesAgo = $now->format( 'Y-m-d H:i:s' );
-		$actions = Crunchbutton_Pexcard_Action::q( 'SELECT * FROM pexcard_action WHERE status = "' . Crunchbutton_Pexcard_Action::STATUS_PROCESSING . '" AND status_date < "' . $fiveMinutesAgo . '"' );
+		$actions = Crunchbutton_Pexcard_Action::q("SELECT * FROM pexcard_action WHERE status = '" . Crunchbutton_Pexcard_Action::STATUS_PROCESSING . "' AND status_date < '" . $fiveMinutesAgo . "'");
 		foreach( $actions as $action ){
 			$action->status = Crunchbutton_Pexcard_Action::STATUS_ERROR;
 			$action->status_date = date( 'Y-m-d H:i:s' );

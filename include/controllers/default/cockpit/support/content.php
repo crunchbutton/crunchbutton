@@ -31,19 +31,19 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 		}
 
 		if( $status != 'all' && $status != '' ){
-			$where .= ' AND status = "' . $status . '"';
+			$where .= " AND status = '" . $status . "'";
 			$paginationLink .= '&status=' . $status;
 		}
 
 		if( $type != 'all' && $type != '' ){
 			if( $type == 'warning' ){
-				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_WARNING . '"';	
+				$where = " AND s.type = '" . Crunchbutton_Support::TYPE_WARNING . "'";
 			} else if(  $type == 'support' ){
-				$where .= ' AND ( s.type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR s.type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
+				$where .= " AND ( s.type = '" . Crunchbutton_Support::TYPE_BOX_NEED_HELP . "' OR s.type = '" . Crunchbutton_Support::TYPE_SMS . "' ) ";
 			} else if (  $type == 'ticket' ){
-				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_TICKET . '"';	
+				$where = " AND s.type = '" . Crunchbutton_Support::TYPE_TICKET . "'";
 			} else if (  $type == 'chat' ){
-				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_COCKPIT_CHAT . '"';	
+				$where = " AND s.type = '" . Crunchbutton_Support::TYPE_COCKPIT_CHAT . "'";
 			}
 			$paginationLink .= '&type=' . $type;
 		}

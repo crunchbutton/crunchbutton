@@ -2,6 +2,12 @@
 
 class Controller_api_test extends Cana_Controller {
 	public function init(){
+		$query = "DATE_SUB( NOW(), INTERVAL '12 HOUR' ) ";
+		
+		$query = preg_replace('/(date_sub\((.*?),(.*?))\)/i','\\2 - \\3', $query);
+		echo $query;
+		exit;
+
 		$qs = [
 			" (DATE_FORMAT( date_start, '%Y-%m-%d' ) <= 2012-12-12 AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= 1015-01-01) ",
 			"( DATE_FORMAT( date_start, '%Y-%m-%d' )", 
