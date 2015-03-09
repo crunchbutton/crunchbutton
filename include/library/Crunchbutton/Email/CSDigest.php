@@ -16,7 +16,8 @@ class Crunchbutton_Email_CSDigest extends Email{
             ['messages' => $params['messages'],
 
                 ]]);
-        var_dump($params['messageHtml']);
+        print_r($params['messageHtml']);//why does this need to be called in order for it to work?
+        //how do i make it automatically send at 10am every day?
 
 
         //parent::__construct($params);//sends emails

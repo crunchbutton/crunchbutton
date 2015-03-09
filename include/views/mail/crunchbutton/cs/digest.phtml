@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <table class="table table-striped">
 <thead>
+<h1>Customer Service Morning Digest</h1>
     <tr>
         <th>Name</th>
         <th>Time</th>
@@ -12,7 +13,7 @@
 <?php foreach ($messages as $message) : ?>
 <tr>
     <td><?= $message->firstMessage()->name ?></td>
-    <td><?= $message->firstMessage()->datetime ?></td>
+    <td><?=  DATE_FORMAT(new DateTime($message->firstMessage()->date), 'g:i A')?></td>
     <td><?= $message->firstMessage()->body ?></td>
     <td><?= $message->firstMessage()->phone ?></td>
 </tr>
