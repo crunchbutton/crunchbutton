@@ -1029,7 +1029,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
 
-		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us at _PHONE_!';
+		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us back!';
 
 		foreach( $communities as $community ){
 
