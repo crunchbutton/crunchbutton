@@ -332,8 +332,8 @@ class Cana_Table extends Cana_Model { //
 //		print_r($fs);
 		$this->dbWrite()->query($query, $fs);
 
-		if ($newItem == 1) {
-			$this->dbWrite()->lastInsertId();
+		if ($newItem) {
+			$this->{$this->idVar()} = $this->dbWrite()->lastInsertId();
 		}
 		return $this;
 	}
