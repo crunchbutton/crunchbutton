@@ -161,26 +161,7 @@
 
 			<div class="divider"></div>
 
-			<div class="footer">
-				<div class="divider line"></div>
-				<div class="content-padding">
-					<? if (!$this->export) : ?>
-						<div class="fb-like-box" data-width="200" data-href="https://www.facebook.com/crunchbutton" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div>
-					<? endif ; ?>
-
-					<div class="social">
-						<a href="http://facebook.com/crunchbutton" target="_blank" class="fa fa-facebook"></a>
-						<a href="http://twitter.com/crunchbutton" target="_blank" class="fa fa-twitter"></a>
-						<a href="http://www.linkedin.com/company/crunchbutton" target="_blank" class="fa fa-linkedin"></a>
-					</div>
-					<span ng-controller="BottomCtrl">
-						<div class="divider"></div>
-						<div class="copyright">&copy; <?=date('Y')?> <a ng-click="navigation.link('/legal')">Crunchbutton</a></div>
-						<div class="divider"></div>
-					</span>
-					<br>
-				</div>
-			</div>
+			
 
 		</div>
 
@@ -188,6 +169,40 @@
 	</div>
 
 	<div class="divider"></div>
+</div>
+
+<div class="footer">
+	<div class="content-padding">
+		<div class="logo"></div>
+		<p>Push a button. Get food. We find the best food from the top local restaurants so you dont have to.</p>
+
+		<? if (!$this->export) : ?>
+			<div class="fb-like-box" data-width="200" data-href="https://www.facebook.com/crunchbutton" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div>
+		<? endif ; ?>
+		
+		<div class="divider line"></div>
+		<br><br>
+
+		<div class="social">
+			<a href="http://facebook.com/crunchbutton" target="_blank"><i class="fa fa-facebook"></i></a>
+			<a href="http://twitter.com/crunchbutton" target="_blank"><i class="fa fa-twitter"></i></a>
+			<a href="http://instagram.com/crunchbutton" target="_blank"><i class="fa fa-instagram"></i></a>
+			<a href="http://www.linkedin.com/company/crunchbutton" target="_blank"><i class="fa fa-linkedin"></i></a>
+		</div>
+		<div class="footer-download">
+			<div class="app-store"></div>
+			<div class="play-store"></div>
+		</div>
+		<div class="divider"></div>
+		<? /*
+		<span ng-controller="BottomCtrl">
+			<div class="divider"></div>
+			<div class="copyright">&copy; <?=date('Y')?> <a ng-click="navigation.link('/legal')">Crunchbutton</a></div>
+			
+		</span>
+		<br>
+		*/ ?>
+	</div>
 </div>
 
 <div ng-include="'assets/view/notification.alert.html'"></div>
