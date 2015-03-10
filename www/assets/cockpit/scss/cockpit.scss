@@ -2300,8 +2300,13 @@ h4.title{
 }
 
 .fooditem {
-	border-bottom: 1px solid #999;
+	border-bottom: 1px dashed #ddd;
 }
+
+.topitem {
+	border-bottom: 1px solid #ddd;
+}
+
 
 .order-contents-item-qty {
 	width: 1em;
@@ -2340,10 +2345,6 @@ h4.title{
 
 .order-tip-cash{
 	text-align: left;
-}
-
-.topitem, .fooditem {
-	border-bottom: 1px solid #c7c7c7;
 }
 
 .itemname{
