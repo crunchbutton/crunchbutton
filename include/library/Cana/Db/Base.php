@@ -1,7 +1,8 @@
 <?php
 
 class Cana_Db_Base {
-	private $_db;
+	protected $_db;
+	protected $_args;
 	private $_fields;
 
 	public function __construct($args = []) {
@@ -13,8 +14,16 @@ class Cana_Db_Base {
 			$args = Cana_Model::toModel($args);
 		}
 
-		$db = $this->connect($args);
-		$this->db($db);
+		$this->db($this->connect($args));
+		$this->_args = $args;
+	}
+
+	public function __sleep() {
+		return ['_args'];
+	}
+	
+	public function __wakeup() {
+		$this->db($this->connect($this->_args));
 	}
 
 	public function connect($args = null) {

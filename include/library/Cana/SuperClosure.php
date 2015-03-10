@@ -99,7 +99,7 @@ class Cana_SuperClosure {
 			$this->closure = $_function;
 			$this->reflection = new ReflectionFunction($_function);
 		} else {
-			throw new Exception();
+			throw new Exception('Failed waking up');
 		}
 	}
 }
