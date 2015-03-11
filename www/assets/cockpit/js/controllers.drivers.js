@@ -22,30 +22,40 @@ NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrd
 	$scope.oc = DriverOrdersViewService;
 	
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		alert('asd');
+		//alert('asd');
 		$scope.oc = null;
 	});
 });
 
 
 
-NGApp.controller('DriversOrderCtrl', function ( $scope, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService) {
+NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
 	$scope.oc = DriverOrdersViewService;
 	DriverOrdersViewService.prep();
 	
 	$scope.nextOrder = function() {
-		alert('asd');
+		//alert('asd');
 	};
 
 	// Just run if the user is loggedin
 	if ($scope.account.isLoggedIn()) {
 		DriverOrdersViewService.load();
 	}
+
+
+	if (!AccountService.user.working){
+		$location.path('/drivers/shifts/');
+	}
 });
 
-NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService ) {
+NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
+
+
+	if (!AccountService.user.working){
+		$location.path('/drivers/shifts/');
+	}
 	var showAll = $.totalStorage('driver-orders-show');
 	if (!showAll) {
 		showAll = false;
