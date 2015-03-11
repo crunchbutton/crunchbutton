@@ -932,6 +932,9 @@ input {
 	-o-transition: background linear 0.08s;
 	transition: background linear 0.08s;
 }
+.ladda-button {
+	@include box-border-radius();
+}
 .button.bigger {
 	font-size: 1.2em;
 	text-align: center;
@@ -1314,6 +1317,7 @@ input {
 }
 .tb-grid tbody {
 	background: #fff;
+	@include box-border-radius();
 }
 .tb-grid  td{
 	padding: .6em .4em .6em .4em;
@@ -1420,7 +1424,6 @@ td.documents-check {
 }
 .tb-grid .schedule-buttons .button{
 	width:3em;
-	border-radius: 0;
 	margin-left: .2em;
 }
 .tb-grid .schedule-buttons .button:active{
@@ -1825,7 +1828,7 @@ h4.title{
 	font-size: 1.2em;
 }
 .order-item-wrap {
-	margin-bottom: 1em;
+	margin-bottom: .6em;
 }
 .order-item-wrap a {
 	color: inherit;
@@ -1840,7 +1843,7 @@ h4.title{
 }
 
 .column-date .orderid {
-	border-bottom: 2px solid #FFF;
+	border-bottom: 1px solid #FFF;
 	font-weight: bold;
 	font-size: 1.4em;
 	cursor: pointer;
@@ -3851,7 +3854,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 }
 
 .order-box-top {
-	height: 1em;
+	height: 13em;
 	width: 100%;
 	position: fixed;
 	top: 0;
@@ -3859,6 +3862,11 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	@include gpu();
 	@include transition(all linear 0.08s);
 	margin-top: -100px;
+	overflow: hidden;
+}
+
+.box-content-new .dialog-subtext {
+	margin-top: 0;
 }
 
 .order-box-top.order-box-top-show {
@@ -3883,3 +3891,6 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	}
 }
 
+.driver-top-pad {
+	height: 6em;
+}
