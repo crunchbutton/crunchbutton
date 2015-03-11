@@ -18,82 +18,31 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 
 
 
-NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService, MainNavigationService) {
+NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrdersViewService) {
+	$scope.oc = DriverOrdersViewService;
+	
+	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+		alert('asd');
+		$scope.oc = null;
+	});
+});
 
+
+
+NGApp.controller('DriversOrderCtrl', function ( $scope, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService) {
+	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
-
-	// private method
-	var load = function(){
-		DriverOrdersService.get( function( json ){
-			$scope.order = json;
-			$scope.ready = true;
-			$scope.unBusy();
-		} );
-	}
-
-	$scope.text_customer_5_min_away_sending = null;
-
-	$scope.text_customer_5_min_away = function(){
-		if( 'Confirm send message to customer?' ){
-			$scope.text_customer_5_min_away_sending = true;
-			DriverOrdersService.text_customer_5_min_away( $scope.order.id_order,
-				function( json ){
-					if( json.status ) {
-						App.alert( 'Message sent!' );
-					} else {
-						App.alert( 'Message not sent!' );
-					}
-					$scope.text_customer_5_min_away_sending = true;
-				}
-			);
-		}
-	}
-
-	$scope.accept = function() {
-		$scope.makeBusy();
-		DriverOrdersService.accept( $scope.order.id_order,
-			function( json ){
-				if( json.status ) {
-					load();
-				} else {
-					load();
-					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
-				}
-			}
-		);
-	};
-
-	$scope.undo = function() {
-		$scope.makeBusy();
-		DriverOrdersService.undo( $scope.order.id_order, function(){ load(); } );
-	};
-
-	$scope.pickedup = function() {
-		$scope.makeBusy();
-		DriverOrdersService.pickedup( $scope.order.id_order, function(){ load(); } );
-	};
-
-	$scope.delivered = function() {
-		$scope.makeBusy();
-		DriverOrdersService.delivered( $scope.order.id_order, function(){
-			load();
-			MainNavigationService.link('/drivers/orders');
-		} );
-	};
-
-	$scope.reject = function() {
-		$scope.makeBusy();
-		DriverOrdersService.reject( $scope.order.id_order, function(){ load();	} );
+	$scope.oc = DriverOrdersViewService;
+	DriverOrdersViewService.prep();
+	
+	$scope.nextOrder = function() {
+		alert('asd');
 	};
 
 	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
+	if ($scope.account.isLoggedIn()) {
+		DriverOrdersViewService.load();
 	}
-
-	DriverOrdersService.driver_take();
-
 });
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService ) {

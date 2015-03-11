@@ -1,3 +1,5 @@
+
+
 NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routeParams ) {
 
 	var service = {};
@@ -130,6 +132,94 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 		} );
 
 	}
+
+	return service;
+} );
+
+
+
+
+NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $routeParams, DriverOrdersService, MainNavigationService) {
+	var service = {
+		order: null
+	};
+	
+	service.prep = function() {
+		service.order = null;
+		service.ready = false;
+		service.text_customer_5_min_away_sending = false;
+	};
+	
+	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+		console.log(service.order);
+		service.order = null;
+	});
+
+	service.load = function() {
+		DriverOrdersService.get( function( json ){
+			service.order = json;
+			service.ready = true;
+			$rootScope.unBusy();
+		});
+	}
+
+	service.text_customer_5_min_away_sending = null;
+
+	service.text_customer_5_min_away = function(){
+		if( 'Confirm send message to customer?' ){
+			service.text_customer_5_min_away_sending = true;
+			DriverOrdersService.text_customer_5_min_away(service.order.id_order,
+				function( json ){
+					if (json.status) {
+						App.alert( 'Message sent!' );
+					} else {
+						App.alert( 'Message not sent!' );
+					}
+					service.text_customer_5_min_away_sending = false;
+				}
+			);
+		}
+	}
+
+	service.accept = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.accept( service.order.id_order,
+			function( json ){
+				if( json.status ) {
+					service.load();
+				} else {
+					service.load();
+					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
+				}
+			}
+		);
+	};
+
+	service.undo = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.undo( service.order.id_order, service.load );
+	};
+
+	service.pickedup = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.pickedup( service.order.id_order, service.load );
+	};
+
+	service.delivered = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.delivered( service.order.id_order, function(){
+			service.load();
+			MainNavigationService.link('/drivers/orders');
+		} );
+	};
+
+	service.reject = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.reject( service.order.id_order, service.load );
+	};
+
+	DriverOrdersService.driver_take();
 
 	return service;
 } );

@@ -30,45 +30,8 @@ if (App.isPhoneGap) {
 }
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
-var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap'], function( $httpProvider ) {
-/*
-	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-	var param = function(obj) {
-		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'angular-gestures'], function( $httpProvider ) {
 
-		for(name in obj) {
-			value = obj[name];
-
-			if(value instanceof Array) {
-				for(i=0; i<value.length; ++i) {
-					subValue = value[i];
-					fullSubName = name + '[' + i + ']';
-					innerObj = {};
-					innerObj[fullSubName] = subValue;
-					query += param(innerObj) + '&';
-				}
-			}
-			else if(value instanceof Object) {
-				for(subName in value) {
-					subValue = value[subName];
-					fullSubName = name + '[' + subName + ']';
-					innerObj = {};
-					innerObj[fullSubName] = subValue;
-					query += param(innerObj) + '&';
-				}
-			}
-			else if(value !== undefined && value !== null)
-				query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
-		}
-
-		return query.length ? query.substr(0, query.length - 1) : query;
-	};
-
-	// Override $http service's default transformRequest
-	$httpProvider.defaults.transformRequest = [function(data) {
-		return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
-	}];
-	*/
 });
 
 NGApp.constant('angularMomentConfig', {
@@ -454,7 +417,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService) {
 
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
@@ -617,7 +580,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	} );
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-
+		$rootScope.navTitle = '';
 		// Store the actual page
 
 		$rootScope.hasBack = $route.current.back === false ? false : true;
