@@ -242,5 +242,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	}
 
+	public function hasCustomerBeenTexted5Minutes(){
+
+	}
+
 
 }
