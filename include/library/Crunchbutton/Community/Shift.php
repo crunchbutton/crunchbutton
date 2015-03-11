@@ -869,7 +869,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$dateStart = $now->format( 'Y-m-d' );
 				$now->modify( '+ 4 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
-				$template = "Hi %s ! You're scheduled for the following shifts at %s: ";
+				$template = "Hi %s ! Just a reminder of your next shifts at %s: ";
 				break;
 		}
 
@@ -896,7 +896,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					$message = sprintf( $template, $driver->firstName(), $shift->community()->name);
 					$message .= $commas;
 					$message .= $shift->dateStart()->format( 'D ga' ) . '-' . $shift->dateEnd()->format( 'ga T' );
-					$commas = ', ';
+					//$commas = ', ';
 				}
 
 				$message .= '.';
