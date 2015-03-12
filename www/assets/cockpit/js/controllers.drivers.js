@@ -45,17 +45,20 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	}
 
 
-	if (!AccountService.user.working){
+	if (!AccountService.user.permissions.GLOBAL && !AccountService.user.working){
 		$location.path('/drivers/shifts/');
+		return;
 	}
 });
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
 
 
-	if (!AccountService.user.working){
+	if (!AccountService.user.permissions.GLOBAL && !AccountService.user.working){
 		$location.path('/drivers/shifts/');
+		return;
 	}
+
 	var showAll = $.totalStorage('driver-orders-show');
 	if (!showAll) {
 		showAll = false;
