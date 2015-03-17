@@ -1826,8 +1826,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function checkSucceededPaymentStatus( $type = 'driver' ){
-		// $payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.balanced_status = '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "' AND p.balanced_status IS NOT NULL AND DATE( p.balanced_date_checked ) = DATE( DATE_SUB( NOW(), INTERVAL 5 day) );" );
-		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.balanced_status = '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "' AND p.balanced_status IS NOT NULL ;" );
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.balanced_status = '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "' AND p.balanced_status IS NOT NULL AND DATE( p.balanced_date_checked ) = DATE( DATE_SUB( NOW(), INTERVAL 14 day) );" );
 		foreach( $payments as $payment ){
 			$id_payment = $payment->id_payment;
 			Cana::timeout( function() use( $id_payment ) {
