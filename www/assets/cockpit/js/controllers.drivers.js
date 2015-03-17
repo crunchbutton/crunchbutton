@@ -22,8 +22,8 @@ NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrd
 	$scope.oc = DriverOrdersViewService;
 	
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		//alert('asd');
-		$scope.oc = null;
+		//console.log('ROUTE',arguments);
+		//$scope.oc = null;
 	});
 });
 
