@@ -20,6 +20,6 @@ class Crunchbutton_Email_CSDigest extends Email{
         //how do i make it automatically send at 10am every day?
 
 
-        //parent::__construct($params);//sends emails
+        parent::__construct($params);//sends emails
     }
 }
