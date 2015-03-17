@@ -853,8 +853,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
-
-
 		switch ( $weekday ) {
 			case 'Wednesday':
 				$sendWarning = true;
@@ -869,11 +867,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$dateStart = $now->format( 'Y-m-d' );
 				$now->modify( '+ 4 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
-				$template = "Hi %s ! Just a reminder of your next shifts at %s: ";
+				$template = "Hi %s! Just a reminder of your next shifts at %s: ";
 				break;
 		}
-
-		$sendWarning = true;
 
 		if( !$sendWarning || !$dateStart || !$dateEnd ){
 			return;
@@ -881,22 +877,24 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		// Get the shifts of this range
 		$drivers = Crunchbutton_Admin::drivers();
-
+		echo '<pre>';
 		foreach( $drivers as $driver ){
+
+			$message = '';
+
 			$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $dateStart . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $dateEnd . '" AND asa.id_admin = "' . $driver->id_admin . '" ORDER BY cs.date_start ASC' );
 
-
 			if( $shifts->count() > 0 ){
-
 
 				$commas = '';
 
 				foreach( $shifts as $shift ){
-
-					$message = sprintf( $template, $driver->firstName(), $shift->community()->name);
+					if( $message == '' ){
+						$message = sprintf( $template, $driver->firstName(), $shift->community()->name );
+					}
 					$message .= $commas;
 					$message .= $shift->dateStart()->format( 'D ga' ) . '-' . $shift->dateEnd()->format( 'ga T' );
-					//$commas = ', ';
+					$commas = ', ';
 				}
 
 				$message .= '.';
@@ -904,11 +902,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				echo $message;
 				echo "\n";
 
-				// Send the sms
-				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ] );
-
 				if( $driver->phone ){
-					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone ] );
+					// Send the sms
+					Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ] );
+					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
 				}
 
 				// Send the email
