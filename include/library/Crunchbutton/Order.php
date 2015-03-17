@@ -2156,11 +2156,27 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function tellDriverTheOrderWasCanceled(){
 		$driver = $this->getDeliveryDriver();
+
 		if( $driver->id_admin && $driver->phone ){
-			$message = 'Sorry, ' . $this->restaurant()->name . ' order #' . $this->id_order . ' from ' . $this->name . ' was canceled! :(';
-			Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
-			Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_ORDER_CANCELED ] );
+
+			$sendMessageToDriver = true;
+
+			$status = $this->status();
+
+			if( $status ){
+				$last = $status->last();
+				if( $last[ 'status' ] == 'delivered' ){
+					$sendMessageToDriver = false;
+				}
+			}
+
+			if( $sendMessageToDriver ){
+				$message = 'Sorry, ' . $this->restaurant()->name . ' order #' . $this->id_order . ' from ' . $this->name . ' was canceled! :(';
+				Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
+				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_ORDER_CANCELED ] );
+			}
 		}
+
 	}
 
 	public function refund() {
