@@ -22,8 +22,8 @@ NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrd
 	$scope.oc = DriverOrdersViewService;
 	
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		//alert('asd');
-		$scope.oc = null;
+		//console.log('ROUTE',arguments);
+		//$scope.oc = null;
 	});
 });
 
@@ -45,7 +45,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	}
 
 
-	if (!AccountService.user.permissions.GLOBAL && !AccountService.user.working){
+	if (AccountService.user && AccountService.user.permissions && (!AccountService.user.permissions.GLOBAL && !AccountService.user.working)){
 		$location.path('/drivers/shifts/');
 		return;
 	}
@@ -54,7 +54,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
 
 
-	if (!AccountService.user.permissions.GLOBAL && !AccountService.user.working){
+	if (AccountService.user && AccountService.user.permissions && (!AccountService.user.permissions.GLOBAL && !AccountService.user.working)){
 		$location.path('/drivers/shifts/');
 		return;
 	}
