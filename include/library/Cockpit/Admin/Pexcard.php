@@ -130,67 +130,57 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function addFunds( $params ){
 
-		$add = false;
+		$card = $this->pexcard();
 
-		// Test cards #4278
-		if( $this->isTestCard() || ( $params[ 'action' ] == Crunchbutton_Pexcard_Action::ACTION_ARBRITARY ) ){
-			$add = true;
+		// Check if the card could receive funds
+		if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
+				( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
+			$this->_error = Crunchbutton_Pexcard_Monitor::balancedExcededLimit( $card, $params[ 'amount' ], $params[ 'note' ] );
+			return false;
 		}
 
-		if( $add ){
+		$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
 
-			$card = $this->pexcard();
+		if( $this->id_pexcard ){
+			$amount = $params[ 'amount' ];
 
-			// Check if the card could receive funds
-			if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
-					( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
-				$this->_error = Crunchbutton_Pexcard_Monitor::balancedExcededLimit( $card, $params[ 'amount' ], $params[ 'note' ] );
-				return false;
-			}
-
-			$action = ( !$params[ 'action' ] ) ? Crunchbutton_Pexcard_Action::ACTION_ARBRITARY : $params[ 'action' ];
-
-			if( $this->id_pexcard ){
-				$amount = $params[ 'amount' ];
-
-				if( floatval( $amount ) != 0 ){
-					$pexcard_action = new Crunchbutton_Pexcard_Action();
-					switch ( $params[ 'action' ] ) {
-						case Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED:
-						case Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED:
-							$pexcard_action->id_admin_shift_assign = $params[ 'id_admin_shift_assign' ];
-							break;
-						case Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED:
-						case Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED:
-							$pexcard_action->id_order = $params[ 'id_order' ];
-							break;
-						default:
-							$pexcard_action->id_admin = c::user()->id_admin;
-							break;
-					}
-					$pexcard_action->amount = $amount;
-					if( $pexcard_action->amount > 0 ){
-						$pexcard_action->type = Crunchbutton_Pexcard_Action::TYPE_CREDIT;
-					} else {
-						$pexcard_action->type = Crunchbutton_Pexcard_Action::TYPE_DEBIT;
-					}
-					$pexcard_action->id_admin_pexcard = $this->id_admin_pexcard;
-					$pexcard_action->id_driver = $this->id_admin;
-					$pexcard_action->date = date( 'Y-m-d H:i:s' );
-					$pexcard_action->note = $params[ 'note' ];
-					$pexcard_action->tries = 0;
-					$pexcard_action->action = $action;
-					$pexcard_action->status = Crunchbutton_Pexcard_Action::STATUS_SCHEDULED;
-					$pexcard_action->save();
-					$pexcard_action = Crunchbutton_Pexcard_Action::o( $pexcard_action->id_pexcard_action );
-
-					$pexcard_action->que();
-
-					return $pexcard_action;
+			if( floatval( $amount ) != 0 ){
+				$pexcard_action = new Crunchbutton_Pexcard_Action();
+				switch ( $params[ 'action' ] ) {
+					case Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED:
+					case Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED:
+						$pexcard_action->id_admin_shift_assign = $params[ 'id_admin_shift_assign' ];
+						break;
+					case Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED:
+					case Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED:
+						$pexcard_action->id_order = $params[ 'id_order' ];
+						break;
+					default:
+						$pexcard_action->id_admin = c::user()->id_admin;
+						break;
 				}
-			} else {
-				return false;
+				$pexcard_action->amount = $amount;
+				if( $pexcard_action->amount > 0 ){
+					$pexcard_action->type = Crunchbutton_Pexcard_Action::TYPE_CREDIT;
+				} else {
+					$pexcard_action->type = Crunchbutton_Pexcard_Action::TYPE_DEBIT;
+				}
+				$pexcard_action->id_admin_pexcard = $this->id_admin_pexcard;
+				$pexcard_action->id_driver = $this->id_admin;
+				$pexcard_action->date = date( 'Y-m-d H:i:s' );
+				$pexcard_action->note = $params[ 'note' ];
+				$pexcard_action->tries = 0;
+				$pexcard_action->action = $action;
+				$pexcard_action->status = Crunchbutton_Pexcard_Action::STATUS_SCHEDULED;
+				$pexcard_action->save();
+				$pexcard_action = Crunchbutton_Pexcard_Action::o( $pexcard_action->id_pexcard_action );
+
+				$pexcard_action->que();
+
+				return $pexcard_action;
 			}
+		} else {
+			return false;
 		}
 	}
 
