@@ -151,6 +151,16 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			$o->status = Order::o( $o->id_order )->status()->last();
 			$restaurant = Restaurant::o( $o->id_restaurant );
 			$o->delivery_it_self = $restaurant->deliveryItSelf();
+			// See: #3763
+			if( !$o->lat ){
+				$user = User::o( $o->id_user );
+				if( $user->id_user && $user->location_lon == $o->lon && $user->location_lat ){
+					$o->lat = $user->location_lat;
+				} else if( !$o->lon && $user->location_lon && $user->location_lat ){
+					$o->lon = $user->location_lon;
+					$o->lat = $user->location_lat;
+				}
+			}
 			$data[] = $o;
 		}
 
