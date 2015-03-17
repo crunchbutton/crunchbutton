@@ -3,16 +3,18 @@
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
 
-			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
-				<i class="fa fa-truck"></i>
-			</div>
+			<div class="menu-tabs">
+				<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
+					<i class="fa fa-truck"></i>
+				</div>
 
-			<div class="menu-tab" ng-if="account.isMarketingRep || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'marketing-rep')}" ng-click="menu.toggle='marketing-rep'">
-				<i class="fa fa-male"></i>
-			</div>
+				<div class="menu-tab" ng-if="account.isMarketingRep || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'marketing-rep')}" ng-click="menu.toggle='marketing-rep'">
+					<i class="fa fa-male"></i>
+				</div>
 
-			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
-				<i class="fa fa-dashboard"></i>
+				<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
+					<i class="fa fa-dashboard"></i>
+				</div>
 			</div>
 			<div class="divider"></div>
 			<? /*
