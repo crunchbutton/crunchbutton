@@ -150,7 +150,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		while ($o = $r->fetch()) {
 			$o->status = Order::o( $o->id_order )->status()->last();
 			$restaurant = Restaurant::o( $o->id_restaurant );
-			$o->delivery_is_self = $restaurant->deliveryItSelf();
+			$o->delivery_it_self = $restaurant->deliveryItSelf();
 			$data[] = $o;
 		}
 

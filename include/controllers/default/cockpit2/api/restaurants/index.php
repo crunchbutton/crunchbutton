@@ -130,7 +130,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 		$q .= '
 			ORDER BY restaurant.name ASC
-			LIMIT ?, ?	
+			LIMIT ?, ?
 		';
 		$keys[] = $offset;
 		$keys[] = $limit;
@@ -145,7 +145,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		while ($s = $r->fetch()) {
 			$restaurant = Restaurant::o($s);
 			$out = $s;
-			$out->delivery_is_self = $restaurant->deliveryItSelf();
+			$out->delivery_it_self = $restaurant->deliveryItSelf();
 			$out->communities = [];
 			foreach ($restaurant->communities() as $community) {
 				$out->communities[] = $community->properties();
