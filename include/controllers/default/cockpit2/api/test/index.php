@@ -3,18 +3,6 @@
 class Controller_api_test extends Cana_Controller {
 	public function init(){
 
-		$settlement = new Crunchbutton_Settlement;
-		$settlement->checkSucceededPaymentStatus();
-		exit;
-
-		$pex = new Cockpit_Admin_Pexcard;
-		echo '<pre>';var_dump( $pex );exit();
-
-		//
-		// Crunchbutton_Community_Shift::shiftWarningWeekly();
-
-		exit();
-
 
 		$query = "DATE_SUB( NOW(), INTERVAL '12 HOUR' ) ";
 
