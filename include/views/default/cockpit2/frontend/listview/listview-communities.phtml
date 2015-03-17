@@ -6,6 +6,7 @@
 			<th>Permalink</th>
 			<th>Timezone</th>
 			<th>Last Order</th>
+			<th>Map Orders</th>
 			<th class="tb-center">Restaurants</th>
 			<th>Active</th>
 			<th></th>
@@ -17,6 +18,11 @@
 			<td>{{community.timezone | formatTimezone}}</td>
 			<td>
 				<span ng-if="community._order_date"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
+			</td>
+			<td>
+				<a href="/orders?limit=100&page=1&search=&restaurant=&community={{community.id_community}}&date=&view=map">
+				Last 100 orders
+				</a>
 			</td>
 			<td class="tb-center"><a href="/restaurants?community={{community.id_community}}">{{community.restaurants}}</a></td>
 			<td><i class="fa fa-check" ng-if="community.active"></i></td>
