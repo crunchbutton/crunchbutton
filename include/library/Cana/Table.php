@@ -134,7 +134,7 @@ class Cana_Table extends Cana_Model { //
 				$row = (object)$props;
 
 				$row->null = $row->null == 'YES' ? true : false;
-				if (strpos($row->type, 'int') !== false) {
+				if ( strpos($row->type, 'enum') === false && strpos($row->type, 'int') !== false) {
 					$row->type = 'int';
 				}
 				$fields[] = $row;
@@ -145,7 +145,7 @@ class Cana_Table extends Cana_Model { //
 		}
 		return $this->_fields;
 	}
-	
+
 	/*
 	public function keys() {
 		// not done with this
@@ -173,7 +173,7 @@ class Cana_Table extends Cana_Model { //
 		}
 
 		return $this->_keys;
-		
+
 	}
 	*/
 
@@ -236,7 +236,7 @@ class Cana_Table extends Cana_Model { //
 				$this->id = $node->$id_var;
 			}
 		}
-		
+
 		foreach ($this->fields() as $field) {
 			switch ($field->type) {
 				case 'int':
@@ -313,7 +313,7 @@ class Cana_Table extends Cana_Model { //
 		if ($newItem) {
 			$query .= ' ) VALUES (';
 			$numset = 0;
-			
+
 			foreach ($fields as $field) {
 				if ($this->property($field->field) === false) {
 					continue;
@@ -322,7 +322,7 @@ class Cana_Table extends Cana_Model { //
 				$query .= ' :'.$field->field;
 				$numset++;
 			}
-			
+
 			$query .= ')';
 		} else {
 			$query .= ' WHERE '.$this->idVar().'=:id';
