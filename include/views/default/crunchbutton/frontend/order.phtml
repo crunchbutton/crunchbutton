@@ -27,8 +27,10 @@
 				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 				<br />
-				<div ng-if="order.reward.points" class="order-details-highlight">You just earned {{Math.floor(order.reward.points)}} points! <strong>Double</strong> it by creating an account.<br><br></div>
-				<div class="divider dots"></div>
+				<div class="order-details-highlight">
+					Create an account and earn {{order.reward.points}} points towards a free delivery.
+					<br />
+				</div>
 			</div>
 
 			<div ng-show="account.user.has_auth">
@@ -37,11 +39,21 @@
 					<div class="divider"></div>
 				</div>
 				<div ng-if="order.reward.points && !order.reward.shared">
-					<div class="order-details-highlight">You just earned {{order.reward.points}} points! Double it by sharing it on facebook. <br> {{account.user.points.free_delivery}} points gets you a free delivery :)<br><br></div>
+					<div class="order-details-highlight">
+						<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
+							You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
+						</div>
+						<div ng-if="!account.user.points.free_delivery_message">
+							You just earned <strong>{{order.reward.points}}</strong> points! You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
+							<br>
+							Want more points? Share this order to double it!
+							<br>
+							Find out more ways to get free <a href="/orders/#credit">delivery here</a>.
+						</div>
+					</div>
 				</div>
 				<div ng-show="order._new && referral.invite_url && referral.enabled">
-					Earn a FREE DELIVERY for every new customer you refer with your link!
-					<br /><br />
+					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!<br />
 				</div>
 			</div>
 
@@ -94,7 +106,7 @@
 
 			${{order.charged | formatPrice}}
 
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+			<div class="credit" ng-show="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<br><br>
 

@@ -24,17 +24,20 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_MAX_CAP_POINTS = 'reward_points_max_cap_points';
 
 	public function validateInviteCode( $code ){
-		$code = trim( $code );
-		// at first check if it belongs to an admin
-		$admin = Crunchbutton_Admin::byInviteCode( $code );
-		if( $admin->id_admin ){
-			$this->code = $code;
-			return [ 'id_admin' => $admin->id_admin ];
-		}
-		// second check if it belongs to an user
-		$user = Crunchbutton_User::byInviteCode( $code );
-		if( $user->id_user ){
-			return [ 'id_user' => $user->id_user ];
+		$codes = explode( ' ' , $code );
+		foreach( $codes as $code ){
+			$code = trim( $code );
+			// at first check if it belongs to an admin
+			$admin = Crunchbutton_Admin::byInviteCode( $code );
+			if( $admin->id_admin ){
+				$this->code = $code;
+				return [ 'id_admin' => $admin->id_admin ];
+			}
+			// second check if it belongs to an user
+			$user = Crunchbutton_User::byInviteCode( $code );
+			if( $user->id_user ){
+				return [ 'id_user' => $user->id_user ];
+			}
 		}
 		return false;
 	}
@@ -66,7 +69,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->date = date( 'Y-m-d H:i:s' );
 		$credit->value = $params[ 'value' ];
 		$credit->id_order = $params[ 'id_order' ];
-		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+		$credit->credit_type = $params[ 'credit_type' ];
 		$credit->note = $params[ 'note' ];
 		$credit->id_referral = $params[ 'id_referral' ];
 		$credit->save();

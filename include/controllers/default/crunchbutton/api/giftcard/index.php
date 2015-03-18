@@ -6,6 +6,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 		switch ( $this->method() ) {
 
 			case 'post':
+			case 'get':
 
 				if ( c::admin()->id_admin ) {
 
@@ -440,10 +441,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 						if( !c::user()->id_user && $totalOrdersByPhone == 0 ){
 							$valid = $reward->validateInviteCode( $word );
 							if( $valid ){
-								$value = $reward->getReferredDiscountAmount();
-								if( $value ){
-									echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
+								if( $valid[ 'id_user' ] ){
+									echo json_encode( [ 'success' => [ 'value' => 0, 'delivery_free' => true, 'giftcard' => $word, 'message' =>  'This delivery fee is on us.' ] ] );
 									exit;
+								} else {
+									$value = $reward->getReferredDiscountAmount();
+									if( $value ){
+										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
+										exit;
+									}
 								}
 							}
 						}
