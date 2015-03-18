@@ -244,15 +244,17 @@ class Crunchbutton_User extends Cana_Table {
 		$reward = $reward->loadSettings();
 		$free_delivery = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
 		$out[ 'points' ] = [];
-		$out[ 'points' ][ 'free_delivery' ] = number_format ( $free_delivery, 0, '.', ',' );
+		$out[ 'points' ][ 'free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery );
 		$out[ 'points' ][ 'total' ] = Crunchbutton_Credit::points( $this->id_user );
 		if( $free_delivery > 0 && $free_delivery <= $out[ 'points' ][ 'total' ] ){
 			$out[ 'points' ][ 'show' ] = $out[ 'points' ][ 'free_delivery' ];
+			$out[ 'points' ][ 'points_percent' ] = 100;
 			$out[ 'points' ][ 'free_delivery_message' ] = true;
 		} else {
 			$out[ 'points' ][ 'free_delivery_message' ] = false;
-			$out[ 'points' ][ 'show' ] = number_format( $out[ 'points' ][ 'total' ], 0, '.', ',' );;
-			$out[ 'points' ][ 'away_free_delivery' ] = number_format( $free_delivery - $out[ 'points' ][ 'total' ], 0, '.', ',' );;
+			$out[ 'points' ][ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'points' ][ 'total' ] );
+			$out[ 'points' ][ 'points_percent' ] = intval( ( $out[ 'points' ][ 'total' ] / $free_delivery * 100 ) );
+			$out[ 'points' ][ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'points' ][ 'total' ] );
 		}
 
 		return $out;
