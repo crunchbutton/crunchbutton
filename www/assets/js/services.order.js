@@ -280,7 +280,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
-		if( service.form.pay_type == 'card' && service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message ){
+		if( service.form.pay_type == 'card' && service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message && service.restaurant.delivery_service ){
 			delivery = 0;
 		}
 		delivery = App.ceil(delivery);
@@ -723,7 +723,7 @@ console.log('order',order);
 
 						// order success
 						App.vibrate();
-						
+
 						MainNavigationService.navStack = [];
 						MainNavigationService.control();
 

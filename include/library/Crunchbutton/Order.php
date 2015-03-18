@@ -430,9 +430,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$delivery_free = false;
 
 		// Point redemption system improvements for customer-customer referrals #4248
-		// If the user has more than 25000 points the code bellow will give him credits
+		// If the user has more than 1M points the code bellow will give him credits
 		// of the same amount of the delivery order
-		if ( $this->delivery_type == 'delivery' && $this->delivery_fee && $this->pay_type == 'card' ) {
+		if ( $this->restaurant()->hasDeliveryService() && $this->delivery_type == 'delivery' && $this->delivery_fee && $this->pay_type == 'card' ) {
 			$reward = new Crunchbutton_Reward;
 			$reward = $reward->loadSettings();
 			$user_points = Crunchbutton_Credit::points( $user->id_user );
@@ -488,7 +488,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$credit->value = $this->delivery_fee;
 				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 				$credit->paid_by = 'CRUNCHBUTTON';
-				$credit->note = 'Reward: removed delivery free';
+				$credit->note = 'Reward: removed delivery free cash';
 				$credit->save();
 			}
 
@@ -511,7 +511,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$credit->value = $user_points;
 			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
 			$credit->paid_by = 'CRUNCHBUTTON';
-			$credit->note = 'Reward: removed delivery free';
+			$credit->note = 'Reward: removed delivery free points';
 			$this->reward_delivery_free = 1;
 			$credit->save();
 		}
