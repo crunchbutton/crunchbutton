@@ -143,13 +143,13 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	var service = {
 		order: null
 	};
-	
+
 	service.prep = function() {
 		service.order = null;
 		service.ready = false;
 		service.text_customer_5_min_away_sending = false;
 	};
-	
+
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		console.log(service.order);
 		service.order = null;
