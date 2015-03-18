@@ -25,17 +25,20 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				$out = [];
 				$out[ 'invite_code' ] = $user->invite_code;
 				$free_delivery = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
-				$out[ 'free_delivery' ] = number_format( $free_delivery, 0, '.', ',' );
+				$out[ 'free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery );
 				$out[ 'total' ] = Crunchbutton_Credit::points( $user->id_user );
 				if( $free_delivery > 0 && $free_delivery <= $out[ 'total' ] ){
 					$out[ 'show' ] = $out[ 'free_delivery' ];
+					$out[ 'points_percent' ] = 100;
 					$out[ 'free_delivery_message' ] = true;
 				} else {
 					$out[ 'free_delivery_message' ] = false;
-					$out[ 'show' ] = number_format( $out[ 'total' ], 0, '.', ',' );
-					$out[ 'away_free_delivery' ] = number_format( $free_delivery - $out[ 'total' ], 0, '.', ',' );
+					$out[ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'total' ] );
+					$out[ 'points_percent' ] = intval( ( $out[ 'total' ] / $free_delivery * 100 ) );
+					$out[ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'total' ] );
 				}
 				echo json_encode( $out );exit;
+
 				break;
 			// Verify if the login was already taken
 			case 'verify':

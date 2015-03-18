@@ -294,12 +294,23 @@ class Crunchbutton_Credit extends Cana_Table
 		return 0;
 	}
 
+	public function formatPoints( $points ){
+		return Util::humanReadableNumbers( $points );
+	}
+
 	public function points( $id_user ){
 		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
 		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_CREDIT]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
-				$spent = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
+				$points = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
+		}
+		$spent = 0;
+		$query = 'SELECT SUM( value ) AS spent FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
+		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_DEBIT]);
+		if( $row->_items && $row->_items[0] ){
+				$row = $row->_items[0];
+				$spent = ( $row->spent && $row->spent < 0 ) ? 0 : $row->spent;
 		}
 		return intval( ( $points - $spent ) );
 	}

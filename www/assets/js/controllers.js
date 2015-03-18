@@ -1389,7 +1389,6 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	$scope.referral.twitter = function(){
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
 	}
-	$scope.points_percent = (($scope.account.user.points.total)/($scope.account.user.points.free_delivery)*100);
 	$scope.hello = 50;
 
 });

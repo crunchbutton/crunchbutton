@@ -2207,15 +2207,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$reward = new Crunchbutton_Reward;
 				$points = $reward->processOrder( $this->id_order );
 				$shared = $reward->orderWasAlreadyShared( $this->id_order );
-				$out['reward'] = array( 'points' => number_format( $points, 0, '.', ',' ), 'shared' => $shared );
+
+				$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ), 'shared' => $shared );
 			}
 		} else {
 			$reward = new Crunchbutton_Reward;
 			$points = $reward->processOrder( $this->id_order );
-			$out['reward'] = array( 'points' => number_format( $points, 0, '.', ',' ) );
+			$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ) );
 		}
-
-
 
 		return $out;
 	}
