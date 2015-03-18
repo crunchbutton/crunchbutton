@@ -301,7 +301,7 @@ class Crunchbutton_Credit extends Cana_Table
 				$row = $row->_items[0];
 				$spent = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
 		}
-		return ( $points - $spent );
+		return intval( ( $points - $spent ) );
 	}
 
 	public function creditLeft(){

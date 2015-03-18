@@ -1,5 +1,40 @@
 <div class="top-pad"></div>
 
+<div class="content-padding">
+
+	<a id="credit"></a>
+
+	<div ng-show="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
+		<p class="delivery-free">You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</p><br/>
+		<p>Earn points by ordering food, sharing your order, or referring friends.</p><br/>
+	</div>
+	<div ng-show="account.user.points.free_delivery_message && account.user.points.free_delivery">
+		<p class="delivery-free">You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.</p>
+	</div>
+
+	<br/>
+
+	<div class="divider"></div>
+
+	<p>Share this family and friends code and both of you get your next delivery on us.</p><br/>
+	<p class="order-code"><strong>{{account.user.invite_code}}</strong></p>
+
+	<br/>
+
+	<div class="button-pushable">
+		<button class="button facebook" ng-click="referral.facebook()">
+			<i class="fa fa-facebook-square"></i><span>Share</span>
+		</button>
+	</div>
+
+	<br/><br/>
+
+</div>
+
+<div class="divider"></div>
+
+<div class="content-padding">
+
 <div ng-show="!orders.list">
 	<div class="content-padding">
 		<div class="stamp-loader">
@@ -8,11 +43,11 @@
 		</div>
 	</div>
 </div>
-	
+
 <div class="content-padding" ng-show="orders.list">
+
 	<div class="orders-oranges animated-resize"></div>
 	<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
-	
 </div>
 
 
@@ -43,12 +78,11 @@
 							{{order.summary}}
 						</div>
 					</div>
-	
+
 					<div class="order-link fa fa-arrow-circle-right"></div>
 				</div>
-				<div class="divider"></div>		
+				<div class="divider"></div>
 			</li>
 		</ul>
 	</div>
-
 </div>

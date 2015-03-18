@@ -272,16 +272,33 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 * @return float
 	 */
 	service._breackDownDelivery = function () {
+		if( service.form.pay_type == 'card' && service._removeDeliveryFee ){
+			return 0;
+		}
+
 		var delivery = 0;
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
-		if( service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message ){
+		if( service.form.pay_type == 'card' && service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message ){
 			delivery = 0;
 		}
 		delivery = App.ceil(delivery);
 		return delivery;
 	}
+
+	service.removeDeliveryFee = function(){
+		service._removeDeliveryFee = true;
+		service._breackDownDelivery();
+	}
+
+	service.restoreDeliveryFee = function(){
+		service._removeDeliveryFee = false;
+		service._breackDownDelivery();
+	}
+
+
+
 	/**
 	 * Crunchbutton service
 	 *

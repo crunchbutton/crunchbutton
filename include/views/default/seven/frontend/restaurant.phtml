@@ -11,7 +11,7 @@
 
 			<div class="restaurant-pic hide-mobile" style="background: url(https://i.crunchbutton.com/1200x425/{{restaurant.permalink}}.jpg?crop=1);"></div>
 			<div class="restaurant-pic hide-desktop" style="background: url({{restaurant.img}});"><div class="restaurant-pic-overlay"></div></div>
-			
+
 			<div class="restaurant-content-padding">
 
 				<div class="restaurant-name">
@@ -31,7 +31,7 @@
 
 
 		<!-- main-content-readable-margin -->
-		
+
 		<div class="restaurant-content-body content-padding">
 			<div class="restaurant-content-body-background"></div>
 
@@ -66,7 +66,6 @@
 							</span>
 						</div>
 					</div>
-
 
 					<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="dialog-message dialog-message-error delivery-minimum-error">
 						Add <sup>$</sup><span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> more to meet the delivery min
@@ -159,9 +158,10 @@
 							</li>
 						</ul>
 					</div>
-					
+
 					<br>
-					<button class="button green hide-desktop" ng-click="fullmenu=0">less food</button>						
+
+					<button class="button green hide-desktop" ng-click="fullmenu=0">less food</button>
 
 				</div>
 
@@ -182,18 +182,19 @@
 					</div>
 
 					<br>
-					<button class="button green" ng-click="fullmenu=1">see full menu</button>						
+					<button class="button green" ng-click="fullmenu=1">see full menu</button>
 
 
 
 				</div>
 
 			</div>
-			
+
 
 			<!-- payment and user info -->
+
 			<form class="payment-form restaurant-side-bar" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
-				
+
 				<div class="divider dots spacer-one-one"></div>
 
 				<div ng-show="restaurant._open && order.showForm && order.cart.hasItems()">
@@ -268,9 +269,19 @@
 										Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
 									</div>
 
-									<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
-										<!-- Gift card success -->
-										<div ng-repeat="success in giftcard.giftcards.success">
+								<div ng-repeat="success in giftcard.giftcards.success">
+									<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+										<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
+										<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free</span>
+									</div>
+								</div>
+
+
+								<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
+									<!-- Gift card success -->
+									<div ng-repeat="success in giftcard.giftcards.success">
+										<div ng-if="!success.delivery_free">
+
 											<div ng-show="!success.error">
 												Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.
 											</div>
@@ -374,6 +385,29 @@
 					</div>
 					<div class="divider"></div>
 
+
+				<div class="order-icon">
+					<div class="icon-map-home" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'"></div>
+					<div class="icon-map-restaurant" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'"></div>
+				</div>
+				<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+					<p>
+						Delivered to:<br />
+					</p>
+					<p class="restaurant-info-address">
+						<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
+						<i ng-hide="order.form.address">no address provided</i>
+					</p>
+				</div>
+				<div class="order-info" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
+					<p class="restaurant-info-address">
+						Pick up from:<br />
+						<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
+					</p>
+				</div>
+
+				<div class="divider"></div>
+
 					<div class="order-icon">
 						<div class="icon-map-home" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'"></div>
 						<div class="icon-map-restaurant" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'"></div>
@@ -395,6 +429,7 @@
 					</div>
 					<div class="divider"></div>
 
+
 					<div class="order-icon"><div class="icon-notes" ng-show="order.form.notes"></div></div>
 					<div class="order-info">
 						<p ng-bind-html-unsafe="order.form.notes | nl2br" class="restaurant-info-address"></p>
@@ -408,7 +443,7 @@
 			</div>
 
 		<div class="divider"></div>
-			
+
 		</div>
 
 	</div>
@@ -442,7 +477,18 @@
 		<div ng-if="credit.hasValue && order.form.pay_type == 'cash' && order.total() >= credit.number">
 			<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
 		</div>
+
+		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
+			<p class="delivery-free">
+				<strong ng-if="order.form.pay_type == 'card'">You have {{points.free_delivery}} points! This delivery fee is on us.</strong>
+				<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
+				<br/>
+			</p>
+		</div>
+
 	</div>
+
+
 
 	<div class="divider bottom-spacer"></div>
 
