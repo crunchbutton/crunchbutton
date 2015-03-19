@@ -107,8 +107,34 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								ORDER BY cs.date_start ASC LIMIT 1';
 			$shift = Crunchbutton_Community_Shift::q( $query );
 			if( $shift->id_community ){
+				$shift = $shift->get( 0 );
+				$date = $shift->dateStart()->format( 'Y-m-d' );
+				$query = 'SELECT cs.* FROM community_shift cs
+										INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+										INNER JOIN admin a ON asa.id_admin = a.id_admin AND a.active = true
+									WHERE
+										cs.id_community = "' . $id_community . '"
+										AND DATE( cs.date_start ) = "' . $date . '"
+										AND cs.active = true
+										AND cs.id_community_shift != "' . $shift->id_community_shift . '"
+									ORDER BY cs.date_start ASC';
+				$shifts = Crunchbutton_Community_Shift::q( $query );
+				if( $shifts->count() > 0 ){
+					$last_date = $shift->dateEnd();
+					foreach( $shifts as $_shift ){
+						$_start_date = $_shift->dateStart();
+						$_last_date = $_shift->dateEnd();
+						if( $_start_date->format( 'YmdHis' ) <= $shift->dateEnd()->format( 'YmdHis' ) &&
+								$last_date->format( 'YmdHis' ) < $_last_date->format( 'YmdHis' ) ){
+							$last_date = $_last_date;
+						}
+					}
+					$shift->_date_end = false;
+					$shift->date_end = $last_date->format( 'Y-m-d H:i:s' );
+				}
 				return $shift;
 			}
+			return false;
 	}
 
 	public function currentAssignedShiftByCommunity( $id_community ){
