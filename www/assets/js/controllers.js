@@ -1237,7 +1237,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService ) {
+NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1274,6 +1274,33 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		invite_url : ReferralService.invite_url,
 		value : ReferralService.value,
 		enabled : ReferralService.enabled
+	}
+
+	$scope.referral.facebook = function(){
+		FacebookService.postInvite( $scope.referral.invite_url );
+	}
+
+    twttr.ready(function (twttr) {
+			twttr.widgets.createShareButton(
+			    'http://google.com',
+			    $('#twitter-button-test')[0],
+			    function (el) {
+			        console.log("Button created.")
+			    },
+			    {
+			        // count: 'none',
+			        text: 'Sharing a URL using the Tweet Button',
+			        hashtags: 'win'
+			    }
+			);
+
+			twttr.events.bind('tweet', function (event) {
+			    console.log(event, event.target);
+			});
+});
+
+	$scope.referral.twitter = function(){
+		window.open( 'https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=Crunchbutton','_system' );
 	}
 
 	// Load the invite_url
