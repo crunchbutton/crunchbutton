@@ -15,7 +15,10 @@
 			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'invalid'">
 				Sorry, this is an invalid gift card.
 			</div>
-			<div class="dialog-message dialog-message-error" ng-show="modal.error != 'used' && modal.error != 'invalid'">
+			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'not-eligible'">
+				Sorry, invite codes are for first time users only.
+			</div>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error != 'used' && modal.error != 'invalid' && modal.error != 'not-eligible'">
 				Please try it again.
 			</div>
 		</div>
@@ -40,7 +43,7 @@
 				&nbsp;Go ahead and order some food!
 			</p>
 		</div>
-		
+
 		<div class="dialog-divider"></div>
 		<div class="dialog-padding dialog-bottom-buttons">
 			<div class="button-pushable">
