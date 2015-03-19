@@ -59,6 +59,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.processModal = function(){
+
 		if( !service.code || service.code == '' ){
 			return;
 		}
@@ -78,6 +79,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 				service.modal.intro = false;
 				if( data.error ){
 					service.modal.error = true;
+
 					switch( data.error ){
 						case 'gift card already used':
 							service.viewed();
@@ -85,6 +87,9 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 							break;
 						case 'invalid gift card':
 							service.modal.error = 'invalid';
+							break;
+						case 'invite not eligible':
+							service.modal.error = 'not-eligible';
 							break;
 						default:
 							service.modal.error = 'unknow';
