@@ -732,13 +732,15 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			if( $close3rdParyDeliveryRestaurants ){
 				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 				$id_admin = $admin->id_admin;
-				$nextShift =Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+
+				$nextShift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+
 				if( $nextShift->id_community ){
 
 					$date_start = $nextShift->dateStart( $this->timezone );
 					$date_end = $nextShift->dateEnd( $this->timezone );
 
-					$message = 'Available at ';
+					$message = 'Next Delivering ';
 					$message .= $date_start->format( 'g' );
 					if( $date_start->format( 'i' ) != '00' ){
 						$message .= ':' . $date_start->format( 'i' );
@@ -750,8 +752,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 						$message .= ':' . $date_end->format( 'i' );
 					}
 					$message .= $date_end->format( 'A' );
-					$message .= ' on ';
-					$message .= $date_start->format( 'D' );
+					$message .= ' ';
+					$message .= $date_start->format( 'l' );
 					$message .= '!';
 				} else {
 					$message = 'Temporally closed!';
