@@ -48,18 +48,65 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 	}
 
 	public function rewardReferralRetroactively(){
-		$inviterCredits = Crunchbutton_Referral::getInviterCreditValue();
-		$invitedCredits = Crunchbutton_Referral::getInvitedCreditValue();
+
+		// $inviterCredits = Crunchbutton_Referral::getInviterCreditValue();
+		// $invitedCredits = Crunchbutton_Referral::getInvitedCreditValue();
+		$reward = new Crunchbutton_Reward;
+		$inviterCredits = $reward->getReferNewUser();
+		$invitedCredits = $reward->getRefered();
+
 		$referrals = Crunchbutton_Referral::q( 'SELECT * FROM referral WHERE id_user_inviter IS NOT NULL AND new_user = 1' );
 		foreach( $referrals as $referral ){
 
-			$inviter_credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE id_user = "' . $referral->id_user_inviter . '" AND id_referral = "' . $referral->id_referral . '" ORDER BY id_credit DESC LIMIT 1' );
+			$inviter_credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE id_user = "' . $referral->id_user_inviter . '" AND id_referral = "' . $referral->id_referral . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" ORDER BY id_credit DESC LIMIT 1' );
+			$addInviterCredit = 0;
+			if( !$inviter_credits->id_credit ){
+				$addInviterCredit = $inviterCredits;
+			} else {
+				$addInviterCredit = 0;
+			}
+			if( $addInviterCredit > 0 ){
+				$credit = new Crunchbutton_Credit();
+				$credit->id_user = $referral->id_user_inviter;
+				$credit->id_referral = $referral->id_referral;
+				$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
+				$credit->date = date('Y-m-d H:i:s');
+				$credit->value = $addInviterCredit;
+				$credit->paid_by = 'crunchbutton';
+				$credit->note = 'Referral inviter: ' . $referral->id_referral;
+				Log::debug([ 'referral_type' => 'inviter', 'id_user' => $credit->id_user,  'id_referral' => $credit->id_referral,  'type' => $credit->type,  'date' => $credit->date,  'value' => $credit->value,  'paid_by' => $credit->paid_by,  'note' => $credit->note, 'type' => 'referral' ]);
+				$credit->save();
+			}
+
+			$invited_credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE id_user = "' . $referral->id_user_invited . '" AND id_referral = "' . $referral->id_referral . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" ORDER BY id_credit DESC LIMIT 1' );
 			$addInvitedCredit = 0;
+			if( !$invited_credits->id_credit ){
+				$addInvitedCredit = $invitedCredits;
+			} else {
+				$addInvitedCredit = 0;
+			}
+			if( $addInvitedCredit > 0 ){
+				$credit = new Crunchbutton_Credit();
+				$credit->id_user = $referral->id_user_invited;
+				$credit->id_referral = $referral->id_referral;
+				$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
+				$credit->date = date('Y-m-d H:i:s');
+				$credit->value = $addInvitedCredit;
+				$credit->paid_by = 'crunchbutton';
+				$credit->note = 'Referral invited: ' . $referral->id_referral;
+				Log::debug([ 'referral_type' => 'invited', 'id_user' => $credit->id_user,  'id_referral' => $credit->id_referral,  'type' => $credit->type,  'date' => $credit->date,  'value' => $credit->value,  'paid_by' => $credit->paid_by,  'note' => $credit->note, 'type' => 'referral' ]);
+				$credit->save();
+			}
+
+			/*
 			if( !$inviter_credits->id_credit ){
 				$addInvitedCredit = $inviterCredits;
 			} else {
 				$addInvitedCredit = $inviterCredits - $inviter_credits->value;
 			}
+
 			if( $addInvitedCredit > 0 ){
 				$credit = new Crunchbutton_Credit();
 				$credit->id_user = $referral->id_user_inviter;
@@ -94,6 +141,7 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 				Log::debug([ 'referral_type' => 'invited', 'id_user' => $credit->id_user,  'id_referral' => $credit->id_referral,  'type' => $credit->type,  'date' => $credit->date,  'value' => $credit->value,  'paid_by' => $credit->paid_by,  'note' => $credit->note, 'type' => 'referral' ]);
 				$credit->save();
 			}
+			*/
 
 
 		}
