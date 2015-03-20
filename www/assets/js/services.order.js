@@ -681,8 +681,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			// Clean the phone string
 			order.phone = order.phone.replace(/-/g, '');
 
+			// Only use redeemed points if the user knows about them #4851
+			order.use_delivery_points = true;
+
 			var url = App.service + 'order';
-console.log('order',order);
+
 			$http( {
 				method: 'POST',
 				url: url,

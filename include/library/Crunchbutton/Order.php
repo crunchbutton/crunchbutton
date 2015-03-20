@@ -428,31 +428,31 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		]);
 
 		$delivery_free = false;
-
-		// Point redemption system improvements for customer-customer referrals #4248
-		// If the user has more than 1M points the code bellow will give him credits
-		// of the same amount of the delivery order
-		if ( $this->restaurant()->hasDeliveryService() && $this->delivery_type == 'delivery' && $this->delivery_fee && $this->pay_type == 'card' ) {
-			$reward = new Crunchbutton_Reward;
-			$reward = $reward->loadSettings();
-			$user_points = Crunchbutton_Credit::points( $user->id_user );
-			if( $user_points >= intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] ) ){
-				$delivery_free = true;
-				// Add credit
-				$credit = new Crunchbutton_Credit();
-				$credit->id_user = $this->id_user;
-				$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
-				$credit->id_restaurant = $this->id_restaurant;
-				$credit->id_promo = null;
-				$credit->date = date('Y-m-d H:i:s');
-				$credit->value = $this->delivery_fee;
-				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
-				$credit->paid_by = 'CRUNCHBUTTON';
-				$credit->note = 'Reward: delivery free';
-				$credit->save();
+		if( $params['use_delivery_points'] ){
+			// Point redemption system improvements for customer-customer referrals #4248
+			// If the user has more than 1M points the code bellow will give him credits
+			// of the same amount of the delivery order
+			if ( $this->restaurant()->hasDeliveryService() && $this->delivery_type == 'delivery' && $this->delivery_fee && $this->pay_type == 'card' ) {
+				$reward = new Crunchbutton_Reward;
+				$reward = $reward->loadSettings();
+				$user_points = Crunchbutton_Credit::points( $user->id_user );
+				if( $user_points >= intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] ) ){
+					$delivery_free = true;
+					// Add credit
+					$credit = new Crunchbutton_Credit();
+					$credit->id_user = $this->id_user;
+					$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+					$credit->id_restaurant = $this->id_restaurant;
+					$credit->id_promo = null;
+					$credit->date = date('Y-m-d H:i:s');
+					$credit->value = $this->delivery_fee;
+					$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+					$credit->paid_by = 'CRUNCHBUTTON';
+					$credit->note = 'Reward: delivery free';
+					$credit->save();
+				}
 			}
 		}
-
 
 		// process the payment
 		$res = $this->verifyPayment();
