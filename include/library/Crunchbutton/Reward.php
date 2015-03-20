@@ -115,12 +115,19 @@ class Crunchbutton_Reward extends Cana_Table{
 	}
 
 	// rewards: 2x after user shares order #3429
-	public function sharedOrder( $id_order ){
+	public function sharedOrder( $id_order, $social = 'facebook' ){
 		$settings = $this->loadSettings();
 		$points = $this->processOrder( $id_order );
-		return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_SHARED_ORDER_VALUE ],
-																		$settings[ Crunchbutton_Reward::CONFIG_KEY_SHARED_ORDER_OPERATION ],
-																		$points );
+		// See: #5026
+		switch ( $social ) {
+			case 'twitter':
+				return ( $points * 2 );
+				break;
+			case 'facebook':
+			default:
+				return $points;
+				break;
+		}
 	}
 
 	//
