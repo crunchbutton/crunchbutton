@@ -226,6 +226,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 									INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 										WHERE asa.id_admin = ?
+											AND cs.active = 1
 											AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= ?
 	 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= ?';
 	 		$shift = Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d H:i' ), $now->format( 'Y-m-d H:i' )]);
