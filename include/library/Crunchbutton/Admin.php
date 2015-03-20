@@ -173,8 +173,10 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function timezone() {
-		if (!isset($this->_timezone)) {
+		if (!isset($this->_timezone) && $this->timezone) {
 			$this->_timezone = new DateTimeZone($this->timezone);
+		} else {
+			$this->_timezone = new DateTimeZone( c::config()->timezone );
 		}
 		return $this->_timezone;
 	}
@@ -395,6 +397,28 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			return false;
 		}
 		return true;
+	}
+
+	public function getLastWorkedTimeHours(){
+		$shift = $this->lastWorkedShift();
+		if( $shift ){
+			$now = new DateTime( 'now', $this->timezone() );
+			$end = $shift->dateEnd()->get( 0 );
+			$secs = Util::intervalToSeconds( $now->diff( $end ) );
+			$hours = $secs / 60 / 60;
+			return intval( $hours );
+		}
+		return false;
+	}
+
+	public function lastWorkedShift(){
+		if( !$this->isWorking() ){
+			$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $this->id_admin );
+			if( $shift->id_community_shift ){
+				return $shift;
+			}
+		}
+		return false;
 	}
 
 	public function workingHoursWeek(){
@@ -786,8 +810,6 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $community_delivery->id_community ){
 			$ex[ 'id_community' ] = $community_delivery->id_community;
 		}
-
-
 		return $ex;
 	}
 
