@@ -1,4 +1,3 @@
-// FacebookService service
 NGApp.factory( 'TwitterService', function( $http, $location, $rootScope, AccountService, ReferralService) {
 
 	var service = {}
