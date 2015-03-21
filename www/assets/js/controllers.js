@@ -1280,24 +1280,20 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		FacebookService.postInvite( $scope.referral.invite_url );
 	}
 
-    twttr.ready(function (twttr) {
-			twttr.widgets.createShareButton(
-			    'http://google.com',
-			    $('#twitter-button-test')[0],
-			    function (el) {
-			        console.log("Button created.")
-			    },
-			    {
-			        // count: 'none',
-			        text: 'Sharing a URL using the Tweet Button',
-			        hashtags: 'win'
-			    }
-			);
 
-			twttr.events.bind('tweet', function (event) {
-			    console.log(event, event.target);
-			});
-});
+	if( AccountService.user.invite_code ){
+		$scope.twitterUrl = 'http://www.crunchbutton.com/invite/' + AccountService.user.invite_code;
+		$scope.twitterText = 'just got @crunchbutton delivered :) use my code ' + AccountService.user.invite_code + ' in the Notes section for free delivery!';
+		$scope.twitterHashtags = 'delivery';
+	}
+
+	$scope.twitterTweet = function( ev ){
+		console.log('ev',ev);
+	}
+
+	$scope.twitterButtonCreated = function( el ){
+		console.log('el',el);
+	}
 
 	$scope.referral.twitter = function(){
 		window.open( 'https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=Crunchbutton','_system' );
