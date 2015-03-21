@@ -848,26 +848,26 @@ NGApp.directive( 'twitterButton', function() {
 			replace: true,
 			template: '<div></div>',
 			link: function (scope, elem, attrs, ctrl) {
+				scope.$watch( 'twitterUrl', function(){
 					var url = scope.twitterUrl ? scope.twitterUrl : attrs.url ? attrs.url : 'http://crunchbutton.com';
 					var text = scope.twitterText ? scope.twitterText : attrs.text ? attrs.text : 'Crunchbutton';
 					var hashtags = scope.twitterHashtags ? scope.twitterHashtags : attrs.hashtags ? attrs.hashtags : 'crunchbutton';
-					setTimeout( function(){
-						twttr.widgets.createShareButton(
-							url,
-							elem[0],
-							function (el) {
-								if( scope.twitterButtonCreated ){
-									scope.twitterButtonCreated( el );
-								}
-							},
-							{ count: ( attrs.count ? attrs.count : 'none' ), text: text, hashtags: hashtags }
-						);
-						twttr.events.bind( 'tweet', function ( event ) {
-							if( scope.twitterTweet ){
-								scope.twitterTweet( event );
+					twttr.widgets.createShareButton(
+						url,
+						elem[0],
+						function (el) {
+							if( scope.twitterButtonCreated ){
+								scope.twitterButtonCreated( el );
 							}
-						} );
-					}, 2000 );
+						},
+						{ count: ( attrs.count ? attrs.count : 'none' ), text: text, hashtags: hashtags }
+					);
+					twttr.events.bind( 'tweet', function ( event ) {
+						if( scope.twitterTweet ){
+							scope.twitterTweet( event );
+						}
+					} );
+				} );
 			}
 		}
 } );

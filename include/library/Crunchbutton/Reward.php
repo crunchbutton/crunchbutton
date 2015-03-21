@@ -64,6 +64,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->id_order = $params[ 'id_order' ];
 		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
 		$credit->note = $params[ 'note' ];
+		$credit->shared = ( $params[ 'shared' ] ? $params[ 'shared' ] : null );
 		$credit->save();
 
 		// save log to avoid duplicates
@@ -88,9 +89,16 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->save();
 	}
 
-	// Check if the user already received points for sharing this order
-	public function orderWasAlreadyShared( $id_order ){
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND note LIKE "%sharing%" LIMIT 1' );
+	public function orderWasAlreadySharedFacebook( $id_order ){
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND ( shared = "facebook" OR note LIKE "%facebook shared%" ) LIMIT 1' );
+		if( $credit->id_credit ){
+			return true;
+		}
+		return false;
+	}
+
+	public function orderWasAlreadySharedTwitter( $id_order ){
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND ( shared = "twitter" OR note LIKE "%twitter shared%" ) LIMIT 1' );
 		if( $credit->id_credit ){
 			return true;
 		}
