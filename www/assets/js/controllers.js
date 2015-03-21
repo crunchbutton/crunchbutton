@@ -1237,7 +1237,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService ) {
+NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1276,13 +1276,30 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		enabled : ReferralService.enabled
 	}
 
+	$scope.referral.facebook = function(){
+		FacebookService.shareOrder( $scope.referral.invite_url, AccountService.user.invite_code );
+	}
+
+	$scope.$watch( 'referral.invite_url', function( newValue, oldValue, scope ) {
+		$scope.twitterUrl = ReferralService.invite_url;
+		$scope.twitterText = TwitterService.referralText( AccountService.user.invite_code );
+		$scope.twitterHashtags = TwitterService.referralHashtags();
+	});
+
+
+	$scope.twitterTweet = function( ev ){
+		TwitterService.tweet( $scope.order.uuid );
+		$scope.order.reward.shared.twitter = true;
+		$scope.$safeApply();
+	}
+
 	// Load the invite_url
 	if( !ReferralService.invite_url ){
 		ReferralService.getStatus();
 	}
 
-	$scope.$on( 'orderShared', function(e, data) {
-		$scope.order.reward.shared = true;
+	$scope.$on( 'orderSharedFacebook', function(e, data) {
+		$scope.order.reward.shared.facebook = true;
 		$scope.$safeApply();
 	} );
 
