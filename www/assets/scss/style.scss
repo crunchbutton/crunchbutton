@@ -3237,6 +3237,20 @@ i {
 		margin-top: 0;
 	}
 	.reward-info .social-button{
+		font-size: .9em;
 		padding-top:2px;
-		width:130px;
+		height:20px;
+		width:50px;
 	}
+		.reward-info .social-button i{
+			margin-right:2px;
+			padding: 3px;
+		}
+		.reward-info .social-button .social-button-text{
+			box-shadow:none;
+			padding:0 2px;
+			border:0;
+		}
+		.reward-info .fa-facebook{
+			font-size: 12px;
+		}

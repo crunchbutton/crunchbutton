@@ -2199,6 +2199,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$out['_tz'] = $date->format('T');
 
 		$out['summary'] = $this->orderMessage('summary');
+		$out['user_has_auth'] = User_Auth::userHasAuth( $this->id_user );
 
 		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $out['user_has_auth'] ){
@@ -2206,9 +2207,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if( $credit->id_credit ){
 				$reward = new Crunchbutton_Reward;
 				$points = $reward->processOrder( $this->id_order );
-				$shared = $reward->orderWasAlreadyShared( $this->id_order );
-
-				$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ), 'shared' => $shared );
+				$sharedTwitter = $reward->orderWasAlreadySharedTwitter( $this->id_order );
+				$sharedFacebook = $reward->orderWasAlreadySharedFacebook( $this->id_order );
+				$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ), 'shared' => [ 'twitter' => $sharedTwitter, 'facebook' => $sharedFacebook ] );
 			}
 		} else {
 			$reward = new Crunchbutton_Reward;

@@ -1237,7 +1237,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService ) {
+NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1277,26 +1277,20 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	}
 
 	$scope.referral.facebook = function(){
-		FacebookService.postInvite( $scope.referral.invite_url );
+		FacebookService.shareOrder( $scope.referral.invite_url, AccountService.user.invite_code );
 	}
 
+	$scope.$watch( 'referral.invite_url', function( newValue, oldValue, scope ) {
+		$scope.twitterUrl = ReferralService.invite_url;
+		$scope.twitterText = TwitterService.referralText( AccountService.user.invite_code );
+		$scope.twitterHashtags = TwitterService.referralHashtags();
+	});
 
-	if( AccountService.user.invite_code ){
-		$scope.twitterUrl = 'http://www.crunchbutton.com/invite/' + AccountService.user.invite_code;
-		$scope.twitterText = 'just got @crunchbutton delivered :) use my code ' + AccountService.user.invite_code + ' in the Notes section for free delivery!';
-		$scope.twitterHashtags = 'delivery';
-	}
 
 	$scope.twitterTweet = function( ev ){
-		console.log('ev',ev);
-	}
-
-	$scope.twitterButtonCreated = function( el ){
-		console.log('el',el);
-	}
-
-	$scope.referral.twitter = function(){
-		window.open( 'https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=Crunchbutton','_system' );
+		TwitterService.tweet( $scope.order.uuid );
+		$scope.order.reward.shared.twitter = true;
+		$scope.$safeApply();
 	}
 
 	// Load the invite_url
@@ -1304,8 +1298,8 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		ReferralService.getStatus();
 	}
 
-	$scope.$on( 'orderShared', function(e, data) {
-		$scope.order.reward.shared = true;
+	$scope.$on( 'orderSharedFacebook', function(e, data) {
+		$scope.order.reward.shared.facebook = true;
 		$scope.$safeApply();
 	} );
 
