@@ -17,7 +17,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 	}, false);
 	
 	service.register = function(complete) {
-		if (device.platform == 'android' || device.platform == 'Android' || device.platform == 'amazon-fireos') {
+		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
 			var params = {
 				'senderID': '1029345412368',
 				'ecb': 'pushnotification'
