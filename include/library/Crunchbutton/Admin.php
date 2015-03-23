@@ -908,14 +908,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function setPush($id, $os = 'ios') {
-		$type = $os == 'ios' ? Crunchbutton_Admin_Notification::TYPE_PUSH_IOS : Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID;
+		$os = 'ios' ? Crunchbutton_Admin_Notification::TYPE_PUSH_IOS : Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID;
 
 		$notifications = Admin_Notification::q('
 			SELECT * FROM admin_notification
 			WHERE
 				id_admin=?
 				AND `type`=?
-		', [$this->id_admin, $type]);
+		', [$this->id_admin, $os]);
 		foreach($notifications as $n) {
 			if ($n->value == $id) {
 				$exists = true;
