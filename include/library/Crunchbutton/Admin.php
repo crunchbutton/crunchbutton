@@ -929,7 +929,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			$n = new Admin_Notification([
 				'active' => 1,
 				'value' => $id,
-				'type' => $type,
+				'type' => $os,
 				'id_admin' => $this->id_admin
 			]);
 			$n->save();
