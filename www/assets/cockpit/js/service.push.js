@@ -28,8 +28,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 		$http({
 			method: 'POST',
 			url: App.service + 'config',
-			data: {key: key, value: service.id},
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			data: {key: key, value: service.id}
 		});
 
 		complete();
