@@ -16,6 +16,25 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 		service.receive(e.msg);
 	}, false);
 	
+	var saveToken = function(id, complete) {
+		service.id = id;
+		
+		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
+			var key = 'push-android';
+		} else {
+			var key = 'push-ios';
+		}
+
+		$http({
+			method: 'POST',
+			url: App.service + 'config',
+			data: {key: key, value: service.id},
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		});
+
+		complete();
+	};
+	
 	service.register = function(complete) {
 		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
 			var params = {
@@ -73,15 +92,13 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 			function(id) {
 				service.id = id;
 				console.debug('Push id: ' + id);
+				
+				if (id == 'OK') {
+					complete();
+					return;
+				}
 
-				$http({
-					method: 'POST',
-					url: App.service + 'config',
-					data: {key: 'push-ios', value: service.id},
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-				});
-
-				complete();
+				saveToken(id, complete);
 			},
 			function() {
 				console.error('Failed registering push notifications', arguments);
@@ -98,6 +115,10 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 		var complete = function() {
 
 		};
+		
+		if (msg.event == 'registered' && msg.regid) {
+			saveToken(msg.regid, complete);
+		}
 		
 		switch (msg.identifier) {
 			case 'i11': // accept an order
