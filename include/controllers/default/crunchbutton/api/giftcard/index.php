@@ -6,6 +6,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 		switch ( $this->method() ) {
 
 			case 'post':
+			case 'get':
 
 				if ( c::admin()->id_admin ) {
 
@@ -387,7 +388,8 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					// At first check if it is an user's invite code - rewards: two way gift cards #2561
 					$reward = new Crunchbutton_Reward;
 					$valid = $reward->validateInviteCode( $code );
-					if( $valid ){
+					$isInvite = $valid;
+					if( $reward->checkIfItIsEligibleForFirstTimeOrder() && $valid ){
 						$value = $reward->getReferredDiscountAmount();
 						if( $value ){
 							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . ' gift card towards your first order.' ] ] );
@@ -411,7 +413,11 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
 						}
 					} else {
-						echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ] );
+						if( $isInvite ){
+							echo json_encode(['error' => 'invite not eligible', 'giftcard' => $code ] );
+						} else {
+							echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ] );
+						}
 					}
 				}
 
@@ -440,10 +446,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 						if( !c::user()->id_user && $totalOrdersByPhone == 0 ){
 							$valid = $reward->validateInviteCode( $word );
 							if( $valid ){
-								$value = $reward->getReferredDiscountAmount();
-								if( $value ){
-									echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
+								if( $valid[ 'id_user' ] ){
+									echo json_encode( [ 'success' => [ 'value' => 0, 'delivery_free' => true, 'giftcard' => $word, 'message' =>  'This delivery fee is on us.' ] ] );
 									exit;
+								} else {
+									$value = $reward->getReferredDiscountAmount();
+									if( $value ){
+										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
+										exit;
+									}
 								}
 							}
 						}

@@ -20,7 +20,7 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 
 NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrdersViewService) {
 	$scope.oc = DriverOrdersViewService;
-	
+
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		//console.log('ROUTE',arguments);
 		//$scope.oc = null;
@@ -34,7 +34,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	$scope.ready = false;
 	$scope.oc = DriverOrdersViewService;
 	DriverOrdersViewService.prep();
-	
+
 	$scope.nextOrder = function() {
 		//alert('asd');
 	};
@@ -53,11 +53,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
 
-
-	if (AccountService.user && AccountService.user.permissions && (!AccountService.user.permissions.GLOBAL && !AccountService.user.working)){
-		$location.path('/drivers/shifts/');
-		return;
-	}
+	$scope.showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift && AccountService.user.hours_since_last_shift <= 6 ) ) );
 
 	var showAll = $.totalStorage('driver-orders-show');
 	if (!showAll) {

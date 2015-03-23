@@ -14,9 +14,13 @@
 		<div class="error" ng-show="modal.error == 'invalid'">
 			Sorry, this is an invalid gift card.
 		</div>
-		<div class="error" ng-show="modal.error != 'used' && modal.error != 'invalid'">
+		<div class="error" ng-show="modal.error == 'not-eligible'">
+			Sorry, invite codes are for first time users only.
+		</div>
+		<div class="error" ng-show="modal.error != 'used' && modal.error != 'invalid' && modal.error != 'not-eligible'">
 			Please try it again.
 		</div>
+
 	</div>
 
 	<!-- Success -->

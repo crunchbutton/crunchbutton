@@ -4,6 +4,37 @@ class Controller_api_test extends Cana_Controller {
 	public function init(){
 
 
+// 		$segments = Crunchbutton_Community_Shift::shiftsByDay( '2015-03-18' );
+// 		foreach( $segments as $segment ){
+// 			if( $segment->id_community == 197 ){
+// 				// echo '<pre>';var_dump( $segment );exit();
+// 				echo $segment->id_community_shift;
+// 				echo "\n";
+// 			}
+// 		}
+// exit();
+
+		$community = Crunchbutton_Community::o( 197 );
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		// 77126
+
+		$date = '2015-03-18 18:00:00';
+
+		echo '<pre>';var_dump( $community->shutDownCommunity( $date ) );exit();
+echo '<pre>';var_dump( 1 );exit();
+		die('hard');
+
+		// $admin = Admin::o( 5 );
+		// echo '<pre>';var_dump( $admin->getLastWorkedTimeHours() );exit();
+
+
+		$community = Community::o( 6 );
+		$community->shutDownCommunity( $dt );
+		die('hard');
+
+
 		$query = "DATE_SUB( NOW(), INTERVAL '12 HOUR' ) ";
 
 		$query = preg_replace('/(date_sub\((.*?),(.*?))\)/i','\\2 - \\3', $query);

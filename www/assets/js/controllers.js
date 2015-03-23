@@ -1033,6 +1033,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
 	};
 
+
+	var using_delivery_free = false;
+
 	var giftcard = GiftCardService;
 	$scope.giftcard = { giftcards : {} };
 	// Event will be called when the gift card changes
@@ -1043,6 +1046,16 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.giftcard.removed = giftcard.notes_field.removed;
 		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
 		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
+
+		if( giftcard.notes_field.giftcards && giftcard.notes_field.giftcards.success && giftcard.notes_field.giftcards.success[0] && giftcard.notes_field.giftcards.success[0].delivery_free ){
+			using_delivery_free = true;
+			order.removeDeliveryFee();
+			$scope.order.updateTotal();
+		} else {
+			using_delivery_free = false;
+			order.restoreDeliveryFee();
+			$scope.order.updateTotal();
+		}
 		$scope.giftcard.hasValue = ( parseFloat( giftcard.notes_field.value ) > 0 );
 		$scope.$safeApply();
 	});
@@ -1052,7 +1065,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			giftcard.notes_field.lastValidation = '';
 			$scope.checkGiftCard();
 		}
-		console.log('$scope.user.id_user',$scope.user.id_user);
 	});
 
 	$scope.checkGiftCard = function(){
@@ -1225,7 +1237,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService ) {
+NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1234,11 +1246,19 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$location.path( '/' );
 		return;
 	}
+
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
+
+
+
+	AccountService.updatePoints( function( points ){
+		$scope.account.user.points = points;
+		$scope.account.user.invite_code = points.invite_code;
+	} );
 
 	$scope.Math = window.Math;
 
@@ -1256,13 +1276,30 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		enabled : ReferralService.enabled
 	}
 
+	$scope.referral.facebook = function(){
+		FacebookService.shareOrder( $scope.referral.invite_url, AccountService.user.invite_code );
+	}
+
+	$scope.$watch( 'referral.invite_url', function( newValue, oldValue, scope ) {
+		$scope.twitterUrl = ReferralService.invite_url;
+		$scope.twitterText = TwitterService.referralText( AccountService.user.invite_code );
+		$scope.twitterHashtags = TwitterService.referralHashtags();
+	});
+
+
+	$scope.twitterTweet = function( ev ){
+		TwitterService.tweet( $scope.order.uuid );
+		$scope.order.reward.shared.twitter = true;
+		$scope.$safeApply();
+	}
+
 	// Load the invite_url
 	if( !ReferralService.invite_url ){
 		ReferralService.getStatus();
 	}
 
-	$scope.$on( 'orderShared', function(e, data) {
-		$scope.order.reward.shared = true;
+	$scope.$on( 'orderSharedFacebook', function(e, data) {
+		$scope.order.reward.shared.facebook = true;
 		$scope.$safeApply();
 	} );
 
@@ -1369,7 +1406,6 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	$scope.referral.twitter = function(){
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
 	}
-	$scope.points_percent = (($scope.account.user.points.total)/($scope.account.user.points.free_delivery)*100);
 	$scope.hello = 50;
 
 });

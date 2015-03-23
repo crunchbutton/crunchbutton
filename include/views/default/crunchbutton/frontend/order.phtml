@@ -22,26 +22,64 @@
 			</div>
 		<? endif ; ?>
 */ ?>
+
 		<div class="order-details">
 			<div ng-hide="account.user.has_auth">
 				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 				<br />
-				<div ng-if="order.reward.points" class="order-details-highlight">You just earned {{Math.floor(order.reward.points)}} points! <strong>Double</strong> it by creating an account.<br><br></div>
-				<div class="divider dots"></div>
+				<div class="order-details-highlight">
+					Create an account and earn {{order.reward.points}} points towards a free delivery.
+					<br />
+				</div>
 			</div>
 
 			<div ng-show="account.user.has_auth">
+			<?php /*
 				<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
 					<i class="fa fa-facebook"></i><span class="social-button-text">Share what you ordered</span>
 					<div class="divider"></div>
 				</div>
-				<div ng-if="order.reward.points && !order.reward.shared">
-					<div class="order-details-highlight">You just earned {{order.reward.points}} points! Double it by sharing it on facebook. <br> {{account.user.points.free_delivery}} points gets you a free delivery :)<br><br></div>
+				*/ ?>
+				<div class="field-container" ng-if="order.reward.points">
+					<div class="order-details-highlight">
+						<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
+							You have <strong>{{account.user.points.free_delivery}}</strong> points!
+							The next delivery fee is on us.
+						</div>
+						<div ng-if="!account.user.points.free_delivery_message">
+							You just earned <strong>{{order.reward.points}}</strong> points! <strong>{{account.user.points.free_delivery}}</strong> points gets you a free delivery.
+						</div>
+					</div>
+					<div class="reward-info" ng-if="!account.user.points.free_delivery_message">
+						<br>
+						<div ng-if="!order.reward.shared.facebook">
+							Double your points by sharing on Facebook:
+							<div class="social-button facebook-button" ng-click="referral.facebook();">
+								<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
+								<div class="divider"></div>
+							</div>
+						</div>
+						<div ng-if="order.reward.shared.facebook">
+							Thanks for sharing on Facebook.
+						</div>
+						<div class="divider"></div>
+						<br>
+						<div ng-if="!order.reward.shared.twitter">
+							Triple them by sharing on Twitter:
+							<twitter-button count="none"></twitter-button>
+						</div>
+						<div ng-if="order.reward.shared.twitter">
+							Thanks for sharing on Twitter.
+						</div>
+						<div class="divider"></div>
+						<br>
+						P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
+						<br>
+					</div>
 				</div>
 				<div ng-show="order._new && referral.invite_url && referral.enabled">
-					Earn a FREE DELIVERY for every new customer you refer with your link!
-					<br /><br />
+					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!<br />
 				</div>
 			</div>
 
@@ -94,7 +132,7 @@
 
 			${{order.charged | formatPrice}}
 
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+			<div class="credit" ng-show="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			<br><br>
 
