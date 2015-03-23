@@ -215,6 +215,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		if( $driver ){
 			$out['driver'] = $driver->exports();
 		}
+		$out['hasCustomerBeenTexted5Minutes'] = $this->hasCustomerBeenTexted5Minutes();
 		return $out;
 	}
 
@@ -242,12 +243,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	}
 
-//	public function hasCustomerBeenTexted5Minutes(){
-//		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`="delivery-5-min-text" AND id_order=? limit 1');
-//		if ($texts !== null) {
-//			//what goes inside here?
-//		}
-//	}
+	public function hasCustomerBeenTexted5Minutes(){
+		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`="delivery-text-5min" AND id_order=? limit 1',[$this->id_order])->get(0);
+		if ($texts->id_order) {
+			return true;
+		} else return false;
+	}
 
 
 }
