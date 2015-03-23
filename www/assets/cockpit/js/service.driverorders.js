@@ -172,6 +172,7 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 				function( json ){
 					if (json.status) {
 						App.alert( 'Message sent!' );
+						$scope.update();
 					} else {
 						App.alert( 'Message not sent!' );
 					}

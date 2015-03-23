@@ -232,6 +232,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 						'message' => $message,
 						'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_NOTIFIES_CUSTOMER
 					] );
+					(new Order_Action([
+						'id_order' => $this->id_order,
+						'id_admin' => c::admin()->id_admin,
+						'timestamp' => date('Y-m-d H:i:s'),
+						'type' => Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN
+					]))->save();
 					Log::debug([ 'order' => $this->id_order, 'action' => 'driver notifies a customer', 'message' => $message , 'type' => 'driver-customer' ] );
 				}
 				break;
@@ -246,7 +252,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 	public function hasCustomerBeenTexted5Minutes(){
 		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`="delivery-text-5min" AND id_order=? limit 1',[$this->id_order])->get(0);
 		if ($texts->id_order) {
-			return true;
+			return DATE_FORMAT(new DateTime($texts->timestamp), 'g:i A');
+			//return $texts->timestamp->date()->format('h:i A');
 		} else return false;
 	}
 

@@ -29,6 +29,10 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			} elseif ($unset && $status->id_admin != $unset) {
 				$unset = null;
 			}
+			elseif($status->type == Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN) {
+				unset($this->_actions[$k]);
+
+			}
 		}
 
 		$this->_statusOrder = [
