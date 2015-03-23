@@ -34,7 +34,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				} else {
 					$out[ 'free_delivery_message' ] = false;
 					$out[ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'total' ] );
-					$out[ 'points_percent' ] = intval( ( $out[ 'total' ] / $free_delivery * 100 ) );
+					$out[ 'points_percent' ] = $out[ 'total' ] ? intval( ( $out[ 'total' ] / $free_delivery * 100 ) ) : 0;
 					$out[ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'total' ] );
 				}
 				echo json_encode( $out );exit;
