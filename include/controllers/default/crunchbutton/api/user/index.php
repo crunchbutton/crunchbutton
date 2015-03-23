@@ -16,6 +16,30 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 				}
 				break;
+
+			case 'points':
+				$user = c::user();
+				// Reward stuff
+				$reward = new Crunchbutton_Reward;
+				$reward = $reward->loadSettings();
+				$out = [];
+				$out[ 'invite_code' ] = $user->invite_code;
+				$free_delivery = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
+				$out[ 'free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery );
+				$out[ 'total' ] = Crunchbutton_Credit::points( $user->id_user );
+				if( $free_delivery > 0 && $free_delivery <= $out[ 'total' ] ){
+					$out[ 'show' ] = $out[ 'free_delivery' ];
+					$out[ 'points_percent' ] = 100;
+					$out[ 'free_delivery_message' ] = true;
+				} else {
+					$out[ 'free_delivery_message' ] = false;
+					$out[ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'total' ] );
+					$out[ 'points_percent' ] = intval( ( $out[ 'total' ] / $free_delivery * 100 ) );
+					$out[ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'total' ] );
+				}
+				echo json_encode( $out );exit;
+
+				break;
 			// Verify if the login was already taken
 			case 'verify':
 				switch ($this->method()) {
@@ -96,12 +120,22 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					$user_auth->active = 1;
 					$user_auth->save();
 
+					// Reward
+					$reward = new Crunchbutton_Reward;
+					$points = $reward->makeAccountAfterOrder( $user->id_user );
+
+					if( floatval( $points ) > 0 ){
+						$order = $user->lastOrder();
+						$reward->saveReward( [  'id_user' => $user->id_user, 'id_order' => $order->id_order, 'points' => $points, 'note' => 'points by creating an account' ] );
+					}
+
 					// This line will create a phone user auth just if the user already has an email auth
 					if( $user->phone ){
 						User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 					}
 
 					$user = c::auth()->doAuthByLocalUser( $params );
+
 					echo c::user()->json();
 				}
 
@@ -165,7 +199,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								$reward = new Crunchbutton_Reward;
 								$points = $reward->makeAccountAfterOrder( $user->id_user );
 								if( floatval( $points ) > 0 ){
-									$reward->saveReward( [  'id_user' => $user->id_user, 'points' => $points, 'note' => 'points by creating an account' ] );
+									$order = $user->lastOrder();
+									$reward->saveReward( [  'id_user' => $user->id_user, 'id_order' => $order->id_order, 'points' => $points, 'note' => 'points by creating an account' ] );
 								}
 
 								$user = c::auth()->doAuthByLocalUser( $params );
@@ -297,7 +332,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$user->email = $fb->fbuser()->email;
 						$user->save();
 					}
-					
+
 					// log them in as the facebook user instead of the previous user they were logged in as.
 					// @todo: merge account info if this is the case as previous user data could be lost
 					if ($fb->fbuser()->id) {

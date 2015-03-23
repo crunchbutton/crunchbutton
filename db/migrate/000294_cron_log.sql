@@ -1,0 +1,1 @@
+INSERT INTO `cron_log` (`id_cron_log`, `description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`) VALUES (NULL, 'check if 5 min away txt already sent', 'Crunchbutton_Cron_Job_CSTicketsDigest', '2015-03-24 09:45:00', 'day', '1', 'idle', NULL, NULL, '0');

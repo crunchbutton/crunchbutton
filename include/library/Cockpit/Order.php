@@ -242,9 +242,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	}
 
-	public function hasCustomerBeenTexted5Minutes(){
-
-	}
+//	public function hasCustomerBeenTexted5Minutes(){
+//		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`="delivery-5-min-text" AND id_order=? limit 1');
+//		if ($texts !== null) {
+//			//what goes inside here?
+//		}
+//	}
 
 
 }

@@ -272,16 +272,33 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 * @return float
 	 */
 	service._breackDownDelivery = function () {
+		if( service.form.pay_type == 'card' && service._removeDeliveryFee ){
+			return 0;
+		}
+
 		var delivery = 0;
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
-		if( service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message ){
+		if( service.form.pay_type == 'card' && service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message && service.restaurant.delivery_service ){
 			delivery = 0;
 		}
 		delivery = App.ceil(delivery);
 		return delivery;
 	}
+
+	service.removeDeliveryFee = function(){
+		service._removeDeliveryFee = true;
+		service._breackDownDelivery();
+	}
+
+	service.restoreDeliveryFee = function(){
+		service._removeDeliveryFee = false;
+		service._breackDownDelivery();
+	}
+
+
+
 	/**
 	 * Crunchbutton service
 	 *
@@ -664,8 +681,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			// Clean the phone string
 			order.phone = order.phone.replace(/-/g, '');
 
+			// Only use redeemed points if the user knows about them #4851
+			order.use_delivery_points = true;
+
 			var url = App.service + 'order';
-console.log('order',order);
+
 			$http( {
 				method: 'POST',
 				url: url,
@@ -706,7 +726,7 @@ console.log('order',order);
 
 						// order success
 						App.vibrate();
-						
+
 						MainNavigationService.navStack = [];
 						MainNavigationService.control();
 

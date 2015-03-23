@@ -3518,7 +3518,7 @@ input[type="checkbox"].switch + div:before {
 }
 .box-filter .button:last-child {
 	@include box-border-radius-left();
-	
+
 }
 
 .box-filter .button:not(:last-child) {
@@ -3680,7 +3680,7 @@ input[type="checkbox"].switch + div:before {
 	}
 }
 
-.delivery_is_self, .delivery_is_self td{
+.delivery_it_self, .delivery_it_self td{
 	color: #458cc8 !important;
 }
 

@@ -9,6 +9,18 @@ class Crunchbutton_Util extends Cana_Model {
 						( strpos( $_SERVER['HTTP_HOST'], 'dev.pit' ) !== false ) ) ? true : false;
 	}
 
+	// https://gist.github.com/maggiben/9457434
+	public static function humanReadableNumbers( $number ){
+		if( $number < 1000 ){
+			return $number;
+		}
+		$si = [ 'K', 'M', 'G', 'T', 'P', 'H' ];
+		$exp = floor( log( $number ) / log( 1000 ) );
+		$result = $number / pow( 1000, $exp );
+		$result = ( $result % 1 > ( 1 / pow( 1000, $exp - 1 ) ) ? round( $result, 2 ) : round( $result, 0 ) );
+		return $result . $si[ $exp - 1 ];
+	}
+
 	public function frontendTemplates($export = false) {
 		$files = [];
 

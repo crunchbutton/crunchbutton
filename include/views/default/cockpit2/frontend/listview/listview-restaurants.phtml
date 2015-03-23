@@ -10,7 +10,7 @@
 			<th class="tb-center">Orders</th>
 			<th>Last&nbsp;Order</th>
 		</tr>
-		<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_is_self': restaurant.delivery_is_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
+		<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
 			<td class="tb-image-row"><a href="/restaurant/{{restaurant.permalink}}">
 				<div class="customer-image-crop">
 					<img ng-if="restaurant.image" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>

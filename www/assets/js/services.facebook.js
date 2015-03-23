@@ -45,7 +45,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 						data: $.param( { 'post_id': success.post_id, 'uuid': service._order_uuid } ),
 						headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 					} ).success( function(){
-						$rootScope.$broadcast( 'orderShared' );
+						$rootScope.$broadcast( 'orderSharedFacebook' );
 					} );
 				}
 			});
@@ -65,6 +65,28 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		});
 	}
 
+	service.shareOrder = function( url, code ) {
+		var description = 'just got @crunchbutton delivered :) use my code ' + code + ' in the Notes section for free delivery!';
+		App.share({
+			url: url,
+			name: 'Crunchbutton',
+			caption: 'Crunchbutton',
+			description: description,
+			url: url,
+			picture: status.picture,
+			success : function( success ){
+				$http( {
+					method: 'POST',
+					url: App.service + 'facebook/reward/',
+					data: $.param( { 'post_id': success.post_id, 'uuid': service._order_uuid } ),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				} ).success( function(){
+					$rootScope.$broadcast( 'orderSharedFacebook' );
+				} );
+			}
+		});
+	}
+
 	// request permission to post on a users timeline
 	service.requestPermission = function(callback) {
 		callback = typeof callback === 'function' ? callback : function(){};
@@ -77,7 +99,6 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// process status is called any time a status change event is triggered with facebook
 	service.processStatus = function(status) {
-		console.log(status);
 
 		if (status.status === 'connected' && status.authResponse) {
 
