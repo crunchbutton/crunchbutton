@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '-1');
+
 class Crunchbutton_Reward_Retroactively extends Cana_Table{
 
 	public function recalculateCreditsFromOrder( $id_order, $order = false ){
@@ -40,6 +42,7 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 					}
 				}
 			}
+			$id_user = $order->id_user;
 			$params = [ 'id_order' => $id_order, 'id_user' => $id_user, 'points' => $points, 'note' => 'retroactively points' ];
 			$reward->saveReward( $params );
 			$totalPoints += $points;
@@ -149,9 +152,9 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 
 	public function start(){
 
-		$iteraction = 0;
+		$iteraction = intval( $_GET[ 'iteraction' ] ) ? intval( $_GET[ 'iteraction' ] ) : 1;
 
-		$limit = 2000;
+		$limit = intval( $_GET[ 'limit' ] ) ? intval( $_GET[ 'limit' ] ) : 2000;
 		$startingAt = ( $limit * $iteraction );
 
 		$reward = new Crunchbutton_Reward;
@@ -162,7 +165,7 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 		$totalPointsRecalculated = 0;
 
 		// select all the users
-		$users = Crunchbutton_User::q( 'SELECT * FROM user ORDER BY id_user DESC LIMIT ' . $startingAt . ',' . $limit );
+		$users = Crunchbutton_User::q( 'SELECT DISTINCT( u.id_user ), u.* FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user ORDER BY id_user DESC LIMIT ' . $startingAt . ',' . $limit );
 
 		foreach( $users as $user ){
 
