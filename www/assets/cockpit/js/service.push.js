@@ -17,27 +17,13 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 	}, false);
 	
 	service.register = function(complete) {
-
-		parent.plugins.pushNotification.register(
-			function(id) {
-				service.id = id;
-				console.debug('Push id: ' + id);
-
-				$http({
-					method: 'POST',
-					url: App.service + 'config',
-					data: {key: 'push-ios', value: service.id},
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-				});
-
-				complete();
-			},
-			function() {
-				console.error('Failed registering push notifications', arguments);
-				App.alert('Failed to enable Push notifications. Please go to your push notification settings on your device and enable them for Cockpit.');
-				complete();
-			},
-			{
+		if (device.platform == 'android' || device.platform == 'Android' || device.platform == 'amazon-fireos') {
+			var params = {
+				'senderID': '1029345412368',
+				'ecb': 'pushnotification'
+			};
+		} else {
+			var params = {
 				'badge': 'true',
 				'sound': 'true',
 				'alert': 'true',
@@ -80,7 +66,28 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 						]
 					}
 				]
-			}
+			};
+		}
+
+		parent.plugins.pushNotification.register(
+			function(id) {
+				service.id = id;
+				console.debug('Push id: ' + id);
+
+				$http({
+					method: 'POST',
+					url: App.service + 'config',
+					data: {key: 'push-ios', value: service.id},
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				});
+
+				complete();
+			},
+			function() {
+				console.error('Failed registering push notifications', arguments);
+				App.alert('Failed to enable Push notifications. Please go to your push notification settings on your device and enable them for Cockpit.');
+				complete();
+			},params
 		);
 	};
 
