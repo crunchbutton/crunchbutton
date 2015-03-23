@@ -379,7 +379,7 @@
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
 							</div>
-							<div class="notification notification-support notification-support-mobile" ng-click="navigation.menu('right')">
+							<div class="notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="navigation.menu('right')">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>

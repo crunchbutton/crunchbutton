@@ -500,6 +500,8 @@ p {
 	-ms-transition: background .2s;
 	-o-transition: background .2s;
 	transition: background .2s;
+	
+	@include box-border-radius();
 }
 
 .snap-drawer .menu-link {
@@ -611,9 +613,6 @@ p {
 	.snap-drawer .menu-link:hover:not(.nav-active) .side-menu-wrap {
 		background: #22242a;
 	}
-	.notification-support-mobile {
-		display: none;
-	}
 	.menu-tab:hover {
 		background: $navHilight;
 	}
@@ -623,6 +622,10 @@ p {
 
 	}
 }
+
+	.notification-support-mobile {
+		display: none;
+	}
 
 @media(max-width:1024px) {
 	.notification-support-desktop {
@@ -2495,6 +2498,7 @@ b, strong{ font-weight: bold; }
 .box-content-color {
 	background: #fff;
 	margin-bottom: 25px;
+	@include box-border-radius();
 }
 .comments-box {
 	margin-bottom: 10px;
@@ -2549,6 +2553,7 @@ b, strong{ font-weight: bold; }
 
 .ticket-status-open, .ticket-status-closed {
 	height: 100%;
+	@include box-border-radius();
 }
 
 .ticket-status-open {
