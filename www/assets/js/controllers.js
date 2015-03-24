@@ -1353,6 +1353,10 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		return;
 	}
 
+	if( !AccountService.user.invite_code ){
+		ReferralService.getInviteCode();
+	}
+
 	$scope.account = AccountService;
 
 	// Alias to method AccountSignOut.do()
