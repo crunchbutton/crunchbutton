@@ -67,13 +67,31 @@
 						</p>
 						<br/><br/>
 						<p>
-							Want more points? Share this order to double it!
-							<br/><br/>
-							Find out more ways to get free <a href="/orders/#credit">delivery here</a>.
+							Want more points?
 						</p>
 						<br/><br/>
-						<div class="button-pushable">
-							<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+						<br>
+						<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
+							Double your points by sharing on Facebook:
+							<button class="button facebook" ng-click="referral.facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+						</div>
+						<div ng-if="order.reward.shared.facebook">
+							Thanks for sharing on Facebook.
+						</div>
+						<div class="divider"></div>
+						<br>
+						<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
+							Triple them by sharing on Twitter:
+							<twitter-button count="none">Twitter</twitter-button>
+						</div>
+						<div ng-if="order.reward.shared.twitter">
+							Thanks for sharing on Twitter.
+						</div>
+						<div class="divider"></div>
+						<div ng-show="order._new && referral.invite_url && referral.enabled">
+							<br>
+							P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
+							<br>
 						</div>
 
 					</div>

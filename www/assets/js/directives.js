@@ -849,8 +849,6 @@ NGApp.directive( 'twitterButton', function( AccountService ) {
 			template: '<div></div>',
 			link: function (scope, elem, attrs, ctrl) {
 				scope.$watch( 'twitterUrl', function( newValue, oldValue, scope ){
-					console.log('newValue',newValue);
-					console.log('oldValue',oldValue);
 					if( newValue != oldValue ){
 						return;
 					}
