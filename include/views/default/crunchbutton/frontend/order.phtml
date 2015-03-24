@@ -41,7 +41,7 @@
 					<div class="divider"></div>
 				</div>
 				*/ ?>
-				<div class="field-container" ng-if="order.reward.points">
+				<div class="rewards-container" ng-if="order.reward.points">
 					<div class="order-details-highlight">
 						<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
 							You have <strong>{{account.user.points.free_delivery}}</strong> points!
@@ -54,7 +54,7 @@
 					<div class="reward-info" ng-if="!account.user.points.free_delivery_message">
 						<br>
 						<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
-							Double your points by sharing on Facebook:
+							<p>Double your points by sharing on Facebook:<br><br></p>
 							<div class="social-button facebook-button" ng-click="referral.facebook();">
 								<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
 								<div class="divider"></div>
@@ -66,16 +66,16 @@
 						<div class="divider"></div>
 						<br>
 						<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
-							Triple them by sharing on Twitter:
+							<p>Triple them by sharing on Twitter:<br><br></p>
 							<twitter-button count="none">Twitter</twitter-button>
 						</div>
 						<div ng-if="order.reward.shared.twitter">
 							Thanks for sharing on Twitter.
 						</div>
 						<div class="divider"></div>
-						<div ng-show="order._new && referral.invite_url && referral.enabled">
+						<div ng-show="referral.invite_url && referral.enabled">
 							<br>
-							P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
+							<b>Earn a FREE DELIVERY for every new customer you refer with your link!</b>
 							<br>
 						</div>
 					</div>

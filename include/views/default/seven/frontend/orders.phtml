@@ -18,28 +18,24 @@
 
 	<div ng-show="account.user.invite_code">
 		<p>
-			Get your friends to enter your code {{account.user.invite_code}} in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
+			Get your friends to enter your code below in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
 		</p><br/>
 		<p class="order-code"><strong>{{account.user.invite_code}}</strong></p>
 	</div>
 	<br/>
 
-	<div class="button-pushable">
-		<button class="button facebook" ng-click="referral.facebook()">
-			<i class="fa fa-facebook-square"></i> <span>Share</span>
-		</button>
-	</div>
 
-	<br/>
+	<button class="button facebook" ng-click="referral.facebook()">
+		<i class="fa fa-facebook-square"></i> <span>Share</span>
+	</button>
 
-	<div class="button-pushable">
-		<button class="button twitter" ng-click="referral.twitter()">
-			<i class="fa fa-twitter-square"></i> <span>Twitter</span>
-		</button>
-	</div>
+	<br><br>
 
+	<button class="button twitter" ng-click="referral.twitter()">
+		<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+	</button>
 
-	<br/><br/>
+	<br><br>
 
 </div>
 
