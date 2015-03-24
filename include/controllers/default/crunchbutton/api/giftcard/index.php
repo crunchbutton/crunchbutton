@@ -449,7 +449,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								if( $valid[ 'id_user' ] ){
 									$value = $reward->getReferredDiscountAmount();
 									if( $value ){
-										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you a $' . $value . ' discount (for first time users only)' ] ] );
 										exit;
 									}
 									// echo json_encode( [ 'success' => [ 'value' => 0, 'delivery_free' => true, 'giftcard' => $word, 'message' =>  'This delivery fee is on us.' ] ] );
@@ -457,7 +457,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								} else {
 									$value = $reward->getReferredDiscountAmount();
 									if( $value ){
-										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you a $' . $value . ' discount (for first time users only)' ] ] );
 										// echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
 										exit;
 									}

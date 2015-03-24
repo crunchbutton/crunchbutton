@@ -378,6 +378,11 @@ p {
 	background: #385ca2;
 	font-weight: bold;
 }
+.button.twitter {
+	background: #e2e2e2;
+	color: #1cadeb;
+	font-weight: bold;
+}
 .button.green {
 	background: #00bea0;
 	font-weight: bold;
@@ -902,7 +907,7 @@ p {
 	width: 100%;
 	background: #2b2937;
 	height: 54px;
-	
+
 	@include transition(all 0.3s ease-out);
 	@include transform-origin(left bottom);
 	@include transform(translate3d(0,67px,0));
@@ -1345,7 +1350,7 @@ p {
 	.fb-like-box {
 		float: left;
 	}
-	
+
 }
 
 
@@ -1774,7 +1779,7 @@ p {
 	.restaurant-menu-category:first-child .restaurant-category {
 		padding-top: 0;
 	}
-	
+
 	.dish-item-name {
 		color: #d9462f;
 		text-decoration: underline;
@@ -3689,7 +3694,7 @@ font-familt: "Museo Slab";
 		display: flex;
 		flex-direction: row;
 		flex-flow: row wrap;
-		justify-content: space-between;	
+		justify-content: space-between;
 	}
 	.col-box .two-col {
 		width: 46%;
@@ -3747,7 +3752,7 @@ font-familt: "Museo Slab";
 	.restaurant-pic {
 		height: 35em;
 		-webkit-filter: brightness(0.90) contrast(125%);
-		
+
 	}
 	.restaurant-pic-overlay {
 		display: none;

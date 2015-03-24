@@ -995,7 +995,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				}
 			}	)
 			.error(function( data, status ) {
-				error( data, status );
+				if( error ){
+					error( data, status );
+				}
 			} );
 	}
 
