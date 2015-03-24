@@ -3230,27 +3230,35 @@ i {
   border-radius: 10px;
   background-size: 35px 20px, 100% 100%, 100% 100%;
 }
-.reward-info{
-	text-align: left !important;
+
+.reward-info {
+	
 }
-	.reward-info .social-button{
-		margin-top: 0;
-	}
-	.reward-info .social-button{
-		font-size: .9em;
-		padding-top:2px;
-		height:20px;
-		width:50px;
-	}
-		.reward-info .social-button i{
-			margin-right:2px;
-			padding: 3px;
-		}
-		.reward-info .social-button .social-button-text{
-			box-shadow:none;
-			padding:0 2px;
-			border:0;
-		}
-		.reward-info .fa-facebook{
-			font-size: 12px;
-		}
+.reward-info p {
+	text-align: center;
+	line-height: .8em;
+}
+.reward-info .social-button {
+	margin-top: 0;
+	font-size: .9em;
+	padding-top:2px;
+	height: 20px;
+	width: 50px;
+	display: inline-block;
+}
+.reward-info .social-button i {
+	margin-right:2px;
+	padding: 3px;
+}
+.reward-info .social-button .social-button-text{
+	box-shadow:none;
+	padding:0 2px;
+	border:0;
+}
+.reward-info .fa-facebook{
+	font-size: 12px;
+}
+
+.rewards-container {
+	margin-bottom: 1em;
+}
