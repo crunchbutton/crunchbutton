@@ -223,10 +223,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		switch ( $text ) {
 			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
-				$pattern = "%s, this is %s from Crunchbutton. I'm just 5 min away with your food!";
+				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
 				$driver = $this->driver();
 				if( $driver->id_admin ){
-					$message = sprintf( $pattern, $this->name, $driver->firstName() );
+					$message = sprintf( $pattern, $driver->firstName() );
 					Crunchbutton_Message_Sms::send( [
 						'to' => $this->phone,
 						'message' => $message,
