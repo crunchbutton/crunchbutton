@@ -106,10 +106,10 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 			$config = Crunchbutton_Config::getConfigByKey( $key );
 			if( $config->key ){
 				$value = trim( $this->request()[ $key ] );
-				if( $value ){
+				// if( $value ){
 					$config->set( $value );
 					$config->save();
-				}
+				// }
 			}
 		}
 		echo json_encode( [ 'success' => 'success' ] );exit();
@@ -122,6 +122,8 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 		foreach( $settings as $key => $value ){
 			if( is_numeric( $value ) ){
 				$value = floatval( $value );
+			} else {
+				$value = 0;
 			}
 			$out[ $key ] = $value;
 		}
