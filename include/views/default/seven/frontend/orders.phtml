@@ -16,9 +16,12 @@
 
 	<div class="divider"></div>
 
-	<p>Get your friends to enter your code USF919AVJ in the Notes section of their first order, and you'll both get $3 off ;) </p><br/>
-	<p class="order-code"><strong>{{account.user.invite_code}}</strong></p>
-
+	<div ng-show="account.user.invite_code">
+		<p>
+			Get your friends to enter your code {{account.user.invite_code}} in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
+		</p><br/>
+		<p class="order-code"><strong>{{account.user.invite_code}}</strong></p>
+	</div>
 	<br/>
 
 	<div class="button-pushable">
