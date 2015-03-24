@@ -21,6 +21,7 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 		$chars_to_use = '123456789';
 		$length = 7;
 		$prefix = '';
+		$include_gift_card_id = true;
 
 		for( $i = 1; $i<= $total; $i++) {
 			$giftcard = new Crunchbutton_Promo;
@@ -33,6 +34,12 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 			$giftcard->created_by = $created_by;
 			$giftcard->paid_by = $paid_by;
 			$giftcard->date = date('Y-m-d H:i:s');
+			if( $include_gift_card_id ){
+				$giftcard->save();
+				$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, $giftcard->id_promo, $prefix );
+			} else {
+				$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
+			}
 			$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
 			$giftcard->save();
 		}
