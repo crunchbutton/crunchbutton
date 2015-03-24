@@ -185,8 +185,14 @@ class Crunchbutton_Reward extends Cana_Table{
 	public function getReferredDiscountAmount(){
 		if( $this->code ){
 			$admin = Crunchbutton_Admin::byInviteCode( $this->code )->get( 0 );
-			if( $admin->referral_customer_credit ){
-				return floatval( $admin->referral_customer_credit );
+			if( $admin->id_admin ){
+				if( $admin->referral_customer_credit ){
+					return floatval( $admin->referral_customer_credit );
+				} else {
+					$settings = $this->loadSettings();
+					return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+				}
+
 			} else {
 				$user = Crunchbutton_User::byInviteCode( $this->code );
 				if( $user->id_user ){
