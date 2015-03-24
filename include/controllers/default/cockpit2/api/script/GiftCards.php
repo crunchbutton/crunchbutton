@@ -12,7 +12,7 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 		echo "\n";
 
 		$ids_restaurant = ['*'];
-		$value = ( $_GET[ 'value' ] ? $_GET[ 'total' ] : 1 );
+		$value = ( $_GET[ 'value' ] ? $_GET[ 'value' ] : 1 );
 		$total = ( $_GET[ 'total' ] ? $_GET[ 'total' ] : 1 );
 		$note = '#5100';
 		$id_order_reference = null;
@@ -24,7 +24,7 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 
 		for( $i = 1; $i<= $total; $i++) {
 			$giftcard = new Crunchbutton_Promo;
-			$giftcard->note = 'This gift is valid to any restaurant!' . "\n" . $note;
+			$giftcard->note = '';
 			$giftcard->value = $value;
 			$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 			$giftcard->note = $note;
@@ -33,9 +33,10 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 			$giftcard->created_by = $created_by;
 			$giftcard->paid_by = $paid_by;
 			$giftcard->date = date('Y-m-d H:i:s');
-			$giftcard->save();
 			$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
 			$giftcard->save();
+			echo '<pre>';var_dump( $giftcard->value, $giftcard->id_promo );exit();
+
 		}
 
 		echo 'Finished at: ' . date( 'Y-m-d H:i:s' );
