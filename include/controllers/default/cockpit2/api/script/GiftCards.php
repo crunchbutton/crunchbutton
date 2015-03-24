@@ -40,7 +40,6 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 			} else {
 				$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
 			}
-			$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
 			$giftcard->save();
 		}
 
