@@ -35,8 +35,6 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 			$giftcard->date = date('Y-m-d H:i:s');
 			$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '', $prefix );
 			$giftcard->save();
-			echo '<pre>';var_dump( $giftcard->value, $giftcard->id_promo );exit();
-
 		}
 
 		echo 'Finished at: ' . date( 'Y-m-d H:i:s' );
