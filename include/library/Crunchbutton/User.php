@@ -253,7 +253,7 @@ class Crunchbutton_User extends Cana_Table {
 		} else {
 			$out[ 'points' ][ 'free_delivery_message' ] = false;
 			$out[ 'points' ][ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'points' ][ 'total' ] );
-			$out[ 'points' ][ 'points_percent' ] = $out[ 'points' ][ 'total' ] ? intval( ( $out[ 'points' ][ 'total' ] / $free_delivery * 100 ) ) : 0;
+			$out[ 'points' ][ 'points_percent' ] = ($out[ 'points' ][ 'total' ] && $free_delivery) ? intval( ( $out[ 'points' ][ 'total' ] / $free_delivery * 100 ) ) : 0;
 			$out[ 'points' ][ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'points' ][ 'total' ] );
 		}
 
