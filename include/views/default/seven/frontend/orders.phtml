@@ -16,27 +16,22 @@
 
 	<div class="divider"></div>
 
-	<p>Get your friends to enter your code USF919AVJ in the Notes section of their first order, and you'll both get $3 off ;) </p><br/>
-	<p class="order-code"><strong>{{account.user.invite_code}}</strong></p>
+	<p>Get your friends to enter your code below in the Notes section of their first order, and you'll both get $3 off ;) </p><br/>
+	<p class="order-code">{{account.user.invite_code}}</p>
 
-	<br/>
+	<br><br>
 
-	<div class="button-pushable">
-		<button class="button facebook" ng-click="referral.facebook()">
-			<i class="fa fa-facebook-square"></i> <span>Share</span>
-		</button>
-	</div>
+	<button class="button facebook" ng-click="referral.facebook()">
+		<i class="fa fa-facebook-square"></i> <span>Share</span>
+	</button>
 
-	<br/>
+	<br><br>
+	
+	<button class="button twitter" ng-click="referral.twitter()">
+		<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+	</button>
 
-	<div class="button-pushable">
-		<button class="button twitter" ng-click="referral.twitter()">
-			<i class="fa fa-twitter-square"></i> <span>Twitter</span>
-		</button>
-	</div>
-
-
-	<br/><br/>
+	<br><br>
 
 </div>
 

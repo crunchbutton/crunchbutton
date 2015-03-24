@@ -72,8 +72,9 @@
 						<br/><br/>
 						<br>
 						<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
-							Double your points by sharing on Facebook:
-							<button class="button facebook" ng-click="referral.facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+							<p>Double your points by sharing on Facebook:</p>
+							<button class="button facebook" ng-click="referral.facebook();">
+								<i class="fa fa-facebook-square"></i> <span>Share</span></button>
 						</div>
 						<div ng-if="order.reward.shared.facebook">
 							Thanks for sharing on Facebook.
@@ -81,8 +82,11 @@
 						<div class="divider"></div>
 						<br>
 						<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
-							Triple them by sharing on Twitter:
-							<twitter-button count="none">Twitter</twitter-button>
+							<p>Triple them by sharing on Twitter:</p>
+							<button class="button twitter" ng-click="referral.twitter()">
+								<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+							</button>
+
 						</div>
 						<div ng-if="order.reward.shared.twitter">
 							Thanks for sharing on Twitter.
