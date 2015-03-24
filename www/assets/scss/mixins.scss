@@ -44,6 +44,16 @@ $engines: (-webkit-, -moz-, -ms-, -o-, '');
 	user-select: none;
 }
 
+@mixin force-select() {
+	-webkit-touch-callout: text !important;
+	-webkit-user-select: text !important;
+	-khtml-user-select: text !important;
+	-moz-user-select: -moz-text !important;
+	-ms-user-select: text !important;
+	-o-user-select: text !important;
+	user-select: text !important;
+}
+
 @mixin gpu() {
 	@include transform(translate3d(0,0,0));
 }

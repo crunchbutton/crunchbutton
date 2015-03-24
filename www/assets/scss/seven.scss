@@ -379,8 +379,8 @@ p {
 	font-weight: bold;
 }
 .button.twitter {
-	background: #e2e2e2;
-	color: #1cadeb;
+	background: #44cafd;
+	color: #fff;
 	font-weight: bold;
 }
 .button.green {
@@ -2164,9 +2164,8 @@ sup {
 	margin-bottom: 2em;
 }
 
-.button.facebook .fa {
+.button.facebook .fa, .button.twitter .fa {
 	margin-right: .4em;
-
 }
 
 
@@ -3846,4 +3845,10 @@ font-familt: "Museo Slab";
   -webkit-linear-gradient(left, #ec5d2f, #ec5d2f);
   border-radius: 10px;
   background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+
+.order-code {
+	font-weight: bold;
+	@include force-select();
 }
