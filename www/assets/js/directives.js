@@ -842,13 +842,19 @@ NGApp.directive( 'navigationBack', function() {
 		}
 } );
 
-NGApp.directive( 'twitterButton', function() {
+NGApp.directive( 'twitterButton', function( AccountService ) {
 	return {
 			restrict: 'AE',
 			replace: true,
 			template: '<div></div>',
 			link: function (scope, elem, attrs, ctrl) {
-				scope.$watch( 'twitterUrl', function(){
+				scope.$watch( 'twitterUrl', function( newValue, oldValue, scope ){
+					console.log('newValue',newValue);
+					console.log('oldValue',oldValue);
+					if( newValue != oldValue ){
+						return;
+					}
+					elem[0].innerHTML = '';
 					var url = scope.twitterUrl ? scope.twitterUrl : attrs.url ? attrs.url : 'http://crunchbutton.com';
 					var text = scope.twitterText ? scope.twitterText : attrs.text ? attrs.text : 'Crunchbutton';
 					var hashtags = scope.twitterHashtags ? scope.twitterHashtags : attrs.hashtags ? attrs.hashtags : 'crunchbutton';
