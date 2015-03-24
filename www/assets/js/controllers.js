@@ -708,7 +708,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	var proceed = function() {
 		App.go( '/' + restaurants.permalink, 'push' );
-		AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
+		if( AccountService.account && AccountService.account.user ){
+			AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
+		}
 		$scope.location.form.address = '';
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
@@ -1253,8 +1255,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
 
-
-
 	AccountService.updatePoints( function( points ){
 		$scope.account.user.points = points;
 		$scope.account.user.invite_code = points.invite_code;
@@ -1289,7 +1289,12 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 
 	$scope.twitterTweet = function( ev ){
 		TwitterService.tweet( $scope.order.uuid );
-		$scope.order.reward.shared.twitter = true;
+		if( !$scope.order.reward.shared ){
+			$scope.order.reward = { shared: { twitter: true } };
+		} else {
+			$scope.order.reward.shared.twitter = true;
+		}
+
 		$scope.$safeApply();
 	}
 

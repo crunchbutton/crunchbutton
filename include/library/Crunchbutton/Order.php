@@ -667,6 +667,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 																				'value' => $this->giftCardInviter[ 'value'],
 																				'id_order' => $this->id_order,
 																				'id_referral' => $referral->id_referral,
+																				'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
 																				'note' => $notes,
 																			] );
 
@@ -694,6 +695,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 
 		$this->debitFromUserCredit( $user->id_user );
+
 		if ( $params['make_default'] == 'true' ) {
 			$preset = $user->preset($this->restaurant()->id_restaurant);
 			if ($preset->id_preset) {

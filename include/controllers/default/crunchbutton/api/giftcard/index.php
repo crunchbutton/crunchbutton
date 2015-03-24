@@ -447,12 +447,18 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$valid = $reward->validateInviteCode( $word );
 							if( $valid ){
 								if( $valid[ 'id_user' ] ){
-									echo json_encode( [ 'success' => [ 'value' => 0, 'delivery_free' => true, 'giftcard' => $word, 'message' =>  'This delivery fee is on us.' ] ] );
-									exit;
+									$value = $reward->getReferredDiscountAmount();
+									if( $value ){
+										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+										exit;
+									}
+									// echo json_encode( [ 'success' => [ 'value' => 0, 'delivery_free' => true, 'giftcard' => $word, 'message' =>  'This delivery fee is on us.' ] ] );
+									// exit;
 								} else {
 									$value = $reward->getReferredDiscountAmount();
 									if( $value ){
-										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
+										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ] );
+										// echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
 										exit;
 									}
 								}

@@ -35,8 +35,6 @@ class Crunchbutton_Reward extends Cana_Table{
 	}
 
 	public function validateInviteCode( $code ){
-
-
 		$codes = explode( ' ' , $code );
 		foreach( $codes as $code ){
 			$code = trim( $code );
@@ -49,6 +47,7 @@ class Crunchbutton_Reward extends Cana_Table{
 			// second check if it belongs to an user
 			$user = Crunchbutton_User::byInviteCode( $code );
 			if( $user->id_user ){
+				$this->code = $code;
 				return [ 'id_user' => $user->id_user ];
 			}
 		}
@@ -188,10 +187,15 @@ class Crunchbutton_Reward extends Cana_Table{
 			$admin = Crunchbutton_Admin::byInviteCode( $this->code )->get( 0 );
 			if( $admin->referral_customer_credit ){
 				return floatval( $admin->referral_customer_credit );
+			} else {
+				$user = Crunchbutton_User::byInviteCode( $this->code );
+				if( $user->id_user ){
+					$settings = $this->loadSettings();
+					return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+				}
 			}
 		}
-		$settings = $this->loadSettings();
-		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+		return 0;
 	}
 
 	// rewards: 2x points when ordering in same week #3432
