@@ -57,7 +57,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.postInvite = function(url, code) {
-		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for free delivery!';
+		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for $3 off!';
 		App.share({
 			url: url,
 			name: 'Noms',
@@ -67,7 +67,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.shareOrder = function( url, code ) {
-		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for free delivery!';
+		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for $3 off!';
 		App.share({
 			url: url,
 			name: 'Crunchbutton',
