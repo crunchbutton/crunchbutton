@@ -12,8 +12,8 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 		echo "\n";
 
 		$ids_restaurant = ['*'];
-		$value = 3;
-		$total = 10000;
+		$value = ( $_GET[ 'value' ] ? $_GET[ 'total' ] : 1 );
+		$total = ( $_GET[ 'total' ] ? $_GET[ 'total' ] : 1 );
 		$note = '#5100';
 		$id_order_reference = null;
 		$paid_by = 'crunchbutton';
