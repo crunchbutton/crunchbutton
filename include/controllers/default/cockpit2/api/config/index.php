@@ -44,7 +44,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 
 			case 'post':
 				$key = strtolower($this->request()['key']);
-				$value = strtolower($this->request()['value']);
+				$value = $this->request()['value'];
 				if (!$key) {
 					echo json_encode(['error' => 'nothing to save']);
 					exit;
