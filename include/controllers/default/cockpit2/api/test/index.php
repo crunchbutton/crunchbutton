@@ -3,7 +3,8 @@
 class Controller_api_test extends Cana_Controller {
 	public function init(){
 
-
+	Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
+	exit();
 // 		$segments = Crunchbutton_Community_Shift::shiftsByDay( '2015-03-18' );
 // 		foreach( $segments as $segment ){
 // 			if( $segment->id_community == 197 ){

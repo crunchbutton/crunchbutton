@@ -93,6 +93,30 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		return false;
 	}
 
+	// Remove funds from all cards - #5144
+	public function pexCardRemoveCardFundsDaily(){
+		$cards = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard LIMIT 10' );
+		$total = 0;
+		foreach( $cards as $card ){
+			$admin = $card->admin();
+			if( $admin->id_admin && !$admin->isWorking() ){
+				$card->pexCardRemoveLeftFunds( $assigments->id_admin_shift_assign );
+			}
+		}
+	}
+
+	public function pexCardRemoveLeftFunds(){
+		if( $this->isBusinessCard() ){
+			return;
+		}
+		$card = $this->load_card_info();
+		if( $card && $card->availableBalance && floatval( $card->availableBalance ) > 0 ){
+			$amount = $card->availableBalance;
+			$amount = $amount * -1;
+			return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_REMOVE_FUNDS, 'amount' => $amount ] );
+		}
+	}
+
 	public function removeFundsShiftFinished( $id_admin_shift_assign ){
 		// #4281
 		if( $this->isBusinessCard() ){
