@@ -4,7 +4,7 @@ class Controller_Api_Script_RetroactivePoints extends Crunchbutton_Controller_Re
 
 	public function init() {
 
-		// die('remove this line');
+		die('remove this line');
 		// Crunchbutton_Reward_Retroactively::rewardReferralRetroactively();
 
 		$reward = new Crunchbutton_Reward_Retroactively;
