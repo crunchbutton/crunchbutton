@@ -271,11 +271,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$env = c::getEnv();
 
 		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $order->id_order );
-
+/*
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
 			return;
 		}
+*/
 
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
 		if( !$is_enable ){
@@ -298,7 +299,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_SMS :
-					$this->sendSms( $order );
+					$this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS :
@@ -314,50 +315,43 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
-					$this->sendPushIos( $order );
+					$this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
-					$this->sendPushAndroid( $order );
+					$this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
 					break;
 			}
 		} else if( $attempts >= 1 ){
 			$admin = $this->admin();
 			switch ( $attempts ) {
 				case 1:
-					// Change 1st driver phone call to a text message #2812
-					$txtNumber = $admin->getTxtNumber();
-
-					if( $txtNumber ){
-
-						$sms = $txtNumber;
-
-						$first_name = Crunchbutton_Message_Sms::greeting( $admin->firstName() );
-
-						$shift = Crunchbutton_Community_Shift::currentDriverShift( $admin->id_admin );
-						if( $shift->id_community_shift ){
-							$shiftDateStart = $shift->dateStart( c::config()->timezone );
-						}
-
-
-						if( $shiftDateStart && ( $order->date() < $shiftDateStart ) ){
-							$message = $first_name . ' ';
-							$message .= Crunchbutton_Admin_Notification::REPS_COCKPIT . $order->id_order;
-							$message .= "\n";
-							$message .= $order->message( 'sms-admin' );
-						} else {
-							$message = $first_name . "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is not optimal ;)";
-						}
-
-						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $txtNumber, 'message' => $message , 'type' => 'admin_notification' ]);
-
-						$rets = Crunchbutton_Message_Sms::send([
-							'to' => $txtNumber,
-							'from' => 'driver',
-							'message' => $message,
-							'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_ORDER
-						]);
+					$shift = Crunchbutton_Community_Shift::currentDriverShift($admin->id_admin);
+					if ($shift->id_community_shift) {
+						$shiftDateStart = $shift->dateStart(c::config()->timezone);
 					}
+
+					if ($shiftDateStart && ($order->date() < $shiftDateStart)) {
+						$c = 1;
+					} else {
+						$c = 2;
+					}
+
+					switch ( $this->type ) {
+						default:
+						case Crunchbutton_Admin_Notification::TYPE_SMS :
+							$this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
+							break;
+
+						case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
+							return $this->sendPushIos( $order, $this->getSmsMessage($order, $c, 'push'));
+							break;
+
+						case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
+							return $this->sendPushAndroid( $order, $this->getSmsMessage($order, $c, 'push'));
+							break;
+					}
+					
 					break;
 				case 2:
 					$phoneNumber = $admin->getPhoneNumber();
@@ -489,21 +483,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		]);
 	}
 
-	public function sendSms( Crunchbutton_Order $order ){
+	public function sendSms( Crunchbutton_Order $order, $message){
 
 		$sms = $this->value;
-
-		$admin = $this->admin();
-		if( $admin->id_admin ){
-			$name = $admin->firstName();
-		} else {
-			$name = '';
-		}
-
-		$message = Crunchbutton_Message_Sms::greeting( $name );
-		$message .= static::REPS_COCKPIT . $order->id_order;
-		$message .= "\n";
-		$message .= $order->message( 'sms-admin' );
 
 		$ret = Crunchbutton_Message_Sms::send([
 			'to' => $sms,
@@ -581,20 +563,18 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 		return $this->_config[ $key ];
 	}
+	
+	public function getPendingOrderCount() {
+		// @todo: this is not working right
+		$orders = Crunchbutton_Order::q('SELECT * FROM `order` o WHERE o.delivery_type = "'.Crunchbutton_Order::SHIPPING_DELIVERY.'" AND o.delivery_service = true AND o.date > DATE_SUB(NOW(), INTERVAL 3 HOUR ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC');
+		return $orders->count();
+	}
 
-	public function sendPushIos($order) {
-
-		// get the total count of pending orders
-		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
-		$orderFromLast = ' 3 HOUR';
-
-		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = true AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC";
-		$orders = Crunchbutton_Order::q($query);
-
+	public function sendPushIos($order, $message) {
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
-			'message' => '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.',
-			'count' => $orders->count() ? $orders->count() : 1,
+			'message' => $message,
+			'count' => 1,
 			'id' => 'order-'.$order->id,
 			'category' => 'order-new-test'
 		]);
@@ -602,23 +582,54 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return $r;
 	}
 
-	public function sendPushAndroid() {
-		// get the total count of pending orders
-		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
-		$orderFromLast = ' 3 HOUR';
-
-		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = true AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) ORDER BY o.id_order ASC";
-		$orders = Crunchbutton_Order::q($query);
+	public function sendPushAndroid($order, $message) {
 
 		$r = Crunchbutton_Message_Push_Android::send([
 			'to' => $this->value,
-			'message' => '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.',
-			'title' => 'New Order',
-			'count' => $orders->count() ? $orders->count() : 1,
+			'message' => $message,
+			'title' => 'Cockpit New Order',
+			'count' => 1,
 			'id' => 'order-'.$order->id
 		]);
 
 		return $r;
+	}
+	
+	public function getSmsMessage($order, $count = 1, $type = 'push') {
+		switch ($count) {
+			default:
+			case 1:
+				switch ($type) {
+					default:
+					case 'sms':
+						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
+						$message .= static::REPS_COCKPIT . $order->id_order . "\n";
+						$message .= $order->message( 'sms-admin' );
+
+						break;
+					case 'push':
+						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
+						break;
+				}
+				
+				break;
+
+			case 2:
+				switch ($type) {
+					default:
+					case 'sms':
+						$first_name = Crunchbutton_Message_Sms::greeting($this->admin()->firstName());
+						$message = $first_name . 'Remember: ACCEPT this order http://cbtn.io/' . $order->id_order . '. Next reminder is a phone call in 3 minutes. Then we\'ll reach out manually, which is not optimal ;)';
+						break;
+					case 'push':
+						$message = 'Please ACCEPT order #'.$order->id.' from '.$order->user()->name.' to '.$order->restaurant()->name.'.';
+						break;
+				}
+			
+			
+				break;
+		}
+		return $message;
 	}
 
 	public function save() {
