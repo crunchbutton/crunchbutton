@@ -232,8 +232,15 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 				$admin_pexcard->card_serial = null;;
 			}
 		}
-
 		return $admin_pexcard;
+	}
+
+	public function getByCardSerial( $card_serial ){
+		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE card_serial = "' . $card_serial . '" LIMIT 1' );
+		if( $admin_pexcard->id_admin_pexcard ){
+			return $admin_pexcard;
+		}
+		return false;
 	}
 
 	public function businessCardList(){
