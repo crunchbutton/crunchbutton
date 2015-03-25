@@ -3820,6 +3820,19 @@ font-familt: "Museo Slab";
 	bottom: 0;
 }
 
+.new-location-address {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  width: 100%;
+  border: 2px solid #003f35;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  font-size: 15px;
+  padding: 0.5em 0 0.5em 0.6em;
+  margin: 0 0 15px 0;
+  height: 2.7em;
+  box-sizing: border-box;
+}
 
 /*points progress bar*/
 .points progress[value] {
@@ -3846,19 +3859,8 @@ font-familt: "Museo Slab";
   border-radius: 10px;
   background-size: 35px 20px, 100% 100%, 100% 100%;
 }
-.new-location-address {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  width: 100%;
-  border: 2px solid #003f35;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  font-size: 15px;
-  padding: 0.5em 0 0.5em 0.6em;
-  margin: 0 0 15px 0;
-  height: 2.7em;
-  box-sizing: border-box;
-}
+
+
 
 .order-code {
 	font-weight: bold;
