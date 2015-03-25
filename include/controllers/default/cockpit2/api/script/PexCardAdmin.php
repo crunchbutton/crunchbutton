@@ -320,6 +320,31 @@ class Controller_Api_Script_PexCardAdmin extends Crunchbutton_Controller_RestAcc
 'Richard Renaud' => [ 'status' => 'active', 'date' => '3/12/2015', 'serial' => '1245', 'id_admin' => '8828' ],
 'April Moore' => [ 'status' => 'active', 'date' => '3/17/2015', 'serial' => '1405', 'id_admin' => '8918' ], ];
 
+
+// pex error: date and month switched in start date! #5145
+$_errors = [];
+$_errors[] = join( [ 'Name', 'id_admin', 'wrong', 'right' ], ',' );
+foreach( $cards as $card ){
+	$id_admin = $card[ 'id_admin' ];
+	$admin = Admin::o( $id_admin );
+	$payment_type = Crunchbutton_Admin_Payment_Type::byAdmin( $id_admin );
+	$date = explode( '/', $card[ 'date' ] );
+	$date = $date[ '2' ] . '-' . ( intval( $date[ '0' ] ) <= 9 ? '0' . $date[ '0' ] : $date[ '0' ] ) . '-' .  ( intval( $date[ '1' ] ) <= 9 ? '0' . $date[ '1' ] : $date[ '1' ] );
+	if( $payment_type->using_pex_date() && $payment_type->using_pex_date()->format( 'Y-m-d' ) != $date ){
+		$_errors[] = join( [ 'name' => $admin->name, 'id_admin' => $id_admin, 'wrong_date' => $payment_type->using_pex_date()->format( 'Y-m-d' ), 'right' => $date ], ',' );
+		$date .= ' 00:00:01';
+		$payment_type->using_pex_date = $date;
+		$payment_type->save();
+	}
+
+	// echo '<pre>';var_dump( $id_admin );exit();
+	// echo '<pre>';var_dump( $date );exit();
+
+}
+
+echo join( $_errors, "\n" );
+
+die('hard');
 		// $customers = Crunchbutton_Pexcard_Card::card_list();
 
 	// echo serialize( $customers );

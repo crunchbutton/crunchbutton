@@ -27,7 +27,7 @@ class Controller_api_user_restaurant extends Crunchbutton_Controller_Rest {
 					$totalOrdersByPhone = Order::totalOrdersByPhone( $phone );
 					if( !c::user()->id_user && $totalOrdersByPhone == 0 ){
 						if( $value ){
-							$giftcard = [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you $' . $value . ' discount (for first time users only)' ] ];
+							$giftcard = [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you a $' . $value . ' discount (for first time users only)' ] ];
 							break;
 						}
 					}
