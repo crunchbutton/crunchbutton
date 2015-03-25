@@ -891,8 +891,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				break;
 			case 'Friday':
 				$sendWarning = true;
+				$now->modify( '+ 1 day' );
 				$dateStart = $now->format( 'Y-m-d' );
-				$now->modify( '+ 4 days' );
+				$now->modify( '+ 6 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
 				$template = "Hi %s! Just a reminder of your next shifts at %s: ";
 				break;
