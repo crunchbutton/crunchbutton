@@ -45,7 +45,7 @@ var App = {
 	},
 	restaurantsPaging: {
 		enabled: true,
-		desktop: 9,
+		desktop: 20,
 		mobile: 6
 	},
 	transitionAnimationEnabled : true,

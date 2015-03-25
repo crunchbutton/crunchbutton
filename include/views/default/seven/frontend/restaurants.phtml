@@ -81,22 +81,23 @@
 
 	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
+			<? /*
 			<div class="restaurant-list-divider" ng-if="restaurant._divider"></div>
+			*/ ?>
 
 			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}">
 
-				<div class="restaurants-closed" ng-if="restaurant._tag == 'closed'">
+				<div class="restaurants-closed" ng-if="showSmallClosures && restaurant._tag == 'closed'">
 					<h2 class="restaurants-name">{{restaurant.name}}</h2>
 					<div class="restaurants-opensin" ng-if="restaurant._openIn > 0" >Available {{restaurant._opensIn_formatted}}</div>
 				</div>
 
-				<div class="restaurants-closed" ng-if="restaurant._tag == 'force_close'">
+				<div class="restaurants-closed" ng-if="showSmallClosures && restaurant._tag == 'force_close'">
 					<h2 class="restaurants-name">{{restaurant.name}}</h2>
 					<div class="restaurants-opensin">Temporarily closed {{restaurant._closedDueTo}}</div>
 				</div>
 
-				<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
-
+				<div class="restaurants-open" ng-if="!showSmallClosures || (showSmallClosures && restaurant._tag != 'closed' && restaurant._tag != 'force_close')">
 
 					<div ng-spinner="loadingRestaurant[restaurant.id_restaurant]" class="restaurants-item-content" data-spinner-color="#333333" data-spinner-scale=".5">
 						<div class="ladda-label">
@@ -105,6 +106,8 @@
 							<h3 class="restaurants-description">{{restaurant._short_description}}</h3>
 
 							<div ng-switch on="restaurant._tag">
+								<div class="meal-item-tag" ng-switch-when="closed">Available {{restaurant._opensIn_formatted}}</div>
+								<div class="meal-item-tag" ng-switch-when="force_close">Temporarily closed {{restaurant._closedDueTo}}</div>
 								<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 								<div class="meal-item-tag" ng-switch-when="next_open">{{restaurant.next_open_time_message.message}}</div>
 								<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>

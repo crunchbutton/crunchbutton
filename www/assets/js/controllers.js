@@ -526,12 +526,18 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					restaurantsToShow++;
 				}
 			}
-			if( restaurantsToShow > 6 ){
-				restaurantsToShow = 6;
-			} else if ( restaurantsToShow < 6 ) {
+			var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
+			$scope.showSmallClosures = App.isMobile() ? true : false;
+
+			if( restaurantsToShow > maxShow ){
+				restaurantsToShow = maxShow;
+			} else if ( restaurantsToShow < maxShow ) {
 				showMoreStage = 2;
 			}
 			$scope.restaurantsToShow = restaurantsToShow;
+			if (!App.isMobile()) {
+				$scope.restaurantsToShow = 100;
+			}
 
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
