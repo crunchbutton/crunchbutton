@@ -47,6 +47,7 @@ class Controller_Api_Script_GiftCards extends Crunchbutton_Controller_RestAccoun
 		echo "\n";
 		echo "\n";
 		echo $total;
+		echo '<script>alert( "finished" )</script>';
 
 	}
 }
