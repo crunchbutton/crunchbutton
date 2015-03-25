@@ -1,12 +1,12 @@
 // ReferralService service
-NGApp.factory( 'ReferralService', function( $http, $rootScope, $location ){
+NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, AccountService ){
 
 	var service = { invite_url : null, value : 0, invites : 0, limit : 0 };
 
 	service.check = function(){
 		var param = $location.search();
 		if( param.invite ){
-			$.cookie( 'referral', param.invite );	
+			$.cookie( 'referral', param.invite );
 			// Remove the invite from url
 			$location.url( $location.path() );
 		}
@@ -14,35 +14,36 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location ){
 
 	service.getInviteCode = function(){
 		var url = App.service + 'referral/code';
-		$http( { 
+		$http( {
 				url: url,
 				method : 'POST',
 				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
 			} ).success( function( data ) {
 				service.invite_url = data.invite_url;
+				AccountService.user.invite_code = data.invite_code;
 				$rootScope.$broadcast( 'referralCodeLoaded', true );
-			}	).error(function( data, status ) { 
-				console.log( { error : data } ); 
+			}	).error(function( data, status ) {
+				console.log( { error : data } );
 			} );
 	}
 
 	service.getValue = function(){
 		var url = App.service + 'referral/value';
-		$http( { 
+		$http( {
 				url: url,
 				method : 'POST',
 				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
 			} ).success( function( data ) {
 				service.value = data.value;
 				$rootScope.$broadcast( 'referralValueLoaded', true );
-			}	).error(function( data, status ) { 
-				console.log( { error : data } ); 
+			}	).error(function( data, status ) {
+				console.log( { error : data } );
 			} );
 	}
 
 	service.getStatus = function(){
 		var url = App.service + 'referral/status';
-		$http( { 
+		$http( {
 				url: url,
 				method : 'POST',
 				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
@@ -53,12 +54,12 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location ){
 				service.limit = data.limit;
 				service.invite_url = data.invite_url;
 				$rootScope.$broadcast( 'referralStatusLoaded', true );
-			}	).error(function( data, status ) { 
-				console.log( { error : data } ); 
+			}	).error(function( data, status ) {
+				console.log( { error : data } );
 			} );
 	}
 
-	
+
 	service.cleaned_url = function(){
 		return service.invite_url && service.invite_url.replace('http://','');
 	}

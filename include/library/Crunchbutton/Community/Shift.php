@@ -945,23 +945,21 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function pexCardRemoveShiftFunds(){
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT c.* FROM community c ORDER BY c.name ' );
 		foreach( $communities as $community ){
 			if( $community->timezone ){
-
 				// remove funds
 				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
 				$now->modify( '- 120 minutes' );
 				$_now = $now->format( 'Y-m-d H:i' );
 				$now->modify( '+ 60 minutes' );
 				$_interval = $now->format( 'Y-m-d H:i' );
-
 				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
 																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 																													WHERE DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
 				if( $nextShifts->count() > 0 ){
 					foreach( $nextShifts as $shift ){
-						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
+						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = "' . $shift->id_community_shift . '"' );
 						foreach( $assigments as $assignment ){
 							$admin = $assignment->admin();
 							$pexcard = $admin->pexcard();

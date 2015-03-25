@@ -3,17 +3,7 @@
 class Controller_api_test extends Cana_Controller {
 	public function init(){
 
-
-// 		$segments = Crunchbutton_Community_Shift::shiftsByDay( '2015-03-18' );
-// 		foreach( $segments as $segment ){
-// 			if( $segment->id_community == 197 ){
-// 				// echo '<pre>';var_dump( $segment );exit();
-// 				echo $segment->id_community_shift;
-// 				echo "\n";
-// 			}
-// 		}
-// exit();
-
+	die('hard');
 		$community = Crunchbutton_Community::o( 197 );
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );

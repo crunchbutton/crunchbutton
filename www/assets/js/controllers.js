@@ -264,7 +264,7 @@ NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralServi
 	});
 
 	$scope.referral.facebook = function(){
-		FacebookService.postInvite( $scope.referral.invite_url );
+		FacebookService.postInvite( $scope.referral.invite_url, AccountService.user.invite_code );
 	}
 
 	$scope.referral.twitter = function(){
@@ -708,7 +708,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	var proceed = function() {
 		App.go( '/' + restaurants.permalink, 'push' );
-		AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
+		if( AccountService.account && AccountService.account.user ){
+			AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
+		}
 		$scope.location.form.address = '';
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
@@ -1253,8 +1255,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
 
-
-
 	AccountService.updatePoints( function( points ){
 		$scope.account.user.points = points;
 		$scope.account.user.invite_code = points.invite_code;
@@ -1280,6 +1280,11 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		FacebookService.shareOrder( $scope.referral.invite_url, AccountService.user.invite_code );
 	}
 
+	$scope.referral.twitter = function(){
+		var text = 'i love @crunchbutton delivery :) use my code ' + AccountService.user.invite_code + ' in the Notes section for $3 off';
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
+	}
+
 	$scope.$watch( 'referral.invite_url', function( newValue, oldValue, scope ) {
 		$scope.twitterUrl = ReferralService.invite_url;
 		$scope.twitterText = TwitterService.referralText( AccountService.user.invite_code );
@@ -1289,7 +1294,12 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 
 	$scope.twitterTweet = function( ev ){
 		TwitterService.tweet( $scope.order.uuid );
-		$scope.order.reward.shared.twitter = true;
+		if( !$scope.order.reward.shared ){
+			$scope.order.reward = { shared: { twitter: true } };
+		} else {
+			$scope.order.reward.shared.twitter = true;
+		}
+
 		$scope.$safeApply();
 	}
 
@@ -1348,6 +1358,10 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		return;
 	}
 
+	if( !AccountService.user.invite_code ){
+		ReferralService.getInviteCode();
+	}
+
 	$scope.account = AccountService;
 
 	// Alias to method AccountSignOut.do()
@@ -1392,6 +1406,7 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	}
 
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		console.log('referralStatusLoaded >>>> ');
 		$scope.referral.invites = ReferralService.invites;
 		$scope.referral.limit = ReferralService.limit;
 		$scope.referral.invite_url = ReferralService.invite_url;
@@ -1400,11 +1415,12 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	});
 
 	$scope.referral.facebook = function(){
-		FacebookService.postInvite( $scope.referral.invite_url );
+		FacebookService.postInvite( $scope.referral.invite_url, AccountService.user.invite_code );
 	}
 
 	$scope.referral.twitter = function(){
-		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+		var text = 'i love @crunchbutton delivery :) use my code ' + AccountService.user.invite_code + ' in the Notes section for $3 off!';
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
 	}
 	$scope.hello = 50;
 

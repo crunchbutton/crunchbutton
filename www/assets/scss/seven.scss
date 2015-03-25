@@ -378,6 +378,11 @@ p {
 	background: #385ca2;
 	font-weight: bold;
 }
+.button.twitter {
+	background: #44cafd;
+	color: #fff;
+	font-weight: bold;
+}
 .button.green {
 	background: #00bea0;
 	font-weight: bold;
@@ -902,7 +907,7 @@ p {
 	width: 100%;
 	background: #2b2937;
 	height: 54px;
-	
+
 	@include transition(all 0.3s ease-out);
 	@include transform-origin(left bottom);
 	@include transform(translate3d(0,67px,0));
@@ -1345,7 +1350,7 @@ p {
 	.fb-like-box {
 		float: left;
 	}
-	
+
 }
 
 
@@ -1774,7 +1779,7 @@ p {
 	.restaurant-menu-category:first-child .restaurant-category {
 		padding-top: 0;
 	}
-	
+
 	.dish-item-name {
 		color: #d9462f;
 		text-decoration: underline;
@@ -2159,9 +2164,8 @@ sup {
 	margin-bottom: 2em;
 }
 
-.button.facebook .fa {
+.button.facebook .fa, .button.twitter .fa {
 	margin-right: .4em;
-
 }
 
 
@@ -3689,7 +3693,7 @@ font-familt: "Museo Slab";
 		display: flex;
 		flex-direction: row;
 		flex-flow: row wrap;
-		justify-content: space-between;	
+		justify-content: space-between;
 	}
 	.col-box .two-col {
 		width: 46%;
@@ -3747,7 +3751,7 @@ font-familt: "Museo Slab";
 	.restaurant-pic {
 		height: 35em;
 		-webkit-filter: brightness(0.90) contrast(125%);
-		
+
 	}
 	.restaurant-pic-overlay {
 		display: none;
@@ -3841,4 +3845,22 @@ font-familt: "Museo Slab";
   -webkit-linear-gradient(left, #ec5d2f, #ec5d2f);
   border-radius: 10px;
   background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+.new-location-address {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  width: 100%;
+  border: 2px solid #003f35;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  font-size: 15px;
+  padding: 0.5em 0 0.5em 0.6em;
+  margin: 0 0 15px 0;
+  height: 2.7em;
+  box-sizing: border-box;
+}
+
+.order-code {
+	font-weight: bold;
+	@include force-select();
 }

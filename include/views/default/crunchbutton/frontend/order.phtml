@@ -41,7 +41,7 @@
 					<div class="divider"></div>
 				</div>
 				*/ ?>
-				<div class="field-container" ng-if="order.reward.points">
+				<div class="rewards-container" ng-if="order.reward.points">
 					<div class="order-details-highlight">
 						<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
 							You have <strong>{{account.user.points.free_delivery}}</strong> points!
@@ -53,8 +53,8 @@
 					</div>
 					<div class="reward-info" ng-if="!account.user.points.free_delivery_message">
 						<br>
-						<div ng-if="!order.reward.shared.facebook">
-							Double your points by sharing on Facebook:
+						<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
+							<p>Double your points by sharing on Facebook:<br><br></p>
 							<div class="social-button facebook-button" ng-click="referral.facebook();">
 								<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
 								<div class="divider"></div>
@@ -65,21 +65,20 @@
 						</div>
 						<div class="divider"></div>
 						<br>
-						<div ng-if="!order.reward.shared.twitter">
-							Triple them by sharing on Twitter:
-							<twitter-button count="none"></twitter-button>
+						<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
+							<p>Triple them by sharing on Twitter:<br><br></p>
+							<twitter-button count="none">Twitter</twitter-button>
 						</div>
 						<div ng-if="order.reward.shared.twitter">
 							Thanks for sharing on Twitter.
 						</div>
 						<div class="divider"></div>
-						<br>
-						P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
-						<br>
+						<div ng-show="referral.invite_url && referral.enabled">
+							<br>
+							<b>Earn a FREE DELIVERY for every new customer you refer with your link!</b>
+							<br>
+						</div>
 					</div>
-				</div>
-				<div ng-show="order._new && referral.invite_url && referral.enabled">
-					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!<br />
 				</div>
 			</div>
 
