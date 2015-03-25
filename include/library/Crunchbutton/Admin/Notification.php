@@ -61,7 +61,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						continue;
 					} else {
+
 						$driversToNotify = [];
+
+						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 
 						foreach ( $order->restaurant()->notifications() as $n ) {
 							// Admin notification type means it needs a driver
@@ -157,7 +160,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						}
 
-						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						if( !$hasDriversWorking ){
 							$restaurant = $order->restaurant()->name;
 							$community = $order->restaurant()->communityNames();
@@ -602,7 +604,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return $r;
 	}
 
-	public function sendPushAndroid() {
+	public function sendPushAndroid( $order ) {
 		// get the total count of pending orders
 		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
