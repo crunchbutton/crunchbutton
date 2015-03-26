@@ -30,7 +30,10 @@ if( $version == 'customer' ){
 			<td class="topitem">Price</td>
 		<?php } ?>
 	</thead>
-	<?php foreach ($order->dishes() as $dish) { ?>
+	<?php
+	$dishes = $order->dishes( true );
+	?>
+	<?php foreach ($dishes as $dish) { ?>
 		<tr>
 			<td class="fooditem">1</td>
 			<td class="fooditem"><?php
