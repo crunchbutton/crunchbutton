@@ -568,7 +568,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
  * show cities
  */
 NGApp.controller( 'CitiesCtrl', function ( $scope ) {
- 	$scope.topCommunities = App.topCommunities;
+
 });
 
 
@@ -607,7 +607,6 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
-	$scope.topCommunities = App.topCommunities;
 	$scope.recommend = RecommendRestaurantService;
 
 	$scope.location = LocationService;

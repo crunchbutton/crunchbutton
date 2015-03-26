@@ -324,6 +324,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.location = $location;
 	App.http = $http;
 	$rootScope.hasFacebook = App.hasFacebook;
+	$rootScope.topCommunities = App.topCommunities;
 
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908

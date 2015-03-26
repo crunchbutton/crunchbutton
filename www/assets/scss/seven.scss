@@ -1292,9 +1292,56 @@ p {
 
 
 @media screen and (min-width: 1025px) {
+	body {
+		background: #f78053 !important;
+		margin-bottom: 450px;
+	}
 	.footer .social {
 		margin-top: 10px;
 		float: left;
+	}
+	
+	.footer .copyright {
+		margin-top: 5px;
+		float: left;
+		font-size: 1.15em;
+	}
+	
+	.footer .logo {
+		width: 200px;
+		margin: 0;
+	}
+	
+	.footer .quote-author-image {
+		height: 60px;
+		width: 60px;
+		border-radius: 100px;
+		background-repeat: none;
+		background-size: 100%;
+		float: left;
+	}
+	.footer .quote-author-info {
+		float: left;
+		text-align: left;
+		margin-left: 1em;
+		margin-top: .2em;
+	}
+	
+	.footer .quote-author-info b {
+		color: #fff;
+	}
+	
+	.footer p {
+		text-align: left;
+		font-size: 1.15em;
+	}
+	
+	.footer .quote-author {
+		margin-top: 40px;
+	}
+	
+	.footer a {
+		color: #f78154;
 	}
 
 	.footer .social a {
@@ -1305,7 +1352,7 @@ p {
 		overflow: hidden;
 		background: #565658;
 		color: #303033;
-		margin-right: 1.2em;
+		margin-right: 1.1em;
 		text-align: center;
 		@include transition(all 0.2s ease);
 		text-decoration: none;
@@ -1321,22 +1368,55 @@ p {
 
 	.footer {
 		background: #303033;
-		margin-top: 50px;
+		margin-top: 100px;
 		text-align: center;
 		color: #b5b5b6;
 		position: absolute;
 		left: 0;
 		bottom: 0;
-		height: 300px;
+		height: 400px;
 		width: 100%;
+		padding-top: 60px;
+	}
+	
+	.footer-columns {
+		display: flex;
+		flex-direction: row;
+		flex-flow: row wrap;
+		justify-content: space-between;
+	}
+	.footer ul a {
+		text-decoration: none;
+		color: #b5b5b6;
+	}
+	.footer ul b {
+		line-height: 2.2em;
+		color: #fff;
+	}
+	.footer ul {
+		text-align: left;
+		line-height: 1.7em;
+		font-size: 1.15em;
+	}
+	.footer-column-description {
+		width: 30%;
+	}
+	.footer-column-info {
+		
+	}
+	.footer-column-quote {
+		vertical-align: center;
+	}
+	.footer-column-quote .quote {
+		font-size: 4em;
 	}
 
 	html {
 		position: relative;
 		min-height: 100%;
 	}
-	body {
-		margin-bottom: 300px;
+	.snap-content-inner {
+		padding-bottom: 100px;
 	}
 
 	.content {
