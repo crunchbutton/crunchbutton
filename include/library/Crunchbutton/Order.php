@@ -2792,7 +2792,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function hasGiftCardIssued(){
 		// check if it has a gift card
-		$promo = Crunchbutton_Promo::q('SELECT * FROM promo p WHERE p.id_order_reference = ', [$this->id_order]);
+		$promo = Crunchbutton_Promo::q('SELECT * FROM promo p WHERE p.id_order_reference = ?', [$this->id_order]);
 		if( $promo->count() > 0 ){
 			return true;
 		}
