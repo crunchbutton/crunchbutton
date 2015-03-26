@@ -173,13 +173,58 @@
 
 <div class="footer hide-before-init">
 	<div class="content-padding">
-		<div class="logo"></div>
-		<p>Push a button. Get food. We find the best food from the top local restaurants so you dont have to.</p>
-
+		<div class="footer-columns">
+			<div class="footer-column-description">
+				<div class="logo"></div>
+				<p>
+					Push a button. Get food. We find the best food from the top local restaurants so you dont have to.
+					<br><br>
+					<a href="mailto:hello@crunchbutton.com">hello@crunchbutton.com</a><br>
+					<a href="tel:+16467831444">(646) 783-1444</a>
+				</p>
+			</div>
+			<div class="footer-column-info">
+				<ul>
+					<li><b>Popular</b></li>
+					<li ng-repeat="alias in topCommunities | limitTo:5">
+						<a href="/{{alias.alias}}">{{alias.name}}</a>
+					</li>
+				</ul>
+			</div>
+			<div class="footer-column-info">
+				<ul>
+					<li><b>Information</b></li>
+					<li><a href="/about">About Us</a></li>
+					<li><a href="/owners">Restaurant Signup</a></li>
+					<li><a href="/work">Work with Us</a></li>
+					<li><a href="/help">Help &amp; FAQ</a></li>
+					<li><a href="/legal">Legal</a></li>
+				</ul>
+			</div>
+			<div class="footer-column-quote">
+				<div class="quote-wrap">
+					<sup class="quote">&#8220;</sup>
+					<p><i>The only food group is Sushi.</i></p>
+					<sub class="quote">&#8221;</sub>
+				</div>
+				<div class="quote-author">
+					<div class="quote-author-image" style="background-image: url(http://graph.facebook.com/witgi/picture?width=120&height=120)"></div>
+					<div class="quote-author-info">
+						<p>
+							<b>Devin Smith</b><br>
+							CTO &amp; co-founder
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<? /*
 		<? if (!$this->export) : ?>
 			<div class="fb-like-box" data-width="200" data-href="https://www.facebook.com/crunchbutton" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div>
 		<? endif ; ?>
+		*/ ?>
 		
+		<br><br><br><br><br><br>
 		<div class="divider line"></div>
 		<br><br>
 
@@ -189,16 +234,18 @@
 			<a href="http://instagram.com/crunchbutton" target="_blank"><i class="fa fa-instagram"></i></a>
 			<a href="http://www.linkedin.com/company/crunchbutton" target="_blank"><i class="fa fa-linkedin"></i></a>
 		</div>
+
 		<div class="footer-download">
 			<a href="/download"><div class="app-store"></div></a>
 			<a href="/download"></a><div class="play-store"></div></a>
 		</div>
 		<div class="divider"></div>
+		<div class="copyright">&copy <?=date('Y')?> <a href="/">Crunchbutton</a></div>
+		<div class="divider"></div>
 		<? /*
 		<span ng-controller="BottomCtrl">
 			<div class="divider"></div>
 			<div class="copyright">&copy; <?=date('Y')?> <a ng-click="navigation.link('/legal')">Crunchbutton</a></div>
-			
 		</span>
 		<br>
 		*/ ?>
