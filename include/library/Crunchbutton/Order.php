@@ -864,7 +864,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				}
 			}
 		}
-		return $totalCredit;
+		return number_format( $totalCredit, 2 );
 	}
 
 	public function charged(){
