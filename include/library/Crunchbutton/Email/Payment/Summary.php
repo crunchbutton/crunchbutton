@@ -15,9 +15,13 @@ class Crunchbutton_Email_Payment_Summary extends Crunchbutton_Email {
 		$this->buildView( $params );
 		$this->view()->subject = $params['subject'] ;
 		$this->view()->email = $params[ 'summary' ]['summary_email'];
-
 		if( $params[ 'summary' ][ 'type' ] == Cockpit_Payment_Schedule::TYPE_DRIVER ){
-			$params['messageHtml'] = $this->view()->render( 'payment/summary-driver',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
+			if( $params[ 'summary' ][ 'arbritary' ] ){
+				$params['messageHtml'] = $this->view()->render( 'payment/summary-driver-arbritary',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
+			} else {
+				$params['messageHtml'] = $this->view()->render( 'payment/summary-driver',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
+			}
+
 		} else {
 			$params['messageHtml'] = $this->view()->render( 'payment/summary-restaurant',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
 		}
