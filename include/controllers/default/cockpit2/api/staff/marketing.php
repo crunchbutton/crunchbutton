@@ -91,14 +91,18 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 
 		// Check unique referral code
 		$invite_code = trim( $this->request()[ 'invite_code' ] );
-		$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
-		if( $admin->count() == 0 ){
-			$staff->invite_code = $invite_code;
+		if ( preg_match('/\s/',$invite_code) ){
+			$this->_error( 'please remove white spaces from invite code' );
 		} else {
-			if( $admin->id_admin != $staff->id_admin ){
-				$this->_error( 'this invite code is already in use' );
-			} else {
+			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
+			if( $admin->count() == 0 ){
 				$staff->invite_code = $invite_code;
+			} else {
+				if( $admin->id_admin != $staff->id_admin ){
+					$this->_error( 'this invite code is already in use' );
+				} else {
+					$staff->invite_code = $invite_code;
+				}
 			}
 		}
 

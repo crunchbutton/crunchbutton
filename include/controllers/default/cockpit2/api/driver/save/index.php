@@ -28,6 +28,21 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver = Cockpit_Admin::o( $id_admin );
 		}
 
+		// Check unique referral code
+		$invite_code = trim( $this->request()[ 'invite_code' ] );
+		if ( preg_match('/\s/',$invite_code) ){
+			$this->_error( 'please remove white spaces from invite code' );
+		} else {
+			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
+			if( $admin->count() == 0 ){
+				$driver->invite_code = $invite_code;
+			} else {
+				if( $admin->id_admin != $driver->id_admin ){
+					$this->_error( 'this invite code is already in use' );
+				}
+			}
+		}
+
 		$phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
 		if( trim( $phone ) == '' ){
 			$this->_error( 'the phone is missing' );
@@ -58,7 +73,6 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver->pass = $driver->makePass( $pass );
 		}
 
-		// if it is a new driver it should create a randon pass
 		$random_pass = '';
 		if( $newDriver ){
 			$random_pass = Crunchbutton_Util::randomPass();

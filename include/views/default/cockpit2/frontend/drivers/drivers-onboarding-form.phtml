@@ -92,6 +92,14 @@
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
+			<li class="li-input" ng-class="{'error':form.driverInviteCode.$invalid}">
+				<div class="label">Referral Code:</div>
+				<div class="input"><input type="text" name="driverInviteCode" ng-model="driver.invite_code" required placeholder="Referral Code"></div>
+				<div class="box-error">
+					<small ng-show="form.driverInviteCode.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input">
 				<div class="label">How much a marketing rep earns from new customer referrals:</div>
 				<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.referral_admin_credit" placeholder=""></div>
