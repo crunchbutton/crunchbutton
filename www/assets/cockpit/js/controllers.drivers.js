@@ -226,9 +226,9 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 					$scope.crunchbutton_card_id = null;
 					$scope.last_four_digits = null;
 					$scope.card = null;
-					$scope.flash.setMessage( 'Your PEX Card is Active! :D! Activate another PEX card', 'success' );
+					App.alert( 'Your PEX Card is Active! :D! Activate another PEX card', 'success' );
 				} else {
-					$scope.flash.setMessage( 'Error activating card!', 'error' );
+					App.alert( 'Error activating card!', 'error' );
 					$scope.isActivating = false;
 				}
 
@@ -263,7 +263,7 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 				if( json.id ){
 					$scope.card = json;
 				} else {
-					$scope.flash.setMessage( json.error, 'error' );
+					App.alert( json.error, 'error' );
 					$scope.crunchbutton_card_id = '';
 					$scope.last_four_digits = '';
 				}
@@ -577,7 +577,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.get( $routeParams.id, function( driver ){
 
 			$scope.driver = driver;
-			console.log('$scope.driver.id_community>>>>>>',$scope.driver.id_community);
 			if( driver.pexcard_date ){
 				$scope.driver.pexcard_date = new Date( driver.pexcard_date );
 			} else {
@@ -624,10 +623,10 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	$scope.notify = function(){
 		DriverOnboardingService.notifySetup( $scope.driver.id_admin, function( json ){
 			if( json.success ){
-				$scope.flash.setMessage( 'Notification sent!' );
+				App.alert( 'Notification sent!' );
 				// logs();
 			} else {
-				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );
+				App.alert( 'Notification not sent: ' + json.error , 'error' );
 			}
 		} );
 	}
@@ -663,11 +662,11 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 					$scope.navigation.link( url );
 				}
 				setTimeout( function(){
-					$scope.flash.setMessage( 'Driver saved!' );
+					App.alert( 'Driver saved!' );
 				}, 50 );
 				$scope.isSaving = false;
 			} else {
-				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
+				App.alert( 'Driver not saved: ' + json.error , 'error' );
 				$scope.isSaving = false;
 			}
 		} );
