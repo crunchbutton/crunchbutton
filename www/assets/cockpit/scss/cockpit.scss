@@ -500,7 +500,7 @@ p {
 	-ms-transition: background .2s;
 	-o-transition: background .2s;
 	transition: background .2s;
-	
+
 	@include box-border-radius();
 }
 
@@ -3910,4 +3910,19 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
   font-size: 1.5em;
   line-height: 1.2em;
   color: #317F7A;
+}
+
+.tb-row{
+	border-bottom: 1px solid #CCC !important;
+}
+
+.tb-mini-grid.title th{
+	padding:0.5em;
+	font-size: 1.1em;
+	background:#F5F5F5 !important;
+}
+
+.tb-mini-grid.subtitle th{
+	padding:0.5em;
+	text-align:left !important;
 }

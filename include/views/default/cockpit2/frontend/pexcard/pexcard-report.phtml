@@ -66,8 +66,8 @@
 			<tbody ng-repeat="driver in result.drivers_expenses">
 				<tr>
 					<td>
-						<span ng-if="driver.login"><a href="/staff/{{driver.login}}">{{driver.driver}}</a></span>
-						<span ng-if="!driver.login">{{driver.driver}}</span>
+						<span ng-if="driver.login">
+						<span class="link" ng-click="driver.details=!driver.details">[<i class="fa fa-info"></i>]</span> <span>{{driver.driver}}</span>
 					</td>
 					<td>{{driver.card_serial}}</td>
 					<td>{{driver.last_four}}</td>
@@ -80,18 +80,39 @@
 					<td positive-or-negative-color="{{driver.card_cash_amount}}">$ {{driver.card_cash_amount | formatPrice}}</td>
 					<td positive-or-negative-color="{{driver.diff}}">$ {{driver.diff | formatPrice}}</td>
 				</tr>
-				<?php /*
-				<tr class="tb-mini-grid">
+
+				<tr class="tb-mini-grid title" ng-show="driver.details && driver.transactions.length">
+					<th colspan="9"><strong>Pex Card</strong></th>
+				</tr>
+				<tr class="tb-mini-grid subtitle" ng-show="driver.details && driver.transactions.length">
 					<th colspan="3"><strong>Date</strong></th>
 					<th colspan="3"><strong>Description</strong></th>
 					<th colspan="3"><strong>Amount</strong></th>
 				</tr>
-				<tr class="tb-mini-grid" ng-repeat="transaction in driver.transactions">
+				<tr class="tb-mini-grid" ng-repeat="transaction in driver.transactions" ng-show="driver.details">
 					<td colspan="3">{{transaction.date}}</td>
 					<td colspan="3">{{transaction.description}}</td>
 					<td colspan="3" positive-or-negative-color="{{transaction.amount}}">$ {{transaction.amount | formatPrice}}</td>
 				</tr>
-				*/ ?>
+
+				<tr class="tb-mini-grid title" ng-show="driver.details && driver.delivered_orders.length">
+					<th colspan="9">Orders</th>
+				</tr>
+				<tr class="tb-mini-grid subtitle" ng-show="driver.details && driver.delivered_orders.length">
+					<th colspan="3"><strong>Date</strong></th>
+					<th colspan="3"><strong>Restaurant</strong></th>
+					<th colspan="3"><strong>Amount</strong></th>
+				</tr>
+				<tr class="tb-mini-grid" ng-repeat="order in driver.delivered_orders" ng-show="driver.details">
+					<td colspan="3">{{order.date}}</td>
+					<td colspan="3">{{order.restaurant}}</td>
+					<td colspan="3" positive-or-negative-color="{{order.amount}}">$ {{order.amount | formatPrice}}</td>
+				</tr>
+
+				<tr ng-show="driver.details">
+					<th style="border-bottom:1px solid #CCC;" colspan="9"><br>&nbsp;<br></th>
+				</tr>
+
 			</tbody>
 		</table>
 
