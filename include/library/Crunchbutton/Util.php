@@ -291,15 +291,15 @@ class Crunchbutton_Util extends Cana_Model {
 		}
 	}
 
-	function format_interval( $difference, $accuracy = 2 ) {
-		$intervals = array('y' => ' year', 'm' => ' month', 'd ' => 'day', 'h' => ' hour', 'i' => ' minute', 's' => ' second');
+	function format_interval( $difference, $accuracy = 10 ) {
+		$intervals = array( 'y' => ' year', 'm' => ' month', 'd' => ' day', 'h' => ' hour', 'i' => ' minute', 's' => ' second' );
 		$i = 0;
 		$result = '';
 		foreach ( $intervals as $interval => $name ) {
-			if ($difference->$interval > 1) {
+			if ( $difference->$interval > 1) {
 				$result .= $difference->$interval . $intervals[$interval] . 's ';
 				$i++;
-			} elseif ($difference->$interval == 1) {
+			} elseif ( $difference->$interval == 1) {
 				$result .= $difference->$interval . $intervals[$interval] . ' ';
 				$i++;
 			}
