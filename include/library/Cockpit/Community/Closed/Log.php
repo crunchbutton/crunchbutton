@@ -35,10 +35,11 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 
 		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$limit_date->setTimezone( new DateTimeZone( $community->timezone ) );
-		$limit_date->modify( '- 3 days' );
+		$limit_date->modify( '- 10 days' );
 
 		$hours_closed = [];
-		$force_closed_times = $community->forceCloseLog( false );
+		$force_closed_times = $community->forceCloseLog( false, true );
+
 		foreach( $force_closed_times as $closed ){
 
 			$from = new DateTime( $closed[ 'closed_at' ], new DateTimeZone( c::config()->timezone ) );
@@ -69,7 +70,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 
 		$out[ 'closed_shifts' ] = $closed_shifts;
 
-		$shifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ), cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ), cs.* FROM community_shift cs WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
 		for( $i=0; $i<count($hours_closed); $i++ ){
 			if( $hours_closed[ $i ][ 'type' ] == Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED ){
 				unset( $hours_closed[ $i ] );
@@ -79,7 +80,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 		$closed_with_drivers = Cockpit_Community_Closed_Log::processClosedHours( $shifts, $hours_closed );
 
 		$out[ 'closed_with_drivers' ] = $closed_with_drivers;
-
+// echo json_encode( $out );exit;
 		return $out;
 	}
 
