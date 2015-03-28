@@ -336,6 +336,8 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftScheduleService ) {
 
+	var isSaving = false;
+
 	$scope.ready = false;
 
 	var list = function(){
@@ -346,7 +348,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.shiftsAvailableToWork = 0;
-	$scope.availableToWork = [12,11,10,9,8,7,6,5,4,3,2,1];
+	$scope.availableToWork = [ 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
 
 	var process = function( data ){
 		$scope.available = 0;
@@ -359,13 +361,20 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	var count = function(){
+		$scope.available = 0;
+		$scope.yes = 0;
+		$scope.not = 0;
 		var list = [];
 		var ranking = 1;
+		var selecteds = [];
 		if( $scope.shifts && $scope.shifts.length ){
+			$scope.shifts.ranking_next = null;
+			$scope.shifts.ranking_prev = null;
 			for( var i = 0; i < $scope.shifts.length; i++ ){
 				var shift = $scope.shifts[ i ];
 				if( shift.ranking > 0 ){
 					ranking++;
+					selecteds.push( i );
 				}
 				if( !shift.ranking && shift.ranking != 0 ){
 					$scope.available++;
@@ -378,12 +387,51 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 				}
 			}
 		}
-		$scope.unBusy();
+
 		$scope.nextRanking = ranking;
+		if( selecteds && selecteds.length ){
+
+			for( var i = 0; i < selecteds.length; i++ ){
+				var shift_index = selecteds[ i ];
+				var next_index = selecteds[ i + 1 ];
+				var prev_index = selecteds[ i - 1 ];
+				$scope.shifts[ shift_index ].ranking_next = null;
+				$scope.shifts[ shift_index ].ranking_prev = null;
+
+				if( $scope.shifts[ prev_index ] ){
+					$scope.shifts[ shift_index ].ranking_prev = $scope.shifts[ prev_index ].id_community_shift;
+				} else {
+					$scope.shifts[ shift_index ].ranking_prev = 0;
+				}
+
+				if( $scope.shifts[ next_index ] ){
+					$scope.shifts[ shift_index ].ranking_next = $scope.shifts[ next_index ].id_community_shift;
+				} else {
+					$scope.shifts[ shift_index ].ranking_next = 0;
+				}
+			}
+		}
+	}
+
+	$scope.save = function(){
+		$scope.makeBusy();
+		$scope.isSaving = true;
+		var shifts = {};
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				var shift = $scope.shifts[ i ];
+				shifts[ shift.id_community_shift ] = shift.ranking;
+			}
+		}
+		DriverShiftScheduleService.save( shifts, function( data ){
+			$scope.isSaving = false;
+			process( data );
+			$scope.unBusy();
+		} );
 	}
 
 	$scope.updateShiftsAvailable = function( shifts ){
-		$scope.makeBusy();
+
 		$scope.shiftsAvailableToWork = shifts;
 		DriverShiftScheduleService.shiftsAvailableToWork( shifts, function( data ){
 			process( data );
@@ -391,6 +439,30 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.rankingChange = function( id_community_shift, id_community_shift_change ){
+		var shift = null;
+		var change = null;
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift ) {
+					shift = i;
+				}
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift_change ) {
+					change = i;
+				}
+			}
+			if( $scope.shifts[ shift ] && $scope.shifts[ change ] ){
+				var actual = $scope.shifts[ shift ].ranking;
+				$scope.shifts[ shift ].ranking = $scope.shifts[ change ].ranking;
+				$scope.shifts[ change ].ranking = actual;
+				actual = $scope.shifts[ shift ];
+				$scope.shifts[ shift ] = $scope.shifts[ change ];
+				$scope.shifts[ change ] = actual;
+				// console.log('$scope.shifts[ shift ]',$scope.shifts[ shift ]);
+				// console.log('$scope.shifts[ change ]',$scope.shifts[ change ]);
+			}
+		}
+		count();
+		return;
 		$scope.makeBusy();
 		DriverShiftScheduleService.rankingChange( id_community_shift, id_community_shift_change, function( data ){
 			if( !data.error ){
@@ -400,6 +472,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.dontWantToWork = function( id_community_shift ){
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift ) {
+					$scope.shifts[ i ].ranking = 0;
+				}
+			}
+		}
+		count();
+		return;
 		$scope.makeBusy();
 		DriverShiftScheduleService.dontWantToWork( id_community_shift, function( data ){
 			if( !data.error ){
@@ -409,6 +490,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.wantToWork = function( id_community_shift ){
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift ) {
+					$scope.shifts[ i ].ranking = $scope.nextRanking;
+				}
+			}
+		}
+		count();
+		return;
 		$scope.makeBusy();
 		DriverShiftScheduleService.wantToWork( id_community_shift, $scope.nextRanking, function( data ){
 			if( !data.error ){
