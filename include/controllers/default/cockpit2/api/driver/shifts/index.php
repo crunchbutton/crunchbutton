@@ -40,6 +40,21 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		switch ( $action ) {
 
+			case 'save':
+				$shifts = $this->request()[ 'shifts' ];
+				foreach ( $shifts as $shift => $ranking ) {
+					$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $shift . '" AND id_admin = "' . $id_admin . '"' );
+					if( !$preference->id_community_shift ){
+						$preference = new Crunchbutton_Admin_Shift_Preference;
+						$preference->id_community_shift = $shift;
+						$preference->id_admin = $id_admin;
+					}
+					$preference->ranking = $ranking;
+					$preference->save();
+				}
+				$this->_scheduleList();
+				break;
+
 			case 'shiftsAvailableToWork':
 				$shifts = $this->request()[ 'shifts' ];
 				// Start week on Thursday #3084
