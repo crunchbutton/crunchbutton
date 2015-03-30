@@ -16,6 +16,11 @@
 
 			<div class="drivers-shift drivers-schedule">
 
+		<div class="dialog-message dialog-message-error">
+			<b><i class="fa fa-hand-o-right"></i> Don't forget: You must save your changes!</b>
+		</div>
+
+
 			<div>
 				<ul class="ul-inputs box-content2">
 					<li class="li-input">
@@ -85,26 +90,12 @@
 								</td>
 							</tr>
 						</tbody>
-						<tbody>
-							<tr>
-								<td colspan="2">
-									<ul class="ul-inputs">
-										<li class="li-input" ng-show="!isSaving">
-											<button class="button save" ng-click="save();">Save</button>
-											You must save your changes!
-										</li>
-										<li class="li-input" ng-show="isSaving">
-											<i class="fa fa-circle-o-notch fa-spin"></i>
-										</li>
-									</ul>
-								</td>
-							</tr>
-						</tbody>
 					</table>
 					<div class="divider"></div>
 				</div>
 
 			</div>
+
 
 			<div ng-if="not > 0" class="shifts-not">
 
@@ -131,6 +122,26 @@
 				</div>
 			</div>
 
+			</div>
+
+
+			<div class="box-content2">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<ul class="ul-inputs">
+									<li class="li-input" ng-show="!isSaving">
+										<button class="button save" ng-click="save();">Save</button>
+									</li>
+									<li class="li-input" ng-show="isSaving">
+										<i class="fa fa-circle-o-notch fa-spin"></i>
+									</li>
+								</ul>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 
 		</div>
