@@ -337,7 +337,11 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, PositionsService, RestaurantsService, LocationService, RestaurantService, CommunityAliasService, AccountService ) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, $route, PositionsService, RestaurantsService, LocationService, RestaurantService, CommunityAliasService, AccountService ) {
+
+	var error = function(){
+		App.go( '/location' );
+	}
 
 	$scope.restaurants = false;
 
@@ -404,7 +408,13 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}, 1000 * 35 );
 	}
 
+	var checkLoadedRestaurants = true;
+
 	$scope.$on( '$destroy', function(){
+		checkLoadedRestaurants = false;
+		if( App.isPhoneGap && App.isAndroid() && checkIfRestaurantsWereLoaded ){
+			$timeout.cancel( checkIfRestaurantsWereLoaded );
+		}
 		RestaurantsService.forceGetStatus = true;
 		// Kills the timer when the controller is changed
 		if( typeof( updateRestaurantsStatus ) !== 'undefined' && updateRestaurantsStatus ){
@@ -499,6 +509,17 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		CommunityAliasService.removeCommunityStyle();
 	}
 
+	var listLoaded = false;
+
+	// See #5129
+	if( App.isPhoneGap && App.isAndroid() ){
+		var checkIfRestaurantsWereLoaded = $timeout(function() {
+			if( $route.current && $route.current.$$route && $route.current.$$route.action == 'restaurants' && checkLoadedRestaurants && !listLoaded ){
+				error();
+			}
+		}, 25000 );
+	}
+
 	restaurants.list(
 		// Success
 		function(){
@@ -555,10 +576,12 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			}
 			$('.content').removeClass('smaller-width');
 
+			listLoaded = true;
+
 		},
 		// Error
 		function(){
-			App.go( '/location' );
+			error();
 		}
 	);
 });
