@@ -1344,6 +1344,10 @@ input {
 .tb-grid .td-large, .tb-hack .td-large{
 	width: 40% !important;
 }
+	.tb-grid .td-larger{
+		width: 60% !important;
+	}
+
 .tb-grid .td-medium{
 	width: 60%;
 	text-align: left;
