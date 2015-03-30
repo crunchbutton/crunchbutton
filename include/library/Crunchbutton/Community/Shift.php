@@ -448,11 +448,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$date->setTimezone( new DateTimeZone( $timezone ) );
 			return $date;
 		}
-
-		if( !$this->_date_start ){
-			$this->_date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->timezone() ) );
-		}
-		return $this->_date_start;
+		return DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->timezone() ) );
 	}
 
 	public function dateEnd( $timezone = false ){
@@ -462,11 +458,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$date->setTimezone( new DateTimeZone( $timezone ) );
 			return $date;
 		}
-
-		if( !$this->_date_end ){
-			$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->timezone() ) );
-		}
-		return $this->_date_end;
+		return DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->timezone() ) );
 	}
 
 	public function startEndToStringCommunityTz(){
