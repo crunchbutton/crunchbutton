@@ -1,8 +1,9 @@
 <?php
 
-class Controller_api_test_sandbox extends Cana_Controller {
+class Controller_Api_Test_Sandbox extends Cana_Controller {
 	public function init(){
-		$order = Order::o( 99581 );
-		echo '<pre>';var_dump( $order->hasGiftCardIssued() );exit();;
+
+		Cockpit_Community_Closed_Log::processLog();
+
 	}
 }
