@@ -35,7 +35,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 
 		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$limit_date->setTimezone( new DateTimeZone( $community->timezone ) );
-		$limit_date->modify( '- 10 days' );
+		$limit_date->modify( '- 30 days' );
 
 		$hours_closed = [];
 		$force_closed_times = $community->forceCloseLog( false, true );
@@ -93,22 +93,27 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 	}
 
 	public function processLog(){
+
 		$out = [];
+
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
+
 		foreach( $communities as $community ){
-			$hours = Cockpit_Community_Closed_Log::forceCloseHoursLog( $community );
-			$closed_shifts = $hours[ 'closed_shifts' ];
-			if( count( $closed_shifts ) ){
-				foreach( $closed_shifts as $closed_shift ) {
-					Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
+			Cana::timeout(function() use($community) {
+				$hours = Cockpit_Community_Closed_Log::forceCloseHoursLog( $community );
+				$closed_shifts = $hours[ 'closed_shifts' ];
+				if( count( $closed_shifts ) ){
+					foreach( $closed_shifts as $closed_shift ) {
+						Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
+					}
 				}
-			}
-			$closed_shifts = $hours[ 'closed_with_drivers' ];
-			if( count( $closed_shifts ) ){
-				foreach( $closed_shifts as $closed_shift ) {
-					Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
+				$closed_shifts = $hours[ 'closed_with_drivers' ];
+				if( count( $closed_shifts ) ){
+					foreach( $closed_shifts as $closed_shift ) {
+						Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
+					}
 				}
-			}
+			});
 		}
 	}
 
