@@ -5,7 +5,7 @@ class Crunchbutton_Email_CSDigest extends Email{
     private $_mailConfig;
 
     public function __construct($params) {
-        $params['subject'] 		= 'Driver Feedback';
+        $params['subject'] 		= 'CS Digest';
         $params['from'] 			= 'Crunchbutton <_USERNAME_>';
         $params['reply']			= 'Crunchbutton <_USERNAME_>';
 
