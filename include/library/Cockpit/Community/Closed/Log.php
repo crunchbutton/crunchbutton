@@ -33,12 +33,14 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 			return false;
 		}
 
+		$limit_days = 30;
+
 		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$limit_date->setTimezone( new DateTimeZone( $community->timezone ) );
-		$limit_date->modify( '- 30 days' );
+		$limit_date->modify( '- ' . $limit_days . ' days' );
 
 		$hours_closed = [];
-		$force_closed_times = $community->forceCloseLog( false, true );
+		$force_closed_times = $community->forceCloseLog( false, true, $limit_days );
 
 		foreach( $force_closed_times as $closed ){
 
@@ -63,25 +65,10 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 			$hours_closed[] = [ 'from' => $from, 'to' => $to, 'type' => $type ];
 		}
 
-		$out = [];
-
 		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift cs WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
 		$closed_shifts = Cockpit_Community_Closed_Log::processClosedHours( $shifts, $hours_closed );
 
-		$out[ 'closed_shifts' ] = $closed_shifts;
-
-		$shifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ), cs.* FROM community_shift cs WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
-		for( $i=0; $i<count($hours_closed); $i++ ){
-			if( $hours_closed[ $i ][ 'type' ] == Cockpit_Community_Closed_Log::TYPE_AUTO_CLOSED ){
-				unset( $hours_closed[ $i ] );
-			}
-			$hours_closed[ $i ][ 'type' ] = Cockpit_Community_Closed_Log::TYPE_CLOSED_WITH_DRIVER;
-		}
-		$closed_with_drivers = Cockpit_Community_Closed_Log::processClosedHours( $shifts, $hours_closed );
-
-		$out[ 'closed_with_drivers' ] = $closed_with_drivers;
-// echo json_encode( $out );exit;
-		return $out;
+		return $closed_shifts;
 	}
 
 	public function processClosedHours( $shifts, $hours_closed ){
@@ -101,15 +88,8 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 		foreach( $communities as $community ){
 			Cana::timeout(function() use($community) {
 				$hours = Cockpit_Community_Closed_Log::forceCloseHoursLog( $community );
-				$closed_shifts = $hours[ 'closed_shifts' ];
-				if( count( $closed_shifts ) ){
-					foreach( $closed_shifts as $closed_shift ) {
-						Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
-					}
-				}
-				$closed_shifts = $hours[ 'closed_with_drivers' ];
-				if( count( $closed_shifts ) ){
-					foreach( $closed_shifts as $closed_shift ) {
+				if( count( $hours ) && is_array( $hours ) ){
+					foreach( $hours as $closed_shift ) {
 						Cockpit_Community_Closed_Log::saveLog( $closed_shift, $community->id_community );
 					}
 				}
@@ -118,7 +98,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 	}
 
 	public function saveLog( $closed, $id_community ){
-		if( Cockpit_Community_Closed_Log::checkIfLogAlreadyExists( $closed[ 'day' ], $id_community, $closed[ 'type' ] ) == false ){
+		if( Cockpit_Community_Closed_Log::checkIfLogAlreadyExists( $closed[ 'day' ], $id_community, $closed[ 'type' ] ) == false && $closed[ 'hours' ] ){
 			$log = new Cockpit_Community_Closed_Log;
 			$log->id_community = $id_community;
 			$log->day = $closed[ 'day' ];
@@ -160,6 +140,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 	}
 
 	public function mergeShiftsWithClosedHours( $shifts, $hours_closed ){
+
 		$closed_times = [];
 		for( $i = 0; $i < count( $shifts ); $i++ ){
 			$shift_start = $shifts[ $i ]->date_start->format( 'YmdHis' );
@@ -181,6 +162,10 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 				// [ { ] }
 				else if( $closed_from > $shift_start && $closed_from < $shift_end && $closed_to > $shift_end ){
 					$closed_times[] = [ 'from' => $hours_closed[ $j ][ 'from' ], 'to' => $shifts[ $i ]->date_end, 'type' => $hours_closed[ $j ][ 'type' ] ];
+				}
+				// [ { } ]
+				else if( $closed_from > $shift_start && $closed_to < $shift_end ){
+					$closed_times[] = [ 'from' => $hours_closed[ $j ][ 'from' ], 'to' => $hours_closed[ $j ][ 'to' ], 'type' => $hours_closed[ $j ][ 'type' ] ];
 				}
 			}
 		}
