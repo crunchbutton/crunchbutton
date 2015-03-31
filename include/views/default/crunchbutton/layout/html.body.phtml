@@ -149,7 +149,7 @@
 					<a ng-show="account.user.id_user" href="javascript:;" ng-click="navigation.link('/free-food')">Free Food</a>
 					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
 					<? if (c::config()->site->config('apply-to-drive')->val()) : ?>
-						<a href="https://docs.google.com/forms/d/1zmBx0XOxXi8UpqKX3n7lzXHJUbJqsMrjomqprYBRh0E/viewform?edit_requested=true">Apply to Drive</a>
+						<a href="/drivers/apply">Apply to Drive</a>
 					<? endif ; ?>
 					<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
 
