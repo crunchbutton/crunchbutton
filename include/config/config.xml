@@ -271,4 +271,8 @@
 			<compress>false</compress>
 		</local>
 	</templates>
+	<gcm>
+		<key>_KEY_</key>
+		<ip>_IP_</ip>
+	</gcm>
 </data>
