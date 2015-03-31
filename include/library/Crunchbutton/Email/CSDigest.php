@@ -1,25 +1,18 @@
 <?php
 
-
 class Crunchbutton_Email_CSDigest extends Email{
-    private $_mailConfig;
+	private $_mailConfig;
 
-    public function __construct($params) {
-        $params['subject'] 		= 'Driver Feedback';
-        $params['from'] 			= 'Crunchbutton <_USERNAME_>';
-        $params['reply']			= 'Crunchbutton <_USERNAME_>';
+	public function __construct( $params ) {
+		$params['to'] 			= $params[ 'to' ];
+		$params['subject'] 		= 'Customer Service Morning Digest - ' . date( 'm/d/Y' );
+		$params['from'] 		= 'Crunchbutton <_USERNAME_>';
+		$params['reply']		= 'Crunchbutton <_USERNAME_>';
 
-        $this->buildView($params);
-        //print_r($params['messages']);
+		$this->buildView($params);
 
-        $params['messageHtml'] = $this->view()->render('cs/digest',['display' => true, 'set' =>
-            ['messages' => $params['messages'],
+		$params['messageHtml'] = $this->view()->render('cs/digest',['display' => true, 'set' => ['messages' => $params['messages'], ]]);
 
-                ]]);
-        print_r($params['messageHtml']);//why does this need to be called in order for it to work?
-        //how do i make it automatically send at 10am every day?
-
-
-        parent::__construct($params);//sends emails
-    }
+		parent::__construct($params);
+	}
 }

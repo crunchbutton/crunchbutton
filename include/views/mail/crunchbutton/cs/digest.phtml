@@ -13,7 +13,7 @@
 <?php foreach ($messages as $message) : ?>
 <tr>
     <td><?= $message->firstMessage()->name ?></td>
-    <td><?=  DATE_FORMAT(new DateTime($message->firstMessage()->date), 'g:i A')?></td>
+    <td nowrap="nowrap"><?=  DATE_FORMAT(new DateTime($message->firstMessage()->date), 'g:i A')?></td>
     <td><?= $message->firstMessage()->body ?></td>
     <td><?= $message->firstMessage()->phone ?></td>
 </tr>
