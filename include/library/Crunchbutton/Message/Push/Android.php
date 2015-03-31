@@ -67,9 +67,10 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 		curl_close($ch);
 		
 		if (!$result->success) {
-			print_r($fields);
-			print_r($result);
+			//print_r($fields);
+			
 		}
+		print_r($result);
 		
 		return $result->success ? true : false;
 
