@@ -2998,6 +2998,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $out;
 	}
 
+	public function checkIfOrderWasRefunded( $force = false ){
+		if( $this->refunded && !$force ){
+			return true;
+		}
+		if( $this->txn ){
+			$env = ( $this->env == 'live' ) ? 'live' : 'dev';
+			$api_key = c::config()->balanced->{$env}->secret;
+			Balanced\Settings::$api_key = $api_key;
+			$url = '/debits/' . $this->txn . '/refunds';
+			$refund = json_decode( json_encode( ( object ) Balanced\Refund::get( $url ) ) );
+			if( $refund && $refund->status && $refund->status == 'succeeded' ){
+				$this->refunded = 1;
+				$this->save();
+				return true;
+			}
+			else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
 	public function save() {
 		$new = $this->id_order ? false : true;
 
