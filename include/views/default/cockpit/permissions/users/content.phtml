@@ -28,9 +28,9 @@ $admins = $this->admins;
 					<a style="margin:0 5px;" href="/permissions/users/<?php echo $admin->id_admin; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
 					
 					<?php if( $admin->active ) { ?>
-						<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-inactive btn-red"><i class="icon-trash"></i> Inactive</button>
+						<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-inactive btn-red"><i class="icon-trash"></i> Make Inactive</button>
 					<?php } else { ?>
-						<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-active btn-default"><i class="icon-trash"></i> Active</button>
+						<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-active btn-default"><i class="icon-trash"></i> Make Active</button>
 					<?php } ?>
 				</td>
 			</tr>
