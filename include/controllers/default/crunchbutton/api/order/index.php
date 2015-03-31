@@ -29,6 +29,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				} else {
 					echo json_encode(['status' => 'false', 'errors' => $status->errors]);
 				}
+				exit;
 				break;
 
 			case 'pay_if_refunded':
