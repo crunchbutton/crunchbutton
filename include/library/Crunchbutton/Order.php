@@ -2331,6 +2331,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								$amount = floatval( number_format( $amount, 2 ) );
 								$amount = $amount * 100;
 								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
+
+								Log::debug([
+										'order' => $this->id_order,
+										'action' => 'refund',
+										'status' => 'refunding',
+										'amount' => $amount
+									]);
+
 								$ch->refund( $amount );
 
 							} catch (Exception $e) {
