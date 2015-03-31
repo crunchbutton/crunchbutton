@@ -92,6 +92,9 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		$scope.unBusy();
 		DriverOrdersService.list(function(data) {
 			$scope.driverorders = data;
+			for (var x in $scope.driverorders) {
+				$scope.driverorders[x].addressFirstLine =$scope.driverorders[x].address.split(',').shift();
+			}
 			$scope.ready = true;
 		});
 	};
