@@ -70,7 +70,8 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 			//print_r($fields);
 			
 		}
-		print_r($result);
+		echo "GCM response\n";
+		var_dump($result);
 		
 		return $result->success ? true : false;
 
