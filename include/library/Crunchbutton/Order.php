@@ -2327,7 +2327,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							try {
 								// refund the debit
 								// See #5191
-								$amount = $this->calcFinalPriceMinusUsersCredit();
+								$amount = $this->charged();
 								$amount = floatval( number_format( $amount, 2 ) );
 								$amount = intval( $amount * 100 );
 								$ch = Crunchbutton_Balanced_Debit::byId( $this->txn );
@@ -2371,6 +2371,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							try {
 								// cancel the hold
 								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
+								Log::debug([
+										'order' => $this->id_order,
+										'action' => 'cancel hold',
+										'status' => 'trying to cancel hold',
+										'amount' => $amount
+									]);
 								if ($hold) {
 									$res = $hold->void();
 								}
