@@ -18,11 +18,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		switch (c::getPagePiece(3)) {
 
 			case 'refund':
-
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-refund'])) {
 					return ;
 				}
-
 				$status = $order->refund();
 				if( $status ){
 					echo json_encode(['status' => 'success']);
