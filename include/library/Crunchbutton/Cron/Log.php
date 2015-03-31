@@ -23,14 +23,14 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0" );
 		if( $crons->count() ){
-			Log::debug( [ 'type' => 'cron-jobs', 'method' => 'start', 'desc' => 'working with ' . $crons->count() . ' cron jobs' ] );
+			// Log::debug( [ 'type' => 'cron-jobs', 'method' => 'start', 'desc' => 'working with ' . $crons->count() . ' cron jobs' ] );
 			foreach( $crons as $cron ){
 				if( $cron->should_start() ){
 					$cron->que();
 				}
 			}
 		} else {
-			Log::debug( [ 'type' => 'cron-jobs', 'method' => 'start', 'desc' => 'there is no cron jobs to run' ] );
+			// Log::debug( [ 'type' => 'cron-jobs', 'method' => 'start', 'desc' => 'there is no cron jobs to run' ] );
 		}
 	}
 
@@ -184,7 +184,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function log( $method, $message ){
-		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
+		// $data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
 		echo date('Y-m-d H:i:s') . ' - ' . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}
