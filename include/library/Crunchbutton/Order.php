@@ -2329,8 +2329,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								// See #5191
 								$amount = $this->calcFinalPriceMinusUsersCredit();
 								$amount = floatval( number_format( $amount, 2 ) );
-								$amount = $amount * 100;
-								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
+								$amount = intval( $amount * 100 );
+								$ch = Crunchbutton_Balanced_Debit::byId( $this->txn );
 
 								Log::debug([
 										'order' => $this->id_order,
