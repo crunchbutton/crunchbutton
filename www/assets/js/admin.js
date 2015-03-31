@@ -921,10 +921,10 @@ App.orders = {
 				alert('Refunding fail! ' + er);
 			}
 			$.ajax({
-				url: '/api/order/' + el.attr('data-uuid') + '/refund',
+				url: '/api/refund/' + el.attr('data-uuid'),
 				success: function( result ){
+					console.log('result',result);
 						try {
-
 							if( result.status && result.status == 'success' ){
 								el.html('REFUNDED');
 							} else {
