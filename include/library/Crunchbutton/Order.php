@@ -2326,8 +2326,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						case 'balanced':
 							try {
 								// refund the debit
+								// See #5191
+								$amount = $this->calcFinalPriceMinusUsersCredit();
+								$amount = floatval( number_format( $amount, 2 ) );
+								$amount = $amount * 100;
 								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
-								$ch->refund();
+								$ch->refund( $amount );
 
 							} catch (Exception $e) {
 
