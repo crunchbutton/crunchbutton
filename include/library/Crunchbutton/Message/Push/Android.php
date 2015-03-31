@@ -65,9 +65,11 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 		curl_setopt($ch,CURLOPT_POSTFIELDS, json_encode($fields));
 		$result = json_decode(curl_exec($ch));
 		$e = curl_error($ch);
+		$h = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		
 		if (!$result || !$result->success) {
 			var_dump($fields);
+			var_dump($h);
 			echo "GCM response\n";
 			if ($e) {
 				var_dump($e);
