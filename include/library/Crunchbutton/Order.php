@@ -2371,6 +2371,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							try {
 								// cancel the hold
 								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
+								Log::debug([
+										'order' => $this->id_order,
+										'action' => 'cancel hold',
+										'status' => 'trying to cancel hold',
+										'amount' => $amount
+									]);
 								if ($hold) {
 									$res = $hold->void();
 								}
