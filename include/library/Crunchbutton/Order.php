@@ -2335,7 +2335,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								Log::debug([
 										'order' => $this->id_order,
 										'action' => 'refund',
-										'status' => 'refunding',
+										'status' => 'trying to refund',
 										'amount' => $amount
 									]);
 
