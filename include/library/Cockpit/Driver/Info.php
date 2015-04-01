@@ -23,7 +23,7 @@ class Cockpit_Driver_Info extends Cana_Table {
 			->load($id);
 	}
 
-    
+
 	public function carrierTypes(){
 		return [ Cockpit_Driver_Info::CARRIER_TYPE_ATT,
 						 Cockpit_Driver_Info::CARRIER_TYPE_VERIZON,
@@ -57,14 +57,14 @@ class Cockpit_Driver_Info extends Cana_Table {
 							'6 Plus',
 							'Other'  ];
 	}
-    
-    public function tshirtSizes(){
-        return [    'S',
-                            'M',
-                            'L',
-                            'XL',
-                            'XXL'  ];
-    }
+
+		public function tshirtSizes(){
+				return [	'S',
+									'M',
+									'L',
+									'XL',
+									'XXL' ];
+		}
 
 	public function androidTypes(){
 

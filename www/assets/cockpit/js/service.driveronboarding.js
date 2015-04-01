@@ -23,11 +23,16 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				'options' : { 'method': 'GET' }
 			}
 		);
-    
-    var tshirt_sizes = $resource( App.service + 'driver/onboarding/tshirt_sizes', {}, {
-				'options' : { 'method': 'GET' }
-			}
-		);
+
+	var tshirt_sizes = $resource( App.service + 'driver/onboarding/tshirt_sizes', {}, {
+			'options' : { 'method': 'GET' }
+		}
+	);
+
+	var defaults = $resource( App.service + 'driver/onboarding/defaults', {}, {
+			'options' : { 'method': 'GET' }
+		}
+	);
 
 	var carrier_types = $resource( App.service + 'driver/onboarding/carrier_types', {}, {
 				'options' : { 'method': 'GET' }
@@ -56,8 +61,8 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			callback( json );
 		} );
 	}
-    
-    service.tshirt_sizes = function( callback ){
+
+	service.tshirt_sizes = function( callback ){
 		tshirt_sizes.options( {}, function( json ){
 			callback( json );
 		} );
@@ -68,8 +73,6 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			callback( json );
 		} );
 	}
-
-
 
 	service.yesNo = function(){
 		var options = [];
@@ -204,15 +207,13 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	service.get = function( id_admin, callback ){
 		if( id_admin ){
 			drivers.get( { 'id_admin': id_admin }, function( driver ){
-				if( driver.communities ){
-					angular.forEach( driver.communities, function( name, id_community ){
-						driver.id_community = id_community;
-					} );
-				}
 				callback( driver );
 			} );
 		} else {
-			callback( {} );
+			defaults.options( {}, function( json ){
+				callback( json );
+			} );
+			// callback( {} );
 		}
 	}
 
