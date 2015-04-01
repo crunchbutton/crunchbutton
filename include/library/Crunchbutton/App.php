@@ -157,9 +157,6 @@ class Crunchbutton_App extends Cana_App {
 			->config($config)
 			->postInit($params);
 
-		require_once c::config()->dirs->library . '/Cana/Stripe.php';
-		Stripe::setApiKey(c::config()->stripe->dev->secret);
-
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
 			case 'beta.spicywithdelivery.com':
@@ -462,6 +459,16 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_balanced;
 	}
+	
+	public function stripe() {
+		if (!$this->_stripe) {
+			\Stripe\Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);;
+			$this->_stripe = true;
+		}
+		return $this->_stripe;
+	}
+	
+	
 
 	public function lob($d = true) {
 		if (!$this->_lob) {

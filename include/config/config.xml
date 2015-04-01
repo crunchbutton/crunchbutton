@@ -138,12 +138,12 @@
 	</text>
 	<stripe>
 		<dev>
-			<secret>***REMOVED***</secret>
-			<public>***REMOVED***</public>
+			<secret>_KEY_</secret>
+			<public>_KEY_</public>
 		</dev>
 		<live>
-			<secret>***REMOVED***</secret>
-			<public>***REMOVED***</public>
+			<secret>_KEY_</secret>
+			<public>_KEY_</public>
 		</live>
 	</stripe>
 	<balanced>

@@ -3,18 +3,27 @@
 class Crunchbutton_User_Payment_Type extends Cana_Table {
 
 	public function processor() {
-		return c::config()->processor;
+		return c::config()->site->config('processor_payments')->value;
 	}	
 
-	public function getUserPaymentType( $id_user = null ){
-		$id_user = ( $id_user ) ? $id_user : c::user()->id_user;
-		if( $id_user ){
-			$where = ' AND ' . Crunchbutton_User_Payment_Type::processor() . '_id IS NOT NULL';
-			$payment = Crunchbutton_User_Payment_Type::q( 'SELECT * FROM user_payment_type WHERE id_user = ? AND active = true ' . $where . ' ORDER BY id_user_payment_type DESC LIMIT 1', [$id_user]);
-			if( $payment->id_user_payment_type ){
+	public function getUserPaymentType($id_user = null) {
+		$id_user = $id_user ? $id_user : c::user()->id_user;
+
+		if ($id_user) {
+			$payment = Crunchbutton_User_Payment_Type::q('
+				SELECT * FROM user_payment_type
+				WHERE
+					id_user = ?
+					AND active = true
+					AND ' . Crunchbutton_User_Payment_Type::processor() . '_id IS NOT NULL
+				ORDER BY id_user_payment_type DESC LIMIT 1
+			', [$id_user]);
+
+			if ($payment->id_user_payment_type) {
 				return $payment;
 			}
 		}
+
 		return false;
 	}
 
