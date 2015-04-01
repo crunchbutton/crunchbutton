@@ -3262,3 +3262,7 @@ i {
 .rewards-container {
 	margin-bottom: 1em;
 }
+
+.no-init .hide-before-init {
+	display: none !important;
+}
