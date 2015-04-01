@@ -764,7 +764,7 @@ App.trackCommunity = function (id_community) {
 App.busy = {
 	_busy: false,
 	_timer: null,
-	_maxExec: 25000,
+	_maxExec: 35000,
 	stage: function() {
 		$('#Stage').height('100%').width('100%');
 		return AdobeEdge.getComposition('EDGE-977700350').getStage();
@@ -1334,8 +1334,8 @@ App.share = function(params) {
 				}
 			}
 		});
-		
-		
+
+
 
 	} else {
 		FB.ui({
