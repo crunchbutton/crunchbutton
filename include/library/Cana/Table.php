@@ -536,5 +536,9 @@ class Cana_Table extends Cana_Model { //
 		}
 		echo ")\n";
 	}
+	
+	public function get() {
+		return $this;
+	}
 
 }
