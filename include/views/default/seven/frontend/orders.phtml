@@ -1,76 +1,76 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
+	<div class="user-account-credit col-box">
+		
+		<div class="two-col">
+			<a id="credit"></a>
 
-	<a id="credit"></a>
+			<div ng-show="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
+				<p class="delivery-free">You are <b>{{account.user.points.away_free_delivery}}</b> points away from a free delivery.</p><br/>
+				<p>Earn points by ordering food, sharing your order, or referring friends.</p><br/>
+			</div>
+			<div ng-show="account.user.points.free_delivery_message && account.user.points.free_delivery">
+				<p><span class="delivery-free">You have <b>{{account.user.points.free_delivery}}</b> points!</span> <br><br>The next delivery fee is on us.</p>
+			</div>
 
-	<div ng-show="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
-		<p class="delivery-free">You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</p><br/>
-		<p>Earn points by ordering food, sharing your order, or referring friends.</p><br/>
+			<br/>
+
+			<div class="divider"></div>
+
+			<div ng-show="account.user.invite_code">
+				<p>
+					Get your friends to enter <b>your referal code</b> in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
+				</p><br/>
+				
+			</div>
+			<br/>
+		</div>
+		<div class="two-col">
+			<div class="col-box">
+
+				<button class="button facebook button-refer" ng-click="referral.facebook()">
+					<i class="fa fa-facebook-square"></i> <span>Share</span>
+				</button>
+
+				<br><br>
+
+				<button class="button twitter button-refer" ng-click="referral.twitter()">
+					<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+				</button>
+			</div>
+			<br><br>
+			<p>Your code: <span class="referal-text-spacer"></span><b>{{account.user.invite_code}}</b></p>
+			<br>
+			<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
+		</div>
 	</div>
-	<div ng-show="account.user.points.free_delivery_message && account.user.points.free_delivery">
-		<p class="delivery-free">You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.</p>
-	</div>
-
-	<br/>
-
-	<div class="divider"></div>
-
-	<div ng-show="account.user.invite_code">
-		<p>
-			Get your friends to enter your code below in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
-		</p><br/>
-		<p class="order-code"><strong>{{account.user.invite_code}}</strong></p>
-	</div>
-	<br/>
 
 
-	<button class="button facebook" ng-click="referral.facebook()">
-		<i class="fa fa-facebook-square"></i> <span>Share</span>
-	</button>
-
-	<br><br>
-
-	<button class="button twitter" ng-click="referral.twitter()">
-		<i class="fa fa-twitter-square"></i> <span>Tweet</span>
-	</button>
-
-	<br><br>
-
-</div>
-
-<div class="divider"></div>
-
-<div class="content-padding">
-
-<div ng-show="!orders.list">
-	<div class="content-padding">
+	<div ng-show="!orders.list">
 		<div class="stamp-loader">
 			<div class="stamp-loader-button"></div>
 			<div class="stamp-loader-words"></div>
 		</div>
 	</div>
-</div>
 
-<div class="content-padding" ng-show="orders.list">
+	<div class="divider"></div>
+	<br><br><br>
+	<div ng-show="orders.list">
+		<div class="orders-oranges animated-resize"></div>
+		<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
+		<p><span class="account-your-orders">Your Orders</span><br><br></p>
+	</div>
 
-	<div class="orders-oranges animated-resize"></div>
-	<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
-</div>
-
-
-
-<div ng-show="orders.list.length == 0">
-	<div class="content-padding">
+	<div ng-show="orders.list.length == 0">
 		<p>After you place orders, you'll see them all right here. </p>
 		<h4><a href="/food-delivery" ng-click="navigation.link('/food-delivery')">Place an order</a></h4>
 		<br /><br />
 	</div>
-</div>
 
-<div ng-show="orders.list && orders.list.length > 0">
-	<div class="content-padding">
-		<ul class="orders-list">
+	<div ng-show="orders.list && orders.list.length > 0">
+
+		<ul class="orders-list col-box">
 			<li ng-repeat="order in orders.list" class="order-item-wrap" ng-click="orders.receipt(order.id)">
 				<div class="order-item">
 					<div class="order-date">

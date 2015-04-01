@@ -3773,7 +3773,33 @@ font-familt: "Museo Slab";
 	@include animation-timing-function(linear);
 }
 
+.referal-text-box {
+	border: 1px solid green;
+	border-radius: 2px;
+	padding: .4em;
+	width: 68%;
+}
+.referal-text-spacer {
+	width: 6%;
+	display: inline-block;
+}
+
 @media screen and (min-width: 1025px) {
+	.orders-list li {
+		width: 48.2%;
+		margin-bottom: 1.2em;
+	}
+	.referal-text-box {
+		width: 75%;
+		float: right;
+	}
+	.button-refer {
+		width: 48%;
+	}
+	
+	.user-account-credit .delivery-free, .account-your-orders {
+		font-size: 2em;
+	}
 	.col-box {
 		display: flex;
 		flex-direction: row;
