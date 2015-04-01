@@ -173,6 +173,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver_info->student = $this->request()[ 'student' ];
 		$driver_info->permashifts = $this->request()[ 'permashifts' ];
 		$driver_info->weekly_hours = $this->request()[ 'weekly_hours' ];
+		$driver_info->tshirt_size = $this->request()[ 'tshirt_size' ];
 
 		$driver_info->save();
 

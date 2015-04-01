@@ -670,6 +670,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.get( $routeParams.id, function( driver ){
 
 			$scope.driver = driver;
+
 			if( driver.pexcard_date ){
 				$scope.driver.pexcard_date = new Date( driver.pexcard_date );
 			} else {
