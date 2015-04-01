@@ -344,7 +344,7 @@ ORDER BY o.id_order ASC";
 					switch ( $this->type ) {
 						default:
 						case Crunchbutton_Admin_Notification::TYPE_SMS :
-							$this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
+							return $this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
 							break;
 
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :

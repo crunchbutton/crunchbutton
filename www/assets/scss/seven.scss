@@ -1198,7 +1198,7 @@ p {
 	margin-top: -8.9em;
 	margin-right: -11px;
 	float: right;
-	border-color: transparent transparent transparent #018872;
+	border-color: transparent transparent transparent #666;
 	border-style: solid;
 	border-width: 4px;
 	width: 0;
@@ -1206,6 +1206,7 @@ p {
 	content: " ";
 	z-index: 5;
 	position: relative;
+	@include transform(rotate(-5deg));
 }
 
 .restaurants-orange {
