@@ -3797,6 +3797,7 @@ font-familt: "Museo Slab";
 	h4.restaurants-top-title {
 		font-size: 2em;
 		font-weight: normal;
+		margin-bottom: .3em;
 	}
 	.restaurants-top-wrap {
 		padding-top: 0;
@@ -3884,13 +3885,12 @@ font-familt: "Museo Slab";
 		display: none;
 	}
 	.restaurants-bubble-wrap {
-		margin-right:8em;
+		margin-right:6em;
 		float: right;
 		margin-bottom: 5px;
-		margin-top: -10px;
+		margin-top: 0px;
 	}
 	.restaurants-top-tag {
-		margin-top: 1em;
 		float: left;
 		margin-bottom: 1em;
 	}
