@@ -166,14 +166,22 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// shifts we have to pay hourly
 	public function workedShiftsByPeriod( $id_admin, $filters ){
+
+		$admin = Admin::o( $id_admin );
+		if( $admin->date_terminated ){
+			$where = 'AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $admin->date_terminated . '"';
+		} else {
+			$where = '';
+		}
 		$start = ( new DateTime( $filters[ 'start' ] ) )->format( 'Y-m-d' );
 		$end = ( new DateTime( $filters[ 'end' ] ) )->format( 'Y-m-d' );
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
-																							WHERE
-																									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $start . '"
-																									AND
-																									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $end . '"' );
+		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
+								WHERE
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $start . '"
+										AND
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $end . '"' . $where;
+		return Crunchbutton_Community_Shift::q( $query );
 	}
 
 
@@ -334,6 +342,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
 			}
 		}
+
 
 		// Get all the shifts between the dates
 		if( $process_shifts ){
@@ -1840,16 +1849,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function shifts( $id_driver = 0 ){
 		$where = ( $id_driver == 0 ) ? '' : ' AND asa.id_admin = ' . $id_driver;
-		return Crunchbutton_Community_Shift::q( "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex, apt.using_pex_date
-																							FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
-																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
-																							INNER JOIN admin a ON a.id_admin = asa.id_admin
-																							WHERE
-																								DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
-																								AND
-																								DATE_FORMAT(cs.date_start, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'"
-																							 . $where );
+		$query = "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex, apt.using_pex_date
+								FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
+								INNER JOIN admin a ON a.id_admin = asa.id_admin
+								WHERE
+									DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
+									AND
+									DATE_FORMAT(cs.date_start, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'"
+								 . $where;
+		return Crunchbutton_Community_Shift::q( $query );
 	}
 
 	public function amount_per_invited_user(){

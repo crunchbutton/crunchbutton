@@ -87,12 +87,19 @@
 					</div>
 				</li>
 
-
 				<li class="li-input" ng-class="{'error':form.payInfoSummaryEmail.$invalid}">
 					<div class="label">Summary Email:</div>
 					<div class="input"><input type="email" name="payInfoSummaryEmail" ng-model="payInfo.summary_email" placeholder="Email"></div>
 					<div class="box-error">
 						<small ng-show="form.payInfoSummaryEmail.$error.email">Enter a valid email.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.dateTerminated.$invalid}">
+					<div class="label">Deactivated date (shifts worked before this date will not be paid):</div>
+					<div class="input"><input type="date" name="dateTerminated" ng-model="payInfo.date_terminated" placeholder=""></div>
+					<div class="box-error">
+						<small ng-show="form.dateTerminated.$error.required">Required.</small>
 					</div>
 				</li>
 

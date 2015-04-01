@@ -488,6 +488,9 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 				if( json.using_pex_date ){
 					$scope.payInfo.using_pex_date = new Date( json.using_pex_date );
 				}
+				if( json.date_terminated ){
+					$scope.payInfo.date_terminated = new Date( json.date_terminated );
+				}
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
 				$scope.payment._using_pex = StaffPayInfoService.typesUsingPex();
 				$scope.payment._types = StaffPayInfoService.typesPayment();
@@ -523,6 +526,13 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		} else {
 			$scope.payInfo.using_pex_date_formatted = null;
 		}
+
+		if( $scope.payInfo.date_terminated && !isNaN( $scope.payInfo.date_terminated.getTime() ) ){
+			$scope.payInfo.date_terminated_formatted = $filter( 'date' )( $scope.payInfo.date_terminated, 'yyyy-MM-dd' )
+		} else {
+			$scope.payInfo.date_terminated_formatted = null;
+		}
+
 		$scope.isSaving = true;
 		StaffPayInfoService.save( $scope.payInfo, function( data ){
 			$scope.isSaving = false;

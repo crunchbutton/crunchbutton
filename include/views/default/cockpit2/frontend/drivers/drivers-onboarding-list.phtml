@@ -27,6 +27,7 @@
 				<th>Vehicle</th>
 				<th>Community</th>
 				<th>Created by</th>
+				<th>Active</th>
 				<th></th>
 			</tr>
 			<tr ng-repeat="driver in drivers" ng-attr-tabindex="{{$index+1}}" tab-select="/drivers/onboarding/{{driver.id_admin}}">
@@ -46,6 +47,9 @@
 				</td>
 				<td>
 					{{driver.author}}
+				</td>
+				<td class="tb-center">
+					<span ng-if="driver.active"><i class="fa fa-check"></i></span>
 				</td>
 				<td>
 					<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
