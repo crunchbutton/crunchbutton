@@ -245,7 +245,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 														) drivers
 													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = true ' . $where . ' ORDER BY name ASC' );
+											drivers ON drivers.id_admin = a.id_admin ' . $where . ' ORDER BY name ASC' );
 	}
 
 	public function search( $search = [] ){
@@ -1001,6 +1001,13 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	// return the last added pexcard
 	public function pexcard(){
 		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = ? ORDER BY id_admin_pexcard DESC', [$this->id_admin])->get( 0 );
+	}
+
+	public function dateTerminated(){
+		if( $this->date_terminated ){
+			return new DateTime( $this->date_terminated, new DateTimeZone( c::config()->timezone ) );
+		}
+		return false;
 	}
 
 	public function __construct($id = null) {

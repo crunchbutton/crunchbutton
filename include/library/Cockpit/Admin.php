@@ -163,6 +163,11 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			}
 		}
 
+		if( $this->date_terminated ){
+			$date = $this->dateTerminated();
+			$out['date_terminated_formatted'] = $date->format( 'm/d/Y' );
+		}
+
 		$out['status'] = $this->status();
 
 		return $out;

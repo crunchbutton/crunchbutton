@@ -73,6 +73,14 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$payment_type->using_pex_date = null;
 		}
 
+		if( $this->request()[ 'date_terminated_formatted' ] ){
+			$admin->date_terminated = ( new DateTime( $this->request()[ 'date_terminated_formatted' ] ) )->format( 'Y-m-d' );
+			$admin->save();
+		} else {
+			$admin->using_pex_date = null;
+			$admin->save();
+		}
+
 		if( $payment_type->using_pex == 1 && !$payment_type->using_pex_date ){
 			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 		}
@@ -151,6 +159,9 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
 			if( $payment_type->using_pex_date ){
 				$out[ 'using_pex_date' ] = $payment_type->using_pex_date()->format( 'Y,m,d' );
+			}
+			if( $admin->date_terminated ){
+				$out[ 'date_terminated' ] = $admin->dateTerminated()->format( 'Y,m,d' );
 			}
 
 			echo json_encode( $out );
