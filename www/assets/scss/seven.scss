@@ -1138,7 +1138,7 @@ p {
 
 @media screen and (min-width: 740px) {
 	.restaurants-item .restaurants-open {
-		width: 25.5em;
+		width: 26.5em;
 		height: 16.2em;
 		border-radius: 6px;
 	}
@@ -3785,6 +3785,22 @@ font-familt: "Museo Slab";
 }
 
 @media screen and (min-width: 1025px) {
+	.restaurants-repeated:nth-child(3n+0) .restaurants-item {
+		margin-right: 0;
+	}
+	.restaurants-repeated:nth-child(3n+1) .restaurants-item {
+		margin-left: 0;
+	}
+	.restaurants-item .restaurants-open {
+		width: 26.9em;
+	}
+	h4.restaurants-top-title {
+		font-size: 2em;
+		font-weight: normal;
+	}
+	.restaurants-top-wrap {
+		padding-top: 0;
+	}
 	.orders-list li {
 		width: 48.2%;
 		margin-bottom: 1.2em;
@@ -3874,9 +3890,9 @@ font-familt: "Museo Slab";
 		margin-top: -10px;
 	}
 	.restaurants-top-tag {
-		margin-left: 2.6em;
 		margin-top: 1em;
 		float: left;
+		margin-bottom: 1em;
 	}
 	.restaurants-top-tag strong {
 		display: none;
