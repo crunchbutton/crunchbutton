@@ -2,98 +2,103 @@
 
 class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 	public function __construct($params = []) {
-	
+		$this->_customer = $params['customer_id'];
+		$this->_card = $params['card_id'];
 	}
 	
 	public function charge($params = []) {
 		
-		$env = c::getEnv();
-		
-		Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+		c::stripe();
 
 		$success = false;
-		$reason = false;
-
-		$user = $params[ 'user' ];
-
-		// Start with no customer id
-		$customer_id = false;
 
 		// The user changed its card or it is a new one
-		if( $params['card']['id'] ){
-			// The first thing we need to do is check customer
-			$token = $params['card']['uri'];
-			// lets see if the customer exists
-			if ( !$user || !$user->payment_type()->stripe_id ) {
-					// if there is no user, create one
-					try {
-						$customer = Stripe_Customer::create( array(
-													'description' => "Crunchbutton",
-													'card' => $token
-												) );
-					} catch ( Exception $e ) {
-						print_r( $e );
-						die('creating customer error: 1');
-					}
-				} elseif ( $user && $user->payment_type()->stripe_id ) {
-					// if there is already a user, update it
-					try {
-						$customer = Stripe_Customer::retrieve( $user->payment_type()->stripe_id );
-						$customer->card = $token;
-						$customer->save();
-					} catch ( Exception $e ) {
-						print_r( $e );
-						die('creating customer error: 2');
-					}
-				}
-				$customer_id = $customer->id;
-			} 
-			// If we don't have a card token it means the user is already a customer
-			else if( $user->payment_type()->stripe_id ) {
-				$customer_id = $user->payment_type()->stripe_id;
-			}
-
-			// yay, we have a valid customer
-			if( $customer_id ){
-				// Now we have to charge it
+		if ($params['card']) {
+			
+			// create a customer if it doesnt exist
+			if (!$this->_customer) {
 				try {
-					$charge = Stripe_Charge::create([
-						'amount' => $params['amount'] * 100,
-						'currency' => 'usd',
-						'customer' => $customer_id,
-						'description' => $params['restaurant']->name,
-					] );
-				} 
-				// Shit happens
-				catch(Stripe_CardError $e) {
-					Log::debug( [ 'card error' => 'card declined', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Your card was declined. Please try again!';
-				} catch (Stripe_InvalidRequestError $e) {
-					Log::debug( [ 'card error' => 'invalid request', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Stripe_AuthenticationError $e) {
-					Log::debug( [ 'card error' => 'auth error', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Stripe_ApiConnectionError $e) {
-					Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Stripe_Error $e) {
-					Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Exception $e) {
-					$errors[] = 'Not enough card information.';
-				}
+					$customer = \Stripe\Customer::create([
+						'description' => $params['name'],
+						'email' => $params['email'],
+						'source' => $params['card']['uri']
+					]);
 
-			if ( $charge->paid && !$charge->refunded ) {
-				$success = true;
-				$txn = $charge->id;
-			} 
-		} 
-		if (!$success && !$errors) {
-			$errors[] = 'Not enough card information.';
+				} catch ( Exception $e ) {
+					$errors[] = 'Could not create customer with processor.';
+				}
+				$this->_customer = $customer->id;
+						
+			// there is already a customer
+			} else {
+				try {
+					$customer = \Stripe\Customer::retrieve($this->_customer);
+					$customer->card = $params['card']['token'];
+					$customer->save();
+
+				} catch ( Exception $e ) {
+					$errors[] = 'Could not retrieve or save customer to processor.';
+				}
+			}
+			
+			$this->_card = $params['card']['id'];
 		}
 
-		return [ 'status' => $success, 'txn' => $txn, 'errors' => $errors, 'customer' => $customer ];
+		// Now we have to charge it
+		try {
+			$charge = \Stripe\Charge::create([
+				'amount' => $params['amount'] * 100,
+				'currency' => 'usd',
+				'customer' => $this->_customer,
+				//'source' => $this->_card,
+				'description' => $params['restaurant']->name,
+				'capture' => c::config()->site->config('processor_payments_capture') ? true : false,
+				'statement_descriptor' => $params['restaurant']->statementName()
+			]);
+
+		} catch(\Stripe\Stripe_CardError $e) {
+			Log::debug( [ 'card error' => 'card declined', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
+			$errors[] = 'Your card was declined. Please try again!';
+
+		} catch (\Stripe\Stripe_InvalidRequestError $e) {
+			Log::debug( [ 'card error' => 'invalid request', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
+			$errors[] = 'Please update your credit card information.';
+
+		} catch (\Stripe\Stripe_AuthenticationError $e) {
+			Log::debug( [ 'card error' => 'auth error', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
+			$errors[] = 'Please update your credit card information.';
+
+		} catch (\Stripe\Stripe_ApiConnectionError $e) {
+			Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
+			$errors[] = 'Please update your credit card information.';
+
+		} catch (\Stripe\Stripe_Error $e) {
+			Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
+			$errors[] = 'Please update your credit card information.';
+
+		} catch (Exception $e) {
+			//tripe\Error\InvalidRequest
+			//Stripe\Error\Card
+			print_r($e);
+			$errors[] = 'Error processing credit card.';
+		}
+
+		if ($charge && $charge->paid && !$charge->refunded) {
+			$success = true;
+			$txn = $charge->id;
+		} 
+
+		if (!$success && !$errors) {
+			$errors[] = 'Completly vague payment error. Contact support and complain. We love complaints.'."\n\n".'angrycustomers@_DOMAIN_';
+		}
+
+		return [
+			'status' => $success,
+			'txn' => $txn,
+			'errors' => $errors,
+			'customer' => $this->_customer,
+			'card' => $this->_card
+		];
 
 	}	
 }

@@ -564,11 +564,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 				switch (Crunchbutton_User_Payment_Type::processor()) {
 					case 'stripe':
-						$payment_type->stripe_id = $this->_customer->id;
+						$payment_type->stripe_id = $this->_paymentType;
 						break;
-
 					case 'balanced':
-					default:
 						$payment_type->balanced_id = $this->_paymentType->id;
 						break;
 				}
@@ -949,32 +947,34 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
+				$processorId = c::config()->site->config('processor_payments') == 'balanced' ? 'balanced_id' : 'stripe_id';
 
-				if( $user ){
+				if ($user) {
 					$paymentType = $user->payment_type();
 				}
 
-				if (!$this->_card['id'] && !$paymentType->id_user_payment_type && $user->balanced_id) {
-					// user only has a balanced customer id, not a payment. copy payment type over
-					$paymentType = (new User_Payment_Type([
-						'id_user' => $user->id_user,
-						'active' => 1,
-//						'stripe_id' => $user->stripe_id,
-						'balanced_id' => $user->balanced_id,
-						'card' => $user->card,
-						'card_exp_month' => $user->card_exp_month,
-						'card_exp_year' => $user->card_exp_year,
-						'date' => date('Y-m-d H:i:s')
-					]))->save();
+				// #5243 - if using stripe, get the stripe id from balanced, and update the paymenttype
+				if (c::config()->site->config('processor_payments') == 'stripe' && $paymentType->balanced_id && !$paymentType->stripe_id) {
+					$balancedCard = Crunchbutton_Balanced_Card::byId($paymentType->balanced_id);
+					print_r($balancedCard);
+					exit;
 				}
 
+				// use a stored users card and the apporiate payment type
+			
 				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
-					// use a stored users card and the apporiate payment type
 
-					if ($paymentType->balanced_id) {
+					if (c::config()->site->config('processor_payments') == 'stripe' && $paymentType->stripe_id) {
+						$charge = new Charge_Stripe([
+							'card_id' => $paymentType->stripe_id,
+							'customer_id' => $user->stripe_id
+						]);
+
+					} elseif (c::config()->site->config('processor_payments') == 'balanced' && $paymentType->balanced_id) {
 
 						if (substr($paymentType->balanced_id,0,2) != 'CC') {
 							// we have stored the customer and not the payment type. need to fix that
+							// @todo: i dont really understand wtf this is for - devin
 							$cards = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id)->cards;
 							if (get_class($cards) == 'RESTful\Collection') {
 								foreach ($cards as $card) {
@@ -996,23 +996,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$charge = new Charge_Balanced([
 							'card_id' => $paymentType->balanced_id
 						]);
-
-					} elseif ($paymentType->stripe_id) {
-						$charge = new Charge_Stripe([
-							'stripe_id' => $paymentType->stripe_id
-						]);
+					} else {
+						die('processor mismatch');
 					}
 				}
 
+				// create the objects with no params
 				if (!$charge) {
 					switch (Crunchbutton_User_Payment_Type::processor()) {
 						case 'balanced':
 							$charge = new Charge_Balanced();
 							break;
 						case 'stripe':
-							$charge = new Charge_Stripe([
-								'stripe_id' => $user->stripe_id
-							]);
+							$charge = new Charge_Stripe();
 							break;
 					}
 				}
@@ -1029,6 +1025,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						'card' => $this->_card,
 						'name' => $this->name,
 						'address' => $this->address,
+						'email' => $user->email,
 						'phone' => $this->phone,
 						'user' => $user,
 						'restaurant' => $this->restaurant()

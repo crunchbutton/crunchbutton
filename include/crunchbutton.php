@@ -100,6 +100,7 @@ spl_autoload_register(function ($className) {
 \Buzz\Bootstrap::init();
 \Github\Bootstrap::init();
 \Mailgun\Bootstrap::init();
+\Stripe\Bootstrap::init();
 
 $configFile = $GLOBALS['config']['dirs']['config'].'config.demo.xml';
 if (file_exists($GLOBALS['config']['dirs']['config'].'config.xml')) {

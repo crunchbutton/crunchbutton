@@ -154,8 +154,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $phone;
 	}
 
-	public function shortName() {
-		return $this->short_name ? $this->short_name : $this->name;
+	// name that appears on credit card statement
+	public function statementName() {
+		if (!isset($this->_statementName)) {
+			$name = $this->short_name ? $this->short_name : $this->name;
+			$name = preg_replace('/[^a-z ]/i','',$name);
+			if (strlen($name) > 22) {
+				$name = str_replace(' ', '', $name);
+			}
+			$this->_statementName = strtoupper(substr($name, 0, 22));
+		}
+		return $this->_statementName;
 	}
 
 	public function _hasOption($option, $options) {
