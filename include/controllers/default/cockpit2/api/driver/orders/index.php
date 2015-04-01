@@ -10,7 +10,6 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 			switch ( c::getPagePiece( 3 ) ) {
 
-
 				case 'revenue':
 					$id_admin = c::admin()->id_admin;
 					$revenueCurrentShift = Admin::revenueCurrentShift( $id_admin );
