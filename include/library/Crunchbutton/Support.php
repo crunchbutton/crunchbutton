@@ -26,6 +26,25 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	  }
 	}
 
+
+	public function getFirstCustomerMessage(){
+		if( $this->id_support ){
+			$first_cs_reply = Crunchbutton_Support_Message::q( 'SELECT MIN( id_support_message ) AS id_support_message FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( `from` =  "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" OR `from` =  "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" )' );
+			$where = '';
+			if( $first_cs_reply->id_support_message ){
+				$where = ' AND id_support_message < "' . $first_cs_reply->id_support_message . '"';
+			}
+			$query = 'SELECT * FROM support_message WHERE id_support = "' . $this->id_support . '" AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ' . $where . ' ORDER BY id_support_message ASC ';
+			$messages = Crunchbutton_Support_Message::q( $query );
+			$text = '';
+			foreach( $messages as $message ){
+				$text .= $message->body;
+			}
+			return $text;
+		}
+		return false;
+	}
+
 	public function tellCustomerService( $message ){
 
 		Crunchbutton_Message_Sms::send([
