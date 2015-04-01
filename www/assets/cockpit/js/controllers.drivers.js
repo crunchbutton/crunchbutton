@@ -45,7 +45,9 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	}
 
 
-	if (AccountService.user && AccountService.user.permissions && (!AccountService.user.permissions.GLOBAL && !AccountService.user.working)){
+	var showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
+
+	if ( !showOrders ){
 		$location.path('/drivers/shifts/');
 		return;
 	}
@@ -53,7 +55,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
 
-	$scope.showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift && AccountService.user.hours_since_last_shift <= 6 ) ) );
+	$scope.showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
 
 	var showAll = $.totalStorage('driver-orders-show');
 	if (!showAll) {
