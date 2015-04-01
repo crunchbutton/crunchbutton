@@ -950,6 +950,13 @@ p {
 	border-bottom: none;
 }
 
+.page-restaurant .nav-top.at-top {
+	background: none;
+	border-bottom: none;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.4) 10%,rgba(0,0,0,0) 100%);
+}
+
+
 .page-location .nav-top.at-top .menu, .page-restaurant .nav-top.at-top .menu {
 	background: url(../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
@@ -1138,7 +1145,7 @@ p {
 
 @media screen and (min-width: 740px) {
 	.restaurants-item .restaurants-open {
-		width: 25.5em;
+		width: 26.5em;
 		height: 16.2em;
 		border-radius: 6px;
 	}
@@ -1295,7 +1302,7 @@ p {
 @media screen and (min-width: 1025px) {
 	body {
 		background: #f78053 !important;
-		margin-bottom: 450px;
+		margin-bottom: 500px;
 	}
 	.footer .social {
 		margin-top: 10px;
@@ -1375,7 +1382,7 @@ p {
 		position: absolute;
 		left: 0;
 		bottom: 0;
-		height: 400px;
+		height: 450px;
 		width: 100%;
 		padding-top: 60px;
 	}
@@ -3773,7 +3780,50 @@ font-familt: "Museo Slab";
 	@include animation-timing-function(linear);
 }
 
+.referal-text-box {
+	border: 1px solid green;
+	border-radius: 2px;
+	padding: .4em;
+	width: 68%;
+}
+.referal-text-spacer {
+	width: 6%;
+	display: inline-block;
+}
+
 @media screen and (min-width: 1025px) {
+	.restaurants-repeated:nth-child(3n+0) .restaurants-item {
+		margin-right: 0;
+	}
+	.restaurants-repeated:nth-child(3n+1) .restaurants-item {
+		margin-left: 0;
+	}
+	.restaurants-item .restaurants-open {
+		width: 26.9em;
+	}
+	h4.restaurants-top-title {
+		font-size: 2em;
+		font-weight: normal;
+		margin-bottom: .3em;
+	}
+	.restaurants-top-wrap {
+		padding-top: 0;
+	}
+	.orders-list li {
+		width: 48.2%;
+		margin-bottom: 1.2em;
+	}
+	.referal-text-box {
+		width: 75%;
+		float: right;
+	}
+	.button-refer {
+		width: 48%;
+	}
+	
+	.user-account-credit .delivery-free, .account-your-orders {
+		font-size: 2em;
+	}
 	.col-box {
 		display: flex;
 		flex-direction: row;
@@ -3842,15 +3892,14 @@ font-familt: "Museo Slab";
 		display: none;
 	}
 	.restaurants-bubble-wrap {
-		margin-right:8em;
+		margin-right:6em;
 		float: right;
 		margin-bottom: 5px;
-		margin-top: -10px;
+		margin-top: 0px;
 	}
 	.restaurants-top-tag {
-		margin-left: 2.6em;
-		margin-top: 1em;
 		float: left;
+		margin-bottom: 1em;
 	}
 	.restaurants-top-tag strong {
 		display: none;
