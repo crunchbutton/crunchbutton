@@ -948,8 +948,14 @@ p {
 .page-location .nav-top.at-top, .page-restaurant .nav-top.at-top {
 	background: none;
 	border-bottom: none;
+}
+
+.page-restaurant .nav-top.at-top {
+	background: none;
+	border-bottom: none;
 	background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.4) 10%,rgba(0,0,0,0) 100%);
 }
+
 
 .page-location .nav-top.at-top .menu, .page-restaurant .nav-top.at-top .menu {
 	background: url(../images/micro/menu-location.svg) center center no-repeat;
