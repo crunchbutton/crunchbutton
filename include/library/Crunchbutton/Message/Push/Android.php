@@ -28,6 +28,10 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 				$title = $to['title'];
 			}
 			
+			if (isset($to['verbose'])) {
+				$verbose = $to['verbose'] ? true : false;
+			}
+			
 			$to = $to['to'];
 		}
 
@@ -48,11 +52,12 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 
 		$fields = [
 			'registration_ids' 	=> [$to],
-			'data'			=> $msg
+			'data'			=> $msg,
+			'userIp' => c::config()->gcm->ip
 		];
 
 		$headers = [
-			'Authorization: key=_KEY_',
+			'Authorization: key='.c::config()->gcm->key,
 			'Content-Type: application/json'
 		];
 
@@ -64,8 +69,21 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch,CURLOPT_POSTFIELDS, json_encode($fields));
 		$result = json_decode(curl_exec($ch));
-		curl_close($ch);
+		$e = curl_error($ch);
+		$h = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		
+		if ($verbose && !$result || !$result->success) {
+			echo "GCM response\n";
+			var_dump($fields);
+			var_dump($h);
+			if ($e) {
+				var_dump($e);
+			}
+			var_dump($result);
+		}
+		
+		curl_close($ch);
+
 		return $result->success ? true : false;
 
 	}
