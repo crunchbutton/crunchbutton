@@ -206,6 +206,19 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 
 	$scope.pexcard = {};
 
+	$scope.remove_assignment = function( pexcard_id ){
+		if( confirm( 'Confirm remove assignment?' ) ){
+			PexCardService.admin_pexcard_remove( pexcard_id, function( json ){
+				if( json.success ){
+					load();
+					$scope.flash.setMessage( 'Driver assigned removed!', 'success' );
+				} else {
+					$scope.flash.setMessage( 'Error removing assignment!', 'error' );
+				}
+			} );
+		}
+	}
+
 	$scope.add_funds = function(){
 		if( $scope.form.$invalid ){
 			App.alert( 'Please fill in all required fields' );
