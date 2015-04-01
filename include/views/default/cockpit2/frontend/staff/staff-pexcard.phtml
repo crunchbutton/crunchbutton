@@ -41,6 +41,10 @@
 						<div class="label">Status:</div>
 						<div class="data">{{card.status}}</div>
 					</li>
+					<li class="li-info">
+						<div class="label">Assignment:</div>
+						<div class="data"><span class="orange link" ng-click="remove_assignment( card.id )"><i class="fa fa-times"></i> Remove assignment</span></div>
+					</li>
 					<li>
 						<hr/>
 						<h2 class="title">Cards</h2>
@@ -70,7 +74,7 @@
 
 		</div>
 
-		<form name="form" novalidate>
+		<form name="form" novalidate ng-if="payInfo.cards.length">
 
 			<h2 class="title">Add funds</h2>
 
@@ -119,6 +123,8 @@
 
 		<div ng-if="!payInfo.cards.length">
 			This user has no pexcard.
+			<br/><br/>
+			<a href="/pexcard/card/driver/{{payInfo.id_admin}}">Assign a Pexcard</a>
 		</div>
 
 	</div>
