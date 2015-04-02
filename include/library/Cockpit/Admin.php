@@ -110,6 +110,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out['referral_admin_credit'] = floatval( $this->referral_admin_credit );
 		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
 		$out['invite_code'] = $this->invite_code;
+		$out['dob'] = $this->dob;
 
 		$author = $this->author();
 		if( $author->id_admin ){
