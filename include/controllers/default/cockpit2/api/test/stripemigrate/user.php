@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This script contacts balanced and finds the associated stripe tokens. or at least lets hope there tokens
+ * This script contacts balanced and finds the associated stripe tokens, accounts, and cards
  *
  * 1.
  * a) if there is a balanced customer id (CU or AC) get the card from it. then update stripe with the name and email.
