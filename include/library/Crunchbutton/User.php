@@ -261,7 +261,7 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public function payment_type(){
-		return Crunchbutton_User_Payment_Type::getUserPaymentType( $this->id_user )->get(0);
+		return Crunchbutton_User_Payment_Type::getUserPaymentType($this->id_user);
 	}
 
 	public function getLastNote(){

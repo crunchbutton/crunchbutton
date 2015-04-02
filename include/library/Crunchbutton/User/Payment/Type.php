@@ -20,7 +20,7 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 			', [$id_user]);
 
 			if ($payment->id_user_payment_type) {
-				return $payment;
+				return $payment->get(0);
 			}
 		}
 

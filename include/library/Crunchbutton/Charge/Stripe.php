@@ -11,6 +11,10 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 		c::stripe();
 
 		$success = false;
+		
+		if (!$params['card'] && !$this->_customer) {
+			$errors[] = 'Missing card or user information from app.';
+		}
 
 		// The user changed its card or it is a new one
 		if ($params['card']) {
@@ -33,8 +37,11 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 			} else {
 				try {
 					$customer = \Stripe\Customer::retrieve($this->_customer);
-					$customer->card = $params['card']['token'];
+					$customer->sources->create(['card' => $params['card']['uri']]);
+					/* @todo: stripe broke this right now
+					$customer->sources->default_source = $params['card']['id'];
 					$customer->save();
+					*/
 
 				} catch ( Exception $e ) {
 					$errors[] = 'Could not retrieve or save customer to processor.';
@@ -50,7 +57,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 				'amount' => $params['amount'] * 100,
 				'currency' => 'usd',
 				'customer' => $this->_customer,
-				//'source' => $this->_card,
+				'source' => $this->_card,
 				'description' => $params['restaurant']->name,
 				'capture' => c::config()->site->config('processor_payments_capture') ? true : false,
 				'statement_descriptor' => $params['restaurant']->statementName()
