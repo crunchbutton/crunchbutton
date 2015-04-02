@@ -702,6 +702,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 			$scope.iphone_type = json.default;
 			$scope.android_type = json.default;
+			//$scope.android_type_other = json.other;//michal
 			$scope.android_version = json.default;
 		} );
 
