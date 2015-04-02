@@ -1,0 +1,46 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<div class="user-account-credit col-box">
+
+		<div class="two-col">
+				<p>
+					Get your friends to enter <b>your referal code</b> in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
+				</p><br/>
+
+			<br/>
+		</div>
+		<div class="two-col">
+			<div class="col-box">
+
+				<a href="sms:?body={{referral.sms}}" class="button text button-refer">
+					<i class="fa fa-mobile"></i> <span>Text your friends</span>
+				</a>
+
+				<br> <center>or</center> <br>
+
+				<button class="button facebook button-refer" ng-click="referral.facebook()">
+					<i class="fa fa-facebook"></i> <span>Share</span>
+				</button>
+
+				<br><br>
+
+				<button class="button twitter button-refer" ng-click="referral.twitter()">
+					<i class="fa fa-twitter"></i> <span>Tweet</span>
+				</button>
+
+			</div>
+			<br><br>
+			<p>Your referral code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+
+	<br><br><br>
+
+	<div ng-show="orders.list">
+		<div class="orders-oranges animated-resize"></div>
+	</div>
+
+</div>

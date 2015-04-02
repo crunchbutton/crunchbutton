@@ -52,6 +52,7 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 				service.invites = data.invites;
 				service.value = data.value;
 				service.limit = data.limit;
+				service.invite_code = data.invite_code;
 				service.invite_url = data.invite_url;
 				$rootScope.$broadcast( 'referralStatusLoaded', true );
 			}	).error(function( data, status ) {

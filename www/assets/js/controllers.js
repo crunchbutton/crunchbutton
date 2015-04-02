@@ -227,9 +227,9 @@ NGApp.controller('LegalCtrl', function ($scope) {
 });
 
 /**
- * help page
+ * Free food page
  */
-NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralService, FacebookService ) {
+NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, ReferralService, FacebookService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -255,20 +255,26 @@ NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralServi
 		ReferralService.getStatus();
 	}
 
-	$scope.$on( 'referralStatusLoaded', function(e, data) {
+	$scope.$on( 'referralStatusLoaded', function( e, data ) {
 		$scope.referral.invites = ReferralService.invites;
 		$scope.referral.limit = ReferralService.limit;
 		$scope.referral.invite_url = ReferralService.invite_url;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+
+		$scope.referral.text = 'i love @crunchbutton delivery :) use my code ' + $scope.referral.invite_code + ' in the Notes section for free delivery!';
+
+		$scope.referral.sms = $scope.referral.text + ' ' + $scope.referral.invite_url;
 	});
 
+
 	$scope.referral.facebook = function(){
-		FacebookService.postInvite( $scope.referral.invite_url, AccountService.user.invite_code );
+		FacebookService.postInvite( $scope.referral.invite_url, $scope.referral.invite_code );
 	}
 
 	$scope.referral.twitter = function(){
-		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + $scope.referral.text ,'_system');
 	}
 
 });
