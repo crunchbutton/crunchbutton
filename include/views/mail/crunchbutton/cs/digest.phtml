@@ -1,23 +1,66 @@
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<table class="table table-striped">
-<thead>
 <h1>Customer Service Morning Digest</h1>
-    <tr>
-        <th>Name</th>
-        <th>Time</th>
-        <th>Message</th>
-        <th>Phone</th>
-    </tr>
-</thead>
-<tbody>
-<?php foreach ($messages as $message) : ?>
-<tr>
-    <td><?= $message->firstMessage()->name ?></td>
-    <td nowrap="nowrap"><?=  DATE_FORMAT(new DateTime($message->firstMessage()->date), 'g:i A')?></td>
-    <td><?= $message->firstMessage()->body ?></td>
-    <td><?= $message->firstMessage()->phone ?></td>
-</tr>
-<?php endforeach ?>
-</tbody>
-</table>
+<?php
+$ticked_opened = count( $tickets[ 'open' ] );
+$ticked_closed = count( $tickets[ 'closed' ] );
+?>
+<p class="summary">
+	<span class="open">
+		Opened: <?php echo $ticked_opened; ?>
+	</span>
+	<br>
+	<span class="closed">
+		Closed: <?php echo $ticked_closed; ?>
+	</span>
+	<br>
+	Total tickets: <?php echo ( $ticked_opened + $ticked_closed ); ?>
+</p>
+<?php
 
+	// $ = 'style="background: #e6e6e6;" bgcolor="#e6e6e6">
+	$client_row_style = "font-size: 12px; font-family: 'Helvetica', 'Arial' !important; padding: 5px 3px 5px 5px; border: 0;background: #e6e6e6; bgcolor=#e6e6e6";
+	$crunchbutton_row_style = "font-size: 12px; font-family: 'Helvetica', 'Arial' !important; padding: 5px 3px 5px 5px; border: 0;background: #e6e6e6; bgcolor=#F5F5F5";
+	$thead_th_row = "font-family: 'Helvetica', 'Arial' !important; padding-top: 25px; text-align: left; font-size: 13px; padding-right: 3px;";
+	$body_td_row = "font-size: 12px; font-family: 'Helvetica', 'Arial' !important; padding: 5px 3px 5px 5px; border: 0;";
+?>
+<?php foreach ( $tickets as $status => $tickets ) { ?>
+	<?php if( $status == 'open' ){ ?>
+		<h2 style="font-size: 16px; font-family: 'Helvetica', 'Arial' !important; color: red; margin: 30px 0 0px;">Opened tickets</h2>
+	<?php } else { ?>
+		<h2 style="font-size: 16px; font-family: 'Helvetica', 'Arial' !important; color: green; margin: 30px 0 0px;">Closed tickets</h2>
+	<?php } ?>
+	<table>
+		<?php foreach( $tickets as $ticket ) { ?>
+		<thead>
+			<tr>
+				<th style="<?php echo $thead_th_row ?>" align="left"><a href="https://cockpit.la/ticket/<?php echo $ticket[ 'id_support' ]; ?>"><?php echo $ticket[ 'id_support' ]; ?></a></th>
+				<th style="<?php echo $thead_th_row ?>" align="left"><?php echo $ticket[ 'status' ]; ?></th>
+				<th style="<?php echo $thead_th_row ?>" align="left"><?php echo $ticket[ 'date' ]; ?></th>
+				<th style="<?php echo $thead_th_row ?>" align="left"><?php if( $ticket[ 'name' ] ){ echo $ticket[ 'name' ]; } else { echo '-'; } ?></th>
+				<th style="<?php echo $thead_th_row ?>" align="left"><?php echo $ticket[ 'phone' ]; ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if( count( $ticket[ 'messages' ] ) ) { ?>
+				<?php foreach( $ticket[ 'messages' ] as $message ) { ?>
+				<tr style="<?php if($message[ 'type' ] == 'client'  ){ echo $client_row_style; } else { $crunchbutton_row_style; } ?>">
+					<td valign="top" style="<?php echo $body_td_row; ?>">
+						<?php if( $message[ 'type' ] == 'client' ) { ?>
+							Client
+						<?php } else { ?>
+							Crunchbutton
+						<?php } ?>
+					</td>
+					<td colspan="4" style="<?php echo $body_td_row; ?>">
+						<?php echo $message[ 'body' ]; ?>
+					</td>
+				</tr>
+				<?php } ?>
+			<?php } ?>
+			<tr>
+				<td style="font-size: 12px; font-family: 'Helvetica', 'Arial' !important; border-top-color: #999; border-top-style: solid; padding: 5px 3px 5px 5px; border-width: 2px 0 0;" colspan="5"></td>
+			</tr>
+		</tbody>
+
+		<?php } ?>
+	</table>
+<?php } ?>

@@ -168,11 +168,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function workedShiftsByPeriod( $id_admin, $filters ){
 
 		$admin = Admin::o( $id_admin );
-		if( $admin->date_terminated ){
-			$where = 'AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $admin->date_terminated . '"';
-		} else {
-			$where = '';
+		if( !$admin->active  ){
+			if( $admin->date_terminated ){
+				$where = 'AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $admin->date_terminated . '"';
+			} else {
+				$where = 'AND 1 = 0';
+			}
 		}
+
 		$start = ( new DateTime( $filters[ 'start' ] ) )->format( 'Y-m-d' );
 		$end = ( new DateTime( $filters[ 'end' ] ) )->format( 'Y-m-d' );
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
