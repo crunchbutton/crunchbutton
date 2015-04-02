@@ -63,6 +63,10 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 		$this->active = 0;
 		$this->save();
 	}
+	
+	public function user() {
+		return User::o($this->id_user);
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
