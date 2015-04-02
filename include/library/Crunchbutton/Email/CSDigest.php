@@ -11,7 +11,7 @@ class Crunchbutton_Email_CSDigest extends Email{
 
 		$this->buildView($params);
 
-		$params['messageHtml'] = $this->view()->render('cs/digest',['display' => true, 'set' => ['messages' => $params['messages'], ]]);
+		$params['messageHtml'] = $this->view()->render('cs/digest',['display' => true, 'set' => ['tickets' => $params['tickets'], ]]);
 
 		parent::__construct($params);
 	}
