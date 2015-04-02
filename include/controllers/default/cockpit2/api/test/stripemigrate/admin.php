@@ -1,13 +1,11 @@
 <?php
 
 /**
- * This script contacts balanced and finds the associated stripe tokens. or at least lets hope there tokens
+ * This script contacts balanced and finds the associated stripe tokens
  *
- * 1.
- * a) if there is a balanced customer id (CU or AC) get the card from it. then update stripe with the name and email.
- * b) if there is a balanced card (CC) retrieve the stripe token (tok_) , create a customer, and add that token
- *
- * 2. store stripe ids for the user in the db
+ * 1. create a stripe managed account for the new driver
+ * 2. add the token to the account
+ * 3. store stripe ids for the user in the db
  */
 
 exit; // no one should run this yet
