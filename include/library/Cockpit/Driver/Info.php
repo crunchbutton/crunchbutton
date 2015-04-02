@@ -7,7 +7,7 @@ class Cockpit_Driver_Info extends Cana_Table {
 	const PHONE_TYPE_BLACKBERRY = 'Blackberry';
 	const PHONE_TYPE_DUMBPHONE = 'Dumbphone';
 	const PHONE_TYPE_OTHER = 'Other';
-
+	//const ANDROID_TYPE_OTHER = 'Other'; //michal
 	const CARRIER_TYPE_ATT = 'ATT';
 	const CARRIER_TYPE_VERIZON = 'Verizon';
 	const CARRIER_TYPE_SPRINT = 'Sprint';
@@ -45,6 +45,10 @@ class Cockpit_Driver_Info extends Cana_Table {
 							Cockpit_Driver_Info::PHONE_TYPE_OTHER ];
 	}
 
+//	public function androidTypeOther(){
+//		return Cockpit_Driver_Info::ANDROID_TYPE_OTHER;
+//	}//michal
+
 	public function iPhoneTypes(){
 		return [	'3G',
 							'3GS',
@@ -67,8 +71,14 @@ class Cockpit_Driver_Info extends Cana_Table {
 		}
 
 	public function androidTypes(){
+//		$addedSubtypes = Cockpit_Driver_Info::q( 'select phone_subtype from driver_info
+//			where
+//			phone_type="android"
+//			and phone_subtype is not null
+//			and phone_subtype != "Other"
+//			group by phone_subtype');
 
-		$types = [ 	'Samsung Galaxy S3',
+				$types = [ 	'Samsung Galaxy S3',
 								'Samsung Galaxy S4',
 								'Samsung Galaxy Note3',
 								'Samsung Galaxy S5',
@@ -87,9 +97,15 @@ class Cockpit_Driver_Info extends Cana_Table {
 								'Samsung Galaxy S',
 								'Samsung Galaxy Win',
 								'Samsung Galaxy Star Advance',
-								'Samsung Galaxy Ace' ];
+								'Samsung Galaxy Ace'];
+//		foreach ($addedSubtypes as $addedSubtype) {
+//		array_push($types,
+//			$addedSubtype->phone_subtype);
+//		}
+
 		sort( $types );
 		$types[] = 'Other';
+		//$types[] = Cockpit_Driver_Info::ANDROID_TYPE_OTHER;
 		return $types;
 	}
 
