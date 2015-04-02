@@ -145,9 +145,18 @@
 					<small ng-show="form.driverAndroidType.$error.required">Required.</small>
 				</div>
 			</li>
+<!---->
+<!---->
+<!--			<li class="li-input" ng-if="driver.android_type=='Other'" ng-class="{'error':form.driverAndroidTypeOther.$invalid}">-->
+<!--				<div class="label">Android Type (Other):</div>-->
+<!--				<div class="input"><input type="text" name="driverAndroidTypeOther" ng-model="driver.android_type_other" required="driver.android_type == android_type_other" placeholder="Android Type" ng-maxlength="40"></div>-->
+<!--				<div class="box-error">-->
+<!--					<small ng-show="form.driverAndroidTypeOther.$error.required">Required.</small>-->
+<!--				</div>-->
+<!--			</li>-->
 
 			<li class="li-input" ng-class="{'error':form.driverAndroidVersion.$invalid}" ng-show="driver.phone_type=='Android'">
-				<div class="label">Android type:</div>
+				<div class="label">Android OS:</div>
 				<div class="input">
 					<select name="driverAndroidVersion" ng-required="driver.phone_type=='Android'" ng-model="driver.android_version" ng-options="opt as opt for opt in android_versions" ></select>
 				</div>

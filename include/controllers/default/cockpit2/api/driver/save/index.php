@@ -160,6 +160,9 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		}
 		if( $driver_info->phone_type == 'Android' ){
 			$driver_info->phone_subtype = $this->request()[ 'android_type' ];
+//			//michal line below:
+//			$driver_info->phone_subtype = ( $this->request()[ 'android_type' ] == Cockpit_Driver_Info::ANDROID_TYPE_OTHER ? $this->request()[ 'android_type_other' ] : $this->request()[ 'android_type' ] );
+
 			$driver_info->phone_version = $this->request()[ 'android_version' ];
 		}
 
