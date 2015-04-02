@@ -262,12 +262,11 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
 		$scope.referral.invite_code = ReferralService.invite_code;
-
-		$scope.referral.text = 'i love @crunchbutton delivery :) use my code ' + $scope.referral.invite_code + ' in the Notes section for free delivery!';
-
-		$scope.referral.sms = $scope.referral.text + ' ' + $scope.referral.invite_url;
+		$scope.referral.sms = ReferralService.sms();
 	});
 
+
+	$scope.isMobile = App.isMobile();
 
 	$scope.referral.facebook = function(){
 		FacebookService.postInvite( $scope.referral.invite_url, $scope.referral.invite_code );
@@ -1353,6 +1352,8 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$scope.referral.invite_url_cleared = ReferralService.value;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+		$scope.referral.sms = ReferralService.sms();
 	});
 
 	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
@@ -1440,13 +1441,15 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	}
 
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
-		console.log('referralStatusLoaded >>>> ');
 		$scope.referral.invites = ReferralService.invites;
 		$scope.referral.limit = ReferralService.limit;
 		$scope.referral.invite_url = ReferralService.invite_url;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.sms = ReferralService.sms();
 	});
+
+	$scope.isMobile = App.isMobile();
 
 	$scope.referral.facebook = function(){
 		FacebookService.postInvite( $scope.referral.invite_url, AccountService.user.invite_code );

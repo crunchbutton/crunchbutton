@@ -6,19 +6,19 @@
 		<div class="two-col">
 				<p>
 					Get your friends to enter <b>your referal code</b> in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
-				</p><br/>
-
+				</p>
+				<br/>
 			<br/>
 		</div>
 		<div class="two-col">
-			<div class="col-box">
 
-				<a href="sms:?body={{referral.sms}}" class="button text button-refer">
+			<div ng-if="isMobile">
+				<a ng-if="referral.sms" href="sms:{{referral.sms}}" class="button text button-refer">
 					<i class="fa fa-mobile"></i> <span>Text your friends</span>
 				</a>
+			</div>
 
-				<br> <center>or</center> <br>
-
+			<div ng-if="!isMobile">
 				<button class="button facebook button-refer" ng-click="referral.facebook()">
 					<i class="fa fa-facebook"></i> <span>Share</span>
 				</button>
@@ -28,10 +28,19 @@
 				<button class="button twitter button-refer" ng-click="referral.twitter()">
 					<i class="fa fa-twitter"></i> <span>Tweet</span>
 				</button>
-
 			</div>
+
+
 			<br><br>
 			<p>Your referral code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
+
+			<div ng-if="!isMobile">
+				<br><br>
+				<p>Your code: <span class="referal-text-spacer"></span><b>{{account.user.invite_code}}</b></p>
+				<br>
+				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
+			</div>
+
 		</div>
 	</div>
 
