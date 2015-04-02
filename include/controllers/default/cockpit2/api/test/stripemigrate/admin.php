@@ -9,7 +9,6 @@
  */
 
 exit; // no one should run this yet
-c::stripe();
 
 // if this is set to true, it will make all the stripe managed accounts first. then the next time we run just set this to false
 $CREATE_ACCOUNTS_FIRST = true;

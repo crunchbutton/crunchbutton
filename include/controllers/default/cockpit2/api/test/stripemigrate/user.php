@@ -11,7 +11,6 @@
  */
 
 exit; // no one should run this yet
-c::stripe();
 
 $p = Crunchbutton_User_Payment_Type::q('
 	select p.* from user_payment_type p
