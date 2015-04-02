@@ -28,9 +28,21 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 						'source' => $params['card']['uri']
 					]);
 
-				} catch ( Exception $e ) {
-					$errors[] = 'Could not create customer with processor.';
+				} catch(\Stripe\Error\Card $e) {
+					$errors[] = $e->getMessage();
+				} catch (\Stripe\Error\InvalidRequest $e) {
+					$errors[] = 'Invalid parameters for payment request.';
+				} catch (\Stripe\Error\Authentication $e) {
+					$errors[] = 'Payment authention failed';
+				} catch (\Stripe\Error\ApiConnection $e) {
+					$errors[] = 'Connection error communicating with Stripe.';
+				} catch (\Stripe\Error\Base $e) {
+					$error[] = 'Some wierd error when communicating with Stripe.';
+					
+				} catch (Exception $e) {
+					$errors[] = 'Could not create a new user for some strange reason.';
 				}
+
 				$this->_customer = $customer->id;
 						
 			// there is already a customer
@@ -43,51 +55,52 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 					$customer->save();
 					*/
 
-				} catch ( Exception $e ) {
-					$errors[] = 'Could not retrieve or save customer to processor.';
+				} catch(\Stripe\Error\Card $e) {
+					$errors[] = $e->getMessage();
+				} catch (\Stripe\Error\InvalidRequest $e) {
+					$errors[] = 'Invalid parameters for payment request.';
+				} catch (\Stripe\Error\Authentication $e) {
+					$errors[] = 'Payment authention failed';
+				} catch (\Stripe\Error\ApiConnection $e) {
+					$errors[] = 'Connection error communicating with Stripe.';
+				} catch (\Stripe\Error\Base $e) {
+					$error[] = 'Some wierd error when communicating with Stripe.';
+					
+				} catch (Exception $e) {
+					$errors[] = 'Could not add new card for some reason. Try using the old one.';
 				}
 			}
 			
 			$this->_card = $params['card']['id'];
 		}
 
-		// Now we have to charge it
-		try {
-			$charge = \Stripe\Charge::create([
-				'amount' => $params['amount'] * 100,
-				'currency' => 'usd',
-				'customer' => $this->_customer,
-				'source' => $this->_card,
-				'description' => $params['restaurant']->name,
-				'capture' => c::config()->site->config('processor_payments_capture') ? true : false,
-				'statement_descriptor' => $params['restaurant']->statementName()
-			]);
+		if (!$errors) {
+			// Now we have to charge it
+			try {
+				$charge = \Stripe\Charge::create([
+					'amount' => $params['amount'] * 100,
+					'currency' => 'usd',
+					'customer' => $this->_customer,
+					'source' => $this->_card,
+					'description' => $params['restaurant']->name,
+					'capture' => c::config()->site->config('processor_payments_capture')->value ? true : false,
+					'statement_descriptor' => $params['restaurant']->statementName()
+				]);
 
-		} catch(\Stripe\Stripe_CardError $e) {
-			Log::debug( [ 'card error' => 'card declined', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-			$errors[] = 'Your card was declined. Please try again!';
+			} catch(\Stripe\Error\Card $e) {
+				$errors[] = $e->getMessage();
+			} catch (\Stripe\Error\InvalidRequest $e) {
+				$errors[] = 'Invalid parameters for payment request.';
+			} catch (\Stripe\Error\Authentication $e) {
+				$errors[] = 'Payment authention failed';
+			} catch (\Stripe\Error\ApiConnection $e) {
+				$errors[] = 'Connection error communicating with Stripe.';
+			} catch (\Stripe\Error\Base $e) {
+				$error[] = 'Some wierd error when communicating with Stripe.';
 
-		} catch (\Stripe\Stripe_InvalidRequestError $e) {
-			Log::debug( [ 'card error' => 'invalid request', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-			$errors[] = 'Please update your credit card information.';
-
-		} catch (\Stripe\Stripe_AuthenticationError $e) {
-			Log::debug( [ 'card error' => 'auth error', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-			$errors[] = 'Please update your credit card information.';
-
-		} catch (\Stripe\Stripe_ApiConnectionError $e) {
-			Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-			$errors[] = 'Please update your credit card information.';
-
-		} catch (\Stripe\Stripe_Error $e) {
-			Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-			$errors[] = 'Please update your credit card information.';
-
-		} catch (Exception $e) {
-			//tripe\Error\InvalidRequest
-			//Stripe\Error\Card
-			print_r($e);
-			$errors[] = 'Error processing credit card.';
+			} catch (Exception $e) {
+				$errors[] = 'An almost completly vague payment error.';
+			}
 		}
 
 		if ($charge && $charge->paid && !$charge->refunded) {
