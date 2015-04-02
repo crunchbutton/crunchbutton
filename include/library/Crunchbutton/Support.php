@@ -806,7 +806,59 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function comments(){
-		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE sm.id_support = "' . $this->id_support . '" AND sm.type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND `from` != "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" ORDER BY sm.id_support_message DESC' );
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE sm.id_support = "' . $this->id_support . '" AND sm.type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND `from` != "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" ORDER BY sm.date DESC' );
 	}
+
+	public function dailyDigest( $days = 1 ){
+
+		$query = 'SELECT DISTINCT( sm.id_support ) AS id, s.* FROM support_message sm
+								INNER JOIN support s ON s.id_support = sm.id_support
+								WHERE sm.date > DATE_SUB( NOW(), interval ' . $days . ' day ) AND s.type != "' . Crunchbutton_Support::TYPE_WARNING . '"
+								ORDER BY sm.date ASC';
+
+		$tickets = Crunchbutton_Support::q( $query );
+		$out = [ 'open' => [], 'closed' => [] ];
+		foreach( $tickets as $ticket ){
+			$data = [];
+			$data[ 'id_support' ] = $ticket->id_support;
+			$data[ 'phone' ] = Crunchbutton_Util::format_phone( $ticket->firstMessage()->phone );
+			$data[ 'name' ] = $ticket->firstMessage()->name;
+			$messages = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE id_support = "' . $ticket->id_support . '" AND sm.date > DATE_SUB( NOW(), interval ' . $days . ' day )' );
+			$count = 0;
+			$prev_type = null;
+			$prev_from = null;
+			$prev_body = null;
+			foreach( $messages as $message ){
+				if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_SYSTEM ||
+					$message->body == '(Ticket created at cockpit)' ){
+					continue;
+				}
+				if( !$data[ 'date' ] ){
+					$data[ 'date' ]	= $message->date()->format( 'M jS g:i a' );
+				}
+				if( $prev_from == $message->from && $prev_type == $message->type ){
+					$join = ( ctype_upper( substr( $message->body, 0 ) ) ) ? '' : '<br>';
+					$data[ 'messages' ][ $count ][ 'body' ] .= $join . $message->body;
+				} else {
+					$count++;
+					$data[ 'messages' ][ $count ] = [ 'type' => $message->from , 'body' => $message->body ];
+				}
+				$prev_type = $message->type;
+				$prev_from = $message->from;
+				$prev_body = $message->body;
+			}
+			if( count( $data[ 'messages' ] ) ){
+				if( $ticket->status == Crunchbutton_Support::STATUS_OPEN ){
+					$data[ 'status' ] = 'Opened';
+					$out[ 'open' ][] = $data;
+				} else {
+					$data[ 'status' ] = 'Closed';
+					$out[ 'closed' ][] = $data;
+				}
+			}
+		}
+		return $out;
+	}
+
 
 }
