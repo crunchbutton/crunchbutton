@@ -50,8 +50,9 @@ foreach ($p as $paymentType) {
 		continue;
 	}
 
+	$idStripe = $paymentType->id_stripe ? $paymentType->id_stripe : $paymentType->admin()->id_stripe;
 
-	if (!$paymentType->id_stripe) {
+	if (!$idStripe) {
 
 		// create a stripe managed account
 		try {
@@ -99,7 +100,7 @@ foreach ($p as $paymentType) {
 		}
 	} else {
 		try {
-			$stripeAccount = \Stripe\Account::retrieve($paymentType->id_stripe);
+			$stripeAccount = \Stripe\Account::retrieve($idStripe);
 		} catch (Exception $e) {
 			echo 'ERROR: '.$e->getMessage()."\n";
 			continue;
