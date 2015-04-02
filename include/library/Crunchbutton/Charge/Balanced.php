@@ -52,6 +52,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
+
 			if ($c->id) {
 				$success = true;
 				$txn = $c->id;
