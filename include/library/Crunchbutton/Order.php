@@ -2297,7 +2297,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund() {
+	public function refund($amt = null) {
 
 		if (!$this->refunded){
 
@@ -2313,14 +2313,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					switch ($this->processor) {
 						case 'stripe':
 						default:
-							$env = c::getEnv();
-							Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-							$ch = Stripe_Charge::retrieve($this->txn);
 							try {
-								$ch->refund();
+								$params = $amt ? ['amount' => $amt * 100] : null;
+								$ch = \Stripe\Charge::retrieve($this->txn);
+								$re = $ch->refunds->create();
+
 							} catch (Exception $e) {
-								var_dump($e);
-								return (object)['status' => false, 'errors' => null];
+								echo $e->getMessage();
+								return (object)['status' => false, 'errors' => $e->getMessage()];
 							}
 							break;
 
