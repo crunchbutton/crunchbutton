@@ -10,6 +10,7 @@
  * 2. store stripe ids for the user in the db
  */
 
+exit; // no one should run this yet
 c::stripe();
 
 $p = Crunchbutton_User_Payment_Type::q('
