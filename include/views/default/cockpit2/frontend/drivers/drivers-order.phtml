@@ -3,7 +3,7 @@
 
 <!-- /actions -->
 
-<div class="content-padding" hm-drag="nextOrder()">
+<div class="content-padding" hm-swiperight="nextOrder" hm-swiperight="prevOrder">
 
 
 	<div ng-if="oc.order.status.status != 'accepted' && oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
@@ -23,8 +23,6 @@
 	<div class="header order-header hide-mobile">
 		#{{oc.order.id_order}}
 	</div>
-
-	
 		
 	<div class="map">
 		<div class="order-item-block-big" ng-if="oc.order.status.status != 'delivered'">

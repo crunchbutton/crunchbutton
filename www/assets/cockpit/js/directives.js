@@ -120,8 +120,7 @@ NGApp.directive('profilePreference', function (AccountService, $http, $rootScope
 				$http({
 					method: 'POST',
 					url: App.service + 'config',
-					data: {key: $scope.key, value: value},
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					data: {key: $scope.key, value: value}
 				});
 			}
 		}
