@@ -9,19 +9,36 @@ $textColor: #312f38;
 $orange: #df4a32;
 $linkColor: #d74924;
 $navHilight: #22242a;
-
+$borderRadius: 2px;
+$borderRadiusMobile: 3px;
+$mobileWidth: 1024px;
+$desktopWidth: 1025px;
 
 
 @mixin box-border-radius() {
-	border-radius: 2px;
+	border-radius: $borderRadius;
+
+	@media screen and (max-width: $mobileWidth) {
+		border-radius: $borderRadiusMobile;
+	}
 }
 @mixin box-border-radius-left() {
-	border-top-left-radius: 2px;
-	border-bottom-left-radius: 2px;
+	border-top-left-radius: $borderRadius;
+	border-bottom-left-radius: $borderRadius;
+
+	@media screen and (max-width: $mobileWidth) {
+		border-top-left-radius: $borderRadiusMobile;
+		border-bottom-left-radius: $borderRadiusMobile;
+	}
 }
 @mixin box-border-radius-right() {
-	border-top-right-radius: 2px;
-	border-bottom-right-radius: 2px;
+	border-top-right-radius: $borderRadius;
+	border-bottom-right-radius: $borderRadius;
+	
+	@media screen and (max-width: $mobileWidth) {
+		border-top-right-radius: $borderRadiusMobile;
+		border-bottom-right-radius: $borderRadiusMobile;
+	}
 }
 
 
@@ -58,7 +75,7 @@ i {
 	font-style: italic;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $mobileWidth) {
 	.bg {
 		background: $background;
 	}
@@ -66,7 +83,7 @@ i {
 		background: $navColor;
 	}
 }
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	body {
 		background: $background;
 	}
@@ -127,7 +144,7 @@ html {
 	-webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	.content-padding {
 		padding: 10px 0 10px 0;
 	}
@@ -138,7 +155,7 @@ html {
 
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $mobileWidth) {
 	.content-padding {
 		padding: 6px;
 	}
@@ -176,7 +193,7 @@ html {
 	font-weight: bold;
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	.nav-back {
 		display: none;
 	}
@@ -388,7 +405,7 @@ p {
 	height: 4em;
 }
 
-@media(max-width:1024px) {
+@media(max-width:$mobileWidth) {
 	body {
 		position: fixed;
 		top: 0;
@@ -590,7 +607,7 @@ p {
 	margin-right: 8px;
 }
 
-@media(min-width:1025px) {
+@media(min-width:$desktopWidth) {
 	.side-menu-label, .side-menu-icon {
 		padding: 8px 0 6px 0;
 	}
@@ -627,7 +644,7 @@ p {
 		display: none;
 	}
 
-@media(max-width:1024px) {
+@media(max-width:$mobileWidth) {
 	.notification-support-desktop {
 		display: none;
 	}
@@ -638,7 +655,7 @@ p {
 
 
 /* SNAPS */
-@media(min-width:1025px) {
+@media(min-width:$desktopWidth) {
 	.wrapper {
 		float: left;
 		width: 100%;
@@ -757,7 +774,7 @@ p {
 	display: none !important;
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	.page-login .snap-drawers {
 		display: none;
 	}
@@ -781,12 +798,12 @@ p {
 	background-size: 150%;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $mobileWidth) {
 	.page-login .bg {
 		@include page-login-bg();
 	}
 }
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	.page-login {
 		@include page-login-bg();
 	}
@@ -835,7 +852,7 @@ input {
 	color: #fff;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $mobileWidth) {
 	.login-content {
 		width: 80%;
 	}
@@ -2066,7 +2083,7 @@ h4.title{
 }
 
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	.user-initials {
 		margin-top: 2.8em;
 	}
@@ -2670,7 +2687,7 @@ b, strong{ font-weight: bold; }
 		font-size: 10vw;
 	}
 }
-@media (min-width:1025px) {
+@media (min-width:$desktopWidth) {
 	.order-header {
 		font-size: 7vw;
 	}
@@ -3635,7 +3652,7 @@ input[type="checkbox"].switch + div:before {
 
 
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $mobileWidth) {
 	.view-animate.ng-enter, .view-animate.ng-leave {
 		display: block;
 		width: 100%;
@@ -3890,12 +3907,12 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: $desktopWidth) {
 	.hide-desktop {
 		display: none;
 	}
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: $mobileWidth) {
 	.hide-mobile {
 		display: none;
 	}
