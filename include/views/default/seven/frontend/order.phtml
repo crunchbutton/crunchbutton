@@ -10,8 +10,8 @@
 <div ng-if="order.id">
 
 	<div class="col-box content-padding-desktop">
-		<div class="two-col content-padding-mobile">
-			<div class="order-bubble-wrap" ng-if="!order._new">
+		<div class="two-col content-padding-mobile" ng-if="order._new">
+			<div class="order-bubble-wrap">
 				<div class="bubble-tail bubble-tail-green bubble-animated">
 					<div class="text" ng-switch="cherryMessage">
 						<span ng-switch-when="1" class="single-line">Yay! Food!</span>
@@ -32,7 +32,7 @@
 			</div>
 		</div>
 
-		<div class="divider dots spacer-two-one" ng-if="!order._new"></div>
+		<div class="divider dots spacer-two-one" ng-if="order._new"></div>
 
 		<div class="two-col content-padding-mobile">
 			<div ng-hide="account.user.has_auth">
@@ -104,7 +104,7 @@
 					<div class="hide-desktop">
 						<p class="order-earn-mobile">Earn more free deliveries by inviting more friends</p>
 						<a href="{{referral.sms}}">
-							<button class="button green">
+							<button class="button lightorange">
 								<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
 							</button>
 						</a>
