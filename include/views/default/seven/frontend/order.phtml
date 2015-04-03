@@ -2,7 +2,6 @@
 
 <div ng-if="!order.id">
 	<div class="content-padding">
-
 		<div class="ajax-loader-teal"></div>
 		<br />
 	</div>
@@ -54,60 +53,62 @@
 				<div class="divider dots spacer-two-two"></div>
 			</div>
 			<div class="content-padding order-buttons">
-				<div>
-					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free">
-						<br/>
-						You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
+
+				<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free order-delivery-free">
+					You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
+				</p>
+				<div ng-if="!account.user.points.free_delivery_message">
+					<br/>
+					<p class="delivery-free">
+						You just earned <strong>{{order.reward.points}}</strong> points!
+						<span></span>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
 					</p>
-					<div ng-if="!account.user.points.free_delivery_message">
-						<br/>
-						<p class="delivery-free">
-							You just earned <strong>{{order.reward.points}}</strong> points!
-							<span></span>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
-						</p>
-						<br/><br/>
-						<div ng-if="!isMobile">
-							<p>
-								Want more points?
-							</p>
-							<br/><br/>
-							<br>
-							<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
-								<p>Double your points by sharing on Facebook:</p>
-								<button class="button facebook" ng-click="referral.facebook();">
-									<i class="fa fa-facebook-square"></i> <span>Share</span></button>
-							</div>
-							<div ng-if="order.reward.shared.facebook">
-								Thanks for sharing on Facebook.
-							</div>
-							<div class="divider"></div>
-							<br>
-							<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
-								<p>Triple them by sharing on Twitter:</p>
-								<button class="button twitter" ng-click="referral.twitter()">
-									<i class="fa fa-twitter-square"></i> <span>Tweet</span>
-								</button>
-
-							</div>
-							<div ng-if="order.reward.shared.twitter">
-								Thanks for sharing on Twitter.
-							</div>
-							<div class="divider"></div>
-							<div ng-show="order._new && referral.invite_url && referral.enabled">
-								<br>
-								P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
-								<br>
-							</div>
-						</div>
-
-						<div ng-if="isMobile">
-							<a ng-if="referral.sms" href="sms:{{referral.sms}}" class="button text button-refer">
-								<i class="fa fa-mobile"></i> <span>Text your friends</span>
-							</a>
-						</div>
+					<br/><br/>
+				</div>
+				<div class="hide-mobile">
+					<p>
+						Want more points?
+					</p>
+					<br/><br/>
+					<br>
+					<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
+						<p>Double your points by sharing on Facebook:</p>
+						<button class="button facebook" ng-click="referral.facebook();">
+							<i class="fa fa-facebook-square"></i> <span>Share</span></button>
+					</div>
+					<div ng-if="order.reward.shared.facebook">
+						Thanks for sharing on Facebook.
+					</div>
+					<div class="divider"></div>
+					<br>
+					<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
+						<p>Triple them by sharing on Twitter:</p>
+						<button class="button twitter" ng-click="referral.twitter()">
+							<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+						</button>
 
 					</div>
+					<div ng-if="order.reward.shared.twitter">
+						Thanks for sharing on Twitter.
+					</div>
+					<div class="divider"></div>
+					<div ng-show="order._new && referral.invite_url && referral.enabled">
+						<br>
+						P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
+						<br>
+					</div>
 				</div>
+				
+
+				<div class="hide-desktop">
+					<p class="order-earn-mobile">Earn more free deliveries by inviting more friends</p>
+					<a href="{{referral.sms}}">
+						<button class="button green">
+							<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
+						</button>
+					</a>
+				</div>
+
 				<? /*
 				<div ng-if="order._new && referral.invite_url && referral.enabled">
 					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
