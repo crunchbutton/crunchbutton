@@ -6,8 +6,7 @@ $r = Crunchbutton_Message_Push_Ios::send([
 	'message' => 'test',
 	'count' => 1,
 	'id' => 'order-1',
-	'category' => 'order-new-test',
-	'env' => 'live'
+	'category' => 'order-new-test'
 ]);
 
 exit;
