@@ -19,6 +19,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 	const REASON_GIFT_CARD = 'gift card';
 	const REASON_GIFT_CARD_REDEEMED = 'gift card redeemed';
 	const REASON_SETTLEMENT_FAIL = 'settlement fail';
+	const REASON_AUTO_REPLY = 'auto reply';
 
 	public static function number($t = null) {
 		if ($t) {
