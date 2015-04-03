@@ -13,44 +13,44 @@
 				<p><span class="delivery-free">You have <b>{{account.user.points.free_delivery}}</b> points!</span> <br><br>The next delivery fee is on us.</p>
 			</div>
 
-			<br/>
+			<br>
 
 			<div class="divider"></div>
 
-			<div ng-show="account.user.invite_code">
+			<div ng-show="account.user.invite_code" class="hide-mobile">
 				<p>
 					Get your friends to enter <b>your referal code</b> in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
-				</p><br/>
-
+				</p>
+				<br><br>
 			</div>
-			<br/>
 		</div>
-		<div class="two-col">
+			<div class="two-col">
 
+				<div class="hide-desktop">
 
+					<button class="button green button-invite" ng-click="navigation.link('/free-food','push')">
+						<span>Free food</span>
+					</button>
 
-				<div ng-if="isMobile">
-					<a ng-if="referral.sms" href="sms:{{referral.sms}}" class="button text button-refer">
-						<i class="fa fa-mobile"></i> <span>Text your friends</span>
-					</a>
 				</div>
 
-				<div ng-if="!isMobile">
-					<button class="button facebook button-refer" ng-click="referral.facebook()">
-						<i class="fa fa-facebook-square"></i> <span>Share</span>
-					</button>
+				<div class="hide-mobile">
+					<div class="col-box">
+						<button class="button facebook button-refer" ng-click="referral.facebook()">
+							<i class="fa fa-facebook-square"></i> <span>Share</span>
+						</button>
 
-					<br><br>
+						<br><br>
 
-					<button class="button twitter button-refer" ng-click="referral.twitter()">
-						<i class="fa fa-twitter-square"></i> <span>Tweet</span>
-					</button>
-
+						<button class="button twitter button-refer" ng-click="referral.twitter()">
+							<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+						</button>
+					</div>
 				</div>
 
 			<br><br>
-			<p>Your code: <span class="referal-text-spacer"></span><b>{{account.user.invite_code}}</b></p>
-			<div ng-if="!isMobile">
+			<p class="hide-mobile">Your code: <span class="referal-text-spacer"></span><b>{{account.user.invite_code}}</b></p>
+			<div class="hide-mobile">
 				<br>
 				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
 			</div>

@@ -31,11 +31,10 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 		var text = 'i love crunchbutton delivery :) use my code ' + service.invite_code + ' in the Notes section and get $3 off your 1st order!';
 		if( App.iOS() ){
 			return 'sms:&body=' + text + ' ' + service.invite_url;
-		}
-		if( App.isAndroid() ){
+		} else {
+			// this appears to be the standard and should work for other non droid phones
 			return 'sms:?body=' + text + ' ' + service.invite_url;
 		}
-		return false;
 	}
 
 	service.getValue = function(){
