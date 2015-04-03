@@ -904,6 +904,9 @@ App.init = function(config) {
 	}
 
 	$('body').removeClass('no-init');
+	setTimeout(function() {
+		$('body').addClass('init');
+	},500);
 
 	// add the side swipe menu for mobile view
 	if (typeof Snap !== 'undefined') {
