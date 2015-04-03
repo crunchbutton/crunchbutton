@@ -36,7 +36,8 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	DriverOrdersViewService.prep();
 
 	$scope.nextOrder = function() {
-		//alert('asd');
+		alert('asd');
+		//console.log(arguments);
 	};
 
 	// Just run if the user is loggedin
