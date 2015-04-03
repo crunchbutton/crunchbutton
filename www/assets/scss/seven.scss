@@ -732,7 +732,7 @@ a.button{
 }
 .faq-heart {
 	color: #ff6b82;
-	font-size: 8.5em;
+	font-size: 8.5em !important;
 }
 
 
@@ -1312,6 +1312,18 @@ a.button{
 		background: #f78053 !important;
 		margin-bottom: 500px;
 	}
+	.footer .quote-wrap {
+		margin-top: 1em;
+		width: 19em;
+	}
+	.footer .quote-wrap sup {
+		margin-right: .2em;
+	}
+	.footer .quote-wrap sub {
+		margin-bottom: -0.2em;
+		vertical-align: bottom;
+		margin-left: .4em;
+	}
 	.footer .social {
 		margin-top: 10px;
 		float: left;
@@ -1450,6 +1462,18 @@ a.button{
 	.fb-like-box {
 		float: left;
 	}
+	.body-loader {
+		background: #f78053;
+		top: 0;
+		bottom: 0;
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		z-index: 100;
+
+		@include gpu();
+		@include transition(all 0.2s ease-in);
+	}
 
 }
 
@@ -1517,7 +1541,7 @@ a.button{
 }
 
 .order-link {
-	font-size: 3.64em;
+	font-size: 3.64em !important;
 }
 
 .order-date {
@@ -2496,6 +2520,20 @@ sup {
 .no-init .hide-before-init {
 	display: none !important;
 }
+
+.hide-after-init {
+	opacity: 0;
+}
+
+.no-init .hide-after-init {
+	display: block !important;
+	opacity: 1 !important;
+}
+
+.init .hide-after-init {
+	display: none;
+}
+
 
 .payment-wrap {
 	overflow: hidden;
