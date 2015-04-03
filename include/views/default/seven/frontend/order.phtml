@@ -36,8 +36,6 @@
 
 		<div class="two-col content-padding-mobile">
 			<div ng-hide="account.user.has_auth">
-
-				<div class="divider dots spacer-two-two"></div>
 				<div class="content-padding order-buttons">
 					<p>
 						Create an account and earn {{order.reward.points}} points towards a free delivery and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
@@ -53,9 +51,7 @@
 			</div>
 
 			<div ng-show="account.user.has_auth">
-				<div ng-if="order._new">
-					<div class="divider dots spacer-two-two"></div>
-				</div>
+
 				<div class="order-buttons">
 
 					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free order-delivery-free">
