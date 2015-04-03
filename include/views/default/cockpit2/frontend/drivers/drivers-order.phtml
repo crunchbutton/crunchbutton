@@ -3,7 +3,7 @@
 
 <!-- /actions -->
 
-<div class="content-padding" hm-swiperight="nextOrder" hm-swiperight="prevOrder">
+<div class="content-padding">
 
 
 	<div ng-if="oc.order.status.status != 'accepted' && oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
@@ -90,7 +90,7 @@
 			<div class="divider"></div>
 			<div class="order-item-block left">
 				<div class="order-icon"><i class="fa fa-clock-o"></i></div>
-				<div class="order-info" hm-drag="nextOrder()">
+				<div class="order-info">
 					Ordered @ {{oc.order.time_formated}}
 				</div>
 			</div>
