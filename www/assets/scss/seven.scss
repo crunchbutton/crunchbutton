@@ -386,10 +386,6 @@ a.button{
 	background: #385ca2;
 	font-weight: bold;
 }
-.button.text {
-	background: #37ba53;
-	font-weight: bold;
-}
 .button.twitter {
 	background: #44cafd;
 	color: #fff;
@@ -2268,7 +2264,7 @@ sup {
 	margin-bottom: 2em;
 }
 
-.button.facebook .fa, .button.twitter .fa {
+.button.facebook .fa, .button.twitter .fa, .button-invite .fa {
 	margin-right: .4em;
 }
 
