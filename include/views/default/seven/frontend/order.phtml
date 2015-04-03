@@ -9,7 +9,7 @@
 
 <div ng-if="order.id">
 
-	<div class="about-bubble-wrap" ng-if="order._new">
+	<div class="order-bubble-wrap" ng-if="order._new">
 		<div class="bubble-tail bubble-tail-green bubble-animated">
 			<div class="text" ng-switch="cherryMessage">
 				<span ng-switch-when="1" class="single-line">Yay! Food!</span>
@@ -20,14 +20,16 @@
 				<span ng-switch-when="6">suggestions, or even complaints!</span>
 				<span ng-switch-when="7">The customer is always right!</span>
 				<span class="single-line" ng-switch-when="8"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-				<span ng-switch-default class="single-line"><b>Crunched!</b></span>
+				<span ng-switch-default class="single-line"><b>Sit back &amp Relax!</b></span>
 			</div>
 			<div class="bubble-tail-spacer"></div>
 		</div>
-		<div class="order-cherry animated-resize" ng-instant="cherryMessage = (cherryMessage > 7 ? 0 : (cherryMessage + 1))" instant-pass-thru></div>
+		<div class="hot-dog-relax animated-resize" ng-instant="cherryMessage = (cherryMessage > 7 ? 0 : (cherryMessage + 1))" instant-pass-thru></div>
 		<div class="divider"></div>
-		<div class="order-tagline"><h1>Your order is placed</h1><h2>and saved for easy 1 click reordering</h2></div>
+		<div class="order-tagline"><h1>Your order is on it's way</h1><h2>and saved for easy 1 click reordering</h2></div>
 	</div>
+	
+	<div class="divider dots spacer-two-one" ng-if="order._new"></div>
 
 
 	<div class="order-content">

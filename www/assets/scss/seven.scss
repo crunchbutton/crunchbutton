@@ -2158,6 +2158,16 @@ select.form-input {
 	float: right;
 }
 
+.hot-dog-relax {
+	background: url(../images/micro/hot-dog-relax.svg) no-repeat;
+	background-position: top center;
+	width: 17em;
+	height: 12.5em;
+	background-size: 100%;
+	float: right;
+	margin-top: 7em;
+}
+
 /* about page */
 .about-pear {
 	background: url(../images/micro/about-pear.svg) no-repeat;
@@ -2170,6 +2180,11 @@ select.form-input {
 .about-bubble-wrap {
 	width: 28em;
 	margin: 0 auto;
+}
+.order-bubble-wrap {
+	width: 30em;
+	margin: 0 auto;
+	margin-top: -1.8em;
 }
 
 .dialog-message {
@@ -3529,9 +3544,6 @@ select {
 	}
 }
 
-.order-tagline {
-	margin-top: -1em;
-}
 .order-tagline h1 {
 	font-size: 1.3em;
 	font-weight: bold;
@@ -4052,11 +4064,7 @@ font-familt: "Museo Slab";
 	text-align: center;
 }
 
-.order-delivery-free {
-	text-align: center;
-}
 .order-earn-mobile {
 	margin-top: 1em;
 	margin-bottom: 1em;
-	text-align: center;
 }
