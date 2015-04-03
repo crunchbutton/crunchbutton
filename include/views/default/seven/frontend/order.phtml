@@ -9,8 +9,8 @@
 
 <div ng-if="order.id">
 
-	<div class="col-box">
-		<div class="two-col content-padding">
+	<div class="col-box content-padding-desktop">
+		<div class="two-col content-padding-mobile">
 			<div class="order-bubble-wrap" ng-if="!order._new">
 				<div class="bubble-tail bubble-tail-green bubble-animated">
 					<div class="text" ng-switch="cherryMessage">
@@ -34,7 +34,7 @@
 
 		<div class="divider dots spacer-two-one" ng-if="!order._new"></div>
 
-		<div class="two-col content-padding">
+		<div class="two-col content-padding-mobile">
 			<div ng-hide="account.user.has_auth">
 
 				<div class="divider dots spacer-two-two"></div>
@@ -72,7 +72,7 @@
 					<div class="hide-mobile">
 						<p>
 							<br>
-							Want more points? Share on facebook or twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
+							Want more points? Share on Facebook or Twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
 							<br><br>
 						</p>
 
