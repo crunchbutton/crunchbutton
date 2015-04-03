@@ -386,28 +386,6 @@
 					<div class="divider"></div>
 
 
-				<div class="order-icon">
-					<div class="icon-map-home" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'"></div>
-					<div class="icon-map-restaurant" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'"></div>
-				</div>
-				<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
-					<p>
-						Delivered to:<br />
-					</p>
-					<p class="restaurant-info-address">
-						<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
-						<i ng-hide="order.form.address">no address provided</i>
-					</p>
-				</div>
-				<div class="order-info" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
-					<p class="restaurant-info-address">
-						Pick up from:<br />
-						<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
-					</p>
-				</div>
-
-				<div class="divider"></div>
-
 					<div class="order-icon">
 						<div class="icon-map-home" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'"></div>
 						<div class="icon-map-restaurant" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'"></div>
@@ -427,6 +405,8 @@
 							<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
 						</p>
 					</div>
+
+
 					<div class="divider"></div>
 
 
