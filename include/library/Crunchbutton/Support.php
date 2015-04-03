@@ -8,6 +8,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	const TYPE_TICKET = 'TICKET';
 	const TYPE_COCKPIT_CHAT = 'COCKPIT_CHAT';
 
+	const CONFIG_AUTO_REPLY_KEY = 'auto-reply-text';
+
 	const STATUS_OPEN = 'open';
 	const STATUS_CLOSED = 'closed';
 
@@ -349,7 +351,62 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$messageParams[ 'phone' ] = $params[ 'phone' ];
 		$messageParams[ 'body' ] = $params[ 'body' ];
 		$messageParams[ 'media' ] = $params[ 'media' ];
+
 		$this->addMessage( $messageParams );
+
+		// CS Auto-Reply #5042
+		$support = $this;
+		Cana::timeout( function() use( $support ) {
+			$support->autoReply();
+		} );
+	}
+
+	public function autoReply(){
+		$body = $this->autoReplyMessage();
+		if( $this->shoudAutoReply() && $body ){
+			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_AUTO_REPLY;
+			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
+			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
+			$messageParams[ 'phone' ] = $params[ 'phone' ];
+			$messageParams[ 'body' ] = $body;
+			$message = $this->addMessage( $messageParams );
+			if( $message->id_support_message ){
+				$message->notify();
+			}
+		}
+	}
+
+	public function autoReplyMessage(){
+		$message = Crunchbutton_Config::q( 'SELECT * FROM config WHERE `key` = "' . Crunchbutton_Support::CONFIG_AUTO_REPLY_KEY . '" ORDER BY RAND() LIMIT 1' );
+		if( $message->value ){
+			return $message->value;
+		}
+		return false;
+	}
+
+	public function lastAutoReplyByPhone( $phone ){
+		$support_message = Crunchbutton_Support_Message::q( 'SELECT sm.* FROM support s
+																														INNER JOIN support_message sm ON sm.id_support = s.id_support
+																														WHERE s.phone = "' . $phone . '"
+																														AND sm.type = "' . Crunchbutton_Support_Message::TYPE_AUTO_REPLY . '"
+																														ORDER BY id_support_message DESC LIMIT 1' )->get( 0 );
+		if( $support_message->id_support_message ){
+			return $support_message;
+		}
+		return false;
+	}
+
+	public function shoudAutoReply(){
+		$last = $this->lastAutoReplyByPhone( $this->phone );
+		if( !$last ){
+			return true;
+		} else {
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			if( Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $last->date() ) ) ){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function addAdminReply($body, $guid = null){

@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES (NULL,'auto-reply-text',"Hey, thanks for texting, we'll be with ya in a second! -Crunchbutton");
