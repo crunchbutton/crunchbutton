@@ -362,20 +362,24 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function autoReply(){
-		if( $this->phone != '***REMOVED***' ){
-			return;
-		}
+
 		$body = $this->autoReplyMessage();
+
 		if( $this->shoudAutoReply() && $body ){
+
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_AUTO_REPLY;
 			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
 			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
 			$messageParams[ 'phone' ] = $params[ 'phone' ];
 			$messageParams[ 'body' ] = $body;
 			$message = $this->addMessage( $messageParams );
-			if( $message->id_support_message ){
-				$message->notify();
-			}
+
+			Crunchbutton_Message_Sms::send([
+				'to' => $message->phone,
+				'message' => $message->body,
+				'reason' => Crunchbutton_Message_Sms::REASON_AUTO_REPLY
+			] );
+			return true;
 		}
 	}
 

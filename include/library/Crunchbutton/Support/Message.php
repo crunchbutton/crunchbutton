@@ -109,17 +109,6 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$support = $this->support();
 		$phone = $support->phone;
 		if (!$phone) return;
-
-		// Auto reply messages
-		if( $this->type == Crunchbutton_Support_Message::TYPE_AUTO_REPLY && $this->body ){
-				Crunchbutton_Message_Sms::send([
-					'to' => $phone,
-					'message' => $this->body,
-					'reason' => Crunchbutton_Message_Sms::REASON_AUTO_REPLY
-				]);
-				return true;
-		}
-
 		if( $this->admin()->id_admin ){
 			$rep_name = $this->admin()->firstName();
 		} else {
