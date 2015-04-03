@@ -1113,8 +1113,8 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 	service.facebook = FacebookService;
 
-	service.load = function(){
 
+	service.load = function(){
 		var url = App.service + 'order/' + $routeParams.id;
 
 		var error = function(){
@@ -1138,6 +1138,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 					service.order._new = service.newOrder;
 				} else {
 					service.order._new = false;
+				}
+				
+				if ($routeParams.new) {
+					service.order._new = true;
 				}
 
 				var arr = data.date.split(/[- :]/);
