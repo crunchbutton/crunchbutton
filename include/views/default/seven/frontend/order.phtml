@@ -9,116 +9,115 @@
 
 <div ng-if="order.id">
 
-	<div class="order-bubble-wrap" ng-if="order._new">
-		<div class="bubble-tail bubble-tail-green bubble-animated">
-			<div class="text" ng-switch="cherryMessage">
-				<span ng-switch-when="1" class="single-line">Yay! Food!</span>
-				<span ng-switch-when="2" class="single-line">It's on it's way.</span>
-				<span ng-switch-when="3" class="small">Questions? Please contact the restaurant.</span>
-				<span ng-switch-when="4">Feedback? Send us a text.</span>
-				<span ng-switch-when="5">We'd love to hear your thoughts...</span>
-				<span ng-switch-when="6">suggestions, or even complaints!</span>
-				<span ng-switch-when="7">The customer is always right!</span>
-				<span class="single-line" ng-switch-when="8"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-				<span ng-switch-default class="single-line"><b>Sit back &amp Relax!</b></span>
+	<div class="col-box">
+		<div class="two-col content-padding">
+			<div class="order-bubble-wrap" ng-if="!order._new">
+				<div class="bubble-tail bubble-tail-green bubble-animated">
+					<div class="text" ng-switch="cherryMessage">
+						<span ng-switch-when="1" class="single-line">Yay! Food!</span>
+						<span ng-switch-when="2" class="single-line">It's on it's way.</span>
+						<span ng-switch-when="3" class="small">Questions? Please contact the restaurant.</span>
+						<span ng-switch-when="4">Feedback? Send us a text.</span>
+						<span ng-switch-when="5">We'd love to hear your thoughts...</span>
+						<span ng-switch-when="6">suggestions, or even complaints!</span>
+						<span ng-switch-when="7">The customer is always right!</span>
+						<span class="single-line" ng-switch-when="8"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+						<span ng-switch-default class="single-line"><b>Sit back &amp Relax!</b></span>
+					</div>
+					<div class="bubble-tail-spacer"></div>
+				</div>
+				<div class="hot-dog-relax animated-resize" ng-instant="cherryMessage = (cherryMessage > 7 ? 0 : (cherryMessage + 1))" instant-pass-thru></div>
+				<div class="divider"></div>
+				<div class="order-tagline"><h1>Your order is on it's way</h1><h2>and saved for easy 1 click reordering</h2></div>
 			</div>
-			<div class="bubble-tail-spacer"></div>
 		</div>
-		<div class="hot-dog-relax animated-resize" ng-instant="cherryMessage = (cherryMessage > 7 ? 0 : (cherryMessage + 1))" instant-pass-thru></div>
-		<div class="divider"></div>
-		<div class="order-tagline"><h1>Your order is on it's way</h1><h2>and saved for easy 1 click reordering</h2></div>
-	</div>
-	
-	<div class="divider dots spacer-two-one" ng-if="order._new"></div>
 
+		<div class="divider dots spacer-two-one" ng-if="!order._new"></div>
+
+		<div class="two-col content-padding">
+			<div ng-hide="account.user.has_auth">
+
+				<div class="divider dots spacer-two-two"></div>
+				<div class="content-padding order-buttons">
+					<p>
+						Create an account and earn {{order.reward.points}} points towards a free delivery and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
+					</p>
+
+					<br>
+					<div class="button-pushable">
+						<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
+					</div>
+					<br />
+				</div>
+
+			</div>
+
+			<div ng-show="account.user.has_auth">
+				<div ng-if="order._new">
+					<div class="divider dots spacer-two-two"></div>
+				</div>
+				<div class="order-buttons">
+
+					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free order-delivery-free">
+						You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
+					</p>
+					<div ng-if="!account.user.points.free_delivery_message">
+						<br/>
+						<p class="delivery-free">
+							You just earned <strong>{{order.reward.points}}</strong> points!
+							<span></span>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
+						</p>
+						<br/><br/>
+					</div>
+					<div class="hide-mobile">
+						<p>
+							<br>
+							Want more points? Share on facebook or twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
+							<br><br>
+						</p>
+
+						<div class="col-box">
+
+							<button class="button facebook button-refer" ng-click="referral.facebook();" ng-if="account.user.has_auth && !order.reward.shared.facebook">
+								<i class="fa fa-facebook-square"></i> <span>Share</span>
+							</button>
+							
+							<button class="button twitter button-refer" ng-click="referral.twitter()" ng-if="account.user.has_auth && !order.reward.shared.twitter">
+								<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+							</button>
+						</div>
+
+						<div ng-if="order.reward.shared.facebook">
+							Thanks for sharing on Facebook.
+						</div>
+
+
+
+						<div ng-if="order.reward.shared.twitter">
+							Thanks for sharing on Twitter.
+						</div>
+						<div class="divider"></div>
+
+					</div>
+
+
+					<div class="hide-desktop">
+						<p class="order-earn-mobile">Earn more free deliveries by inviting more friends</p>
+						<a href="{{referral.sms}}">
+							<button class="button green">
+								<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
+							</button>
+						</a>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+		
 
 	<div class="order-content">
-		<div ng-hide="account.user.has_auth">
-
-			<div class="divider dots spacer-two-two"></div>
-			<div class="content-padding order-buttons">
-				<p>
-					Create an account and earn {{order.reward.points}} points towards a free delivery and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
-				</p>
-
-				<br>
-				<div class="button-pushable">
-					<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
-				</div>
-				<br />
-			</div>
-
-		</div>
-
-		<div ng-show="account.user.has_auth">
-			<div ng-if="order._new">
-				<div class="divider dots spacer-two-two"></div>
-			</div>
-			<div class="content-padding order-buttons">
-
-				<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free order-delivery-free">
-					You have <strong>{{account.user.points.free_delivery}}</strong> points! The next delivery fee is on us.
-				</p>
-				<div ng-if="!account.user.points.free_delivery_message">
-					<br/>
-					<p class="delivery-free">
-						You just earned <strong>{{order.reward.points}}</strong> points!
-						<span></span>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
-					</p>
-					<br/><br/>
-				</div>
-				<div class="hide-mobile">
-					<p>
-						Want more points?
-					</p>
-					<br/><br/>
-					<br>
-					<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
-						<p>Double your points by sharing on Facebook:</p>
-						<button class="button facebook" ng-click="referral.facebook();">
-							<i class="fa fa-facebook-square"></i> <span>Share</span></button>
-					</div>
-					<div ng-if="order.reward.shared.facebook">
-						Thanks for sharing on Facebook.
-					</div>
-					<div class="divider"></div>
-					<br>
-					<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
-						<p>Triple them by sharing on Twitter:</p>
-						<button class="button twitter" ng-click="referral.twitter()">
-							<i class="fa fa-twitter-square"></i> <span>Tweet</span>
-						</button>
-
-					</div>
-					<div ng-if="order.reward.shared.twitter">
-						Thanks for sharing on Twitter.
-					</div>
-					<div class="divider"></div>
-					<div ng-show="order._new && referral.invite_url && referral.enabled">
-						<br>
-						P.S. - Earn a FREE DELIVERY for every new customer you refer with your link!
-						<br>
-					</div>
-				</div>
-				
-
-				<div class="hide-desktop">
-					<p class="order-earn-mobile">Earn more free deliveries by inviting more friends</p>
-					<a href="{{referral.sms}}">
-						<button class="button green">
-							<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
-						</button>
-					</a>
-				</div>
-
-				<? /*
-				<div ng-if="order._new && referral.invite_url && referral.enabled">
-					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
-					<br /><br />
-				</div>
-				*/ ?>
-			</div>
-		</div>
 
 		<div class="divider dots spacer-two-two"></div>
 
