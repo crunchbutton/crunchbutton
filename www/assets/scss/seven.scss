@@ -72,7 +72,7 @@ html {
 
 
 @media screen and (max-width: 1024px) {
-	.content-padding {
+	.content-padding, .content-padding-mobile {
 		padding: 10px;
 	}
 	*:not(input):not(textarea) {
@@ -2182,7 +2182,7 @@ select.form-input {
 	margin: 0 auto;
 }
 .order-bubble-wrap {
-	width: 30em;
+	width: auto;
 	margin: 0 auto;
 	margin-top: -1.8em;
 }
@@ -3666,7 +3666,7 @@ select {
 
 
 @media screen and (min-width: 1025px) {
-	.content-padding {
+	.content-padding, .content-padding-desktop {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
@@ -3674,6 +3674,7 @@ select {
 	.nav .content,
 	.restaurant-content-padding,
 	.page-cafe .content,
+	.content-padding-desktop,
 	.content-padding {
 		/*max-width: 767px;*/
 		max-width: 1024px;
