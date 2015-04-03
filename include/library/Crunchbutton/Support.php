@@ -356,12 +356,15 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		// CS Auto-Reply #5042
 		$support = $this;
-		Cana::timeout( function() use( $support ) {
+		c::timeout( function() use( $support ) {
 			$support->autoReply();
-		} );
+		}, 10 * 1000 );
 	}
 
 	public function autoReply(){
+		if( $this->phone != '***REMOVED***' ){
+			return;
+		}
 		$body = $this->autoReplyMessage();
 		if( $this->shoudAutoReply() && $body ){
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_AUTO_REPLY;
