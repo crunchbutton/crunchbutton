@@ -355,10 +355,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$this->addMessage( $messageParams );
 
 		// CS Auto-Reply #5042
-		// $support = $this;
-		// c::timeout( function() use( $support ) {
-		// 	$support->autoReply();
-		// }, 10 * 1000 );
+		$support = $this;
+		c::timeout( function() use( $support ) {
+			$support->autoReply();
+		}, 10 * 1000 );
 	}
 
 	public function autoReply(){

@@ -57,3 +57,37 @@ NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeP
 	return service;
 
 } );
+
+NGApp.factory( 'ConfigAutoReplyService', function( $rootScope, $resource, $routeParams ) {
+
+	var service = {};
+
+	var settings = $resource( App.service + 'config/autoreply/:action', { action: '@action' }, {
+				// list methods
+				'load' : { 'method': 'GET', params : { 'action' : 'load' }, isArray: true },
+				'save' : { 'method': 'POST', params : { 'action' : 'save' } },
+				'remove' : { 'method': 'POST', params : { 'action' : 'remove' } },
+			}
+		);
+
+	service.load = function( callback ){
+			settings.load( function( data ){
+				callback( data );
+			} );
+		};
+
+	service.save = function( params, callback ){
+			settings.save( params, function( data ){
+				callback( data );
+			} );
+		};
+
+	service.remove = function( id_config, callback ){
+			settings.remove( { 'id_config' : id_config }, function( data ){
+				callback( data );
+			} );
+		};
+
+	return service;
+
+} );
