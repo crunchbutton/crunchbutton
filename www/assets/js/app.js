@@ -325,7 +325,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.http = $http;
 	$rootScope.hasFacebook = App.hasFacebook;
 	$rootScope.topCommunities = App.topCommunities;
-
+	var hello = 'moc.nottubhcnurc@olleh'.split('').reverse().join('');
+	$scope.hello = hello;
+	var textUs = '4441387646'.split('').reverse().join('');
+	$scope.textUs = textUs;
+	var textUsFormatted = '4441-387 )646('.split('').reverse().join('');
+	$scope.textUsFormatted = textUsFormatted;
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908
 	$rootScope.softKeyboard = function( e ){
