@@ -392,7 +392,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					if( $reward->checkIfItIsEligibleForFirstTimeOrder() && $valid ){
 						$value = $reward->getReferredDiscountAmount();
 						if( $value ){
-							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . ' gift card towards your first order.' ] ] );
+							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . '  gift card for a free delivery.' ] ] );
 							exit;
 						}
 					}

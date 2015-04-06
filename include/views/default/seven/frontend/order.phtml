@@ -61,7 +61,7 @@
 						<br/>
 						<p class="delivery-free">
 							You just earned <strong>{{order.reward.points}}</strong> points!
-							<span></span>You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.
+							<span ng-if="account.user.points.away_free_delivery > 0"> You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</span>
 						</p>
 						<br/><br/>
 					</div>
@@ -77,7 +77,7 @@
 							<button class="button facebook button-refer" ng-click="referral.facebook();" ng-if="account.user.has_auth && !order.reward.shared.facebook">
 								<i class="fa fa-facebook-square"></i> <span>Share</span>
 							</button>
-							
+
 							<button class="button twitter button-refer" ng-click="referral.twitter()" ng-if="account.user.has_auth && !order.reward.shared.twitter">
 								<i class="fa fa-twitter-square"></i> <span>Tweet</span>
 							</button>
@@ -111,7 +111,7 @@
 
 		</div>
 	</div>
-		
+
 
 	<div class="order-content">
 
