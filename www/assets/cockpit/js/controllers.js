@@ -79,7 +79,10 @@ NGApp.controller('LegalCtrl', function ($scope) {
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 
 	$scope.loggingIn = false;
-
+	var l;
+	setTimeout(function(){
+		l = Ladda.create($('.button-login .ladda-button').get(0));
+	},700);
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 	$scope.login = function() {
 		if( !$scope.username ){
@@ -99,6 +102,7 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 			return;
 		}
 		$scope.loggingIn = true;
+		l.start();
 		AccountService.login( $scope.username, $scope.password, function( status ) {
 			if( status ){
 				MainNavigationService.link( '/' );
@@ -106,12 +110,15 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 				$scope.error = true;
 			}
 			$scope.loggingIn = false;
+			l.stop();
 		} );
 	}
 
 	// needs to be updated when the html is
 	$scope.welcome = Math.floor((Math.random() * 8) + 1);
 	console.debug('welcome message', $scope.welcome);
+
+
 });
 
 NGApp.controller( 'ProfileCtrl', function ($scope) {
