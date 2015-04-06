@@ -1401,6 +1401,8 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		ReferralService.getInviteCode();
 	}
 
+	ReferralService.getStatus();
+
 	$scope.account = AccountService;
 
 	// Alias to method AccountSignOut.do()
@@ -1432,16 +1434,12 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		value : ReferralService.value,
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
-		enabled : ReferralService.enabled
+		enabled : ReferralService.enabled,
+		invite_code: ReferralService.invite_code
 	}
 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
-	}
-
-	// Load the invite_url
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
 	}
 
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
@@ -1450,6 +1448,7 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		$scope.referral.invite_url = ReferralService.invite_url;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
 		$scope.referral.sms = ReferralService.sms();
 	});
 

@@ -17,20 +17,32 @@
 
 			<div class="divider"></div>
 
-			<div ng-show="account.user.invite_code" class="hide-mobile">
+			<div ng-show="referral.invite_code">
 				<p>
-					Get your friends to enter <b>your referral code</b> in the Notes section of their first order, and they will get $3 off and you a 	delivery free ;)
+					Get your friends to enter <b>your referral code</b> in the Notes section of their first order, and you'll both get a free delivery ;)
 				</p>
 				<br><br>
+
+
+
 			</div>
 		</div>
 			<div class="two-col">
 
 				<div class="hide-desktop">
 
-					<button class="button lightorange button-invite" ng-click="navigation.link('/free-food','push')">
-						<span>Free food</span>
-					</button>
+					<a href="{{referral.sms}}">
+						<button class="button lightorange button-invite">
+							<i class="fa fa-comment"></i> <span>Invite Friends</span>
+						</button>
+					</a>
+
+					<br><br>
+					<p>Your code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
+					<div class="hide-mobile">
+						<br>
+						<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
+					</div>
 
 				</div>
 
@@ -49,7 +61,7 @@
 				</div>
 
 			<br><br>
-			<p class="hide-mobile">Your code: <span class="referal-text-spacer"></span><b>{{account.user.invite_code}}</b></p>
+			<p class="hide-mobile">Your code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
 			<div class="hide-mobile">
 				<br>
 				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
