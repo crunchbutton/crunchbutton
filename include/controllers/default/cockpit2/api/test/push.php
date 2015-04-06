@@ -12,10 +12,15 @@ $r = Crunchbutton_Message_Push_Ios::send([
 exit;
 */
 
+c::timeout(function() {
 
-$n = Admin_Notification::o(5701);
-$o = Crunchbutton_Order::o(46000);
+	$n = Admin_Notification::o(5701);
+	$o = Crunchbutton_Order::o(46000);
 
-$r = $n->send($o);
+	$r = $n->send($o);
 
-var_dump($r);
+	var_dump($r);
+	error_log(print_r($r, 1));
+});
+
+die('sent');
