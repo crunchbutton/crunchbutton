@@ -243,8 +243,12 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		value : ReferralService.value,
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
-		enabled : ReferralService.enabled
+		enabled : ReferralService.enabled,
+		invite_code : ReferralService.invite_code,
+		sms : ReferralService.sms()
 	}
+
+	ReferralService.getStatus();
 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
