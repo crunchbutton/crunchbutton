@@ -84,7 +84,7 @@ class Crunchbutton_Message_Push_Android extends Crunchbutton_Message {
 		
 		curl_close($ch);
 
-		return $result->success ? true : false;
+		return ['status' => $result->success ? true : false];
 
 	}
 }

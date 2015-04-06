@@ -57,6 +57,8 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 				$certs.'aps_development_com.crunchbutton.cockpit.pem'
 			);
 		}
+		
+		ob_start();
 
 		$push->setRootCertificationAuthority($certs.'entrust_root_certification_authority.pem');
 		$push->connect();
@@ -85,9 +87,12 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 
 		$push->send();
 		$push->disconnect();
+		
+		$res = ob_get_contents();
+		ob_end_clean();
 
 		$aErrorQueue = $push->getErrors();
 
-		return $aErrorQueue ? $aErrorQueue : true;
+		return ['res' => $res, 'status' => $aErrorQueue ? $aErrorQueue : true, 'errors' => $aErrorQueue];
 	}
 }
