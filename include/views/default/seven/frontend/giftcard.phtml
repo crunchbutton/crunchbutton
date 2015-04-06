@@ -37,7 +37,12 @@
 					You just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
 				</span>
 				<span ng-show="!modal.restaurant">
-					You just got a <b>${{giftcard.value}}</b> gift card.
+					<div ng-if="giftcard.message">
+						{{giftcard.message}}
+					</div>
+					<div ng-if="!giftcard.message">
+						You just got a <b>${{giftcard.value}}</b> gift card.
+					</div>
 				</span>
 
 				&nbsp;Go ahead and order some food!
