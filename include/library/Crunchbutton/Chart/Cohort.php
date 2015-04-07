@@ -10,7 +10,7 @@ class Crunchbutton_Chart_Cohort extends Cana_Table {
 			->load($id);
 	}
 
-	public static function get( $id, $type ){
+	public static function _get( $id, $type ){
 
 		switch ( $type ) {
 			case 'cohort':
@@ -38,13 +38,13 @@ class Crunchbutton_Chart_Cohort extends Cana_Table {
 		return json_encode( $array );
 	}
 
-	public static function getAll(){
-	
+	public static function _getAll(){
+
 		$data = [];
 		$data[ 'cohorts' ] = [];
 		$data[ 'giftcards' ] = [];
 		$data[ 'months' ] = [];
-		
+
 		$cohorts = Crunchbutton_Chart_Cohort::q( 'SELECT * FROM chart_cohort ORDER BY name DESC' );
 		foreach ( $cohorts as $cohort ) {
 			$data[ 'cohorts' ][] = (object) array( 'name' => $cohort->name, 'id_chart_cohort' => $cohort->id_chart_cohort, 'cohort_type' => 'cohort' );
@@ -76,27 +76,27 @@ class Crunchbutton_Chart_Cohort extends Cana_Table {
 						switch ( $key ) {
 							case 'address_has':
 								if( $value != '' ){
-									$query .= " AND o.address LIKE '%{$value}%' ";	
+									$query .= " AND o.address LIKE '%{$value}%' ";
 								}
 								break;
 							case 'name_has':
 								if( $value != '' ){
-									$query .= " AND o.name LIKE '%{$value}%' ";	
+									$query .= " AND o.name LIKE '%{$value}%' ";
 								}
 								break;
 							case 'delivery_type_is':
 								if( $value != '' ){
-									$query .= " AND o.delivery_type = '{$value}' ";	
+									$query .= " AND o.delivery_type = '{$value}' ";
 								}
 								break;
 							case 'pay_type_is':
 								if( $value != '' ){
-									$query .= " AND o.pay_type = '{$value}' ";	
+									$query .= " AND o.pay_type = '{$value}' ";
 								}
 								break;
 						}
 					}
-				}	
+				}
 				break;
 
 			case 'giftcard':
