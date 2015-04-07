@@ -1,3 +1,12 @@
+<?php
+$red = 'red';
+function paint( $text, $color, $condition ){
+	if( $condition ){
+		return '<font color="' . $color . '">' . $text . '</font>';
+	}
+	return $text;
+}
+?>
 <h1>Customer Service Morning Digest</h1>
 <?php
 $ticked_opened = count( $tickets[ 'open' ] );
@@ -32,11 +41,18 @@ $ticked_closed = count( $tickets[ 'closed' ] );
 		<?php foreach( $tickets as $ticket ) { ?>
 		<thead>
 			<tr>
-				<th style="<?php echo $thead_th_row ?>" align="left"><a href="https://cockpit.la/ticket/<?php echo $ticket[ 'id_support' ]; ?>"><?php echo $ticket[ 'id_support' ]; ?></a></th>
-				<th style="<?php echo $thead_th_row ?>" align="left"><?php echo $ticket[ 'status' ]; ?></th>
-				<th style="<?php echo $thead_th_row ?>" align="left"><?php echo $ticket[ 'date' ]; ?></th>
-				<th style="<?php echo $thead_th_row ?>" align="left"><?php if( $ticket[ 'name' ] ){ echo $ticket[ 'name' ]; } else { echo '-'; } ?></th>
-				<th style="<?php echo $thead_th_row ?>" align="left"><?php echo $ticket[ 'phone' ]; ?></th>
+				<th style="<?php echo $thead_th_row ?>" align="left"><a href="https://cockpit.crunchbutton.com/support/<?php echo $ticket[ 'id_support' ]; ?>">
+					<?php echo paint( $ticket[ 'id_support' ], $red, $ticket[ 'more_5_min' ] ); ?>
+				</a></th>
+				<th style="<?php echo $thead_th_row ?>" align="left">
+					<?php echo paint( ( $ticket[ 'name' ] ? $ticket[ 'name' ] : '-' ), $red, $ticket[ 'more_5_min' ] ); ?> <?php echo paint( $ticket[ 'phone' ], $red, $ticket[ 'more_5_min' ] ); ?>
+				</th>
+				<th style="<?php echo $thead_th_row ?>" align="left">
+					<?php echo paint( $ticket[ 'date' ], $red, $ticket[ 'more_5_min' ] ); ?>
+				</th>
+				<th style="<?php echo $thead_th_row ?>" align="left">
+					<?php echo paint( $ticket[ 'status' ], $red, $ticket[ 'more_5_min' ] ); ?>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -44,14 +60,13 @@ $ticked_closed = count( $tickets[ 'closed' ] );
 				<?php foreach( $ticket[ 'messages' ] as $message ) { ?>
 				<tr style="<?php if($message[ 'type' ] == 'client'  ){ echo $client_row_style; } else { $crunchbutton_row_style; } ?>">
 					<td valign="top" style="<?php echo $body_td_row; ?>">
-						<?php if( $message[ 'type' ] == 'client' ) { ?>
-							Client
-						<?php } else { ?>
-							Crunchbutton
-						<?php } ?>
+						<?php echo $message[ 'name' ]; ?>
 					</td>
-					<td colspan="4" style="<?php echo $body_td_row; ?>">
+					<td colspan="2" style="<?php echo $body_td_row; ?>">
 						<?php echo $message[ 'body' ]; ?>
+					</td>
+					<td nowrap="nowrap">
+						<?php echo $message[ 'date' ]; ?>
 					</td>
 				</tr>
 				<?php } ?>
