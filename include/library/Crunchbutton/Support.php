@@ -873,6 +873,51 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE sm.id_support = "' . $this->id_support . '" AND sm.type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND `from` != "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" ORDER BY sm.date DESC' );
 	}
 
+	public function findsTheSendersName( $phone = null ){
+		if( !$phone ){
+			$phone = $this->phone;
+		}
+
+		// look at the users
+		$user = Crunchbutton_User::q( 'SELECT * FROM user WHERE phone = "' . $phone . '" LIMIT 1' );
+		if( count( $user ) && $user->get( 0 ) && $user->get( 0 )->name ){
+			return $user->get( 0 )->name;
+		}
+		// look at the orders
+		$order = Crunchbutton_User::q( 'SELECT * FROM `order` WHERE phone = "' . $phone . '" LIMIT 1' );
+		if( count( $order ) && $order->get( 0 ) && $order->get( 0 )->name ){
+			return $order->get( 0 )->name;
+		}
+		// look at the admins
+		$admin = Crunchbutton_User::q( 'SELECT * FROM  admin WHERE phone = "' . $phone . '" LIMIT 1' );
+		if( count( $admin ) && $admin->get( 0 ) && $admin->get( 0 )->name ){
+			return $admin->get( 0 )->name;
+		}
+		return null;
+	}
+
+	public function findsTheSendersType( $phone = null ){
+		if( !$phone ){
+			$phone = $this->phone;
+		}
+		// look at the admins
+		$admin = Crunchbutton_User::q( 'SELECT * FROM  admin WHERE phone = "' . $phone . '" LIMIT 1' );
+		if( count( $admin ) && $admin->get( 0 ) && $admin->get( 0 )->id_admin ){
+			return 'Driver: ';
+		}
+		// look at the users
+		$user = Crunchbutton_User::q( 'SELECT * FROM user WHERE phone = "' . $phone . '" LIMIT 1' );
+		if( count( $user ) && $user->get( 0 ) && $user->get( 0 )->id_user ){
+			return 'Customer: ';
+		}
+		// look at the orders
+		$order = Crunchbutton_User::q( 'SELECT * FROM `order` WHERE phone = "' . $phone . '" LIMIT 1' );
+		if( count( $order ) && $order->get( 0 ) && $order->get( 0 )->id_order ){
+			return 'Customer: ';
+		}
+		return null;
+	}
+
 	public function dailyDigest( $days = 1 ){
 
 		$query = 'SELECT DISTINCT( sm.id_support ) AS id, s.* FROM support_message sm
@@ -886,32 +931,73 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$data = [];
 			$data[ 'id_support' ] = $ticket->id_support;
 			$data[ 'phone' ] = Crunchbutton_Util::format_phone( $ticket->firstMessage()->phone );
-			$data[ 'name' ] = $ticket->firstMessage()->name;
+			$_name = $ticket->firstMessage()->name;
+			if( !$_name ){
+				$_name = $ticket->findsTheSendersName();
+			}
+			if( !$_name ){
+				$_name = '<i>Unknown</i>';
+			}
+			$type = $ticket->findsTheSendersType();
+			$data[ 'name' ] = $type . $_name;
 			$messages = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE id_support = "' . $ticket->id_support . '" AND sm.date > DATE_SUB( NOW(), interval ' . $days . ' day )' );
 			$count = 0;
 			$prev_type = null;
 			$prev_from = null;
 			$prev_body = null;
+			$_firstMessageDate = null;
+			$_secondMessageDate = null;
 			foreach( $messages as $message ){
 				if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_SYSTEM ||
 					$message->body == '(Ticket created at cockpit)' ){
 					continue;
 				}
+				$date = $message->date()->format( 'g:i a' );
 				if( !$data[ 'date' ] ){
 					$data[ 'date' ]	= $message->date()->format( 'M jS g:i a' );
 				}
+
+				if( $_firstMessageDate && !$_secondMessageDate ){
+					$_secondMessageDate = $message->date();
+				}
+
+				if( !$_firstMessageDate ){
+					$_firstMessageDate = $message->date();
+				}
+
+				if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_CLIENT ){
+					$name = ( $_name ? $_name : '<i>Unknown</i>' );
+				} else {
+					if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_REP ){
+						if( $message->name ){
+							$name = $message->name;
+						} else {
+							$admin = Admin::o( $message->id_admin );
+							$name = $admin->name;
+						}
+					}
+				}
+
 				if( $prev_from == $message->from && $prev_type == $message->type ){
 					$join = ( ctype_upper( substr( $message->body, 0 ) ) ) ? '' : '<br>';
 					$data[ 'messages' ][ $count ][ 'body' ] .= $join . $message->body;
 				} else {
 					$count++;
-					$data[ 'messages' ][ $count ] = [ 'type' => $message->from , 'body' => $message->body ];
+					$data[ 'messages' ][ $count ] = [ 'type' => $message->from , 'body' => $message->body, 'name' => $name, 'date' => $date ];
 				}
 				$prev_type = $message->type;
 				$prev_from = $message->from;
 				$prev_body = $message->body;
 			}
 			if( count( $data[ 'messages' ] ) ){
+
+				if( $_firstMessageDate && $_secondMessageDate ){
+					$seconds = Crunchbutton_Util::intervalToSeconds( $_firstMessageDate->diff( $_secondMessageDate ) );
+					if( $seconds >= ( 60 * 5 ) ){
+						$data[ 'more_5_min' ] = true;
+					}
+				}
+
 				if( $ticket->status == Crunchbutton_Support::STATUS_OPEN ){
 					$data[ 'status' ] = 'Opened';
 					$out[ 'open' ][] = $data;
@@ -921,6 +1007,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				}
 			}
 		}
+
 		return $out;
 	}
 
