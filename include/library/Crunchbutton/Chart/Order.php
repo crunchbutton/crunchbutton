@@ -532,7 +532,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
 													 COUNT(*) AS Total
 										FROM `order` o
@@ -604,7 +604,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 													COUNT(*) AS Total
 										FROM `order` o
@@ -672,7 +672,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT YEARWEEK(date) AS Week,
 													 COUNT(*) AS Total
 										FROM `order` o
