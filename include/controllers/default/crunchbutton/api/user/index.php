@@ -18,9 +18,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'points':
-
 				echo json_encode( Crunchbutton_Credit::exportPoints() );exit;
-
 				break;
 			// Verify if the login was already taken
 			case 'verify':

@@ -232,7 +232,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'repsApplyCtrl',
 			templateUrl: 'assets/view/reps.apply.html'
 		})
-        .when('/thankyou', {
+    .when('/thankyou', {
 			action: 'thankyou',
 			controller: 'ThankyouCtrl',
 			templateUrl: 'assets/view/thankyou.html'
@@ -420,6 +420,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}
 			AccountService.forceDontReloadAfterAuth = false;
 		});
+		setTimeout( function(){
+			ReferralService.newReferredUsersByUser();
+		}, 4000 );
 	});
 
 	$rootScope.focus = function( selector ){
@@ -565,6 +568,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	LocationService.init();
 
 	ReferralService.check();
+
+	if( App.config.user.id_user ){
+		ReferralService.newReferredUsersByUser();
+	}
 
 });
 
@@ -1096,6 +1103,7 @@ App.handleUrl = function(url) {
  */
 App.dialog = {
 	show: function() {
+		console.log('111',111);
 		if (arguments[1]) {
 			// its a title and message
 			var src = '<div class="zoom-anim-dialog small-container">' +

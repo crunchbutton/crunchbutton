@@ -1,7 +1,7 @@
 // ReferralService service
 NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, AccountService ){
 
-	var service = { invite_url : null, value : 0, invites : 0, limit : 0 };
+	var service = { invite_url : null, value : 0, invites : 0, limit : 0, invitedUsers: false };
 
 	service.check = function(){
 		var param = $location.search();
@@ -10,6 +10,19 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 			// Remove the invite from url
 			$location.url( $location.path() );
 		}
+	}
+
+	service.newReferredUsersByUser = function(){
+		var url = App.service + 'user/referral';
+		$http( {
+				url: url,
+				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
+			} ).success( function( data ) {
+				if( data && data.users ){
+					service.invitedUsers = data.users;
+					$rootScope.$broadcast( 'ReferralInvitedUsers', true );
+				}
+			}	);
 	}
 
 	service.getInviteCode = function(){

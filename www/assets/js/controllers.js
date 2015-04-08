@@ -1533,6 +1533,16 @@ NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, Accou
 	}
 });
 
+NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService ) {
+	$rootScope.$on( 'ReferralInvitedUsers', function(e, data) {
+		$scope.invitedUsers = ReferralService.invitedUsers;
+		App.dialog.show( '.referral-container' );
+	});
+	$scope.modal = { close: function(){
+		$.magnificPopup.close();
+	} };
+});
+
 NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCardService ) {
 	$scope.giftcard = {};
 	$scope.user = GiftCardService.account.user;
