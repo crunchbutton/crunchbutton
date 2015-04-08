@@ -1279,8 +1279,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->_dishes = false;
 			unset( $this->_dishes );
 		}
-		if (!isset($this->_dishes)) {
-			$this->_dishes = Order_Dish::q('select * from order_dish where id_order="'.$this->id_order.'"');
+		if ( !$this->_dishes ) {
+			$this->_dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = "'.$this->id_order.'"' );
 		}
 		return $this->_dishes;
 	}
