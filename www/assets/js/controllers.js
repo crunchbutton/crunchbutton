@@ -1302,6 +1302,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	OrderViewService.load();
 
 	$scope.isMobile = App.isMobile();
+	$scope.isAndroid = App.isAndroid();
 
 	$scope.facebook = function(){
 		OrderViewService.facebook.postOrder();
