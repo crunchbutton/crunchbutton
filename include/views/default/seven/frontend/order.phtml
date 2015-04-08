@@ -38,7 +38,9 @@
 			<div ng-hide="account.user.has_auth">
 				<div class="content-padding order-buttons">
 					<p>
-						Create an account and earn {{order.reward.points}} points towards a free delivery and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
+						Create an account and earn {{order.reward.points}} points towards a free delivery and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our
+						<a ng-show="!isAndroid" data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
+						<a ng-show="isAndroid" data-ng-href="https://play.google.com/store/apps/details?id=com.crunchbutton">Android App</a>
 					</p>
 
 					<br>
