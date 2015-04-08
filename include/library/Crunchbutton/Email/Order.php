@@ -1,6 +1,7 @@
 <?php
 
 class Crunchbutton_Email_Order extends Crunchbutton_Email {
+
 	private $_mailConfig;
 
 	public function __construct($params) {
@@ -9,7 +10,7 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 		$params['subject'] = 'Customer Order #'.$params['order']->id_order;
 		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
-		$params['reason']			= Crunchbutton_Email_Address::REASON_ORDER;
+		$params['reason'] = Crunchbutton_Email_Address::REASON_ORDER;
 
 		$this->buildView($params);
 		$this->view()->subject = $params['subject'];
