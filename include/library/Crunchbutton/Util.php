@@ -17,7 +17,7 @@ class Crunchbutton_Util extends Cana_Model {
 		$si = [ 'K', 'M', 'G', 'T', 'P', 'H' ];
 		$exp = floor( log( $number ) / log( 1000 ) );
 		$result = $number / pow( 1000, $exp );
-		$result = ( $result % 1 > ( 1 / pow( 1000, $exp - 1 ) ) ? round( $result, 2 ) : round( $result, 0 ) );
+		$result = ( $result % 1 > ( 1 / pow( 1000, $exp - 1 ) ) ? floor( $result ) : floor( $result ) );
 		return $result . $si[ $exp - 1 ];
 	}
 

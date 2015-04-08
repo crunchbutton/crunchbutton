@@ -298,6 +298,29 @@ class Crunchbutton_Credit extends Cana_Table
 		return Util::humanReadableNumbers( $points );
 	}
 
+	public function exportPoints(){
+		$user = c::user();
+		// Reward stuff
+		$reward = new Crunchbutton_Reward;
+		$reward = $reward->loadSettings();
+		$free_delivery = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
+		$out = [];
+		$out[ 'invite_code' ] = $user->invite_code;
+		$out[ 'free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery );
+		$out[ 'total' ] = Crunchbutton_Credit::points( $user->id_user );
+		$out[ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'total' ] );
+		if( $out[ 'total' ] > $free_delivery ){
+			$out[ 'free_delivery_message' ] = true;
+			$out[ 'away_free_delivery' ] = 0;
+			$out[ 'points_percent' ] = 100;
+		} else {
+			$out[ 'free_delivery_message' ] = false;
+			$out[ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'total' ] );
+			$out[ 'points_percent' ] = ($out[ 'total' ] && $free_delivery) ? intval( ( $out[ 'total' ] / $free_delivery * 100 ) ) : 0;
+		}
+		return $out;
+	}
+
 	public function points( $id_user ){
 		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
 		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_CREDIT]);
