@@ -25,6 +25,23 @@ class Crunchbutton_Referral extends Cana_Table{
 			->load($id);
 	}
 
+	public function newReferredUsersByUser( $id_user ){
+		if( $id_user ){
+			$query = 'SELECT u.*
+									FROM referral r
+									INNER JOIN user u ON u.id_user = r.id_user_invited
+									WHERE r.id_user_inviter = "' . $id_user . '" AND r.new_user = 1 AND r.warned = 0
+									ORDER BY r.id_referral ASC';
+			$users = Crunchbutton_User::q( $query );
+			if( $users->count() ){
+				// Update warned = 1
+				c::db()->query( 'UPDATE referral SET warned = 1 WHERE id_user_inviter = "' . $id_user . '" AND warned = 0' );
+				return $users;
+			}
+		}
+		return false;
+	}
+
 	public function checkCookie(){
 		if ( isset( $_COOKIE['referral'] ) && $_COOKIE['referral'] != '' ) {
 			return $_COOKIE['referral'];
