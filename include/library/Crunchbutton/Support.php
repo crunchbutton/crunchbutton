@@ -28,7 +28,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	  }
 	}
 
-
 	public function getFirstCustomerMessage(){
 		if( $this->id_support ){
 			$first_cs_reply = Crunchbutton_Support_Message::q( 'SELECT MIN( id_support_message ) AS id_support_message FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( `from` =  "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" OR `from` =  "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" )' );
@@ -343,6 +342,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function addCustomerMessage( $params = [] ){
+
 		$messageParams[ 'id_admin' ] = NULL;
 		$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;
 		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_CLIENT;
@@ -363,16 +363,19 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	public function autoReply(){
 
-		$body = $this->autoReplyMessage();
+		$support = Crunchbutton_Support::o( $this->id_support );
 
-		if( $this->shoudAutoReply() && $body ){
+		$body = $support->autoReplyMessage();
+
+		if( $support->shoudAutoReply() && $body ){
 
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_AUTO_REPLY;
 			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
 			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
-			$messageParams[ 'phone' ] = $params[ 'phone' ];
+			$messageParams[ 'phone' ] = $support->phone;
 			$messageParams[ 'body' ] = $body;
-			$message = $this->addMessage( $messageParams );
+
+			$message = $support->addMessage( $messageParams );
 
 			Crunchbutton_Message_Sms::send([
 				'to' => $message->phone,
@@ -392,11 +395,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function lastAutoReplyByPhone( $phone ){
-		$support_message = Crunchbutton_Support_Message::q( 'SELECT sm.* FROM support s
-																														INNER JOIN support_message sm ON sm.id_support = s.id_support
-																														WHERE s.phone = "' . $phone . '"
-																														AND sm.type = "' . Crunchbutton_Support_Message::TYPE_AUTO_REPLY . '"
-																														ORDER BY id_support_message DESC LIMIT 1' )->get( 0 );
+		$query = 'SELECT sm.* FROM support s
+							INNER JOIN support_message sm ON sm.id_support = s.id_support
+							WHERE s.phone = "' . $phone . '"
+							AND sm.type = "' . Crunchbutton_Support_Message::TYPE_AUTO_REPLY . '"
+							ORDER BY id_support_message DESC LIMIT 1';
+		$support_message = Crunchbutton_Support_Message::q( $query )->get( 0 );
 		if( $support_message->id_support_message ){
 			return $support_message;
 		}
