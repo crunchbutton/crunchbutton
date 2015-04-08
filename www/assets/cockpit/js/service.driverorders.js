@@ -171,10 +171,10 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 			DriverOrdersService.text_customer_5_min_away(service.order.id_order,
 				function( json ){
 					if (json.status) {
-						App.alert( 'Message sent!' );
-						$scope.update();
+						service.load();
+
 					} else {
-						App.alert( 'Message not sent!' );
+						App.alert('Message failed to send. Please try again.');
 					}
 					service.text_customer_5_min_away_sending = false;
 				}
