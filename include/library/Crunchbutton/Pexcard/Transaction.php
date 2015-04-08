@@ -139,9 +139,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 											' . $where . '
 											AND
-												DATE( o.date ) >= "' . $start . '"
+												DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") >= "' . $start . '"
 											AND
-												DATE( o.date ) <= "' . $end . '"
+												DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $end . '"
 											GROUP BY a.id_admin ORDER BY driver' ;
 		$expenses = c::db()->get( $query );
 		return $expenses;
@@ -206,19 +206,22 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		}
 
 		$start = explode( '/' , $start );
-		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( 'America/Chicago' ) );
+		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
 
+		$pst_start = $start->format( 'Y-m-d H:i' );
+
+		$start->setTimezone( new DateTimeZone( 'America/Chicago' ) );
 		$est_start = $start->format( 'Y-m-d H:i' );
-
-		$start->setTimezone( new DateTimeZone( c::config()->timezone ) );
-		$pst_start = $start->format( 'Y-m-d' );
 
 		$end = explode( '/' , $end );
 		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
 
-		$pst_end = $end->format( 'Y-m-d' );
+		$end->modify( '+4 hours' );
+		$end->modify( '+1 minute' );
 
-		$end->setTimezone( new DateTimeZone( c::config()->timezone ) );
+		$pst_end = $end->format( 'Y-m-d H:i' );
+
+		$end->setTimezone( new DateTimeZone( 'America/Chicago' ) );
 		$est_end = $end->format( 'Y-m-d H:i' );
 
 		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $est_start, $est_end );
@@ -285,19 +288,19 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 			}
 			foreach( $order_expenses as $order ){
 				if( intval( $card[ 'id_admin' ] ) == intval( $order->id_admin ) ){
-					$diff = $card[ 'pexcard_amount' ] - floatval( number_format( $order->amount, 2 ) );
+					$diff = $card[ 'pexcard_amount' ] - floatval( number_format( $order->amount, 2, '.', '' ) );
 					$card = array_merge( $card, [ 'login' => $order->login,
 																				'orders' => intval( $order->orders ),
 																				'driver' => $order->driver,
 																				'diff' => ( $diff  * -1 ),
 																				'email' => $order->email,
 																				'sort' => $order->driver,
-																				'card_amount' => floatval( number_format( $order->amount, 2 ) ) ] );
+																				'card_amount' => floatval( number_format( $order->amount, 2, '.', '' ) ) ] );
 				}
 			}
 			foreach( $order_expenses_cash_card as $order ){
 				if( intval( $card[ 'id_admin' ] ) == intval( $order->id_admin ) ){
-					$card = array_merge( $card, [ 'card_cash_amount' => floatval( number_format( $order->amount, 2 ) ) ] );
+					$card = array_merge( $card, [ 'card_cash_amount' => floatval( number_format( $order->amount, 2, '.', '' ) ) ] );
 				}
 			}
 
