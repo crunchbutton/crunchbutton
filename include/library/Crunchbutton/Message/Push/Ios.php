@@ -3,7 +3,7 @@
 class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 	public static function send($to, $message = null, $id = null, $count = null) {
 
-		$sound = 'www/edm.wav';
+		$sound = 'www/new-order.wav';
 		$count = 1;
 		$id = 'push';
 		$category = '';
