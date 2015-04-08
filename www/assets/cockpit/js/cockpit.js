@@ -494,6 +494,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.go.apply(arguments);
 	};
 
+	if (App.isPhoneGap) {
+		$('body').addClass('phonegap');
+	}
+
 	$rootScope.back = function() {
 		$('body').addClass('back');
 
