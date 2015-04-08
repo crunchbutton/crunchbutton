@@ -21,8 +21,8 @@
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.lastFourDigits.$invalid}">
-					<div class="label">Last four digits:</div>
-					<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last four digits"></div>
+					<div class="label">Last 4 digits (of 16 digit card number):</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last 4 digits (of 16 digit card number)"></div>
 					<div class="box-error">
 						<small ng-show="form.lastFourDigits.$error.required">Required.</small>
 					</div>
