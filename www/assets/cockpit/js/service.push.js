@@ -13,8 +13,14 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 	}
 
 	document.addEventListener('pushnotification', function(e) {
+		console.log('Push recieve event, e);
 		service.receive(e.msg);
 	}, false);
+	
+	window.parent.pushnotification = function() {
+		console.log('Push recieve function, e);
+		service.receive(e.msg);
+	};
 	
 	var saveToken = function(id, complete) {
 		service.id = id;
