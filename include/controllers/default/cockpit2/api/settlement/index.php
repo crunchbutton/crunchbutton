@@ -598,6 +598,8 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$driver[ 'standard_reimburse' ] = ( $driver[ 'standard_reimburse' ] ? $driver[ 'standard_reimburse' ] : 0 );
 			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
 			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
+			$driver[ 'delivery_fee_collected' ] = ( $driver[ 'delivery_fee_collected' ] ? $driver[ 'delivery_fee_collected' ] : 0 );
+
 			$driver[ 'pay' ] = true;
 
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
@@ -785,7 +787,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$list = [];
 		foreach( $payments as $payment ){
 			$data = $payment->exports();
-			$data[ 'date' ] = $payment->date()->format( 'M jS Y g:i:s A' );
+			$data[ 'date' ] = $payment->date()->format( Settlement::date_format() );
 			unset( $data[ 'id_restaurant' ] );
 			unset( $data[ 'check_id' ] );
 			unset( $data[ 'note' ] );
