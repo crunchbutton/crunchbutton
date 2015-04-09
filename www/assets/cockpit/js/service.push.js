@@ -13,18 +13,18 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 	}
 
 	document.addEventListener('pushnotification', function(e) {
-		console.log('Push recieve event, e);
+		console.log('Push recieve event', e);
 		service.receive(e.msg);
 	}, false);
-	
+
 	window.parent.pushnotification = function() {
-		console.log('Push recieve function, e);
+		console.log('Push recieve function', e);
 		service.receive(e.msg);
 	};
-	
+
 	var saveToken = function(id, complete) {
 		service.id = id;
-		
+
 		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
 			var key = 'push-android';
 		} else {
@@ -39,7 +39,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 
 		complete();
 	};
-	
+
 	service.register = function(complete) {
 		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
 			var params = {
@@ -97,7 +97,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 			function(id) {
 				service.id = id;
 				console.debug('Push id: ' + id);
-				
+
 				if (id == 'OK') {
 					complete();
 					return;
@@ -113,25 +113,25 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 		);
 	};
 
-	
+
 	service.receive = function(msg) {
 		console.debug('Notification: ', msg);
 
 		var complete = function() {
 
 		};
-		
+
 		if (msg.event == 'registered' && msg.regid) {
 			saveToken(msg.regid, complete);
 		}
-		
+
 		switch (msg.identifier) {
 			case 'i11': // accept an order
 				var order = msg.alert.replace(/^#([0-9]+).*$/,'$1');
 				DriverOrdersService.accept(order, function(json) {
 					console.debug('ACCEPT RESPONSE', json);
 					if (json.status) {
-						
+
 					} else {
 						var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
 						App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
@@ -159,6 +159,6 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 			snd.play();
 		}
 	}
-	
+
 	return service;
 });
