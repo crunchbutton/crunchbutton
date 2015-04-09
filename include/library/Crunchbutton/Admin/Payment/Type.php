@@ -13,7 +13,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 			->idVar('id_admin_payment_type')
 			->load($id);
 	}
-	
+
 	public function admin() {
 		return Admin::o($this->id_admin);
 	}

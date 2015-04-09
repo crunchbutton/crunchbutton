@@ -161,6 +161,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
+
 		return Order::q( $query );
 	}
 
@@ -345,7 +346,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
 			}
 		}
-
 
 		// Get all the shifts between the dates
 		if( $process_shifts ){
@@ -712,9 +712,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'name' ] = $order->name;
 		$values[ 'pay_type' ] = $order->pay_type;
 		$values[ 'restaurant' ] = $order->restaurant()->name;
-		$values[ 'date' ] = $order->date()->format( 'M jS Y g:i:s A' );
+		$values[ 'date' ] = $order->date()->format( Settlement::date_format() );
 		$values[ 'formatted_date' ] = $order->date()->format( 'Ymd' );
-		$values[ 'short_date' ] = $order->date()->format( 'M jS Y' );
+		$values[ 'short_date' ] = $order->date()->format( Settlement::date_format( 'short' ) );
 
 		return $values;
 	}
@@ -1522,12 +1522,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function driverSummary( $id_payment_schedule ){
+
+		$date_format = Settlement::date_format();
+
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_DRIVER ){
+
 			$settlement = new Settlement;
+
 			$summary = $schedule->exports();
 
 			$summary[ 'adjustment' ] = floatval( $summary[ 'adjustment' ] );
+			$summary[ 'collected_in_cash' ] = 0;
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'summary_email' ] = $schedule->driver()->payment_type()->summary_email;
 			$summary[ 'driver' ] = $schedule->driver()->name;
@@ -1540,18 +1546,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'balanced_failure_reason' ] = $payment->balanced_failure_reason;
 				$balanced_date_checked = $payment->balanced_date_checked();
 				if( $balanced_date_checked ){
-					$summary[ 'balanced_date_checked' ] = $balanced_date_checked->format( 'M jS Y g:i:s A T' );
+					$summary[ 'balanced_date_checked' ] = $balanced_date_checked->format( $date_format );
 				}
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
 				$summary[ 'check_id' ] = $payment->check_id;
-				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
-				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
-				$status = Cockpit_Payment_Schedule::statusToDriver( $schedule );
+				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( $date_format );
+				$summary[ 'payment_date' ] = $payment->date()->format( $date_format );
+				$status = Cockpit_Payment_Schedule::statusToDriver( $schedule, false );
 				$summary[ 'expected_date' ] = $status[ 'paid_date' ];
 			}
 			if( $schedule->status_date ){
-				$summary[ 'status_date' ] = $schedule->status_date()->format( 'M jS Y g:i:s A T' );
+				$summary[ 'status_date' ] = $schedule->status_date()->format( $date_format );
 			}
 
 			$invites = $schedule->invites();
@@ -1602,6 +1608,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$_order = $order->order();
 				if( $_order->id_order ){
 					$variables = $settlement->orderExtractVariables( $_order );
+
 					$pay_info = $settlement->driversProcess( [ $variables ], true, false, false );
 
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
@@ -1626,8 +1633,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total_reimburse' => $_total_reimburse,
 																										'total_payment' => $_total_payment
 																									];
-					if( $type == 'Cash' ){
-						$summary[ '_total_received_cash_' ] = $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
+
+					if( $variables[ 'cash' ] ){
+						// Hourly drivers are ALSO collecting the $3 delivery fee for all cash orders, and keeping it. They shouldn't be! #5053
+						$summary[ 'collected_in_cash' ] += $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ];
+						// adicionar aqui a verificao se está sendo cobrado o fee por ordens
+						// if( $summary[ 'driver_payment_hours' ] ){
+							// $summary[ 'collected_in_cash' ] += ( $variables[ 'delivery_fee' ] * -1 );
+						// }
+						$summary[ '_total_received_cash_' ] += $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
 						$summary[ '_total_cash_orders_' ]++;
 					}
 
@@ -1656,6 +1670,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$index = 0;
 			$summary[ 'calcs' ] = [ 'total_reimburse' => floatval( $total_reimburse ),
 															'total_payment' => floatval( $total_payment ),
+															'total_received_cash' => floatval( $summary[ '_total_received_cash_' ] ),
 															'tax' => floatval( $calcs[ $index ][ 'tax' ] ),
 															'delivery_fee' => floatval( $calcs[ $index ][ 'delivery_fee' ] ),
 															'tip' => floatval( $calcs[ $index ][ 'tip' ] ),
@@ -1672,6 +1687,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
 				$summary[ 'total_payment' ] = max( $summary[ 'amount' ], 0 );
 				$summary[ 'calcs' ][ 'total_payment' ] = floatval( $summary[ 'total_payment' ] );
+				$summary[ 'calcs' ][ 'collected_in_cash' ] = floatval( $summary[ 'collected_in_cash' ] * -1 );
+				$summary[ 'calcs' ][ 'earnings' ] = floatval( ( $summary[ 'calcs' ][ 'collected_in_cash' ] ) + $summary[ 'calcs' ][ 'total_payment' ] );
 			}
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
 				$summary[ 'total_reimburse' ] = max( $summary[ 'amount' ], 0 );
@@ -1681,6 +1698,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 			return $summary;
 		} else {
 			return false;
+		}
+	}
+
+	public function date_format( $format = 'full' ){
+		switch ( $format ) {
+			case 'short':
+				return 'M jS Y (D)';
+				break;
+
+			case 'full':
+			default:
+				return 'M jS Y (D) g:i:s A T';
+				break;
 		}
 	}
 

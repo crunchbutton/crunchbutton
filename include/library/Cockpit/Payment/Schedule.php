@@ -100,15 +100,21 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $this->_status_date;
 	}
 
-	public function statusToDriver( $schedule ){
+	public function statusToDriver( $schedule, $full = false ){
 		$out = [];
 		if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE && $schedule->id_payment ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$collected_in_cash = 0;
+			if( $schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT && $full ){
+				$summary = Settlement::driverSummary( $schedule->id_payment_schedule );
+				$collected_in_cash = $summary[ 'calcs' ][ 'markup' ];
+			}
 			$expected = $schedule->payment()->date();
+			$out[ 'collected_in_cash' ] = ( $collected_in_cash * -1 );
 			$out[ 'range_date' ] = $schedule->range_date;
-			$out[ 'send_date' ] = ( string ) $expected->format( 'M jS Y' );
+			$out[ 'send_date' ] = ( string ) $expected->format( Settlement::date_format( 'short' ) );
 			$expected->modify( '+3 Weekday' );
-			$out[ 'paid_date' ] = ( string ) $expected->format( 'M jS Y' );
+			$out[ 'paid_date' ] = ( string ) $expected->format( Settlement::date_format( 'short' ) );
 			if( $now->format( 'Ymd' ) >= $expected->format( 'Ymd' ) ){
 				$out[ 'status' ] = 'Paid';
 			} else {
