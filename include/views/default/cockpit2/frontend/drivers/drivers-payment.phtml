@@ -13,20 +13,26 @@
 			<navigation-back></navigation-back>
 
 			<table class="tb-grid tb-zebra">
-				<tbody>
+				<tbody ng-if="pay_type_payment">
 
-					<tr ng-if="result.id_payment">
-						<td><strong>{{result.title}} ID</strong></td>
-						<td>
-							# {{result.id_payment}}
-						</td>
+					<tr positive-or-negative-color="{{result.calcs.earnings}}">
+						<td>Total Money Earned This Week</td>
+						<td>${{result.calcs.earnings | formatPrice}}</td>
 					</tr>
-					<tr ng-if="result.id_payment_schedule">
-						<td><strong>{{result.title}} Schedule ID</strong></td>
-						<td>
-							# {{result.id_payment_schedule}}
-						</td>
+
+					<tr positive-or-negative-color="{{result.calcs.collected_in_cash}}">
+						<td>Additional Payment Due Through Deposit</td>
+						<td>${{result.calcs.collected_in_cash | formatPrice}}</td>
 					</tr>
+
+					<tr positive-or-negative-color="{{result.calcs.total_payment}}">
+						<td>Additional Payment Due Through Deposit</td>
+						<td>${{result.calcs.total_payment | formatPrice}}</td>
+					</tr>
+
+					<tr class="transparent"><td></td><td></td></tr>
+				</tbody>
+				<tbody>
 
 					<tr ng-if="pay_type_reimbursement">
 						<td><strong>Type</strong></td>
@@ -50,7 +56,7 @@
 					</tr>
 
 					<tr ng-if="result.payment_date">
-						<td><strong>{{result.title}} Transfer Initiated</strong></td>
+						<td><strong>{{result.title}} Deposit Initiated</strong></td>
 						<td>{{result.payment_date}}</td>
 					</tr>
 					<tr ng-if="result.expected_date">
@@ -75,14 +81,6 @@
 						<td><span class="link orange" ng-click="send_summary()">Send Summary</span></td>
 					</tr>
 					<tr class="transparent"><td></td><td></td></tr>
-					<tr ng-if="result.balanced_id">
-						<td>Balanced</td>
-						<td>{{result.balanced_id}}</td>
-					</tr>
-					<tr ng-if="result.stripe_id">
-						<td>Stripe</td>
-						<td>{{result.stripe_id}}</td>
-					</tr>
 					<tr ng-if="result.hourly" positive-or-negative-color="{{result.shifts_hours_amount}}">
 						<td>Worked hours</td>
 						<td>${{result.shifts_hours_amount | formatPrice}}</td>
@@ -94,10 +92,6 @@
 					<tr ng-if="result.calcs.tip && pay_type_payment" positive-or-negative-color="{{result.calcs.tip}}">
 						<td>Tip</td>
 						<td>${{result.calcs.tip | formatPrice}}</td>
-					</tr>
-					<tr ng-if="result.calcs.markup && pay_type_payment" positive-or-negative-color="{{result.calcs.markup}}">
-						<td>Minus Crunchbutton Fees You Collected in Cash</td>
-						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
 					<tr ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement" positive-or-negative-color="{{result._total_reimburse_}}">
 						<td>Reimbursement</td>
@@ -242,7 +236,7 @@
 			</thead>
 			<thead ng-if="result.orders.included.length">
 				<tr>
-					<td class="hide-tiny-screen">#</td>
+					<td class="hide-tiny-screen">Order #</td>
 					<td>
 						<span class="hide-tiny-screen">Customer</span>
 						<span class="show-tiny-screen">Order #/<br>Customer</span>
@@ -257,7 +251,7 @@
 					</td>
 					<td ng-if="pay_type_reimbursement">Reimburse</td>
 					<td>
-						<span ng-if="pay_type_payment && !result.hourly">Pay</span>
+						<span ng-if="pay_type_payment && !result.hourly">Earnings</span>
 					</td>
 				</tr>
 			</thead>
@@ -290,6 +284,7 @@
 					<td></td>
 					<td></td>
 				</tr>
+				<?php /* ?>
 				<tr class="transparent" ng-if="pay_type_payment && !result.hourly && result.calcs.delivery_fee">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
@@ -335,6 +330,7 @@
 					<td></td>
 					<td></td>
 				</tr>
+				<?php /* ?>
 				<tr class="transparent" ng-if="pay_type_reimbursement">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
@@ -344,7 +340,6 @@
 					<td></td>
 					<td></td>
 				</tr>
-
 				<tr class="transparent" ng-if="pay_type_payment && result.invites_amount">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
@@ -354,7 +349,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-
+				<?php /* ?>
 				<tr class="transparent" ng-if="pay_type_payment && result.calcs.markup">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
@@ -364,6 +359,7 @@
 					<td></td>
 					<td></td>
 				</tr>
+
 				<tr class="transparent" ng-if="pay_type_payment">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
@@ -373,6 +369,7 @@
 					<td></td>
 					<td></td>
 				</tr>
+
 				<tr class="transparent" ng-if="result.adjustment">
 					<td class="hide-tiny-screen"></td>
 					<td></td>
@@ -382,8 +379,37 @@
 					<td></td>
 					<td></td>
 				</tr>
+				<?php */ ?>
 			</tbody>
 		</table>
+
+
+		<table class="tb-grid tb-zebra">
+				<tbody>
+
+					<tr ng-if="result.id_payment">
+						<td><strong>{{result.title}} ID</strong></td>
+						<td>
+							# {{result.id_payment}}
+						</td>
+					</tr>
+					<tr ng-if="result.id_payment_schedule">
+						<td><strong>{{result.title}} Schedule ID</strong></td>
+						<td>
+							# {{result.id_payment_schedule}}
+						</td>
+					</tr>
+					<tr ng-if="result.balanced_id">
+						<td><strong>Balanced Reference</strong></td>
+						<td>{{result.balanced_id}}</td>
+					</tr>
+					<tr ng-if="result.stripe_id">
+						<td><strong>Stripe</strong></td>
+						<td>{{result.stripe_id}}</td>
+					</tr>
+				</tbody>
+			</table>
+
 	</div>
 
 	<div ng-if="!result.id_payment_schedule" class="box-content">

@@ -4,7 +4,11 @@ class Controller_Api_Test_Sandbox extends Cana_Controller {
 
 	public function init(){
 
-		Crunchbutton_Support::lastAutoReplyByPhone( '2404410108' );
+			$settlement = new Settlement;
+			$summary = $settlement->driverSummary( 22633 );
+			echo json_encode( $summary );exit;
+
+		// Crunchbutton_Support::lastAutoReplyByPhone( '2404410108' );
 
 
 		die('hard');
