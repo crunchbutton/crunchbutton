@@ -44,6 +44,29 @@
 	</table>
 <?php } ?>
 
+<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
+<div class="xhatch separator-small"></div>
+	<br>
+	<br>
+	<table width="100%" celpadding="0" cellspacing="0" class="detail">
+		<tbody>
+			<tr>
+				<td class="topitem"><strong>Earnings</strong></td>
+				<td class="topitem">$<?php echo number_format( $summary[ 'calcs' ][ 'earnings' ], 2 ); ?></td>
+			</tr>
+			<tr>
+				<td class="topitem"><strong>Amount Already Collected in Cash</strong></td>
+				<td class="topitem">$<?php echo number_format( $summary[ 'calcs' ][ 'collected_in_cash' ], 2 ); ?></td>
+			</tr>
+			<tr>
+				<td class="topitem"><strong>Deposit Amount</strong></td>
+				<td class="topitem">$<?php echo number_format( $summary[ 'calcs' ][ 'total_payment' ], 2 ); ?></td>
+			</tr>
+		</tbody>
+	</table>
+	<br>
+	<br>
+<?php } ?>
 <div class="xhatch separator-small"></div>
 
 <?php if( $summary[ 'driver_payment_hours' ] ) { ?>

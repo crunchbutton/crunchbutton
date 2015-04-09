@@ -3,10 +3,13 @@
 class Controller_Api_Test_Sandbox extends Cana_Controller {
 
 	public function init(){
-
-			$settlement = new Settlement;
-			$summary = $settlement->driverSummary( 22633 );
-			echo json_encode( $summary );exit;
+		$settlement = new Settlement;
+			$summary = $settlement->driverSummary( 23614 );
+			// echo json_encode( $summary );exit;
+		// echo json_encode( $summary );exit();
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		echo $mail->message();
+		exit;
 
 		// Crunchbutton_Support::lastAutoReplyByPhone( '2404410108' );
 
