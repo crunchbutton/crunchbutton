@@ -473,7 +473,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 
 	$scope.summary = function(){
 
-		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0, 'worked_hours': 0 };
+		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0, 'worked_hours': 0, 'delivery_fee_collected': 0 };
 
 		var total_drivers = 0;
 		var total_payments = 0;
@@ -488,6 +488,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		var total_refunded = 0;
 		var total_invited_users = 0;
 		var total_payment_invited_users = 0;
+		var delivery_fee_collected = 0;
 		for( x in $scope.result.drivers ){
 			$scope.result.drivers[ x ].total_payments = ( $scope.result.drivers[ x ].total_payment_without_adjustment + $scope.result.drivers[ x ].adjustment );
 			if( $scope.result.drivers[ x ].pay ){
@@ -503,7 +504,9 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 				if( $scope.result.drivers[ x ].standard_reimburse ){
 					total_standard_reimbursements += $scope.result.drivers[ x ].standard_reimburse;
 				}
-
+				if( $scope.result.drivers[ x ].delivery_fee_collected ){
+					delivery_fee_collected += $scope.result.drivers[ x ].delivery_fee_collected;
+				}
 
 				total_orders += $scope.result.drivers[ x ].orders_count;
 				total_not_included += $scope.result.drivers[ x ].not_included;
@@ -540,6 +543,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		$scope.total_worked_hours = total_worked_hours;
 		$scope.total_invited_users = total_invited_users;
 		$scope.total_payment_invited_users = total_payment_invited_users;
+		$scope.delivery_fee_collected = delivery_fee_collected;
 		$scope.sum = sum;
 	}
 
