@@ -36,10 +36,11 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-if="driver.id_admin">
+			<li class="li-input">
 				<div class="label">Password:</div>
 				<div class="input"><input type="text" name="driverPass" ng-model="driver.pass"></div>
-				<small class="tip">Leave it blank if you don't wanna change it.</small>
+				<small class="tip" ng-if="!driver.id_admin">Would you like to choose a password now? Otherwise, you'll get one randomly assigned.</small>
+				<small class="tip" ng-if="driver.id_admin">Leave it blank if you don't wanna change it.</small>
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}">

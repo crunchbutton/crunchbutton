@@ -76,8 +76,13 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$random_pass = '';
 		if( $newDriver ){
-			$random_pass = Crunchbutton_Util::randomPass();
-			$driver->pass = $driver->makePass( $random_pass );
+			if( trim( $pass ) == '' ){
+				$random_pass = Crunchbutton_Util::randomPass();
+				$driver->pass = $driver->makePass( $random_pass );
+			} else {
+				$random_pass = $pass;
+				$driver->pass = $driver->makePass( $pass );
+			}
 		}
 
 		$driver->save();

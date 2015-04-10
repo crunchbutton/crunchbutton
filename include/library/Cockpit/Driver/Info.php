@@ -116,7 +116,9 @@ class Cockpit_Driver_Info extends Cana_Table {
 								'Jelly Bean (4.1.x)',
 								'Jelly Bean (4.2.x)',
 								'Jelly Bean (4.3.x)',
-								'KitKat (4.4)' ];
+								'KitKat (4.4)',
+								'Lollipop (5.0)',
+								 ];
 
 		asort( $types );
 		$types[] = 'Other';
