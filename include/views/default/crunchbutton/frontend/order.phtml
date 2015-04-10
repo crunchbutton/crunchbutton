@@ -46,12 +46,18 @@
 						<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
 							You have <strong>{{account.user.points.show}}</strong> points!
 							 The next delivery fee is on us.
+							 <br><br>
+							 <div class="divider dots"></div>
+							 <br>
 						</div>
-						<div ng-if="!account.user.points.free_delivery_message">
-							You just earned <strong>{{order.reward.points}}</strong> points! <strong>{{account.user.points.free_delivery}}</strong> points gets you a free delivery.
+						<div>
+							You just earned <strong>{{order.reward.points}}</strong> points!
+							<span ng-if="!account.user.points.free_delivery_message">
+								<strong> {{account.user.points.free_delivery}}</strong> points gets you a free delivery.
+							</span>
 						</div>
 					</div>
-					<div class="reward-info" ng-if="!account.user.points.free_delivery_message">
+					<div class="reward-info">
 						<br>
 						<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
 							<p>Double your points by sharing on Facebook:<br><br></p>
