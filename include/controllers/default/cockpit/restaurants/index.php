@@ -162,9 +162,9 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 							$restaurant->save();
 							chmod($file,0777);
 							// remove the old image
-							if (file_exists($current_image)){
-								unlink( $current_image );
-							}
+							// if (file_exists($current_image)){
+								// unlink( $current_image );
+							// }
 						}
 					}
 					c::view()->display('restaurants/image');
