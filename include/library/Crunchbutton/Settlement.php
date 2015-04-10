@@ -6,8 +6,6 @@
  * settlement settles fund distribution. this can be CB, driver, or restaurant
  *
  */
-
-
 class Crunchbutton_Settlement extends Cana_Model {
 
 	const DEFAULT_NOTES = 'Crunchbutton Orders';
@@ -572,7 +570,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// We need to make this change: add the $3 delivery fee to the amount being subtracted for cash orders from payment for hourly drivers.
 	public function orderDeliveryFeeDriverCollected( $arr ){
-		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] * $arr[ 'pay_type_hour' ] );
+		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] * $arr[ 'pay_type_hour' ] ) * ( 1 - $arr[ 'refunded' ] );
 		// echo '<pre>';var_dump( $arr );exit();
 		// echo json_encode( $arr );exit;
 	}
