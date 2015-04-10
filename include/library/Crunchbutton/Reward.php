@@ -280,6 +280,46 @@ class Crunchbutton_Reward extends Cana_Table{
 		return floatval( $points );
 	}
 
+	public function createUniqueCode( $name, $phone, $step = 0 ){
+
+		$_name = explode( ' ', $name );
+
+		switch ( $step ) {
+			case 3:
+				if( $_name[ 2 ] ){
+					$code = $_name[ 0 ] . '-' . $_name[ 1 ] . '-' . $_name[ 2 ] . '-' . $phone;
+				}
+				break;
+			case 2:
+				if( $_name[ 2 ] ){
+					$code = $_name[ 0 ] . $_name[ 1 ] . $_name[ 2 ] . $phone;
+				} else {
+					$code = $_name[ 0 ] . '-' . $_name[ 1 ] . '-' . $phone;
+				}
+				break;
+			case 1:
+				if( $_name[ 1 ] ){
+					$code = $_name[ 0 ] . $_name[ 1 ] . $phone;
+				} else {
+					$code = $_name[ 0 ] . '-' . $phone;
+				}
+				break;
+			case 0:
+				$code = $_name[ 0 ] . trim( $phone );
+				break;
+		}
+
+		if( $code ){
+			if( !Crunchbutton_Reward::validateInviteCode( $code ) ){
+				return $code;
+			} else {
+				$step++;
+				return Crunchbutton_Reward::createUniqueCode( $name, $phone, $step );
+			}
+		}
+		return false;
+	}
+
 	public function loadSettings(){
 		if( !$this->_config ){
 			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'reward_points%'" );
