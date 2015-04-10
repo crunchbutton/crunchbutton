@@ -59,6 +59,12 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'referral':
+				$name = strtolower( trim( $this->request()[ 'name' ] ) );
+				$phone = Crunchbutton_Phone::clean( $this->request()[ 'phone' ] );
+				$code = Crunchbutton_Reward::createUniqueCode( $name, $phone );
+				echo json_encode( [ 'code' => $code ] );exit;
+				break;
 			default:
 				if ($this->method() == 'post') {
 					// save a setting

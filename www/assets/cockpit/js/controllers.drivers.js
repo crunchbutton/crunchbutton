@@ -628,6 +628,29 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		}
 	} );
 
+	$scope.$watch( 'driver.phone', function( newValue, oldValue, scope ) {
+		referral();
+	} );
+
+
+	$scope.$watch( 'driver.name', function( newValue, oldValue, scope ) {
+		referral();
+	} );
+
+	var referral = function(){
+		if( $scope.driver && !$scope.driver.id_admin ){
+			var name = $scope.driver.name;
+			var phone = $scope.driver.phone;
+			if( name && phone ){
+				DriverOnboardingService.referral( phone, name, function( data ){
+					if( data.code ){
+						$scope.driver.invite_code = data.code;
+					};
+				} );
+			}
+		}
+	}
+
 	CommunityService.listSimple( function( data ){
 		if( !$scope.communities ){
 			$scope.communities = data;
@@ -690,8 +713,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 			// logs();
 			docs();
-
-
 		} );
 
 		DriverOnboardingService.phone_types( function( json ){

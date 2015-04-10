@@ -6,6 +6,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var drivers = $resource( App.service + 'driver/:action/:method/:id_admin/:page/:search/:phone', { id_admin: '@id_admin', action: '@action' }, {
 				'get' : { 'method': 'GET', params : { action : null } },
 				'notify' : { 'method': 'POST', params : { action: 'notify' } },
+				'referral' : { 'method': 'POST', params : { action: 'referral' } },
 				'list' : { 'method': 'GET', params : { action: 'list', method: 'method' } },
 				'pexcard' : { 'method': 'GET', params : { action: 'list', method: 'pexcard' }, isArray: true },
 				'save' : { 'method': 'POST', params : { action: 'save' } },
@@ -136,6 +137,13 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	service.save = function( driver, callback ){
 		var notify = driver.notify;
 		drivers.save( driver, function( json ){
+			callback( json );
+		} );
+	}
+
+	// referral code
+	service.referral = function( phone, name, callback ){
+		drivers.referral( { 'phone': phone, 'name': name }, function( json ){
 			callback( json );
 		} );
 	}
