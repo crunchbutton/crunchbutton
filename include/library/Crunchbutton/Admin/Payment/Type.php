@@ -44,6 +44,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		}
 		$payment = new Crunchbutton_Admin_Payment_Type();
 		$payment->id_admin = $id_admin;
+		$payment->using_pex = 1;
 		$payment->save();
 		return $payment;
 	}
