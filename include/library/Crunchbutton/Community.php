@@ -777,7 +777,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= $date_start->format( 'l' );
 					$message .= '!';
 				} else {
-					$message = 'Temporally closed!';
+					$message = 'Temporarily closed!';
 				}
 
 				echo $message;
