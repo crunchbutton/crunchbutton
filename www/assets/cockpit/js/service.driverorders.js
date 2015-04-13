@@ -91,7 +91,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	}
 
 	service.accept = function( id_order, callback ){
-		orders.accept( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		orders.accept( { 'id_order': id_order }, function( json ){
+			App.playAudio('orders-delivered');
+			callback( json ); } );
 	}
 
 	service.undo = function( id_order, callback ){
@@ -99,11 +101,15 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	}
 
 	service.pickedup = function( id_order, callback ){
-		orders.pickedup( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		orders.pickedup( { 'id_order': id_order }, function( json ){
+			App.playAudio('orders-delivered');
+			callback( json ); } );
 	}
 
 	service.delivered = function( id_order, callback ){
-		orders.delivered( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		orders.delivered( { 'id_order': id_order }, function( json ){
+			App.playAudio('orders-delivered');
+			callback( json ); } );
 	}
 
 	service.reject = function( id_order, callback ){
@@ -168,6 +174,11 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	service.text_customer_5_min_away = function(){
 		if( 'Confirm send message to customer?' ){
 			service.text_customer_5_min_away_sending = true;
+			//var l;
+			//setTimeout(function(){
+			//	l = Ladda.create($(' .ladda-button').get(0));
+			//	},700);
+			//l.start();
 			DriverOrdersService.text_customer_5_min_away(service.order.id_order,
 				function( json ){
 					if (json.status) {
@@ -177,6 +188,7 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 						App.alert('Message failed to send. Please try again.');
 					}
 					service.text_customer_5_min_away_sending = false;
+					//l.stop();
 				}
 			);
 		}
