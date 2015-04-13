@@ -1,3 +1,4 @@
+
 NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationService, DriverOrdersService ) {
 
 	//This links to orders page for pending orders
@@ -147,6 +148,8 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams, StaffService, ViewListService ) {
 
 	angular.extend( $scope, ViewListService );
+
+	$scope.isMobile = App.isMobile();
 
 	if( $scope.account.isLoggedIn() ){
 		$scope.id_admin = parseInt( $scope.account.user.id_admin );
