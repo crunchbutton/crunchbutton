@@ -885,6 +885,7 @@ App.orders = {
 		params.export = 'csv';
 		location.href = '/orders/content?' + jQuery.param(params);
 	},
+
 	createEvents: function(){
 
 		$(document).on('click', '.check-refunded', function() {
@@ -899,7 +900,7 @@ App.orders = {
 				console.log( result.responseText);
 				el.html('REFUND');
 				var er = result.errors ? "\n\n" + result.errors : 'See the console.log!';
-				alert('Refunding fail! ' + er);
+				alert('Checking fail: ' + er);
 			}
 			$.ajax({
 				url: '/api/refund/check/' + el.attr('data-uuid'),
@@ -907,6 +908,7 @@ App.orders = {
 					console.log('result',result);
 						try {
 							if( result.status && result.status == 'success' ){
+								alert( 'Order already refunded!' );
 								$( '.was-refunded-' + el.attr('data-uuid') ).html( 'REFUNDED' );
 								el.hide();
 								var do_not_reimburse_driver = $( '.do_not_reimburse_driver-' + el.attr('data-uuid') );
@@ -918,7 +920,6 @@ App.orders = {
 								} else {
 									do_not_reimburse_driver.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
 								}
-
 							} else if( result.status && result.status == 'false' ){
 								alert( 'Not refunded yet!' )
 								el.html('Check if it was refunded');
