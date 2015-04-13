@@ -52,7 +52,7 @@
 							<!-- date -->
 							<div class="column-date" ng-click="showOrder( order.id_order )">
 								<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-								<div class="orderid">#{{order.id_order}}</div>
+								<div class="orderid">#{{order.id_order | limitTo:-3:0}}</div>
 								<div class="hour">{{order.date_hour | date:'h:mm a'}}</div>
 							</div>
 
