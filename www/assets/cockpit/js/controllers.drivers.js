@@ -838,8 +838,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		start();
 	});
 
-
-
 } );
 
 NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardingService ) {
