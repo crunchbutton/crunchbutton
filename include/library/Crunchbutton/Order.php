@@ -3011,6 +3011,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$refund = json_decode( json_encode( ( object ) Balanced\Refund::get( $url ) ) );
 			if( $refund && $refund->status && $refund->status == 'succeeded' ){
 				$this->refunded = 1;
+				$this->do_not_reimburse_driver = 1;
+				$this->do_not_pay_driver = 1;
 				$this->save();
 				return true;
 			}
