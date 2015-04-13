@@ -25,15 +25,15 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public static function byCode( $code ){
-		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE UPPER( code ) = UPPER("' . $code . '")' );
+		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE UPPER( code ) = UPPER(?)', [$code]);
 	}
 
 	public static function byPhone( $phone ){
-		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.phone = '{$phone}' AND c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
+		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.phone = ? AND c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )", [$phone]);
 	}
 
 	public static function byIdUser( $id_user ){
-		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.id_user = '{$id_user}' AND c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
+		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.id_user = ? AND c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )", [$id_user]);
 	}
 
 	public static function lastID(){
@@ -41,7 +41,7 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public static function giftWasAlreadyUsed( $id_promo ){
-		$gift = Crunchbutton_Promo::q( 'SELECT * FROM promo p INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = ' . $id_promo );
+		$gift = Crunchbutton_Promo::q( 'SELECT * FROM promo p INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = ?', [$id_promo]);
 		return ( $gift->count() > 0 );
 	}
 
@@ -157,11 +157,11 @@ class Crunchbutton_Promo extends Cana_Table
 
 
 		if( !$sort ){
-			$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ' . $id_ini . ' AND ' . $id_end . ' AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL ) ORDER BY id_promo ASC');
+			$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ? AND ? AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL ) ORDER BY id_promo ASC', [$id_ini, $id_end]);
 			return $giftcards;
 		}
 
-		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ' . $id_ini . ' AND ' . $id_end . ' AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL ) ORDER BY id_promo');
+		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ? AND ? AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL ) ORDER BY id_promo', [$id_ini, $id_end]);
 
 		$idsArray = array();
 		foreach ( $giftcards as $giftcard ) {
@@ -426,27 +426,33 @@ class Crunchbutton_Promo extends Cana_Table
 	public static function find($search = []) {
 
 		$query = 'SELECT `promo`.*, user.name FROM `promo` LEFT JOIN restaurant USING(id_restaurant) LEFT OUTER JOIN user USING(id_user) WHERE id_promo IS NOT NULL ';
+		$qs = [];
 
 		if ($search['type']) {
-			$query .= " and type='".$search['type']."' ";
+			$query .= " and type=? ";
+			$qs[] = $search['type'];
 		}
 
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
-			$query .= " and DATE(`date`)>='".$s->format('Y-m-d')."' ";
+			$query .= " and DATE(`date`)>=? ";
+			$qs[] = $s->format('Y-m-d');
 		}
 
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
-			$query .= " and DATE(`date`)<='".$s->format('Y-m-d')."' ";
+			$query .= " and DATE(`date`)<=? ";
+			$qs[] = $s->format('Y-m-d');
 		}
 
 		if ($search['restaurant']) {
-			$query .= " and `promo`.id_restaurant=".$search['restaurant']." ";
+			$query .= " and `promo`.id_restaurant=? ";
+			$qs[] = $search['restaurant'];
 		}
 
 		if ($search['id_user']) {
-			$query .= " and `promo`.id_user='".$search['id_user']."' ";
+			$query .= " and `promo`.id_user=? ";
+			$qs[] = $search['id_user'];
 		}
 
 		$query .= 'ORDER BY `id_promo` DESC';
@@ -455,15 +461,15 @@ class Crunchbutton_Promo extends Cana_Table
 			$query .= ' limit '.$search['limit'].' ';
 		}
 
-		$gifts = self::q($query);
+		$gifts = self::q($query, $qs);
 		return $gifts;
 	}
 
 	public function getLastGiftCardsRedeemedFromPhoneNumber( $phone, $giftcards = 2 ){
 		$query = "SELECT c.* FROM credit c
-								INNER JOIN user u ON u.id_user = c.id_user AND u.phone = '{$phone}'
+								INNER JOIN user u ON u.id_user = c.id_user AND u.phone = ?
 								WHERE c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' ) ORDER BY id_credit DESC limit 0,{$giftcards}";
-		return Crunchbutton_Promo::q( $query );
+		return Crunchbutton_Promo::q( $query, [$phone]);
 	}
 
 	public function groups(){
