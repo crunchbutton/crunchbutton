@@ -1035,17 +1035,17 @@ App.phoneGapListener = {
 	}
 };
 
-
+/**
+ * play crunch audio sound
+ */
 App.playAudio = function(audio) {
-	var audio = document.getElementById(audio);
-	if (!audio) {
-		return;
-	}
-	audio.pause();
-	audio.currentTime = 0;
-	audio.play();
+	var path = (App.isPhoneGap ? '' : '/') + 'assets/cockpit/audio/';
+	console.log('path',path);
+	var sound = new Howl({
+		urls: [path + audio + '.mp3', path + audio + '.ogg']
+	}).play();
 }
-
+// App.playAudio( 'test' );
 
 function handleOpenURL(url) {
 	// only happens if being pased from a url in the native app
