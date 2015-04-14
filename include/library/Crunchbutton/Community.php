@@ -65,12 +65,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				FROM restaurant
 					left join restaurant_community using(id_restaurant)
 				WHERE
-						id_community="'.$this->id_community.'"
+					id_community=?
 					and restaurant.active=true
 				ORDER by
 					restaurant_community.sort,
 					restaurant.delivery DESC
-			');
+			',[$this->id_community]);
 /*
 			$this->_restaurants->sort([
 				'function' => 'open'
