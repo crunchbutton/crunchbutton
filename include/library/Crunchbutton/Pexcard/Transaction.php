@@ -152,7 +152,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT acctId, SUM( amount ) AS amount
 								FROM pexcard_transaction
 									WHERE
-										DATE_FORMAT( settlementTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										DATE_FORMAT( transactionTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
 										AND transactionType != "Transfer"
 										AND isPending IS NULL
 								GROUP BY acctId
@@ -165,8 +165,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT *
 								FROM pexcard_transaction
 									WHERE
-										DATE_FORMAT( settlementTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										DATE_FORMAT( transactionTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
 										AND transactionType != "Transfer"
+										AND isPending IS NULL
 										AND acctId = "' . $acctId . '"
 								ORDER BY transactionTime ASC';
 		$expenses = c::db()->get( $query );
