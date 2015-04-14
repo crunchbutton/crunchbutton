@@ -16,6 +16,16 @@ NGApp.filter( 'formatPhone', function() {
 	};
 });
 
+// Address format filter
+NGApp.filter( 'formatAddress', function() {
+	return function( input ) {
+		if( input != null ){
+			input = input.split("\n")[0].split(',')[0];
+		}
+		return input;
+	};
+});
+
 // Price format filter
 NGApp.filter( 'formatPrice', function() {
 	return function( input ) {
