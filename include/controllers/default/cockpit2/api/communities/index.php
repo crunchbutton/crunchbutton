@@ -96,6 +96,13 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			// get whether its 3rd or not
 			$restaurant = Community::o($s);
 			$s->type = $restaurant->type();
+			
+			// ensure boolean values
+			$s->close_3rd_party_delivery_restaurants = $s->close_3rd_party_delivery_restaurants ? true : false;
+			$s->is_auto_closed = $s->is_auto_closed ? true : false;
+			$s->auto_close = $s->auto_close ? true : false;
+			$s->close_all_restaurants = $s->close_all_restaurants ? true : false;
+			$s->active = $s->active ? true : false;
 
 //			$data[] = $out;
 			$data[] = $s;
