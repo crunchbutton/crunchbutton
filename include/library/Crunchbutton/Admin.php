@@ -399,8 +399,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return true;
 	}
 
-	public function getLastWorkedTimeHours(){
-		$shift = $this->lastWorkedShift();
+	public function getLastWorkedTimeHours( $now = 'now' ){
+		$shift = $this->lastWorkedShift( $now );
 		if( $shift ){
 			$now = new DateTime( 'now', $this->timezone() );
 			$end = $shift->dateEnd()->get( 0 );
@@ -411,9 +411,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function lastWorkedShift(){
-		if( !$this->isWorking() ){
-			$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $this->id_admin );
+	public function lastWorkedShift( $now = 'now' ){
+		if( !$this->isWorking( $now ) ){
+			$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $this->id_admin, $now );
 			if( $shift->id_community_shift ){
 				return $shift;
 			}
