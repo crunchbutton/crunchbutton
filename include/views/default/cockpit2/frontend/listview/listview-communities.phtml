@@ -22,11 +22,11 @@
 				<span ng-if="community._order_date"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
 			</td>
 			<td>
-				<span ng-if="community.close_all_restaurants == '1'">
+				<span ng-if="community.close_all_restaurants">
 					All restaurants closed by {{community.close_all_restaurants_id_admin}} on {{community.close_all_restaurants_date}}<br>
 					{{community.close_all_restaurants_note}}
 				</span>
-				<span ng-if="community.close_all_restaurants == '1' && community.close_3rd_party_delivery_restaurants == '1'">
+				<span ng-if="community.close_all_restaurants && community.close_3rd_party_delivery_restaurants">
 					<br>
 				</span>
 				<span ng-if="community.close_3rd_party_delivery_restaurants == '1'">
@@ -36,8 +36,8 @@
 			</td>
 			<td class="tb-center">
 
-				<span class="tag tag-red" ng-if="community.close_all_restaurants == '1' && community.is_auto_closed == '1' || community.close_3rd_party_delivery_restaurants == '1'">Closed</span>
-				<span class="tag tag-green" ng-if="community.close_all_restaurants == '0' && community.is_auto_closed == '0' && community.close_3rd_party_delivery_restaurants == '0'">Open</span>
+				<span class="tag tag-red" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
+				<span class="tag tag-green" ng-if="!community.close_all_restaurants && !community.is_auto_closed  && !community.close_3rd_party_delivery_restaurants">Open</span>
 			</td>
 			<td nowrap class="tb-center">
 				<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
