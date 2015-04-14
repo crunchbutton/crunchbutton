@@ -33,7 +33,7 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 
 		$scope.isProcessing = true;
 
-		var params = { 'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
+		var params = {  'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
 										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
 										'import': import_data };
 
