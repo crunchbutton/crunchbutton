@@ -198,10 +198,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $day;
 	}
 
-	public function getLastWorkedShiftByAdmin( $id_admin ){
+	public function getLastWorkedShiftByAdmin( $id_admin, $now = 'now' ){
 		$admin = Crunchbutton_Admin::o( $id_admin );
 		$timezone = $admin->timezone();
-		$now = new DateTime( 'now', $timezone );
+		$now = new DateTime( $now, $timezone );
 		$query = 'SELECT cs.* FROM admin_shift_assign asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 							WHERE
