@@ -84,6 +84,10 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 				$out->communities[] = $community->properties();
 			}
 			*/
+			
+			// get whether its 3rd or not
+			$restaurant = Community::o($s);
+			$s->type = $restaurant->type();
 
 //			$data[] = $out;
 			$data[] = $s;
