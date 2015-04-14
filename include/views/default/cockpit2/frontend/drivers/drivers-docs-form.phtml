@@ -115,8 +115,13 @@
 						<small ng-show="formBasic.basicAddress.$error.required">Required.</small>
 					</div>
 				</li>
-				<li class="li-input">
+				<li class="li-input li-input-line-height">
 					* After saving this form, you'll need to enter your Bank Account information below so we can pay you
+					<span class="contrast">
+						<br><br>
+						By entering your payment information, you agree to the <a href="https://stripe.com/connect/account-terms" target="_system">Stripe Connected Account Agreement</a> which allows us to send money directly to your bank account.
+					</span>
+					
 					<br/><br/>
 					<button class="button green" ng-click="save_basic_info();">Save</button>
 				</li>
