@@ -34,8 +34,8 @@
 				</span>
 			</td>
 			<td class="tb-center">
-				<span class="tag tag-green" ng-if="community.active && !community.close_all_restaurants && !community.id_auto_closed && !community.close_3rd_party_delivery_restaurants">Open</span>
-				<span class="tag tag-red" ng-if="!community.active || community.close_all_restaurants || community.id_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
+				<span class="tag tag-green" ng-if="community.active && !community.close_all_restaurants && !community.is_auto_closed && !community.close_3rd_party_delivery_restaurants">Open</span>
+				<span class="tag tag-red" ng-if="!community.active || community.close_all_restaurants || community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
 			</td>
 			<td nowrap class="tb-center">
 				<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
