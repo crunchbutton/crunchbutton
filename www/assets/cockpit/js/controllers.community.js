@@ -32,6 +32,7 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 
 	$scope.view({
 		scope: $scope,
+		allowAll: true,
 		watch: {
 			search: ''
 		},
