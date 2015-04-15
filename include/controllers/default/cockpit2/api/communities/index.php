@@ -8,6 +8,8 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		$search = $this->request()['search'] ?$this->request()['search'] : '';
 		$page = $this->request()['page'] ?$this->request()['page'] : 1;
 		$status = $this->request()['status'] ?$this->request()['status'] : 'all';
+		$open = $this->request()['open'] ?$this->request()['open'] : 'all';
+
 		$keys = [];
 		
 		if ($limit == 'none') {
@@ -35,7 +37,25 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		
 		if ($status != 'all') {
 			$q .= '
-				AND active="'.($status == 'active' ? '1' : '0').'"
+				AND community.active='.($status == 'active' ? 'true' : 'false').'
+			';
+		}
+		
+		if ($open == 'open') {
+			$q .= '
+				AND (
+					community.is_auto_closed = false
+					AND community.close_all_restaurants = false
+					AND community.close_3rd_party_delivery_restaurants = false
+				)
+			';
+		} elseif ($open == 'closed') {
+			$q .= '
+				AND (
+					community.is_auto_closed = true
+					OR community.close_all_restaurants = true
+					OR community.close_3rd_party_delivery_restaurants = true
+				)
 			';
 		}
 		
@@ -94,8 +114,8 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			*/
 			
 			// get whether its 3rd or not
-			$restaurant = Community::o($s);
-			$s->type = $restaurant->type();
+			$community = Community::o($s);
+			$s->type = $community->type();
 			
 			// ensure boolean values
 			$s->close_3rd_party_delivery_restaurants = $s->close_3rd_party_delivery_restaurants ? true : false;
@@ -103,6 +123,10 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			$s->auto_close = $s->auto_close ? true : false;
 			$s->close_all_restaurants = $s->close_all_restaurants ? true : false;
 			$s->active = $s->active ? true : false;
+			
+			// pull up community closed log
+			// @todo seems to take a little longer. need to clean this up
+			$s->closedLog = $community->closedSince()[0];
 
 //			$data[] = $out;
 			$data[] = $s;
