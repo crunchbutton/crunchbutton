@@ -343,33 +343,17 @@ ORDER BY o.id_order ASC";
 
 					switch ( $this->type ) {
 
-						case Crunchbutton_Admin_Notification::TYPE_FAX :
-							$this->sendFax( $order );
-							break;
-
-						case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS :
-							$this->sendDumbSms( $order );
-							break;
-
-						case Crunchbutton_Admin_Notification::TYPE_PHONE :
-							$this->phoneCall( $order );
-							break;
-
-						case Crunchbutton_Admin_Notification::TYPE_EMAIL :
-							$this->sendEmail( $order );
-							break;
-
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
-							$this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
+							return $this->sendPushIos( $order, $this->getSmsMessage($order, $c, 'push'));
 							break;
 
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
-							$this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
+							return $this->sendPushAndroid( $order, $this->getSmsMessage($order, $c, 'push'));
 							break;
 
 						default:
 						case Crunchbutton_Admin_Notification::TYPE_SMS :
-							$this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
+							return $this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
 							break;
 					}
 
