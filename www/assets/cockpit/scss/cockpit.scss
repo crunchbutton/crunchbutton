@@ -4,7 +4,7 @@ $navColor: #202228;
 $sideBg: #2f323a;
 $navLinkColor: #aeb2b7;
 $green: #4ecdc4;
-$background: #f1f2f7;
+$background: #f3f3f4;
 $textColor: #312f38;
 $orange: #df4a32;
 $linkColor: #d74924;
@@ -156,7 +156,7 @@ html {
 
 @media screen and (min-width: $desktopWidth) {
 	.content-padding {
-		padding: 10px 0 10px 0;
+		padding: 5px 0 10px 0;
 	}
 	.nav .content,
 	.content-padding {
@@ -2544,6 +2544,13 @@ b, strong{ font-weight: bold; }
 	margin-bottom: 25px;
 	@include box-border-radius();
 }
+.no-box-content-color, .support-box-wrap h1 {
+	padding: 12px;
+}
+.no-box-content-color {
+	margin-bottom: 0;
+	padding-top: 0;
+}
 .comments-box {
 	margin-bottom: 10px;
 }
@@ -2557,7 +2564,8 @@ b, strong{ font-weight: bold; }
 }
 @media(min-width:600px) {
 	.support-box-wrap {
-
+		display: inline-block;
+		width: 100%;
 	}
 	.support-boxes {
 		-webkit-column-count: 2;
@@ -2609,15 +2617,25 @@ b, strong{ font-weight: bold; }
 }
 
 .support-box-wrap h1 {
-	font-size: 1.6em;
-	font-family: Source Sans Pro, Helvetica, sans-serif;
-	font-weight: 300;
+	font-size: 1.2em;
+	font-weight: 600;
 	color: #5d5f63;
-	margin-bottom: .5em;
+	margin-bottom: 0;
+	float: left;
+}
+.support-box-wrap-header {
+	border-bottom: 1px solid #e7eaec;
+}
+.support-box-header-actions {
+	float: right;
+	margin: 1em 1em 0 0;
 }
 .support-box-wrap h1 .fa {
 	float: right;
 	margin-right: 1em;
+}
+.support-boxes .box-content2 {
+	padding: 0;
 }
 
 .field-container {
@@ -2630,6 +2648,13 @@ b, strong{ font-weight: bold; }
 	line-height: 1.5em;
 	border-bottom: 1px solid #f1f2f7;
 	display: table-cell;
+}
+
+.field-container .field-key {
+	padding-left: 0;
+}
+.field-container .field-value {
+	padding-right: 0;
 }
 
 .field-button-spacer {
