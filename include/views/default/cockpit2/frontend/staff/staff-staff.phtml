@@ -14,9 +14,6 @@
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<br>
-
-
 	<div class="support-boxes">
 
 		<div class="support-box-wrap box-content2">
@@ -90,7 +87,7 @@
 						<div class="field-value">{{staff.pexcard.last_four }}</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key"><a href="/staff/{{staff.login}}/pexcard"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Add Funds</button></a></div>
+						<div class="field-key"><a href="/staff/{{staff.login}}/pexcard"><button class="button button-small button-small-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Add Funds</button></a></div>
 						<div class="field-value"></div>
 					</div>
 				</div>
@@ -98,7 +95,7 @@
 			<div class="no-box-content-color" ng-if="!staff.pexcard.active">
 				<div class="field-container">
 					<div class="field-row">
-						<div class="field-key"><a href="/pexcard/card/driver/{{staff.id_admin}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Add Card</button></a></div>
+						<div class="field-key"><a href="/pexcard/card/driver/{{staff.id_admin}}"><button class="button button-small button-small-green">Add Card</button></a></div>
 						<div class="field-value"></div>
 					</div>
 				</div>
