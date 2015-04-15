@@ -28,8 +28,6 @@ NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrd
 	});
 });
 
-
-
 NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
@@ -44,14 +42,36 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	if ($scope.account.isLoggedIn()) {
 		DriverOrdersViewService.load();
 	}
-
-
+	
 	var showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
 	// console.log('showOrders',showOrders);
 	if ( !showOrders ){
 		// $location.path('/drivers/shifts/');
 		return;
 	}
+$rootScope.navTitle = '#' + $routeParams.id;
+$scope.ready = false;
+$scope.oc = DriverOrdersViewService;
+DriverOrdersViewService.prep();
+
+$scope.nextOrder = function() {
+
+    //console.log(arguments);
+};
+// Just run if the user is loggedin
+if ($scope.account.isLoggedIn()) {
+    DriverOrdersViewService.load();
+
+    setTimeout(function(){
+       DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0));
+    },2000);
+}
+var showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
+
+if ( !showOrders ){
+    $location.path('/drivers/shifts/');
+    return;
+}
 });
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
