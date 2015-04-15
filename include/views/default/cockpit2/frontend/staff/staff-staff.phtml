@@ -89,11 +89,44 @@
 						<div class="field-key">Last Four</div>
 						<div class="field-value">{{staff.pexcard.last_four }}</div>
 					</div>
-
+					<div class="field-row">
+						<div class="field-key"><a href="/staff/{{staff.login}}/pexcard"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Add Funds</button></a></div>
+						<div class="field-value"></div>
+					</div>
 				</div>
-
+			</div>
+			<div class="no-box-content-color" ng-if="!staff.pexcard.active">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key"><a href="/pexcard/card/driver/{{staff.id_admin}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Add Card</button></a></div>
+						<div class="field-value"></div>
+					</div>
+				</div>
 			</div>
 		</div>
+		
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Tools</h1>
+				<div class="divider"></div>
+			</div>
+			
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key"><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement</a></div>
+						<div class="field-value"></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key"><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></div>
+						<div class="field-value"><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
 		
 <? /*
 		<div class="support-box-wrap">
@@ -154,17 +187,6 @@
 		</table>
 	</div>
 	*/ ?>
-
-	<h1 class="title"><i class="fa fa-cog"></i>Tools</h1>
-	<div class="box-content2 box-content-table">
-		<table>
-			<tr><td><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement </a></td></tr>
-			<tr><td><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></td></tr>
-			<tr><td><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></td></tr>
-			<tr ng-if="staff.pexcard"><td><a href="/staff/{{staff.login}}/pexcard">Pexcard / Add funds</a></td></tr>
-			<tr ng-if="!staff.pexcard"><td><a href="/pexcard/card/driver/{{staff.id_admin}}">Pexcard</a></td></tr>
-		</table>
-	</div>
 
 
 </div>
