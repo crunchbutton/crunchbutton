@@ -53,6 +53,7 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			'driver' => [
 				'id_admin' => $action->id_admin,
 				'name' =>  Admin::o($action->id_admin)->name,
+				'phone' =>  Admin::o($action->id_admin)->phone
 			]
 		];
 	}
