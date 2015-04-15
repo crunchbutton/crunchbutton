@@ -34,7 +34,9 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 		scope: $scope,
 		allowAll: true,
 		watch: {
-			search: ''
+			search: '',
+			status: 'active',
+			open: 'all'
 		},
 		update: function() {
 			CommunityService.list($scope.query, function(d) {
@@ -44,10 +46,11 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 		}
 	});
 
-
+/*
  	CommunityService.closed( function( json ){
  		$scope.closed_communities = json;
 	} )
+*/
 
 });
 
