@@ -101,6 +101,13 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $this->_deliveries;
 	}
+	
+	public function pex() {
+		if (!isset($this->_pex)) {
+			$this->_pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
+		}
+		return $this->_pex;
+	}
 
 	public function exports( $params = [] ) {
 		$out = parent::exports( $params );
@@ -111,6 +118,13 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
 		$out['invite_code'] = $this->invite_code;
 		$out['dob'] = $this->dob;
+		
+		
+		$out['pexcard'] = [
+			'card_serial' => $this->pex()->card_serial,
+			'last_four' => $this->pex()->last_four,
+			'active' => $this->pex()->card_serial && $this->pex()->card_serial ? true : false
+		];
 
 		$author = $this->author();
 		if( $author->id_admin ){
