@@ -1214,7 +1214,8 @@ input {
 	color: $textColor;
 	padding:.48em;
 	font-size: 1.1em;
-	width: 90%;
+	width: 100%;
+	box-sizing: border-box;
 	@include box-border-radius(4px);
 }
 .li-input select {
@@ -4066,4 +4067,18 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 .box-content-table td.tb-v-center, .box-content-table th.tb-v-center {
 	vertical-align: middle;
+}
+
+@media screen and (min-width: $desktopWidth) {
+	.col-box {
+		display: flex;
+		flex-direction: row;
+		flex-flow: row wrap;
+		justify-content: space-between;
+	}
+	.col-box .two-col {
+		width: 50%;
+		box-sizing: border-box;
+		border: .5em solid $background;
+	}
 }
