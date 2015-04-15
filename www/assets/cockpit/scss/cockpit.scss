@@ -4044,6 +4044,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .nav-button-green {
 	background: #1ab394;
 }
+.nav-button-grey {
+	background: #666;
+}
 
 .page-title-wrap .title {
 	float: left;
@@ -4055,6 +4058,15 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 .page-title-wrap .page-title-nav button {
 	padding: .2em .5em .2em .5em;
+	width: auto;
+	text-transform: none;
+}
+.page-title-wrap .page-title-nav button .fa {
+	margin-right: .5em;
+}
+.page-title-wrap .page-title-nav button span {
+	font-size: .9em;
+	vertical-align: top;
 }
 
 .listview-smaller {
