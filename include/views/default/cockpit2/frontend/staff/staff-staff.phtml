@@ -1,18 +1,10 @@
-
-
 <div class="top-pad"></div>
 
 <div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-user"></i>{{staff.name}}</h1>
-	<div class="ticket-status-top" ng-if="staff.id_admin">
-		<div class="ticket-status-open" ng-if="staff.active">Active</div>
-		<div class="ticket-status-closed" ng-if="!staff.active">Inactive</div>
-	</div>
-
+	<h1 class="title box-title"><i class="fa fa-user"></i>{{staff.name}}</h1>
 	<div class="divider"></div>
-
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="support-boxes">
 
@@ -122,40 +114,51 @@
 				</div>
 			</div>
 		</div>
-
-
 		
-<? /*
-		<div class="support-box-wrap">
-			<h1>Location</h1>
-			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-
-			</map>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Shifts</h1>
+				<div class="divider"></div>
+			</div>
+			
+			<div class="no-box-content-color box-content-table">
+				<table class="tb-zebra">
+					<tr>
+						<th>Time</th>
+						<th>Community</th>
+						<th class="tb-small"></th>
+					</tr>
+					<tr ng-repeat="shift in staff.shifts">
+						<td>
+							<span class="listview-smaller">
+								<span class="listview-bold">Start</span>: {{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}<br>
+								<span class="listview-bold">End</span>: {{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}
+							</span>
+						</td>
+						<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
+						<td>
+							<span class="tag tag-green" ng-if="shift.current">Now</span>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
-		*/ ?>
 		
-	</div>
-	
-	<div class="divider"></div>
 
-	<h1 class="title"><i class="fa fa-calendar"></i>Shifts</h1>
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Start</th>
-				<th>End</th>
-				<th>Community</th>
-				<th>Current</th>
-			</tr>
-			<tr ng-repeat="shift in staff.shifts" ng-class="{'highlight':shift.current}">
-				<td>{{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}</td>
-				<td>{{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}</td>
-				<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
-				<td>
-					<span ng-if="shift.current"><i class="fa fa-check"></i></span>
-				</td>
-			</tr>
-		</table>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Location</h1>
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
+				</div>
+				<div class="divider"></div>
+			</div>
+			<? /*
+			<div class="no-box-content-color box-content-table">
+				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+			</div>
+			*/ ?>
+		</div>
 	</div>
 
 
