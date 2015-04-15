@@ -48,6 +48,43 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return $this->_restaurantsByLoc;
 	}
+	
+	public function type() {
+		if (!isset($this->_type)) {
+			$rs = $this->restaurants();
+			$third = false;
+			$first = false;
+			$takeout = false;
+
+			foreach ($rs as $r) {
+				if ($r->delivery_service && $r->delivery) {
+					$third = true;
+					continue;
+				}
+				if (!$r->delivery_service) {
+					$first = true;
+					continue;
+				}
+				if ($r->takeout) {
+					$takeout = true;
+					continue;
+				}
+			}
+			
+			if (!$third && !$first && $takeout) {
+				$this->_type = 'takeout';
+			} elseif($third && $first) {
+				$this->_type = 'both';
+			} elseif ($third) {
+				$this->_type = '3rd';
+			} elseif ($first) {
+				$this->_type = '1st';
+			} else {
+				$this->_type = 'none';
+			}
+		}
+		return $this->_type;
+	}
 
 	/**
 	 * Returns all the restaurants that belong to this Community
@@ -65,12 +102,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				FROM restaurant
 					left join restaurant_community using(id_restaurant)
 				WHERE
-						id_community="'.$this->id_community.'"
+					id_community=?
 					and restaurant.active=true
 				ORDER by
 					restaurant_community.sort,
 					restaurant.delivery DESC
-			');
+			',[$this->id_community]);
 /*
 			$this->_restaurants->sort([
 				'function' => 'open'

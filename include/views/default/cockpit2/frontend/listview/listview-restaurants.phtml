@@ -6,7 +6,6 @@
 			<th>Name</th>
 			<th>Phone</th>
 			<th>Address</th>
-			<th ng-if="!community">Communities</th>
 			<th class="tb-center">Orders</th>
 			<th>Last&nbsp;Order</th>
 		</tr>
@@ -18,14 +17,17 @@
 				</div>
 			</a></td>
 			<td><a href="/restaurant/{{restaurant.permalink}}">{{restaurant.id_restaurant}}</a></td>
-			<td>{{restaurant.name}}</td>
-			<td><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></td>
-			<td>{{restaurant.address}}</td>
-			<td ng-if="!community">
-				<span class="staff-community-repeat" ng-repeat="community in restaurant.communities">
-					<a href="/community/{{community.permalink}}">{{community.name}}</a>
+			<td>
+				<span class="listview-bold">{{restaurant.name}}</span><br>
+				<span ng-if="!community">
+					<span class="staff-community-repeat" ng-repeat="community in restaurant.communities">
+						<a href="/community/{{community.permalink}}">{{community.name}}</a>
+					</span>
 				</span>
 			</td>
+			<td nowrap><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></td>
+			<td>{{restaurant.address | formatAddress}}</td>
+
 			<td class="tb-center">
 				<a href="/orders?restaurant={{restaurant.id_restaurant}}" ng-if="restaurant.orders != '0'">{{restaurant.orders}}</a>
 				<span ng-if="restaurant.orders == '0'">0</span>

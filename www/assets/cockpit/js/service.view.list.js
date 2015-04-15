@@ -5,11 +5,11 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 
 	service.view = function(params) {
 		var scope = params.scope;
-
 		var query = $location.search();
+		var defaultLimit = query.limit || (App.isMobile() ? 5 : 20);
 
 		scope.query = {
-			limit: query.limit || (App.isMobile() ? 5 : 20),
+			limit: defaultLimit,
 			page: query.page || 1
 		};
 		scope.query.page = parseInt(scope.query.page);
@@ -37,6 +37,8 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 
 		scope.count = 0;
 		scope.pages = 0;
+		
+		scope.allowAll = params.allowAll ? true : false;
 
 		scope.$watch('query.limit', inputWatch);
 		scope.$watch('query.page', watch);
@@ -44,6 +46,22 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		scope.setPage = function(page) {
 			scope.query.page = page;
 			App.scrollTop(0);
+		};
+		
+		scope.viewAll = function() {
+			if (!scope.allowAll) {
+				return;
+			}
+			scope.query.page = 1;
+			scope.query.limit = 'none';
+		};
+
+		scope.viewLess = function() {
+			if (!scope.allowAll) {
+				return;
+			}
+			scope.query.page = 1;
+			scope.query.limit = defaultLimit;
 		};
 
 		scope.sort = function(by) {
