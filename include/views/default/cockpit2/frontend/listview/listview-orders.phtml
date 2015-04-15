@@ -7,7 +7,7 @@
 			<th>Customer</th>
 			<th>Order</th>
 			<th>Driver</th>
-			<th>Status</th>
+			<th class="tb-small">Status</th>
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="order in orders track by $index" ng-class="{ 'delivery_it_self': order.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/order/{{order.id_order}}">

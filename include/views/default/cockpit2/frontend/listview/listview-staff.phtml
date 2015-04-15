@@ -3,11 +3,11 @@
 		<tr>
 			<th>Name</th>
 			<th>Info</th>
-			<th class="tb-center">Active</th>
-			<th class="tb-center">Working</th>
-			<th class="tb-center">Vehicle</th>
-			<th class="tb-center">Pex</th>
-			<th> </th>
+			<th class="tb-small tb-center">Active</th>
+			<th class="tb-small tb-center">Working</th>
+			<th class="tb-small tb-center">Vehicle</th>
+			<th class="tb-small tb-center">Pex</th>
+			<th class="tb-small"> </th>
 		</tr>
 		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
 			<td>
@@ -41,7 +41,7 @@
 				<span class="tag tag-grey" ng-if="!s.vehicle">None</span>
 			</td>
 			<td nowrap class="tb-center tb-v-center">
-				<span class="tag tag-blue" ng-if="s.pexcard">{{s.pexcard.card_serial}}</span>
+				<span class="tag tag-grey" ng-if="s.pexcard">{{s.pexcard.card_serial}}</span>
 				<span class="tag tag-lightgrey" ng-if="!s.pexcard">None</span>
 			</td>
 			<td nowrap class="tb-v-center">
