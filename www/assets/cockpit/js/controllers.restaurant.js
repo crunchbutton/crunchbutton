@@ -49,9 +49,33 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderView',
 			templateUrl: 'assets/view/restaurant-order-view.html'
+		})
+		.when('/restaurant/payment-type/:id', {
+			action: 'restaurant-payment-type',
+			controller: 'RestaurantPaymentTypeCtrl',
+			templateUrl: 'assets/view/restaurant-payment-type.html'
 		});
 }]);
 
+
+NGApp.controller('RestaurantPaymentTypeCtrl', function ($rootScope, $scope, $routeParams, RestaurantService ) {
+
+	$scope.yesNo = RestaurantService.yesNo();
+	$scope.summaryMethod = RestaurantService.summaryMethod();
+	$scope.paymentMethod = RestaurantService.paymentMethod();
+
+	RestaurantService.get( $routeParams.id, function(d) {
+		$rootScope.title = d.name + ' | Payment type';
+		$scope.restaurant = d;
+		$scope.ready = true;
+
+		RestaurantService.payment_method( $routeParams.id, function( d ){
+			$scope.restaurant.payment_type = d;
+		});
+
+	});
+
+} );
 
 NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService) {
 	$rootScope.title = 'Restaurants';
@@ -77,13 +101,13 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;
 	$scope.loadingOrders = true;
-	
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
 		update();
 	});
-	
+
 	var update = function() {
 		if (!$scope.map || !$scope.restaurant) {
 			return;
@@ -101,7 +125,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, R
 		$rootScope.title = d.name + ' | Restaurant';
 		$scope.restaurant = d;
 		$scope.loading = false;
-		
+
 		update();
 
 		OrderService.list({restaurant: d.id_restaurant, limit: 5}, function(d) {
