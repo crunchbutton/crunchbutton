@@ -4048,7 +4048,14 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 
 
-
+.button.button-small {
+	font-size: .9em;
+	padding: .3em .6em .4em .6em;
+	background: none;
+	text-transform: none;
+	color: #676a6c;
+	width: auto;
+}
 
 .button.button-empty {
 	border: 1px solid #e7eaec;
@@ -4063,6 +4070,11 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .button.button-empty-green:hover {
 	background: #1ab394;
 	border-color: #1ab394;
+	color: #fff;
+}
+
+.button.button-small-green {
+	background: #1ab394;
 	color: #fff;
 }
 
