@@ -22,8 +22,10 @@
 				<span ng-if="community._order_date"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
 			</td>
 			<td>
-				<span class="listview-bold">{{community.closedLog.closed_by}}</span> @ {{community.closedLog.closed_at}}<br>
-				<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
+				<span ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">
+					<span class="listview-bold">{{community.closedLog.closed_by}}</span> @ {{community.closedLog.closed_at}}<br>
+					<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
+				</span>
 				<? /*
 				@todo: might be faster?
 				<span ng-if="community.close_all_restaurants">
@@ -40,7 +42,6 @@
 				*/ ?>
 			</td>
 			<td class="tb-center">
-
 				<span class="tag tag-red" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
 				<span class="tag tag-green" ng-if="!community.close_all_restaurants && !community.is_auto_closed  && !community.close_3rd_party_delivery_restaurants">Open</span>
 			</td>
