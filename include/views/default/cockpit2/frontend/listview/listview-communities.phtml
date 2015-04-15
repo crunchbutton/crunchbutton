@@ -22,6 +22,10 @@
 				<span ng-if="community._order_date"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
 			</td>
 			<td>
+				<span class="listview-bold">{{community.closedLog.closed_by}}</span> @ {{community.closedLog.closed_at}}<br>
+				<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
+				<? /*
+				@todo: might be faster?
 				<span ng-if="community.close_all_restaurants">
 					All restaurants closed by {{community.close_all_restaurants_id_admin}} on {{community.close_all_restaurants_date}}<br>
 					{{community.close_all_restaurants_note}}
@@ -33,6 +37,7 @@
 					3rd party delivery restaurants closed by {{community.close_3rd_party_delivery_restaurants_id_admin}} on {{community.close_3rd_party_delivery_restaurants_date}}<br>
 					{{community.close_3rd_party_delivery_restaurants_note}}
 				</span>
+				*/ ?>
 			</td>
 			<td class="tb-center">
 
