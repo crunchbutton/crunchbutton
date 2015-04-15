@@ -64,7 +64,7 @@ if ($scope.account.isLoggedIn()) {
 
     setTimeout(function(){
        DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0));
-    },2000);
+    },700);
 }
 var showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
 
