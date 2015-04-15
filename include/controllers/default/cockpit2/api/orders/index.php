@@ -138,6 +138,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			restaurant.name as _restaurant_name,
 			restaurant.phone as _restaurant_phone,
 			restaurant.permalink as _restaurant_permalink,
+			restaurant.confirmation as _restaurant_confirmation,
 			community.name as _community_name,
 			community.permalink as _community_permalink,
 			community.id_community as _community_id,
@@ -161,6 +162,12 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$o->lat = $user->location_lat;
 				}
 			}
+			
+			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
+			foreach ($boolFields as $field) {
+				$o->{$field} = $o->{$field} ? true : false;
+			}
+
 			$data[] = $o;
 		}
 

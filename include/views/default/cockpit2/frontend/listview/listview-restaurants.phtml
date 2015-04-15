@@ -8,7 +8,7 @@
 			<th>Last&nbsp;Order</th>
 			<th class="tb-small">Active</th>
 			<th class="tb-small">Open</th>
-			<th class="tb-small">Deilvery</th>
+			<th class="tb-small">Delivery</th>
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
@@ -63,8 +63,6 @@
 				<a href="https://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}" target="_system"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 				<a href="/restaurant/{{restaurant.permalink}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 			</td>
-	
-
 		</tr>
 	</table>
 </div>
