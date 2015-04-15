@@ -15,8 +15,14 @@ $mobileWidth: 1024px;
 $desktopWidth: 1025px;
 
 
-@mixin box-border-radius() {
-	border-radius: $borderRadius;
+@mixin box-border-radius($radius: 'auto') {
+
+	@if $radius == 'auto' {
+		border-radius: $borderRadius;
+	} @else {
+		border-radius: $radius;
+	}
+	
 
 	@media screen and (max-width: $mobileWidth) {
 		border-radius: $borderRadiusMobile;
@@ -1209,7 +1215,11 @@ input {
 	padding:.48em;
 	font-size: 1.1em;
 	width: 90%;
-	@include box-border-radius();
+	@include box-border-radius(4px);
+}
+.li-input select {
+	height: 2.4em;
+	background: none;
 }
 .li-input textarea{
 	height: 50px;
@@ -2521,6 +2531,10 @@ b, strong{ font-weight: bold; }
 	padding: 10px;
 	border: 5px;
 	@include box-border-radius();
+}
+
+.box-content2 {
+	border-top: 3px solid #e7eaec;
 }
 
 .box-content-color {
@@ -4025,3 +4039,18 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	color: #fff;
 }
 
+.nav-button-green {
+	background: #1ab394;
+}
+
+.page-title-wrap .title {
+	float: left;
+}
+
+.page-title-wrap .page-title-nav {
+	float: right;
+}
+
+.page-title-wrap .page-title-nav button {
+	padding: .2em .5em .2em .5em;
+}

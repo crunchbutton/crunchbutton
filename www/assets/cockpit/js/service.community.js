@@ -23,12 +23,15 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			url: App.service + 'community/:id_community/:action',
 			method: 'POST',
 			params : { 'action' : 'save' }
-		},
+		}
+		/*,
+		@depreciated
 		'closed' : {
 			method: 'GET',
 			params : { 'action': 'closed' },
 			isArray: true
 		},
+		*/
 	});
 
 	var aliases = $resource( App.service + 'community/:permalink/aliases/:action', { permalink: '@permalink', action: '@action' }, {
@@ -71,11 +74,14 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		}
 	}
 
+	/*
+	@depreciated
 	service.closed = function( callback ) {
 		community.closed( function(data) {
 			callback( data );
 		});
 	}
+	*/
 
 	service.list = function(params, callback) {
 		community.query(params).$promise.then(function success(data, responseHeaders) {
