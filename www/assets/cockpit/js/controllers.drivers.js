@@ -37,7 +37,6 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	DriverOrdersViewService.prep();
 
 	$scope.nextOrder = function() {
-
 		//console.log(arguments);
 	};
 
@@ -48,9 +47,9 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 
 
 	var showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
-
+	// console.log('showOrders',showOrders);
 	if ( !showOrders ){
-		$location.path('/drivers/shifts/');
+		// $location.path('/drivers/shifts/');
 		return;
 	}
 });
@@ -97,7 +96,9 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		DriverOrdersService.list(function(data) {
 			$scope.driverorders = data;
 			for (var x in $scope.driverorders) {
-				$scope.driverorders[x].addressFirstLine =$scope.driverorders[x].address.split(',').shift();
+				if( $scope.driverorders[x].address ){
+					$scope.driverorders[x].addressFirstLine = $scope.driverorders[x].address.split(',').shift();
+				}
 			}
 			$scope.ready = true;
 		});

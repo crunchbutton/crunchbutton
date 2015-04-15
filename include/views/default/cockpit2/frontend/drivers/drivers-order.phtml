@@ -24,12 +24,12 @@
 	<div class="header order-header hide-mobile">
 		#{{oc.order.id_order}}
 	</div>
-		
+
 	<div class="map">
 		<div class="order-item-block-big" ng-if="oc.order.status.status != 'delivered'">
 			<div class="order-icon2"><i class="fa fa-clock-o"></i></div>
 			<div class="order-info2 order-info-small">
-				Ordered @ {{oc.order.time_formated}}<span ng-if="oc.order._delivery_estimated_time">. Deliver by </br> {{oc.order._delivery_estimated_time}}</span>
+				Ordered @ {{oc.order.time_formated}}<span ng-if="oc.order._delivery_estimated_time">. Deliver by {{oc.order._delivery_estimated_time}}</span>
 			</div>
 		</div>
 		<br>
@@ -37,8 +37,7 @@
 		<a href="http://maps.apple.com/?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}">
 			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=400x100&markers=color:green%7Clabel:A%7C{{oc.order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{oc.order._restaurant_lat}},{{oc.order._restaurant_lon}}&sensor=false&visual_refresh=true&scale=2');"></div>
 		</a>
-		
-		
+
 		<div class="info-block">
 			<div class="order-icon3"><i class="icon-chef"></i></div>
 			<div class="order-info">
@@ -49,7 +48,7 @@
 				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{oc.order._restaurant_address}}"><span ng-bind-html-unsafe="oc.order._restaurant_address | nl2br"></span></a></p></div>
 			</div>
 		</div>
-		
+
 		<div class="info-block">
 			<div class="order-icon3"><i class="icon-user"></i></div>
 			<div class="order-info">
@@ -70,7 +69,7 @@
 		</div>
 		<? /*
 		<div class="order-item-info">
-			
+
 			<div class="order-item-block left">
 				<div class="order-icon" ng-if="oc.order.delivery_type=='takeout'"><i class="fa fa-taxi"></i></div>
 				<div class="order-icon" ng-if="oc.order.delivery_type=='delivery'"><i class="fa fa-car"></i></div>
@@ -103,7 +102,7 @@
 				</div>
 			</div>
 			<div class="divider"></div>
-		
+
 		</div>
 		*/ ?>
 
@@ -152,88 +151,11 @@
 				<span ng-bind-html-unsafe="oc.order.notes | nl2br"></span>
 			</div>
 		</div>
-	
+
 	<br>
-
-		<? /*
-		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
-		<div ng-if="account.user.id_admin == 1 ||
-								account.user.id_admin == 2 ||
-								account.user.id_admin == 3 ||
-								account.user.id_admin == 5">
-			<h3><strong>Issue #4779 - Regular view</strong></h3><br><br>
-		</div>
-
-		<div class="order-contents">
-			<table width="100%" celpadding="0" cellspacing="0" class="detail">
-				<thead>
-					<td class="topitem order-contents-item-qty">Qty</td>
-					<td class="topitem itemname">Item</td>
-					<td class="topitem itemprice">Store Price</td>
-				</thead>
-				<tbody>
-					<tr ng-repeat="dish in oc.order._dishes">
-						<td class="fooditem order-contents-item-qty">1</td>
-						<td class="fooditem dish-name">
-						{{dish.name}}
-						<div>{{dish.options.select_options}}</div>
-						<div>{{dish.options.with_option}}</div>
-						<div>{{dish.options.without_default_options}}</div>
-						</td>
-						<td class="fooditem dish-price">
-							${{dish.price.regular | formatPrice}}
-						</td>
-					</tr>
-					<tr class="class">
-						<td></td>
-						<td class="dish-price">Subtotal</td>
-						<td class="dish-price">
-							${{oc.order.price | formatPrice}}
-						</td>
-					</tr>
-					<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
-					<tr ng-if="oc.order._tip">
-						<td></td>
-						<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="oc.order.tip_type != 'number'"></span></td>
-						<td style="text-align:right; font-size:24px;color:#666;">${{oc.order._tip | formatPrice}}</td>
-					</tr>
-
-					<tr ng-if="oc.order.delivery_fee">
-						<td></td>
-						<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
-						<td style="text-align:right; font-size:24px;color:#666;">${{oc.order.delivery_fee | formatPrice}}</td>
-					</tr>
-					<tr ng-if="oc.order.service_fee">
-						<td></td>
-						<td style="text-align:right">Service Fee</td>
-						<td>${{oc.order.service_fee | formatPrice}}</td>
-						<php if( $isDriverCockpit ) {  />
-					</tr>
-					-->
-					<tr>
-						<td></td>
-						<td class="dish-price">Tax</td>
-						<td class="dish-price">
-							${{oc.order._tax | formatPrice}}
-						</td>
-					</tr>
-					<tr class="order-total-row">
-						<td></td>
-						<td class="order-total-text">Total</td>
-						<td class="dish-price order-total-text">
-							${{oc.order._final_price | formatPrice}}
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		
-		*/ ?>
 
 		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
 		<div>
-
-
 			<div class="order-contents">
 				<table width="100%" celpadding="0" cellspacing="0" class="detail">
 					<thead>
@@ -320,6 +242,18 @@
 		</div>
 	</div>
 
+	<div class="order-item-block-big">
+		<div class="order-icon2">
+			<i class="fa fa-smile-o"></i>
+		</div>
+		<div class="order-info2 order-info-small" ng-show="oc.order.orders_by_phone <= 1">
+			New customer so create a great first experience!
+		</div>
+
+		<div class="order-info2 order-info-small" ng-show="oc.order.orders_by_phone > 1">
+			Return customer (placed {{oc.order.orders_by_phone}} orders), so treat 'em nice!
+		</div>
+	</div>
 
 
 	<div class="customer-total-block total-block">
@@ -327,6 +261,7 @@
 		<span class="order-total-block-text">Customer total</span>
 		</br>
 	</div>
+
 	<? /*
 	<div class="tip-total-block">
 		<?//SAME CSS CONFIGURATION ?>
@@ -335,6 +270,7 @@
 		</br>
 	</div>
 	*/ ?>
+
 	<div class="tip-total-block total-block">
 		<span class="order-total-price">
 			<span ng-if="oc.order._tip_with_cash || oc.order._tip == 0">CASH</span>
@@ -347,11 +283,9 @@
 
 
 	<div class="divider"></div><br><br><br>
-
-			<div class="order-info2 order-info-small">
-				If prices in store differ from what it says above, plz let us know!<br>
-				Just email your receipt and the order number to <a href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
-				1 in 3 menu updates will earn you a random $ amount bonus ;)
-			</div>
-
+		<div class="order-info2 order-info-small">
+			If prices in store differ from what it says above, plz let us know!<br>
+			Just email your receipt and the order number to <a href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
+			1 in 3 menu updates will earn you a random $ amount bonus ;)
+		</div>
 </div>
