@@ -142,6 +142,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
 			COUNT(`order`.id_order) orders
 		', $q), $keys);
+
 		while ($s = $r->fetch()) {
 			$restaurant = Restaurant::o($s);
 			$out = $s;
@@ -150,6 +151,14 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			foreach ($restaurant->communities() as $community) {
 				$out->communities[] = $community->properties();
 			}
+			
+			$out->active = $out->active ? true : false;
+			$out->open_for_business = $out->open_for_business ? true : false;
+			$out->open = $restaurant->open() ? true : false;
+			$out->delivery_service = $out->delivery_service ? true : false;
+			$out->delivery = $out->delivery ? true : false;
+			$out->takeout = $out->takeout ? true : false;
+			
 
 /*
 			$unset = ['email','timezone','testphone','txt'];
