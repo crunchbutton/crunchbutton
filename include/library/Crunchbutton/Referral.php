@@ -123,7 +123,25 @@ class Crunchbutton_Referral extends Cana_Table{
 		$out[ 'id_admin' ] = $this->id_admin_inviter;
 		$out[ 'id_referral' ] = $this->id_referral;
 		$out[ 'id_order' ] = $this->id_order;
-		$out[ 'admin_credit' ] = ( $this->admin_credit ? floatval( $this->admin_credit ) : Crunchbutton_Reward::adminRefersNewUserCreditAmount() );
+		if( $out[ 'id_admin' ] ){
+			$admin = Admin::o( $out[ 'id_admin' ] );
+			if( $admin->referral_admin_credit ){
+				$credit = floatval( $admin->referral_admin_credit );
+			} else {
+				if( $admin->isDriver() ){
+					$referral = new Crunchbutton_Reward;
+					$settings = $referral->loadSettings();
+					$credit = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
+				}
+			}
+		}
+
+		if( $credit != $this->admin_credit ){
+			$this->admin_credit = $credit;
+			$this->save();
+		}
+
+		$out[ 'admin_credit' ] = $credit;
 		$out[ 'user' ] = [ 'id_user' => $this->invitedUser()->id_user, 'name' => $this->invitedUser()->name ];
 		$out[ 'date' ] = $this->date()->format( Settlement::date_format() );
 		return $out;

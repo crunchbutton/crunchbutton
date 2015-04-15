@@ -170,11 +170,13 @@ class Crunchbutton_Reward extends Cana_Table{
 			$admin = Crunchbutton_Admin::byInviteCode( $this->code )->get( 0 );
 			if( $admin->referral_admin_credit ){
 				return floatval( $admin->referral_admin_credit );
+			} else {
+				if( $admin->isDriver() ){
+					$settings = self::loadSettings();
+					return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
+				}
 			}
 		}
-
-		$settings = self::loadSettings();
-		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
 	}
 
 	public function refersNewUserCreditAmount(){
