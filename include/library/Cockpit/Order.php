@@ -37,6 +37,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out['credit'] = 0;
 		}
 
+		$out['orders_by_phone'] = $this->totalOrdersByPhone( $this->phone );
+
 		$paymentType = $this->paymentType();
 		if( $paymentType->id_user_payment_type ){
 			$out['card_ending'] = substr( $paymentType->card, -4, 4 );
