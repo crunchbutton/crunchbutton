@@ -22,8 +22,15 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		'query' : {
 			method: 'GET',
 			params : {}
-		}
+		},
 	});
+
+	var payinfo = $resource( App.service + 'restaurant/payinfo/:action/:id_restaurant', { action: '@action' }, {
+			'payment_method' : { 'method': 'GET', params : { 'action' : 'payment-method' } },
+		}
+	);
+
+
 
 	service.list = function(params, callback) {
 		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
@@ -56,6 +63,12 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		} );
 	}
 
+	service.payment_method = function( id_restaurant, callback ){
+		payinfo.payment_method( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
 	service.paid_list = function( callback ){
 		restaurants.paid_list( function( data ){
 			callback( data );
@@ -66,6 +79,30 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		restaurants.eta( function( data ){
 			callback( data );
 		} );
+	}
+
+
+	service.yesNo = function(){
+		var methods = [];
+		methods.push( { value: 0, label: 'No' } );
+		methods.push( { value: 1, label: 'Yes' } );
+		return methods;
+	}
+
+	service.summaryMethod = function(){
+		var methods = [];
+		methods.push( { value: 'fax', label: 'Fax' } );
+		methods.push( { value: 'email', label: 'Email' } );
+		methods.push( { value: 'no summary', label: 'No Summary' } );
+		return methods;
+	}
+
+	service.paymentMethod = function(){
+		var methods = [];
+		methods.push( { value: 'check', label: 'Check' } );
+		methods.push( { value: 'deposit', label: 'Deposit' } );
+		methods.push( { value: 'no payment', label: 'No Payment' } );
+		return methods;
 	}
 
 	return service;

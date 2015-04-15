@@ -1,0 +1,156 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="left title"><i class="fa fa-coffee"></i>{{restaurant.name}} - Payment Info</h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+		<h2 class="title">Basic Info</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input">
+				<div class="label">Legal Name for Payment:</div>
+				<div class="input"><input type="text" name="legalNamePayment" maxlength="250" ng-model="restaurant.payment_type.legal_name_payment" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Tax ID #:</div>
+				<div class="input"><input type="text" name="taxID" maxlength="250" ng-model="restaurant.payment_type.tax_id" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.paymentMethod.$invalid}">
+				<div class="label">Payment Method</div>
+				<select name="paymentMethod" required ng-model="restaurant.payment_type.payment_method" ng-options="opt.value as opt.label for opt in paymentMethod"></select>
+				<div class="box-error">
+					<small ng-show="form.paymentMethod.$error.required">Required.</small>
+				</div>
+			</li>
+
+		</ul>
+
+		<br/><br/><br/>
+
+		<h2 class="title">Address</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input">
+				<div class="label">Address:</div>
+				<div class="input"><input type="text" name="checkAddress" maxlength="250" ng-model="restaurant.payment_type.check_address" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">City:</div>
+				<div class="input"><input type="text" name="checkAddressCity" maxlength="50" ng-model="restaurant.payment_type.check_address_city" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">State:</div>
+				<div class="input"><input type="text" name="checkAddressState" maxlength="50" ng-model="restaurant.payment_type.check_address_state" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Zip:</div>
+				<div class="input"><input type="text" name="checkAddressZip" maxlength="20" ng-model="restaurant.payment_type.check_address_zip" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Country:</div>
+				<div class="input"><input type="text" name="checkAddressCountry" maxlength="20" ng-model="restaurant.payment_type.check_address_country" placeholder=""></div>
+			</li>
+		</ul>
+
+		<br/><br/><br/>
+
+		<h2 class="title">Payment Info</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input" ng-class="{'error':form.chargeCreditFee.$invalid}">
+				<div class="label">Charge Credit Fees</div>
+				<select name="chargeCreditFee" required ng-model="restaurant.payment_type.charge_credit_fee" ng-options="opt.value as opt.label for opt in yesNo"></select>
+				<div class="box-error">
+					<small ng-show="form.chargeCreditFee.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.waiveFeeFirstMonth.$invalid}">
+				<div class="label">Waive Fee 1st Month?</div>
+				<select name="waiveFeeFirstMonth" required ng-model="restaurant.payment_type.waive_fee_first_month" ng-options="opt.value as opt.label for opt in yesNo"></select>
+				<div class="box-error">
+					<small ng-show="form.waiveFeeFirstMonth.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.payApologyCredits.$invalid}">
+				<div class="label">Pay For Apology Credits?</div>
+				<select name="payApologyCredits" required ng-model="restaurant.payment_type.pay_apology_credits" ng-options="opt.value as opt.label for opt in yesNo"></select>
+				<div class="box-error">
+					<small ng-show="form.payApologyCredits.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Max Apology Credit:</div>
+				<div class="input"><input type="number" name="maxApologyCredit" ignore-mouse-wheel ng-model="restaurant.payment_type.max_apology_credit" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Max Promotion Paying:</div>
+				<div class="input"><input type="number" name="maxPayPromotion" ignore-mouse-wheel ng-model="restaurant.payment_type.max_pay_promotion" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Contact Name:</div>
+				<div class="input"><input type="text" name="contactName" maxlength="250" ng-model="restaurant.payment_type.contact_name" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.summaryMethod.$invalid}">
+				<div class="label">Summary Method:</div>
+				<select name="summaryMethod" required ng-model="restaurant.payment_type.summary_method" ng-options="opt.value as opt.label for opt in summaryMethod"></select>
+				<div class="box-error">
+					<small ng-show="form.summaryMethod.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="restaurant.payment_type.summary_method == 'fax'">
+				<div class="label">Summary Fax:</div>
+				<div class="input"><input type="text" name="summaryFax" maxlength="250" ng-model="restaurant.payment_type.summary_fax" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-show="restaurant.payment_type.summary_method == 'email'">
+				<div class="label">Summary Email:</div>
+				<div class="input"><input type="text" name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Summary Frequency:</div>
+				<div class="input"><input type="number" name="maxPayPromotion" ignore-mouse-wheel ng-model="restaurant.payment_type.summary_frequency" placeholder=""></div>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<br><br><br>
+
+	<ul class="ul-inputs">
+		<li class="li-input" ng-show="!isSaving">
+			<button class="button save" ng-click="save();">Save</button>
+
+		</li>
+		<li class="li-input" ng-show="isSaving">
+			<i class="fa fa-circle-o-notch fa-spin"></i>
+		</li>
+	</ul>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
