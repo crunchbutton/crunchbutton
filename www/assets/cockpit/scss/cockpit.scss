@@ -3483,7 +3483,7 @@ input[type="checkbox"].switch + div:before {
 	font-size: 1.2em;
 	padding: .7em;
 	border-bottom: 1px solid #eeeeee;
-	line-height: 1.6em;
+	line-height: 1.5em;
 	vertical-align: top;
 }
 
@@ -4025,8 +4025,8 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 .button.button-empty {
 	border: 1px solid #e7eaec;
-	font-size: .8em;
-	padding: .2em .4em .2em .4em;
+	font-size: .9em;
+	padding: .3em .6em .4em .6em;
 	background: none;
 	text-transform: none;
 	color: #676a6c;
@@ -4053,4 +4053,16 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 .page-title-wrap .page-title-nav button {
 	padding: .2em .5em .2em .5em;
+}
+
+.listview-smaller {
+	font-size: .9em;
+}
+
+.listview-light {
+	opacity: .8;
+}
+
+.box-content-table td.tb-v-center, .box-content-table th.tb-v-center {
+	vertical-align: middle;
 }
