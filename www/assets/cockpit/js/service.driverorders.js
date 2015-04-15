@@ -171,28 +171,25 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 
 	service.text_customer_5_min_away_sending = null;
 
-	service.text_customer_5_min_away = function(){
-		if( 'Confirm send message to customer?' ){
-			service.text_customer_5_min_away_sending = true;
-			//var l;
-			//setTimeout(function(){
-			//	l = Ladda.create($(' .ladda-button').get(0));
-			//	},700);
-			//l.start();
-			DriverOrdersService.text_customer_5_min_away(service.order.id_order,
-				function( json ){
-					if (json.status) {
-						service.load();
+service.text_customer_5_min_away = function(){
+if( 'Confirm send message to customer?' ){
+    service.text_customer_5_min_away_sending = true;
 
-					} else {
-						App.alert('Message failed to send. Please try again.');
-					}
-					service.text_customer_5_min_away_sending = false;
-					//l.stop();
-				}
-			);
-		}
-	}
+    service.textLoader.start();
+    DriverOrdersService.text_customer_5_min_away(service.order.id_order,
+       function( json ){
+          if (json.status) {
+             service.load();
+          } else {
+             App.alert('Message failed to send. Please try again.');
+          }
+          service.textLoader.stop();
+          service.text_customer_5_min_away_sending = false;
+
+       }
+    );
+}
+}
 
 	service.accept = function() {
 		$rootScope.makeBusy();
