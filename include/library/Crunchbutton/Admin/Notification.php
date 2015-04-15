@@ -342,17 +342,34 @@ ORDER BY o.id_order ASC";
 					}
 
 					switch ( $this->type ) {
-						default:
-						case Crunchbutton_Admin_Notification::TYPE_SMS :
-							return $this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
+
+						case Crunchbutton_Admin_Notification::TYPE_FAX :
+							$this->sendFax( $order );
+							break;
+
+						case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS :
+							$this->sendDumbSms( $order );
+							break;
+
+						case Crunchbutton_Admin_Notification::TYPE_PHONE :
+							$this->phoneCall( $order );
+							break;
+
+						case Crunchbutton_Admin_Notification::TYPE_EMAIL :
+							$this->sendEmail( $order );
 							break;
 
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
-							return $this->sendPushIos( $order, $this->getSmsMessage($order, $c, 'push'));
+							$this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
 							break;
 
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
-							return $this->sendPushAndroid( $order, $this->getSmsMessage($order, $c, 'push'));
+							$this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
+							break;
+
+						default:
+						case Crunchbutton_Admin_Notification::TYPE_SMS :
+							$this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
 							break;
 					}
 
