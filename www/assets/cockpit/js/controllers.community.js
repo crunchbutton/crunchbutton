@@ -61,7 +61,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 	$scope.isSaving = false;
 
 	$scope.save = function(){
-		console.log('$scope.community.dont_warn_till_enabled',$scope.community.dont_warn_till_enabled);
+
 		if( !$scope.community.dont_warn_till_enabled ){
 			$scope.community.dont_warn_till = null;
 		}

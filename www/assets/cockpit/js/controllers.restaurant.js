@@ -50,15 +50,15 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'RestaurantOrderView',
 			templateUrl: 'assets/view/restaurant-order-view.html'
 		})
-		.when('/restaurant/payment-type/:id', {
-			action: 'restaurant-payment-type',
-			controller: 'RestaurantPaymentTypeCtrl',
-			templateUrl: 'assets/view/restaurant-payment-type.html'
+		.when('/restaurant/payment-info/:id', {
+			action: 'restaurant-payment-info',
+			controller: 'RestaurantPaymentInfoCtrl',
+			templateUrl: 'assets/view/restaurant-payment-info.html'
 		});
 }]);
 
 
-NGApp.controller('RestaurantPaymentTypeCtrl', function ($rootScope, $scope, $routeParams, RestaurantService ) {
+NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $routeParams, RestaurantService ) {
 
 	$scope.yesNo = RestaurantService.yesNo();
 	$scope.summaryMethod = RestaurantService.summaryMethod();
@@ -70,10 +70,32 @@ NGApp.controller('RestaurantPaymentTypeCtrl', function ($rootScope, $scope, $rou
 		$scope.ready = true;
 
 		RestaurantService.payment_method( $routeParams.id, function( d ){
-			$scope.restaurant.payment_type = d;
+			if( !d.id_restaurant ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$scope.restaurant.payment_type = d;
+			}
 		});
 
 	});
+
+	$scope.save = function(){
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		if( $scope.restaurant.id_restaurant ){
+			RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
+				$scope.isSaving = false;
+				console.log('d',d);
+			} );
+		}
+
+	}
 
 } );
 
