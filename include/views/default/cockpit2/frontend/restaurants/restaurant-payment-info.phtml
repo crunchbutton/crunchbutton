@@ -62,6 +62,12 @@
 
 			<li class="li-input" ng-show="!isSavingStripeAccount">
 				<button class="button save" ng-click="saveStripeAccount();">Save Stripe</button>
+
+				<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.form=false">Cancel Edit Stripe Account</span>
+
+				<span class="link" ng-click="testAccount()">Account Test</span>
+
+
 			</li>
 
 			<li class="li-input" ng-show="isSavingStripeAccount">
@@ -74,7 +80,7 @@
 
 			<li class="li-input">
 				<div class="label">
-					This restaurant already has an Stripe Account
+					This restaurant already has a Stripe Account
 				</div>
 				<div class="input">
 					<span class="link" ng-click="restaurant.stripeAccount.form=true">Edit Stripe Account</span>
