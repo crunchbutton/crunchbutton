@@ -2,198 +2,215 @@
 
 <div class="content-padding">
 
-
 	<h1 class="left title"><i class="fa fa-car"></i>Order Details</h1>
-
 	<div class="ticket-status-top">
 		<div class="ticket-status-open">{{order.status.status}}</div>
 	</div>
-
 	<div class="divider"></div>
-
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<br>
+	<div class="support-boxes">
 
-	<div>
-		<div class="support-boxes-column">
-
-			<div ng-if="order.id_order" class="support-box-wrap">
+		<? /* orde details */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.id_order">
+			<div class="support-box-wrap-header">
 				<h1>Order #{{order.id_order}}</h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Pay / Type</div>
-							<div class="field-value">{{order.pay_type | capitalize}} / {{order.delivery_type | capitalize}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Placed At</div>
-							<div class="field-value">
-								{{order._date_formatted}}
-								<div ng-if="!order._outsideOf24h">
-									(<span am-time-ago="order.date"></span>)
-								</div>
-							</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Status</div>
-							<div class="field-value">
-								<span ng-if="order.status"><b>{{order.status.status}}</b>
-									<br/>
-									<span ng-if="!order.status._outside_of_24h">
-										<span am-time-ago="order.status.timestamp*1000"></span>
-									</span>
-									<span ng-if="order.status._outside_of_24h">
-										{{order.status._date_formatted}}
-									</span>
-								</span>
-								<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-							</div>
-						</div>
-						<div class="field-row" ng-if="order.pay_type == 'card'">
-							<div class="field-key">{{order.processor == 'stripe' ? 'Stripe' : 'Balanced'}}</div>
-							<div class="field-value"><a href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/debits/{{order.txn}}" target="_blank">{{order.txn}}</a></div>
-						</div>
-						<div class="field-row" ng-if="order.status.status != 'delivered'">
-							<div class="field-key">ETA</div>
-							<div class="field-value" ng-if="eta.time">
-								{{eta.time | formatPrice}} minutes
-							</div>
-						</div>
-						<div class="field-row field-row-button" ng-if="isRefunding">
-							<div class="field-value" colspan="2">
-								<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
-							</div>
-						</div>
-						<div class="field-row field-row-button" ng-if="order.pay_type == 'card' && !order.refunded && !isRefunding">
-							<div class="field-value" colspan="2">
-								<button ng-click="refund();" class="button orange">Refund</button>
-							</div>
-						</div>
-						<div class="field-row" ng-if="order.refunded">
-							<div class="field-key">Order Refunded</div>
-							<div class="field-value">Yes</div>
-						</div>
-						<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="order.refunded">
-							<div class="field-key">
-								<i ng-if="!order.do_not_reimburse_driver" class="fa fa-square-o"></i>
-								<i ng-if="order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
-							</div>
-							<div class="field-value">
-								Do Not Reimburse Driver?
-							</div>
-						</div>
-
-						<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="order.refunded">
-							<div class="field-key">
-								<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
-								<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
-							</div>
-							<div class="field-value">
-								Do Not Pay Driver?
-							</div>
-						</div>
-						<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="order.refunded">
-							<div class="field-key">
-								<i ng-if="!order.do_not_pay_restaurant" class="fa fa-square-o"></i>
-								<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
-							</div>
-							<div class="field-value">
-								Pay restaurant despite refund <br>(e.g. this refund was our fault)
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div ng-if="order.user.id_user" class="support-box-wrap">
-				<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{order.user.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(order.user.phone)">{{order.user.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(order.user.address)">{{order.user.address}}</a></div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-
-			<div ng-if="order.restaurant.id_restaurant" class="support-box-wrap">
-				<h1>Restaurant <a href="/restaurant/{{order.restaurant.id_restaurant}}">#{{order.restaurant.id_restaurant}}</a></h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{order.restaurant.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(order.restaurant.phone)">{{order.restaurant.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(order.restaurant.address)">{{order.restaurant.address}}</a></div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div>
-		<div class="support-boxes-column">
-
-			<div class="support-box-wrap" ng-if="order.driver.id_admin">
-				<h1>Location</h1>
-				<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-					<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
-				</map>
 				<div class="divider"></div>
-				<br><br>
 			</div>
 
-			<div ng-if="order.driver.id_admin" class="support-box-wrap">
-				<h1>Driver <a href="/staff/{{order.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{order.driver.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(order.driver.phone)">{{order.driver.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Deliveries</div>
-							<div class="field-value">&nbsp;{{order.driver.deliveries.length}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Shift ends in</div>
-							<div class="field-value">
-								<span ng-if="order.driver.working">{{order.driver.shift_ends/60/60 | formatPrice}} hours</span>
-								<span ng-if="!order.driver.working">Shift ended</span>
-							</div>
-						</div>
-						<div class="field-row" ng-if="order.status.status == 'accepted' || order.status.status == 'pickedup'">
-							<div class="field-key">Distance</div>
-							<div class="field-value">
-								{{eta.distance | formatPrice}} miles
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Pay / Type</div>
+						<div class="field-value">{{order.pay_type | capitalize}} / {{order.delivery_type | capitalize}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Placed At</div>
+						<div class="field-value">
+							{{order._date_formatted}}
+							<div ng-if="!order._outsideOf24h">
+								(<span am-time-ago="order.date"></span>)
 							</div>
 						</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">
+							<span ng-if="order.status"><b>{{order.status.status}}</b>
+								<br/>
+								<span ng-if="!order.status._outside_of_24h">
+									<span am-time-ago="order.status.timestamp*1000"></span>
+								</span>
+								<span ng-if="order.status._outside_of_24h">
+									{{order.status._date_formatted}}
+								</span>
+							</span>
+							<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="order.pay_type == 'card'">
+						<div class="field-key">{{order.processor == 'stripe' ? 'Stripe' : 'Balanced'}}</div>
+						<div class="field-value"><a href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/debits/{{order.txn}}" target="_blank">{{order.txn}}</a></div>
+					</div>
+					<div class="field-row" ng-if="order.status.status != 'delivered'">
+						<div class="field-key">ETA</div>
+						<div class="field-value" ng-if="eta.time">
+							{{eta.time | formatPrice}} minutes
+						</div>
+					</div>
+					<div class="field-row field-row-button" ng-if="isRefunding">
+						<div class="field-value" colspan="2">
+							<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
+						</div>
+					</div>
+					<div class="field-row field-row-button" ng-if="order.pay_type == 'card' && !order.refunded && !isRefunding">
+						<div class="field-value" colspan="2">
+							<button ng-click="refund();" class="button orange">Refund</button>
+						</div>
+					</div>
+					<div class="field-row" ng-if="order.refunded">
+						<div class="field-key">Order Refunded</div>
+						<div class="field-value">Yes</div>
+					</div>
+					<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="order.refunded">
+						<div class="field-key">
+							<i ng-if="!order.do_not_reimburse_driver" class="fa fa-square-o"></i>
+							<i ng-if="order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
+						</div>
+						<div class="field-value">
+							Do Not Reimburse Driver?
+						</div>
+					</div>
 
+					<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="order.refunded">
+						<div class="field-key">
+							<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
+							<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
+						</div>
+						<div class="field-value">
+							Do Not Pay Driver?
+						</div>
+					</div>
+					<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="order.refunded">
+						<div class="field-key">
+							<i ng-if="!order.do_not_pay_restaurant" class="fa fa-square-o"></i>
+							<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+						</div>
+						<div class="field-value">
+							Pay restaurant despite refund <br>(e.g. this refund was our fault)
+						</div>
+					</div>
 				</div>
 			</div>
-
 		</div>
+
+		<? /* customer */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.user.id_user">
+			<div class="support-box-wrap-header">
+				<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{order.user.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(order.user.phone)">{{order.user.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(order.user.address)">{{order.user.address}}</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<? /* restaurant */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.restaurant.id_restaurant">
+			<div class="support-box-wrap-header">
+				<h1>Restaurant <a href="/restaurant/{{order.restaurant.id_restaurant}}">#{{order.restaurant.id_restaurant}}</a></h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{order.restaurant.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(order.restaurant.phone)">{{order.restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(order.restaurant.address)">{{order.restaurant.address}}</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<? /* location */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
+			<div class="support-box-wrap-header">
+				<h1>Location</h1>
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+				<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
+			</map>
+			<div class="divider"></div>
+			
+		</div>
+
+		<? /* driver */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
+			<div class="support-box-wrap-header">
+				<h1>Driver <a href="/staff/{{order.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{order.driver.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(order.driver.phone)">{{order.driver.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Deliveries</div>
+						<div class="field-value">&nbsp;{{order.driver.deliveries.length}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Shift ends in</div>
+						<div class="field-value">
+							<span ng-if="order.driver.working">{{order.driver.shift_ends/60/60 | formatPrice}} hours</span>
+							<span ng-if="!order.driver.working">Shift ended</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="order.status.status == 'accepted' || order.status.status == 'pickedup'">
+						<div class="field-key">Distance</div>
+						<div class="field-value">
+							{{eta.distance | formatPrice}} miles
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
 	</div>
+
 
 </div>
