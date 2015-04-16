@@ -83,17 +83,19 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 				} else {
 					$scope.restaurant.stripeAccount.form = true;
 				}
-
 			}
-
 		});
-
 	});
 
 	$scope.testAccount = function(){
 		$scope.restaurant.stripeAccount.routing_number = '111000025';
 		$scope.restaurant.stripeAccount.account_number = '000123456789';
 		$scope.restaurant.stripeAccount.account_type = 'individual';
+		$scope.restaurant.payment_type.check_address = '4690 Eldarado Parkway';
+		$scope.restaurant.payment_type.check_address_city = 'McKinney';
+		$scope.restaurant.payment_type.check_address_state = 'TX';
+		$scope.restaurant.payment_type.check_address_zip = '75070';
+		$scope.restaurant.payment_type.check_address_country = 'US';
 	}
 
 	$scope.saveStripeAccount = function(){
@@ -106,42 +108,43 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 		$scope.isSavingStripeAccount = true;
 
-		Stripe.bankAccount.createToken({
-			country: 'US',
-			currency: 'USD',
-			routing_number: $scope.restaurant.stripeAccount.routing_number,
-			account_number: $scope.restaurant.stripeAccount.account_number
-		}, function( header, response ){
-			if( response.id ){
+		RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
 
-				var params = {
-					'id_restaurant': $scope.restaurant.id_restaurant,
-					'token': response.id,
-					'name': $scope.restaurant.payment_type.legal_name_payment,
-					'tax_id': $scope.restaurant.payment_type.tax_id,
-					'account_type': $scope.restaurant.stripeAccount.account_type,
-					'email': $scope.restaurant.payment_type.summary_email
-				};
+			Stripe.bankAccount.createToken({
+				country: 'US',
+				currency: 'USD',
+				routing_number: $scope.restaurant.stripeAccount.routing_number,
+				account_number: $scope.restaurant.stripeAccount.account_number
+			}, function( header, response ){
 
-				RestaurantService.stripe( params, function( d ){
-					if( d.id_restaurant ){
-						App.alert( 'Stripe info saved' );
-						$scope.restaurant.stripeAccount.form = false;
-						$scope.restaurant.stripeAccount.routing_number = '';
-						$scope.restaurant.stripeAccount.account_number = '';
-					} else {
-						App.alert( 'Error creating a Stripe token' );
-					}
+				if( response.id ){
+
+					var params = {
+						'id_restaurant': $scope.restaurant.id_restaurant,
+						'token': response.id,
+						'name': $scope.restaurant.payment_type.legal_name_payment,
+						'tax_id': $scope.restaurant.payment_type.tax_id,
+						'account_type': $scope.restaurant.stripeAccount.account_type,
+						'email': $scope.restaurant.payment_type.summary_email
+					};
+
+					RestaurantService.stripe( params, function( d ){
+						if( d.id_restaurant ){
+							App.alert( 'Stripe info saved' );
+							$scope.restaurant.stripeAccount.form = false;
+							$scope.restaurant.stripeAccount.routing_number = '';
+							$scope.restaurant.stripeAccount.account_number = '';
+						} else {
+							App.alert( 'Error creating a Stripe token' );
+						}
+						$scope.isSavingStripeAccount = false;
+					} );
+				} else {
+					App.alert( 'Error creating a Stripe token' );
 					$scope.isSavingStripeAccount = false;
-				} );
-			} else {
-				App.alert( 'Error creating a Stripe token' );
-				$scope.isSavingStripeAccount = false;
-			}
-		});
-
-
-
+				}
+			});
+		} );
 	}
 
 	$scope.save = function(){

@@ -24,6 +24,72 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		return $out;
 	}
 
+	public function createStripe( $params ){
+
+		if( !$params[ 'account_type' ] ){
+			return false;
+		}
+
+		$env = c::getEnv();
+
+		\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+
+		$account_type = $params[ 'account_type' ];
+		$name = explode( ' ', $this->legal_name_payment );
+		$first_name = array_shift( $name );
+		$first_name = implode( ' ',$name );
+
+		try {
+
+			$info = [
+				'managed' => true,
+				'country' => $this->check_address_country,
+				'email' => $this->summary_email,
+				'bank_account' => $params[ 'bank_account' ],
+				'tos_acceptance' => [
+					'date' => time(),
+					'ip' => $_SERVER['REMOTE_ADDR']
+				],
+				'legal_entity' => [
+					'type' => $account_type,
+					'first_name' => $first_name,
+					'last_name' => $last_name,
+					'address' => [
+						'line1' => $this->check_address,
+						'city' => $this->check_address_city,
+						'state' => $this->check_address_state,
+						'country' => $this->check_address_country,
+					]
+				]
+			];
+
+			if( $params[ 'dob' ] ){
+				$info[ 'legal_entity' ][ 'dob' ] = [ // @note: this viloates stripes docs but this is the correct way
+																							'day' => $params[ 'dob' ][ 'day' ],
+																							'month' => $params[ 'dob' ][ 'month' ],
+																							'year' => $params[ 'dob' ][ 'year' ]
+																						];
+			}
+			if( $params[ 'ssn' ] ){
+				$info[ 'legal_entity' ][ 'ssn_last_4' ] = $params[ 'ssn' ];
+			}
+
+			$stripeAccount = \Stripe\Account::create( $info );
+
+			if( $stripeAccount->id && $stripeAccount->bank_accounts->data[0]->id ){
+				$this->stripe_id = $stripeAccount->id;
+				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
+				$this->save();
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception $e) {
+			return [ 'error' => $e->getMessage() ];
+		}
+		return false;
+	}
+
 	public function getRecipientInfo(){
 		if( $this->stripe_id && !$this->_stripe_recipient ){
 			try{
