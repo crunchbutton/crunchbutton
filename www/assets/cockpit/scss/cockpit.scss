@@ -4115,6 +4115,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 		box-sizing: border-box;
 		border: .5em solid $background;
 	}
+	.alias-dialog-container {
+		width: 70%;
+	}
 }
 .addAliasButton {
   background: #1ab394;
