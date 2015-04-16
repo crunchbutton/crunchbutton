@@ -25,6 +25,10 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 				$this->_stripe();
 			break;
 
+			case 'balanced-to-stripe':
+				$this->_migrateFromBalancedToStripe();
+			break;
+
 			default:
 			$this->_error();
 			break;
@@ -96,36 +100,15 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 
 	}
 
-	private function __stripe(){
+	private function _migrateFromBalancedToStripe(){
 
-		$token = $this->request()[ 'token' ];
-		if( !$token ){
-			$this->_error( 'Invalid token!' );
-		}
+		$restaurant = $this->_restaurant();
+		$paymentType = $restaurant->payment_type();
 
-		$env = c::getEnv();
-
-		\Stripe\Stripe::setApiKey( c::config()->stripe->{$env}->secret );
-
-		$recipient = \Stripe\Recipient::create( array(
-			'name' => $this->request()[ 'name' ],
-			'type' => $this->request()[ 'account_type' ],
-			'bank_account' => $token,
-			'email' => $this->request()[ 'email' ] )
-		);
-
-		if( $recipient->id && $recipient->active_account && $recipient->active_account->id ){
-			$restaurant = $this->_restaurant();
-			$payment_method = $restaurant->payment_type();
-			$payment_method->legal_name_payment = $this->request()[ 'name' ];
-			$payment_method->summary_email = $this->request()[ 'email' ];
-			$payment_method->tax_id = $this->request()[ 'tax_id' ];
-			$payment_method->stripe_id = $recipient->id;
-			$payment_method->stripe_account_id = $recipient->active_account->id;
-			$payment_method->save();
+		if( $paymentType->migrateFromBalanced( [ 'account_type' => $this->request()[ 'account_type' ] ] ) ){
 			$this->_exports();
 		}
-		$this->_error( 'Error saving' );
+		$this->_error( 'Error creating stripe account' );
 
 	}
 

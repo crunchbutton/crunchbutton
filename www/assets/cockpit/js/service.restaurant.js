@@ -28,6 +28,8 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 	var payinfo = $resource( App.service + 'restaurant/payinfo/:action/:id_restaurant', { action: '@action' }, {
 			'payment_method' : { 'method': 'GET', params : { 'action' : 'payment-method' } },
 			'payment_method_save' : { 'method': 'POST', params : { 'action' : 'payment-method' } },
+			'balanced_to_sprite' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
+			'balanced_to_sprite_account' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
 			'stripe' : { 'method': 'POST', params : { 'action' : 'stripe' } },
 		}
 	);
@@ -74,6 +76,19 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			callback( data );
 		} );
 	}
+
+	service.balanced_to_sprite = function( id_restaurant, callback ){
+		payinfo.balanced_to_sprite( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.balanced_to_sprite_account = function( params, callback ){
+		payinfo.balanced_to_sprite_account( params,  function( data ){
+			callback( data );
+		} );
+	}
+
 
 	service.stripe = function( params, callback ){
 		payinfo.stripe( params,  function( data ){

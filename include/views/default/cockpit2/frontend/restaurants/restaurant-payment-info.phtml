@@ -10,7 +10,7 @@
 
 		<h2 class="title">Stripe</h2>
 
-		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.form">
+		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.formStripe">
 
 			<li class="li-input" ng-class="{'error':formStripeAccount.legalNamePayment.$invalid}">
 				<div class="label">Legal Name for Payment:</div>
@@ -44,17 +44,17 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':formStripeAccount.routingNumber.$invalid}">
+			<li ng-show="!restaurant.payment_type.has_balanced_bank" class="li-input" ng-class="{'error':formStripeAccount.routingNumber.$invalid}">
 				<div class="label">Routing Number:</div>
-				<div class="input"><input type="text" required name="routingNumber" maxlength="250" ng-model="restaurant.stripeAccount.routing_number" placeholder=""></div>
+				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="routingNumber" maxlength="250" ng-model="restaurant.stripeAccount.routing_number" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="formStripeAccount.routingNumber.$error.required">Required.</small>
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':formStripeAccount.accountNumber.$invalid}">
+			<li ng-show="!restaurant.payment_type.has_balanced_bank" class="li-input" ng-class="{'error':formStripeAccount.accountNumber.$invalid}">
 				<div class="label">Account Number:</div>
-				<div class="input"><input type="text" required name="accountNumber" maxlength="250" ng-model="restaurant.stripeAccount.account_number" placeholder=""></div>
+				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="accountNumber" maxlength="250" ng-model="restaurant.stripeAccount.account_number" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="formStripeAccount.accountNumber.$error.required">Required.</small>
 				</div>
@@ -105,12 +105,21 @@
 			</li>
 
 			<li class="li-input" ng-show="!isSavingStripeAccount">
-				<button class="button save" ng-click="saveStripeAccount();">Save Stripe</button>
 
-				<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.form=false">Cancel Edit Stripe Account</span>
+				<div ng-show="!restaurant.payment_type.has_balanced_bank">
+					<button class="button save" ng-click="saveStripeAccount();">Save Stripe</button>
+				</div>
 
-				<span class="link" ng-click="testAccount()">Account Test</span>
+				<div ng-show="restaurant.payment_type.has_balanced_bank">
+					<button class="button save" ng-click="createStripeAccountAndMigrate();">Create Stripe account and migrate balanced bank</button>
+				</div>
 
+				<div ng-show="!restaurant.payment_type.has_balanced_bank">
+					<br>
+					<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.formStripe = false">Cancel</span>
+
+					<span class="link" ng-click="testAccount()">Account Test</span>
+				</div>
 
 			</li>
 
@@ -120,18 +129,36 @@
 
 		</ul>
 
-		<ul class="ul-inputs" ng-show="!restaurant.stripeAccount.form">
+		<ul class="ul-inputs" ng-show="!restaurant.stripeAccount.formStripe && restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id">
 
 			<li class="li-input">
 				<div class="label">
 					This restaurant already has a Stripe Account
 				</div>
 				<div class="input">
-					<span class="link" ng-click="restaurant.stripeAccount.form=true">Edit Stripe Account</span>
+					<span class="link" ng-click="restaurant.stripeAccount.formStripe=true">Edit Stripe Account</span>
 				</div>
 			</li>
+
 		</ul>
 
+		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.formStripeMigrate && !restaurant.stripeAccount.formStripe && !restaurant.payment_type.stripe_account_id">
+
+			<li class="li-input" ng-show="!isMigrating">
+
+				<button class="button save" ng-click="migrateFromBalancedToStripe();">Migrate Balanced Bank to Stripe</button>
+
+				<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.formStripe = false">Cancel Edit Stripe Account</span>
+
+				<span class="link" ng-click="restaurant.stripeAccount.formStripe=true">Show Stripe create form</span>
+
+			</li>
+
+			<li class="li-input" ng-show="isMigrating">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+
+		</ul>
 
 		<br/><br/><br/>
 	</form>
