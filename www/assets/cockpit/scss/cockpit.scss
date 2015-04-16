@@ -2627,8 +2627,14 @@ b, strong{ font-weight: bold; }
 	border-bottom: 1px solid #e7eaec;
 }
 .support-box-header-actions {
+	display: table-cell;
+	vertical-align: middle;
+	height: 3.4em;
+
+}
+.support-box-header-actions-wrap {
 	float: right;
-	margin: 1em 1em 0 0;
+	margin: 0 .8em 0 0;
 }
 .support-box-wrap h1 .fa {
 	float: right;
