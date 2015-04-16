@@ -12,7 +12,7 @@
 	<div class="divider"></div>
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 	<br>
-	
+
 	<div class="no-support-boxes">
 		<div class="support-boxes-column">
 			<div class="support-box-wrap">
@@ -43,24 +43,30 @@
 							<div class="field-key">Notification Sent</div>
 							<div class="field-value">{{restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
 						</div>
+						<div class="field-row">
+							<div class="field-key">Payment Info</div>
+							<div class="field-value">
+								<a href="/restaurant/payment-info/{{restaurant.permalink}}">Edit payment info</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-			
+
 		<div class="support-boxes-column">
 			<div class="support-box-wrap">
 				<h1>Location</h1>
 				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-	
+
 				</map>
 			</div>
 		</div>
-		
+
 		<div class="divider"></div>
 
 	</div>
-	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>		
+	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
 
 	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
 	<div class="box-content2 box-content-table">

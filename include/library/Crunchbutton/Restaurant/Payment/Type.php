@@ -18,6 +18,12 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			->load($id);
 	}
 
+	public function exports(){
+		$out = $this->properties();
+		$out[ 'max_pay_promotion' ] = intval( $out[ 'max_pay_promotion' ] );
+		return $out;
+	}
+
 	public function getRecipientInfo(){
 		if( $this->stripe_id && !$this->_stripe_recipient ){
 			try{

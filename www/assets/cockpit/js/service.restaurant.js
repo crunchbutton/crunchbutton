@@ -27,10 +27,9 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 
 	var payinfo = $resource( App.service + 'restaurant/payinfo/:action/:id_restaurant', { action: '@action' }, {
 			'payment_method' : { 'method': 'GET', params : { 'action' : 'payment-method' } },
+			'payment_method_save' : { 'method': 'POST', params : { 'action' : 'payment-method' } },
 		}
 	);
-
-
 
 	service.list = function(params, callback) {
 		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
@@ -65,6 +64,12 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 
 	service.payment_method = function( id_restaurant, callback ){
 		payinfo.payment_method( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.payment_method_save = function( params, callback ){
+		payinfo.payment_method_save( params,  function( data ){
 			callback( data );
 		} );
 	}
