@@ -135,6 +135,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
 		$out[ 'auto_close' ] = intval( $out[ 'auto_close' ] );
 		$out[ 'is_auto_closed' ] = intval( $out[ 'is_auto_closed' ] );
+		$out['type'] = $this->type();
 
 		if( $out[ 'close_all_restaurants_id_admin' ] ){
 			$admin = Admin::o( $out[ 'close_all_restaurants_id_admin' ] );
