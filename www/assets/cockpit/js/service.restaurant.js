@@ -28,6 +28,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 	var payinfo = $resource( App.service + 'restaurant/payinfo/:action/:id_restaurant', { action: '@action' }, {
 			'payment_method' : { 'method': 'GET', params : { 'action' : 'payment-method' } },
 			'payment_method_save' : { 'method': 'POST', params : { 'action' : 'payment-method' } },
+			'stripe' : { 'method': 'POST', params : { 'action' : 'stripe' } },
 		}
 	);
 
@@ -74,6 +75,14 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		} );
 	}
 
+	service.stripe = function( params, callback ){
+		payinfo.stripe( params,  function( data ){
+			callback( data );
+		} );
+	}
+
+
+
 	service.paid_list = function( callback ){
 		restaurants.paid_list( function( data ){
 			callback( data );
@@ -107,6 +116,13 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		methods.push( { value: 'check', label: 'Check' } );
 		methods.push( { value: 'deposit', label: 'Deposit' } );
 		methods.push( { value: 'no payment', label: 'No Payment' } );
+		return methods;
+	}
+
+	service.accountType = function(){
+		var methods = [];
+		methods.push( { value: 'individual', label: 'Individual' } );
+		methods.push( { value: 'corporation', label: 'Corporation' } );
 		return methods;
 	}
 
