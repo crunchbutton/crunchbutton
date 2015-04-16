@@ -733,8 +733,7 @@ p {
 		position: absolute;
 		z-index: 2;
 		width: 222px;
-		margin-top: 5px;
-		padding-top: 62px;
+		padding-top: 52px;
 	}
 	.support-toggled .snap-drawer-right {
 		margin-right: 0;
@@ -743,6 +742,8 @@ p {
 	.nav-top {
 		background: #22242a;
 		border-bottom: none;
+		padding-top: 5px;
+		height: 3.5em;
 	}
 	.side-menu-wrap {
 		width: 205px;
@@ -2627,8 +2628,14 @@ b, strong{ font-weight: bold; }
 	border-bottom: 1px solid #e7eaec;
 }
 .support-box-header-actions {
+	display: table-cell;
+	vertical-align: middle;
+	height: 3.4em;
+
+}
+.support-box-header-actions-wrap {
 	float: right;
-	margin: 1em 1em 0 0;
+	margin: 0 .8em 0 0;
 }
 .support-box-wrap h1 .fa {
 	float: right;
@@ -4114,6 +4121,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 		width: 50%;
 		box-sizing: border-box;
 		border: .5em solid $background;
+	}
+	.alias-dialog-container {
+		width: 70%;
 	}
 }
 .addAliasButton {
