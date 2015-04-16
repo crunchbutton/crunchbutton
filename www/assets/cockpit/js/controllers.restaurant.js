@@ -86,15 +86,15 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 			}
 
-// @remove -- remove it before commit
-		$scope.restaurant.payment_type.legal_name_payment = 'Daniel Camargo';
-		$scope.restaurant.payment_type.summary_email = 'daniel@crunchbutton.com';
-		$scope.restaurant.stripeAccount.routing_number = '111000025';
-		$scope.restaurant.stripeAccount.account_number = '000123456789';
-
 		});
 
 	});
+
+	$scope.testAccount = function(){
+		$scope.restaurant.stripeAccount.routing_number = '111000025';
+		$scope.restaurant.stripeAccount.account_number = '000123456789';
+		$scope.restaurant.stripeAccount.account_type = 'individual';
+	}
 
 	$scope.saveStripeAccount = function(){
 
@@ -126,6 +126,9 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 				RestaurantService.stripe( params, function( d ){
 					if( d.id_restaurant ){
 						App.alert( 'Stripe info saved' );
+						$scope.restaurant.stripeAccount.form = false;
+						$scope.restaurant.stripeAccount.routing_number = '';
+						$scope.restaurant.stripeAccount.account_number = '';
 					} else {
 						App.alert( 'Error creating a Stripe token' );
 					}
