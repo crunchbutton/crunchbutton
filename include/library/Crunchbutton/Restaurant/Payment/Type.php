@@ -24,6 +24,46 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		return $out;
 	}
 
+	public function getStripe(){
+
+		if( $this->stripe_id ){
+
+			$env = c::getEnv();
+
+			\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+
+			$stripeAccount = \Stripe\Account::retrieve( $this->stripe_id );
+
+			return $stripeAccount;
+
+		}
+
+		return null;
+
+	}
+
+	public function stripeTransfer( $amount ){
+
+		if( $this->stripe_id ){
+
+			$env = c::getEnv();
+
+			\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+
+			$transfer = \Stripe\Transfer::create(
+											array(
+												'amount' => $amount,
+												'currency' => 'usd',
+												'destination' => $this->stripe_id
+											) );
+			if( $transfer->id ){
+				return true;
+			}
+
+		}
+		return false;
+	}
+
 	public function createStripe( $params ){
 
 		if( !$params[ 'account_type' ] ){
@@ -37,7 +77,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$account_type = $params[ 'account_type' ];
 		$name = explode( ' ', $this->legal_name_payment );
 		$first_name = array_shift( $name );
-		$first_name = implode( ' ',$name );
+		$last_name = implode( ' ',$name );
 
 		try {
 
