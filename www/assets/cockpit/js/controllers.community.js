@@ -59,7 +59,6 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 
 	$scope.ready = false;
 	$scope.isSaving = false;
-	$scope.isSavingAlias = false;
 
 	$scope.save = function(){
 		console.log('$scope.community.dont_warn_till_enabled',$scope.community.dont_warn_till_enabled);
@@ -115,6 +114,60 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 		$scope.ready = true;
 	}
 
+	$scope.restaurants = new Array();
+
+	var community = function(){
+		if( $routeParams.id ){
+			CommunityService.get( $routeParams.id, function( d ) {
+				$rootScope.title = d.name + ' | Community';
+				$scope.community = d;
+				if( $scope.community.dont_warn_till ){
+					var dont_warn_till = new Date( 	$scope.community.dont_warn_till.y,
+																					( $scope.community.dont_warn_till.m -1 ),
+																					$scope.community.dont_warn_till.d,
+																					$scope.community.dont_warn_till.h,
+																					$scope.community.dont_warn_till.i );
+					$scope.community.dont_warn_till = dont_warn_till;
+					$scope.community.dont_warn_till_enabled = 1;
+				} else {
+					$scope.community.dont_warn_till = null;
+					$scope.community.dont_warn_till_enabled = 0;
+				}
+				angular.forEach( d._restaurants, function( restaurant, id_restaurant ) {
+					$scope.restaurants.push( { 'id_restaurant' : restaurant.id_restaurant, 'name' : restaurant.name } );
+				} );
+				load();
+			});
+		} else {
+			$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0 };
+			load();
+		}
+	}
+
+	community();
+
+
+});
+
+
+NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
+	$scope.loading = true;
+	$scope.loadingOrders = true;
+	$scope.loadingRestaurants = true;
+	$scope.loadingStaff = true;
+	$scope.isSaving = false;
+	$scope.isSavingAlias = false;
+
+	$scope.$on('mapInitialized', function(event, map) {
+		$scope.map = map;
+		MapService.style(map);
+		update();
+	});
+
+
+	$scope.aliasDialogContainer = function(){
+		App.dialog.show('.alias-dialog-container');
+	};
 	var load_alias = function(){
 		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink, sort: $scope.community.next_sort };
 		CommunityService.alias.list( $routeParams.id, function( json ){
@@ -150,64 +203,13 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-				community();
+				update(true);
+				App.dialog.close();
+				console.log('y u no work');
 			}
+			console.log('y u no work 2');
+
 			$scope.formAliasSubmitted = false;
-		} );
-	}
-
-	$scope.restaurants = new Array();
-
-	var community = function(){
-		if( $routeParams.id ){
-			CommunityService.get( $routeParams.id, function( d ) {
-				$rootScope.title = d.name + ' | Community';
-				$scope.community = d;
-				if( $scope.community.dont_warn_till ){
-					var dont_warn_till = new Date( 	$scope.community.dont_warn_till.y,
-																					( $scope.community.dont_warn_till.m -1 ),
-																					$scope.community.dont_warn_till.d,
-																					$scope.community.dont_warn_till.h,
-																					$scope.community.dont_warn_till.i );
-					$scope.community.dont_warn_till = dont_warn_till;
-					$scope.community.dont_warn_till_enabled = 1;
-				} else {
-					$scope.community.dont_warn_till = null;
-					$scope.community.dont_warn_till_enabled = 0;
-				}
-				angular.forEach( d._restaurants, function( restaurant, id_restaurant ) {
-					$scope.restaurants.push( { 'id_restaurant' : restaurant.id_restaurant, 'name' : restaurant.name } );
-				} );
-				load_alias();
-				load();
-			});
-		} else {
-			$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0 };
-			load();
-		}
-	}
-
-	community();
-
-
-});
-
-
-NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
-	$scope.loading = true;
-	$scope.loadingOrders = true;
-	$scope.loadingRestaurants = true;
-	$scope.loadingStaff = true;
-
-	$scope.$on('mapInitialized', function(event, map) {
-		$scope.map = map;
-		MapService.style(map);
-		update();
-	});
-
-	var load_alias = function(){
-		CommunityService.alias.list( $routeParams.id, function( json ){
-			$scope.aliases = json;
 		} );
 	}
 
@@ -217,11 +219,11 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} );
 	}
 
-	var update = function() {
-		if (!$scope.map || !$scope.community) {
+	var update = function(force) {
+		if ((!$scope.map || !$scope.community) &&  !force) {
+
 			return;
 		}
-
 		MapService.trackCommunity({
 			map: $scope.map,
 			community: $scope.community,

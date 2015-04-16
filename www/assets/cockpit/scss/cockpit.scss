@@ -3918,19 +3918,6 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 		color:#FFF !important;
 	}
 
-.drivercontain {
-    width: 90%;
-}
-
-.driver-feedback .button {
-    margin-left:14%;
-    width:20%;
-}
-
-.driver-feedback .form-group textarea{
-    height:100px;
-}
-
 .order-box-top {
 	height: 13em;
 	width: 100%;
@@ -4129,7 +4116,21 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 		border: .5em solid $background;
 	}
 }
-
+.addAliasButton {
+  background: #1ab394;
+  border-radius: 2px;
+  font-size: 1em;
+  color: #fff;
+  padding: 0.2em 0.4em 0.2em 0.4em;
+  margin: 0;
+  border: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  text-align: center;
+  cursor: pointer;
+  width: 8em;
+  height: 2em;
+  float: right;
+}
 h1.title.box-title {
 	margin-bottom: 1em;
 }
