@@ -64,11 +64,33 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		return false;
 	}
 
-	public function createStripe( $params ){
+	public function migrateFromBalanced( $params ){
 
-		if( !$params[ 'account_type' ] ){
-			return false;
+		if( $this->balanced_bank ){
+			try {
+				$bank = Crunchbutton_Balanced_BankAccount::byId( $this->balanced_bank );
+			} catch ( Exception $e ) {
+				echo "ERROR: Failed to get balanced id\n";
+				exit();
+			}
+
+			$stripeBankToken = $bank->meta->{ 'stripe_customer.funding_instrument.id' };
+
+			$stripeAccount = $this->getStripe();
+			if( $stripeAccount ){
+				$stripeAccount->bank_account = $stripeBankToken;
+				$stripeAccount->save();
+				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
+				$this->save();
+			} else {
+				return $this->createStripe( [ 'bank_account' => $stripeBankToken, 'account_type' => $params[ 'account_type' ]	 ] );
+			}
+
 		}
+		return false;
+	}
+
+	public function createStripe( $params ){
 
 		$env = c::getEnv();
 
@@ -103,6 +125,11 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				]
 			];
 
+			if( $params[ 'account_type' ] ){
+				$info[ 'legal_entity' ][ 'type' ] = $params[ 'account_type' ];
+			}
+
+
 			if( $params[ 'dob' ] ){
 				$info[ 'legal_entity' ][ 'dob' ] = [ // @note: this viloates stripes docs but this is the correct way
 																							'day' => $params[ 'dob' ][ 'day' ],
@@ -110,6 +137,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 																							'year' => $params[ 'dob' ][ 'year' ]
 																						];
 			}
+
 			if( $params[ 'ssn' ] ){
 				$info[ 'legal_entity' ][ 'ssn_last_4' ] = $params[ 'ssn' ];
 			}
@@ -117,6 +145,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			$stripeAccount = \Stripe\Account::create( $info );
 
 			if( $stripeAccount->id && $stripeAccount->bank_accounts->data[0]->id ){
+
 				$this->stripe_id = $stripeAccount->id;
 				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
 				$this->save();

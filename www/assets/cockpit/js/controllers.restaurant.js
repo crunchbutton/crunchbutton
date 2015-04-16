@@ -65,29 +65,63 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 	$scope.paymentMethod = RestaurantService.paymentMethod();
 	$scope.accountType = RestaurantService.accountType();
 
-	RestaurantService.get( $routeParams.id, function(d) {
+	var load = function(){
 
-		$rootScope.title = d.name + ' | Payment type';
-		$scope.restaurant = d;
-		$scope.ready = true;
+		RestaurantService.get( $routeParams.id, function(d) {
 
-		$scope.restaurant.stripeAccount = {};
+			$rootScope.title = d.name + ' | Payment type';
+			$scope.restaurant = d;
+			$scope.ready = true;
 
-		RestaurantService.payment_method( $routeParams.id, function( d ){
-			if( !d.id_restaurant ){
-				App.alert( 'Error saving: ' + json.error );
-			} else {
-				$scope.restaurant.payment_type = d;
-				if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.stripe_account_id ){
-					$scope.restaurant.stripeAccount.form = false;
+			$scope.restaurant.stripeAccount = {};
+
+			RestaurantService.payment_method( $routeParams.id, function( d ){
+				if( !d.id_restaurant ){
+					App.alert( 'Error loading payment method: ' + json.error );
 				} else {
-					$scope.restaurant.stripeAccount.form = true;
+					$scope.restaurant.payment_type = d;
+
+					$scope.restaurant.stripeAccount.formStripe = true;
+					$scope.restaurant.stripeAccount.formStripeMigrate = false;
+
+					if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.stripe_account_id ){
+						$scope.restaurant.stripeAccount.formStripe = false;
+					}
+
+					if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.balanced_bank ){
+						$scope.restaurant.stripeAccount.formStripeMigrate = true;
+						$scope.restaurant.stripeAccount.formStripe = false;
+					}
+
+					$scope.restaurant.payment_type.has_balanced_bank = ( $scope.restaurant.payment_type.balanced_bank && !$scope.restaurant.payment_type.stripe_id );
+
 				}
-			}
-		});
-	});
+			});
+		} );
+	}
+
+	$scope.createStripeAccountAndMigrate = function(){
+		$scope.saveStripeAccount( true );
+	}
+
+	$scope.migrateFromBalancedToStripe = function(){
+
+		if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.balanced_bank ){
+
+			$scope.isMigrating = true;
+
+			RestaurantService.balanced_to_sprite( $scope.restaurant.id_restaurant, function( d ){
+				App.alert( 'Stripe info saved' );
+				load();
+			} );
+
+		} else {
+			App.alert( 'Error: the restaurant must to have a balanced account!' );
+		}
+	}
 
 	$scope.testAccount = function(){
+
 		$scope.restaurant.stripeAccount.routing_number = '111000025';
 		$scope.restaurant.stripeAccount.account_number = '000123456789';
 		$scope.restaurant.stripeAccount.account_type = 'individual';
@@ -98,7 +132,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		$scope.restaurant.payment_type.check_address_country = 'US';
 	}
 
-	$scope.saveStripeAccount = function(){
+	$scope.saveStripeAccount = function( migrateFromBalanced ){
 
 		if( $scope.formStripeAccount.$invalid ){
 			App.alert( 'Please fill in all required fields' );
@@ -110,40 +144,54 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 		RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
 
-			Stripe.bankAccount.createToken({
-				country: 'US',
-				currency: 'USD',
-				routing_number: $scope.restaurant.stripeAccount.routing_number,
-				account_number: $scope.restaurant.stripeAccount.account_number
-			}, function( header, response ){
+			if( migrateFromBalanced ){
+				var params = {
+							'id_restaurant': $scope.restaurant.id_restaurant,
+							'account_type': $scope.restaurant.stripeAccount.account_type
+						};
+				RestaurantService.balanced_to_sprite_account( params, function( d ){
+					App.alert( 'Stripe info saved' );
+					load();
+				} );
 
-				if( response.id ){
+			} else {
 
-					var params = {
-						'id_restaurant': $scope.restaurant.id_restaurant,
-						'token': response.id,
-						'name': $scope.restaurant.payment_type.legal_name_payment,
-						'tax_id': $scope.restaurant.payment_type.tax_id,
-						'account_type': $scope.restaurant.stripeAccount.account_type,
-						'email': $scope.restaurant.payment_type.summary_email
-					};
+				Stripe.bankAccount.createToken( {
+					country: 'US',
+					currency: 'USD',
+					routing_number: $scope.restaurant.stripeAccount.routing_number,
+					account_number: $scope.restaurant.stripeAccount.account_number
+				}, function( header, response ){
 
-					RestaurantService.stripe( params, function( d ){
-						if( d.id_restaurant ){
-							App.alert( 'Stripe info saved' );
-							$scope.restaurant.stripeAccount.form = false;
-							$scope.restaurant.stripeAccount.routing_number = '';
-							$scope.restaurant.stripeAccount.account_number = '';
-						} else {
-							App.alert( 'Error creating a Stripe token' );
-						}
+					if( response.id ){
+
+						var params = {
+							'id_restaurant': $scope.restaurant.id_restaurant,
+							'token': response.id,
+							'name': $scope.restaurant.payment_type.legal_name_payment,
+							'tax_id': $scope.restaurant.payment_type.tax_id,
+							'account_type': $scope.restaurant.stripeAccount.account_type,
+							'email': $scope.restaurant.payment_type.summary_email
+						};
+
+						RestaurantService.stripe( params, function( d ){
+							if( d.id_restaurant ){
+								App.alert( 'Stripe info saved' );
+								$scope.restaurant.stripeAccount.formStripe = false;
+								$scope.restaurant.stripeAccount.routing_number = '';
+								$scope.restaurant.stripeAccount.account_number = '';
+							} else {
+								App.alert( 'Error creating a Stripe token' );
+							}
+							$scope.isSavingStripeAccount = false;
+						} );
+					} else {
+						App.alert( 'Error creating a Stripe token' );
 						$scope.isSavingStripeAccount = false;
-					} );
-				} else {
-					App.alert( 'Error creating a Stripe token' );
-					$scope.isSavingStripeAccount = false;
-				}
-			});
+					}
+				} );
+			}
+
 		} );
 	}
 
@@ -161,10 +209,13 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 			RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
 				$scope.isSaving = false;
 				App.alert( 'Payment info saved' );
+				load();
 			} );
 		}
 
 	}
+
+	load();
 
 } );
 
