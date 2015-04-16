@@ -60,6 +60,50 @@
 				</div>
 			</li>
 
+			<li>
+				<h2 class="title">Address</h2>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddress.$invalid}">
+				<div class="label">Address:</div>
+				<div class="input"><input type="text" required name="checkAddress" maxlength="250" ng-model="restaurant.payment_type.check_address" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddress.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressCity.$invalid}">
+				<div class="label">City:</div>
+				<div class="input"><input type="text" required name="checkAddressCity" maxlength="50" ng-model="restaurant.payment_type.check_address_city" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressCity.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressState.$invalid}">
+				<div class="label">State:</div>
+				<div class="input"><input type="text" required name="checkAddressState" maxlength="50" ng-model="restaurant.payment_type.check_address_state" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressState.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressZip.$invalid}">
+				<div class="label">Zip:</div>
+				<div class="input"><input type="text" required name="checkAddressZip" maxlength="20" ng-model="restaurant.payment_type.check_address_zip" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressZip.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressCountry.$invalid}">
+				<div class="label">Country:</div>
+				<div class="input"><input type="text" required name="checkAddressCountry" maxlength="20" ng-model="restaurant.payment_type.check_address_country" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressCountry.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input" ng-show="!isSavingStripeAccount">
 				<button class="button save" ng-click="saveStripeAccount();">Save Stripe</button>
 

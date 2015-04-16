@@ -3,16 +3,13 @@
 class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-
 		switch ( $this->method() ) {
 			case 'post':
 				$this->_post();
 				break;
-
 			case 'get':
 				$this->_get();
 				break;
-
 		}
 	}
 
@@ -78,11 +75,28 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 
 	private function _exports(){
 		$restaurant = $this->_restaurant();
-		$payment_method = $restaurant->payment_type();
-		echo json_encode( $payment_method->exports() );exit;
+		$paymentType = $restaurant->payment_type();
+		echo json_encode( $paymentType->exports() );exit;
 	}
 
 	private function _stripe(){
+
+		$token = $this->request()[ 'token' ];
+		if( !$token ){
+			$this->_error( 'Invalid token!' );
+		}
+
+		$restaurant = $this->_restaurant();
+		$paymentType = $restaurant->payment_type();
+
+		if( $paymentType->createStripe( [ 'bank_account' => $token, 'account_type' => $this->request()[ 'account_type' ] ] ) ){
+			$this->_exports();
+		}
+		$this->_error( 'Error creating stripe account' );
+
+	}
+
+	private function __stripe(){
 
 		$token = $this->request()[ 'token' ];
 		if( !$token ){
