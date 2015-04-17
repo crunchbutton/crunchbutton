@@ -3,7 +3,7 @@
 		<tr>
 			<th>Info</th>
 			<th>Date</th>
-			<th>Restaurant</th>
+			<th ng-if="!restaurant">Restaurant</th>
 			<th>Customer</th>
 			<th>Order</th>
 			<th>Driver</th>
@@ -21,7 +21,7 @@
 				{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}
 				<?php /* Date */ ?>
 			</td>
-			<td>
+			<td ng-if="!restaurant">
 				<? /* Restaurant */ ?>
 				<span class="listview-smaller">
 					<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
