@@ -37,9 +37,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			return $stripeAccount;
 
 		}
-
 		return null;
-
 	}
 
 	public function stripeTransfer( $amount ){

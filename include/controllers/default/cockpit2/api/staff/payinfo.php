@@ -55,6 +55,9 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			case 'save-bank':
 				$this->saveBankInfo( $admin );
 				break;
+			case 'save-stripe-bank':
+				$this->saveStripeBankInfo( $admin );
+				break;
 		}
 	}
 
@@ -115,6 +118,27 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 
 		$payment_type->save();
 		$this->payInfo( $admin );
+	}
+
+	private function saveStripeBankInfo( $admin ){
+
+		$token = $this->request()[ 'token' ];
+
+		if( !$token ){
+			$this->_error( 'Invalid token!' );
+		}
+
+		$paymentType = $admin->payment_type();
+
+		$stripe = $paymentType->createStripe( [ 'bank_account' => $token ] );
+
+		if( $stripe && !is_array( $stripe ) ){
+			$this->payInfo( $admin );
+			exit;
+		} else {
+			echo json_encode( $stripe );exit;
+		}
+		$this->_error( 'Error creating stripe account' );
 	}
 
 	private function saveBankInfo( $admin ){
