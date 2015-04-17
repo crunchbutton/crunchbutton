@@ -3,67 +3,100 @@
 <div class="content-padding">
 
 
-	<h1 class="left title"><i class="fa fa-coffee"></i>{{restaurant.name}}<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+
+	
+	
+	<h1 class="title box-title"><i class="fa fa-coffee"></i>{{restaurant.name}}</h1>
+	
 
 	<div class="ticket-status-top">
 		<div class="ticket-status-open">{{order.status.status}}</div>
 	</div>
-
+	
 	<div class="divider"></div>
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-	<br>
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div class="no-support-boxes">
-		<div class="support-boxes-column">
-			<div class="support-box-wrap">
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Details</h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{restaurant.name}}</div>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(restaurant.address)">{{restaurant.address}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Type</div>
+						<div class="field-value">
+							<span class="tag tag-orange" ng-if="restaurant.delivery && restaurant.delivery_service">3rd</span>
+							<span class="tag tag-blue" ng-if="restaurant.delivery && !restaurant.delivery_service">1st</span>
+							<span class="tag tag-lightgrey" ng-if="restaurant.takeout && !restaurant.delivery">Takeout</span>
+							<span class="tag tag-lightgrey" ng-if="!restaurant.takeout && !restaurant.delivery">None</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Relationship</div>
+						<div class="field-value">
+							<span class="tag tag-purple" ng-if="restaurant.formal_relationship">Formal</span>
+							<span class="tag tag-grey" ng-if="!restaurant.formal_relationship">Informal</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(restaurant.address)">{{restaurant.address}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Notification Sent</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.order_notifications_sent">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.order_notifications_sent">No</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Delivery by</div>
-							<div class="field-value">{{restaurant.delivery_service ? 'Crunchbutton' : 'Restaurant'}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Communities</div>
+						<div class="field-value">
+
+							<span class="staff-community-repeat listview-smaller" ng-repeat="community in restaurant.communities">
+								<a href="/community/{{community.permalink}}">{{community.name}}</a>
+							</span>
+
 						</div>
-						<div class="field-row">
-							<div class="field-key">Relationship</div>
-							<div class="field-value">{{restaurant.formal_relationship ? 'Formal' : 'Informal'}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Notification Sent</div>
-							<div class="field-value">{{restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Payment Info</div>
-							<div class="field-value">
-								<a href="/restaurant/payment-info/{{restaurant.permalink}}">Edit payment info</a>
-							</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Payment Info</div>
+						<div class="field-value">
+							<a href="/restaurant/payment-info/{{restaurant.permalink}}">Edit payment info</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="support-boxes-column">
-			<div class="support-box-wrap">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Location</h1>
-				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-
-				</map>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red">BETA</span>
+					</div>
+				</div>
+				<div class="divider"></div>
 			</div>
-		</div>
 
-		<div class="divider"></div>
+			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+		</div>
 
 	</div>
 	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
