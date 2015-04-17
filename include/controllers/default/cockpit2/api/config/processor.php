@@ -8,9 +8,9 @@ class Controller_api_config_processor extends Crunchbutton_Controller_Rest {
 		}
 
 		$config[ 'processor' ][ 'type' ] = Crunchbutton_User_Payment_Type::processor();
-			$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
-			$config[ 'processor' ][ 'balanced' ] = c::balanced()->href;
-			echo json_encode( $config );exit();
+		$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
+		$config[ 'processor' ][ 'balanced' ] = c::balanced()->href;
+		echo json_encode( $config );exit();
 
 	}
 	private function _error( $error = 'invalid request' ){

@@ -7,6 +7,17 @@ NGApp.factory( 'ConfigService', function( $resource ) {
 			}
 		);
 
+	service.getProcessor = function( callback ){
+		if( service._processor ){
+			callback( service._processor );
+		} else {
+			service.processor( function( data ){
+				service._processor = data;
+				service.getProcessor( callback );
+			} )
+		}
+	}
+
 	service.processor = function( callback ){
 		settings.processor( function( data ){
 			callback( data );

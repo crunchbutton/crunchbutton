@@ -42,7 +42,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	if ($scope.account.isLoggedIn()) {
 		DriverOrdersViewService.load();
 	}
-	
+
 	var showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
 	// console.log('showOrders',showOrders);
 	if ( !showOrders ){
@@ -1025,7 +1025,7 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 	}
 } );
 
-NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService ) {
+NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService, ConfigService ) {
 
 	$scope.bank = { 'showForm': true };
 	$scope.basicInfo = {};
@@ -1034,7 +1034,10 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 		StaffPayInfoService.loadById( $scope.account.user.id_admin, function( json ){
 			if( json.id_admin ){
 				$scope.basicInfo = json;
-				if( json.balanced_bank ){
+				if( $scope.isBalanced && json.balanced_bank && json.balanced_id ){
+					$scope.bank.showForm = false;
+				}
+				if( $scope.isStripe && json.stripe_id && json.stripe_account_id ){
 					$scope.bank.showForm = false;
 				}
 				$scope.ready = true;
@@ -1068,25 +1071,72 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 
 	$scope.bankInfoTest = function(){
 		StaffPayInfoService.bankInfoTest( function( json ){
-			$scope.bank.routing_number = json.routing_number; ;
-			$scope.bank.account_number = json.account_number;;
-		} )
+			$scope.bank.routing_number = json.routing_number;
+			$scope.bank.account_number = json.account_number;
+		} );
 	}
 
-	$scope.tokenize = function(){
+	$scope.createBankAccount = function(){
 
 		if( !$scope.basicInfo.id_admin_payment_type ){
 			App.alert( 'You must save the "Basic Information" form before save the Bank Account Information.' );
 			return;
 		}
 
-
 		if( $scope.formBank.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.bankSubmitted = true;
 			return;
 		}
+
 		$scope.isTokenizing = true;
+
+		if ( $scope.isBalanced ) {
+			balanced();
+		} else if ( $scope.isStripe ) {
+			stripe();
+		}
+	}
+
+	var stripe = function(){
+		Stripe.bankAccount.createToken( {
+			country: 'US',
+			currency: 'USD',
+			routing_number: $scope.bank.routing_number,
+			account_number: $scope.bank.account_number
+		}, function( header, response ){
+			if( response.id ){
+				var params = {
+					'token': response.id,
+					'id_admin': $scope.account.user.id_admin
+				};
+				StaffPayInfoService.save_stripe_bank( params, function( d ){
+					if( d.id_admin ){
+						bank_info_saved();
+					} else {
+						var error = d.error ? d.error : '';
+						App.alert( 'Error: ' + error );
+					}
+				} );
+			} else {
+				App.alert( 'Error creating a Stripe token' );
+			}
+		} );
+	}
+
+	var bank_info_saved = function(){
+		document.activeElement.blur();
+		load();
+		$scope.isTokenizing = false;
+		$scope.saved = true;
+		$scope.bank.account_number = '';
+		$scope.bank.routing_number = '';
+		$scope.bank.showForm = false;
+		App.alert( 'Bank information saved!' );
+		setTimeout( function() { $scope.saved = false; }, 1500 );
+	}
+
+	var balanced = function(){
 		var payload = { name: $scope.basicInfo.legal_name_payment,
 										account_number: $scope.bank.account_number,
 										routing_number: $scope.bank.routing_number };
@@ -1099,15 +1149,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 						App.alert( data.error);
 						return;
 					} else {
-						document.activeElement.blur();
-						load();
-						$scope.isTokenizing = false;
-						$scope.saved = true;
-						$scope.bank.account_number = '';
-						$scope.bank.routing_number = '';
-						$scope.bank.showForm = false;
-						App.alert( 'Bank information saved!' );
-						setTimeout( function() { $scope.saved = false; }, 1500 );
+						bank_info_saved();
 					}
 				} );
 
@@ -1123,7 +1165,13 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 	}
 
 	if( $scope.account.isLoggedIn() ){
-		load();
+		// just to cache the config process stuff
+		ConfigService.getProcessor( function( json ){
+			$scope.processor = json.processor.type;
+			$scope.isBalanced = ( json.processor.type == 'balanced' );
+			$scope.isStripe = ( json.processor.type == 'stripe' );
+			load();
+		} );
 	}
 
 });
