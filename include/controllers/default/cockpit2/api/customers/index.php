@@ -80,16 +80,16 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', `user`.id_user DESC, `order`.date ASC ';
 				break;
 			case 'name':
-				$q .= ' ORDER BY user.name '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
+				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', user.name '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
 				break;
 			case 'address':
-				$q .= ' ORDER BY user.address '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
+				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', user.address '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
 				break;
 			case 'phone':
-				$q .= ' ORDER BY user.phone '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
+				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', user.phone '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
 				break;
 			default:
-				$q .= ' ORDER BY `user`.id_user '.($sc ? 'DESC' : 'ASC').', `order`.date ASC ';
+				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', `user`.id_user '.($sc ? 'DESC' : 'ASC').', `order`.date ASC ';
 				break;
 			
 		}
