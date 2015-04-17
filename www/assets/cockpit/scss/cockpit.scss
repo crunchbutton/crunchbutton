@@ -3483,6 +3483,8 @@ input[type="checkbox"].switch + div:before {
 	display: table;
 	width: 100%;
 	box-sizing: border-box;
+	margin-top: 1em;
+	padding-bottom: 0;
 }
 .tb-info-item {
 	display:table-row;
