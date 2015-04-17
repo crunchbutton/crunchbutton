@@ -2562,7 +2562,9 @@ b, strong{ font-weight: bold; }
 	margin-bottom: 10px;
 }
 
-
+.support-box-wrap {
+	box-sizing: border-box;
+}
 
 @media(max-width:699px) {
 	.support-box-wrap {
@@ -3979,17 +3981,6 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	height: 6em;
 }
 
-.tableOfContentsFAQHead{
-  font-size: 2em;
-  color: black;
-  line-height: 1.5em;
-}
-.tableOfContentsFAQ{
-  text-decoration: none;
-  font-size: 1.5em;
-  line-height: 1.2em;
-  color: #317F7A;
-}
 
 .tb-row{
 	border-bottom: 1px solid #CCC !important;
