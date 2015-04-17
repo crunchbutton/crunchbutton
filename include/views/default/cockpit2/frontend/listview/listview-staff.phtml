@@ -11,8 +11,7 @@
 		</tr>
 		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
 			<td>
-				<a ng-show="s.type == 'Marketing Rep'" href="/staff/marketing/{{s.id_admin}}"><span class="listview-bold">{{s.name}}</span></a>
-				<a ng-show="s.type != 'Marketing Rep'" href="/staff/{{s.login}}"><span class="listview-bold">{{s.name}}</span></a>
+				<span class="listview-bold">{{s.name}}</span>
 				<br><span class="listview-smaller">{{s.login}}</span>
 				<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
 			</td>

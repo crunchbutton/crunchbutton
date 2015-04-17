@@ -2,17 +2,8 @@
 
 <div class="content-padding">
 
-
-
-	
-	
 	<h1 class="title box-title"><i class="fa fa-coffee"></i>{{restaurant.name}}</h1>
-	
 
-	<div class="ticket-status-top">
-		<div class="ticket-status-open">{{order.status.status}}</div>
-	</div>
-	
 	<div class="divider"></div>
 	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
@@ -40,6 +31,26 @@
 						<div class="field-key">Address</div>
 						<div class="field-value"><a href ng-click="routeAddress(restaurant.address)">{{restaurant.address}}</a></div>
 					</div>
+
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.active">Active</span>
+							<span class="tag tag-red" ng-if="!restaurant.active">Inactive</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Open</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="!restaurant.open_for_business">Closed</span>
+								<span ng-if="restaurant.open_for_business">
+								<span class="tag tag-green" ng-if="restaurant.open">Open</span>
+								<span class="tag tag-red" ng-if="!restaurant.open">Closed</span>
+							</span>
+						</div>
+					</div>
+
+					
 					<div class="field-row">
 						<div class="field-key">Type</div>
 						<div class="field-value">
@@ -64,19 +75,40 @@
 						</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Communities</div>
+						<div class="field-key">Community</div>
 						<div class="field-value">
+							<a href="/community/{{restaurant.id_community}}">{{restaurant.community}}</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Payment Info</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/restaurant/payment-info/{{restaurant.permalink}}"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
 
-							<span class="staff-community-repeat listview-smaller" ng-repeat="community in restaurant.communities">
-								<a href="/community/{{community.permalink}}">{{community.name}}</a>
-							</span>
-
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Balanced</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.payment_type.balanced_bank && restaurant.payment_type.balanced_id">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.payment_type.balanced_bank || !restaurant.payment_type.balanced_id">No</span>
 						</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Payment Info</div>
+						<div class="field-key">Stripe</div>
 						<div class="field-value">
-							<a href="/restaurant/payment-info/{{restaurant.permalink}}">Edit payment info</a>
+							<span class="tag tag-green" ng-if="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.payment_type.stripe_id || !restaurant.payment_type.stripe_account_id">No</span>
 						</div>
 					</div>
 				</div>

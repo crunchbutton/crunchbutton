@@ -72,5 +72,11 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		}
 		return $this->_payableOrders;
 	}
+	
+	public function exports($ignore = [], $where = []) {
+		$out = parent::exports($ignore, $where);
+		$out['payment_type'] = $this->payment_type()->exports();
+		return $out;
+	}
 
 }

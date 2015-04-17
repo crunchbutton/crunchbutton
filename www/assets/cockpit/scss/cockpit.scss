@@ -404,6 +404,12 @@ p {
 	float:right;
 }
 
+@media(min-width:$desktopWidth) {
+	.top-pad {
+		height: 53px;
+	}
+}
+
 
 
 
