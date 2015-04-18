@@ -165,10 +165,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$out[ 'dont_warn_till' ] = null;
 		}
 
-
 		foreach ($this->restaurants() as $restaurant) {
-			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
+			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports(['categories' => true]);
 		}
+
 		return $out;
 	}
 
