@@ -2,7 +2,7 @@
 	<table class="tb-zebra">
 		<tr>
 			<th>Name</th>
-			<th>Info</th>
+			<th ng-if="!community">Info</th>
 			<th class="tb-small tb-center">Active</th>
 			<th class="tb-small tb-center">Working</th>
 			<th class="tb-small tb-center">Vehicle</th>
@@ -15,7 +15,7 @@
 				<br><span class="listview-smaller">{{s.login}}</span>
 				<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
 			</td>
-			<td>
+			<td ng-if="!community">
 				<span class="listview-bold">{{s.type}}</span>
 				<span ng-if="!community"><br>
 					<span>
