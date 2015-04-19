@@ -73,7 +73,10 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]))->save();
 		
-		$sids = $n->send($this->order);
+		$res = $n->send($this->order);
+		echo 'RES';
+		print_r($res);
+		
 		$status = true;
 		foreach ($sids as $res) {
 			if (!$res->sid) {
