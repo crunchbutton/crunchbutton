@@ -50,8 +50,8 @@ describe('Page', function() {
 		});
 
 	    runs(function() {
-			console.log('runs');
-			console.log(content);
+			console.log('rendered');
+			//console.log(content);
 			expect(content.match(/facebook-jssdk/i)).toBeTruthy();
 	    });
     });
