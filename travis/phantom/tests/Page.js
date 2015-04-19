@@ -1,5 +1,7 @@
 var page = require('webpage').create();
 
+console.log('Reading ' + phantom.url);
+
 describe('Page', function() {
 	
 	var content = false;
