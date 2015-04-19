@@ -31,6 +31,17 @@ describe('Page', function() {
 		    checkReadyState();
 		});
 	});
+	
+    it('should wait 5 seconds for content', function() {
+		
+		waitsFor(function() {
+			return content;
+		});
+
+	    runs(function() {
+			expect(content ? true : false).toBeTruthy();
+	    });
+    });
 
     it('should finish rendering', function() {
 		
