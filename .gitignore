@@ -40,3 +40,5 @@ workflow*
 
 composer.lock
 vendor/*
+
+npm-debug.log
