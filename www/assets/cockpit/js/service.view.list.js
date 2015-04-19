@@ -13,21 +13,10 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			page: query.page || 1
 		};
 		scope.query.page = parseInt(scope.query.page);
-		
-		var updating = false;
-		
 
 		var watch = function() {
 			$location.search(scope.query);
-
-			setTimeout(function() {
-				if (updating) {
-					return;
-				}
-				updating = true;
-				update();
-			},1);
-			
+			update();
 		};
 
 		// @todo: this breaks linking to pages
@@ -86,7 +75,6 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		var updater = function(){};
 
 		scope.update = function(fn) {
-			updating = false;
 			if (fn) {
 				updater = fn;
 			} else {
