@@ -11,7 +11,7 @@ describe('Page', function() {
 			var onPageReady = function() {
 				setTimeout(function() {
 					content = page.content;
-				},1200);
+				},5000);
 			};
 			
 			function checkReadyState() {
