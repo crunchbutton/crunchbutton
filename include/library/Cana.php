@@ -170,7 +170,7 @@ class Cana extends Cana_Model {
 
 		if ($async) {
 			try {
-				$log = getenv('TRAVIS') ? '/dev/null' ? '/var/log/timeout';
+				$log = getenv('TRAVIS') ? '/dev/null' : '/var/log/timeout';
 				exec('nohup '.$cmd.' >> '.$log.' 2>&1 &');
 			} catch (Exception $e) {
 				Crunchbutton_Log::error([
