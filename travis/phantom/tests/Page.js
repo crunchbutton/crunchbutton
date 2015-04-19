@@ -32,14 +32,15 @@ describe('Page', function() {
 		});
 	});
 	
-    it('should wait 5 seconds for content', function() {
+	// for some reason this is needed so that the next test gets content
+    it('should wait 5 seconds for content -- DEBUG', function() {
 		
 		waitsFor(function() {
 			return content;
 		});
 
 	    runs(function() {
-			expect(content ? true : false).toBeTruthy();
+			expect(true).toBeTruthy();
 	    });
     });
 
