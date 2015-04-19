@@ -217,7 +217,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 			$admin = Admin::o( $s );
 
-			$staff = $admin->exports(['permissions', 'groups']);
+			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
 
 			$staff['id_admin_payment_type'] = $s->id_admin_payment_type;
 			$staff['pexcard'] = ( $s->using_pex ) ? true : false;
