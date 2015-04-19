@@ -19,8 +19,8 @@
 					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
 						<li class="li-input" ng-class="{'error':form.payInfoLegalNamePayment.$invalid}">
-							<div class="label">Legal Name Payment:</div>
-							<div class="input"><input type="text" name="payInfoLegalNamePayment" ng-model="payInfo.legal_name_payment" placeholder="Legal Name Payment" ng-maxlength="250"></div>
+							<div class="label">Full Legal Name:</div>
+							<div class="input"><input type="text" name="payInfoLegalNamePayment" ng-model="payInfo.legal_name_payment" placeholder="Legal Name" ng-maxlength="250"></div>
 							<div class="box-error">
 								<small ng-show="form.payInfoLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
 							</div>
@@ -140,8 +140,8 @@
 						<ul ng-class="{'submitted':bankSubmitted}" ng-show="bank.showForm">
 
 							<li class="li-input" ng-class="{'error':formBank.bankLegalNamePayment.$invalid}">
-								<div class="label">Legal Name Payment:</div>
-								<div class="input"><input type="text" name="bankLegalNamePayment" ng-model="payInfo.legal_name_payment" required placeholder="Legal Name Payment" ng-minlength="5" ng-maxlength="250"></div>
+								<div class="label">Full Legal Name:</div>
+								<div class="input"><input type="text" name="bankLegalNamePayment" ng-model="payInfo.legal_name_payment" required placeholder="Legal Name" ng-minlength="5" ng-maxlength="250"></div>
 								<div class="box-error">
 									<small ng-show="formBank.bankLegalNamePayment.$error.required">Required.</small>
 									<small ng-show="formBank.bankLegalNamePayment.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
