@@ -1,4 +1,5 @@
 var page = require('webpage').create();
+page.settings.webSecurityEnabled = false;
 
 console.log('Reading ' + phantom.url);
 
