@@ -2,9 +2,9 @@
 	<table class="tb-zebra">
 		<tr>
 			<th>Name</th>
-			<th>Info</th>
+			<th ng-if="!community">Info</th>
 			<th class="tb-small tb-center">Active</th>
-			<th class="tb-small tb-center">Working</th>
+			<th class="tb-small tb-center" ng-if="query.working != 'all'">Working</th>
 			<th class="tb-small tb-center">Vehicle</th>
 			<th class="tb-small tb-center">Pex</th>
 			<th class="tb-small"> </th>
@@ -15,7 +15,7 @@
 				<br><span class="listview-smaller">{{s.login}}</span>
 				<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
 			</td>
-			<td>
+			<td ng-if="!community">
 				<span class="listview-bold">{{s.type}}</span>
 				<span ng-if="!community"><br>
 					<span>
@@ -29,7 +29,7 @@
 				<span class="tag tag-green" ng-if="s.active">Active</span>
 				<span class="tag tag-red" ng-if="!s.active">Inactive</span>
 			</td>
-			<td nowrap class="tb-center tb-v-center">
+			<td nowrap class="tb-center tb-v-center" ng-if="query.working != 'all'">
 				<span class="tag tag-purple" ng-if="s.working_today && !s.working">Today</span>
 				<span class="tag tag-orange" ng-if="s.working">Now</span>
 				<span class="tag tag-lightgrey" ng-if="!s.working_today && !s.working">No</span>

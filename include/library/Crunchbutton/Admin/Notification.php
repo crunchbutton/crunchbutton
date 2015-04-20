@@ -299,31 +299,31 @@ ORDER BY o.id_order ASC";
 		if( $attempts == 0 ){
 			switch ( $this->type ) {
 				case Crunchbutton_Admin_Notification::TYPE_FAX :
-					$this->sendFax( $order );
+					$res =$this->sendFax( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_SMS :
-					$this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
+					$res =$this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS :
-					$this->sendDumbSms( $order );
+					$res =$this->sendDumbSms( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PHONE :
-					$this->phoneCall( $order );
+					$res =$this->phoneCall( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_EMAIL :
-					$this->sendEmail( $order );
+					$res =$this->sendEmail( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
-					$this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
+					$res =$this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
-					$this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
+					$res =$this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
 					break;
 			}
 		} else if( $attempts >= 1 ){
@@ -344,16 +344,16 @@ ORDER BY o.id_order ASC";
 					switch ( $this->type ) {
 
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
-							return $this->sendPushIos( $order, $this->getSmsMessage($order, $c, 'push'));
+							$res = $this->sendPushIos( $order, $this->getSmsMessage($order, $c, 'push'));
 							break;
 
 						case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
-							return $this->sendPushAndroid( $order, $this->getSmsMessage($order, $c, 'push'));
+							$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, $c, 'push'));
 							break;
 
 						default:
 						case Crunchbutton_Admin_Notification::TYPE_SMS :
-							return $this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
+							$res = $this->sendSms( $order, $this->getSmsMessage($order, $c, 'sms'));
 							break;
 					}
 
@@ -376,6 +376,8 @@ ORDER BY o.id_order ASC";
 					break;
 			}
 		}
+		
+		return $res;
 	}
 
 	public function admin(){

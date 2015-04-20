@@ -36,15 +36,6 @@
 						<div class="field-key">Timezone</div>
 						<div class="field-value">{{staff.timezone}}</div>
 					</div>
-					<div class="field-row">
-						<div class="field-key">Communities</div>
-						<div class="field-value">
-							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
-								{{community}}
-							</span>
-							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/1" target="_blank"><i class="fa fa-plus-circle"></i></a>
-						</div>
-					</div>
 					<div class="field-row" ng-if="staff.date_terminated_formatted">
 						<div class="field-key">Inactive since</div>
 						<div class="field-value">{{staff.date_terminated_formatted}}</div>
@@ -57,37 +48,34 @@
 		
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
-				<h1>Pex Card</h1>
+				<h1>Payment Info</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<span class="tag tag-green" ng-if="staff.pexcard.active">Active</span>
-						<span class="tag tag-red" ng-if="!staff.pexcard.active">Inctive</span>
+						<a href="/staff/{{staff.login}}/pexcard" ng-if="staff.pexcard.active"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Funds</button></a>
+						<a href="/pexcard/card/driver/{{staff.id_admin}}" ng-if="!staff.pexcard.active"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Card</button></a>
+						<a href="/staff/{{staff.login}}/payinfo"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+						
 					</div>
 				</div>
 				<div class="divider"></div>
 			</div>
 			
-			<div class="no-box-content-color" ng-if="staff.pexcard.active">
+			<div class="no-box-content-color">
 				<div class="field-container">
 					<div class="field-row">
-						<div class="field-key">Serial</div>
+						<div class="field-key">PEX Card</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.pexcard.active">Active</span>
+							<span class="tag tag-red" ng-if="!staff.pexcard.active">Inctive</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="staff.pexcard.active">
+						<div class="field-key">PEX Serial</div>
 						<div class="field-value">{{staff.pexcard.card_serial}}</div>
 					</div>
-					<div class="field-row">
-						<div class="field-key">Last Four</div>
-						<div class="field-value">{{staff.pexcard.last_four }}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key"><a href="/staff/{{staff.login}}/pexcard"><button class="button button-small button-small-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Funds</button></a></div>
-						<div class="field-value"></div>
-					</div>
-				</div>
-			</div>
-			<div class="no-box-content-color" ng-if="!staff.pexcard.active">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key"><a href="/pexcard/card/driver/{{staff.id_admin}}"><button class="button button-small button-small-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Card</button></a></div>
-						<div class="field-value"></div>
+					<div class="field-row" ng-if="staff.pexcard.active">
+						<div class="field-key">PEX Last Four</div>
+						<div class="field-value">{{staff.pexcard.last_four}}</div>
 					</div>
 				</div>
 			</div>
@@ -103,11 +91,51 @@
 				<div class="field-container">
 					<div class="field-row">
 						<div class="field-key"><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement</a></div>
-						<div class="field-value"><a href="/drivers/onboarding/{{staff.id_admin}}">Driver Info</a></div>
+						<div class="field-value"></div>
 					</div>
 					<div class="field-row">
 						<div class="field-key"><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></div>
-						<div class="field-value"><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></div>
+						<div class="field-value"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Driver Info</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/drivers/onboarding/{{staff.id_admin}}"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+			
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Communities</div>
+						<div class="field-value">
+							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
+								{{community}}
+							</span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/{{staff.id_admin}}" target="_blank"><i class="fa fa-plus-circle"></i></a>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Vehicle</div>
+						<div class="field-value">
+							<span class="tag tag-orange" ng-if="staff.vehicle == 'car'">Car</span>
+							<span class="tag tag-purple" ng-if="staff.vehicle == 'bike'">Bike</span>
+							<span class="tag tag-grey" ng-if="staff.vehicle != 'bike' && staff.vehicle != 'car'">None</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Referral Code</div>
+						<div class="field-value">
+							{{staff.invite_code}}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,10 +144,15 @@
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Shifts</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red" ng-if="!staff.shifts.length">No Shifts</span>
+					</div>
+				</div>
 				<div class="divider"></div>
 			</div>
 			
-			<div class="no-box-content-color box-content-table">
+			<div class="no-box-content-color box-content-table" ng-if="staff.shifts.length">
 				<table class="tb-zebra">
 					<tr>
 						<th>Time</th>
