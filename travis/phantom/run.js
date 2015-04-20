@@ -38,8 +38,8 @@ var ConsoleReporter = jasmineRequire.ConsoleReporter();
 var options = {
 	timer: new jasmine.Timer, 
 	showColors: true,
-	onComplete: function(failedCount) {
-		phantom.exit(failedCount ? 1 : 0);
+	onComplete: function(success) {
+		phantom.exit(success ? 0 : 1);
 	},
 	print: function (e) {
 		console.log(e);
