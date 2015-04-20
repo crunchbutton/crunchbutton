@@ -39,7 +39,7 @@ var options = {
 	timer: new jasmine.Timer, 
 	showColors: true,
 	onComplete: function(failedCount) {
-		phantom.exit(failedCount > 0 ? 1 : 0);
+		phantom.exit(failedCount ? 1 : 0);
 	},
 	print: function (e) {
 		console.log(e);
