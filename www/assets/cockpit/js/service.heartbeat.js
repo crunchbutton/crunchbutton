@@ -40,10 +40,12 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 				}
 
 				$rootScope.$broadcast('tickets', { 'tickets': data.tickets, 'timestamp': data.timestamp } );
-				$rootScope.$broadcast('totalOrders', data.orders['total']);
-				$rootScope.$broadcast('newOrders', data.orders['new']);
-				$rootScope.$broadcast('acceptedOrders', data.orders['accepted']);
-				$rootScope.$broadcast('pickedupOrders', data.orders['pickedup']);
+				if( data.orders ){
+					$rootScope.$broadcast('totalOrders', data.orders['total']);
+					$rootScope.$broadcast('newOrders', data.orders['new']);
+					$rootScope.$broadcast('acceptedOrders', data.orders['accepted']);
+					$rootScope.$broadcast('pickedupOrders', data.orders['pickedup']);
+				}
 				$rootScope.$broadcast('adminWorking', data.working);
 
 				favicoService.badge((parseInt(data.tickets) + parseInt(data.orders['new'])) || 0);

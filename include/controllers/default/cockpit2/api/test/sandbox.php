@@ -4,15 +4,43 @@ class Controller_Api_Test_Sandbox extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		$payment = Payment::o( 23861 );
+		echo '<pre>';var_dump( $payment->checkPaymentStatus() );exit();;
+
+
+		\Stripe\Stripe::setApiKey( c::config()->stripe->{ 'dev' }->secret );
+
+				$transfer = \Stripe\Transfer::retrieve( 'tr_15tjpjJMXBWnTQ4rN59WVsn5' );
+
+				echo '<pre>';var_dump( $transfer->status );exit();
 
 
 
+		$admin = Admin::o( 5 );
 
-		// $env = c::getEnv();
 
-		// \Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+		$paymenType = $admin->paymenType();
 
-		// echo '<pre>';var_dump( \Stripe\Balance::retrieve() );exit();
+		echo '<pre>';var_dump( $paymenType->testAccount() );exit();;
+
+die('hard');
+
+		$restaurant = Restaurant::o( 107 );
+		$paymentType = $restaurant->payment_type();
+
+		$stripeAccount = $paymentType->getStripe();
+
+		$stripeAccount->bank_account = 'btok_64TigicYqgKovr';
+		$stripeAccount->save();
+
+		$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
+		$paymentType->save();
+
+
+		$stripeAccount = $paymentType->getStripe();
+
+		echo '<pre>';var_dump( $stripeAccount );exit();
+
 
 
 // 		$charge = \Stripe\Charge::create(array(

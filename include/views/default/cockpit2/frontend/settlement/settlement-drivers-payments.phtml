@@ -17,7 +17,7 @@
 				</td>
 				<th>Status</th>
 				<td>
-					<select ng-model="query.status" ng-options="opt.type as opt.label for opt in balanced_statuses" class="cart-customize-select"></select>
+					<select ng-model="query.status" ng-options="opt.type as opt.label for opt in payment_statuses" class="cart-customize-select"></select>
 				</td>
 			</tr>
 		</table>
@@ -34,7 +34,7 @@
 					<th>Driver</th>
 					<th>Type</th>
 					<th>Amount</th>
-					<th>Balanced Status</th>
+					<th>Payment Status</th>
 					<th>Date</th>
 				</tr>
 
@@ -50,15 +50,14 @@
 					<td>{{payment.driver}}</td>
 					<td>{{payment.pay_type}}</td>
 					<td>$ {{payment.amount | formatPrice}}</td>
-					<td ng-class="payment.balanced_status">
-						<span ng-if="payment.balanced_failure_reason">
-							<i title="{{payment.balanced_failure_reason}}" class="fa fa-warning"></i>&nbsp;
+					<td ng-class="payment.payment_status">
+						<span ng-if="payment.payment_failure_reason">
+							<i title="{{payment.payment_failure_reason}}" class="fa fa-warning"></i>&nbsp;
 						</span>
-
-						{{payment.balanced_status}}
-						<i ng-if="!payment.balanced_status">new</i>
+						{{payment.payment_status}}
+						<i ng-if="!payment.payment_status">new</i>
 						&nbsp;&nbsp;
-						<span title="Check balanced status" class="link no-underline" ng-if="payment.balanced_status != 'succeeded'" ng-click="balanced_status( payment.id_payment );"> <i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i> </span>
+						<span title="Check payment status" class="link no-underline" ng-if="payment.payment_status != 'succeeded'" ng-click="payment_status( payment.id_payment );"> <i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i> </span>
 					</td>
 					<td>{{payment.date}}</td>
 				</tr>
@@ -76,7 +75,7 @@
 			</tbody>
 		</table>
 		<div class="divider"></div>
-		
+
 	</div>
 
 

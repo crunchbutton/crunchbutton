@@ -86,22 +86,22 @@
 					</td>
 				</tr>
 				<tr>
-					<td><strong>Balanced Status</strong></td>
-					<td ng-class="result.balanced_status">
-						{{result.balanced_status}}
-						<span title="Re-check balanced status" class="link no-underline" ng-click="balanced_status();"> <i class="fa fa-refresh"></i> </span>
+					<td><strong>Payment Status</strong></td>
+					<td ng-class="result.payment_status">
+						{{result.payment_status}}
+						<span title="Re-check balanced status" class="link no-underline" ng-click="payment_status();"> <i class="fa fa-refresh"></i> </span>
 					</td>
 				</tr>
-				<tr ng-if="result.balanced_date_checked">
-					<td><strong>Balanced Status Checked</strong></td>
-					<td ng-class="result.balanced_status">
-						{{result.balanced_date_checked}}
+				<tr ng-if="result.payment_date_checked">
+					<td><strong>Payment Status Checked</strong></td>
+					<td ng-class="result.payment_status">
+						{{result.payment_date_checked}}
 					</td>
 				</tr>
-				<tr ng-if="result.balanced_failure_reason">
-					<td><strong>Balanced Failure Reason</strong></td>
-					<td ng-class="result.balanced_status">
-						{{result.balanced_failure_reason}}
+				<tr ng-if="result.payment_failure_reason">
+					<td><strong>Payment Failure Reason</strong></td>
+					<td ng-class="result.payment_status">
+						{{result.payment_failure_reason}}
 					</td>
 				</tr>
 				<tr ng-if="result.stripe_id">
