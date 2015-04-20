@@ -162,7 +162,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		// claim it
 		$payment_type->claimBankAccount( $payment_type->balanced_bank );
 
-		$paymentType->testAccount();
+		$payment_type->testAccount();
 
 		$this->payInfo( $admin );
 	}
