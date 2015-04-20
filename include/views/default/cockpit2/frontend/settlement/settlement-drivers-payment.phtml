@@ -86,20 +86,20 @@
 					</td>
 				</tr>
 				<tr>
-					<td><strong>Balanced Status</strong></td>
+					<td><strong>Payment Status</strong></td>
 					<td ng-class="result.balanced_status">
 						{{result.balanced_status}}
-						<span title="Re-check balanced status" class="link no-underline" ng-click="balanced_status();"> <i class="fa fa-refresh"></i> </span>
+						<span title="Re-check balanced status" class="link no-underline" ng-click="payment_status();"> <i class="fa fa-refresh"></i> </span>
 					</td>
 				</tr>
 				<tr ng-if="result.balanced_date_checked">
-					<td><strong>Balanced Status Checked</strong></td>
+					<td><strong>Payment Status Checked</strong></td>
 					<td ng-class="result.balanced_status">
 						{{result.balanced_date_checked}}
 					</td>
 				</tr>
 				<tr ng-if="result.balanced_failure_reason">
-					<td><strong>Balanced Failure Reason</strong></td>
+					<td><strong>Payment Failure Reason</strong></td>
 					<td ng-class="result.balanced_status">
 						{{result.balanced_failure_reason}}
 					</td>

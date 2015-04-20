@@ -1,0 +1,1 @@
+ALTER TABLE payment CHANGE COLUMN `balanced_status` `balanced_status` enum('pending','failed','succeeded','canceled') DEFAULT NULL;

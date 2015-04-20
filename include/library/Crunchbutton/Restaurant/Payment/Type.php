@@ -44,16 +44,8 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 
 		if( $this->stripe_id ){
 
-			$env = c::getEnv();
+			$transfer = Crunchbutton_Stripe_Credit::credit( $this->stripe_id, $amount );
 
-			\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-
-			$transfer = \Stripe\Transfer::create(
-											array(
-												'amount' => $amount,
-												'currency' => 'usd',
-												'destination' => $this->stripe_id
-											) );
 			if( $transfer->id ){
 				return true;
 			}
