@@ -797,8 +797,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function scheduleDriverArbitraryPayment( $id_driver, $amount, $pay_type, $notes ){
 
-		// GET THE PROCESSOR
-
 		$this->log( 'scheduleDriverArbitraryPayment: start', [ $id_driver, $amount, $type, $notes ] );
 
 		$schedule = new Cockpit_Payment_Schedule;
@@ -1362,14 +1360,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$amount = floatval( $schedule->amount );
 
-				$payment_type = $schedule->driver()->payment_type();
+				$driver = $schedule->driver();
+
+				$payment_type = $driver->payment_type();
 
 				$payment_method = $payment_type->payment_method;
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
 
-					if( !$payment_type->balanced_id || !$payment_type->balanced_bank ){
+					if( !$driver->hasPaymentInfo() ){
 						$schedule->log = 'There is no account info for this driver.';
 						$message = 'Restaurant Payment error! Driver: ' . $schedule->driver()->name;
 						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
@@ -1390,7 +1390,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																			'amount' => $amount,
 																			'note' => $schedule->note,
 																			'pay_type' => $schedule->pay_type,
-																			'type' => 'balanced' ] );
+																			'type' => Payment::processor() ] );
 						} catch ( Exception $e ) {
 							$schedule->log = $e->getMessage();
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;

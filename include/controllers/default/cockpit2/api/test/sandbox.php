@@ -4,13 +4,25 @@ class Controller_Api_Test_Sandbox extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		$payment = Payment::o( 23861 );
+		echo '<pre>';var_dump( $payment->checkPaymentStatus() );exit();;
+
+
+		\Stripe\Stripe::setApiKey( c::config()->stripe->{ 'dev' }->secret );
+
+				$transfer = \Stripe\Transfer::retrieve( 'tr_15tjpjJMXBWnTQ4rN59WVsn5' );
+
+				echo '<pre>';var_dump( $transfer->status );exit();
+
 
 
 		$admin = Admin::o( 5 );
 
+
 		$paymenType = $admin->paymenType();
 
-		$paymenType->testAccount();
+		echo '<pre>';var_dump( $paymenType->testAccount() );exit();;
+
 die('hard');
 
 		$restaurant = Restaurant::o( 107 );

@@ -27,10 +27,10 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 
-	public function checkBalancedStatus(){
+	public function checkPaymentStatus(){
 		$payment = $this->payment();
 		if( $payment->id_payment ){
-			return $payment->checkBalancedStatus();
+			return $payment->checkPaymentStatus();
 		}
 		return false;
 	}
