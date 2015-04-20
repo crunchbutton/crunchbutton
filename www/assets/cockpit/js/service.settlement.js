@@ -218,7 +218,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 	}
 
 	service.drivers.payments = function( params, callback ){
-		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type, 'balanced_status': params.balanced_status }, function( json ){
+		settlement.drivers.payments( { 'page' : params.page, 'id_driver' : params.id_driver, 'pay_type': params.pay_type, 'payment_status': params.payment_status }, function( json ){
 			callback( json );
 		} );
 	}
