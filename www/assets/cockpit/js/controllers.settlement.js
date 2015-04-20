@@ -825,7 +825,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 				'page': $scope.query.page,
 				'id_driver': $scope.query.driver,
 				'pay_type': $scope.query.type,
-				'balanced_status': $scope.query.status
+				'payment_status': $scope.query.status
 			}, function( data ){
 				$scope.payments = data.results;
 				$scope.complete(data);
@@ -841,9 +841,9 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-	$scope.balanced_status = function( id_payment ){
+	$scope.payment_status = function( id_payment ){
 		$scope.balancedRefresh = id_payment;
-		SettlementService.drivers.balanced_status( id_payment, function( json ){
+		SettlementService.drivers.payment_status( id_payment, function( json ){
 			if( json.error ){
 				App.alert( 'Oops, something bad happened: ' + json.error );
 			} else {
@@ -857,7 +857,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	if( $scope.account.isLoggedIn() ){
 		$scope.pay_type = 0;
 		$scope.pay_types = SettlementService.pay_types();
-		$scope.balanced_statuses = SettlementService.balanced_statuses();
+		$scope.payment_statuses = SettlementService.payment_statuses();
 		drivers();
 		$scope.update();
 	}
@@ -974,9 +974,9 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 		} );
 	}
 
-	$scope.balanced_status = function(){
+	$scope.payment_status = function(){
 			$scope.makeBusy();
-			SettlementService.drivers.balanced_status( $routeParams.id, function( json ){
+			SettlementService.drivers.payment_status( $routeParams.id, function( json ){
 				if( json.error ){
 					App.alert( 'Oops, something bad happened: ' + json.error );
 				} else {

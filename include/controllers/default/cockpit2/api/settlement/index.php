@@ -91,8 +91,8 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 						break;
 					case 'drivers':
 						switch ( c::getPagePiece( 3 ) ) {
-							case 'balanced-status':
-								$this->_driverCheckBalancedStatus();
+							case 'payment-status':
+								$this->_driverCheckPaymentStatus();
 								break;
 							case 'begin':
 								$this->_driverBegin();
@@ -459,11 +459,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		echo $mail->message();
 	}
 
-	private function _driverCheckBalancedStatus(){
+	private function _driverCheckPaymentStatus(){
 		$id_payment = $this->request()['id_payment'];
 		$payment = Crunchbutton_Payment::o( $id_payment );
 		if( $payment->id_payment ){
-			$status = $payment->checkBalancedStatus();
+			$status = $payment->checkPaymentStatus();
 			echo json_encode( [ 'success' => $status ] );
 		} else {
 			echo json_encode( [ 'error' => 'Payment not found!' ] );
@@ -778,10 +778,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$page = max( $this->request()['page'], 1 );
 		$id_driver = max( $this->request()['id_driver'], 0 );
 		$pay_type = max( $this->request()['pay_type'], 0 );
-		$balanced_status = max( $this->request()['balanced_status'], 0 );
+		$payment_status = max( $this->request()['payment_status'], 0 );
 		$start = ( ( $page - 1 ) * $resultsPerPage );
-		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'balanced_status' => $balanced_status ] );
-		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'balanced_status' => $balanced_status ] );
+		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
+		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
 		$payments_total = $payments_total->count();
 
 		$list = [];
