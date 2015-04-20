@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Cron_Job_CheckBalancedPaymentStatus extends Crunchbutton_Cron_Log {
+class Crunchbutton_Cron_Job_CheckPaymentStatus extends Crunchbutton_Cron_Log {
 
 	public function run(){
 

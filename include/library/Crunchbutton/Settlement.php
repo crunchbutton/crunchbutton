@@ -1883,7 +1883,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$id_payment = $payment->id_payment;
 			Cana::timeout( function() use( $id_payment ) {
 				$payment = Crunchbutton_Payment::o( $id_payment );
-				$status = $payment->checkBalancedStatus();
+				$status = $payment->checkPaymentStatus();
 			} );
 			$message = 'id_payment : ' . $payment->id_payment;
 			$this->log( 'checkPaymentStatus', $message );
@@ -1896,7 +1896,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$id_payment = $payment->id_payment;
 			Cana::timeout( function() use( $id_payment ) {
 				$payment = Crunchbutton_Payment::o( $id_payment );
-				$status = $payment->checkBalancedStatus();
+				$status = $payment->checkPaymentStatus();
 			} );
 			$message = 'id_payment : ' . $payment->id_payment;
 			$this->log( 'checkPaymentStatus', $message );
