@@ -41,7 +41,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 
 		$env = c::getEnv();
 
-		\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+		\Stripe\Stripe::setApiKey( c::config()->stripe->{ $env }->secret );
 
 		$account_type = 'individual';
 
@@ -160,6 +160,16 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		$auth = c::config()->balanced->{$env}->secret;
 		$request = new \Cana_Curl($url, null, 'get', null, $headers, null, [ 'user' => $auth, 'pass' => '' ] );
 		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
+	}
+
+	public function testAccount(){
+		$admin = $this->admin();
+		// When a driver enters their payment info, make a $0.01 deposit into their bank account #4029
+		$settlement = new Crunchbutton_Settlement();
+		$id_payment_schedule = $settlement->scheduleDriverArbitraryPayment( $admin->id_admin, 0.01, Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT, 'Test Deposit' );
+		// Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+			$settlement->payDriver( $id_payment_schedule );
+		// } );
 	}
 
 	public function using_pex_date(){

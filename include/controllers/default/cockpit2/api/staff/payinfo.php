@@ -133,6 +133,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$stripe = $paymentType->createStripe( [ 'bank_account' => $token ] );
 
 		if( $stripe && !is_array( $stripe ) ){
+			$paymentType->testAccount();
 			$this->payInfo( $admin );
 			exit;
 		} else {
@@ -140,6 +141,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		}
 		$this->_error( 'Error creating stripe account' );
 	}
+
 
 	private function saveBankInfo( $admin ){
 		$payment_type = $admin->payment_type();
@@ -160,12 +162,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		// claim it
 		$payment_type->claimBankAccount( $payment_type->balanced_bank );
 
-		// When a driver enters their payment info, make a $0.01 deposit into their bank account #4029
-		$settlement = new Crunchbutton_Settlement();
-		$id_payment_schedule = $settlement->scheduleDriverArbitraryPayment( $admin->id_admin, 0.01, Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT, 'Test Deposit' );
-		Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-			$settlement->payDriver( $id_payment_schedule );
-		} );
+		$paymentType->testAccount();
 
 		$this->payInfo( $admin );
 	}

@@ -92,6 +92,10 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		];
 	}
 
+	public function paymenType(){
+		return $this->payment_type();
+	}
+
 	public function payment_type(){
 		return Crunchbutton_Admin_Payment_Type::byAdmin( $this->id_admin );
 	}
@@ -1006,6 +1010,25 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function dateTerminated(){
 		if( $this->date_terminated ){
 			return new DateTime( $this->date_terminated, new DateTimeZone( c::config()->timezone ) );
+		}
+		return false;
+	}
+
+
+	public function hasPaymentInfo(){
+		$paymenType = $this->paymenType();
+		switch ( Crunchbutton_Payment::processor() ) {
+			case Crunchbutton_Payment::PROCESSOR_BALANCED:
+				if( $paymenType->balanced_id && $paymenType->balanced_bank ){
+					return true;
+				}
+				break;
+
+			case Crunchbutton_Payment::PROCESSOR_STRIPE:
+				if( $paymenType->stripe_id && $paymenType->stripe_account_id ){
+					return true;
+				}
+				break;
 		}
 		return false;
 	}
