@@ -68,14 +68,15 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 
 		$n = (new Crunchbutton_Admin_Notification([
 			'id_admin' => $this->driver->id_admin,
-			'type' => 'sms',
+			'type' =>  Crunchbutton_Admin_Notification::TYPE_SMS,
 			'value' => '_PHONE_',
 			'active' => 1
 		]))->save();
 		
-		$sids = $n->sendSms($this->order);
+		$ress = $n->send($this->order);
+		
 		$status = true;
-		foreach ($sids as $res) {
+		foreach ($ress as $res) {
 			if (!$res->sid) {
 				$status = false;
 				break;

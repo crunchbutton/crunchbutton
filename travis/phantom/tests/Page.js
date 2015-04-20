@@ -1,5 +1,7 @@
 var page = require('webpage').create();
 
+console.log('Reading ' + phantom.url);
+
 describe('Page', function() {
 	
 	var content = false;
@@ -9,7 +11,7 @@ describe('Page', function() {
 			var onPageReady = function() {
 				setTimeout(function() {
 					content = page.content;
-				},1200);
+				},5000);
 			};
 			
 			function checkReadyState() {
@@ -29,6 +31,18 @@ describe('Page', function() {
 		    checkReadyState();
 		});
 	});
+	
+	// for some reason this is needed so that the next test gets content
+    it('should wait 5 seconds for content -- DEBUG', function() {
+		
+		waitsFor(function() {
+			return content;
+		});
+
+	    runs(function() {
+			expect(true).toBeTruthy();
+	    });
+    });
 
     it('should finish rendering', function() {
 		
@@ -37,8 +51,8 @@ describe('Page', function() {
 		});
 
 	    runs(function() {
-			console.log('runs');
-			console.log(content);
+			console.log('rendered');
+			//console.log(content);
 			expect(content.match(/facebook-jssdk/i)).toBeTruthy();
 	    });
     });

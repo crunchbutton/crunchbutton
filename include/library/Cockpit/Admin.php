@@ -136,45 +136,48 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		if ($this->location()) {
 			$out['location'] = $this->location()->exports();
 		}
+		
+		if ($params['working'] !== false) {
 
-		$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
+			$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
 
-		if ($next) {
+			if ($next) {
 
-			foreach ($next as $shift) {
+				foreach ($next as $shift) {
 
-				$shift = $shift->exports();
+					$shift = $shift->exports();
 
-				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
-				$start = $date->getTimestamp();
+					$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
+					$start = $date->getTimestamp();
 
-				$today = new DateTime( 'now' , new DateTimeZone( $this->timezone ) );
+					$today = new DateTime( 'now' , new DateTimeZone( $this->timezone ) );
 
-				if( $date->format( 'Ymd' ) == $today->format( 'Ymd' ) ){
-					$out['working_today'] = true;
-				}
-
-				if ($start <= time() ) {
-					$now = new DateTime( 'now' , new DateTimeZone($this->timezone));
-					$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
-					$diff = $now->diff( $date );
-					$shift['current'] = true;
-					$out['working'] = true;
-
-					$out['shift_ends'] = $diff->h;
-					$out['shift_ends_formatted'] = $diff->h;
-					if( $diff->i ){
-						$out['shift_ends'] .= '' . str_replace(  '0.', '.', strval( number_format( $diff->i / 60, 2 ) ) );
-						if( $diff->h ){
-							$out['shift_ends_formatted'] .= ' hour' . ( ( $diff->h > 1 ) ? 's' : '' );
-							$out['shift_ends_formatted'] .= ' and ';
-						}
-						 $out['shift_ends_formatted'] .= str_pad( $diff->i, '0', 2 ) . ' minute' . ( $diff->i > 1 ? 's' : '' ) ;
+					if( $date->format( 'Ymd' ) == $today->format( 'Ymd' ) ){
+						$out['working_today'] = true;
 					}
-				} else {
-					$shift['current'] = false;
+
+					if ($start <= time() ) {
+						$now = new DateTime( 'now' , new DateTimeZone($this->timezone));
+						$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
+						$diff = $now->diff( $date );
+						$shift['current'] = true;
+						$out['working'] = true;
+
+						$out['shift_ends'] = $diff->h;
+						$out['shift_ends_formatted'] = $diff->h;
+						if( $diff->i ){
+							$out['shift_ends'] .= '' . str_replace(  '0.', '.', strval( number_format( $diff->i / 60, 2 ) ) );
+							if( $diff->h ){
+								$out['shift_ends_formatted'] .= ' hour' . ( ( $diff->h > 1 ) ? 's' : '' );
+								$out['shift_ends_formatted'] .= ' and ';
+							}
+							 $out['shift_ends_formatted'] .= str_pad( $diff->i, '0', 2 ) . ' minute' . ( $diff->i > 1 ? 's' : '' ) ;
+						}
+					} else {
+						$shift['current'] = false;
+					}
+					$out['shifts'][] = $shift;
 				}
-				$out['shifts'][] = $shift;
 			}
 		}
 

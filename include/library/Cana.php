@@ -163,10 +163,15 @@ class Cana extends Cana_Model {
 		}
 
 		$cmd = c::config()->dirs->root.'cli/timeout-'.$v.'.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded)) . $env;
+		
+		if (getenv('TRAVIS')) {
+			$async = false;
+		}
 
 		if ($async) {
 			try {
-				exec('nohup '.$cmd.' >> /var/log/timeout 2>&1 &');
+				$log = getenv('TRAVIS') ? '/dev/null' : '/var/log/timeout';
+				exec('nohup '.$cmd.' >> '.$log.' 2>&1 &');
 			} catch (Exception $e) {
 				Crunchbutton_Log::error([
 					'type'         => 'timeout exception',
