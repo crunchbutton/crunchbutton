@@ -6,13 +6,29 @@ class Controller_Api_Test_Sandbox extends Crunchbutton_Controller_Account {
 
 
 
+		$admin = Admin::o( 5 );
+
+		$paymenType = $admin->paymenType();
+
+		$paymenType->testAccount();
+die('hard');
+
+		$restaurant = Restaurant::o( 107 );
+		$paymentType = $restaurant->payment_type();
+
+		$stripeAccount = $paymentType->getStripe();
+
+		$stripeAccount->bank_account = 'btok_64TigicYqgKovr';
+		$stripeAccount->save();
+
+		$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
+		$paymentType->save();
 
 
-		// $env = c::getEnv();
+		$stripeAccount = $paymentType->getStripe();
 
-		// \Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+		echo '<pre>';var_dump( $stripeAccount );exit();
 
-		// echo '<pre>';var_dump( \Stripe\Balance::retrieve() );exit();
 
 
 // 		$charge = \Stripe\Charge::create(array(

@@ -797,6 +797,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function scheduleDriverArbitraryPayment( $id_driver, $amount, $pay_type, $notes ){
 
+		// GET THE PROCESSOR
+
 		$this->log( 'scheduleDriverArbitraryPayment: start', [ $id_driver, $amount, $type, $notes ] );
 
 		$schedule = new Cockpit_Payment_Schedule;
