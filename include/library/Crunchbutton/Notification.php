@@ -71,7 +71,6 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirmFaxWasReceived();
 				}
 
 				break;
@@ -120,7 +119,6 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirmFaxWasReceived();
 				}
 
 				return $fax->success;
