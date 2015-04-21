@@ -795,6 +795,26 @@ class Crunchbutton_Settlement extends Cana_Model {
 		} );
 	}
 
+
+	public function scheduleRestaurantArbitraryPayment( $id_restaurant, $amount, $pay_type, $notes ){
+
+		$schedule = new Cockpit_Payment_Schedule;
+		$schedule->id_restaurant = $id_restaurant;
+		$schedule->date = date( 'Y-m-d H:i:s' );
+		$schedule->amount = $amount;
+		$schedule->adjustment = 0;
+		$schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
+		$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
+		$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+		$schedule->note = $notes;
+		$schedule->id_admin = c::user()->id_admin;
+		$schedule->save();
+		$id_payment_schedule = $schedule->id_payment_schedule;
+
+		return $this->payRestaurant( $id_payment_schedule );
+
+	}
+
 	public function scheduleDriverArbitraryPayment( $id_driver, $amount, $pay_type, $notes ){
 
 		$this->log( 'scheduleDriverArbitraryPayment: start', [ $id_driver, $amount, $type, $notes ] );
@@ -1089,6 +1109,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		$this->log( 'payRestaurant', $schedule->properties() );
+
 		if( $schedule->id_payment_schedule ){
 
 			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
@@ -1101,16 +1122,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$amount = floatval( $schedule->amount );
 
-				$payment_method = $schedule->restaurant()->payment_type()->payment_method;
+				$restaurant = $schedule->restaurant();
+
+				$payment_method = $restaurant->payment_type()->payment_method;
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
 
-					$payment_type = $schedule->restaurant()->payment_type();
+					$payment_type = $restaurant->payment_type();
 
-					if( !$payment_type->balanced_id || !$payment_type->balanced_bank ){
+					if( !$restaurant->hasPaymentType() ){
 						$schedule->log = 'There is no account info for this restaurant.';
-						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+						$message = 'Restaurant Payment error! Restaurant: ' . $restaurant->name;
 						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
 						$message .= "\n". 'amount: ' . $schedule->amount;
 						$message .= "\n". $schedule->log;

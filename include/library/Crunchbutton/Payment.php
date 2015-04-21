@@ -21,8 +21,11 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->date = date('Y-m-d H:i:s');
 		$payment_type = Crunchbutton_Restaurant_Payment_Type::byRestaurant( $payment->id_restaurant );
 
-		if( $payment->type == 'balanced' ){
-			try {
+
+		switch ( Crunchbutton_Payment::processor() ) {
+
+			case Crunchbutton_Payment::PROCESSOR_BALANCED:
+				try {
 					$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
 				} catch ( Exception $e ) {
 						throw new Exception( $e->getMessage() );
@@ -31,29 +34,21 @@ class Crunchbutton_Payment extends Cana_Table {
 				if( $credit && $credit->id ){
 					$payment->balanced_id = $credit->id;
 				}
+			break;
 
-			} elseif( $payment->type == 'stripe' ){
-
-				// Stripe payment
-				Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
-
+			case Crunchbutton_Payment::PROCESSOR_STRIPE:
 				try {
-					if ( $payment_type->stripe_id ) {
-						$credit = Stripe_Transfer::create( array(
-							'amount' => $payment->amount * 100,
-							'currency' => 'usd',
-							'recipient' => $payment_type->stripe_id,
-							'description' => $payment->note,
-							'statement_descriptor' => 'Crunchbutton Orders'
-						) );
-						$payment->stripe_id = $credit->id;
-					}
-
-				} catch (Exception $e) {
-					print_r($e);
-					exit;
+					$credit = Crunchbutton_Stripe_Credit::credit( $payment_type->stripe_id, $payment->amount, 'Crunchbutton Orders' );
+				} catch ( Exception $e ) {
+						throw new Exception( $e->getMessage() );
+						exit;
 				}
+				if( $credit && $credit->id ){
+					$payment->stripe_id = $credit->id;
+				}
+			break;
 		}
+
 		$payment->env = c::getEnv(false);
 		$payment->id_admin = c::user()->id_admin;
 		$payment->save();
@@ -71,6 +66,7 @@ class Crunchbutton_Payment extends Cana_Table {
 			$env = c::getEnv();
 
 			if( $this->stripe_id && $this->env ){
+
 				$env = ( $this->env == 'live' ) ? 'live' : 'dev';
 
 				\Stripe\Stripe::setApiKey( c::config()->stripe->{ $env }->secret );

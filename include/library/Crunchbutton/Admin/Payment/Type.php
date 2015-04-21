@@ -167,9 +167,9 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		// When a driver enters their payment info, make a $0.01 deposit into their bank account #4029
 		$settlement = new Crunchbutton_Settlement();
 		$id_payment_schedule = $settlement->scheduleDriverArbitraryPayment( $admin->id_admin, 0.01, Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT, 'Test Deposit' );
-		// Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+		Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
 			$settlement->payDriver( $id_payment_schedule );
-		// } );
+		} );
 	}
 
 	public function using_pex_date(){
