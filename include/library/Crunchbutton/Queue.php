@@ -19,8 +19,13 @@ class Crunchbutton_Queue extends Cana_Table {
 		$queue = self::q('select * from queue where date_start<now() and status=?', [self::STATUS_NEW]);
 		foreach ($queue as $q) {
 			echo 'Starting #'.$q->id_queue. '...';
+			
+			register_shutdown_function(function() use ($q) {
+				$q->status = self::STATUS_FAILED;
+				$q->save();
+			});
 
-			//$q->status = self::STATUS_RUNNING;
+			$q->status = self::STATUS_RUNNING;
 			$q->save();
 
 			$type = 'TYPE_'.str_replace('-','_',strtoupper($q->type));
@@ -60,6 +65,8 @@ class Crunchbutton_Queue extends Cana_Table {
 			$params['date_start'] = date('Y-m-d H:i:s', time() + $params['seconds']);
 			unset($params['seconds']);
 		}
+		
+		$params['status'] = self::STATUS_NEW;
 
 		$q = new Crunchbutton_Queue($params);
 		$q->save();
