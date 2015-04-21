@@ -14,7 +14,6 @@ describe('Page', function() {
     it('should finish rendering', function() {
 		//assert.equals(page.content.match(/\<\/html\>/i) ? true : false, true);
 		expect(content.match(/facebook-jssdk/i)).toBeTruthy();
-		
     });
 
     it('should be javascript bundled', function() {

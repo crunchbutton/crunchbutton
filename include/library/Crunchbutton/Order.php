@@ -18,6 +18,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const SHIPPING_TAKEOUT     = 'takeout';
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
+	
+	const PROCESS_TYPE_RESTAURANT 	= 'restaurant';
+	const PROCESS_TYPE_WEB			= 'web';
+	const PROCESS_TYPE_ADMIN		= 'admin';
 
 	/**
 	 * Process an order
@@ -71,14 +75,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$this->id_restaurant = $params['restaurant'];
 
-		if( $processType == 'web' ){
+		if( $processType == static::PROCESS_TYPE_WEB ){
 			// Check if the restaurant is active #2938
 			if( $this->restaurant()->active == 0 ){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
 
-		if( $processType == 'restaurant' ){
+		if( $processType == static::PROCESS_TYPE_RESTAURANT ){
 			// Check if the restaurant is active for restaurant order placement
 			// https://github.com/crunchbutton/crunchbutton/issues/3350#issuecomment-48255149
 			if( $this->restaurant()->active_restaurant_order_placement == 0 ){
@@ -119,7 +123,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
 
-		if ($processType == 'restaurant') {
+		if ($processType == static::PROCESS_TYPE_RESTAURANT) {
 			$subtotal = $params['subtotal'];
 			$delivery_service_markup = $this->restaurant()->delivery_service_markup ? $this->restaurant()->delivery_service_markup : 0;
 			$price_delivery_markup = number_format($subtotal * $delivery_service_markup / 100, 2);
@@ -616,7 +620,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		if ($processType != 'restaurant') {
+		if ($processType != static::PROCESS_TYPE_RESTAURANT) {
 			c::auth()->session()->id_user = $user->id_user;
 			c::auth()->session()->generateAndSaveToken();
 		}
@@ -724,20 +728,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$order = $this;
 
 		if ( $params['make_default'] == 'true' ) {
-			// Cana::timeout(function() use($order) {
-				Preset::cloneFromOrder($order);
-			// });
+			Preset::cloneFromOrder($order);
 		}
 
-		Cana::timeout(function() use($order) {
-			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
-		});
+		if ($processType != static::PROCESS_TYPE_RESTAURANT) {
 
-		if ($processType != 'restaurant') {
-			Cana::timeout(function() use($order) {
-				$rules = new Crunchbutton_Order_Rules();
-				$rules->run( $order );
-			});
 			// Reward
 			$reward = new Crunchbutton_Reward;
 			// rewards: earn points when an order has been placed #2458
@@ -1530,59 +1525,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->sendNativeAppLink();
 	}
 
-	public function que( $sendReceipt = true ) {
-
-		$order = $this;
-
-		Cana::timeout(function() use($order) {
-			/* @var $order Crunchbutton_Order */
-			$order->notify();
-		});
-
-		if( $sendReceipt ){
-			c::timeout(function() use($order) {
-				$order->receipt();
-			}, 30 * 1000); // 30 seconds
-		} else {
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'receipt already sent', 'type' => 'notification' ]);
-		}
-
-		// Start the timer to check if the order was confirmed. #1049
-		// if ($this->restaurant()->confirmation) {
-			// $timer = c::config()->twilio->warningOrderNotConfirmedTime;
-
-			// Log
-			// Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
-			/* Removed for while by @pererinha asked by @DavidKlumpp at 11/07/2013
-			c::timeout(function() use($order, $timer) {
-				$order->warningOrderNotConfirmed();
-			}, $timer );
-			*/
-		// }
-	}
-
-	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
-	public function queConfirmFaxWasReceived(){
-
-		// Issue #1239
-		return false;
-
-		$order = $this;
-
-		$isConfirmed = Order::isConfirmed( $order->id_order );
-
-		if ( $isConfirmed || !$order->restaurant()->confirmation) {
-			return;
-		}
-
-		$confirmTimeFaxReceived = c::config()->twilio->confirmTimeFaxReceived;
-
-		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
-
-		c::timeout(function() use($order) {
-			$order->confirm();
-		}, $confirmTimeFaxReceived );
+	public function que() {
+		$q = Queue::create([
+			'type' => 'order',
+			'id_order' => $this->id_order
+		]);
 	}
 
 	public function queConfirm() {
@@ -1616,12 +1563,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		// $order = $this;
-
-		Cana::timeout(function() use($order) {
-			/* @var $order Crunchbutton_Order */
-			$order->confirm();
-		}, $confirmationTime );
+		$q = Queue::create([
+			'type' => 'order-confirmation',
+			'id_order' => $this->id_order,
+			'seconds' => $confirmationTime / 1000
+		]);
 
 	}
 
