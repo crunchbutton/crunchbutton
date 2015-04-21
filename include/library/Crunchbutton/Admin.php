@@ -92,7 +92,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		];
 	}
 
-	public function paymenType(){
+	public function paymentType(){
 		return $this->payment_type();
 	}
 
@@ -1016,16 +1016,16 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 
 	public function hasPaymentInfo(){
-		$paymenType = $this->paymenType();
+		$paymentType = $this->paymentType();
 		switch ( Crunchbutton_Payment::processor() ) {
 			case Crunchbutton_Payment::PROCESSOR_BALANCED:
-				if( $paymenType->balanced_id && $paymenType->balanced_bank ){
+				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
 					return true;
 				}
 				break;
 
 			case Crunchbutton_Payment::PROCESSOR_STRIPE:
-				if( $paymenType->stripe_id && $paymenType->stripe_account_id ){
+				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
 					return true;
 				}
 				break;

@@ -49,10 +49,24 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $_restaurants;
 	}
 
+	public function paymentType(){
+		return $this->payment_type();
+	}
+
 	public function hasPaymentType(){
-		$payment_type = $this->payment_type();
-		if( $payment_type->balanced_id && $payment_type->balanced_bank ){
-			return true;
+		$paymentType = $this->paymentType();
+		switch ( Crunchbutton_Payment::processor() ) {
+			case Crunchbutton_Payment::PROCESSOR_BALANCED:
+				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
+					return true;
+				}
+				break;
+
+			case Crunchbutton_Payment::PROCESSOR_STRIPE:
+				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+					return true;
+				}
+				break;
 		}
 		return false;
 	}
@@ -1412,12 +1426,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public static function byRange($params) {
 		$params['range'] = $params['range'] ? $params['range'] : 2;
-		
+
 		$range = floatval($params['range']);
 		$rangeDif = $range-2;
 		$lat = floatval($params['lat']);
 		$lon = floatval($params['lon']);
-		
+
 		$calc = '((ACOS(SIN('.$lat.' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$lat.' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$lon.' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515)';
 
 		$query = '
