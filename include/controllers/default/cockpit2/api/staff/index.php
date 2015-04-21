@@ -180,7 +180,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					'admin.phone' => 'like',
 					'admin.login' => 'like',
 					'admin.email' => 'like',
-					'admin.id_admin' => 'liker'
+					'admin.id_admin' => 'liker',
+					'admin.invite_code' => 'eq'
 				]
 			]);
 			$q .= $s['query'];
