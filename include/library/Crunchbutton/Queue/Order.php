@@ -23,7 +23,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		
 		
 		// notify people
-		$order->notify();
+		$this->order()->notify();
 		
 		return self::STATUS_SUCCESS;
 	}
