@@ -18,6 +18,19 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			->load($id);
 	}
 
+	public function restaurant(){
+		return Restaurant::o( $this->id_restaurant );
+	}
+
+	public function testAccount(){
+		$restaurant = $this->restaurant();
+		$settlement = new Crunchbutton_Settlement();
+		$id_payment_schedule = $settlement->scheduleRestaurantArbitraryPayment( $restaurant->id_restaurant, 0.01, Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT, 'Test Deposit' );
+		Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
+			$settlement->payRestaurant( $id_payment_schedule );
+		} );
+	}
+
 	public function exports(){
 		$out = $this->properties();
 		$out[ 'max_pay_promotion' ] = intval( $out[ 'max_pay_promotion' ] );
@@ -91,6 +104,9 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$first_name = array_shift( $name );
 		$last_name = implode( ' ',$name );
 
+		$this->payment_method = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT;
+		$this->save();
+
 		try {
 
 			$info = [
@@ -135,7 +151,6 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			$stripeAccount = \Stripe\Account::create( $info );
 
 			if( $stripeAccount->id && $stripeAccount->bank_accounts->data[0]->id ){
-
 				$this->stripe_id = $stripeAccount->id;
 				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
 				$this->save();
