@@ -15,11 +15,13 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		}
 		
 		// send customer a receipt in 30 seconds
+		/*
 		$q = Queue::create([
 			'type' => 'order-receipt',
 			'id_order' => $this->order()->id_order,
 			'seconds' => 30
 		]);
+		*/
 		
 		// send restaurants notifications
 		$this->order()->notifyRestaurants();

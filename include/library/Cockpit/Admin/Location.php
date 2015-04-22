@@ -1,6 +1,8 @@
 <?php
 
 class Cockpit_Admin_Location extends Cana_Table {
+	const TIME_LOCATION_VALID = 6 * 60; // seconds
+
 	public function exports() {
 		$exports = [
 			'lat' => $this->lat,
@@ -9,6 +11,15 @@ class Cockpit_Admin_Location extends Cana_Table {
 			'date' => $this->date
 		];
 		return $exports;
+	}
+	
+	public function valid($seconds = self::TIME_LOCATION_VALID) {
+		$date = new DateTime($this->date);
+		$now = new DateTime();
+		$interval = $date->diff($now);
+		$interval->format('%s');
+
+		return $interval > $seconds ? false : true;
 	}
 
 	public function __construct($id = null) {

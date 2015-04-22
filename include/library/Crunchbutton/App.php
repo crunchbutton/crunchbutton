@@ -16,6 +16,7 @@ class Crunchbutton_App extends Cana_App {
 		new Crunchbutton_Headers;
 
 		if (!$_SERVER['SERVER_NAME']) {
+			putenv('CLI=true');
 			$cli = true;
 			// get the env send by parameter
 			$a = (object)getopt('s::c::r::f::e::');
@@ -249,6 +250,9 @@ class Crunchbutton_App extends Cana_App {
 	public function admin($admin = null) {
 		if ($admin !== null) {
 			$this->_admin = $admin;
+		}
+		if (!$admin && getenv('CLI')) {
+			$this->_admin = new Admin;
 		}
 		return $this->_admin;
 	}
