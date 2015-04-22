@@ -1805,6 +1805,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
+		// if it is a driver restaurant it will return open - #5371
+		if( $this->isDriverRestaurant() ){
+			return true;
+		}
+
 		// restaurant without hours is not open
 		if( count( $this->hours() ) == 0 ){
 			return false;
@@ -1812,6 +1817,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// Calculate the hours to verify if it is open or not
 		return Hour::restaurantIsOpen( $this, $dt );
+	}
+
+	public function isDriverRestaurant(){
+		$restaurant = Crunchbutton_Community::q( 'SELECT * FROM community WHERE id_driver_restaurant = ' . $this->id_restaurant . ' LIMIT 1' )->get( 0 );
+		if( $restaurant->id_driver_restaurant == $this->id_restaurant ){
+			return true;
+		}
+		return false;
 	}
 
 	// return the closed message
