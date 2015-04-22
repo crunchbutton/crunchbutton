@@ -69,6 +69,10 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 			$totals[ 'orders' ] += count( $calc[ 'orders' ] );
 		}
 
+		foreach( $totals as $key => $val ){
+			$totals[ $key ] = floatval( number_format( $val, 2 ) );
+		}
+
 		$this->assertEquals( $totals[ 'subtotal' ], 29.91 );
 		$this->assertEquals( $totals[ 'tax' ], 2.25 );
 		$this->assertEquals( $totals[ 'delivery_fee' ], 20 );
@@ -81,6 +85,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $totals[ 'orders' ], 10 );
 		$this->assertEquals( $totals[ 'total_reimburse' ], 32.16 );
 		$this->assertEquals( $totals[ 'total_payment' ], 764.64 );
+
 	}
 
 	public function testRestaurantIndividualMathsCashOrderFormalRelationship() {
