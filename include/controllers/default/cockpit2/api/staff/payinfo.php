@@ -62,6 +62,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function savePayInfo( $admin ){
+
 		$payment_type = $admin->payment_type();
 		if( !$payment_type->id_admin_payment_type ){
 			$payment_type = new Crunchbutton_Admin_Payment_Type;
@@ -71,9 +72,15 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
 
 		if( $this->request()[ 'using_pex_date_formatted' ] ){
-			$payment_type->using_pex_date = ( new DateTime( $this->request()[ 'using_pex_date_formatted' ] ) )->format( 'Y-m-d H:i:s' );
-		} else {
-			$payment_type->using_pex_date = null;
+			$date = new DateTime( $this->request()[ 'using_pex_date_formatted' ] );
+			if( $date->format( 'Ymd' ) > date( 'Ymd' ) ){
+				$this->_error( 'Date started using Pex Card should not be in the future!' );
+			}
+			$payment_type->using_pex_date = $date->format( 'Y-m-d H:i:s' );
+		}
+
+		if( $payment_type->using_pex && !$payment_type->using_pex_date ){
+			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 		}
 
 		if( $this->request()[ 'date_terminated_formatted' ] ){
