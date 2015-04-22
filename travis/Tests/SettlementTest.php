@@ -49,20 +49,38 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testDriversMath() {
-		$calc = $this->settlement->driversProcess( $this->driver_orders, true, false );
-		$calc = $calc[ 0 ];
-		$this->assertEquals( $calc[ 'subtotal' ], 29.91 );
-		$this->assertEquals( $calc[ 'tax' ], 2.25 );
-		$this->assertEquals( $calc[ 'delivery_fee' ], 20 );
-		$this->assertEquals( $calc[ 'tip' ], 14.86 );
-		$this->assertEquals( $calc[ 'customer_fee' ], 0 );
-		$this->assertEquals( $calc[ 'markup' ], -2.22 );
-		$this->assertEquals( $calc[ 'credit_charge' ], 0 );
-		$this->assertEquals( $calc[ 'restaurant_fee' ], 0 );
-		$this->assertEquals( $calc[ 'gift_card' ], 0 );
-		$this->assertEquals( count( $calc[ 'orders' ] ), 10 );
-		$this->assertEquals( $calc[ 'total_reimburse' ], 32.16 );
-		$this->assertEquals( $calc[ 'total_payment' ], 32.64 );
+
+		$calcs = $this->settlement->driversProcess( $this->driver_orders, true, false );
+
+		$totals = [];
+
+		foreach( $calcs as $calc ){
+			$totals[ 'subtotal' ] += $calc[ 'subtotal' ];
+			$totals[ 'tax' ] += $calc[ 'tax' ];
+			$totals[ 'delivery_fee' ] += $calc[ 'delivery_fee' ];
+			$totals[ 'tip' ] += $calc[ 'tip' ];
+			$totals[ 'customer_fee' ] += $calc[ 'customer_fee' ];
+			$totals[ 'markup' ] += $calc[ 'markup' ];
+			$totals[ 'credit_charge' ] += $calc[ 'credit_charge' ];
+			$totals[ 'restaurant_fee' ] += $calc[ 'restaurant_fee' ];
+			$totals[ 'gift_card' ] += $calc[ 'gift_card' ];
+			$totals[ 'total_reimburse' ] += $calc[ 'total_reimburse' ];
+			$totals[ 'total_payment' ] += $calc[ 'total_payment' ];
+			$totals[ 'orders' ] += count( $calc[ 'orders' ] );
+		}
+
+		$this->assertEquals( $totals[ 'subtotal' ], 29.91 );
+		$this->assertEquals( $totals[ 'tax' ], 2.25 );
+		$this->assertEquals( $totals[ 'delivery_fee' ], 20 );
+		$this->assertEquals( $totals[ 'tip' ], 14.86 );
+		$this->assertEquals( $totals[ 'customer_fee' ], 0 );
+		$this->assertEquals( $totals[ 'markup' ], -2.22 );
+		$this->assertEquals( $totals[ 'credit_charge' ], 0 );
+		$this->assertEquals( $totals[ 'restaurant_fee' ], 0 );
+		$this->assertEquals( $totals[ 'gift_card' ], 0 );
+		$this->assertEquals( $totals[ 'orders' ], 10 );
+		$this->assertEquals( $totals[ 'total_reimburse' ], 32.16 );
+		$this->assertEquals( $totals[ 'total_payment' ], 764.64 );
 	}
 
 	public function testRestaurantIndividualMathsCashOrderFormalRelationship() {
