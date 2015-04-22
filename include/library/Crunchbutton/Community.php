@@ -48,7 +48,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return $this->_restaurantsByLoc;
 	}
-	
+
 	public function type() {
 		if (!isset($this->_type)) {
 			$rs = $this->restaurants();
@@ -70,7 +70,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					continue;
 				}
 			}
-			
+
 			if (!$third && !$first && $takeout) {
 				$this->_type = 'takeout';
 			} elseif($third && $first) {
@@ -747,7 +747,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$drivers = $this->getDriversOfCommunity();
 		$hasDriverWorking = false;
 		foreach( $drivers as $driver ){
-			if( $driver->isWorking( $dt ) ){
+			if( $driver->isWorking( $dt, $this->id_community ) ){
 				$totalDrivers++;
 			}
 		}
@@ -833,6 +833,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				} else {
 					$ticket .= 'Because it has no next shift with drivers.';
 				}
+
+				echo $ticket;
+				echo "\n";
 
 				Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-closed' ] );
 				Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
