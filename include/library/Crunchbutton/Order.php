@@ -1361,7 +1361,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	
 	// return a list of drivers that are currently working for the community to notify
 	public function getDriversToNotify() {
-		return [];
+		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder($this->id_order);
+		return $drivers;
 	}
 
 	
