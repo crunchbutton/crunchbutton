@@ -323,6 +323,13 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			back: false,
             reloadOnSearch: false
 		})
+		.when('/invite', {
+			action: 'drivers-invite',
+			controller: 'InviteCtrl',
+			templateUrl: 'assets/view/drivers-invite.html',
+			back: false,
+			reloadOnSearch: false
+		})
 		.when('/drivers/drivers-locations', {
 			action: 'drivers-locations',
 			controller: 'DriversLocationsCtrl',
