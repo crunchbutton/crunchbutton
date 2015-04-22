@@ -195,6 +195,10 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		} else {
 			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 		}
+		if( $newDriver ){
+			$payment_type->using_pex = 1;
+			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
+		}
 		$payment_type->save();
 
 		if( intval( $driver_info->permashifts ) == 1 ){
