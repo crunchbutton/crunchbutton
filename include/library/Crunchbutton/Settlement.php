@@ -279,6 +279,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					if( $pay_type->using_pex_date ){
 						$pay[ $driver ][ 'using_pex_date' ] = $pay_type->using_pex_date()->format( 'Ymd' );
 					}
+
 					if( $pay_type->id_admin_payment_type ){
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
 					} else {
