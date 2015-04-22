@@ -394,9 +394,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_communitiesHeDeliveriesFor;
 	}
 
-	public function isWorking( $dt = null ){
-		// Based on their shifts #2638
-		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, $dt );
+	public function isWorking( $dt = null, $id_community_shift = null ){
+		// Based on their shifts and community #2638
+		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, $dt, $id_community_shift );
 		if( !$shift ){
 			return false;
 		}
