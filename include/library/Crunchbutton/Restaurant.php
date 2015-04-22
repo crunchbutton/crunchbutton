@@ -1805,6 +1805,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
+		// if it is a driver restaurant it will return open - #5371
+		if( $this->isDriverRestaurant() ){
+			return true;
+		}
+
 		// restaurant without hours is not open
 		if( count( $this->hours() ) == 0 ){
 			return false;
@@ -1812,6 +1817,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// Calculate the hours to verify if it is open or not
 		return Hour::restaurantIsOpen( $this, $dt );
+	}
+
+	public function isDriverRestaurant(){
+		$restaurant = Crunchbutton_Community::q( 'SELECT * FROM community WHERE id_driver_restaurant = ' . $this->id_restaurant . ' LIMIT 1' )->get( 0 );
+		if( $restaurant->id_driver_restaurant == $this->id_restaurant ){
+			return true;
+		}
+		return false;
 	}
 
 	// return the closed message
@@ -1880,7 +1893,20 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	// Export the restaurant statuses: open/close for the next 24 hours
 	public function hours_next_24_hours( $gmt = false ){
 		if( $this->open_for_business ){
-			return Hour::getByRestaurantNext24Hours( $this, $gmt );
+			if( $this->isDriverRestaurant() ){
+				// #5371
+				$now = new DateTime( 'now', new DateTimeZone( ( $gmt ? 'UTC' : $this->timezone ) ) );
+				$now->modify( '- 5 minutes' );
+				$out = [];
+				$start = $now->format( 'Y-m-d H:i' );
+				$now->modify( '+ 1 day' );
+				$end = $now->format( 'Y-m-d H:i' );
+				$out[] = [ 'from' => $start, 'to' => $end, 'status' => 'open' ];
+				return $out;
+			} else {
+				return Hour::getByRestaurantNext24Hours( $this, $gmt );
+			}
+
 		}
 		return false;
 	}
