@@ -874,6 +874,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return $this->_assigned_shift_hours;
 	}
+	
+	// should return a smart value based on what time it is. for now just return db value
+	public function campusTime() {
+		return 1;
+	}
 
 	public function driverRestaurantName(){
 		if( $this->close_all_restaurants && trim( $this->close_all_restaurants_note ) != '' ){
