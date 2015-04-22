@@ -138,7 +138,6 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		return null;
 	}
 
-
 	function byAdmin( $id_admin ){
 		if( $id_admin ){
 			$payment = Crunchbutton_Admin_Payment_Type::q( 'SELECT * FROM admin_payment_type WHERE id_admin = ' . $id_admin . ' ORDER BY id_admin_payment_type DESC LIMIT 1' );
