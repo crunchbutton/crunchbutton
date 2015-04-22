@@ -1252,6 +1252,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// start eta
 		$out[ 'eta' ] = $this->smartETA();
 
+		$money_value = [ 'delivery_fee' ];
+		foreach ( $money_value as $key ) {
+			if( $out[ $key ] ){
+				$out[ $key ] = floatval( number_format( $out[ $key ], 2 ) );
+			}
+		}
+
+
+
 		return $out;
 	}
 
