@@ -1063,7 +1063,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return self::q('select * from `order` order by `date` DESC');
 	}
 
-	public static function deliveryOrders( $hours = 24, $all = false ){
+	public static function deliveryOrders( $hours = 24, $all = false, $admin = null){
 		if (c::admin()->getConfig('demo')->value == '1') {
 			//$restaurant = Restaurant::q('select * from restaurant where name="devins driver test restaurant"');
 			$query = '
@@ -1077,9 +1077,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		} else {
 
 			$interval = $hours . ' HOUR';
-			$id_admin = c::admin()->id_admin;
+
 			if( !$all ){
-				$admin = Admin::o( $id_admin );
+				if (!$admin) {
+					$admin = c::admin();
+				}
 				$deliveryFor = $admin->allPlacesHeDeliveryFor();
 				if( count( $deliveryFor ) == 0 ){
 					$deliveryFor[] = 0;
@@ -1340,19 +1342,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function notify(){
-		$order = $this;
-		foreach ( $order->restaurant()->notifications() as $n ) {
-			// Admin notification type means it needs a driver
-			if( $n->type != Crunchbutton_Notification::TYPE_ADMIN ){
-				Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
-				$n->send( $order );
-			}
-		}
-		if( intval( $order->restaurant()->delivery_service ) == 1 ){
+		$this->notifyRestaurants();
+		if( intval( $this->restaurant()->delivery_service ) == 1 ){
 			$this->notifyDrivers();
 		}
 	}
+	
+	public function notifyRestaurants() {
+		foreach ( $this->restaurant()->notifications() as $n ) {
+			// admin type is depreciated. so lets not use it
+			if ($n->type == Crunchbutton_Notification::TYPE_ADMIN) {
+				continue;
+			}
+			Log::debug([ 'order' => $this->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
+			$n->send( $this );
+		}
+	}
+	
+	// return a list of drivers that are currently working for the community to notify
+	public function getDriversToNotify() {
+		return [];
+	}
 
+	
 	public function notifyDrivers(){
 
 		if( $this->ignoreDrivers ){
@@ -1365,6 +1377,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$driversToNotify = [];
 
+		/*
+		* legacy stuff. hopefully not used anymore
+
 		foreach ( $order->restaurant()->notifications() as $n ) {
 			// Admin notification type means it needs a driver
 			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
@@ -1374,6 +1389,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$driversToNotify[ $admin->id_admin ] = $admin;
 			}
 		}
+		*/
 
 		// check if the restaurant is using our delivery system
 		if( intval( $order->restaurant()->delivery_service ) == 1 ){

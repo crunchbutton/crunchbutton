@@ -2044,6 +2044,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return $id_restaurant;
 	}
+	
+	// temporary function. should calculate or return a better value in the future
+	public function lineTime() {
+		return 11;
+	}
 
 	// Return minutes left to open
 	public function opensIn( $dt = null ) {
