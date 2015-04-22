@@ -54,7 +54,9 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 
 		$totals = [];
 
-		foreach( $calcs as $calc ){
+		$calc = $calcs[ 14 ];
+
+		// foreach( $calcs as $calc ){
 			$totals[ 'subtotal' ] += $calc[ 'subtotal' ];
 			$totals[ 'tax' ] += $calc[ 'tax' ];
 			$totals[ 'delivery_fee' ] += $calc[ 'delivery_fee' ];
@@ -67,7 +69,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 			$totals[ 'total_reimburse' ] += $calc[ 'total_reimburse' ];
 			$totals[ 'total_payment' ] += $calc[ 'total_payment' ];
 			$totals[ 'orders' ] += count( $calc[ 'orders' ] );
-		}
+		// }
 
 		foreach( $totals as $key => $val ){
 			$totals[ $key ] = floatval( number_format( $val, 2 ) );
@@ -83,6 +85,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $totals[ 'restaurant_fee' ], 0 );
 		$this->assertEquals( $totals[ 'gift_card' ], 0 );
 		$this->assertEquals( $totals[ 'orders' ], 10 );
+		$this->assertEquals( $totals[ 'total_reimburse' ], 32.16 );
 		$this->assertEquals( $totals[ 'total_payment' ], 32.64 );
 
 	}
