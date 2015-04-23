@@ -39,7 +39,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 					'type' => 'notification-driver',
 					'id_order' => $this->order()->id_order,
 					'id_admin' => $driver->id_admin,
-					'seconds' => $driver->seconds
+					'seconds' => $driver->_seconds ? intval($driver->_seconds) ? 0;
 				]);
 			}
 		} else {

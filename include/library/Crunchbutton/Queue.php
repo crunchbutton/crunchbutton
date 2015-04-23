@@ -14,9 +14,13 @@ class Crunchbutton_Queue extends Cana_Table {
 	const STATUS_STOPPED				= 'stopped';
 	
 
-	public static function process() {
+	public static function process($all = false) {
+		
+		if (!$all) {
+			$allQuery = ' and date_start<now()';
+		}
 
-		$queue = self::q('select * from queue where date_start<now() and status=?', [self::STATUS_NEW]);
+		$queue = self::q('select * from queue where status=?'.$allQuery, [self::STATUS_NEW]);
 		foreach ($queue as $q) {
 			echo 'Starting #'.$q->id_queue. '...';
 			
@@ -39,6 +43,16 @@ class Crunchbutton_Queue extends Cana_Table {
 			}
 		}
 		return $queue->count();
+	}
+	
+	// dump the que and do nothing
+	public static function clean() {
+		c::db()->exec('update queue set status=?', [self::STATUS_STOPPED]);
+	}
+	
+	// run the entire que until its empty
+	public static function end() {
+		self::process(true);
 	}
 	
 	public function complete($status = self::STATUS_SUCCESS) {
