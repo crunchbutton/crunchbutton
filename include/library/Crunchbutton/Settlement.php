@@ -302,6 +302,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'standard_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
+				$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
 				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
 				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
 
@@ -316,12 +317,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
+					$order[ 'pay_info' ][ 'total_payment_per_order' ] = 0;
 					$order[ 'pay_info' ][ 'delivery_fee_collected' ] = 0;
 				}
 
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					$order[ 'pay_info' ][ 'tip' ] = 0;
 					$order[ 'pay_info' ][ 'delivery_fee' ] = 0;
+					$order[ 'pay_info' ][ 'total_payment_per_order' ] = 0;
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
 
@@ -344,6 +347,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'standard_reimburse' ] += $order[ 'pay_info' ][ 'standard_reimburse' ];
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
+				$pay[ $driver ][ 'total_payment_per_order' ] += $order[ 'pay_info' ][ 'total_payment_per_order' ];
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
 			}
 		}
@@ -396,6 +400,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+				$pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
 			}
 		}
 
@@ -446,17 +451,29 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'delivery_service' ] * ( $arr[ 'formal_relationship' ] ? 0 : 1 );
 	}
 
-	public function orderCalculateTotalDueDriver( $pay ){
+	public function orderCalculateTotalDueDriver( $pay, $force = false ){
+
+		$pay_by_order = $pay[ 'pay_by_order' ];
+
+		// #5325
+		if( $force ){
+			$delivery_fee = ( $pay[ 'delivery_fee' ] ? $pay[ 'delivery_fee' ] : 3 );
+			$pay_by_order = 1;
+		} else {
+			$delivery_fee = $pay[ 'delivery_fee' ];
+		}
+
+
 		$total_due = 	( ( $pay[ 'subtotal' ] +
 										$pay[ 'tax' ] +
-										$pay[ 'delivery_fee' ] +
+										$delivery_fee +
 										$pay[ 'customer_fee' ] +
 										$pay[ 'markup' ] +
 										$pay[ 'delivery_fee_collected' ] +
 										$pay[ 'credit_charge' ] +
 										$pay[ 'restaurant_fee' ] +
 										$pay[ 'gift_card' ] -
-										$pay[ 'total_reimburse' ] ) * $pay[ 'pay_by_order' ] ) + $pay[ 'tip' ];
+										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ];
 		return $total_due;
 	}
 
