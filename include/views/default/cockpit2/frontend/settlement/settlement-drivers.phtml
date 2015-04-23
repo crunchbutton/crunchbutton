@@ -175,6 +175,7 @@
 					<td>Payment</td>
 					<td>Total Spent</td>
 					<td>Standard Reimburse</td>
+					<td>Per-Order Pay</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -191,6 +192,7 @@
 					<td>$ {{driver.total_payment | formatPrice}}</td>
 					<td>$ {{driver.total_spent | formatPrice}}</td>
 					<td>$ {{driver.standard_reimburse | formatPrice}}</td>
+					<td>$ {{driver.total_payment_per_order | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
