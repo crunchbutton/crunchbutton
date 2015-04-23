@@ -54,6 +54,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 					$orderTime = strtotime($order->date);
 					
 					// only bundle them if it is within the bundle time limit
+					// @todo: there should be 2 bundle times, so that it counts the time of the oldest order for that restaurant, not just newest
+					//   that way the diver deosnt stay at chipotle forever
 					if ($orderTime + self::TIME_BUNDLE < $time) {
 						$acceptedRestaurants[$order->restaurant()->id_restaurant] = $order;
 					}
