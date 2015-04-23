@@ -77,6 +77,8 @@ if ( !showOrders ){
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
 
 	$scope.showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
+	// #5413
+	$scope.showOrders = true;
 
 	var showAll = $.totalStorage('driver-orders-show');
 	if (!showAll) {
