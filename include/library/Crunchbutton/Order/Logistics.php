@@ -3,7 +3,7 @@
 class Crunchbutton_Order_Logistics extends Cana_Model {
 	const TIME_MAX_DELAY = 120; // seconds
 	const MAX_DESTINATIONS = 3; // unique destinations
-	const TIME_BUNDLE = 10 * 60; // seconds
+	const TIME_BUNDLE = 600; // seconds
 	const CALCULATE_CURRENT_ORDER_ONLY = true; // dont try to plan routes with other orders that have not been acepted
 
 	public function __construct($order) {
@@ -27,7 +27,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 			
 			// get the drivers valid location based on an expiration time
 			$location = $driver->location();
-			if (!$location->valid()) {
+			if ($location && !$location->valid()) {
 				$location = null;
 			}
 
@@ -38,7 +38,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 			foreach ($ordersUnfiltered as $order) {
 
 				// if the order is another drivers, or already delivered, we dont care
-				if ($order->status->last()->driver->id_admin && ($order->status->last()->driver->id_admin != $dirver->id_admin || $order->status->last()->status == 'delivered')) {
+				if ($order->status()->last()->driver->id_admin && ($order->status()->last()->driver->id_admin != $dirver->id_admin || $order->status()->last()->status == 'delivered')) {
 					continue;
 				}
 				
@@ -50,7 +50,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 				$driverPrios[$driver->id_admin][$order->id_order] = 0;
 
 				// get a list of accepted restaurants so we can bundle unaccepted orders
-				if ($order->status->last()->status == 'accepted') {
+				if ($order->status()->last()->status == 'accepted') {
 					$orderTime = strtotime($order->date);
 					
 					// only bundle them if it is within the bundle time limit
@@ -73,7 +73,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 				$customer = new Crunchbutton_Order_Logistics_Destination([
 					'address' => $order->address,
 					'from' => $location,
-					'driver' => $this->driver(),
+					'driver' => $driver,
 					'type' => 'customer',
 					'status' => $order->status()->last()->status == 'new' ? 'new' : 'progress',
 					'id_order' => $order->id_order
@@ -83,7 +83,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 				$restaurant = new Crunchbutton_Order_Logistics_Destination([
 					'address' => $order->restaurant()->address,
 					'from' => $location,
-					'driver' => $this->driver(),
+					'driver' => $driver,
 					'type' => 'restaurant',
 					'status' => $order->status()->last()->status == 'new' ? 'new' : 'progress',
 					'id_order' => $order->id_order

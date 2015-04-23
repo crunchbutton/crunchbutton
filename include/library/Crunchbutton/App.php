@@ -124,7 +124,7 @@ class Crunchbutton_App extends Cana_App {
 			exit;
 		}
 
-		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2') {
+		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 		
