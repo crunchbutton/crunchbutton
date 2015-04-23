@@ -107,6 +107,16 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
 	}
 
+	public function convertTimeZone(){
+		$transactions = Crunchbutton_Pexcard_Transaction::q( 'SELECT * FROM pexcard_transaction WHERE transactionTime_pst IS NULL ORDER BY id_pexcard_transaction DESC LIMIT 10000' );
+		foreach( $transactions as $transaction ){
+			$date = new DateTime( $transaction->transactionTime, new DateTimeZone( 'America/Chicago' ) );
+			$date->setTimezone( new DateTimeZone( c::config()->timezone ) );
+			$transaction->transactionTime_pst = $date->format( 'Y-m-d H:i:s' );
+			$transaction->save();
+		}
+	}
+
 	public function saveTransactionsByPeriod( $start, $end ){
 		$start = new DateTime( $start );
 		$end = new DateTime( $end );
@@ -152,7 +162,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT acctId, SUM( amount ) AS amount
 								FROM pexcard_transaction
 									WHERE
-										DATE_FORMAT( transactionTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										DATE_FORMAT( transactionTime_pst, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
 										AND transactionType != "Transfer"
 										AND isPending IS NULL
 								GROUP BY acctId
@@ -165,7 +175,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT *
 								FROM pexcard_transaction
 									WHERE
-										DATE_FORMAT( transactionTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										DATE_FORMAT( transactionTime_pst, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
 										AND transactionType != "Transfer"
 										AND isPending IS NULL
 										AND acctId = "' . $acctId . '"
@@ -192,9 +202,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 											' . $where . '
 											AND
-												DATE( o.date ) >= "' . $start . '"
-											AND
-												DATE( o.date ) <= "' . $end . '"
+											DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
 											AND a.id_admin = "' . $id_admin . '"
 											ORDER BY o.date ASC';
 		return Crunchbutton_Order::q( $query );
@@ -209,7 +217,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 		$start = explode( '/' , $start );
 		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
-
+		$start->modify( '+4 hours' );
 		$pst_start = $start->format( 'Y-m-d H:i' );
 
 		$start->setTimezone( new DateTimeZone( 'America/Chicago' ) );
@@ -219,14 +227,13 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
 
 		$end->modify( '+4 hours' );
-		$end->modify( '+1 minute' );
 
 		$pst_end = $end->format( 'Y-m-d H:i' );
 
 		$end->setTimezone( new DateTimeZone( 'America/Chicago' ) );
 		$est_end = $end->format( 'Y-m-d H:i' );
 
-		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $est_start, $est_end );
+		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $pst_start, $pst_end );
 		$order_expenses = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $pst_start, $pst_end );
 		$order_expenses_cash_card = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $pst_start, $pst_end, false );
 
@@ -252,10 +259,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 				$timezone = c::config()->timezone;
 			}
 
-			$transactions = Crunchbutton_Pexcard_Transaction::getExpensesByPeriodByCard( $est_start, $est_end, $card->acctId );
+			$transactions = Crunchbutton_Pexcard_Transaction::getExpensesByPeriodByCard( $pst_start, $pst_end, $card->acctId );
 			foreach( $transactions as $transaction ){
-				$date = new DateTime( $transaction->transactionTime, new DateTimeZone( 'America/Chicago' ) );
-				$date->setTimezone( new DateTimeZone( $timezone ) );
+				$date = new DateTime( $transaction->transactionTime, new DateTimeZone( c::config()->timezone ) );
 				$info[ 'transactions' ][] = [ 'date' => $date->format( 'M jS Y g:i:s A T' ),
 																	'description' => $transaction->description,
 																	'amount' => $transaction->amount ];
@@ -278,6 +284,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		}
 
 		foreach( $cards as $card ){
+
 			if( !intval( $card[ 'id_admin' ] ) ){
 				$card = array_merge( $card, [ 'driver' => 'Card not assigned',
 																			'card_amount' => 0,
@@ -345,6 +352,10 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 			$transactionTime = date( 'Y-m-d H:i:s', strtotime( $transaction->transactionTime ) );
 			$settlementTime = date( 'Y-m-d H:i:s', strtotime( $transaction->settlementTime ) );
+
+			$date = new DateTime( $transactionTime, new DateTimeZone( 'America/Chicago' ) );
+			$date->setTimezone( new DateTimeZone( c::config()->timezone ) );
+			$_transaction->transactionTime_pst = $date->format( 'Y-m-d H:i:s' );
 
 			$_transaction->transactionId = $transaction->id;
 			$_transaction->acctId = $transaction->acctId;
