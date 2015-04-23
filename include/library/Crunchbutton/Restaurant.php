@@ -20,6 +20,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			->load($id);
 	}
 
+	public function isImageUsedByOtherRestaurant(){
+		if( !$this->image ){
+			return false;
+		}
+		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE image = "' . $this->image . '" AND id_restaurant != "' . $this->id_restaurant . '"' );
+		if( $restaurants->count() > 0 ){
+			return true;
+		}
+		return false;
+	}
+
 	public function deliveryItSelf(){
 		if( $this->delivery ){
 			if( $this->delivery_service ){
@@ -2053,7 +2064,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return $id_restaurant;
 	}
-	
+
 	// temporary function. should calculate or return a better value in the future
 	public function lineTime() {
 		return 11;
