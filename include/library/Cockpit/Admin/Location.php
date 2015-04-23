@@ -1,7 +1,7 @@
 <?php
 
 class Cockpit_Admin_Location extends Cana_Table {
-	const TIME_LOCATION_VALID = 6 * 60; // seconds
+	const TIME_LOCATION_VALID = 600; // seconds
 
 	public function exports() {
 		$exports = [

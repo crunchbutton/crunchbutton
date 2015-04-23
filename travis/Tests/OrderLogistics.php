@@ -171,7 +171,7 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($a1->id_queue ? true : false);
 		$this->assertTrue($a2->id_queue ? true : false);
 
-		
+		$this->assertTrue(false);
 		
 	}
 }
