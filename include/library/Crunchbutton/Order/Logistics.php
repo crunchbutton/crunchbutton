@@ -4,6 +4,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 	const TIME_MAX_DELAY = 120; // seconds
 	const MAX_DESTINATIONS = 3; // unique destinations
 	const TIME_BUNDLE = 10 * 60; // seconds
+	const CALCULATE_CURRENT_ORDER_ONLY = true; // dont try to plan routes with other orders that have not been acepted
 
 	public function __construct($order) {
 		$this->_order = $order;
@@ -16,12 +17,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 		$time = time();
 		$driverPrios = [];
 		$driverVolumes = [];
+		$driverOrders = [];
 
 		foreach ($this->drivers() as $driver) {
 
 			$prios[$driver->id_admin] = [];
 			$acceptedRestaurants = [];
-			$destinations = [];
+			$destinations = new Crunchbutton_Order_Logistics_DestinationList;
 			
 			// get the drivers valid location based on an expiration time
 			$location = $driver->location();
@@ -37,6 +39,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 
 				// if the order is another drivers, or already delivered, we dont care
 				if ($order->status->last()->driver->id_admin && ($order->status->last()->driver->id_admin != $dirver->id_admin || $order->status->last()->status == 'delivered')) {
+					continue;
+				}
+				
+				// skip all orders that arent the one being run in this queue. they will run in their own queue job
+				if (self::CALCULATE_CURRENT_ORDER_ONLY && $order->status()->last()->status == 'new' && $order->id_order != $this->order()->id_order) {
 					continue;
 				}
 				
@@ -64,21 +71,50 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 				}
 
 				$customer = new Crunchbutton_Order_Logistics_Destination([
-					'address' => $order->address
+					'address' => $order->address,
+					'from' => $location,
+					'driver' => $this->driver(),
+					'type' => 'customer',
+					'status' => $order->status()->last()->status == 'new' ? 'new' : 'progress',
+					'id_order' => $order->id_order
 				]);
-				$destinations = Crunchbutton_Order_Logistics_Destination::($destinations, $customer);
+				$destinations->add($customer);
 				
 				$restaurant = new Crunchbutton_Order_Logistics_Destination([
-					'address' => $order->restaurant()->address
+					'address' => $order->restaurant()->address,
+					'from' => $location,
+					'driver' => $this->driver(),
+					'type' => 'restaurant',
+					'status' => $order->status()->last()->status == 'new' ? 'new' : 'progress',
+					'id_order' => $order->id_order
 				]);
-				// force add a destination if its not bundled
-				$destinations = Crunchbutton_Order_Logistics_Destination::($destinations, $restaurant, $prios[$driver->id_admin][$order->id_order] ? false : true);
+				$destinations->add($restaurant);
 
+				if ($location) {
+					// add small amount just for having location
+					// this way drivers without location enabled do not have preference on anything other than bundled
+					$driverPrios[$driver->id_admin][$order->id_order] += .1;
+				}
 
 				echo 'Order #'.$order->id_order.' - status: '.json_encode($order->status()->last())."\n";
 			}
 			
+			$driverOrders[$driver->id_admin] = $orders;
 			$driverDestinations[$driver->id_admin] = $destinations;
+		}
+		
+		// assign a score based on travel time of the restaurant and driver + their current orders
+		foreach ($this->drivers() as $driver) {
+			// calculate each possible destination set with the drivers current orders
+			$destinationCalculations = $driverDestinations[$driver->id_admin]->calculateEach($driver);
+
+			foreach ($destinationCalculations['results'] as $id => $result) {
+				$idOrder = $destinationCalculations['list'][$id]->getOrderId();
+				$time = $result->time;
+
+				// assign score. formula is just bullshit right now
+				$driverPrios[$driver->id_admin][$idOrder] += (1 - ($time / 200));
+			}
 		}
 		
 		// calculate the current max destinations to get a ratio
@@ -89,7 +125,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 			}
 		}
 		
-		// now that we have all our data we need to assign priorties
+		// now that we have all our data we need to assign priorties by fliping our matrix
 		
 		foreach ($driverPrios as $idAdmin => $orders) {
 			foreach ($orders as $idOrder => $prio) {

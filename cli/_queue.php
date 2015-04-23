@@ -12,7 +12,6 @@ $end = $start + 59;
 
 echo "\x1B[44mRunning Queue...\x1B[0m\n";
 while (time() < $end) {
-	//echo '.';
 	$c = Crunchbutton_Queue::process();
 	echo $c ? ("\x1B[32mFinished running ".$c." queue items\x1B[0m\n") : "\x1B[31mQueue is empty.\x1B[0m\n";
 	sleep(1);
