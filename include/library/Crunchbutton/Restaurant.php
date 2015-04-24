@@ -312,7 +312,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// N = # of active drivers
 		$activeDrivers = $this->activeDrivers();
 
-
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
 		// Z = # of additional orders from the same restaurant accepted by the same driver
