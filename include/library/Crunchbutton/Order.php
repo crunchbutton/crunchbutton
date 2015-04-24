@@ -18,7 +18,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const SHIPPING_TAKEOUT     = 'takeout';
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
-	
+
 	const PROCESS_TYPE_RESTAURANT 	= 'restaurant';
 	const PROCESS_TYPE_WEB			= 'web';
 	const PROCESS_TYPE_ADMIN		= 'admin';
@@ -1347,7 +1347,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->notifyDrivers();
 		}
 	}
-	
+
 	public function notifyRestaurants() {
 		foreach ( $this->restaurant()->notifications() as $n ) {
 			// admin type is depreciated. so lets not use it
@@ -1358,14 +1358,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$n->send( $this );
 		}
 	}
-	
+
 	// return a list of drivers that are currently working for the community to notify
 	public function getDriversToNotify() {
 		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder($this->id_order);
 		return $drivers;
 	}
 
-	
+
 	public function notifyDrivers(){
 
 		if( $this->ignoreDrivers ){
