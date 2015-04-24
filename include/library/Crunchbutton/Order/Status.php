@@ -58,13 +58,15 @@ class Crunchbutton_Order_Status extends Cana_Table {
 		];
 	}
 
-	public function last(  ) {
+	public function last() {
 		if (!count($this->actions())) {
 			$date = $this->order()->date();
+			$date_timestamp = Crunchbutton_Util::dateToUnixTimestamp( $date );
 			return [
 				'status' => 'new',
 				'date' => $date->format('Y-m-d H:i:s'),
 				'timestamp' => $date->getTimestamp(),
+				'date_timestamp' => $date_timestamp,
 				'order' => 0,
 				'driver' => null
 			];

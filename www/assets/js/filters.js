@@ -40,7 +40,7 @@ NGApp.filter( 'formatPrice', function() {
 NGApp.filter( 'nl2br', function() {
 	return function( input ) {
 		if( input != null ){
-			return input.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');	
+			return input.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
 		}
 		return input;
 	};
@@ -49,7 +49,7 @@ NGApp.filter( 'nl2br', function() {
 NGApp.filter( 'clearAddress', function(){
 	return function( input ) {
 		if( input != null ){
-			return input.replace(/#/g, '');	
+			return input.replace(/#/g, '');
 		}
 		return input;
 	};
@@ -59,7 +59,7 @@ NGApp.filter( 'clearAddress', function(){
 NGApp.filter( 'nl2cm', function() {
 	return function( input ) {
 		if( input != null ){
-			return input.replace(/\r/g, '').replace(/\n/g,', ');	
+			return input.replace(/\r/g, '').replace(/\n/g,', ');
 		}
 		return input;
 	};
@@ -70,7 +70,7 @@ NGApp.filter( 'callPhone', function() {
 	return function( input ) {
 		if( input != null ){
 			if( App.isMobile() ){
-				return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
+				return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>';
 			}
 		}
 		return input;
@@ -82,3 +82,14 @@ NGApp.filter('iif', function () {
 		return input ? trueValue : falseValue;
 	};
 });
+
+NGApp.filter( 'tsToHour', function( $filter ){
+	return function( input ) {
+		if( input != null ){
+			// client's timezone
+			var tz = new Date().toString().match( /([-\+][0-9]+)\s/ )[ 1 ];
+			return $filter( 'date' )( input, 'h:mm a' , tz );
+		}
+		return input;
+	};
+} );
