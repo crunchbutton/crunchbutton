@@ -128,7 +128,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 	}
 
 	public function registerSmartETA(){
-		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '" . Crunchbutton_Order::SHIPPING_DELIVERY . "' AND o.delivery_service = true AND o.date > DATE_SUB( NOW(), INTERVAL 10000 minute ) ORDER BY o.id_order ASC";
+		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '" . Crunchbutton_Order::SHIPPING_DELIVERY . "' AND o.delivery_service = true AND o.date > DATE_SUB( NOW(), INTERVAL 10 minute ) ORDER BY o.id_order ASC";
 		$orders = Crunchbutton_Order::q( $query );
 		foreach( $orders as $order ){
 			Crunchbutton_Order_Eta::_smartEta( $order );
