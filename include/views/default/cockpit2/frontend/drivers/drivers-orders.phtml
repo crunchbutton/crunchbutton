@@ -36,7 +36,7 @@
 								<span ng-switch-when="delivered">Delivered</span>
 								<span ng-switch-when="pickedup">Picked up</span>
 								<span ng-switch-when="accepted">Accepted</span>
-								<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.date | date:'shortTime'}}</span>
+								<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.timestamp | tsToHour}}</span>
 							</span>
 						</h6>
 
@@ -53,7 +53,7 @@
 							<div class="column-date" ng-click="showOrder( order.id_order )">
 								<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
 								<div class="orderid">#{{order.id_order | limitTo:-3:0}}</div>
-								<div class="hour">{{order.date_hour | date:'h:mm a'}}</div>
+								<div class="hour">{{order.timestamp | tsToHour}}</div>
 							</div>
 
 							<!-- vertical divider -->

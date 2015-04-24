@@ -27,6 +27,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
 		$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
 		$out['user'] = $this->user()->uuid;
+		$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
@@ -63,9 +64,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['summary'] = $this->orderMessage('summary');
 
 		if( $this->restaurant()->delivery_estimated_time ){
-			$out[ '_delivery_estimated_time' ] = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes')->format('h:i A');
+			$estimate = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes');
+			$out[ '_delivery_estimated_time' ] = $estimate->format('h:i A');
+			$out[ '_delivery_estimated_time_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $estimate );
 		} else {
 			$out[ '_delivery_estimated_time' ] = false;
+			$out[ '_delivery_estimated_time_timestamp' ] = false;
 		}
 		$out[ '_instructions_payment' ] = $this->driverInstructionsPaymentStatus();
 		$out[ '_instructions_food' ] = $this->driverInstructionsFoodStatus();
@@ -206,7 +210,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$status = $this->status()->last();
 		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
 		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
-
+		$status[ 'date_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $status_date );
 		$status[ '_outside_of_24h' ] = Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $date ) );
 		$status[ '_date_formatted' ] = $status_date->format( 'M jS Y g:i:s A' );
 
