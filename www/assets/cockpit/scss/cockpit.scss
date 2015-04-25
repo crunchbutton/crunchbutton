@@ -22,7 +22,7 @@ $desktopWidth: 1025px;
 	} @else {
 		border-radius: $radius;
 	}
-	
+
 
 	@media screen and (max-width: $mobileWidth) {
 		border-radius: $borderRadiusMobile;
@@ -40,7 +40,7 @@ $desktopWidth: 1025px;
 @mixin box-border-radius-right() {
 	border-top-right-radius: $borderRadius;
 	border-bottom-right-radius: $borderRadius;
-	
+
 	@media screen and (max-width: $mobileWidth) {
 		border-top-right-radius: $borderRadiusMobile;
 		border-bottom-right-radius: $borderRadiusMobile;
@@ -1229,6 +1229,11 @@ input {
 	height: 2.4em;
 	background: none;
 }
+	.li-input select[multiple]{
+		height: 10em;
+		background: #FFF;
+	}
+
 .li-input textarea{
 	height: 50px;
 }
@@ -1553,7 +1558,7 @@ td.documents-check {
 }
 .tb-pagination .td-next{
 	text-align: right;
-	
+
 }
 .tb-pagination .button{
 
