@@ -20,19 +20,19 @@ NGApp.directive('fitHeight', function() {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
-	
+
 			var setHeight = function() {
-				angular.element(element).height(angular.element(window).height() - angular.element(element).position().top - 10);				
+				angular.element(element).height(angular.element(window).height() - angular.element(element).position().top - 10);
 			};
-			
+
 			angular.element(window).on('resize', setHeight);
 
 			scope.$on('$destroy', function() {
 				angular.element(window).off('resize', setHeight);
 			});
-			
+
 			setHeight();
-			
+
 			scope.$watch('view', setHeight);
 		}
 	};
@@ -171,7 +171,7 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			});
 
 			resource = $resource(url, options, actions);
-			
+
 			var isLoading = {};
 
 			Object.keys(actions).forEach(function(action) {
@@ -188,7 +188,7 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 					promise = method.apply(null, arguments).$promise;
 
 					abortablePromiseWrap(promise, deferred, outstanding);
-					
+
 					isLoading.action = deferred;
 
 					return {
@@ -249,40 +249,40 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 		scope: true,
 		link: function ( scope, elem, attrs, ctrl ) {
 			var button = elem.find('button')[0];
-			
+
 			scope.init = true;
-			
+
 			if (!window.Ladda) {
 				return;
 			}
 
-			var l = Ladda.create(button);		
+			var l = Ladda.create(button);
 
 			angular.element(button).on('click', function() {
 				angular.element(elem.find('input')[0]).click();
 			});
-			
+
 			scope.uploader = new FileUploader({
 				url: '/api/driver/documents/upload/',
 				autoUpload: true
 			});
-	
+
 			scope.uploader.onBeforeUploadItem = function() {
 				l.start();
 			};
-		
+
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'driverDocsUploaded', { id_driver_document: response.id_driver_document, response: response } );
 				scope.uploader.clearQueue();
 				l.stop();
 			};
-		
+
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'driverDocsUploadedError', {} );
 				scope.uploader.clearQueue();
 				l.stop();
 			};
-			
+
 			return;
 
 
@@ -294,10 +294,65 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 					l.setProgress( progress );
 				}
 			});
-
 			$timeout(l.stop, 100);
+		}
+	}
+});
 
 
+NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
+	return {
+		restrict: 'AE',
+		replace: false,
+		scope: true,
+		link: function ( scope, elem, attrs, ctrl ) {
+			var button = elem.find('button')[0];
+
+			scope.init = true;
+
+			if (!window.Ladda) {
+				return;
+			}
+
+			var l = Ladda.create(button);
+
+			angular.element(button).on('click', function() {
+				angular.element(elem.find('input')[0]).click();
+			});
+
+			scope.uploader = new FileUploader({
+				url: '/api/community/resource/upload/',
+				autoUpload: true
+			});
+
+			scope.uploader.onBeforeUploadItem = function() {
+				l.start();
+			};
+
+			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUploadError', {} );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			return;
+
+
+			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
+				return;
+				console.log(newValue);
+				if( !isNaN( uploader.progress ) ){
+					var progress = ( uploader.progress / 100 );
+					l.setProgress( progress );
+				}
+			});
+			$timeout(l.stop, 100);
 		}
 	}
 });

@@ -30,7 +30,7 @@ if (App.isPhoneGap) {
 }
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
-var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap'], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap','isteven-multi-select'], function( $httpProvider ) {
 
 });
 
