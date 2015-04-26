@@ -4,35 +4,43 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'resource-all' ])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
-		}
-
 		if( c::getPagePiece( 3 ) == 'upload' ){
 			$this->_upload();
 		}
-
 
 		switch ( $this->method() ) {
 			case 'get':
 				$this->_get();
 			break;
 			case 'post':
+				$this->_permission();
 				$this->_post();
 			break;
 		}
 	}
 
+	private function _permission(){
+		if (!c::admin()->permission()->check(['global', 'resource-all' ])) {
+			header('HTTP/1.1 401 Unauthorized');
+			exit;
+		}
+	}
+
 	private function _get(){
+
 		switch ( c::getPagePiece( 3 ) ) {
 
 			case 'list':
+				$this->_permission();
 				$this->_list();
 				break;
 
-			case 'by-community':
-				# code...
+			case 'driver':
+				$this->_driver();
+				break;
+
+			case 'download':
+				$this->_download();
 				break;
 
 			default:
@@ -43,7 +51,69 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 				$this->_error();
 				break;
 		}
+	}
 
+	private function _driver(){
+		$resources = [];
+
+		$_resources = Crunchbutton_Community_Resource::byCommunity( 'all' );
+		if( $_resources ){
+			foreach( $_resources as $resource ){
+				if( !$resources[ $community->id_community ] ){
+					$resources[ 0 ] = [ 'id_community' => 0, 'name' => 'All Communities', 'resources' => [] ];
+				}
+				$resources[ 0 ][ 'resources' ][] = $resource->exports();
+			}
+		}
+
+		$driver = c::user();
+		$groups = $driver->groups();
+		foreach ( $groups as $group ) {
+			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
+			foreach( $communities as $community ){
+				$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
+				if( $_resources ){
+					foreach( $_resources as $resource ){
+						if( !$resources[ $community->id_community ] ){
+							$resources[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'resources' => [] ];
+						}
+						$data = $resource->exports();
+						$data[ 'communities' ] = null;
+						unset( $data[ 'communities' ] );
+						$resources[ $community->id_community ][ 'resources' ][] = $data;
+					}
+				}
+			}
+		}
+		$out = [];
+		foreach( $resources as $key => $val ){
+			$out[] = $val;
+		}
+		echo json_encode( $out );exit;
+	}
+
+	private function _download(){
+		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 4 ) );
+		if( $resource->id_community_resource ){
+			$file = $resource->doc_path();
+			$name = $resource->name;
+			$ext = pathinfo( $file, PATHINFO_EXTENSION );
+			$name .= '.' . $ext;
+			if( file_exists( $file ) ){
+				header( 'Content-Description: File Transfer' );
+				header( 'Content-Type: application/octet-stream' );
+				header( 'Content-Disposition: attachment; filename=' . $name );
+				header( 'Expires: 0' );
+				header( 'Cache-Control: must-revalidate' );
+				header( 'Pragma: public' );
+				header( 'Content-Length: ' . filesize( $file ) );
+				readfile( $file );
+				exit;
+			} else {
+				$this->_error( 'download:file-not-found' );
+			}
+		}
+		$this->_error();
 	}
 
 	private function _upload(){
@@ -98,6 +168,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 		$resource->all = ( $this->request()[ 'all' ] ? 1 : 0 );
 		$resource->page = ( $this->request()[ 'page' ] ? 1 : 0 );
 		$resource->side = ( $this->request()[ 'side' ] ? 1 : 0 );
+		$resource->active = ( $this->request()[ 'active' ] ? 1 : 0 );
 		$resource->date = date( 'Y-m-d H:i:s' );
 		$resource->save();
 
@@ -199,8 +270,8 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 			$out->page = ( intval( $out->page ) ) ? true : false;
 			$out->side = ( intval( $out->side ) ) ? true : false;
 			$out->all = ( intval( $out->all ) ) ? true : false;
+			$out->active = ( intval( $out->active ) ) ? true : false;
 			$data[] = $out;
-//			$data[] = $s;
 		}
 
 		echo json_encode([

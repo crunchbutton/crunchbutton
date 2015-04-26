@@ -1,3 +1,19 @@
+NGApp.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		.when('/resources', {
+			action: 'resources',
+			controller: 'CommunityResourcesDriverCtrl',
+			templateUrl: 'assets/view/drivers-resources.html'
+
+		})
+}]);
+
+NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, CommunityResourceService ) {
+	CommunityResourceService.driver(function(data) {
+		$scope.communities = data;
+		console.log('$scope.communities',$scope.communities);
+	});
+} );
 
 NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationService, DriverOrdersService ) {
 

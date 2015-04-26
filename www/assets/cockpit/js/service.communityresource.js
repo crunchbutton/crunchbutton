@@ -4,7 +4,8 @@ NGApp.factory( 'CommunityResourceService', function( $rootScope, $resource, Reso
 	var resource = $resource( App.service + 'community/resource/:action/:id_resource', { id_admin: '@id_admin', action: '@action' }, {
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'get' : { 'method': 'GET', params : { } },
-				'list' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true }
+				'list' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true },
+				'driver' : { 'method': 'GET', params : { 'action' : 'driver' }, isArray: true }
 			}
 		);
 
@@ -20,6 +21,12 @@ NGApp.factory( 'CommunityResourceService', function( $rootScope, $resource, Reso
 
 	service.get = function( id_community_resource, callback ){
 		resource.get( { 'id_resource': id_community_resource }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.driver = function( callback ){
+		resource.driver( { }, function( json ){
 			callback( json );
 		} );
 	}

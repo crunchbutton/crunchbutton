@@ -22,3 +22,6 @@ CREATE TABLE `community_resource_community` (
   CONSTRAINT `community_resource_community_ibfk_1` FOREIGN KEY (`id_community`) REFERENCES `community` (`id_community`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `community_resource_community_ibfk_2` FOREIGN KEY (`id_community_resource`) REFERENCES `community_resource` (`id_community_resource`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE  `community_resource` ADD  `active` TINYINT( 1 ) NOT NULL DEFAULT '0';
+UPDATE community_resource SET active = 1;

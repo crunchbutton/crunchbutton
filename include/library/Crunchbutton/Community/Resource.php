@@ -47,6 +47,14 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 		}
 	}
 
+	public function byCommunity( $id_community ){
+		if( $id_community == 'all' ){
+			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr WHERE cr.all = "1" AND active = 1' );
+		} else {
+			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr INNER JOIN community_resource_community crc ON cr.id_community_resource = crc.id_community_resource AND crc.id_community = "' . $id_community . '"  AND active = 1' );
+		}
+	}
+
 	public function exports(){
 		$out = $this->properties();
 		$communities = $this->communities();
@@ -56,7 +64,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 				$out[ 'communities' ][] = $community->id_community;
 			}
 		}
-
+		$out[ 'path' ] = $this->url();
 		return $out;
 	}
 

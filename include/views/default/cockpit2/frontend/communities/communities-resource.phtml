@@ -80,6 +80,16 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.active.$invalid}">
+				<div class="label">Active:</div>
+				<div class="input">
+					<select name="active" required ng-model="resource.active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.active.$error.required">Required.</small>
+				</div>
+			</li>
+
 		</ul>
 
 	</form>
