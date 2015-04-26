@@ -13,8 +13,33 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, $routeParams, CommunityResourceService ) {
+NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewListService, CommunityResourceService, CommunityService ) {
 
+	$rootScope.title = 'Resources';
+
+	CommunityService.listSimple( function( json ){
+		$scope.communities = [];
+		$scope.communities.push( { 'name': 'All', 'id_community': 'all' } );
+		angular.forEach( json, function( community, key ) {
+  		this.push( { 'name': community.name, 'id_community': community.id_community } );
+		}, $scope.communities );
+	} );
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			community: 'all'
+		},
+		update: function() {
+			CommunityResourceService.list( $scope.query, function(d) {
+				$scope.resources = d.results;
+				$scope.complete(d);
+			});
+		}
+	});
 } );
 
 NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, CommunityResourceService, CommunityService ) {

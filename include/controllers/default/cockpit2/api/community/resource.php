@@ -25,7 +25,12 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 	}
 
 	private function _get(){
-		switch ( $resource ) {
+		switch ( c::getPagePiece( 3 ) ) {
+
+			case 'list':
+				$this->_list();
+				break;
+
 			case 'by-community':
 				# code...
 				break;
@@ -110,6 +115,101 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 
 		echo json_encode( [ 'id_resource' => $resource->id_community_resource ] );
 		exit;
+	}
+
+	private function _list(){
+
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		if( $community == 'all' ){
+			$community = null;
+		}
+		$keys = [];
+
+		if ($page == 1) {
+			$offset = '0';
+		} else {
+			$offset = ($page-1) * $limit;
+		}
+
+		$q = '
+			SELECT
+				-WILD-
+			FROM community_resource cr
+		';
+		if ($community) {
+			$q .= '
+				LEFT JOIN community_resource_community crc ON cr.id_community_resource=crc.id_community_resource
+			';
+		}
+		$q .='
+			WHERE
+				cr.name IS NOT NULL
+		';
+
+
+		if ($community) {
+			$q .= '
+				AND crc.id_community=?
+			';
+			$keys[] = $community;
+		}
+
+		if ($search) {
+			$s = Crunchbutton_Query::search([
+				'search' => stripslashes($search),
+				'fields' => [
+					'cr.name' => 'like',
+					'cr.file' => 'like'
+				]
+			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
+		}
+
+		// get the count
+		$count = 0;
+		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
+		while ($c = $r->fetch()) {
+			$count++;
+		}
+
+		$q .= '
+			ORDER BY cr.name ASC
+			LIMIT ?, ?
+		';
+		$keys[] = $offset;
+		$keys[] = $limit;
+
+		// do the query
+		$data = [];
+		$r = c::db()->query(str_replace('-WILD-','
+			cr.*
+		', $q), $keys);
+
+		while ($s = $r->fetch()) {
+			$resource = Crunchbutton_Community_Resource::o($s);
+			$out = $s;
+			$out->communities = [];
+			foreach ($resource->communities( true ) as $community) {
+				$out->communities[] = [ 'id_community' => $community->id_community, 'name' => $community->name ];
+			}
+			$out->page = ( intval( $out->page ) ) ? true : false;
+			$out->side = ( intval( $out->side ) ) ? true : false;
+			$out->all = ( intval( $out->all ) ) ? true : false;
+			$data[] = $out;
+//			$data[] = $s;
+		}
+
+		echo json_encode([
+			'count' => intval($count),
+			'pages' => ceil($count / $limit),
+			'page' => $page,
+			'results' => $data
+		]);
+
 	}
 
 	private function _error( $error = 'invalid request' ){

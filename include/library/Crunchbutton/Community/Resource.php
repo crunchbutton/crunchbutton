@@ -17,7 +17,11 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	}
 
 	public function path(){
-		return Util::uploadPath() . '/resource/';
+		$path = Util::uploadPath() . '/resource/';
+		if ( !file_exists( $path ) ) {
+			@mkdir( $path, 0777, true );
+		}
+		return $path;
 	}
 
 	public function doc_path(){
@@ -30,13 +34,17 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 
 	public function date(){
 		if( !$this->_date ){
-			$this->_date = new DateTime($this->datetime, new DateTimeZone(c::config()->timezone));
+			$this->_date = new DateTime( $this->datetime, new DateTimeZone( c::config()->timezone ) );
 		}
 		return $this->_date;
 	}
 
-	public function communities(){
-		return Crunchbutton_Community_Resource_Community::q( 'SELECT * FROM community_resource_community WHERE id_community_resource = "' . $this->id_community_resource . '"' );
+	public function communities( $name = false ){
+		if( $name ){
+			return Crunchbutton_Community::q( 'SELECT community.name, community.id_community FROM community_resource_community INNER JOIN community ON community.id_community = community_resource_community.id_community WHERE id_community_resource = "' . $this->id_community_resource . '"' );
+		} else {
+			return Crunchbutton_Community_Resource_Community::q( 'SELECT * FROM community_resource_community WHERE id_community_resource = "' . $this->id_community_resource . '"' );
+		}
 	}
 
 	public function exports(){
