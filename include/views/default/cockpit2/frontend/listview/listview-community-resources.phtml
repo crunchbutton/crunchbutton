@@ -1,0 +1,41 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th></th>
+			<th>Name</th>
+			<th>File</th>
+			<th class="tb-center">Communities</th>
+			<th class="tb-small" nowrap="nowrap">Page</th>
+			<th class="tb-small" nowrap="nowrap">Side</th>
+			<th class="tb-small"></th>
+		</tr>
+		<tr ng-repeat="resource in resources track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_community_resource}}">
+			<td>#{{resource.id_community_resource}}</td>
+			<td>
+			{{resource.name}}
+			</td>
+			<td>
+			{{resource.file}}
+			</td>
+			<td>
+				<span class="tag tag-red" ng-if="resource.all">All</span>
+				<span class="listview-smaller" ng-if="!resource.all">
+					<span ng-repeat="community in resource.communities">
+						<span class="tag tag-lightgrey">{{community.name}}</span>
+					</span>
+				</span>
+			</td>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-green" ng-if="resource.page">Yes</span>
+				<span class="tag tag-red" ng-if="!resource.page">No</span>
+			</td>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-green" ng-if="resource.side">Yes</span>
+				<span class="tag tag-red" ng-if="!resource.side">No</span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="/community/resource/{{resource.id_community_resource}}"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+			</td>
+		</tr>
+	</table>
+</div>
