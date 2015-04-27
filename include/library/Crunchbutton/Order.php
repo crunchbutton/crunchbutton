@@ -1993,7 +1993,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$msg .= " \n\n";
 				// Payment is card and user tipped
 				if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
-					$msg .= 'TIP ' . $this->tip() . $spacer;
+					// remove the tip amount from the notification SMS sent to drivers #5418
+					// $msg .= 'TIP ' . $this->tip() . $spacer;
 				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
 					$msg .= 'TIP BY CASH' . $spacer;
 				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
