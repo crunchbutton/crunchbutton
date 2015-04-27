@@ -90,6 +90,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 */
+
 		echo json_encode($out);
 	}
 
