@@ -212,6 +212,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 				if( data.id_user != '' ){
 					service.user = data;
 					App.config.user = data;
+					$rootScope.$broadcast('userUpdated', service.user);
 					$rootScope.$safeApply();
 				}
 				if( callback ){

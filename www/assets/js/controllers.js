@@ -1471,7 +1471,7 @@ NGApp.controller( 'GiftcardCtrl', function ($scope, $location, GiftCardService )
 	setTimeout( function(){ GiftCardService.open(); }, 300 );
 });
 
-NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
+NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $rootScope, $http, AccountModalService, AccountService, AccountHelpService ) {
 	$scope.modal = AccountModalService;
 	$scope.account = AccountService;
 	$scope.help = AccountHelpService;
@@ -1479,12 +1479,28 @@ NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountMod
 		$scope.modal.toggleSignForm( 'signin' );
 		$scope.help.show( false );
 	}
+	if( AccountService && AccountService.user && AccountService.user.email ){
+		$scope.account.form.email = AccountService.user.email;
+	}
+	$scope.$on( 'userUpdated', function(e, user) {
+		if( !$scope.account.form.email ){
+			$scope.account.form.email = user.email;
+		}
+	} );
 });
 
 
 NGApp.controller( 'AccountSevenCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService, AccountFacebookService ) {
 	$scope.tab = 'facebook'
 	$scope.account = AccountService;
+	if( AccountService && AccountService.user && AccountService.user.email ){
+		$scope.account.form.email = AccountService.user.email;
+	}
+	$scope.$on( 'userUpdated', function(e, user) {
+		if( !$scope.account.form.email ){
+			$scope.account.form.email = user.email;
+		}
+	} );
 	$scope.help = AccountHelpService;
 	$scope.facebook = AccountFacebookService;
 	$scope.changeTab = function( tab ){
