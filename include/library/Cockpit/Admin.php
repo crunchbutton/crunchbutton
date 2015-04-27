@@ -101,12 +101,21 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $this->_deliveries;
 	}
-	
+
 	public function pex() {
 		if (!isset($this->_pex)) {
 			$this->_pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
 		}
 		return $this->_pex;
+	}
+
+	public function totalReferralActivations( $period = false ){
+		$query = 'SELECT COUNT(*) AS total FROM referral WHERE id_admin_inviter = "' . $this->id_admin . '" AND new_user = 1 ';
+		if( $period ){
+			$query .= ' AND date >= DATE_SUB( NOW(), INTERVAL ' . $period . ' DAY )';
+		}
+		$total = Crunchbutton_Referral::q( $query )->get( 0 );
+		return intval( $total->total );
 	}
 
 	public function exports( $params = [] ) {
@@ -118,8 +127,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
 		$out['invite_code'] = $this->invite_code;
 		$out['dob'] = $this->dob;
-		
-		
+
+		$out['referral_total'] = $this->totalReferralActivations();
+		$out['referral_total_last_week'] = $this->totalReferralActivations( 7 );
+
 		$out['pexcard'] = [
 			'card_serial' => $this->pex()->card_serial,
 			'last_four' => $this->pex()->last_four,
@@ -136,7 +147,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		if ($this->location()) {
 			$out['location'] = $this->location()->exports();
 		}
-		
+
 		if ($params['working'] !== false) {
 
 			$next = Community_Shift::nextShiftsByAdmin($this->id_admin);

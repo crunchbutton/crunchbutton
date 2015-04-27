@@ -44,8 +44,8 @@
 
 			</div>
 		</div>
-		
-		
+
+
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Payment Info</h1>
@@ -54,12 +54,12 @@
 						<a href="/staff/{{staff.login}}/pexcard" ng-if="staff.pexcard.active"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Funds</button></a>
 						<a href="/pexcard/card/driver/{{staff.id_admin}}" ng-if="!staff.pexcard.active"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Card</button></a>
 						<a href="/staff/{{staff.login}}/payinfo"><button class="button button-empty button-empty-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-						
+
 					</div>
 				</div>
 				<div class="divider"></div>
 			</div>
-			
+
 			<div class="no-box-content-color">
 				<div class="field-container">
 					<div class="field-row">
@@ -80,13 +80,13 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Tools</h1>
 				<div class="divider"></div>
 			</div>
-			
+
 			<div class="no-box-content-color">
 				<div class="field-container">
 					<div class="field-row">
@@ -100,7 +100,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Driver Info</h1>
@@ -111,7 +111,7 @@
 				</div>
 				<div class="divider"></div>
 			</div>
-			
+
 			<div class="no-box-content-color">
 				<div class="field-container">
 					<div class="field-row">
@@ -137,10 +137,22 @@
 							{{staff.invite_code}}
 						</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Total Number Activations</div>
+						<div class="field-value">
+							{{staff.referral_total}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Total Number Activations in Past Week</div>
+						<div class="field-value">
+							{{staff.referral_total_last_week}}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Shifts</h1>
@@ -151,7 +163,7 @@
 				</div>
 				<div class="divider"></div>
 			</div>
-			
+
 			<div class="no-box-content-color box-content-table" ng-if="staff.shifts.length">
 				<table class="tb-zebra">
 					<tr>
@@ -174,7 +186,7 @@
 				</table>
 			</div>
 		</div>
-		
+
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
