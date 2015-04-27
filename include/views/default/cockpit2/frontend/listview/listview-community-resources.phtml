@@ -5,9 +5,10 @@
 			<th>Name</th>
 			<th>File</th>
 			<th class="tb-center">Communities</th>
-			<th class="tb-small" nowrap="nowrap">Page</th>
-			<th class="tb-small" nowrap="nowrap">Side</th>
-			<th class="tb-small" nowrap="nowrap">Active</th>
+			<th nowrap="nowrap">Show at<br>Resources Page</th>
+			<th nowrap="nowrap">Show at<br>Sideswipe Menu</th>
+			<th nowrap="nowrap">Show at<br>Order Page</th>
+			<th nowrap="nowrap">Active</th>
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="resource in resources track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_community_resource}}">
@@ -33,6 +34,10 @@
 			<td nowrap class="tb-center tb-v-center">
 				<span class="tag tag-green" ng-if="resource.side">Yes</span>
 				<span class="tag tag-red" ng-if="!resource.side">No</span>
+			</td>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-green" ng-if="resource.order_page">Yes</span>
+				<span class="tag tag-red" ng-if="!resource.order_page">No</span>
 			</td>
 			<td nowrap class="tb-center tb-v-center">
 				<span class="tag tag-green" ng-if="resource.active">Active</span>

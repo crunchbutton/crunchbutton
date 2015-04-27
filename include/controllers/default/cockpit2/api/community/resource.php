@@ -167,6 +167,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 		$resource->file = $this->request()[ 'file' ];
 		$resource->all = ( $this->request()[ 'all' ] ? 1 : 0 );
 		$resource->page = ( $this->request()[ 'page' ] ? 1 : 0 );
+		$resource->order_page = ( $this->request()[ 'order_page' ] ? 1 : 0 );
 		$resource->side = ( $this->request()[ 'side' ] ? 1 : 0 );
 		$resource->active = ( $this->request()[ 'active' ] ? 1 : 0 );
 		$resource->date = date( 'Y-m-d H:i:s' );
@@ -268,6 +269,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 				$out->communities[] = [ 'id_community' => $community->id_community, 'name' => $community->name ];
 			}
 			$out->page = ( intval( $out->page ) ) ? true : false;
+			$out->order_page = ( intval( $out->order_page ) ) ? true : false;
 			$out->side = ( intval( $out->side ) ) ? true : false;
 			$out->all = ( intval( $out->all ) ) ? true : false;
 			$out->active = ( intval( $out->active ) ) ? true : false;

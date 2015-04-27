@@ -1,7 +1,7 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 		.when('/resources', {
-			action: 'resources',
+			action: 'community-resources',
 			controller: 'CommunityResourcesDriverCtrl',
 			templateUrl: 'assets/view/drivers-resources.html'
 

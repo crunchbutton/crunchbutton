@@ -25,3 +25,6 @@ CREATE TABLE `community_resource_community` (
 
 ALTER TABLE  `community_resource` ADD  `active` TINYINT( 1 ) NOT NULL DEFAULT '0';
 UPDATE community_resource SET active = 1;
+
+ALTER TABLE  `community_resource` ADD  `order_page` TINYINT( 1 ) NOT NULL DEFAULT '0';
+UPDATE community_resource SET active = 1;

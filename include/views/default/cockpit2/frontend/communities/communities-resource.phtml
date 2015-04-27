@@ -60,6 +60,16 @@
 					<div isteven-multi-select input-model="communities" output-model="outputCommunities" button-label="name" item-label="name" tick-property="ticked" ></div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.orderPage.$invalid}">
+				<div class="label">Show at order page (for drivers):</div>
+				<div class="input">
+					<select name="orderPage" required ng-model="resource.order_page" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.orderPage.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.page.$invalid}">
 				<div class="label">Show at resource page:</div>
 				<div class="input">

@@ -31,6 +31,16 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
+
+		// resources
+		$resources = Crunchbutton_Community_Resource::byCommunity( $this->id_community, 'order_page' );
+		if( $resources ){
+			$out['resources'] = [];
+			foreach( $resources as $resource ){
+				$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->url() ];
+			}
+		}
+
 		$credit = $this->chargedByCredit();
 		if( $credit > 0 ){
 			$out['credit'] = $credit;
