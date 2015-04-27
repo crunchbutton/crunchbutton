@@ -2822,7 +2822,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				if( $driver->id_admin && $driver->hasPexCard() ){
 					return 'Pay restaurant with your own cash, not PEX';
 				} else {
-					return 'Pay the restaurant with cash';
+					return 'Pay the restaurant with own cash';
 				}
 			} else {
 				return 'Do not pay the restaurant';
@@ -2833,7 +2833,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				if( $driver->id_admin && $driver->hasPexCard() ){
 					return 'Pay restaurant with your own cash, not PEX';
 				} else {
-					return 'Pay the restaurant with cash';
+					return 'Pay the restaurant with own cash';
 				}
 			} else {
 				if( $driver->id_admin && $driver->hasPexCard() ){
