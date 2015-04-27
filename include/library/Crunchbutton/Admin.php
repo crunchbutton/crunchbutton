@@ -1033,6 +1033,30 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function hasResource(){
+		$_resources = Crunchbutton_Community_Resource::byCommunity( 'all' );
+		if( $_resources ){
+			foreach( $_resources as $resource ){
+				return true;
+			}
+		}
+
+		$driver = c::user();
+		$groups = $driver->groups();
+		foreach ( $groups as $group ) {
+			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
+			foreach( $communities as $community ){
+				$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
+				if( $_resources ){
+					foreach( $_resources as $resource ){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this->changeOptions([

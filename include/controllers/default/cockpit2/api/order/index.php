@@ -162,7 +162,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			case 'status':
 				echo json_encode($order->status()->last());
 				break;
-				
+
 			case 'ticket':
 				echo $order->getSupport(true)->json();
 				break;
