@@ -172,6 +172,7 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	service.text_customer_5_min_away_sending = null;
 
 service.text_customer_5_min_away = function(){
+
 if( 'Confirm send message to customer?' ){
 		service.text_customer_5_min_away_sending = true;
 		if( service && service.textLoader && service.textLoader.start ){

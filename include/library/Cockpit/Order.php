@@ -239,9 +239,16 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		switch ( $text ) {
 			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
+
+				$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = "' . $this->id_order . '" AND type = "' . Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN . '" LIMIT 1' )->get( 0 );
+				if( $action->id_order_action ){
+					return true;
+				}
+
 				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
 				$driver = $this->driver();
 				if( $driver->id_admin ){
+
 					$message = sprintf( $pattern, $driver->firstName() );
 					Crunchbutton_Message_Sms::send( [
 						'to' => $this->phone,
