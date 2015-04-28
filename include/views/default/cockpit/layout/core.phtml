@@ -239,14 +239,6 @@
 						</a>
 					</li>
 					<? } ?>
-
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
-						<li class="">
-							<a href="/drivers/hours">
-								<i class="icon-time"></i> Working hours <i style="font-size:11px;">deprecated</i>
-							</a>
-						</li>
-					<? } ?>
 				</ul>
 			</li>
 		<? endif ; ?>
@@ -343,13 +335,6 @@
 					<li class="">
 						<a href="/permissions">
 							<i class="icon-unlock"></i> User / Permissions
-						</a>
-					</li>
-				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','settlement'] ) ) { ?>
-					<li class="">
-						<a href="/settlement">
-							<i class="icon-money"></i> Settlement
 						</a>
 					</li>
 				<? } ?>

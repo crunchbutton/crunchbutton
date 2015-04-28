@@ -53,15 +53,6 @@
 				<span>View</span>
 			</li>
 
-			<?php if (c::admin()->permission()->check(['global', 'restaurants-all' ])) { ?>
-				<li class="action-nav-button">
-					<a class="tip" data-original-title="Old Admin" href="/restaurants/legacy/<?php echo $this->restaurant->id_restaurant?>" title="">
-						<i class="icon-book"></i>
-						</a>
-					<span>Old Admin</span>
-				</li>
-			<?php } ?>
-
 			<?php if (c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$this->restaurant->id_restaurant}-all" ])) { ?>
 				<li class="action-nav-button">
 					<a class="tip" data-original-title="Duplicate" href="javascript:if(confirm('Confirm duplicate this restaurant?')){ document.location.href='/restaurants/<?php echo $this->restaurant->id_restaurant?>/duplicate'; }" title="">

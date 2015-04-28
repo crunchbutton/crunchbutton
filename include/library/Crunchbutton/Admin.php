@@ -426,6 +426,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function workingHoursWeek(){
+		die ('#5430 deprecated');
+		/*
 
 		$date = date( 'Y\WW' );
 		$weekdays = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri','Sat' ];
@@ -446,6 +448,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			$weekdays[ join( $weekday, ', ' ) ] = $hour;
 		}
 		return $weekdays;
+		*/
 	}
 
 	public function getNotifications( $oderby = 'active DESC, id_admin_notification DESC' ){

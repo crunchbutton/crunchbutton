@@ -10,7 +10,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const TYPE_FAX = 'fax';
 	const TYPE_PUSH_IOS = 'push-ios';
 	const TYPE_PUSH_ANDROID = 'push-android';
-	const REPS_COCKPIT = 'http://cbtn.io/';
+	const REPS_COCKPIT = 'https://cockpit.la/';
 
 	const IS_ENABLE_KEY = 'notification-admin-is-enable';
 	const IS_ENABLE_TO_TAKEOUT_KEY = 'notification-admin-is-enable-takeout';
@@ -199,7 +199,7 @@ ORDER BY o.id_order ASC";
 
 			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-			$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' http://cbtn.io/' . $order->id_order;
+			$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
 
 			// Get drivers name
 			$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
@@ -626,7 +626,7 @@ ORDER BY o.id_order ASC";
 					default:
 					case 'sms':
 						$first_name = Crunchbutton_Message_Sms::greeting($this->admin()->firstName());
-						$message = $first_name . 'Remember: ACCEPT this order http://cbtn.io/' . $order->id_order . '. Next reminder is a phone call in 3 minutes. Then we\'ll reach out manually, which is not optimal ;)';
+						$message = $first_name . 'Remember: ACCEPT this order https://cockpit.la/' . $order->id_order . '. Next reminder is a phone call in 3 minutes. Then we\'ll reach out manually, which is not optimal ;)';
 						break;
 					case 'push':
 						$message = 'Please ACCEPT order #'.$order->id.' from '.$order->user()->name.' to '.$order->restaurant()->name.'.';

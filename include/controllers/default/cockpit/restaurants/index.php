@@ -30,9 +30,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		$view->communities         = $communities;
 		$view->restaurantCommunity = $community;
-		$view_name = c::getPagePiece(1) == 'legacy' ?
-				'restaurants/legacy/restaurant'		:
-				'restaurants/restaurant';
+		$view_name = 'restaurants/restaurant';
 		$view->display($view_name);
 	}
 
@@ -55,10 +53,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		c::view()->page = 'restaurants';
 
-		if(c::getPagePiece(1) == 'legacy') {
-			c::view()->page = 'restaurants';
-			$page_piece_index = 2;
-		} else if(c::getPagePiece(1) == 'analytics') {
+		if(c::getPagePiece(1) == 'analytics') {
 			echo 1;
 		} else if(c::getPagePiece(1) == 'hours_override') {
 			c::view()->overrides = Crunchbutton_Restaurant_Hour_Override::getNexts();

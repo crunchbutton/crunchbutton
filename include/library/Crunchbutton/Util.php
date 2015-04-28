@@ -62,6 +62,7 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function stringToColorCode( $str ) {
+		die('#5430 deprecated');
 		$code = dechex( crc32( $str ) );
 		$code = substr( $code, 0, 6 );
 		return $code;
@@ -81,6 +82,7 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function inverseColor( $color ){
+		die('#5430 deprecated');
 		$r = dechex( 255 - hexdec( substr( $color, 0, 2 ) ) );
 		$r = ( strlen( $r ) > 1 ) ? $r : '0' . $r;
 		$g = dechex( 255 - hexdec( substr( $color, 2, 2 ) ) );
@@ -91,6 +93,7 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function isDarkColor( $color ){
+		die('#5430 deprecated');
 		$c_r = hexdec( substr( $color, 0, 2 ) );
 		$c_g = hexdec( substr( $color, 2, 2 ) );
 		$c_b = hexdec( substr( $color, 4, 2 ) );
