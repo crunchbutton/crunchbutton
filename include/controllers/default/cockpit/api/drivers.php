@@ -11,6 +11,8 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 		
 		switch ( c::getPagePiece( 2 ) ) {
 			case 'hours':
+				die('#5430 deprecated');
+				/*
 				switch ( c::getPagePiece( 3 ) ) {
 					case 'add':
 						$this->addHours();
@@ -34,6 +36,7 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 						echo json_encode( [ 'error' => 'invalid object' ] );
 						break;
 				}
+				*/
 				break;
 			case 'assign':
 				switch ( c::getPagePiece( 3 ) ) {
@@ -76,6 +79,7 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( array( 'success' => true ) );
 	}
 
+	/*
 	public function copyAllHours(){
 		$week = $this->request()[ 'week' ];
 		$year = $this->request()[ 'year' ];
@@ -230,4 +234,5 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 		}
 		echo json_encode( array( 'success' => true ) );
 	}
+	*/
 }
