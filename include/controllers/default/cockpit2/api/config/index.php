@@ -26,10 +26,18 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$payment_type = c::user()->payment_type();
 				if( $payment_type->using_pex ){
 					$user[ 'using_pex' ] = true;
+					$pex = Cockpit_Admin_Pexcard::getByAdmin( c::user()->id_admin )->get( 0 );
+					if( $pex->id_admin_pexcard ){
+						$user['pexcard'] = [
+							'card_serial' => $pex->card_serial,
+							'last_four' => $pex->last_four,
+							'active' => $pex->card_serial && $pex->card_serial ? true : false
+						];
+						$user['has_pexcard'] = true;
+					} else {
+						$user['has_pexcard'] = false;
+					}
 				}
-
-				// $user[ 'using_pex' ] = true;
-
 
 				$config = [
 					'user' => $user,
