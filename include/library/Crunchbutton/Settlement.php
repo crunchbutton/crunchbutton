@@ -860,14 +860,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	}
 
-	public function sendDriverArbitraryPayment( $id_payment_schedule ){
-		if( $this->doDriverPayments( $id_payment_schedule ) ){
-			return $id_payment_schedule;
-		} else {
-			return false;
-		}
-	}
-
 	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ){
 
 		if( !$type ){
@@ -982,7 +974,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 
 			$this->log( 'scheduleDriverPayment', $schedule->properties() );
-			$this->doDriverPayments( $id_payment_schedule );
 		}
 	}
 
@@ -1012,34 +1003,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function doDriverErrPayments(){
 		$schedules = Cockpit_Payment_Schedule::q("SELECT * FROM payment_schedule WHERE status = '" . Cockpit_Payment_Schedule::STATUS_ERROR . "'");
-		foreach( $schedules as $_schedule ){
-			$id_payment_schedule = $_schedule->id_payment_schedule;
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-				$settlement->payDriver( $id_payment_schedule );
-			} );
+		foreach( $schedules as $schedule ){
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+			$schedule->save();
 		}
 	}
 
-	public function doDriverPayments( $id_payment_schedule = false ){
-		if( $id_payment_schedule ){
-			$this->log( 'doDriverPayments', $id_payment_schedule );
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-				$settlement->payDriver( $id_payment_schedule );
-			} );
-		} else {
-			$schedule = new Cockpit_Payment_Schedule;
-			$lastDate = $schedule->lastDriverStatusDate();
-			$schedules = $schedule->driversSchedulesFromDate( $lastDate );
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			foreach( $schedules as $_schedule ){
-				$id_payment_schedule = $_schedule->id_payment_schedule;
-				Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-					$settlement->payDriver( $id_payment_schedule );
-				} );
-			}
-			return;
+	public function doDriverPayments(){
+		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_DRIVER . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" LIMIT 50';
+		$scheduled_payments = Cockpit_Payment_Schedule::q( $query );
+		$settlement = new Crunchbutton_Settlement;
+		foreach( $scheduled_payments as $scheduled ){
+			$settlement->payDriver( $scheduled->id_payment_schedule );
 		}
 	}
 
