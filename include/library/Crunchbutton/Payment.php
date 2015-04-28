@@ -191,6 +191,7 @@ class Crunchbutton_Payment extends Cana_Table {
 			$payment->balanced_id = null;
 		} else {
 			$payment = new Payment((object)$params);
+			$payment->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_PENDING;
 		}
 
 		$payment->date = date('Y-m-d H:i:s');
