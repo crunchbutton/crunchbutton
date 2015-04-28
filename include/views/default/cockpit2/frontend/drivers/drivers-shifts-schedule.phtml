@@ -38,7 +38,7 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
 							<td>
-								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
 								<div class="schedule-period">
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
@@ -69,7 +69,7 @@
 						<tbody ng-repeat="shift in shifts" ng-if="shift.ranking > 0" >
 							<tr>
 								<td>
-									<div class="schedule-day">{{shift.day}}</div>
+									<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
 									<div class="schedule-period">
 										{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 									</div>
@@ -106,7 +106,7 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">
 							<td>
-								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
 								<div class="schedule-period">
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
