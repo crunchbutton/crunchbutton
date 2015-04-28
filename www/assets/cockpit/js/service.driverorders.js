@@ -173,21 +173,24 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 
 service.text_customer_5_min_away = function(){
 if( 'Confirm send message to customer?' ){
-    service.text_customer_5_min_away_sending = true;
+		service.text_customer_5_min_away_sending = true;
+		if( textLoader && service.textLoader && service.textLoader.start ){
+			service.textLoader.start();
+		}
 
-    service.textLoader.start();
-    DriverOrdersService.text_customer_5_min_away(service.order.id_order,
-       function( json ){
-          if (json.status) {
-             service.load();
-          } else {
-             App.alert('Message failed to send. Please try again.');
-          }
-          service.textLoader.stop();
-          service.text_customer_5_min_away_sending = false;
-
-       }
-    );
+		DriverOrdersService.text_customer_5_min_away(service.order.id_order,
+			 function( json ){
+					if (json.status) {
+						 service.load();
+					} else {
+						 App.alert('Message failed to send. Please try again.');
+					}
+					if( textLoader && service.textLoader && service.textLoader.start ){
+						service.textLoader.stop();
+					}
+					service.text_customer_5_min_away_sending = false;
+			 }
+		);
 }
 }
 
