@@ -19,7 +19,7 @@ class Controller_vieworder extends Cana_Controller {
 				break;
 			default:
 				$version = 'cockpit';
-				$cockpit_url = 'http://cbtn.io/' . $order->id_order;
+				$cockpit_url = 'https://cockpit.la/' . $order->id_order;
 				break;
 		}
 

@@ -1,30 +1,43 @@
-NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
-	if (!AccountService || !AccountService.user || !AccountService.user.id_admin) {
-		MainNavigationService.link('/login');
-		return;
-	}
 
-	var id_order = $location.path().replace( '/', '' );
-	if( !isNaN( parseInt( id_order ) ) ){
-		MainNavigationService.link('/drivers/order/' + id_order);
-	} else {
-		if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
-			setTimeout(function(){
-				MainNavigationService.link('/drivers/welcome');
-				$rootScope.$apply();
-			},100);
+NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
+	
+	
+	var redirect = function() {
+		// redirect to login if there is no user
+		if (!AccountService.user || !AccountService.user.id_admin) {
+			MainNavigationService.link('/login');
 			return;
 		}
-
-		if (AccountService.user.permissions.GLOBAL) {
-			MainNavigationService.link('/home');
-		} else if (AccountService.isRestaurant) {
-			MainNavigationService.link('/restaurant/order/placement/dashboard');
-		} else if (AccountService.isDriver) {
-			MainNavigationService.link('/drivers/orders');
+		
+		var id_order = $location.path().replace( '/', '' );
+		if( !isNaN( parseInt( id_order ) ) ){
+			MainNavigationService.link('/drivers/order/' + id_order);
 		} else {
-			MainNavigationService.link('/login');
+			if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
+				setTimeout(function(){
+					MainNavigationService.link('/drivers/welcome');
+					$rootScope.$apply();
+				},100);
+				return;
+			}
+
+			if (AccountService.user.permissions.GLOBAL) {
+				MainNavigationService.link('/home');
+			} else if (AccountService.isRestaurant) {
+				MainNavigationService.link('/restaurant/order/placement/dashboard');
+			} else if (AccountService.isDriver) {
+				MainNavigationService.link('/drivers/orders');
+			} else {
+				MainNavigationService.link('/login');
+			}
 		}
+	};
+	
+	// wait for login to complete
+	if (!AccountService.init) {
+		$scope.$on('userAuth', redirect);
+	} else {
+		redirect()
 	}
 });
 

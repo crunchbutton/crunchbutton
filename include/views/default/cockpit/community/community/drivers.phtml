@@ -67,6 +67,8 @@ $drivers = $this->drivers;
 		<td>
 			<strong><?php echo $driver->timezone; ?></strong>
 			<?php
+				// #5430 deprecated
+									  /*
 				$workingHours = $driver->workingHoursWeek();
 				if( count( $workingHours ) > 0 ){
 					foreach( $workingHours as $weekday => $hours ){
@@ -77,6 +79,7 @@ $drivers = $this->drivers;
 				} else {
 					echo '<div>-</div>';
 				}
+				*/
 			?>
 		</td>
 		<td>
