@@ -924,6 +924,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	public function dailyDigest( $days = 1 ){
 
+		$_admin_cache_names = [];
+
 		$query = 'SELECT DISTINCT( sm.id_support ) AS id, s.* FROM support_message sm
 								INNER JOIN support s ON s.id_support = sm.id_support
 								WHERE sm.date > DATE_SUB( NOW(), interval ' . $days . ' day ) AND s.type != "' . Crunchbutton_Support::TYPE_WARNING . '"
@@ -973,12 +975,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 					$name = ( $_name ? $_name : '<i>Unknown</i>' );
 				} else {
 					if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_REP ){
-						if( $message->name ){
-							$name = $message->name;
-						} else {
+						if( !$_admin_cache_names[ $message->id_admin ] ){
 							$admin = Admin::o( $message->id_admin );
-							$name = $admin->name;
+							$_admin_cache_names[ $message->id_admin ] = $admin->name;
 						}
+						$name = $_admin_cache_names[ $message->id_admin ];
 					}
 				}
 
@@ -987,7 +988,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 					$data[ 'messages' ][ $count ][ 'body' ] .= $join . $message->body;
 				} else {
 					$count++;
-					$data[ 'messages' ][ $count ] = [ 'type' => $message->from , 'body' => $message->body, 'name' => $name, 'date' => $date ];
+					$data[ 'messages' ][ $count ] = [ 'id_support_message' => $message->id_support_message, 'type' => $message->from , 'body' => $message->body, 'name' => $name, 'date' => $date ];
 				}
 				$prev_type = $message->type;
 				$prev_from = $message->from;
@@ -1011,7 +1012,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				}
 			}
 		}
-
 		return $out;
 	}
 
