@@ -72,7 +72,7 @@
 
 
 	</div>
-	<div class="order" ng-if="oc.order.status.driver.id_admin == account.user.id_admin">
+	<div class="order" ng-if="oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
 
 		<br><br>
 		<div class="dialog-message dialog-message-notice check-reminder" ng-if="oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
