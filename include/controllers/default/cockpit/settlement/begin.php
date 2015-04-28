@@ -2,7 +2,10 @@
 
 class Controller_settlement_begin extends Crunchbutton_Controller_Account {
 	public function init() {
+		
+		die('#5430 deprecated');
 
+		/*
 		if (!c::admin()->permission()->check(['global','settlement'])) {
 			return;
 		}
@@ -14,5 +17,6 @@ class Controller_settlement_begin extends Crunchbutton_Controller_Account {
 
 		c::view()->layout('layout/ajax');
 		c::view()->display('settlement/begin');
+		*/
 	}
 }
