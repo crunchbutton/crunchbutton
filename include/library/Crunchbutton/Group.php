@@ -25,7 +25,10 @@ class Crunchbutton_Group extends Cana_Table {
 			->load($id);
 	}
 
+	
 	public function getRestaurantCommunityName( $community ){
+		die('#5430 deprecated');
+		
 		$communities = Restaurant::getCommunities();
 		foreach( $communities as $_community ){
 			if( Crunchbutton_Group::driverGroupOfCommunity( $_community ) == $community ){

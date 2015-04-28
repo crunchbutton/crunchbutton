@@ -3,6 +3,8 @@
 class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 	
 	public function init() {
+		die('#5430 deprecated');
+		/*
 
 		if (!c::admin()->permission()->check(['global', 'drivers-all', 'drivers-working-hours', 'drivers-working-hours-view'])) {
 			return ;
@@ -127,6 +129,7 @@ class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 
 				break;
 		}
+		*/
 
 	}
 }
