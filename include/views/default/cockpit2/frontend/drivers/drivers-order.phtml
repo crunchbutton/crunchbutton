@@ -8,9 +8,11 @@
 
 	<div ng-if="oc.order.status.status != 'accepted' && oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
 		<div ng-show="!text_customer_5_min_away_sending" ng-if="!oc.order.hasCustomerBeenTexted5Minutes">
+			<br><br>
 			<button ng-click="oc.text_customer_5_min_away()" id="textCustomer5" class="ladda-button button orange-on-orange" data-color="orange" data-style="zoom-in"><span class="ladda-label">Text Customer I'm 5 Min Away</span></button>
 		</div>
 		<div ng-if="oc.order.hasCustomerBeenTexted5Minutes">
+			<br><br>
 			<button class="button orange-on-orange" style="background-color:#A39B9B">You texted the customer you're 5 min away at {{oc.order.hasCustomerBeenTexted5Minutes | date: 'shortTime'}}</button>
 		</div>
 		<div ng-show="text_customer_5_min_away_sending">
