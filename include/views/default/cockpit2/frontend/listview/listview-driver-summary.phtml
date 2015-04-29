@@ -1,7 +1,6 @@
 <div class="box-content2 box-content-table" ng-if="summary.results && !isMobile">
 	<table class="tb-zebra">
 		<tr>
-			<th>Type</th>
 			<th>Period</th>
 			<th>Earnings</th>
 			<th>Amount Already Collected in Cash</th>
@@ -10,10 +9,7 @@
 			<th>Deposit Initiated</th>
 			<th>Est. In Account</th>
 		</tr>
-		<tr ng-repeat="payment in summary.results" ng-show="!filter || filter == payment.type">
-			<td>
-				<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
-			</td>
+		<tr ng-repeat="payment in summary.results" ng-hide="payment.type == 'Reimbursement' && payment.amount == 0">
 			<td>{{payment.range_date}}</td>
 			<td positive-or-negative-color="{{payment.earnings}}">
 				${{payment.earnings | formatPrice}}
@@ -38,20 +34,18 @@
 				</span>
 			</td>
 			<td>{{payment.send_date}}</td>
-			<td>{{payment.paid_date}}</td>
+			<td><a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.paid_date}}</a></td>
 		</tr>
 	</table>
 </div>
 <div class="box-content2 box-content-table" ng-if="summary.results && isMobile">
 	<table class="tb-zebra">
 		<tr>
-			<th>Type / Period / Status</th>
 			<th>Amounts</th>
 			<th>Date</th>
 		</tr>
-		<tr ng-repeat="payment in summary.results" ng-show="!filter || filter == payment.type">
+		<tr ng-repeat="payment in summary.results">
 			<td>
-				<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
 				<br>
 				<br>
 				{{payment.range_date}}
@@ -93,7 +87,7 @@
 				<br>
 				<br>
 				Est. In Account:
-				{{payment.paid_date}}
+			<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.paid_date}}</a>
 			</td>
 		</tr>
 	</table>
