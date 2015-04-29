@@ -96,7 +96,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 			communities();
 		} )
 	} else {
-		$scope.resource = { 'all': 0, 'page': 1, 'side': 0 };
+		$scope.resource = { 'all': 0, 'page': 1, 'side': 0, 'order_page': 0, 'active': 1 };
 		communities();
 	}
 

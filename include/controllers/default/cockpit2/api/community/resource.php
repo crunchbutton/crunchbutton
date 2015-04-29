@@ -263,16 +263,16 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 
 		while ($s = $r->fetch()) {
 			$resource = Crunchbutton_Community_Resource::o($s);
-			$out = $s;
-			$out->communities = [];
+			$out = $resource->exports();
+			$out['communities'] = [];
 			foreach ($resource->communities( true ) as $community) {
-				$out->communities[] = [ 'id_community' => $community->id_community, 'name' => $community->name ];
+				$out['communities'][] = [ 'id_community' => $community->id_community, 'name' => $community->name ];
 			}
-			$out->page = ( intval( $out->page ) ) ? true : false;
-			$out->order_page = ( intval( $out->order_page ) ) ? true : false;
-			$out->side = ( intval( $out->side ) ) ? true : false;
-			$out->all = ( intval( $out->all ) ) ? true : false;
-			$out->active = ( intval( $out->active ) ) ? true : false;
+			$out['page'] = ( intval( $out[ 'page'] ) ) ? true : false;
+			$out['order_page'] = ( intval( $out[ 'order_page'] ) ) ? true : false;
+			$out['side'] = ( intval( $out[ 'side'] ) ) ? true : false;
+			$out['all'] = ( intval( $out[ 'all'] ) ) ? true : false;
+			$out['active'] = ( intval( $out[ 'active'] ) ) ? true : false;
 			$data[] = $out;
 		}
 
