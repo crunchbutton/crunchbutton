@@ -8,7 +8,7 @@
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 	</div>
-	
+
 	<div class="divider"></div>
 
 	<h2 class="link title" >Setup next week's shifts</h2>
@@ -18,7 +18,7 @@
 		<div ng-if="drivershifts.length">
 
 			<div class="drivers-shift" ng-repeat="shift in drivershifts | filter:filterShifts">
-
+<!-- drivershifts::{{drivershifts}} -->
 				<span class="day">{{shift.day}}</span>
 
 				<div ng-if="shift.drivers.length > 0" class="box-content2">
@@ -37,7 +37,7 @@
 								</span>
 
 								<span ng-if="driver.name">
-									<span class="driver-name">{{driver.name}}</span><br>
+									<span class="driver-name">{{driver.name}} - <i>{{driver.community}}</i></span><br>
 									<a href ng-click="callText(driver.phone)" class="driver-phone">{{driver.phone | formatPhone}}</a>
 								</span>
 
