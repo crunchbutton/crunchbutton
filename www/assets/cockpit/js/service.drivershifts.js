@@ -23,7 +23,7 @@ NGApp.factory( 'DriverShiftsService', function( $rootScope, $resource ) {
 			}
 			if( data[ i ].drivers && data[ i ].drivers.length ){
 				for( var j = 0; j < data[ i ].drivers.length; j++ ){
-					groups[ day ][ 'drivers' ].push( { 'hour': segment, 'id' : data[ i ].drivers[j].id, 'name' : data[ i ].drivers[j].name, 'phone' : data[ i ].drivers[j].phone } );
+					groups[ day ][ 'drivers' ].push( { 'hour': segment, 'id' : data[ i ].drivers[j].id, 'name' : data[ i ].drivers[j].name, 'phone' : data[ i ].drivers[j].phone, 'community': data[ i ].community } );
 					if( data[ i ].drivers[j].id == $rootScope.account.user.id_admin ){
 						groups[ day ][ 'mine' ] = true;
 					}
