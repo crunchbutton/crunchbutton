@@ -67,7 +67,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 				$out[ 'communities' ][] = $community->id_community;
 			}
 		}
-		$out[ 'path' ] = $this->url();
+		$out[ 'path' ] = $this->download_url();
 		return $out;
 	}
 

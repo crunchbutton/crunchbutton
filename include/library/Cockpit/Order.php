@@ -37,7 +37,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		if( $resources ){
 			$out['resources'] = [];
 			foreach( $resources as $resource ){
-				$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->url() ];
+				$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->download_url() ];
 			}
 		}
 
