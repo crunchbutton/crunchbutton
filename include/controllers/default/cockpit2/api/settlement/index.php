@@ -839,12 +839,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( [ 'error' => 'Payment already in process!' ] );
 				exit;
 			}
-			$settlement = new Settlement;
-			if( $settlement->doDriverPayments( $id_payment_schedule ) ){
-				echo json_encode( [ 'success' => true ] );
-			} else {
-				echo json_encode( [ 'error' => 'Problem finishing the payment!' ] );
-			}
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+			$schedule->log = 'Schedule created';
+			$schedule->save();
+			echo json_encode( [ 'success' => true ] );
 		} else {
 			echo json_encode( [ 'error' => 'Payment schedule not found!' ] );
 		}
