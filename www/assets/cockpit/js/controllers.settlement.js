@@ -812,9 +812,9 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	$scope.view({
 		scope: $scope,
 		watch: {
+			search: '',
 			type: 0,
-			status: 0,
-			driver: 0,
+			status: 0
 		},
 		update: function() {
 			$scope.query.status = parseInt($scope.query.status);
@@ -823,7 +823,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			$scope.ready = false;
 			SettlementService.drivers.payments({
 				'page': $scope.query.page,
-				'id_driver': $scope.query.driver,
+				'search': $scope.query.search,
 				'pay_type': $scope.query.type,
 				'payment_status': $scope.query.status
 			}, function( data ){
