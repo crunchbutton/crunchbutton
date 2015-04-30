@@ -697,6 +697,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							var uuid = json.uuid;
 						} else {
 							console.error('Error',json);
+							if (json && json.errors && json.errors[0]) {
+								console.error('Credit Card processing Error:', json.errors[0]);
+							}
 							App.log.order(json, 'processing error');
 							if( !json.errors ){
 								json = {
