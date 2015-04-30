@@ -311,7 +311,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// Estimated ETA:
 		// 30 min + (15X + 7Y - 8Z) / N
 
-		$interval = 40;
+		$interval = 1;
 
 		// N = # of active drivers
 		$activeDrivers = $this->activeDrivers();
@@ -331,7 +331,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 														AND o.delivery_service = true
 														AND o.date >= now() - INTERVAL ' . $interval . ' DAY
 													ORDER BY o.id_order DESC';
-
 		$orders = Order::q( $query );
 		foreach( $orders as $order ){
 			$lastStatus = $order->deliveryLastStatus();
