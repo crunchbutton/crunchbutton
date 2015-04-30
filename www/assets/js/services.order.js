@@ -672,7 +672,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				};
 			}
 
-			// Play the crunch audio just once, when the user clicks at the Get Food button
+			// Play the crunch audio just once, when the user clicks at the Place Order button
 			if (!service._crunchSoundPlayded) {
 				App.playAudio('crunch');
 				service._crunchSoundPlayded = true;
@@ -1139,7 +1139,7 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 				} else {
 					service.order._new = false;
 				}
-				
+
 				if ($routeParams.new) {
 					service.order._new = true;
 				}
