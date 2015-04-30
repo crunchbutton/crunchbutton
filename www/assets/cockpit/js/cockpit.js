@@ -42,6 +42,36 @@ NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
+NGApp.factory('errorInterceptor', function($q) {  
+	var errorFromResponse = function(response) {
+		var headers = response.headers();
+		if (headers && headers['php-fatal-error']) {
+			console.error(headers['php-fatal-error']);
+			App.alert('<b>Error</b>. Please report this to dev:<br><br><ul class="ul-inputs"><li class="li-input"><div class="input"><textarea class="fatal-error-content">' + headers['php-fatal-error'] + '</textarea></div></li></ul>');
+			return false;
+		}
+		return true;
+	};
+	var errorInterceptor = {
+		responseError: function(response) {
+			errorFromResponse(response);
+			return $q.reject(response);
+		},
+		response: function(response) {
+			if (!errorFromResponse(response)) {
+				return $q.reject(response);
+			} else {
+				return response;
+			}
+		}
+	};
+	return errorInterceptor;
+});
+NGApp.config(['$httpProvider', function($httpProvider) {  
+	$httpProvider.interceptors.push('errorInterceptor');
+	
+}]);
+
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 
 	$routeProvider
