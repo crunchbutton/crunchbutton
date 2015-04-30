@@ -22,11 +22,16 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			case 'eta':
 				$out = [];
 				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND delivery_service = true ORDER BY name ASC' );
+				$communities = [];
+
 				foreach( $restaurants as $restaurant ){
 					if( $restaurant->open() ){
-						$community = $restaurant->community()->name;
-						$drivers = $restaurant->activeDrivers();
-						$out[] = array_merge( [ 'restaurant' => $restaurant->name, 'community' => $community ], $restaurant->smartETA( true ) );
+						$community = $restaurant->community()->get( 0 );
+						if( !$communities[ $community->id_community ] ){
+							$communities[ $community->id_community ] = [ 'name' => $community->name, 'activeDrivers' => $restaurant->activeDrivers() ];
+						}
+						$params = [ 'id_community' => $community->id_community, 'activeDrivers' => $communities[ $community->id_community ][ 'activeDrivers' ] ];
+						$out[] = array_merge( [ 'restaurant' => $restaurant->name, 'community' => $community->name ], $restaurant->smartETA( true, $params) );
 					}
 				}
 				echo json_encode( $out );exit;
@@ -151,14 +156,14 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			foreach ($restaurant->communities() as $community) {
 				$out->communities[] = $community->properties();
 			}
-			
+
 			$out->active = $out->active ? true : false;
 			$out->open_for_business = $out->open_for_business ? true : false;
 			$out->open = $restaurant->open() ? true : false;
 			$out->delivery_service = $out->delivery_service ? true : false;
 			$out->delivery = $out->delivery ? true : false;
 			$out->takeout = $out->takeout ? true : false;
-			
+
 
 /*
 			$unset = ['email','timezone','testphone','txt'];

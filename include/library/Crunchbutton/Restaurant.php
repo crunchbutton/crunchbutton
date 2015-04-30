@@ -296,7 +296,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Smart ETA MVP #4600
-	public function smartETA( $array = false ){
+	public function smartETA( $array = false, $params = [] ){
 
 		if( !$this->hasDeliveryService() ){
 			return 0;
@@ -314,9 +314,18 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$interval = 1;
 
 		// N = # of active drivers
-		$activeDrivers = $this->activeDrivers();
+		if( $params[ 'activeDrivers' ] ){
+			$activeDrivers = $params[ 'activeDrivers' ];
+		} else {
+			$activeDrivers = $this->activeDrivers();
+		}
 
-		$community = $this->community();
+		if( $params[ 'id_community' ] ){
+			$id_community = $params[ 'id_community' ];
+		} else {
+			$id_community = $this->community();
+		}
+
 
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
