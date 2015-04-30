@@ -192,7 +192,7 @@ class Crunchbutton_App extends Cana_App {
 
 	}
 
-	public function exception($e) {
+	public function defaultExceptionHandler($e) {
 		$this->config()->db = null;
 
 		foreach($e->getTrace() as $k=>$v){
@@ -274,10 +274,29 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$pageName = $page;
 		}
-
-		parent::displayPage($pageName == 'error' ? 'home' : $pageName);
+		try {
+			parent::displayPage($pageName == 'error' ? 'home' : $pageName);
+		} catch (Exception $e) {
+			$this->exception($e);
+		}
 
 		return $this;
+	}
+	
+	public function exception($e) {
+		$fn = $this->exceptionHandler();
+		if ($fn) {
+			$fn($e);
+		} else {
+			$this->defaultExceptionHandler($e);
+		}
+	}
+	
+	public function exceptionHandler($fn = null) {
+		if (!is_null($fn)) {
+			$this->_exceptionHandler = $fn;
+		}
+		return $this->_exceptionHandler;
 	}
 
 
