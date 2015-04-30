@@ -160,6 +160,10 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function addFunds( $params ){
 
+		if( !$this->isPexCardFundsActive() ){
+			return false;
+		}
+
 		$card = $this->pexcard();
 
 		// Check if the card could receive funds
@@ -259,6 +263,10 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 			$cards[] = intval( $config->value );
 		}
 		return $cards;
+	}
+
+	public function isPexCardFundsActive(){
+		return intval( Crunchbutton_Config::getVal( 'pex-card-active' ) );
 	}
 
 	public function loadSettings(){
