@@ -27,14 +27,12 @@ NGApp.factory('ViewListService', function($location, $timeout, $interval) {
 			if( angular.isDefined( timer ) ) {
 				$interval.cancel( timer );
 				timer = undefined;
-				console.log('cancelingggg');
 			}
 			timer = $interval(function(){
 				$interval.cancel( timer );
 				timer = undefined;
 				update();
-				console.log('updaring');
-			}, 1500 );
+			}, 1000 );
 		};
 
 		// @todo: this breaks linking to pages
