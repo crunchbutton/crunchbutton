@@ -302,6 +302,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return 0;
 		}
 
+		$eta = 0;
+
 		// N = # of active drivers
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
@@ -309,8 +311,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// Estimated ETA:
 		// 30 min + (15X + 7Y - 8Z) / N
 
+		$interval = 40;
+
 		// N = # of active drivers
 		$activeDrivers = $this->activeDrivers();
+
+		$community = $this->community();
 
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
@@ -318,13 +324,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$ordersPlacedButNotPickedUp = 0;
 		$ordersPickedUpButNotDelivered = 0;
 		$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver = 0;
-		$orders = Order::q( 'SELECT o.* FROM `order` o
+		$query = 'SELECT o.* FROM `order` o
 													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
-													WHERE o.delivery_type = \'delivery\'
+													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
+													WHERE o.delivery_type = "' . Crunchbutton_Order::SHIPPING_DELIVERY . '"
 														AND o.delivery_service = true
-														AND o.date >= now() - INTERVAL 1 DAY
-													ORDER BY o.id_order DESC', [$community->id_community]);
+														AND o.date >= now() - INTERVAL ' . $interval . ' DAY
+													ORDER BY o.id_order DESC';
+
+		$orders = Order::q( $query );
 		foreach( $orders as $order ){
 			$lastStatus = $order->deliveryLastStatus();
 			if( $lastStatus[ 'status' ] == 'new' || $lastStatus[ 'status' ] == 'accepted' ){
@@ -343,7 +351,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 										( 7 * $ordersPickedUpButNotDelivered ) +
 										( 8 * $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ) ) / $activeDrivers;
 		}
-
 		if( $eta < 40 ){
 			$eta = 40;
 		}
