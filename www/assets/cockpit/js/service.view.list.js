@@ -14,7 +14,13 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		};
 		scope.query.page = parseInt(scope.query.page);
 
+		var last_search = null;
 		var watch = function() {
+			var new_search = JSON.stringify( scope.query );
+			if( new_search == last_search ){
+				return;
+			}
+			last_search = new_search;
 			$location.search(scope.query);
 			update();
 		};
@@ -31,13 +37,15 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		scope.watch = function(vars) {
 			for (var x in vars) {
 				scope.query[x] = query[x] || vars[x];
-				scope.$watch('query.' + x, inputWatch);
+				if( x ){
+					scope.$watch('query.' + x, inputWatch);
+				}
 			}
 		};
 
 		scope.count = 0;
 		scope.pages = 0;
-		
+
 		scope.allowAll = params.allowAll ? true : false;
 
 		scope.$watch('query.limit', inputWatch);
@@ -47,7 +55,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			scope.query.page = page;
 			App.scrollTop(0);
 		};
-		
+
 		scope.viewAll = function() {
 			if (!scope.allowAll) {
 				return;
