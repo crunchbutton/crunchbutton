@@ -7,10 +7,9 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<th>Driver</th>
-				<td>
-					<select ng-model="query.driver" ng-options="opt.id_driver as opt.name for opt in drivers" class="cart-customize-select"></select>
-				</td>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+			<tr>
 				<th>Type</th>
 				<td>
 					<select ng-model="query.type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>

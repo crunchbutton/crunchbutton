@@ -812,9 +812,9 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	$scope.view({
 		scope: $scope,
 		watch: {
+			search: '',
 			type: 0,
-			status: 0,
-			driver: 0,
+			status: 0
 		},
 		update: function() {
 			$scope.query.status = parseInt($scope.query.status);

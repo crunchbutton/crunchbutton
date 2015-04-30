@@ -4,7 +4,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		$this->resultsPerPage = 20;
+		$this->resultsPerPage = 10;
 
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
@@ -777,12 +777,13 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$resultsPerPage = $this->resultsPerPage;
 
 		$page = max( $this->request()['page'], 1 );
-		$id_driver = max( $this->request()['id_driver'], 0 );
+		$search = $this->request()['search'];
 		$pay_type = max( $this->request()['pay_type'], 0 );
 		$payment_status = max( $this->request()['payment_status'], 0 );
 		$start = ( ( $page - 1 ) * $resultsPerPage );
-		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
-		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
+
+		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
+		$payments_total = Crunchbutton_Payment::listPayments( [ 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
 		$payments_total = $payments_total->count();
 
 		$list = [];
