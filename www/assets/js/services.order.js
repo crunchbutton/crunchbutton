@@ -412,7 +412,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.errors = function(errors) {
 		var error = '';
 		for (var x in errors) {
-			if( x != 'debug' ){
+			if ( x == 'set-processor') {
+				App.config.processor.type = errors[x];
+				if (App.config.processor.type == 'stripe') {
+					Stripe.setPublishableKey(App.config.processor.stripe);
+				}
+				continue;
+			}
+			if( x != 'debug'){
 				error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';
 			}
 		}
@@ -683,6 +690,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 			// Only use redeemed points if the user knows about them #4851
 			order.use_delivery_points = true;
+			
+			var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
+			order.processor = processor;
 
 			var url = App.service + 'order';
 
