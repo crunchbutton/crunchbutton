@@ -96,6 +96,35 @@ NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
+NGApp.factory('errorInterceptor', function($q) {  
+	var errorFromResponse = function(response) {
+		var headers = response.headers();
+		if (headers && headers['php-fatal-error']) {
+			console.error(headers['php-fatal-error']);
+			App.alert('There was an error connecting to the server. Please try again, or contact support if it continues to be a problem.');
+			return false;
+		}
+		return true;
+	};
+	var errorInterceptor = {
+		responseError: function(response) {
+			errorFromResponse(response);
+			return $q.reject(response);
+		},
+		response: function(response) {
+			if (!errorFromResponse(response)) {
+				return $q.reject(response);
+			} else {
+				return response;
+			}
+		}
+	};
+	return errorInterceptor;
+});
+NGApp.config(['$httpProvider', function($httpProvider) {  
+	$httpProvider.interceptors.push('errorInterceptor');
+}]);
+
 NGApp.run(function() {
 	FastClick.attach(document.body);
 } );
