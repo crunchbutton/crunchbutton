@@ -8,7 +8,7 @@ class Crunchbutton_Cron_Job_CheckPexCardApiStatus extends Crunchbutton_Cron_Log 
 			$result = trim( $result );
 			if( strpos( $result, date( 'Y-m' ) ) !== false ){
 				// stop the cron
-				Crunchbutton_Support::createNewWarning(  [ 'body' => 'Yay! it seems pex card is working again! Please tell send this message to David or Nick or Devin or Daniel. Thanks! You are awesome! :)' ] );
+				Crunchbutton_Support::createNewWarning(  [ 'body' => 'Yay! it seems pex card is working again! Please tell send this message to David or Nick or Devin or Daniel (Issue #5507). Thanks! You are awesome! :)' ] );
 				$cron = Crunchbutton_Cron_Log::q( 'SELECT * FROM cron_log WHERE `class` = "Crunchbutton_Cron_Job_CheckPexCardApiStatus"' )->get( 0 );
 				$cron->interval_unity = 0;
 				$cron->save();
