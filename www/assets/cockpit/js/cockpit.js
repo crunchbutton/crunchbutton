@@ -69,7 +69,6 @@ NGApp.factory('errorInterceptor', function($q) {
 });
 NGApp.config(['$httpProvider', function($httpProvider) {  
 	$httpProvider.interceptors.push('errorInterceptor');
-	
 }]);
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
