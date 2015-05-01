@@ -13,7 +13,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 		$success = false;
 		
 		if (!$params['card'] && !$this->_customer) {
-			$errors[] = 'Missing card or user information from app.';
+			$errors[] = 'Missing all card information. Please try entering your card information again.';
 		}
 
 		// The user changed its card or it is a new one
