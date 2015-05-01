@@ -7,7 +7,11 @@
 			<a id="credit"></a>
 
 			<div ng-show="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
-				<p><span class="delivery-free">You are <b>{{account.user.points.away_free_delivery || 0}}</b> points away  from a <strong>free delivery</strong>. Earn points by ordering food, sharing your order, or referring friends.</span></p><br/>
+				<p>
+					<span class="delivery-free">You are <b>{{account.user.points.away_free_delivery || 0}}</b> points away</span>
+					<span class="hide-mobile"><br></span>
+					from a <b>free delivery</b>. Earn points by ordering food, sharing your order, or referring friends.
+				</p><br/>
 			</div>
 			<div ng-show="account.user.points.free_delivery_message && account.user.points.free_delivery">
 				<p><span class="delivery-free">You have <b>{{account.user.points.show}}</b> points!</span> <br><br>The next delivery fee is on us.</p>
@@ -38,7 +42,7 @@
 					</a>
 
 					<br><br>
-					<p>Your code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
+					<p>Your code: <span class="referal-text-spacer"></span><b class="allow-select">{{referral.invite_code}}</b></p>
 					<div class="hide-mobile">
 						<br>
 						<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>

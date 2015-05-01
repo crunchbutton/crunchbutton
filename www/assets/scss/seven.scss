@@ -3881,8 +3881,11 @@ font-familt: "Museo Slab";
 		width: 48%;
 	}
 
-	.user-account-credit .delivery-free, .account-your-orders {
+	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
 		font-size: 2em;
+
+		margin-bottom: 1.1em;
+		display: inline-block;
 	}
 	.col-box {
 		display: flex;
@@ -4069,4 +4072,14 @@ font-familt: "Museo Slab";
 .order-earn-mobile {
 	margin-top: 1em;
 	margin-bottom: 1em;
+}
+
+.allow-select {
+	-webkit-touch-callout: auto !important;
+	-webkit-user-select: auto !important;
+}
+
+.page-free-food .home-join-us {
+	margin-top: 0;
+	margin-bottom: 4em;
 }
