@@ -1776,7 +1776,7 @@ a.button{
 
 
 /* CUSTOM CHECKBOX */
-.custom-checkbox {
+.custom-checkbox, .fa.custom-checkbox {
 	color: #d7dcde;
 	height: 20px;
 	width: 20px;
@@ -1842,7 +1842,7 @@ a.button{
 }
 
 
-.form-icon {
+.form-icon, .fa.form-icon {
 	color: #00957f;
 	font-size: 1.8em;
 	width: 1.1em;
@@ -4085,8 +4085,4 @@ font-familt: "Museo Slab";
 .allow-select {
 	-webkit-touch-callout: auto !important;
 	-webkit-user-select: auto !important;
-}
-
-.fa {
-	font-size: initial !important;
 }
