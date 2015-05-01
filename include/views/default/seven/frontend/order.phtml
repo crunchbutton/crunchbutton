@@ -60,16 +60,13 @@
 						You have <strong>{{account.user.points.show}}</strong> points! The next delivery fee is on us.
 					</p>
 					<div ng-if="!account.user.points.free_delivery_message">
-						<br/>
 						<p class="delivery-free">
 							You just earned <strong>{{order.reward.points}}</strong> points!
 							<span ng-if="account.user.points.away_free_delivery > 0"> You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</span>
 						</p>
-						<br/><br/>
 					</div>
 					<div class="hide-mobile">
 						<p>
-							<br>
 							Want more points? Share on Facebook or Twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
 							<br><br>
 						</p>
@@ -88,8 +85,6 @@
 						<div ng-if="order.reward.shared.facebook">
 							Thanks for sharing on Facebook.
 						</div>
-
-
 
 						<div ng-if="order.reward.shared.twitter">
 							Thanks for sharing on Twitter.
