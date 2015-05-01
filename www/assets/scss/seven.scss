@@ -301,6 +301,14 @@ p {
 	margin: 0 auto;
 	margin-top: 15em;
 }
+.free-food-friends {
+	background: url(../images/micro/free-food-friends.svg) no-repeat;
+	width: 21.3em;
+	height: 13.6em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 15em;
+}
 .jobs-bubble-wrap {
 	margin: 0 auto;
 	width: 28em;
@@ -2163,10 +2171,10 @@ select.form-input {
 	background: url(../images/micro/hot-dog-relax.svg) no-repeat;
 	background-position: top center;
 	width: 17em;
-	height: 12.5em;
+	height: 10.4em;
 	background-size: 100%;
 	float: right;
-	margin-top: 7em;
+	margin-top: 8em;
 }
 
 /* about page */
@@ -2183,7 +2191,7 @@ select.form-input {
 	margin: 0 auto;
 }
 .order-bubble-wrap {
-	width: auto;
+	width: 30em;
 	margin: 0 auto;
 	margin-top: -1.8em;
 }
@@ -4077,9 +4085,4 @@ font-familt: "Museo Slab";
 .allow-select {
 	-webkit-touch-callout: auto !important;
 	-webkit-user-select: auto !important;
-}
-
-.page-free-food .home-join-us {
-	margin-top: 0;
-	margin-bottom: 4em;
 }

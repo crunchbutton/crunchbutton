@@ -1,8 +1,27 @@
-<div class="top-pad"></div>
 
 <div class="content-padding">
-	
-	<div class="home-join-us"></div>
+	<div class="jobs-bubble-wrap">
+		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
+			<div class="text" ng-switch="orangeMessage">
+				<span ng-switch-when="1">When you invite friends...</span>
+				<span class="single-line" ng-switch-when="2">family...</span>
+				<span class="single-line" ng-switch-when="3">co-workers...</span>
+				<span class="single-line" ng-switch-when="4">or arch enemies.</span>
+				<span ng-switch-when="5">Don't have any of those?</span>
+				<span class="small" ng-switch-when="6">Give some strangers your code</span>
+				<span ng-switch-when="7">And make new friends!</span>
+				<span class="single-line" ng-switch-when="8"><i class="fa fa-coffee"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-spoon"></i></span>
+				<span class="single-line" ng-switch-default><b>Free food!</b></span>
+			</div>
+		</div>
+	</div>
+
+	<div class="free-food-friends" ng-instant="orangeMessage = (orangeMessage > 7 ? 0 : (orangeMessage + 1))" instant-pass-thru></div>
+	<div class="divider"></div>
+</div>
+<br>
+<div class="content-padding">
+
 	<div class="user-account-credit col-box">
 
 		<div class="two-col">
