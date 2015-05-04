@@ -3266,3 +3266,8 @@ i {
 .no-init .hide-before-init {
 	display: none !important;
 }
+
+.allow-select {
+	-webkit-touch-callout: auto;
+	-webkit-user-select: auto;
+}
