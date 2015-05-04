@@ -85,7 +85,7 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 			'lat' => '33.175101',
 			'lon' => '-96.677810',
 			'local_gid' => 'RAND',
-			'processor' => 'stripe'
+			'processor' => Crunchbutton_User_Payment_Type::processor()
 		];
 		
 		$order = new Order;
