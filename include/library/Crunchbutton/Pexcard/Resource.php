@@ -4,10 +4,28 @@ use Httpful\Request;
 
 class Crunchbutton_Pexcard_Resource extends Cana_Table {
 
+	const CACHE_FILE_NAME = 'PexCard_';
+
 	// I created this method so I can fake live
 	public function env(){
 		return 'live';
 		return ( c::getEnv() == 'live' ) ? 'live' : 'beta';
+	}
+
+	public function cache( $AccountId = false ){
+		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Ymd' ) . ( $AccountId ? $AccountId : '' );
+		$cache = new Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
+		if( $cache->cached( $fileName, - ( 60 * 60 ) ) ){
+			return $cache->read( $fileName );
+		}
+		return false;
+	}
+
+	public function saveCache( $content, $AccountId = false ){
+		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Ymd' ) . ( $AccountId ? $AccountId : '' );
+		$cache = new Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
+		$cache->write( $fileName, $content );
+		return Crunchbutton_Pexcard_Resource::cache( $AccountId );
 	}
 
 	public static function uri(){
