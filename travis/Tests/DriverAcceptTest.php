@@ -67,6 +67,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 
 		$order = new Order;
 		$charge = $order->process($_POST);
+		print_r($charge);
 	}
 
 	public static function tearDownAfterClass() {
