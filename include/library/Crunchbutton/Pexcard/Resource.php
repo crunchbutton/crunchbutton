@@ -25,7 +25,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Y-m-d' ) . ( $AccountId ? $AccountId : '' );
 		$cache = new Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
 		$cache->write( $fileName, $content );
-		return Crunchbutton_Pexcard_Resource::cache( $AccountId );
+		return $content;
 	}
 
 	public static function uri(){
