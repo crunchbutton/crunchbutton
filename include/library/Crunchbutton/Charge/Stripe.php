@@ -13,7 +13,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 		$success = false;
 		
 		if (!$params['card'] && !$this->_customer) {
-			$errors[] = 'Missing card or user information from app.';
+			$errors[] = 'Missing all card information. Please try entering your card information again.';
 		}
 
 		// The user changed its card or it is a new one
@@ -31,7 +31,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 				} catch(\Stripe\Error\Card $e) {
 					$errors[] = $e->getMessage();
 				} catch (\Stripe\Error\InvalidRequest $e) {
-					$errors[] = 'Invalid parameters for payment request.';
+					$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
 				} catch (\Stripe\Error\Authentication $e) {
 					$errors[] = 'Payment authention failed';
 				} catch (\Stripe\Error\ApiConnection $e) {
@@ -58,7 +58,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 				} catch(\Stripe\Error\Card $e) {
 					$errors[] = $e->getMessage();
 				} catch (\Stripe\Error\InvalidRequest $e) {
-					$errors[] = 'Invalid parameters for payment request.';
+					$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
 				} catch (\Stripe\Error\Authentication $e) {
 					$errors[] = 'Payment authention failed';
 				} catch (\Stripe\Error\ApiConnection $e) {
@@ -90,7 +90,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 			} catch(\Stripe\Error\Card $e) {
 				$errors[] = $e->getMessage();
 			} catch (\Stripe\Error\InvalidRequest $e) {
-				$errors[] = 'Invalid parameters for payment request.';
+				$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
 			} catch (\Stripe\Error\Authentication $e) {
 				$errors[] = 'Payment authention failed';
 			} catch (\Stripe\Error\ApiConnection $e) {

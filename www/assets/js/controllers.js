@@ -610,7 +610,9 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
 
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
+	$scope.devs = devs;
 
 	$scope.loadingLocation = false;
 	$scope.loadingGetfood = false;
