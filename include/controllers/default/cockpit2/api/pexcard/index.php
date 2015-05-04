@@ -149,8 +149,11 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 			$cards = Crunchbutton_Pexcard_Card::card_list();
 
 			if( is_array( $cards->body ) ){
+
 				foreach( $cards->body as $card ){
+
 					if( intval( $card->lastName ) == intval( $crunchbutton_id ) ){
+
 						$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
 
 						if( !$admin_pexcard->id_admin ){
