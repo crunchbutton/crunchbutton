@@ -25,10 +25,13 @@ class Crunchbutton_Queue extends Cana_Table {
 			echo 'Starting #'.$q->id_queue. '...';
 			
 			register_shutdown_function(function() use ($q) {
-				$q->data = json_encode(error_get_last());
-				$q->date_end = date('Y-m-d H:i:s');
-				$q->status = self::STATUS_FAILED;
-				$q->save();
+				$error = error_get_last();
+				if ($error['type'] == E_ERROR) {
+					$q->data = json_encode($error);
+					$q->date_end = date('Y-m-d H:i:s');
+					$q->status = self::STATUS_FAILED;
+					$q->save();
+				}
 			});
 
 			$q->status = self::STATUS_RUNNING;
