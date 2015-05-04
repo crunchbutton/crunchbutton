@@ -106,6 +106,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			$orders = Order::deliveryOrders( $lastHours );
 
 			foreach ( $orders as $order ) {
+				$restaurant = $order->restaurant();
 				$timestamp = Crunchbutton_Util::dateToUnixTimestamp( $order->date() );
 				$exports[] = Model::toModel( [
 					'id_order' => $order->id_order,
@@ -116,7 +117,8 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					'date' => $order->date(),
 					'timestamp' => $timestamp,
 					'date_hour' => $order->date()->format( 'g:i A'),
-					'restaurant' => $order->restaurant()->name,
+					'restaurant' => $restaurant->name,
+					'restaurant_address' => $restaurant->address,
 				] );
 			}
 
