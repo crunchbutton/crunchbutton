@@ -1528,6 +1528,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function driverPaymentError( $id_payment_schedule ){
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+		$schedule->save();
 		if( $schedule->id_payment_schedule ){
 			$driver = $schedule->driver();
 			if( $driver->id_admin ){
