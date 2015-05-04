@@ -4,6 +4,10 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 	public function __construct($id = null) {
 		$this->_changeSetName = 'Crunchbutton_Restaurant';
+		$this->changeOptions([
+			'created' => true
+		]);
+
 		parent::__construct($id);
 	}
 

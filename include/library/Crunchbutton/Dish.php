@@ -93,6 +93,9 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 
 	public function __construct($id = null) {
 		parent::__construct();
+		$this->changeOptions([
+			'created' => true
+		]);
 		$this
 			->table('dish')
 			->idVar('id_dish')
