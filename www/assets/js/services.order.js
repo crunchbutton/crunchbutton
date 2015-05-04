@@ -410,6 +410,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 
 	service.errors = function(errors) {
+		console.error('Order posting errors:', errors);
 		var error = '';
 		for (var x in errors) {
 			if ( x == 'set-processor') {
