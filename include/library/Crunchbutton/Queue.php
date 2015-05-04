@@ -61,6 +61,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		$this->data = null;
 		$this->date_end = date('Y-m-d H:i:s');
 		$this->save();
+		register_shutdown_function(function(){});
 		echo $status."\n";
 	}
 	
