@@ -74,7 +74,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		$this->id_restaurant = $params['restaurant'];
-		
+
 		if (Crunchbutton_User_Payment_Type::processor() != $params['processor']) {
 			$errors['processor'] = 'We recently upgraded our credit card processing security. Please press "Place Order" again to automagicly use our fancy new system.';
 			$errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
@@ -751,7 +751,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$points = $reward->orderTwoDaysInARow( $order->id_user );
 			if( floatval( $points ) > 0 ){
 				if( User_Auth::userHasAuth( $order->id_user ) ){
-					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by 2 days in a row' ] );
 				}
 			}
 			if( !$points ){
