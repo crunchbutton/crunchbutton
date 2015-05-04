@@ -96,7 +96,7 @@ NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
-NGApp.factory('errorInterceptor', function($q) {  
+NGApp.factory('errorInterceptor', function($q) {
 	var errorFromResponse = function(response) {
 		var headers = response.headers();
 		if (headers && headers['php-fatal-error']) {
@@ -121,7 +121,7 @@ NGApp.factory('errorInterceptor', function($q) {
 	};
 	return errorInterceptor;
 });
-NGApp.config(['$httpProvider', function($httpProvider) {  
+NGApp.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.interceptors.push('errorInterceptor');
 }]);
 
@@ -424,6 +424,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.$on('userAuth', function(e, data) {
+
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
 			if (data) {
@@ -436,9 +437,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}
 
 			LocationService.init(true);
-
 			if (App.config.user.id_user && App.config.user.location_lat && ($rootScope.navigation.page == 'location' || $rootScope.navigation.page == 'splash')) {
 				$location.path('/food-delivery');
+			} else if (App.config.user.id_user && !App.config.user.location_lat && $rootScope.navigation.page == 'splash') {
+				$location.path('/location');
+				AccountService.forceDontReloadAfterAuth = true;
 			}
 
 			App.snap.close();
