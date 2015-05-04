@@ -309,7 +309,16 @@ if( $version == 'customer' ){
 				Already Paid by Gift Card
 			<?php } ?>
 		</td>
-		<td>$<?php echo number_format($order->chargedByCredit(),2); ?></td>
+		<td>
+		<?php
+			if( $order->pay_type == 'card' ) { ?>
+				<?php if( !$order->reward_delivery_free ) { ?>
+					$<?php echo number_format($order->chargedByCredit(),2); ?>
+				<?php } ?>
+			<?php } else { ?>
+				$<?php echo number_format($order->chargedByCredit(),2); ?>
+			<?php } ?>
+		</td>
 	</tr>
 
 	<tr style="font-weight:bold;">
