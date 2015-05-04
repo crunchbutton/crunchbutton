@@ -13,16 +13,16 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 	}
 
 	public function cache( $AccountId = false ){
-		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Ymd' ) . ( $AccountId ? $AccountId : '' );
+		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Y-m-d' ) . ( $AccountId ? $AccountId : '' );
 		$cache = new Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
-		if( $cache->cached( $fileName, - ( 60 * 60 ) ) ){
+		if( $cache->cached( $fileName ) ){
 			return $cache->read( $fileName );
 		}
 		return false;
 	}
 
 	public function saveCache( $content, $AccountId = false ){
-		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Ymd' ) . ( $AccountId ? $AccountId : '' );
+		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Y-m-d' ) . ( $AccountId ? $AccountId : '' );
 		$cache = new Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
 		$cache->write( $fileName, $content );
 		return Crunchbutton_Pexcard_Resource::cache( $AccountId );
