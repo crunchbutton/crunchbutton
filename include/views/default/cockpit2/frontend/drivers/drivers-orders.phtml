@@ -50,6 +50,8 @@
 							</div>
 
 							<!-- date -->
+							<a ng-click="showOrder( order.id_order )">
+
 							<div class="column-date" ng-click="showOrder( order.id_order )">
 								<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
 								<div class="orderid">#{{order.id_order | limitTo:-3:0}}</div>
@@ -58,12 +60,14 @@
 
 							<!-- vertical divider -->
 							<div class="vert-divider"></div>
-
+							</a>
 							<!-- info -->
 							<div class="column-info">
-								<div class="restaurant-pointer" ng-click="showOrder( order.id_order )">
-									{{order.restaurant}}
-								</div>
+								<a href="http://maps.google.com/maps?q={{order.restaurant_address}}">
+									<div class="restaurant-pointer">
+										{{order.restaurant}}
+									</div>
+								</a>
 
 								<div class="customer-pointer">
 									{{order.name}}
@@ -73,10 +77,11 @@
 									<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
 								</div>
 
-								<div ng-if="order.address" class="customer-address">
-									{{order.addressFirstLine}}
-								</div>
-
+								<a href="http://maps.apple.com/?q={{order.address}}">
+									<div ng-if="order.address" class="customer-address">
+										{{order.addressFirstLine}}
+									</div>
+								</a>
 							</div>
 							<div class="divider"></div>
 						</div>
