@@ -198,8 +198,10 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 
 	service.typesPayment = function(){
 		var methods = [];
-		methods.push( { value: 'orders', label: 'Orders' } );
-		methods.push( { value: 'hours', label: 'Hours' } );
+		methods.push( { value: 'orders', label: 'Commission' } );
+		methods.push( { value: 'hours', label: 'Hourly with tips' } );
+		methods.push( { value: 'hours_without_tips', label: 'Hourly without tips (but a higher hourly rate)' } );
+		methods.push( { value: 'making_whole', label: 'Making whole' } );
 		return methods;
 	}
 

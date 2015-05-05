@@ -654,11 +654,13 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 	$scope.focus('#search');
 });
 
-NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService, StaffPayInfoService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
 	$scope.isSaving = false;
+
+	$scope.payment_types = StaffPayInfoService.typesPayment();
 
 	var vehicle_default = null;
 
