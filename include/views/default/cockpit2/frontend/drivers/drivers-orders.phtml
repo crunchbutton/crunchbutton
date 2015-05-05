@@ -63,7 +63,13 @@
 							</a>
 							<!-- info -->
 							<div class="column-info">
-								<a href="http://maps.google.com/maps?q={{order.restaurant_address}}">
+								<a href="http://maps.apple.com/?q={{order.restaurant_address}}" ng-if="iOS">
+									<div class="restaurant-pointer">
+										{{order.restaurant}}
+									</div>
+								</a>
+
+								<a href="http://maps.google.com/maps?q={{order.restaurant_address}}" ng-if="!iOS">
 									<div class="restaurant-pointer">
 										{{order.restaurant}}
 									</div>
@@ -77,7 +83,13 @@
 									<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
 								</div>
 
-								<a href="http://maps.apple.com/?q={{order.address}}">
+								<a href="http://maps.apple.com/?q={{order.address}}" ng-if="iOS">
+									<div ng-if="order.address" class="customer-address">
+										{{order.addressFirstLine}}
+									</div>
+								</a>
+
+								<a href="http://maps.google.com/maps?q={{order.address}}" ng-if="!iOS">
 									<div ng-if="order.address" class="customer-address">
 										{{order.addressFirstLine}}
 									</div>
