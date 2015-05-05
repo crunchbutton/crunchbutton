@@ -143,19 +143,22 @@
 	</thead>
 	<thead style="font-weight:bold">
 		<tr>
-			<?php if( !$summary[ 'show_tips' ] ) { ?><td class="topitem"></td><?php } ?>
+			<?php if( !$summary[ 'show_credit_card_tips' ] ) { ?><td class="topitem"></td><?php } ?>
+			<?php if( !$summary[ 'show_delivery_fees' ] ) { ?><td class="topitem"></td><?php } ?>
 			<td style="width:215px;" class="topitem">Customer</td>
 			<td style="width:255px;" class="topitem">Restaurant</td>
 			<td style="width:215px;" class="topitem">Date</td>
 			<td style="width:90px;" class="topitem">Type</td>
 			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
-				<?php if( $summary[ 'show_tips' ] ){ ?>
+				<?php if( $summary[ 'show_credit_card_tips' ] ){ ?>
 					<td style="width:90px;" class="topitem">
 						Tip
 					</td>
 				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
-					<td style="width:155px;" class="topitem">Delivery Fee</td>
+					<?php if( $summary[ 'show_delivery_fees' ] ) { ?>
+						<td style="width:155px;" class="topitem">Delivery Fee</td>
+					<?php } ?>
 					<td style="width:155px;" class="topitem">Payment</td>
 				<?php } ?>
 			<?php } ?>
@@ -167,13 +170,14 @@
 	<?php } ?>
 	<?php foreach( $summary[ 'orders' ][ 'included' ] as $order ) { ?>
 		<tr>
-			<?php if( !$summary[ 'show_tips' ] ) { ?><td class="fooditem"></td><?php } ?>
+			<?php if( !$summary[ 'show_delivery_fees' ] ) { ?><td class="fooditem"></td><?php } ?>
+			<?php if( !$summary[ 'show_credit_card_tips' ] ) { ?><td class="fooditem"></td><?php } ?>
 			<td class="fooditem"><?php echo $order[ 'name' ]; ?></td>
 			<td class="fooditem"><?php echo $order[ 'restaurant' ]; ?></td>
 			<td class="fooditem"><?php echo $order[ 'date' ]; ?></td>
 			<td class="fooditem"><?php echo $order[ 'pay_type' ]; ?></td>
 			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
-				<?php if( $summary[ 'show_tips' ] ) { ?>
+				<?php if( $summary[ 'show_credit_card_tips' ] ) { ?>
 					<td class="fooditem">
 						<?php if( $order[ 'tip' ] && $order[ 'pay_type' ] == 'Card' ) { ?>
 						$<?php echo number_format( $order[ 'tip' ], 2 ); ?>
@@ -183,7 +187,9 @@
 					</td>
 				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
-					<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee' ], 2 ); ?></td>
+					<?php if( $summary[ 'show_delivery_fees' ] ) { ?>
+						<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee' ], 2 ); ?></td>
+					<?php } ?>
 					<td class="fooditem">$<?php echo number_format( $order[ 'total_payment' ], 2 ); ?></td>
 				<?php } ?>
 			<?php } else { ?>
@@ -196,13 +202,13 @@
 		</tr>
 
 	<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
-		<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Delivery Fee</td>
-			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee' ], 2 ); ?></td>
-		</tr>
+		<?php if( !$summary[ 'driver_payment_hours' ] && $summary[ 'show_delivery_fees' ] ) { ?>
+			<tr class="class">
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Delivery Fee</td>
+				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee' ], 2 ); ?></td>
+			</tr>
 		<?php } ?>
-		<?php if( $summary[ 'show_tips' ] ) { ?>
+		<?php if( $summary[ 'show_credit_card_tips' ] ) { ?>
 			<tr class="class">
 				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Tips by Card</td>
 				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'tip' ], 2 ); ?></td>

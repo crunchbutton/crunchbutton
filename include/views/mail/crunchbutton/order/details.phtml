@@ -189,7 +189,7 @@ if( $version == 'customer' ){
 	// change fax for 3rd party restaurants #2962
 	$showTipAndDeliveryFee = !( $viewer == 'restaurant' && $order->restaurant()->delivery_service );
 
-	if( $showTipAndDeliveryFee ){
+	if( $showTipAndDeliveryFee && $show_credit_card_tips ){
 		if ( $order->pay_type == 'card' && $order->tip ) { ?>
 			<tr>
 				<td></td>
@@ -206,7 +206,7 @@ if( $version == 'customer' ){
 		<?php }
 	}
 
-	if( $showTipAndDeliveryFee ){
+	if( $showTipAndDeliveryFee && $show_delivery_fees ){
 
 		 if ( $order->restaurant()->delivery_fee ) { ?>
 			<tr>
