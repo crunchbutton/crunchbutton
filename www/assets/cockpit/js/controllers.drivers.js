@@ -180,6 +180,12 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 			$scope.update();
 		}
 	});
+	//if (App.iOS()) {
+	//	DriverOrdersService.order.mapLink = 'http://maps.apple.com/?' +(DriverOrdersService.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + encodeURIComponent(address) + '&' + (DriverOrdersService.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + encodeURIComponent(restaurant_address);
+	//} else {
+	//	DriverOrdersService.order.mapLink = 'http://maps.google.com/maps?' +(DriverOrdersService.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + encodeURIComponent(address) + '&' + (DriverOrdersService.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + encodeURIComponent(restaurant_address)+'"';
+	//}
+
 
 	$scope.update();
 } );
