@@ -10,8 +10,6 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 					$user[ 'invite_code' ] = c::user()->inviteCode();
 					$user['working'] = c::user()->isWorking();
 					$user[ 'hours_since_last_shift' ] = c::user()->getLastWorkedTimeHours();
-					$user['isMarketingRep'] = c::user()->isMarketingRep();
-					$user['isMarketingRep'] = c::user()->isMarketingRep();
 				}
 
 				$reward = new Crunchbutton_Reward();

@@ -782,6 +782,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			}
 		}
 
+		$paymentType = $this->paymentType();
+
 		$ex = [
 			'id_admin' => $this->id_admin,
 			'login' => $this->login,
@@ -795,7 +797,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'groups' => $groups,
 			'vehicle' => $this->vehicle(),
 			'communities' => $communities,
-			'active' => ( $this->active == 1 )
+			'active' => ( $this->active == 1 ),
+			'payment_type' => $paymentType->payment_type,
+			'hour_rate' => $paymentType->hour_rate
 		];
 
 		$cfg = $this->config();

@@ -1197,7 +1197,10 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 
 });
 
-NGApp.controller('DriversHelpCtrl', function() {});
+NGApp.controller('DriversHelpCtrl', function( $scope, AccountService ) {
+	$scope.account = AccountService;
+});
+
 NGApp.controller('InviteCtrl', function() {});
 NGApp.controller('DriversFeedbackCtrl', function($scope, FeedbackService) {
 	$scope.feedback = {};
