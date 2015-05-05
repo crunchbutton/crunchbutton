@@ -588,9 +588,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// We need to make this change: add the $3 delivery fee to the amount being subtracted for cash orders from payment for hourly drivers.
 	public function orderDeliveryFeeDriverCollected( $arr ){
-		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] * $arr[ 'pay_type_hour' ] ) * ( 1 - $arr[ 'refunded' ] );
-		// echo '<pre>';var_dump( $arr );exit();
-		// echo json_encode( $arr );exit;
+		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] );
 	}
 
 	// Drivers must pay us back our markup they collected in cash.
@@ -1678,13 +1676,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total_payment' => $_total_payment
 																									];
 					if( $variables[ 'cash' ] ){
+						// aqui aqui
 						// Hourly drivers are ALSO collecting the $3 delivery fee for all cash orders, and keeping it. They shouldn't be! #5053
 						$summary[ 'collected_in_cash' ] += $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ];
-						// adicionar aqui a verificao se está sendo cobrado o fee por ordens
-						if( $summary[ 'driver_payment_hours' ] ){
+
+						// if( $summary[ 'driver_payment_hours' ] ){
 							$summary[ 'delivery_fee_collected' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] );
 							$summary[ 'collected_in_cash' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] );
-						}
+						// }
 						$summary[ '_total_received_cash_' ] += $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
 						$summary[ '_total_cash_orders_' ]++;
 					}
