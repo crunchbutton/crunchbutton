@@ -32,7 +32,10 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 			'order' => $params['order'],
 			'user' => $params['user'],
 			'cockpit' => $params['cockpit'],
-			'version' => $version
+			'show_credit_card_tips' => $params['show_credit_card_tips'],
+			'show_delivery_fees' => $params['show_delivery_fees'],
+			'version' => $version,
+
 		]]);
 
 		parent::__construct($params);

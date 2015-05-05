@@ -376,7 +376,7 @@ ORDER BY o.id_order ASC";
 					break;
 			}
 		}
-		
+
 		return $res;
 	}
 
@@ -439,7 +439,14 @@ ORDER BY o.id_order ASC";
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => $this->host_callback(), 'type' => 'admin_notification' ]);
 
-		$mail = new Email_Order( [ 'order' => $order, 'cockpit_url' => $cockpit_url  ] );
+
+		$admin = $this->admin();
+		$mail = new Email_Order( [	'order' => $order,
+																'cockpit_url' => $cockpit_url,
+																'show_credit_card_tips' => $admin->showCreditCardTips(),
+																'show_delivery_fees' => $admin->showDeliveryFees(),
+															] );
+
 		$temp = tempnam('/tmp','fax');
 
 		file_put_contents($temp, $mail->message());
@@ -510,12 +517,15 @@ ORDER BY o.id_order ASC";
 
 		$env = c::getEnv();
 		$mail = $this->value;
+		$admin = $this->admin();
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 
 		$mail = new Email_Order( [	'order' => $order,
 																'email' => $mail,
-																'cockpit_url' => $cockpit_url
+																'cockpit_url' => $cockpit_url,
+																'show_credit_card_tips' => $admin->showCreditCardTips(),
+																'show_delivery_fees' => $admin->showDeliveryFees(),
 															] );
 		$mail->send();
 	}

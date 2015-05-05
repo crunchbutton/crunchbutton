@@ -296,7 +296,7 @@
 	</div>
 	*/ ?>
 
-	<div class="tip-total-block total-block" ng-if="account.user.payment_type != 'hours_without_tips' || ( account.user.payment_type == 'hours_without_tips' && ( oc.order._tip_with_cash || oc.order._tip == '0.00' ) )">
+	<div class="tip-total-block total-block" ng-if="account.user.show_credit_card_tips || ( oc.order._tip_with_cash || oc.order._tip == '0.00' )">
 		<span class="order-total-price">
 			<span ng-if="oc.order._tip_with_cash || oc.order._tip == 0">CASH</span>
 			<span ng-if="!oc.order._tip_with_cash && oc.order._tip != 0"><span class="tip-total-price-dollar">$</span>{{oc.order._tip | formatPrice}}</span>

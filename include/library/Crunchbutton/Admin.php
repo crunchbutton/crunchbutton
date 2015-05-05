@@ -799,7 +799,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'communities' => $communities,
 			'active' => ( $this->active == 1 ),
 			'payment_type' => $paymentType->payment_type,
-			'hour_rate' => $paymentType->hour_rate
+			'hour_rate' => $paymentType->hour_rate,
+			'show_credit_card_tips' => $this->showCreditCardTips(),
+			'show_delivery_fees' => $this->showDeliveryFees(),
 		];
 
 		$cfg = $this->config();
@@ -822,6 +824,19 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			$ex[ 'id_community' ] = $community_delivery->id_community;
 		}
 		return $ex;
+	}
+
+	// #5480
+	public function showCreditCardTips(){
+		$paymentType = $this->paymentType();
+		return ( $paymentType->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS );
+	}
+
+	// #5480
+	public function showDeliveryFees(){
+		$paymentType = $this->paymentType();
+		return ( 	$paymentType->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS &&
+							$paymentType->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS );
 	}
 
 	private static function _isBoolPref($pref) {
