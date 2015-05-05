@@ -5,6 +5,8 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 	const PAYMENT_METHOD_DEPOSIT = 'deposit';
 	const PAYMENT_TYPE_HOURS = 'hours';
 	const PAYMENT_TYPE_ORDERS = 'orders';
+	const PAYMENT_TYPE_HOURS_WITHOUT_TIPS = 'hours_without_tips';
+	const PAYMENT_TYPE_MAKING_WHOLE = 'making_whole';
 
 	public function __construct($id = null) {
 		parent::__construct();

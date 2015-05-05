@@ -186,15 +186,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver_info->save();
 
+
 		$payment_type = $driver->payment_type();
-		if( intval( $this->request()[ 'hourly' ] ) == 1 ){
-			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
-			if( !$payment_type->hour_rate ){
-				$payment_type->hour_rate = 6; // #4224
-			}
-		} else {
-			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
-		}
+		$payment_type->payment_type = $this->request()[ 'payment_type' ];
+		$payment_type->hour_rate = $this->request()[ 'hour_rate' ];
+
 		if( $newDriver ){
 			$payment_type->using_pex = 1;
 			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );

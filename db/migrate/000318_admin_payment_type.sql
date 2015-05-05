@@ -1,0 +1,1 @@
+ALTER TABLE admin_payment_type CHANGE COLUMN `payment_type` `payment_type` enum('orders','hours','hours_without_tips','making_whole') DEFAULT 'orders';
