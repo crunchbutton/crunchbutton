@@ -143,12 +143,17 @@
 	</thead>
 	<thead style="font-weight:bold">
 		<tr>
+			<?php if( !$summary[ 'show_tips' ] ) { ?><td class="topitem"></td><?php } ?>
 			<td style="width:215px;" class="topitem">Customer</td>
 			<td style="width:255px;" class="topitem">Restaurant</td>
 			<td style="width:215px;" class="topitem">Date</td>
 			<td style="width:90px;" class="topitem">Type</td>
 			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
-				<td style="width:90px;" class="topitem">Tip</td>
+				<?php if( $summary[ 'show_tips' ] ){ ?>
+					<td style="width:90px;" class="topitem">
+						Tip
+					</td>
+				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td style="width:155px;" class="topitem">Delivery Fee</td>
 					<td style="width:155px;" class="topitem">Payment</td>
@@ -162,18 +167,21 @@
 	<?php } ?>
 	<?php foreach( $summary[ 'orders' ][ 'included' ] as $order ) { ?>
 		<tr>
+			<?php if( !$summary[ 'show_tips' ] ) { ?><td class="fooditem"></td><?php } ?>
 			<td class="fooditem"><?php echo $order[ 'name' ]; ?></td>
 			<td class="fooditem"><?php echo $order[ 'restaurant' ]; ?></td>
 			<td class="fooditem"><?php echo $order[ 'date' ]; ?></td>
 			<td class="fooditem"><?php echo $order[ 'pay_type' ]; ?></td>
 			<?php if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ) { ?>
-				<td class="fooditem">
-					<?php if( $order[ 'tip' ] && $order[ 'pay_type' ] == 'Card' ) { ?>
-					$<?php echo number_format( $order[ 'tip' ], 2 ); ?>
-					<?php } else { ?>
-					-
-					<?php } ?>
-				</td>
+				<?php if( $summary[ 'show_tips' ] ) { ?>
+					<td class="fooditem">
+						<?php if( $order[ 'tip' ] && $order[ 'pay_type' ] == 'Card' ) { ?>
+						$<?php echo number_format( $order[ 'tip' ], 2 ); ?>
+						<?php } else { ?>
+						-
+						<?php } ?>
+					</td>
+				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee' ], 2 ); ?></td>
 					<td class="fooditem">$<?php echo number_format( $order[ 'total_payment' ], 2 ); ?></td>
@@ -194,10 +202,12 @@
 			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee' ], 2 ); ?></td>
 		</tr>
 		<?php } ?>
-		<tr class="class">
-			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Tips by Card</td>
-			<td>$<?php echo number_format( $summary[ 'calcs' ][ 'tip' ], 2 ); ?></td>
-		</tr>
+		<?php if( $summary[ 'show_tips' ] ) { ?>
+			<tr class="class">
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Tips by Card</td>
+				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'tip' ], 2 ); ?></td>
+			</tr>
+		<?php } ?>
 			<tr class="class">
 				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Markup</td>
 				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'markup' ], 2 ); ?></td>

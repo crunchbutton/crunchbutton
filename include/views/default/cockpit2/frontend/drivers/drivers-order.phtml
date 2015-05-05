@@ -85,6 +85,7 @@
 
 
 	</div>
+
 	<div class="order" ng-if="oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
 
 		<br><br>
@@ -295,7 +296,7 @@
 	</div>
 	*/ ?>
 
-	<div class="tip-total-block total-block">
+	<div class="tip-total-block total-block" ng-if="account.user.payment_type != 'hours_without_tips' || ( account.user.payment_type == 'hours_without_tips' && ( oc.order._tip_with_cash || oc.order._tip == '0.00' ) )">
 		<span class="order-total-price">
 			<span ng-if="oc.order._tip_with_cash || oc.order._tip == 0">CASH</span>
 			<span ng-if="!oc.order._tip_with_cash && oc.order._tip != 0"><span class="tip-total-price-dollar">$</span>{{oc.order._tip | formatPrice}}</span>

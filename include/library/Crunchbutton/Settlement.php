@@ -1578,6 +1578,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'payment_method' ] = $schedule->driver()->payment_type()->payment_method;
 			$summary[ 'salary_type' ] = ( $schedule->driver_payment_hours ) ? Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS : Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+			$summary[ 'driver_payment_type' ] = $schedule->driver()->payment_type()->payment_type;
+			$summary[ 'show_tips' ] = ( $schedule->driver()->payment_type()->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS );
 			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_DRIVER;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
