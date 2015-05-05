@@ -72,7 +72,8 @@
 						<td>Delivery Fee</td>
 						<td>${{result.calcs.delivery_fee | formatPrice}}</td>
 					</tr>
-					<tr ng-if="result.calcs.tip && pay_type_payment" positive-or-negative-color="{{result.calcs.tip}}">
+
+					<tr ng-if="result.calcs.tip && pay_type_payment && result.show_tips" positive-or-negative-color="{{result.calcs.tip}}">
 						<td>Tip</td>
 						<td>${{result.calcs.tip | formatPrice}}</td>
 					</tr>
@@ -227,7 +228,7 @@
 					<td>Restaurant</td>
 					<td>Date</td>
 					<td>
-						<span ng-if="pay_type_payment">Tip</span>
+						<span ng-if="pay_type_payment && result.show_tips">Tip</span>
 					</td>
 					<td>
 						<span ng-if="pay_type_payment && !result.hourly">Delivery Fee</span>
@@ -247,7 +248,7 @@
 					</td>
 					<td>{{order.restaurant}}</td>
 					<td>{{order.date}}</td>
-					<td><span ng-if="pay_type_payment">${{order.tip | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment && result.show_tips">${{order.tip | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment && !result.hourly">${{order.delivery_fee | formatPrice}}</span></td>
 					<td ng-if="pay_type_reimbursement">${{order.total_reimburse | formatPrice}}</td>
 					<td ng-if="pay_type_payment">
