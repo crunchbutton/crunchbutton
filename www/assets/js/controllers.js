@@ -890,6 +890,10 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
+	if(!$scope.order.cardMonth){
+		$scope.order.cardMonth = '';
+		$scope.order.cardYear = '';
+	}
 	$scope.order.info = order.info;
 
 	$scope.Math = window.Math;
@@ -1378,7 +1382,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$('.order-print').get(0).contentWindow.document.body.innerHTML = $('.order-print-content').html();
 		$('.order-print').get(0).contentWindow.print();
 	};
-
 	if ( App.busy.isBusy() ) {
 		setTimeout( function(){
 			App.busy.unBusy();

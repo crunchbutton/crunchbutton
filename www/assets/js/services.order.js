@@ -129,14 +129,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if( !service.account.user.id_user ){
 			var userEntered = $.totalStorage( 'userEntered' );
 			if( userEntered ){
-				service.form.name = ( userEntered.name && userEntered.name != '' ? userEntered.name : service.form.name );
-				service.form.phone = $filter( 'formatPhone' )( ( userEntered.phone && userEntered.phone != '' ? userEntered.phone : service.form.phone ) );
-				service.form.address = ( userEntered.address && userEntered.address != '' ? userEntered.address : service.form.address );
-				service.form.notes = ( userEntered.notes && userEntered.notes != '' ? userEntered.notes : service.form.notes );
-				service.form.delivery_type = ( userEntered.delivery_type && userEntered.delivery_type != '' ? userEntered.delivery_type : service.form.delivery_type );
-				service.form.pay_type = ( userEntered.pay_type && userEntered.pay_type != '' ? userEntered.pay_type : service.form.pay_type );
-				service.form.cardMonth = ( userEntered.cardMonth && userEntered.cardMonth != '' ? userEntered.cardMonth : service.form.cardMonth );
-				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '' ? userEntered.cardYear : service.form.cardYear );
+				service.form.name = ( userEntered.name && userEntered.name != '') ? userEntered.name : service.form.name ;
+				service.form.phone = $filter( 'formatPhone' )( ( userEntered.phone && userEntered.phone != '') ? userEntered.phone : service.form.phone ) ;
+				service.form.address = ( userEntered.address && userEntered.address != '') ? userEntered.address : service.form.address ;
+				service.form.notes = ( userEntered.notes && userEntered.notes != '' ) ? userEntered.notes : service.form.notes ;
+				service.form.delivery_type = ( userEntered.delivery_type && userEntered.delivery_type != '') ? userEntered.delivery_type : service.form.delivery_type;
+				service.form.pay_type = ( userEntered.pay_type && userEntered.pay_type != '') ? userEntered.pay_type : service.form.pay_type ;
+				service.form.cardMonth = ( userEntered.cardMonth && userEntered.cardMonth !== '') ? userEntered.cardMonth : service.form.cardMonth;
+				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '') ? userEntered.cardYear : service.form.cardYear ;
 				if( userEntered.tip && userEntered.tip != '' ){
 					var _tip = userEntered.tip;
 					setTimeout(function() {
@@ -691,7 +691,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 			// Only use redeemed points if the user knows about them #4851
 			order.use_delivery_points = true;
-			
+
 			var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
 			order.processor = processor;
 
