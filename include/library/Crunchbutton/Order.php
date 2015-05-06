@@ -77,7 +77,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if (Crunchbutton_User_Payment_Type::processor() != $params['processor']) {
 			$errors['processor'] = 'We recently upgraded our credit card processing security. Please press "Place Order" again to automagicly use our fancy new system.';
-			$errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
+			// $errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
 		}
 
 		if( $processType == static::PROCESS_TYPE_WEB ){
