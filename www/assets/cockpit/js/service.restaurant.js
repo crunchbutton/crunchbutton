@@ -279,7 +279,7 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 
 	service.cardYears = function(){
 		var years = [];
-		years.push( { value: 0, label: 'Year' } );
+		years.push( { value: '', label: 'Year' } );
 		var date = new Date().getFullYear();
 		for ( var x = date; x <= date + 20; x++ ) {
 			years.push( { value: x.toString(), label: x.toString() } );
@@ -289,7 +289,7 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 
 	service.cardMonths = function(){
 		var months = [];
-		months.push( { value: 0, label: 'Month' } );
+		months.push( { value: '', label: 'Month' } );
 		for ( var x = 1; x <= 12; x++ ) {
 			months.push( { value: x.toString(), label: x.toString() } );
 		}

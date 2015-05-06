@@ -41,7 +41,7 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 	}
 
 	service.sms = function(){
-		var text = 'I love crunchbutton delivery :) use my code ' + service.invite_code + ' in the Notes section and get your first order delivered for free!';
+		var text = 'I love crunchbutton delivery :) Enter ' + service.invite_code + '  in your Order Notes section and get your first order delivered for free! Or go to ';
 		if( App.iOS() ){
 			return 'sms:&body=' + text + ' ' + service.invite_url;
 		} else {
