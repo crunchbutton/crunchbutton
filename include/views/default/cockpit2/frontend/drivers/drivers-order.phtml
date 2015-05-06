@@ -52,8 +52,12 @@
 
 				<div class="info-address"><p class="order-info-address">
 						<a href="http://maps.apple.com/?q={{oc.order._restaurant_address}}" ng-if="iOS" target="_system">
+							<span>{{oc.order._restaurant_address}}</span>
+						</a>
 						<a href="http://maps.google.com/maps?q={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
-						<span ng-bind-html-unsafe="oc.order._restaurant_address | nl2br"></span></a></p></div>
+							<span>{{oc.order._restaurant_address}}</span>
+						</a>
+					</div>
 			</div>
 		</div>
 
@@ -66,10 +70,12 @@
 
 				<div class="info-address"><p class="order-info-address">
 					<a href="http://maps.apple.com/?q={{oc.order.address}}" ng-if="iOS" target="_system">
+						<span>{{oc.order.address}}</span>
+					</a>
 					<a href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_system">
-					<span ng-bind-html-unsafe="oc.order.address | nl2br"></span>
-					</a></p></div>
-
+						<span ng-bind-html-unsafe="oc.order.address | nl2br"></span>
+					</a>
+				</div>
 			</div>
 		</div>
 
