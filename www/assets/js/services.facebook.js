@@ -185,12 +185,17 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// sign out of facebook
 	service.signout = function(callback) {
-		FB.logout(function() {
+		var complete = function() {
 			service.logged = false;
 			if (typeof callback === 'function') {
 				callback();
 			}
-		});
+		};
+		try {
+			FB.logout(complete);
+		} catch (e) {
+			complete();
+		}
 	}
 
 	return service;
