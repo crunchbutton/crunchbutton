@@ -512,7 +512,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					$order = $order->get(0);
 				}
 
-				if ($order->id_order) {
+				if ($order->id_order && c::user()->id_user == $order->id_user) {
 					echo $order->json();
 					break;
 
