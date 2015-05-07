@@ -369,6 +369,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $eta < 40 ){
 			$eta = 40;
 		}
+
+		$eta = ceil( $eta );
 		if( $array ){
 			return [ 	'eta' => $eta,
 								'activeDrivers' => $activeDrivers,
