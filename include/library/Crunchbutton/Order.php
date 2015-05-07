@@ -1381,74 +1381,26 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$needDrivers = false;
 		$hasDriversWorking = false;
 
-		$driversToNotify = [];
-
-		/*
-		* legacy stuff. hopefully not used anymore
-
-		foreach ( $order->restaurant()->notifications() as $n ) {
-			// Admin notification type means it needs a driver
-			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
-				$needDrivers = true;
-				$admin = $n->admin();
-				// Store the drivers
-				$driversToNotify[ $admin->id_admin ] = $admin;
-			}
-		}
-		*/
-
 		// check if the restaurant is using our delivery system
 		if( intval( $order->restaurant()->delivery_service ) == 1 ){
 			$needDrivers = true;
-			// get the restaurant community and its drivers
-			$communities = $order->restaurant()->communities();
-			foreach( $communities as $community ){
-				if( $community->id_community ){
-					$drivers = $community->getDriversOfCommunity();
-					foreach( $drivers as $driver ){
-						$driversToNotify[ $driver->id_admin ] = $driver;
-					}
-				}
-			}
 		}
 
-		$driverAlreadyNotified = [];
-
-		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+		$drivers = $this->getDriversToNotify();
 		if( $drivers ){
 			foreach( $drivers as $driver ){
-				$driverAlreadyNotified[] = $driver->id_admin;
 				foreach( $driver->activeNotifications() as $adminNotification ){
 					$adminNotification->send( $order );
 					$hasDriversWorking = true;
-					$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value;
+					$message = '#'.$order->id_order.' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 				}
 			}
 		}
 
-
-		// Send notification to drivers
-		if( count( $driversToNotify ) > 0 ){
-			foreach( $driversToNotify as $driver ){
-				if( $driver->isWorking() ){
-					if( in_array( $driver->id_admin, $driverAlreadyNotified ) ){
-						$message = '#'.$order->id_order.' notification to ' . $driver->name . ' already sent';
-						Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-						continue;
-					}
-					foreach( $driver->activeNotifications() as $adminNotification ){
-						$hasDriversWorking = true;
-						$adminNotification->send( $order );
-						Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => 'admin', 'type' => 'notification']);
-					}
-				}
-			}
-			Crunchbutton_Admin_Notification_Log::register( $this->id_order );
-		}
+		Crunchbutton_Admin_Notification_Log::register( $this->id_order );
 
 		if( $needDrivers && !$hasDriversWorking ){
-			Log::debug([ 'order' => $order->id_order, 'action' => 'there is no drivers to get the order', 'type' => 'notification']);
 			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 		}
 	}
