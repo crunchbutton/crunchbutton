@@ -320,12 +320,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$activeDrivers = $this->activeDrivers();
 		}
 
-		if( $params[ 'id_community' ] ){
-			$id_community = $params[ 'id_community' ];
-		} else {
-			$id_community = $this->community();
-		}
-
+		$community = $this->community();
+		$id_community = $community->id_community;
 
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
