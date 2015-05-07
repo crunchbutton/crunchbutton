@@ -4,7 +4,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		$this->resultsPerPage = 10;
+		$this->resultsPerPage = 20;
 
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();

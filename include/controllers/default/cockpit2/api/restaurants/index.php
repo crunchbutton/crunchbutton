@@ -20,17 +20,27 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'eta':
+
 				$out = [];
-				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND delivery_service = true ORDER BY name ASC' );
+				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND delivery_service = true ORDER BY name ' );
 				$communities = [];
 
 				foreach( $restaurants as $restaurant ){
 					if( $restaurant->open() ){
 						$community = $restaurant->community()->get( 0 );
 						if( !$communities[ $community->id_community ] ){
-							$communities[ $community->id_community ] = [ 'name' => $community->name, 'activeDrivers' => $restaurant->activeDrivers() ];
+							$query = 'SELECT o.* FROM `order` o
+													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
+													WHERE o.delivery_type = "' . Crunchbutton_Order::SHIPPING_DELIVERY . '"
+														AND o.delivery_service = true
+														AND o.date >= now() - INTERVAL 1 DAY
+													ORDER BY o.id_order DESC';
+							$orders = Order::q( $query );
+							$activeDrivers = $restaurant->activeDrivers();
+							$communities[ $community->id_community ] = [ 'name' => $community->name, 'activeDrivers' => $activeDrivers, 'orders' => $orders ];
 						}
-						$params = [ 'id_community' => $community->id_community, 'activeDrivers' => $communities[ $community->id_community ][ 'activeDrivers' ] ];
+						$params = [ 'id_community' => $community->id_community, 'activeDrivers' => $communities[ $community->id_community ][ 'activeDrivers' ], 'orders' => $communities[ $community->id_community ][ 'orders' ] ];
 						$out[] = array_merge( [ 'restaurant' => $restaurant->name, 'community' => $community->name ], $restaurant->smartETA( true, $params) );
 					}
 				}
