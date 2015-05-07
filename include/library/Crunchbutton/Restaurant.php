@@ -323,9 +323,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $params[ 'id_community' ] ){
 			$id_community = $params[ 'id_community' ];
 		} else {
-			$id_community = $this->community();
+			$community = $this->community();
+			$id_community = $community->id_community;
 		}
-
 
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
@@ -333,14 +333,21 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$ordersPlacedButNotPickedUp = 0;
 		$ordersPickedUpButNotDelivered = 0;
 		$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver = 0;
-		$query = 'SELECT o.* FROM `order` o
-													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
-													WHERE o.delivery_type = "' . Crunchbutton_Order::SHIPPING_DELIVERY . '"
-														AND o.delivery_service = true
-														AND o.date >= now() - INTERVAL ' . $interval . ' DAY
-													ORDER BY o.id_order DESC';
-		$orders = Order::q( $query );
+
+		if( $params[ 'orders' ] ){
+			$orders = $params[ 'orders' ];
+		} else {
+
+			$query = 'SELECT o.* FROM `order` o
+														INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+														INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $id_community . '"
+														WHERE o.delivery_type = "' . Crunchbutton_Order::SHIPPING_DELIVERY . '"
+															AND o.delivery_service = true
+															AND o.date >= now() - INTERVAL ' . $interval . ' DAY
+														ORDER BY o.id_order DESC';
+
+			$orders = Order::q( $query );
+		}
 		foreach( $orders as $order ){
 			$lastStatus = $order->deliveryLastStatus();
 			if( $lastStatus[ 'status' ] == 'new' || $lastStatus[ 'status' ] == 'accepted' ){
@@ -362,6 +369,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $eta < 40 ){
 			$eta = 40;
 		}
+
+		$eta = ceil( $eta );
 		if( $array ){
 			return [ 	'eta' => $eta,
 								'activeDrivers' => $activeDrivers,

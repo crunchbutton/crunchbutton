@@ -457,7 +457,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// #5325
 		if( $force ){
-			$delivery_fee = ( $pay[ 'delivery_fee' ] ? $pay[ 'delivery_fee' ] : 3 );
+			$delivery_fee = $pay[ 'delivery_fee' ];
 			$pay_by_order = 1;
 		} else {
 			$delivery_fee = $pay[ 'delivery_fee' ];
