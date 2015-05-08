@@ -49,12 +49,12 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 
 	public function byCommunity( $id_community, $type = false ){
 
-		$type = ( $type ) ? ' AND ' . $type . ' = 1' : '';
+		$type = ( $type ) ? ' AND ' . $type . ' = true' : '';
 
 		if( $id_community == 'all' ){
-			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr WHERE cr.all = "1" AND active = 1 ' . $type );
+			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr WHERE cr.all = true AND active = true ' . $type );
 		} else {
-			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr INNER JOIN community_resource_community crc ON cr.id_community_resource = crc.id_community_resource AND crc.id_community = "' . $id_community . '"  AND active = 1 ' . $type );
+			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr INNER JOIN community_resource_community crc ON cr.id_community_resource = crc.id_community_resource AND crc.id_community = "' . $id_community . '"  AND active = true ' . $type );
 		}
 	}
 
