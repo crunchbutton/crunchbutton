@@ -12,7 +12,7 @@
 			<li class="li-input" ng-class="{'error':form.paymentDriver.$invalid}">
 				<div class="label">Select a driver:</div>
 				<div class="input">
-					<select name="paymentDriver" ng-model="payment.id_driver" required ng-options="opt.id_admin as opt.name for opt in drivers"></select>
+					<div isteven-multi-select selection-mode="single" input-model="drivers" output-model="outputDriver" button-label="name" item-label="name" tick-property="ticked" ></div>
 				</div>
 				<div class="box-error">
 					<small ng-show="form.paymentDriver.$error.required">Required.</small>

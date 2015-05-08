@@ -88,8 +88,6 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 		}
 	});
 
-
-
 	if( $routeParams.id ){
 		CommunityResourceService.get( $routeParams.id, function( json ){
 			$scope.resource = json;

@@ -48,6 +48,19 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'all-admins-with-login':
+				$out = [];
+				$drivers = Admin::q( 'SELECT * FROM admin a INNER JOIN admin_payment_type apt ON a.id_admin = apt.id_admin WHERE a.name IS NOT NULL and a.login IS NOT NULL ORDER BY a.name ASC' );
+				foreach( $drivers as $driver ){
+					if( $driver->isDriver() ){
+						$community = $driver->communityDriverDelivery();
+						$name = $driver->name . ' (' . $driver->login . ') ' . $community->name;
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $name ];
+					}
+				}
+				echo json_encode( $out );
+				break;
+
 			case 'list-payment-type':
 				$out = [];
 				$drivers = Admin::drivers();

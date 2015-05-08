@@ -852,7 +852,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$this->log( 'scheduleDriverArbitraryPayment: end', $schedule->properties() );
 
-		$this->payDriver( $id_payment_schedule );
+		// $this->payDriver( $id_payment_schedule );
 
 		return $id_payment_schedule;
 
