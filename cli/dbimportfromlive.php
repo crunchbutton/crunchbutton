@@ -22,19 +22,33 @@ require_once('../include/crunchbutton.php');
 $remote = c::config()->db->live;
 $local = c::config()->db->local;
 
+$schemaOnly = ['session','log','analytics_event','admin_location'];
+foreach ($schemaOnly as $t) {
+	$ignoreTables .= ' --ignore-table=crunchbutton.'.$t.' ';
+}
+
+// delete existing file
 $cmd[] = 'rm '.$file;
-$cmd[] = $dump.' --lock-tables=false -h 45.56.80.7 -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
+
+// schema
+$cmd[] = $dump.' -d --lock-tables=false -h 45.56.80.7 -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
+
+// data
+$cmd[] = $dump.' --no-create-info --skip-triggers --lock-tables=false '.$ignoreTables.' -h 45.56.80.7 -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
+
 //$cmd[] = $dump.' --no-create-info --skip-triggers -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' config group site >> '.$file;
+// replace trigger creators
 $cmd[] = 'sed  "s/\`devin\`@\`%\`/\`root\`@\`localhost\`/g" '.$file.' > '.$file.'tmp';
+$cmd[] = 'mv '.$file.'tmp '.$file;
+
+$cmd[] = 'sed  "s/\`crunchapple\`@\`%\`/\`root\`@\`localhost\`/g" '.$file.' > '.$file.'tmp';
 $cmd[] = 'mv '.$file.'tmp '.$file;
 
 // import into local db
 $cmd[] = $mysql.' -u '.$local->user.' -p'.$local->pass.' '.$local->db.' < '.$file;
 
-print_r($cmd);
-exit;
-
 foreach ($cmd as $c) {
+	echo $c."\n";
 	exec($c);
 }
 
