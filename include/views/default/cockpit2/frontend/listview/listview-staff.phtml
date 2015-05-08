@@ -40,8 +40,8 @@
 				<span class="tag tag-grey" ng-if="!s.vehicle">None</span>
 			</td>
 			<td nowrap class="tb-center tb-v-center">
-				<span class="tag tag-grey" ng-if="s.pexcard">{{s.pexcard.card_serial}}</span>
-				<span class="tag tag-lightgrey" ng-if="!s.pexcard">None</span>
+				<span class="tag tag-grey" ng-if="s.pexcard && s.pexcard.card_serial">{{s.pexcard.card_serial}}</span>
+				<span class="tag tag-lightgrey" ng-if="!s.pexcard || !s.pexcard.card_serial">None</span>
 			</td>
 			<td nowrap class="tb-v-center">
 				<a href="/staff/{{s.login}}/payinfo"><button class="button button-empty button-empty-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>

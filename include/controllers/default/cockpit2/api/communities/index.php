@@ -9,6 +9,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		$page = $this->request()['page'] ?$this->request()['page'] : 1;
 		$status = $this->request()['status'] ?$this->request()['status'] : 'all';
 		$open = $this->request()['open'] ?$this->request()['open'] : 'all';
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 
 		$keys = [];
 		
@@ -77,11 +78,14 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			GROUP BY community.id_community
 		';
 		
-		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `community`.id_community) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
@@ -92,17 +96,27 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 				LIMIT ?, ?
 			';
 			$keys[] = $offset;
-			$keys[] = $limit;
+			$keys[] = $getCount ? $limit : $limit+1;
 		}
 		
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			community.*,
-			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
+			(SELECT `order`.date FROM `order` WHERE `order`.id_community = community.id_community order by `order`.date desc limit 1) as _order_date,
 			COUNT(`restaurant`.id_restaurant) restaurants
 		', $q), $keys);
+		
+
+		$i = 1;
+		$more = false;
+
 		while ($s = $r->fetch()) {
+			
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
 			/*
 			$restaurant = Restaurant::o($s);
 			$out = $s;
@@ -130,12 +144,14 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 
 //			$data[] = $out;
 			$data[] = $s;
+			$i++;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => $limit == 'none' ? '1' : ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $data
 		]);
 	}

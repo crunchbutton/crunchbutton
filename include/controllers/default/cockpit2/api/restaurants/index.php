@@ -79,6 +79,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
 		if ($page == 1) {
@@ -136,11 +137,14 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			GROUP BY restaurant.id_restaurant
 		';
 
-		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `restaurant`.id_restaurant) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
@@ -148,17 +152,29 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			LIMIT ?, ?
 		';
 		$keys[] = $offset;
-		$keys[] = $limit;
+		$keys[] = $getCount ? $limit : $limit+1;
 
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			restaurant.*,
-			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
+			(SELECT `order`.date FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant order by `order`.date desc limit 1) as _order_date,
 			COUNT(`order`.id_order) orders
 		', $q), $keys);
+		
+		// this method seems like 8% slower for some reason
+		//SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant
+		
+		$i = 1;
+		$more = false;
 
 		while ($s = $r->fetch()) {
+			
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
+			
 			$restaurant = Restaurant::o($s);
 			$out = $s;
 			$out->delivery_it_self = $restaurant->deliveryItSelf();
@@ -183,12 +199,14 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 */
 			$data[] = $out;
 //			$data[] = $s;
+			$i++;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $data
 		]);
 	}

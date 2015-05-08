@@ -228,7 +228,8 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 		scope: $scope,
 		watch: {
 			search: '',
-			community: ''
+			community: '',
+			fullcount: false
 		},
 		update: function() {
 			RestaurantService.list($scope.query, function(d) {

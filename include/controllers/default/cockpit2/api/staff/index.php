@@ -113,6 +113,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$working = $this->request()['working'] ? $this->request()['working'] : 'all';
 		$pexcard = $this->request()['pexcard'] ? $this->request()['pexcard'] : 'all';
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
 		if ($page == 1) {
@@ -191,8 +192,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		// get the count
 		$count = 0;
-		if ($working == 'all') {
-			$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
+
+		// get the count
+		if ($working == 'all' && $getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `admin`.id_admin) as c', $q), $keys);
 			while ($c = $r->fetch()) {
 				$count = $c->c;
 			}
