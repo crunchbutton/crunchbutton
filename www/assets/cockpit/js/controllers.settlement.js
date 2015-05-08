@@ -870,18 +870,28 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	$scope.id_driver = 0;
 
 	var drivers = function(){
-		DriverService.listAllAdmins( function( data ){
+		DriverService.listAllAdminsWithLogin( function( data ){
 			var drivers = [];
 			$scope.drivers = data;
 			$scope.ready = true;
 		} );
 	}
 
+	$scope.$watch( 'outputDriver', function( newValue, oldValue, scope ) {
+		if ( $scope.payment ) {
+			angular.forEach( newValue, function( driver, key ){
+				$scope.payment.id_driver = driver.id_admin;
+			} );
+		};
+	});
+
+
 	var payments_type = function(){
 		$scope.payments_type = [ { 'pay_type': 'payment', 'name': 'Payment'  }, { 'pay_type': 'reimbursement', 'name': 'Reimbursement'  } ];
 	}
 
 	var load = function(){
+		$scope.payment = {};
 		drivers();
 		payments_type();
 	}
@@ -893,6 +903,11 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	$scope.pay = function(){
 
 		if( $scope.isPaying ){
+			return;
+		}
+
+		if( !$scope.payment.id_driver ){
+			App.alert( 'Select a driver!' );
 			return;
 		}
 
