@@ -1055,7 +1055,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function hasResource( $justSide = false ){
+	public function hasResource( $type = 'page' ){
 		$_resources = Crunchbutton_Community_Resource::byCommunity( 'all' );
 		if( $_resources ){
 			foreach( $_resources as $resource ){
@@ -1073,10 +1073,17 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 				$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
 				if( $_resources ){
 					foreach( $_resources as $resource ){
-						if( !$justSide ){
-							return true;
+						if( $resource->active ){
+							if( $type == 'page' ){
+								if( $resource->page ){
+									return true;
+								}
+							} else if( $type == 'side' ){
+								if( $resource->side ){
+									$resources[] = [ 'name' => $resource->name, 'url' => $resource->download_url() ];
+								}
+							}
 						}
-						$resources[] = [ 'name' => $resource->name, 'url' => $resource->download_url() ];
 					}
 				}
 			}
