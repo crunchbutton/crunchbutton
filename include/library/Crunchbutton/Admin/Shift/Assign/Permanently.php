@@ -31,7 +31,7 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 
 	public function getByShift( $id_community_shift ){
 		$query = 'SELECT aap.* FROM admin_shift_assign_permanently aap
-							INNER JOIN admin a ON aap.id_admin = a.id_admin AND a.active = 1
+							INNER JOIN admin a ON aap.id_admin = a.id_admin AND a.active = true
 							WHERE id_community_shift = "' . $id_community_shift . '"';
 		return Crunchbutton_Admin_Shift_Assign_Permanently::q( $query );
 	}
