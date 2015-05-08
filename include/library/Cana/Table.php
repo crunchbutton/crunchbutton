@@ -293,6 +293,18 @@ class Cana_Table extends Cana_Model { //
 				case 'int':
 					$this->{$field->field} = intval($this->{$field->field});
 					break;
+
+				case 'datetime':
+					if ($this->{$field->field} == '0000-00-00 00:00:00' && $field->null) {
+						$this->{$field->field} = null;
+					}
+					break;
+
+				case 'date':
+					if ($this->{$field->field} == '0000-00-00' && $field->null) {
+						$this->{$field->field} = null;
+					}
+					break;
 			}
 
 			$this->{$field->field} = (!$this->{$field->field} && $field->null) ? null : $this->{$field->field};
