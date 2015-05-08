@@ -51,7 +51,7 @@ NGApp.directive('pageKey', function() {
 				}
 
 				// next
-				if (e.which == 39 && scope.query.page < scope.pages) {
+				if (e.which == 39 && (scope.query.page < scope.pages || scope.more)) {
 					scope.$apply(function() {
 						scope.setPage(scope.query.page+1);
 					});

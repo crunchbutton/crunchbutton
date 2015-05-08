@@ -10,7 +10,8 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 
 		scope.query = {
 			limit: defaultLimit,
-			page: query.page || 1
+			page: query.page || 1,
+			fullcount: true
 		};
 		scope.query.page = parseInt(scope.query.page);
 
@@ -39,6 +40,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 
 		scope.count = 0;
 		scope.pages = 0;
+		scope.more = false;
 
 		scope.allowAll = params.allowAll ? true : false;
 
@@ -90,6 +92,8 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		scope.complete = function(d) {
 			scope.count = d.count;
 			scope.pages = d.pages;
+			scope.more = d.more;
+			console.log(d);
 
 			if (scope.loader) {
 				clearTimeout(scope.loader);

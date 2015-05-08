@@ -73,7 +73,8 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			restaurant: '',
 			community: '',
 			date: '',
-			view: 'list'
+			view: 'list',
+			fullcount: false
 		},
 		update: function() {
 			OrderService.list($scope.query, function(d) {

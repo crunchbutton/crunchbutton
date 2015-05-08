@@ -18,6 +18,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$phone = $this->request()['phone'] ? $this->request()['phone'] : null;
 		$restaurant = $this->request()['restaurant'] ? $this->request()['restaurant'] : null;
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
 		$keys = [];
 
 		if ($page == 1) {
@@ -113,23 +115,24 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-		$q .= '
-			GROUP BY `order`.id_order
-		';
+
+		$count = 0;
 
 		// get the count
-		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `order`.id_order) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
+			GROUP BY `order`.id_order
 			ORDER BY `order`.id_order DESC
 			LIMIT ?, ?
 		';
 		$keys[] = $offset;
-		$keys[] = $limit;
+		$keys[] = $getCount ? $limit : $limit+1;
 
 		// do the query
 		$data = [];
@@ -148,7 +151,16 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		$r = c::db()->query($query, $keys);
 
+		$i = 1;
+		$more = false;
+
 		while ($o = $r->fetch()) {
+			
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
+
 			$o->status = Order::o( $o->id_order )->status()->last();
 			$restaurant = Restaurant::o( $o->id_restaurant );
 			$o->delivery_it_self = $restaurant->deliveryItSelf();
@@ -169,12 +181,16 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$data[] = $o;
+			$i++;
 		}
+		
+		$pages = ceil($count / $limit);
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $data
 		]);
 
