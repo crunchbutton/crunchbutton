@@ -30,6 +30,6 @@ class Cana_Cache_Redis extends Cana_Model {
 	}
 	
 	public function mtime($fileName) {
-		return filemtime($this->dir.sha1($fileName).$suffix);
+		return time();
 	}
 }
