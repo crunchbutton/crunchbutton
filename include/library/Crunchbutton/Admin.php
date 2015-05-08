@@ -1002,9 +1002,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		$this->phone = Phone::clean($this->phone);
 		$this->txt = Phone::clean($this->txt);
 		$this->testphone = Phone::clean($this->testphone);
-		if ($this->dob == '0000-00-00') {
-			$this->dob = null;
-		}
+
 		// if it is a new record saves the author
 		if( !$this->id_admin && c::admin()->id_admin ){
 			$this->id_admin_author = c::admin()->id_admin;
