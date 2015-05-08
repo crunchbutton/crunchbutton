@@ -23,7 +23,8 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 		watch: {
 			search: '',
 			status: 'open',
-			admin: 'all'
+			admin: 'all',
+			fullcount: false
 		},
 		update: function() {
 			TicketService.list($scope.query, function(d) {

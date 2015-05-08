@@ -10,6 +10,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
 		$admin = $this->request()['admin'] ? $this->request()['admin'] : 'all';
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
 		if ($page == 1) {
@@ -66,24 +67,24 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$keys = array_merge($keys, $s['keys']);
 		}
 
-		$q .= '
-			GROUP BY s.id_support
-		';
+
+		$count = 0;
 
 		// get the count
-		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `s`.id_support) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
+			GROUP BY s.id_support
 			ORDER BY s.datetime DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT ?, ?
 		';
-		$keys[] = $limit;
 		$keys[] = $offset;
+		$keys[] = $getCount ? $limit : $limit+1;
 		
 
 		// do the query
@@ -103,8 +104,16 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			s.status,
 			sm.body as message
 		', $q), $keys);
+		
+		$i = 1;
+		$more = false;
 
 		while ($o = $r->fetch()) {
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
+
 			if (!$o->name) {
 				$o->name = Phone::name($o);
 			}
@@ -112,12 +121,14 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$o->message = $support->lastMessage()->body;
 			$o->date = $support->lastMessage()->date();
 			$d[] = $o;
+			$i++;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $d
 		]);
 
