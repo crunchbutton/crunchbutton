@@ -824,6 +824,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			SettlementService.drivers.payments({
 				'page': $scope.query.page,
 				'search': $scope.query.search,
+				'id_driver': $scope.query.driver,
 				'pay_type': $scope.query.type,
 				'payment_status': $scope.query.status
 			}, function( data ){

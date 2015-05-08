@@ -1,4 +1,4 @@
-NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
+NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, $routeParams ) {
 
 	var service = { restaurants : {}, drivers : {} };
 	var settlement = { restaurants : {}, drivers : {} };
@@ -37,7 +37,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } }
 	}	);
 
-	settlement.drivers = $resource( App.service + 'settlement/drivers/:action/:id_payment_schedule/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
+	settlement.drivers = ResourceFactory.createResource( App.service + 'settlement/drivers/:action/:id_payment_schedule/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
 		'do_not_pay_driver' : { 'method': 'POST', params : { action: 'do-not-pay-driver' } },
 		'transfer_driver' : { 'method': 'POST', params : { action: 'transfer-driver' } },
@@ -217,10 +217,10 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		} );
 	}
 
-	service.drivers.payments = function( params, callback ){
-		settlement.drivers.payments( { 'page' : params.page, 'search' : params.search, 'pay_type': params.pay_type, 'payment_status': params.payment_status }, function( json ){
-			callback( json );
-		} );
+	service.drivers.payments = function(params, callback) {
+		settlement.drivers.payments(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
 	}
 
 	service.drivers.payment = function( callback ){

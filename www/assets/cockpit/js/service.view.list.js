@@ -1,5 +1,5 @@
 
-NGApp.factory('ViewListService', function($location, $timeout, $interval) {
+NGApp.factory('ViewListService', function($location, $timeout) {
 
 	var service = {};
 
@@ -14,25 +14,9 @@ NGApp.factory('ViewListService', function($location, $timeout, $interval) {
 		};
 		scope.query.page = parseInt(scope.query.page);
 
-		var timer = undefined;
-		var last_search = null;
-
 		var watch = function() {
-			var new_search = JSON.stringify( scope.query );
-			if( new_search == last_search ){
-				return;
-			}
-			last_search = new_search;
 			$location.search(scope.query);
-			if( angular.isDefined( timer ) ) {
-				$interval.cancel( timer );
-				timer = undefined;
-			}
-			timer = $interval(function(){
-				$interval.cancel( timer );
-				timer = undefined;
-				update();
-			}, 1000 );
+			update();
 		};
 
 		// @todo: this breaks linking to pages
@@ -120,7 +104,6 @@ NGApp.factory('ViewListService', function($location, $timeout, $interval) {
 		};
 
 		var update = function() {
-			timer = undefined;
 			scope.loading = true;
 			updater();
 		};
