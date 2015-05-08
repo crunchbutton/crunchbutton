@@ -347,10 +347,7 @@ class Cana_App extends Cana_Model {
 	
 	public function cache() {
 		if (!isset($this->_cache)) {
-			$this->_cache = new Cache(array(
-				'dir'		=> $this->config()->dirs->cache.'data/',
-				'expire'	=> 60*60*60
-			));
+			$this->_cache = new Cache($this->config()->cache->default);
 		}
 		return $this->_cache;
 	}
