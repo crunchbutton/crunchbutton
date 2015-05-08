@@ -22,9 +22,9 @@
 include/config/config.xml
 
 # files in cache
-cache
-logs/*
-www/cache/*
+/cache
+/logs/*
+/www/cache/*
 
 #upload files
 www/upload/drivers-doc/*
