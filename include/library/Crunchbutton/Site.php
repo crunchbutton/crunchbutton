@@ -69,6 +69,14 @@ class Crunchbutton_Site extends Cana_Table {
 				break;
 			}
 		}
+		
+		// default if there is no site (only happens if the site table is empty which should never happen)
+		if (!$tsite) {
+			$tsite = new Site([
+				'theme' => 'crunchbutton',
+				'name' => 'Default'
+			]);
+		}
 
 		if (preg_match('/(iphone|android)/',$_SERVER['HTTP_USER_AGENT'])) {
 			$tsite->version = 'mobile';
