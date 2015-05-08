@@ -47,6 +47,22 @@ $cmd[] = 'mv '.$file.'tmp '.$file;
 // import into local db
 $cmd[] = $mysql.' -u '.$local->user.' -p'.$local->pass.' '.$local->db.' < '.$file;
 
+// import into postgres
+$cmd[] = 'pgloader mysql://'.$local->user.':'.$local->pass.'@localhost:8889/'.$local->db.' postgresql:///metrics';
+
+// export postgres dump
+//PGPASSWORD=mypassword 
+$cmd[] = 'pg_dump -Fc --no-acl --no-owner -h localhost metrics -f crunchbutton.psql';
+
+// delete existing heroku db
+$cmd[] = 'heroku pg:reset --confirm crunchbutton HEROKU_POSTGRESQL_NAVY';
+
+// import the uploaded dump into heroku
+$cmd[] = "heroku pg:backups restore --confirm crunchbutton 'http://drop.crunchr.co/crunchbutton.psql' HEROKU_POSTGRESQL_NAVY";
+
+print_r($cmd);
+exit;
+
 foreach ($cmd as $c) {
 	echo $c."\n";
 	exec($c);
