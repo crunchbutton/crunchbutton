@@ -45,10 +45,13 @@ class Crunchbutton_Order_Status extends Cana_Table {
 	}
 
 	private function _exportStatus($action) {
+		$date = $action->date();
+		$date_timestamp = Crunchbutton_Util::dateToUnixTimestamp( $date );
 		return [
 			'status' => str_replace('delivery-','',$action->type),
-			'date' => $action->date()->format('Y-m-d H:i:s'),
-			'timestamp' => $action->date()->getTimestamp(),
+			'date' => $date->format('Y-m-d H:i:s'),
+			'timestamp' => $date->getTimestamp(),
+			'date_timestamp' => $date_timestamp,
 			'order' => $this->_statusOrder[$action->type],
 			'driver' => [
 				'id_admin' => $action->id_admin,
