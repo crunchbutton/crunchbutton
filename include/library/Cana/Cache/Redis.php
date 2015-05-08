@@ -22,11 +22,11 @@ class Cana_Cache_Redis extends Cana_Model {
 	}
 	
 	public function read($fileName) {
-		return $this->redis->get($filename);
+		return unserialize($this->redis->get($filename));
 	}
 
 	public function write($fileName, $file) {
-		return $this->redis->set($filename, $file);
+		return $this->redis->set($filename, serialize($file));
 	}
 	
 	public function mtime($fileName) {
