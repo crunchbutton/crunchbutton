@@ -105,10 +105,17 @@ class Crunchbutton_App extends Cana_App {
 				'type' => 'PostgreSQL'
 			];
 			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
+			
+			if (getenv('REDISCLOUD_URL')) {
+				$params['config']->cache->default = $params['config']->cache->redis;
+				$params['config']->cache->default->server = getenv('REDISCLOUD_URL');
+			}
 
 			parent::init($params);
 
 		} else {
+			$params['config']->cache->default = $params['config']->cache->file;
+
 			try {
 				parent::init($params);
 			} catch (Exception $e) {
