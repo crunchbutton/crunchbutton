@@ -88,7 +88,7 @@ NGApp.filter( 'tsToHour', function( $filter ){
 		if( input != null ){
 			// client's timezone
 			var tz = new Date().toString().match( /([-\+][0-9]+)\s/ )[ 1 ];
-			return $filter( 'date' )( input, 'h:mm a' , tz );
+			return $filter( 'date' )( input, 'h:mm a', tz );
 		}
 		return input;
 	};
