@@ -20,6 +20,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$user['isMarketingRep'] = c::user()->isMarketingRep();
 
 				$user['has_resource'] = c::user()->hasResource();
+				$user['side_resource'] = c::user()->hasResource( true );
 
 				$payment_type = c::user()->payment_type();
 				if( $payment_type->using_pex ){
