@@ -36,7 +36,8 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 		watch: {
 			search: '',
 			status: 'active',
-			open: 'all'
+			open: 'all',
+			fullcount: false
 		},
 		update: function() {
 			CommunityService.list($scope.query, function(d) {

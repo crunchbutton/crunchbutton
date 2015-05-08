@@ -5,7 +5,7 @@
 	<tbody>
 		<tr>
 			<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
-			<td class="td-info">Page {{query.page}} of <span ng-if="query.fullcount != 'false'">{{pages}}</span><span ng-if="query.fullcount == 'false'">many</span></td>
+			<td class="td-info">Page {{query.page}} of <span ng-if="query.fullcount != 'false' && query.fullcount">{{pages}}</span><span ng-if="query.fullcount == 'false' || !query.fullcount">many</span></td>
 			<td class="td-next"><button class="button orange" ng-if="(query.page < pages) || more" ng-click="setPage(query.page+1)">next</button></td>
 		</tr>
 	</tbody>
