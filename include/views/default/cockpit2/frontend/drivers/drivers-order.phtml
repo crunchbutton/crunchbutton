@@ -176,13 +176,6 @@
 		</span>
 
 
-		<div class="order-item-block-big order-notes" ng-if="oc.order.notes">
-			<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
-			<div class="order-info2 order-info-small">
-				<span ng-bind-html-unsafe="oc.order.notes | nl2br"></span>
-			</div>
-		</div>
-
 	<br>
 
 		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
@@ -219,6 +212,16 @@
 							<td class="dish-price">Subtotal</td>
 							<td class="dish-price">
 								${{oc.order.price | formatPrice}}
+							</td>
+						</tr>
+						<tr ng-if="oc.order.notes">
+							<td colspan="4" class="order-notes">
+								<div class="order-item-block-big order-notes" ng-if="oc.order.notes">
+									<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
+									<div class="order-info2 order-info-small">
+										<span ng-bind-html-unsafe="oc.order.notes | nl2br"></span>
+									</div>
+								</div>
 							</td>
 						</tr>
 						<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
