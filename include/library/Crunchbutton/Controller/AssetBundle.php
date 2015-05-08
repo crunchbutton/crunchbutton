@@ -81,7 +81,8 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		return Minify::serve('Files', [
 			'files'  => $files,
 			'maxAge' => 86400,
-			'quiet' => $quiet
+			'quiet' => $quiet,
+			'invalidate' => true
 		]);
     }
     
