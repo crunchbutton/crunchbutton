@@ -95,10 +95,11 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $limit;
+		$keys[] = $offset;
 		
 		// do the query
 		$data = [];

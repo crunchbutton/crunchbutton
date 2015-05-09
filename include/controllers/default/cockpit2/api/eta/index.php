@@ -70,10 +70,11 @@ class Controller_api_eta extends Crunchbutton_Controller_Rest {
 		';
 		if ($limit != 'none') {
 			$q .= '
-				LIMIT ?, ?
+				LIMIT ?
+				OFFSET ?
 			';
-			$keys[] = $offset;
 			$keys[] = $limit;
+			$keys[] = $offset;
 		}
 
 		// do the query

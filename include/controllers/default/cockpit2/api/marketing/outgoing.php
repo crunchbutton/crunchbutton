@@ -77,10 +77,11 @@ class Controller_Api_Marketing_Outgoing extends Crunchbutton_Controller_RestAcco
 
 		$q .= '
 			ORDER BY log.date DESC
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $limit;
+		$keys[] = $offset;
 
 		// do the query
 		$d = [];
