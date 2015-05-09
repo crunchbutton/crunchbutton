@@ -212,31 +212,46 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query );
 	}
 
-	public function shiftDriverIsCurrentWorkingOn( $id_admin, $dt = null, $id_community = null ){
+	public function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null) {
 		$admin = Admin::o( $id_admin );
+
 		// start using community's timezone - #4965
 		$community = $admin->communityDriverDelivery();
-		if( $community->id_community && $community->timezone ){
+
+		if ($community->id_community && $community->timezone) {
 			$timezone = $community->timezone;
 		} else {
 			$timezone = $admin->timezone;
 		}
-		if( $timezone ){
-			$time = ( $dt ? $dt : 'now' );
+
+		if ($timezone) {
+			$time = ($dt ? $dt : 'now');
 			$now = new DateTime( $time, new DateTimeZone( c::config()->timezone ) );
-			$where = ( $id_community ? ' AND cs.id_community = "' . $id_community . '"' : '' );
 			$now->setTimezone( new DateTimeZone( $timezone ) );
-			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
-									INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
-										WHERE asa.id_admin = ' . $id_admin . '
-											AND cs.active = true ' . $where . '
-											AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $now->format( 'Y-m-d H:i' ) . '"
-	 										AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i" ) >= "' . $now->format( 'Y-m-d H:i' ) . '"';
-	 		$shift = Crunchbutton_Community_Shift::q( $query );
-	 		if( $shift->id_admin_shift_assign ){
+			$nowFormat = $now->format( 'Y-m-d H:i' );
+
+			$params = [$id_admin];
+			
+			if ($id_community) {
+				$where = ' AND cs.id_community = ? ';
+				$params[] = $id_community;
+			}
+
+			$query = '
+				SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+				INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+				WHERE asa.id_admin = ?
+					AND cs.active = true ' . $where . '
+					AND cs.date_start <= "' . $nowFormat . '"
+	 				AND cs.date_end >= "' . $nowFormat . '"
+			';
+			
+	 		$shift = Crunchbutton_Community_Shift::q($query, $params);
+	 		if ($shift->id_admin_shift_assign) {
 	 			return $shift;
 	 		}
 		}
+
  		return false;
 	}
 
