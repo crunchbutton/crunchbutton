@@ -57,7 +57,8 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 			$data = $res['data'];
 		}
 		if (is_array($data)) {
-			print_r($data);
+			echo $cacheid."\n";
+			print_r(array_keys($data));
 			exit;
 		}
 
