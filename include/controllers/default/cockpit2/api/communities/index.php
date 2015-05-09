@@ -93,10 +93,11 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		';
 		if ($limit != 'none') {
 			$q .= '
-				LIMIT ?, ?
+				LIMIT ?
+				OFFSET ?
 			';
-			$keys[] = $offset;
 			$keys[] = $getCount ? $limit : $limit+1;
+			$keys[] = $offset;
 		}
 		
 		// do the query

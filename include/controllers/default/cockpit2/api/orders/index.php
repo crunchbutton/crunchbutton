@@ -128,10 +128,11 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			ORDER BY `order`.id_order DESC
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $getCount ? $limit : $limit+1;
+		$keys[] = $offset;
 
 		// do the query
 		$data = [];

@@ -149,10 +149,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 		$q .= '
 			ORDER BY restaurant.name ASC
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $getCount ? $limit : $limit+1;
+		$keys[] = $offset;
 
 		// do the query
 		$data = [];
