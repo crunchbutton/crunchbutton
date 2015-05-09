@@ -23,10 +23,11 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			SELECT
 				-WILD-
 			FROM support s
-			INNER JOIN support_message sm ON s.id_support = sm.id_support
+			LEFT JOIN (SELECT * FROM support_message order by support_message.id_support_message desc limit 1) as sm on sm.id_support=s.id_support
 			LEFT JOIN `user` u ON u.id_user=s.id_user
 			LEFT JOIN `order` o ON o.id_order=s.id_order
 			LEFT JOIN admin a ON a.id_admin=sm.id_admin
+			
 			WHERE 1=1
 		';
 
