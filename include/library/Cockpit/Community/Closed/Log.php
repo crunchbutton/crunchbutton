@@ -65,7 +65,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 			$hours_closed[] = [ 'from' => $from, 'to' => $to, 'type' => $type ];
 		}
 
-		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift cs WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = 1 ORDER BY cs.date_start' );
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift cs WHERE cs.id_community = "' . $community->id_community . '" AND DATE( cs.date_end ) > "' . $limit_date->format( 'Y-m-d' ) . '" AND active = true ORDER BY cs.date_start' );
 		$closed_shifts = Cockpit_Community_Closed_Log::processClosedHours( $shifts, $hours_closed );
 
 		return $closed_shifts;

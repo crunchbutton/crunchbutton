@@ -56,6 +56,11 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 			$mtime = $res['mtime'];
 			$data = $res['data'];
 		}
+		if (is_array($data)) {
+			echo $cacheid."\n";
+			print_r(array_keys($data));
+			exit;
+		}
 
 		header('HTTP/1.1 200 OK');
 		header('Date: '.date('r'));
@@ -81,7 +86,8 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		return Minify::serve('Files', [
 			'files'  => $files,
 			'maxAge' => 86400,
-			'quiet' => $quiet
+			'quiet' => $quiet,
+			'invalidate' => true
 		]);
     }
     

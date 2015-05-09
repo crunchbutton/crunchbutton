@@ -2,255 +2,302 @@
 
 <div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-comments-o"></i><span>Support</span> : Issue #{{ticket.id_support}}</h1>
-
-	&nbsp;&nbsp;&nbsp;<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a>
-
+	<h1 class="title box-title"><i class="fa fa-comments-o"></i>Support : Issue #{{ticket.id_support}}</h1>
+	<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a>
+	
 	<div class="ticket-status-top" ng-click="openCloseTicket()">
 		<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
 		<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
 	</div>
+	
+
 
 	<div class="divider"></div>
 
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div>
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
-		<div class="support-boxes-column">
-
-			<div ng-if="ticket.type == 'WARNING' && !ticket.order.id_order" class="support-box-wrap">
+	<div class="support-boxes">
+		
+		
+		<div class="support-box-wrap box-content2" ng-if="ticket.type == 'WARNING' && !ticket.order.id_order" class="support-box-wrap">
+			<div class="support-box-wrap-header">
 				<h1>Internal Warning</h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">No action is required.</td>
-						</tr>
-					</table>
-				</div>
+				<div class="divider"></div>
 			</div>
 
-			<div ng-if="ticket.order.id_order" class="support-box-wrap">
-				<h1>Order <a href="/order/{{ticket.order.id_order}}">#{{ticket.order.id_order}}</a></h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Pay / Type</td>
-							<td class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Placed At</td>
-							<td class="field-value">{{ticket.order.date | localtime | timestamp | date: "MM/dd hh:mm a"}} (<span am-time-ago="ticket.order.date"></span>)</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Status</td>
-							<td class="field-value">
-								<span ng-if="ticket.order.status"><b>{{ticket.order.status.status}}</b> <span am-time-ago="ticket.order.status.timestamp*1000"></span></span>
-								<span ng-if="!ticket.order.status">{{ticket.order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-							</td>
-						</tr>
-						<tr class="field-row" ng-if="ticket.order.status.status != 'delivered' && eta.time">
-							<td class="field-key">ETA</td>
-							<td class="field-value">
-								{{eta.time | formatPrice}} minutes
-							</td>
-						</tr>
-						<tr class="field-row field-row-button" ng-if="isRefunding">
-							<td class="field-value" colspan="2">
-								<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
-							</td>
-						</tr>
-						<tr class="field-row field-row-button" ng-if="ticket.order.pay_type == 'card' && !ticket.order.refunded && !isRefunding">
-							<td class="field-value" colspan="2">
-								<button ng-click="refund();" class="button orange">Refund</button>
-							</td>
-						</tr>
-						<tbody ng-show="ticket.order.refunded">
-							<tr class="field-row">
-								<td class="field-key">Order Refunded</td>
-								<td class="field-value">Yes</td>
-							</tr>
-							<tr class="field-row link no-underline" ng-click="do_not_reimburse_driver()">
-								<td class="field-key">
-									<i ng-if="!ticket.order.do_not_reimburse_driver" class="fa fa-square-o"></i>
-									<i ng-if="ticket.order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
-								</td>
-								<td class="field-value">
-									Do Not Reimburse Driver?
-								</td>
-							</tr>
-							<tr class="field-row link no-underline" ng-click="do_not_pay_driver()">
-								<td class="field-key">
-									<i ng-if="!ticket.order.do_not_pay_driver" class="fa fa-square-o"></i>
-									<i ng-if="ticket.order.do_not_pay_driver" class="fa fa-check-square-o"></i>
-								</td>
-								<td class="field-value">
-									Do Not Pay Driver?
-								</td>
-							</tr>
-							<tr class="field-row link no-underline" ng-click="do_not_pay_restaurant()">
-								<td class="field-key">
-									<i ng-if="!ticket.order.do_not_pay_restaurant" class="fa fa-square-o"></i>
-									<i ng-if="ticket.order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
-								</td>
-								<td class="field-value">
-									Pay restaurant despite refund <br>(e.g. this refund was our fault)
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+			<div class="no-box-content-color">
+				No action is required.
 			</div>
-
-			<div ng-if="ticket.user.id_user" class="support-box-wrap">
-				<h1>Customer <a href="/customer/{{ticket.user.id_user}}">#{{ticket.user.id_user}}</a></h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Name</td>
-							<td class="field-value">{{ticket.user.name}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Phone</td>
-							<td class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Address</td>
-							<td class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></td>
-						</tr>
-						<tr class="field-row field-row-button" ng-if="ticket.user.id_user">
-							<td class="field-value" colspan="2"><button class="button orange">Gift Card</button></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-
-
-			<div ng-if="ticket.restaurant.id_restaurant" class="support-box-wrap">
-				<h1>Restaurant <a href="/restaurant/{{ticket.restaurant.id_restaurant}}">#{{ticket.restaurant.id_restaurant}}</a></h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{ticket.restaurant.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(ticket.restaurant.phone)">{{ticket.restaurant.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(ticket.restaurant.address)">{{ticket.restaurant.address}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Delivery by</div>
-							<div class="field-value">{{ticket.restaurant.delivery_service ? 'Crunchbutton' : 'Restaurant'}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Relationship</div>
-							<div class="field-value">{{ticket.restaurant.formal_relationship ? 'Formal' : 'Informal'}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Notification Sent</div>
-							<div class="field-value">{{ticket.restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-
 		</div>
 
-		<div class="support-boxes-column">
 
-			<div class="support-box-wrap" ng-if="ticket.order.driver.id_admin">
-				<h1>Location</h1>
-				<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-					<traffic-layer ng-if="staff.id_admin"></traffic-layer>
-				</map>
+		<div class="support-box-wrap box-content2" ng-if="ticket.order.id_order">
+			<div class="support-box-wrap-header">
+				<h1>Order #{{ticket.order.id_order}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/order/{{ticket.order.id_order}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
-				<br><br>
 			</div>
 
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Pay / Type</div>
+						<div class="field-value">{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Placed At</div>
+						<div class="field-value">{{ticket.order.date | localtime | timestamp | date: "MM/dd hh:mm a"}} (<span am-time-ago="ticket.order.date"></span>)</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">
+							<span ng-if="ticket.order.status"><b>{{ticket.order.status.status}}</b> <span am-time-ago="ticket.order.status.timestamp*1000"></span></span>
+							<span ng-if="!ticket.order.status">{{ticket.order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="ticket.order.status.status != 'delivered' && eta.time">
+						<div class="field-key">ETA</div>
+						<div class="field-value">
+							{{eta.time | formatPrice}} minutes
+						</div>
+					</div>
+					<div class="field-row field-row-button" ng-if="isRefunding">
+						<div class="field-value" colspan="2">
+							<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
+						</div>
+					</div>
+					<div class="field-row field-row-button" ng-if="ticket.order.pay_type == 'card' && !ticket.order.refunded && !isRefunding">
+						<div class="field-value" colspan="2">
+							<button ng-click="refund();" class="button orange">Refund</button>
+						</div>
+					</div>
 
+					<div class="field-row" ng-if="ticket.order.refunded">
+						<div class="field-key">Order Refunded</div>
+						<div class="field-value">Yes</div>
+					</div>
+					<div class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="ticket.order.refunded">
+						<div class="field-key">
+							<i ng-if="!ticket.order.do_not_reimburse_driver" class="fa fa-square-o"></i>
+							<i ng-if="ticket.order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
+						</div>
+						<div class="field-value">
+							Do Not Reimburse Driver?
+						</div>
+					</div>
+					<div class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="ticket.order.refunded">
+						<div class="field-key">
+							<i ng-if="!ticket.order.do_not_pay_driver" class="fa fa-square-o"></i>
+							<i ng-if="ticket.order.do_not_pay_driver" class="fa fa-check-square-o"></i>
+						</div>
+						<div class="field-value">
+							Do Not Pay Driver?
+						</div>
+					</div>
+					<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="ticket.order.refunded">
+						<div class="field-key">
+							<i ng-if="!ticket.order.do_not_pay_restaurant" class="fa fa-square-o"></i>
+							<i ng-if="ticket.order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+						</div>
+						<div class="field-value">
+							Pay restaurant despite refund <br>(e.g. this refund was our fault)
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="support-box-wrap box-content2" ng-if="ticket.user.id_user" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Customer #{{ticket.user.id_user}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/customer/{{ticket.user.id_user}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
 
-			<div ng-if="ticket.order.driver.id_admin" class="support-box-wrap">
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.user.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
+					</div>
+					<div class="field-row field-row-button" ng-if="ticket.user.id_user">
+						<div class="field-value" colspan="2"><button class="button orange">Gift Card</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+
+		<div class="support-box-wrap box-content2" ng-if="ticket.restaurant.id_restaurant" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Restaurant #{{ticket.restaurant.id_restaurant}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/restaurant/{{ticket.restaurant.id_restaurant}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.restaurant.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(ticket.restaurant.phone)">{{ticket.restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(ticket.restaurant.address)">{{ticket.restaurant.address}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Delivery by</div>
+						<div class="field-value">{{ticket.restaurant.delivery_service ? 'Crunchbutton' : 'Restaurant'}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Relationship</div>
+						<div class="field-value">{{ticket.restaurant.formal_relationship ? 'Formal' : 'Informal'}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Notification Sent</div>
+						<div class="field-value">{{ticket.restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="support-box-wrap box-content2" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Location</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red">BETA</span>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+				<traffic-layer ng-if="staff.id_admin"></traffic-layer>
+			</map>
+		</div>
+		
+		<div class="support-box-wrap box-content2" ng-if="ticket.order.driver.id_admin" class="support-box-wrap">
+			<div class="support-box-wrap-header">
 				<h1>Driver <a href="/staff/{{ticket.order.driver.id_admin}}">#{{ticket.order.driver.id_admin}}</a></h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{ticket.order.driver.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(ticket.order.driver.phone)">{{ticket.order.driver.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Deliveries</div>
-							<div class="field-value">&nbsp;{{ticket.order.driver.deliveries.length}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Shift ends in</div>
-							<div class="field-value">
-								<span ng-if="ticket.order.driver.working" title="{{ticket.order.driver.shift_ends_formatted}}">{{ticket.order.driver.shift_ends}}</span>
-								<span ng-if="!ticket.order.driver.working">Shift ended</span>
-							</div>
-						</div>
-						<div class="field-row" ng-if="ticket.order.status.status == 'accepted' || ticket.order.status.status == 'pickedup'">
-							<div class="field-key">Distance</div>
-							<div class="field-value">
-								{{eta.distance | formatPrice}} miles
-							</div>
-						</div>
+				<div class="divider"></div>
+			</div>
 
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.order.driver.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(ticket.order.driver.phone)">{{ticket.order.driver.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Deliveries</div>
+						<div class="field-value">&nbsp;{{ticket.order.driver.deliveries.length}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Shift ends in</div>
+						<div class="field-value">
+							<span ng-if="ticket.order.driver.working" title="{{ticket.order.driver.shift_ends_formatted}}">{{ticket.order.driver.shift_ends}}</span>
+							<span ng-if="!ticket.order.driver.working">Shift ended</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="ticket.order.status.status == 'accepted' || ticket.order.status.status == 'pickedup'">
+						<div class="field-key">Distance</div>
+						<div class="field-value">
+							{{eta.distance | formatPrice}} miles
+						</div>
 					</div>
 
 				</div>
 			</div>
+		</div>
+		
+		
+		<div class="support-box-wrap box-content2" ng-if="ticket.id_support" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Comments</h1>
+				<div class="divider"></div>
+			</div>
 
-			<div ng-show="ticket.id_support">
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row" ng-repeat="comment in ticket.comments">
+						<div class="field-key">{{comment.name}} @ <span title="{{comment.date}}">{{comment.hour}}</span></div>
+						<div class="field-value">{{comment.body}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
 				<div class="support-box-wrap">
-					<h1>Comments</h1>
+					<h1></h1>
 					<div ng-if="ticket.comments">
 						<div class="box-content-color comments-box">
-							<div class="field-container">
-								<div class="field-row" ng-repeat="comment in ticket.comments">
-									<div class="field-key">{{comment.name}} @ <span title="{{comment.date}}">{{comment.hour}}</span></div>
-									<div class="field-value">{{comment.body}}</div>
-								</div>
-							</div>
+	
 						</div>
 					</div>
 				</div>
 
-				<table class="field-container">
-					<tr class="field-row field-container">
-						<td colspan="2">
+				<div class="field-container">
+					<div class="field-row field-container">
+						<div colspan="2">
 							<div class="comments-box">
 								<textarea id="support-comment" ng-model="comment_text" class="support-comment"></textarea>
 							</div>
-						</td>
-					</tr>
-					<tr class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
-						<td class="field-two-rows field-left">
+						</div>
+					</div>
+					<div class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
+						<div class="field-two-rows field-left">
 							<button ng-click="close_and_comment();" class="button" ng-class="{ 'orange': ticket.status == 'open' }">
 								Close & Comment
 							</button>
-						</td>
-						<td class="field-two-rows field-right">
+						</div>
+						<div class="field-two-rows field-right">
 							<button ng-click="comment();" class="button orange">
 								Comment
 							</button>
-						</td>
-					</tr>
-					<tr ng-if="isCommentSaving">
-						<td colspan="2">
+						</div>
+					</div>
+					<div ng-if="isCommentSaving">
+						<div colspan="2">
 							<button class="button">
 								<i class="fa fa-circle-o-notch fa-spin"></i> Saving
 							</button>
-						</td>
-					</tr>
+						</div>
+					</div>
 				</table>
 			</div>
 
