@@ -1,0 +1,15 @@
+update `user_payment_type` set `card_type`=null where `card_type`="";
+update `support_message` set `visibility`="internal" where `visibility`="";
+update `restaurant_payment_type` set `payment_method`=null where `payment_method`="";
+update `admin_payment_type` set `payment_method`=null where `payment_method`="";
+update `admin_payment_type` set `payment_type`=null where `payment_type`="";
+update `driver_log` set `action`=null where `action`="";
+update `admin` set `dob`=null where `dob`="0000-00-00";
+update `community` set `close_3rd_party_delivery_restaurants_date`=null where `close_3rd_party_delivery_restaurants_date`="0000-00-00 00:00:00";
+update `community` set `dont_warn_till`=null where `dont_warn_till`="0000-00-00 00:00:00";
+update `notification_log` set `type`=null where `type`="";
+update `option` set `type`="check" where `type`="";
+update `order` set `processor`="stripe" where `processor` = "";
+update `restaurant` set `delivery_min_amt`="subtotal" where `delivery_min_amt`="";
+update `order_action` set `type`=null where `type`="";
+update `restaurant` set `confirmation_type`="regular" where `confirmation_type`="";

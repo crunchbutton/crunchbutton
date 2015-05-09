@@ -4,7 +4,14 @@
 	<bundle>false</bundle>
 	<timezone>America/Los_Angeles</timezone>
 	<cache>
-		<mysql>false</mysql>
+		<default>file</default>
+		<redis>
+			<adapter>redis</adapter>
+		</redis>
+		<file>
+			<dir>data</dir>
+			<expire>216000</expire>
+		</file>
 	</cache>
 	<imgCache>http://i._DOMAIN_/cache/</imgCache>
 	<powered>Sex &amp; Drugs</powered>

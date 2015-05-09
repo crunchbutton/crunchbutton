@@ -22,9 +22,13 @@
 include/config/config.xml
 
 # files in cache
-cache
-logs/*
-www/cache/*
+/cache
+/logs/*
+/www/cache/*
+
+# files in build
+/www/build/*
+!.gitkeep
 
 #upload files
 www/upload/drivers-doc/*
