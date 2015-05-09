@@ -24,11 +24,11 @@ class Cana_Cache_File extends Cana_Model {
 	}
 	
 	public function read($fileName) {
-		return unserialize(file_get_contents($this->dir.sha1($fileName).$suffix));
+		return file_get_contents($this->dir.sha1($fileName).$suffix);
 	}
 
 	public function write($fileName, $file) {
-		return file_put_contents($this->dir.sha1($fileName).$suffix, serialize($file));
+		return file_put_contents($this->dir.sha1($fileName).$suffix, $file);
 	}
 	
 	public function mtime($fileName) {

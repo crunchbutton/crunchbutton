@@ -4,6 +4,7 @@
 	<bundle>false</bundle>
 	<timezone>America/Los_Angeles</timezone>
 	<cache>
+		<default>file</default>
 		<redis>
 			<adapter>redis</adapter>
 		</redis>
