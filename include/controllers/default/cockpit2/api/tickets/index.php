@@ -81,11 +81,11 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		$q .= '
 			GROUP BY s.id_support
 			ORDER BY s.datetime DESC
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $getCount ? $limit : $limit+1;
-		
+		$keys[] = $offset;
 
 		// do the query
 		$d = [];
