@@ -56,6 +56,10 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 			$mtime = $res['mtime'];
 			$data = $res['data'];
 		}
+		if (is_array($data)) {
+			print_r($data);
+			exit;
+		}
 
 		header('HTTP/1.1 200 OK');
 		header('Date: '.date('r'));
