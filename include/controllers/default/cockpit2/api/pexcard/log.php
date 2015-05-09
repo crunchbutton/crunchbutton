@@ -98,10 +98,11 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			ORDER BY pa.id_pexcard_action DESC
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $limit;
+		$keys[] = $offset;
 
 		// do the query
 		$d = [];

@@ -250,10 +250,11 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 
 		$q .= '
 			ORDER BY cr.name ASC
-			LIMIT ?, ?
+			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $offset;
 		$keys[] = $limit;
+		$keys[] = $offset;
 
 		// do the query
 		$data = [];

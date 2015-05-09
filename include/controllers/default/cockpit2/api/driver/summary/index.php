@@ -74,8 +74,8 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 		$pay_type = $this->request()[ 'type' ];
 
-		$keys[] = $offset;
 		$keys[] = $limit;
+		$keys[] = $offset;
 
 		if( $pay_type && $pay_type != 'all' ){
 			$where = ' AND pay_type = "' . $pay_type . '"';
@@ -87,7 +87,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 		$result = c::db()->get( $query );
 		$out[ 'count' ] = intval( $result->_items[ 0 ]->total );
 		$out[ 'pages' ] = ceil( $out[ 'count' ] / $limit );
-		$query = 'SELECT * FROM payment_schedule WHERE id_driver = ? ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ?, ?';
+		$query = 'SELECT * FROM payment_schedule WHERE id_driver = ? ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ? OFFSET ?';
 		$payments = Cockpit_Payment_Schedule::q( $query, $keys);
 		$has_error = false;
 
