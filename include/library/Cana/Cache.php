@@ -12,6 +12,8 @@ class Cana_Cache extends Cana_Model {
 	}
 	
 	public function __call($name, $arguments) {
+		print_r($arguments);
+		die($name);
 		return (new ReflectionMethod($this->adapter(), $name))->invokeArgs($this->adapter(), $arguments);
 	}
 	
