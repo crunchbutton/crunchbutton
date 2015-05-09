@@ -109,12 +109,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_pex;
 	}
 
-	public function totalReferralActivations( $period = false ){
-		$query = 'SELECT COUNT(*) AS total FROM referral WHERE id_admin_inviter = "' . $this->id_admin . '" AND new_user = 1 ';
-		if( $period ){
+	public function totalReferralActivations($period = null) {
+		$query = 'SELECT COUNT(*) AS total FROM referral WHERE id_admin_inviter = ? AND new_user = true ';
+		if ($period) {
 			$query .= ' AND date >= DATE_SUB( NOW(), INTERVAL ' . $period . ' DAY )';
 		}
-		$total = Crunchbutton_Referral::q( $query )->get( 0 );
+		$total = Crunchbutton_Referral::q( $query, [$this->id_admin])->get(0);
 		return intval( $total->total );
 	}
 
