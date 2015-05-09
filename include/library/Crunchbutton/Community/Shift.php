@@ -213,7 +213,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null) {
-		$admin = Admin::o( $id_admin );
+		$admin = Admin::o($id_admin);
 
 		// start using community's timezone - #4965
 		$community = $admin->communityDriverDelivery();
@@ -230,21 +230,21 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$now->setTimezone( new DateTimeZone( $timezone ) );
 			$nowFormat = $now->format( 'Y-m-d H:i' );
 
-			$params = [$id_admin];
-			
-			if ($id_community) {
-				$where = ' AND cs.id_community = ? ';
-				$params[] = $id_community;
-			}
+			$params = [$id_admin, $nowFormat, $nowFormat];
 
 			$query = '
 				SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 				INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 				WHERE asa.id_admin = ?
-					AND cs.active = true ' . $where . '
-					AND cs.date_start <= "' . $nowFormat . '"
-	 				AND cs.date_end >= "' . $nowFormat . '"
+					AND cs.active = true
+					AND cs.date_start <= ?
+	 				AND cs.date_end >= ?
 			';
+
+			if ($id_community) {
+				$query .= ' AND cs.id_community = ? ';
+				$params[] = $id_community;
+			}
 			
 	 		$shift = Crunchbutton_Community_Shift::q($query, $params);
 	 		if ($shift->id_admin_shift_assign) {
