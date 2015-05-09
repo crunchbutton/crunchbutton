@@ -22,6 +22,7 @@ class Cana_Cache_Redis extends Cana_Model {
 	}
 	
 	public function read($fileName) {
+		echo $fileName."\n<br>\n";
 		die($this->redis->get($filename));
 		//return unserialize();
 	}
