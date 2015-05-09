@@ -140,18 +140,23 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		return null;
 	}
 
-	function byAdmin( $id_admin ){
-		if( $id_admin ){
-			$payment = Crunchbutton_Admin_Payment_Type::q( 'SELECT * FROM admin_payment_type WHERE id_admin = ' . $id_admin . ' ORDER BY id_admin_payment_type DESC LIMIT 1' );
-			if( $payment->id_admin_payment_type ){
-				return Crunchbutton_Admin_Payment_Type::o( $payment->id_admin_payment_type );
+	// @todo: i dont understand why we NEED a payment type for admin but ok. - devin
+	public static function byAdmin($id_admin) {
+		if ($id_admin){
+			$payment = Crunchbutton_Admin_Payment_Type::q( 'SELECT * FROM admin_payment_type WHERE id_admin = ? ORDER BY id_admin_payment_type DESC LIMIT 1', [$id_admin])->get(0);
+
+			if (!$payment->id_admin_payment_type) {
+				$payment = new Crunchbutton_Admin_Payment_Type([
+					'id_admin' => $id_admin,
+					'using_pex' => true,
+					'using_pex_date' => date('Y-m-d H:i:s')
+				]);
+				$payment->save();
 			}
+		} else {
+			$payment = new Crunchbutton_Admin_Payment_Type;
 		}
-		$payment = new Crunchbutton_Admin_Payment_Type();
-		$payment->id_admin = $id_admin;
-		$payment->using_pex = 1;
-		$payment->using_pex_date = date( 'Y-m-d H:i:s' );
-		$payment->save();
+
 		return $payment;
 	}
 
