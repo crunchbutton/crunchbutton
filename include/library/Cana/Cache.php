@@ -11,8 +11,16 @@ class Cana_Cache extends Cana_Model {
 		}
 	}
 	
-	public function __call($name, $arguments) {
-		return (new ReflectionMethod($this->adapter(), $name))->invokeArgs($this->adapter(), $arguments);
+	public function read($key) {
+		return unserialize($this->adapter()->read($key));
+	}
+	
+	public function write($key, $value) {
+		return $this->adapter()->write($key, serialize($value));
+	}
+	
+	public function redis() {
+		return $this->adapter()->redis();
 	}
 	
 	public function adapter($adapter = null) {

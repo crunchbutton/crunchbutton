@@ -108,13 +108,13 @@ class Crunchbutton_App extends Cana_App {
 			
 			if (getenv('REDISCLOUD_URL')) {
 				$params['config']->cache->default = $params['config']->cache->redis;
-				$params['config']->cache->default->server = getenv('REDISCLOUD_URL');
+				$params['config']->cache->default->url = getenv('REDISCLOUD_URL');
 			}
 
 			parent::init($params);
 
 		} else {
-			$params['config']->cache->default = $params['config']->cache->file;
+			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
 
 			try {
 				parent::init($params);
