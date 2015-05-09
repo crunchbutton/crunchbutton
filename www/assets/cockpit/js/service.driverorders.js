@@ -161,39 +161,43 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 		service.order = null;
 	});
 
-	service.load = function() {
+	service.load = function( callback ) {
 		DriverOrdersService.get( function( json ){
 			service.order = json;
 			service.ready = true;
 			$rootScope.unBusy();
+			if( callback ){
+				callback();
+			}
 		});
 	}
 
 	service.text_customer_5_min_away_sending = null;
 
-service.text_customer_5_min_away = function(){
+	service.text_customer_5_min_away = function(){
+		if( confirm( 'Confirm send message to customer?' ) ){
 
-if( 'Confirm send message to customer?' ){
-		service.text_customer_5_min_away_sending = true;
-		if( service && service.textLoader && service.textLoader.start ){
-			service.textLoader.start();
+				service.text_customer_5_min_away_sending = true;
+
+				if( service && service.textLoader && service.textLoader.start ){
+					service.textLoader.start();
+				}
+
+				DriverOrdersService.text_customer_5_min_away(service.order.id_order,
+					 function( json ){
+							if (json.status) {
+								 service.load();
+							} else {
+								 App.alert('Message failed to send. Please try again.');
+							}
+							if( service && service.textLoader && service.textLoader.start ){
+								service.textLoader.stop();
+							}
+							service.text_customer_5_min_away_sending = false;
+					 }
+				);
 		}
-
-		DriverOrdersService.text_customer_5_min_away(service.order.id_order,
-			 function( json ){
-					if (json.status) {
-						 service.load();
-					} else {
-						 App.alert('Message failed to send. Please try again.');
-					}
-					if( service && service.textLoader && service.textLoader.start ){
-						service.textLoader.stop();
-					}
-					service.text_customer_5_min_away_sending = false;
-			 }
-		);
-}
-}
+	}
 
 	service.accept = function() {
 		$rootScope.makeBusy();
