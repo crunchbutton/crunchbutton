@@ -38,14 +38,17 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 
 		if (c::app()->cache()->cached($cacheid)) {
 			$mtime = c::cache()->mtime($cacheid);
-			
+
+			// doesnt work
+			/*
 			if (isset($headers['if-modified-since']) && !$nocache) {
 				header('Last-Modified: '.gmdate('D, d M Y H:i:s',$mtime).' GMT', true, 304);
 				exit;
 			}
-			
+			*/
 			$cached = true;
 		}
+		
 
 		if ($cached && !$_REQUEST['nocache']) {
 			$data = c::app()->cache()->read($cacheid);
