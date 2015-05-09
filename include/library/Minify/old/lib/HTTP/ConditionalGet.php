@@ -291,6 +291,7 @@ class HTTP_ConditionalGet {
             // possibly has a valid cache.
             return false;
         }
+		return false;
         $isValid = ($this->resourceMatchedEtag() || $this->resourceNotModified());
         if ($isValid) {
             $this->_headers['_responseCode'] = 'HTTP/1.0 304 Not Modified';
