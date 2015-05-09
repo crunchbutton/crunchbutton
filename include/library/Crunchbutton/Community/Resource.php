@@ -41,9 +41,9 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 
 	public function communities( $name = false ){
 		if( $name ){
-			return Crunchbutton_Community::q( 'SELECT community.name, community.id_community FROM community_resource_community INNER JOIN community ON community.id_community = community_resource_community.id_community WHERE id_community_resource = "' . $this->id_community_resource . '"' );
+			return Crunchbutton_Community::q( 'SELECT community.name, community.id_community FROM community_resource_community INNER JOIN community ON community.id_community = community_resource_community.id_community WHERE id_community_resource = ?', [$this->id_community_resource]);
 		} else {
-			return Crunchbutton_Community_Resource_Community::q( 'SELECT * FROM community_resource_community WHERE id_community_resource = "' . $this->id_community_resource . '"' );
+			return Crunchbutton_Community_Resource_Community::q( 'SELECT * FROM community_resource_community WHERE id_community_resource = ?', [$this->id_community_resource]);
 		}
 	}
 
@@ -54,7 +54,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 		if( $id_community == 'all' ){
 			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr WHERE cr.all = true AND active = true ' . $type );
 		} else {
-			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr INNER JOIN community_resource_community crc ON cr.id_community_resource = crc.id_community_resource AND crc.id_community = "' . $id_community . '"  AND active = true ' . $type );
+			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr INNER JOIN community_resource_community crc ON cr.id_community_resource = crc.id_community_resource AND crc.id_community = ?  AND active = true ' . $type, [$id_community]);
 		}
 	}
 
