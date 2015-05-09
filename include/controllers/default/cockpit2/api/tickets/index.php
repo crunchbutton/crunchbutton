@@ -80,7 +80,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
-			GROUP BY s.id_support
+			GROUP BY s.id_support, sm.id_support_message
 			ORDER BY s.datetime DESC
 			LIMIT ?
 			OFFSET ?
