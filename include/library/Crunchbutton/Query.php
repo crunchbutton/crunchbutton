@@ -39,6 +39,9 @@ class Crunchbutton_Query extends Cana_Model {
 						$w = ($type == 'like' || $type == 'likel' ? '%' : '').$word.($type == 'like' || $type == 'liker' ? '%' : '');
 					} elseif ($type == 'eq') {
 						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
+					} elseif ($type == 'inteq') {
+						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
+						$w = intval($word);
 					} elseif ($type == 'gt') {
 						$sqq .= ' '.$key.' > ? ';
 					} elseif ($type == 'lt') {
