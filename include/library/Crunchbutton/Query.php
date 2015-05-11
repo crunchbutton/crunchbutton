@@ -41,7 +41,7 @@ class Crunchbutton_Query extends Cana_Model {
 						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
 					} elseif ($type == 'inteq') {
 						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
-						$w = intval($word);
+						$word = intval($word);
 					} elseif ($type == 'gt') {
 						$sqq .= ' '.$key.' > ? ';
 					} elseif ($type == 'lt') {
