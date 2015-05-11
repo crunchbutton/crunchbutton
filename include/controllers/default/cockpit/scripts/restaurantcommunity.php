@@ -28,7 +28,7 @@ class Controller_scripts_restaurantcommunity extends Crunchbutton_Controller_Acc
 	public function addTimezone(){
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
 		foreach( $communities as $community ){
-			$restaurant = Crunchbutton_Restaurant::q( 'SELECT r.* FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ' . $community->id_community . ' WHERE r.active = true LIMIT 1' );
+			$restaurant = Crunchbutton_Restaurant::q( 'SELECT r.* FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ? WHERE r.active = true LIMIT 1', [$community->id_community]);
 			if( $restaurant->id_restaurant ){
 				$community->timezone = $restaurant->timezone;
 				$community->save();

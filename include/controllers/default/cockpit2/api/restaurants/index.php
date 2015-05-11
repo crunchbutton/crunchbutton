@@ -29,14 +29,16 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					if( $restaurant->open() ){
 						$community = $restaurant->community()->get( 0 );
 						if( !$communities[ $community->id_community ] ){
-							$query = 'SELECT o.* FROM `order` o
-													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
-													WHERE o.delivery_type = "' . Crunchbutton_Order::SHIPPING_DELIVERY . '"
-														AND o.delivery_service = true
-														AND o.date >= now() - INTERVAL 1 DAY
-													ORDER BY o.id_order DESC';
-							$orders = Order::q( $query );
+							$query = '
+								SELECT o.* FROM `order` o
+								INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+								INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
+								WHERE o.delivery_type = ?
+									AND o.delivery_service = true
+									AND o.date >= now() - INTERVAL 1 DAY
+								ORDER BY o.id_order DESC
+							';
+							$orders = Order::q($query, [$community->id_community, Crunchbutton_Order::SHIPPING_DELIVERY]);
 							$activeDrivers = $restaurant->activeDrivers();
 							$communities[ $community->id_community ] = [ 'name' => $community->name, 'activeDrivers' => $activeDrivers, 'orders' => $orders ];
 						}
