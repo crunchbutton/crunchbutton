@@ -411,9 +411,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 				}
 			}
-			// if the code doenst belong to a user check if it belongs to a gift card
+			// if the code doesn't belong to a user check if it belongs to a gift card
 			if( !$this->giftCardInviter ) {
-				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant, $this->phone );
 				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 					if( $giftcard->id_promo ){
 						if( !$giftCardAdded ){
@@ -685,12 +686,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
 				}
 			} else {
-				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant, $this->phone );
 				$giftCardAdded = false;
 				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 					if( $giftcard->id_promo ){
 						if( !$giftCardAdded ){
-							$giftcard->addCredit( $user->id_user );
+							$giftcard->addCredit( $user->id_user, $this->delivery_fee );
 						}
 						$giftCardAdded = true;
 					}
