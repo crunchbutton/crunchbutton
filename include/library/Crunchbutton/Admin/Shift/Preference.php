@@ -30,28 +30,41 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 		} else {
 			$where = 'AND asp.ranking > 0';
 		}
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs 
-																							INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
-																							WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $to . '" 
-																							AND asp.id_admin = ' . $id_admin . ' ' . $where . '
-																							ORDER BY asp.ranking ASC, cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q('
+			SELECT cs.* FROM community_shift cs 
+			INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
+			WHERE cs.date_start >= ? AND cs.date_start <= ?
+			AND asp.id_admin = ?
+			' . $where . '
+			ORDER BY asp.ranking ASC, cs.date_start ASC
+		', [$from, $to, $id_admin]);
 	}
 
 	public function highestRankingByPeriod( $id_admin, $from, $to ){
-			$shift = Crunchbutton_Community_Shift::q( 'SELECT cs.*, asp.ranking FROM community_shift cs 
-																							INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
-																							WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $to . '" 
-																							AND asp.id_admin = ' . $id_admin . ' 
-																							ORDER BY asp.ranking DESC LIMIT 1' );	
-			if( $shift->id_community_shift ){
+			$shift = Crunchbutton_Community_Shift::q('
+				SELECT cs.*, asp.ranking FROM community_shift cs 
+				INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
+				WHERE cs.date_start >= ? AND cs.date_start <= ?
+				AND asp.id_admin = ?
+				ORDER BY asp.ranking DESC
+				LIMIT 1
+			', [$from, $to, $id_admin]);	
+
+			if ($shift->id_community_shift) {
 				return $shift->ranking;
 			}
 			return 0;
 	}
 
 	public function adminHasShift( $id_admin, $id_community_shift ){
-		$shift = Crunchbutton_Admin_Shift_Preference::q( "SELECT * FROM admin_shift_preference WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" );
-		if( $shift->id_admin_shift_preference ){
+		$shift = Crunchbutton_Admin_Shift_Preference::q('
+			SELECT * FROM admin_shift_preference
+			WHERE id_admin = ?
+			AND id_community_shift = ?
+			LIMIT 1
+		', [$id_admin, $id_community_shift]);
+
+		if ($shift->id_admin_shift_preference) {
 			return true;
 		}
 		return false;

@@ -461,8 +461,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$shifts = Crunchbutton_Community_Shift::q('
 			SELECT COUNT(*) AS shifts FROM community_shift cs
 			WHERE
-				DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= ?
-				AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= ?
+				cs.date_start >= ?
+				AND cs.date_end <= ?
 				AND id_community = ?
 			ORDER BY cs.date_start ASC
 		', [$from, $to, $this->id_community]);

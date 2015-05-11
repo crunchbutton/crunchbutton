@@ -166,8 +166,8 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 						FROM admin_shift_assign asaINNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 						WHERE
 							asa.id_admin = ?
-							AND DATE_FORMAT( cs.date_start, "%m/%d/%Y" ) >= ?
-							AND DATE_FORMAT( cs.date_end, "%m/%d/%Y" ) <= ?
+							AND cs.date_start >= ?
+							AND cs.date_end <= ?
 					', [$schedule->id_driver, trim( $range[ 0 ] ), trim( $range[ 1 ] )]);
 					$_total = 0;
 					$_amount = 0;

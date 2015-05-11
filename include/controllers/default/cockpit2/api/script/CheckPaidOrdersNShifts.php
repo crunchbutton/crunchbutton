@@ -27,9 +27,9 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin
 								WHERE
-									DATE_FORMAT( cs.date_start, "%Y%m%d" ) >= ?
+									cs.date_start >= ?
 								AND
-									DATE_FORMAT( cs.date_end, "%Y%m%d" ) <= ?
+									cs.date_end <= ?
 								AND
 									asa.id_admin_shift_assign NOT IN ( SELECT id_admin_shift_assign FROM payment_schedule_shift pss )
 								AND
@@ -181,9 +181,9 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin
 								WHERE
-									DATE_FORMAT( cs.date_start, "%Y%m%d" ) >= ?
+									cs.date_start >= ?
 								AND
-									DATE_FORMAT( cs.date_end, "%Y%m%d" ) <= ?
+									cs.date_end <= ?
 								AND
 									asa.id_admin_shift_assign NOT IN ( SELECT id_admin_shift_assign FROM payment_schedule_shift pss )
 								AND
