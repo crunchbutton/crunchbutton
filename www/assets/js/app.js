@@ -122,6 +122,7 @@ NGApp.factory('errorInterceptor', function($q) {
 	return errorInterceptor;
 });
 NGApp.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.defaults.headers.common['Http-Error'] = 1;
 	$httpProvider.interceptors.push('errorInterceptor');
 }]);
 
