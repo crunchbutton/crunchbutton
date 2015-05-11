@@ -1159,11 +1159,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
 
-		//$out['img']       = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
-		//$out['img64']     = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
-
-		$out['img']    = 'https://i._DOMAIN_/630x280/'.$this->image.'?crop=1';
-		$out['img64']  = 'https://i._DOMAIN_/596x596/'.$this->image;
+		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
+		//596x596
+		//.'?crop=1'
 
 
 		if (!$ignore['categories']) {
