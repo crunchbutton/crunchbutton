@@ -382,50 +382,22 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 				}
 
 				if ( c::getPagePiece(2) == 'validate' ) {
-
 					$code = $this->request()['code'];
 
-					// At first check if it is an user's invite code - rewards: two way gift cards #2561
-					$reward = new Crunchbutton_Reward;
-					$valid = $reward->validateInviteCode( $code );
-					$isInvite = $valid;
-					if( $reward->checkIfItIsEligibleForFirstTimeOrder() && $valid ){
-						$value = $reward->getReferredDiscountAmount();
-						if( $value ){
-							echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . '  gift card for a free delivery.' ] ] );
-							exit;
-						}
-					}
-
-					// Get the giftcard (promo) by code
-					$giftcard = Crunchbutton_Promo::byCode( $code);
-					// Check if the giftcard is valid
-					if( $giftcard->id_promo ){
-						// Check if the giftcard was already used
-						if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
-							echo json_encode(['error' => 'gift card already used', 'giftcard' => $code ]);
-						} else {
-							// It the gift has a user_id just this user will be able to use it
-							if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
-								echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ]);
-								exit;
-							}
-							echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
-						}
+					$valid = $this->valide_code( $code );
+					if( $valid ){
+						echo json_encode( $valid );
 					} else {
-						if( $isInvite ){
-							echo json_encode(['error' => 'invite not eligible', 'giftcard' => $code ] );
-						} else {
-							echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ] );
-						}
+						echo json_encode( [ 'error' => 'invalid gift card' ] );
 					}
+					exit();
 				}
 
 				if ( c::getPagePiece(2) == 'validate-words' ) {
 
-
 					$words = $this->request()['words'];
 					$phone = $this->request()['phone'];
+					$id_restaurant = $this->request()['id_restaurant'];
 
 					$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $words);
 					$words = explode( ' ', $words );
@@ -436,56 +408,13 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 						$word = trim( $word );
 
-						if( $word == '' ){
-							continue;
-						}
-
-						// At first check if it is an user's invite code - rewards: two way gift cards #2561
-						$reward = new Crunchbutton_Reward;
-						$totalOrdersByPhone = Order::totalOrdersByPhone( $phone );
-						if( !c::user()->id_user && $totalOrdersByPhone == 0 ){
-							$valid = $reward->validateInviteCode( $word );
-							if( $valid ){
-								if( $valid[ 'id_user' ] ){
-									$value = $reward->getReferredDiscountAmount();
-									if( $value ){
-										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you a $' . $value . ' discount (for first time users only)' ] ] );
-										exit;
-									}
-									// echo json_encode( [ 'success' => [ 'value' => 0, 'delivery_free' => true, 'giftcard' => $word, 'message' =>  'This delivery fee is on us.' ] ] );
-									// exit;
-								} else {
-									$value = $reward->getReferredDiscountAmount();
-									if( $value ){
-										echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') will give you a $' . $value . ' discount (for first time users only)' ] ] );
-										// echo json_encode( [ 'success' => [ 'value' => $value, 'giftcard' => $word, 'message' =>  'This code (' . $word . ') gives you a $' . $value . ' gift card towards your order.' ] ] );
-										exit;
-									}
-								}
-							}
-						}
-
-						Crunchbutton_Promo::byCode( $word );
-						// Get the giftcard (promo) by code
-						$giftcard = Crunchbutton_Promo::byCode( $word );
-						// Check if the giftcard is valid
-						if( $giftcard->id_promo ){
-							// Check if the giftcard was already used
-							if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
-								echo json_encode(['error' => 'gift card already used', 'giftcard' => $word ]);
-								exit;
-							} else {
-								// It the gift has a user_id just this user will be able to use it
-								if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
-									echo json_encode(['error' => 'invalid gift card', 'giftcard' => $word ]);
-									exit;
-								}
-								echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $word, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
-								exit;
-							}
+						if( $word == '' ){ continue; }
+						$valid = $this->valide_code( $word, $phone, $id_restaurant );
+						if( $valid && $valid[ 'success' ] ){
+							echo json_encode( $valid );exit;
 						}
 					}
-					echo json_encode(['error' => 'invalid gift card' ] );
+					echo json_encode( [ 'error' => 'invalid gift card' ] );
 				}
 
 			break;
@@ -496,4 +425,62 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 			break;
 		}
 	}
+
+	public function valide_code( $code, $phone = false, $id_restaurant = false ){
+
+		$code = trim( $code );
+
+		// At first check if it is an user's invite code - rewards: two way gift cards #2561
+		$reward = new Crunchbutton_Reward;
+		$valid = $reward->validateInviteCode( $code );
+		$isInvite = $valid;
+
+		if( $reward->checkIfItIsEligibleForFirstTimeOrder() && $valid ){
+			$value = $reward->getReferredDiscountAmount();
+			if( $value ){
+				return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . '  gift card for a free delivery.' ] ] );
+			}
+		}
+
+		// Get the giftcard (promo) by code
+		$giftcard = Crunchbutton_Promo::byCode( $code )->get( 0 );
+		// Check if the giftcard is valid
+		if( $giftcard->id_promo ){
+
+			$params = [];
+
+			if( $phone ){
+				$params[ 'phone' ] = $phone;
+			}
+
+			if( $id_restaurant ){
+				$params[ 'id_restaurant' ] = $id_restaurant;
+			}
+
+			$discount_code = $giftcard->isDiscountCode( $params );
+			if( $discount_code ){
+				echo json_encode( $discount_code );exit;
+			}
+
+			// Check if the giftcard was already used
+			if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+				return(['error' => 'gift card already used', 'giftcard' => $code ]);
+			} else {
+				// It the gift has a user_id just this user will be able to use it
+				if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
+					return(['error' => 'invalid gift card', 'giftcard' => $code ]);
+
+				}
+				return( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
+			}
+		} else {
+			if( $isInvite ){
+				return(['error' => 'invite not eligible', 'giftcard' => $code ] );
+			} else {
+				return(['error' => 'invalid gift card', 'giftcard' => $code ] );
+			}
+		}
+		return false;
+	}
+
 }

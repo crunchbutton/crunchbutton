@@ -1115,7 +1115,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.checkGiftCard = function(){
 		if( validateGiftCard ){
 			giftcard.notes_field.content = $scope.order.form.notes;
-			giftcard.notes_field.start( $scope.order.form.phone );
+			giftcard.notes_field.start( $scope.order.form.phone, $scope.restaurant.id_restaurant );
 		}
 	}
 

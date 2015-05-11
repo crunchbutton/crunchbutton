@@ -16,6 +16,10 @@ class Crunchbutton_Promo extends Cana_Table
 	const TAG_GIFT_CODE = '[gift_code]';
 	const TAG_GIFT_URL = '[gift_url]';
 
+	const USABLE_BY_NEW_USERS = 'new-users';
+	const USABLE_BY_OLD_USERS = 'old-users';
+	const USABLE_BY_ANYONE = 'anyone';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -80,7 +84,7 @@ class Crunchbutton_Promo extends Cana_Table
 		}
 	}
 
-	public function validateNotesField( $notes, $id_restaurant = false ){
+	public function validateNotesField( $notes, $id_restaurant = false, $phone = false ){
 		$return = array();
 		$giftcards = array();
 		$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $notes );
@@ -89,17 +93,26 @@ class Crunchbutton_Promo extends Cana_Table
 			$code = preg_replace( '/[^a-zA-Z 0-9]+/', '', $word );
 			$giftcard = Crunchbutton_Promo::byCode( $code );
 			if( $giftcard->id_promo ){
-				if( !$giftcard->id_user || ( $giftcard->id_user && $giftcard->id_user == c::user()->id_user ) ){
-					if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
-						if( $id_restaurant ){
-							if( $id_restaurant == $giftcard->id_restaurant || !$giftcard->id_restaurant ){
+				$discount_code = $giftcard->isDiscountCode( [ 'id_restaurant' => $id_restaurant, 'phone' => $phone ] )->get( 0 );
+				if( $discount_code ){
+					if( $discount_code[ 'success' ] ){
+						$giftcards[ $giftcard->id_promo ] = $giftcard;
+						$notes = str_replace( $code, '', $notes );
+					}
+					continue;
+				} else {
+					if( !$giftcard->id_user || ( $giftcard->id_user && $giftcard->id_user == c::user()->id_user ) ){
+						if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+							if( $id_restaurant ){
+								if( $id_restaurant == $giftcard->id_restaurant || !$giftcard->id_restaurant ){
+									$giftcards[ $giftcard->id_promo ] = $giftcard;
+								}
+							} else {
 								$giftcards[ $giftcard->id_promo ] = $giftcard;
 							}
-						} else {
-							$giftcards[ $giftcard->id_promo ] = $giftcard;
+							// Remove the gift card code from the notes
+							$notes = str_replace( $code, '', $notes );
 						}
-						// Remove the gift card code from the notes
-						$notes = str_replace( $code, '', $notes );
 					}
 				}
 			}
@@ -109,14 +122,18 @@ class Crunchbutton_Promo extends Cana_Table
 		return $return;
 	}
 
-	public function addCredit( $id_user ){
+	public function addCredit( $id_user, $delivery_fee = 0 ){
 		$credit = new Crunchbutton_Credit();
 		$credit->id_user = $id_user;
 		$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 		$credit->id_restaurant = $this->id_restaurant;
 		$credit->id_promo = $this->id_promo;
 		$credit->date = date('Y-m-d H:i:s');
-		$credit->value = $this->value;
+		if( $this->is_discount_code && $this->delivery_fee ){
+			$credit->value = $delivery_fee;
+		} else {
+			$credit->value = $this->value;
+		}
 		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 		$credit->id_order_reference = $this->id_order_reference;
 		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
@@ -124,8 +141,10 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->note = 'Giftcard: ' . $this->id_promo;
 		$credit->save();
 
-		$this->id_user = $id_user;
-		$this->save();
+		if( !$this->is_discount_code ){
+			$this->id_user = $id_user;
+			$this->save();
+		}
 
 		if( $credit->id_credit ){
 			$this->queTrack();
@@ -463,6 +482,162 @@ class Crunchbutton_Promo extends Cana_Table
 
 		$gifts = self::q($query, $qs);
 		return $gifts;
+	}
+
+	public function userHasAlreadyUsedDiscountCode( $code, $phone ){
+
+		$phone = trim( str_replace( '-', '', str_replace( ' ', '', $phone ) ) );
+
+		$query = 'SELECT p.* FROM promo p
+								INNER JOIN credit c ON c.id_promo = p.id_promo
+								INNER JOIN user u ON u.id_user = c.id_user
+								WHERE u.phone = ? AND LOWER( p.code ) = LOWER( ? ) LIMIT 1';
+		$promo = Crunchbutton_Promo::q( $query, [ $phone, $code ] );
+
+		if( $promo->id_promo ){
+			return true;
+		}
+		return false;
+	}
+
+	public function isDiscountCode( $params = [] ){
+
+		if( $params[ 'id_restaurant' ] ){
+			$id_restaurant = $params[ 'id_restaurant' ];
+		} else {
+			$id_restaurant = false;
+		}
+
+		if( $params[ 'phone' ] ){
+			$phone = $params[ 'phone' ];
+		} else {
+			$phone = false;
+		}
+
+		$out = [];
+
+		if( $this->is_discount_code ){
+
+			if( $this->active && $this->date_start && $this->date_end ){
+
+				$start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
+				$end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
+				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+				if( $start < $now && $now < $end ){
+
+					if( $this->id_community ){
+						$community = $this->community();
+						if( $id_restaurant ){
+							$restaurant = Crunchbutton_Restaurant::o( $id_restaurant );
+							$community = $restaurant->community();
+							if( $community->id_community != $this->id_community ){
+								$out[ 'error' ] = true;
+								$out[ 'warning' ] = 'Sorry, this code is valid just for the restaurants of the community ' . $community->name;
+							}
+						} else {
+							$out[ 'success' ][ 'warning'] = 'Valid just for the restaurants of the community ' . $community->name;
+						}
+					}
+
+					if( $phone ){
+						if( Crunchbutton_Promo::userHasAlreadyUsedDiscountCode( $this->code, $phone ) ){
+							$out[ 'error' ] = true;
+							$out[ 'warning' ] = 'Sorry, it seems you already used this code before.';
+						}
+					}
+
+					if( !$out[ 'error' ] ){
+						switch ( $this->usable_by ) {
+							case Crunchbutton_Promo::USABLE_BY_NEW_USERS:
+								if( $phone ){
+									$orders = Crunchbutton_Order::totalOrdersByPhone( $phone );
+									if( intval( $orders ) > 0 ){
+										$out[ 'error' ] = true;
+										$out[ 'warning' ] = 'Sorry, this code is valid for new users only.';
+									}
+								} else {
+									if( !$out[ 'success' ] ){ $out[ 'success' ] = []; }
+									if( $out[ 'success' ][ 'warning' ] ){
+										$out[ 'success' ][ 'warning' ] .= ' and it is valid for new users only.';
+									} else {
+										$out[ 'success' ][ 'warning' ] = 'Valid for new users only.';
+									}
+								}
+								break;
+
+							case Crunchbutton_Promo::USABLE_BY_OLD_USERS:
+								if( $phone ){
+									$orders = Crunchbutton_Order::totalOrdersByPhone( $phone );
+									if( intval( $orders ) == 0 ){
+										$out[ 'error' ] = true;
+										$out[ 'warning' ] = 'Sorry, this code is valid for existing users only.';
+									}
+								} else {
+									if( !$out[ 'success' ] ){ $out[ 'success' ] = []; }
+									if( $out[ 'success' ][ 'warning' ] ){
+										$out[ 'success' ][ 'warning' ] .= ' and it is valid for existing users only.';
+									} else {
+										$out[ 'success' ][ 'warning' ] = 'Valid for existing users only.';
+									}
+								}
+								break;
+
+							case Crunchbutton_Promo::USABLE_BY_ANYONE:
+							default:
+								break;
+						}
+					}
+
+					if( !$out[ 'error' ] ){
+
+						if( !$out[ 'success' ] ){ $out[ 'success' ] = []; }
+
+						if( $this->delivery_fee ){
+							$out[ 'success' ][ 'delivery_fee'] = true;
+							if( $id_restaurant ){
+								$restaurant = Crunchbutton_Restaurant::o( $id_restaurant );
+								$value = $restaurant->delivery_fee;
+							}
+							if( !$value ){
+								$value = 3;
+							}
+							$out[ 'success' ][ 'message' ] = 'You have a $' . $value . ' gift card for a free delivery.';
+							$out[ 'success' ][ 'value'] = $value;
+						} else {
+							$out[ 'success' ][ 'value'] = $this->value;
+							$out[ 'success' ][ 'message' ] = 'Congrats! This gift card (' . $this->code . ') gives you $' . $this->value . '.';
+						}
+
+						if( $out[ 'success' ][ 'warning' ] ){
+							$out[ 'success' ][ 'message' ] .= " " . $out[ 'success' ][ 'warning' ];
+							unset( $out[ 'success' ][ 'warning' ] );
+						}
+					}
+
+				} else {
+					$out[ 'error' ] = true;
+					$out[ 'warning' ] = 'This code has expired!';
+				}
+
+			} else {
+				$out[ 'error' ] = true;
+				$out[ 'warning' ] = 'This code has expired!';
+			}
+			if( $out[ 'error' ] ){
+				unset( $out[ 'success' ] );
+			}
+			return $out;
+		}
+		return false;
+	}
+
+	public function community(){
+		if( !$this->_community ){
+			$this->_community = Crunchbutton_Community::o( $this->id_community );
+		}
+		return $this->_community;
+
 	}
 
 	public function getLastGiftCardsRedeemedFromPhoneNumber( $phone, $giftcards = 2 ){
