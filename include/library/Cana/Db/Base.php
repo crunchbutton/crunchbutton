@@ -65,7 +65,7 @@ class Cana_Db_Base {
 		try {
 			$stmt->execute($args);
 		} catch (Exception $e) {
-			throw new Exception($query."\n".$e->getMessage());
+			throw new Exception($query."\n".print_r($args,1)."\n".$e->getMessage());
 		}
 
 		return $stmt;
