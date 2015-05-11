@@ -343,10 +343,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
 				WHERE o.delivery_type = ?
 					AND o.delivery_service = true
-					AND o.date >= now() - INTERVAL ? DAY
+					AND o.date >= now() - INTERVAL '.$interval.' DAY
 				ORDER BY o.id_order DESC
 			';
-			$orders = Order::q($query, [$id_community, Crunchbutton_Order::SHIPPING_DELIVERY, $interval]);
+			$orders = Order::q($query, [$id_community, Crunchbutton_Order::SHIPPING_DELIVERY]);
 		}
 		foreach( $orders as $order ){
 			$lastStatus = $order->deliveryLastStatus();
