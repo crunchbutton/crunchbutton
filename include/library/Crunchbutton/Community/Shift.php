@@ -1029,8 +1029,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
 					INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 					WHERE
-						cs.date_end, "%Y-%m-%d %H:%i" >= ?
-						AND cs.date_end, "%Y-%m-%d %H:%i" <= ?
+						cs.date_end >= ?
+						AND cs.date_end <= ?
 						AND cs.id_community = ?
 				', [$_now, $_interval, $community->id_community]);
 				if( $nextShifts->count() > 0 ){
@@ -1065,11 +1065,16 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$now->modify( '+ 7 days' );
 			$to = $now->format( 'Y-m-d H:i' );
 
-			$query = 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
-									INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-									WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $to . '" AND cs.id_community = "' . $community->id_community . '"';
+			$query = '
+				SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
+				INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+				WHERE
+					cs.date_start >= ?
+					AND cs.date_start <= ?
+					AND cs.id_community = ?
+			';
 
-			$nextShifts = Crunchbutton_Community_Shift::q( $query );
+			$nextShifts = Crunchbutton_Community_Shift::q($query, [$from, $to, $community->id_community]);
 
 			foreach( $nextShifts as $shift ){
 
