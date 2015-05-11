@@ -69,11 +69,16 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function nextShiftsByAdmin( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		$query = 'SELECT cs.* FROM admin_shift_assign ass
-								INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
-								WHERE ass.id_admin = "' . $id_admin . '" AND
-									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
-		return Crunchbutton_Community_Shift::q( $query );
+		$query = '
+			SELECT cs.* FROM admin_shift_assign ass
+			INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
+			WHERE
+				ass.id_admin = ?
+				AND cs.date_start >= ?
+			ORDER BY cs.date_start ASC
+			LIMIT 20
+		';
+		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 
 	public function nextShiftsByCommunities( $communities ){
@@ -82,12 +87,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$now_formated = $now->format( 'Y-m-d' );
 			$now->modify( '+ 7 days' );
 			$next_days_formated = $now->format( 'Y-m-d' );
-			$query = 'SELECT cs.* FROM community_shift cs
-									WHERE cs.id_community IN( ' . join( ',', $communities ) . ' ) AND
-										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now_formated  . '" AND
-										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $next_days_formated  . '"
-									 ORDER BY cs.date_start ASC';
-			return Crunchbutton_Community_Shift::q( $query );
+			$query = '
+				SELECT cs.* FROM community_shift cs
+				WHERE
+					cs.id_community IN( ' . join( ',', $communities ) . ' )
+					AND cs.date_start >= ?
+					AND cs.date_start <= ?
+				ORDER BY cs.date_start ASC
+			';
+			return Crunchbutton_Community_Shift::q($query, [$now_formated, $next_days_formated]);
 		}
 		return false;
 	}
