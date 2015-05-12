@@ -70,7 +70,7 @@
 					<span class="tag tag-grey">Placed</span>
 				</span>
 				<br>
-				<span ng-if="order.status" class="listview-smaller"><span am-time-ago="order.status.date | localtime | timestamp"></span></span>
+				<span ng-if="order.status" class="listview-smaller"><span am-time-ago="order.status.date | timestamp"></span></span>
 			</td>
 			<td nowrap class="tb-v-center">
 				<a href="" ng-click="ticket(order.id_order)"><button class="button button-empty button-empty-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
