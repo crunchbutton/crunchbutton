@@ -5,7 +5,7 @@
 			<th>Date</th>
 			<th ng-if="!restaurant">Restaurant</th>
 			<th>Customer</th>
-			<th>Order</th>
+			<th>Price</th>
 			<th>Driver</th>
 			<th class="tb-small">Status</th>
 			<th class="tb-small"></th>
@@ -37,7 +37,15 @@
 			</td>
 			<td>
 				<?php /* Order */ ?>
-				${{order.final_price_plus_delivery_markup}}
+				<span class="listview-smaller">
+					<table>
+						<tr><td>Subtotal:</td><td>${{order.price + order.delivery_fee + order.delivery_service_markup_value + (order.price * (order.service_fee/100)) | number:2}}</td></tr>
+						<tr><td>Tax:</td><td>${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
+						<tr><td>Tip:</td><td>${{order.tip | number:2}}</td></tr>
+						<tr><td class="listview-bold">Total:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
+					</table>
+				</span>
+
 				<?php /* Order */ ?>
 			</td>
 			<td>
