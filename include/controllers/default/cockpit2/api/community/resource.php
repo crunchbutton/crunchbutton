@@ -21,8 +21,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 
 	private function _permission(){
 		if (!c::admin()->permission()->check(['global', 'resource-all' ])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 	}
 

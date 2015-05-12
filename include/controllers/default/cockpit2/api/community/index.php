@@ -5,8 +5,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		switch ($this->method()) {
@@ -19,8 +18,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 				}
 
 				if (!$community->id_community) {
-					header('HTTP/1.0 404 Not Found');
-					exit;
+					$this->error(404);
 				}
 
 				switch ( c::getPagePiece(3) ) {
@@ -53,8 +51,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 			case 'post':
 
 				if (!c::admin()->permission()->check(['global'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					exit;
+					$this->error(401);
 				}
 
 
