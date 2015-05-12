@@ -1,25 +1,20 @@
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
-			<th></th>
-			<th>Name</th>
-			<th>File</th>
+			<th>Resource</th>
 			<th class="tb-center">Communities</th>
-			<th nowrap="nowrap">Show at<br>Resources Page</th>
-			<th nowrap="nowrap">Show at<br>Sideswipe Menu</th>
-			<th nowrap="nowrap">Show at<br>Order Page</th>
+			<th nowrap="nowrap">Menu</th>
+			<th nowrap="nowrap">Resources</th>
+			<th nowrap="nowrap">Order</th>
 			<th nowrap="nowrap">Active</th>
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="resource in resources track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_community_resource}}">
-			<td>#{{resource.id_community_resource}}</td>
-			<td>
-			{{resource.name}}
+			<td class="tb-v-center">
+				<span class="listview-bold">{{resource.name}}</span>
+				<br><a target="_system" href="{{resource.path}}">{{resource.file}}</a>
 			</td>
-			<td>
-				<a target="_system" href="{{resource.path}}">{{resource.file}}</a>
-			</td>
-			<td>
+			<td class="tb-v-center">
 				<span class="tag tag-red" ng-if="resource.all">All</span>
 				<span class="listview-smaller" ng-if="!resource.all">
 					<span ng-repeat="community in resource.communities">
