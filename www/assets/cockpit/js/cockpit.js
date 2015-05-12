@@ -578,11 +578,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.back = function() {
 		$('body').addClass('back');
 
-		//history.back();
-		history.go(-1);
-    	navigator.app.backHistory();
-
-
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},100);
@@ -595,6 +590,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},1200);
+		
+		history.go(-1);
+    	navigator.app.backHistory();
 	};
 
 	$rootScope.closePopup = function() {
