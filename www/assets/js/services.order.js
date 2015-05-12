@@ -238,11 +238,16 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		var elements = [];
 		var text = '';
 		if (breakdown.delivery) {
-			elements.push(service.info.dollarSign + breakdown.delivery.toFixed(2) + ' delivery');
+			var delivery_fee = breakdown.delivery;
+			// make customer fee display on front end in the regular fee #5597
+			if (breakdown.fee) {
+				delivery_fee = delivery_fee + breakdown.fee;
+				elements.push(service.info.dollarSign + delivery_fee.toFixed(2) + ' delivery fee');
+			} else {
+				elements.push(service.info.dollarSign + delivery_fee.toFixed(2) + ' delivery');
+			}
 		}
-		if (breakdown.fee) {
-			elements.push(service.info.dollarSign + breakdown.fee.toFixed(2) + ' fee');
-		}
+
 		if (breakdown.taxes) {
 			elements.push(service.info.dollarSign + breakdown.taxes.toFixed(2) + ' taxes');
 		}

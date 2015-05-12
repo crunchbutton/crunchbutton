@@ -294,7 +294,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'delivery_fee' ] = $this->orderDeliveryFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'delivery_fee_collected' ] = $this->orderDeliveryFeeDriverCollected( $order );
 				$order[ 'pay_info' ][ 'tip' ] = $this->orderTipDriverPay( $order );
-				$order[ 'pay_info' ][ 'customer_fee' ] = $this->orderCustomerFeeDriverPay( $order );
+				$order[ 'pay_info' ][ 'customer_fee' ] = $order[ 'service_fee' ];
+				$order[ 'pay_info' ][ 'customer_fee_collected' ] = $this->orderCustomerFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'markup' ] = $this->orderMarkupDriverPay( $order );
 				$order[ 'pay_info' ][ 'credit_charge' ] = $this->orderCreditChargeDriverPay( $order );
 				$order[ 'pay_info' ][ 'restaurant_fee' ] = $this->orderRestaurantFeeDriverPay( $order );
@@ -319,6 +320,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 					$order[ 'pay_info' ][ 'total_payment_per_order' ] = 0;
 					$order[ 'pay_info' ][ 'delivery_fee_collected' ] = 0;
+					$order[ 'pay_info' ][ 'customer_fee_collected' ] = 0;
 				}
 
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
@@ -341,6 +343,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'customer_fee' ] += $order[ 'pay_info' ][ 'customer_fee' ];
 				$pay[ $driver ][ 'markup' ] += $order[ 'pay_info' ][ 'markup' ];
 				$pay[ $driver ][ 'delivery_fee_collected' ] += $order[ 'pay_info' ][ 'delivery_fee_collected' ];
+				$pay[ $driver ][ 'customer_fee_collected' ] += $order[ 'pay_info' ][ 'customer_fee_collected' ];
 				$pay[ $driver ][ 'credit_charge' ] += $order[ 'pay_info' ][ 'credit_charge' ];
 				$pay[ $driver ][ 'restaurant_fee' ] += $order[ 'pay_info' ][ 'restaurant_fee' ];
 				$pay[ $driver ][ 'gift_card' ] += $order[ 'pay_info' ][ 'gift_card' ];
@@ -396,7 +399,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					}
 				}
 				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
-				$pay[ $id_driver ][ 'total_payment' ] = max( ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] ), 0 );
+				$pay[ $id_driver ][ 'total_payment' ] = max( ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] + $pay[ $id_driver ][ 'customer_fee_collected' ] ), 0 );
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
@@ -463,17 +466,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$delivery_fee = $pay[ 'delivery_fee' ];
 		}
 
-
 		$total_due = 	( ( $pay[ 'subtotal' ] +
 										$pay[ 'tax' ] +
 										$delivery_fee +
-										$pay[ 'customer_fee' ] +
-										$pay[ 'markup' ] +
-										$pay[ 'delivery_fee_collected' ] +
 										$pay[ 'credit_charge' ] +
 										$pay[ 'restaurant_fee' ] +
 										$pay[ 'gift_card' ] -
-										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ];
+										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ] +
+										// total driver collected in cash
+										$pay[ 'customer_fee_collected' ] +
+										$pay[ 'markup' ] +
+										$pay[ 'delivery_fee_collected' ];
 		return $total_due;
 	}
 
@@ -1660,7 +1663,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$_total_payment = $pay_info[ 1 ][ 'total_payment' ];
 					}
 
-					$_total_payment = max( 0, $_total_payment );
+					$_total_payment = $_total_payment;
 					$_total_reimburse = max( 0, $pay_info[ 0 ][ 'total_reimburse' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
@@ -1669,8 +1672,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'date' => $variables[ 'short_date' ],
 																										'tip' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'tip' ],
 																										'restaurant' => $variables[ 'restaurant' ],
+																										'markup' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ],
 																										'delivery_fee' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee' ],
 																										'delivery_fee_collected' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ],
+																										'customer_fee_collected' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'customer_fee_collected' ],
 																										'pay_type' => $type,
 																										'total_reimburse' => $_total_reimburse,
 																										'total_payment' => $_total_payment
@@ -1682,7 +1687,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 						// if( $summary[ 'driver_payment_hours' ] ){
 							$summary[ 'delivery_fee_collected' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] );
-							$summary[ 'collected_in_cash' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] );
+							$summary[ 'customer_fee_collected' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'customer_fee_collected' ] );
+							$summary[ 'collected_in_cash' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] + $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'customer_fee_collected' ] );
 						// }
 						$summary[ '_total_received_cash_' ] += $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
 						$summary[ '_total_cash_orders_' ]++;
@@ -1717,6 +1723,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 															'tax' => floatval( $calcs[ $index ][ 'tax' ] ),
 															'delivery_fee' => floatval( $calcs[ $index ][ 'delivery_fee' ] ),
 															'delivery_fee_collected' => floatval( $calcs[ $index ][ 'delivery_fee_collected' ] ),
+															'customer_fee_collected' => floatval( $calcs[ $index ][ 'customer_fee_collected' ] ),
 															'tip' => floatval( $calcs[ $index ][ 'tip' ] ),
 															'customer_fee' => floatval( $calcs[ $index ][ 'customer_fee' ] ),
 															'markup' => floatval( $calcs[ $index ][ 'markup' ] ),

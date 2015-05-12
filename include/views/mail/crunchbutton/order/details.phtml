@@ -13,11 +13,13 @@ if( $version == 'restaurant' ){
 	$isRestaurant = true;
 	$isDriverCockpit = false;
 }
+
 if( $version == 'customer' ){
 	$user = true;
 	$isRestaurant = false;
 	$isDriverCockpit = false;
 }
+
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
@@ -187,7 +189,6 @@ if( $version == 'customer' ){
 	</tr>
 	<?php
 	// change fax for 3rd party restaurants #2962
-
 	if( $viewer != 'driver' ){
 		$showTipAndDeliveryFee = true;
 		$show_credit_card_tips = true;
@@ -212,13 +213,15 @@ if( $version == 'customer' ){
 		<?php }
 	}
 
-	if( $showTipAndDeliveryFee && $show_delivery_fees ){
-
+	if( $viewer != 'driver' || $show_delivery_fees ){
 		 if ( $order->restaurant()->delivery_fee ) { ?>
 			<tr>
 				<td></td>
 				<td style="text-align:right">Delivery Fee</td>
-				<td>$<?php echo $order->deliveryFee(); ?></td>
+				<td>
+				$<?php
+					echo number_format( $order->deliveryFee() + $order->serviceFee(), 2 );
+				?></td>
 				<?php if( $isDriverCockpit ) {  ?>
 				<td style="font-size:12px;color:#666;">
 					&mdash;
@@ -231,6 +234,7 @@ if( $version == 'customer' ){
 
 	?>
 
+	<?php /* #5597 ?>
 	<?php if ( $order->restaurant()->fee_customer ) { ?>
 		<tr>
 			<td></td>
@@ -243,6 +247,7 @@ if( $version == 'customer' ){
 			<?php } ?>
 		</tr>
 	<?php } ?>
+	<?php */ ?>
 
 	<tr>
 		<td></td>

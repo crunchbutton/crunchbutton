@@ -578,8 +578,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
 					$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
 					$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
-					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
+					$_order[ 'customer_fee' ] = $order[ 'pay_info' ][ 'customer_fee' ] ;
+					$_order[ 'customer_fee_collected' ] = $order[ 'pay_info' ][ 'customer_fee_collected' ] ;
 					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
+					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ] ;
+					$_order[ 'delivery_fee_collected' ] = $order[ 'pay_info' ][ 'delivery_fee_collected' ] ;
 					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
 					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
 					$_order[ 'date' ] = $order[ 'date' ];
@@ -596,10 +599,12 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$driver[ 'adjustment' ] = 0;
 			$driver[ 'adjustment_notes' ] = '';
 			$driver[ 'standard_reimburse' ] = ( $driver[ 'standard_reimburse' ] ? $driver[ 'standard_reimburse' ] : 0 );
+			$driver[ 'total_service_fee' ] = ( $driver[ 'service_fee' ] ? $driver[ 'service_fee' ] : 0 );
 			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
 			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
 			$driver[ 'total_payment_per_order' ] = ( $driver[ 'total_payment_per_order' ] ? $driver[ 'total_payment_per_order' ] : 0 );
 			$driver[ 'delivery_fee_collected' ] = ( $driver[ 'delivery_fee_collected' ] ? $driver[ 'delivery_fee_collected' ] : 0 );
+			$driver[ 'customer_fee_collected' ] = ( $driver[ 'customer_fee_collected' ] ? $driver[ 'customer_fee_collected' ] : 0 );
 
 			$driver[ 'pay' ] = true;
 
