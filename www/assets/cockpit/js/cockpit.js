@@ -101,7 +101,6 @@ NGApp.factory('errorInterceptor', function($q) {
 		cancelers: [],
 		cancelAll: function() {
 			for (var x in errorInterceptor.cancelers) {
-				console.debug('canceling...');
 				errorInterceptor.cancelers[x].canceler.resolve();
 			}
 		}
