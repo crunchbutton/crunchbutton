@@ -65,15 +65,6 @@ NGApp.factory('errorInterceptor', function($q) {
 		}
 	};
 
-	var isLoading = function(url) {
-		for (var x in errorInterceptor.cancelers) {
-			if (errorInterceptor.cancelers[x].url == url) {
-				return true;
-			}
-		}
-		return false;
-	};
-
 	var errorInterceptor = {
 		responseError: function(response) {
 			removeUrl(response.url || response.config.url);
@@ -101,11 +92,6 @@ NGApp.factory('errorInterceptor', function($q) {
 			}
 
 			if (!ignore) {
-				/*
-				if (isLoading(config.url)) {
-					return $q.reject(config);
-				}
-				*/
 				var canceler = $q.defer();
 				config.timeout = config.timeout || canceler.promise;
 				errorInterceptor.cancelers.push({canceler: config.canceler || canceler, url: config.url});
