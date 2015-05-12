@@ -104,6 +104,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 
 		App.snap.close();
 
+		// hopefully this doesnt break anything
 		//$rootScope.reload();
 
 	} );

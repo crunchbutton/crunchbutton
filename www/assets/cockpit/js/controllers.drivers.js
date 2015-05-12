@@ -55,16 +55,25 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 		//console.log(arguments);
 	};
 
-	// Just run if the user is loggedin
-	if ($scope.account.isLoggedIn()) {
-		DriverOrdersViewService.load();
-	}
-
 	$scope.iOS = App.iOS();
+	
+	var load = function() {
+		DriverOrdersViewService.load();
+		watching = null;
+	};
+	
+	var watching = null;
 
-	if ($scope.account.isLoggedIn()) {
-	    DriverOrdersViewService.load();
-	    setTimeout( function(){ DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0)); }, 1000 );
+	if (!AccountService.init) {
+		// we got here before the auth service was complete. 
+		watching = $rootScope.$on('userAuth', load);
+	}
+	
+	if (AccountService.isLoggedIn()) {
+	    load();
+	    setTimeout(function() {
+			DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0));
+		}, 1000 );
 	}
 
 });
