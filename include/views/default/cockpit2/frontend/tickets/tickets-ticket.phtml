@@ -2,12 +2,14 @@
 
 <div class="content-padding">
 
-	<h1 class="title box-title"><i class="fa fa-comments-o"></i>Support : Issue #{{ticket.id_support}}</h1>
-	<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a>
+	<h1 class="title box-title left"><i class="fa fa-comments-o"></i>Support : Issue #{{ticket.id_support}}</h1>
 	
-	<div class="ticket-status-top" ng-click="openCloseTicket()">
-		<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
-		<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
+	<div class="right">
+		<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i> Open Chat</a>
+		<div class="ticket-status-top" ng-click="openCloseTicket()">
+			<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
+			<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
+		</div>
 	</div>
 	
 
@@ -199,8 +201,8 @@
 				<div class="divider"></div>
 			</div>
 
-			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-				<traffic-layer ng-if="staff.id_admin"></traffic-layer>
+			<map ng-if="ticket.order.driver && ticket.order.driver.location" center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+
 			</map>
 		</div>
 		
