@@ -123,22 +123,6 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 			callback( order );
 		} );
 	}
-
-
-	//Driver fee
-	service.driver_take = function( callback ){
-		var totalTake = 0;
-		var id_order = $routeParams.id;
-		orders.get( { 'id_order': id_order }, function( order ) {
-			totalTake = (1 * order._tip) + (1 * order.delivery_fee);
-			$rootScope.driverTake = { total: totalTake };
-			if (callback) {
-				callback( order );
-			}
-		} );
-
-	}
-
 	return service;
 } );
 
@@ -166,6 +150,10 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 			service.order = json;
 			service.ready = true;
 			$rootScope.unBusy();
+			var totalTake = 0;
+			totalTake = (1 * json._tip) + (1 * json.delivery_fee);
+			$rootScope.driverTake = { total: totalTake };
+
 			if( callback ){
 				callback();
 			}
@@ -236,8 +224,6 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 		$rootScope.makeBusy();
 		DriverOrdersService.reject( service.order.id_order, service.load );
 	};
-
-	DriverOrdersService.driver_take();
 
 	return service;
 } );

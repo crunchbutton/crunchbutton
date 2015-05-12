@@ -17,12 +17,15 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 
-NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService) {
+NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService, AccountService) {
 	$scope.params = {
 		status: 'open'
 	};
 
 	var getTickets = function() {
+		if (!AccountService || !AccountService.user || !AccountService.user.permissions) {
+			return;
+		}
 		TicketService.shortlist( $scope.params, function(tickets) {
 			TicketViewService.scope.tickets = tickets.results;
 		});
