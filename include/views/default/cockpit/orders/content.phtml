@@ -274,7 +274,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<?php } ?>
 						<tr>
 							<td>Service Fee</td>
-							<td>$<?=$order->serviceFee()?> ($<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
+							<td>$<?=$order->serviceFee()?> (%<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
 						</tr>
 						<tr>
 							<td nowrap="">Delivery Fee</td>

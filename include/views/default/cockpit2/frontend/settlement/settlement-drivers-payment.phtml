@@ -132,10 +132,15 @@
 					<td>Markup</td>
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
-				<tr ng-if="result.calcs.delivery_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.markup}}">
+				<tr ng-if="result.calcs.delivery_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
 					<td>Delivery Fee Collected In Cash by Hourly Drivers</td>
 					<td>$ {{result.calcs.delivery_fee_collected | formatPrice}}</td>
 				</tr>
+				<tr ng-if="result.calcs.customer_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee_collected}}">
+					<td>Customer Fee Collected In Cash</td>
+					<td>$ {{result.calcs.customer_fee_collected | formatPrice}}</td>
+				</tr>
+
 				<tr ng-if="!result.hourly && result.calcs.credit_charge && pay_type_payment" positive-or-negative-color="{{result.calcs.credit_charge}}">
 					<td>Credit Card Charge</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
@@ -264,11 +269,13 @@
 		<table class="tb-grid tb-zebra">
 			<thead ng-if="result.orders.included.length > 0 || result.orders.not_included.length > 0">
 				<tr>
-					<td colspan="9" class="title">Orders</td>
+					<td colspan="11" class="title">Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders">
 				<tr>
+					<td></td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -294,7 +301,13 @@
 						<span ng-if="pay_type_payment">Delivery Fee</span>
 					</td>
 					<td>
+						<span ng-if="pay_type_payment">Markup (Collected in Cash)</span>
+					</td>
+					<td>
 						<span ng-if="pay_type_payment">Delivery Fee (Collected in Cash)</span>
+					</td>
+					<td>
+						<span ng-if="pay_type_payment">Customer Fee (Collected in Cash)</span>
 					</td>
 					<td ng-if="pay_type_reimbursement">Reimbursement</td>
 					<td ng-if="pay_type_payment">Payment</td>
@@ -309,7 +322,9 @@
 					<td>{{order.pay_type}}</td>
 					<td><span ng-if="pay_type_payment">$ {{order.tip | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">$ {{order.markup | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee_collected | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">$ {{order.customer_fee_collected | formatPrice}}</span></td>
 					<td ng-if="pay_type_reimbursement">$ {{order.total_reimburse | formatPrice}}</td>
 					<td ng-if="pay_type_payment">$ {{order.total_payment | formatPrice}}</td>
 				</tr>
