@@ -94,6 +94,7 @@ class Controller_api_promo_discountcode extends Crunchbutton_Controller_RestAcco
 		$promo->date_end = $this->request()[ 'date_end' ];
 		$promo->usable_by = $this->request()[ 'usable_by' ];
 		$promo->id_community = $this->request()[ 'id_community' ];
+		$promo->paid_by = strtoupper( $this->request()[ 'paid_by' ] );
 		$promo->delivery_fee = ( $this->request()[ 'delivery_fee' ] ? 1 : 0 );
 		$promo->value = $this->request()[ 'value' ];
 
