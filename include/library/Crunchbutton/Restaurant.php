@@ -1074,26 +1074,60 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return $fax;
 	}
-
-	public function image($params = []) {
-		$params['height'] = 280;
-		$params['width'] = 630;
-		$params['crop'] = 1;
-		$params['gravity'] = 'center';
-		$params['format'] = 'jpg';
-		$params['quality'] = '70';
-
-		$params['img']			= $this->image;
-		$params['cache'] 		= $this->cachePath();
-		$params['path'] 		= $this->imagePath();
-
-		try {
-			$thumb = new Cana_Thumb($params);
-		} catch (Exception $e) {
-			return null;
+	
+	public function getImgFormats() {
+		return [
+			['height' => 596, 'width' => 596, 'crop' => 0],
+			['height' => 66, 'width' => 66, 'crop' => 0],
+			['height' => 425, 'width' => 1200, 'crop' => 1]
+		];
+	}
+	
+	public function image() {
+		$img = (strpos($this->image,'http://') !== 0 ? 'https://i._DOMAIN_/' : '') . $this->image;
+		return $img;
+	}
+	
+	public function updateImage($tmpFile = null) {
+		if (!$tmpFile) {
+			return false;
 		}
-		return $thumb;
+		
+		$info = pathinfo($tmpFile);
+		
+		$formats = $this->getImgFormats();
+		
+		// upload the source image
+		$upload = new Crunchbutton_Upload([
+			'file' => $tmpFile,
+			'resource' => $this->permalink.'.jpg'
+		]);
+		$upload->upload();
 
+		// loop through each thumb and upload
+		foreach ($formats as $format) {
+
+			$format['img']			= $info['basename'];
+			$format['cache'] 		= '/tmp/';
+			$format['path'] 		= $info['dirname'].'/';
+
+			try {
+				$thumb = new Cana_Thumb($format);
+			} catch (Exception $e) {
+				print_r($e->getMessage());
+				$thumb = null;
+			}
+			
+			if ($thumb) {
+				$upload = new Crunchbutton_Upload([
+					'file' => $thumb->_image['file'],
+					'resource' => $this->permalink.'-'.$format['width'].'x'.$format['height'].'.'.$info['extension'],
+					'bucket' => c::config()->s3->buckets->{'image-restaurant'}->name
+				]);
+				$upload->upload();
+			}
+		}
+		
 	}
 
 	public function weight() {
@@ -1158,10 +1192,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// Return the offset to help the Javascript to calculate the open/close hour correctly
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
+		
+		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
 
 		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
-		//596x596
-		//.'?crop=1'
+		$out['images'] = [
+			$imgPrefix.$this->permalink.'.jpg',
+		];
+		
+		foreach ($this->getImgFormats() as $format) {
+			$out['images'][] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
+		}
 
 
 		if (!$ignore['categories']) {

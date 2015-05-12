@@ -20,7 +20,9 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 		
-		switch (c::getPagePiece(2)) {
+		$this->restaurant = $restaurant;
+		
+		switch (c::getPagePiece(3)) {
 			case 'image':
 				$this->_image();
 				break;
@@ -32,16 +34,21 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 	}
 	
 	private function _image() {
+		// pull path of a temporary file
+
 		switch ($this->method()) {
 			case 'get':
-				echo $restaurant->image;
+				die($this->restaurant->image());
+				header('Location: '.$this->restaurant->image());
 				break;
+
 			case 'post':
 			case 'put':
-				// convert the image localy into its 3 different sizes:
-				//   origional
-				//   
-				// upload the image to amazon aws, or localy, depending onthe environment
+				if ($_FILES) {
+					foreach ($_FILES as $file) {
+						$this->restaurant->updateImage($file['tmp_name']);
+					}
+				}
 				break;
 		}
 	}
@@ -49,7 +56,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 	private function _restaurant() {
 		switch ($this->method()) {
 			case 'get':
-				echo $restaurant->json();
+				echo $this->restaurant->json();
 				break;
 			case 'post':
 				// do nothing for now
