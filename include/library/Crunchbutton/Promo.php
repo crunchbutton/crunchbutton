@@ -659,6 +659,25 @@ class Crunchbutton_Promo extends Cana_Table
 		return Restaurant::o($this->id_restaurant_paid_by);
 	}
 
+	public function admin(){
+		return Admin::o( $this->id_admin );
+	}
+
+	public function dateStart(){
+		if( $this->date_start ){
+			return DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
+		}
+		return null;
+	}
+
+	public function dateEnd(){
+		if( $this->date_end ){
+			return DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
+		}
+		return null;
+
+	}
+
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
