@@ -64,17 +64,19 @@
 				</div>
 			</div>
 		</div>
-		<span ng-repeat="resource in oc.order.resources">
-			<div class="divider dots"></div>
-			<div class="order-item-block-big">
-				<div class="order-icon2"><i class="fa fa-files-o"></i></div>
+
+	</div>
+	<div class="order" ng-if="oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
+		
+		<div class="info-block">
+			<div ng-repeat="resource in oc.order.resources" class="order-info-resource">
+				<div class="order-icon3"><i class="fa fa-file"></i></div>
 				<div class="order-info2 order-info-small">
 					<a href="{{resource.path}}" target="_system">{{resource.name}}</a>
 				</div>
 			</div>
-		</span>
-	</div>
-	<div class="order" ng-if="oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
+		</div>
+		
 		<br><br>
 		<div class="dialog-message dialog-message-notice check-reminder" ng-if="oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
 			<b>Double check</b> to make sure you received exactly the right food!
@@ -234,7 +236,7 @@
 					</table>
 				</div>
 			</div>
-			<div class="order-item-block-big">
+			<div ng-class="oc.order.pay_type=='cash' ? 'order-item-block-big' : 'info-block'">
 				<div class="order-icon2">
 					<i class="fa fa-money" ng-if="oc.order.pay_type=='cash'"></i>
 					<i class="fa fa-credit-card" ng-if="oc.order.pay_type=='card'"></i>
