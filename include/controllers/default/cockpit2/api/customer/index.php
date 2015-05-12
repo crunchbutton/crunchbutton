@@ -5,8 +5,7 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		$customer = User::uuid(c::getPagePiece(2));
@@ -25,8 +24,7 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 */
 
 		if (!$customer->id_user) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
 		}
 
 		switch ($this->method()) {

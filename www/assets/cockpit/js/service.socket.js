@@ -2,7 +2,7 @@
 NGApp.factory('eventSocket', function (socketFactory, $rootScope) {
 
 //	$rootScope.$on('userAuth', function(e, data) {
-	var myIoSocket = io.connect('https://chat.cockpit.la');
+	var myIoSocket = io.connect('https://event.cockpit.la');
 
 	mySocket = socketFactory({
 		ioSocket: myIoSocket

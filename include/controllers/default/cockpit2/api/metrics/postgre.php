@@ -8,8 +8,7 @@ class Controller_api_metrics_postgre extends Crunchbutton_Controller_RestAccount
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		$r = c::app()->metricsDB()->query('select * from tests');

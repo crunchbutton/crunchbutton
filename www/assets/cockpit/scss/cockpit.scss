@@ -1862,7 +1862,7 @@ h4.title{
 	font-size: .95em;
 }
 .column-action {
-	margin-right: .4em;
+	margin-right: .1em;
 }
 .column-action .button {
 	font-size: 1em;
@@ -1870,7 +1870,7 @@ h4.title{
 }
 
 .drivers-order-list .column-date, .drivers-order-list .column-info, .drivers-order-list .column-action {
-	margin-top: .4em;
+	margin-top: .1em;
 }
 
 .drivers-order-list .column-action{
@@ -1904,12 +1904,12 @@ h4.title{
 }
 
 .column-date .orderid {
-	border-bottom: 1px solid #FFF;
 	font-weight: bold;
-	font-size: 1.4em;
+	font-size: 2.2em;
 	cursor: pointer;
 	margin-bottom: 1em;
 	font-family: Ruda;
+	text-align: center;
 }
 
 
@@ -4164,4 +4164,8 @@ h1.title.box-title {
 
 .li-input textarea.fatal-error-content {
 	height: 9em;
+}
+
+.order-info-resource:not(:last-child) {
+	margin-bottom: .5em;
 }

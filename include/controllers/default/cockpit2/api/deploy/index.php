@@ -5,8 +5,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'server-deploy-admin', 'server-deploy'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		switch (c::getPagePiece(2)) {
@@ -21,8 +20,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 					$server = Deploy_Server::byName(c::getPagePiece(3));
 				}
 				if (!$server->id_deploy_server) {
-					header('HTTP/1.0 404 Not Found');
-					exit;
+					$this->error(404);
 				}
 				
 				switch (c::getPagePiece(4)) {
@@ -49,8 +47,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 			case 'version':
 				if ($this->method() == 'post' || $this->method() == 'delete') {
 					if (!c::admin()->permission()->check(['server-deploy-admin'])) {
-						header('HTTP/1.1 401 Unauthorized');
-						exit;
+						$this->error(401);
 					}
 					
 					if ($this->method() == 'post') {
@@ -60,8 +57,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 							$server = Deploy_Server::byName($this->request()['id_deploy_server']);
 						}
 						if (!$server->id_deploy_server) {
-							header('HTTP/1.0 404 Not Found');
-							exit;
+							$this->error(404);
 						}
 	
 						$date = $this->request()['date'];
@@ -92,12 +88,12 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 					} else {						
 						$d = Deploy_Version::o(c::getPagePiece(3));
 						if (!$d->id_deploy_version) {
-							header('HTTP/1.0 404 Not Found');
-							exit;
+							$this->error(404);
+
 						} elseif ($d->status != 'new') {
-							header('HTTP/1.0 406 Not Acceptable');
-							exit;
+							$this->error(406);
 						}
+
 						$d->status = 'canceled';
 						$d->save();
 

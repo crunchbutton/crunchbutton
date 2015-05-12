@@ -44,6 +44,9 @@ NGApp.config(function($compileProvider){
 
 NGApp.factory('errorInterceptor', function($q) {  
 	var errorFromResponse = function(response) {
+		if (response.headers && typeof(response.headers) !== 'function') {
+			return true;
+		}
 		var headers = response.headers();
 		if (headers && headers['php-fatal-error']) {
 			console.error(headers['php-fatal-error']);
@@ -61,14 +64,15 @@ NGApp.factory('errorInterceptor', function($q) {
 			}
 		}
 	};
+
 	var errorInterceptor = {
 		responseError: function(response) {
-			removeUrl(response.config.url);
+			removeUrl(response.url || response.config.url);
 			errorFromResponse(response);
 			return $q.reject(response);
 		},
 		response: function(response) {
-			removeUrl(response.config.url);
+			removeUrl(response.url || response.config.url);
 
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
@@ -89,15 +93,14 @@ NGApp.factory('errorInterceptor', function($q) {
 
 			if (!ignore) {
 				var canceler = $q.defer();
-				config.timeout = canceler.promise;
-				errorInterceptor.cancelers.push({canceler: canceler, url: config.url});
+				config.timeout = config.timeout || canceler.promise;
+				errorInterceptor.cancelers.push({canceler: config.canceler || canceler, url: config.url});
 			}
 			return config;
 		},
 		cancelers: [],
 		cancelAll: function() {
 			for (var x in errorInterceptor.cancelers) {
-				console.debug('canceling...');
 				errorInterceptor.cancelers[x].canceler.resolve();
 			}
 		}
@@ -575,11 +578,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.back = function() {
 		$('body').addClass('back');
 
-		//history.back();
-		history.go(-1);
-    	navigator.app.backHistory();
-
-
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},100);
@@ -592,6 +590,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},1200);
+		
+		history.go(-1);
+    	navigator.app.backHistory();
 	};
 
 	$rootScope.closePopup = function() {
