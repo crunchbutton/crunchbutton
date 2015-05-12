@@ -1009,7 +1009,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function doDriverPayments(){
-		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_DRIVER . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" AND log = "Schedule created" ORDER BY id_payment_schedule DESC LIMIT 50';
+		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_DRIVER . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" AND ( log = "Schedule created" OR log IS NULL ) ORDER BY id_payment_schedule DESC LIMIT 50';
 		$scheduled_payments = Cockpit_Payment_Schedule::q( $query );
 		$settlement = new Crunchbutton_Settlement;
 		foreach( $scheduled_payments as $scheduled ){
