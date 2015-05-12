@@ -21,6 +21,7 @@
 	<div ng-if="showOrders">
 
 		<div class="dialog-message dialog-message-nice">
+			&#x1F481;
 			<b>In order to get paid</b></br> <div class="dialog-subtext">you MUST mark your orders as accepted & delivered!</div>
 		</div>
 
@@ -54,7 +55,7 @@
 
 							<div class="column-date" ng-click="showOrder( order.id_order )">
 								<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-								<div class="orderid">#{{order.id_order | limitTo:-3:0}}</div>
+								<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
 								<div class="hour">{{order.timestamp | tsToHour}}</div>
 							</div>
 
