@@ -3,8 +3,7 @@
 class Controller_api_blasts extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 		if (!c::admin()->permission()->check(['global', 'blast-all', 'blast-view' ])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		$blasts = Blast::q('

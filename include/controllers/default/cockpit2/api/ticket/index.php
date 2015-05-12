@@ -4,16 +4,14 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		// Creates a new ticket for a certain order
 		if (c::getPagePiece(2) == 'create' && $this->method() == 'post' && $this->request()['id_order']) {
 			$order = Order::o($this->request()['id_order']);
 			if (!$order->id_order) {
-				header('HTTP/1.0 404 Not Found');
-				exit;
+				$this->error(404);
 			}
 			$support = $order->getSupport(true);
 			echo $support->json();
@@ -23,8 +21,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		$ticket = Support::o( c::getPagePiece( 2 ) );
 
 		if (!$ticket->id_support) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
 		}
 
 		if (get_class($ticket) != 'Crunchbutton_Support') {

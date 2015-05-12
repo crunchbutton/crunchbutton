@@ -8,8 +8,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 		
 		
@@ -21,6 +20,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$sort = $this->request()['sort'] ? $this->request()['sort'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 		
 		if ($sort{0} == '-') {
