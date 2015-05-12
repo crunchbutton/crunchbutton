@@ -52,16 +52,53 @@ NGApp.factory('errorInterceptor', function($q) {
 		}
 		return true;
 	};
+	var unteruptable = [App.service + 'config', 'assets/view/'];
+	var removeUrl = function(url) {
+		for (var x in errorInterceptor.cancelers) {
+			if (errorInterceptor.cancelers[x].url == url) {
+				errorInterceptor.cancelers.splice(x, 1);
+				break;
+			}
+		}
+	};
 	var errorInterceptor = {
 		responseError: function(response) {
+			removeUrl(response.config.url);
 			errorFromResponse(response);
 			return $q.reject(response);
 		},
 		response: function(response) {
+			removeUrl(response.config.url);
+
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
 			} else {
 				return response;
+			}
+		},
+		request: function(config) {
+			//console.log(config);
+			var ignore = false;
+			for (var x in unteruptable) {
+				if (config.url.indexOf(unteruptable[x]) === 0) {
+					// dont interupt
+					ignore = true;
+					break;
+				}
+			}
+
+			if (!ignore) {
+				var canceler = $q.defer();
+				config.timeout = canceler.promise;
+				errorInterceptor.cancelers.push({canceler: canceler, url: config.url});
+			}
+			return config;
+		},
+		cancelers: [],
+		cancelAll: function() {
+			for (var x in errorInterceptor.cancelers) {
+				console.debug('canceling...');
+				errorInterceptor.cancelers[x].canceler.resolve();
 			}
 		}
 	};
@@ -454,7 +491,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor) {
 
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
@@ -655,7 +692,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
-
+		
+		errorInterceptor.cancelAll();
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
