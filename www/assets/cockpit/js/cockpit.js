@@ -44,6 +44,9 @@ NGApp.config(function($compileProvider){
 
 NGApp.factory('errorInterceptor', function($q) {  
 	var errorFromResponse = function(response) {
+		if (response.headers && typeof(response.headers) !== 'function') {
+			return true;
+		}
 		var headers = response.headers();
 		if (headers && headers['php-fatal-error']) {
 			console.error(headers['php-fatal-error']);
@@ -61,14 +64,24 @@ NGApp.factory('errorInterceptor', function($q) {
 			}
 		}
 	};
+
+	var isLoading = function(url) {
+		for (var x in errorInterceptor.cancelers) {
+			if (errorInterceptor.cancelers[x].url == url) {
+				return true;
+			}
+		}
+		return false;
+	};
+
 	var errorInterceptor = {
 		responseError: function(response) {
-			removeUrl(response.config.url);
+			removeUrl(response.url || response.config.url);
 			errorFromResponse(response);
 			return $q.reject(response);
 		},
 		response: function(response) {
-			removeUrl(response.config.url);
+			removeUrl(response.url || response.config.url);
 
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
@@ -88,9 +101,14 @@ NGApp.factory('errorInterceptor', function($q) {
 			}
 
 			if (!ignore) {
+				/*
+				if (isLoading(config.url)) {
+					return $q.reject(config);
+				}
+				*/
 				var canceler = $q.defer();
-				config.timeout = canceler.promise;
-				errorInterceptor.cancelers.push({canceler: canceler, url: config.url});
+				config.timeout = config.timeout || canceler.promise;
+				errorInterceptor.cancelers.push({canceler: config.canceler || canceler, url: config.url});
 			}
 			return config;
 		},

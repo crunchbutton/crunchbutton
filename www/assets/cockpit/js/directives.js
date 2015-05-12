@@ -158,6 +158,8 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			});
 			outstanding.push(deferred);
 		}
+		
+		var cancelers = [];
 
 		function createResource(url, options, actions) {
 			var resource;
@@ -167,20 +169,25 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			Object.keys(actions).forEach(function(action) {
 				var canceller = $q.defer();
 				actions[action].timeout = canceller.promise;
-				actions[action].Canceller = canceller;
+				cancelers[action] = canceller;
 			});
 
 			resource = $resource(url, options, actions);
 
-			var isLoading = {};
+			var isLoading = null;
 
 			Object.keys(actions).forEach(function(action) {
 				var method = resource[action];
 
 				resource[action] = function() {
 
-					if (isLoading.action) {
-						isLoading.action.reject('Aborted');
+					if (isLoading) {
+						isLoading.reject('Aborted');
+
+						cancelers[action].resolve();
+						var canceller = $q.defer();
+						actions[action].timeout = canceller.promise;
+						cancelers[action] = canceller;
 					}
 
 					var deferred = $q.defer(),
@@ -189,21 +196,19 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 
 					abortablePromiseWrap(promise, deferred, outstanding);
 
-					isLoading.action = deferred;
+					isLoading = deferred;
 
 					return {
 						$promise: deferred.promise,
-
 						abort: function() {
-							deferred.reject('Aborted');
-						},
-						cancel: function() {
-							actions[action].Canceller.resolve('Call cancelled');
+							// i dont think this is called unless we resolve the primise, which were not doing
+							console.error('Resource Aborted');
+							cancelers[action].resolve();
 
-							// Recreate canceler so that request can be executed again
 							var canceller = $q.defer();
 							actions[action].timeout = canceller.promise;
-							actions[action].Canceller = canceller;
+							cancelers[action] = canceller;
+							deferred.reject('Aborted');
 						}
 					};
 				};
