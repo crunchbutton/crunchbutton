@@ -8,8 +8,7 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 		
 		// cant get postgres to work right now

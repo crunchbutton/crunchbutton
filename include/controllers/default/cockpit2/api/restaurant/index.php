@@ -11,13 +11,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!$restaurant->id_restaurant) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
 		}
 
 		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 		
 		$this->restaurant = $restaurant;

@@ -17,8 +17,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 
 			if (!$staff->id_admin) {
-				header('HTTP/1.0 404 Not Found');
-				exit;
+				$this->error(404);
 			}
 
 			switch (c::getPagePiece(3)) {
@@ -50,8 +49,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _permissionDenied(){
 		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 	}
 
