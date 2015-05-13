@@ -302,7 +302,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 
 	service.trackOrder = function(params) {
 		var map = params.map;
-		if (params.driver.location) {
+		if (params.driver && params.driver.location) {
 			var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
 		}
 		var restaurant = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
