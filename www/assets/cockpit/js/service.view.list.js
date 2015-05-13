@@ -30,7 +30,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			}
 
 			previous = getQuery();
-			$location.search(scope.query);
+			$location.search(scope.query).replace();
 			update();
 		};
 
