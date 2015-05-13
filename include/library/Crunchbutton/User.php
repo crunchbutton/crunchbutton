@@ -385,7 +385,6 @@ class Crunchbutton_User extends Cana_Table {
 				and p.balanced_id is not null
 				and (p.stripe_id is null or (p.stripe_id is not null and p.stripe_id not like "card_%"))
 			order by p.id_user_payment_type desc
-			limit 1
 		', [$this->id_user]);
 		
 		// we dont have a stripe account for this user
@@ -464,19 +463,19 @@ class Crunchbutton_User extends Cana_Table {
 				$dbCards = Crunchbutton_User_Payment_Type::q('
 					select * from user_payment_type
 					where id_user=?
+					and stripe_id is not null
 				',[$this->id_user]);
+
 				$usedCards = [];
 				foreach ($dbCards as $card) {
 					$usedCards[] = $card->stripe_id;
 				}
-				print_r($cards);
-				print_r($usedCards);
 				
 				foreach ($cards as $card) {
 					echo 'checking card: '.$card->id."\n";
 					print_r($card);
 					if (!in_array($card->id, $usedCards)) {
-						$paymentType->stripe_id;
+						$paymentType->stripe_id = $card->id;
 					}
 				}
 				
