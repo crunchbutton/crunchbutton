@@ -29,8 +29,13 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 				return;
 			}
 
+			if (!previous) {
+				$location.search(scope.query).replace();
+			} else {
+				$location.search(scope.query);
+			}
+			
 			previous = getQuery();
-			$location.search(scope.query).replace();
 			update();
 		};
 
