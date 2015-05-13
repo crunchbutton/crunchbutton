@@ -26,15 +26,33 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 		if (!$customer->id_user) {
 			$this->error(404);
 		}
+		
+		$this->customer = $customer;
 
-		switch ($this->method()) {
-			case 'get':
-				echo $customer->json();
+		switch (c::getPagePiece(3)) {
+			case 'balanced-stripe':
+				$this->_tempStripeToBalanced();
 				break;
-
-			case 'post':
-				// do nothing for now
+			default:
+				$this->_customer();
 				break;
 		}
+
+	}
+	
+	private function _customer() {
+		switch ($this->method()) {
+			case 'get':
+				echo $this->customer->json();
+				break;
+			case 'post':
+				$this->error(400);
+				break;
+		}
+	}
+	
+	private function _tempStripeToBalanced() {
+		$status = $this->customer->tempConvertBalancedToStripe();
+		echo $status ? 'success' : 'fail';
 	}
 }

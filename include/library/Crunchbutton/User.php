@@ -360,6 +360,103 @@ class Crunchbutton_User extends Cana_Table {
 	public static function uuid($uuid) {
 		return self::q('select * from `user` where uuid="'.$uuid.'"')->get(0);
 	}
+	
+	// should be removed after we move to stripe
+	public function tempConvertBalancedToStripe() {
+		if (!$this->id_user || $this->stripe_id || c::env() != 'live' || c::admin()->id_admin != 1) {
+			return false;
+		}
+
+		/**
+		 * This script contacts balanced and finds the associated stripe tokens, accounts, and cards
+		 *
+		 * 1.
+		 * a) if there is a balanced customer id (CU or AC) get the card from it. then update stripe with the name and email.
+		 * b) if there is a balanced card (CC) retrieve the stripe token (tok_) , create a customer, and add that token
+		 *
+		 * 2. store stripe ids for the user in the db
+		 */
+
+		$p = Crunchbutton_User_Payment_Type::q('
+			select p.* from user_payment_type p
+			left join `user` using(id_user)
+			where
+				`user`.id_user=?
+				and p.balanced_id is not null
+			order by p.id_user_payment_type desc
+			limit 1
+		', [$this->id_user]);
+
+
+		foreach ($p as $paymentType) {
+			echo "\nWorking on ".$paymentType->balanced_id.' - user #'.$paymentType->id_user."\n";
+
+			try {
+				if (substr($paymentType->balanced_id,0,2) != 'CC') {
+					// CU or AC. who knows wtf the dif is.
+					$account = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id);
+					$cards = $account->cards;
+
+					if (get_class($cards) == 'RESTful\Collection') {
+						foreach ($cards as $c) {
+							$card = $c;
+						}
+					}
+				} else {
+					$card = Crunchbutton_Balanced_Card::byId($paymentType->balanced_id);
+				}
+
+			} catch (Exception $e) {
+				echo "ERROR: Failed to get balanced id\n";
+				continue;
+			}
+
+			$stripeCardId = $card->meta->{'stripe_customer.funding_instrument.id'};
+
+			if (!$stripeCardId) {
+				echo "ERROR: No card meta.\n";
+				continue;
+			}
+
+			$paymentType->stripe_id = $stripeCardId;
+
+			if ($account) {
+				$stripeAccountId = $account->meta->{'stripe.customer_id'};
+			}
+
+			if (!$stripeAccountId) {
+				try {
+					$stripeAccount = \Stripe\Customer::create([
+						'description' => $paymentType->user()->name,
+						'email' => $paymentType->user()->email,
+						'source' => $stripeCardId
+					]);
+				} catch (Exception $e) {
+					echo 'ERROR: '.$e->getMessage()."\n";
+					continue;
+				}
+
+				$stripeAccountId = $stripeAccount->id;
+
+			} else {
+				if ($account) {
+					$account->description = $paymentType->user()->name;
+					$account->email = $paymentType->user()->email;
+					$account->save();
+				}
+			}
+
+			$paymentType->user()->stripe_id = $stripeAccountId;
+			$paymentType->user()->save();
+			$paymentType->save();
+
+			echo 'Stripe IDs: card '.$stripeCardId.' - account '.$stripeAccountId."\n";
+		}
+
+		echo "\ndone";
+		return true;
+
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
