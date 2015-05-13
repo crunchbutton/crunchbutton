@@ -461,8 +461,23 @@ class Crunchbutton_User extends Cana_Table {
 				// the card is only a token. we need the real card
 				
 				$cards = \Stripe\Customer::retrieve($stripeAccountId)->sources->all(['object' => 'card']);
-				print_r($cards); exit;
-				//$paymentType->stripe_id = 
+				$dbCards = Crunchbutton_User_Payment_Type::q('
+					select * from user_payment_type
+					where id_user=?
+				',[$this->id_user]);
+				$usedCards = [];
+				foreach ($dbCards as $card) {
+					$usedCards[] = $card->stripe_id;
+				}
+				print_r($usedCards);
+				
+				foreach ($cards as $card) {
+					if (!in_array($card->id, $usedCards)) {
+						$paymentType->stripe_id;
+					}
+				}
+				
+				echo 'new stripe id is: '.$paymentType->stripe_id."\n";
 			}
 
 			$paymentType->user()->stripe_id = $stripeAccountId;
