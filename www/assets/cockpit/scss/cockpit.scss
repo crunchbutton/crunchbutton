@@ -3420,10 +3420,11 @@ input[type="checkbox"].switch + div:before {
 }
 
 .box-content-table > table > tbody > tr > td.tb-image-row {
-	padding-top: .35em;
-	padding-bottom: .35em;
+
+
 	padding-left: .7em;
 	width: 1px;
+	vertical-align: middle;
 }
 
 .box-content-table > table > tbody > tr:focus {

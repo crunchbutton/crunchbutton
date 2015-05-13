@@ -40,7 +40,11 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			SELECT
 				-WILD-
 			FROM `user`
-			LEFT JOIN `order` using(id_user)
+			LEFT JOIN `order` on `order`.id_user=`user`.id_user
+			LEFT JOIN `restaurant` on `restaurant`.id_restaurant=`order`.id_restaurant
+			LEFT JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
+			LEFT JOIN community ON community.id_community=restaurant_community.id_community
+			LEFT JOIN `user_payment_type` on `user_payment_type`.id_user=`user`.id_user and `user_payment_type`.active = true
 			WHERE 1=1
 		';
 		
@@ -54,6 +58,8 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 					'`order`.name' => 'like',
 					'`order`.phone' => 'like',
 					'`order`.address' => 'like',
+					'restaurant.name' => 'like',
+					'community.name' => 'like',
 					'user.id_user' => 'liker'
 				]
 			]);
@@ -65,60 +71,78 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			GROUP BY `user`.id_user
 		';
 
-		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `user`.id_user) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 		
 		switch ($sort) {
-			case 'orders':
-				$q .= ' ORDER BY orders '.($sc ? 'ASC' : 'DESC').', `user`.id_user DESC, `order`.date ASC ';
-				break;
-			case 'order':
-				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', `user`.id_user DESC, `order`.date ASC ';
-				break;
 			case 'name':
-				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', user.name '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
+				$q .= ' ORDER BY user.name '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC ';
 				break;
 			case 'address':
-				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', user.address '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
+				$q .= ' ORDER BY user.address '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC ';
 				break;
 			case 'phone':
-				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', user.phone '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC, `order`.date ASC ';
+				$q .= ' ORDER BY user.phone '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC ';
+				break;
+			case 'stripe':
+				$q .= ' ORDER BY `user_payment_type`.stripe_id '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC ';
+				break;
+			case 'order':
+				$q .= ' ORDER BY _order_date '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC ';
 				break;
 			default:
-				$q .= ' ORDER BY _order_date '.($sc ? 'ASC' : 'DESC').', `user`.id_user '.($sc ? 'DESC' : 'ASC').', `order`.date ASC ';
+				$q .= ' ORDER BY `user`.id_user DESC ';
 				break;
-			
 		}
 
 		$q .= '
 			LIMIT ?
 			OFFSET ?
 		';
-		$keys[] = $limit;
+		$keys[] = $getCount ? $limit : $limit+1;
 		$keys[] = $offset;
 		
 		// do the query
 		$data = [];
-		$r = c::db()->query(str_replace('-WILD-','
+		//(SELECT `order`.date FROM `order` WHERE `order`.id_user = user.id_user order by `order`.date desc limit 1) as _order_date,
+		$query = str_replace('-WILD-','
 			`user`.*,
 			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = user.id_user) as _order_date,
-			COUNT(`order`.id_order) orders
-		', $q), $keys);
+			`user_payment_type`.balanced_id as _balanced_id,
+			`user_payment_type`.stripe_id as _stripe_id,
+			community.name as _community_name,
+			community.id_community as _id_community
+		', $q);
+		$r = c::db()->query($query, $keys);
+
+		$i = 1;
+		$more = false;
 
 		while ($o = $r->fetch()) {
+			
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
+
 			$u = new User($o);
 			$o->image = $u->image(false);
 			$data[] = $o;
+			$i++;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $data
 		]);
 

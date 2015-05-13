@@ -22,7 +22,8 @@ NGApp.controller('CustomersCtrl', function ($rootScope, $scope, CustomerService,
 		scope: $scope,
 		watch: {
 			search: '',
-			sort: ''
+			sort: '',
+			fullcount: false
 		},
 		update: function() {
 			CustomerService.list($scope.query, function(d) {
