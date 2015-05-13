@@ -69,6 +69,25 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			callback( data );
 		});
 	}
+	
+	service.askRefund = function(order, callback) {
+
+		var question = 'Are you sure you want to refund this order?';
+		if (parseFloat(order.credit ) > 0) {
+			question += "\nA gift card was used at this order the refund value will be $" + $scope.ticket.order.charged + ' + $' + $scope.ticket.order.credit + ' as gift card.' ;
+		}
+
+		App.confirm(question, 'Refund #' + id_order, service.refund(order.id_order, function(result) {
+			if (result.success) {
+				callback(true);
+			} else {
+				console.log(result.responseText);
+				var er = result.errors ? '<br>' + result.errors : 'See the console.log!';
+				App.alert('Refunding fail! ' + er);
+				callback(false);
+			}
+		}));
+	}
 
 	service.do_not_reimburse_driver = function( id_order, callback ){
 		order.do_not_reimburse_driver( { id_order: id_order }, function( data ) {
