@@ -460,7 +460,7 @@ class Crunchbutton_User extends Cana_Table {
 			if (strpos($paymentType->stripe_id, 'tok_') === 0) {
 				// the card is only a token. we need the real card
 				
-				$cards = \Stripe\Customer::retrieve($stripeAccountId)->sources->all(['object' => 'card']);
+				$cards = \Stripe\Customer::retrieve($stripeAccountId)->sources->all(['object' => 'card'])->data;
 				$dbCards = Crunchbutton_User_Payment_Type::q('
 					select * from user_payment_type
 					where id_user=?
