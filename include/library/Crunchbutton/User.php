@@ -469,9 +469,12 @@ class Crunchbutton_User extends Cana_Table {
 				foreach ($dbCards as $card) {
 					$usedCards[] = $card->stripe_id;
 				}
+				print_r($cards);
 				print_r($usedCards);
 				
 				foreach ($cards as $card) {
+					echo 'checking card: '.$card->id."\n";
+					print_r($card);
 					if (!in_array($card->id, $usedCards)) {
 						$paymentType->stripe_id;
 					}
