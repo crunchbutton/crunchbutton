@@ -71,16 +71,7 @@
 							{{eta.time | formatPrice}} minutes
 						</div>
 					</div>
-					<div class="field-row field-row-button" ng-if="isRefunding">
-						<div class="field-value" colspan="2">
-							<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
-						</div>
-					</div>
-					<div class="field-row field-row-button" ng-if="ticket.order.pay_type == 'card' && !ticket.order.refunded && !isRefunding">
-						<div class="field-value" colspan="2">
-							<button ng-click="refund();" class="button orange">Refund</button>
-						</div>
-					</div>
+
 
 					<div class="field-row" ng-if="ticket.order.refunded">
 						<div class="field-key">Order Refunded</div>
@@ -114,6 +105,8 @@
 						</div>
 					</div>
 				</div>
+				<br>
+				<button class="button button-empty button-border button-orange" ng-if="ticket.user.id_user" ng-class="{'button-disabled': isRefunding || ticket.order.refunded}" ng-click="refund()">Refund</button>
 			</div>
 		</div>
 		
@@ -272,7 +265,7 @@
 				</div>
 				
 				<div class="double-cols">
-					<button ng-click="close_and_comment();" class="button button-border button-empty button-orange" ng-class="{ 'button-disabled': ticket.status == 'closed'}"><span ng-if="comment_text">Comment &amp; </span>Close</button>
+					<button ng-click="close_and_comment();" class="button button-border button-empty button-orange" ng-class="{ 'button-disabled': ticket.status == 'closed'}"><span ng-if="comment_text && ticket.status='open'">Comment &amp; </span>Close</button>
 					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment_text}">Comment</button>
 				</div>
 				
