@@ -363,7 +363,7 @@ class Crunchbutton_User extends Cana_Table {
 	
 	// should be removed after we move to stripe
 	public function tempConvertBalancedToStripe() {
-		if (!$this->id_user || $this->stripe_id || c::env() != 'live' || c::admin()->id_admin != 1) {
+		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
 			return false;
 		}
 
@@ -386,6 +386,11 @@ class Crunchbutton_User extends Cana_Table {
 			order by p.id_user_payment_type desc
 			limit 1
 		', [$this->id_user]);
+		
+		// we dont have a stripe account for this user
+		if (!$this->stripe_id) {
+			
+		}
 
 
 		foreach ($p as $paymentType) {
@@ -403,6 +408,7 @@ class Crunchbutton_User extends Cana_Table {
 						}
 					}
 				} else {
+					// CC
 					$card = Crunchbutton_Balanced_Card::byId($paymentType->balanced_id);
 				}
 
@@ -422,6 +428,10 @@ class Crunchbutton_User extends Cana_Table {
 
 			if ($account) {
 				$stripeAccountId = $account->meta->{'stripe.customer_id'};
+			}
+			
+			if ($this->stripe_id != $stripeAccountId) {
+				die('customer id from balanced ('.$stripeAccountId.') does not match the one in the db ('.$this->stripe_id.') for this payment method');
 			}
 
 			if (!$stripeAccountId) {
@@ -444,6 +454,14 @@ class Crunchbutton_User extends Cana_Table {
 					$account->email = $paymentType->user()->email;
 					$account->save();
 				}
+			}
+			
+			if (strpos($paymentType->stripe_id, 'tok_') === 0) {
+				// the card is only a token. we need the real card
+				
+				$cards = \Stripe\Customer::retrieve($stripeAccountId)->sources->all(['object' => 'card']);
+				print_r($cards); exit;
+				//$paymentType->stripe_id = 
 			}
 
 			$paymentType->user()->stripe_id = $stripeAccountId;
