@@ -246,6 +246,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			} else {
 				elements.push(service.info.dollarSign + delivery_fee.toFixed(2) + ' delivery');
 			}
+		} else {
+			if (breakdown.fee) {
+				elements.push(service.info.dollarSign + breakdown.fee.toFixed(2) + ' service fee');
+			}
 		}
 
 		if (breakdown.taxes) {
@@ -902,6 +906,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.info.subtotal = breakdown.subtotal.toFixed(2);
 		service.info.fee = breakdown.fee.toFixed(2);
 		service.info.delivery = breakdown.delivery.toFixed(2);
+		// #5597
+		service.info.delivery_service_fee = ( breakdown.delivery + breakdown.fee ).toFixed(2);
 		service.info.total = total;
 
 		if (service.form.pay_type == 'card' && credit > 0) {

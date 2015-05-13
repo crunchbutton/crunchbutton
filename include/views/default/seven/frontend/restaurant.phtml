@@ -445,8 +445,8 @@
 					<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>{{AB.dollar}}{{order.info.subtotal}}</span>
 					<span class="restaurant-payment-item">Tax: {{AB.dollar}}{{order.info.taxes}}</span>
 					<span class="restaurant-payment-item" ng-show="order.form.pay_type!='cash' && order.info.tip!='0.00'">Tip: {{AB.dollar}}{{order.info.tip}}</span>
-					<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00'">Delivery Fee: {{AB.dollar}}{{order.info.delivery}}</span>
-					<span class="restaurant-payment-item" ng-show="order.info.fee!='0.00'">Service Fee: {{AB.dollar}}{{order.info.fee}}</span>
+					<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00' && order.info.delivery_service_fee!='0.00'">Delivery Fee: {{AB.dollar}}{{order.info.delivery_service_fee}}</span>
+					<span class="restaurant-payment-item" ng-show="order.info.delivery=='0.00' && order.info.fee!='0.00'">Service Fee: {{AB.dollar}}{{order.info.fee}}</span>
 					<span class="restaurant-payment-item" ng-show="credit.hasValue && order.form.pay_type == 'card'">Credit: -$
 						<span ng-show="order.total() <= credit.number">{{order.info.total}}</span>
 						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
