@@ -5,6 +5,6 @@
 		"hhvm": "~3.5"
 	},
 	"require-dev": {
-		"hhvm/heroku-buildpack-hhvm": "*"
+		"heroku/heroku-buildpack-php": "*"
 	}
 }
