@@ -1,6 +1,7 @@
 {
 	"require": {
-		"ext-mbstring": "*"
+		"ext-mbstring": "*",
+		"hhvm": "~3.5"
 	},
 	"require-dev": {
 		"heroku/heroku-buildpack-php": "*"
