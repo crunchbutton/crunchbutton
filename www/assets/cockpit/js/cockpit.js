@@ -55,7 +55,11 @@ NGApp.factory('errorInterceptor', function($q) {
 		}
 		return true;
 	};
-	var unteruptable = [App.service + 'config', 'assets/view/'];
+	var unteruptable = [
+		App.service + 'config',
+		App.service + 'driver/orders/',
+		'assets/view/'
+	];
 	var removeUrl = function(url) {
 		for (var x in errorInterceptor.cancelers) {
 			if (errorInterceptor.cancelers[x].url == url) {
@@ -82,14 +86,7 @@ NGApp.factory('errorInterceptor', function($q) {
 		},
 		request: function(config) {
 			//console.log(config);
-			var ignore = false;
-			for (var x in unteruptable) {
-				if (config.url.indexOf(unteruptable[x]) === 0) {
-					// dont interupt
-					ignore = true;
-					break;
-				}
-			}
+			var ignore = errorInterceptor.isInteruptable(config.url);
 
 			if (!ignore) {
 				var canceler = $q.defer();
@@ -101,12 +98,25 @@ NGApp.factory('errorInterceptor', function($q) {
 		cancelers: [],
 		cancelAll: function() {
 			for (var x in errorInterceptor.cancelers) {
+				console.debug('>> canceling all requests...');
 				errorInterceptor.cancelers[x].canceler.resolve();
 			}
+		},
+		isInteruptable: function(url) {
+			var ignore = false;
+			for (var x in unteruptable) {
+				if (url.indexOf(unteruptable[x]) === 0) {
+					// dont interupt
+					ignore = true;
+					break;
+				}
+			}
+			return ignore;
 		}
 	};
 	return errorInterceptor;
 });
+
 NGApp.config(['$httpProvider', function($httpProvider) { 
 	$httpProvider.defaults.headers.common['Http-Error'] = 1;
 	$httpProvider.interceptors.push('errorInterceptor');
@@ -694,7 +704,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
 		
-		errorInterceptor.cancelAll();
+		if (errorInterceptor.isInteruptable($location.url())) {
+			errorInterceptor.cancelAll();
+		}
+		console.debug('>> route change start');
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
