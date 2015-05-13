@@ -52,71 +52,67 @@
 						<div class="field-key">{{order.processor == 'stripe' ? 'Stripe' : 'Balanced'}}</div>
 						<div class="field-value"><a href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/debits/{{order.txn}}" target="_blank">{{order.txn}}</a></div>
 					</div>
-					<div class="field-row" ng-if="order.status.status != 'delivered'">
+					<div class="field-row" ng-if="order.status.status != 'delivered' && eta.time">
 						<div class="field-key">ETA</div>
-						<div class="field-value" ng-if="eta.time">
+						<div class="field-value">
 							{{eta.time | formatPrice}} minutes
 						</div>
 					</div>
-					<div class="field-row field-row-button" ng-if="isRefunding">
-						<div class="field-value" colspan="2">
-							<button class="button"><i class="fa fa-circle-o-notch fa-spin"></i> Refunding</button>
-						</div>
-					</div>
-					<div class="field-row field-row-button" ng-if="order.pay_type == 'card' && !order.refunded && !isRefunding">
-						<div class="field-value" colspan="2">
-							<button ng-click="refund();" class="button orange">Refund</button>
-						</div>
-					</div>
 					<div class="field-row" ng-if="order.refunded">
-						<div class="field-key">Order Refunded</div>
-						<div class="field-value">Yes</div>
+						<div class="field-key">Refunded</div>
+						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
 					</div>
-					<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="order.refunded">
+					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline" ng-click="do_not_reimburse_driver()">
 						<div class="field-key">
+							Do Not Reimburse Driver?
+						</div>
+						<div class="field-value">
 							<i ng-if="!order.do_not_reimburse_driver" class="fa fa-square-o"></i>
 							<i ng-if="order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
 						</div>
-						<div class="field-value">
-							Do Not Reimburse Driver?
-						</div>
 					</div>
 
-					<div ng-if="order.delivery_service" class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="order.refunded">
+					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline" ng-click="do_not_pay_driver()">
 						<div class="field-key">
-							<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
-							<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
+							Do Not Pay Driver?
 						</div>
 						<div class="field-value">
-							Do Not Pay Driver?
+							<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
+							<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
 						</div>
 					</div>
 					<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="order.refunded">
 						<div class="field-key">
-							<i ng-if="!order.do_not_pay_restaurant" class="fa fa-square-o"></i>
-							<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+							Pay restaurant despite refund <br>(e.g. this refund was our fault)
 						</div>
 						<div class="field-value">
-							Pay restaurant despite refund <br>(e.g. this refund was our fault)
+							<i ng-if="!order.do_not_pay_restaurant" class="fa fa-square-o"></i>
+							<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
 						</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Price</div>
 						<div class="field-value">
 
-						<table align="right">
-							<tr><td>Price:</td><td>${{order.price | number:2}}</td></tr>
-							<tr><td>Markup:</td><td>${{order.delivery_service_markup_value | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
-							<tr><td>Service Fee:</td><td>${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
-							<tr><td>Delivery Fee:</td><td>${{order.delivery_fee | number:2}}</td></tr>
-							<tr><td>Tax:</td><td>${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
-							<tr><td>Tip:</td><td>${{order.tip | number:2}}</td></tr>
-							<tr><td class="listview-bold">Total:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
-						</table>
+							<table align="right">
+								<tr><td>Price:</td><td>${{order.price | number:2}}</td></tr>
+								<tr><td>Markup:</td><td>${{order.delivery_service_markup_value | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
+								<tr><td>Service Fee:</td><td>${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
+								<tr><td>Delivery Fee:</td><td>${{order.delivery_fee | number:2}}</td></tr>
+								<tr><td>Tax:</td><td>${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
+								<tr><td>Tip:</td><td>${{order.tip | number:2}}</td></tr>
+								<tr><td class="listview-bold">Total:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
+							</table>
 
 						</div>
 					</div>
 				</div>
+				
+				<br>
+				<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()">Refund</button>
+
 			</div>
 		</div>
 
