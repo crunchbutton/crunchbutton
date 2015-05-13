@@ -733,11 +733,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 });
 
-// Check user's auth
-/* todo: check user's permission too */
-NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
-
-});
 
 App.alert = function(txt, title, useNativeAlert, fn) {
 	setTimeout(function() {
