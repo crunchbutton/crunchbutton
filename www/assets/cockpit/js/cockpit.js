@@ -835,7 +835,6 @@ App.processConfig = function(json, user) {
 	}
 
 	App.rootScope.$broadcast( 'configLoaded' );
-
 };
 
 /**
