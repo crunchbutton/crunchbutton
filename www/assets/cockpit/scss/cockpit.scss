@@ -1,4 +1,4 @@
-@import 'mixins';
+@import 'mixin';
 
 $navColor: #202228;
 $sideBg: #2f323a;
@@ -14,38 +14,15 @@ $borderRadiusMobile: 3px;
 $mobileWidth: 1024px;
 $desktopWidth: 1025px;
 
+$buttonGreen: #1ab394;
+$buttonOrange: #e1574c;
 
-@mixin box-border-radius($radius: 'auto') {
-
-	@if $radius == 'auto' {
-		border-radius: $borderRadius;
-	} @else {
-		border-radius: $radius;
-	}
+@import 'border';
+@import 'button';
 
 
-	@media screen and (max-width: $mobileWidth) {
-		border-radius: $borderRadiusMobile;
-	}
-}
-@mixin box-border-radius-left() {
-	border-top-left-radius: $borderRadius;
-	border-bottom-left-radius: $borderRadius;
 
-	@media screen and (max-width: $mobileWidth) {
-		border-top-left-radius: $borderRadiusMobile;
-		border-bottom-left-radius: $borderRadiusMobile;
-	}
-}
-@mixin box-border-radius-right() {
-	border-top-right-radius: $borderRadius;
-	border-bottom-right-radius: $borderRadius;
 
-	@media screen and (max-width: $mobileWidth) {
-		border-top-right-radius: $borderRadiusMobile;
-		border-bottom-right-radius: $borderRadiusMobile;
-	}
-}
 
 
 html, body, div, span, applet, object, iframe,
@@ -271,12 +248,14 @@ p {
 	font-size: 1.2em;
 	line-height: 1.6em;
 }
-.orange{
+
+.orange:not(.button){
 	color: $orange;
 }
-.green{
+.green:not(.button){
 	color: $green;
 }
+
 .excluded{
 	text-decoration: line-through;
 }
@@ -960,142 +939,6 @@ input {
 }
 
 
-/* BUTTONS */
-.button {
-	border: 0;
-	padding: .5em 0 .5em 0;
-	@include box-border-radius();
-	cursor: pointer;
-	color: #fff;
-	text-transform: uppercase;
-	font-size: 1.3em;
-	width: 100%;
-
-	-webkit-transition: background linear 0.08s;
-	-moz-transition: background linear 0.08s;
-	-ms-transition: background linear 0.08s;
-	-o-transition: background linear 0.08s;
-	transition: background linear 0.08s;
-}
-.ladda-button {
-	@include box-border-radius();
-}
-.button.bigger {
-	font-size: 1.2em;
-	text-align: center;
-}
-.button.ani-all {
-	-webkit-transform: translate3d(0,0,0);
-	-moz-transform: translate3d(0,0,0);
-	-ms-transform: translate3d(0,0,0);
-	-o-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0);
-
-	-webkit-transition: all linear 0.08s;
-	-moz-transition: all linear 0.08s;
-	-ms-transition: all linear 0.08s;
-	-o-transition: all linear 0.08s;
-	transition: all linear 0.08s;
-}
-.ladda-progress{
-	display:block;
-	float: right;
-}
-/* colors */
-.button.orange {
-	background: #e1574c;
-	font-weight: bold;
-}
-.button.orange-on-orange {
-	background: #bc483f;
-	font-weight: bold;
-}
-.button.lightorange {
-	background: #fe9872;
-	font-weight: bold;
-}
-.button.black{
-	background: #2a3037;
-	font-weight: bold;
-}
-.button.blue{
-	background: #2F618C;
-	font-weight: bold;
-}
-.button.dark-gray{
-	background: #444c57;
-	font-weight: bold;
-}
-.button.dgray-on-dgray{
-	background: #353b44;
-	font-weight: bold;
-}
-.button.light-gray{
-	background: #d6d9dc;
-	font-weight: bold;
-}
-.button.lgray-on-lgray{
-	background: #b8babc;
-	font-weight: bold;
-}
-.button.green {
-	background: #4ac5bc;
-	font-weight: bold;
-}
-.button.green-on-green{
-	background: #43b1a9;
-	font-weight: bold;
-}
-.button.find-restaurants {
-	font-size: 1.9em;
-	max-width: 30em;
-	padding: .9em 0 .9em 0;
-	border-radius: 6px;
-	letter-spacing: 0;
-}
-.button-login .button {
-	border-radius: 6px;
-	line-height: 2.5em
-}
-
-/* active colors */
-.button.orange:active {
-	background: #ce412a;
-}
-.button.download:active {
-	background: #d13b39;
-}
-.button.lightorange:active {
-	background: #e78d62;
-}
-.button.green:active {
-	background: #00b195;
-}
-
-/* pushable border colors */
-.button-pushable .button.orange {
-	box-shadow: 0 3px 0 #961500;
-}
-.button-pushable .button.lightorange {
-	box-shadow: 0 2px 0 #de7e5b;
-}
-.button-pushable .button.green {
-	box-shadow: 0 2px 0 #00927b;
-}
-.button-pushable .button.black{
-	box-shadow: 0 2px 0 black;
-}
-
-/* pushable states */
-.button-pushable {
-	margin-top: 0;
-	height: 3.5em;
-}
-.button-pushable .button:active {
-	box-shadow: none;
-	margin-top: 4px;
-}
-
 .dialog-message {
 	color: #fff;
 	margin-bottom: .5em;
@@ -1566,7 +1409,7 @@ td.documents-check {
 	font-size: .9em;
 }
 .tb-pagination .td-info{
-	width: 8em;
+	width: 9em;
 	text-align: center;
 }
 
@@ -2614,6 +2457,7 @@ b, strong{ font-weight: bold; }
 
 
 .ticket-status-top {
+	float: right;
 	color: #fff;
 	font-weight: bold;
 	width: 8em;
@@ -2675,6 +2519,11 @@ b, strong{ font-weight: bold; }
 	display: table-cell;
 }
 
+.field-row:last-child  .field-key, .field-row:last-child .field-value {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
 .field-container .field-key {
 	padding-left: 0;
 }
@@ -2698,7 +2547,7 @@ b, strong{ font-weight: bold; }
 }
 
 .field-container .field-row-button {
-	font-size: 1em;
+	font-size: .9em;
 }
 
 .field-container .field-key {
@@ -2707,11 +2556,23 @@ b, strong{ font-weight: bold; }
 	white-space: nowrap;
 }
 
+.double-cols {
+	-webkit-column-count: 2;
+	-webkit-column-gap: 15px;
+}
+
 .field-container .field-row-button .field-two-rows {
-	width: 50% !important;
+	width: 40% !important;
 }
 .field-container .field-row-button .field-two-rows .button {
 	width: 100% !important;
+}
+
+.field-container .field-row-button .field-two-rows .button:first-child {
+	float: left;
+}
+.field-container .field-row-button .field-two-rows .button:last-child {
+	float: right;
 }
 
 .field-container .field-value {
@@ -2724,15 +2585,6 @@ b, strong{ font-weight: bold; }
 }
 .field-container .field-value td:last-child {
 	text-align: right;
-}
-
-.field-container .field-left{
-	text-align: left;
-	padding-right: 2px;
-}
-.field-container .field-right{
-	text-align: right;
-	padding-left: 2px;
 }
 
 .order-contents {
@@ -3326,12 +3178,14 @@ h1.driver-title {
 	box-sizing: border-box;
 }
 .support-comment{
-	border: 2px solid #b9b9b9 !important;
+	border: 1px solid #b9b9b9 !important;
+	font-size: 1em;
 	height: 70px;
 	width: 100%;
 	border: 0;
 	padding: .5em;
 	box-sizing: border-box;
+	@include box-border-radius();
 }
 
 .support-chat-contents-message {
@@ -4047,35 +3901,6 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 
 
-.button.button-small {
-	font-size: .9em;
-	padding: .3em .6em .4em .6em;
-	background: none;
-	text-transform: none;
-	color: #676a6c;
-	width: auto;
-}
-
-.button.button-empty {
-	border: 1px solid #e7eaec;
-	font-size: .9em;
-	padding: .3em .6em .4em .6em;
-	background: none;
-	text-transform: none;
-	color: #676a6c;
-	width: auto;
-}
-
-.button.button-empty-green:hover {
-	background: #1ab394;
-	border-color: #1ab394;
-	color: #fff;
-}
-
-.button.button-small-green {
-	background: #1ab394;
-	color: #fff;
-}
 
 .nav-button-green {
 	background: #1ab394;
@@ -4163,4 +3988,10 @@ h1.title.box-title {
 
 .order-info-resource:not(:last-child) {
 	margin-bottom: .5em;
+}
+
+.ticket-chat-link {
+	float: left;
+	margin-right: 2em;
+	margin-top: 1em;
 }
