@@ -39,10 +39,8 @@
 				<?php /* Order */ ?>
 				<span class="listview-smaller">
 					<table>
-						<tr><td>Subtotal:</td><td>${{order.price + order.delivery_fee + order.delivery_service_markup_value + (order.price * (order.service_fee/100)) | number:2}}</td></tr>
-						<tr><td>Tax:</td><td>${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
-						<tr><td>Tip:</td><td>${{order.tip | number:2}}</td></tr>
-						<tr><td class="listview-bold">Total:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
+						<tr><td>Sub:</td><td>${{order.price + order.delivery_fee + order.delivery_service_markup_value + (order.price * (order.service_fee/100)) | number:2}}</td></tr>
+						<tr><td class="listview-bold">Tot:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 					</table>
 				</span>
 
@@ -73,8 +71,8 @@
 				<span ng-if="order.status" class="listview-smaller"><span am-time-ago="order.status.date | timestamp"></span></span>
 			</td>
 			<td nowrap class="tb-v-center">
-				<a href="" ng-click="ticket(order.id_order)"><button class="button button-empty button-empty-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
-				<a href="/order/{{order.id_order}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+				<a href="" ng-click="ticket(order.id_order)"><button class="button button-small button-empty button-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
+				<a href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 			</td>
 		</tr>
 	</table>

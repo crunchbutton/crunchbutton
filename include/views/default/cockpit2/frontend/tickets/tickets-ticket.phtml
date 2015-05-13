@@ -5,7 +5,10 @@
 	<h1 class="title box-title left"><i class="fa fa-comments-o"></i>Support : Issue #{{ticket.id_support}}</h1>
 	
 	<div class="right">
-		<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i> Open Chat</a>
+		<div class="ticket-chat-link">
+			<a href ng-click="triggerViewTicket(ticket.id_support)"><i class="fa fa-comment-o"></i></a>&nbsp;
+			<a href ng-click="triggerViewTicket(ticket.id_support)">Chat</a>
+		</div>
 		<div class="ticket-status-top" ng-click="openCloseTicket()">
 			<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
 			<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
@@ -39,7 +42,7 @@
 				<h1>Order #{{ticket.order.id_order}}</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href="/order/{{ticket.order.id_order}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href="/order/{{ticket.order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -120,7 +123,7 @@
 				<h1>Customer #{{ticket.user.id_user}}</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href="/customer/{{ticket.user.id_user}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href="/customer/{{ticket.user.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -140,10 +143,9 @@
 						<div class="field-key">Address</div>
 						<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
 					</div>
-					<div class="field-row field-row-button" ng-if="ticket.user.id_user">
-						<div class="field-value" colspan="2"><button class="button orange">Gift Card</button></div>
-					</div>
 				</div>
+				<br>
+				<button class="button button-empty button-border button-orange" ng-if="ticket.user.id_user">Gift Card</button>
 			</div>
 		</div>
 			
@@ -153,7 +155,7 @@
 				<h1>Restaurant #{{ticket.restaurant.id_restaurant}}</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href="/restaurant/{{ticket.restaurant.id_restaurant}}"><button class="button button-empty button-empty-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href="/restaurant/{{ticket.restaurant.id_restaurant}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -254,25 +256,11 @@
 			<div class="no-box-content-color">
 				<div class="field-container">
 					<div class="field-row" ng-repeat="comment in ticket.comments">
-						<div class="field-key">{{comment.name}} @ <span title="{{comment.date}}">{{comment.hour}}</span></div>
+						<div class="field-key"><span class="listview-bold">{{comment.name}}</span> @ <span title="{{comment.date}}">{{comment.hour}}</span></div>
 						<div class="field-value">{{comment.body}}</div>
 					</div>
 				</div>
-			</div>
-		</div>
-
-
-
-
-				<div class="support-box-wrap">
-					<h1></h1>
-					<div ng-if="ticket.comments">
-						<div class="box-content-color comments-box">
-	
-						</div>
-					</div>
-				</div>
-
+				<br><br>
 				<div class="field-container">
 					<div class="field-row field-container">
 						<div colspan="2">
@@ -281,29 +269,28 @@
 							</div>
 						</div>
 					</div>
-					<div class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
-						<div class="field-two-rows field-left">
-							<button ng-click="close_and_comment();" class="button" ng-class="{ 'orange': ticket.status == 'open' }">
-								Close & Comment
-							</button>
-						</div>
-						<div class="field-two-rows field-right">
-							<button ng-click="comment();" class="button orange">
-								Comment
-							</button>
-						</div>
+				</div>
+				
+				<div class="double-cols">
+					<button ng-click="close_and_comment();" class="button button-border button-empty button-orange" ng-class="{ 'button-disabled': ticket.status == 'closed'}"><span ng-if="comment_text">Comment &amp; </span>Close</button>
+					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment_text}">Comment</button>
+				</div>
+				
+				<div class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
+
+				</div>
+				<div ng-if="isCommentSaving">
+					<div colspan="2">
+						<button class="button">
+							<i class="fa fa-circle-o-notch fa-spin"></i> Saving
+						</button>
 					</div>
-					<div ng-if="isCommentSaving">
-						<div colspan="2">
-							<button class="button">
-								<i class="fa fa-circle-o-notch fa-spin"></i> Saving
-							</button>
-						</div>
-					</div>
-				</table>
+				</div>
+				
 			</div>
 
 		</div>
+
 	</div>
 
 </div>

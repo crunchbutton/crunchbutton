@@ -1,0 +1,184 @@
+/*
+	BUTTONS
+
+	this is still kind of sloppy. need to clean things up so we can do simple css like:
+	button green
+	or
+	button button-small button-empty button-orange
+	or
+	button button-bigger button-blue
+	or
+	button button-empty button-border button-green
+*/
+
+.button {
+	border: 0;
+	padding: .5em 0 .5em 0;
+	cursor: pointer;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 1.3em;
+	width: 100%;
+	
+	@include box-border-radius();
+	/*@include gpu();*/
+	@include transition(all linear 0.10s);
+}
+.ladda-button {
+	@include box-border-radius();
+}
+.button.bigger {
+	font-size: 1.2em;
+	text-align: center;
+}
+
+.ladda-progress{
+	display:block;
+	float: right;
+}
+
+
+
+
+/* colors */
+.button.orange {
+	background: #e1574c;
+	font-weight: bold;
+}
+.button.orange-on-orange {
+	background: #bc483f;
+	font-weight: bold;
+}
+.button.lightorange {
+	background: #fe9872;
+	font-weight: bold;
+}
+.button.black{
+	background: #2a3037;
+	font-weight: bold;
+}
+.button.blue{
+	background: #2F618C;
+	font-weight: bold;
+}
+.button.dark-gray{
+	background: #444c57;
+	font-weight: bold;
+}
+.button.dgray-on-dgray{
+	background: #353b44;
+	font-weight: bold;
+}
+.button.light-gray{
+	background: #d6d9dc;
+	font-weight: bold;
+}
+.button.lgray-on-lgray{
+	background: #b8babc;
+	font-weight: bold;
+}
+.button.green {
+	background: #4ac5bc;
+	font-weight: bold;
+}
+.button.green-on-green{
+	background: #43b1a9;
+	font-weight: bold;
+}
+.button.find-restaurants {
+	font-size: 1.9em;
+	max-width: 30em;
+	padding: .9em 0 .9em 0;
+	border-radius: 6px;
+	letter-spacing: 0;
+}
+.button-login .button {
+	border-radius: 6px;
+	line-height: 2.5em
+}
+
+/* active colors */
+.button.orange:active {
+	background: #ce412a;
+}
+.button.download:active {
+	background: #d13b39;
+}
+.button.lightorange:active {
+	background: #e78d62;
+}
+.button.green:active {
+	background: #00b195;
+}
+
+/* pushable border colors */
+.button-pushable .button.orange {
+	box-shadow: 0 3px 0 #961500;
+}
+.button-pushable .button.lightorange {
+	box-shadow: 0 2px 0 #de7e5b;
+}
+.button-pushable .button.green {
+	box-shadow: 0 2px 0 #00927b;
+}
+.button-pushable .button.black{
+	box-shadow: 0 2px 0 black;
+}
+
+/* pushable states */
+.button-pushable {
+	margin-top: 0;
+	height: 3.5em;
+}
+.button-pushable .button:active {
+	box-shadow: none;
+	margin-top: 4px;
+}
+
+
+
+/* new buttons */
+.button.button-small {
+	font-size: .9em;
+	padding: .3em .6em .4em .6em;
+	text-transform: none;
+	width: auto;
+}
+
+.button.button-empty {
+	border: 1px solid #e7eaec;
+	background: none;
+	color: #676a6c;
+}
+
+
+.button.button-empty.button-green:hover, .button.button-empty.button-border.button-green {
+	border-color: $buttonGreen;
+	color: $buttonGreen;
+}
+.button.button-empty.button-orange:hover, .button.button-empty.button-border.button-orange {
+	border-color: $buttonOrange;
+	color: $buttonOrange;
+}
+
+.button.button-empty.button-border.button-green:hover {
+	background: $buttonGreen;
+	color: #fff;
+}
+.button.button-empty.button-border.button-orange:hover {
+	background: $buttonOrange;
+	color: #fff;
+}
+
+.button.button-small-green {
+	background: $buttonGreen;
+	color: #fff;
+}
+
+.button.button-empty.button-border.button-disabled, .button.button-empty.button-border.button-disabled:hover {
+	border: 1px solid #e7eaec;
+	background: none;
+	color: #e7eaec;
+	cursor: default;
+	pointer-events: none;
+}
