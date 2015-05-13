@@ -430,7 +430,7 @@ class Crunchbutton_User extends Cana_Table {
 				$stripeAccountId = $account->meta->{'stripe.customer_id'};
 			}
 			
-			if ($this->stripe_id != $stripeAccountId) {
+			if ($this->stripe_id && $stripeAccountId && $this->stripe_id != $stripeAccountId) {
 				die('customer id from balanced ('.$stripeAccountId.') does not match the one in the db ('.$this->stripe_id.') for this payment method');
 			}
 
