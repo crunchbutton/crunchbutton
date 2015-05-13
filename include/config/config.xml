@@ -57,6 +57,7 @@
 			<prefix></prefix>
 		</travis>
 		<metrics>
+			<!-- THIS DB NO LONGER EXISTS. if postgres is needed, we can use our heroku hosting. - devin -->
 			<type>postgresql</type>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
