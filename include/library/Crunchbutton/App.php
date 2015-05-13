@@ -494,7 +494,7 @@ class Crunchbutton_App extends Cana_App {
 	
 	public function stripe() {
 		if (!$this->_stripe) {
-			\Stripe\Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);;
+			\Stripe\Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
 			$this->_stripe = true;
 		}
 		return $this->_stripe;
