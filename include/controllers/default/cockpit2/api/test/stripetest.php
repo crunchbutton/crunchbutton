@@ -1,7 +1,7 @@
 <?php
 
 $badusers = [
-	7497,
+	7497, // using some wierd old balanced format
 	7507,
 	2549,
 	7485,
@@ -9,7 +9,12 @@ $badusers = [
 	7517,
 	7518,
 	7520,
-	7526
+	7526,
+	110593, // declined cards
+	110149,
+	112159,
+	111568,
+	111313
 ];
 
 foreach ($badusers as $u) {
