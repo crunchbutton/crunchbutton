@@ -366,6 +366,8 @@ class Crunchbutton_User extends Cana_Table {
 		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
 			return false;
 		}
+		
+		$status = true;
 
 		/**
 		 * This script contacts balanced and finds the associated stripe tokens, accounts, and cards
@@ -414,6 +416,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			} catch (Exception $e) {
 				echo "ERROR: Failed to get balanced id\n";
+				$status = false;
 				continue;
 			}
 
@@ -421,6 +424,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			if (!$stripeCardId) {
 				echo "ERROR: No card meta.\n";
+				$status = false;
 				continue;
 			}
 
@@ -443,6 +447,7 @@ class Crunchbutton_User extends Cana_Table {
 					]);
 				} catch (Exception $e) {
 					echo 'ERROR: '.$e->getMessage()."\n";
+					$status = false;
 					continue;
 				}
 
@@ -490,7 +495,7 @@ class Crunchbutton_User extends Cana_Table {
 		}
 
 		echo "\ndone";
-		return true;
+		return $status;
 
 	}
 
