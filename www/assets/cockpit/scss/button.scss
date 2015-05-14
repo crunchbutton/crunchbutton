@@ -182,3 +182,13 @@
 	cursor: default;
 	pointer-events: none;
 }
+
+.basic-table th {
+	font-weight: bold;
+	margin-top: 1em;
+}
+
+.basic-table th, .basic-table td {
+	text-align: left;
+	padding: .5em;
+}
