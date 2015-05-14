@@ -24,7 +24,7 @@ $p = Crunchbutton_User::q('
 	'.$q.'
 	group by user.id_user
 	having c = 1
-	order by c desc
+	order by c desc, `user`.id_user desc
 	limit 20
 ');
 
