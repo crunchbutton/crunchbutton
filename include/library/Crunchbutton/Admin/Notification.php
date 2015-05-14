@@ -26,9 +26,24 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
 
-		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = true AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-AND o.name not like '%test%'
-ORDER BY o.id_order ASC";
+		$query = "SELECT * FROM
+								`order` o
+							WHERE
+								o.delivery_type = '{$type_delivery}'
+									AND
+								o.delivery_service = true
+									AND
+								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
+									AND
+								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+									AND
+									o.name not like '%test%'
+
+							ORDER BY o.id_order ASC";
+
+
+							$query = 'SELECT * FROM `order` WHERE id_order = 138790';
+
 
 		$orders = Crunchbutton_Order::q($query);
 
@@ -65,99 +80,15 @@ ORDER BY o.id_order ASC";
 					} else {
 
 						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
-
-						$driversToNotify = [];
-
-						foreach ( $order->restaurant()->notifications() as $n ) {
-							// Admin notification type means it needs a driver
-							if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
-								$admin = $n->admin();
-								// Store the drivers
-								$driversToNotify[ $admin->id_admin ] = $admin;
-							}
-						}
-
-						// get the restaurant community and its drivers
-						$communities = $order->restaurant()->communities();
-						foreach( $communities as $community ){
-							if( $community->id_community ){
-								$drivers = $community->getDriversOfCommunity();
-								foreach( $drivers as $driver ){
-									$driversToNotify[ $driver->id_admin ] = $driver;
-								}
-							}
-						}
-
-						// Legacy - lets keep it here for while
-						$community = $order->restaurant()->community;
-						if( $community ){
-							$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
-							if( $group->id_group ){
-								$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
-								foreach( $drivers as $driver ){
-									$driversToNotify[ $driver->id_admin ] = $driver;
-								}
-							}
-						}
-
-						$driverAlreadyNotified = [];
-						$driversAlreadyReminded = [];
-						$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+						$drivers = $order->getDriversToNotify();
 						if( $drivers ){
 							foreach( $drivers as $driver ){
-								$driverAlreadyNotified[] = $driver->id_admin;
 								foreach( $driver->activeNotifications() as $adminNotification ){
-									// first notification
-									if( $attempts == 0 ){
-										$adminNotification->send( $order );
-										$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value . ' attempt: ' .  $attempts;
-										Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-										echo $message."\n";
-									} else {
-										// next notifications
-										if( !$driversAlreadyReminded[ $driver->id_admin ] ){
-											$adminNotification->send( $order );
-											$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' - attempt: ' .  $attempts;
-											Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-											echo $message."\n";
-										}
-									}
-									$driversAlreadyReminded[ $driver->id_admin ] = true;
+									$adminNotification->send( $order );
 									$hasDriversWorking = true;
-								}
-							}
-						}
-
-						// Send notification to drivers - Working Hours legacy
-						$driversAlreadyReminded = [];
-						if( count( $driversToNotify ) > 0 ){
-							foreach( $driversToNotify as $driver ){
-								if( $driver->isWorking() ){
-									if( in_array( $driver->id_admin, $driverAlreadyNotified ) ){
-										$message = '#'.$order->id_order.' notification to ' . $driver->name . ' already sent';
-										Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-										echo $message."\n";
-										continue;
-									}
-									foreach( $driver->activeNotifications() as $adminNotification ){
-										// first notification
-										if( $attempts == 0 ){
-											$adminNotification->send( $order );
-											$message = '#'.$order->id_order.' sending notification to ' . $driver->name . ' # ' . $adminNotification->value . '  attempt: ' .  $attempts;
-											Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-											echo $message."\n";
-										} else {
-											// next notifications
-											if( !$driversAlreadyReminded[ $driver->id_admin ] ){
-												$adminNotification->send( $order );
-												$message = '#'.$order->id_order.' sending warning notification to ' . $driver->name . ' attempt: ' .  $attempts;
-												Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-												echo $message."\n";
-											}
-										}
-										$driversAlreadyReminded[ $driver->id_admin ] = true;
-										$hasDriversWorking = true;
-									}
+									$message = '#'.$order->id_order.' attempts: ' . $attempts . ' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
+									Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+									echo $message ."\n";
 								}
 							}
 						}
@@ -171,7 +102,7 @@ ORDER BY o.id_order ASC";
 							$message = '#'.$order->id_order.' there is no drivers to get the order - ' . $restaurant;
 							Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 							echo $message."\n";
-							Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
+							// Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 						}
 					}
 

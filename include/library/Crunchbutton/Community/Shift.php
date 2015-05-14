@@ -267,7 +267,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$query .= ' AND cs.id_community = ? ';
 				$params[] = $id_community;
 			}
-			
+
 	 		$shift = Crunchbutton_Community_Shift::q($query, $params);
 	 		if ($shift->id_admin_shift_assign) {
 	 			return $shift;
@@ -329,7 +329,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				AND active = true
 				AND DATE_FORMAT( date_start, "%w" ) = ?
 		', [$weekday]);
-		
+
 		// Create the recurring events
 		foreach( $shifts as $shift ){
 			if( $shift->dateStart()->format( 'Ymd' ) < $day->format( 'Ymd' ) ){
