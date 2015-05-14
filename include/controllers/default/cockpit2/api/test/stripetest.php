@@ -1,23 +1,10 @@
 <?php
 
-$badusers = [
-	7497, // using some wierd old balanced format
-	7507,
-	2549,
-	7485,
-	7515,
-	7517,
-	7518,
-	7520,
-	7526,
-	110593, // declined cards
-	110149,
-	112159,
-	111568,
-	111313
-];
+$r = Restaurant::o(26);
+$fails = json_decode($r->notes_owner);
 
-foreach ($badusers as $u) {
+
+foreach ($fails as $u) {
 	$q .= ' and `user`.id_user != '.$u.' ';
 }
 
@@ -34,7 +21,14 @@ $p = Crunchbutton_User::q('
 ');
 
 foreach ($p as $user) {
-	$user->tempConvertBalancedToStripe();
+	$status = $user->tempConvertBalancedToStripe();
+	if (!$status) {
+		$fails[] = $user->id_user;
+	}
 }
+
+$r->notes_owner = json_encode($fails);
+$r->save();
+
 
 echo "\n\nALL DONE";
