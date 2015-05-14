@@ -25,7 +25,7 @@ $p = Crunchbutton_User::q('
 	group by user.id_user
 	having c = 1
 	order by c desc, `user`.id_user desc
-	limit 20
+	limit '.($_REQUEST['l'] ? $_REQUEST['l'] : 200).'
 ');
 
 foreach ($p as $user) {
