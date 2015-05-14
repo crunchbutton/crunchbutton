@@ -447,6 +447,7 @@ class Crunchbutton_User extends Cana_Table {
 					]);
 				} catch (Exception $e) {
 					echo 'ERROR: '.$e->getMessage()."\n";
+					$status = false;
 					continue;
 				}
 
