@@ -956,13 +956,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$paymentType = $user->payment_type();
 				}
 
-				// #5243 - if using stripe, get the stripe id from balanced, and update the paymenttype
-				if (Crunchbutton_User_Payment_Type::processor() == 'stripe' && $paymentType->balanced_id && !$paymentType->stripe_id) {
-					$balancedCard = Crunchbutton_Balanced_Card::byId($paymentType->balanced_id);
-					print_r($balancedCard);
-					exit;
-				}
-
 				// use a stored users card and the apporiate payment type
 
 				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
