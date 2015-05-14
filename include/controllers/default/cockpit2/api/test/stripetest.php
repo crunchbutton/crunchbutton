@@ -8,11 +8,19 @@ $p = Crunchbutton_User::q('
 	group by user.id_user
 	having c = 1
 	order by c desc
-	limit 10
+	limit 50
 ');
 
+$max = 10;
+
 foreach ($p as $user) {
-	$user->tempConvertBalancedToStripe();
+	if ($i >= $max) {
+		break;
+	}
+	$status = $user->tempConvertBalancedToStripe();
+	if ($status) {
+		$i++;
+	}
 }
 
-echo 'ALL DONE';
+echo "\n\nALL DONE";
