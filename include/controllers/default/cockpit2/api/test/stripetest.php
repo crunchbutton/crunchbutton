@@ -32,3 +32,7 @@ $r->save();
 
 
 echo "\n\nALL DONE";
+
+if ($_REQUEST['r']) {
+	echo '<script>setTimeout(function(){window.location=window.location},10000);</script>';
+}
