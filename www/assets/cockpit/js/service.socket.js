@@ -15,6 +15,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 	var service = {};
 	var listening = {};
 	service.socket = eventSocket;
+	service.connected = false;
 
 	service.listen = function(group, scope) {
 
@@ -68,19 +69,11 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 
 		return new Listener(group, scope);
 	};
+	
+	// response after sending auth credentials
+	service.socket.on('auth', function (data) {
 
-
-	service.socket.on('connect', function (data) {
-
-		console.debug('Connected to socket.io');
-
-		service.socket.emit('auth', {
-			token: $.cookie('token'),
-			phpsessid: $.cookie('PHPSESSID'),
-			host: location.host
-		});
-
-		var subscribe = function(){
+		var subscribe = function() {
 
 			if( AccountService && AccountService.user && AccountService.user.id_admin ){
 
@@ -99,9 +92,17 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 		}
 
 		subscribe();
-
 	});
 
+	service.socket.on('connect', function (data) {
+		console.debug('Connected to socket.io');
+
+		service.socket.emit('auth', {
+			token: $.cookie('token'),
+			phpsessid: $.cookie('PHPSESSID'),
+			host: location.host
+		});
+	});
 
 	$rootScope.$on('user-preference', function(e, data) {
 		if (!service.socket) {
