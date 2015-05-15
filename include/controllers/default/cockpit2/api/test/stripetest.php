@@ -1,7 +1,7 @@
 <?php
 
 $r = Restaurant::o(26);
-$fails = json_decode($r->notes_owner);
+$fails = json_decode($r->notes_owner, true);
 
 
 foreach ($fails as $type => $d) {
