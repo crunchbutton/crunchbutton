@@ -386,6 +386,7 @@ class Crunchbutton_User extends Cana_Table {
 				`user`.id_user=?
 				and p.balanced_id is not null
 				and (p.stripe_id is null or (p.stripe_id is not null and p.stripe_id not like "card_%"))
+				and p.active = true
 			order by p.id_user_payment_type desc
 		', [$this->id_user]);
 		
