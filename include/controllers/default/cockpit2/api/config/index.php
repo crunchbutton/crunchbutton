@@ -48,6 +48,17 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				if ($this->request()['init']) {
 					$config['timezones'] = json_decode(file_get_contents(c::config()->dirs->www.'assets/cockpit/js/moment-timezone-db.json'));
 				}
+				/*
+				a different way of doing permissions that we should remove
+				if ($this->request()['permissions']) {
+					$config['permissions'] = [];
+					$perms = c::admin()->getAllPermissionsName();
+					foreach ($perms as $perm) {
+						$config['permissions'][] = $perm->permission;
+					}
+				}
+				*/
+
 
 				echo json_encode($config);
 				break;
