@@ -416,7 +416,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			} catch (Exception $e) {
 				echo "ERROR: Failed to get balanced id\n";
-				$status = false;
+				$status = 'no-balanced-id';
 				continue;
 			}
 
@@ -424,7 +424,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			if (!$stripeCardId) {
 				echo "ERROR: No card meta.\n";
-				$status = false;
+				$status = 'no-card-meta';
 				continue;
 			}
 
@@ -447,7 +447,7 @@ class Crunchbutton_User extends Cana_Table {
 					]);
 				} catch (Exception $e) {
 					echo 'ERROR: '.$e->getMessage()."\n";
-					$status = false;
+					$status = strtolower(str_replace(' ','-',$e->getMessage()));
 					continue;
 				}
 
