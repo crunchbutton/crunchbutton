@@ -1,7 +1,6 @@
 
-NGApp.factory('eventSocket', function (socketFactory, $rootScope) {
+NGApp.factory('eventSocket', function (socketFactory, $rootScope, $q) {
 
-//	$rootScope.$on('userAuth', function(e, data) {
 	var myIoSocket = io.connect('https://event.cockpit.la');
 
 	mySocket = socketFactory({
@@ -11,16 +10,51 @@ NGApp.factory('eventSocket', function (socketFactory, $rootScope) {
 	return mySocket;
 });
 
-NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope) {
+NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope, $q) {
 	var service = {};
 	var listening = {};
 	service.socket = eventSocket;
 	service.connected = false;
+	
+	service.createQ = function() {
+		if (service.defferedConnection) {
+			service.defferedConnection.reject();
+		}
+
+		service.defferedConnection = $q.defer();
+
+		service.q = function(fn) {
+			service.defferedConnection.promise.then(fn);
+		};
+	};
+	
+	service.createQ();
+
+	// when the socket is fully authenticated
+	service.q(function() {
+		service.connected = true;
+		
+		if( AccountService && AccountService.user && AccountService.user.id_admin ){
+
+			service.socket.emit( 'event.subscribe', 'user.preference.' + AccountService.user.id_admin);
+			if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
+				console.debug('Subscribing to all tickets');
+				service.socket.emit('event.subscribe', 'ticket.all');
+			} else {
+				console.debug('Unsubscribing to all tickets');
+				service.socket.emit('event.unsubscribe', 'ticket.all');
+			}
+		}
+	});
+
 
 	service.listen = function(group, scope) {
 
 		if (!listening[group]) {
-			service.socket.emit('event.subscribe', group, listening[group]);
+			service.q(function() {
+				service.socket.emit('event.subscribe', group, listening[group]);
+			});
+			
 			listening[group] = [scope.$id];
 			console.debug('Creating listener to ' + group, listening[group]);
 		} else {
@@ -37,7 +71,10 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 		scope.$on('$destroy', function() {
 			if (listening[group] && listening[group].indexOf(scope.$id) >= 0) {
 				listening[group].splice(listening[group].indexOf(scope.$id),1);
-				service.socket.emit('event.unsubscribe', group);
+				
+				service.q(function() {
+					service.socket.emit('event.unsubscribe', group);
+				});
 
 				console.debug('Removing listener for ' + group, listening[group]);
 			}
@@ -69,39 +106,32 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 
 		return new Listener(group, scope);
 	};
-	
+
 	// response after sending auth credentials
 	service.socket.on('auth', function (data) {
 		console.debug('socket auth response:', data);
-
-		var subscribe = function() {
-
-			if( AccountService && AccountService.user && AccountService.user.id_admin ){
-
-				service.socket.emit( 'event.subscribe', 'user.preference.' + AccountService.user.id_admin);
-				if (AccountService.user && AccountService.user.prefs && AccountService.user.prefs['notification-desktop-support-all'] == '1') {
-					console.debug('Subscribing to all tickets');
-					service.socket.emit('event.subscribe', 'ticket.all');
-				} else {
-					console.debug('Unsubscribing to all tickets');
-					service.socket.emit('event.unsubscribe', 'ticket.all');
-				}
-
-			} else {
-				setTimeout( function(){ subscribe() }, 100 );
-			}
+		
+		if (data.status) {
+			service.defferedConnection.resolve();
 		}
-
-		subscribe();
 	});
 
 	service.socket.on('connect', function (data) {
 		console.debug('Connected to socket.io');
+		
+		
+		
+		$rootScope.$on('userAuth', function(e, data) {
+			if (AccountService.user && AccountService.user.id_admin) {
 
-		service.socket.emit('auth', {
-			token: $.cookie('token'),
-			phpsessid: $.cookie('PHPSESSID'),
-			host: location.host
+				console.debug('Have a user, authenticating with socket server');
+
+				service.socket.emit('auth', {
+					token: $.cookie('token'),
+					phpsessid: $.cookie('PHPSESSID'),
+					host: location.host
+				});
+			}
 		});
 	});
 
