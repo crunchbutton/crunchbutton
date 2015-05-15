@@ -72,6 +72,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope)
 	
 	// response after sending auth credentials
 	service.socket.on('auth', function (data) {
+		console.debug('socket auth response:', data);
 
 		var subscribe = function() {
 
