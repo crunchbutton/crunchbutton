@@ -36,12 +36,18 @@
 					<div class="field-row">
 						<div class="field-key">Status</div>
 						<div class="field-value">
-							<span ng-if="order.status"><b>{{order.status.status}}</b>
+							<span ng-if="order.status">
+							
+								<span class="tag tag-red" ng-if="order.status.status == 'new'">New</span>
+								<span class="tag tag-green" ng-if="order.status.status == 'accepted'">Accepted</span>
+								<span class="tag tag-blue" ng-if="order.status.status == 'pickedup'">Pickedup</span>
+								<span class="tag tag-purple" ng-if="order.status.status == 'delivered'">Delivered</span>
+
 								<br/>
-								<span ng-if="!order.status._outside_of_24h">
+								<span ng-if="!order.status._outside_of_24h" class="listview-smaller">
 									<span am-time-ago="order.status.timestamp*1000"></span>
 								</span>
-								<span ng-if="order.status._outside_of_24h">
+								<span ng-if="order.status._outside_of_24h" class="listview-smaller">
 									{{order.status._date_formatted}}
 								</span>
 							</span>
@@ -104,6 +110,24 @@
 								<tr><td>Tax:</td><td>${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
 								<tr><td>Tip:</td><td>${{order.tip | number:2}}</td></tr>
 								<tr><td class="listview-bold">Total:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
+							</table>
+
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Contents</div>
+						<div class="field-value">
+							<table align="right">
+								<tr>
+									<th>Dish</th>
+									<th>Price</th>
+									<th>Marked up</th>
+								</tr>
+								<tr ng-repeat="dish in order._dishes">
+									<td>{{dish.name}}</td>
+									<td>${{dish.price.regular | number:2}}</td>
+									<td>${{dish.price.marked_up | number:2}}</td>
+								</tr>
 							</table>
 
 						</div>
