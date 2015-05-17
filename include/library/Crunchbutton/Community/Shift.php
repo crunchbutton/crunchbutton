@@ -306,14 +306,21 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function shiftByCommunityDay( $id_community, $date ){
+
+		$_date = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
+
+		$now = $_date->format( 'Y-m-d' );
+		$_date->modify( '+1 day' );
+		$next = $_date->format( 'Y-m-d' );
+
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q('
 			SELECT * FROM community_shift
-			WHERE id_community =?
-				AND date_start = ?
+			WHERE id_community = ?
+				AND date_start >= ?
+				AND date_start < ?
 				AND active = true
-			ORDER BY id_community_shift ASC
-		', [$id_community, $date]);
+			ORDER BY id_community_shift ASC ', [ $id_community, $now, $next ]);
 	}
 
 	public function createRecurringEvent( $date ){
