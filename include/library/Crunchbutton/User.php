@@ -386,6 +386,7 @@ class Crunchbutton_User extends Cana_Table {
 				`user`.id_user=?
 				and p.balanced_id is not null
 				and (p.stripe_id is null or (p.stripe_id is not null and p.stripe_id not like "card_%"))
+				and p.active = true
 			order by p.id_user_payment_type desc
 		', [$this->id_user]);
 		
@@ -416,7 +417,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			} catch (Exception $e) {
 				echo "ERROR: Failed to get balanced id\n";
-				$status = false;
+				$status = 'no-balanced-id';
 				continue;
 			}
 
@@ -424,7 +425,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			if (!$stripeCardId) {
 				echo "ERROR: No card meta.\n";
-				$status = false;
+				$status = 'no-card-meta';
 				continue;
 			}
 
@@ -447,7 +448,7 @@ class Crunchbutton_User extends Cana_Table {
 					]);
 				} catch (Exception $e) {
 					echo 'ERROR: '.$e->getMessage()."\n";
-					$status = false;
+					$status = strtolower(str_replace(' ','-',$e->getMessage()));
 					continue;
 				}
 

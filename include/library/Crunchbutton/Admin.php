@@ -456,7 +456,18 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getAllPermissionsName(){
-		return c::db()->get('SELECT DISTINCT( ap.permission ) FROM admin_permission ap WHERE ap.id_admin = ? OR ap.id_group IN ( SELECT id_group FROM admin_group WHERE id_admin = ? )', [$this->id_admin, $this->id_admin]);
+		return c::db()->get('
+			SELECT DISTINCT( ap.permission )
+			FROM admin_permission ap
+			WHERE (ap.id_admin = ? and ap.allow = true)
+			OR ap.id_group IN (
+				SELECT id_group
+				FROM admin_group
+				WHERE
+					id_admin = ?
+					and allow = true
+			)
+		', [$this->id_admin, $this->id_admin]);
 	}
 
 	public function permissionCuration() {
@@ -1068,20 +1079,22 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 		$driver = c::user();
 		$groups = $driver->groups();
-		foreach ( $groups as $group ) {
-			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
-			foreach( $communities as $community ){
-				$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
-				if( $_resources ){
-					foreach( $_resources as $resource ){
-						if( $resource->active ){
-							if( $type == 'page' ){
-								if( $resource->page ){
-									return true;
-								}
-							} else if( $type == 'side' ){
-								if( $resource->side ){
-									$resources[] = [ 'name' => $resource->name, 'url' => $resource->download_url() ];
+		if ($groups) {
+			foreach ( $groups as $group ) {
+				$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
+				foreach( $communities as $community ){
+					$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
+					if( $_resources ){
+						foreach( $_resources as $resource ){
+							if( $resource->active ){
+								if( $type == 'page' ){
+									if( $resource->page ){
+										return true;
+									}
+								} else if( $type == 'side' ){
+									if( $resource->side ){
+										$resources[] = [ 'name' => $resource->name, 'url' => $resource->download_url() ];
+									}
 								}
 							}
 						}
