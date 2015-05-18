@@ -127,6 +127,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
+			GROUP BY `order`.id_order
 			ORDER BY `order`.id_order DESC
 			LIMIT ?
 			OFFSET ?
