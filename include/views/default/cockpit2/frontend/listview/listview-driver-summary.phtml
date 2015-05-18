@@ -1,6 +1,7 @@
 <div class="box-content2 box-content-table" ng-if="summary.results && !isMobile">
 	<table class="tb-zebra">
 		<tr>
+			<th></th>
 			<th>Period</th>
 			<th>Earnings</th>
 			<th>Amount Already Collected in Cash</th>
@@ -10,6 +11,11 @@
 			<th>Est. In Account</th>
 		</tr>
 		<tr ng-repeat="payment in summary.results" ng-hide="payment.type == 'Reimbursement' && payment.amount == 0">
+			<td>
+				<a href="/drivers/payment/{{payment.id_payment_schedule}}">
+					View Details
+				</a>
+			</td>
 			<td>{{payment.range_date}}</td>
 			<td positive-or-negative-color="{{payment.earnings}}">
 				${{payment.earnings | formatPrice}}
