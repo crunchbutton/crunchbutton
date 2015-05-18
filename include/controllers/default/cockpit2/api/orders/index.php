@@ -161,7 +161,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				$more = true;
 				break;
 			}
-			
+			/*
 			foreach (get_object_vars($o) as $key => $value) {
 				if (intval($value) == $value) {
 					$o->{$key} = intval($value);
@@ -169,6 +169,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$o->{$key} = floatval($value);
 				}
 			}
+			*/
 
 			$o->status = Order::o( $o->id_order )->status()->last();
 			$restaurant = Restaurant::o( $o->id_restaurant );
@@ -183,9 +184,6 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$o->lat = $user->location_lat;
 				}
 			}
-			
-
-
 			
 			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
 			foreach ($boolFields as $field) {
