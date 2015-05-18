@@ -156,7 +156,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$more = false;
 
 		while ($o = $r->fetch()) {
-			
+
 			if (!$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
@@ -177,10 +177,10 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			}
 			
 
-			foreach ($o as $key => $value) {
+			foreach (get_object_vars($o) as $key => $value) {
 				if (intval($value) == $value) {
 					$o->{$key} = intval($value);
-				} else if (floatval($value) == $value) {
+				} elseif (floatval($value) == $value) {
 					$o->{$key} = floatval($value);
 				}
 			}
