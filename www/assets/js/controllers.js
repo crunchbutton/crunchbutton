@@ -890,6 +890,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
+
 	if(!$scope.order.cardMonth){
 		$scope.order.cardMonth = '';
 		$scope.order.cardYear = '';

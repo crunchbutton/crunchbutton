@@ -122,8 +122,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		// Credit card stuff
 		service.form.cardNumber = service.account.user.card;
-		service.form.cardMonth = ( service.account.user.card_exp_month ) ? service.account.user.card_exp_month : '';
-		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
+		service.form.cardMonth = ( service.account.user.card_exp_month ) ? ( service.account.user.card_exp_month ).toString() : '';
+		service.form.cardYear = ( service.account.user.card_exp_year ) ? ( service.account.user.card_exp_year ).toString() : '';
 
 		service.updateTotal();
 		if( !service.account.user.id_user ){
@@ -136,7 +136,15 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				service.form.delivery_type = ( userEntered.delivery_type && userEntered.delivery_type != '') ? userEntered.delivery_type : service.form.delivery_type;
 				service.form.pay_type = ( userEntered.pay_type && userEntered.pay_type != '') ? userEntered.pay_type : service.form.pay_type ;
 				service.form.cardMonth = ( userEntered.cardMonth && userEntered.cardMonth !== '') ? userEntered.cardMonth : service.form.cardMonth;
+				service.form.cardMonth = ( service.form.cardMonth ).toString();
 				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '') ? userEntered.cardYear : service.form.cardYear ;
+				service.form.cardYear = ( service.form.cardYear ).toString();
+				if( service.form.cardMonth == '' ){
+					service.form.cardMonth = '-';
+				}
+				if( service.form.cardYear == '' ){
+					service.form.cardYear = '-';
+				}
 				if( userEntered.tip && userEntered.tip != '' ){
 					var _tip = userEntered.tip;
 					setTimeout(function() {
@@ -146,6 +154,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					}, 10 );
 				} else {
 					service.updateTotal();
+				}
+			} else {
+				if( service.form.cardMonth == '' ){
+					service.form.cardMonth = '-';
+				}
+				if( service.form.cardYear == '' ){
+					service.form.cardYear = '-';
 				}
 			}
 			service.startStoreEntederInfo = true;
@@ -510,10 +525,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber) || (!service.form.cardNumber) ) ) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth) || (!service.form.cardMonth) ) ) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth) || (!service.form.cardMonth) || service.form.cardMonth == '-' ) ) {
 			errors['card_month'] = 'Please enter the card expiration month.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) ) ) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) || service.form.cardYear == '-' ) ) {
 			errors['card_year'] = 'Please enter the card expiration year.';
 		}
 		if (!service.cart.hasItems()) {
@@ -939,7 +954,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service._years = function () {
 		var years = [];
 		years.push({
-			value: '',
+			value: '-',
 			label: 'Year'
 		});
 		var date = new Date().getFullYear();
@@ -955,7 +970,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service._months = function () {
 		var months = [];
 		months.push({
-			value: '',
+			value: '-',
 			label: 'Month'
 		});
 		for (var x = 1; x <= 12; x++) {
