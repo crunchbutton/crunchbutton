@@ -176,6 +176,15 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 			
+
+			foreach ($o as $key => $value) {
+				if (intval($value) == $value) {
+					$o->{$key} = intval($value);
+				} else if (floatval($value) == $value) {
+					$o->{$key} = floatval($value);
+				}
+			}
+			
 			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
 			foreach ($boolFields as $field) {
 				$o->{$field} = $o->{$field} ? true : false;
