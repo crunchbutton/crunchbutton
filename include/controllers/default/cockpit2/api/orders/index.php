@@ -161,15 +161,20 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				$more = true;
 				break;
 			}
-			/*
-			foreach (get_object_vars($o) as $key => $value) {
-				if (intval($value) == $value) {
-					$o->{$key} = intval($value);
-				} elseif (floatval($value) == $value) {
-					$o->{$key} = floatval($value);
+			if ($_REQUEST['test']) {
+				var_dump($o);
+
+				foreach (get_object_vars($o) as $key => $value) {
+					echo $key.' > '.$value."\n";
+					if (intval($value) == $value) {
+						$o->{$key} = intval($value);
+					} elseif (floatval($value) == $value) {
+						$o->{$key} = floatval($value);
+					}
 				}
+				
+				var_dump($o); exit;
 			}
-			*/
 
 			$o->status = Order::o( $o->id_order )->status()->last();
 			$restaurant = Restaurant::o( $o->id_restaurant );
