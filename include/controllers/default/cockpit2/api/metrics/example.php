@@ -10,7 +10,7 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 			$this->error(401);
 		}
-		
+
 		// cant get postgres to work right now
 		/*
 		$r = c::app()->metricsDB()->query('select * from tests');
@@ -19,14 +19,14 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 		}
 		exit;
 		*/
-		
+
 		$days = $this->request()['days'] ? $this->request()['days'] : 90;
 		$keys = [];
-		$keys[] = $data;
-		
+		$keys[] = $days;
+
 		$data = [];
 		$q = '
-			select c as "Orders", name as "Community" from 
+			select c as "Orders", name as "Community" from
 			(
 				select count(*) as c, community.name from `order`
 				left join restaurant on restaurant.id_restaurant=`order`.id_restaurant
@@ -46,11 +46,11 @@ class Controller_api_metrics_example extends Crunchbutton_Controller_RestAccount
 			limit 10
 		';
 
-		$r = c::db()->query($q, $keys);
+		$r = c::db()->query( $q, $keys );
 		while ($o = $r->fetch()) {
 			$data[] = (array)$o;
 		}
-		
+
 		echo json_encode([
 			'title' => 'Example',
 			'data' => $data
