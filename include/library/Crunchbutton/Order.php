@@ -2595,15 +2595,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 
-		$q = Queue::create([
-			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
-			'id_order' => $this->id_order,
-			'seconds' => 0
-		]);
+		// $q = Queue::create([
+		// 	'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
+		// 	'id_order' => $this->id_order,
+		// 	'seconds' => 0
+		// ]);
 
 
-		return true;
-/*
+
 		// Pexcard stuff - #3992
 		$pexcard = $admin->pexcard();
 		if( $pexcard->id_admin_pexcard ){
@@ -2631,7 +2630,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					break;
 			}
 		}
-*/
+
 		return true;
 	}
 
