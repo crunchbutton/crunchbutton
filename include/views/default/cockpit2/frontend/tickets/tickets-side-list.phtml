@@ -6,11 +6,11 @@
 				<div ng-repeat="ticket in tickets" ng-click="setViewTicket(ticket.id_support)" class="tickets-side-item" ng-class="{'tickets-side-item-unread': (ticket.from == 'client' || ticket.from == 'system'), 'tickets-side-item-read': (ticket.from == 'rep')}">
 					<div class="tickets-side-tickets-wrap">
 						<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
-						<span title="{{ ticket.ts | tsToHour }}" class="tickets-side-time" am-time-ago="ticket.date"></span>
+						<span title="{{ ticket.ts | tsToHour }}" class="tickets-side-time" am-preprocess="unix" am-time-ago="ticket.timestamp"></span>
 
 						<div class="divider"></div>
 						<br>
-						<span class="tickets-side-name">{{ticket.name}}: </span>
+						<span ng-show="ticket.name" class="tickets-side-name">{{ticket.name}}: </span>
 						<span class="tickets-side-message">{{ticket.message}}</span>
 					</div>
 				</div>
