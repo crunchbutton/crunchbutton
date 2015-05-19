@@ -4,13 +4,12 @@ class Controller_Api_Test_Sandbox extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
-		echo '<pre>';
+		// $order = Order::o( 121265 );
+		// $order->pexcardFunds();
 
-		// $dt = '2015-05-10 18:56:00';
-		// $community = Crunchbutton_Community::o( 126 );
-		// $community->shutDownCommunity( $dt );
-		$notification = new Crunchbutton_Admin_Notification();
-		$notification->resendNotification();
+		$q = Crunchbutton_Queue_Order_PexCard_Funds::o( 17953 );
+		$q->run();
+		// Crunchbutton_Queue::process();
 
 	}
 }
