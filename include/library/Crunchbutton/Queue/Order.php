@@ -2,23 +2,23 @@
 
 class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 	public function run() {
-		
+
 		// send hipchat notification
 		// @pererinha is this still needed?
 		//Crunchbutton_Hipchat_Notification::OrderPlaced($this->order());
-		
+
 		// send customer a receipt in 30 seconds
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT,
 			'id_order' => $this->order()->id_order,
 			'seconds' => 30
 		]);
-		
+
 		// send restaurants notifications
 		$this->order()->notifyRestaurants();
-		
+
 		if (intval($this->order()->restaurant()->delivery_service) == 1){
-			
+
 			// get active community drivers
 			$drivers = $this->order()->getDriversToNotify();
 
@@ -40,13 +40,13 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			}
 
 		}
-		
-		
-		
+
+
+
 		// replaces Crunchbutton_Cron_Job_OrderRules
 		$rules = new Crunchbutton_Order_Rules;
 		$rules->run($this->order());
-		
+
 		return self::STATUS_SUCCESS;
 	}
 }

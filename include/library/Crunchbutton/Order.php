@@ -2588,7 +2588,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		]))->save();
 
 		if ($notify) {
-			$this->textCustomerAboutDriver();
+			$q = Queue::create([
+				'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_YOUR_DRIVER,
+				'id_order' => $this->id_order,
+				'seconds' => 0
+			]);
+
 		}
 
 		// Pexcard stuff - #3992
