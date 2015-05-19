@@ -105,7 +105,7 @@
 						<div class="field-key">Price</div>
 						<div class="field-value">
 
-							<table align="right">
+							<table align="right" class="basic-table">
 								<tr><td>Price:</td><td>${{order.price | number:2}}</td></tr>
 								<tr><td>Markup:</td><td>${{order.delivery_service_markup_value | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
 								<tr><td>Service Fee:</td><td>${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
@@ -120,7 +120,7 @@
 					<div class="field-row">
 						<div class="field-key">Contents</div>
 						<div class="field-value">
-							<table align="right">
+							<table align="right" class="basic-table">
 								<tr>
 									<th>Dish</th>
 									<th>Price</th>

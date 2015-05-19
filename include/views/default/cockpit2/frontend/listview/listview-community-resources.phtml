@@ -3,10 +3,10 @@
 		<tr>
 			<th>Resource</th>
 			<th class="tb-center">Communities</th>
-			<th nowrap="nowrap">Menu</th>
-			<th nowrap="nowrap">Resources</th>
-			<th nowrap="nowrap">Order</th>
-			<th nowrap="nowrap">Active</th>
+			<th nowrap="tb-center">Menu</th>
+			<th nowrap="tb-center">Resources</th>
+			<th nowrap="tb-center">Order</th>
+			<th nowrap="tb-center">Active</th>
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="resource in resources track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_community_resource}}">
