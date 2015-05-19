@@ -33,8 +33,8 @@ $query = '
 	where p.balanced_id is not null
 	and p.stripe_id is null
 	and `user`.name not like "%test%"
-	and `order`.date > date_sub(now(), interval 6 month)
-	and p.balanced_id like "CC%"
+	#and `order`.date > date_sub(now(), interval 6 month)
+	#and p.balanced_id like "CC%"
 	and p.active = true
 	'.$q.'
 	group by user.id_user
