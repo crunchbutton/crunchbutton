@@ -2,16 +2,21 @@
 
 class Crunchbutton_Queue extends Cana_Table {
 	
-	const TYPE_ORDER					= 'Crunchbutton_Queue_Order';
-	const TYPE_NOTIFICATION_DRIVER		= 'Crunchbutton_Queue_Driver';
-	const TYPE_ORDER_RECEIPT			= 'Crunchbutton_Queue_Order_Receipt';
-	const TYPE_ORDER_CONFIRM			= 'Crunchbutton_Queue_Order_Confirm';
+	const TYPE_CLASS_ORDER						= 'Crunchbutton_Queue_Order';
+	const TYPE_CLASS_NOTIFICATION_DRIVER		= 'Crunchbutton_Queue_Driver';
+	const TYPE_CLASS_ORDER_RECEIPT				= 'Crunchbutton_Queue_Order_Receipt';
+	const TYPE_CLASS_ORDER_CONFIRM				= 'Crunchbutton_Queue_Order_Confirm';
 	
-	const STATUS_NEW					= 'new';
-	const STATUS_SUCCESS				= 'success';
-	const STATUS_FAILED					= 'failed';
-	const STATUS_RUNNING				= 'running';
-	const STATUS_STOPPED				= 'stopped';
+	const TYPE_ORDER							= 'order';
+	const TYPE_NOTIFICATION_DRIVER				= 'notification-driver';
+	const TYPE_ORDER_RECEIPT					= 'order-receipt';
+	const TYPE_ORDER_CONFIRM					= 'order-confirm';
+
+	const STATUS_NEW							= 'new';
+	const STATUS_SUCCESS						= 'success';
+	const STATUS_FAILED							= 'failed';
+	const STATUS_RUNNING						= 'running';
+	const STATUS_STOPPED						= 'stopped';
 	
 
 	public static function process($all = false) {
@@ -37,8 +42,15 @@ class Crunchbutton_Queue extends Cana_Table {
 			$q->status = self::STATUS_RUNNING;
 			$q->save();
 
-			$type = 'TYPE_'.str_replace('-','_',strtoupper($q->type));
+			$type = 'TYPE_CLASS_'.str_replace('-','_',strtoupper($q->type));
 			$class = constant('self::'.$type);
+			if (!$class) {
+				$q->status = self::STATUS_FAILED;
+				$q->date_end = date('Y-m-d H:i:s');
+				$q->data = 'Invalid class type of: '.$q->type;
+				continue;
+			}
+
 			$q = new $class($q->properties());
 
 			$res = $q->run();

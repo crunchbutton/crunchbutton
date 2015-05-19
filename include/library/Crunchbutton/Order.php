@@ -1495,7 +1495,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function que() {
 		$q = Queue::create([
-			'type' => 'order',
+			'type' => Crunchbutton_Queue::TYPE_ORDER,
 			'id_order' => $this->id_order
 		]);
 	}
@@ -1532,7 +1532,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
 		$q = Queue::create([
-			'type' => 'order-confirmation',
+			'type' => Crunchbutton_Queue::TYPE_ORDER_CONFIRM,
 			'id_order' => $this->id_order,
 			'seconds' => $confirmationTime / 1000
 		]);
