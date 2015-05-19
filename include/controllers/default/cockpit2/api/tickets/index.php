@@ -27,7 +27,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN `user` u ON u.id_user=s.id_user
 			LEFT JOIN `order` o ON o.id_order=s.id_order
 			LEFT JOIN admin a ON a.id_admin=sm.id_admin
-			
+
 			WHERE 1=1
 		';
 
@@ -105,7 +105,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			s.status,
 			sm.body as message
 		', $q), $keys);
-		
+
 		$i = 1;
 		$more = false;
 
@@ -119,8 +119,13 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				$o->name = Phone::name($o);
 			}
 			$support = Support::o( $o->id_support );
-			$o->message = $support->lastMessage()->body;
-			$o->date = $support->lastMessage()->date();
+			$message = $support->lastMessage();
+			$message = $message->get( 0 );
+			$o->message = $message->body;
+			$date = $message->date();
+			$o->timestamp = $date->getTimestamp();
+			$o->date = $date->format( 'Y-m-d H:i:s' );
+			$o->ts = Crunchbutton_Util::dateToUnixTimestamp( $date );
 			$d[] = $o;
 			$i++;
 		}
