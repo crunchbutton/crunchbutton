@@ -1074,7 +1074,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return $fax;
 	}
-	
+
 	public function getImgFormats() {
 		return [
 			['height' => 596, 'width' => 596, 'crop' => 0],
@@ -1082,21 +1082,21 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			['height' => 425, 'width' => 1200, 'crop' => 1]
 		];
 	}
-	
+
 	public function image() {
 		$img = (strpos($this->image,'http://') !== 0 ? 'https://i._DOMAIN_/' : '') . $this->image;
 		return $img;
 	}
-	
+
 	public function updateImage($tmpFile = null) {
 		if (!$tmpFile) {
 			return false;
 		}
-		
+
 		$info = pathinfo($tmpFile);
-		
+
 		$formats = $this->getImgFormats();
-		
+
 		// upload the source image
 		$upload = new Crunchbutton_Upload([
 			'file' => $tmpFile,
@@ -1117,7 +1117,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				print_r($e->getMessage());
 				$thumb = null;
 			}
-			
+
 			if ($thumb) {
 				$upload = new Crunchbutton_Upload([
 					'file' => $thumb->_image['file'],
@@ -1127,7 +1127,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$upload->upload();
 			}
 		}
-		
+
 	}
 
 	public function weight() {
@@ -1192,14 +1192,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// Return the offset to help the Javascript to calculate the open/close hour correctly
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
-		
+
 		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
 
 		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
 		$out['images'] = [
 			$imgPrefix.$this->permalink.'.jpg',
 		];
-		
+
 		foreach ($this->getImgFormats() as $format) {
 			$out['images'][] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
 		}
@@ -1322,6 +1322,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
+		if( $isCockpit ){
+			$payment_type = $this->payment_type();
+			$out[ 'payment_method' ] = $payment_type->payment_method;
+		}
+
 		// start eta
 		$out[ 'eta' ] = $this->smartETA();
 
@@ -1418,6 +1423,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$this->saveHours($restaurant['_hours']);
 		$this->saveNotifications($restaurant['_notifications']);
 		$this->saveCategories($restaurant['_categories']);
+
+		$payment_type = $this->payment_type();
+		$payment_type->summary_method = $restaurant['summary_method'];
+		$payment_type->payment_method = $restaurant['payment_method'];
+		$payment_type->save();
 
 		// dishes with options are the awful part
 		$all_dishes = [];
