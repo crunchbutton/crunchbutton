@@ -2593,8 +2593,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'id_order' => $this->id_order,
 				'seconds' => 0
 			]);
-
 		}
+
+		// $q = Queue::create([
+		// 	'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
+		// 	'id_order' => $this->id_order,
+		// 	'seconds' => 0
+		// ]);
+
+
 
 		// Pexcard stuff - #3992
 		$pexcard = $admin->pexcard();
@@ -2625,6 +2632,55 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		return true;
+	}
+
+	public function pexcardFunds(){
+
+		$order = Order::o( $this->id_order );
+
+		$status = $order->status()->last();
+
+		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
+
+			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+
+			if( $driver->id_admin ){
+
+				// Pexcard stuff - #3992
+				$pexcard = $driver->pexcard();
+				if( $pexcard->id_admin_pexcard ){
+
+					$status = 'delivery-' . $status[ 'status' ];
+
+					switch ( $status ) {
+						case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+
+								// Add $10 for the first accepted order - #3993
+								$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $driver->id_admin );
+								if( $shift->id_admin_shift_assign ){
+									$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
+								}
+								// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
+								$loadCard = true;
+
+								if( $order->pay_type == 'card' && $order->restaurant()->formal_relationship ){
+									$loadCard = false;
+								}
+
+								if( $loadCard ){
+									$pexcard->addFundsOrderAccepeted( $order->id_order );
+									Log::debug([ 'actions' => 'pex card LOADED', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+								} else {
+									Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+								}
+							break;
+						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+							$pexcard->removeFundsOrderCancelled( $order->id_order );
+							break;
+					}
+				}
+			}
+		}
 	}
 
 	public function deliveryReply($admin) {
