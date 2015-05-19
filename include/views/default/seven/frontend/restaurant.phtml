@@ -146,9 +146,8 @@
 				<div ng-show="fullmenu">
 					<div ng-bind-once class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">
 
-						<div class="restaurant-title-wrap">
-							<div class="restaurant-title restaurant-category">{{category.name}}{{category.locName()}}</div>
-							<div class="restaurant-title-bar restaurant-category"><div class="restaurant-title-bar-inner">&nbsp;</div></div>
+						<div class="restaurant-title-wrap restaurant-category">
+							<div class="restaurant-title">{{category.name}}{{category.locName()}}</div>
 						</div>
 
 						<ul class="col-box resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
@@ -169,7 +168,6 @@
 
 					<div class="restaurant-title-wrap">
 						<div class="restaurant-title">The Highlights</div>
-						<div class="restaurant-title-bar"><div class="restaurant-title-bar-inner"></div></div>
 					</div>
 
 					<div ng-repeat="category in restaurant.categories()">
@@ -183,8 +181,6 @@
 
 					<br>
 					<button class="button green" ng-click="fullmenu=1">see full menu</button>
-
-
 
 				</div>
 
