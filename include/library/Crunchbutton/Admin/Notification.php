@@ -41,10 +41,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 							ORDER BY o.id_order ASC";
 
-
-							$query = 'SELECT * FROM `order` WHERE id_order = 138790';
-
-
 		$orders = Crunchbutton_Order::q($query);
 
 		$message = 'working with '.$orders->count().' orders';
@@ -118,87 +114,75 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function alertDispatch( Crunchbutton_Order $order ) {
 
 		$env = c::getEnv();
+		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
 
-		if( $env != 'live' ){
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'alertDispatch to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
-			return;
-		}
-
-		$group = Crunchbutton_Group::byName(Config::getVal('rep-fail-group-name'));
-
-		if ($group->id_group) {
-
-			$env = c::getEnv();
-			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-			$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
-
-			// Get drivers name
-			$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
-			if( $drivers ){
-				foreach( $drivers as $driver ){
-					foreach( $driver->activeNotifications() as $adminNotification ){
-						$driversToNotify[ $driver->id_admin ] = $driver->name . ': ' . $driver->phone();
-					}
+		// Get drivers name
+		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+		if( $drivers ){
+			foreach( $drivers as $driver ){
+				foreach( $driver->activeNotifications() as $adminNotification ){
+					$driversToNotify[ $driver->id_admin ] = $driver->name . ': ' . $driver->phone();
 				}
 			}
-			$drivers_list = "";
-			$commas = "";
-			foreach( $driversToNotify as $key => $val ){
-				$drivers_list .= $commas . $val;
-				$commas = "; ";
-			}
+		}
+		$drivers_list = "";
+		$commas = "";
+		foreach( $driversToNotify as $key => $val ){
+			$drivers_list .= $commas . $val;
+			$commas = "; ";
+		}
 
-			$sms_message = Crunchbutton_Message_Sms::greeting() . '#'.$order->id_order.' sms: reps failed to pickup order';
-			$sms_message .= "\n";
-			$sms_message .= "R: " . $order->restaurant()->name;
+		$sms_message = Crunchbutton_Message_Sms::greeting() . '#'.$order->id_order.' sms: reps failed to pickup order';
+		$sms_message .= "\n";
+		$sms_message .= "R: " . $order->restaurant()->name;
+		if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+			$sms_message .= ' (' . $order->restaurant()->community . ')';
+		}
+		$sms_message .= "\n";
+		$sms_message .= "C: " . $order->name;
+
+		if( $drivers_list != '' ){
+			$sms_message .= "\nD: " . $drivers_list;
+		}
+
+		// Reps failed to pickup order texts changes #2802
+		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message ] );
+
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'message' => $sms_message,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
+		]);
+
+		echo $sms_message."\n";
+		Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
+
+
+		/*
+		Removed the phone call for while - asked by David 2/23/2014
+		$num = $a->getPhoneNumber();
+		if( $num ){
+
+			$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/pick-up-fail';
+			$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
+			$message .= "\n";
+			$message .= $order->restaurant()->name;
 			if( $order->restaurant()->community && $order->restaurant()->community != '' ){
-				$sms_message .= ' (' . $order->restaurant()->community . ')';
-			}
-			$sms_message .= "\n";
-			$sms_message .= "C: " . $order->name;
-
-			if( $drivers_list != '' ){
-				$sms_message .= "\nD: " . $drivers_list;
+				$message .= ' (' . $order->restaurant()->community . ')';
 			}
 
-			// Reps failed to pickup order texts changes #2802
-			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message ] );
-
-			Crunchbutton_Message_Sms::send([
-				'to' => Crunchbutton_Support::getUsers(),
-				'message' => $sms_message,
-				'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
-			]);
-
-			echo $sms_message."\n";
-			Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
-
-
-			/*
-			Removed the phone call for while - asked by David 2/23/2014
-			$num = $a->getPhoneNumber();
-			if( $num ){
-
-				$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/pick-up-fail';
-				$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
-				$message .= "\n";
-				$message .= $order->restaurant()->name;
-				if( $order->restaurant()->community && $order->restaurant()->community != '' ){
-					$message .= ' (' . $order->restaurant()->community . ')';
-				}
-
-				echo $message."\n";
-				Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
-				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-				$call = $twilio->account->calls->create(
-					c::config()->twilio->{$env}->outgoingDriver,
-					'+1'.$num,
-					$url
-				);
-			}
-			*/
-
+			echo $message."\n";
+			Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
+			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$call = $twilio->account->calls->create(
+				c::config()->twilio->{$env}->outgoingDriver,
+				'+1'.$num,
+				$url
+			);
 		}
+		*/
+
 	}
 
 	public function send( Crunchbutton_Order $order ) {
