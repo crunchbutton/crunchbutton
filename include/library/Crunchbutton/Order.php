@@ -2595,11 +2595,39 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 
-		$q = Queue::create([
-			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
-			'id_order' => $this->id_order,
-			'seconds' => 0
-		]);
+		// $q = Queue::create([
+		// 	'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
+		// 	'id_order' => $this->id_order,
+		// 	'seconds' => 0
+		// ]);
+
+		// Pexcard stuff - #3992
+		$pexcard = $admin->pexcard();
+		if( $pexcard->id_admin_pexcard ){
+			switch ( $status ) {
+				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						// Add $10 for the first accepted order - #3993
+						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
+						if( $shift->id_admin_shift_assign ){
+							$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
+						}
+						// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
+						$loadCard = true;
+						if( $this->pay_type == 'card' && $this->restaurant()->formal_relationship ){
+							$loadCard = false;
+						}
+						if( $loadCard ){
+							$pexcard->addFundsOrderAccepeted( $this->id_order );
+							Log::debug([ 'actions' => 'pex card LOADED', 'id_order' => $this->id_order, 'type' => 'pexcard-load' ]);
+						} else {
+							Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $this->id_order, 'type' => 'pexcard-load' ]);
+						}
+					break;
+				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+					$pexcard->removeFundsOrderCancelled( $this->id_order );
+					break;
+			}
+		}
 
 		return true;
 	}
