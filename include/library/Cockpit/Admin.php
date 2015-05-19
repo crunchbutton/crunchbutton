@@ -297,7 +297,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		// get their bank info
 		foreach ($p as $paymentType) {
-			echo "\nBalanced bank account ".$paymentType->balanced_bank."\n";
+			echo "Balanced bank account ".$paymentType->balanced_bank."\n";
 
 			$handle = fopen('/Users/arzynik/Downloads/2015-05-19-1431998893-***REMOVED***.csv', 'r');
 			if (substr($paymentType->balanced_id,0,2) != 'BA') {
@@ -343,17 +343,23 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				// do something with the token
 
 				$stripeAccount->bank_account = $stripeBankToken;
-				$res = $stripeAccount->save();
+				try {
+					$stripeAccount->save();
 
-				foreach ($stripeAccount->bank_accounts->all()->data as $stripeBankAccount) {			
-					break;
+					foreach ($stripeAccount->bank_accounts->all()->data as $stripeBankAccount) {			
+						break;
+					}
+
+					echo "Stripe bank account is ".$stripeBankAccount->id."\n";
+
+					$paymentType->stripe_id = $idStripe;
+					$paymentType->stripe_account_id = $stripeBankAccount->id;
+					$paymentType->save();
+				} catch (Exception $e) {
+					echo 'ERROR: '.$e->getMessage()."\n";
+					return false;
 				}
 
-				echo "Stripe bank account is ".$stripeBankAccount->id."\n";
-
-				$paymentType->stripe_id = $idStripe;
-				$paymentType->stripe_account_id = $stripeBankAccount->id;
-				$paymentType->save();
 
 			}
 
