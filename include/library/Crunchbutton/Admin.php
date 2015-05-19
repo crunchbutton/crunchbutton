@@ -238,18 +238,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function driversList( $search = '' ){
 
 		$where = ( $search && trim( $search ) != '' ) ? ' AND a.name LIKE "%' . $search . '%"' : '';
-		return Admin::q( 'SELECT a.* FROM admin a
-												INNER JOIN (
-													SELECT DISTINCT(id_admin) FROM (
-													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
-													UNION
-													SELECT DISTINCT(a.id_admin) FROM admin a
-														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
-														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
-														) drivers
-													)
-											drivers ON drivers.id_admin = a.id_admin ' . $where . ' ORDER BY name ASC' );
+		$admins = Admin::q( 'SELECT * FROM admin a WHERE a.active = true ' . $where );
+		$drivers = [];
+		foreach( $admins as $admin ){
+			if( $admin->isDriver() ){
+				$drivers[] = $admin;
+			}
+		}
+		return $drivers;
 	}
 
 	public function search( $search = [] ){
