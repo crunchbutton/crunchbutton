@@ -2,6 +2,9 @@
 NGApp.filter( 'formatPhone', function() {
 	return function( input ) {
 		if( input != null ){
+			if (typeof input == 'number') {
+				input = input.toString();
+			}
 			input = input.replace(/^0|^1/,'');
 			input = input.replace(/[^\d]*/gi,'');
 			input = input.substr(0,10);
