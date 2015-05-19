@@ -7,12 +7,14 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_NOTIFICATION_YOUR_DRIVER	= 'Crunchbutton_Queue_Notification_Your_Driver';
 	const TYPE_CLASS_ORDER_RECEIPT						= 'Crunchbutton_Queue_Order_Receipt';
 	const TYPE_CLASS_ORDER_CONFIRM						= 'Crunchbutton_Queue_Order_Confirm';
+	const TYPE_CLASS_ORDER_PEXCARD_FUNDS			= 'Crunchbutton_Queue_Order_PexCard_Funds';
 
 	const TYPE_ORDER											= 'order';
 	const TYPE_NOTIFICATION_DRIVER				= 'notification-driver';
 	const TYPE_NOTIFICATION_YOUR_DRIVER		= 'notification-your-driver';
 	const TYPE_ORDER_RECEIPT							= 'order-receipt';
 	const TYPE_ORDER_CONFIRM							= 'order-confirm';
+	const TYPE_ORDER_PEXCARD_FUNDS				= 'order-pexcard-funds';
 
 	const STATUS_NEW								= 'new';
 	const STATUS_SUCCESS						= 'success';
