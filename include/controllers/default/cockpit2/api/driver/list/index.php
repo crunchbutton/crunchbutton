@@ -67,10 +67,10 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 			$count++;
 		}
 
-		$pages = ceil( $drivers->count() / $resultsPerPage );
+		$pages = ceil( count( $drivers ) / $resultsPerPage );
 
 		$data = [];
-		$data[ 'count' ] = $drivers->count();
+		$data[ 'count' ] = count( $drivers );
 		$data[ 'pages' ] = $pages;
 		$data[ 'prev' ] = ( $page > 1 ) ? $page - 1 : null;
 		$data[ 'page' ] = intval( $page );
