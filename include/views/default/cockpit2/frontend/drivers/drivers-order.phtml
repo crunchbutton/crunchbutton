@@ -68,7 +68,7 @@
 
 	</div>
 	<div class="order" ng-if="oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
-		
+
 		<div class="info-block">
 			<div ng-repeat="resource in oc.order.resources" class="order-info-resource">
 				<div class="order-icon3"><i class="fa fa-file"></i></div>
@@ -77,7 +77,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<br><br>
 		<div class="dialog-message dialog-message-notice check-reminder" ng-if="oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
 			<b>Double check</b> to make sure you received exactly the right food!
@@ -257,7 +257,7 @@
 					Return customer (placed {{oc.order.orders_by_phone}} orders), so treat 'em nice!
 				</div>
 			</div>
-			<div class="customer-total-block total-block">
+			<div class="customer-total-block total-block" ng-show="oc.order.pay_type=='cash'">
 				<span class="order-total-price"><span class="tip-total-price-dollar">$</span>{{oc.order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
 				<span class="order-total-block-text">Customer total</span>
 				</br>
