@@ -156,7 +156,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$more = false;
 
 		while ($o = $r->fetch()) {
-			
+
 			if (!$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
@@ -193,7 +193,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			'pages' => $pages,
 			'page' => intval($page),
 			'results' => $data
-		]);
+		], JSON_NUMERIC_CHECK);
 
 	}
 }
