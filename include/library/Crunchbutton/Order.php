@@ -2642,20 +2642,30 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$order = Order::o( $this->id_order );
 
+		Log::debug([ 'method' => 'pexcardFunds', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+
 		$status = $order->status()->last();
+
+		Log::debug([ 'method' => 'pexcardFunds', 'status' => $status[ 'driver' ] , 'type' => 'pexcard-load' ]);
 
 		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
 
 			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+
+			Log::debug([ 'method' => 'pexcardFunds', 'id_admin' => $driver->id_admin , 'type' => 'pexcard-load' ]);
 
 			if( $driver->id_admin ){
 
 				// Pexcard stuff - #3992
 				$pexcard = $driver->pexcard();
 
+				Log::debug([ 'method' => 'pexcardFunds', 'id_admin_pexcard' => $pexcard->id_admin_pexcard , 'type' => 'pexcard-load' ]);
+
 				if( $pexcard->id_admin_pexcard ){
 
 					$status = 'delivery-' . $status[ 'status' ];
+
+					Log::debug([ 'method' => 'pexcardFunds', 'status' => $status , 'type' => 'pexcard-load' ]);
 
 					switch ( $status ) {
 
@@ -2663,17 +2673,27 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 								// Add $10 for the first accepted order - #3993
 								$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $driver->id_admin );
+								Log::debug([ 'method' => 'pexcardFunds', 'id_admin_shift_assign' => $shift->id_admin_shift_assign , 'type' => 'pexcard-load' ]);
 								if( $shift->id_admin_shift_assign ){
 									$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
 								}
+
 								// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
 								$loadCard = true;
+
+								Log::debug([ 'method' => 'pexcardFunds', 'loadCard' => $loadCard , 'type' => 'pexcard-load' ]);
+
+								Log::debug([ 'method' => 'pexcardFunds', 'pay_type' => $order->pay_type , 'type' => 'pexcard-load' ]);
+								Log::debug([ 'method' => 'pexcardFunds', 'formal_relationship' => $order->restaurant()->formal_relationship , 'type' => 'pexcard-load' ]);
 
 								if( $order->pay_type == 'card' && $order->restaurant()->formal_relationship ){
 									$loadCard = false;
 								}
 
+								Log::debug([ 'method' => 'pexcardFunds', 'loadCard' => $loadCard , 'type' => 'pexcard-load' ]);
+
 								if( $loadCard ){
+
 									$pexcard->addFundsOrderAccepeted( $order->id_order );
 
 									Log::debug([ 'actions' => 'pex card LOADED', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
@@ -2682,7 +2702,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 								}
 							break;
+
 						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+
+							Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
 
 							$pexcard->removeFundsOrderCancelled( $order->id_order );
 							break;
@@ -2693,6 +2716,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function deliveryReply($admin) {
+
 		$act = false;
 
 		foreach ($this->_actions as $action) {
