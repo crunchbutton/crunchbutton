@@ -2588,6 +2588,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		]))->save();
 
 		if ($notify) {
+			// Notify customer about their driver
 			$q = Queue::create([
 				'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_YOUR_DRIVER,
 				'id_order' => $this->id_order,
@@ -2595,17 +2596,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 
-		// $q = Queue::create([
-		// 	'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
-		// 	'id_order' => $this->id_order,
-		// 	'seconds' => 0
-		// ]);
+		// Add/Remove pex card funds
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
+			'id_order' => $this->id_order,
+			'seconds' => 0
+		]);
+
+		return true;
 
 		// Pexcard stuff - #3992
 		$pexcard = $admin->pexcard();
 		if( $pexcard->id_admin_pexcard ){
 			switch ( $status ) {
+
 				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+
 						// Add $10 for the first accepted order - #3993
 						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
 						if( $shift->id_admin_shift_assign ){
@@ -2637,7 +2643,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$order = Order::o( $this->id_order );
 
 		$status = $order->status()->last();
-
 
 		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
 
@@ -2678,6 +2683,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								}
 							break;
 						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+
 							$pexcard->removeFundsOrderCancelled( $order->id_order );
 							break;
 					}
