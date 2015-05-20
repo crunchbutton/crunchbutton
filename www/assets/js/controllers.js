@@ -1,12 +1,14 @@
 /**
  * splash page
  */
-NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService) {
+NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService, AccountFacebookService) {
 	if (App.isAndroid()) {
 		$scope.downloadLink = 'https://play.google.com/store/apps/details?id=com.crunchbutton';
 	} else {
 		$scope.downloadLink = 'https://itunes.apple.com/app/id721780390';
 	}
+
+	$scope.facebook = AccountFacebookService;
 
 	$scope.text = {
 		number: '',
@@ -229,12 +231,15 @@ NGApp.controller('LegalCtrl', function ($scope) {
 /**
  * Free food page
  */
-NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, ReferralService, FacebookService ) {
+NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, ReferralService, FacebookService, AccountModalService ) {
 
 	if( !AccountService.isLogged() ){
-		$location.path( '/' );
-		return;
+		// waiting devin's comment
+		// $location.path( '/' );
+		// return;
 	}
+
+	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 
 	$scope.account = AccountService;
 
