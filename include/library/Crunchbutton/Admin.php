@@ -1045,9 +1045,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 
-	public function hasPaymentInfo(){
+	public function hasPaymentInfo( $processor = null ){
+
+		if( !$processor ){
+			$processor = Crunchbutton_Payment::processor();
+		}
+
 		$paymentType = $this->paymentType();
-		switch ( Crunchbutton_Payment::processor() ) {
+		switch ( $processor ) {
 			case Crunchbutton_Payment::PROCESSOR_BALANCED:
 				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
 					return true;
