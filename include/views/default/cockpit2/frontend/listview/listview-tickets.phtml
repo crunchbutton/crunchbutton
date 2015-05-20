@@ -1,22 +1,40 @@
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
-			<th>ID</th>
-			<th>From</th>
+			<th>Contact</th>
 			<th>Updated</th>
-			<th>Name</th>
 			<th>Message</th>
+			<th class="tb-small tb-center">Type</th>
+			<th class="tb-small tb-center">Status</th>
+			<th class="tb-small"></th>
 		</tr>
 
 		<tr ng-repeat="ticket in lotsoftickets">
-			<td><a href="/ticket/{{ticket.id_support}}">{{ticket.id_support}}</td>
-			<td><a href ng-click="callText(ticket.phone)">{{ticket.phone | formatPhone}}</a></td>
+			<td>
+				<a href="/staff/{{ticket.id_admin_from}}" ng-if="ticket.id_admin_from">{{ticket.name}}</a>
+				<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin_from & ticket.id_user">{{ticket.name}}</a>
+				<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
+			</td>
 			<td nowrap="nowrap">
 				<span ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></span>
 				<span ng-if="!ticket.timestamp"><i>Unknown</i></span>
 			</td>
-			<td>{{ticket.name}}</td>
 			<td>{{ticket.message}}</td>
+			<td class="tb-v-center tb-center">
+				<span class="tag tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
+				<span ng-if="ticket.type != 'WARNING'">
+					<span class="tag tag-blue" ng-if="ticket.id_user">Customer</span>
+					<span class="tag tag-orange" ng-if="!ticket.id_user && ticket.id_admin_from">Driver</span>
+					<span class="tag tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
+				</span>
+			</td>
+			<td class="tb-v-center tb-center">
+				<span class="tag tag-green" ng-if="ticket.status">Open</span>
+				<span class="tag tag-red" ng-if="!ticket.status">Closed</span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="/ticket/{{ticket.id_support}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+			</td>
 		</tr>
 	</table>
 </div>

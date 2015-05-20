@@ -1,7 +1,6 @@
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
-			<th class="tb-small tb-v-center">ID</th>
 			<th>Contact</th>
 			<th class="tb-small tb-center">Type</th>
 			<th class="tb-small tb-center">Direction</th>
@@ -9,7 +8,6 @@
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="call in calls">
-			<td><a href="/call/{{call.id_call}}">{{call.id_call}}</td>
 			<td>
 				<a href="/customer/{{call.id_user_from}}" ng-if="call.id_user_from">{{call.user_from}}</a>
 				<a href="/staff/{{call.id_admin_from}}" ng-if="!call.id_user_from && call.id_admin_from">{{call.admin_from}}</a>
@@ -46,6 +44,7 @@
 			<td nowrap class="tb-v-center">
 				<a href="/ticket/{{call.support.id_support}}" ng-if="call.support.id_support"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Ticket</button></a>
 				<a href="/call/{{call.id_call}}/ticket" ng-if="!call.support.id_support"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Ticket</button></a>
+				<a href="/call/{{call.id_call}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 			</td>
 		</tr>
 	</table>
