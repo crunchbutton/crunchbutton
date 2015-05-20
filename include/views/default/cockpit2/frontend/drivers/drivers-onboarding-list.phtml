@@ -57,8 +57,8 @@
 					<span class="tag tag-red" ng-if="!driver.active">Inactive</span>
 				</td>
 				<td class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="driver.payment">OK</span>
-					<span class="tag tag-red" ng-if="!driver.payment">Missing</span>
+					<span class="tag tag-green" ng-if="driver.status.payment">OK</span>
+					<span class="tag tag-red" ng-if="!driver.status.payment">Missing</span>
 				</td>
 				<td class="tb-center tb-v-center">
 					<span class="tag tag-green" ng-if="driver.sent_all_docs">OK</span>
