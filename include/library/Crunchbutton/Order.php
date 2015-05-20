@@ -2706,7 +2706,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
 
-							Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+							Log::debug([ 'actions' => 'pex card funds REMOVED', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
 
 							$pexcard->removeFundsOrderRejected( $order->id_order );
 							break;
