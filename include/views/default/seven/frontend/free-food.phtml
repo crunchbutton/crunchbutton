@@ -32,9 +32,18 @@
 				</p><br/>
 
 			</div>
+			<div ng-show="!referral.invite_code">
+				<p>
+					Get your friends to enter <b>your referral code</b> in the Notes section of their first order, and you'll both get a free delivery ;)
+				</p><br/>
+				<p>
+					Create an account and receive your referral code.
+				</p><br/>
+
+			</div>
 			<br/>
 		</div>
-			<div class="two-col">
+			<div class="two-col" ng-show="referral.invite_code">
 
 				<div class="hide-desktop">
 					<a href="{{referral.sms}}" target="_blank">
@@ -67,6 +76,13 @@
 				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
 			</div>
 		</div>
+
+		<div class="two-col" ng-show="!referral.invite_code">
+			<div class="button-pushable">
+				<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
+			</div>
+		</div>
+
 	</div>
 
 </div>
