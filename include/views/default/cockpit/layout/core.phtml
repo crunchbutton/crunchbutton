@@ -96,14 +96,6 @@
 <!-- side nav -->
 <div class="primary-sidebar">
 	<ul class="nav nav-collapse collapse nav-collapse-primary">
-		<li class="<?=$this->page == 'home' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/dashboard">
-				<i class="icon-dashboard icon-2x"></i>
-				<span>Dashboard</span>
-			</a>
-		</li>
-
 
 		<? if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) : ?>
 			<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
@@ -232,13 +224,6 @@
 					</li>
 					<? } ?>
 
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
-					<li class="">
-						<a href="/drivers/shift/schedule/driver">
-							<i class="icon-calendar"></i> Schedule - for drivers
-						</a>
-					</li>
-					<? } ?>
 				</ul>
 			</li>
 		<? endif ; ?>
@@ -281,13 +266,7 @@
 						</a>
 					</li>
 				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','locations'] ) ) { ?>
-					<li class="">
-						<a href="/loc">
-							<i class="icon-map-marker"></i> Locations
-						</a>
-					</li>
-				<? } ?>
+
 			</ul>
 		</li>
 
@@ -307,13 +286,6 @@
 					<li class="">
 						<a href="/restaurants/weight">
 							<i class="icon-female"></i> Weight adjustment
-						</a>
-					</li>
-				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','logs'] ) ) { ?>
-					<li class="">
-						<a href="/logs">
-							<i class="icon-warning-sign"></i> Logs
 						</a>
 					</li>
 				<? } ?>
