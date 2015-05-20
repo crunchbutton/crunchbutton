@@ -2644,14 +2644,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		Log::debug([ 'method' => 'pexcardFunds', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
 
-		$status = $order->status()->last();
+		$status = Crunchbutton_Order_Status::q( 'SELECT * FROM order_action WHERE id_order = ? ORDER BY id_order_action DESC LIMIT 1', [ $order->id_order ] )->get( 0 );
 
-		Log::debug([ 'method' => 'pexcardFunds', 'status' => $status[ 'driver' ] , 'type' => 'pexcard-load' ]);
-		Log::debug([ 'method' => 'pexcardFunds', 'status' => $status[ 'driver' ][ 'id_admin' ] , 'type' => 'pexcard-load' ]);
+		Log::debug([ 'method' => 'pexcardFunds', 'id_order_action' => $status->id_order_action , 'type' => 'pexcard-load' ]);
+		Log::debug([ 'method' => 'pexcardFunds', 'id_admin' => $status->id_admin , 'type' => 'pexcard-load' ]);
 
-		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
+		if( $status->id_order_action && $status->id_admin ){
 
-			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+			$driver = Admin::o( $status->id_admin );
 
 			Log::debug([ 'method' => 'pexcardFunds', 'id_admin' => $driver->id_admin , 'type' => 'pexcard-load' ]);
 
@@ -2664,7 +2664,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 				if( $pexcard->id_admin_pexcard ){
 
-					$status = 'delivery-' . $status[ 'status' ];
+					$status = $status->type;
 
 					Log::debug([ 'method' => 'pexcardFunds', 'status' => $status , 'type' => 'pexcard-load' ]);
 
