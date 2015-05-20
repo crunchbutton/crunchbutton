@@ -203,7 +203,13 @@ class Crunchbutton_Payment extends Cana_Table {
 
 		$payment_type = $driver->payment_type();
 
-		switch ( Crunchbutton_Payment::processor() ) {
+		$processor = $params[ 'processor' ];
+
+		if( !$processor ){
+			$processor = Crunchbutton_Payment::processor();
+		}
+
+		switch ( $processor ) {
 
 			case Crunchbutton_Payment::PROCESSOR_BALANCED:
 				try {

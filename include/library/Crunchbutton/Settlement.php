@@ -1418,7 +1418,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																			'amount' => $amount,
 																			'note' => $schedule->note,
 																			'pay_type' => $schedule->pay_type,
-																			'type' => $processor ] );
+																			'processor' => $processor ] );
 						} catch ( Exception $e ) {
 							$schedule->log = $e->getMessage();
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
