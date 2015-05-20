@@ -10,7 +10,7 @@
 
 		<tr ng-repeat="ticket in lotsoftickets">
 			<td><a href="/ticket/{{ticket.id_support}}">{{ticket.id_support}}</td>
-			<td><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></td>
+			<td><a href ng-click="callText(ticket.phone)">{{ticket.phone | formatPhone}}</a></td>
 			<td nowrap="nowrap">
 				<span ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></span>
 				<span ng-if="!ticket.timestamp"><i>Unknown</i></span>

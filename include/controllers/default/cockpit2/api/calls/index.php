@@ -5,10 +5,18 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
 		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
+		
+		if ($page == 1) {
+			$offset = '0';
+		} else {
+			$offset = ($page-1) * $limit;
+		}
 
 		$q = '
 			SELECT
@@ -67,22 +75,27 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			GROUP BY c.id_call
 		';
 
-		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) co', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT c.id_call) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
 			ORDER BY c.date_start DESC
 			LIMIT ?
+			OFFSET ?
 		';
-		$keys[] = $limit;
+		$keys[] = $getCount ? $limit : $limit+1;
+		$keys[] = $offset;
 
 		// do the query
-		$d = [];
-		$r = c::db()->query(str_replace('-WILD-','
+		$data = [];
+		$query = str_replace('-WILD-','
 			c.id_call,
 			c.direction,
 			c.date_start,
@@ -98,14 +111,22 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			uf.name as user_from,
 			ut.name as user_to,
 			at.name as admin_to,
-			at.name as admin_from,
+			af.name as admin_from,
 			c.id_user_from,
 			c.id_user_to,
 			c.id_admin_from,
 			c.id_admin_to
-		', $q), $keys);
+		', $q);
+		$r = c::db()->query($query, $keys);
+
+		$i = 1;
+		$more = false;
 
 		while ($o = $r->fetch()) {
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
 			if ($o->direction == 'inbound') {
 				if ($o->user_from) {
 					$name = $o->user_from;
@@ -127,16 +148,18 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 					$o->to_name = Phone::name($o->to);
 				}
 			}
+			$i++;
 
-			$d[] = $o;
+			$data[] = $o;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
-			'results' => $d
-		]);
+			'pages' => $pages,
+			'page' => intval($page),
+			'results' => $data
+		], JSON_NUMERIC_CHECK);
 
 		exit;
 	}
