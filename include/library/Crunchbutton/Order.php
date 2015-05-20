@@ -2642,31 +2642,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$order = Order::o( $this->id_order );
 
-		Log::debug([ 'method' => 'pexcardFunds', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
-
 		$status = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? ORDER BY id_order_action DESC LIMIT 1', [ $order->id_order ] )->get( 0 );
-
-		Log::debug([ 'method' => 'pexcardFunds', 'id_order_action' => $status->id_order_action , 'type' => 'pexcard-load' ]);
-		Log::debug([ 'method' => 'pexcardFunds', 'id_admin' => $status->id_admin , 'type' => 'pexcard-load' ]);
 
 		if( $status->id_order_action && $status->id_admin ){
 
 			$driver = Admin::o( $status->id_admin );
-
-			Log::debug([ 'method' => 'pexcardFunds', 'id_admin' => $driver->id_admin , 'type' => 'pexcard-load' ]);
 
 			if( $driver->id_admin ){
 
 				// Pexcard stuff - #3992
 				$pexcard = $driver->pexcard();
 
-				Log::debug([ 'method' => 'pexcardFunds', 'id_admin_pexcard' => $pexcard->id_admin_pexcard , 'type' => 'pexcard-load' ]);
-
 				if( $pexcard->id_admin_pexcard ){
 
 					$status = $status->type;
-
-					Log::debug([ 'method' => 'pexcardFunds', 'status' => $status , 'type' => 'pexcard-load' ]);
 
 					switch ( $status ) {
 
@@ -2674,7 +2663,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 								// Add $10 for the first accepted order - #3993
 								$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $driver->id_admin );
-								Log::debug([ 'method' => 'pexcardFunds', 'id_admin_shift_assign' => $shift->id_admin_shift_assign , 'type' => 'pexcard-load' ]);
+
 								if( $shift->id_admin_shift_assign ){
 									$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
 								}
@@ -2682,16 +2671,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
 								$loadCard = true;
 
-								Log::debug([ 'method' => 'pexcardFunds', 'loadCard' => $loadCard , 'type' => 'pexcard-load' ]);
-
-								Log::debug([ 'method' => 'pexcardFunds', 'pay_type' => $order->pay_type , 'type' => 'pexcard-load' ]);
-								Log::debug([ 'method' => 'pexcardFunds', 'formal_relationship' => $order->restaurant()->formal_relationship , 'type' => 'pexcard-load' ]);
-
 								if( $order->pay_type == 'card' && $order->restaurant()->formal_relationship ){
 									$loadCard = false;
 								}
-
-								Log::debug([ 'method' => 'pexcardFunds', 'loadCard' => $loadCard , 'type' => 'pexcard-load' ]);
 
 								if( $loadCard ){
 
