@@ -26,7 +26,6 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN (SELECT * FROM support_message order by support_message.id_support_message desc limit 1) as sm on sm.id_support=s.id_support
 			LEFT JOIN `user` u ON u.id_user=s.id_user
 			LEFT JOIN `order` o ON o.id_order=s.id_order
-			LEFT JOIN admin a ON a.id_admin=sm.id_admin
 
 			WHERE 1=1
 		';
@@ -92,15 +91,17 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		$d = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			s.id_support,
+			s.name,
+			s.phone,
+			s.type,
 			sm.id_support_message,
 			sm.id_admin,
 			sm.date,
 			UNIX_TIMESTAMP(sm.date) as timestamp,
-			sm.name,
-			sm.phone,
+			sm.name as message_name,
+			sm.phone as message_phone,
 			sm.from,
 			u.name as user_name,
-			a.name as admin_name,
 			u.id_user,
 			s.status,
 			sm.body as message
@@ -116,8 +117,11 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			}
 
 			if (!$o->name) {
-				$o->name = Phone::name($o);
+				$n = Phone::name($o, true);
+				$o->name = $n['name'];
+				$o->id_admin_from = $n['id_admin'];
 			}
+
 			$support = Support::o( $o->id_support );
 			$message = $support->lastMessage();
 			$message = $message->get( 0 );

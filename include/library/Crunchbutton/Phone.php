@@ -109,7 +109,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		return parent::save();
 	}
 	
-	public static function name($mixed) {
+	public static function name($mixed, $returnId = false) {
 		if (is_object($mixed)) {
 			if ($mixed->phone) {
 				$phone = $mixed->phone;
@@ -117,6 +117,8 @@ class Crunchbutton_Phone extends Cana_Table {
 			if ($mixed->from == 'system') {
 				$name = 'SYSTEM';
 			}
+		} else {
+			$phone = $mixed;
 		}
 		
 		$phone = self::clean($phone);
@@ -142,8 +144,16 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (!$name) {
 			$name = $phone;
 		}
-
-		return $name;
+		
+		if ($returnId) {
+			return [
+				'name' => $name,
+				'id_admin' => $user->id_admin,
+				'id_user' => $user->id_user
+			];
+		} else {
+			return $name;
+		}
 
 	}
 	
