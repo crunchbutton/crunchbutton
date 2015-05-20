@@ -101,44 +101,58 @@
 							<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
 						</div>
 					</div>
-					<div class="field-row">
-						<div class="field-key">Price</div>
-						<div class="field-value">
 
-							<table align="right" class="basic-table">
-								<tr><td>Price:</td><td>${{order.price | number:2}}</td></tr>
-								<tr><td>Markup:</td><td>${{order.delivery_service_markup_value | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
-								<tr><td>Service Fee:</td><td>${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
-								<tr><td>Delivery Fee:</td><td>${{order.delivery_fee | number:2}}</td></tr>
-								<tr><td>Tax:</td><td>${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
-								<tr><td>Tip:</td><td>${{order.tip | number:2}}</td></tr>
-								<tr><td class="listview-bold">Total:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
-							</table>
-
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Contents</div>
-						<div class="field-value">
-							<table align="right" class="basic-table">
-								<tr>
-									<th>Dish</th>
-									<th>Price</th>
-									<th>Marked up</th>
-								</tr>
-								<tr ng-repeat="dish in order._dishes">
-									<td>{{dish.name}}</td>
-									<td>${{dish.price.regular | number:2}}</td>
-									<td>${{dish.price.marked_up | number:2}}</td>
-								</tr>
-							</table>
-
-						</div>
-					</div>
+					
 				</div>
 				
 				<br>
 				<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()">Refund</button>
+
+			</div>
+		</div>
+		
+		<? /* customer */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.user.id_user">
+			<div class="support-box-wrap-header">
+				<h1>Contents</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<table align="right" class="basic-table detail">
+					<tr>
+						<td class="topitem order-contents-item-qty">Qty</td>
+						<td class="topitem itemname">Item</td>
+						<td class="topitem itemname"></td>
+						<td class="topitem itemprice">Store Price</td>
+					</tr>
+					<tr ng-repeat="dish in order._dishes_qty">
+						<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
+						<td class="fooditem dish-name">
+							<b>{{dish.name}}</b>
+							<div>{{dish.options.select_options}}</div>
+							<div>{{dish.options.with_option}}</div>
+							<div>{{dish.options.without_default_options}}</div>
+						</td>
+						<td class="fooditem dish-price-unity">
+							<span ng-if="dish.quantity > 1">
+								{{dish.quantity}} * ${{dish.price.regular_unity | formatPrice}}
+							</span>
+						</td>
+						<td class="fooditem dish-price">
+							${{dish.price.regular | formatPrice}}
+						</td>
+					</tr>
+					<tr><td><br></td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Subtotal:</td><td nowrap class="dish-price">${{order.price | number:2}}</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Markup:</td><td nowrap class="dish-price">${{order.delivery_service_markup_value || 0 | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Service Fee:</td><td nowrap class="dish-price">${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Delivery Fee:</td><td nowrap class="dish-price">${{order.delivery_fee || 0 | number:2}}</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tax:</td><td nowrap class="dish-price">${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order.tip || 0 | number:2}}</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
+				</table>
+				<div class="divider"></div>
 
 			</div>
 		</div>
