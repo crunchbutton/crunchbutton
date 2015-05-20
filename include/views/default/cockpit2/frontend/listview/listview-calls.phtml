@@ -1,22 +1,51 @@
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
-			<th>ID</th>
-			<th>From</th>
-			<th>Status</th>
-			<th>Start</th>
-			<th>End</th>
-			<th>Ticket</th>
+			<th class="tb-small tb-v-center">ID</th>
+			<th>Contact</th>
+			<th class="tb-small tb-center">Type</th>
+			<th class="tb-small tb-center">Direction</th>
+			<th class="tb-small tb-center">Status</th>
+			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="call in calls">
 			<td><a href="/call/{{call.id_call}}">{{call.id_call}}</td>
-			<td><a href ng-click="callText(call.from)">{{call.from | formatPhone}}</a></td>
-			<td>{{call.status}}</td>
-			<td>{{call.start_time}}</td>
-			<td>{{call.end_time}}</td>
 			<td>
-				<span ng-if="call.support.id_support"><a href="/ticket/{{call.support.id_support}}">View Ticket</a></span>
-				<span ng-if="!call.support.id_support"><a href="/call/{{call.id_call}}/ticket">Create Ticket</a></span>
+				<a href="/customer/{{call.id_user_from}}" ng-if="call.id_user_from">{{call.user_from}}</a>
+				<a href="/staff/{{call.id_admin_from}}" ng-if="!call.id_user_from && call.id_admin_from">{{call.admin_from}}</a>
+				<i ng-if="!call.id_user_from && !call.id_admin_from">unknown</i>
+
+				<br><a href ng-click="callText(call.from)" class="listview-smaller">{{call.from | formatPhone}}</a>
+			</td>
+			<td class="tb-v-center tb-center">
+				<span class="tag tag-blue" ng-if="call.id_user_from">Customer</span>
+				<span class="tag tag-orange" ng-if="!call.id_user_from && call.id_admin_from">Driver</span>
+				<span class="tag tag-grey" ng-if="!call.id_user_from && !call.id_admin_from">Unknown</span>
+			</td>
+			<td class="tb-v-center tb-center">
+				<span class="tag tag-purple" ng-if="call.direction == 'inbound'">In</span>
+				<span class="tag tag-orange" ng-if="call.direction == 'outbound'">Out</span>
+			</td>
+			<td nowrap class="tb-v-center tb-center">
+				<span class="tag tag-green" ng-if="call.status == 'completed'">Completed</span>
+				<span class="tag tag-blue" ng-if="call.status == 'in-progress'">In Progress</span>
+				<span class="tag tag-blue" ng-if="call.status == 'ringing'">Ringing</span>
+				<span class="tag tag-blue" ng-if="call.status == 'queued'">Queued</span>
+				<span class="tag tag-red" ng-if="call.status == 'failed'">No Answer</span>
+				<span class="tag tag-red" ng-if="call.status == 'failed'">Failed</span>
+				<span class="tag tag-red" ng-if="call.status == 'busy'">Busy</span>
+				<span class="tag tag-red" ng-if="call.status == 'canceled'">Canceled</span>
+				<br>
+				<span ng-if="call.date_end" class="listview-smaller">
+					<span am-time-ago="call.date_end | timestamp"></span>
+				</span>
+				<span ng-if="!call.date_end" class="listview-smaller">
+					<span am-time-ago="call.date_start | timestamp"></span>
+				</span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="/ticket/{{call.support.id_support}}" ng-if="call.support.id_support"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Ticket</button></a>
+				<a href="/call/{{call.id_call}}/ticket" ng-if="!call.support.id_support"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Ticket</button></a>
 			</td>
 		</tr>
 	</table>

@@ -22,7 +22,8 @@ NGApp.controller('CallsCtrl', function ($rootScope, $scope, CallService, ViewLis
 		scope: $scope,
 		watch: {
 			search: '',
-			status: 'all'
+			status: 'all',
+			fullcount: false
 		},
 		update: function() {
 			CallService.list($scope.query, function(d) {
