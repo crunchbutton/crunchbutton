@@ -2644,7 +2644,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		Log::debug([ 'method' => 'pexcardFunds', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
 
-		$status = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ' . $order->id_order . ' ORDER BY id_order_action DESC LIMIT 1' );
+		$status = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? ORDER BY id_order_action DESC LIMIT 1', [ $order->id_order ] )->get( 0 );
 
 		Log::debug([ 'method' => 'pexcardFunds', 'id_order_action' => $status->id_order_action , 'type' => 'pexcard-load' ]);
 		Log::debug([ 'method' => 'pexcardFunds', 'id_admin' => $status->id_admin , 'type' => 'pexcard-load' ]);
