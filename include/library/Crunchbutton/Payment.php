@@ -334,7 +334,7 @@ class Crunchbutton_Payment extends Cana_Table {
 	}
 
 	public function processor(){
-		return c::config()->site->config('processor_payments')->value;
+		return c::config()->site->config('processor_settlement')->value;
 	}
 
 	public function __construct($id = null) {
