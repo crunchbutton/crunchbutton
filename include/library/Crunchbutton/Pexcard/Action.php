@@ -6,6 +6,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	const ACTION_SHIFT_FINISHED = 'shift-finished';
 	const ACTION_ORDER_ACCEPTED = 'order-accepted';
 	const ACTION_ORDER_CANCELLED = 'order-cancelled';
+	const ACTION_ORDER_REJECTED = 'order-rejected';
 	const ACTION_ARBRITARY = 'arbritary';
 	const ACTION_REMOVE_FUNDS = 'remove-funds';
 
