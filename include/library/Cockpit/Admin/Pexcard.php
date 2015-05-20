@@ -203,7 +203,8 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 						$pexcard_action->id_admin_shift_assign = $params[ 'id_admin_shift_assign' ];
 						break;
 					case Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED:
-					case Crunchbutton_Pexcard_Action::ACTION_ORDER_CANCELLED:
+					case Crunchbutton_Pexcard_Action::ACTION_ORDER_ACCEPTED:
+					case Crunchbutton_Pexcard_Action::ACTION_ORDER_REJECTED:
 						$pexcard_action->id_order = $params[ 'id_order' ];
 						break;
 					default:
