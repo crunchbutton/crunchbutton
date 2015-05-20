@@ -2647,6 +2647,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$status = $order->status()->last();
 
 		Log::debug([ 'method' => 'pexcardFunds', 'status' => $status[ 'driver' ] , 'type' => 'pexcard-load' ]);
+		Log::debug([ 'method' => 'pexcardFunds', 'status' => $status[ 'driver' ][ 'id_admin' ] , 'type' => 'pexcard-load' ]);
 
 		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
 
