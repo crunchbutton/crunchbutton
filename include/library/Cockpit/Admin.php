@@ -23,7 +23,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		];
 		$paymentType = $this->payment_type();
 		if ($paymentType->id_admin_payment_type) {
-			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->balanced_id && $this->ssn()) {
+			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->stripe_account_id && $paymentType->stripe_id && $this->ssn() && $this->dob) {
 				$status['payment'] = true;
 			}
 		}
