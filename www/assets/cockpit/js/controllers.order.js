@@ -133,7 +133,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		console.debug('Got route update: ', args);
 	});
 
-	$scope.updater = $interval(update, 5000);
+	$scope.updater = $interval(update, 30000); // update every 30 seconds
 	$scope.$on('$destroy', function() {
 		$interval.cancel($scope.updater);
 		cleanup();
@@ -202,6 +202,31 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 				$scope.flash.setMessage( 'Error!' );
 			}
 		} );
+	}
+	
+	
+	$scope.resend_notification_drivers = function(){
+		$scope.isDriverNotifying = true;
+		OrderService.resend_notification_drivers( $scope.order.id_order, function(result) {
+			$scope.isDriverNotifying = false;
+			if (result.status != 'success') {
+				$scope.flash.setMessage( 'Error!' );
+			} else {
+				$scope.flash.setMessage( 'Notifications sent' );
+			}
+		});
+	}
+	
+	$scope.resend_notification = function(){
+		$scope.isRestaurantNotifying = true;
+		OrderService.resend_notification( $scope.order.id_order, function(result) {
+			$scope.isRestaurantNotifying = false;
+			if (result.status != 'success') {
+				$scope.flash.setMessage( 'Error!' );
+			} else {
+				$scope.flash.setMessage( 'Notifications sent' );
+			}
+		});
 	}
 
 	update();

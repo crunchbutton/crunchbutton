@@ -1410,6 +1410,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$order = $this;
 		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
 		$order->notifyDrivers();
+		return true;
 	}
 
 	public function resend_notify(){
@@ -1421,6 +1422,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
 		$order->ignoreDrivers = true;
 		$order->notify();
+		return true;
 	}
 
 	public function confirm() {
