@@ -41,12 +41,16 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 			if( class_exists( $this->class ) ){
 				$job = new $this->class;
 				$job->id_cron_log = $this->id_cron_log;
+
 				if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
 					if( method_exists( $job, 'run' ) ){
-						// async
+
+						$env = ( $this->env ? $this->env : 'live' );
+
 						Cana::timeout( function() use( $job ) {
 							$job->run();
-						} );
+						}, 1000, true, $env );
+
 					} else {
 						$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
 					}
