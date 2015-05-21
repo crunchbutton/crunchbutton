@@ -567,8 +567,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 
 
-
-
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page);
@@ -592,7 +590,20 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.windowHeight = $window.outerHeight;
 		$rootScope.$apply( 'windowWidth' );
 		$rootScope.$apply( 'windowHeight' );
+		isMobile();
 	});
+
+	$rootScope.isMobileWidth = false;
+
+	var isMobile = function(){
+		if( $rootScope.windowWidth <= 1024 ){
+			$rootScope.isMobileWidth = true;
+		} else {
+			$rootScope.isMobileWidth = false;
+		}
+	}
+
+	isMobile();
 
 	$scope.hasLocations = function(){
 		return ( LocationService.position.hasValidLocation() );
