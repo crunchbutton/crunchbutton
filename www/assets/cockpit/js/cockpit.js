@@ -759,11 +759,15 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 	});
 };
 
-App.confirm = function(txt, title, fn, buttons) {
+App.confirm = function(txt, title, success, fail, buttons) {
 	if (App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
-		return parent.window.navigator.notification.confirm(txt, fn, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
+		return parent.window.navigator.notification.confirm(txt, success, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
 	} else {
-		return confirm(txt);
+		if (confirm(txt)) {
+			success();
+		} else {
+			fail();
+		}
 	}
 };
 

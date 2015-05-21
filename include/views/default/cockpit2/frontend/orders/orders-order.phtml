@@ -61,6 +61,12 @@
 							<a ng-if="order.processor == 'stripe'" href="https://dashboard.stripe.com/payments/{{order.txn}}" target="_blank">{{order.txn}}</a>
 						</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">User Agent</div>
+						<div class="field-value">
+							{{order.agent}}
+						</div>
+					</div>
 					<div class="field-row" ng-if="order.status.status != 'delivered' && eta.time">
 						<div class="field-key">ETA</div>
 						<div class="field-value">
@@ -108,8 +114,8 @@
 				<br><br>
 				<div class="tripple-cols">
 					<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
-					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying}"><i class="fa fa-car"></i>&nbsp;&nbsp;Notify</button>
-					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
+					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && (order.status.status != 'new' || order.status.status != 'rejected'))}"><i class="fa fa-car"></i>&nbsp;&nbsp;Notify</button>
+					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
 				</div>
 				
 			</div>
@@ -164,7 +170,12 @@
 		<? /* customer */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.user.id_user">
 			<div class="support-box-wrap-header">
-				<h1>Customer <a href="/customer/{{order.user.id_user}}">#{{order.user.id_user}}</a></h1>
+				<h1>Customer #{{order.user.id_user}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/customer/{{order.user.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
 			</div>
 
@@ -189,7 +200,12 @@
 		<? /* restaurant */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.restaurant.id_restaurant">
 			<div class="support-box-wrap-header">
-				<h1>Restaurant <a href="/restaurant/{{order.restaurant.id_restaurant}}">#{{order.restaurant.id_restaurant}}</a></h1>
+				<h1>Restaurant #{{order.restaurant.id_restaurant}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/restaurant/{{order.restaurant.id_restaurant}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
 			</div>
 
@@ -214,7 +230,12 @@
 		<? /* driver */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
 			<div class="support-box-wrap-header">
-				<h1>Driver <a href="/staff/{{order.driver.id_admin}}">#{{order.driver.id_admin}}</a></h1>
+				<h1>Driver #{{order.driver.id_admin}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/staff/{{order.driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
 			</div>
 
