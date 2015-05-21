@@ -74,7 +74,15 @@
 			<li class="li-input" ng-show="promo.all == 0">
 				<div class="label">Communities:</div>
 				<div class="input">
-					<div isteven-multi-select selection-mode="single" input-model="communities" output-model="outputCommunities" button-label="name" item-label="name" tick-property="ticked" ></div>
+
+					<ui-select ng-model="promo.id_community" theme="selectize" ng-disabled="disabled" style="width: 300px;" title="Select a community">
+						<ui-select-match placeholder="Select a community">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+							{{community.name}}
+						</ui-select-choices>
+					</ui-select>
+					
+				</div>
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.usable_by.$invalid}">
