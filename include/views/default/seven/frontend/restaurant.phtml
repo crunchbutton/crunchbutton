@@ -28,8 +28,19 @@
 			<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
 
 			<!-- place order button - just for mobile -->
-			<div class="hide-desktop">
-				<div class="button-pushable" ng-show="order.form.name || order.form.phone"><button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button></div>
+			<div ng-if="isMobileWidth">
+
+				<div class="payment-content">
+
+					<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+
+					<div class="button-pushable" ng-show="order.form.name || order.form.phone">
+						<button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button>
+						<div class="divider"></div>
+					</div>
+
+				</div>
+
 			</div>
 
 			<!-- payment and user info -->
@@ -45,7 +56,7 @@
 	</div>
 
 	<!-- total breakdown -->
-	<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+	<ng-include ng-if="!isMobileWidth" src="'assets/view/restaurant-breakdown.html'"></ng-include>
 
 	<div class="divider bottom-spacer"></div>
 
