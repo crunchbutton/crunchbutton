@@ -16,6 +16,7 @@ $desktopWidth: 1025px;
 
 $buttonGreen: #1ab394;
 $buttonOrange: #e1574c;
+$buttonBlue: #2485c4;
 
 @import 'border';
 @import 'button';
@@ -2560,6 +2561,13 @@ b, strong{ font-weight: bold; }
 .double-cols {
 	-webkit-column-count: 2;
 	-webkit-column-gap: 15px;
+	@include gpu();
+}
+
+.tripple-cols {
+	-webkit-column-count: 3;
+	-webkit-column-gap: 15px;
+	@include gpu();
 }
 
 .field-container .field-row-button .field-two-rows {
@@ -3889,7 +3897,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	background: #f19161;
 }
 .tag.tag-blue {
-	background: #2485c4;
+	background: $buttonBlue;
 }
 .tag.tag-grey {
 	background: #666;

@@ -104,10 +104,14 @@
 
 					
 				</div>
-				
-				<br>
-				<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()">Refund</button>
 
+				<br><br>
+				<div class="tripple-cols">
+					<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
+					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying}"><i class="fa fa-car"></i>&nbsp;&nbsp;Notify</button>
+					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
+				</div>
+				
 			</div>
 		</div>
 		
@@ -152,7 +156,7 @@
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order.tip || 0 | number:2}}</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 				</table>
-				<div class="divider"></div>
+				
 
 			</div>
 		</div>
@@ -207,23 +211,6 @@
 			</div>
 		</div>
 
-		<? /* location */ ?>
-		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
-			<div class="support-box-wrap-header">
-				<h1>Location</h1>
-				<div class="support-box-header-actions">
-					<span class="tag tag-red">BETA</span>
-				</div>
-				<div class="divider"></div>
-			</div>
-
-			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-				<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
-			</map>
-			<div class="divider"></div>
-			
-		</div>
-
 		<? /* driver */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
 			<div class="support-box-wrap-header">
@@ -261,6 +248,24 @@
 				</div>
 
 			</div>
+		</div>
+		
+
+		<? /* location */ ?>
+		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
+			<div class="support-box-wrap-header">
+				<h1>Location</h1>
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+				<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
+			</map>
+			<div class="divider"></div>
+			
 		</div>
 
 	</div>
