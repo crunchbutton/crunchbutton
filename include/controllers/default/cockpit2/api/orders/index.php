@@ -16,6 +16,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$user = $this->request()['user'] ? $this->request()['user'] : null;
 		$phone = $this->request()['phone'] ? $this->request()['phone'] : null;
+		$datestart = $this->request()['datestart'] ? $this->request()['datestart'] : null;
+		$dateend = $this->request()['dateend'] ? $this->request()['dateend'] : null;
 		$restaurant = $this->request()['restaurant'] ? $this->request()['restaurant'] : null;
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
 		$export = $this->request()['export'] ? true : false;
@@ -76,6 +78,22 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				AND restaurant.id_restaurant=?
 			';
 			$keys[] = $restaurant;
+		}
+		
+		if ($datestart) {
+			$datestart = date('Y-m-d', strtotime($datestart));
+			$q .= '
+				AND `order`.date >= ?
+			';
+			$keys[] = $datestart;
+		}
+		
+		if ($dateend) {
+			$dateend = date('Y-m-d', strtotime($dateend));
+			$q .= '
+				AND `order`.date <= date_add(?, interval 1 day)
+			';
+			$keys[] = $dateend;
 		}
 
 		if ($search) {
