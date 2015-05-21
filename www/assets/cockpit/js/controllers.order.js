@@ -74,6 +74,8 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			community: '',
 			date: '',
 			view: 'list',
+			datestart: '',
+			dateend: '',
 			fullcount: false
 		},
 		update: function() {
