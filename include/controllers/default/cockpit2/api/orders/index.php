@@ -18,6 +18,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$phone = $this->request()['phone'] ? $this->request()['phone'] : null;
 		$restaurant = $this->request()['restaurant'] ? $this->request()['restaurant'] : null;
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$export = $this->request()['export'] ? true : false;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 
 		$keys = [];
@@ -129,11 +130,15 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$q .= '
 			GROUP BY `order`.id_order
 			ORDER BY `order`.id_order DESC
-			LIMIT ?
-			OFFSET ?
 		';
-		$keys[] = $getCount ? $limit : $limit+1;
-		$keys[] = $offset;
+		if (!$export) {
+			$q .= '
+				LIMIT ?
+				OFFSET ?
+			';
+			$keys[] = $getCount ? $limit : $limit+1;
+			$keys[] = $offset;
+		}
 
 		// do the query
 		$data = [];
@@ -157,7 +162,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		while ($o = $r->fetch()) {
 
-			if (!$getCount && $i == $limit + 1) {
+			if (!$export && !$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
 			}
@@ -186,14 +191,22 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 		
 		$pages = ceil($count / $limit);
+		
+		if ($export) {
+			// @todo: make these layouts actulay do something. they are from old cockpit and need to be migrated
+			c::view()->orders = $data;
+			c::view()->layout('layout/csv');
+			c::view()->display('orders/csv', ['display' => true, 'filter' => false]);
+		} else {
 
-		echo json_encode([
-			'more' => $getCount ? $pages > $page : $more,
-			'count' => intval($count),
-			'pages' => $pages,
-			'page' => intval($page),
-			'results' => $data
-		], JSON_NUMERIC_CHECK);
+			echo json_encode([
+				'more' => $getCount ? $pages > $page : $more,
+				'count' => intval($count),
+				'pages' => $pages,
+				'page' => intval($page),
+				'results' => $data
+			], JSON_NUMERIC_CHECK);
+		}
 
 	}
 }
