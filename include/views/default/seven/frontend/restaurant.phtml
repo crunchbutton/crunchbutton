@@ -7,421 +7,47 @@
 
 		<div class="restaurant-pad"></div>
 
-		<div ng-if="restaurant.image" class="restaurant-pic-wrapper">
-
-			<div class="restaurant-pic hide-mobile" style="background: url(https://i.crunchbutton.com/1200x425/{{restaurant.permalink}}.jpg?crop=1);"></div>
-			<div class="restaurant-pic hide-desktop" style="background: url({{restaurant.img}});"><div class="restaurant-pic-overlay"></div></div>
-
-			<div class="restaurant-content-padding">
-
-				<div class="restaurant-name">
-					<h1 ng-resize-text>{{restaurant.name}}</h1><div></div>
-					<h2>{{restaurant.message || restaurant.short_description}}</h2>
-				</div>
-
-				<div class="giftcard-badge" ng-if="credit.hasValue">
-					<i class="fa fa-certificate"></i>
-					<div class="giftcard-badge-value"><sup>$</sup>{{Math.round(credit.value)}}</div>
-					<div class="giftcard-badge-text">gift card</div>
-				</div>
-			</div>
-
-			<div class="divider"></div>
-		</div>
-
+		<!-- image -->
+		<ng-include src="'assets/view/restaurant-image.html'"></ng-include>
 
 		<!-- main-content-readable-margin -->
-
 		<div class="restaurant-content-body content-padding">
 			<div class="restaurant-content-body-background"></div>
 
-			<div class="restaurant-comment" ng-if="restaurant.comment">
-				<div class="restaurant-comment-wrap">
-					<div class="restaurant-comment-image">
-						<div class="restaurant-comment-image-img" style="background: url(http://graph.facebook.com/{{restaurant.comment.fb}}/picture?type=normal)"></div>
-					</div>
-					<div class="restaurant-comment-content">
-						<h4>{{restaurant.comment.user}} says</h4>
-						<p>{{restaurant.comment.content}}</p>
-					</div>
-				</div>
-			</div>
+			<!-- comment -->
+			<ng-include src="'assets/view/restaurant-comment.html'"></ng-include>
 
 			<div ng-if="restaurant.eta" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
 
 			<div restaurant-is-closed></div>
 
-			<!-- cart -->
-			<div class="cart-items restaurant-side-bar">
-				<div ng-show="restaurant._open">
-
-					<div ng-show="!order.cart.hasItems()" class="restaurant-box">
-						<div class="restaurant-box-inner">
-							<span class="restaurant-box-icon">
-								<i class="fa fa-arrow-down"></i>
-							</span>
-							<span class="restaurant-box-content">
-								<? /* <span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span> */ ?>
-								<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartMobile}}</span>
-							</span>
-						</div>
-					</div>
-
-					<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="dialog-message dialog-message-error delivery-minimum-error">
-						Add <sup>$</sup><span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> more to meet the delivery min
-					</div>
-
-					<div ng-show="order.cart.hasItems()">
-						<div class="restaurant-title-wrap">
-							<div class="restaurant-title">The Order</div>
-							<div class="restaurant-title-bar"><div class="restaurant-title-bar-inner">&nbsp;</div></div>
-						</div>
-					</div>
-
-					<!-- Cart's basket -->
-					<div ng-repeat="item in order.cart.items">
-
-						<div class="cart-item">
-
-							<div ng-if="item.details.customization.customizable" ng-click="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config">Customize</div>
-
-							<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="fa fa-times-circle"></span></div>
-
-							<div class="cart-item-text">
-								<span class="cart-item-name">{{item.details.name}}</span><br />
-								<span class="cart-item-description">{{item.details.description}}</span>
-							</div>
-
-
-							<div class="divider"></div>
-
-						</div>
-
-						<!-- Customizable options -->
-						<div class="cart-customize-options" ng-show="item.details.customization.customizable && item.details.customization.expanded">
-
-							<div ng-repeat="option in item.details.customization.options">
-
-								<div class="cart-item-customize-item">
-
-									<div ng-switch on="option.type">
-
-										<!-- Customizable - select -->
-										<div ng-switch-when="select" class="cart-item-customize-item-select">
-											<label class="cart-item-customize-select-name">{{option.name}}</label>
-											<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
-										</div>
-
-										<!-- Customizable - checkbox -->
-										<div ng-switch-when="check" class="cart-item-customize-item-check">
-											<input type="checkbox" custom-checkbox ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
-											<span ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</span>
-											<span ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</span>
-											<div class="divider"></div>
-										</div>
-
-
-
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-					</div>
-				</div>
-
-
-				<div class="default-order-check" ng-show="order.info.totalItems && restaurant._open">
-					<input custom-checkbox type="checkbox" ng-model="order.form.make_default">
-					<a ng-click="order.form.make_default = !order.form.make_default;">Save this order for next time</a>
-					<div class="divider"></div>
-				</div>
-
-			</div>
-
 			<!-- menu -->
-			<div class="restaurant-items">
+			<ng-include src="'assets/view/restaurant-menu.html'"></ng-include>
 
-				<div ng-show="fullmenu">
-					<div ng-bind-once class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">
+			<!-- cart -->
+			<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
 
-						<div class="restaurant-title-wrap restaurant-category">
-							<div class="restaurant-title">{{category.name}}{{category.locName()}}</div>
-						</div>
+			<!-- place order button - just for mobile -->
+			<div ng-if="isMobileWidth">
 
-						<ul class="col-box resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-							<li ng-bind-once ng-repeat="dish in category.dishes()" class="two-col dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
-								<span class="dish-item-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span><br />
-								<span class="dish-item-description">{{dish.description}}</span>
-							</li>
-						</ul>
+				<div class="payment-content">
+
+					<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+
+					<div class="button-pushable" ng-show="order.form.name || order.form.phone">
+						<button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button>
+						<div class="divider"></div>
 					</div>
-
-					<br>
-
-					<button class="button green hide-desktop" ng-click="fullmenu=0">less food</button>
-
-				</div>
-
-				<div ng-show="!fullmenu">
-
-					<div class="restaurant-title-wrap">
-						<div class="restaurant-title">The Highlights</div>
-					</div>
-
-					<div ng-repeat="category in restaurant.categories()">
-						<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-							<li ng-repeat="dish in category.dishes() | filter: {top: 1}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
-								<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
-								<span class="dish-item-description">{{dish.description}}</span>
-							</li>
-						</ul>
-					</div>
-
-					<br>
-					<button class="button green" ng-click="fullmenu=1">see full menu</button>
 
 				</div>
 
 			</div>
-
 
 			<!-- payment and user info -->
-
-			<form class="payment-form restaurant-side-bar" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
-
-				<div class="divider dots spacer-one-one"></div>
-
-				<div ng-show="restaurant._open && order.showForm && order.cart.hasItems()">
-
-					<!-- user info -->
-					<div class="delivery-info-container">
-						<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
-							<div class="toggle-wrapper clearfix">
-								<button ng-click="order.toogleDelivery( 'delivery' )" ng-class="{'toggle-active': order.form.delivery_type=='delivery' }" class="payment-form-toggle">delivery</button>
-								<button ng-click="order.toogleDelivery( 'takeout' )" ng-class="{'toggle-active': order.form.delivery_type=='takeout' }" class="payment-form-toggle">takeout</button>
-								<div class="divider"></div>
-							</div>
-						</div>
-
-
-						<div class="payment-form-group form-group">
-							<i class="form-icon form-field"> </i>
-							<div class="form-field">
-								<div ng-show="(restaurant.delivery == '1' && restaurant.takeout != '1')">
-									<label class="pay-title-label">Delivery Info</label>
-								</div>
-
-								<div ng-show="(restaurant.delivery != '1' && restaurant.takeout == '1')">
-									<label class="pay-title-label">Takeout Info </label>
-									<span class="take-out-only">Take out only!</span>
-								</div>
-							</div>
-						</div>
-
-						<div class="divider spacer-one-two"></div>
-
-
-						<div class="personal-info field-container">
-							<div class="payment-form-group form-group">
-								<i class="fa fa-user payment-form-icon form-icon form-field"></i>
-								<input ng-focus="softKeyboard($event);" type="text" name="pay-name" tabindex="2" ng-model="order.form.name" class="payment-form-input form-input form-field" placeholder="name">
-							</div>
-
-							<div class="payment-form-group form-group">
-								<i class="fa fa-envelope-o payment-form-icon form-icon form-field"></i>
-								<input ng-focus="softKeyboard($event);" type="email" name="pay-email" tabindex="3" ng-model="order.form.email" class="payment-form-input form-input form-field" placeholder="email">
-							</div>
-
-							<div class="payment-form-group form-group">
-								<i class="fa fa-phone payment-form-icon form-icon form-field"></i>
-								<input ng-focus="softKeyboard($event);" type="tel" name="pay-phone" tabindex="4" ng-format-phone ng-model="order.form.phone" class="payment-form-input form-input form-field" placeholder="phone number">
-							</div>
-
-							<div class="payment-form-group form-group">
-								<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
-								<p class="pickup-info" ng-if="order.form.delivery_type!='delivery'">Pickup from:<br><span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
-								<textarea ng-focus="softKeyboard($event);" ng-autosize ng-show="order.form.delivery_type=='delivery'" class="payment-form-input form-input form-field" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
-							</div>
-
-							<div class="payment-form-group form-group">
-
-								<i class="fa fa-bullhorn payment-form-icon form-icon form-field"></i>
-								<textarea ng-focus="softKeyboard($event);" ng-autosize name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6" class="payment-form-input form-input form-field" placeholder="notes"></textarea>
-
-								<!-- Gift card messages -->
-								<div class="giftcard-info">
-
-									<div class="warning" ng-if="giftcard.removed">
-										You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.
-									</div>
-
-									<div ng-if="restaurant.giftcard == 0 && giftcard.hasGiftCards">
-										This restaurant does not accept gift card.
-									</div>
-
-									<div ng-if="giftcard.hasValue && order.form.pay_type == 'cash' ">
-										Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
-									</div>
-
-								<div ng-repeat="success in giftcard.giftcards.success">
-									<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
-										<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
-										<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free</span>
-									</div>
-								</div>
-
-
-								<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
-									<!-- Gift card success -->
-									<div ng-repeat="success in giftcard.giftcards.success">
-										<div ng-if="!success.delivery_free && !success.message">
-											<div ng-show="!success.error">
-												Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
-											</div>
-											<div ng-show="success.error == 'other restaurant'">
-												The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
-											</div>
-										</div>
-										<div ng-if="success.message">
-											{{success.message}}
-										</div>
-									</div>
-									<!-- Gift card errors -->
-									<div ng-repeat="error in giftcard.giftcards.error">
-										<div ng-switch on="error.error">
-											<div ng-switch-when="gift card already used">
-												The gift card ({{error.giftcard}}) you are trying to use was already redeemed.
-											</div>
-											<div ng-switch-when="custom">
-												{{error.message}}
-											</div>
-										</div>
-									</div>
-									<span ng-if="giftcard.justOneGiftCardError">
-										You can only use one gift card at a time!
-									</span>
-								</div>
-							</div>
-
-						</div>
-					</div>
-
-					<!-- payment info -->
-					<div class="payment-info-container">
-
-
-						<div class="divider spacer-two-two"></div>
-						<div class="divider spacer-one-one"></div>
-
-						<div class="payment-info field-container">
-							<div class="toggle-wrapper clearfix">
-								<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button>
-								<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
-								<div class="divider"></div>
-							</div>
-
-							<div class="divider spacer-two-two"></div>
-
-							<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
-								<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
-								<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber">
-							</div>
-
-							<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
-								<i class="fa payment-form-icon form-icon form-field"></i>
-								<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select></div>
-								<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year"></select></div>
-							</div>
-
-							<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
-								<i class="fa fa-thumbs-up payment-form-icon form-icon form-field"></i>
-								<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-								<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
-							</div>
-						</div>
-
-					</div>
-
-
-
-					</div>
-				</div>
-
-			</form>
+			<ng-include src="'assets/view/restaurant-form-user-info.html'"></ng-include>
 
 			<!-- stored user info -->
-
-			<div class="delivery-payment-info restaurant-side-bar" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
-
-				<div class="divider dots spacer-one-one"></div>
-					<div class="content-padding">
-
-					<p>We’ve saved your payment and delivery info for one click reordering.</p>
-
-					<div class="divider spacer-one-one"></div>
-
-					<div class="order-icon"><div class="icon-phone"></div></div>
-					<div class="order-info order-info-oneline">
-						<p>
-							<span ng-show="user.phone">{{ user.phone | formatPhone }}</span>
-							<span ng-show="!user.phone">no phone # provided</span>
-						</p>
-					</div>
-					<div class="divider"></div>
-					<div class="order-icon">
-							<div class="icon-credit" ng-show="order.form.pay_type=='card' && order.total() <= credit.number"></div>
-							<div class="icon-card" ng-show="order.form.pay_type=='card' && order.total() > credit.number"></div>
-							<div class="icon-cash" ng-show="order.form.pay_type=='cash'"></div>
-					</div>
-					<div class="order-info order-info-oneline">
-
-						<p>
-							<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
-							<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
-							<span ng-show="order.form.pay_type=='card' && !credit.number">Card ending in {{user.card_ending}}</span>
-							<span ng-show="order.form.pay_type=='cash'">Pay and tip with <b>cash</b></span>
-						</p>
-					</div>
-					<div class="divider"></div>
-
-
-					<div class="order-icon">
-						<div class="icon-map-home" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'"></div>
-						<div class="icon-map-restaurant" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'"></div>
-					</div>
-					<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
-						<p>
-							Delivered to:<br />
-						</p>
-						<p class="restaurant-info-address">
-							<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
-							<i ng-hide="order.form.address">no address provided</i>
-						</p>
-					</div>
-					<div class="order-info" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
-						<p class="restaurant-info-address">
-							Pick up from:<br />
-							<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
-						</p>
-					</div>
-
-
-					<div class="divider"></div>
-
-
-					<div class="order-icon"><div class="icon-notes" ng-show="order.form.notes"></div></div>
-					<div class="order-info">
-						<p ng-bind-html-unsafe="order.form.notes | nl2br" class="restaurant-info-address"></p>
-					</div>
-					<div class="divider"></div>
-
-					<div class="divider spacer-one-two"></div>
-
-					<button class="button green" ng-click="order.showForm=true">Change info</button>
-				</div>
-			</div>
+			<ng-include src="'assets/view/restaurant-stored-user-info.html'"></ng-include>
 
 		<div class="divider"></div>
 
@@ -430,110 +56,10 @@
 	</div>
 
 	<!-- total breakdown -->
-	<div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open"></div>
-
-	<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open">
-		<div class="restaurant-banana animated-resize"></div>
-
-		<div class="payment-wrap">
-			<div class="payment-ribbon" ng-class="{'backface':!isIOs}">
-				<div class="payment-ribbon-content">
-					<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>{{AB.dollar}}{{order.info.subtotal}}</span>
-					<span class="restaurant-payment-item">Tax: {{AB.dollar}}{{order.info.taxes}}</span>
-					<span class="restaurant-payment-item" ng-show="order.form.pay_type!='cash' && order.info.tip!='0.00'">Tip: {{AB.dollar}}{{order.info.tip}}</span>
-					<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00' && order.info.delivery_service_fee!='0.00'">Delivery Fee: {{AB.dollar}}{{order.info.delivery_service_fee}}</span>
-					<span class="restaurant-payment-item" ng-show="order.info.delivery=='0.00' && order.info.fee!='0.00'">Service Fee: {{AB.dollar}}{{order.info.fee}}</span>
-					<span class="restaurant-payment-item" ng-show="credit.hasValue && order.form.pay_type == 'card'">Credit: -$
-						<span ng-show="order.total() <= credit.number">{{order.info.total}}</span>
-						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
-					</span>
-					<span class="restaurant-payment-item">Bananas: 0</span>
-					<span class="restaurant-payment-item">Total: <b>{{order.info.totalText}}</b></span>
-				</div>
-			</div>
-			<div class="divider"></div>
-		</div>
-		<div class="divider"></div>
-
-		<div ng-if="credit.hasValue && order.form.pay_type == 'cash' && order.total() >= credit.number">
-			<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
-		</div>
-
-		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
-			<p class="delivery-free restaurant-delivery-free">
-				<strong ng-if="order.form.pay_type == 'card'">You have {{points.show}} points! This delivery fee is on us.</strong>
-				<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
-				<br/>
-			</p>
-		</div>
-
-	</div>
-
-
+	<ng-include ng-if="!isMobileWidth" src="'assets/view/restaurant-breakdown.html'"></ng-include>
 
 	<div class="divider bottom-spacer"></div>
 
-
 </div>
 
-
-<div class="address-incomplete-warning order-warning  zoom-anim-dialog mfp-hide dialog mfp-hide">
-	<div class="dialog-padding">
-		<b class="order-warning-bold">Confirm your address?</b>
-		<p>It looks like your address is incomplete: <br/> {{order.form.address}}</p>
-		<div class="divider spacer-one-two"></div>
-		<ul>
-			<li>
-				<div class="button-pushable">
-					<button class="button lightorange" ng-click="addressLetMeChangeIt()">
-						Add a City or Zip Code
-					</button>
-				</div>
-			</li>
-			<li>
-				<div class="cursor link" ng-click="addressPlaceAnyway();">Place Order Anyway</div>
-			</li>
-		</ul>
-	</div>
-</div>
-
-<div class="address-not-found-warning order-warning  zoom-anim-dialog mfp-hide dialog mfp-hide">
-	<div class="dialog-padding">
-		<b class="order-warning-bold">Confirm your address?</b>
-		<p>We could not find the address: <br/> {{order.form.address}}</p>
-		<div class="divider spacer-one-two"></div>
-		<ul>
-			<li>
-				<div class="button-pushable">
-					<button class="button lightorange" ng-click="addressLetMeChangeIt()">
-						Add a City or Zip Code
-					</button>
-				</div>
-			</li>
-			<li>
-				<div class="cursor link" ng-click="addressPlaceAnyway();">Continue</div>
-			</li>
-		</ul>
-	</div>
-</div>
-
-
-<div class="address-out-of-range-warning order-warning  zoom-anim-dialog mfp-hide dialog mfp-hide">
-	<div class="dialog-padding">
-		<b class="order-warning-bold">One sec!</b>
-		<p>The address <b>{{order.form.address}}</b> is out of delivery range, or you have entered an invalid address.<br/><br/>Please check your address, or order takeout.</p>
-		<div class="divider spacer-one-two"></div>
-		<ul>
-			<li>
-				<div class="button-pushable">
-					<button class="button lightorange" ng-click="addressLetMeChangeIt()">
-						Modify Address
-					</button>
-				</div>
-			</li>
-			<li>
-				<div class="cursor link" ng-click="addressPlaceAnyway();">Place Order Anyway</div>
-			</li>
-		</ul>
-	</div>
-</div>
+<ng-include src="'assets/view/restaurant-message-boxes.html'"></ng-include>
