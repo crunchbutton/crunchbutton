@@ -84,8 +84,6 @@ html {
 	@include noselect();
 }
 
-
-
 .logo {
 	background: url(../images/micro/crunchbutton-logo.svg) no-repeat;
 	width: 254px;
@@ -4015,62 +4013,6 @@ font-familt: "Museo Slab";
 	}
 	.footer {
 		display: none;
-	}
-	.restaurant-side-bar {
-		background: #373737;
-		padding: 1.5em;
-		color: #fff;
-	}
-
-	.restaurant-side-bar-margin{
-		margin-top: 1em;
-	}
-
-	.restaurant-side-bar .restaurant-title{
-		background: #373737;
-		color: #fff;
-	}
-	.restaurant-side-bar .cart-item{
-		background: none;
-	}
-	.restaurant-side-bar .cart-button-remove{
-		color:#f77748;
-	}
-
-	.restaurant-side-bar a, .restaurant-side-bar .custom-checkbox{
-		color: #f88f68;
-	}
-
-	.payment-content{
-		background: #373737;
-		color: #fff;
-		padding-bottom: 2em;
-	}
-	.payment-wrap {
-		overflow: none;
-		width: auto;
-		height: auto;
-		margin-right: 0;
-		float: right;
-	}
-	.restaurant-payment-content{
-		display: table-row;
-	}
-	.restaurant-payment-item{
-		display: table-row;
-		line-height: 1.3em;
-	}
-		.restaurant-payment-item-label, .restaurant-payment-item-value{
-			display: table-cell;
-		}
-		.restaurant-payment-item-label{
-			padding-right: 1em;
-		}
-		.restaurant-payment-item-value{
-			white-space: nowrap;
-		}
-	.restaurant-side-user-info{
-		background: #474747;
 	}
 }
 
