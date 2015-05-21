@@ -117,16 +117,38 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 		});
 	}
 	
-	service.resend_notification_drivers = function( id_order, callback ){
-		order.resend_notification_drivers( { id_order: id_order }, function( data ) {
-			callback( data );
-		});
+	service.resend_notification_drivers = function( order, callback ){
+		if (order.status.status != 'new' || order.status.status != 'rejected') {
+			$rootScope.flash.setMessage('Order has already been accepted.');
+			callback({status:false});
+			return;
+		}
+		var question = 'Are you sure you want to resend driver notifications to #' + order.id_order;
+		App.confirm(question, 'Renotify #' + order.id_order, order.resend_notification_drivers( { id_order: order.id_order }, function( data ) {
+			if (result.status != 'success') {
+				$rootScope.flash.setMessage('Error!');
+			} else {
+				$rootScope.flash.setMessage('Notifications sent');
+			}
+			callback(data);
+		}));
 	}
 	
-	service.resend_notification = function( id_order, callback ){
-		order.resend_notification( { id_order: id_order }, function( data ) {
-			callback( data );
-		});
+	service.resend_notification = function( order, callback ){
+		if (order.confirmed) {
+			$rootScope.flash.setMessage('Order has already been confirmed.');
+			callback({status:false});
+			return;
+		}
+		var question = 'Are you sure you want to resend restaurant notifications to #' + order.id_order;
+		App.confirm(question, 'Renotify #' + order.id_order, order.resend_notification( { id_order: order.id_order }, function( data ) {
+			if (result.status != 'success') {
+				$rootScope.flash.setMessage('Error!');
+			} else {
+				$rootScope.flash.setMessage('Notifications sent');
+			}
+			callback(data);
+		}));
 	}
 
 	service.saveeta = function(params, callback) {
