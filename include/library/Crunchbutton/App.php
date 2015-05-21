@@ -105,7 +105,7 @@ class Crunchbutton_App extends Cana_App {
 				'type' => 'PostgreSQL'
 			];
 			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
-			
+
 			if (getenv('REDISCLOUD_URL')) {
 				$params['config']->cache->default = $params['config']->cache->redis;
 				$params['config']->cache->default->url = getenv('REDISCLOUD_URL');
@@ -134,7 +134,7 @@ class Crunchbutton_App extends Cana_App {
 		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
-		
+
 
 
 		// set host callback by hostname
@@ -191,7 +191,7 @@ class Crunchbutton_App extends Cana_App {
 				break;
 
 		}
-		
+
 		c::stripe();
 
 		header('X-Powered-By: '.$this->config()->powered);
@@ -211,8 +211,8 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		if (getenv('HEROKU')) {
-			$stderr = fopen('php://stderr', 'w'); 
-			
+			$stderr = fopen('php://stderr', 'w');
+
 			fwrite($stderr, 'PHP EXCEPTION: '.$e->getMessage()."\n");
 
 			foreach ($backtracels as $l) {
@@ -220,7 +220,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 
 			fwrite($stderr, "\n");
-			fclose($stderr); 
+			fclose($stderr);
 		}
 
 		if ($this->env == 'live') {
@@ -289,7 +289,7 @@ class Crunchbutton_App extends Cana_App {
 
 		return $this;
 	}
-	
+
 	public function exception($e) {
 		$fn = $this->exceptionHandler();
 		if ($fn) {
@@ -298,7 +298,7 @@ class Crunchbutton_App extends Cana_App {
 			$this->defaultExceptionHandler($e);
 		}
 	}
-	
+
 	public function exceptionHandler($fn = null) {
 		if (!is_null($fn)) {
 			$this->_exceptionHandler = $fn;
@@ -342,7 +342,7 @@ class Crunchbutton_App extends Cana_App {
 		foreach ($stack as $theme) {
 			$this->controllerStack($theme);
 		}
-		
+
 		if ($this->isCockpit()) {
 			$this->config()->viewfilter = false;
 		}
@@ -491,7 +491,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_balanced;
 	}
-	
+
 	public function stripe() {
 		if (!$this->_stripe) {
 			\Stripe\Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
@@ -499,8 +499,8 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_stripe;
 	}
-	
-	
+
+
 
 	public function lob($d = true) {
 		if (!$this->_lob) {
@@ -579,7 +579,14 @@ class Crunchbutton_App extends Cana_App {
 		include(c::config()->dirs->www.'server-vacation.html');
 		exit;
 	}
-	
+
+	public function env(){
+		if( parent::env() == 'crondb' ){
+			return 'live';
+		}
+		return parent::env();
+	}
+
 	public function metricsDB() {
 		if (!isset($this->_metricsDB)) {
 			$this->_metricsDB = new Cana_Db_PostgreSQL_Db($this->config()->db->metrics);
