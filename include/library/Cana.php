@@ -146,7 +146,7 @@ class Cana extends Cana_Model {
 		return (new ReflectionMethod(self::app(), 'extend'))->invokeArgs(self::app(), func_get_args());
 	}
 
-	public function timeout($func, $ms = null, $async = true) {
+	public function timeout($func, $ms = null, $async = true, $forceEnv = false) {
 		$closure = new SuperClosure($func);
 		$encoded = base64_encode(serialize($closure));
 
@@ -154,7 +154,12 @@ class Cana extends Cana_Model {
 			$sleep = ' -s='.$ms;
 		}
 
-		$env = ' -e=' . ( c::getEnv(false) );
+
+		if( $forceEnv ){
+			$env = ' -e=' . $forceEnv;
+		} else {
+			$env = ' -e=' . ( c::getEnv(false) );
+		}
 
 		if (file_exists('/usr/local/bin/php')) {
 			$v = 'local';
@@ -163,7 +168,7 @@ class Cana extends Cana_Model {
 		}
 
 		$cmd = c::config()->dirs->root.'cli/timeout-'.$v.'.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded)) . $env;
-		
+
 		if (getenv('TRAVIS')) {
 			$async = false;
 		}
