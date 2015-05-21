@@ -38,7 +38,7 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 	}
 
 	public function document( $id_admin, $id_driver_document ){
-		$document = Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status WHERE id_admin = ' . $id_admin . ' AND id_driver_document =' . $id_driver_document )->get( 0 );
+		$document = Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status WHERE id_admin = ? AND id_driver_document = ?', [$id_admin, $id_driver_document])->get( 0 );
 		if( $document->id_driver_document ){
 			return $document;
 		}

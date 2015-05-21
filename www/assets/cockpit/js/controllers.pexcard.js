@@ -45,7 +45,7 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 
 } );
 
-NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, $route, PexCardService, DriverOnboardingService ) {
+NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, $route, PexCardService) {
 
 	$scope.submitted = false;
 	$scope.isSearching = false;
@@ -160,7 +160,9 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, $route, PexC
 		} );
 	}
 
-	DriverOnboardingService.pexcard( function( json ){ $scope.drivers = json; } );
+	PexCardService.list(function(json) {
+		$scope.drivers = json;
+	});
 
 	if( $routeParams.id ){
 		if( $route.current.driver ){

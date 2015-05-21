@@ -123,56 +123,6 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 	});
 });
 
-NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
-
-	$scope.showForm = true;
-
-	$scope.search = {};
-
-	$scope.ready = true;
-	$scope.search._types = StaffService.typeSearch();
-	$scope.search._status = StaffService.statusSearch();
-	$scope.search.type = 'all';
-	$scope.search.status = 'all';
-	$scope.search.name = '';
-	$scope.page = 1;
-
-	var list = function(){
-		$scope.searched = true;
-		$scope.isSearching = true;
-		var search = { 'type': $scope.search.type, 'name': $scope.search.name, 'status': $scope.search.status, 'page': $scope.page }
-		StaffService.list( search, function( data ){
-			$scope.isSearching = false;
-			$scope.pages = data.pages;
-			$scope.next = data.next;
-			$scope.prev = data.prev;
-			$scope.staff = data.results;
-			$scope.count = data.count;
-		} );
-	}
-
-	var waiting = false;
-
-	$scope.doSearch = function(){
-		$scope.page = 1;
-		list();
-	}
-
-	$scope.nextPage = function(){
-		$scope.page = $scope.next;
-		list();
-	}
-
-	$scope.prevPage = function(){
-		$scope.page = $scope.prev;
-		list();
-	}
-
-	$scope.payinfo = function( id_admin ){
-		$scope.navigation.link( '/staff/payinfo/' + id_admin );
-	}
-
-});
 
 NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
 
