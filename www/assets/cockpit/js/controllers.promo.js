@@ -85,15 +85,6 @@ NGApp.controller( 'PromoDiscountCodeCtrl', function ($scope, $routeParams, $filt
 		} );
 	}
 
-	$scope.$watch( 'outputCommunities', function( newValue, oldValue, scope ) {
-		if( $scope.promo ){
-			$scope.promo.id_community = null;
-			angular.forEach( newValue, function( community, key ){
-				$scope.promo.id_community = community.id_community;
-			} );
-		}
-	});
-
 	if( $routeParams.id ){
 
 		PromoDiscountCodeService.get( $routeParams.id, function( json ){

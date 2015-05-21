@@ -12,7 +12,13 @@
 			<li class="li-input" ng-class="{'error':form.paymentDriver.$invalid}">
 				<div class="label">Select a driver:</div>
 				<div class="input">
-					<div isteven-multi-select selection-mode="single" input-model="drivers" output-model="outputDriver" button-label="name" item-label="name" tick-property="ticked" ></div>
+
+					<ui-select ng-model="payment.id_driver" theme="selectize" ng-disabled="disabled" style="width: 300px;" title="Select a driver">
+						<ui-select-match placeholder="Select a driver">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="driver.id_admin as driver in drivers | propsFilter: {name: $select.search}">
+							{{driver.name}}
+						</ui-select-choices>
+					</ui-select>
 				</div>
 				<div class="box-error">
 					<small ng-show="form.paymentDriver.$error.required">Required.</small>

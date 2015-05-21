@@ -882,15 +882,6 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 		} );
 	}
 
-	$scope.$watch( 'outputDriver', function( newValue, oldValue, scope ) {
-		if ( $scope.payment ) {
-			angular.forEach( newValue, function( driver, key ){
-				$scope.payment.id_driver = driver.id_admin;
-			} );
-		};
-	});
-
-
 	var payments_type = function(){
 		$scope.payments_type = [ { 'pay_type': 'payment', 'name': 'Payment'  }, { 'pay_type': 'reimbursement', 'name': 'Reimbursement'  } ];
 	}

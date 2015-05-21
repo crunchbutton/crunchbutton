@@ -79,15 +79,6 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 		} );
 	}
 
-	$scope.$watch( 'outputCommunities', function( newValue, oldValue, scope ) {
-		if( $scope.resource ){
-			$scope.resource.communities = [];
-			angular.forEach( newValue, function( community, key ){
-				$scope.resource.communities.push( community.id_community );
-			} );
-		}
-	});
-
 	if( $routeParams.id ){
 		CommunityResourceService.get( $routeParams.id, function( json ){
 			$scope.resource = json;
@@ -113,5 +104,6 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 			App.alert( 'File not saved! ');
 		}
 	});
+	
 
 });
