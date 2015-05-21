@@ -34,6 +34,14 @@
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</live>
+		<crondb>
+			<user>***REMOVED***</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton</db>
+			<host>192.168.190.21</host>
+			<prefix></prefix>
+			<encrypted>true</encrypted>
+		</crondb>
 		<beta>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
