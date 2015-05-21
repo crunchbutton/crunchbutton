@@ -595,51 +595,26 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 	list();
 
 } );
-NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, DriverOnboardingService) {
+NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, StaffService, ViewListService) {
+	angular.extend( $scope, ViewListService );
 
-	var query = $location.search();
-	$scope.query = {
-		search: query.search,
-		limit: query.limit || 25,
-		page: query.page || 1
-	};
-
-	$scope.query.page = parseInt($scope.query.page);
-
-	var update = function() {
-		$scope.loading = true;
-		DriverOnboardingService.list($scope.query.page, $scope.query.search, function(data) {
-			$scope.pages = data.pages;
-			$scope.drivers = data.results;
-			$scope.count = data.count;
-			$scope.loading = false;
-		});
-	}
-
-	var watch = function() {
-		$location.search($scope.query);
-		update();
-	};
-
-	// @todo: this breaks linking to pages
-	var inputWatch = function() {
-		if ($scope.query.page != 1) {
-			$scope.query.page = 1;
-		} else {
-			watch();
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'driver',
+			status: 'active',
+			working: 'all',
+			pexcard: 'all',
+			fullcount: false
+		},
+		update: function() {
+			StaffService.list($scope.query, function(d) {
+				$scope.drivers = d.results;
+				$scope.complete(d);
+			});
 		}
-	};
-
-	$scope.$watch('query.search', inputWatch);
-	$scope.$watch('query.limit', inputWatch);
-	$scope.$watch('query.page', watch);
-
-	$scope.setPage = function(page) {
-		$scope.query.page = page;
-		App.scrollTop(0);
-	};
-
-	$scope.focus('#search');
+	});
 });
 
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService, StaffPayInfoService ) {

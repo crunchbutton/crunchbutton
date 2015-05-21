@@ -7,7 +7,6 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				'get' : { 'method': 'GET', params : { action : null } },
 				'notify' : { 'method': 'POST', params : { action: 'notify' } },
 				'referral' : { 'method': 'POST', params : { action: 'referral' } },
-				'list' : { 'method': 'GET', params : { action: 'list', method: 'method' } },
 				'pexcard' : { 'method': 'GET', params : { action: 'list', method: 'pexcard' }, isArray: true },
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'setupValidate' : { 'method': 'GET', params : { action: 'setup' } },
@@ -148,14 +147,8 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
-	// get driver's list
-	service.list = function( page, search, callback ){
-		drivers.list( { page : page, search : search }, function( data ){
-			callback( data );
-		} );
-	}
-
 	service.pexcard = function( callback ){
+		alert('pex');
 		drivers.pexcard( {}, function( data ){
 			callback( data );
 		} );

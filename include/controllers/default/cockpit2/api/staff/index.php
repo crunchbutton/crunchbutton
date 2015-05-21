@@ -208,15 +208,23 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				LIMIT ?
 				OFFSET ?
 			';
-			$keys[] = $limit;
+			$keys[] = $getCount ? $limit : $limit+1;
 			$keys[] = $offset;
-
 		}
+		
+		$docs = Cockpit_Driver_Document::driver();
 
 		// do the query
 		$data = [];
 		$r = c::db()->query( str_replace('-WILD-','admin.*, apt.using_pex, apt.id_admin_payment_type', $q), $keys );
+		
+		$i = 1;
 		while ($s = $r->fetch()) {
+			
+			if (!$export && !$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
 
 			$admin = Admin::o( $s );
 
@@ -271,8 +279,39 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				}
 				$staff[ 'type' ] = $commas . 'Marketing Rep';
 			}
+			
+			
+			if ($type == 'driver') {
+				$sentAllDocs = true;
+
+				$payment_type = $admin->payment_type();
+
+				foreach( $docs as $doc ){
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+						$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+						$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
+					// see: https://github.com/crunchbutton/crunchbutton/issues/3393
+					if( $doc->isRequired( $staff[ 'vehicle' ] ) ){
+						$docStatus = Cockpit_Driver_Document_Status::document( $admin->id_admin, $doc->id_driver_document );
+						if( !$docStatus->id_driver_document_status ){
+							$sentAllDocs = false;
+						}
+					}
+				}
+				$staff[ 'sent_all_docs' ] = $sentAllDocs;
+			}
+			
 
 			$data[] = $staff;
+			$i++;
 		}
 
 		if ($working == 'all') {
@@ -282,10 +321,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
 			'pages' => $pages,
-			'page' => $page,
+			'page' => intval($page),
 			'results' => $data
-		]);
+		], JSON_NUMERIC_CHECK);
 	}
 }
