@@ -115,7 +115,7 @@
 				<div class="tripple-cols">
 					<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
 					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && (order.status.status != 'new' || order.status.status != 'rejected'))}"><i class="fa fa-car"></i>&nbsp;&nbsp;Notify</button>
-					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && ( order.restaurant.formal_relationship || order.restaurantorder_notifications_sent))}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
+					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
 				</div>
 				
 			</div>
