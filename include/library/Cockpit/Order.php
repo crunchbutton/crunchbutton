@@ -31,6 +31,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
+		
+		$agent = $this->agent();
+		$out['agent'] = $agent->os.' '.$agent->browser;
 
 		// resources
 		$resources = Crunchbutton_Community_Resource::byCommunity( $this->id_community, 'order_page' );
