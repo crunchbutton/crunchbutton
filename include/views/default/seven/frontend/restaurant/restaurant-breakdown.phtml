@@ -1,13 +1,13 @@
 <div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open && !isMobileWidth"></div>
 <div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open">
 
-	<div class="hide-mobile restaurant-banana animated-resize"></div>
+	<div class="restaurant-banana animated-resize"></div>
 
 	<div class="payment-wrap">
 
-		<div ng-class="{'backface':!isIOs, 'payment-ribbon':!isMobileWidth}">
+		<div class="payment-ribbon" ng-class="{'backface':!isIOs}">
 
-			<div ng-class="{'payment-ribbon-content':!isMobileWidth, 'restaurant-payment-content': isMobileWidth}">
+			<div class="payment-ribbon-content">
 
 				<span class="restaurant-payment-item">
 					<span class="restaurant-payment-item-label">Subtotal: </span>

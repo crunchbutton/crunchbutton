@@ -21,13 +21,14 @@
 
 			<div restaurant-is-closed></div>
 
-			<!-- menu -->
-			<ng-include src="'assets/view/restaurant-menu.html'"></ng-include>
-
 			<!-- cart -->
 			<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
 
+			<!-- menu -->
+			<ng-include src="'assets/view/restaurant-menu.html'"></ng-include>
+
 			<!-- place order button - just for mobile -->
+			<?php /*
 			<div ng-if="isMobileWidth">
 
 				<div class="payment-content">
@@ -42,6 +43,7 @@
 				</div>
 
 			</div>
+			*/ ?>
 
 			<!-- payment and user info -->
 			<ng-include src="'assets/view/restaurant-form-user-info.html'"></ng-include>
@@ -56,7 +58,7 @@
 	</div>
 
 	<!-- total breakdown -->
-	<ng-include ng-if="!isMobileWidth" src="'assets/view/restaurant-breakdown.html'"></ng-include>
+	<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
 
 	<div class="divider bottom-spacer"></div>
 
