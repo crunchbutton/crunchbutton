@@ -473,7 +473,7 @@ class Crunchbutton_App extends Cana_App {
 	public function getEnv($d = true) {
 		if (c::user()->debug) {
 			$env = 'dev';
-		} elseif (c::env() == 'live') {
+		} elseif (c::env() == 'live' || c::env() == 'crondb') {
 			$env = 'live';
 		} elseif ($d) {
 			$env = 'dev';
@@ -578,13 +578,6 @@ class Crunchbutton_App extends Cana_App {
 	public function dbError() {
 		include(c::config()->dirs->www.'server-vacation.html');
 		exit;
-	}
-
-	public function env(){
-		if( parent::env() == 'crondb' ){
-			return 'live';
-		}
-		return parent::env();
 	}
 
 	public function metricsDB() {
