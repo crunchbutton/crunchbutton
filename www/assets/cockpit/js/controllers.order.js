@@ -207,25 +207,15 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	
 	$scope.resend_notification_drivers = function(){
 		$scope.isDriverNotifying = true;
-		OrderService.resend_notification_drivers( $scope.order.id_order, function(result) {
+		OrderService.resend_notification_drivers( $scope.order, function(result) {
 			$scope.isDriverNotifying = false;
-			if (result.status != 'success') {
-				$scope.flash.setMessage( 'Error!' );
-			} else {
-				$scope.flash.setMessage( 'Notifications sent' );
-			}
 		});
 	}
 	
 	$scope.resend_notification = function(){
 		$scope.isRestaurantNotifying = true;
-		OrderService.resend_notification( $scope.order.id_order, function(result) {
+		OrderService.resend_notification( $scope.order, function(result) {
 			$scope.isRestaurantNotifying = false;
-			if (result.status != 'success') {
-				$scope.flash.setMessage( 'Error!' );
-			} else {
-				$scope.flash.setMessage( 'Notifications sent' );
-			}
 		});
 	}
 
