@@ -160,6 +160,10 @@
 	border-color: $buttonOrange;
 	color: $buttonOrange;
 }
+.button.button-empty.button-blue:hover, .button.button-empty.button-border.button-blue {
+	border-color: $buttonBlue;
+	color: $buttonBlue;
+}
 
 .button.button-empty.button-border.button-green:hover {
 	background: $buttonGreen;
@@ -167,6 +171,10 @@
 }
 .button.button-empty.button-border.button-orange:hover {
 	background: $buttonOrange;
+	color: #fff;
+}
+.button.button-empty.button-border.button-blue:hover {
+	background: $buttonBlue;
 	color: #fff;
 }
 
@@ -191,4 +199,8 @@
 .basic-table th, .basic-table td {
 	text-align: left;
 	padding: .5em;
+}
+
+.button.button-lowercase {
+	text-transform: lowercase;
 }

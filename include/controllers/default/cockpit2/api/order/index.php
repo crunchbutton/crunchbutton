@@ -135,6 +135,22 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
 				break;
+			
+			case 'resend_notification':
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+					$this->error(401);
+				}
+				echo json_encode(['status' => $order->resend_notify() ? 'success' : 'error']);
+
+				break;
+
+			case 'resend_notification_drivers':
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+					$this->error(401);
+				}
+				echo json_encode(['status' => $order->resend_notify_drivers() ? 'success' : 'error']);
+
+				break;
 
 			case 'eta':
 				if (c::getPagePiece(4) == 'refresh') {

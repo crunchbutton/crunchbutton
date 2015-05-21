@@ -33,6 +33,16 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			method: 'GET',
 			params : {}
 		},
+		'resend_notification' : {
+			url: App.service + 'order/:id_order/resend_notification',
+			method: 'GET',
+			params : {}
+		},
+		'resend_notification_drivers' : {
+			url: App.service + 'order/:id_order/resend_notification_drivers',
+			method: 'GET',
+			params : {}
+		},
 		'refund' : { url: App.service + 'order/:id_order/refund', method: 'GET', params : {} },
 		'do_not_reimburse_driver' : { url: App.service + 'order/:id_order/do_not_reimburse_driver', method: 'GET', params : {} },
 		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
@@ -103,6 +113,18 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 
 	service.do_not_pay_restaurant = function( id_order, callback ){
 		order.do_not_pay_restaurant( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+	
+	service.resend_notification_drivers = function( id_order, callback ){
+		order.resend_notification_drivers( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+	
+	service.resend_notification = function( id_order, callback ){
+		order.resend_notification( { id_order: id_order }, function( data ) {
 			callback( data );
 		});
 	}
