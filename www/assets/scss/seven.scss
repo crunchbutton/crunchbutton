@@ -1873,6 +1873,11 @@ a.button{
 		padding: 1.5em;
 		color: #fff;
 	}
+
+	.restaurant-side-bar .restaurant-title{
+		background: #373737;
+	}
+
 	.restaurant-side-bar .divider.dots {
 		background: none;
 		border: 0;
@@ -2150,6 +2155,7 @@ select.form-input {
 	background: #fffef8;
 	padding-right:0.6em;
 }
+
 .restaurant-title-bar {
 	display: table-cell;
 	width: 100%;
