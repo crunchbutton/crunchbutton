@@ -108,8 +108,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 		if ($status != 'all') {
 			$q .= '
-				AND active="'.($status == 'active' ? '1' : '0').'"
+				AND active=?
 			';
+			$keys[] = $status == 'active' ? true : false;
 		}
 
 		if ($community) {
