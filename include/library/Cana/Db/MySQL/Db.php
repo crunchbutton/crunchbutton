@@ -27,4 +27,11 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		$res = $this->db()->query('SHOW COLUMNS FROM `'.$table.'`');
 		return $res;
 	}
+	
+	public function query($query, $args = [], $type = 'object') {
+		// replace bool_and
+		$query = preg_replace('/(bool_and\((.*?))\)/i','max(\\2)', $query);
+
+		return parent::query($query, $args, $type);
+	}
 }
