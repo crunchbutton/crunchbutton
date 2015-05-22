@@ -22,7 +22,7 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 		scope: $scope,
 		watch: {
 			search: '',
-			status: 'open',
+			status: 'all',
 			admin: 'all',
 			fullcount: false
 		},

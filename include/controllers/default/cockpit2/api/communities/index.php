@@ -38,8 +38,9 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		
 		if ($status != 'all') {
 			$q .= '
-				AND community.active='.($status == 'active' ? 'true' : 'false').'
+				AND community.active=?
 			';
+			$keys[] = $status == 'active' ? true : false;
 		}
 		
 		if ($open == 'open') {

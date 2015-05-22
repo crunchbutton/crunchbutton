@@ -190,8 +190,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($status != 'all') {
 			$q .= '
-				AND active="'.($status == 'active' ? '1' : '0').'"
+				AND active=?
 			';
+			$keys[] = $status == 'active' ? true : false;
 		}
 
 		if ($community) {
