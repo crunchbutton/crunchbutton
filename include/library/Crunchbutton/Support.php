@@ -842,10 +842,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 
 		$out = $this->properties();
+
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
-		$out['driver'] = ($this->order()->id_order && $this->order()->driver()->id_admin) ? $this->order()->driver()->exports() : null;
+		$out['driver'] = ( $this->order()->id_order && $this->order()->driver()->id_admin ) ? $this->order()->driver()->exports() : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
+
 
 		// Export the comments
 		$out[ 'comments' ] = [];
@@ -862,6 +864,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$out[ 'pexcard' ] = $pexcard->exports();
 				$out[ 'pexcard' ][ 'name' ] = $admin->name;
 			}
+		}
+
+		if( $admin->id_admin && !$out[ 'user' ] ){
+			$out[ 'staff' ] = $admin->exports();
 		}
 
 		$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );

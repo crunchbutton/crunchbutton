@@ -18,6 +18,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 
 
 NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService, AccountService) {
+
 	$scope.params = {
 		status: 'open'
 	};
