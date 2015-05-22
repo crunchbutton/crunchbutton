@@ -1,8 +1,10 @@
-$selectBorderColor: #FF0000;
+$selectBorderColor: #4ecdc4;
 $selectBackgroundColor: #FFF;
 $selectTextColor: #303030;
 $backgroundSelectable: rgba(125, 168, 208, 0.2);
+
 /*!
+#5897fb
 * ui-select
 * http://github.com/angular-ui/ui-select
 * Version: 0.11.2 - 2015-03-17T04:08:46.478Z
@@ -40,7 +42,7 @@ $backgroundSelectable: rgba(125, 168, 208, 0.2);
 .selectize-input,
 .selectize-input input {
 	font-family: inherit;
-	font-size: 1.1em;
+	font-size: 1em;
 	line-height: 1.5em;
 	color: $selectTextColor;
 }
@@ -390,12 +392,12 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 }
 
 .select2-drop-active {
-	border: 1px solid #5897fb;
+	border: 1px solid $selectBorderColor;
 	border-top: none;
 }
 
 .select2-drop.select2-drop-above.select2-drop-active {
-	border-top: 1px solid #5897fb;
+	border-top: 1px solid $selectBorderColor;
 }
 
 
@@ -528,9 +530,13 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 	font-size: 1px;
 	outline: none;
 	background: url('select2.png') right top no-repeat;
+	content: "X";
+	color: red;
 }
 .select2-container-multi .select2-search-choice-close {
 	left: 3px;
+	content: "X";
+	color: red;
 }
 .select2-container-multi .select2-choices .select2-search-choice .select2-search-choice-close:hover {
 	background-position: right -11px;
@@ -593,14 +599,10 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 .select2-container .select2-choices {
 	background: none;
 	padding: 0;
-	border-color: #cccccc;
+	border-color: $selectBorderColor;
 	border-radius: 4px;
-	color: #555555;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	background-color: white;
-	filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	color: $selectTextColor;
+	background-color: $selectBackgroundColor;
 }
 
 .select2-search input {
