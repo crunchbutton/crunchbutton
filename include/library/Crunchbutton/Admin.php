@@ -401,11 +401,16 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	public function getLastWorkedTimeHours( $now = 'now' ){
 		$shift = $this->lastWorkedShift( $now );
-		if( $shift ){
+		if ($shift){
 			$now = new DateTime( 'now', $this->timezone() );
 			$end = $shift->dateEnd()->get( 0 );
-			$secs = Util::intervalToSeconds( $now->diff( $end ) );
-			$hours = $secs / 60 / 60;
+			if ($end) {
+				$secs = Util::intervalToSeconds( $now->diff( $end ) );
+				$hours = $secs / 60 / 60;
+			} else {
+				$hours = 0;
+			}
+			
 			return intval( $hours );
 		}
 		return false;
