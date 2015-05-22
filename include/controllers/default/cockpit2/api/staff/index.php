@@ -161,8 +161,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		';
 
 		$q .= '
-				INNER JOIN ( SELECT admin_payment_type.* FROM admin_payment_type INNER JOIN ( SELECT MAX( max.id_admin_payment_type ) AS max_id_admin_payment_type FROM admin_payment_type AS max GROUP BY max.id_admin ) max ON max.max_id_admin_payment_type = admin_payment_type.id_admin_payment_type ORDER BY id_admin_payment_type ) apt ON apt.id_admin = admin.id_admin
-				';
+			INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
+		';
 
 		if ($type == 'driver') {
 			$q .= '
@@ -201,11 +201,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $community;
 		}
-
+		
 		if ( $pexcard != 'all' ) {
 			$q .= '
-				AND apt.using_pex = "'.($pexcard == 'yes' ? '1' : '0').'"
+				AND apt.using_pex = ?
 			';
+			$keys[] = $pexcard == 'yes' ? true : false;
 		}
 
 		if ($search) {
@@ -252,7 +253,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		// do the query
 		$data = [];
-		$r = c::db()->query( str_replace('-WILD-','admin.*, apt.using_pex, apt.id_admin_payment_type', $q), $keys );
+		$query = str_replace('-WILD-','
+			admin.*, 
+			bool_and(apt.using_pex) using_pex, 
+			max(apt.id_admin_payment_type) id_admin_payment_type
+		', $q);
+
+		$r = c::db()->query($query, $keys );
 
 		$i = 1;
 		while ($s = $r->fetch()) {
