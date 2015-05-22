@@ -1,0 +1,34 @@
+<div class="restaurant-right-bar">
+
+	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin">
+
+		<!-- cart -->
+		<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
+
+		<div ng-if="restaurant._open && order.cart.hasItems()">
+
+			<!-- breakdown -->
+			<div class="payment-content">
+				<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+			</div>
+
+			<!-- place order button -->
+			<div class="button-pushable" ng-show="order.form.name || order.form.phone"><button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button></div>
+			<div class="button-pushable" ng-show="!order.form.name && !order.form.phone"><button class="button orange get-food ani-all" ng-click="order.checkout();"><div>Checkout</div></button></div>
+
+		</div>
+
+	</div>
+
+	<!-- payment and user info -->
+	<ng-include src="'assets/view/restaurant-form-user-info.html'"></ng-include>
+
+	<!-- stored user info -->
+	<ng-include src="'assets/view/restaurant-stored-user-info.html'"></ng-include>
+
+</div>
+
+<!-- menu -->
+<ng-include src="'assets/view/restaurant-menu.html'"></ng-include>
+
+<div class="divider"></div>
