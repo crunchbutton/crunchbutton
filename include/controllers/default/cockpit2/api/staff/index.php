@@ -70,6 +70,41 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$out = $staff->exports();
 		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin )->get( 0 );
 
+		if( $staff->isDriver() ){
+
+			$out[ 'is_driver' ] = true;
+		}
+		$driver_info = $staff->driver_info()->exports();
+
+		$driver_info[ 'student' ] = strval( $driver_info[ 'student' ] );
+		$driver_info[ 'permashifts' ] = strval( $driver_info[ 'permashifts' ] );
+
+		$driver_info[ 'iphone_type' ] = '';
+		$driver_info[ 'android_type' ] = '';
+		$driver_info[ 'android_version' ] = '';
+
+		if( $driver_info[ 'phone_type' ] == 'Android' ){
+			$driver_info[ 'android_type' ] = $driver_info[ 'phone_subtype' ];
+			$driver_info[ 'android_version' ] = $driver_info[ 'phone_version' ];
+		}
+		if( $driver_info[ 'phone_type' ] == 'iPhone' ){
+			$driver_info[ 'iphone_type' ] = $driver_info[ 'phone_subtype' ];
+		}
+
+		$out = array_merge( $out, $driver_info );
+
+		$payment_type = $staff->payment_type();
+		$out[ 'payment_type' ] = $payment_type->payment_type;
+		$out[ 'hour_rate' ] = intval( $payment_type->hour_rate );
+
+		if( $staff->driver_info()->pexcard_date ){
+			$out[ 'pexcard_date' ] = $staff->driver_info()->pexcard_date()->format( 'Y,m,d' );
+		}
+
+		if( $out[ 'weekly_hours' ] ){
+			$out[ 'weekly_hours' ] = intval( $out[ 'weekly_hours' ] );
+		}
+
 		/*
 		$out['shifts'] = [];
 
@@ -211,16 +246,16 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$keys[] = $getCount ? $limit : $limit+1;
 			$keys[] = $offset;
 		}
-		
+
 		$docs = Cockpit_Driver_Document::driver();
 
 		// do the query
 		$data = [];
 		$r = c::db()->query( str_replace('-WILD-','admin.*, apt.using_pex, apt.id_admin_payment_type', $q), $keys );
-		
+
 		$i = 1;
 		while ($s = $r->fetch()) {
-			
+
 			if (!$export && !$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
@@ -279,8 +314,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				}
 				$staff[ 'type' ] = $commas . 'Marketing Rep';
 			}
-			
-			
+
+
 			if ($type == 'driver') {
 				$sentAllDocs = true;
 
@@ -308,7 +343,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				}
 				$staff[ 'sent_all_docs' ] = $sentAllDocs;
 			}
-			
+
 
 			$data[] = $staff;
 			$i++;

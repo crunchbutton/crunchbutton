@@ -86,8 +86,8 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				$json = $driver->exports();
 				$driver_info = $driver->driver_info()->exports();
 
-				$driver_info[ 'student' ] = strval( $driver_info[ 'student' ] );
-				$driver_info[ 'permashifts' ] = strval( $driver_info[ 'permashifts' ] );
+				$driver_info[ 'student' ] = intval( $driver_info[ 'student' ] );
+				$driver_info[ 'permashifts' ] = intval( $driver_info[ 'permashifts' ] );
 
 				$driver_info[ 'iphone_type' ] = '';
 				$driver_info[ 'android_type' ] = '';
