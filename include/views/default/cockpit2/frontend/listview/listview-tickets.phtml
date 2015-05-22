@@ -2,7 +2,6 @@
 	<table class="tb-zebra">
 		<tr>
 			<th>Contact</th>
-			<th>Updated</th>
 			<th>Message</th>
 			<th class="tb-small tb-center">Type</th>
 			<th class="tb-small tb-center">Status</th>
@@ -15,11 +14,14 @@
 				<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin_from & ticket.id_user">{{ticket.name}}</a>
 				<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
 			</td>
-			<td nowrap="nowrap">
-				<span ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></span>
-				<span ng-if="!ticket.timestamp"><i>Unknown</i></span>
+			<td>
+				<span class="listview-smaller">
+					<i ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></i>
+					<i ng-if="!ticket.timestamp"><i>Unknown</i></i>
+					<br>
+					<span>{{ticket.message}}</span>
+				</span>
 			</td>
-			<td>{{ticket.message}}</td>
 			<td class="tb-v-center tb-center">
 				<span class="tag tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
 				<span ng-if="ticket.type != 'WARNING'">
@@ -29,8 +31,8 @@
 				</span>
 			</td>
 			<td class="tb-v-center tb-center">
-				<span class="tag tag-green" ng-if="ticket.status">Open</span>
-				<span class="tag tag-red" ng-if="!ticket.status">Closed</span>
+				<span class="tag tag-green" ng-if="ticket.status == 'open'">Open</span>
+				<span class="tag tag-red" ng-if="ticket.status != 'open'">Closed</span>
 			</td>
 			<td nowrap class="tb-v-center">
 				<a href="/ticket/{{ticket.id_support}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>

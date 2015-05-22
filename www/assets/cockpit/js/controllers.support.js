@@ -215,7 +215,8 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, Tick
 	};
 	$scope.callparams = {
 		status: ['in-progress','ringing'],
-		limit: 5
+		limit: 5,
+		today: true
 	};
 
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
