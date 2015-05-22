@@ -153,6 +153,90 @@
 		</div>
 
 		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Additional Info</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<div class="field-container">
+
+					<div class="field-row" ng-if="staff.phone_type">
+						<div class="field-key">Phone</div>
+						<div class="field-value">
+							{{staff.phone_type}}
+							<span ng-if="staff.phone_subtype"> - {{staff.phone_subtype}}</span>
+							<span ng-if="staff.phone_version"> - {{staff.phone_version}}</span>
+							<span ng-if="staff.iphone_type"> - {{staff.iphone_type}}</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.cell_carrier">
+						<div class="field-key">Cell Carrier</div>
+						<div class="field-value">
+							{{staff.cell_carrier}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.is_driver">
+						<div class="field-key">Student</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.student">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.student">No</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.is_driver">
+						<div class="field-key">Permashifts</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.permashifts">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.permashifts">No</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.weekly_hours">
+						<div class="field-key">Desired Weekly Hours</div>
+						<div class="field-value">
+							{{staff.weekly_hours}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.tshirt_size">
+						<div class="field-key">T-shirt Size</div>
+						<div class="field-value">
+							{{staff.tshirt_size}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.address">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(staff.address)">{{staff.address}}</a></div>
+					</div>
+
+					<div class="field-row" ng-if="staff.payment_type">
+						<div class="field-key">Pay Structure</div>
+						<div class="field-value">
+							<span class="tag tag-blue" ng-if="staff.payment_type == 'orders'">Commission</span>
+							<span class="tag tag-purple" ng-if="staff.payment_type == 'hours'">Hourly with tips</span>
+							<span class="tag tag-orange" ng-if="staff.payment_type == 'hours_without_tips'">Hourly without tips (but a higher hourly rate)</span>
+							<span class="tag tag-green" ng-if="staff.payment_type == 'making_whole'">Making whole</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.hour_rate">
+						<div class="field-key">Hour rate</div>
+						<div class="field-value">
+							{{staff.hour_rate}}
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Shifts</h1>
 				<div class="support-box-header-actions-wrap">
