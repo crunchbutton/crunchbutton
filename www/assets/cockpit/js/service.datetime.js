@@ -1,5 +1,5 @@
 
-NGApp.factory('DateTimeService', function() {
+NGApp.factory('DateTimeService', function(AccountService) {
 	var service = {
 		tzServer: 'America/Los_Angeles',
 		tzLocal: new Date().getTimezoneOffset(),
@@ -19,6 +19,10 @@ NGApp.factory('DateTimeService', function() {
 		// convert a date to any timezone
 		convert: function(date, zone) {
 			return moment(date).tz(zone);
+		},
+		
+		convertformat: function(date, zone, format) {
+			return moment(date).tz(zone).format(format || 'ha z');
 		}
 	};
 	return service;
@@ -40,4 +44,8 @@ NGApp.filter('timestamp', function(DateTimeService) {
 	return function(date) {
 		return moment(date).unix()*1000;
 	};
+});
+
+NGApp.filter('convertimeformat', function(DateTimeService) {
+	return DateTimeService.convertformat;
 });
