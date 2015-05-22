@@ -1937,6 +1937,36 @@ a.button{
 		color: #d9462f;
 	}
 
+	.starred-item {
+		background: #fffaf8;
+		border: 1px solid #e46436;
+		border-radius: 4px;
+		color: #d9462f;
+		padding: .7em .8em .6em .8em;
+		margin-top: .6em;
+		cursor: pointer;
+		line-height: 1.5em;
+		height: 3em;
+	}
+	.dish-item-name {
+		font-weight: bold;
+		font-size: 1.2em;
+	}
+	.dish-item-price {
+		font-size: 1.1em;
+		float: right;
+	}
+	.dish-item-description {
+		color: #e7806c;
+		font-size: 1.0em;
+		text-overflow: ellipsis;
+		display: block;
+		white-space: nowrap;
+		overflow: hidden;
+		/* @test
+		color: #fff;
+		opacity: .8; */
+	}
 
 	.payment-content{
 		background: #373737;
