@@ -9,8 +9,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out = $this->properties();
 
 		$out['id'] = $this->uuid;
+		
+		$date = $this->date();
 
-		$date = new DateTime( $this->date, new DateTimeZone( $this->restaurant()->timezone ) );
 		$out['do_not_pay_restaurant'] = ( $out['do_not_pay_restaurant'] ? 1 : 0 );
 		$out['do_not_pay_driver'] = ( $out['do_not_pay_driver'] ? 1 : 0 );
 		$out['do_not_reimburse_driver'] = ( $out['do_not_reimburse_driver'] ? 1 : 0 );
@@ -27,7 +28,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
 		$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
 		$out['user'] = $this->user()->uuid;
-		$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
+		//$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
+
+		$out['timestamp'] = $this->date()->format('U');				// unix epoc
+		$out['date'] = $this->date()->format('c');					// date in timezone that the order was placed in
+
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;

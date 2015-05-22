@@ -10,6 +10,9 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+		$datestart = $this->request()['datestart'] ? $this->request()['datestart'] : null;
+		$today = $this->request()['today'] ? true : false;
+
 		$keys = [];
 		
 		if ($page == 1) {
@@ -40,6 +43,18 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			$q .= '
 				AND ('.$st.')
 			';
+		}
+		
+		if ($today) {
+			$q .= '
+				AND c.date_start >= date_sub(now(), interval 2 hour)
+			';
+		} elseif ($datestart) {
+			$datestart = date('Y-m-d', strtotime($datestart));
+			$q .= '
+				AND c.date_start >= ?
+			';
+			$keys[] = $datestart;
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
