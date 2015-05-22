@@ -892,6 +892,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}, 50 );
 	}
 
+
+
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
@@ -910,6 +912,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.creditCardChanged = function() {
 		order._cardInfoHasChanged = true;
 	};
+
+	$scope.$watch( 'isMobileWidth', function( newValue, oldValue, scope ) {
+		if( !$scope.fullmenu && !$scope.isMobileWidth ){
+			$scope.fullmenu = true;
+		}
+	});
 
 	var creditCard = CreditCardService;
 
