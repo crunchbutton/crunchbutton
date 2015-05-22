@@ -21,40 +21,17 @@
 
 			<div restaurant-is-closed></div>
 
+			<!-- desktop version -->
+			<ng-include ng-if="!isMobileWidth" src="'assets/view/restaurant-desktop.html'"></ng-include>
 
-			<div class="cart-items restaurant-side-bar restaurant-side-bar-margin">
-
-				<!-- cart -->
-				<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
-
-				<!-- just for desktop -->
-				<div ng-if="!isMobileWidth && restaurant._open && order.cart.hasItems()">
-					<div class="payment-content"><ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include></div>
-					<!-- place order button -->
-					<div class="button-pushable" ng-show="order.form.name || order.form.phone"><button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button></div>
-					<div class="button-pushable" ng-show="!order.form.name && !order.form.phone"><button class="button orange get-food ani-all" ng-click="order.checkout();"><div>Checkout</div></button></div>
-				</div>
-
-			</div>
-
-			<!-- menu -->
-			<ng-include src="'assets/view/restaurant-menu.html'"></ng-include>
-
-			<div class="divider"></div>
-
-			<!-- payment and user info -->
-			<ng-include src="'assets/view/restaurant-form-user-info.html'"></ng-include>
-
-			<!-- stored user info -->
-			<ng-include src="'assets/view/restaurant-stored-user-info.html'"></ng-include>
-
-		<div class="divider"></div>
+			<!-- mobile version -->
+			<ng-include ng-if="isMobileWidth" src="'assets/view/restaurant-mobile.html'"></ng-include>
 
 		</div>
 
 	</div>
 
-	<!-- total breakdown -->
+	<!-- total breakdown - mobile only -->
 	<ng-include ng-if="isMobileWidth" src="'assets/view/restaurant-breakdown.html'"></ng-include>
 
 	<div class="divider bottom-spacer"></div>
