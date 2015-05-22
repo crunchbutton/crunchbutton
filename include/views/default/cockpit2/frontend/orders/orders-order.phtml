@@ -27,8 +27,17 @@
 					<div class="field-row">
 						<div class="field-key">Placed At</div>
 						<div class="field-value">
-							{{order._date_formatted}}
-							<div ng-if="!order._outsideOf24h">
+
+							<span ng-if="order.restaurant.timezone != account.user.timezone">
+								{{order.date | convertimeformat:order.restaurant.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+								&nbsp;(<span class="listview-bold">{{order.date | convertimeformat:order.restaurant.timezone:'z'}}</span>)
+								<br>
+							</span>
+							{{order.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{order.date | convertimeformat:account.user.timezone:'z'}}</span>)
+
+
+							<div ng-if="!order._outsideOf24h" class="listview-smaller">
 								(<span am-time-ago="order.date"></span>)
 							</div>
 						</div>
