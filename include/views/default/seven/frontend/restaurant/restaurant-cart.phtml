@@ -1,17 +1,5 @@
 <div ng-show="restaurant._open">
 
-	<div ng-show="!order.cart.hasItems()" class="restaurant-box">
-		<div class="restaurant-box-inner">
-			<span class="restaurant-box-icon">
-				<i class="fa fa-arrow-down"></i>
-			</span>
-			<span class="restaurant-box-content">
-				<? /* <span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span> */ ?>
-				<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartMobile}}</span>
-			</span>
-		</div>
-	</div>
-
 	<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="dialog-message dialog-message-error delivery-minimum-error">
 		Add <sup>$</sup><span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> more to meet the delivery min
 	</div>

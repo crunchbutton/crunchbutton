@@ -28,7 +28,7 @@
 				<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
 
 				<!-- just for desktop -->
-				<div ng-if="!isMobileWidth">
+				<div ng-if="!isMobileWidth && restaurant._open && order.cart.hasItems()">
 					<div class="payment-content"><ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include></div>
 					<!-- place order button -->
 					<div class="button-pushable" ng-show="order.form.name || order.form.phone"><button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button></div>
