@@ -167,8 +167,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if ($type == 'driver') {
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
+				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE ?
 			';
+			$keys[] = Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%';
 
 			if ($community) {
 				$q .= '
@@ -180,8 +181,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if( $type == 'marketing-rep'  ){
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = "' . Crunchbutton_Group::TYPE_DRIVER . '"
+				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = ?
 			';
+			$keys[] = Crunchbutton_Group::TYPE_DRIVER;
 		}
 
 		$q .='
