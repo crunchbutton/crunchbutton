@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
 
-touch $1/test
-echo $SOURCE_VERSION > $1/test
-
-# cd cli && ./build.sh
+echo $SOURCE_VERSION > $1/.gitversion
+cd cli && ./build.sh
