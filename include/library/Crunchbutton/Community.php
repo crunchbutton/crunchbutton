@@ -493,10 +493,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$force_closed_times = Crunchbutton_Community_Changeset::q('
 			SELECT ccs.*, cc.field FROM community_change cc
 			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
-			AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" )
+			AND ( cc.field = ? OR cc.field = ? )
 			AND cc.new_value = true
 			ORDER BY cc.id_community_change DESC
-		', [$this->id_community]);
+		', [$this->id_community, 'close_all_restaurants', 'close_3rd_party_delivery_restaurants']);
 		$out = [];
 		if( $force_closed_times->count() ){
 			foreach( $force_closed_times as $force_close ){
@@ -567,10 +567,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$force_closed_times = Crunchbutton_Community_Changeset::q('
 			SELECT ccs.*, cc.field FROM community_change cc
 			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
-			AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" OR cc.field = "is_auto_closed" )
+			AND ( cc.field = ? OR cc.field = ? OR cc.field = ? )
 			AND cc.new_value = true AND date( timestamp ) > ?
 			ORDER BY timestamp DESC
-		', [$this->id_community, $limit_date->format( 'Y-m-d' )]);
+		', [$this->id_community, 'close_all_restaurants', 'close_3rd_party_delivery_restaurants', 'is_auto_closed', $limit_date->format( 'Y-m-d' )]);
 		$out = [];
 		$alreadyUsed_open = [];
 		$alreadyUsed_closed = [];
