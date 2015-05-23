@@ -35,11 +35,13 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			SELECT
 				-WILD-
 			FROM `order`
+			left JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
+			left JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
+			left JOIN community ON community.id_community=restaurant_community.id_community
+			
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
-			LEFT JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
-			LEFT JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
-			LEFT JOIN community ON community.id_community=restaurant_community.id_community
+
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
 
@@ -162,15 +164,15 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$data = [];
 		$query = str_replace('-WILD-','
 			`order`.*,
-			restaurant.name as _restaurant_name,
-			restaurant.phone as _restaurant_phone,
-			restaurant.permalink as _restaurant_permalink,
-			restaurant.confirmation as _restaurant_confirmation,
-			community.name as _community_name,
-			community.permalink as _community_permalink,
-			community.id_community as _community_id,
-			admin.name as _driver_name,
-			admin.id_admin as _driver_id
+			max(restaurant.name) as _restaurant_name,
+			max(restaurant.phone) as _restaurant_phone,
+			max(restaurant.permalink) as _restaurant_permalink,
+			bool_and(restaurant.confirmation) as _restaurant_confirmation,
+			max(community.name )as _community_name,
+			max(community.permalink) as _community_permalink,
+			max(community.id_community) as _community_id,
+			max(admin.name) as _driver_name,
+			max(admin.id_admin) as _driver_id
 		', $q);
 
 		$r = c::db()->query($query, $keys);
