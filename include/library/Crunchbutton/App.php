@@ -106,9 +106,9 @@ class Crunchbutton_App extends Cana_App {
 			];
 			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
 
-			if (getenv('REDISCLOUD_URL')) {
+			if (getenv('REDIS_URL')) {
 				$params['config']->cache->default = $params['config']->cache->redis;
-				$params['config']->cache->default->url = getenv('REDISCLOUD_URL');
+				$params['config']->cache->default->url = getenv('REDIS_URL');
 			}
 
 			parent::init($params);
