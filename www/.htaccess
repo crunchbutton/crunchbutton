@@ -13,7 +13,7 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 RewriteRule ^(.+)$					index.php?__url=$1 [L,QSA]
 RewriteRule ^(.+).scss$				index.php?__url=$1 [L,QSA]
 
-RewriteCond %{REQUEST_URI}			/index\.html$
+RewriteCond %{REQUEST_URI}			/$
 RewriteCond %{HTTP_HOST}			^heroku\.crunchr\.co [NC]
 RewriteRule ^(.*)$					build/crunchbutton.html [L,QSA]
 
