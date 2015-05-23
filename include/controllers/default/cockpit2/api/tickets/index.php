@@ -23,11 +23,16 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			SELECT
 				-WILD-
 			FROM support s
-			LEFT JOIN (SELECT * FROM support_message order by support_message.id_support_message desc limit 1) as sm on sm.id_support=s.id_support
-			LEFT JOIN `user` u ON u.id_user=s.id_user
-			LEFT JOIN `order` o ON o.id_order=s.id_order
+			inner join support_message sm on sm.id_support=s.id_support
+			inner JOIN `user` u ON u.id_user=s.id_user
+			inner JOIN `order` o ON o.id_order=s.id_order
 
-			WHERE 1=1
+			where
+				sm.id_support_message=(
+					SELECT MAX(support_message.id_support_message) a
+					FROM support_message
+					WHERE support_message.id_support=s.id_support
+				)
 		';
 
 		if ($status != 'all') {
@@ -80,7 +85,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			GROUP BY s.id_support, sm.id_support_message
-			ORDER BY s.datetime DESC
+			ORDER BY sm.id_support_message DESC
 			LIMIT ?
 			OFFSET ?
 		';
@@ -89,23 +94,24 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		// do the query
 		$d = [];
-		$r = c::db()->query(str_replace('-WILD-','
+		$query = str_replace('-WILD-','
 			s.id_support,
+			max(sm.body) as message,
 			s.name,
 			s.phone,
 			s.type,
-			sm.id_support_message,
-			sm.id_admin,
-			sm.date,
-			UNIX_TIMESTAMP(sm.date) as timestamp,
-			sm.name as message_name,
-			sm.phone as message_phone,
-			sm.from,
-			u.name as user_name,
-			u.id_user,
-			s.status,
-			sm.body as message
-		', $q), $keys);
+			max(sm.id_support_message) as id_support_message,
+			max(sm.id_admin) as id_admin,
+			max(sm.date) as date,
+			max(sm.name) as message_name,
+			max(sm.phone) as message_phone,
+			max(sm.from) as "from",
+			max(u.name) as user_name,
+			max(u.id_user) as id_user,
+			s.status
+		', $q);
+
+		$r = c::db()->query($query, $keys);
 
 		$i = 1;
 		$more = false;
