@@ -52,15 +52,15 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
-					'user.name' => 'like',
-					'user.phone' => 'like',
-					'user.address' => 'like',
+					'`user`.name' => 'like',
+					'`user`.phone' => 'like',
+					'`user`.address' => 'like',
 					'`order`.name' => 'like',
 					'`order`.phone' => 'like',
 					'`order`.address' => 'like',
 					'restaurant.name' => 'like',
 					'community.name' => 'like',
-					'user.id_user' => 'liker'
+					'`user`.id_user' => 'liker'
 				]
 			]);
 			$q .= $s['query'];
@@ -114,7 +114,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		//(SELECT `order`.date FROM `order` WHERE `order`.id_user = user.id_user order by `order`.date desc limit 1) as _order_date,
 		$query = str_replace('-WILD-','
 			`user`.*,
-			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = user.id_user) as _order_date,
+			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = `user`.id_user) as _order_date,
 			`user_payment_type`.balanced_id as _balanced_id,
 			`user_payment_type`.stripe_id as _stripe_id,
 			community.name as _community_name,
