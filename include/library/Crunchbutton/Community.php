@@ -642,12 +642,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	private function _closedNote( $id_community_change_set, $field ){
 		$field = ( $field == 'is_auto_closed' ? 'close_3rd_party_delivery_restaurants' : $field );
 		$field = $field . '_note';
-		$note = Crunchbutton_Community_Changeset::q( 'SELECT
-																											ccs.*, cc.field, cc.new_value FROM community_change cc
-																											INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-																											AND cc.field = "' . $field . '"
-																											AND ccs.id_community_change_set = ' . $id_community_change_set . '
-																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
+		$note = Crunchbutton_Community_Changeset::q('
+			SELECT
+			ccs.*, cc.field, cc.new_value FROM community_change cc
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			AND cc.field = ?
+			AND ccs.id_community_change_set = ?
+			ORDER BY cc.id_community_change DESC LIMIT 1
+		',[$this->id_community, $field, $id_community_change_set])->get(0);
 		if( $note->new_value ){
 			return $note->new_value;
 		}
@@ -855,13 +857,15 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function _openedAt( $date, $field ){
-		$query = 'SELECT
-								ccs.*, cc.field FROM community_change cc
-								INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-								AND cc.field = "' . $field . '"
-								AND ( cc.new_value = 0 OR cc.new_value IS NULL ) AND ccs.timestamp > "' . $date . '"
-								ORDER BY cc.id_community_change ASC LIMIT 1';
-		$opened = Crunchbutton_Community_Changeset::q( $query )->get( 0 );
+		$query = '
+			SELECT
+			ccs.*, cc.field FROM community_change cc
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			AND cc.field = ?
+			AND ( cc.new_value = \'0\' OR cc.new_value IS NULL ) AND ccs.timestamp > ?
+			ORDER BY cc.id_community_change ASC LIMIT 1
+		';
+		$opened = Crunchbutton_Community_Changeset::q($query, [$this->id_community, $field, $date])->get(0);
 		if( $opened->id_community_change_set ){
 			return $opened;
 		}
