@@ -1865,8 +1865,11 @@ a.button{
 		color: #fff;
 	}
 
-	.restaurant-side-bar {
+	.restaurant-right-bar{
 		float: right;
+	}
+
+	.restaurant-side-bar {
 		width: 30em;
 		background: #474747;
 		padding: 1.5em;
@@ -1936,6 +1939,70 @@ a.button{
 	.dish-item-price {
 		color: #d9462f;
 	}
+
+	.starred-item {
+		background: #fffaf8;
+		border: 1px solid #e46436;
+		border-radius: 4px;
+		color: #d9462f;
+		padding: .7em .8em .6em .8em;
+		margin-top: .6em;
+		cursor: pointer;
+		line-height: 1.5em;
+		height: 3em;
+	}
+	.dish-item-name {
+		font-weight: bold;
+		font-size: 1.2em;
+	}
+	.dish-item-price {
+		font-size: 1.1em;
+		float: right;
+	}
+	.dish-item-description {
+		color: #e7806c;
+		font-size: 1.0em;
+		text-overflow: ellipsis;
+		display: block;
+		white-space: nowrap;
+		overflow: hidden;
+		/* @test
+		color: #fff;
+		opacity: .8; */
+	}
+
+	.payment-content{
+		background: #373737;
+		color: #fff;
+		padding-bottom: 2em;
+	}
+	.payment-wrap {
+		font-size:1.1em;
+		width: 13em !important;
+		float: right;
+	}
+	.restaurant-payment-content{
+		display: table-row;
+	}
+	.restaurant-payment-item{
+		display: table-row;
+		line-height: 1.3em;
+	}
+		.restaurant-payment-item-label, .restaurant-payment-item-value{
+			display: table-cell;
+		}
+		.restaurant-payment-item-label{
+			padding-right: .6em;
+			width: 6.5em;
+		}
+		.restaurant-payment-item-value{
+			width:4em;
+			white-space: nowrap;
+		}
+	.restaurant-side-user-info{
+		background: #474747;
+	}
+
 }
 /* wierd stuff i was playing with
 @media only screen and (-webkit-min-device-pixel-ratio:1.5), only screen and (min-device-pixel-ratio:1.5) {
@@ -2568,8 +2635,6 @@ sup {
 
 .payment-wrap {
 	overflow: hidden;
-	width: 20em;
-	height: 16em;
 	margin-right: -1em;
 	float: right;
 }
@@ -4013,6 +4078,10 @@ font-familt: "Museo Slab";
 	}
 	.footer {
 		display: none;
+	}
+	.payment-wrap {
+		width: 20em;
+		height: 16em;
 	}
 }
 
