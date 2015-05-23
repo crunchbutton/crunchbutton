@@ -115,10 +115,10 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		$query = str_replace('-WILD-','
 			`user`.*,
 			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_user = `user`.id_user) as _order_date,
-			`user_payment_type`.balanced_id as _balanced_id,
-			`user_payment_type`.stripe_id as _stripe_id,
-			community.name as _community_name,
-			community.id_community as _id_community
+			max(`user_payment_type`.balanced_id) as _balanced_id,
+			max(`user_payment_type`.stripe_id) as _stripe_id,
+			max(community.name) as _community_name,
+			max(community.id_community) as _id_community
 		', $q);
 		$r = c::db()->query($query, $keys);
 
