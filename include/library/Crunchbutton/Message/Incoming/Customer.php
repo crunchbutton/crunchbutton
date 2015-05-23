@@ -11,15 +11,15 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$parsed = $this->parseBody($params['body']);
 		$action = $parsed['verb'];
 
-		$this->order = Order::q('select * from `order` where phone="'.$params['from'].'" order by date desc limit 1')->get(0);
+		$this->order = Order::q('select * from `order` where phone=? order by date desc limit 1',[$params['from']])->get(0);
 		$this->support = Support::q('
 			select support.* from support
 			left join support_message using(id_support)
-			where support.phone="'.$params['from'].'"
+			where support.phone=?
 			and timestampdiff(hour, support_message.date, now()) < 4
 			order by support_message.date desc
 			limit 1
-		')->get(0);
+		',[$params['from']])->get(0);
 
 		$response = [];
 

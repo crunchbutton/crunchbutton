@@ -59,11 +59,13 @@ class Crunchbutton_Phone extends Cana_Table {
 		
 		$numbers = self::numbers();
 		$use = null;
+		$keys = [];
 
 		foreach ($numbers as $number) {
 			$logs[$number] = 0;
-			$q = ' phone.phone="'.$number.'" ';
+			$q = ' phone.phone=? ';
 			$phones .= $phones ? ' OR '.$q : $q;
+			$keys[] = $number;
 		}
 		
 		$query = '
@@ -74,7 +76,7 @@ class Crunchbutton_Phone extends Cana_Table {
 			group by phone_log.id_phone_from order by c asc
 		';
 
-		$r = c::db()->query($query);
+		$r = c::db()->query($query, $keys);
 		while ($c = $r->fetch()) {
 			$logs[$c->phone] = $c->c;
 		}
@@ -126,14 +128,14 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (!$name && $phone) {
 	
 			$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
-			$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phone.'"');
+			$user = Crunchbutton_Admin::q('select * from admin where phone=?', [$phone]);
 
 			if (!$user->id_admin) {
-				$user = Crunchbutton_Admin::q('select * from admin where phone="'.$phoneFormat.'"');
+				$user = Crunchbutton_Admin::q('select * from admin where phone=?',[$phoneFormat]);
 			}
 			
 			if (!$user->id_admin) {
-				$user = Crunchbutton_User::q('select * from `user` where phone="'.$phone.'"');
+				$user = Crunchbutton_User::q('select * from `user` where phone=?',[$phone]);
 			}
 			
 			if ($user->id_admin || $user->id_user) {
@@ -163,7 +165,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (!$phone) {
 			return null;
 		}
-		$obj = self::q('select * from phone where phone="'.$phone.'"')->get(0);
+		$obj = self::q('select * from phone where phone=?', [$phone])->get(0);
 		if (!$obj->id_phone) {
 			$obj = new Phone([
 				'phone' => $phone
