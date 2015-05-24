@@ -25,6 +25,8 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 	RewriteRule ^(.+)$				server-vacation.html [L,QSA]
 </Else>
 
+RewriteRule ^(.+)$				server-vacation.html [L,QSA]
+
 <IfDefine !TRAVIS>
 
 	<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
