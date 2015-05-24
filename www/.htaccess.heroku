@@ -15,11 +15,11 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 # only use on heroku because all our other hosts use apache 2.2, not 2.4
 #RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
 <If "req('Host') == 'heroku.crunchr.co'">
-	RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
-#	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
+	#RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
+	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
 </If>
 <If "req('Host') == 'cockpit.heroku.crunchr.co'">
-	RewriteRule ^(.+)$					build/cockpit.html [L,QSA]
+	#RewriteRule ^(.+)$					build/cockpit.html [L,QSA]
 </If>
 
 <IfDefine !TRAVIS>
