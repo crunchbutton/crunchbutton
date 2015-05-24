@@ -29,7 +29,7 @@ class Crunchbutton_Util extends Cana_Model {
 		return $result . $si[ $exp - 1 ];
 	}
 
-	public function frontendTemplates($export = false) {
+	public static function frontendTemplates($export = false) {
 		$files = [];
 
 		$themes = c::view()->theme();
