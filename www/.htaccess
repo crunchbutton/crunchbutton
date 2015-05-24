@@ -20,7 +20,7 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
 </IfDefine>
 <IfDefine HEROKU>
-	RewriteRule ^(.+)$				server-vacation.html [L,QSA]
+	#RewriteRule ^(.+)$				server-vacation.html [L,QSA]
 </IfDefine>
 
 <IfDefine !TRAVIS>
