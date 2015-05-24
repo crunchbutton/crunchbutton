@@ -54,3 +54,5 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 </IfDefine>
 
 AddDefaultCharset UTF-8
+
+# keep this line here
