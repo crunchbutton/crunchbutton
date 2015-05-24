@@ -18,9 +18,12 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 	#RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
 	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
 </If>
-<If "%{HTTP_HOST} == 'cockpit.heroku.crunchr.co'">
+<ElseIf "%{HTTP_HOST} == 'cockpit.heroku.crunchr.co'">
 	#RewriteRule ^(.+)$					build/cockpit.html [L,QSA]
 </If>
+<Else>
+	RewriteRule ^(.+)$				server-vacation.html [L,QSA]
+</Else
 
 <IfDefine !TRAVIS>
 
