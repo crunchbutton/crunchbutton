@@ -11,14 +11,9 @@ RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 RewriteCond %{REQUEST_FILENAME}		!-f
 RewriteCond %{REQUEST_FILENAME}		!-d
+RewriteRule ^(.+)$					../index.php?__url=assets/$1 [L,QSA]
+RewriteRule ^(.+).scss$				../index.php?__url=assets/$1 [L,QSA]
 
-#RewriteRule ^(?!assets).(.*?)$		build/crunchbutton.html [L,QSA]
-
-
-<IfDefine !HEROKU>
-	#RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
-	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
-</IfDefine>
 
 <IfDefine !TRAVIS>
 
@@ -51,3 +46,4 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 </IfDefine>
 
 AddDefaultCharset UTF-8
+
