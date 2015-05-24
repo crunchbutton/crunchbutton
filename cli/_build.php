@@ -1,4 +1,4 @@
-#!.heroku/php/bin/php
+#!/usr/bin/env php
 <?php
 
 // create static assets
