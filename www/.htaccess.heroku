@@ -23,7 +23,7 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 </ElseIf>
 <Else>
 	RewriteRule ^(.+)$				server-vacation.html [L,QSA]
-</Else
+</Else>
 
 <IfDefine !TRAVIS>
 
