@@ -192,40 +192,50 @@ class Crunchbutton_User extends Cana_Table {
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
 		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' )
 
-		$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
-		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
-		$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
-		$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
-		$lastOrder = Order::lastDeliveredOrder( $this->id_user );
-		if( $lastOrder->id_restaurant ){
-			$communities = [];
-			foreach ( $lastOrder->restaurant()->community() as $community ) {
-				$communities[] = $community->id_community;
+		if ($this->id_user) {
+			$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
+			$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
+			$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
+			$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
+			$lastOrder = Order::lastDeliveredOrder( $this->id_user );
+			if( $lastOrder->id_restaurant ){
+				$communities = [];
+				foreach ( $lastOrder->restaurant()->community() as $community ) {
+					$communities[] = $community->id_community;
+				}
+				$out[ 'last_order' ] = array( 'address' => $lastOrder->address, 'communities' => $communities );
+			} else {
+				$out[ 'last_order' ] = false;
 			}
-			$out[ 'last_order' ] = array( 'address' => $lastOrder->address, 'communities' => $communities );
-		} else {
-			$out[ 'last_order' ] = false;
+
+			$lastNote = $this->getLastNote();
+			if( $lastNote ){
+				$out['last_notes'] = trim( $lastNote );
+			}
+			foreach ($this->presets() as $preset) {
+				$out['presets'][$preset->id_restaurant] = $preset->exports();
+			}
+			
+			// Get user payment type
+			$payment_type = $this->payment_type();
+			if( $payment_type ){
+				$out[ 'card' ] = $payment_type->card;
+				$out[ 'card_type' ] = $payment_type->card_type;
+				$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
+				$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
+			}
+			
+
+			$out['tipper'] = $this->tipper();
+
+			$out[ 'points' ] = Crunchbutton_Credit::exportPoints();
 		}
 
-		$lastNote = $this->getLastNote();
-		if( $lastNote ){
-			$out['last_notes'] = trim( $lastNote );
-		}
-
-		foreach ($this->presets() as $preset) {
-			$out['presets'][$preset->id_restaurant] = $preset->exports();
-		}
+		
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();
 
-		// Get user payment type
-		$payment_type = $this->payment_type();
-		if( $payment_type ){
-			$out[ 'card' ] = $payment_type->card;
-			$out[ 'card_type' ] = $payment_type->card_type;
-			$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
-			$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
-		}
+		
 		if( $out['card'] ){
 			$out['card_ending'] = substr( $out['card'], -4, 4 );
 		}
@@ -237,9 +247,6 @@ class Crunchbutton_User extends Cana_Table {
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
 
-		$out['tipper'] = $this->tipper();
-
-		$out[ 'points' ] = Crunchbutton_Credit::exportPoints();
 		return $out;
 	}
 
