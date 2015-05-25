@@ -165,20 +165,20 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			(SELECT `order`.date FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant order by `order`.date desc limit 1) as _order_date,
 			COUNT(`order`.id_order) orders
 		', $q), $keys);
-		
+
 		// this method seems like 8% slower for some reason
 		//SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant
-		
+
 		$i = 1;
 		$more = false;
 
 		while ($s = $r->fetch()) {
-			
+
 			if (!$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
 			}
-			
+
 			$restaurant = Restaurant::o($s);
 			$out = $s;
 			$out->delivery_it_self = $restaurant->deliveryItSelf();

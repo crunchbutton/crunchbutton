@@ -287,6 +287,20 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 		return types;
 	}
 
+	service.scheduled_statuses = function(){
+		var types = [];
+		types.push( { type: 0, label: 'All' } );
+		types.push( { type: service.PAYMENT_STATUS_SCHEDULED, label: 'Scheduled' } );
+		types.push( { type: service.PAYMENT_STATUS_PROCESSING, label: 'Processing' } );
+		types.push( { type: service.PAYMENT_STATUS_DELETED, label: 'Deleted' } );
+		types.push( { type: service.PAYMENT_STATUS_ARCHIVED, label: 'Archived' } );
+		types.push( { type: service.PAYMENT_STATUS_ERROR, label: 'Error' } );
+		types.push( { type: service.PAYMENT_STATUS_FAILED, label: 'Failed' } );
+		return types;
+	}
+
+
+
 	service.drivers.range = function( callback ){
 		settlement.drivers.range( function( json ){
 			callback( json );

@@ -206,6 +206,48 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $this->referrals();
 	}
 
+	public function search( $search ){
+
+		$query = '';
+		$where = ' WHERE 1=1 AND ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '"';
+		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
+
+		if( $search[ 'type' ] ){
+			if( $search[ 'type' ] == 'driver' ){
+
+				if( $search[ 'search' ] ){
+					$where .= ' AND a.name LIKE "%' . $search[ 'search' ] . '%"';
+				}
+
+				if( $search[ 'pay_type' ] ){
+					$where .= ' AND ps.pay_type = "' . $search[ 'pay_type' ] . '"';
+				}
+
+				if( $search[ 'status' ] ){
+					$where .= ' AND ps.status = "' . $search[ 'status' ] . '"';
+				}
+
+				$query = 'SELECT -WILD- FROM payment_schedule ps
+								INNER JOIN admin a ON a.id_admin = ps.id_driver
+								' . $where . '
+								ORDER BY ps.id_payment_schedule DESC ' . $limit;
+			}
+		}
+
+		if( $search[ 'total' ] ){
+			$query = str_replace('-WILD-','COUNT(*) AS total', $query );
+			if( $query != '' ){
+				$total = c::db()->get( $query )->get( 0 );
+				return $total->total;
+			}
+		} else {
+			$query = str_replace('-WILD-','ps.*, a.name AS driver, ps.id_payment_schedule', $query );
+			if( $query != '' ){
+				return Cockpit_Payment_Schedule::q( $query );
+			}
+		}
+	}
+
 	public function shifts(){
 		return Cockpit_Payment_Schedule_Shift::q( 'SELECT * FROM payment_schedule_shift WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_admin_shift_assign DESC' );
 	}

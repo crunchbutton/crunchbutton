@@ -6,6 +6,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$this->resultsPerPage = 20;
 
+		// $this->_driverScheduled();
+		// exit;
+
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -754,26 +757,43 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$this->_error();
 			}
 		} else {
+
+			$resultsPerPage = $this->resultsPerPage;
+
+			$page = max( $this->request()['page'], 1 );
+			$search = $this->request()['search'];
+			$pay_type = max( $this->request()['type'], 0 );
+			$status = max( $this->request()['status'], 0 );
+			$start = ( ( $page - 1 ) * $resultsPerPage );
+
 			$schedule = new Cockpit_Payment_Schedule;
-			$schedules = $schedule->driverNotCompletedSchedules();
-			$out = [ 'drivers' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total_payments' => 0, 'total_reimbursements' => 0 ];
+			$schedules = $schedule->search( [ 'limit' => $start . ',' . $resultsPerPage, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'status' => $status ] );
+
+			$payments_total = $schedule->search( [ 'total' => true, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'status' => $status ] );
+
+			$results = [];
 			foreach( $schedules as $_schedule ){
 				$data = $_schedule->exports();
 				if( !$data[ 'amount' ] ){
 					$data[ 'amount' ] = 0;
 				}
 				$data[ 'date' ] = $_schedule->date()->format( 'M jS Y g:i:s A' );
-				$out[ 'drivers' ][] = $data;
-				$out[ $_schedule->status ]++;
-				if( $_schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
-					$out[ 'total_reimbursements' ]++;
-				} else {
-					$out[ 'total_payments' ]++;
-				}
+				$results[] = $data;
 			}
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
-			echo json_encode( $out );
+
+			if( $payments_total > 0 ){
+				$pages = ceil( $payments_total / $resultsPerPage );
+			}
+
+			$data = [];
+			$data[ 'count' ] = $payments_total;
+			$data[ 'pages' ] = $pages;
+			$data[ 'prev' ] = ( $page > 1 ) ? $page - 1 : null;
+			$data[ 'page' ] = intval( $page );
+			$data[ 'next' ] = ( $page < $pages ) ? $page + 1 : null;
+			$data[ 'results' ] = $results;
+
+			echo json_encode( $data );
 		}
 	}
 
@@ -808,7 +828,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		if( $payments_total > 0 ){
 			$pages = ceil( $payments_total / $resultsPerPage );
 		}
-
 
 		$data = [];
 		$data[ 'count' ] = $payments_total;

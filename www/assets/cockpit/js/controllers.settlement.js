@@ -662,53 +662,6 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 
 });
 
-NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, SettlementService ) {
-
-	$scope.ready = false;
-	$scope.filter = false;
-
-	$scope.status = SettlementService.PAYMENT_STATUS_SCHEDULED;
-
-	$scope.update = function(){
-		SettlementService.drivers.scheduled( function( json ){
-			$scope.result = json;
-			$scope.ready = true;
-		} );
-	}
-
-	$scope.do_err_payments = function(){
-		SettlementService.drivers.do_err_payments( function(){
-			$scope.update();
-		} );
-	}
-
-	$scope.delete = function( id_payment_schedule ){
-		if( confirm( 'Confirm delete payment ' + id_payment_schedule + '?' ) ){
-			SettlementService.drivers.delete( id_payment_schedule, function(){
-				$scope.update();
-			} );
-		}
-	}
-
-	$scope.archive = function( id_payment_schedule ){
-		if( confirm( 'Confirm archive payment ' + id_payment_schedule + '?' ) ){
-			SettlementService.drivers.archive( id_payment_schedule, function(){
-				$scope.update();
-			} );
-		}
-	}
-
-	$scope.payment = function( id_payment ){
-		$scope.navigation.link( '/settlement/drivers/scheduled/' + id_payment );
-	}
-
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		$scope.update();
-	}
-
-});
-
 NGApp.controller( 'SettlementDriversDeletedCtrl', function ( $scope, SettlementService ) {
 
 	$scope.ready = false;
@@ -808,6 +761,56 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 	if( $scope.account.isLoggedIn() ){
 		load();
 	}
+});
+
+NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService, ViewListService) {
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 0,
+			status: 0
+		},
+		update: function() {
+			$scope.ready = false;
+			SettlementService.drivers.scheduled({
+				'page': $scope.query.page,
+				'search': $scope.query.search,
+				'id_driver': $scope.query.driver,
+				'type': $scope.query.type,
+				'status': $scope.query.status
+			}, function( data ){
+				$scope.payments = data.results;
+				$scope.complete(data);
+			});
+		}
+	});
+
+	$scope.query.status = 0;
+	$scope.query.type = 0;
+	$scope.pay_types = SettlementService.pay_types();
+	$scope.payment_statuses = SettlementService.scheduled_statuses();
+	$scope.update();
+
+	$scope.delete = function( id_payment_schedule ){
+		if( confirm( 'Confirm delete payment ' + id_payment_schedule + '?' ) ){
+			SettlementService.drivers.delete( id_payment_schedule, function(){
+				$scope.update();
+			} );
+		}
+	}
+
+	$scope.archive = function( id_payment_schedule ){
+		if( confirm( 'Confirm archive payment ' + id_payment_schedule + '?' ) ){
+			SettlementService.drivers.archive( id_payment_schedule, function(){
+				$scope.update();
+			} );
+		}
+	}
+
 });
 
 NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService, ViewListService) {
