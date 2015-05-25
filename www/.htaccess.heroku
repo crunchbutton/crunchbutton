@@ -9,63 +9,55 @@ RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
 RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 
-
 RewriteCond %{REQUEST_FILENAME}		!-f
-
 RewriteCond %{HTTP_HOST}			^heroku\.crunchr\.co$
+RewriteCond %{REQUEST_URI}			!^/(api|assets)
+RewriteCond %{DOCUMENT_ROOT}/build/crunchbutton.html -f
 RewriteRule ^(.*)$					build/crunchbutton.html [L,QSA]
 
+RewriteCond %{REQUEST_FILENAME}		!-f
+RewriteCond %{HTTP_HOST}			^heroku\.crunchr\.co$
+RewriteCond %{REQUEST_URI}			^/(api|assets)
+RewriteRule ^(.*)$					index.php?__url=$1 [L,QSA]
+
+
+RewriteCond %{REQUEST_FILENAME}		!-f
 RewriteCond %{HTTP_HOST}			^cockpit\.heroku\.crunchr\.co$
+RewriteCond %{REQUEST_URI}			!^/(api|assets)
+RewriteCond %{DOCUMENT_ROOT}/build/cockpit.html -f
 RewriteRule ^(.*)$					build/cockpit.html [L,QSA]
 
+RewriteCond %{REQUEST_FILENAME}		!-f
+RewriteCond %{HTTP_HOST}			^cockpit\.heroku\.crunchr\.co$
+RewriteCond %{REQUEST_URI}			^/(api|assets)
+RewriteRule ^(.*)$					index.php?__url=$1 [L,QSA]
 
 
 
-#RewriteCond %{REQUEST_FILENAME}		!-f
-#RewriteCond %{REQUEST_FILENAME}		!-d
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
+	Header set Cache-Control "max-age=290304000, public"
+</FilesMatch>
 
-# only use on heroku because all our other hosts use apache 2.2, not 2.4
+AddType font/ttf .ttf
+AddType font/eot .eot
+AddType font/otf .otf
+AddType font/woff .woff
+AddType image/svg+xml .svg .svgz
 
-#<If "%{HTTP_HOST} == 'heroku.crunchr.co'">
-	#RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
-#	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
-#</If>
-#<ElseIf "%{HTTP_HOST} == 'cockpit.heroku.crunchr.co'">
-#	RewriteRule ^(.+)$					build/cockpit.html [L,QSA]
-#</ElseIf>
-#<Else>
-#	RewriteRule ^(.+)$				server-vacation.html [L,QSA]
-#</Else>
-#RewriteRule ^api(.+)$				index.php?__url=$1 [L,QSA]
+<IfModule mod_php5.c>
+	php_value max_input_vars 100000
+	php_value upload_max_filesize 32M
+	php_value post_max_size 32M
+</IfModule>
 
-<IfDefine !TRAVIS>
-
-	<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
-		Header set Cache-Control "max-age=290304000, public"
-	</FilesMatch>
-
-	AddType font/ttf .ttf
-	AddType font/eot .eot
-	AddType font/otf .otf
-	AddType font/woff .woff
-	AddType image/svg+xml .svg .svgz
-
-	<IfModule mod_php5.c>
-		php_value max_input_vars 100000
-		php_value upload_max_filesize 32M
-		php_value post_max_size 32M
-	</IfModule>
-
-	AddOutputFilterByType DEFLATE text/plain
-	AddOutputFilterByType DEFLATE text/html
-	AddOutputFilterByType DEFLATE text/xml
-	AddOutputFilterByType DEFLATE text/css
-	AddOutputFilterByType DEFLATE application/xml
-	AddOutputFilterByType DEFLATE application/xhtml+xml
-	AddOutputFilterByType DEFLATE application/rss+xml
-	AddOutputFilterByType DEFLATE application/javascript
-	AddOutputFilterByType DEFLATE application/x-javascript
-
-</IfDefine>
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
 
 AddDefaultCharset UTF-8
