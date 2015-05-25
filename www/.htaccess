@@ -10,21 +10,10 @@ RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-#RewriteCond %{REQUEST_FILENAME}		!-d
-
-#RewriteRule ^(?!assets).(.*?)$		build/crunchbutton.html [L,QSA]
-
-
-#RewriteCond %{REQUEST_URI}			!^/api/ [NC]
-#RewriteCond %{REQUEST_URI}			!^/assets/ [NC]
-#RewriteCond %{HTTP_HOST}			^crunchbutton\.localhost$
-#RewriteRule ^(.*)$					build/crunchbutton.html [L,QSA]
-
-#RewriteCond %{HTTP_HOST}			^cockpit3\.localhost$
-#RewriteRule ^(.*)$					build/cockpit.html [L,QSA]
+RewriteCond %{REQUEST_FILENAME}		!-d
 
 RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
-
+RewriteRule ^(.+).scss$				index.php?__url=$1 [L,QSA]
 
 <IfDefine !TRAVIS>
 
