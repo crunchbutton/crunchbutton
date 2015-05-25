@@ -1,4 +1,4 @@
-RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{REQUEST_FILENAME}		!-d
+#RewriteCond %{REQUEST_FILENAME}		!-f
+#RewriteCond %{REQUEST_FILENAME}		!-d
 
-RewriteRule ^(.+)$					../index.php?__url=assets/$1 [L,QSA]
+#RewriteRule ^(.+)$					../index.php?__url=assets/$1 [L,QSA]
