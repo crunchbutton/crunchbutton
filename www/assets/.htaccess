@@ -1,4 +1,4 @@
 
-RewriteRule ^(.+)$					../index.php?__url=assets/$1 [L,QSA]
+#RewriteRule ^(.+)$					../index.php?__url=assets/$1 [L,QSA]
 #RewriteRule ^(.*).scss$				../index.php?__url=assets/$1 [L,QSA]
 #RewriteRule ^(.*\.scss)$				../index.php?__url=assets/$1 [L,QSA]
