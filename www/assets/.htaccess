@@ -1,13 +1,3 @@
-allow from all
-
-RewriteEngine on
-Options +Followsymlinks -Indexes
-
-ReWriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
-ReWriteRule .* - [F]
-RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
-RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
-
 
 RewriteCond %{REQUEST_FILENAME}		!-f
 RewriteCond %{REQUEST_FILENAME}		!-d

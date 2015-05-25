@@ -1,0 +1,3 @@
+
+RewriteRule ^(.+)$					../index.php?__url=api/$1 [L,QSA]
+RewriteRule ^(.+).scss$				../index.php?__url=api/$1 [L,QSA]
