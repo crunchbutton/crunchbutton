@@ -11,9 +11,12 @@ RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{REQUEST_URI}			!^/api/ [NC]
-RewriteCond %{REQUEST_URI}			!^/assets/ [NC]
+
+RewriteCond %{HTTP_HOST}			^heroku\.crunchr\.co$
 RewriteRule ^(.*)$					build/crunchbutton.html [L,QSA]
+
+RewriteCond %{HTTP_HOST}			^cockpit\.heroku\.crunchr\.co$
+RewriteRule ^(.*)$					build/cockpit.html [L,QSA]
 
 
 
