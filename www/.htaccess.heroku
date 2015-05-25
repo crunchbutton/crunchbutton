@@ -9,13 +9,22 @@ RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
 RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 
+
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{REQUEST_FILENAME}		!-d
+RewriteCond %{REQUEST_URI}			!^/api/ [NC]
+RewriteCond %{REQUEST_URI}			!^/assets/ [NC]
+RewriteRule ^(.*)$					build/crunchbutton.html [L,QSA]
+
+
+
+
+#RewriteCond %{REQUEST_FILENAME}		!-f
+#RewriteCond %{REQUEST_FILENAME}		!-d
 
 # only use on heroku because all our other hosts use apache 2.2, not 2.4
 
 #<If "%{HTTP_HOST} == 'heroku.crunchr.co'">
-	RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
+	#RewriteRule ^(.+)$					build/crunchbutton.html [L,QSA]
 #	RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
 #</If>
 #<ElseIf "%{HTTP_HOST} == 'cockpit.heroku.crunchr.co'">
@@ -24,7 +33,7 @@ RewriteCond %{REQUEST_FILENAME}		!-d
 #<Else>
 #	RewriteRule ^(.+)$				server-vacation.html [L,QSA]
 #</Else>
-
+#RewriteRule ^api(.+)$				index.php?__url=$1 [L,QSA]
 
 <IfDefine !TRAVIS>
 
