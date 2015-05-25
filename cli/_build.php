@@ -5,6 +5,10 @@
 
 $host = $argv[1];
 $uri = $argv[2];
+$params = $argv[3];
+
+parse_str($params, $_GET);
+parse_str($params, $_REQUEST);
 
 error_reporting(E_ALL ^ (E_NOTICE | E_STRICT));
 ini_set('display_errors',true);
