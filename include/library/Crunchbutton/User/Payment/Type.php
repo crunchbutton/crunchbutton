@@ -2,7 +2,7 @@
 
 class Crunchbutton_User_Payment_Type extends Cana_Table {
 
-	public function processor() {
+	public static function processor() {
 		return c::config()->site->config('processor_payments')->value;
 	}	
 
