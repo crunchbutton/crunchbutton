@@ -900,4 +900,5 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return 'Temporarily closed';
 	}
+
 }
