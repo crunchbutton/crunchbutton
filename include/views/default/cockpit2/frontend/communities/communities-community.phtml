@@ -107,13 +107,13 @@
 				</div>
 				<div class="divider"></div>
 			</div>
-			
+
 			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
 
 			<div class="no-box-content-color">
-				
+
 				<div class="field-container">
-					
+
 					<div class="field-row">
 						<div class="field-key">Latitude, Longitude</div>
 						<div class="field-value">{{community.loc_lat}}, {{community.loc_lon}}</div>
@@ -122,10 +122,10 @@
 						<div class="field-key">Timezone</div>
 						<div class="field-value">{{community.timezone}}</div>
 					</div>
-					
+
 				</div>
-				
-				
+
+
 			</div>
 		</div>
 
@@ -147,7 +147,7 @@
 
 	<div class="right">
 		<p>
-			<a href="/orders?limit=100&page=1&search=&restaurant=&community={{community.id_community}}&date=&view=map">Map last 100 orders</a> | 
+			<a href="/orders?limit=100&page=1&search=&restaurant=&community={{community.id_community}}&date=&view=map">Map last 100 orders</a> |
 			<a href="/orders?community={{community.id_community}}">View all orders</a>
 		</p>
 	</div>
@@ -179,6 +179,7 @@
 							<div class="box-error">
 								<small ng-show="formAlias.aliasAlias.$error.required">Required.</small>
 							</div>
+							<div>Must be entered as all lowercase letters, or it won't work for customers!</div>
 						</li>
 
 						<li class="li-input" ng-class="{'error':formAlias.aliasNameAlt.$invalid}">

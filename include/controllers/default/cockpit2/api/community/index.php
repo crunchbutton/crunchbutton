@@ -71,7 +71,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							case 'add':
 								$alias = new Crunchbutton_Community_Alias;
 								$alias->id_community = $this->request()[ 'id_community' ];
-								$alias->alias = $this->request()[ 'alias' ];
+								$alias->alias = strtolower( $this->request()[ 'alias' ] );
 								$alias->prep = $this->request()[ 'prep' ];
 								$alias->name_alt = $this->request()[ 'name_alt' ];
 								$alias->top = $this->request()[ 'top' ];
