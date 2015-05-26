@@ -20,6 +20,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			$_all_closed = true;
 			$id_community = 0;
 			foreach ($restaurants as $restaurant) {
+
 				$data = $restaurant->exports( [ 'categories' => true ] );
 
 				$communities[ $restaurant->community()->id_community ] = true;

@@ -1337,7 +1337,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-
+		// change its lat and long to the community's
+		if( !$isCockpit && $this->delivery_radius_type == 'community' ){
+			$community = $this->community();
+			$out[ 'loc_lat' ] = $community->loc_lat;
+			$out[ 'loc_long' ] = $community->loc_lon;
+		}
 
 		return $out;
 	}
@@ -1517,38 +1522,75 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function byRange($params) {
+
 		$params['range'] = $params['range'] ? $params['range'] : 2;
 
 		$range = floatval($params['range']);
-		$rangeDif = $range-2;
+		$rangeDif = $range - 2;
 		$lat = floatval($params['lat']);
 		$lon = floatval($params['lon']);
 
-		$calc = '((ACOS(SIN('.$lat.' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$lat.' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$lon.' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515)';
+		$formula = '( ( ACOS( SIN( %F * PI() / 180 ) * SIN( %s * PI() / 180 ) + COS( %F * PI() / 180 ) * COS( %s * PI() / 180 ) * COS( ( %F - %s ) * PI() / 180 ) ) * 180 / PI() ) * 60 * 1.1515 )';
 
-		$query = '
+		$regular_calc = sprintf( $formula, $lat, 'loc_lat', $lat, 'loc_lat', $lon, 'loc_long' );
+
+		$query = "
 			SELECT
 				count(*) as _weight,
-				\'byrange\' as type,
-				'.$calc.' AS distance,
+				restaurant.loc_lat,
+				restaurant.loc_long,
+				'byrange' as type,
+				{$regular_calc} AS distance,
 				restaurant.*
-			FROM `restaurant`
-			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
-			WHERE
-				active = true
-			GROUP BY restaurant.id_restaurant
-			HAVING
-					takeout = true
-				AND
-					delivery = false
-				AND
-					'.$calc.' <= '.$range.'
-				OR
-					delivery = true
-				AND
-					'.$calc.' <= (delivery_radius+ '.$rangeDif.' )
-			ORDER BY _weight DESC;
-		';
+			FROM restaurant
+				LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
+				WHERE
+					active = true AND delivery_radius_type = 'restaurant'
+				GROUP BY restaurant.id_restaurant
+				HAVING
+						takeout = true
+					AND
+						delivery = false
+					AND
+						{$regular_calc} <= {$range}
+					OR
+						delivery = true
+					AND
+						{$regular_calc} <= (delivery_radius + {$rangeDif} ) ";
+
+		$query .= " UNION ";
+
+		$community_calc = sprintf( $formula, $lat, 'c.loc_lat', $lat, 'c.loc_lat', $lon, 'c.loc_lon' );
+		$restaurant_calc = sprintf( $formula, $lat, 'r.loc_lat', $lat, 'r.loc_lat', $lon, 'r.loc_long' );
+
+		$query .= "
+  			SELECT
+  				count(*) as _weight,
+  				c.loc_lat AS loc_lat,
+  				c.loc_lon AS loc_long,
+  				'byrange' as type,
+  				{$restaurant_calc} AS distance,
+  				r.*
+  			FROM restaurant r
+  			LEFT JOIN `order` o ON o.id_restaurant = r.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
+  			INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant
+  			INNER JOIN community c ON c.id_community = rc.id_community
+  			WHERE
+  				r.active = true AND r.delivery_radius_type = 'community' AND c.active = true
+  			GROUP BY r.id_restaurant
+  			 HAVING
+  					r.takeout = true
+  				AND
+  					r.delivery = false
+  				AND
+  					{$community_calc} <= {$range}
+  				OR
+  					delivery = true
+  				AND
+  					{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
+
+  	$query .= " ORDER BY _weight DESC; ";
+
 		$restaurants = self::q($query, $keys);
 		foreach ($restaurants as $restaurant) {
 			$sum += $restaurant->_weight;
