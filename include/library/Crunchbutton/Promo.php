@@ -643,7 +643,7 @@ class Crunchbutton_Promo extends Cana_Table
 	public function getLastGiftCardsRedeemedFromPhoneNumber( $phone, $giftcards = 2 ){
 		$query = "SELECT c.* FROM credit c
 								INNER JOIN user u ON u.id_user = c.id_user AND u.phone = ?
-								WHERE c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' ) ORDER BY id_credit DESC limit 0,{$giftcards}";
+								WHERE c.type = 'CREDIT' AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' ) AND c.id_promo IS NOT NULL ORDER BY id_credit DESC limit 0,{$giftcards}";
 		return Crunchbutton_Promo::q( $query, [$phone]);
 	}
 
