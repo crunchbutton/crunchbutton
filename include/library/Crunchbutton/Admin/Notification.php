@@ -384,7 +384,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingDriver,
 			'+1'.$num,
-			$url
+			$url,
+			[ 'IfMachine' => 'Hangup' ]
 		);
 
 	}
