@@ -42,7 +42,7 @@ NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
-NGApp.factory('errorInterceptor', function($q) {  
+NGApp.factory('errorInterceptor', function($q) {
 	var errorFromResponse = function(response) {
 		if (response.headers && typeof(response.headers) !== 'function') {
 			return true;
@@ -117,7 +117,7 @@ NGApp.factory('errorInterceptor', function($q) {
 	return errorInterceptor;
 });
 
-NGApp.config(['$httpProvider', function($httpProvider) { 
+NGApp.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.headers.common['Http-Error'] = 1;
 	$httpProvider.interceptors.push('errorInterceptor');
 }]);
@@ -600,7 +600,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},1200);
-		
+
 		history.go(-1);
     	navigator.app.backHistory();
 	};
@@ -703,7 +703,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
-		
+
 		if (errorInterceptor.isInteruptable($location.url())) {
 			errorInterceptor.cancelAll();
 		}
@@ -1028,6 +1028,11 @@ App.dialog = {
 	},
 	isOpen : function(){
 		return $.magnificPopup && $.magnificPopup.instance && $.magnificPopup.instance.isOpen;
+	},
+	close: function(){
+		try {
+			$.magnificPopup.close();
+		} catch (e) {}
 	}
 };
 
