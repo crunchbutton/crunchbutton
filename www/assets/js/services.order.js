@@ -588,8 +588,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				var success = function (results) {
 					// Get the closest address from that lat/lng
 					var theClosestAddress = service.location.theClosestAddress(results, latLong);
+
 					var isTheAddressOk = service.restaurant.id_restaurant == 26 ? true : service.location.validateAddressType(theClosestAddress.result);
 					if (isTheAddressOk) {
+
 						theClosestAddress = theClosestAddress.location;
 						if( service.form.address != theClosestAddress.formatted() ){
 							theClosestAddress.setEntered( service.form.address );
@@ -603,6 +605,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						}
 
 						var distance = service.location.distance( { from : { lat : lat, lon : lon }, to : { lat : service.restaurant.loc_lat, lon : service.restaurant.loc_long } } );
+
 						distance = service.location.km2Miles( distance );
 
 						if (!service.restaurant.deliveryHere(distance)) {
