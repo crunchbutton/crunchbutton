@@ -151,7 +151,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 				switch ($this->request()['Digits']) {
 					case '3':
-						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin"  numDigits="1" timeout="10" finishOnKey="#" method="get">';
 						echo Crunchbutton_Admin_Notification::spellOutURL( $order->id_order );
 
 						for ($x = 0; $x <= $repeat; $x++) {
@@ -172,7 +172,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 					case '1':
 					default:
-						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" IfMachine="Hangup" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
 
@@ -204,7 +204,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				}
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
-						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" IfMachine="Hangup" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							. '<Pause length="1" />'
 							. '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' . . </Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'">You have not confirmed order number ' . $order->id_order . ' . . </Say>'
