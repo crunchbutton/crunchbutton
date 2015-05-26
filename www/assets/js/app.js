@@ -1149,7 +1149,6 @@ App.handleUrl = function(url) {
  */
 App.dialog = {
 	show: function() {
-		console.log('111',111);
 		if (arguments[1]) {
 			// its a title and message
 			var src = '<div class="zoom-anim-dialog small-container">' +
