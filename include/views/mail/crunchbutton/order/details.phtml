@@ -196,7 +196,7 @@ if( $version == 'customer' ){
 		$showTipAndDeliveryFee = !$order->restaurant()->delivery_service;
 	}
 
-	if( $showTipAndDeliveryFee && $show_credit_card_tips ){
+	if( $showTipAndDeliveryFee && $show_credit_card_tips && $viewer != 'driver' ){
 		if ( $order->pay_type == 'card' && $order->tip ) { ?>
 			<tr>
 				<td></td>
