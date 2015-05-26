@@ -246,6 +246,9 @@ class Crunchbutton_User extends Cana_Table {
 
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
+		
+
+		$out['image'] = $this->image(false);
 
 		return $out;
 	}

@@ -2431,10 +2431,12 @@ b, strong{ font-weight: bold; }
 	.support-box-wrap {
 		display: inline-block;
 		width: 100%;
+		-webkit-column-fill: balance;
 	}
 	.support-boxes {
 		-webkit-column-count: 2;
 		-webkit-column-gap: 15px;
+		-webkit-column-fill: balance;
 	}
 	.support-boxes-column {
 		width: 49%;
@@ -3556,6 +3558,12 @@ input[type="checkbox"].switch + div:before {
 	width: 2.5em;
 }
 
+.customer-image-large, .customer-image-crop-large {
+	height: 10.5em;
+	width: 10.5em;
+	margin: 0 auto;
+}
+
 .customer-image-null {
 	background: url(../images/cockpit-user.png);
 	background-size: contain;
@@ -4010,4 +4018,59 @@ h1.title.box-title {
 	float: left;
 	margin-right: 2em;
 	margin-top: 1em;
+}
+
+.support-box-wrap .customer-name-large {
+	font-size: 2.5em;
+	font-weight: 200;
+	padding: .5em 0 1em 0;
+	text-align: center;
+	float: none;
+}
+
+.support-box-widget {
+	@include box-border-radius(6px);
+	padding: 1em;
+	color: #fff;
+}
+
+
+.column-50 {
+	width: 49%;
+	box-sizing: border-box;
+	display: block;
+}
+
+.column-50:first-child {
+	float: left;
+	
+}
+.column-50:last-child {
+	float: right;
+}
+
+.support-box-widget-green {
+	background: $buttonGreen;
+}
+.support-box-widget-blue {
+	background: $buttonBlue;
+}
+
+.support-box-widget-content {
+	padding-top: .2em;
+	font-size: 2.8em;
+	font-weight: 100;
+	float: right;
+	clear: right;
+}
+.support-box-widget-label {
+	float: right;
+}
+.fa.support-box-widget-icon {
+	font-size: 4.4em;
+	float: left;
+}
+
+.support-widget-box-wrap {
+	margin-bottom: 1.1em;
 }
