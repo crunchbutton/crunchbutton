@@ -10,9 +10,10 @@ RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{REQUEST_FILENAME}		!-d
+#RewriteCond %{REQUEST_FILENAME}		!-d
 
-RewriteRule ^(.+)$				index.php?__url=$1 [L,QSA]
+RewriteRule ^(.+)$					index.php [L,QSA]
+RewriteRule ^(.+).scss$				index.php [L,QSA]
 
 
 <IfDefine !TRAVIS>
