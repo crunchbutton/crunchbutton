@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `force_community_radius` tinyint(1) DEFAULT '0';

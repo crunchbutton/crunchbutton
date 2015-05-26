@@ -115,6 +115,13 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.forceCommunityRadius.$invalid}">
+				<div class="label">Force Community Radius:</div>
+				<div class="input">
+					<select name="forceCommunityRadius" required ng-model="community.force_community_radius" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+				</div>
+			</li>
+
 		</ul>
 
 		<br/><br/><br/>
