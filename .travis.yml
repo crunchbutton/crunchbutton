@@ -49,7 +49,7 @@ notifications:
   webhooks: https://cockpit.la/api/travisci/build
 
 addons:
-	postgresql: "9.3"
+  postgresql: "9.3"
 #  sauce_connect:
 #  username: "Your Sauce Labs username"
 #  access_key: "Your Sauce Labs access key"
