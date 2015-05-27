@@ -1,14 +1,14 @@
 
 NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
-	
-	
+
+
 	var redirect = function() {
 		// redirect to login if there is no user
 		if (!AccountService.user || !AccountService.user.id_admin) {
 			MainNavigationService.link('/login');
 			return;
 		}
-		
+
 		var id_order = $location.path().replace( '/', '' );
 		if( !isNaN( parseInt( id_order ) ) ){
 			MainNavigationService.link('/drivers/order/' + id_order);
@@ -32,7 +32,7 @@ NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, 
 			}
 		}
 	};
-	
+
 	// wait for login to complete
 	if (!AccountService.init) {
 		$scope.$on('userAuth', redirect);
@@ -166,13 +166,25 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 });
 
 NGApp.controller( 'CallText', function ($scope, $rootScope) {
+
 	$rootScope.$on('callText', function(e, num) {
+
 		$(':focus').blur();
 		$scope.number = num;
 		$scope.complete = $rootScope.closePopup;
 		App.dialog.show('.notification-call-text-container');
 
+		$scope.hideCallBox = true;
+		$scope.hideSMSBox = true;
+
 	});
+
+	// variables to controll the template 'assets/view/support-phone.html'
+	// when it is called by a modal
+	$scope.isModal = true;
+	$scope.hideCallBox = true;
+	$scope.hideSMSBox = true;
+
 });
 
 NGApp.filter('capitalize', function() {
