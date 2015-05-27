@@ -19,12 +19,13 @@ before_script:
   - php travis/dbmigrate.php
   - sudo apt-get clean
   - sudo apt-get update
-  - sudo apt-get install apache2 pgloader
+  - sudo apt-get install apache2 gdebi
+  - gdebi http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
   - psql -c 'create database crunchbutton_travis;' -U postgres
   - mysqldump -d --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
   - mysqldump --no-create-info --skip-triggers --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
   - touch pgloader.conf
-  - pgloader -c pgloader.conf mysql://root@localhost:3306/crunchbutton_travis postgresql:///crunchbutton_travis
+  - pgloader mysql://root@localhost:3306/crunchbutton_travis postgresql:///crunchbutton_travis
   - sudo a2enmod actions
   - sudo a2enmod rewrite
   - chmod -R 0777 ./*
