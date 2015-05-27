@@ -194,10 +194,22 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$o->lat = $user->location_lat;
 				}
 			}
-			
+
 			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
-			foreach ($boolFields as $field) {
-				$o->{$field} = $o->{$field} ? true : false;
+			
+			foreach (get_object_vars($o) as $key => $value) {
+				$type = gettype($value);
+
+				if (($type == 'string' || $type == 'integer') && in_array($key, $boolFields)) {
+					$o->{$key} = $o->{$key} ? true : false;
+				} elseif ($type == 'string' && is_numeric($value)) {
+					if (strpos($value, '.') === false) {
+						$o->{$key} = intval($o->{$key});
+					} else {
+						$o->{$key} = floatval($o->{$key});
+					}
+				}
+				
 			}
 
 			$data[] = $o;
@@ -219,7 +231,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				'pages' => $pages,
 				'page' => intval($page),
 				'results' => $data
-			], JSON_NUMERIC_CHECK);
+			], JSON_PRETTY_PRINT);
+			// this aparantly doesnt always work JSON_NUMERIC_CHECK 
 		}
 
 	}
