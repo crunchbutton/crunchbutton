@@ -46,7 +46,7 @@
 						<div class="field-key">Status</div>
 						<div class="field-value">
 							<span ng-if="order.status">
-							
+
 								<span class="tag tag-red" ng-if="order.status.status == 'new'">New</span>
 								<span class="tag tag-green" ng-if="order.status.status == 'accepted'">Accepted</span>
 								<span class="tag tag-blue" ng-if="order.status.status == 'pickedup'">Pickedup</span>
@@ -117,19 +117,22 @@
 						</div>
 					</div>
 
-					
+
 				</div>
 
 				<br><br>
-				<div class="tripple-cols">
+				<div class="quadruple-cols">
 					<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
 					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && (order.status.status != 'new' || order.status.status != 'rejected'))}"><i class="fa fa-car"></i>&nbsp;&nbsp;Notify</button>
 					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
+					<button ng-click="creditDialog( order.id_user );" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
 				</div>
-				
+
+				<br><br>
+
 			</div>
 		</div>
-		
+
 		<? /* customer */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.user.id_user">
 			<div class="support-box-wrap-header">
@@ -171,7 +174,7 @@
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order.tip || 0 | number:2}}</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 				</table>
-				
+
 
 			</div>
 		</div>
@@ -279,7 +282,7 @@
 
 			</div>
 		</div>
-		
+
 
 		<? /* location */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
@@ -295,7 +298,7 @@
 				<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
 			</map>
 			<div class="divider"></div>
-			
+
 		</div>
 
 	</div>

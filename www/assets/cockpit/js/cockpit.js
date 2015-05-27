@@ -630,6 +630,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.$broadcast('callText', num);
 	};
 
+	$rootScope.creditDialog = function(id_user, id_order) {
+		$rootScope.$broadcast('creditDialog', id_user, id_order);
+	};
+
 	$rootScope.hasBack = false;
 
 	var camelCase = function(str) {
