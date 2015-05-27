@@ -111,12 +111,6 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$keys[] = $phone;
 					break;
 
-				case ( strpos( $search, 'customer:' ) !== false ):
-					$id_user = str_replace( 'customer:' , '', $search );
-					$q .= 'AND order.id_user = ? ';
-					$keys[] = $id_user;
-					break;
-
 				default:
 					$s = Crunchbutton_Query::search([
 						'search' => stripslashes($search),

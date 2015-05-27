@@ -40,6 +40,12 @@ NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, Cust
 	CustomerService.get($routeParams.id, function(d) {
 		$rootScope.title = d.name + ' | Customers';
 		$scope.customer = d;
+		
+		if ($scope.customer.address.indexOf(',') > -1) {
+			var address = $scope.customer.address.split(',');
+			$scope.customer.address = address.shift() + "\n" + address.join(',');
+		}
+		
 		$scope.loading = false;
 	});
 	
