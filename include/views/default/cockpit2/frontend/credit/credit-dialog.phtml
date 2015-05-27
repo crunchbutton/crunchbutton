@@ -1,0 +1,51 @@
+<div ng-controller="CreditDialogCtrl">
+
+	<h1 class="dialog-title">Add Credit</h1>
+
+	<div class="ul-inputs">
+
+		<form name="formCredit" novalidate>
+
+			<ul ng-class="{'submitted':formCreditSubmitted}" class="ul-inputs">
+
+				<li class="li-input">
+					<div class="label">Customer</div>
+					<div class="input">
+						<span ng-show="isLoading"><i class="fa fa-spinner fa-pulse"></i></span>
+						<span ng-show="!isLoading"><strong>{{credit.name}}</strong></span>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':formCredit.value.$invalid}">
+					<div class="label">Value:</div>
+					<div class="input">
+						<input type="number" name="value" required ignore-mouse-wheel ng-model="credit.value" placeholder="">
+					</div>
+					<div class="box-error">
+						<small ng-show="formCredit.value.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':formCredit.note.$invalid}">
+					<div class="label">Note:</div>
+					<div class="input">
+						<textarea name="note" required ng-model="credit.note"></textarea>
+					</div>
+					<div class="box-error">
+						<small ng-show="formCredit.note.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="!isSaving">
+					<button class="button button-empty button-border button-orange ng-scope" ng-class="{'button-disabled': isLoading }" ng-click="save()"><i class="fa fa-gift"></i>&nbsp;&nbsp;Add Gift Card</button>
+				</li>
+				<li class="li-input" ng-show="isSaving">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+
+			</ul>
+
+		</form>
+
+	</div>
+</div>

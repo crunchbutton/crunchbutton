@@ -3,6 +3,8 @@
 class Crunchbutton_Promo extends Cana_Table
 {
 
+	const CHARS = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+
 	const TYPE_SHARE = 'user_share';
 	const TYPE_GIFTCARD = 'gift_card';
 
@@ -122,8 +124,8 @@ class Crunchbutton_Promo extends Cana_Table
 		return $return;
 	}
 
-	public function addCredit( $id_user, $delivery_fee = 0 ){
-		$credit = new Crunchbutton_Credit();
+	public function addCredit( $id_user, $delivery_fee = 0, $note = false ){
+		$credit = new Crunchbutton_Credit;
 		$credit->id_user = $id_user;
 		$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 		$credit->id_restaurant = $this->id_restaurant;
@@ -138,7 +140,12 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->id_order_reference = $this->id_order_reference;
 		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
 		$credit->paid_by = $this->paid_by;
-		$credit->note = 'Giftcard: ' . $this->id_promo;
+		if( !$note ){
+			$credit->note = 'Giftcard: ' . $this->id_promo;
+		} else {
+			$credit->note = $note;
+		}
+
 		$credit->save();
 
 		if( !$this->is_discount_code ){

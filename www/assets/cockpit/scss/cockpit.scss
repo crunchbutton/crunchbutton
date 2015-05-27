@@ -2572,6 +2572,12 @@ b, strong{ font-weight: bold; }
 	@include gpu();
 }
 
+.quadruple-cols {
+	-webkit-column-count: 4;
+	-webkit-column-gap: 15px;
+	@include gpu();
+}
+
 .field-container .field-row-button .field-two-rows {
 	width: 40% !important;
 }
@@ -3117,7 +3123,7 @@ h1.driver-title {
 	margin-bottom: -.8em;
 }
 
-.dialog-call-number {
+.dialog-call-number, .dialog-title {
 	font-family: Ruda;
 	font-size: 1.8em;
 	display: block;
@@ -4043,7 +4049,7 @@ h1.title.box-title {
 
 .column-50:first-child {
 	float: left;
-	
+
 }
 .column-50:last-child {
 	float: right;

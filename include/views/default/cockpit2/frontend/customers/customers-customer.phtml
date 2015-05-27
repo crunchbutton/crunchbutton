@@ -2,7 +2,7 @@
 
 <div class="content-padding">
 
-	
+
 	<div class="support-boxes">
 
 		<div class="support-box-wrap box-content2" style="-webkit-column-width: 20%;">
@@ -13,7 +13,7 @@
 					<div ng-if="!customer.image" class="customer-image-large customer-image-null"></div>
 				</div>
 				<h1 class="customer-name-large">{{customer.name}}</h1>
-				
+
 				<div class="field-container">
 
 					<div class="field-row">
@@ -27,7 +27,9 @@
 				</div>
 				<br><br>
 				<div class="double-cols">
-					<button ng-click="" class="button button-empty button-border button-orange" ng-class="{'button-disabled': isRefunding || order.refunded}"><i class="fa fa-heart"></i>&nbsp;&nbsp;Gift Card</button>
+
+					<button ng-click="creditDialog( customer.id_user );" ng-if="customer.id_user" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
+
 					<button ng-click="" class="button button-empty button-border button-blue" ng-class="{'button-disabled': true}"><i class="fa fa-close"></i>&nbsp;&nbsp;Deactive</button>
 				</div>
 			</div>
@@ -39,14 +41,14 @@
 				<div class="support-box-widget-label">Orders from this number</div>
 				<div class="support-box-widget-content">{{customer.orders_from_this_customer}}</div>
 			</a>
-				
+
 			<a href="/orders?phone={{customer.phone}}" class="column-50 support-box-widget support-box-widget-blue">
 				<i class="fa fa-phone support-box-widget-icon"></i>
 				<div class="support-box-widget-label">Orders from this customer</div>
 				<div class="support-box-widget-content">{{customer.orders_from_this_phone}}</div>
 			</a>
 		</div>
-	
+
 		<div class="support-box-wrap box-content2" style="-webkit-column-width: 80%;">
 			<div class="support-box-wrap-header">
 				<h1>Credits</h1>
@@ -57,13 +59,13 @@
 				</div>
 				<div class="divider"></div>
 			</div>
-			
+
 			<div class="no-box-content-color">
 				<br>
 				@todo: add gift card and point logs
 			</div>
 		</div>
-	
+
 	</div>
 
 	<br><br>
