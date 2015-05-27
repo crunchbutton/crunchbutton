@@ -1923,6 +1923,9 @@ a.button{
 	.dish-item-name {
 		color: #d9462f;
 		text-decoration: underline;
+		
+	}
+	.dish-item:not(.starred-item) {
 		line-height: 1.8em;
 	}
 	.dish-item {
