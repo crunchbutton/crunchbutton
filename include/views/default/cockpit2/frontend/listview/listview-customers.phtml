@@ -34,7 +34,7 @@
 				<span class="tag tag-red" ng-if="!customer._stripe_id">No</span>
 			</td>
 			<td nowrap class="tb-v-center">
-				<a href="/orders?search=phone:{{customer.phone}}"><button class="button button-small button-empty button-green"><i class="fa fa-phone"></i>&nbsp;&nbsp;Orders</button></a>
+				<a href="/orders?phone={{customer.phone}}"><button class="button button-small button-empty button-green"><i class="fa fa-phone"></i>&nbsp;&nbsp;Orders</button></a>
 				<a href="/customer/{{customer.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 			</td>
 		</tr>
