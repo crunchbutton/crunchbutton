@@ -476,15 +476,34 @@
 
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
+
 		<h1 class="dialog-call-number">{{number | formatPhone}}</h1>
 
-		<a href="sms:{{number}}" class="number-action" target="_system">
-			<button class="button green">Text</button>
-		</a>
+		<div class="hide-desktop">
 
-		<a href="tel:{{number}}" class="number-action" target="_system">
-			<button class="button green">Call</button>
-		</a>
+			<a href="sms:{{number}}" class="number-action" target="_system">
+				<button class="button green">Text</button>
+			</a>
+
+			<a href="tel:{{number}}" class="number-action" target="_system">
+				<button class="button green">Call</button>
+			</a>
+
+		</div>
+
+		<div class="hide-mobile" ng-show="hideSMSBox && hideCallBox">
+
+			<a href="" ng-click="hideSMSBox = false" class="number-action">
+				<button class="button green">Text</button>
+			</a>
+
+			<a href="" ng-click="hideCallBox = false" class="number-action">
+				<button class="button green">Call</button>
+			</a>
+
+		</div>
+
+		<ng-include src="'assets/view/support-phone.html'"></ng-include>
 
 		<? /*
 		<a href class="number-action" target="_system" ng-if="account.user.permissions.GLOBAL">

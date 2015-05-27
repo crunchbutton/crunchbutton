@@ -152,7 +152,7 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 
 } );
 
-NGApp.controller('SupportPhoneCtrl', function( $scope, StaffService, CallService, MainNavigationService) {
+NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService, CallService, MainNavigationService) {
 
 	$scope.call = { staff : '', to : 'customer', _to: CallService.call_to() };
 	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to() };
@@ -174,16 +174,29 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, StaffService, CallService
 	$scope.formCallSending = false;
 	$scope.formSMSSending = false;
 
+	$scope.reset = function(){
+		$scope.call.phone = '';
+		$scope.sms.phone = '';
+		$scope.sms.message = '';
+	}
+
+
 	$scope.sms.send = function(){
+
 		if( $scope.formSMS.$invalid ){
 			$scope.formSMSSubmitted = true;
 			return;
 		}
+
 		$scope.formSMSSending = true;
 		CallService.send_sms( $scope.sms, function( json ){
 			$scope.formSMSSending = false;
 			if( json.success ){
 				MainNavigationService.link('/ticket/' + json.success);
+				if( $scope.complete ){
+					$scope.complete();
+				}
+				$scope.reset();
 			} else {
 				App.alert( json.error );
 			}
@@ -200,12 +213,19 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, StaffService, CallService
 			$scope.formCallSending = false;
 			if( json.success ){
 				App.alert( json.success );
+				$scope.reset();
 			} else {
 				App.alert( json.error );
 			}
 		} );
 	}
 
+	// Reset stuff when calling from modal
+	$rootScope.$on('callText', function(e, num) {
+		$scope.reset();
+		$scope.call.phone = num;
+		$scope.sms.phone = num;
+	} );
 
 } );
 

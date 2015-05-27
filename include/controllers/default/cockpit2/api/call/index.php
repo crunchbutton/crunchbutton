@@ -42,7 +42,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 		$params[ 'Created_By' ] = c::admin()->firstName();
 		$params[ 'Body' ] = $this->request()[ 'message' ];
 		$params[ 'From' ] = $this->request()[ 'phone' ];
-		if( trim( $params[ 'Name' ] ) != '' && trim( $params[ 'Body' ] ) != '' && trim( $params[ 'From' ] ) != '' ){
+		if( trim( $params[ 'Body' ] ) != '' && trim( $params[ 'From' ] ) != '' ){
 			$support = Crunchbutton_Support::createNewChat( $params );
 			if( $support->id_support ){
 					echo json_encode( [ 'success' => $support->id_support ] );

@@ -1,13 +1,15 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-hide="isModal">
 	<h1 class="title"><i class="fa fa-comments-o"></i> Make a call / Send SMS</h1>
 </div>
 
-<div class="content-padding col-box">
+<div ng-class="{'col-box': !isModal}"class="content-padding" ng-controller="SupportPhoneCtrl">
 
-	<div class="two-col">
+	<div ng-class="{'two-col': !isModal}" ng-hide="hideCallBox">
+
 		<div class="ul-inputs box-content2">
+
 			<form name="formCall" novalidate>
 
 				<ul ng-class="{'submitted':formCallSubmitted}" class="ul-inputs">
@@ -16,10 +18,10 @@
 						<strong>Make a call</strong>
 					</li>
 
-					<li class="li-input">
+					<li class="li-input" ng-show="!isModal">
 						<div class="label">Choose an admin/driver:</div>
 						<div class="input">
-							<select name="staff" ng-model="call.staff" required ng-options="opt.phone as opt.name for opt in staff"></select>
+							<select name="staff" ng-model="call.staff" ng-required="!isModal" ng-options="opt.phone as opt.name for opt in staff"></select>
 						</div>
 					</li>
 
@@ -55,7 +57,8 @@
 		</div>
 	</div>
 
-	<div class="two-col">
+	<div ng-class="{'two-col': !isModal}" ng-hide="hideSMSBox">
+
 		<div class="ul-inputs box-content2">
 
 			<form name="formSMS" novalidate>
@@ -66,16 +69,16 @@
 						<strong>Send SMS</strong>
 					</li>
 
-					<li class="li-input">
+					<li class="li-input" ng-show="!isModal">
 						<div class="label">Choose an admin/driver:</div>
 						<div class="input">
-							<select name="staff" ng-model="sms.staff" required ng-options="( opt.phone + '##' + opt.name ) as opt.name for opt in staff"></select>
+							<select name="staff" ng-model="sms.staff" ng-required="!isModal" ng-options="( opt.phone + '##' + opt.name ) as opt.name for opt in staff"></select>
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formSMS.name.$invalid}">
+					<li class="li-input" ng-class="{'error':formSMS.name.$invalid}" ng-show="!isModal">
 						<div class="label">Name:</div>
-						<div class="input"><input type="text" name="name" required  placeholder="Phone" ng-model="sms.name"></div>
+						<div class="input"><input type="text" name="name" ng-required="!isModal" placeholder="Name" ng-model="sms.name"></div>
 						<div class="box-error">
 							<small ng-show="formSMS.name.$error.required">Required.</small>
 						</div>
@@ -90,7 +93,7 @@
 					</li>
 
 					<li class="li-input" ng-class="{'error':formSMS.message.$invalid}">
-						<div class="label">Phone:</div>
+						<div class="label">Message:</div>
 						<div class="input"><input type="text" name="message" required  placeholder="Message" ng-model="sms.message"></div>
 						<div class="box-error">
 							<small ng-show="formSMS.message.$error.required">Required.</small>
