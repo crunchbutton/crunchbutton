@@ -805,7 +805,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$date_start = $nextShift->dateStart( $this->timezone );
 					$date_end = $nextShift->dateEnd( $this->timezone );
 
-					$message = 'Next Delivering ';
+					$message = 'Next Open ';
 					$message .= $date_start->format( 'g' );
 					if( $date_start->format( 'i' ) != '00' ){
 						$message .= ':' . $date_start->format( 'i' );
