@@ -9,7 +9,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out = $this->properties();
 
 		$out['id'] = $this->uuid;
-		
+
 		$date = $this->date();
 
 		$out['do_not_pay_restaurant'] = ( $out['do_not_pay_restaurant'] ? 1 : 0 );
@@ -36,7 +36,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
-		
+
 		$agent = $this->agent();
 		$out['agent'] = $agent->os.' '.$agent->browser;
 
@@ -235,6 +235,22 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['status'] = $status;
 		$out['eta'] = $this->eta()->exports();
 		$driver = $this->status()->driver();
+
+		$actions = $this->actions();
+
+		$out[ 'actions' ] = [];
+
+		foreach ( $actions as $action ) {
+			$_action = [];
+			$_admin = $action->admin();
+			$_action[ 'id_order_action' ] = $action->id_order_action;
+			$_action[ 'type' ] = $action->type;
+			$_action[ 'note' ] = $action->note;
+			$_action[ 'date' ] = $action->date()->format( 'Y-m-d H:i:s' );
+			$_action[ 'admin' ] = [ 'id_admin' => $_admin->id_admin, 'login' => $_admin->login, 'name' => $_admin->name, 'phone' => $_admin->phone ];
+			$out[ 'actions' ][] = $_action;
+		}
+
 
 		if( $driver ){
 			$out['driver'] = $driver->exports();
