@@ -143,13 +143,19 @@
 			<div class="no-box-content-color">
 				<table align="right" class="basic-table detail" style="width:100%;">
 					<tr>
-						<td class="topitem order-contents-item-qty">Date</td>
+						<td class="topitem itemprice">Status</td>
 						<td class="topitem itemname">Driver</td>
 						<td class="topitem itemname">Phone</td>
-						<td class="topitem itemprice">Status</td>
+						<td class="topitem order-contents-item-qty">Date</td>
 					</tr>
 					<tr ng-repeat="action in order.actions">
-						<td class="fooditem" nowrap="nowrap">{{action.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
+						<td class="fooditem" nowrap="nowrap">
+							<span class="tag tag-red" ng-if="action.type == 'delivery-text-5min'">Texted 5 min away</span>
+							<span class="tag tag-red" ng-if="action.type == 'delivery-rejected'">Rejected</span>
+							<span class="tag tag-green" ng-if="action.type == 'delivery-accepted'">Accepted</span>
+							<span class="tag tag-blue" ng-if="action.type == 'delivery-pickedup'">Pickedup</span>
+							<span class="tag tag-purple" ng-if="action.type == 'delivery-delivered'">Delivered</span>
+						</td>
 						<td class="fooditem">
 							<a href="/staff/{{action.admin.login}}">{{action.admin.name}}</a>
 						</td>
@@ -157,11 +163,14 @@
 							<a href ng-click="callText(action.admin.phone)">{{action.admin.phone | formatPhone}}</a>
 						</td>
 						<td class="fooditem" nowrap="nowrap">
-							<span class="tag tag-red" ng-if="action.type == 'delivery-text-5min'">Texted 5 min away</span>
-							<span class="tag tag-red" ng-if="action.type == 'delivery-rejected'">Rejected</span>
-							<span class="tag tag-green" ng-if="action.type == 'delivery-accepted'">Accepted</span>
-							<span class="tag tag-blue" ng-if="action.type == 'delivery-pickedup'">Pickedup</span>
-							<span class="tag tag-purple" ng-if="action.type == 'delivery-delivered'">Delivered</span>
+							<span ng-if="order.restaurant.timezone != account.user.timezone">
+								{{action.date | convertimeformat:order.restaurant.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+								&nbsp;(<span class="listview-bold">{{order.date | convertimeformat:order.restaurant.timezone:'z'}}</span>)
+								<br>
+							</span>
+								{{action.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{order.date | convertimeformat:account.user.timezone:'z'}}</span>)
+
 						</td>
 					</tr>
 				</table>
