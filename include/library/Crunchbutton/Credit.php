@@ -25,6 +25,13 @@ class Crunchbutton_Credit extends Cana_Table
 		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? )', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}
 
+	public function cashCreditByUser( $id_user ) {
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? ) ORDER BY id_credit DESC', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH ]);
+	}
+
+	public function debitsFromCredit() {
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_credit_debited_from = ? ORDER BY id_credit DESC', [self::TYPE_DEBIT, $this->id_credit ]);
+	}
 	public function debitByUser( $id_user ) {
 		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? )', [self::TYPE_DEBIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}

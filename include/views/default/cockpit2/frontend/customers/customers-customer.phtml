@@ -54,15 +54,13 @@
 				<h1>Credits</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href=""><button class="button button-small button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Gift Card</button></a>
+						<a href="" ng-click="creditDialog( customer.id_user );"><button class="button button-small button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Gift Card</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
 			</div>
-
-			<div class="no-box-content-color">
-				<br>
-				@todo: add gift card and point logs
+			<div class="support-box-wrap support-widget-box-wrap">
+				<ng-include src="'assets/view/listview-credit.html'"></ng-include>
 			</div>
 		</div>
 
@@ -72,7 +70,6 @@
 	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
 	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
 	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
-
 
 </div>
 
