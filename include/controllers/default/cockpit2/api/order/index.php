@@ -77,7 +77,6 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			$this->error(401);
 		}
 
-
 		// update an order
 		if ($this->method() == 'put') {
 
@@ -135,7 +134,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
 				break;
-			
+
 			case 'resend_notification':
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
 					$this->error(401);
