@@ -72,7 +72,7 @@ class Controller_api_credit_log extends Crunchbutton_Controller_RestAccount {
 
 				$_credit[ 'id_credit' ] = $credit->id_credit;
 				$_credit[ 'value' ] = floatval( $credit->value );
-				$_credit[ 'date' ] = $credit->date()->format( $format_date );
+				$_credit[ 'date' ] = Crunchbutton_Util::dateToUnixTimestamp( $credit->date() );
 				$_credit[ 'type' ] = ucfirst( strtolower( $credit->type ) );
 				if( $credit->type == Crunchbutton_Credit::TYPE_CREDIT ){
 					$_credit[ 'left' ] = floatval( $credit->creditLeft() );
@@ -83,7 +83,7 @@ class Controller_api_credit_log extends Crunchbutton_Controller_RestAccount {
 						$_credit[ 'promo' ][ 'id_promo' ] = $promo->id_promo;
 						$_credit[ 'promo' ][ 'code' ] = $promo->code;
 						$_credit[ 'promo' ][ 'note' ] = $promo->note;
-						$_credit[ 'promo' ][ 'date' ] = $promo->date()->format( $format_date );
+						$_credit[ 'promo' ][ 'date' ] = Crunchbutton_Util::dateToUnixTimestamp( $promo->date() );
 						if( $promo->id_admin ){
 							$admin = $promo->admin();
 							$_credit[ 'promo' ][ 'id_admin' ] = $admin->id_admin;
