@@ -42,6 +42,7 @@ NGApp.controller( 'CreditDialogCtrl', function ( $scope, $rootScope, CustomerSer
 		CreditService.add( $scope.credit, function( json ){
 			if( json.success ){
 				App.alert( json.success );
+				$rootScope.$broadcast( 'creditAdded' );
 			} else {
 				App.alert( 'Error: ' + json.error , 'error' );
 			}

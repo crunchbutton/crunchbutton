@@ -14,7 +14,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			fullcount: true
 		};
 		scope.query.page = parseInt(scope.query.page);
-		
+
 		var previous = null;
 		var getQuery = function() {
 			var q = '';
@@ -34,7 +34,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			} else {
 				$location.search(scope.query);
 			}
-			
+
 			previous = getQuery();
 			update();
 		};
@@ -104,7 +104,6 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 				update();
 			}
 		};
-
 
 		scope.loader = false;
 

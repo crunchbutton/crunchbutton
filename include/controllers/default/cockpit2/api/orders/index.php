@@ -38,7 +38,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			left JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
 			left JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
 			left JOIN community ON community.id_community=restaurant_community.id_community
-			
+
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
 
@@ -81,7 +81,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $restaurant;
 		}
-		
+
 		if ($datestart) {
 			$datestart = date('Y-m-d', strtotime($datestart));
 			$q .= '
@@ -89,7 +89,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $datestart;
 		}
-		
+
 		if ($dateend) {
 			$dateend = date('Y-m-d', strtotime($dateend));
 			$q .= '
@@ -196,7 +196,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
-			
+
 			foreach (get_object_vars($o) as $key => $value) {
 				$type = gettype($value);
 
@@ -209,15 +209,15 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 						$o->{$key} = floatval($o->{$key});
 					}
 				}
-				
+
 			}
 
 			$data[] = $o;
 			$i++;
 		}
-		
+
 		$pages = ceil($count / $limit);
-		
+
 		if ($export) {
 			// @todo: make these layouts actulay do something. they are from old cockpit and need to be migrated
 			c::view()->orders = $data;
@@ -232,7 +232,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				'page' => intval($page),
 				'results' => $data
 			], JSON_PRETTY_PRINT);
-			// this aparantly doesnt always work JSON_NUMERIC_CHECK 
+			// this aparantly doesnt always work JSON_NUMERIC_CHECK
 		}
 
 	}

@@ -148,7 +148,6 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	}
 
 	service.pexcard = function( callback ){
-		alert('pex');
 		drivers.pexcard( {}, function( data ){
 			callback( data );
 		} );
