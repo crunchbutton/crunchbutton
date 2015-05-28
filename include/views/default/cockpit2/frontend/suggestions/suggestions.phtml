@@ -1,0 +1,28 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<h1 class="title"><i class="fa fa-volume-up"></i>Suggestions</h1>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+			<tr>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" id="type" ng-options="opt.value as opt.label for opt in _types" tabindex="2" class="cart-customize-select"></select>
+				</td>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" id="type" ng-options="opt.value as opt.label for opt in _statuses" tabindex="3" class="cart-customize-select">
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+	<ng-include src="'assets/view/listview-suggestions.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+
+</div>
