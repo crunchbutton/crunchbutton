@@ -246,7 +246,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$_action[ 'id_order_action' ] = $action->id_order_action;
 			$_action[ 'type' ] = $action->type;
 			$_action[ 'note' ] = $action->note;
-			$_action[ 'date' ] = $action->date()->format( 'Y-m-d H:i:s' );
+			$_action[ 'date' ] = Crunchbutton_Util::dateToUnixTimestamp( $action->date() );
 			$_action[ 'admin' ] = [ 'id_admin' => $_admin->id_admin, 'login' => $_admin->login, 'name' => $_admin->name, 'phone' => $_admin->phone ];
 			$out[ 'actions' ][] = $_action;
 		}
