@@ -231,7 +231,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					'admin.login' => 'like',
 					'admin.email' => 'like',
 					'admin.id_admin' => 'liker',
-					'admin.invite_code' => 'eq'
+					'admin.invite_code' => 'eq',
+					'apt.stripe_id' => 'eq',
+					'apt.stripe_account_id' => 'eq'
 				]
 			]);
 			$q .= $s['query'];
