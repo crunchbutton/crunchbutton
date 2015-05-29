@@ -1,0 +1,1 @@
+ALTER TABLE `order` ADD COLUMN `geomatched` tinyint(1) DEFAULT NULL;

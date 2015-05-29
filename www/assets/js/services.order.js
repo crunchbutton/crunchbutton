@@ -9,6 +9,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.credit = CreditService;
 	service.restaurant = {};
 	service.startStoreEntederInfo = false;
+	service.geomatched = 1;
 
 	// Listener to user signin/signout
 	$rootScope.$on( 'userAuth', function(e, data) {
@@ -483,7 +484,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			notes: service.form.notes,
 			lat: service.location.position.pos().lat(),
 			lon: service.location.position.pos().lon(),
-			local_gid : service.local_gid
+			local_gid : service.local_gid,
+			geomatched : service.geomatched
 		};
 
 		if (order.pay_type == 'card') {
