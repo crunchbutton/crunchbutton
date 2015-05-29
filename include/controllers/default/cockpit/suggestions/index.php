@@ -3,7 +3,8 @@
 class Controller_suggestions extends Crunchbutton_Controller_Account {
 	public function init() {
 
-		header( 'location:http://cockpit.la/suggestions' );
+		header( 'HTTP/1.1 301 Moved Permanently' );
+		header( 'Location: http://cockpit.la/suggestions' );
 
 		if (!c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) {
 			return ;

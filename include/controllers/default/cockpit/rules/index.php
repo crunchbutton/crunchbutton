@@ -2,6 +2,10 @@
 
 class Controller_Rules extends Crunchbutton_Controller_Account {
 	public function init() {
+
+		header( 'HTTP/1.1 301 Moved Permanently' );
+		header( 'Location: http://cockpit.la/rules' );
+
 		if (!c::admin()->permission()->check(['global','rules'])) {
 			return ;
 		}
