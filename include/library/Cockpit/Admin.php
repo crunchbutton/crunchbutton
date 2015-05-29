@@ -1,6 +1,122 @@
 <?php
 
 class Cockpit_Admin extends Crunchbutton_Admin {
+	
+	public function stripeVerificationStatus() {
+		if (!isset($this->_stripeVerificationStatus)) {
+			$stripeAccount = $this->stripeAccount();
+			
+			$data = [
+				'status' => $stripeAccount->legal_entity->verification->status,
+				'fields' => $stripeAccount->verification->fields_needed,
+				'due_by' => $stripeAccount->verification->due_by,
+				'contacted' => trim($stripeAccount->verification->contacted) ? true : false
+			];
+
+			$this->_stripeVerificationStatus = $data;
+		}
+		return $this->_stripeVerificationStatus;
+	}
+	
+	public function stripeAccount() {
+		if (!isset($this->_stripeAccount)) {
+			$paymentType = $this->payment_type();
+			$this->_stripeAccount = \Stripe\Account::retrieve($paymentType->stripe_id);
+		}
+		return $this->_stripeAccount;
+	}
+	
+	public function isStripeVerified() {
+		$status = $this->stripeVerificationStatus();
+		if ($status->status == 'unverified') {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public function autoStripeVerify() {
+		$stripeAccount = $this->stripeAccount();
+		$status = $this->stripeVerificationStatus();
+		$paymentType = $this->payment_type();
+		$name = explode(' ', $paymentType->legal_name_payment);
+
+		$address = explode("\n", $paymentType->address);
+		$address[1] = explode(',', $address[1]);
+		$address[1][1] = explode(' ', $address[1][1]);
+
+		// make sure we can verify it
+		if ($status['status'] == 'unverified' && !$status['contacted'] && $status['due_by']) {
+			$saving = 0;
+			foreach ($status['fields'] as $field) {
+				switch ($field) {
+					case 'legal_entity.first_name':
+						if (!$stripeAccount->legal_entity->first_name) {
+							$stripeAccount->legal_entity->first_name = array_shift($name);
+							$saving++;
+						}
+						break;
+					case 'legal_entity.last_name':
+						if (!$stripeAccount->legal_entity->last_name) {
+							$stripeAccount->legal_entity->last_name = array_pop($name);
+							$saving++;
+						}
+						break;
+					case 'legal_entity.address.line1':
+						if (!$stripeAccount->legal_entity->address->line1) {
+							$stripeAccount->legal_entity->address->line1 = $address[0];
+							$saving++;
+						}
+						break;
+					case 'legal_entity.address.city':
+						if (!$stripeAccount->legal_entity->address->city) {
+							$stripeAccount->legal_entity->address->city = $address[1][0];
+							$saving++;
+						}
+						break;
+					case 'legal_entity.address.state':
+						if ($stripeAccount->legal_entity->address->state) {
+							$stripeAccount->legal_entity->address->state = $address[1][1][0];
+							$saving++;
+						}
+						break;
+					case 'legal_entity.address.postal_code':
+						if (!$stripeAccount->legal_entity->address->postal_code) {
+							$stripeAccount->legal_entity->address->postal_code = $address[1][1][1];
+							$saving++;
+						}
+						break;
+				}
+			}
+			if ($saving) {
+				$stripeAccount->save();
+			}
+			
+			if ($saving == count($status['fields'])) {
+				$status = true;
+			}
+
+			if ($paymentType->verified) {
+				$paymentType->verified = false;
+				$paymentType->save();
+			}
+
+			return $status ? true : false;
+
+		} elseif($status['status'] == 'verified') {
+			$paymentType->verified = true;
+			$paymentType->save();
+			return true;
+
+		} else {
+
+			if ($paymentType->verified) {
+				$paymentType->verified = false;
+				$paymentType->save();
+			}
+			return false;
+		}
+	}
 
 	public function publicExports() {
 		$out = parent::publicExports();
