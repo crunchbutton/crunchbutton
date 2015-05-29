@@ -69,6 +69,50 @@ NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeP
 
 } );
 
+NGApp.factory( 'RulesService', function( $rootScope, $resource, $routeParams ) {
+
+	var service = {};
+
+	var rules = $resource( App.service + 'config/rules/:action', { action: '@action' }, {
+				// list methods
+				'config' : { 'method': 'GET', params : { 'action' : 'config' } },
+				'config_save' : { 'method': 'POST', params : { 'action' : 'config' } },
+				'config_value' : { 'method': 'POST', params : { 'action' : 'config-value' } },
+			}
+		);
+
+	service.rules = {
+		config: {
+			load: function( callback ){
+				rules.config( function( data ){
+					callback( data );
+				} );
+			},
+			value: function( key, callback ){
+				rules.config_value( { key: key }, function( data ){
+					callback( data );
+				} );
+			},
+			save: function( params, callback ){
+				rules.config_save( params, function( data ){
+					callback( data );
+				} );
+			}
+		}
+	}
+
+	service.yesNo = function(){
+		var methods = [];
+		methods.push( { value: 0, label: 'No' } );
+		methods.push( { value: 1, label: 'Yes' } );
+		return methods;
+	}
+
+
+	return service;
+
+} );
+
 NGApp.factory( 'ConfigAutoReplyService', function( $rootScope, $resource, $routeParams ) {
 
 	var service = {};

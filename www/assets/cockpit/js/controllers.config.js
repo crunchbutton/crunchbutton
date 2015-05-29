@@ -10,6 +10,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'ConfigRewardsCtrl',
 			templateUrl: 'assets/view/config-rewards.html'
 		})
+		.when('/config/rules', {
+			action: 'config-rules',
+			controller: 'ConfigRulesCtrl',
+			templateUrl: 'assets/view/config-rules.html'
+		})
 		.when('/config/auto-reply', {
 			action: 'config-rewards',
 			controller: 'ConfigAutoReplyCtrl',
@@ -18,7 +23,38 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 
 }]);
 
+NGApp.controller('ConfigRulesCtrl', function( $scope, RulesService ) {
 
+	var load = function(){
+		RulesService.rules.config.load( function( json ){
+			if( !json.error ){
+				$scope.config = json;
+				$scope.ready = true;
+			}
+		} )
+	}
+
+	$scope.yesNo = RulesService.yesNo();
+
+	$scope.save = function(){
+		$scope.isSaving = true;
+		RulesService.rules.config.save( $scope.config, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.basicInfo = data;
+				$scope.saved = true;
+				$scope.flash.setMessage( 'Information saved!' );
+				setTimeout( function() { $scope.saved = false; }, 1500 );
+			}
+		} );
+	}
+
+	load();
+
+});
 NGApp.controller('ConfigRewardsCtrl', function( $scope, CustomerRewardService ) {
 
 	var load = function(){
@@ -51,9 +87,7 @@ NGApp.controller('ConfigRewardsCtrl', function( $scope, CustomerRewardService ) 
 		} );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });
 
@@ -103,11 +137,8 @@ NGApp.controller('ConfigAutoReplyCtrl', function( $scope, ConfigAutoReplyService
 		} );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });
 
-NGApp.controller( 'ConfigCtrl', function ( $scope ) {
-});
+NGApp.controller( 'ConfigCtrl', function ( $scope ) {});

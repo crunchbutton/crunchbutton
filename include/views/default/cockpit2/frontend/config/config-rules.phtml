@@ -1,0 +1,191 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title"><i class="fa fa-angellist"></i>Order Rules</h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+		<div class="ul-inputs">
+
+			<p><strong>Gift cards redeemed</strong><br><br></p>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+
+				<li class="li-input">
+					<div class="label">Active:</div>
+					<div class="input">
+						<select name="rule_gift_card_redeemed_active" ng-model="config.rule_gift_card_redeemed_active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_gift_card_redeemed_active">
+					<div class="label">Time in days:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rule_gift_card_redeemed_time" ng-model="config.rule_gift_card_redeemed_time">
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_gift_card_redeemed_active">
+					<div class="label">Send message to reps?</div>
+					<div class="input">
+						<select name="rule_gift_card_redeemed_reps" ng-model="config.rule_gift_card_redeemed_reps" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_gift_card_redeemed_active">
+					<div class="label">Send message to Customer Service?</div>
+					<div class="input">
+						<select name="rule_gift_card_redeemed_cs" ng-model="config.rule_gift_card_redeemed_cs" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_gift_card_redeemed_active">
+					<div class="label">Group name</div>
+					<div class="input">
+						<input type="text" name="rule_gift_card_redeemed_group" ng-model="config.rule_gift_card_redeemed_group">
+					</div>
+				</li>
+
+			</ul>
+
+			<p><strong>Time since last order (different content)</strong><br><br></p>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+
+				<li class="li-input">
+					<div class="label">Active:</div>
+					<div class="input">
+						<select name="rule_time_since_last_order_active" ng-model="config.rule_time_since_last_order_active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_active">
+					<div class="label">Time in minutes:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rule_time_since_last_order_time" ng-model="config.rule_time_since_last_order_time">
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_active">
+					<div class="label">Send message to reps?</div>
+					<div class="input">
+						<select name="rule_time_since_last_order_reps" ng-model="config.rule_time_since_last_order_reps" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_active">
+					<div class="label">Send message to Customer Service?</div>
+					<div class="input">
+						<select name="rule_time_since_last_order_cs" ng-model="config.rule_time_since_last_order_cs" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_active">
+					<div class="label">Group name</div>
+					<div class="input">
+						<input type="text" name="rule_time_since_last_order_group" ng-model="config.rule_time_since_last_order_group">
+					</div>
+				</li>
+
+			</ul>
+
+			<p><strong>Time since last order (equal content)</strong><br><br></p>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+
+				<li class="li-input">
+					<div class="label">Active:</div>
+					<div class="input">
+						<select name="rule_time_since_last_order_equal_active" ng-model="config.rule_time_since_last_order_equal_active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_equal_active">
+					<div class="label">Time in minutes:</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="rule_time_since_last_order_equal_time" ng-model="config.rule_time_since_last_order_equal_time">
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_equal_active">
+					<div class="label">Send message to reps?</div>
+					<div class="input">
+						<select name="rule_time_since_last_order_equal_reps" ng-model="config.rule_time_since_last_order_equal_reps" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_equal_active">
+					<div class="label">Send message to Customer Service?</div>
+					<div class="input">
+						<select name="rule_time_since_last_order_equal_cs" ng-model="config.rule_time_since_last_order_equal_cs" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_time_since_last_order_equal_active">
+					<div class="label">Group name</div>
+					<div class="input">
+						<input type="text" name="rule_time_since_last_order_equal_group" ng-model="config.rule_time_since_last_order_equal_group">
+					</div>
+				</li>
+
+			</ul>
+
+			<p><strong>Monitor name/phone</strong><br><br></p>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+
+				<li class="li-input">
+					<div class="label">Active:</div>
+					<div class="input">
+						<select name="rule_monitor_name_phone_active" ng-model="config.rule_monitor_name_phone_active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_monitor_name_phone_active">
+					<div class="label">Name(s) to monitor:</div>
+					<div class="input">
+						<input type="text" name="rule_monitor_name_phone_name" ng-model="config.rule_monitor_name_phone_name">
+					</div>
+					<div>Use commas to separe names.</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_monitor_name_phone_active">
+					<div class="label">Phone(s) to monitor:</div>
+					<div class="input">
+						<input type="text" name="rule_monitor_name_phone_phone" ng-model="config.rule_monitor_name_phone_phone">
+					</div>
+					<div>Use commas to separe names.</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_monitor_name_phone_active">
+					<div class="label">Send sms to:</div>
+					<div class="input">
+						<input type="text" name="rule_monitor_name_phone_warning_phone" ng-model="config.rule_monitor_name_phone_warning_phone">
+					</div>
+					<div>Use commas to separe names.</div>
+				</li>
+
+				<li class="li-input" ng-show="config.rule_monitor_name_phone_active">
+					<div class="label">Send email to:</div>
+					<div class="input">
+						<input type="text" name="rule_monitor_name_phone_warning_email" ng-model="config.rule_monitor_name_phone_warning_email">
+					</div>
+					<div>Use commas to separe names.</div>
+				</li>
+
+			</ul>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

@@ -2,7 +2,7 @@
 	$this->title = 'Rules';
 	$this->titleicon = 'filter';
 	$this->titleLink = '/rules';
-	
+
 	$rules = $this->rules;
 
 ?>
@@ -70,7 +70,7 @@
 													break;
 											}
 
-											
+
 											$type = 'text';
 											break;
 									}
@@ -80,7 +80,7 @@
 										<span>
 											<?php echo $title; ?>
 										</span>
-										
+
 											<?php switch ( $type ) {
 												case 'numeric':
 													?>
@@ -106,15 +106,15 @@
 													<?php
 													break;
 											} ?>
-											
-										
+
+
 									</li>
 									<?php
 								}
 								?><hr/><?php
 						} ?>
 						<li class="input">
-							<button type="submit" class="btn btn-blue admin-save"><i class="icon-save"></i> Save </button> 
+							<button type="submit" class="btn btn-blue admin-save"><i class="icon-save"></i> Save </button>
 						</li>
 					</ul>
 				</div>
@@ -127,7 +127,7 @@
 	$(function() {
 
 		$(document).on('click', '.admin-save', function() {
-			
+
 			var data = {};
 
 			$( '.settings' ).each( function(){
