@@ -44,9 +44,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$address = explode("\n", $paymentType->address);
 		$address[1] = explode(',', $address[1]);
 		$address[1][1] = explode(' ', $address[1][1]);
-		
-		print_r($status);
-		
+
 		// make sure we can verify it
 		if ($status['status'] == 'unverified' && !$status['contacted'] && $status['due_by']) {
 			$saving = 0;
@@ -105,7 +103,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 			return $status ? true : false;
 
-		} elseif($status->status == 'verified') {
+		} elseif($status['status'] == 'verified') {
 			$paymentType->verified = true;
 			$paymentType->save();
 			return true;
