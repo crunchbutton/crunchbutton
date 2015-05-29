@@ -34,6 +34,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_permissionDenied();
 					$this->_has_pexcard($staff);
 					break;
+				
+				case 'reverify':
+					$this->_permissionDenied();
+					$this->_reverify($staff);
+					break;
 
 				default:
 					$this->_permissionDenied();
@@ -51,6 +56,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
 			$this->error(401);
 		}
+	}
+	
+	private function _reverify($staff) {
+		$status = $staff->stripeVerificationStatus();
+		$reverify = $staff->autoStripeVerify();
+		echo json_encode(['stripe_id' => $staff->payment_type()->stripe_id, 'reverify' => $reverify, 'status' => $status]);
 	}
 
 	private function _locations($staff) {
