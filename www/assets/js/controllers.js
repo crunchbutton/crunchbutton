@@ -875,6 +875,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
 	var order = OrderService;
+	order.geomatched = 1;
+
 	order.loaded = false;
 	$scope.order = {};
 	$scope.open = false;
@@ -892,11 +894,10 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}, 50 );
 	}
 
-
-
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
+
 
 	if(!$scope.order.cardMonth){
 		$scope.order.cardMonth = '';
@@ -1022,6 +1023,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.addressOutOfRangePlaceAnyway = function(){
 		$rootScope.closePopup();
 		// Give time to close the modal.
+		order.geomatched = 0;
 		setTimeout( function(){ order.submit( true );;	}, 300 );
 	}
 
