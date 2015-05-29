@@ -6,29 +6,36 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
 	const AUTO_SHUTDOWN_COMMUNITY_LOGIN = 'autoshutdowncommunity';
 
+	const TITLE_CLOSE_ALL_RESTAURANTS = 'Close All Restaurants';
+	const TITLE_CLOSE_3RD_PARY_RESTAURANTS = 'Close 3rd Party Delivery Restaurants';
+	const TITLE_CLOSE_AUTO_CLOSED = 'Auto Closed';
+
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
 		$force = preg_replace('/[^a-z\-]+/','',$force);
+		$keys = ['ip' => $ip];
+
 		if ($force) {
-			$forceq = ' OR (community.permalink="'.c::db()->escape($force).'") ';
+			$forceq = ' OR (community.permalink=:force) ';
+			$keys['force'] = $force;
 		}
 
 		$q = '
 			select community.* from community
 			left join community_ip on community_ip.id_community=community.id_community
 			where
-				community.active=1
+				community.active=true
 				AND (
-					( community.private=0 )
+					( community.private=false )
 					OR
-					(community.private=1 AND community_ip.ip="'.c::db()->escape($ip).'")
+					(community.private=true AND community_ip.ip=:ip)
 					'.$forceq.'
 				)
 			group by community.id_community
 			order by name
 		';
 
-		return self::q($q);
+		return self::q($q, $keys);
 	}
 
 	public function restaurantByLoc() {
@@ -40,6 +47,43 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			]);
 		}
 		return $this->_restaurantsByLoc;
+	}
+
+	public function type() {
+		if (!isset($this->_type)) {
+			$rs = $this->restaurants();
+			$third = false;
+			$first = false;
+			$takeout = false;
+
+			foreach ($rs as $r) {
+				if ($r->delivery_service && $r->delivery) {
+					$third = true;
+					continue;
+				}
+				if (!$r->delivery_service) {
+					$first = true;
+					continue;
+				}
+				if ($r->takeout) {
+					$takeout = true;
+					continue;
+				}
+			}
+
+			if (!$third && !$first && $takeout) {
+				$this->_type = 'takeout';
+			} elseif($third && $first) {
+				$this->_type = 'both';
+			} elseif ($third) {
+				$this->_type = '3rd';
+			} elseif ($first) {
+				$this->_type = '1st';
+			} else {
+				$this->_type = 'none';
+			}
+		}
+		return $this->_type;
 	}
 
 	/**
@@ -58,12 +102,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				FROM restaurant
 					left join restaurant_community using(id_restaurant)
 				WHERE
-						id_community="'.$this->id_community.'"
-					and restaurant.active=1
+					id_community=?
+					and restaurant.active=true
 				ORDER by
 					restaurant_community.sort,
 					restaurant.delivery DESC
-			');
+			',[$this->id_community]);
 /*
 			$this->_restaurants->sort([
 				'function' => 'open'
@@ -91,6 +135,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
 		$out[ 'auto_close' ] = intval( $out[ 'auto_close' ] );
 		$out[ 'is_auto_closed' ] = intval( $out[ 'is_auto_closed' ] );
+		$out['type'] = $this->type();
 
 		if( $out[ 'close_all_restaurants_id_admin' ] ){
 			$admin = Admin::o( $out[ 'close_all_restaurants_id_admin' ] );
@@ -120,10 +165,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$out[ 'dont_warn_till' ] = null;
 		}
 
-
 		foreach ($this->restaurants() as $restaurant) {
-			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
+			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports(['categories' => true]);
 		}
+
 		return $out;
 	}
 
@@ -149,7 +194,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public static function permalink($permalink) {
-		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
+		return self::q('select * from community where permalink=?', [$permalink])->get(0);
 	}
 
 	public static function all_locations(){
@@ -174,7 +219,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function aliases(){
 		if( !$this->_aliases ){
-			$this->_aliases = Crunchbutton_Community_Alias::q( 'SELECT * FROM community_alias WHERE id_community = ' . $this->id_community . ' ORDER BY alias ASC' );
+			$this->_aliases = Crunchbutton_Community_Alias::q( 'SELECT * FROM community_alias WHERE id_community = ? ORDER BY alias ASC', [$this->id_community]);
 		}
 		return $this->_aliases;
 	}
@@ -211,7 +256,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	function groupOfMarketingReps(){
 		if (!isset($this->_groupOfMarketingReps)) {
-			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = "' . $this->id_community . '" AND type = "' . Crunchbutton_Group::TYPE_MARKETING_REP . '" ORDER BY id_group DESC LIMIT 1 ' );
+			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = ? AND type = ? ORDER BY id_group DESC LIMIT 1 ', [$this->id_community, Crunchbutton_Group::TYPE_MARKETING_REP]);
 			if (!$group->id_group) {
 				$group = Crunchbutton_Group::createMarketingRepGroup( $this->id_community );
 			}
@@ -221,11 +266,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function communityByDriverGroup( $group ){
-		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = "' . $group . '"' );
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = ?', [$group]);
 	}
 
 	public function active(){
-		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true ORDER BY name ASC' );
 	}
 
 	public function getDriversOfCommunity(){
@@ -236,18 +281,18 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 													SELECT DISTINCT(id_admin) FROM (
 													SELECT DISTINCT(a.id_admin)
 														FROM admin a
-														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = 1
-														LEFT JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = true
+														LEFT JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant
-														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ' . $this->id_community . '
+														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ?
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '"
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = ?
 														) drivers
 													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ORDER BY name ASC';
-		return Admin::q( $query );
+											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC';
+		return Admin::q( $query, [$this->id_community, $group]);
 	}
 
 	public function slug(){
@@ -309,9 +354,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function getOrdersFromLastDaysByCommunity( $days = 14 ){
 		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
 					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$this->id_community}'
+					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
 					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
-		return c::db()->get( $query );
+		return c::db()->get( $query, [$this->id_community]);
 	}
 
 	public function ordersLastWeek(){
@@ -347,14 +392,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function getRestaurants(){
-		return Restaurant::q( 'SELECT * FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ' . $this->id_community . ' ORDER BY r.name' );
+		return Restaurant::q( 'SELECT * FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ? ORDER BY r.name', [$this->id_community]);
 	}
 
 	public function driverDeliveryHere( $id_admin ){
 		$group = $this->groupOfDrivers();
 
 		if( $group->id_group ){
-			$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = {$group->id_group} AND ag.id_admin = {$id_admin} LIMIT 1" );
+			$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = ? AND ag.id_admin = ? LIMIT 1", [$group->id_group, $id_admin]);
 			if( $admin_group->id_admin_group ){
 				return true;
 			}
@@ -413,7 +458,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$from = $day->format( 'Y-m-d' );
 		$day->modify( '+6 days' );
 		$to = $day->format( 'Y-m-d' );
-		$shifts = Crunchbutton_Community_Shift::q( 'SELECT COUNT(*) AS shifts FROM community_shift cs WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND id_community = "' . $this->id_community . '" ORDER BY cs.date_start ASC' );
+		$shifts = Crunchbutton_Community_Shift::q('
+			SELECT COUNT(*) AS shifts FROM community_shift cs
+			WHERE
+				cs.date_start >= ?
+				AND cs.date_end <= ?
+				AND id_community = ?
+			ORDER BY cs.date_start ASC
+		', [$from, $to, $this->id_community]);
 		return ( $shifts->shifts > 0 );
 	}
 
@@ -423,12 +475,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function totalRestaurantsByCommunity(){
 
-		$query = "SELECT COUNT(*) AS Total FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$this->id_community}";
+		$query = "SELECT COUNT(*) AS Total FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?";
 
-		$result = c::db()->get( $query );
+		$result = c::db()->get( $query, [$this->id_community]);
 		$total = $result->_items[0]->Total;
 
-		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = 1 AND name NOT LIKE '%test%'";
+		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = true AND name NOT LIKE '%test%'";
 		$result = c::db()->get( $query );
 		$all = $result->_items[0]->Total;
 
@@ -438,12 +490,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function closedSince(){
-
-		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
-																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" )
-																																	AND cc.new_value = 1
-																																	ORDER BY cc.id_community_change DESC' );
+		$force_closed_times = Crunchbutton_Community_Changeset::q('
+			SELECT ccs.*, cc.field FROM community_change cc
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			AND ( cc.field = ? OR cc.field = ? )
+			AND cc.new_value = \'1\'
+			ORDER BY cc.id_community_change DESC
+		', [$this->id_community, 'close_all_restaurants', 'close_3rd_party_delivery_restaurants']);
 		$out = [];
 		if( $force_closed_times->count() ){
 			foreach( $force_closed_times as $force_close ){
@@ -455,14 +508,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					// it probably was closed by auto shutdown
 					$closed_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
 				}
-			$output[ 'closed_by' ] = $closed_by;
+				$output[ 'closed_by' ] = $closed_by;
 				if( $force_close->field == 'close_all_restaurants' ){
 					$output[ 'type' ] = 'Close All Restaurants';
 				} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
 					$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
 				}
 				$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
-				$open = $this->_openedAt( $force_close->id_community_change_set, $force_close->field );
+				$open = $this->_openedAt( $closed_at->format( 'Y-m-d H:i:s' ), $force_close->field );
 				if( !$open ){
 					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 					$interval = $now->diff( $closed_at );
@@ -506,17 +559,32 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $out;
 	}
 
-	public function forceCloseLog(){
-		$force_closed_times = Crunchbutton_Community_Changeset::q( 'SELECT ccs.*, cc.field FROM community_change cc
-																																	INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-																																	AND ( cc.field = "close_all_restaurants" OR cc.field = "close_3rd_party_delivery_restaurants" OR cc.field = "is_auto_closed" )
-																																	AND cc.new_value = 1
-																																	ORDER BY cc.id_community_change DESC' );
+	public function forceCloseLog( $echo = true, $remove_unclosed = false, $days = 30 ){
+
+		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$limit_date->modify( '- ' . $days . ' days' );
+
+		$force_closed_times = Crunchbutton_Community_Changeset::q('
+			SELECT ccs.*, cc.field FROM community_change cc
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			AND ( cc.field = ? OR cc.field = ? OR cc.field = ? )
+			AND cc.new_value = \'1\' AND date( timestamp ) > ?
+			ORDER BY timestamp DESC
+		', [$this->id_community, 'close_all_restaurants', 'close_3rd_party_delivery_restaurants', 'is_auto_closed', $limit_date->format( 'Y-m-d' )]);
 		$out = [];
+		$alreadyUsed_open = [];
+		$alreadyUsed_closed = [];
+
 		foreach( $force_closed_times as $force_close ){
+
+			if( $alreadyUsed_closed[ $force_close->timestamp ] ){
+
+			}
+			$alreadyUsed_closed[ $force_close->timestamp ] = true;
 			$output = [];
 			$closed_at = $force_close->date();
 			$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+			// $output[ 'closed_at_id_community_change' ] = $force_close->id_community_change_set;
 			$closed_by = $force_close->admin()->name;
 			if( !$closed_by ){
 				// it probably was closed by auto shutdown
@@ -525,19 +593,22 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$output[ 'closed_by' ] = $closed_by;
 
 			if( $force_close->field == 'close_all_restaurants' ){
-				$output[ 'type' ] = 'Close All Restaurants';
+				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_ALL_RESTAURANTS;
 			} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
-				$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
+				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_3RD_PARY_RESTAURANTS;
 			} else if ( $force_close->field == 'is_auto_closed' ){
-				$output[ 'type' ] = 'Auto Closed';
+				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_AUTO_CLOSED;
 			}
 
 			$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
 
-			$open = $this->_openedAt( $force_close->id_community_change_set, $force_close->field );
-			if( $open ){
+			$open = $this->_openedAt( $closed_at->format( 'Y-m-d H:i:s' ), $force_close->field );
+
+			if( $open && !$alreadyUsed_open[ $open->timestamp ] ){
+				$alreadyUsed_open[ $open->timestamp ] = true ;
 				$opened_at = $open->date();
 				$output[ 'opened_at' ] = $opened_at->format( 'M jS Y g:i:s A T' );
+				// $output[ 'opened_at_id_community_change' ] = $open->id_community_change_set;
 				$opened_by = $open->admin()->name;
 				if( !$opened_by ){
 					// it probably was closed by auto shutdown
@@ -547,26 +618,38 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$interval = $opened_at->diff( $closed_at );
 				$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
 			} else {
-				if( !$this->$force_close->field ){
-					$output[ 'how_long' ] = 'No records, probably variable was changed directly at database.';
+
+				if( $remove_unclosed ){
+					$output = false;
 				} else {
-					$output[ 'how_long' ] = 'It is still closed!';
+					if( !$this->$force_close->field ){
+						$output[ 'how_long' ] = 'No records, probably variable was changed directly at database.';
+					} else {
+						$output[ 'how_long' ] = 'It is still closed!';
+					}
 				}
 			}
-			$out[] = $output;
+			if( $output ){
+				$out[] = $output;
+			}
 		}
-		echo json_encode( $out );exit;
+		if( $echo ){
+			echo json_encode( $out );exit;
+		}
+		return $out;
 	}
 
 	private function _closedNote( $id_community_change_set, $field ){
 		$field = ( $field == 'is_auto_closed' ? 'close_3rd_party_delivery_restaurants' : $field );
 		$field = $field . '_note';
-		$note = Crunchbutton_Community_Changeset::q( 'SELECT
-																											ccs.*, cc.field, cc.new_value FROM community_change cc
-																											INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-																											AND cc.field = "' . $field . '"
-																											AND ccs.id_community_change_set = ' . $id_community_change_set . '
-																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
+		$note = Crunchbutton_Community_Changeset::q('
+			SELECT
+			ccs.*, cc.field, cc.new_value FROM community_change cc
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			AND cc.field = ?
+			AND ccs.id_community_change_set = ?
+			ORDER BY cc.id_community_change DESC LIMIT 1
+		',[$this->id_community, $field, $id_community_change_set])->get(0);
 		if( $note->new_value ){
 			return $note->new_value;
 		}
@@ -585,7 +668,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function reopenAutoClosedCommunities(){
 		$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 		$id_admin = $admin->id_admin;
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = "1"' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = true' );
 		foreach( $communities as $community ){
 			$community->reopenAutoClosedCommunity();
 		}
@@ -670,7 +753,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$drivers = $this->getDriversOfCommunity();
 		$hasDriverWorking = false;
 		foreach( $drivers as $driver ){
-			if( $driver->isWorking( $dt ) ){
+			if( $driver->isWorking( $dt, $this->id_community ) ){
 				$totalDrivers++;
 			}
 		}
@@ -714,13 +797,15 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			if( $close3rdParyDeliveryRestaurants ){
 				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 				$id_admin = $admin->id_admin;
-				$nextShift =Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+
+				$nextShift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+
 				if( $nextShift->id_community ){
 
 					$date_start = $nextShift->dateStart( $this->timezone );
 					$date_end = $nextShift->dateEnd( $this->timezone );
 
-					$message = 'Available at ';
+					$message = 'Next Open ';
 					$message .= $date_start->format( 'g' );
 					if( $date_start->format( 'i' ) != '00' ){
 						$message .= ':' . $date_start->format( 'i' );
@@ -732,11 +817,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 						$message .= ':' . $date_end->format( 'i' );
 					}
 					$message .= $date_end->format( 'A' );
-					$message .= ' on ';
-					$message .= $date_start->format( 'D' );
+					$message .= ' ';
+					$message .= $date_start->format( 'l' );
 					$message .= '!';
 				} else {
-					$message = 'Temporally closed!';
+					$message = 'Temporarily closed!';
 				}
 
 				echo $message;
@@ -755,6 +840,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$ticket .= 'Because it has no next shift with drivers.';
 				}
 
+				echo $ticket;
+				echo "\n";
+
 				Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-closed' ] );
 				Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
 			}
@@ -768,13 +856,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	private function _openedAt( $id_community_change_set, $field ){
-		$opened = Crunchbutton_Community_Changeset::q( 'SELECT
-																											ccs.*, cc.field FROM community_change cc
-																											INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = "' . $this->id_community . '"
-																											AND cc.field = "' . $field . '"
-																											AND ( cc.new_value = 0 OR cc.new_value IS NULL ) AND ccs.id_community_change_set > ' . $id_community_change_set . '
-																											ORDER BY cc.id_community_change DESC LIMIT 1' )->get( 0 );
+	public function _openedAt( $date, $field ){
+		$query = '
+			SELECT
+			ccs.*, cc.field FROM community_change cc
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			AND cc.field = ?
+			AND ( cc.new_value = \'0\' OR cc.new_value IS NULL ) AND ccs.timestamp > ?
+			ORDER BY cc.id_community_change ASC LIMIT 1
+		';
+		$opened = Crunchbutton_Community_Changeset::q($query, [$this->id_community, $field, $date])->get(0);
 		if( $opened->id_community_change_set ){
 			return $opened;
 		}
@@ -792,6 +883,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $this->_assigned_shift_hours;
 	}
 
+	// should return a smart value based on what time it is. for now just return db value
+	public function campusTime() {
+		return 1;
+	}
+
 	public function driverRestaurantName(){
 		if( $this->close_all_restaurants && trim( $this->close_all_restaurants_note ) != '' ){
 			return $this->close_all_restaurants_note;
@@ -804,4 +900,5 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return 'Temporarily closed';
 	}
+
 }

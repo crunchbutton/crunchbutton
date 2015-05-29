@@ -1,12 +1,14 @@
 /**
  * splash page
  */
-NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService) {
+NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService, AccountFacebookService) {
 	if (App.isAndroid()) {
 		$scope.downloadLink = 'https://play.google.com/store/apps/details?id=com.crunchbutton';
 	} else {
 		$scope.downloadLink = 'https://itunes.apple.com/app/id721780390';
 	}
+
+	$scope.facebook = AccountFacebookService;
 
 	$scope.text = {
 		number: '',
@@ -23,9 +25,21 @@ NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService) {
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
 
-	$scope.communities = App.communities;
+	var array_without_test = [];
+	for (var iiii in App.communities){
 
+		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)
+			|| ((App.communities[iiii]).name.indexOf('Marina')>-1) || ((App.communities[iiii]).name.indexOf('burrito')>-1)
+			|| ((App.communities[iiii]).name.indexOf('duplication')>-1)){
+			//do nothing
+		}
+		else{
+			//only add communities without "test" and without "no drivers"
+			array_without_test.push(App.communities[iiii]);
+		}
 
+	}
+	$scope.communities = array_without_test;
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
@@ -61,9 +75,9 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     		$scope.errors.otherCarrier = true;
     		}
     	}
-    	if (!$scope.apply.transport) {
-    		$scope.errors.transport = true;
-    	}
+    	//if (!$scope.apply.transport) {
+    	//	$scope.errors.transport = true;
+    	//}
     	if (!$scope.apply.hours) {
     		$scope.errors.hours = true;
     	}
@@ -92,9 +106,21 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 
 NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $location) {
 
-	$scope.communities = App.communities;
-	//console.log($scope.communities);
+	var array_without_test = [];
+	for (var iiii in App.communities){
 
+		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)
+		|| ((App.communities[iiii]).name.indexOf('Marina')>-1) || ((App.communities[iiii]).name.indexOf('burrito')>-1)
+		|| ((App.communities[iiii]).name.indexOf('duplication')>-1)){
+			//do nothing
+		}
+		else{
+			//only add communities without "test" and without "no drivers"
+			array_without_test.push(App.communities[iiii]);
+		}
+
+	}
+	$scope.communities = array_without_test;
 	$scope.apply = {};
 	$scope.errors = {};
 	$scope.post = function(){
@@ -163,7 +189,7 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
  */
 NGApp.controller('WorkCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
-	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
 	$scope.devs = devs;
 });
@@ -173,7 +199,7 @@ NGApp.controller('WorkCtrl', function ($scope) {
  */
 NGApp.controller('ThankyouCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
-	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
 	$scope.devs = devs;
 });
@@ -203,14 +229,17 @@ NGApp.controller('LegalCtrl', function ($scope) {
 });
 
 /**
- * help page
+ * Free food page
  */
-NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralService, FacebookService ) {
+NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, ReferralService, FacebookService, AccountModalService ) {
 
 	if( !AccountService.isLogged() ){
-		$location.path( '/' );
-		return;
+		// waiting devin's comment
+		// $location.path( '/' );
+		// return;
 	}
+
+	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 
 	$scope.account = AccountService;
 
@@ -219,8 +248,12 @@ NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralServi
 		value : ReferralService.value,
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
-		enabled : ReferralService.enabled
+		enabled : ReferralService.enabled,
+		invite_code : ReferralService.invite_code,
+		sms : ReferralService.sms()
 	}
+
+	ReferralService.getStatus();
 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
@@ -231,20 +264,25 @@ NGApp.controller('FreeFoodCtrl', function ($scope, AccountService, ReferralServi
 		ReferralService.getStatus();
 	}
 
-	$scope.$on( 'referralStatusLoaded', function(e, data) {
+	$scope.$on( 'referralStatusLoaded', function( e, data ) {
 		$scope.referral.invites = ReferralService.invites;
 		$scope.referral.limit = ReferralService.limit;
 		$scope.referral.invite_url = ReferralService.invite_url;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+		$scope.referral.sms = ReferralService.sms();
 	});
 
+
+	$scope.isMobile = App.isMobile();
+
 	$scope.referral.facebook = function(){
-		FacebookService.postInvite( $scope.referral.invite_url );
+		FacebookService.postInvite( $scope.referral.invite_url, $scope.referral.invite_code );
 	}
 
 	$scope.referral.twitter = function(){
-		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + $scope.referral.text ,'_system');
 	}
 
 });
@@ -313,7 +351,11 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, PositionsService, RestaurantsService, LocationService, RestaurantService, CommunityAliasService, AccountService ) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, $route, PositionsService, RestaurantsService, LocationService, RestaurantService, CommunityAliasService, AccountService ) {
+
+	var error = function(){
+		App.go( '/location' );
+	}
 
 	$scope.restaurants = false;
 
@@ -380,7 +422,13 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}, 1000 * 35 );
 	}
 
+	var checkLoadedRestaurants = true;
+
 	$scope.$on( '$destroy', function(){
+		checkLoadedRestaurants = false;
+		if( App.isPhoneGap && App.isAndroid() && checkIfRestaurantsWereLoaded ){
+			$timeout.cancel( checkIfRestaurantsWereLoaded );
+		}
 		RestaurantsService.forceGetStatus = true;
 		// Kills the timer when the controller is changed
 		if( typeof( updateRestaurantsStatus ) !== 'undefined' && updateRestaurantsStatus ){
@@ -475,6 +523,17 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		CommunityAliasService.removeCommunityStyle();
 	}
 
+	var listLoaded = false;
+
+	// See #5129
+	if( App.isPhoneGap && App.isAndroid() ){
+		var checkIfRestaurantsWereLoaded = $timeout(function() {
+			if( $route.current && $route.current.$$route && $route.current.$$route.action == 'restaurants' && checkLoadedRestaurants && !listLoaded ){
+				error();
+			}
+		}, 25000 );
+	}
+
 	restaurants.list(
 		// Success
 		function(){
@@ -502,12 +561,18 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					restaurantsToShow++;
 				}
 			}
-			if( restaurantsToShow > 6 ){
-				restaurantsToShow = 6;
-			} else if ( restaurantsToShow < 6 ) {
+			var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
+			$scope.showSmallClosures = App.isMobile() ? true : false;
+
+			if( restaurantsToShow > maxShow ){
+				restaurantsToShow = maxShow;
+			} else if ( restaurantsToShow < maxShow ) {
 				showMoreStage = 2;
 			}
 			$scope.restaurantsToShow = restaurantsToShow;
+			if (!App.isMobile()) {
+				$scope.restaurantsToShow = 100;
+			}
 
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
@@ -525,10 +590,12 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			}
 			$('.content').removeClass('smaller-width');
 
+			listLoaded = true;
+
 		},
 		// Error
 		function(){
-			App.go( '/location' );
+			error();
 		}
 	);
 });
@@ -538,7 +605,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
  * show cities
  */
 NGApp.controller( 'CitiesCtrl', function ( $scope ) {
- 	$scope.topCommunities = App.topCommunities;
+
 });
 
 
@@ -548,7 +615,9 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
 
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
+	$scope.devs = devs;
 
 	$scope.loadingLocation = false;
 	$scope.loadingGetfood = false;
@@ -577,7 +646,6 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
-	$scope.topCommunities = App.topCommunities;
 	$scope.recommend = RecommendRestaurantService;
 
 	$scope.location = LocationService;
@@ -684,7 +752,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	var proceed = function() {
 		App.go( '/' + restaurants.permalink, 'push' );
-		AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
+		if( AccountService.account && AccountService.account.user ){
+			AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
+		}
 		$scope.location.form.address = '';
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
@@ -822,9 +892,16 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}, 50 );
 	}
 
+
+
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
+
+	if(!$scope.order.cardMonth){
+		$scope.order.cardMonth = '';
+		$scope.order.cardYear = '';
+	}
 	$scope.order.info = order.info;
 
 	$scope.Math = window.Math;
@@ -835,6 +912,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.creditCardChanged = function() {
 		order._cardInfoHasChanged = true;
 	};
+
+	$scope.$watch( 'isMobileWidth', function( newValue, oldValue, scope ) {
+		if( !$scope.fullmenu && !$scope.isMobileWidth ){
+			$scope.fullmenu = true;
+		}
+	});
 
 	var creditCard = CreditCardService;
 
@@ -1009,6 +1092,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
 	};
 
+
+	var using_delivery_free = false;
+
 	var giftcard = GiftCardService;
 	$scope.giftcard = { giftcards : {} };
 	// Event will be called when the gift card changes
@@ -1019,6 +1105,16 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.giftcard.removed = giftcard.notes_field.removed;
 		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
 		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
+
+		if( giftcard.notes_field.giftcards && giftcard.notes_field.giftcards.success && giftcard.notes_field.giftcards.success[0] && giftcard.notes_field.giftcards.success[0].delivery_free ){
+			using_delivery_free = true;
+			order.removeDeliveryFee();
+			$scope.order.updateTotal();
+		} else {
+			using_delivery_free = false;
+			order.restoreDeliveryFee();
+			$scope.order.updateTotal();
+		}
 		$scope.giftcard.hasValue = ( parseFloat( giftcard.notes_field.value ) > 0 );
 		$scope.$safeApply();
 	});
@@ -1028,13 +1124,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			giftcard.notes_field.lastValidation = '';
 			$scope.checkGiftCard();
 		}
-		console.log('$scope.user.id_user',$scope.user.id_user);
 	});
 
 	$scope.checkGiftCard = function(){
 		if( validateGiftCard ){
 			giftcard.notes_field.content = $scope.order.form.notes;
-			giftcard.notes_field.start( $scope.order.form.phone );
+			giftcard.notes_field.start( $scope.order.form.phone, $scope.restaurant.id_restaurant );
 		}
 	}
 
@@ -1201,7 +1296,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService ) {
+NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1210,17 +1305,24 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$location.path( '/' );
 		return;
 	}
+
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
 
+	AccountService.updatePoints( function( points ){
+		$scope.account.user.points = points;
+		$scope.account.user.invite_code = points.invite_code;
+	} );
+
 	$scope.Math = window.Math;
 
 	OrderViewService.load();
 
 	$scope.isMobile = App.isMobile();
+	$scope.isAndroid = App.isAndroid();
 
 	$scope.facebook = function(){
 		OrderViewService.facebook.postOrder();
@@ -1232,13 +1334,40 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		enabled : ReferralService.enabled
 	}
 
+	$scope.referral.facebook = function(){
+		FacebookService.shareOrder( $scope.referral.invite_url, AccountService.user.invite_code );
+	}
+
+	$scope.referral.twitter = function(){
+		var text = 'i love @crunchbutton delivery :) use my code ' + AccountService.user.invite_code + ' in the Notes section for free delivery!';
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
+	}
+
+	$scope.$watch( 'referral.invite_url', function( newValue, oldValue, scope ) {
+		$scope.twitterUrl = ReferralService.invite_url;
+		$scope.twitterText = TwitterService.referralText( AccountService.user.invite_code );
+		$scope.twitterHashtags = TwitterService.referralHashtags();
+	});
+
+
+	$scope.twitterTweet = function( ev ){
+		TwitterService.tweet( $scope.order.uuid );
+		if( !$scope.order.reward.shared ){
+			$scope.order.reward = { shared: { twitter: true } };
+		} else {
+			$scope.order.reward.shared.twitter = true;
+		}
+
+		$scope.$safeApply();
+	}
+
 	// Load the invite_url
 	if( !ReferralService.invite_url ){
 		ReferralService.getStatus();
 	}
 
-	$scope.$on( 'orderShared', function(e, data) {
-		$scope.order.reward.shared = true;
+	$scope.$on( 'orderSharedFacebook', function(e, data) {
+		$scope.order.reward.shared.facebook = true;
 		$scope.$safeApply();
 	} );
 
@@ -1248,6 +1377,8 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$scope.referral.invite_url_cleared = ReferralService.value;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+		$scope.referral.sms = ReferralService.sms();
 	});
 
 	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
@@ -1265,7 +1396,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$('.order-print').get(0).contentWindow.document.body.innerHTML = $('.order-print-content').html();
 		$('.order-print').get(0).contentWindow.print();
 	};
-
 	if ( App.busy.isBusy() ) {
 		setTimeout( function(){
 			App.busy.unBusy();
@@ -1286,6 +1416,12 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		$location.path( '/' );
 		return;
 	}
+
+	if( !AccountService.user.invite_code ){
+		ReferralService.getInviteCode();
+	}
+
+	ReferralService.getStatus();
 
 	$scope.account = AccountService;
 
@@ -1318,16 +1454,12 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		value : ReferralService.value,
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
-		enabled : ReferralService.enabled
+		enabled : ReferralService.enabled,
+		invite_code: ReferralService.invite_code
 	}
 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
-	}
-
-	// Load the invite_url
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
 	}
 
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
@@ -1336,15 +1468,21 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		$scope.referral.invite_url = ReferralService.invite_url;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+		$scope.referral.sms = ReferralService.sms();
 	});
 
+	$scope.isMobile = App.isMobile();
+
 	$scope.referral.facebook = function(){
-		FacebookService.postInvite( $scope.referral.invite_url );
+		FacebookService.postInvite( $scope.referral.invite_url, AccountService.user.invite_code );
 	}
 
 	$scope.referral.twitter = function(){
-		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+		var text = 'i love @crunchbutton delivery :) use my code ' + AccountService.user.invite_code + ' in the Notes section for free delivery!';
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
 	}
+	$scope.hello = 50;
 
 });
 
@@ -1352,7 +1490,7 @@ NGApp.controller( 'GiftcardCtrl', function ($scope, $location, GiftCardService )
 	setTimeout( function(){ GiftCardService.open(); }, 300 );
 });
 
-NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
+NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $rootScope, $http, AccountModalService, AccountService, AccountHelpService ) {
 	$scope.modal = AccountModalService;
 	$scope.account = AccountService;
 	$scope.help = AccountHelpService;
@@ -1360,12 +1498,28 @@ NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountMod
 		$scope.modal.toggleSignForm( 'signin' );
 		$scope.help.show( false );
 	}
+	if( AccountService && AccountService.user && AccountService.user.email ){
+		$scope.account.form.email = AccountService.user.email;
+	}
+	$scope.$on( 'userUpdated', function(e, user) {
+		if( !$scope.account.form.email ){
+			$scope.account.form.email = user.email;
+		}
+	} );
 });
 
 
 NGApp.controller( 'AccountSevenCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService, AccountFacebookService ) {
 	$scope.tab = 'facebook'
 	$scope.account = AccountService;
+	if( AccountService && AccountService.user && AccountService.user.email ){
+		$scope.account.form.email = AccountService.user.email;
+	}
+	$scope.$on( 'userUpdated', function(e, user) {
+		if( !$scope.account.form.email ){
+			$scope.account.form.email = user.email;
+		}
+	} );
 	$scope.help = AccountHelpService;
 	$scope.facebook = AccountFacebookService;
 	$scope.changeTab = function( tab ){
@@ -1412,6 +1566,16 @@ NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, Accou
 		AccountModalService.resetOpen();
 		$location.path( '/' );
 	}
+});
+
+NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService ) {
+	$rootScope.$on( 'ReferralInvitedUsers', function(e, data) {
+		$scope.invitedUsers = ReferralService.invitedUsers;
+		App.dialog.show( '.referral-container' );
+	});
+	$scope.modal = { close: function(){
+		$.magnificPopup.close();
+	} };
 });
 
 NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCardService ) {

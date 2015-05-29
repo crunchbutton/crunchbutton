@@ -23,14 +23,11 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0" );
 		if( $crons->count() ){
-			Log::debug( [ 'type' => 'cron-jobs', 'method' => 'start', 'desc' => 'working with ' . $crons->count() . ' cron jobs' ] );
 			foreach( $crons as $cron ){
 				if( $cron->should_start() ){
 					$cron->que();
 				}
 			}
-		} else {
-			Log::debug( [ 'type' => 'cron-jobs', 'method' => 'start', 'desc' => 'there is no cron jobs to run' ] );
 		}
 	}
 
@@ -38,20 +35,22 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		if( $this->update_next_time() ){
 
-			$this->log( 'que', 'starting que' );
 			$this->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING;
 			$this->save();
 
 			if( class_exists( $this->class ) ){
 				$job = new $this->class;
 				$job->id_cron_log = $this->id_cron_log;
+
 				if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
 					if( method_exists( $job, 'run' ) ){
-						// async
+
+						$env = ( $this->env ? $this->env : 'live' );
+
 						Cana::timeout( function() use( $job ) {
 							$job->run();
-						} );
-						$this->log( 'go', $this->class . ' called run' );
+						}, 1000, true, $env );
+
 					} else {
 						$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
 					}
@@ -65,10 +64,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function should_start(){
-
-		if( !$this->start_date() ){
-			$this->log( 'should_start', 'job doesnt have start date' );
-		}
 
 		// now
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -90,7 +85,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				return true;
 			}
 		}
-		$this->log( ' should_start', 'not this time. will start at: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
 		return false;
 	}
 
@@ -111,15 +105,12 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				if( $watch_dog >= 10000 ){
 					$message = 'The cron task "' . $this->description . '" have a problem updating the next_time and didn\'t run. If you get this message tell it to the devs. Thank you.';
 					Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
-					$this->log( 'update_next_time', 'watch_dog:' . $watch_dog . ' next_time: ' . $next_time->format( 'Y-m-d H:i:s' ) );
 					return false;
 				}
 			}
 		} else {
 			$next_time = $date;
 		}
-
-		$this->log( 'update_next_time', 'watch_dog:' . $watch_dog . ' next_time: ' . $next_time->format( 'Y-m-d H:i:s' ) );
 
 		$this->next_time = $next_time->format( 'Y-m-d H:i:s' );
 		$this->save();
@@ -134,8 +125,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		$message = 'The cron task "' . $this->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn\'t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
 		Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
 
-		$this->log( 'error_warning', 'message:' . $message );
-
 		// change the current status to let it start
 		$this->status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
 		$this->save();
@@ -145,7 +134,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	public function finished(){
 
 		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
-		$job->log( 'finished', 'the interaction ' . $job->interactions );
 		$job->finished = date('Y-m-d H:i:s');
 		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
 		$job->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
@@ -184,7 +172,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function log( $method, $message ){
-		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
+		// $data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
 		echo date('Y-m-d H:i:s') . ' - ' . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}

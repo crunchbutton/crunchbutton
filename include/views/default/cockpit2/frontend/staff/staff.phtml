@@ -1,7 +1,15 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-users"></i>Staff<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-users"></i>Staff</h1>
+		<div class="page-title-nav">
+			<a href="/staff/marketing/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Marketing Rep</span></button></a>
+			<a href="/drivers/onboarding/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Driver</span></button></a>
+		</div>
+	</div>
+	<div class="divider"></div>
+	
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
@@ -34,7 +42,7 @@
 						<option value="no">No</option>
 					</select>
 				</td>
-			<th>Using Pex Card</th>
+				<th>Using Pex Card</th>
 				<td>
 					<select ng-model="query.pexcard" name="searchType" tabindex="5">
 						<option value="all">All</option>
@@ -47,11 +55,6 @@
 	</div>
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-
-	<h2>
-		<a href="/staff/marketing/new">Create a new marketing rep</a>
-	</h2>
-	<br><br>
 
 	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
 	<ng-include src="'assets/view/listview-paging.html'"></ng-include>

@@ -1,0 +1,82 @@
+<div ng-if="oc.order.id_order" class="order-box-top control" ng-class="{'order-box-top-show': oc.order.id_order}">
+	<div class="top-pad"></div>
+	<div ng-if="oc.order.status.status == 'new'">
+		<div class="box-content-nav-box box-content-new box-order-status">
+			<div class="message">
+				<div class="dialog-subtext">You <b>must</b> mark orders as accepted,<br> picked up, and delivered to get</br> paid correctly.</div>
+				<a class="order-action-undo" href ng-click="oc.reject()">reject</a>
+			</div>
+			<div class="buttons">
+				<button ng-click="oc.accept()" class="button orange-on-orange">Accept</button>
+			</div>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'rejected'">
+		<div class="box-content-nav-box box-content-rejected box-order-status">
+			<div class="message">You rejected this order. </div>
+			<div class="buttons">
+				<button ng-click="oc.accept()" class="button orange-on-orange">Accept</button>
+			</div>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'accepted' && oc.order.status.driver.id_admin == account.user.id_admin">
+		<div class="box-content-nav-box box-content-accepted box-order-status">
+			<div class="message">
+				<div class="dialog-title">You accepted this order</div>
+				<div class="dialog-subtext">@ {{oc.order.status.date_timestamp | tsToHour}}</div>
+				<a class="order-action-undo" ng-click="oc.undo()">undo</a>
+			</div>
+			<div class="buttons">
+				<button ng-click="oc.pickedup()" class="button green-on-green">Picked up</button>
+			</div>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'pickedup' && oc.order.status.driver.id_admin == account.user.id_admin">
+		<div class="box-content-nav-box box-content-pickedup box-order-status">
+			<div class="message">
+				<div class="dialog-title">You picked up this order</div>
+				<div class="dialog-subtext">@ {{oc.order.status.date_timestamp | tsToHour}}</div>
+				<a class="order-action-undo" ng-click="oc.undo()">undo</a>
+			</div>
+			<div class="buttons" ng-click="oc.delivered()">
+				<button class="button dgray-on-dgray">Delivered</button>
+			</div>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'delivered' && oc.order.status.driver.id_admin == account.user.id_admin">
+		<div class="box-content-nav-box box-content-delivered box-order-status">
+			<div class="message">
+				You delivered this order @ {{oc.order.status.date_timestamp | tsToHour}}
+				<br><br>
+				<a class="order-action-undo" ng-click="oc.undo()">undo</a>
+			</div>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'accepted' && oc.order.status.driver.id_admin != account.user.id_admin">
+		<div class="box-content-nav-box dialog-message dialog-message-error">
+			<div class="message">
+				<div class="dialog-title"><b>DO NOT DELIVER</b></div>
+				<div class="dialog-subtext">THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{oc.order.status.driver.name}}</span>.</div>
+			</div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'pickedup' && oc.order.status.driver.id_admin != account.user.id_admin">
+		<div class="box-content-nav-box dialog-message dialog-message-error">
+			<div class="message">
+				This order has been picked up by <span class="delivery-name">{{oc.order.status.driver.name}}</span>.
+			</div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'delivered' && oc.order.status.driver.id_admin != account.user.id_admin">
+		<div class="box-content-nav-box dialog-message dialog-message-error">
+			<div class="message">
+				This order has been delivered by <span class="delivery-name">{{oc.order.status.driver.name}}</span>
+			</div>
+		</div>
+	</div>
+</div>

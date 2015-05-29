@@ -53,15 +53,6 @@
 				<span>View</span>
 			</li>
 
-			<?php if (c::admin()->permission()->check(['global', 'restaurants-all' ])) { ?>
-				<li class="action-nav-button">
-					<a class="tip" data-original-title="Old Admin" href="/restaurants/legacy/<?php echo $this->restaurant->id_restaurant?>" title="">
-						<i class="icon-book"></i>
-						</a>
-					<span>Old Admin</span>
-				</li>
-			<?php } ?>
-
 			<?php if (c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$this->restaurant->id_restaurant}-all" ])) { ?>
 				<li class="action-nav-button">
 					<a class="tip" data-original-title="Duplicate" href="javascript:if(confirm('Confirm duplicate this restaurant?')){ document.location.href='/restaurants/<?php echo $this->restaurant->id_restaurant?>/duplicate'; }" title="">
@@ -137,7 +128,7 @@
 							<select id="restaurant-id-community">
 								<option value=""></option>
 								<?php
-								$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
+								$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true ORDER BY name ASC' );
 								foreach( $communities as $community ){
 									?>
 									<option value="<?php echo $community->id_community; ?>">
@@ -249,6 +240,24 @@
 								<div class="admin-map" id="restaurant-map">
 								</div>
 							</div>
+						</div>
+					</div>
+
+					<div class="admin-item">
+						<div class="admin-item-left">
+							<div class="admin-item-name">
+								Delivery Radius Type
+							</div>
+						</div>
+						<div class="admin-item-right">
+							<select id="restaurant-delivery_radius_type">
+								<option value="restaurant">
+									Restaurant
+								</option>
+								<option value="community">
+									Community
+								</option>
+							</select>
 						</div>
 					</div>
 

@@ -16,15 +16,15 @@ class Controller_home_curation extends Crunchbutton_Controller_Account {
 		$totalFoodOrdered = Crunchbutton_Order_Dish::totalDishesOrdered();
 
 		$data = [];
-		$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE active = 1 ORDER BY name ASC');
+		$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE active = true ORDER BY name ASC');
 
 		// It means the user can see the curation of all restaurants
 		if( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud'] ) ){
-			$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE active = 1 ORDER BY name ASC');
+			$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE active = true ORDER BY name ASC');
 		} else {
 			$_restaurants_id = c::admin()->getRestaurantsUserHasCurationPermission();
 			$in = join( ',', $_restaurants_id );
-			$restaurants = Restaurant::q("SELECT * FROM restaurant WHERE active = 1 AND id_restaurant IN( {$in} ) ORDER BY name ASC");
+			$restaurants = Restaurant::q("SELECT * FROM restaurant WHERE active = true AND id_restaurant IN( {$in} ) ORDER BY name ASC");
 		}
 
 		foreach( $restaurants as $restaurant ){

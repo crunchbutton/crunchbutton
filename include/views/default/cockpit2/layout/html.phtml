@@ -9,4 +9,8 @@
 <?=$this->display('layout/html.bottom')?>
 
 <script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+<script src="//js.stripe.com/v2/" bundle="false"></script>
+<script type="text/javascript">
+	Stripe.setPublishableKey( '<?=c::config()->stripe->{c::getEnv()}->{'public'}?>' );
+</script>
 <? /* &key=AIzaSyBSQXZPG5n_yRG4umquaDANsL62uhlgaE8 */ ?>

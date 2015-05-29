@@ -22,7 +22,6 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 			} else {
 				$search['search'] = $_REQUEST['search'];
 			}
-
 		}
 
 		if ($_REQUEST['env']) {

@@ -47,13 +47,37 @@
 				</div>
 			</div>
 			<div class="box-content">
-				<div class="padded">
+
+			<div class="padded">
+			<table width="100%" id="header_float" style="position:fixed;top:0;display:none;background:#FFF;">
+				<tr>
+					<?php foreach( $this->days as $day ) {
+						$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
+					?>
+						<th width="14%" style="background:<?php echo $dark; ?>" id="float-<?php echo $day->format( 'l' ); ?>">
+							<div class="row-fluid padded">
+								<div class="span12">
+									<strong style="font-size:16px;color:#666;">
+										<?php echo $day->format( 'l' ); ?>
+										<div style="font-size:10px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
+									</strong>
+								</div>
+							</div>
+						</th>
+					<?php } ?>
+				</tr>
+				</table>
+				</div>
+
+				<div class="padded" id="header_columns">
 					<table width="100%">
 						<tr>
-							<?php foreach( $this->days as $day ) {
+							<?php
+							$dark = false;
+							foreach( $this->days as $day ) {
 								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 							?>
-								<th width="14%" style="background:<?php echo $dark; ?>">
+								<th id="<?php echo $day->format( 'l' ); ?>" width="14%" style="background:<?php echo $dark; ?>">
 									<div class="row-fluid padded">
 										<div class="span12">
 											<strong style="font-size:16px;color:#666;">
@@ -220,3 +244,44 @@ $( document ).ready( function(){
 } );
 </script>
 <script type="text/javascript" src="/assets/js/jquery.autosize-min.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script type="text/javascript">
+var getHeaderSize = function(){
+	var header_columns = $( '#header_columns' );
+	header_columns.find( 'th' ).each( function(){
+		var th = $( this );
+		if( th.attr( 'id' ) ){
+			var th_float = $( '#float-' + th.attr( 'id' ) );
+			if( th_float ){
+				th_float.width( th.width() );
+			}
+		}
+	} );
+	var header_float = $( '#header_float' );
+	header_float.width( header_columns.width() );
+	showHideHeader();
+};
+var showHideHeader = function(){
+	var scroll_top = $( window ).scrollTop();
+	var header_float = $( '#header_float' );
+	if( scroll_top >= 265 ){
+		$( '#header_float' ).fadeIn( 200 );
+	} else {
+		$( '#header_float' ).fadeOut( 200 );
+	}
+};
+$( function() {
+
+	setTimeout( function(){
+		getHeaderSize();
+	}, 100 );
+
+	$( window ).scroll( function(){
+		showHideHeader();
+	} );
+
+	$( window ).resize( function(){
+		getHeaderSize();
+	} );
+
+});
+</script>

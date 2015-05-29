@@ -35,7 +35,7 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 		if(!$session || !$session->id_session) {
 			return self::nullInitialSequence;
 		}
-		$lastEvent = c::db()->query('SELECT * FROM `analytics_event` WHERE id_session = "' . $session->id_session . '" ORDER BY sequence DESC, ts DESC LIMIT 1')->fetch();
+		$lastEvent = c::db()->query('SELECT * FROM `analytics_event` WHERE id_session = ? ORDER BY id_analytics_event DESC, ts DESC LIMIT 1', [$session->id_session])->fetch();
 		$now = date_create()->getTimestamp();
 		if (is_null($lastEvent->ts)) {
 			return self::nullInitialSequence;
@@ -65,7 +65,7 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 
 }
 
-// Event API expects every request to have a category, action and potentially a label. 
+// Event API expects every request to have a category, action and potentially a label.
 // Requests may also send an additional blob of data that may or may not be used. category
 // and action are included in request URLs to facilitate grepping through logs on storage errors.
 //
@@ -73,7 +73,7 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 // Response 201 (application/json) - {'id_analytics_event': <some_id>} indicates success
 // Response 500 - server error (e.g., overloaded, etc.)
 // Response 400 (application/json) - missing category or action
-// {'error': 'missing category'} 
+// {'error': 'missing category'}
 //
 // POST /api/events?category=page&action=ordered&label=bought+dat
 // Body (application/json)

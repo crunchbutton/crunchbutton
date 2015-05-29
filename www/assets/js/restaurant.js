@@ -92,12 +92,8 @@ var Restaurant = function(id) {
 		self.categories();
 
 		if (App.isPhoneGap) {
-			if( self.image ){
-				var img = self.image.replace(/^.*\/|\.[^.]*$/g, '');
-				// load same image for both #3092
-				self.img = App.imgServer + '596x596/' + img +  '.jpg';
-				self.img64 = App.imgServer + '596x596/' + img +  '.jpg';
-			}
+			// this shouldnt be used anymore, but old apps will still be pulling from this url
+			// self.img = App.imgServer + '596x596/' + img +  '.jpg';
 		}
 
 		if (typeof complete == 'function') {

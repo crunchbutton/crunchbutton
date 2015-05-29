@@ -30,9 +30,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		$view->communities         = $communities;
 		$view->restaurantCommunity = $community;
-		$view_name = c::getPagePiece(1) == 'legacy' ?
-				'restaurants/legacy/restaurant'		:
-				'restaurants/restaurant';
+		$view_name = 'restaurants/restaurant';
 		$view->display($view_name);
 	}
 
@@ -55,10 +53,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		c::view()->page = 'restaurants';
 
-		if(c::getPagePiece(1) == 'legacy') {
-			c::view()->page = 'restaurants';
-			$page_piece_index = 2;
-		} else if(c::getPagePiece(1) == 'analytics') {
+		if(c::getPagePiece(1) == 'analytics') {
 			echo 1;
 		} else if(c::getPagePiece(1) == 'hours_override') {
 			c::view()->overrides = Crunchbutton_Restaurant_Hour_Override::getNexts();
@@ -151,21 +146,38 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 						return;
 					}
 					if ($_FILES['image']) {
-						$current_image = '/home/i.crunchbutton/www/image/' . $restaurant->image;
 
-						$rand = rand ( 0, date( 'Ymd' ) );
+						$images_path = '/home/i.crunchbutton/www/image/';
+
+						$current_image = $images_path . $restaurant->image;
+
 						$ext = pathinfo( $_FILES['image']['name'], PATHINFO_EXTENSION );
-						$image_name = $restaurant->permalink . $rand . '.'. $ext;
-						$file = '/home/i.crunchbutton/www/image/'.$image_name;
+						$image_name = $restaurant->id . '.'. $ext;
+						$file = $images_path . $image_name;
+
+
+						$remove_old_image = false;
+						// check if the old image is being used by any other restaurant - if it is not, delete it
+						if( !$restaurant->isImageUsedByOtherRestaurant() ){
+							$remove_old_image = true;
+						}
+
+						if( $image_name == $restaurant->image ){
+							$remove_old_image = true;
+						}
+
+						if( $remove_old_image ){
+							if ( file_exists( $current_image ) ){
+								unlink( $current_image );
+							}
+						}
+
 						if ( copy( $_FILES['image']['tmp_name'],$file ) ) {
 							$restaurant->image = $image_name;
 							$restaurant->save();
 							chmod($file,0777);
-							// remove the old image
-							if (file_exists($current_image)){
-								unlink( $current_image );
-							}
 						}
+
 					}
 					c::view()->display('restaurants/image');
 					break;

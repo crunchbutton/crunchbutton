@@ -26,7 +26,7 @@ class Controller_api_referral extends Crunchbutton_Controller_Rest {
 				if( c::user()->id_user && c::user()->id_user != '' ){
 					$invite_code = c::user()->inviteCode();
 					$url = 'http://' . $_SERVER['HTTP_HOST'] . '/invite/' . $invite_code;
-					echo json_encode(['invite_url' => $url ]);
+					echo json_encode(['invite_url' => $url, 'invite_code' => $invite_code ]);
 				} else {
 					echo json_encode(['error' => 'invalid request']);
 				}
@@ -50,7 +50,7 @@ class Controller_api_referral extends Crunchbutton_Controller_Rest {
 					// $url = 'http://' . $_SERVER['HTTP_HOST'] . '?invite=' . $invite_code;
 					$url = 'http://' . $_SERVER['HTTP_HOST'] . '/invite/' . $invite_code;
 					$value = Crunchbutton_Referral::getInviterCreditValue();
-					echo json_encode(['invites' => intval( $invites ), 'limit' => intval( $limit ), 'invite_url' => $url, 'value' => intval( $value ), 'enabled' => $enabled ]);
+					echo json_encode(['invites' => intval( $invites ), 'limit' => intval( $limit ), 'invite_url' => $url, 'value' => intval( $value ), 'enabled' => $enabled, 'invite_code' => $invite_code ]);
 				} else {
 					echo json_encode(['error' => 'invalid request']);
 				}

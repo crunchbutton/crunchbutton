@@ -8,7 +8,7 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		select `order`.* from `order`
 		left join restaurant using (id_restaurant)
 		left join admin_notification_log using (id_order)
-		where restaurant.delivery_service=1 and restaurant.active=1 and admin_notification_log.id_admin_notification_log is null
+		where restaurant.delivery_service=1 and restaurant.active=true and admin_notification_log.id_admin_notification_log is null
 		and `order`.date > date_sub(now(), interval 10 minute)
 		order by `order`.id_order desc
 		';

@@ -20,13 +20,30 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'eta':
+
 				$out = [];
-				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 AND delivery_service = 1 ORDER BY name ASC' );
+				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND delivery_service = true ORDER BY name ' );
+				$communities = [];
+
 				foreach( $restaurants as $restaurant ){
 					if( $restaurant->open() ){
-						$community = $restaurant->community()->name;
-						$drivers = $restaurant->activeDrivers();
-						$out[] = array_merge( [ 'restaurant' => $restaurant->name, 'community' => $community ], $restaurant->smartETA( true ) );
+						$community = $restaurant->community()->get( 0 );
+						if( !$communities[ $community->id_community ] ){
+							$query = '
+								SELECT o.* FROM `order` o
+								INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+								INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
+								WHERE o.delivery_type = ?
+									AND o.delivery_service = true
+									AND o.date >= now() - INTERVAL 1 DAY
+								ORDER BY o.id_order DESC
+							';
+							$orders = Order::q($query, [$community->id_community, Crunchbutton_Order::SHIPPING_DELIVERY]);
+							$activeDrivers = $restaurant->activeDrivers();
+							$communities[ $community->id_community ] = [ 'name' => $community->name, 'activeDrivers' => $activeDrivers, 'orders' => $orders ];
+						}
+						$params = [ 'id_community' => $community->id_community, 'activeDrivers' => $communities[ $community->id_community ][ 'activeDrivers' ], 'orders' => $communities[ $community->id_community ][ 'orders' ] ];
+						$out[] = array_merge( [ 'restaurant' => $restaurant->name, 'community' => $community->name ], $restaurant->smartETA( true, $params) );
 					}
 				}
 				echo json_encode( $out );exit;
@@ -59,11 +76,13 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 	private function _query() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -89,18 +108,20 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 		if ($status != 'all') {
 			$q .= '
-				AND active="'.($status == 'active' ? '1' : '0').'"
+				AND active=?
 			';
+			$keys[] = $status == 'active' ? true : false;
 		}
 
 		if ($community) {
 			$q .= '
-				AND restaurant_community.id_community="'.$community.'"
+				AND restaurant_community.id_community=?
 			';
+			$keys[] = $community;
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'restaurant.name' => 'like',
@@ -111,39 +132,68 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					'restaurant.id_restaurant' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 		$q .= '
 			GROUP BY restaurant.id_restaurant
 		';
 
-		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
-		while ($c = $r->fetch()) {
-			$count++;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `restaurant`.id_restaurant) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
 			ORDER BY restaurant.name ASC
-			LIMIT '.$offset.', '.$limit.'
+			LIMIT ?
+			OFFSET ?
 		';
+		$keys[] = $getCount ? $limit : $limit+1;
+		$keys[] = $offset;
 
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			restaurant.*,
-			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
+			(SELECT `order`.date FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant order by `order`.date desc limit 1) as _order_date,
 			COUNT(`order`.id_order) orders
-		', $q));
+		', $q), $keys);
+
+		// this method seems like 8% slower for some reason
+		//SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant
+
+		$i = 1;
+		$more = false;
+
 		while ($s = $r->fetch()) {
+
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
+
 			$restaurant = Restaurant::o($s);
 			$out = $s;
-			$out->delivery_is_self = $restaurant->deliveryItSelf();
+			$out->delivery_it_self = $restaurant->deliveryItSelf();
 			$out->communities = [];
 			foreach ($restaurant->communities() as $community) {
 				$out->communities[] = $community->properties();
 			}
+
+			$out->active = $out->active ? true : false;
+			$out->open_for_business = $out->open_for_business ? true : false;
+			$out->open = $restaurant->open() ? true : false;
+			$out->delivery_service = $out->delivery_service ? true : false;
+			$out->delivery = $out->delivery ? true : false;
+			$out->takeout = $out->takeout ? true : false;
+
 
 /*
 			$unset = ['email','timezone','testphone','txt'];
@@ -153,12 +203,14 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 */
 			$data[] = $out;
 //			$data[] = $s;
+			$i++;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $data
 		]);
 	}

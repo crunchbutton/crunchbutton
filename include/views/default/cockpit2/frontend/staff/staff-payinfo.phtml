@@ -2,180 +2,198 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-credit-card"></i><span>Payment info: #{{payInfo.id_admin}} - {{payInfo.name}}</span></h1>
-
+	<h1 class="title left"><i class="fa fa-credit-card"></i><span>{{payInfo.name}} - Payment Info</span></h1>
 	<div class="divider"></div>
 
-	<navigation-back></navigation-back>
+	<div class="support-boxes">
 
-	<div>
-
-		<form name="form" novalidate>
-
-			<h2 class="title">Basic info</h2>
-
-			<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content2">
-
-				<li class="li-input" ng-class="{'error':form.payInfoLegalNamePayment.$invalid}">
-					<div class="label">Legal Name Payment:</div>
-					<div class="input"><input type="text" name="payInfoLegalNamePayment" ng-model="payInfo.legal_name_payment" placeholder="Legal Name Payment" ng-maxlength="250"></div>
-					<div class="box-error">
-						<small ng-show="form.payInfoLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.basicSocialSecurityNumber.$invalid}">
-					<div class="label">Social Security Number:</div>
-					<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
-					<div class="box-error">
-						<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Social Security Number. Please use the format: XXX-XX-XXXX.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.basicAddress.$invalid}">
-					<div class="label">Address:</div>
-					<div class="input">
-					<textarea name="basicAddress" ng-model="payInfo.address" placeholder="Address"></textarea>
-					<div class="box-error"></div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.payInfoPaymentType.$invalid}">
-					<div class="label">Payment Type</div>
-					<div class="input">
-						<select ng-model="payInfo.payment_type" required name="payInfoPaymentType" ng-options="type.value as type.label for type in payment._types"></select>
-					</div>
-					<div class="box-error">
-						<small ng-show="form.payInfoPaymentType.$error.required">Required.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.payInfoHourRate.$invalid}" ng-show="payInfo.payment_type=='hours'">
-					<div class="label">Hour Rate</div>
-					<div class="input">
-						<input type="number" ignore-mouse-wheel name="payInfoHourRate" ng-required="payInfo.payment_type=='hours'" ng-model="payInfo.hour_rate" placeholder="0.00">
-					</div>
-					<div class="box-error">
-						<small ng-show="form.payInfoHourRate.$error.required">Required.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.payInfoPaymentMethod.$invalid}">
-					<div class="label">Payment Method</div>
-					<div class="input">
-						<select ng-model="payInfo.payment_method" required name="payInfoPaymentMethod" ng-options="method.value as method.label for method in payment._methods"></select>
-					</div>
-					<div class="box-error">
-						<small ng-show="form.payInfoPaymentMethod.$error.required">Required.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.payInfoUsingPex.$invalid}">
-					<div class="label">Using Pex Card</div>
-					<div class="input">
-						<select ng-model="payInfo.using_pex" required name="payInfoUsingPex" ng-options="type.value as type.label for type in yesNo"></select>
-					</div>
-					<div class="box-error">
-						<small ng-show="form.payInfoUsingPex.$error.required">Required.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-class="{'error':form.payInfoUsingPexDate.$invalid}">
-					<div class="label">Date started using Pex Card:</div>
-					<div class="input"><input type="date" name="payInfoUsingPexDate" ng-model="payInfo.using_pex_date" placeholder=""></div>
-					<div class="box-error">
-						<small ng-show="form.payInfoUsingPexDate.$error.required">Required.</small>
-					</div>
-				</li>
-
-
-				<li class="li-input" ng-class="{'error':form.payInfoSummaryEmail.$invalid}">
-					<div class="label">Summary Email:</div>
-					<div class="input"><input type="email" name="payInfoSummaryEmail" ng-model="payInfo.summary_email" placeholder="Email"></div>
-					<div class="box-error">
-						<small ng-show="form.payInfoSummaryEmail.$error.email">Enter a valid email.</small>
-					</div>
-				</li>
-
-
-				<li class="li-input" ng-show="!isSaving">
-					<button class="button orange" ng-click="save();">Save</button>
-					<span ng-show="saved" class="green">Saved!</span>
-				</li>
-
-				<li class="li-input" ng-show="isSaving">
-					<span><i class="fa fa-circle-o-notch fa-spin"></i> Saving</span>
-				</li>
-
-			</ul>
-
-		</form>
-
-		<form name="formBank" novalidate>
-
-			<h2 class="title">Bank info</h2>
-
-			<div class="ul-inputs box-content2">
-
-				<p ng-show="!bank.showForm">
-					This worker already has a bank account. <span ng-click="bank.showForm = 1" class="link orange">Edit</span>
-				</p>
-
-				<ul ng-class="{'submitted':bankSubmitted}" ng-show="bank.showForm">
-
-					<li class="li-input" ng-class="{'error':formBank.bankLegalNamePayment.$invalid}">
-						<div class="label">Legal Name Payment:</div>
-						<div class="input"><input type="text" name="bankLegalNamePayment" ng-model="payInfo.legal_name_payment" required placeholder="Legal Name Payment" ng-minlength="5" ng-maxlength="250"></div>
-						<div class="box-error">
-							<small ng-show="formBank.bankLegalNamePayment.$error.required">Required.</small>
-							<small ng-show="formBank.bankLegalNamePayment.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
-							<small ng-show="formBank.bankLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formBank.accountNumber.$invalid}">
-						<div class="label">Account Number:</div>
-						<div class="input"><input type="tel" name="accountNumber" ng-model="bank.account_number" required></div>
-						<div class="box-error">
-							<small ng-show="formBank.accountNumber.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formBank.routingNumber.$invalid}">
-						<div class="label">Routing Number:</div>
-						<div class="input"><input type="tel" name="routingNumber" ng-model="bank.routing_number" required></div>
-						<div class="box-error">
-							<small ng-show="formBank.routingNumber.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-show="!isTokenizing">
-						<button class="button green" ng-click="tokenize();">Tokenize</button> <span class="orange link" ng-show="isBeta" ng-click="bankInfoTest()">Test account</span>
-					</li>
-
-					<li class="li-input" ng-show="isTokenizing">
-						<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
-					</li>
-
-				</ul>
-
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Basic Info</h1>
+				<div class="divider"></div>
 			</div>
 
-		</form>
+			<div class="no-box-content-color">
+				<form name="form" novalidate>
 
-		<div ng-if="payInfo.pexcard">
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-			<h2 class="title">Cards</h2>
-			<div class="box-content2 box-content-table">
-				<table>
-					<tr><td><a href="/staff/{{payInfo.login}}/pexcard">Pexcard</a></td></tr>
-				</table>
+						<li class="li-input" ng-class="{'error':form.payInfoLegalNamePayment.$invalid}">
+							<div class="label">Full Legal Name:</div>
+							<div class="input"><input type="text" name="payInfoLegalNamePayment" ng-model="payInfo.legal_name_payment" placeholder="Legal Name" ng-maxlength="250"></div>
+							<div class="box-error">
+								<small ng-show="form.payInfoLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.basicSocialSecurityNumber.$invalid}">
+							<div class="label">Social Security Number:</div>
+							<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
+							<div class="box-error">
+								<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Social Security Number. Please use the format: XXX-XX-XXXX.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.basicAddress.$invalid}">
+							<div class="label">Address:</div>
+							<div class="input">
+							<textarea name="basicAddress" ng-model="payInfo.address" placeholder="Address" rows="4"></textarea>
+							<div class="box-error"></div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.payInfoPaymentType.$invalid}">
+							<div class="label">Pay Structure</div>
+							<div class="input">
+								<select ng-model="payInfo.payment_type" required name="payInfoPaymentType" ng-options="type.value as type.label for type in payment._types"></select>
+							</div>
+							<div class="box-error">
+								<small ng-show="form.payInfoPaymentType.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.payInfoHourRate.$invalid}" ng-show="payInfo.payment_type=='hours' || payInfo.payment_type=='hours_without_tips' || payInfo.payment_type=='making_whole'">
+							<div class="label">Hour Rate</div>
+							<div class="input">
+								<input type="number" ignore-mouse-wheel name="payInfoHourRate" ng-required="payInfo.payment_type=='hours' || payInfo.payment_type=='hours_without_tips' || payInfo.payment_type=='making_whole'" ng-model="payInfo.hour_rate" placeholder="0.00">
+							</div>
+							<div class="box-error">
+								<small ng-show="form.payInfoHourRate.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.payInfoPaymentMethod.$invalid}">
+							<div class="label">Payment Method</div>
+							<div class="input">
+								<select ng-model="payInfo.payment_method" required name="payInfoPaymentMethod" ng-options="method.value as method.label for method in payment._methods"></select>
+							</div>
+							<div class="box-error">
+								<small ng-show="form.payInfoPaymentMethod.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.payInfoUsingPex.$invalid}">
+							<div class="label">Using Pex Card</div>
+							<div class="input">
+								<select ng-model="payInfo.using_pex" required name="payInfoUsingPex" ng-options="type.value as type.label for type in yesNo"></select>
+							</div>
+							<div class="box-error">
+								<small ng-show="form.payInfoUsingPex.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.payInfoUsingPexDate.$invalid}">
+							<div class="label">Date started using Pex Card:</div>
+							<div class="input"><input type="date" name="payInfoUsingPexDate" ng-model="payInfo.using_pex_date" placeholder=""></div>
+							<div class="box-error">
+								<small ng-show="form.payInfoUsingPexDate.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.payInfoSummaryEmail.$invalid}">
+							<div class="label">Summary Email:</div>
+							<div class="input"><input type="email" name="payInfoSummaryEmail" ng-model="payInfo.summary_email" placeholder="Email"></div>
+							<div class="box-error">
+								<small ng-show="form.payInfoSummaryEmail.$error.email">Enter a valid email.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.dateTerminated.$invalid}">
+							<div class="label">Deactivated date (shifts worked before this date will not be paid):</div>
+							<div class="input"><input type="date" name="dateTerminated" ng-model="payInfo.date_terminated" placeholder=""></div>
+							<div class="box-error">
+								<small ng-show="form.dateTerminated.$error.required">Required.</small>
+							</div>
+						</li>
+
+
+						<li class="li-input" ng-show="!isSaving">
+							<button class="button orange" ng-click="save();">Save</button>
+							<span ng-show="saved" class="green">Saved!</span>
+						</li>
+
+						<li class="li-input" ng-show="isSaving">
+							<span><i class="fa fa-circle-o-notch fa-spin"></i> Saving</span>
+						</li>
+
+					</ul>
+
+				</form>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Bank Info</h1>
+				<div class="divider"></div>
 			</div>
 
+			<div class="no-box-content-color">
 
+				<form name="formBank" novalidate>
+
+					<div class="ul-inputs">
+
+						<p ng-show="!bank.showForm">
+							This worker already has a bank account. <span ng-click="bank.showForm = 1" class="link orange">Edit</span>
+						</p>
+
+						<ul ng-class="{'submitted':bankSubmitted}" ng-show="bank.showForm">
+
+							<li class="li-input" ng-class="{'error':formBank.bankLegalNamePayment.$invalid}">
+								<div class="label">Full Legal Name:</div>
+								<div class="input"><input type="text" name="bankLegalNamePayment" ng-model="payInfo.legal_name_payment" required placeholder="Legal Name" ng-minlength="5" ng-maxlength="250"></div>
+								<div class="box-error">
+									<small ng-show="formBank.bankLegalNamePayment.$error.required">Required.</small>
+									<small ng-show="formBank.bankLegalNamePayment.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
+									<small ng-show="formBank.bankLegalNamePayment.$error.maxlength">Name cannot be longer than 250 characters.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':formBank.accountNumber.$invalid}">
+								<div class="label">Account Number:</div>
+								<div class="input"><input type="tel" name="accountNumber" ng-model="bank.account_number" required></div>
+								<div class="box-error">
+									<small ng-show="formBank.accountNumber.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':formBank.routingNumber.$invalid}">
+								<div class="label">Routing Number:</div>
+								<div class="input"><input type="tel" name="routingNumber" ng-model="bank.routing_number" required></div>
+								<div class="box-error">
+									<small ng-show="formBank.routingNumber.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-show="!isTokenizing">
+								<button class="button green" ng-click="tokenize();">Tokenize</button> <span class="orange link" ng-show="isBeta" ng-click="bankInfoTest()">Test account</span>
+							</li>
+
+							<li class="li-input" ng-show="isTokenizing">
+								<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
+							</li>
+
+						</ul>
+
+					</div>
+
+				</form>
+
+				<div ng-if="payInfo.pexcard">
+
+					<h2 class="title">Cards</h2>
+					<div class="box-content2 box-content-table">
+						<table>
+							<tr><td><a href="/staff/{{payInfo.login}}/pexcard">Pexcard</a></td></tr>
+						</table>
+					</div>
+
+
+				</div>
+			</div>
 		</div>
 
 	</div>
 </div>
 
 <spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>

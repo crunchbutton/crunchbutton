@@ -6,8 +6,6 @@
 
 	<div class="divider"></div>
 
-	<navigation-back></navigation-back>
-
 	<h2 class="title">
 		<span ng-if="!driver.id_admin">Add driver</span>
 		<span ng-if="driver.id_admin">Edit driver</span>
@@ -36,10 +34,11 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-if="driver.id_admin">
+			<li class="li-input">
 				<div class="label">Password:</div>
 				<div class="input"><input type="text" name="driverPass" ng-model="driver.pass"></div>
-				<small class="tip">Leave it blank if you don't wanna change it.</small>
+				<small class="tip" ng-if="!driver.id_admin">Would you like to choose a password now? Otherwise, you'll get one randomly assigned.</small>
+				<small class="tip" ng-if="driver.id_admin">Leave it blank if you don't wanna change it.</small>
 			</li>
 
 			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}">
@@ -62,15 +61,33 @@
 				<div class="label">Community:</div>
 				<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
 				<div class="box-error">
+
 					<small ng-show="form.driverIdCommunity.$error.required">Required.</small>
 				</div>
 			</li>
 
+			<li class="li-input" ng-class="{'error':form.driverTimezone.$invalid}">
+				<div class="label">Timezone:</div>
+				<div class="input">
+				<select name="driverTimezone" required ng-model="driver.timezone" ng-options="opt.value as opt.label for opt in timezones" ></select>
+
+				</div>
+			</li>
+
+
 			<li class="li-input" ng-class="{'error':form.driverEmail.$invalid}">
 				<div class="label">Email:</div>
-				<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
+				<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" required ng-pattern="/.*@.*/" placeholder="Email"></div>
 				<div class="box-error">
 					<small ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverDob.$invalid}">
+				<div class="label">Date of Birth:</div>
+				<div class="input"><input type="text" name="driverDob" required ng-pattern="/[0-9]{4}-[0-9]{2}-[0-9]{2}/" ng-model="driver.dob"></div>
+				<div class="box-error">
+					<small ng-show="form.driverDob.$invalid">Enter a valid format (YYYY-MM-DD)</small>
 				</div>
 			</li>
 
@@ -81,6 +98,14 @@
 		<h2 class="title">Earnings - Referral Code</h2>
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input" ng-class="{'error':form.driverInviteCode.$invalid}">
+				<div class="label">Referral Code:</div>
+				<div class="input"><input type="text" name="driverInviteCode" ng-model="driver.invite_code" required placeholder="Referral Code"></div>
+				<div class="box-error">
+					<small ng-show="form.driverInviteCode.$error.required">Required.</small>
+				</div>
+			</li>
 
 			<li class="li-input">
 				<div class="label">How much a marketing rep earns from new customer referrals:</div>
@@ -127,9 +152,18 @@
 					<small ng-show="form.driverAndroidType.$error.required">Required.</small>
 				</div>
 			</li>
+<!---->
+<!---->
+<!--			<li class="li-input" ng-if="driver.android_type=='Other'" ng-class="{'error':form.driverAndroidTypeOther.$invalid}">-->
+<!--				<div class="label">Android Type (Other):</div>-->
+<!--				<div class="input"><input type="text" name="driverAndroidTypeOther" ng-model="driver.android_type_other" required="driver.android_type == android_type_other" placeholder="Android Type" ng-maxlength="40"></div>-->
+<!--				<div class="box-error">-->
+<!--					<small ng-show="form.driverAndroidTypeOther.$error.required">Required.</small>-->
+<!--				</div>-->
+<!--			</li>-->
 
 			<li class="li-input" ng-class="{'error':form.driverAndroidVersion.$invalid}" ng-show="driver.phone_type=='Android'">
-				<div class="label">Android type:</div>
+				<div class="label">Android OS:</div>
 				<div class="input">
 					<select name="driverAndroidVersion" ng-required="driver.phone_type=='Android'" ng-model="driver.android_version" ng-options="opt as opt for opt in android_versions" ></select>
 				</div>
@@ -159,8 +193,8 @@
 				<div class="input">
 				<textarea name="driverAddress" ng-model="driver.address"></textarea>
 			</li>
-                
-           <li class="li-input">
+
+			<li class="li-input">
 				<div class="label">T-shirt Size:</div>
 				<div class="input">
 					<select name="drivertshirtSizes"  ng-model="driver.tshirt_size" ng-options="opt as opt for opt in tshirt_sizes" ></select>
@@ -185,13 +219,23 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.driverHourly.$invalid}">
-				<div class="label">Hourly:</div>
+			<li class="li-input" ng-class="{'error':form.payInfoPaymentType.$invalid}">
+				<div class="label">Pay Structure</div>
 				<div class="input">
-					<select ng-model="driver.hourly" required name="driverHourly" ng-options="type.value as type.label for type in _yesNo"></select>
+					<select ng-model="driver.payment_type" required name="payInfoPaymentType" ng-options="type.value as type.label for type in payment_types"></select>
 				</div>
 				<div class="box-error">
-					<small ng-show="form.driverHourly.$error.required">Required.</small>
+					<small ng-show="form.payInfoPaymentType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.payInfoHourRate.$invalid}" ng-show="driver.payment_type=='hours' || driver.payment_type=='hours_without_tips' || driver.payment_type=='making_whole'">
+				<div class="label">Hour Rate</div>
+				<div class="input">
+					<input type="number" ignore-mouse-wheel name="payInfoHourRate" ng-required="driver.payment_type=='hours' || driver.payment_type=='hours_without_tips' || driver.payment_type=='making_whole'" ng-model="driver.hour_rate" placeholder="0.00">
+				</div>
+				<div class="box-error">
+					<small ng-show="form.payInfoHourRate.$error.required">Required.</small>
 				</div>
 			</li>
 
@@ -204,8 +248,8 @@
 					<small ng-show="form.driverPermashifts.$error.required">Required.</small>
 				</div>
 			</li>
-            
-            
+
+
 
 			<li class="li-input">
 				<div class="label">Desired Weekly Hours:</div>
@@ -333,7 +377,6 @@
 	<ul class="ul-inputs">
 		<li class="li-input" ng-show="!isSaving">
 			<button class="button save" ng-click="save();">Save</button>
-			<button class="button cancel" ng-click="cancel()">Cancel</button>
 		</li>
 		<li class="li-input" ng-show="isSaving">
 			<i class="fa fa-circle-o-notch fa-spin"></i>

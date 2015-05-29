@@ -77,10 +77,10 @@ public function init() {
 						$order = Order::uuid( $uuid );
 						if( c::user()->id_user == $order->id_user && $post_id ){
 							$reward = new Crunchbutton_Reward;
-							$points = $reward->sharedOrder( $order->id_order );
+							$points = $reward->sharedOrder( $order->id_order, 'facebook' );
 							if( floatval( $points ) > 0 ){
-								if( !$reward->orderWasAlreadyShared( $order->id_order ) ){
-									$reward->saveReward( [  'id_user' => $order->id_user, 'id_order' => $order->id_order, 'points' => $points, 'note' => 'points by sharing order' ] );
+								if( !$reward->orderWasAlreadySharedFacebook( $order->id_order ) ){
+									$reward->saveReward( [  'id_user' => $order->id_user, 'id_order' => $order->id_order, 'points' => $points, 'note' => 'facebook shared', 'shared' => 'facebook' ] );
 									echo json_encode(['success' => 'success']);
 									exit;
 								}

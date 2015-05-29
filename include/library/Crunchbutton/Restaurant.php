@@ -20,6 +20,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			->load($id);
 	}
 
+	public function isImageUsedByOtherRestaurant(){
+		if( !$this->image ){
+			return false;
+		}
+		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE image = "' . $this->image . '" AND id_restaurant != "' . $this->id_restaurant . '"' );
+		if( $restaurants->count() > 0 ){
+			return true;
+		}
+		return false;
+	}
+
 	public function deliveryItSelf(){
 		if( $this->delivery ){
 			if( $this->delivery_service ){
@@ -31,16 +42,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function permalink($permalink) {
-		return self::q('select * from restaurant where permalink="'.$permalink.'"')->get(0);
+		return self::q('select * from restaurant where permalink=?', [$permalink])->get(0);
 	}
 
 	public function active(){
-		return Crunchbutton_Restaurant::q( 'SELECT id_restaurant, name FROM restaurant WHERE active = 1 ORDER BY name ASC' );
+		return Crunchbutton_Restaurant::q( 'SELECT id_restaurant, name FROM restaurant WHERE active = true ORDER BY name ASC' );
 	}
 
 	public function with_no_payment_method(){
 		$_restaurants = [];
-		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 AND formal_relationship = 1 AND name NOT LIKE "%test%" ORDER BY name' );
+		$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND formal_relationship = 1 AND name NOT LIKE "%test%" ORDER BY name' );
 		foreach( $restaurants as $restaurant ){
 			if( !$restaurant->hasPaymentType() ){
 				$_restaurants[] = $restaurant;
@@ -49,10 +60,24 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $_restaurants;
 	}
 
+	public function paymentType(){
+		return $this->payment_type();
+	}
+
 	public function hasPaymentType(){
-		$payment_type = $this->payment_type();
-		if( $payment_type->balanced_id && $payment_type->balanced_bank ){
-			return true;
+		$paymentType = $this->paymentType();
+		switch ( Crunchbutton_Payment::processor() ) {
+			case Crunchbutton_Payment::PROCESSOR_BALANCED:
+				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
+					return true;
+				}
+				break;
+
+			case Crunchbutton_Payment::PROCESSOR_STRIPE:
+				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+					return true;
+				}
+				break;
 		}
 		return false;
 	}
@@ -98,7 +123,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			];
 			$where = $this->_mergeWhere($defaultFilters, $where);
 			$sql   = "SELECT * FROM dish WHERE $where";
-			$this->_dishes = Dish::q($sql, $this->db());
+			$this->_dishes = Dish::q($sql);
 		}
 		return $this->_dishes;
 	}
@@ -141,7 +166,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function communities() {
 		if (!isset($this->_communities)) {
-			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'" ORDER BY community.name ASC');
+			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant=? ORDER BY community.name ASC', [$this->id_restaurant]);
 		}
 		return $this->_communities;
 	}
@@ -154,8 +179,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $phone;
 	}
 
-	public function shortName() {
-		return $this->short_name ? $this->short_name : $this->name;
+	// name that appears on credit card statement
+	public function statementName() {
+		if (!isset($this->_statementName)) {
+			$name = $this->short_name ? $this->short_name : $this->name;
+			$name = preg_replace('/[^a-z ]/i','',$name);
+			if (strlen($name) > 22) {
+				$name = str_replace(' ', '', $name);
+			}
+			$this->_statementName = strtoupper(substr($name, 0, 22));
+		}
+		return $this->_statementName;
 	}
 
 	public function _hasOption($option, $options) {
@@ -262,11 +296,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Smart ETA MVP #4600
-	public function smartETA( $array = false ){
+	public function smartETA( $array = false, $params = [] ){
 
 		if( !$this->hasDeliveryService() ){
 			return 0;
 		}
+
+		$eta = 0;
 
 		// N = # of active drivers
 		// X = # of orders placed but not picked up
@@ -275,9 +311,21 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// Estimated ETA:
 		// 30 min + (15X + 7Y - 8Z) / N
 
-		// N = # of active drivers
-		$activeDrivers = $this->activeDrivers();
+		$interval = 1;
 
+		// N = # of active drivers
+		if( $params[ 'activeDrivers' ] ){
+			$activeDrivers = $params[ 'activeDrivers' ];
+		} else {
+			$activeDrivers = $this->activeDrivers();
+		}
+
+		if( $params[ 'id_community' ] ){
+			$id_community = $params[ 'id_community' ];
+		} else {
+			$community = $this->community();
+			$id_community = $community->id_community;
+		}
 
 		// X = # of orders placed but not picked up
 		// Y = # of orders picked up but not delivered
@@ -285,13 +333,21 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$ordersPlacedButNotPickedUp = 0;
 		$ordersPickedUpButNotDelivered = 0;
 		$additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver = 0;
-		$orders = Order::q( 'SELECT o.* FROM `order` o
-													INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-													INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = "' . $community->id_community . '"
-													WHERE o.delivery_type = "delivery"
-														AND o.delivery_service = 1
-														AND o.date >= now() - INTERVAL 1 DAY
-													ORDER BY o.id_order DESC' );
+
+		if( $params[ 'orders' ] ){
+			$orders = $params[ 'orders' ];
+		} else {
+			$query = '
+				SELECT o.* FROM `order` o
+				INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+				INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
+				WHERE o.delivery_type = ?
+					AND o.delivery_service = true
+					AND o.date >= now() - INTERVAL '.$interval.' DAY
+				ORDER BY o.id_order DESC
+			';
+			$orders = Order::q($query, [$id_community, Crunchbutton_Order::SHIPPING_DELIVERY]);
+		}
 		foreach( $orders as $order ){
 			$lastStatus = $order->deliveryLastStatus();
 			if( $lastStatus[ 'status' ] == 'new' || $lastStatus[ 'status' ] == 'accepted' ){
@@ -310,10 +366,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 										( 7 * $ordersPickedUpButNotDelivered ) +
 										( 8 * $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ) ) / $activeDrivers;
 		}
-
 		if( $eta < 40 ){
 			$eta = 40;
 		}
+
+		$eta = ceil( $eta );
 		if( $array ){
 			return [ 	'eta' => $eta,
 								'activeDrivers' => $activeDrivers,
@@ -766,7 +823,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 
 	public function removeCommunity(){
-		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant="'.$this->id_restaurant.'"' );
+		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant=?', [$this->id_restaurant]);
 	}
 
 	/**
@@ -830,7 +887,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return void
 	 */
 	public function saveHours($hours) {
-		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
+		c::db()->query('delete from hour where id_restaurant=?', [$this->id_restaurant]);
 		if ($hours) {
 			foreach ($hours as $day => $times) {
 				foreach ($times as $time) {
@@ -850,7 +907,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function adminNotifications(){
 		if (!isset($this->_admin_notifications)) {
-			$this->_admin_notifications = Crunchbutton_Notification::q( "SELECT n.* FROM notification n WHERE id_restaurant = {$this->id_restaurant} AND active = 1 AND type = 'admin' " );
+			$this->_admin_notifications = Crunchbutton_Notification::q( "SELECT n.* FROM notification n WHERE id_restaurant = {$this->id_restaurant} AND active = true AND type = 'admin' " );
 		}
 		return $this->_admin_notifications;
 	}
@@ -897,9 +954,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function preset() {
 		return Preset::q('
-			select * from preset where id_restaurant="'.$this->id_restaurant.'"
+			select * from preset where id_restaurant=?
 			and id_user is null
-		');
+		', [$this->id_restaurant]);
 	}
 
 	public function cachePath() {
@@ -1018,34 +1075,69 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $fax;
 	}
 
-	public function image($params = []) {
-		$params['height'] = 280;
-		$params['width'] = 630;
-		$params['crop'] = 1;
-		$params['gravity'] = 'center';
-		$params['format'] = 'jpg';
-		$params['quality'] = '70';
+	public function getImgFormats() {
+		return [
+			['height' => 596, 'width' => 596, 'crop' => 0],
+			['height' => 66, 'width' => 66, 'crop' => 0],
+			['height' => 425, 'width' => 1200, 'crop' => 1]
+		];
+	}
 
-		$params['img']			= $this->image;
-		$params['cache'] 		= $this->cachePath();
-		$params['path'] 		= $this->imagePath();
+	public function image() {
+		$img = (strpos($this->image,'http://') !== 0 ? 'https://i._DOMAIN_/' : '') . $this->image;
+		return $img;
+	}
 
-		try {
-			$thumb = new Cana_Thumb($params);
-		} catch (Exception $e) {
-			return null;
+	public function updateImage($tmpFile = null) {
+		if (!$tmpFile) {
+			return false;
 		}
-		return $thumb;
+
+		$info = pathinfo($tmpFile);
+
+		$formats = $this->getImgFormats();
+
+		// upload the source image
+		$upload = new Crunchbutton_Upload([
+			'file' => $tmpFile,
+			'resource' => $this->permalink.'.jpg'
+		]);
+		$upload->upload();
+
+		// loop through each thumb and upload
+		foreach ($formats as $format) {
+
+			$format['img']			= $info['basename'];
+			$format['cache'] 		= '/tmp/';
+			$format['path'] 		= $info['dirname'].'/';
+
+			try {
+				$thumb = new Cana_Thumb($format);
+			} catch (Exception $e) {
+				print_r($e->getMessage());
+				$thumb = null;
+			}
+
+			if ($thumb) {
+				$upload = new Crunchbutton_Upload([
+					'file' => $thumb->_image['file'],
+					'resource' => $this->permalink.'-'.$format['width'].'x'.$format['height'].'.'.$info['extension'],
+					'bucket' => c::config()->s3->buckets->{'image-restaurant'}->name
+				]);
+				$upload->upload();
+			}
+		}
 
 	}
 
 	public function weight() {
 		if (!isset($this->_weight)) {
 			$res = self::q('
-				select count(*) as `weight`, `restaurant`.name from `order`
-				left join `restaurant` using(id_restaurant)
-				where id_restaurant='.$this->id_restaurant.'
-			');
+				select count(*) as weight, restaurant.name from `order`
+				left join restaurant using(id_restaurant)
+				where restaurant.id_restaurant=?
+				group by restaurant.id_restaurant
+			', [$this->id_restaurant]);
 			$this->_weight = $res->weight;
 		}
 		return $this->_weight;
@@ -1065,7 +1157,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
 
-		$isCockpit = Crunchbutton_Util::isCockpit();;
+		$isCockpit = Crunchbutton_Util::isCockpit();
 
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
@@ -1101,11 +1193,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
 
-		//$out['img']       = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
-		//$out['img64']     = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
+		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
 
-		$out['img']    = 'https://i._DOMAIN_/630x280/'.$this->image.'?crop=1';
-		$out['img64']  = 'https://i._DOMAIN_/596x596/'.$this->image;
+		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
+		$out['images'] = [
+			$imgPrefix.$this->permalink.'.jpg',
+		];
+
+		foreach ($this->getImgFormats() as $format) {
+			$out['images'][] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
+		}
 
 
 		if (!$ignore['categories']) {
@@ -1153,7 +1250,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// Issue #1051 - potentially urgent security issue
-		if( !$isAdmin ){
+		if( !$isCockpit ){
 			$ignore['notifications'] = true;
 			$out[ 'notes_owner' ] = NULL;
 			$out[ 'balanced_id' ] = NULL;
@@ -1164,7 +1261,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		if (!$ignore['notifications']) {
 			$where = [];
-			if ( $isAdmin ) {
+			if ( $isCockpit ) {
 				$where['active'] = NULL;
 			}
 			foreach ($this->notifications($where) as $notification) {
@@ -1225,8 +1322,27 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
+		if( $isCockpit ){
+			$payment_type = $this->payment_type();
+			$out[ 'payment_method' ] = $payment_type->payment_method;
+		}
+
 		// start eta
 		$out[ 'eta' ] = $this->smartETA();
+
+		$money_value = [ 'delivery_fee' ];
+		foreach ( $money_value as $key ) {
+			if( $out[ $key ] ){
+				$out[ $key ] = floatval( number_format( $out[ $key ], 2 ) );
+			}
+		}
+
+		// change its lat and long to the community's
+		if( !$isCockpit && $this->delivery_radius_type == 'community' ){
+			$community = $this->community();
+			$out[ 'loc_lat' ] = $community->loc_lat;
+			$out[ 'loc_long' ] = $community->loc_lon;
+		}
 
 		return $out;
 	}
@@ -1277,7 +1393,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		/*
 		// Second, check if it has an admin active notification
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
-		$notification = Notification::q( "SELECT n.* FROM notification n WHERE n.id_restaurant = {$this->id_restaurant} AND n.active = 1 AND n.type = '{$type_admin}' LIMIT 1");
+		$notification = Notification::q( "SELECT n.* FROM notification n WHERE n.id_restaurant = {$this->id_restaurant} AND n.active = true AND n.type = '{$type_admin}' LIMIT 1");
 		if( $notification->id_notification ){
 			return 1;
 		}*/
@@ -1312,6 +1428,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$this->saveHours($restaurant['_hours']);
 		$this->saveNotifications($restaurant['_notifications']);
 		$this->saveCategories($restaurant['_categories']);
+
+		$payment_type = $this->payment_type();
+		$payment_type->summary_method = $restaurant['summary_method'];
+		$payment_type->payment_method = $restaurant['payment_method'];
+		$payment_type->save();
 
 		// dishes with options are the awful part
 		$all_dishes = [];
@@ -1395,39 +1516,82 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function ratingCount() {
 		if (!isset($this->_ratingCount)) {
-			$this->_ratingCount = Order::q('select count(*) as c from `order` where id_restaurant="'.$this->id_restaurant.'" and env="live"')->c;
+			$this->_ratingCount = Order::q('select count(*) as c from `order` where id_restaurant=? and env=?', [$this->id_restaurant, 'live'])->c;
 		}
 		return $this->_ratingCount;
 	}
 
 	public static function byRange($params) {
-		$params['range'] = $params['range'] ? $params['range'] : 2;
-		$rangeDif = $params['range']-2;
 
-		$query = '
+		$params['range'] = $params['range'] ? $params['range'] : 2;
+
+		$range = floatval($params['range']);
+		$rangeDif = $range - 2;
+		$lat = floatval($params['lat']);
+		$lon = floatval($params['lon']);
+
+		$formula = '( ( ACOS( SIN( %F * PI() / 180 ) * SIN( %s * PI() / 180 ) + COS( %F * PI() / 180 ) * COS( %s * PI() / 180 ) * COS( ( %F - %s ) * PI() / 180 ) ) * 180 / PI() ) * 60 * 1.1515 )';
+
+		$regular_calc = sprintf( $formula, $lat, 'loc_lat', $lat, 'loc_lat', $lon, 'loc_long' );
+
+		$query = "
 			SELECT
 				count(*) as _weight,
-				"byrange" type,
-				((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
+				restaurant.loc_lat,
+				restaurant.loc_long,
+				'byrange' as type,
+				{$regular_calc} AS distance,
 				restaurant.*
-			FROM `restaurant`
-			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
-			WHERE
-				active = 1
-			GROUP BY restaurant.id_restaurant
-			HAVING
-					takeout = 1
-				AND
-					delivery = 0
-				AND
-					`distance` <= '.$params['range'].'
-				OR
-					delivery = 1
-				AND
-					`distance` <= (`delivery_radius`+'.$rangeDif.')
-			ORDER BY _weight DESC;
-		';
-		$restaurants = self::q($query);
+			FROM restaurant
+				LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
+				WHERE
+					active = true AND delivery_radius_type = 'restaurant'
+				GROUP BY restaurant.id_restaurant
+				HAVING
+						takeout = true
+					AND
+						delivery = false
+					AND
+						{$regular_calc} <= {$range}
+					OR
+						delivery = true
+					AND
+						{$regular_calc} <= (delivery_radius + {$rangeDif} ) ";
+
+		$query .= " UNION ";
+
+		$community_calc = sprintf( $formula, $lat, 'c.loc_lat', $lat, 'c.loc_lat', $lon, 'c.loc_lon' );
+		$restaurant_calc = sprintf( $formula, $lat, 'r.loc_lat', $lat, 'r.loc_lat', $lon, 'r.loc_long' );
+
+		$query .= "
+  			SELECT
+  				count(*) as _weight,
+  				c.loc_lat AS loc_lat,
+  				c.loc_lon AS loc_long,
+  				'byrange' as type,
+  				{$restaurant_calc} AS distance,
+  				r.*
+  			FROM restaurant r
+  			LEFT JOIN `order` o ON o.id_restaurant = r.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
+  			INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant
+  			INNER JOIN community c ON c.id_community = rc.id_community
+  			WHERE
+  				r.active = true AND r.delivery_radius_type = 'community' AND c.active = true
+  			GROUP BY r.id_restaurant
+  			 HAVING
+  					r.takeout = true
+  				AND
+  					r.delivery = false
+  				AND
+  					{$community_calc} <= {$range}
+  				OR
+  					delivery = true
+  				AND
+  					{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
+
+  	$query .= " ORDER BY _weight DESC; ";
+
+		$restaurants = self::q($query, $keys);
 		foreach ($restaurants as $restaurant) {
 			$sum += $restaurant->_weight;
 		}
@@ -1440,7 +1604,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasPhoneNotification(){
-		$phone = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and type = "' . Crunchbutton_Notification::TYPE_PHONE . '"' );
+		$phone = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ? AND active = true and type = ? ', [$this->id_restaurant, Crunchbutton_Notification::TYPE_PHONE]);
 		if( $phone->id_notification ){
 			return true;
 		} else {
@@ -1449,7 +1613,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasFaxNotification(){
-		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and ( type = "' . Crunchbutton_Notification::TYPE_FAX . '" OR type = "' . Crunchbutton_Notification::TYPE_STEALTH . '" )' );
+		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ? AND active = true and ( type = ? OR type = ?)', [$this->id_restaurant, Crunchbutton_Notification::TYPE_FAX, Crunchbutton_Notification::TYPE_STEALTH]);
 		if( $fax->id_notification ){
 			return true;
 		} else {
@@ -1458,7 +1622,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function getCommunities(){
-		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" AND active = 1 ORDER BY community ASC' );
+		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" AND active = true ORDER BY community ASC' );
 		$communities = [];
 		foreach ( $data as $item ) {
 			$communities[] = $item->community;
@@ -1477,9 +1641,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public static function getRestaurantsByCommunity( $community, $inactive = false ){
 		if( !$inactive ){
-			$where = 'AND active = 1';
+			$where = 'AND active = true';
 		}
-		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}' {$where} ORDER BY name ASC" );
+		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE community = ? '.$where.' ORDER BY name ASC', [$community]);
 	}
 
 	public function restaurantsUserHasPermission(){
@@ -1557,7 +1721,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function comment() {
 		if (!isset($this->_comment)) {
-			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=1 && id_restaurant='.$this->id_restaurant.'');
+			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=true AND id_restaurant=?', [$this->id_restaurant]);
 		}
 		return $this->_comment;
 	}
@@ -1628,11 +1792,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function drivers(){
-		return Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ' . $this->id_restaurant . ' AND n.active = 1 AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '"');
+		return Admin::q("SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ? AND n.active = true AND n.type = ?", [$this->id_restaurant, Crunchbutton_Notification::TYPE_ADMIN]);
 	}
 
 	public function withDrivers(){
-		return Restaurant::q( 'SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r INNER JOIN notification n ON r.id_restaurant = n.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" WHERE r.name NOT LIKE "%test%" ORDER BY r.name' );
+		return Restaurant::q("SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r INNER JOIN notification n ON r.id_restaurant = n.id_restaurant AND n.type = '" . Crunchbutton_Notification::TYPE_ADMIN . "' WHERE r.name NOT LIKE '%test%' ORDER BY r.name");
 	}
 
 	public function totalOrders(){
@@ -1775,6 +1939,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
+		// if it is a driver restaurant it will return open - #5371
+		if( $this->isDriverRestaurant() ){
+			return true;
+		}
+
 		// restaurant without hours is not open
 		if( count( $this->hours() ) == 0 ){
 			return false;
@@ -1782,6 +1951,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// Calculate the hours to verify if it is open or not
 		return Hour::restaurantIsOpen( $this, $dt );
+	}
+
+	public function isDriverRestaurant(){
+		$restaurant = Crunchbutton_Community::q( 'SELECT * FROM community WHERE id_driver_restaurant = ' . $this->id_restaurant . ' LIMIT 1' )->get( 0 );
+		if( $restaurant->id_driver_restaurant == $this->id_restaurant ){
+			return true;
+		}
+		return false;
 	}
 
 	// return the closed message
@@ -1850,7 +2027,20 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	// Export the restaurant statuses: open/close for the next 24 hours
 	public function hours_next_24_hours( $gmt = false ){
 		if( $this->open_for_business ){
-			return Hour::getByRestaurantNext24Hours( $this, $gmt );
+			if( $this->isDriverRestaurant() ){
+				// #5371
+				$now = new DateTime( 'now', new DateTimeZone( ( $gmt ? 'UTC' : $this->timezone ) ) );
+				$now->modify( '- 5 minutes' );
+				$out = [];
+				$start = $now->format( 'Y-m-d H:i' );
+				$now->modify( '+ 1 day' );
+				$end = $now->format( 'Y-m-d H:i' );
+				$out[] = [ 'from' => $start, 'to' => $end, 'status' => 'open' ];
+				return $out;
+			} else {
+				return Hour::getByRestaurantNext24Hours( $this, $gmt );
+			}
+
 		}
 		return false;
 	}
@@ -1987,6 +2177,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$payment->save();
 		}
 		return $id_restaurant;
+	}
+
+	// temporary function. should calculate or return a better value in the future
+	public function lineTime() {
+		return 11;
 	}
 
 	// Return minutes left to open

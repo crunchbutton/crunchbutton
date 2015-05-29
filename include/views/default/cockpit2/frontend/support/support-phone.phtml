@@ -1,115 +1,117 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-hide="isModal">
+	<h1 class="title"><i class="fa fa-comments-o"></i> Make a call / Send SMS</h1>
+</div>
 
-	<h1 class="title left"><i class="fa fa-comments-o"></i> Make a call / Send SMS</h1>
+<div ng-class="{'col-box': !isModal}"class="content-padding" ng-controller="SupportPhoneCtrl">
 
-	<div class="divider"></div>
+	<div ng-class="{'two-col': !isModal}" ng-hide="hideCallBox">
 
-	<navigation-back></navigation-back>
+		<div class="ul-inputs box-content2">
 
-	<div class="ul-inputs box-content2">
+			<form name="formCall" novalidate>
 
-		<form name="formCall" novalidate>
+				<ul ng-class="{'submitted':formCallSubmitted}" class="ul-inputs">
 
-			<ul ng-class="{'submitted':formCallSubmitted}" class="ul-inputs">
+					<li class="li-input">
+						<strong>Make a call</strong>
+					</li>
 
-				<li class="li-input">
-					<strong>Make a call</strong>
-				</li>
+					<li class="li-input" ng-show="!isModal">
+						<div class="label">Choose an admin/driver:</div>
+						<div class="input">
+							<select name="staff" ng-model="call.staff" ng-required="!isModal" ng-options="opt.phone as opt.name for opt in staff"></select>
+						</div>
+					</li>
 
-				<li class="li-input">
-					<div class="label">Choose an admin/driver:</div>
-					<div class="input">
-						<select name="staff" ng-model="call.staff" required ng-options="opt.phone as opt.name for opt in staff"></select>
-					</div>
-				</li>
+					<li class="li-input" ng-class="{'error':formCall.phone.$invalid}">
+						<div class="label">Phone:</div>
+						<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="call.phone"></div>
+						<div class="box-error">
+							<small ng-show="formCall.phone.$error.required">Required.</small>
+						</div>
+					</li>
 
-				<li class="li-input" ng-class="{'error':formCall.phone.$invalid}">
-					<div class="label">Phone:</div>
-					<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="call.phone"></div>
-					<div class="box-error">
-						<small ng-show="formCall.phone.$error.required">Required.</small>
-					</div>
-				</li>
+					<li class="li-input" ng-class="{'error':formCall.to.$invalid}">
+						<div class="label">Are you calling to:</div>
+						<div class="input">
+							<select name="to" ng-model="call.to" required ng-options="opt.to as opt.label for opt in call._to"></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="formCall.to.$error.required">Required.</small>
+						</div>
+					</li>
 
-				<li class="li-input" ng-class="{'error':formCall.to.$invalid}">
-					<div class="label">Are you calling to:</div>
-					<div class="input">
-						<select name="to" ng-model="call.to" required ng-options="opt.to as opt.label for opt in call._to"></select>
-					</div>
-					<div class="box-error">
-						<small ng-show="formCall.to.$error.required">Required.</small>
-					</div>
-				</li>
+					<li class="li-input" ng-show="!formCallSending">
+						<button class="button save" ng-click="call.make();"><i class="fa fa-phone"></i> Call</button>
+					</li>
+					<li class="li-input" ng-show="formCallSending">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
 
-				<li class="li-input" ng-show="!formCallSending">
-					<button class="button save" ng-click="call.make();"><i class="fa fa-phone"></i> Call</button>
-				</li>
-				<li class="li-input" ng-show="formCallSending">
-					<i class="fa fa-circle-o-notch fa-spin"></i>
-				</li>
+				</ul>
 
-			</ul>
+			</form>
 
-		</form>
-
+		</div>
 	</div>
 
-	<div class="ul-inputs box-content2">
+	<div ng-class="{'two-col': !isModal}" ng-hide="hideSMSBox">
 
-		<form name="formSMS" novalidate>
+		<div class="ul-inputs box-content2">
 
-			<ul ng-class="{'submitted':formSMSSubmitted}" class="ul-inputs">
+			<form name="formSMS" novalidate>
 
-				<li class="li-input">
-					<strong>Send SMS</strong>
-				</li>
+				<ul ng-class="{'submitted':formSMSSubmitted}" class="ul-inputs">
 
-				<li class="li-input">
-					<div class="label">Choose an admin/driver:</div>
-					<div class="input">
-						<select name="staff" ng-model="sms.staff" required ng-options="( opt.phone + '##' + opt.name ) as opt.name for opt in staff"></select>
-					</div>
-				</li>
+					<li class="li-input">
+						<strong>Send SMS</strong>
+					</li>
 
-				<li class="li-input" ng-class="{'error':formSMS.name.$invalid}">
-					<div class="label">Name:</div>
-					<div class="input"><input type="text" name="name" required  placeholder="Phone" ng-model="sms.name"></div>
-					<div class="box-error">
-						<small ng-show="formSMS.name.$error.required">Required.</small>
-					</div>
-				</li>
+					<li class="li-input" ng-show="!isModal">
+						<div class="label">Choose an admin/driver:</div>
+						<div class="input">
+							<select name="staff" ng-model="sms.staff" ng-required="!isModal" ng-options="( opt.phone + '##' + opt.name ) as opt.name for opt in staff"></select>
+						</div>
+					</li>
 
-				<li class="li-input" ng-class="{'error':formSMS.phone.$invalid}">
-					<div class="label">Phone:</div>
-					<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="sms.phone"></div>
-					<div class="box-error">
-						<small ng-show="formSMS.phone.$error.required">Required.</small>
-					</div>
-				</li>
+					<li class="li-input" ng-class="{'error':formSMS.name.$invalid}" ng-show="!isModal">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="name" ng-required="!isModal" placeholder="Name" ng-model="sms.name"></div>
+						<div class="box-error">
+							<small ng-show="formSMS.name.$error.required">Required.</small>
+						</div>
+					</li>
 
-				<li class="li-input" ng-class="{'error':formSMS.message.$invalid}">
-					<div class="label">Phone:</div>
-					<div class="input"><input type="text" name="message" required  placeholder="Message" ng-model="sms.message"></div>
-					<div class="box-error">
-						<small ng-show="formSMS.message.$error.required">Required.</small>
-					</div>
-				</li>
+					<li class="li-input" ng-class="{'error':formSMS.phone.$invalid}">
+						<div class="label">Phone:</div>
+						<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="sms.phone"></div>
+						<div class="box-error">
+							<small ng-show="formSMS.phone.$error.required">Required.</small>
+						</div>
+					</li>
 
-				<li class="li-input" ng-show="!formSMSSending">
-					<button class="button save" ng-click="sms.send();"><i class="fa fa-comment"></i> Send SMS</button>
-				</li>
-				<li class="li-input" ng-show="formSMSSending">
-					<i class="fa fa-circle-o-notch fa-spin"></i>
-				</li>
+					<li class="li-input" ng-class="{'error':formSMS.message.$invalid}">
+						<div class="label">Message:</div>
+						<div class="input"><input type="text" name="message" required  placeholder="Message" ng-model="sms.message"></div>
+						<div class="box-error">
+							<small ng-show="formSMS.message.$error.required">Required.</small>
+						</div>
+					</li>
 
-			</ul>
+					<li class="li-input" ng-show="!formSMSSending">
+						<button class="button save" ng-click="sms.send();"><i class="fa fa-comment"></i> Send SMS</button>
+					</li>
+					<li class="li-input" ng-show="formSMSSending">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
 
-		</form>
+				</ul>
 
+			</form>
+
+		</div>
 	</div>
 
 </div>
-
-<hack-expand-content></hack-expand-content>

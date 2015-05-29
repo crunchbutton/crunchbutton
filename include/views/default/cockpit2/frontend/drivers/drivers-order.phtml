@@ -1,329 +1,158 @@
 <div class="top-pad"></div>
-
-<!-- actions -->
-<div class="control" ng-show="ready">
-
-	<div class="divider"></div>
-
-	<div class="content-padding">
-
-		<div ng-if="order.status.status == 'new'">
-			<div class="box-content-new box-order-status">
-				<div class="message">
-					<div class="dialog-title">Accept this order?</div>
-					<div class="dialog-subtext">You <b>must</b> mark orders as accepted,<br> picked up, and delivered to get</br>  paid correctly.</div>
-
-					<a class="order-action-undo" href ng-click="reject()">no</a>
-				</div>
-
-				<div class="buttons">
-					<button ng-click="accept()" class="button orange-on-orange">Yes</button>
-				</div>
-				<div class="divider"></div>
-			</div>
-		</div>
-
-		<div ng-if="order.status.status == 'rejected'">
-			<div class="box-content-rejected box-order-status">
-				<div class="message">You rejected this order. </div>
-				<div class="buttons">
-					<button ng-click="accept()" class="button orange-on-orange">Accept</button>
-				</div>
-				<div class="divider"></div>
-			</div>
-		</div>
-
-		<div ng-if="order.status.status == 'accepted' && order.status.driver.id_admin == account.user.id_admin">
-			<div class="box-content-accepted box-order-status">
-				<div class="message">
-					<div class="dialog-title">You accepted this order</div>
-					<div class="dialog-subtext">@ {{order.status.timestamp*1000 | date: 'h:mm a'}}</div>
-
-					<a class="order-action-undo" ng-click="undo()">undo</a>
-				</div>
-				<div class="buttons">
-					<button ng-click="pickedup()" class="button green-on-green">Picked up</button>
-				</div>
-				<div class="divider"></div>
-			</div>
-		</div>
-
-		<div ng-if="order.status.status == 'pickedup' && order.status.driver.id_admin == account.user.id_admin">
-			<div class="box-content-pickedup box-order-status">
-				<div class="message">
-					<div class="dialog-title">You picked up this order</div>
-					<div class="dialog-subtext">@ {{order.status.timestamp*1000 | date: 'h:mm a'}}</div>
-
-					<a class="order-action-undo" ng-click="undo()">undo</a>
-				</div>
-				<div class="buttons" ng-click="delivered()">
-					<button class="button dgray-on-dgray">Delivered</button>
-				</div>
-				<div class="divider"></div>
-			</div>
-		</div>
-	</div>
-
-
-	<div ng-if="order.status.status == 'delivered' && order.status.driver.id_admin == account.user.id_admin" class="content-padding">
-		<div class="box-content-delivered box-order-status">
-			<div class="message">
-				You delivered this order @ {{order.status.timestamp*1000 | date: 'h:mm a'}}
-				<br><br>
-				<a class="order-action-undo" ng-click="undo()">undo</a>
-			</div>
-			<div class="divider"></div>
-		</div>
-	</div>
-
-
-	<div ng-if="order.status.status == 'accepted' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
-		<div class="dialog-message dialog-message-error">
-			<div class="message">
-				<div class="dialog-title"><b>DO NOT DELIVER</b></div>
-				<div class="dialog-subtext">THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.status.driver.name}}</span>.</div>
-			</div>
-		</div>
-	</div>
-
-
-	<div ng-if="order.status.status == 'pickedup' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
-		<div class="dialog-message dialog-message-error">
-			<div class="message">
-				This order has been picked up by <span class="delivery-name">{{order.status.driver.name}}</span>.
-			</div>
-		</div>
-	</div>
-
-	<div ng-if="order.status.status == 'delivered' && order.status.driver.id_admin != account.user.id_admin" class="content-padding">
-		<div class="dialog-message dialog-message-error">
-			<div class="message">
-				This order has been delivered by <span class="delivery-name">{{order.status.driver.name}}</span>
-			</div>
-		</div>
-	</div>
-
-
-<!-- /actions -->
-
+<div class="driver-top-pad"></div>
 <div class="content-padding">
-
-	<div class="dialog-message dialog-message-notice check-reminder" ng-if="order.status.status != 'delivered' && order.status.status != 'rejected' && order.status.driver.id_admin == account.user.id_admin">
-		<b>Double check</b> to make sure you received exactly the right food!
-	</div>
-
-	<div ng-if="order.status.status != 'accepted' && order.status.status != 'delivered' && order.status.status != 'rejected' && order.status.driver.id_admin == account.user.id_admin">
-		<div ng-show="!text_customer_5_min_away_sending">
-			<button ng-click="text_customer_5_min_away()" class="button orange-on-orange">Text Customer I'm 5 Min Away</button>
+	<div ng-show="oc.order.status.status != 'accepted' && oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
+		<div ng-show="!text_customer_5_min_away_sending && !oc.order.hasCustomerBeenTexted5Minutes">
+			<br><br>
+			<button ng-click="oc.text_customer_5_min_away()" id="textCustomer5" class="ladda-button button orange-on-orange" data-color="orange" data-style="zoom-in"><span class="ladda-label">Text Customer I'm 5 Min Away</span></button>
 		</div>
-		<div ng-show="text_customer_5_min_away_sending">
-			<button class="button orange-on-orange">
-				<i class="fa fa-circle-o-notch fa-spin"></i> Sending
-			</button>
-		</div>
+		<div ng-show="oc.order.hasCustomerBeenTexted5Minutes">
+			<br><br>
+			<div class="order-item-block-big">
+				<div class="order-info2 order-info-small">
+					&nbsp;&nbsp;&nbsp;You texted the customer you're 5 min away at {{oc.order.hasCustomerBeenTexted5Minutes | tsToHour}}
+				</div>
+			</div>
 		</div>
 	</div>
-
-	<div class="header order-header">
-		#{{order.id_order}}
+	<div class="header order-header hide-mobile">
+		#{{oc.order.id_order}}
 	</div>
+	<div class="map">
+		<br>
+		<div class="info-block" ng-if="oc.order.status.status != 'delivered'">
+			<div class="order-icon2"><i class="fa fa-clock-o"></i></div>
+			<div class="order-info2 order-info-small">
+				Ordered @ {{oc.order.date | convertimeformat:account.user.timezone:'h:mm a'}}<span ng-if="oc.order._delivery_estimated_time">. Deliver by {{oc.order._delivery_estimated_time_timestamp | tsToHour}}</span>
+			</div>
+		</div>
+		<br>
+		<a href="http://maps.apple.com/?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}" ng-if="iOS" target="_system">
+			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=400x100&markers=color:green%7Clabel:A%7C{{oc.order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{oc.order._restaurant_lat}},{{oc.order._restaurant_lon}}&sensor=false&visual_refresh=true&scale=2');"></div>
+		</a>
+		<a href="http://maps.google.com/maps?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
+			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=400x100&markers=color:green%7Clabel:A%7C{{oc.order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{oc.order._restaurant_lat}},{{oc.order._restaurant_lon}}&sensor=false&visual_refresh=true&scale=2');"></div>
+		</a>
+		<div class="info-block">
+			<div class="order-icon3"><i class="icon-chef"></i></div>
+			<div class="order-info">
+				<div class="info-name">{{oc.order._restaurant_name}}</div>
+				<div class="info-phone"><a href="tel:+1{{oc.order._restaurant_phone}}" target="_system">{{oc.order._restaurant_phone | formatPhone}}</a></div>
+				<div class="divider"></div>
+				<div class="info-address"><p class="order-info-address">
+					<a href="http://maps.apple.com/?q={{oc.order._restaurant_address}}" ng-if="iOS" target="_system">
+						<span>{{oc.order._restaurant_address}}</span>
+					</a>
+					<a href="http://maps.google.com/maps?q={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
+						<span>{{oc.order._restaurant_address}}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="info-block">
+			<div class="order-icon3"><i class="icon-user"></i></div>
+			<div class="order-info">
+				<div class="info-name">{{oc.order.name}}</div>
+				<div class="info-phone"><a href ng-click="callText(oc.order.phone)">{{oc.order.phone | formatPhone}}</a></div>
+				<div class="divider"></div>
+				<div class="info-address"><p class="order-info-address">
+					<a href="http://maps.apple.com/?q={{oc.order.address}}" ng-if="iOS" target="_system">
+						<span>{{oc.order.address}}</span>
+					</a>
+					<a href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_system">
+						<span>{{oc.order.address}}</span>
+					</a>
+				</div>
+			</div>
+		</div>
 
-	<div class="order">
+	</div>
+	<div class="order" ng-if="oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
+
+		<div class="info-block">
+			<div ng-repeat="resource in oc.order.resources" class="order-info-resource">
+				<div class="order-icon3"><i class="fa fa-file"></i></div>
+				<div class="order-info2 order-info-small">
+					<a href="{{resource.path}}" target="_system">{{resource.name}}</a>
+				</div>
+			</div>
+		</div>
+
+		<br><br>
+		<div class="dialog-message dialog-message-notice check-reminder" ng-if="oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
+			<b>Double check</b> to make sure you received exactly the right food!
+		</div>
+		<? /*
 		<div class="order-item-info">
 			<div class="order-item-block left">
-				<div class="order-icon" ng-if="order.delivery_type=='takeout'"><i class="fa fa-taxi"></i></div>
-				<div class="order-icon" ng-if="order.delivery_type=='delivery'"><i class="fa fa-car"></i></div>
+				<div class="order-icon" ng-if="oc.order.delivery_type=='takeout'"><i class="fa fa-taxi"></i></div>
+				<div class="order-icon" ng-if="oc.order.delivery_type=='delivery'"><i class="fa fa-car"></i></div>
 				<div class="order-info">
-					<span ng-if="order.delivery_type=='takeout'">Takeout</span>
-					<span ng-if="order.delivery_type=='delivery'">Delivery</span>
+					<span ng-if="oc.order.delivery_type=='takeout'">Takeout</span>
+					<span ng-if="oc.order.delivery_type=='delivery'">Delivery</span>
 				</div>
 			</div>
 			<div class="order-item-block right">
-				<div class="order-icon" ng-if="order.pay_type=='card'"><i class="fa fa-credit-card"></i></div>
-				<div class="order-icon" ng-if="order.pay_type=='cash'"><i class="fa fa-money"></i></div>
+				<div class="order-icon" ng-if="oc.order.pay_type=='card'"><i class="fa fa-credit-card"></i></div>
+				<div class="order-icon" ng-if="oc.order.pay_type=='cash'"><i class="fa fa-money"></i></div>
 				<div class="order-info">
-					<span ng-if="order.pay_type=='card'">Card</span>
-					<span ng-if="order.pay_type=='cash'">Cash</span>
+					<span ng-if="oc.order.pay_type=='card'">Card</span>
+					<span ng-if="oc.order.pay_type=='cash'">Cash</span>
 				</div>
 			</div>
 			<div class="divider"></div>
 			<div class="order-item-block left">
 				<div class="order-icon"><i class="fa fa-clock-o"></i></div>
 				<div class="order-info">
-					At {{order.time_formated}}
+					Ordered @ {{oc.order.time_formated}}
 				</div>
 			</div>
-			<div class="order-item-block right">
+			<div class="order-item-block right" ng-if="oc.order._delivery_estimated_time">
 				<div class="order-icon"><i class="fa fa-heart"></i></div>
 				<div class="order-info">
-					<span ng-if="order._delivery_estimated_time">By </br> {{order._delivery_estimated_time}}</span>
-					<span ng-if="!order._delivery_estimated_time">None</span>
+					<span ng-if="oc.order._delivery_estimated_time">Delivery expected by </br> {{oc.order._delivery_estimated_time}}</span>
+					<span ng-if="!oc.order._delivery_estimated_time">None</span>
 				</div>
 			</div>
 			<div class="divider"></div>
 		</div>
-		<div class="divider"></div>
-		<div class="divider dots"></div>
-
-		<span ng-if="order.notes_to_driver">
+		*/ ?>
+		<span ng-if="oc.order.notes_to_driver">
 			<div class="divider dots"></div>
 			<div class="order-item-block-big">
 				<div class="order-icon2"><i class="fa fa-exclamation"></i></div>
 				<div class="order-info2 order-info-small">
-					{{order.notes_to_driver}}
+					{{oc.order.notes_to_driver}}
 				</div>
 			</div>
 		</span>
-
-		<div class="order-item-block-big">
+		<div class="order-item-block-big" ng-if="(oc.order.status.status == 'accepted') && oc.order.status.driver.id_admin == account.user.id_admin">
 			<div class="order-icon2"><i class="fa fa-money"></i></div>
 			<div class="order-info2 order-info-small">
-				{{order._instructions_payment}}
+				{{oc.order._instructions_payment}}
 			</div>
 		</div>
-		<div class="order-item-block-big">
+		<div class="order-item-block-big" ng-if="(oc.order.status.status == 'accepted') && oc.order.status.driver.id_admin == account.user.id_admin">
 			<div class="order-icon2"><i class="fa fa-hand-o-right"></i></div>
 			<div class="order-info2 order-info-small">
-				{{order._instructions_food}}
+				{{oc.order._instructions_food}}
 			</div>
 		</div>
-		<div class="order-item-block-big" ng-if="order._instructions_fax">
+		<div class="order-item-block-big" ng-if="oc.order._instructions_fax">
 			<div class="order-icon2"><i class="fa fa-exclamation-triangle"></i></div>
 			<div class="order-info2 order-info-small">
-				{{order._instructions_fax}}
+				{{oc.order._instructions_fax}}
 			</div>
 		</div>
-
-		<div class="divider"></div>
-		<div class="divider dots"></div>
-		<span ng-if="order._stealth_notification">
+		<span ng-if="oc.order._stealth_notification">
 			<div class="order-item-block-bigger">
-				Skip the line. Tell restaurant: <i>"I'm here to pick up a faxed order for {{order.name}}, #{{order.id_order}}</i>".
+				Skip the line. Tell restaurant: <i>"I'm here to pick up a faxed order for {{oc.order.name}}, #{{oc.order.id_order}}</i>".
 			</div>
 			<div class="divider"></div>
 			<div class="divider dots"></div>
 		</span>
 		<br>
-
-		<div class="info-block">
-			<div class="order-icon3"><i class="icon-user"></i></div>
-			<div class="order-info">
-				<div class="info-name">{{order.name}}</div>
-				<div class="info-phone"><a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a></div>
-				<div class="divider"></div>
-
-				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order.address}}"><span ng-bind-html-unsafe="order.address | nl2br"></span></a></p></div>
-
-			</div>
-		</div>
-
-		</br>
-
-		<div class="info-block">
-			<div class="order-icon3"><i class="icon-chef"></i></div>
-			<div class="order-info">
-				<div class="info-name">{{order._restaurant_name}}</div>
-				<div class="info-phone"><a href="tel:+1{{order._restaurant_phone}}" target="_system">{{order._restaurant_phone | formatPhone}}</a></div>
-				<div class="divider"></div>
-
-				<div class="info-address"><p class="order-info-address"><a href="http://maps.apple.com/?q={{order._restaurant_address}}"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p></div>
-			</div>
-		</div>
-
-		</br>
-
-		<a href="http://maps.apple.com/?daddr={{order.address}}&saddr={{order._restaurant_address}}">
-			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=640x300&markers=color:green%7Clabel:A%7C{{order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div>
-		</a>
-		<br>
-
-		<div class="order-item-block-big order-notes" ng-if="order.notes">
-			<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
-			<div class="order-info2 order-info-small">
-				<span ng-bind-html-unsafe="order.notes | nl2br"></span>
-			</div>
-		</div>
-		<br>
-
-		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
-		<div ng-if="account.user.id_admin == 1 ||
-								account.user.id_admin == 2 ||
-								account.user.id_admin == 3 ||
-								account.user.id_admin == 5">
-			<h3><strong>Issue #4779 - Regular view</strong></h3><br><br>
-		</div>
-
-		<div class="order-contents">
-			<table width="100%" celpadding="0" cellspacing="0" class="detail">
-				<thead>
-					<td class="topitem order-contents-item-qty">Qty</td>
-					<td class="topitem itemname">Item</td>
-					<td class="topitem itemprice">Store Price</td>
-				</thead>
-				<tbody>
-					<tr ng-repeat="dish in order._dishes">
-						<td class="fooditem order-contents-item-qty">1</td>
-						<td class="fooditem dish-name">
-						{{dish.name}}
-						<div>{{dish.options.select_options}}</div>
-						<div>{{dish.options.with_option}}</div>
-						<div>{{dish.options.without_default_options}}</div>
-						</td>
-						<td class="fooditem dish-price">
-							${{dish.price.regular | formatPrice}}
-						</td>
-					</tr>
-					<tr class="class">
-						<td></td>
-						<td class="dish-price">Subtotal</td>
-						<td class="dish-price">
-							${{order.price | formatPrice}}
-						</td>
-					</tr>
-					<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
-					<tr ng-if="order._tip">
-						<td></td>
-						<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="order.tip_type != 'number'"></span></td>
-						<td style="text-align:right; font-size:24px;color:#666;">${{order._tip | formatPrice}}</td>
-					</tr>
-
-					<tr ng-if="order.delivery_fee">
-						<td></td>
-						<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
-						<td style="text-align:right; font-size:24px;color:#666;">${{order.delivery_fee | formatPrice}}</td>
-					</tr>
-					<tr ng-if="order.service_fee">
-						<td></td>
-						<td style="text-align:right">Service Fee</td>
-						<td>${{order.service_fee | formatPrice}}</td>
-						<php if( $isDriverCockpit ) {  />
-					</tr>
-					-->
-					<tr>
-						<td></td>
-						<td class="dish-price">Tax</td>
-						<td class="dish-price">
-							${{order._tax | formatPrice}}
-						</td>
-					</tr>
-					<tr class="order-total-row">
-						<td></td>
-						<td class="order-total-text">Total</td>
-						<td class="dish-price order-total-text">
-							${{order._final_price | formatPrice}}
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<!-- driver suggestion: quantity column to make ordering easier #4779 -->
-		<div ng-if="account.user.id_admin == 1 ||
-								account.user.id_admin == 2 ||
-								account.user.id_admin == 3 ||
-								account.user.id_admin == 5">
-			<h3><strong>Issue #4779 - New view - with quantity</strong></h3><br><br>
-
+		<div>
 			<div class="order-contents">
 				<table width="100%" celpadding="0" cellspacing="0" class="detail">
 					<thead>
@@ -333,13 +162,13 @@
 						<td class="topitem itemprice">Store Price</td>
 					</thead>
 					<tbody>
-						<tr ng-repeat="dish in order._dishes_qty">
+						<tr ng-repeat="dish in oc.order._dishes_qty">
 							<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
 							<td class="fooditem dish-name">
-							{{dish.name}}
-							<div>{{dish.options.select_options}}</div>
-							<div>{{dish.options.with_option}}</div>
-							<div>{{dish.options.without_default_options}}</div>
+								<b>{{dish.name}}</b>
+								<div>{{dish.options.select_options}}</div>
+								<div>{{dish.options.with_option}}</div>
+								<div>{{dish.options.without_default_options}}</div>
 							</td>
 							<td class="fooditem dish-price-unity">
 								<span ng-if="dish.quantity > 1">
@@ -352,97 +181,109 @@
 						</tr>
 						<tr class="class">
 							<td></td>
+							<td></td>
 							<td class="dish-price">Subtotal</td>
 							<td class="dish-price">
-								${{order.price | formatPrice}}
+								${{oc.order.price | formatPrice}}
 							</td>
 						</tr>
+						<tr ng-if="oc.order.notes">
+							<td colspan="4" class="order-notes">
+								<div class="order-item-block-big order-notes" ng-if="oc.order.notes">
+									<div class="order-icon2"><i class="fa fa-bullhorn"></i></div>
+									<div class="order-info2 order-info-small">
+										<span ng-bind-html-unsafe="oc.order.notes | nl2br"></span>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<?php /*
 						<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
-						<tr ng-if="order._tip">
-							<td></td>
-							<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="order.tip_type != 'number'"></span></td>
-							<td style="text-align:right; font-size:24px;color:#666;">${{order._tip | formatPrice}}</td>
+						<tr ng-if="oc.order._tip">
+									<td></td>
+									<td style="text-align:right; font-size:24px;color:#666;">Tip <span ng-if="oc.order.tip_type != 'number'"></span></td>
+									<td style="text-align:right; font-size:24px;color:#666;">${{oc.order._tip | formatPrice}}</td>
 						</tr>
-
-						<tr ng-if="order.delivery_fee">
-							<td></td>
-							<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
-							<td style="text-align:right; font-size:24px;color:#666;">${{order.delivery_fee | formatPrice}}</td>
+						<tr ng-if="oc.order.delivery_fee">
+									<td></td>
+									<td style="text-align:right; font-size:24px;color:#666;">Delivery Fee</td>
+									<td style="text-align:right; font-size:24px;color:#666;">${{oc.order.delivery_fee | formatPrice}}</td>
 						</tr>
-						<tr ng-if="order.service_fee">
-							<td></td>
-							<td style="text-align:right">Service Fee</td>
-							<td>${{order.service_fee | formatPrice}}</td>
-							<php if( $isDriverCockpit ) {  />
-						</tr>
-						-->
-						<tr>
-							<td></td>
-							<td></td>
-							<td class="dish-price">Tax</td>
-							<td class="dish-price">
-								${{order._tax | formatPrice}}
-							</td>
-						</tr>
-						<tr class="order-total-row">
-							<td></td>
-							<td></td>
-							<td class="order-total-text">Total</td>
-							<td class="dish-price order-total-text">
-								${{order._final_price | formatPrice}}
-							</td>
-						</tr>
-					</tbody>
-				</table>
+						<tr ng-if="oc.order.service_fee">
+									<td></td>
+									<td style="text-align:right">Service Fee</td>
+									<td>${{oc.order.service_fee | formatPrice}}</td>
+									<php if( $isDriverCockpit ) {  />
+								</tr>
+							-->
+							*/ ?>
+							<tr>
+								<td></td>
+								<td></td>
+								<td class="dish-price">Tax</td>
+								<td class="dish-price">
+									${{oc.order._tax | formatPrice}}
+								</td>
+							</tr>
+							<tr class="order-total-row">
+								<td></td>
+								<td></td>
+								<td class="order-total-text">Store Total</td>
+								<td class="dish-price order-total-text">
+									${{oc.order._final_price | formatPrice}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div ng-class="oc.order.pay_type=='cash' ? 'order-item-block-big' : 'info-block'">
+				<div class="order-icon2">
+					<i class="fa fa-money" ng-if="oc.order.pay_type=='cash'"></i>
+					<i class="fa fa-credit-card" ng-if="oc.order.pay_type=='card'"></i>
+				</div>
+				<div class="order-info2 order-info-small">
+					Customer is paying by {{oc.order.pay_type}}
+				</div>
+			</div>
+			<div class="info-block">
+				<div class="order-icon2">
+					<i class="fa fa-smile-o"></i>
+				</div>
+				<div class="order-info2 order-info-small" ng-show="oc.order.orders_by_phone <= 1">
+					New customer so create a great first experience!
+				</div>
+				<div class="order-info2 order-info-small" ng-show="oc.order.orders_by_phone > 1">
+					Return customer (placed {{oc.order.orders_by_phone}} orders), so treat 'em nice!
+				</div>
+			</div>
+			<div class="customer-total-block total-block" ng-show="oc.order.pay_type=='cash'">
+				<span class="order-total-price"><span class="tip-total-price-dollar">$</span>{{oc.order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
+				<span class="order-total-block-text">Customer total</span>
+				</br>
+			</div>
+			<? /*
+			<div class="tip-total-block">
+				<?//SAME CSS CONFIGURATION ?>
+				<span class="tip-total-price">${{driverTake.total | formatPrice}}</span></br></br>
+				<span class="tip-total-text"><strong>Your take (fee+tip)</strong></span>
+				</br>
+			</div>
+			*/ ?>
+			<div class="tip-total-block total-block" ng-if="account.user.show_credit_card_tips || ( oc.order._tip_with_cash || oc.order._tip == '0.00' )">
+				<span class="order-total-price">
+					<span ng-if="oc.order._tip_with_cash || oc.order._tip == 0">CASH</span>
+					<span ng-if="!oc.order._tip_with_cash && oc.order._tip != 0"><span class="tip-total-price-dollar">$</span>{{oc.order._tip | formatPrice}}</span>
+				</span></br></br>
+				<span class="order-total-block-text">Tip</span>
+				</br>
+			</div>
+			<div class="divider"></div><br><br><br>
+			<div class="order-info2 order-info-small">
+				If prices in store differ from what it says above, plz let us know!<br>
+				Just email your receipt and the order number to <a href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
+				1 in 3 menu updates will earn you a random $ amount bonus ;)
 			</div>
 		</div>
-
 	</div>
-
-
-
-	<div class="order-item-block-big">
-		<div class="order-icon2">
-			<i class="fa fa-money" ng-if="order.pay_type=='cash'"></i>
-			<i class="fa fa-credit-card" ng-if="order.pay_type=='card'"></i>
-		</div>
-		<div class="order-info2 order-info-small">
-			Customer is paying by {{order.pay_type}}
-		</div>
-	</div>
-
-
-
-	<div class="customer-total-block total-block">
-		<span class="order-total-price"><span class="tip-total-price-dollar">$</span>{{order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
-		<span class="order-total-block-text">Customer total</span>
-		</br>
-	</div>
-	<? /*
-	<div class="tip-total-block">
-		<?//SAME CSS CONFIGURATION ?>
-		<span class="tip-total-price">${{driverTake.total | formatPrice}}</span></br></br>
-		<span class="tip-total-text"><strong>Your take (fee+tip)</strong></span>
-		</br>
-	</div>
-	*/ ?>
-	<div class="tip-total-block total-block">
-		<span class="order-total-price">
-			<span ng-if="order._tip_with_cash || order._tip == 0">CASH</span>
-			<span ng-if="!order._tip_with_cash && order._tip != 0"><span class="tip-total-price-dollar">$</span>{{order._tip | formatPrice}}</span>
-		</span></br></br>
-		<span class="order-total-block-text">Tip</span>
-		</br>
-	</div>
-
-	<div class="divider"></div><br><br><br>
-
-
-	<div class="info-block">
-		<a href="/drivers/orders/">View All Orders</a>
-	</div>
-
-
-	<br><br>
-
 </div>

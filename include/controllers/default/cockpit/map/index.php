@@ -8,7 +8,7 @@ class Controller_map extends Cana_Controller {
 			Cana::view()->restaurants = $community->restaurantByLoc();
 
 		} else {
-			Cana::view()->restaurants = Restaurant::q('select * from restaurant where active=1 and loc_lat');
+			Cana::view()->restaurants = Restaurant::q('select * from restaurant where active=true and loc_lat');
 		}
 		
 		Cana::view()->layout('layout/blank');

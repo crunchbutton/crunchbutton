@@ -73,7 +73,12 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			restaurant: '',
 			community: '',
 			date: '',
-			view: 'list'
+			view: 'list',
+			datestart: '',
+			dateend: '',
+			user: '',
+			phone: '',
+			fullcount: false
 		},
 		update: function() {
 			OrderService.list($scope.query, function(d) {
@@ -132,7 +137,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		console.debug('Got route update: ', args);
 	});
 
-	$scope.updater = $interval(update, 5000);
+	$scope.updater = $interval(update, 30000); // update every 30 seconds
 	$scope.$on('$destroy', function() {
 		$interval.cancel($scope.updater);
 		cleanup();
@@ -201,6 +206,21 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 				$scope.flash.setMessage( 'Error!' );
 			}
 		} );
+	}
+	
+	
+	$scope.resend_notification_drivers = function(){
+		$scope.isDriverNotifying = true;
+		OrderService.resend_notification_drivers( $scope.order, function(result) {
+			$scope.isDriverNotifying = false;
+		});
+	}
+	
+	$scope.resend_notification = function(){
+		$scope.isRestaurantNotifying = true;
+		OrderService.resend_notification( $scope.order, function(result) {
+			$scope.isRestaurantNotifying = false;
+		});
 	}
 
 	update();

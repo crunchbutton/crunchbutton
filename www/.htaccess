@@ -4,15 +4,16 @@ RewriteEngine on
 Options +Followsymlinks -Indexes
 
 ReWriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
-ReWriteRule .* - [F] 
+ReWriteRule .* - [F]
 RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
 RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
-RewriteCond %{REQUEST_FILENAME}        !-f
-RewriteCond %{REQUEST_FILENAME}        !-d
-RewriteRule ^(.+)$                    index.php?__url=$1 [L,QSA]
-RewriteRule ^(.+).scss$                    index.php?__url=$1 [L,QSA]
 
+RewriteCond %{REQUEST_FILENAME}		!-f
+#RewriteCond %{REQUEST_FILENAME}		!-d
+
+RewriteRule ^(.+)$					index.php [L,QSA]
+RewriteRule ^(.+).scss$				index.php [L,QSA]
 
 
 <IfDefine !TRAVIS>
@@ -20,13 +21,19 @@ RewriteRule ^(.+).scss$                    index.php?__url=$1 [L,QSA]
 	<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
 		Header set Cache-Control "max-age=290304000, public"
 	</FilesMatch>
-	
+
 	AddType font/ttf .ttf
 	AddType font/eot .eot
 	AddType font/otf .otf
 	AddType font/woff .woff
 	AddType image/svg+xml .svg .svgz
-	
+
+	<IfModule mod_php5.c>
+		php_value max_input_vars 100000
+		php_value upload_max_filesize 32M
+		php_value post_max_size 32M
+	</IfModule>
+
 	AddOutputFilterByType DEFLATE text/plain
 	AddOutputFilterByType DEFLATE text/html
 	AddOutputFilterByType DEFLATE text/xml
@@ -40,4 +47,3 @@ RewriteRule ^(.+).scss$                    index.php?__url=$1 [L,QSA]
 </IfDefine>
 
 AddDefaultCharset UTF-8
-

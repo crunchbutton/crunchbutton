@@ -3,6 +3,7 @@
 class Controller_api_communities_closed extends Crunchbutton_Controller_Rest {
 
 	public function init() {
+		die('depreciated');
 		$out = [];
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE ( close_all_restaurants = 1 OR close_3rd_party_delivery_restaurants = 1 ) ORDER BY name ASC' );
 		foreach( $communities as $community ){

@@ -28,47 +28,10 @@ App.localStorage = App.isPhoneGap;
 if (App.isPhoneGap) {
 	App.service = 'https://cockpit.la/api/';
 }
-console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap');
+console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
-var NGApp = angular.module('NGApp', ['multi-select', 'chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap'], function( $httpProvider ) {
-/*
-	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-	var param = function(obj) {
-		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select'], function( $httpProvider ) {
 
-		for(name in obj) {
-			value = obj[name];
-
-			if(value instanceof Array) {
-				for(i=0; i<value.length; ++i) {
-					subValue = value[i];
-					fullSubName = name + '[' + i + ']';
-					innerObj = {};
-					innerObj[fullSubName] = subValue;
-					query += param(innerObj) + '&';
-				}
-			}
-			else if(value instanceof Object) {
-				for(subName in value) {
-					subValue = value[subName];
-					fullSubName = name + '[' + subName + ']';
-					innerObj = {};
-					innerObj[fullSubName] = subValue;
-					query += param(innerObj) + '&';
-				}
-			}
-			else if(value !== undefined && value !== null)
-				query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
-		}
-
-		return query.length ? query.substr(0, query.length - 1) : query;
-	};
-
-	// Override $http service's default transformRequest
-	$httpProvider.defaults.transformRequest = [function(data) {
-		return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
-	}];
-	*/
 });
 
 NGApp.constant('angularMomentConfig', {
@@ -78,6 +41,86 @@ NGApp.constant('angularMomentConfig', {
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
+
+NGApp.factory('errorInterceptor', function($q) {
+	var errorFromResponse = function(response) {
+		if (response.headers && typeof(response.headers) !== 'function') {
+			return true;
+		}
+		var headers = response.headers();
+		if (headers && headers['php-fatal-error']) {
+			console.error(headers['php-fatal-error']);
+			App.alert('<b>Error</b>. Please report this to dev:<br><br><ul class="ul-inputs"><li class="li-input"><div class="input"><textarea class="fatal-error-content">' + headers['php-fatal-error'] + '</textarea></div></li></ul>');
+			return false;
+		}
+		return true;
+	};
+	var unteruptable = [
+		App.service + 'config',
+		App.service + 'driver/orders/',
+		'assets/view/'
+	];
+	var removeUrl = function(url) {
+		for (var x in errorInterceptor.cancelers) {
+			if (errorInterceptor.cancelers[x].url == url) {
+				errorInterceptor.cancelers.splice(x, 1);
+				break;
+			}
+		}
+	};
+
+	var errorInterceptor = {
+		responseError: function(response) {
+			removeUrl(response.url || response.config.url);
+			errorFromResponse(response);
+			return $q.reject(response);
+		},
+		response: function(response) {
+			removeUrl(response.url || response.config.url);
+
+			if (!errorFromResponse(response)) {
+				return $q.reject(response);
+			} else {
+				return response;
+			}
+		},
+		request: function(config) {
+			//console.log(config);
+			var ignore = errorInterceptor.isInteruptable(config.url);
+
+			if (!ignore) {
+				var canceler = $q.defer();
+				config.timeout = config.timeout || canceler.promise;
+				errorInterceptor.cancelers.push({canceler: config.canceler || canceler, url: config.url});
+			}
+			return config;
+		},
+		cancelers: [],
+		cancelAll: function() {
+			for (var x in errorInterceptor.cancelers) {
+				console.debug('>> canceling all requests...');
+				errorInterceptor.cancelers[x].canceler.resolve();
+			}
+		},
+		isInteruptable: function(url) {
+			var ignore = false;
+			for (var x in unteruptable) {
+				if (url.indexOf(unteruptable[x]) === 0) {
+					// dont interupt
+					ignore = true;
+					break;
+				}
+			}
+			return ignore;
+		}
+	};
+	return errorInterceptor;
+});
+
+NGApp.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.defaults.headers.common['Http-Error'] = 1;
+	$httpProvider.interceptors.push('errorInterceptor');
+}]);
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 
@@ -360,6 +403,13 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			back: false,
             reloadOnSearch: false
 		})
+		.when('/invite', {
+			action: 'drivers-invite',
+			controller: 'InviteCtrl',
+			templateUrl: 'assets/view/drivers-invite.html',
+			back: false,
+			reloadOnSearch: false
+		})
 		.when('/drivers/drivers-locations', {
 			action: 'drivers-locations',
 			controller: 'DriversLocationsCtrl',
@@ -454,7 +504,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor) {
 
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
@@ -491,7 +541,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			angular.element( 'body' ).addClass( 'loading' );
 			$rootScope.isBusy = true;
 		}
-	};
+	}
 
 	$rootScope.walkTo = function( selector, adjust ){
 		adjust = adjust ? adjust : 0;
@@ -500,7 +550,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top ) + adjust;
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
 		}
-	};
+	}
 
 	$rootScope.unBusy = function(){
 		if( $rootScope.isBusy ){
@@ -509,19 +559,19 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}, 100 );
 			$rootScope.isBusy = false;
 		}
-	};
+	}
 
 	$rootScope.focus = function( selector ){
 		setTimeout( function(){
 			angular.element( selector ).focus();
 		}, 300 );
-	};
+	}
 
 	$rootScope.blur = function( selector ){
 		setTimeout( function(){
 			angular.element( selector ).blur();
 		}, 100 );
-	};
+	}
 
 	$rootScope.reload = function() {
 		$route.reload();
@@ -531,13 +581,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.go.apply(arguments);
 	};
 
+	if (App.isPhoneGap) {
+		$('body').addClass('phonegap');
+	}
+
 	$rootScope.back = function() {
 		$('body').addClass('back');
-
-		//history.back();
-		history.go(-1);
-    	navigator.app.backHistory();
-
 
 		setTimeout(function(){
 			$rootScope.$safeApply();
@@ -551,6 +600,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		setTimeout(function(){
 			$rootScope.$safeApply();
 		},1200);
+
+		history.go(-1);
+    	navigator.app.backHistory();
 	};
 
 	$rootScope.closePopup = function() {
@@ -576,6 +628,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.callText = function(num) {
 		$rootScope.$broadcast('callText', num);
+	};
+
+	$rootScope.creditDialog = function(id_user, id_order) {
+		$rootScope.$broadcast('creditDialog', id_user, id_order);
 	};
 
 	$rootScope.hasBack = false;
@@ -617,7 +673,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	} );
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-
+		$rootScope.navTitle = '';
 		// Store the actual page
 
 		$rootScope.hasBack = $route.current.back === false ? false : true;
@@ -652,6 +708,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
 
+		if (errorInterceptor.isInteruptable($location.url())) {
+			errorInterceptor.cancelAll();
+		}
+		console.debug('>> route change start');
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
@@ -690,11 +750,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 });
 
-// Check user's auth
-/* todo: check user's permission too */
-NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
-
-});
 
 App.alert = function(txt, title, useNativeAlert, fn) {
 	setTimeout(function() {
@@ -708,11 +763,15 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 	});
 };
 
-App.confirm = function(txt, title, fn, buttons) {
+App.confirm = function(txt, title, success, fail, buttons) {
 	if (App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
-		return parent.window.navigator.notification.confirm(txt, fn, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
+		return parent.window.navigator.notification.confirm(txt, success, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
 	} else {
-		return confirm(txt);
+		if (confirm(txt)) {
+			success();
+		} else {
+			fail();
+		}
 	}
 };
 
@@ -797,7 +856,6 @@ App.processConfig = function(json, user) {
 	}
 
 	App.rootScope.$broadcast( 'configLoaded' );
-
 };
 
 /**
@@ -857,10 +915,6 @@ App.init = function(config) {
 		});
 
 	}
-
-	setTimeout( function(){
-		//App.snap.disable();
-	}, 1000 );
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
@@ -978,6 +1032,11 @@ App.dialog = {
 	},
 	isOpen : function(){
 		return $.magnificPopup && $.magnificPopup.instance && $.magnificPopup.instance.isOpen;
+	},
+	close: function(){
+		try {
+			$.magnificPopup.close();
+		} catch (e) {}
 	}
 };
 
@@ -1068,17 +1127,17 @@ App.phoneGapListener = {
 	}
 };
 
-
+/**
+ * play crunch audio sound
+ */
 App.playAudio = function(audio) {
-	var audio = document.getElementById(audio);
-	if (!audio) {
-		return;
-	}
-	audio.pause();
-	audio.currentTime = 0;
-	audio.play();
+	var path = (App.isPhoneGap ? '' : '/') + 'assets/cockpit/audio/';
+	console.log('path',path);
+	var sound = new Howl({
+		urls: [path + audio + '.mp3', path + audio + '.ogg']
+	}).play();
 }
-
+// App.playAudio( 'test' );
 
 function handleOpenURL(url) {
 	// only happens if being pased from a url in the native app
@@ -1105,3 +1164,35 @@ function handleOpenURL(url) {
 		});
 	}
 };
+
+
+NGApp.filter('propsFilter', function() {
+  return function(items, props) {
+    var out = [];
+
+    if (angular.isArray(items)) {
+      items.forEach(function(item) {
+        var itemMatches = false;
+
+        var keys = Object.keys(props);
+        for (var i = 0; i < keys.length; i++) {
+          var prop = keys[i];
+          var text = props[prop].toLowerCase();
+          if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+            itemMatches = true;
+            break;
+          }
+        }
+
+        if (itemMatches) {
+          out.push(item);
+        }
+      });
+    } else {
+      // Let the output be the input untouched
+      out = items;
+    }
+
+    return out;
+  };
+});

@@ -142,15 +142,6 @@
 						<small ng-show="form.rewardPointsCreateAnAccountValue.$error.required">Required.</small>
 					</div>
 				</li>
-				<li class="li-input" ng-class="{'error':form.rewardPointsSharedOrderValue.$invalid}">
-					<div class="label">Reward shared orders (multiply order's points by):</div>
-					<div class="input">
-						<input type="number" ignore-mouse-wheel name="rewardPointsSharedOrderValue" ng-model="config.reward_points_shared_order_value" required>
-					</div>
-					<div class="box-error">
-						<small ng-show="form.rewardPointsSharedOrderValue.$error.required">Required.</small>
-					</div>
-				</li>
 				<li class="li-input" ng-class="{'error':form.rewardPointsWinCluckbuttonValue.$invalid}">
 					<div class="label">Win Cluckbutton (add points):</div>
 					<div class="input">

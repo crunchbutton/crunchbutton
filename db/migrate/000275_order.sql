@@ -1,0 +1,1 @@
+ALTER TABLE  `order` ADD  `reward_delivery_free` TINYINT( 1 ) NOT NULL DEFAULT '0';

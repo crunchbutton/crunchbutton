@@ -44,11 +44,11 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 					`option`
 					LEFT JOIN dish_option using(id_option)
 				WHERE
-					id_dish="'.$this->id_dish.'"
+					id_dish=?
 				ORDER BY
 					option.type desc,
 					dish_option.sort ASC, option.name
-			', $this->db());
+			', [$this->id_dish]);
 		}
 		if (gettype($this->_options) == 'array') {
 			$this->_options = i::o($this->_options);
@@ -67,7 +67,7 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 	 * @todo We should probably show a flash message about that
 	 */
 	public function delete() {
-		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish="'.$this->id_dish.'"');
+		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish=?', [$this->id_dish]);
 
 		if (!$od->count()) {
 			parent::delete();
@@ -83,16 +83,19 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 			$this->_ratingCount = Order::q('
 				select count(*) as c from `order`
 				left join order_dish using(id_order)
-				where id_restaurant="'.$this->id_restaurant.'"
-				and id_dish="'.$this->id_dish.'"
+				where id_restaurant=?
+				and id_dish=?
 				and env="live"
-			')->c;
+			', [$this->id_restaurant, $this->id_dish])->c;
 		}
 		return $this->_ratingCount;
 	}
 
 	public function __construct($id = null) {
 		parent::__construct();
+		$this->changeOptions([
+			'created' => true
+		]);
 		$this
 			->table('dish')
 			->idVar('id_dish')

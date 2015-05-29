@@ -368,7 +368,7 @@ NGApp.directive('ngSpinner', function ($compile) {
 			if (App.minimalMode || !attr.ngSpinner) {
 				return;
 			}
-			
+
 			var color = attr.spinnerColor || '#000';
 			var scale = attr.spinnerScale || 1;
 			var css = null;
@@ -838,6 +838,40 @@ NGApp.directive( 'navigationBack', function() {
 			template: '<div ng-click="navigation.back();" class="back-button orange link"><i class="fa fa-chevron-left"></i> Back</div>',
 			link: function (scope, elem, attrs, ctrl) {
 					var navigation = scope.navigation;
+			}
+		}
+} );
+
+NGApp.directive( 'twitterButton', function( AccountService ) {
+	return {
+			restrict: 'AE',
+			replace: true,
+			template: '<div></div>',
+			link: function (scope, elem, attrs, ctrl) {
+				scope.$watch( 'twitterUrl', function( newValue, oldValue, scope ){
+					if( newValue != oldValue ){
+						return;
+					}
+					elem[0].innerHTML = '';
+					var url = scope.twitterUrl ? scope.twitterUrl : attrs.url ? attrs.url : 'http://crunchbutton.com';
+					var text = scope.twitterText ? scope.twitterText : attrs.text ? attrs.text : 'Crunchbutton';
+					var hashtags = scope.twitterHashtags ? scope.twitterHashtags : attrs.hashtags ? attrs.hashtags : 'crunchbutton';
+					twttr.widgets.createShareButton(
+						url,
+						elem[0],
+						function (el) {
+							if( scope.twitterButtonCreated ){
+								scope.twitterButtonCreated( el );
+							}
+						},
+						{ count: ( attrs.count ? attrs.count : 'none' ), text: text, hashtags: hashtags }
+					);
+					twttr.events.bind( 'tweet', function ( event ) {
+						if( scope.twitterTweet ){
+							scope.twitterTweet( event );
+						}
+					} );
+				} );
 			}
 		}
 } );

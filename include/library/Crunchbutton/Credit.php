@@ -22,11 +22,18 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function creditByUser( $id_user ) {
-		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user="'.$id_user.'" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? )', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}
 
+	public function cashCreditByUser( $id_user ) {
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? ) ORDER BY id_credit DESC', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH ]);
+	}
+
+	public function debitsFromCredit() {
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_credit_debited_from = ? ORDER BY id_credit DESC', [self::TYPE_DEBIT, $this->id_credit ]);
+	}
 	public function debitByUser( $id_user ) {
-		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_DEBIT . '" AND id_user="'.$id_user.'" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )');
+		return Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? )', [self::TYPE_DEBIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}
 
 	public function creditByUserRestaurant( $id_user, $id_restaurant ) {
@@ -34,8 +41,29 @@ class Crunchbutton_Credit extends Cana_Table
 			return 0;
 		}
 		$credits = 0;
-		$query = 'SELECT SUM(`value`) as credit FROM ( SELECT SUM(`value`) as `value` FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.' AND id_restaurant = ' . $id_restaurant . ' AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) UNION SELECT SUM(`value`) * -1 as `value` FROM credit WHERE type = "' . self::TYPE_DEBIT . '" AND id_user = '.$id_user.' AND id_restaurant = ' . $id_restaurant . '  AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) ) credit';
-		$row = Cana::db()->get( $query );
+
+		// @todo: make this faster
+		$row = Cana::db()->get('
+			SELECT SUM(`value`) as credit
+			FROM (
+				SELECT SUM(`value`) as `value`
+				FROM credit
+				WHERE
+					type = ?
+					AND id_user = ?
+					AND id_restaurant = ?
+					AND ( credit_type = ? OR credit_type != ? )
+				UNION
+					SELECT SUM(`value`) * -1 as `value`
+					FROM credit
+					WHERE
+						type = ?
+						AND id_user = ?
+						AND id_restaurant = ?
+						AND ( credit_type = ? OR credit_type != ? )
+			) credit
+		', [self::TYPE_CREDIT, $id_user, $id_restaurant, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, self::TYPE_DEBIT, $id_user, $id_restaurant, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
+
 		if( $row->_items && $row->_items[0] ){
 			if( $row->_items[0]->credit ){
 				$credits = floatval( $row->_items[0]->credit );
@@ -49,8 +77,33 @@ class Crunchbutton_Credit extends Cana_Table
 		if (!$id_user) {
 			return 0;
 		}
-		$query = 'SELECT SUM(`value`) as debit FROM ( SELECT SUM(`value`) as `value` FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.' AND id_restaurant IS NULL  AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) UNION SELECT SUM( value ) * -1  FROM credit WHERE id_credit_debited_from IN ( SELECT id_credit FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.'  AND id_restaurant IS NULL  AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) ) ) debit';
-		$row = Cana::db()->get( $query );
+
+		// @todo: make this faster
+		$row = Cana::db()->get('
+			SELECT SUM(`value`) as debit
+			FROM (
+				SELECT SUM(`value`) as `value`
+				FROM credit
+				WHERE
+					type = ?
+					AND id_user = ?
+					AND id_restaurant IS NULL
+					AND ( credit_type = ? OR credit_type != ? )
+				UNION
+					SELECT SUM( value ) * -1
+					FROM credit
+					WHERE id_credit_debited_from IN (
+						SELECT id_credit
+						FROM credit
+						WHERE
+							type = ?
+							AND id_user = ?
+							AND id_restaurant IS NULL
+							AND ( credit_type = ? OR credit_type != ? )
+					)
+			) debit
+		', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
+
 		if( $row->_items && $row->_items[0] ){
 			if( $row->_items[0]->debit ){
 				return floatval( $row->_items[0]->debit );
@@ -60,8 +113,13 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function totalDebitedFromCredit(){
-		$query = 'SELECT SUM(`value`) as `debited` FROM credit WHERE type = "' . self::TYPE_DEBIT . '"  AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_credit_debited_from = ' . $this->id_credit;
-		$row = Cana::db()->get( $query );
+		$row = Cana::db()->get('
+			SELECT SUM(`value`) as `debited`
+			FROM credit
+			WHERE
+				type = ?
+				AND ( credit_type = ? OR credit_type != ? ) AND id_credit_debited_from = ?
+		', [self::TYPE_DEBIT, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, $this->id_credit]);
 		if( $row->_items && $row->_items[0] ){
 			if( $row->_items[0]->debited ){
 				return floatval( $row->_items[0]->debited );
@@ -72,10 +130,12 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public static function find($search = []) {
 
-		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" )';
+		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL AND ( credit_type = ? OR credit_type != ? )';
+		$keys = [Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT];
 
 		if ($search['type']) {
-			$query .= ' and type="'.$search['type'].'" ';
+			$query .= ' and type=? ';
+			$keys[] = $search['type'];
 		}
 
 		if ($search['start']) {
@@ -89,15 +149,18 @@ class Crunchbutton_Credit extends Cana_Table
 		}
 
 		if ($search['restaurant']) {
-			$query .= ' and `credit`.id_restaurant="'.$search['restaurant'].'" ';
+			$query .= ' and `credit`.id_restaurant=? ';
+			$keys[] = $search['restaurant'];
 		}
 
 		if ($search['id_order']) {
-			$query .= ' and `credit`.id_order="'.$search['id_order'].'" ';
+			$query .= ' and `credit`.id_order=? ';
+			$keys[] = $search['id_order'];
 		}
 
 		if ($search['id_user']) {
-			$query .= ' and `credit`.id_user="'.$search['id_user'].'" ';
+			$query .= ' and `credit`.id_user=? ';
+			$keys[] = $search['id_user'];
 		}
 
 		$query .= 'ORDER BY `date` DESC';
@@ -106,7 +169,7 @@ class Crunchbutton_Credit extends Cana_Table
 			$query .= ' limit '.$search['limit'].' ';
 		}
 
-		$credits = self::q($query);
+		$credits = self::q($query, $keys);
 		return $credits;
 	}
 
@@ -225,8 +288,12 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function creditSpent(){
-		$query = 'SELECT SUM( value ) as spent FROM credit c WHERE type = "' . Crunchbutton_Credit::TYPE_DEBIT . '" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_credit_debited_from = ' . $this->id_credit;
-		$row = Cana::db()->get( $query );
+		$row = Cana::db()->get('
+			SELECT SUM( value ) as spent
+			FROM credit c
+			WHERE
+				type = ? AND ( credit_type = ? OR credit_type != ? ) AND id_credit_debited_from = ?
+		', [Crunchbutton_Credit::TYPE_DEBIT, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, $this->id_credit]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return ( $row->spent < 0 ) ? 0 : $row->spent;
@@ -234,20 +301,49 @@ class Crunchbutton_Credit extends Cana_Table
 		return 0;
 	}
 
+	public function formatPoints( $points ){
+		return Util::humanReadableNumbers( $points );
+	}
+
+	public function exportPoints(){
+		$user = c::user();
+		// Reward stuff
+		$reward = new Crunchbutton_Reward;
+		$reward = $reward->loadSettings();
+		$free_delivery = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
+		$out = [];
+		$out[ 'invite_code' ] = $user->invite_code;
+		$out[ 'free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery );
+		$out[ 'total' ] = Crunchbutton_Credit::points( $user->id_user );
+		$out[ 'show' ] = Crunchbutton_Credit::formatPoints( $out[ 'total' ] );
+		if( $out[ 'total' ] > $free_delivery ){
+			$out[ 'free_delivery_message' ] = true;
+			$out[ 'away_free_delivery' ] = 0;
+			$out[ 'points_percent' ] = 100;
+		} else {
+			$out[ 'free_delivery_message' ] = false;
+			$out[ 'away_free_delivery' ] = Crunchbutton_Credit::formatPoints( $free_delivery - $out[ 'total' ] );
+			$out[ 'points_percent' ] = ($out[ 'total' ] && $free_delivery) ? intval( ( $out[ 'total' ] / $free_delivery * 100 ) ) : 0;
+		}
+		return $out;
+	}
+
 	public function points( $id_user ){
-		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = "' . $id_user . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND type = "' . Crunchbutton_Credit::TYPE_CREDIT . '"';
-		$row = Cana::db()->get( $query );
+		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
+		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_CREDIT]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				$points = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
 		}
-		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = "' . $id_user . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND type = "' . Crunchbutton_Credit::TYPE_DEBIT . '"';
-		$row = Cana::db()->get( $query );
+
+		$spent = 0;
+		$query = 'SELECT SUM( value ) AS spent FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
+		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_DEBIT]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
-				$spent = ( $row->points && $row->points < 0 ) ? 0 : $row->points;
+				$spent = ( $row->spent && $row->spent < 0 ) ? 0 : $row->spent;
 		}
-		return ( $points - $spent );
+		return intval( ( $points - $spent ) );
 	}
 
 	public function creditLeft(){
@@ -291,7 +387,7 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public function creditsAvailableByUserRestaurant( $id_user, $id_restaurant ){
 		$credit_available = array();
-		$credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user="'.$id_user.'" AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND ( id_restaurant = '.$id_restaurant.' OR id_restaurant IS NULL )' );
+		$credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = ? AND id_user=? AND ( credit_type = ? OR credit_type != ? ) AND ( id_restaurant = ? OR id_restaurant IS NULL )', [self::TYPE_CREDIT, $id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT, $id_restaurant]);
 		if( $credits->count() > 0 ){
 			foreach( $credits as $credit ){
 				$left = $credit->creditLeft();

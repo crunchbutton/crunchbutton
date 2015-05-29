@@ -20,19 +20,19 @@ NGApp.directive('fitHeight', function() {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
-	
+
 			var setHeight = function() {
-				angular.element(element).height(angular.element(window).height() - angular.element(element).position().top - 10);				
+				angular.element(element).height(angular.element(window).height() - angular.element(element).position().top - 10);
 			};
-			
+
 			angular.element(window).on('resize', setHeight);
 
 			scope.$on('$destroy', function() {
 				angular.element(window).off('resize', setHeight);
 			});
-			
+
 			setHeight();
-			
+
 			scope.$watch('view', setHeight);
 		}
 	};
@@ -51,7 +51,7 @@ NGApp.directive('pageKey', function() {
 				}
 
 				// next
-				if (e.which == 39 && scope.query.page < scope.pages) {
+				if (e.which == 39 && (scope.query.page < scope.pages || scope.more)) {
 					scope.$apply(function() {
 						scope.setPage(scope.query.page+1);
 					});
@@ -120,8 +120,7 @@ NGApp.directive('profilePreference', function (AccountService, $http, $rootScope
 				$http({
 					method: 'POST',
 					url: App.service + 'config',
-					data: {key: $scope.key, value: value},
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					data: {key: $scope.key, value: value}
 				});
 			}
 		}
@@ -159,6 +158,8 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			});
 			outstanding.push(deferred);
 		}
+		
+		var cancelers = [];
 
 		function createResource(url, options, actions) {
 			var resource;
@@ -168,20 +169,25 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			Object.keys(actions).forEach(function(action) {
 				var canceller = $q.defer();
 				actions[action].timeout = canceller.promise;
-				actions[action].Canceller = canceller;
+				cancelers[action] = canceller;
 			});
 
 			resource = $resource(url, options, actions);
-			
-			var isLoading = {};
+
+			var isLoading = null;
 
 			Object.keys(actions).forEach(function(action) {
 				var method = resource[action];
 
 				resource[action] = function() {
 
-					if (isLoading.action) {
-						isLoading.action.reject('Aborted');
+					if (isLoading) {
+						isLoading.reject('Aborted');
+
+						cancelers[action].resolve();
+						var canceller = $q.defer();
+						actions[action].timeout = canceller.promise;
+						cancelers[action] = canceller;
 					}
 
 					var deferred = $q.defer(),
@@ -189,22 +195,20 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 					promise = method.apply(null, arguments).$promise;
 
 					abortablePromiseWrap(promise, deferred, outstanding);
-					
-					isLoading.action = deferred;
+
+					isLoading = deferred;
 
 					return {
 						$promise: deferred.promise,
-
 						abort: function() {
-							deferred.reject('Aborted');
-						},
-						cancel: function() {
-							actions[action].Canceller.resolve('Call cancelled');
+							// i dont think this is called unless we resolve the primise, which were not doing
+							console.error('Resource Aborted');
+							cancelers[action].resolve();
 
-							// Recreate canceler so that request can be executed again
 							var canceller = $q.defer();
 							actions[action].timeout = canceller.promise;
-							actions[action].Canceller = canceller;
+							cancelers[action] = canceller;
+							deferred.reject('Aborted');
 						}
 					};
 				};
@@ -250,40 +254,40 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 		scope: true,
 		link: function ( scope, elem, attrs, ctrl ) {
 			var button = elem.find('button')[0];
-			
+
 			scope.init = true;
-			
+
 			if (!window.Ladda) {
 				return;
 			}
 
-			var l = Ladda.create(button);		
+			var l = Ladda.create(button);
 
 			angular.element(button).on('click', function() {
 				angular.element(elem.find('input')[0]).click();
 			});
-			
+
 			scope.uploader = new FileUploader({
 				url: '/api/driver/documents/upload/',
 				autoUpload: true
 			});
-	
+
 			scope.uploader.onBeforeUploadItem = function() {
 				l.start();
 			};
-		
+
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'driverDocsUploaded', { id_driver_document: response.id_driver_document, response: response } );
 				scope.uploader.clearQueue();
 				l.stop();
 			};
-		
+
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'driverDocsUploadedError', {} );
 				scope.uploader.clearQueue();
 				l.stop();
 			};
-			
+
 			return;
 
 
@@ -295,10 +299,65 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 					l.setProgress( progress );
 				}
 			});
-
 			$timeout(l.stop, 100);
+		}
+	}
+});
 
 
+NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
+	return {
+		restrict: 'AE',
+		replace: false,
+		scope: true,
+		link: function ( scope, elem, attrs, ctrl ) {
+			var button = elem.find('button')[0];
+
+			scope.init = true;
+
+			if (!window.Ladda) {
+				return;
+			}
+
+			var l = Ladda.create(button);
+
+			angular.element(button).on('click', function() {
+				angular.element(elem.find('input')[0]).click();
+			});
+
+			scope.uploader = new FileUploader({
+				url: '/api/community/resource/upload/',
+				autoUpload: true
+			});
+
+			scope.uploader.onBeforeUploadItem = function() {
+				l.start();
+			};
+
+			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUploadError', {} );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			return;
+
+
+			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
+				return;
+				console.log(newValue);
+				if( !isNaN( uploader.progress ) ){
+					var progress = ( uploader.progress / 100 );
+					l.setProgress( progress );
+				}
+			});
+			$timeout(l.stop, 100);
 		}
 	}
 });

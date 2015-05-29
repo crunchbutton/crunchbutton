@@ -9,7 +9,27 @@ class Crunchbutton_Util extends Cana_Model {
 						( strpos( $_SERVER['HTTP_HOST'], 'dev.pit' ) !== false ) ) ? true : false;
 	}
 
-	public function frontendTemplates($export = false) {
+	public function dateToUnixTimestamp( $dateTime ){
+		if ( is_a( $dateTime , 'DateTime' ) ) {
+			$tz = $dateTime->getTimestamp();
+			return gmdate( 'Y-m-d\TH:i:s\Z', $tz );
+		}
+		return false;
+	}
+
+	// https://gist.github.com/maggiben/9457434
+	public static function humanReadableNumbers( $number ){
+		if( $number < 1000 ){
+			return $number;
+		}
+		$si = [ 'K', 'M', 'G', 'T', 'P', 'H' ];
+		$exp = floor( log( $number ) / log( 1000 ) );
+		$result = $number / pow( 1000, $exp );
+		$result = ( $result % 1 > ( 1 / pow( 1000, $exp - 1 ) ) ? floor( $result ) : floor( $result ) );
+		return $result . $si[ $exp - 1 ];
+	}
+
+	public static function frontendTemplates($export = false) {
 		$files = [];
 
 		$themes = c::view()->theme();
@@ -37,10 +57,12 @@ class Crunchbutton_Util extends Cana_Model {
 		if ($export) {
 			$files[] = 'legal';
 		}
+		natcasesort($files);
 		return $files;
 	}
 
 	public static function stringToColorCode( $str ) {
+		die('#5430 deprecated');
 		$code = dechex( crc32( $str ) );
 		$code = substr( $code, 0, 6 );
 		return $code;
@@ -60,6 +82,7 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function inverseColor( $color ){
+		die('#5430 deprecated');
 		$r = dechex( 255 - hexdec( substr( $color, 0, 2 ) ) );
 		$r = ( strlen( $r ) > 1 ) ? $r : '0' . $r;
 		$g = dechex( 255 - hexdec( substr( $color, 2, 2 ) ) );
@@ -70,6 +93,7 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function isDarkColor( $color ){
+		die('#5430 deprecated');
 		$c_r = hexdec( substr( $color, 0, 2 ) );
 		$c_g = hexdec( substr( $color, 2, 2 ) );
 		$c_b = hexdec( substr( $color, 4, 2 ) );
@@ -278,15 +302,15 @@ class Crunchbutton_Util extends Cana_Model {
 		}
 	}
 
-	function format_interval( $difference, $accuracy = 2 ) {
-		$intervals = array('y' => ' year', 'm' => ' month', 'd ' => 'day', 'h' => ' hour', 'i' => ' minute', 's' => ' second');
+	function format_interval( $difference, $accuracy = 10 ) {
+		$intervals = array( 'y' => ' year', 'm' => ' month', 'd' => ' day', 'h' => ' hour', 'i' => ' minute', 's' => ' second' );
 		$i = 0;
 		$result = '';
 		foreach ( $intervals as $interval => $name ) {
-			if ($difference->$interval > 1) {
+			if ( $difference->$interval > 1) {
 				$result .= $difference->$interval . $intervals[$interval] . 's ';
 				$i++;
-			} elseif ($difference->$interval == 1) {
+			} elseif ( $difference->$interval == 1) {
 				$result .= $difference->$interval . $intervals[$interval] . ' ';
 				$i++;
 			}
@@ -295,6 +319,17 @@ class Crunchbutton_Util extends Cana_Model {
 			}
 		}
 		return $result;
+	}
+
+	function interval2Hours( $difference, $accuracy = 2 ) {
+		$seconds = 	( $difference->s )
+							+ ( $difference->i * 60 )
+							+ ( $difference->h * 60 * 60 )
+							+ ( $difference->d * 60 * 60 * 24 )
+							+ ( $difference->m * 60 * 60 * 24 * 30 )
+							+ ( $difference->y * 60 * 60 * 24 * 365 );
+		$hours = $seconds / 60 / 60;
+		return floatval( number_format( $hours, 2 ) );
 	}
 
 	public static function randomPass( $length = 6 ){

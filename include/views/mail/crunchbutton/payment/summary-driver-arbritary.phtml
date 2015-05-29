@@ -1,0 +1,39 @@
+<div class="xhatch separator-small"></div>
+
+<table width="100%" celpadding="0" cellspacing="0">
+	<tr>
+		<td>
+				<table cellpadding="0" cellspacing="0">
+					<tr>
+					<td style="font-size:22px;" class="text-size-mid"><strong><?php echo $summary[ 'driver' ]; ?></strong></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<table class="notes" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="top"><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/note.png')?>" class="icon-note"></td>
+		<td style="margin: 0; padding: 22px 0 0 0;" valign="top"><div class="arrow-left"></div></td>
+		<td style="width: 100%; padding-right: 0; "><table style="width: 100%"><tr><td class="notes-content">
+		You were just paid $<?php echo number_format( $summary[ 'calcs' ][ 'total_payment' ], 2 ); ?> by Crunchbutton.
+		<br>This is the Note on the payment: <?=nl2br( $summary[ 'note' ] )?></td></tr></table></td>
+	</tr>
+</table>
+
+<br/><br/>
+<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
+	<tr>
+		<td style="text-align: left;" class="text-size-small">
+			<?php if( $summary[ 'payment_method' ] == 'deposit' ) { ?>
+				Payment has been deposited into your bank account
+			<?php } else { ?>
+
+			<?php } ?>
+		</td>
+		<td style="text-align: right;" class="text-size-small">Crunchbutton support: call or text <?=c::config()->phone->restaurant?></td>
+	</tr>
+</table>
+
+<div class="xhatch separator-big" style="text-align:right!important;"></div>

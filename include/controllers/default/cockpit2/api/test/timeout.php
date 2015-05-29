@@ -5,10 +5,11 @@
 class Controller_api_test_timeout {
 
 	public function init() {
-		c::timeout(function() {
+		$order = Order::o(92768);
+		c::timeout(function() use ($order) {
 			Crunchbutton_Message_Sms::send([
 				'to' => '_PHONE_',
-				'message' => 'WITH TIMEOUT'
+				'message' => 'WITH TIMEOUT - '.$order->name
 			]);
 		});
 		/*

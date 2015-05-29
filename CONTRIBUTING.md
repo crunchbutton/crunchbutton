@@ -2,6 +2,8 @@
 
 To report development issues, please make sure you provide as much information as possible to help identify the problem.
 
+**If an issue is blocking orders being fullfilled, ie, order notifications not going out, drivers cant accept orders, users cant place orders, add the label BLOCKING**
+
 #### For user/Crunchbutton related issues
 
 1. Browser
@@ -30,9 +32,9 @@ To report development issues, please make sure you provide as much information a
   2. Select "network" second from the left: (in Firefox it's all the way to the right)
      ![image](https://cloud.githubusercontent.com/assets/10369508/6260328/05d47404-b792-11e4-9799-4ee9a0f3e542.png)
   4. Click on "XHR"
-  5. Select the last item in the list
+  5. Select the last item in the list. This is *not* heartbeat or count. You want to click on the request you are trying to debug.
   6. Click on "Response"
-     ![image](https://cloud.githubusercontent.com/assets/27974/6272179/96a299d8-b81a-11e4-9064-bea9e449f03b.png)
+     ![image](https://cloud.githubusercontent.com/assets/27974/7008609/47bb07e4-dc49-11e4-9281-2610a2885ce5.png)
   7. Then take a screenshot of what's there. 
 
 *If a developer has a question, please make sure to respond ASAP, or it will just get closed and not addressed properly.*

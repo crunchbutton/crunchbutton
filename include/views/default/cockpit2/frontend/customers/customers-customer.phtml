@@ -3,116 +3,73 @@
 <div class="content-padding">
 
 
-	<h1 class="left title"><i class="fa fa-user"></i>Customer #{{customer.id_user}}<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="support-boxes">
 
-	<div class="ticket-status-top">
-		<div class="ticket-status-open">{{order.status.status}}</div>
-	</div>
-
-	<div class="divider"></div>
-	<br>
-
-	<div ng-if="!loading">
-
-		<div class="support-boxes">
-			<div ng-if="!customer.id_user" class="support-box-wrap">
-				<h1>Invalid Customer</h1>
-			</div>
-
-			<div ng-if="customer.id_user" class="support-box-wrap">
-				<h1>Details</h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{customer.name}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(customer.address)">{{customer.address}}</a></div>
-						</div>
-					</div>
+		<div class="support-box-wrap box-content2" style="-webkit-column-width: 20%;">
+			<br>
+			<div class="no-box-content-color customer-content-box">
+				<div class="customer-image-crop customer-image-crop-large">
+					<img ng-if="customer.image" class="customer-image-large" src="{{customer.image}}"></img>
+					<div ng-if="!customer.image" class="customer-image-large customer-image-null"></div>
 				</div>
-			</div>
-		</div>
+				<h1 class="customer-name-large">{{customer.name}}</h1>
 
-		<h1 class="title"><i class="fa fa-car"></i>Orders<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
-
-		<div class="box-content2 box-content-table">
-			<table class="tb-zebra">
-				<tr>
-					<th>Info</th>
-					<th>Date</th>
-					<th>Restaurant</th>
-					<th>Driver</th>
-					<th>Order</th>
-					<th>Status</th>
-				</tr>
-				<tr ng-repeat="order in orders">
-					<td><a href="/order/{{order.id_order}}">{{order.id_order}}</td>
-					<td>{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
-					<td>
-						<a href="/restaurant/{{order.id_restaurant}}">{{order._restaurant_name}}</a><br>
-						<a href="/community/{{order._community_name}}">{{order._community_name}}</a>
-					</td>
-					<td><a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></td>
-					<td>${{order.final_price_plus_delivery_markup}}</td>
-					<td>
-						<b>{{order.status.status}}</b><br>
-						<span ng-if="order.status"><span am-time-ago="order.status.date | localtime | timestamp"></span></span>
-					</td>
-				</tr>
-			</table>
-		</div>
-
-		<table class="tb-pagination right" ng-if="pages > 1" page-key>
-			<tbody>
-				<tr>
-					<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
-					<td class="td-info">Page {{query.page}} of {{pages}}</td>
-					<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
-				</tr>
-			</tbody>
-		</table>
-
-		<div class="divider"></div>
-
-		<div ng-if="customer.id_user" class="support-box-wrap">
-			<div class="box-content-color">
 				<div class="field-container">
+
 					<div class="field-row">
-						<div class="field-key">
-							<a href="/orders?search=phone:{{customer.phone}}">
-								Orders from this customer
-							</a>
-						</div>
-						<div class="field-value">
-							<a href="/orders?search=phone:{{customer.phone}}">
-								{{customer.orders_from_this_phone}}
-							</a>
-						</div>
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">
-							<a href="/orders?search=customer:{{customer.id_user}}">
-								Orders from this number
-							</a>
-						</div>
-						<div class="field-value">
-							<a href="/orders?search=customer:{{customer.id_user}}">
-								{{customer.orders_from_this_customer}}
-							</a>
-						</div>
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(customer.address)"><span ng-bind-html-unsafe="customer.address | nl2br"></span></a></div>
 					</div>
+				</div>
+				<br><br>
+				<div class="double-cols">
+
+					<button ng-click="creditDialog( customer.id_user );" ng-if="customer.id_user" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
+
+					<button ng-click="" class="button button-empty button-border button-blue" ng-class="{'button-disabled': true}"><i class="fa fa-close"></i>&nbsp;&nbsp;Deactive</button>
 				</div>
 			</div>
 		</div>
 
+		<div class="support-box-wrap support-widget-box-wrap">
+			<a href="/orders?user={{customer.id_user}}" class="column-50 support-box-widget support-box-widget-green">
+				<i class="fa fa-user support-box-widget-icon"></i>
+				<div class="support-box-widget-label">Orders from this number</div>
+				<div class="support-box-widget-content">{{customer.orders_from_this_customer}}</div>
+			</a>
+
+			<a href="/orders?phone={{customer.phone}}" class="column-50 support-box-widget support-box-widget-blue">
+				<i class="fa fa-phone support-box-widget-icon"></i>
+				<div class="support-box-widget-label">Orders from this customer</div>
+				<div class="support-box-widget-content">{{customer.orders_from_this_phone}}</div>
+			</a>
+		</div>
+
+		<div class="support-box-wrap box-content2" style="-webkit-column-width: 80%;">
+			<div class="support-box-wrap-header">
+				<h1>Credits</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="" ng-click="creditDialog( customer.id_user );"><button class="button button-small button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Gift Card</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+			<div class="support-box-wrap support-widget-box-wrap">
+				<ng-include src="'assets/view/listview-credit.html'"></ng-include>
+			</div>
+		</div>
+
 	</div>
+
+	<br><br>
+	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
+	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
+	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
 
 </div>
 

@@ -1,0 +1,34 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1><i class="fa fa-files-o"></i>Resources</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<div class="field-container" ng-repeat="community in communities">
+					<div class="field-row" ng-repeat="resource in community.resources" ng-if="resource.page">
+						<div class="field-key">
+							<a ng-if="resource.path" target="_system" href="{{resource.path}}">
+								{{resource.name}}
+							</a>
+						</div>
+						<div class="field-value">{{community.name}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

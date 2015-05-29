@@ -1,0 +1,41 @@
+<div class="box-content2 box-content-table" ng-show="credits.count">
+	<table class="tb-zebra">
+		<tr>
+			<th class="tb-small tb-center">Date</th>
+			<th class="tb-small tb-center">Type</th>
+			<th class="tb-small tb-center">Amount / Left</th>
+			<th class="tb-small tb-center">Note</th>
+			<th class="tb-small tb-center">Gift Card</th>
+			<th class="tb-small tb-center">Order</th>
+		</tr>
+		<tr ng-repeat="c in credits.results">
+			<td>
+				{{c.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}
+			</td>
+			<td>
+				<span class="tag tag-red" ng-if="c.type == 'Debit'">Debit</span>
+				<span class="tag tag-blue" ng-if="c.type == 'Credit'">Credit</span>
+			</td>
+			<td>
+				<span ng-if="c.value" positive-or-negative-color="{{c.value}}">${{c.value | formatPrice}}</span>
+				<span ng-if="c.left" positive-or-negative-color="{{c.left}}"> / ${{c.left | formatPrice}}</span>
+			</td>
+			<td>{{c.note}}</td>
+			<td>{{c.promo.code}}</td>
+			<td>
+				<a ng-if="c.id_order" href="/order/{{c.id_order}}">{{c.id_order}}</a>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<table class="tb-pagination right">
+		<tbody>
+			<tr>
+				<td>Showing {{credits.results.length}} of {{credits.count}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div ng-show="!credits.count">
+	<div class="content-padding">&nbsp;No credits</div>
+</div>

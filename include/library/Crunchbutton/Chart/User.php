@@ -202,7 +202,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 				$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
 				$cohort_type = $_GET[ 'cohort_type' ];
 
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 
 				$cohortQuery = $cohort->toQuery();
 
@@ -352,7 +352,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = '';
 				$union = '';
 
@@ -685,7 +685,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 				$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
 				$cohort_type = $_GET[ 'cohort_type' ];
 
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 
 				$cohortQuery = $cohort->toQuery();
 
@@ -1513,7 +1513,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		switch ( $cohort_type ) {
 			case 'cohort':
 
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type )	;
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type )	;
 
 				$query = "SELECT SUM(1) AS Total,
 												 DATE_FORMAT(o.date ,'%Y-%m') AS Month
@@ -1589,7 +1589,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$cohortQuery = $cohort->toQuery();
 				$query = "SELECT SUM(1) AS Total,
 												 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
@@ -1665,7 +1665,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT SUM(1) AS Total,
 												 YEARWEEK(o.date) AS Week
 									FROM `order` o
@@ -1746,7 +1746,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
-LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
+									LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1=1
 								 		{$community}
 										{$this->queryExcludeUsers}
@@ -2032,9 +2032,9 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$id_community}'
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
 								{$this->queryExcludeUsers}";
-		$result = c::db()->get( $query );
+		$result = c::db()->get( $query, [$id_community]);
 		return $result->_items[0]->Total;
 	}
 

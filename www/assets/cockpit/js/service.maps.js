@@ -33,7 +33,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			}
 		}
 	};
-	
+
 	service.styles = {
 		cockpit: [
 		{"featureType":"water","elementType":"geometry","stylers":[{"color":"#333739"}]},
@@ -50,20 +50,21 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		{"featureType":"poi.park","stylers":[{"color":"#1f4441"}]},
 		{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#308a84"},{"weight":0.1},{"lightness":10}]}],
 	};
-	
+
 	service.style = function(map) {
 		map.setOptions({styles: service.styles.cockpit});
 	};
-	
+
 	var maps = {};
-	
+
 	service.reset = function(id) {
 		maps[id] = null;
 	};
-	
+
 	service.trackOrders = function(params) {
+
 		var map = params.map;
-		
+
 		var closeInfoWindows = function() {
 			for (var x in maps[params.id].infoWindows) {
 				maps[params.id].infoWindows[x].close();
@@ -86,7 +87,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			maps[params.id].markers[x].setMap(null);
 		}
 		maps[params.id].markers = [];
-		
+
 		for (var x in maps[params.id].infoWindows) {
 			maps[params.id].infoWindows[x].close();
 			maps[params.id].infoWindows[x] = null;
@@ -97,11 +98,11 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		var updateBounds = function(loc) {
 			latlngbounds.extend(loc);
 			map.setCenter(latlngbounds.getCenter());
-			map.fitBounds(latlngbounds); 
+			map.fitBounds(latlngbounds);
 		};
-		
+
 		var geocoder = new google.maps.Geocoder();
-		
+
 		var getGeo = function(order, address, retries) {
 			if (retries > 3) {
 				return;
@@ -110,7 +111,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 				if (status == google.maps.GeocoderStatus.OK) {
 					console.debug('Got geocoded result: ', results[0]);
 					markOrder(order, results[0].geometry.location);
-					
+
 					// update the order with the lat and lon so we never have to geocode the address again
 					OrderService.put({
 						id_order: order,
@@ -126,7 +127,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 				}
 			});
 		};
-		
+
 		var markOrder = function(order, loc) {
 			updateBounds(loc);
 
@@ -138,13 +139,13 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 				var template = angular.element(d);
 				var linkFn = $compile(d);
 				var element = linkFn(orderScope);
-				
+
 				$timeout(function() {
 					orderScope.$apply();
 					var infowindow = new google.maps.InfoWindow({
 						content: element[0].innerHTML
 					});
-					
+
 					var marker = new google.maps.Marker({
 						map: map,
 						position: loc,
@@ -152,26 +153,34 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 						animation: google.maps.Animation.DROP,
 						icon: service.icon.customer
 					});
-		
+
 					maps[params.id].markers.push(marker);
 					maps[params.id].infoWindows.push(infowindow);
-		
+
 					google.maps.event.addListener(marker, 'click', function() {
 						closeInfoWindows();
 						infowindow.open(map, marker);
 					});
 				})
 
-				
+
 
 			});
 		}
-		
+
+		var _already_shown = {};
+
 		var trackOrder = function(order) {
 			if (!order.address) {
 				return;
 			}
 			if (order.lat && order.lon) {
+				var key = order.lat + '_' + order.lon;
+				if( !_already_shown[ key ] ){
+					_already_shown[ key ] = true;
+				} else {
+					return;
+				}
 				markOrder(order, new google.maps.LatLng(parseFloat(order.lat), parseFloat(order.lon)));
 			} else {
 				getGeo(order.id_order, order.address, 0);
@@ -179,15 +188,16 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		for (var x in params.orders) {
-			trackOrder(params.orders[x]);
+			var order = params.orders[x];
+			trackOrder( order );
 		}
 
 		// center on the US
 		//map.setCenter(new google.maps.LatLng(parseFloat(39.0997), parseFloat(-94.5783)));
-		
+
 		return trackOrder;
 	};
-	
+
 	service.trackCommunity = function(params) {
 		var map = params.map;
 
@@ -203,7 +213,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		var myLatlng = new google.maps.LatLng(parseFloat(params.community.loc_lat), parseFloat(params.community.loc_lon));
-		
+
 		map.setCenter(myLatlng);
 
 		maps[params.id].markers.current = new google.maps.Circle({
@@ -217,7 +227,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			radius: parseInt(params.community.range) * 1609.34
 		});
 	};
-	
+
 	service.trackRestaurant	 = function(params) {
 		var map = params.map;
 
@@ -233,7 +243,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		var myLatlng = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
-		
+
 		map.setCenter(myLatlng);
 
 		maps[params.id].markers.current = new google.maps.Circle({
@@ -247,7 +257,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			radius: parseInt(params.restaurant.delivery_radius) * 1609.34
 		});
 	};
-	
+
 	service.trackStaff = function(params) {
 		var map = params.map;
 
@@ -259,7 +269,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		var locs = {};
-		
+
 		locs[params.staff.location.lat] = params.staff.location.lon;
 
 		for (var x in params.locations) {
@@ -280,7 +290,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		var myLatlng = new google.maps.LatLng(parseFloat(params.staff.location.lat), parseFloat(params.staff.location.lon));
-		
+
 		map.setCenter(myLatlng);
 		maps[params.id].markers.current = new google.maps.Marker({
 			map: map,
@@ -289,10 +299,10 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			icon: params.staff.vehicle == 'car' ? service.icon.car : service.icon.bike
 		});
 	};
-	
+
 	service.trackOrder = function(params) {
 		var map = params.map;
-		if (params.driver.location) {
+		if (params.driver && params.driver.location) {
 			var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
 		}
 		var restaurant = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
@@ -303,7 +313,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 				service.reset(params.id);
 			});
 		}
-		
+
 		var getDirections = function() {
 			// directions render
 			if (maps[params.id].markers.directions){
@@ -321,11 +331,11 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			} else {
 				return;
 			}
-			
+
 			var directionsService = new google.maps.DirectionsService();
 			maps[params.id].markers.directions = new google.maps.DirectionsRenderer({suppressMarkers: true});
 			maps[params.id].markers.directions.setMap(map);
-			
+
 			var routeParams = {
 				origin: driver,
 				destination: dest,
@@ -373,7 +383,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			}
 			maps[params.id].markers.driverLat = params.driver.location.lat;
 			maps[params.id].markers.driverLon = params.driver.location.lon;
-	
+
 			maps[params.id].markers.driver = new google.maps.Marker({
 				map: map,
 				position: driver,
@@ -389,16 +399,16 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			geocoder.geocode({address: params.order.address}, function (results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					console.debug('Got geocoded result: ', results[0]);
-					
+
 					maps[params.id].markers.customerLocation = results[0].geometry.location;
-	
+
 					maps[params.id].markers.customer = new google.maps.Marker({
 						map: map,
 						position: results[0].geometry.location,
 						zIndex: 99,
 						icon: service.icon.customer
 					});
-					
+
 					getDirections();
 				} else {
 					console.error('Could not geocode address: ', d.address);

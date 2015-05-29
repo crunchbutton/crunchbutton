@@ -262,7 +262,7 @@ $(function() {
 	});
 
 	var restaurants = [];
-	<? foreach (Restaurant::q('select * from restaurant where active=1 order by name') as $restaurant) : ?>
+	<? foreach (Restaurant::q('select * from restaurant where active=true order by name') as $restaurant) : ?>
 		restaurants.push({
 			id: '<?=$restaurant->id_restaurant?>',
 			text: '<?=str_replace("'","\'",$restaurant->name)?>'

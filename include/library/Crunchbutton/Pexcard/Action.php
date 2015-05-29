@@ -6,7 +6,9 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	const ACTION_SHIFT_FINISHED = 'shift-finished';
 	const ACTION_ORDER_ACCEPTED = 'order-accepted';
 	const ACTION_ORDER_CANCELLED = 'order-cancelled';
+	const ACTION_ORDER_REJECTED = 'order-rejected';
 	const ACTION_ARBRITARY = 'arbritary';
+	const ACTION_REMOVE_FUNDS = 'remove-funds';
 
 	const STATUS_SCHEDULED = 'scheduled';
 	const STATUS_PROCESSING = 'processing';
@@ -42,7 +44,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	}
 
 	public function checkOrderReceivedFunds( $id_order, $id_driver ){
-		$received_action = Crunchbutton_Pexcard_Action::q( 'SELECT SUM( amount ) AS amount FROM pexcard_action WHERE id_order = "' . $id_order . '" AND id_driver = "' . $id_driver . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_CREDIT . '"' );
+		$received_action = Crunchbutton_Pexcard_Action::q( 'SELECT SUM( amount ) AS amount FROM pexcard_action WHERE id_order = "' . $id_order . '" AND id_driver = "' . $id_driver . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_CREDIT . '"' )->get( 0 );
 		$returned_action = Crunchbutton_Pexcard_Action::q( 'SELECT SUM( amount ) AS amount FROM pexcard_action WHERE id_order = "' . $id_order . '" AND id_driver = "' . $id_driver . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_DEBIT . '"' )->get( 0 );
 		$returned_amount = number_format( $received_action->amount, 2 );
 		$received_amount = number_format( $returned_action->amount, 2 );
@@ -72,7 +74,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '-5 minutes' );
 		$fiveMinutesAgo = $now->format( 'Y-m-d H:i:s' );
-		$actions = Crunchbutton_Pexcard_Action::q( 'SELECT * FROM pexcard_action WHERE status = "' . Crunchbutton_Pexcard_Action::STATUS_PROCESSING . '" AND status_date < "' . $fiveMinutesAgo . '"' );
+		$actions = Crunchbutton_Pexcard_Action::q("SELECT * FROM pexcard_action WHERE status = '" . Crunchbutton_Pexcard_Action::STATUS_PROCESSING . "' AND status_date < '" . $fiveMinutesAgo . "'");
 		foreach( $actions as $action ){
 			$action->status = Crunchbutton_Pexcard_Action::STATUS_ERROR;
 			$action->status_date = date( 'Y-m-d H:i:s' );

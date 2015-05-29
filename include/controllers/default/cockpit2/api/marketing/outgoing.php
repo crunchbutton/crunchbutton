@@ -12,10 +12,11 @@ class Controller_Api_Marketing_Outgoing extends Crunchbutton_Controller_RestAcco
 			$this->_error();
 		}
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -51,12 +52,13 @@ class Controller_Api_Marketing_Outgoing extends Crunchbutton_Controller_RestAcco
 
 		if ($type != 'all') {
 			$q .= '
-				AND log.type = "' . $type  . '"
+				AND log.type = ?
 			';
+			$keys[] = $type;
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'log.from' => 'like',
@@ -65,20 +67,25 @@ class Controller_Api_Marketing_Outgoing extends Crunchbutton_Controller_RestAcco
 					'log.subject' => 'like'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 		// get the count
-		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		$count = intval( $r->_items[0]->c );
 
 		$q .= '
 			ORDER BY log.date DESC
-			LIMIT '.$offset.', '.$limit . '
+			LIMIT ?
+			OFFSET ?
 		';
+		$keys[] = $limit;
+		$keys[] = $offset;
 
 		// do the query
 		$d = [];
-		$r = c::db()->query(str_replace('-WILD-','*', $q));
+		$r = c::db()->query(str_replace('-WILD-','*', $q), $keys);
 
 		while ($o = $r->fetch()) {
 			$date = new DateTime($o->date, new DateTimeZone(c::config()->timezone));;

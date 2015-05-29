@@ -49,9 +49,175 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderView',
 			templateUrl: 'assets/view/restaurant-order-view.html'
+		})
+		.when('/restaurant/payment-info/:id', {
+			action: 'restaurant-payment-info',
+			controller: 'RestaurantPaymentInfoCtrl',
+			templateUrl: 'assets/view/restaurant-payment-info.html'
 		});
 }]);
 
+
+NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $routeParams, RestaurantService ) {
+
+	$scope.yesNo = RestaurantService.yesNo();
+	$scope.summaryMethod = RestaurantService.summaryMethod();
+	$scope.paymentMethod = RestaurantService.paymentMethod();
+	$scope.accountType = RestaurantService.accountType();
+
+	var load = function(){
+
+		RestaurantService.get( $routeParams.id, function(d) {
+
+			$rootScope.title = d.name + ' | Payment type';
+			$scope.restaurant = d;
+			$scope.ready = true;
+
+			$scope.restaurant.stripeAccount = {};
+
+			RestaurantService.payment_method( $routeParams.id, function( d ){
+				if( !d.id_restaurant ){
+					App.alert( 'Error loading payment method: ' + json.error );
+				} else {
+					$scope.restaurant.payment_type = d;
+
+					$scope.restaurant.stripeAccount.formStripe = true;
+					$scope.restaurant.stripeAccount.formStripeMigrate = false;
+
+					if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.stripe_account_id ){
+						$scope.restaurant.stripeAccount.formStripe = false;
+					}
+
+					if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.balanced_bank ){
+						$scope.restaurant.stripeAccount.formStripeMigrate = true;
+						$scope.restaurant.stripeAccount.formStripe = false;
+					}
+
+					$scope.restaurant.payment_type.has_balanced_bank = ( $scope.restaurant.payment_type.balanced_bank && !$scope.restaurant.payment_type.stripe_id );
+
+				}
+			});
+		} );
+	}
+
+	$scope.createStripeAccountAndMigrate = function(){
+		$scope.saveStripeAccount( true );
+	}
+
+	$scope.migrateFromBalancedToStripe = function(){
+
+		if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.balanced_bank ){
+
+			$scope.isMigrating = true;
+
+			RestaurantService.balanced_to_sprite( $scope.restaurant.id_restaurant, function( d ){
+				App.alert( 'Stripe info saved' );
+				load();
+			} );
+
+		} else {
+			App.alert( 'Error: the restaurant must to have a balanced account!' );
+		}
+	}
+
+	$scope.testAccount = function(){
+
+		$scope.restaurant.stripeAccount.routing_number = '111000025';
+		$scope.restaurant.stripeAccount.account_number = '000123456789';
+		$scope.restaurant.stripeAccount.account_type = 'individual';
+		$scope.restaurant.payment_type.check_address = '4690 Eldarado Parkway';
+		$scope.restaurant.payment_type.check_address_city = 'McKinney';
+		$scope.restaurant.payment_type.check_address_state = 'TX';
+		$scope.restaurant.payment_type.check_address_zip = '75070';
+		$scope.restaurant.payment_type.check_address_country = 'US';
+	}
+
+	$scope.saveStripeAccount = function( migrateFromBalanced ){
+
+		if( $scope.formStripeAccount.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.stripeAccountSubmitted = true;
+			return;
+		}
+
+		$scope.isSavingStripeAccount = true;
+
+		RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
+
+			if( migrateFromBalanced ){
+				var params = {
+							'id_restaurant': $scope.restaurant.id_restaurant,
+							'account_type': $scope.restaurant.stripeAccount.account_type
+						};
+				RestaurantService.balanced_to_sprite_account( params, function( d ){
+					App.alert( 'Stripe info saved' );
+					load();
+				} );
+
+			} else {
+
+				Stripe.bankAccount.createToken( {
+					country: 'US',
+					currency: 'USD',
+					routing_number: $scope.restaurant.stripeAccount.routing_number,
+					account_number: $scope.restaurant.stripeAccount.account_number
+				}, function( header, response ){
+
+					if( response.id ){
+
+						var params = {
+							'id_restaurant': $scope.restaurant.id_restaurant,
+							'token': response.id,
+							'name': $scope.restaurant.payment_type.legal_name_payment,
+							'tax_id': $scope.restaurant.payment_type.tax_id,
+							'account_type': $scope.restaurant.stripeAccount.account_type,
+							'email': $scope.restaurant.payment_type.summary_email
+						};
+
+						RestaurantService.stripe( params, function( d ){
+							if( d.id_restaurant ){
+								App.alert( 'Stripe info saved' );
+								$scope.restaurant.stripeAccount.formStripe = false;
+								$scope.restaurant.stripeAccount.routing_number = '';
+								$scope.restaurant.stripeAccount.account_number = '';
+							} else {
+								App.alert( 'Error creating a Stripe token' );
+							}
+							$scope.isSavingStripeAccount = false;
+						} );
+					} else {
+						App.alert( 'Error creating a Stripe token' );
+						$scope.isSavingStripeAccount = false;
+					}
+				} );
+			}
+
+		} );
+	}
+
+	$scope.save = function(){
+
+		if( $scope.formBasic.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		if( $scope.restaurant.id_restaurant ){
+			RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
+				$scope.isSaving = false;
+				App.alert( 'Payment info saved' );
+				load();
+			} );
+		}
+
+	}
+
+	load();
+
+} );
 
 NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService) {
 	$rootScope.title = 'Restaurants';
@@ -62,7 +228,8 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 		scope: $scope,
 		watch: {
 			search: '',
-			community: ''
+			community: '',
+			fullcount: false
 		},
 		update: function() {
 			RestaurantService.list($scope.query, function(d) {
@@ -77,13 +244,13 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;
 	$scope.loadingOrders = true;
-	
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
 		update();
 	});
-	
+
 	var update = function() {
 		if (!$scope.map || !$scope.restaurant) {
 			return;
@@ -101,7 +268,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, R
 		$rootScope.title = d.name + ' | Restaurant';
 		$scope.restaurant = d;
 		$scope.loading = false;
-		
+
 		update();
 
 		OrderService.list({restaurant: d.id_restaurant, limit: 5}, function(d) {

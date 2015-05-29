@@ -16,6 +16,7 @@ class Crunchbutton_App extends Cana_App {
 		new Crunchbutton_Headers;
 
 		if (!$_SERVER['SERVER_NAME']) {
+			putenv('CLI=true');
 			$cli = true;
 			// get the env send by parameter
 			$a = (object)getopt('s::c::r::f::e::');
@@ -43,6 +44,9 @@ class Crunchbutton_App extends Cana_App {
 
 			} elseif (preg_match('/^\/home\/staging2.crunchbutton/',dirname(__FILE__))) {
 				$_SERVER['SERVER_NAME'] = 'staging2.crunchr.co';
+
+			} elseif (preg_match('/^\/app/',dirname(__FILE__))) {
+				$_SERVER['SERVER_NAME'] = 'heroku.crunchr.co';
 			}
 		}
 
@@ -53,6 +57,9 @@ class Crunchbutton_App extends Cana_App {
 		// anything local
 		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
+		// anything by heroku use its own db
+		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co|cockpit.la|cockpit._DOMAIN_)$/',$_SERVER['SERVER_NAME'])) {
+			$db = 'heroku';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
@@ -62,9 +69,6 @@ class Crunchbutton_App extends Cana_App {
 		// anything prefixed with beta or dev
 		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
-		// anything by heroku use remote live
-		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
-			$db = 'live';
 		// anything else (should be nothing)
 		} else {
 			$db = 'fail';
@@ -77,14 +81,13 @@ class Crunchbutton_App extends Cana_App {
 
 		// redirect bad urls
 		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
-			die ('no db');
-			header('HTTP/1.1 301 Moved Permanently');
+			//header('HTTP/1.1 301 Moved Permanently');
 			header('Location: https://_DOMAIN_/');
 			exit;
 		}
 
 		// special settings for live web views
-		if (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
+		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
@@ -96,10 +99,28 @@ class Crunchbutton_App extends Cana_App {
 		$params['postInitSkip'] = true;
 		$params['env'] = $db;
 
-		try {
+		if (getenv('HEROKU')) {
+			$params['config']->db->heroku = (object)[
+				'url' => getenv('HEROKU_POSTGRESQL_NAVY_URL'),
+				'type' => 'PostgreSQL'
+			];
+			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
+
+			if (getenv('REDIS_URL')) {
+				$params['config']->cache->default = $params['config']->cache->redis;
+				$params['config']->cache->default->url = getenv('REDIS_URL');
+			}
+
 			parent::init($params);
-		} catch (Exception $e) {
-			$this->dbError();
+
+		} else {
+			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
+
+			try {
+				parent::init($params);
+			} catch (Exception $e) {
+				$this->dbError();
+			}
 		}
 
 		$config = $this->config();
@@ -110,9 +131,11 @@ class Crunchbutton_App extends Cana_App {
 			exit;
 		}
 
-		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2') {
+		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
+
+
 
 		// set host callback by hostname
 		$config->host_callback = ($db == 'local' || $db == 'travis' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
@@ -142,9 +165,6 @@ class Crunchbutton_App extends Cana_App {
 			->config($config)
 			->postInit($params);
 
-		require_once c::config()->dirs->library . '/Cana/Stripe.php';
-		Stripe::setApiKey(c::config()->stripe->dev->secret);
-
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
 			case 'beta.spicywithdelivery.com':
@@ -172,12 +192,37 @@ class Crunchbutton_App extends Cana_App {
 
 		}
 
+		c::stripe();
+
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
 
 	}
 
-	public function exception($e) {
+	public function defaultExceptionHandler($e) {
+		$this->config()->db = null;
+
+		foreach($e->getTrace() as $k=>$v){
+			if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
+				$backtracels[] = "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]";
+			} else {
+				$backtracels[] = "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]";
+			}
+		}
+
+		if (getenv('HEROKU')) {
+			$stderr = fopen('php://stderr', 'w');
+
+			fwrite($stderr, 'PHP EXCEPTION: '.$e->getMessage()."\n");
+
+			foreach ($backtracels as $l) {
+				fwrite($stderr, $l."\n");
+			}
+
+			fwrite($stderr, "\n");
+			fclose($stderr);
+		}
+
 		if ($this->env == 'live') {
 			echo
 				'<title>Error</title><style>body {font-family: sans-serif; }.wrapper{ width: 400px; margin: 0 auto; margin-top: 25px;}</style>'.
@@ -189,16 +234,10 @@ class Crunchbutton_App extends Cana_App {
 			mail('_EMAIL','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
 			exit;
 		} else {
-			$this->config()->db = null;
 			echo "\n<br />".$e->getMessage()."\n<br /><pre>";
-			foreach($e->getTrace() as $k=>$v){
-				if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
-					$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />";
-				} else {
-					$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />";
-				}
+			foreach ($backtracels as $l) {
+				echo $l.'<br>';
 			}
-			echo $backtracel;
 			exit;
 		}
 	}
@@ -218,6 +257,9 @@ class Crunchbutton_App extends Cana_App {
 	public function admin($admin = null) {
 		if ($admin !== null) {
 			$this->_admin = $admin;
+		}
+		if (!$admin && getenv('CLI')) {
+			$this->_admin = new Admin;
 		}
 		return $this->_admin;
 	}
@@ -239,10 +281,29 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$pageName = $page;
 		}
-
-		parent::displayPage($pageName == 'error' ? 'home' : $pageName);
+		try {
+			parent::displayPage($pageName == 'error' ? 'home' : $pageName);
+		} catch (Exception $e) {
+			$this->exception($e);
+		}
 
 		return $this;
+	}
+
+	public function exception($e) {
+		$fn = $this->exceptionHandler();
+		if ($fn) {
+			$fn($e);
+		} else {
+			$this->defaultExceptionHandler($e);
+		}
+	}
+
+	public function exceptionHandler($fn = null) {
+		if (!is_null($fn)) {
+			$this->_exceptionHandler = $fn;
+		}
+		return $this->_exceptionHandler;
 	}
 
 
@@ -281,7 +342,7 @@ class Crunchbutton_App extends Cana_App {
 		foreach ($stack as $theme) {
 			$this->controllerStack($theme);
 		}
-		
+
 		if ($this->isCockpit()) {
 			$this->config()->viewfilter = false;
 		}
@@ -396,7 +457,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 
 			$config['topCommunities'] = [];
-			foreach (Community_Alias::q('select * from community_alias where top="1" order by `sort`') as $community_alias) {
+			foreach (Community_Alias::q('select * from community_alias where top=true order by `sort`') as $community_alias) {
 				$config['topCommunities'][] = [
 					'alias' => $community_alias->alias,
 					'name' => $community_alias->name_alt
@@ -412,7 +473,7 @@ class Crunchbutton_App extends Cana_App {
 	public function getEnv($d = true) {
 		if (c::user()->debug) {
 			$env = 'dev';
-		} elseif (c::env() == 'live') {
+		} elseif (c::env() == 'live' || c::env() == 'crondb') {
 			$env = 'live';
 		} elseif ($d) {
 			$env = 'dev';
@@ -430,6 +491,16 @@ class Crunchbutton_App extends Cana_App {
 		}
 		return $this->_balanced;
 	}
+
+	public function stripe() {
+		if (!$this->_stripe) {
+			\Stripe\Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
+			$this->_stripe = true;
+		}
+		return $this->_stripe;
+	}
+
+
 
 	public function lob($d = true) {
 		if (!$this->_lob) {
@@ -508,7 +579,7 @@ class Crunchbutton_App extends Cana_App {
 		include(c::config()->dirs->www.'server-vacation.html');
 		exit;
 	}
-	
+
 	public function metricsDB() {
 		if (!isset($this->_metricsDB)) {
 			$this->_metricsDB = new Cana_Db_PostgreSQL_Db($this->config()->db->metrics);

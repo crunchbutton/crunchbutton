@@ -5,8 +5,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		if( c::getPagePiece(2) == 'make-call' ){
@@ -22,8 +21,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 		$call = Call::o(c::getPagePiece(2));
 
 		if (!$call->id_call) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
 		}
 
 		switch ($this->method()) {
@@ -44,7 +42,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 		$params[ 'Created_By' ] = c::admin()->firstName();
 		$params[ 'Body' ] = $this->request()[ 'message' ];
 		$params[ 'From' ] = $this->request()[ 'phone' ];
-		if( trim( $params[ 'Name' ] ) != '' && trim( $params[ 'Body' ] ) != '' && trim( $params[ 'From' ] ) != '' ){
+		if( trim( $params[ 'Body' ] ) != '' && trim( $params[ 'From' ] ) != '' ){
 			$support = Crunchbutton_Support::createNewChat( $params );
 			if( $support->id_support ){
 					echo json_encode( [ 'success' => $support->id_support ] );

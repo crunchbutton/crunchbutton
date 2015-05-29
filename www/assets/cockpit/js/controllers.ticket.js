@@ -22,8 +22,9 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 		scope: $scope,
 		watch: {
 			search: '',
-			status: 'open',
-			admin: 'all'
+			status: 'all',
+			admin: 'all',
+			fullcount: false
 		},
 		update: function() {
 			TicketService.list($scope.query, function(d) {
@@ -39,40 +40,21 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	$rootScope.title = 'Ticket #' + $routeParams.id;
 	$scope.loading = true;
+	$scope.isRefunding = false;
 
 	SocketService.listen('ticket.' + $routeParams.id, $scope).on('update', function(d) { update(); });
 
-
-	$scope.isRefunding = false;
-
 	$scope.refund = function(){
-
-		if( $scope.isRefunding ){
+		if ($scope.isRefunding) {
 			return;
 		}
 
-		var question = 'Are you sure you want to refund this order?';
-		if( parseFloat( $scope.ticket.order.credit ) > 0 ){
-			question += "\n";
-			question += 'A gift card was used at this order the refund value will be $' + $scope.ticket.order.charged + ' + $' + $scope.ticket.order.credit + ' as gift card.' ;
-		}
-
-		if ( confirm( question ) ){
-
-			$scope.isRefunding = true;
-			OrderService.refund( $scope.ticket.order.id_order, function( result ){
-
-				$scope.isRefunding = false;
-
-				if( result.success ){
-					$rootScope.reload();
-				} else {
-					console.log( result.responseText );
-					var er = result.errors ? "<br>" + result.errors : 'See the console.log!';
-					App.alert('Refunding fail! ' + er);
-				}
-			} );
-		}
+		// ask the admin if they want to refund
+		$scope.isRefunding = true;
+		OrderService.askRefund($scope.ticket.order, function() {
+			$scope.isRefunding = false;
+			update();
+		});
 	}
 
 	$scope.do_not_pay_driver = function(){

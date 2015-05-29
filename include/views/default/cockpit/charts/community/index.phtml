@@ -172,12 +172,12 @@ $( document ).ready( function(){
 		}
 	});
 
-	<?php foreach( $communities as $community ) {
-		if( $community->hasShiftThisWeek() ){ ?>
-			$( '#checkbox-<?php echo $community->id_community;?>' ).iCheck( 'check' );
-	<?php
-		}
-	 } ?>
+<!--	--><?php //foreach( $communities as $community ) {
+//		if( $community->hasShiftThisWeek() ){ ?>
+//			$( '#checkbox-<?php //echo $community->id_community;?>//' ).iCheck( 'check' );
+//	<?php
+//		}
+//	 } ?>
 
 } );
 
@@ -215,9 +215,7 @@ $( document ).ready( function(){
 
 		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
 
-		if( info[ 'force' ] ){
-			chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
-		}
+		chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
 
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 

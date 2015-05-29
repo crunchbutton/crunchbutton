@@ -81,8 +81,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public static function login($login, $inactive = false) {
-		$status = ( $inactive ? '' : 'and active = 1' );
-		return self::q('select * from admin where login="'.c::db()->escape($login).'"' . $status . ' limit 1')->get(0);
+		$status = ( $inactive ? '' : 'and active = true' );
+		return self::q('select * from admin where login = ? ' . $status . ' limit 1',[$login])->get(0);
 	}
 
 	public function publicExports() {
@@ -90,6 +90,10 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'name' => $this->name,
 			'id_admin' => $this->id_admin
 		];
+	}
+
+	public function paymentType(){
+		return $this->payment_type();
 	}
 
 	public function payment_type(){
@@ -143,7 +147,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getByPhone( $phone, $activeOnly = false){
-		return Crunchbutton_Admin::q("SELECT * FROM admin a WHERE ".($activeOnly ? 'active=1 AND' : '')." (REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}') ORDER BY id_admin DESC LIMIT 1 ")->get(0);
+		return Crunchbutton_Admin::q("SELECT * FROM admin a WHERE ".($activeOnly ? 'active=true AND' : '')." (REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}') ORDER BY id_admin DESC LIMIT 1 ")->get(0);
 	}
 
 	public function getByPhoneSetup( $phone ){
@@ -173,8 +177,10 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function timezone() {
-		if (!isset($this->_timezone)) {
+		if (!isset($this->_timezone) && $this->timezone) {
 			$this->_timezone = new DateTimeZone($this->timezone);
+		} else {
+			$this->_timezone = new DateTimeZone( c::config()->timezone );
 		}
 		return $this->_timezone;
 	}
@@ -190,7 +196,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $this->txt ){
 			return $this->txt;
 		}
-		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_SMS ){
 				return $notification->value;
@@ -203,7 +209,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $this->phone ){
 			return $this->phone;
 		}
-		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_PHONE ){
 				return $notification->value;
@@ -219,31 +225,27 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function activeNotifications(){
 		if( !$this->_activeNotifications ){
 			if( $this->id_admin ){
-				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 			}
 		}
 		return $this->_activeNotifications;
 	}
 
 	public function restaurantsHeDeliveryFor(){
-		return Restaurant::q( 'SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" AND n.active = 1 AND r.active = 1 AND n.id_admin = ' . $this->id_admin );
+		return Restaurant::q("SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = '" . Crunchbutton_Notification::TYPE_ADMIN . "' AND n.active = true AND r.active = true AND n.id_admin = ?", [$this->id_admin]);
 	}
 
 	public function driversList( $search = '' ){
 
 		$where = ( $search && trim( $search ) != '' ) ? ' AND a.name LIKE "%' . $search . '%"' : '';
-		return Admin::q( 'SELECT a.* FROM admin a
-												INNER JOIN (
-													SELECT DISTINCT(id_admin) FROM (
-													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
-													UNION
-													SELECT DISTINCT(a.id_admin) FROM admin a
-														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
-														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
-														) drivers
-													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ' . $where . ' ORDER BY name ASC' );
+		$admins = Admin::q( 'SELECT * FROM admin a WHERE a.active = true ' . $where );
+		$drivers = [];
+		foreach( $admins as $admin ){
+			if( $admin->isDriver() ){
+				$drivers[] = $admin;
+			}
+		}
+		return $drivers;
 	}
 
 	public function search( $search = [] ){
@@ -276,19 +278,19 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
 
-													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
 														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
-														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
 														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"
 														) drivers
 													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ORDER BY name ASC' );
+											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC' );
 	}
 
 	public function allPlacesHeDeliveryFor(){
@@ -326,10 +328,32 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $deliveryFor;
 	}
 
+	public function communityDriverDelivery(){
+		$adminCommunities = [];
+		$groups = $this->groups();
+		foreach ( $groups as $group ) {
+			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
+			foreach( $communities as $community ){
+				if( $community->active ){
+					return Crunchbutton_Community::o( $community->id_community );
+				}
+			}
+		}
+		return false;
+	}
+
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
-			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = "' . $this->id_admin . '" AND g.name LIKE "drivers-%" AND g.name !="' . Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP . '"';
-			$result = c::db()->get( $query );
+			$query = '
+				SELECT COUNT(*) AS Total
+				FROM admin_group ag
+				INNER JOIN `group` g ON g.id_group = ag.id_group
+				WHERE
+					ag.id_admin = ?
+					AND g.name LIKE ?
+					AND g.name !=?
+			';
+			$result = c::db()->get( $query, [$this->id_admin, 'drivers-%', Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP]);
 			$this->_isDriver = ( $result->_items[0]->Total > 0 );
 		}
 		return $this->_isDriver;
@@ -337,8 +361,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	public function isMarketingRep(){
 		if (!isset($this->_isMarketingRep)) {
-			$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = "' . $this->id_admin . '" AND type = "' . Crunchbutton_Group::TYPE_MARKETING_REP . '"';
-			$result = c::db()->get( $query );
+			$query = '
+				SELECT COUNT(*) AS Total FROM admin_group ag
+				INNER JOIN `group` g ON g.id_group = ag.id_group
+				WHERE
+					ag.id_admin = ?
+					AND type = ?
+			';
+			$result = c::db()->get( $query, [$this->id_admin, Crunchbutton_Group::TYPE_MARKETING_REP]);
 			$this->_isMarketingRep = ( $result->_items[0]->Total > 0 );
 		}
 		return $this->_isMarketingRep;
@@ -348,8 +378,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if ( !isset( $this->_isSupport ) ) {
 			$result = c::db()->get('SELECT COUNT(*) AS c FROM admin_group ag
 																LEFT JOIN `group` g using (id_group)
-																WHERE ag.id_admin = ' . $this->id_admin . '
-																AND g.name= "' . Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) . '"');
+																WHERE ag.id_admin = ?
+																AND g.name= ?', [$this->id_admin, Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY)]);
 			if( !$onlyReturnTrueIfTheyAreWorking ){
 				$this->_isSupport = $result->get( 0 )->c ? true : false;
 				return $this->_isSupport;
@@ -368,22 +398,51 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 				SELECT c.* FROM community c
 				LEFT JOIN `group` g ON g.name=c.driver_group
 				LEFT JOIN admin_group ag ON ag.id_group=g.id_group
-				WHERE ag.id_admin="'.$this->id_admin.'"
-			');
+				WHERE ag.id_admin=?
+			', [$this->id_admin]);
 		}
 		return $this->_communitiesHeDeliveriesFor;
 	}
 
-	public function isWorking( $dt = null ){
-		// Based on their shifts #2638
-		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, $dt );
+	public function isWorking( $dt = null, $id_community_shift = null ){
+		// Based on their shifts and community #2638
+		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, $dt, $id_community_shift );
 		if( !$shift ){
 			return false;
 		}
 		return true;
 	}
 
+	public function getLastWorkedTimeHours( $now = 'now' ){
+		$shift = $this->lastWorkedShift( $now );
+		if ($shift){
+			$now = new DateTime( 'now', $this->timezone() );
+			$end = $shift->dateEnd()->get( 0 );
+			if ($end) {
+				$secs = Util::intervalToSeconds( $now->diff( $end ) );
+				$hours = $secs / 60 / 60;
+			} else {
+				$hours = 0;
+			}
+			
+			return intval( $hours );
+		}
+		return false;
+	}
+
+	public function lastWorkedShift( $now = 'now' ){
+		if( !$this->isWorking( $now ) ){
+			$shift = Crunchbutton_Community_Shift::getLastWorkedShiftByAdmin( $this->id_admin, $now );
+			if( $shift->id_community_shift ){
+				return $shift;
+			}
+		}
+		return false;
+	}
+
 	public function workingHoursWeek(){
+		die ('#5430 deprecated');
+		/*
 
 		$date = date( 'Y\WW' );
 		$weekdays = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri','Sat' ];
@@ -404,14 +463,26 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			$weekdays[ join( $weekday, ', ' ) ] = $hour;
 		}
 		return $weekdays;
+		*/
 	}
 
 	public function getNotifications( $oderby = 'active DESC, id_admin_notification DESC' ){
-		return Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} ORDER BY {$oderby}" );
+		return Crunchbutton_Admin_Notification::q('SELECT * FROM admin_notification WHERE id_admin = ? ORDER BY '.$oderby, [$this->id_admin]);
 	}
 
 	public function getAllPermissionsName(){
-		return c::db()->get( "SELECT DISTINCT( ap.permission ) FROM admin_permission ap WHERE ap.id_admin = {$this->id_admin} OR ap.id_group IN ( SELECT id_group FROM admin_group WHERE id_admin = {$this->id_admin} )" );
+		return c::db()->get('
+			SELECT DISTINCT( ap.permission )
+			FROM admin_permission ap
+			WHERE (ap.id_admin = ? and ap.allow = true)
+			OR ap.id_group IN (
+				SELECT id_group
+				FROM admin_group
+				WHERE
+					id_admin = ?
+					and allow = true
+			)
+		', [$this->id_admin, $this->id_admin]);
 	}
 
 	public function permissionCuration() {
@@ -471,13 +542,13 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getPermissionsByGroups(){
-		return c::db()->get( "SELECT ap.*, g.name as group_name FROM admin_permission ap
-										INNER JOIN admin_group ag ON ap.id_group = ap.id_group and ag.id_admin = {$this->id_admin}
-										INNER JOIN `group` g ON g.id_group = ag.id_group ORDER BY group_name, permission ASC" );
+		return c::db()->get('SELECT ap.*, g.name as group_name FROM admin_permission ap
+										INNER JOIN admin_group ag ON ap.id_group = ap.id_group and ag.id_admin = ?
+										INNER JOIN `group` g ON g.id_group = ag.id_group ORDER BY group_name, permission ASC', [$this->id_admin]);
 	}
 
 	public function getPermissionsByUser(){
-		return c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );
+		return c::db()->get('SELECT * FROM admin_permission WHERE id_admin = ?', [$this->id_admin]);
 	}
 
 	public function permission() {
@@ -555,7 +626,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function groups(){
 		if( $this->id_admin ){
 			if( !$this->_groups ){
-				$this->_groups = Crunchbutton_Group::q( "SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = {$this->id_admin} ORDER BY name ASC" );
+				$this->_groups = Crunchbutton_Group::q('SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = ? ORDER BY name ASC', [$this->id_admin]);
 			}
 			return $this->_groups;
 		}
@@ -563,16 +634,16 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function removeGroups(){
-		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin}" );
+		Cana::db()->query('DELETE FROM `admin_group` WHERE id_admin = ?' , [$this->id_admin]);
 	}
 
 	public function removeGroup( $id_group ){
-		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin} AND id_group = {$id_group}" );
+		Cana::db()->query('DELETE FROM `admin_group` WHERE id_admin = ? AND id_group = ?', [$this->id_admin, $id_group]);
 	}
 
 	public function permissions(){
 		if( !$this->_permissions ){
-			$this->_permissions = c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );
+			$this->_permissions = c::db()->get('SELECT * FROM admin_permission WHERE id_admin = ?', [$this->id_admin]);
 		}
 		return $this->_permissions;
 	}
@@ -593,7 +664,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function removePermissions(){
-		c::db()->query( "DELETE FROM admin_permission WHERE id_admin = {$this->id_admin}" );
+		c::db()->query('DELETE FROM admin_permission WHERE id_admin = ?', [$this->id_admin]);
 	}
 
 	public function addPermissions( $permissions ){
@@ -662,7 +733,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	public function config($key = null) {
 		if (!isset($this->_config)) {
-			$config = Crunchbutton_Admin_Config::q('SELECT * FROM admin_config WHERE id_admin='.$this->id_admin);
+			$config = Crunchbutton_Admin_Config::q('SELECT * FROM admin_config WHERE id_admin=?', [$this->id_admin]);
 			foreach ($config as $c) {
 				$this->_config[$c->key] = $c;
 			}
@@ -737,6 +808,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			}
 		}
 
+		$paymentType = $this->paymentType();
+
 		$ex = [
 			'id_admin' => $this->id_admin,
 			'login' => $this->login,
@@ -750,7 +823,11 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'groups' => $groups,
 			'vehicle' => $this->vehicle(),
 			'communities' => $communities,
-			'active' => ( $this->active == 1 )
+			'active' => ( $this->active == 1 ),
+			'payment_type' => $paymentType->payment_type,
+			'hour_rate' => $paymentType->hour_rate,
+			'show_credit_card_tips' => $this->showCreditCardTips(),
+			'show_delivery_fees' => $this->showDeliveryFees(),
 		];
 
 		$cfg = $this->config();
@@ -768,7 +845,24 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			unset( $ex[ $rem ] );
 		}
 
+		$community_delivery = $this->communityDriverDelivery();
+		if( $community_delivery->id_community ){
+			$ex[ 'id_community' ] = $community_delivery->id_community;
+		}
 		return $ex;
+	}
+
+	// #5480
+	public function showCreditCardTips(){
+		$paymentType = $this->paymentType();
+		return ( $paymentType->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS );
+	}
+
+	// #5480
+	public function showDeliveryFees(){
+		$paymentType = $this->paymentType();
+		return ( 	$paymentType->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS &&
+							$paymentType->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS );
 	}
 
 	private static function _isBoolPref($pref) {
@@ -866,14 +960,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function setPush($id, $os = 'ios') {
-		$type = $os == 'ios' ? Crunchbutton_Admin_Notification::TYPE_PUSH_IOS : Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID;
+		$os = $os == 'ios' ? Crunchbutton_Admin_Notification::TYPE_PUSH_IOS : Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID;
 
 		$notifications = Admin_Notification::q('
 			SELECT * FROM admin_notification
 			WHERE
-				id_admin="'.$this->id_admin.'"
-				AND `type`="'.$type.'"
-		');
+				id_admin=?
+				AND `type`=?
+		', [$this->id_admin, $os]);
 		foreach($notifications as $n) {
 			if ($n->value == $id) {
 				$exists = true;
@@ -887,7 +981,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			$n = new Admin_Notification([
 				'active' => 1,
 				'value' => $id,
-				'type' => $type,
+				'type' => $os,
 				'id_admin' => $this->id_admin
 			]);
 			$n->save();
@@ -934,6 +1028,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		$this->phone = Phone::clean($this->phone);
 		$this->txt = Phone::clean($this->txt);
 		$this->testphone = Phone::clean($this->testphone);
+
 		// if it is a new record saves the author
 		if( !$this->id_admin && c::admin()->id_admin ){
 			$this->id_admin_author = c::admin()->id_admin;
@@ -958,7 +1053,79 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	// return the last added pexcard
 	public function pexcard(){
-		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = "' . $this->id_admin . '" ORDER BY id_admin_pexcard DESC' )->get( 0 );
+		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = ? ORDER BY id_admin_pexcard DESC', [$this->id_admin])->get( 0 );
+	}
+
+	public function dateTerminated(){
+		if( $this->date_terminated ){
+			return new DateTime( $this->date_terminated, new DateTimeZone( c::config()->timezone ) );
+		}
+		return false;
+	}
+
+
+	public function hasPaymentInfo( $processor = null ){
+
+		if( !$processor ){
+			$processor = Crunchbutton_Payment::processor();
+		}
+
+		$paymentType = $this->paymentType();
+		switch ( $processor ) {
+			case Crunchbutton_Payment::PROCESSOR_BALANCED:
+				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
+					return true;
+				}
+				break;
+
+			case Crunchbutton_Payment::PROCESSOR_STRIPE:
+				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+					return true;
+				}
+				break;
+		}
+		return false;
+	}
+
+	public function hasResource( $type = 'page' ){
+		$_resources = Crunchbutton_Community_Resource::byCommunity( 'all' );
+		if( $_resources ){
+			foreach( $_resources as $resource ){
+				return true;
+			}
+		}
+
+		$resources = [];
+
+		$driver = c::user();
+		$groups = $driver->groups();
+		if ($groups) {
+			foreach ( $groups as $group ) {
+				$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
+				foreach( $communities as $community ){
+					$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
+					if( $_resources ){
+						foreach( $_resources as $resource ){
+							if( $resource->active ){
+								if( $type == 'page' ){
+									if( $resource->page ){
+										return true;
+									}
+								} else if( $type == 'side' ){
+									if( $resource->side ){
+										$resources[] = [ 'name' => $resource->name, 'url' => $resource->download_url() ];
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if( count( $resources ) ){
+			return $resources;
+		}
+		return false;
 	}
 
 	public function __construct($id = null) {
@@ -966,7 +1133,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		$this->changeOptions([
 			'author_id' => 'id_author'
 		]);
-		
+
 		$this
 			->table('admin')
 			->idVar('id_admin')

@@ -150,6 +150,7 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 				'pexcard' : { 'method': 'GET', params : { action: 'pexcard' } },
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'save_bank' : { 'method': 'POST', params : { action: 'save-bank' } },
+				'save_stripe_bank' : { 'method': 'POST', params : { action: 'save-stripe-bank' } },
 			}
 		);
 
@@ -197,8 +198,10 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 
 	service.typesPayment = function(){
 		var methods = [];
-		methods.push( { value: 'orders', label: 'Orders' } );
-		methods.push( { value: 'hours', label: 'Hours' } );
+		methods.push( { value: 'orders', label: 'Commission' } );
+		methods.push( { value: 'hours', label: 'Hourly with tips' } );
+		methods.push( { value: 'hours_without_tips', label: 'Hourly without tips (but a higher hourly rate)' } );
+		methods.push( { value: 'making_whole', label: 'Making whole' } );
 		return methods;
 	}
 
@@ -210,17 +213,35 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 	}
 
 	service.bankInfoTest = function( callback ){
-		callback( { 'routing_number':'321174851', 'account_number':'9900000000' } );
+		ConfigService.getProcessor( function( json ){
+			if( json.processor && json.processor.type ){
+				if ( json.processor.type == 'balanced' ) {
+					callback( { 'routing_number':'321174851', 'account_number':'9900000000' } );
+				} else if ( json.processor.type == 'stripe' ) {
+					callback( { 'routing_number':'111000025', 'account_number':'000123456789' } );
+				}
+			}
+		} );
+	}
+
+	service.save_stripe_bank = function( params, callback ){
+		staff.save_stripe_bank( params, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.createBankAccount = function( callback ){
+		ConfigService.getProcessor( function( json ){
+			callback( json );
+		} );
 	}
 
 	service.bankAccount = function( payload, callback ){
-		ConfigService.processor( function( json ){
+		ConfigService.getProcessor( function( json ){
 			if( !json.error && json.processor ){
 				var marketplaceUri = json.processor.balanced;
 				balanced.init( marketplaceUri );
-				console.debug('Creating bank account: ', payload);
 				balanced.bankAccount.create( payload, function( response ) {
-					console.debug('Balanced response : ', arguments);
 						// Successful tokenization
 						if( response.status_code === 201 ) {
 							callback( response.bank_accounts[ 0 ] );

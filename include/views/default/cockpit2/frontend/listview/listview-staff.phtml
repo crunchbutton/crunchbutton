@@ -2,51 +2,52 @@
 	<table class="tb-zebra">
 		<tr>
 			<th>Name</th>
-			<th>Phone</th>
-			<th>Login</th>
-			<th>Type</th>
-			<th ng-if="!community">Community</th>
-			<th class="tb-center">Active</th>
-			<th class="tb-center">Working</th>
-			<th class="tb-center">Working Today</th>
-			<th class="tb-center">Pex Card</th>
-			<th class="tb-center">Serial</th>
-			<th class="tb-center">Last four</th>
-			<th> </th>
+			<th ng-if="!community">Info</th>
+			<th class="tb-small tb-center">Active</th>
+			<th class="tb-small tb-center" ng-if="query.working != 'all'">Working</th>
+			<th class="tb-small tb-center">Vehicle</th>
+			<th class="tb-small tb-center">Pex</th>
+			<th class="tb-small"> </th>
 		</tr>
 		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{s.login}}">
 			<td>
-
-				<a ng-show="s.type == 'Marketing Rep'" href="/staff/marketing/{{s.id_admin}}">{{s.name}}</a>
-				<a ng-show="s.type != 'Marketing Rep'" href="/staff/{{s.login}}">{{s.name}}</a>
+				<span class="listview-bold">{{s.name}}</span>
+				<br><span class="listview-smaller">{{s.login}}</span>
+				<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
 			</td>
-			<td><a href ng-click="callText(s.phone)">{{s.phone | formatPhone}}</a></td>
-			<td>{{s.login}}</td>
-			<td>{{s.type}}</td>
 			<td ng-if="!community">
-				<span class="staff-community-repeat" ng-repeat="community in s.communities">
-					{{community}}
+				<span class="listview-bold">{{s.type}}</span>
+				<span ng-if="!community"><br>
+					<span>
+					<span class="staff-community-repeat listview-smaller" ng-repeat="community in s.communities">
+						{{community}}
+					</span>
+					</span>
 				</span>
 			</td>
-			<td class="tb-center">
-				<span ng-if="s.active"><i class="fa fa-check"></i></span>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-green" ng-if="s.active">Active</span>
+				<span class="tag tag-red" ng-if="!s.active">Inactive</span>
 			</td>
-			<td class="tb-center">
-				<span ng-if="s.working"><i class="fa fa-check"></i></span>
+			<td nowrap class="tb-center tb-v-center" ng-if="query.working != 'all'">
+				<span class="tag tag-purple" ng-if="s.working_today && !s.working">Today</span>
+				<span class="tag tag-orange" ng-if="s.working">Now</span>
+				<span class="tag tag-lightgrey" ng-if="!s.working_today && !s.working">No</span>
 			</td>
-			<td class="tb-center">
-				<span ng-if="s.working_today"><i class="fa fa-check"></i></span>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-blue" ng-if="s.vehicle == 'car'">Car</span>
+				<span class="tag tag-purple" ng-if="s.vehicle == 'bike'">Bike</span>
+				<span class="tag tag-grey" ng-if="!s.vehicle">None</span>
 			</td>
-			<td class="tb-center">
-				<span ng-if="s.pexcard"><i class="fa fa-check"></i></span>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-grey" ng-if="s.pexcard && s.pexcard.card_serial">{{s.pexcard.card_serial}}</span>
+				<span class="tag tag-lightgrey" ng-if="!s.pexcard || !s.pexcard.card_serial">None</span>
 			</td>
-			<td class="tb-center">
-				<span ng-if="s.pexcard">{{s.pexcard.card_serial}}</span>
+			<td nowrap class="tb-v-center">
+				<a href="/staff/{{s.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>
+				<a href="/drivers/onboarding/{{s.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver Info</button></a>
+				<a href="/staff/{{s.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 			</td>
-			<td class="tb-center">
-				<span ng-if="s.pexcard">{{s.pexcard.last_four}}</span>
-			</td>
-			<td><a href="/staff/{{s.login}}/payinfo">Pay Info</a></td>
 		</tr>
 	</table>
 </div>

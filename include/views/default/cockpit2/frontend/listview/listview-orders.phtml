@@ -3,21 +3,17 @@
 		<tr>
 			<th>Info</th>
 			<th>Date</th>
-			<th>Restaurant</th>
+			<th ng-if="!restaurant">Restaurant</th>
 			<th>Customer</th>
+			<th>Price</th>
 			<th>Driver</th>
-			<th>Order</th>
-			<th>Status</th>
+			<th class="tb-small">Status</th>
+			<th class="tb-small"></th>
 		</tr>
-		<tr ng-repeat="order in orders track by $index" ng-class="{ 'delivery_is_self': order.delivery_is_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/order/{{order.id_order}}">
+		<tr ng-repeat="order in orders track by $index" ng-class="{ 'delivery_it_self': order.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/order/{{order.id_order}}">
 			<td>
 				<?php /* Info */ ?>
-					<div>
-						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
-					</div>
-					<div class="link no-underline" ng-click="ticket(order.id_order);">
-						<i class="fa fa-comments-o"></i> Ticket
-					</div>
+					<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
 				<?php /* Info */ ?>
 			</td>
 			<td>
@@ -25,37 +21,58 @@
 				{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}
 				<?php /* Date */ ?>
 			</td>
-			<td>
-				<?php /* Restaurant */ ?>
-				<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
-				<a href="/community/{{order._community_permalink}}" ng-if="!community">{{order._community_name}}</a>
-				<div>
-					<a href ng-click="callText(order._restaurant_phone)">{{order._restaurant_phone | formatPhone}}</a>
-				</div>
-				<?php /* Restaurant */ ?>
+			<td ng-if="!restaurant">
+				<? /* Restaurant */ ?>
+				<span class="listview-smaller">
+					<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
+					<a href="/community/{{order._community_permalink}}" ng-if="!community" class="no-underline">{{order._community_name}}</a>
+				</span>
+				<? /* Restaurant */ ?>
 			</td>
 			<td>
 				<?php /* Customer */ ?>
-					<div><a href="/customer/{{order.id_user}}">{{order.name}}</a></div>
-					<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
+					<a href="/customer/{{order.id_user}}">{{order.name}}</a><br>
+					<a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</a>
 				<?php /* Customer */ ?>
 			</td>
 			<td>
-				<?php /* Driver */ ?>
-					<div><a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></div>
-					<div><strong>{{order.status.status}}</strong></div>
-				<?php /* Driver */ ?>
+				<?php /* Order */ ?>
+				<span class="listview-smaller">
+					<table>
+						<tr><td>Sub:</td><td>${{order.price + order.delivery_fee + order.delivery_service_markup_value + (order.price * (order.service_fee/100)) | number:2}}</td></tr>
+						<tr><td class="listview-bold">Tot:</td><td class="listview-bold">${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
+					</table>
+				</span>
+
+				<?php /* Order */ ?>
 			</td>
 			<td>
-				<?php /* Order */ ?>
-				${{order.final_price_plus_delivery_markup}}
-				<?php /* Order */ ?>
+				<?php /* Driver */ ?>
+
+					<a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a><br>
+					<a href ng-click="callText(order.status.driver.phone)" class="listview-smaller">{{order.status.driver.phone | formatPhone}}</a>
+				<?php /* Driver */ ?>
 			</td>
-			<td>
-				<?php /* Status */ ?>
-				<b>{{order.status.status}}</b><br>
-				<span ng-if="order.status"><span am-time-ago="order.status.date | localtime | timestamp"></span></span>
-				<?php /* Status */ ?>
+			<td class="tb-v-center">
+				<span ng-if="order.delivery_service">
+					<span class="tag tag-red" ng-if="order.status.status == 'new'">New</span>
+					<span class="tag tag-green" ng-if="order.status.status == 'accepted'">Accepted</span>
+					<span class="tag tag-blue" ng-if="order.status.status == 'pickedup'">Pickedup</span>
+					<span class="tag tag-purple" ng-if="order.status.status == 'delivered'">Delivered</span>
+				</span>
+				<span ng-if="!order.delivery_service && order._restaurant_confirmation">
+					<span class="tag tag-red" ng-if="!order.confirmed">Unconfirmed</span>
+					<span class="tag tag-green" ng-if="order.confirmed">Confirmed</span>
+				</span>
+				<span ng-if="!order.delivery_service && !order._restaurant_confirmation">
+					<span class="tag tag-grey">Placed</span>
+				</span>
+				<br>
+				<span ng-if="order.status" class="listview-smallest"><span am-time-ago="order.status.date_timestamp | timestamp"></span></span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="" ng-click="ticket(order.id_order)"><button class="button button-small button-empty button-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
+				<a href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 			</td>
 		</tr>
 	</table>

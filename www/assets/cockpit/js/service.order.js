@@ -33,6 +33,16 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			method: 'GET',
 			params : {}
 		},
+		'resend_notification' : {
+			url: App.service + 'order/:id_order/resend_notification',
+			method: 'GET',
+			params : {}
+		},
+		'resend_notification_drivers' : {
+			url: App.service + 'order/:id_order/resend_notification_drivers',
+			method: 'GET',
+			params : {}
+		},
 		'refund' : { url: App.service + 'order/:id_order/refund', method: 'GET', params : {} },
 		'do_not_reimburse_driver' : { url: App.service + 'order/:id_order/do_not_reimburse_driver', method: 'GET', params : {} },
 		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
@@ -69,6 +79,33 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			callback( data );
 		});
 	}
+	
+	service.askRefund = function(order, callback) {
+
+		var question = 'Are you sure you want to refund this order?';
+		if (parseFloat(order.credit ) > 0) {
+			question += "\nA gift card was used at this order the refund value will be $" + $scope.ticket.order.charged + ' + $' + $scope.ticket.order.credit + ' as gift card.' ;
+		}
+		
+		var fail = function() {
+			callback(false);
+		};
+		
+		var success = function() {
+			service.refund(order.id_order, function(result) {
+				if (result.success) {
+					callback(true);
+				} else {
+					console.log(result.responseText);
+					var er = result.errors ? '<br>' + result.errors : 'See the console.log!';
+					App.alert('Refunding fail! ' + er);
+					fail();
+				}
+			});
+		};
+
+		App.confirm(question, 'Refund #' + id_order, success, fail);
+	}
 
 	service.do_not_reimburse_driver = function( id_order, callback ){
 		order.do_not_reimburse_driver( { id_order: id_order }, function( data ) {
@@ -86,6 +123,58 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 		order.do_not_pay_restaurant( { id_order: id_order }, function( data ) {
 			callback( data );
 		});
+	}
+	
+	service.resend_notification_drivers = function( o, callback ){
+		var fail = function() {
+			callback({status:false});
+		};
+
+		if (o.status.status != 'new' || o.status.status != 'rejected') {
+			$rootScope.flash.setMessage('Order has already been accepted.');
+			fail();
+			return;
+		}
+
+		var question = 'Are you sure you want to resend driver notifications to #' + o.id_order + '?';
+
+		var success = function() {
+			order.resend_notification_drivers( { id_order: o.id_order }, function( result ) {
+				if (!result || result.status != 'success') {
+					$rootScope.flash.setMessage('Error!');
+				} else {
+					$rootScope.flash.setMessage('Notifications sent');
+				}
+				callback(result);
+			});
+		};
+
+		App.confirm(question, 'Renotify #' + o.id_order, success, fail);
+	}
+	
+	service.resend_notification = function( o, callback ){
+		var fail = function() {
+			callback({status:false});
+		};
+
+		if (o.confirmed) {
+			$rootScope.flash.setMessage('Order has already been confirmed.');
+			fail();
+			return;
+		}
+		var question = 'Are you sure you want to resend restaurant notifications to #' + o.id_order + '?';
+
+		var success = function() {
+			order.resend_notification( { id_order: o.id_order }, function( result ) {
+				if (!result || result.status != 'success') {
+					$rootScope.flash.setMessage('Error!');
+				} else {
+					$rootScope.flash.setMessage('Notifications sent');
+				}
+				callback(result);
+			});
+		};
+		App.confirm(question, 'Renotify #' + o.id_order, success, fail);
 	}
 
 	service.saveeta = function(params, callback) {

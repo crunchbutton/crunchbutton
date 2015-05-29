@@ -96,14 +96,6 @@
 <!-- side nav -->
 <div class="primary-sidebar">
 	<ul class="nav nav-collapse collapse nav-collapse-primary">
-		<li class="<?=$this->page == 'home' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/dashboard">
-				<i class="icon-dashboard icon-2x"></i>
-				<span>Dashboard</span>
-			</a>
-		</li>
-
 
 		<? if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) : ?>
 			<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
@@ -232,21 +224,6 @@
 					</li>
 					<? } ?>
 
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
-					<li class="">
-						<a href="/drivers/shift/schedule/driver">
-							<i class="icon-calendar"></i> Schedule - for drivers
-						</a>
-					</li>
-					<? } ?>
-
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
-						<li class="">
-							<a href="/drivers/hours">
-								<i class="icon-time"></i> Working hours <i style="font-size:11px;">deprecated</i>
-							</a>
-						</li>
-					<? } ?>
 				</ul>
 			</li>
 		<? endif ; ?>
@@ -289,13 +266,7 @@
 						</a>
 					</li>
 				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','locations'] ) ) { ?>
-					<li class="">
-						<a href="/loc">
-							<i class="icon-map-marker"></i> Locations
-						</a>
-					</li>
-				<? } ?>
+
 			</ul>
 		</li>
 
@@ -318,13 +289,6 @@
 						</a>
 					</li>
 				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','logs'] ) ) { ?>
-					<li class="">
-						<a href="/logs">
-							<i class="icon-warning-sign"></i> Logs
-						</a>
-					</li>
-				<? } ?>
 				<? if ( c::admin()->permission()->check( [ 'global','rules'] ) ) { ?>
 					<li class="">
 						<a href="/rules">
@@ -343,13 +307,6 @@
 					<li class="">
 						<a href="/permissions">
 							<i class="icon-unlock"></i> User / Permissions
-						</a>
-					</li>
-				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','settlement'] ) ) { ?>
-					<li class="">
-						<a href="/settlement">
-							<i class="icon-money"></i> Settlement
 						</a>
 					</li>
 				<? } ?>

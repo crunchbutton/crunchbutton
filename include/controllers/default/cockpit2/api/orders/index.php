@@ -11,13 +11,19 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$user = $this->request()['user'] ? c::db()->escape($this->request()['user']) : null;
-		$phone = $this->request()['phone'] ? c::db()->escape($this->request()['phone']) : null;
-		$restaurant = $this->request()['restaurant'] ? c::db()->escape($this->request()['restaurant']) : null;
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$user = $this->request()['user'] ? $this->request()['user'] : null;
+		$phone = $this->request()['phone'] ? $this->request()['phone'] : null;
+		$datestart = $this->request()['datestart'] ? $this->request()['datestart'] : null;
+		$dateend = $this->request()['dateend'] ? $this->request()['dateend'] : null;
+		$restaurant = $this->request()['restaurant'] ? $this->request()['restaurant'] : null;
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$export = $this->request()['export'] ? true : false;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -29,11 +35,13 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			SELECT
 				-WILD-
 			FROM `order`
+			left JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
+			left JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
+			left JOIN community ON community.id_community=restaurant_community.id_community
+
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
-			LEFT JOIN restaurant ON restaurant.id_restaurant=`order`.id_restaurant
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
-			LEFT JOIN restaurant_community ON restaurant_community.id_restaurant=restaurant.id_restaurant
-			LEFT JOIN community ON community.id_community=restaurant_community.id_community
+
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
 
@@ -48,26 +56,46 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		if ($user) {
 			$q .= '
-				AND `order`.id_user="'.$user.'"
+				AND `order`.id_user=?
 			';
+			$keys[] = $user;
 		}
 
 		if ($phone) {
 			$q .= '
-				AND `order`.phone="'.$phone.'"
+				AND `order`.phone=?
 			';
+			$keys[] = $phone;
 		}
 
 		if ($community) {
 			$q .= '
-				AND community.id_community="'.$community.'"
+				AND community.id_community=?
 			';
+			$keys[] = $community;
 		}
 
 		if ($restaurant) {
 			$q .= '
-				AND restaurant.id_restaurant="'.$restaurant.'"
+				AND restaurant.id_restaurant=?
 			';
+			$keys[] = $restaurant;
+		}
+
+		if ($datestart) {
+			$datestart = date('Y-m-d', strtotime($datestart));
+			$q .= '
+				AND `order`.date >= ?
+			';
+			$keys[] = $datestart;
+		}
+
+		if ($dateend) {
+			$dateend = date('Y-m-d', strtotime($dateend));
+			$q .= '
+				AND `order`.date <= date_add(?, interval 1 day)
+			';
+			$keys[] = $dateend;
 		}
 
 		if ($search) {
@@ -79,76 +107,133 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				case ( strpos( $search, 'phone:' ) !== false ):
 					$phone = str_replace( 'phone:' , '', $search );
 					$phone = str_replace( '-' , '', $phone );
-					$q .= 'AND order.phone = "' . $phone . '"';
-					break;
-
-				case ( strpos( $search, 'customer:' ) !== false ):
-					$id_user = str_replace( 'customer:' , '', $search );
-					$q .= 'AND order.id_user = "' . $id_user . '"';
+					$q .= 'AND order.phone = ? ';
+					$keys[] = $phone;
 					break;
 
 				default:
-					$q .= Crunchbutton_Query::search([
+					$s = Crunchbutton_Query::search([
 						'search' => stripslashes($search),
 						'fields' => [
 							'restaurant.name' => 'like',
 							'admin.name' => 'like',
-							'order.phone' => 'like',
-							'order.name' => 'like',
-							'order.address' => 'like',
-							'order.notes' => 'like',
-							'order.id_order' => 'liker'
+							'`order`.phone' => 'like',
+							'`order`.name' => 'like',
+							'`order`.address' => 'like',
+							'`order`.notes' => 'like',
+							'`order`.id_order' => 'inteq'
 						]
 					]);
+					$q .= $s['query'];
+					$keys = array_merge($keys, $s['keys']);
 					break;
+			}
+		}
+
+
+		$count = 0;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `order`.id_order) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
 			}
 		}
 
 		$q .= '
 			GROUP BY `order`.id_order
-		';
-
-		// get the count
-		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
-		while ($c = $r->fetch()) {
-			$count++;
-		}
-
-		$q .= '
 			ORDER BY `order`.id_order DESC
-			LIMIT '.$offset.', '.$limit.'
 		';
+		if (!$export) {
+			$q .= '
+				LIMIT ?
+				OFFSET ?
+			';
+			$keys[] = $getCount ? $limit : $limit+1;
+			$keys[] = $offset;
+		}
 
 		// do the query
 		$data = [];
 		$query = str_replace('-WILD-','
 			`order`.*,
-			restaurant.name as _restaurant_name,
-			restaurant.phone as _restaurant_phone,
-			restaurant.permalink as _restaurant_permalink,
-			community.name as _community_name,
-			community.permalink as _community_permalink,
-			community.id_community as _community_id,
-			admin.name as _driver_name,
-			admin.id_admin as _driver_id
+			max(restaurant.name) as _restaurant_name,
+			max(restaurant.phone) as _restaurant_phone,
+			max(restaurant.permalink) as _restaurant_permalink,
+			bool_and(restaurant.confirmation) as _restaurant_confirmation,
+			max(community.name )as _community_name,
+			max(community.permalink) as _community_permalink,
+			max(community.id_community) as _community_id,
+			max(admin.name) as _driver_name,
+			max(admin.id_admin) as _driver_id
 		', $q);
 
-		$r = c::db()->query($query);
+		$r = c::db()->query($query, $keys);
+
+		$i = 1;
+		$more = false;
 
 		while ($o = $r->fetch()) {
+
+			if (!$export && !$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
+
 			$o->status = Order::o( $o->id_order )->status()->last();
 			$restaurant = Restaurant::o( $o->id_restaurant );
-			$o->delivery_is_self = $restaurant->deliveryItSelf();
+			$o->delivery_it_self = $restaurant->deliveryItSelf();
+			// See: #3763
+			if( !$o->lat ){
+				$user = User::o( $o->id_user );
+				if( $user->id_user && $user->location_lon == $o->lon && $user->location_lat ){
+					$o->lat = $user->location_lat;
+				} else if( !$o->lon && $user->location_lon && $user->location_lat ){
+					$o->lon = $user->location_lon;
+					$o->lat = $user->location_lat;
+				}
+			}
+
+			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
+
+			foreach (get_object_vars($o) as $key => $value) {
+				$type = gettype($value);
+
+				if (($type == 'string' || $type == 'integer') && in_array($key, $boolFields)) {
+					$o->{$key} = $o->{$key} ? true : false;
+				} elseif ($type == 'string' && is_numeric($value)) {
+					if (strpos($value, '.') === false) {
+						$o->{$key} = intval($o->{$key});
+					} else {
+						$o->{$key} = floatval($o->{$key});
+					}
+				}
+
+			}
+
 			$data[] = $o;
+			$i++;
 		}
 
-		echo json_encode([
-			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
-			'results' => $data
-		]);
+		$pages = ceil($count / $limit);
+
+		if ($export) {
+			// @todo: make these layouts actulay do something. they are from old cockpit and need to be migrated
+			c::view()->orders = $data;
+			c::view()->layout('layout/csv');
+			c::view()->display('orders/csv', ['display' => true, 'filter' => false]);
+		} else {
+
+			echo json_encode([
+				'more' => $getCount ? $pages > $page : $more,
+				'count' => intval($count),
+				'pages' => $pages,
+				'page' => intval($page),
+				'results' => $data
+			], JSON_PRETTY_PRINT);
+			// this aparantly doesnt always work JSON_NUMERIC_CHECK
+		}
 
 	}
 }

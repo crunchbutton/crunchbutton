@@ -1,3 +1,20 @@
+NGApp.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		.when('/resources', {
+			action: 'community-resources',
+			controller: 'CommunityResourcesDriverCtrl',
+			templateUrl: 'assets/view/drivers-resources.html'
+
+		})
+}]);
+
+NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, CommunityResourceService ) {
+	CommunityResourceService.driver(function(data) {
+		$scope.communities = data;
+		console.log('$scope.communities',$scope.communities);
+	});
+} );
+
 NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationService, DriverOrdersService ) {
 
 	//This links to orders page for pending orders
@@ -18,92 +35,62 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 
 
 
-NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService, MainNavigationService) {
+NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrdersViewService) {
+	$scope.oc = DriverOrdersViewService;
 
+	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+		//console.log('ROUTE',arguments);
+		//$scope.oc = null;
+	});
+});
+
+NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
+
+	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
+	$scope.oc = DriverOrdersViewService;
+	DriverOrdersViewService.prep();
 
-	// private method
-	var load = function(){
-		DriverOrdersService.get( function( json ){
-			$scope.order = json;
-			$scope.ready = true;
-			$scope.unBusy();
-		} );
+	$scope.nextOrder = function() {
+		//console.log(arguments);
+	};
+
+	$scope.iOS = App.iOS();
+	
+	var load = function() {
+		DriverOrdersViewService.load();
+		watching = null;
+	};
+	
+	var watching = null;
+
+	if (!AccountService.init) {
+		// we got here before the auth service was complete. 
+		watching = $rootScope.$on('userAuth', load);
 	}
-
-	$scope.text_customer_5_min_away_sending = null;
-
-	$scope.text_customer_5_min_away = function(){
-		if( 'Confirm send message to customer?' ){
-			$scope.text_customer_5_min_away_sending = true;
-			DriverOrdersService.text_customer_5_min_away( $scope.order.id_order,
-				function( json ){
-					if( json.status ) {
-						App.alert( 'Message sent!' );
-					} else {
-						App.alert( 'Message not sent!' );
-					}
-					$scope.text_customer_5_min_away_sending = true;
-				}
-			);
-		}
+	
+	if (AccountService.isLoggedIn()) {
+	    load();
+	    setTimeout(function() {
+			DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0));
+		}, 1000 );
 	}
-
-	$scope.accept = function() {
-		$scope.makeBusy();
-		DriverOrdersService.accept( $scope.order.id_order,
-			function( json ){
-				if( json.status ) {
-					load();
-				} else {
-					load();
-					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
-				}
-			}
-		);
-	};
-
-	$scope.undo = function() {
-		$scope.makeBusy();
-		DriverOrdersService.undo( $scope.order.id_order, function(){ load(); } );
-	};
-
-	$scope.pickedup = function() {
-		$scope.makeBusy();
-		DriverOrdersService.pickedup( $scope.order.id_order, function(){ load(); } );
-	};
-
-	$scope.delivered = function() {
-		$scope.makeBusy();
-		DriverOrdersService.delivered( $scope.order.id_order, function(){
-			load();
-			MainNavigationService.link('/drivers/orders');
-		} );
-	};
-
-	$scope.reject = function() {
-		$scope.makeBusy();
-		DriverOrdersService.reject( $scope.order.id_order, function(){ load();	} );
-	};
-
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
-
-	DriverOrdersService.driver_take();
 
 });
 
-NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService ) {
+NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
+
+	$scope.showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
+	// #5413
+	$scope.showOrders = true;
+
 	var showAll = $.totalStorage('driver-orders-show');
 	if (!showAll) {
 		showAll = false;
 	} else {
 		showAll = $.totalStorage('driver-orders-show') == 'all' ? true : false;
 	}
-
+	$scope.iOS = App.iOS();
 	$scope.show = {
 		all: showAll
 	};
@@ -134,6 +121,11 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		$scope.unBusy();
 		DriverOrdersService.list(function(data) {
 			$scope.driverorders = data;
+			for (var x in $scope.driverorders) {
+				if( $scope.driverorders[x].address ){
+					$scope.driverorders[x].addressFirstLine = $scope.driverorders[x].address.split(',').shift();
+				}
+			}
 			$scope.ready = true;
 		});
 	};
@@ -177,12 +169,15 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		}
 	});
 
+
 	$scope.update();
 } );
 
 NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $routeParams, StaffService, ViewListService ) {
 
 	angular.extend( $scope, ViewListService );
+
+	$scope.isMobile = App.isMobile();
 
 	if( $scope.account.isLoggedIn() ){
 		$scope.id_admin = parseInt( $scope.account.user.id_admin );
@@ -268,9 +263,9 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 					$scope.crunchbutton_card_id = null;
 					$scope.last_four_digits = null;
 					$scope.card = null;
-					$scope.flash.setMessage( 'Your PEX Card is Active! :D! Activate another PEX card', 'success' );
+					App.alert( 'Your PEX Card is Active! :D! Activate another PEX card', 'success' );
 				} else {
-					$scope.flash.setMessage( 'Error activating card!', 'error' );
+					App.alert( 'Error activating card!', 'error' );
 					$scope.isActivating = false;
 				}
 
@@ -305,7 +300,7 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 				if( json.id ){
 					$scope.card = json;
 				} else {
-					$scope.flash.setMessage( json.error, 'error' );
+					App.alert( json.error, 'error' );
 					$scope.crunchbutton_card_id = '';
 					$scope.last_four_digits = '';
 				}
@@ -378,6 +373,8 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftScheduleService ) {
 
+	var isSaving = false;
+
 	$scope.ready = false;
 
 	var list = function(){
@@ -388,7 +385,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.shiftsAvailableToWork = 0;
-	$scope.availableToWork = [12,11,10,9,8,7,6,5,4,3,2,1];
+	$scope.availableToWork = [ 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
 
 	var process = function( data ){
 		$scope.available = 0;
@@ -401,13 +398,20 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	var count = function(){
+		$scope.available = 0;
+		$scope.yes = 0;
+		$scope.not = 0;
 		var list = [];
 		var ranking = 1;
+		var selecteds = [];
 		if( $scope.shifts && $scope.shifts.length ){
+			$scope.shifts.ranking_next = null;
+			$scope.shifts.ranking_prev = null;
 			for( var i = 0; i < $scope.shifts.length; i++ ){
 				var shift = $scope.shifts[ i ];
 				if( shift.ranking > 0 ){
 					ranking++;
+					selecteds.push( i );
 				}
 				if( !shift.ranking && shift.ranking != 0 ){
 					$scope.available++;
@@ -420,12 +424,51 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 				}
 			}
 		}
-		$scope.unBusy();
+
 		$scope.nextRanking = ranking;
+		if( selecteds && selecteds.length ){
+
+			for( var i = 0; i < selecteds.length; i++ ){
+				var shift_index = selecteds[ i ];
+				var next_index = selecteds[ i + 1 ];
+				var prev_index = selecteds[ i - 1 ];
+				$scope.shifts[ shift_index ].ranking_next = null;
+				$scope.shifts[ shift_index ].ranking_prev = null;
+
+				if( $scope.shifts[ prev_index ] ){
+					$scope.shifts[ shift_index ].ranking_prev = $scope.shifts[ prev_index ].id_community_shift;
+				} else {
+					$scope.shifts[ shift_index ].ranking_prev = 0;
+				}
+
+				if( $scope.shifts[ next_index ] ){
+					$scope.shifts[ shift_index ].ranking_next = $scope.shifts[ next_index ].id_community_shift;
+				} else {
+					$scope.shifts[ shift_index ].ranking_next = 0;
+				}
+			}
+		}
+	}
+
+	$scope.save = function(){
+		$scope.makeBusy();
+		$scope.isSaving = true;
+		var shifts = {};
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				var shift = $scope.shifts[ i ];
+				shifts[ shift.id_community_shift ] = shift.ranking;
+			}
+		}
+		DriverShiftScheduleService.save( shifts, function( data ){
+			$scope.isSaving = false;
+			process( data );
+			$scope.unBusy();
+		} );
 	}
 
 	$scope.updateShiftsAvailable = function( shifts ){
-		$scope.makeBusy();
+
 		$scope.shiftsAvailableToWork = shifts;
 		DriverShiftScheduleService.shiftsAvailableToWork( shifts, function( data ){
 			process( data );
@@ -433,6 +476,30 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.rankingChange = function( id_community_shift, id_community_shift_change ){
+		var shift = null;
+		var change = null;
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift ) {
+					shift = i;
+				}
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift_change ) {
+					change = i;
+				}
+			}
+			if( $scope.shifts[ shift ] && $scope.shifts[ change ] ){
+				var actual = $scope.shifts[ shift ].ranking;
+				$scope.shifts[ shift ].ranking = $scope.shifts[ change ].ranking;
+				$scope.shifts[ change ].ranking = actual;
+				actual = $scope.shifts[ shift ];
+				$scope.shifts[ shift ] = $scope.shifts[ change ];
+				$scope.shifts[ change ] = actual;
+				// console.log('$scope.shifts[ shift ]',$scope.shifts[ shift ]);
+				// console.log('$scope.shifts[ change ]',$scope.shifts[ change ]);
+			}
+		}
+		count();
+		return;
 		$scope.makeBusy();
 		DriverShiftScheduleService.rankingChange( id_community_shift, id_community_shift_change, function( data ){
 			if( !data.error ){
@@ -442,6 +509,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.dontWantToWork = function( id_community_shift ){
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift ) {
+					$scope.shifts[ i ].ranking = 0;
+				}
+			}
+		}
+		count();
+		return;
 		$scope.makeBusy();
 		DriverShiftScheduleService.dontWantToWork( id_community_shift, function( data ){
 			if( !data.error ){
@@ -451,6 +527,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.wantToWork = function( id_community_shift ){
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				if ( $scope.shifts[ i ].id_community_shift == id_community_shift ) {
+					$scope.shifts[ i ].ranking = $scope.nextRanking;
+				}
+			}
+		}
+		count();
+		return;
 		$scope.makeBusy();
 		DriverShiftScheduleService.wantToWork( id_community_shift, $scope.nextRanking, function( data ){
 			if( !data.error ){
@@ -510,58 +595,76 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 	list();
 
 } );
-NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, DriverOnboardingService) {
+NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, StaffService, ViewListService) {
+	angular.extend( $scope, ViewListService );
 
-	var query = $location.search();
-	$scope.query = {
-		search: query.search,
-		limit: query.limit || 25,
-		page: query.page || 1
-	};
-
-	$scope.query.page = parseInt($scope.query.page);
-
-	var update = function() {
-		$scope.loading = true;
-		DriverOnboardingService.list($scope.query.page, $scope.query.search, function(data) {
-			$scope.pages = data.pages;
-			$scope.drivers = data.results;
-			$scope.count = data.count;
-			$scope.loading = false;
-		});
-	}
-
-	var watch = function() {
-		$location.search($scope.query);
-		update();
-	};
-
-	// @todo: this breaks linking to pages
-	var inputWatch = function() {
-		if ($scope.query.page != 1) {
-			$scope.query.page = 1;
-		} else {
-			watch();
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'driver',
+			status: 'active',
+			working: 'all',
+			pexcard: 'all',
+			fullcount: false
+		},
+		update: function() {
+			StaffService.list($scope.query, function(d) {
+				$scope.drivers = d.results;
+				$scope.complete(d);
+			});
 		}
-	};
-
-	$scope.$watch('query.search', inputWatch);
-	$scope.$watch('query.limit', inputWatch);
-	$scope.$watch('query.page', watch);
-
-	$scope.setPage = function(page) {
-		$scope.query.page = page;
-		App.scrollTop(0);
-	};
-
-	$scope.focus('#search');
+	});
 });
 
-NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService, StaffPayInfoService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
 	$scope.isSaving = false;
+
+	$scope.payment_types = StaffPayInfoService.typesPayment();
+
+	var vehicle_default = null;
+
+	$scope._yesNo = DriverOnboardingService.yesNo();
+	$scope.timezones = CommunityService.timezones();
+	DriverOnboardingService.vehicles( function( json ){
+		if( !$scope.vehicles ){
+			$scope.vehicles = json.options;
+			vehicle_default = json.default;
+		}
+	} );
+
+	$scope.$watch( 'driver.phone', function( newValue, oldValue, scope ) {
+		referral();
+	} );
+
+
+	$scope.$watch( 'driver.name', function( newValue, oldValue, scope ) {
+		referral();
+	} );
+
+	var referral = function(){
+		if( $scope.driver && !$scope.driver.id_admin ){
+			var name = $scope.driver.name;
+			var phone = $scope.driver.phone;
+			if( name && phone ){
+				DriverOnboardingService.referral( phone, name, function( data ){
+					if( data.code ){
+						$scope.driver.invite_code = data.code;
+					};
+				} );
+			}
+		}
+	}
+
+	CommunityService.listSimple( function( data ){
+		if( !$scope.communities ){
+			$scope.communities = data;
+		}
+		$scope.ready = true;
+	} );
 
 	var docs = function(){
 		// Load the docs
@@ -600,8 +703,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 		DriverOnboardingService.get( $routeParams.id, function( driver ){
 
-			$scope._yesNo = DriverOnboardingService.yesNo();
-
 			$scope.driver = driver;
 
 			if( driver.pexcard_date ){
@@ -613,24 +714,16 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			if( !$scope.driver.id_admin ){
 				$scope.driver.notify = true;
 			}
+
+			if( !$scope.driver.vehicle && vehicle_default ){
+				$scope.driver.vehicle = vehicle_default
+			}
+
 			// logs();
 			docs();
-			DriverOnboardingService.vehicles( function( json ){
-				$scope.vehicles = json.options;
-				if( !$scope.driver.vehicle ){
-					$scope.driver.vehicle = json.default;
-				}
-			} );
-
-			CommunityService.listSimple( function( data ){
-				$scope.communities = data;
-				$scope.ready = true;
-			} );
-
 		} );
 
 		DriverOnboardingService.phone_types( function( json ){
-
 			$scope.phone_types = json.options;
 			$scope.phones_default = json.default;
 			$scope.iphone_options = json.iphone_options;
@@ -639,6 +732,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 			$scope.iphone_type = json.default;
 			$scope.android_type = json.default;
+			//$scope.android_type_other = json.other;//michal
 			$scope.android_version = json.default;
 		} );
 
@@ -647,7 +741,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			$scope.carrier_type_other = json.other;
 		} );
 
-        DriverOnboardingService.tshirt_sizes( function( json ){
+    DriverOnboardingService.tshirt_sizes( function( json ){
 			$scope.tshirt_sizes = json.tshirt_options;
 		} );
 
@@ -656,10 +750,10 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	$scope.notify = function(){
 		DriverOnboardingService.notifySetup( $scope.driver.id_admin, function( json ){
 			if( json.success ){
-				$scope.flash.setMessage( 'Notification sent!' );
+				App.alert( 'Notification sent!' );
 				// logs();
 			} else {
-				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );
+				App.alert( 'Notification not sent: ' + json.error , 'error' );
 			}
 		} );
 	}
@@ -695,11 +789,11 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 					$scope.navigation.link( url );
 				}
 				setTimeout( function(){
-					$scope.flash.setMessage( 'Driver saved!' );
-				}, 500 );
+					App.alert( 'Driver saved!' );
+				}, 50 );
 				$scope.isSaving = false;
 			} else {
-				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
+				App.alert( 'Driver not saved: ' + json.error , 'error' );
 				$scope.isSaving = false;
 			}
 		} );
@@ -748,7 +842,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.docs.download( id_driver_document_status );
 	}
 
-	start();
+	$scope.$watch( 'ready', function( newValue, oldValue, scope ) {
+		start();
+	});
 
 } );
 
@@ -913,7 +1009,7 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 	}
 } );
 
-NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService ) {
+NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService, ConfigService ) {
 
 	$scope.bank = { 'showForm': true };
 	$scope.basicInfo = {};
@@ -922,7 +1018,10 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 		StaffPayInfoService.loadById( $scope.account.user.id_admin, function( json ){
 			if( json.id_admin ){
 				$scope.basicInfo = json;
-				if( json.balanced_bank ){
+				if( $scope.isBalanced && json.balanced_bank && json.balanced_id ){
+					$scope.bank.showForm = false;
+				}
+				if( $scope.isStripe && json.stripe_id && json.stripe_account_id ){
 					$scope.bank.showForm = false;
 				}
 				$scope.ready = true;
@@ -956,25 +1055,72 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 
 	$scope.bankInfoTest = function(){
 		StaffPayInfoService.bankInfoTest( function( json ){
-			$scope.bank.routing_number = json.routing_number; ;
-			$scope.bank.account_number = json.account_number;;
-		} )
+			$scope.bank.routing_number = json.routing_number;
+			$scope.bank.account_number = json.account_number;
+		} );
 	}
 
-	$scope.tokenize = function(){
+	$scope.createBankAccount = function(){
 
 		if( !$scope.basicInfo.id_admin_payment_type ){
 			App.alert( 'You must save the "Basic Information" form before save the Bank Account Information.' );
 			return;
 		}
 
-
 		if( $scope.formBank.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.bankSubmitted = true;
 			return;
 		}
+
 		$scope.isTokenizing = true;
+
+		if ( $scope.isBalanced ) {
+			balanced();
+		} else if ( $scope.isStripe ) {
+			stripe();
+		}
+	}
+
+	var stripe = function(){
+		Stripe.bankAccount.createToken( {
+			country: 'US',
+			currency: 'USD',
+			routing_number: $scope.bank.routing_number,
+			account_number: $scope.bank.account_number
+		}, function( header, response ){
+			if( response.id ){
+				var params = {
+					'token': response.id,
+					'id_admin': $scope.account.user.id_admin
+				};
+				StaffPayInfoService.save_stripe_bank( params, function( d ){
+					if( d.id_admin ){
+						bank_info_saved();
+					} else {
+						var error = d.error ? d.error : '';
+						App.alert( 'Error: ' + error );
+					}
+				} );
+			} else {
+				App.alert( 'Error creating a Stripe token' );
+			}
+		} );
+	}
+
+	var bank_info_saved = function(){
+		document.activeElement.blur();
+		load();
+		$scope.isTokenizing = false;
+		$scope.saved = true;
+		$scope.bank.account_number = '';
+		$scope.bank.routing_number = '';
+		$scope.bank.showForm = false;
+		App.alert( 'Bank information saved!' );
+		setTimeout( function() { $scope.saved = false; }, 1500 );
+	}
+
+	var balanced = function(){
 		var payload = { name: $scope.basicInfo.legal_name_payment,
 										account_number: $scope.bank.account_number,
 										routing_number: $scope.bank.routing_number };
@@ -987,15 +1133,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 						App.alert( data.error);
 						return;
 					} else {
-						document.activeElement.blur();
-						load();
-						$scope.isTokenizing = false;
-						$scope.saved = true;
-						$scope.bank.account_number = '';
-						$scope.bank.routing_number = '';
-						$scope.bank.showForm = false;
-						App.alert( 'Bank information saved!' );
-						setTimeout( function() { $scope.saved = false; }, 1500 );
+						bank_info_saved();
 					}
 				} );
 
@@ -1011,12 +1149,22 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 	}
 
 	if( $scope.account.isLoggedIn() ){
-		load();
+		// just to cache the config process stuff
+		ConfigService.getProcessor( function( json ){
+			$scope.processor = json.processor.type;
+			$scope.isBalanced = ( json.processor.type == 'balanced' );
+			$scope.isStripe = ( json.processor.type == 'stripe' );
+			load();
+		} );
 	}
 
 });
 
-NGApp.controller('DriversHelpCtrl', function() {});
+NGApp.controller('DriversHelpCtrl', function( $scope, AccountService ) {
+	$scope.account = AccountService;
+});
+
+NGApp.controller('InviteCtrl', function() {});
 NGApp.controller('DriversFeedbackCtrl', function($scope, FeedbackService) {
 	$scope.feedback = {};
 	$scope.errors = {};

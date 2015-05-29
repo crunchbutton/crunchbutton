@@ -13,7 +13,7 @@
 
 						<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
 						<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-					<br>ETA: {{ticket.order.eta.time}} minites
+					<br>ETA: {{ticket.order.eta.time}} minutes
 				</div>
 
 
@@ -82,7 +82,7 @@
 		</td></tr>
 		<tr><td class="support-chat-contents">
 			<div class="support-chat-contents-scroll">
-				
+
 				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 				'support-chat-contents-message-support': message.is_support,
 				'support-chat-contents-message-driver': message.is_driver,
@@ -113,13 +113,13 @@
 						<span>{{message.relative}}</span>
 					</div>
 					<div class="support-chat-contents-message-body">{{message.body}}
-						<div ng-repeat="image in message.media"> 
+						<div ng-repeat="image in message.media">
 							<img class="support-side-image" src="{{image}}">
 						</div>
-					
-				
+
+
 					</div>
-					
+
 				</div>
 			</div>
 		</td></tr>
@@ -127,7 +127,6 @@
 			<div class="support-chat-box-wrap">
 				<textarea id="support-chat-box" ng-model="message_text" class="support-chat-box" placeholder="Type something and press enter..." chat-send></textarea>
 			</div>
-			<button class="button" ng-class="{'save' : message_text}" ng-click="add_note();"><i class="fa fa-file-text-o"></i> Add note</button>
 		</td></tr>
 	</table>
 </div>

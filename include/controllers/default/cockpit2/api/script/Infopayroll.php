@@ -21,17 +21,21 @@ class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAcco
 
 	public function inforFor1099(){
 
-		$query = 'SELECT
-							  p.id_driver,
-							  a.name,
-							  a.phone,
-							  a.email,
-							  SUM( amount ) AS payment
-							  FROM payment p
-							  INNER JOIN admin a ON a.id_admin = p.id_driver
-							  WHERE YEAR( p.date ) = ' . $this->year . ' AND p.pay_type = "payment" AND p.balanced_id IS NOT NULL AND p.env = "live" AND p.balanced_status = "succeeded"
-							GROUP BY id_driver
-							ORDER BY a.name ASC';
+		$query = "SELECT
+					  p.id_driver,
+					  a.name,
+					  a.phone,
+					  a.email,
+					  SUM( amount ) AS payment
+					  FROM payment p
+					  INNER JOIN admin a ON a.id_admin = p.id_driver
+					  WHERE YEAR( p.date ) = " . $this->year . "
+					  AND p.pay_type = 'payment'
+					  AND p.balanced_id IS NOT NULL
+					  AND p.env = 'live' AND p.payment_status = 'succeeded'
+					GROUP BY id_driver
+					ORDER BY a.name ASC
+		";
 
 		$payments = c::db()->get( $query );
 		$out = [];

@@ -532,7 +532,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
 													 COUNT(*) AS Total
 										FROM `order` o
@@ -604,7 +604,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 													COUNT(*) AS Total
 										FROM `order` o
@@ -672,7 +672,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		switch ( $cohort_type ) {
 			case 'cohort':
-				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohort = Crunchbutton_Chart_Cohort::_get( $id_chart_cohort, $cohort_type );
 				$query = "SELECT YEARWEEK(date) AS Week,
 													 COUNT(*) AS Total
 										FROM `order` o
@@ -772,12 +772,12 @@ public function byDayPerRestaurant( $render = false ){
 									DATE_FORMAT( o.date, '%H' ) AS Hour
 									FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-									INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$id_community}
-									WHERE o.delivery_service = 1 {$where_day}
+									INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ?
+									WHERE o.delivery_service = true {$where_day}
 									AND o.date BETWEEN NOW() - INTERVAL 14 DAY AND NOW()
 									GROUP BY Hour";
 
-			$data = c::db()->get( $query );
+			$data = c::db()->get( $query, [$id_community]);
 
 			$_hours = [];
 

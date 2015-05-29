@@ -99,11 +99,22 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function loadTransactions(){
+		ini_set( 'memory_limit', '-1' );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$end = $now->format( 'm/d/Y' );
-		$now->modify( '-7 days' );
+		$now->modify( '-4 days' );
 		$start = $now->format( 'm/d/Y' );
 		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
+	}
+
+	public function convertTimeZone(){
+		$transactions = Crunchbutton_Pexcard_Transaction::q( 'SELECT * FROM pexcard_transaction WHERE transactionTime_pst IS NULL ORDER BY id_pexcard_transaction DESC LIMIT 10000' );
+		foreach( $transactions as $transaction ){
+			$date = new DateTime( $transaction->transactionTime, new DateTimeZone( 'America/Chicago' ) );
+			$date->setTimezone( new DateTimeZone( c::config()->timezone ) );
+			$transaction->transactionTime_pst = $date->format( 'Y-m-d H:i:s' );
+			$transaction->save();
+		}
 	}
 
 	public function saveTransactionsByPeriod( $start, $end ){
@@ -120,41 +131,79 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function getOrderExpenses( $start, $end, $only_card = true ){
-
 		$where = ( $only_card ) ? 'AND o.pay_type = "' . Crunchbutton_Order::PAY_TYPE_CREDIT_CARD . '"' : '';
-		$expenses = c::db()->get( 'SELECT SUM( o.final_price - o.delivery_fee ) amount,
-																			a.id_admin,
-																			a.login,
-																			COUNT(1) AS orders,
-																			a.name AS driver,
-																			a.email
-																			FROM `order` o
-																					INNER JOIN order_action oa ON o.id_order = oa.id_order
-																					INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
-																					INNER JOIN admin a ON oa.id_admin = a.id_admin
-																					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = 0
-																					WHERE
-																						apt.using_pex = 1
-																					AND
-																						oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
-																					' . $where . '
-																					AND
-																						DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) >= "' . $start . '"
-																					AND
-																						DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) <= "' . $end . '"
-																					GROUP BY a.id_admin ORDER BY driver' );
+		$query = 'SELECT SUM( o.final_price - o.delivery_fee ) amount,
+									a.id_admin,
+									a.login,
+									COUNT(1) AS orders,
+									a.name AS driver,
+									a.email
+									FROM `order` o
+											INNER JOIN order_action oa ON o.id_order = oa.id_order
+											INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
+											INNER JOIN admin a ON oa.id_admin = a.id_admin
+											INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = false
+											WHERE
+												apt.using_pex = true
+												AND o.refunded = 0
+											AND
+												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
+											' . $where . '
+											AND
+												DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") >= "' . $start . '"
+											AND
+												DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $end . '"
+											GROUP BY a.id_admin ORDER BY driver' ;
+		$expenses = c::db()->get( $query );
 		return $expenses;
 	}
 
 	public function getExpensesByPeriod( $start, $end ){
-		$expenses = c::db()->get( 'SELECT lastName AS card_serial, cardNumber AS last_four, SUM( amount ) AS amount
-																												FROM pexcard_transaction
-																													WHERE
-																														DATE_FORMAT( transactionTime, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
-																														AND transactionType != "Transfer"
-																												GROUP BY lastName, cardNumber
-																												ORDER BY amount DESC' );
+		$query = 'SELECT acctId
+								FROM pexcard_transaction
+									WHERE
+										DATE_FORMAT( transactionTime_pst, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										AND transactionType != "Transfer"
+								GROUP BY acctId
+								ORDER BY amount DESC';
+		$expenses = c::db()->get( $query );
 		return $expenses;
+	}
+
+		public function getExpensesByPeriodByCard( $start, $end, $acctId ){
+		$query = 'SELECT *
+								FROM pexcard_transaction
+									WHERE
+										DATE_FORMAT( transactionTime_pst, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										AND transactionType != "Transfer"
+										AND acctId = "' . $acctId . '"
+								ORDER BY transactionTime ASC, isPending DESC';
+		$expenses = c::db()->get( $query );
+		return $expenses;
+	}
+
+	public function getOrderExpensesByDriver( $start, $end, $id_admin ){
+		$query = 'SELECT
+									DISTINCT(o.id_order),
+									( o.final_price - o.delivery_fee ) amount,
+									r.name as restaurant,
+									o.*
+									FROM `order` o
+											INNER JOIN order_action oa ON o.id_order = oa.id_order
+											INNER JOIN admin_payment_type apt ON apt.id_admin = oa.id_admin
+											INNER JOIN admin a ON oa.id_admin = a.id_admin
+											INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = false
+											WHERE
+												apt.using_pex = true
+											AND o.refunded = 0
+											AND
+												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
+											' . $where . '
+											AND
+											DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+											AND a.id_admin = "' . $id_admin . '"
+											ORDER BY o.pay_type DESC, o.date ASC';
+		return Crunchbutton_Order::q( $query );
 	}
 
 	public function processExpenses( $start, $end ){
@@ -165,61 +214,161 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		}
 
 		$start = explode( '/' , $start );
-		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
+		$start->modify( '+4 hours' );
+		$pst_start = $start->format( 'Y-m-d H:i' );
+
+		$start->setTimezone( new DateTimeZone( 'America/Chicago' ) );
+		$est_start = $start->format( 'Y-m-d H:i' );
 
 		$end = explode( '/' , $end );
-		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 04:00:00', new DateTimeZone( c::config()->timezone ) );
-		if( $sameDay ){
-			$end->modify( '+ 24 hours' );
-		}
+		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
 
-		$pst_start = $start->format( 'Y-m-d H:i' );
+		$end->modify( '+4 hours' );
+
 		$pst_end = $end->format( 'Y-m-d H:i' );
 
-		$start->setTimezone( new DateTimeZone( 'America/New_York' ) );
-		$end->setTimezone( new DateTimeZone( 'America/New_York' ) );
-
-		$est_start = $start->format( 'Y-m-d H:i' );
+		$end->setTimezone( new DateTimeZone( 'America/Chicago' ) );
 		$est_end = $end->format( 'Y-m-d H:i' );
 
-		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $est_start, $est_end );
-		$order_expenses = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $pst_start, $pst_end );
-		$order_expenses_cash_card = Crunchbutton_Pexcard_Transaction::getOrderExpenses( $pst_start, $pst_end, false );
-		$drivers_expenses = [];
+		$pex_expenses = Crunchbutton_Pexcard_Transaction::getExpensesByPeriod( $pst_start, $pst_end );
 
-		$_cash_order_expenses = [];
+		$cards = [];
+		$report = [];
 
-		foreach ( $order_expenses_cash_card as $order_expense ) {
-			$_cash_order_expenses[ $order_expense->id_admin ] = floatval( number_format( $order_expense->amount, 2 ) );
-		}
+		foreach( $pex_expenses as $card ){
 
-		foreach( $order_expenses as $order_expense ){
-			$cards = Cockpit_Admin_Pexcard::getByAdmin( $order_expense->id_admin );
-			if( $cards->count() ){
-				$_cards = [];
-				$card_amount = 0;
-				foreach( $cards as $card ){
-					$amount = 0;
-					foreach( $pex_expenses as $pex_expense ){
-						if( $card->last_four == $pex_expense->last_four && $card->card_serial == $pex_expense->card_serial ){
-							$amount = number_format( $pex_expense->amount, 2 );
-							$pex_expense->used = true;
-						}
-					}
-					$card_amount += $amount;
+			$pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->acctId );
+
+			$admin = $pexcard->admin();
+
+			$info = [ 'id_pexcard' => intval( $card->acctId ) ];
+			$info[ 'card_serial' ] = intval( $pexcard->card_serial );
+			$info[ 'last_four' ] = $pexcard->last_four;
+			$info[ 'id_admin' ] = $pexcard->id_admin;
+			$info[ 'driver' ] = $admin->name;
+			$info[ 'login' ] = $admin->login;
+			$info[ 'email' ] = $admin->email;
+			$info[ 'cash_orders' ] = false;
+			$info[ 'card_orders' ] = false;
+			$info[ 'pexcard_amount' ] = 0;
+			$info[ 'card_cash_amount' ] = 0;
+			$info[ 'card_amount' ] = 0;
+
+			$info[ 'show_transactions' ] = false;
+			$info[ 'transactions' ] = [];
+
+			$admin = $pexcard->admin();
+			if( $admin->timezone ){
+				$timezone = $admin->timezone;
+			} else {
+				$timezone = c::config()->timezone;
+			}
+
+			$transactions = Crunchbutton_Pexcard_Transaction::getExpensesByPeriodByCard( $pst_start, $pst_end, $card->acctId );
+
+			$transactions_already_added = [];
+
+			foreach( $transactions as $transaction ){
+
+				if( !$transactions_already_added[ $transaction->authTransactionId ] ){
+					$date = new DateTime( $transaction->transactionTime, new DateTimeZone( c::config()->timezone ) );
+					$info[ 'transactions' ][] = [ 'date' => $date->format( 'M jS Y g:i:s A T' ),
+																		'description' => $transaction->merchantName,
+																		'amount' => $transaction->amount ];
+					$info[ 'pexcard_amount' ] += number_format( $transaction->amount, 2 );
 				}
-				$diff = floatval( floatval( number_format( $card_amount, 2 ) ) - floatval( number_format( $order_expense->amount, 2 ) ) );
-				$drivers_expenses[] = [ 'id_admin' => intval( $order_expense->id_admin ), 'login' => $order_expense->login,  'driver' => $order_expense->driver, 'email' => $order_expense->email, 'pexcard_amount' => floatval( number_format( $card_amount, 2 ) ), 'card_cash_amount' => $_cash_order_expenses[ $order_expense->id_admin ], 'card_amount' => floatval( number_format( $order_expense->amount, 2 ) ), 'diff' => $diff, 'orders' => intval( $order_expense->orders ) ];
+
+
+
+				$transactions_already_added[ $transaction->authTransactionId ] = true;
+
 			}
+
+			$info[ 'delivered_orders' ] = [];
+			$total_amount_orders = 0;
+			$orders = Crunchbutton_Pexcard_Transaction::getOrderExpensesByDriver( $pst_start, $pst_end, $info[ 'id_admin' ] );
+			foreach( $orders as $order ){
+
+				$get_out = true;
+				$last = $order->status()->last();
+				if( $last[ 'driver' ] && $last[ 'driver' ][ 'id_admin' ] && $last[ 'driver' ][ 'id_admin' ] == $info[ 'id_admin' ] ){
+					$get_out = false;
+				}
+
+				if( $get_out ){
+					continue;
+				}
+
+				$info[ 'card_cash_amount' ] += number_format( $order->amount, 2 );
+				if( $order->pay_type == 'card' ){
+					$info[ 'card_amount' ] += number_format( $order->amount, 2 );
+					$info[ 'card_orders' ] = true;
+				} else {
+					$info[ 'cash_orders' ] = true;
+				}
+
+				$date = $order->date();
+				$total_amount_orders += number_format( $order->amount, 2 );
+				$info[ 'delivered_orders' ][] = [ 'date' => $date->format( 'M jS Y g:i:s A T' ),
+																					'restaurant' => $order->restaurant,
+																					'pay_type' => $order->pay_type,
+																					'id_order' => $order->id_order,
+																					'status' => $last[ 'status' ],
+																					'amount' => number_format( $order->amount, 2 ) ];
+			}
+
+			$cards[] = $info;
+
 		}
 
-		$card_expenses = [];
-		foreach( $pex_expenses as $pex_expense ){
-			if( !$pex_expense->used ){
-				$card_expenses[ $pex_expense->card_serial ] = [ 'card_serial' => $pex_expense->card_serial, 'last_four' => $pex_expense->last_four, 'amount' => number_format( $pex_expense->amount, 2 ) ];
+		foreach( $cards as $card ){
+
+			if( !intval( $card[ 'id_admin' ] ) ){
+
+				$card = array_merge( $card, [ 'driver' => 'Card not assigned',
+																			'card_amount' => 0,
+																			'email' => '',
+																			'diff' => 0,
+																			'sort' => ( 'zz' . $card[ 'last_four' ] ),
+																			'card_cash_amount' => 0 ] );
+				$report[] = $card;
+				continue;
 			}
+
+			if( $card[ 'id_admin' ] ){
+				$card[ 'sort' ] = $card[ 'driver' ];
+				$card[ 'sort' ] = $card[ 'driver' ];
+				$card[ 'diff' ] = ( number_format( $card[ 'pexcard_amount' ] - $card[ 'card_amount' ], 2 ) ) * -1;
+				$card[ 'orders' ] = count( $card[ 'delivered_orders' ] );
+			}
+
+
+			if( !$card[ 'driver' ] ){
+
+				$admin = Admin::o( $card[ 'id_admin' ] );
+
+				$diff = $card[ 'pexcard_amount' ] * -1;
+
+				$card = array_merge( $card, [ 'login' => $admin->login,
+																			'orders' => 0,
+																			'driver' => $admin->name,
+																			'diff' => $diff,
+																			'card_cash_amount' => 0,
+																			'email' => $admin->email,
+																			'sort' => $admin->name,
+																			'card_amount' => 0 ] );
+			}
+			$card[ 'details' ] = false;
+
+			$report[] = $card;
 		}
-		return [ 'drivers_expenses' => $drivers_expenses, 'card_expenses' => $card_expenses ];
+
+		usort( $report, function( $a, $b ){
+			return $a[ 'sort' ] > $b[ 'sort' ];
+		} );
+
+		echo json_encode( [ 'drivers_expenses' => $report ] );exit;
 	}
 
 	public function saveTransaction( $transaction ){
@@ -235,6 +384,10 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 			$transactionTime = date( 'Y-m-d H:i:s', strtotime( $transaction->transactionTime ) );
 			$settlementTime = date( 'Y-m-d H:i:s', strtotime( $transaction->settlementTime ) );
+
+			$date = new DateTime( $transactionTime, new DateTimeZone( 'America/Chicago' ) );
+			$date->setTimezone( new DateTimeZone( c::config()->timezone ) );
+			$_transaction->transactionTime_pst = $date->format( 'Y-m-d H:i:s' );
 
 			$_transaction->transactionId = $transaction->id;
 			$_transaction->acctId = $transaction->acctId;

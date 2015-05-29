@@ -59,6 +59,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.processModal = function(){
+
 		if( !service.code || service.code == '' ){
 			return;
 		}
@@ -78,6 +79,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 				service.modal.intro = false;
 				if( data.error ){
 					service.modal.error = true;
+
 					switch( data.error ){
 						case 'gift card already used':
 							service.viewed();
@@ -85,6 +87,12 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 							break;
 						case 'invalid gift card':
 							service.modal.error = 'invalid';
+							break;
+						case 'invite not eligible':
+							service.modal.error = 'not-eligible';
+							break;
+						case 'custom':
+							service.modal.error = 'custom';
 							break;
 						default:
 							service.modal.error = 'unknow';
@@ -184,7 +192,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		$rootScope.$broadcast( 'giftCardUpdate' );
 	}
 
-	service.notes_field.start = function( phone ){
+	service.notes_field.start = function( phone, id_restaurant ){
 
 		service.notes_field.hasGiftCards = false;
 		service.notes_field.giftcards.success = [];
@@ -208,8 +216,12 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 			var url = App.service + 'giftcard/validate-words';
 
 			var data = { 'words': words };
+
 			if( phone ){
 				data.phone = phone;
+			}
+			if( id_restaurant ){
+				data.id_restaurant = id_restaurant;
 			}
 
 			$http( {
@@ -227,6 +239,10 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 						service.notes_field.giftcards.success.push( data.success );
 					} else if( data.error ){
 						service.notes_field.giftcards.success = [];
+						service.notes_field.giftcards.error = [];
+						if( data.error && data.warning ){
+							service.notes_field.giftcards.error.push( { 'error': 'custom', 'message': data.warning } );
+						}
 					}
 					service.notes_field.total--;
 					service.notes_field.checkAllValidated();

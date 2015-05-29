@@ -45,7 +45,7 @@ var App = {
 	},
 	restaurantsPaging: {
 		enabled: true,
-		desktop: 9,
+		desktop: 20,
 		mobile: 6
 	},
 	transitionAnimationEnabled : true,
@@ -95,6 +95,36 @@ var NGApp = angular.module('NGApp', modules);
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
+
+NGApp.factory('errorInterceptor', function($q) {
+	var errorFromResponse = function(response) {
+		var headers = response.headers();
+		if (headers && headers['php-fatal-error']) {
+			console.error(headers['php-fatal-error']);
+			App.alert('There was an error connecting to the server. Please try again, or contact support if it continues to be a problem.');
+			return false;
+		}
+		return true;
+	};
+	var errorInterceptor = {
+		responseError: function(response) {
+			errorFromResponse(response);
+			return $q.reject(response);
+		},
+		response: function(response) {
+			if (!errorFromResponse(response)) {
+				return $q.reject(response);
+			} else {
+				return response;
+			}
+		}
+	};
+	return errorInterceptor;
+});
+NGApp.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.defaults.headers.common['Http-Error'] = 1;
+	$httpProvider.interceptors.push('errorInterceptor');
+}]);
 
 NGApp.run(function() {
 	FastClick.attach(document.body);
@@ -232,7 +262,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'repsApplyCtrl',
 			templateUrl: 'assets/view/reps.apply.html'
 		})
-        .when('/thankyou', {
+    .when('/thankyou', {
 			action: 'thankyou',
 			controller: 'ThankyouCtrl',
 			templateUrl: 'assets/view/thankyou.html'
@@ -324,7 +354,13 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.location = $location;
 	App.http = $http;
 	$rootScope.hasFacebook = App.hasFacebook;
-
+	$rootScope.topCommunities = App.topCommunities;
+	var hello = 'moc.nottubhcnurc@olleh'.split('').reverse().join('');
+	$scope.hello = hello;
+	var textUs = '4441387646'.split('').reverse().join('');
+	$scope.textUs = textUs;
+	var textUsFormatted = '4441-387 )646('.split('').reverse().join('');
+	$scope.textUsFormatted = textUsFormatted;
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908
 	$rootScope.softKeyboard = function( e ){
@@ -389,6 +425,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.$on('userAuth', function(e, data) {
+
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
 			if (data) {
@@ -401,9 +438,13 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}
 
 			LocationService.init(true);
-
 			if (App.config.user.id_user && App.config.user.location_lat && ($rootScope.navigation.page == 'location' || $rootScope.navigation.page == 'splash')) {
 				$location.path('/food-delivery');
+			}
+			// Some new users doesn't have lat nor lon - #5442
+			else if (App.config.user.id_user && !App.config.user.location_lat && $rootScope.navigation.page == 'splash') {
+				$location.path('/location');
+				AccountService.forceDontReloadAfterAuth = true;
 			}
 
 			App.snap.close();
@@ -414,6 +455,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}
 			AccountService.forceDontReloadAfterAuth = false;
 		});
+		setTimeout( function(){
+			ReferralService.newReferredUsersByUser();
+		}, 4000 );
 	});
 
 	$rootScope.focus = function( selector ){
@@ -523,8 +567,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 
 
-
-
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page);
@@ -548,7 +590,20 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.windowHeight = $window.outerHeight;
 		$rootScope.$apply( 'windowWidth' );
 		$rootScope.$apply( 'windowHeight' );
+		isMobile();
 	});
+
+	$rootScope.isMobileWidth = false;
+
+	var isMobile = function(){
+		if( $rootScope.windowWidth <= 1024 ){
+			$rootScope.isMobileWidth = true;
+		} else {
+			$rootScope.isMobileWidth = false;
+		}
+	}
+
+	isMobile();
 
 	$scope.hasLocations = function(){
 		return ( LocationService.position.hasValidLocation() );
@@ -559,6 +614,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	LocationService.init();
 
 	ReferralService.check();
+
+	if( App.config.user.id_user ){
+		ReferralService.newReferredUsersByUser();
+	}
 
 });
 
@@ -763,7 +822,7 @@ App.trackCommunity = function (id_community) {
 App.busy = {
 	_busy: false,
 	_timer: null,
-	_maxExec: 25000,
+	_maxExec: 35000,
 	stage: function() {
 		$('#Stage').height('100%').width('100%');
 		return AdobeEdge.getComposition('EDGE-977700350').getStage();
@@ -903,6 +962,9 @@ App.init = function(config) {
 	}
 
 	$('body').removeClass('no-init');
+	setTimeout(function() {
+		$('body').addClass('init');
+	},500);
 
 	// add the side swipe menu for mobile view
 	if (typeof Snap !== 'undefined') {
@@ -1333,8 +1395,8 @@ App.share = function(params) {
 				}
 			}
 		});
-		
-		
+
+
 
 	} else {
 		FB.ui({
@@ -1387,3 +1449,24 @@ App.isUI2 = function() {
 		return App._UI2ISNT = false;
 	}
 }
+
+App.loadConfig = function() {
+	App.request(App.service + 'config/extended', function(r) {
+		var extract = ['aliases','locations','facebookScope','communities','topCommunities'];
+		for (var x in extract) {
+			App[extract[x]] = r[extract[x]];
+			r[extract[x]] = null;
+		}
+		App._remoteConfig = true;
+		App.init(r);
+	}, function() {
+		App._remoteConfig = false;
+		App.init({});
+	});
+};
+
+$(function() {
+	if (!App.isPhoneGap) {
+		App.loadConfig();
+	}
+});

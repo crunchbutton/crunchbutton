@@ -1,73 +1,37 @@
 <?php
 
-/**
- * Mysql database connectivity
- *
- * @date		2009.09.18
- * @author		Devin Smith <devin@cana.la>
- *
- */
+class Cana_Db_MySQL_Db extends Cana_Db_Base {
+	public function connect($args = null) {
+		$options = [];
 
-class Cana_Db_MySQL_Db extends mysqli {
-	use Cana_Db_Base;
-
-	// ignore strict standards
-	public function __construct($params) {
-		if (php_sapi_name() === 'cli') {
-			ini_set('mysql.connect_timeout',10);
-			ini_set('mysqli.reconnect',1);
+		if (!$args->dsn) {
+			$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8';
 		}
-		@parent::__construct($params->host, $params->user, $params->pass ? $params->pass : null, $params->db);
-		if ($this->connect_errno) {
-			throw new Cana_Exception('Unable to connect to the database');
+
+		if ($args->persistent) {
+			$options[PDO::ATTR_PERSISTENT] = true;
 		}
-	}
 
-	/*
-	public function select($db) {		
-		$res = @mysql_select_db($db, $this->conn()) or $er = true;
-		if (isset($er)) {
-			throw new Exception('Unable to select the database');
-		}
-		return $res;	
-	}
-	*/
+		$db = new \PDO($args->dsn, $args->user, $args->pass, $options);
+		$this->driver($db->getAttribute(\PDO::ATTR_DRIVER_NAME));
+		$this->database($args->db);
 
-	public function query($query, $cache = true) {
-		if ($cache && Cana::config()->cache->mysql !== false && $cached = $this->cached($query)) {
-			$result = $cached;
+		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+		$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
 
-			$result->res()->data_seek(0);
-
-		} else {
-			if (Cana::config()->cache->mysql !== false) {
-				$this->queries($query);
-			}
-			$ret = parent::query($query);
-			if ($er = $this->error) {
-				$errno = $this->errno;
-				if (php_sapi_name() === 'cli' && $errno == 2006) {
-					$this->ping();
-					return $this->query($query, $cache);
-				} else {
-					throw new Cana_Exception_Query(['message' => $er, 'query' => $query]);
-				}
-			}
-			$result = new Cana_Db_MySQL_Result($ret, $this);
-			$result->numRows();
-
-			if (Cana::config()->cache->mysql !== false) {
-				$this->queries($query, $result);
-			}
-		}
-		return $result;
-	}
-
-	public function escape($var) {
-		return $this->real_escape_string($var);
+		return $db;
 	}
 	
-	public function insertId() {
-		return $this->insert_id;
+	public function getFields($table) {
+		$res = $this->db()->query('SHOW COLUMNS FROM `'.$table.'`');
+		return $res;
 	}
-} 
+	
+	public function query($query, $args = [], $type = 'object') {
+		// replace bool_and
+		$query = preg_replace('/(bool_and\((.*?))\)/i','max(\\2)', $query);
+
+		return parent::query($query, $args, $type);
+	}
+}

@@ -18,18 +18,16 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		switch (c::getPagePiece(3)) {
 
 			case 'refund':
-
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-refund'])) {
 					return ;
 				}
-
-				if (!$order->get(0)->refund()->status) {
-					echo json_encode(['status' => 'false', 'errors' => $order->get(0)->refund()->errors]);
-					exit;
-				} else {
+				$status = $order->refund();
+				if( $status ){
 					echo json_encode(['status' => 'success']);
-					exit;
+				} else {
+					echo json_encode(['status' => 'false', 'errors' => $status->errors]);
 				}
+				exit;
 				break;
 
 			case 'pay_if_refunded':
@@ -286,7 +284,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 
 					case '0':
-						echo '<Dial timeout="10" record="true">_PHONE_</Dial>';
+						echo '<Dial timeout="10" record="true">'.c::config()->phone->restaurant.'</Dial>';
 
 				}
 				echo '</Response>';
@@ -514,7 +512,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					$order = $order->get(0);
 				}
 
-				if ($order->id_order) {
+				if ($order->id_order && c::user()->id_user == $order->id_user) {
 					echo $order->json();
 					break;
 
@@ -526,12 +524,17 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 			case 'post':
 				$order = new Order;
 				$charge = $order->process($_POST);
+
 				if ($charge === true) {
+
+					// reload so we get id_order and uuid
+					$order = new Order($order->id_order);
+
 					echo json_encode([
 						'id_user' => c::auth()->session()->id_user,
 						'txn' => $order->txn,
 						'final_price' => $order->final_price,
-						'uuid' => (new Order($order->id_order))->uuid,
+						'uuid' => $order->uuid,
 						'token' => c::auth()->session()->token
 					]);
 				} else {

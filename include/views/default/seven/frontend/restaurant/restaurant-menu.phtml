@@ -1,0 +1,57 @@
+
+<div ng-show="!order.cart.hasItems()" class="restaurant-box" ng-class="{'restaurant-items':!isMobileWidth}">
+	<div class="restaurant-box-inner">
+		<span class="restaurant-box-icon">
+			<i class="fa fa-arrow-down"></i>
+		</span>
+		<span class="restaurant-box-content">
+			<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartMobile}}</span>
+		</span>
+	</div>
+</div>
+
+<div class="restaurant-items">
+
+	<div ng-show="fullmenu">
+		<div ng-bind-once class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">
+
+			<div class="restaurant-title-wrap restaurant-category">
+				<div class="restaurant-title">{{category.name}}{{category.locName()}}</div>
+			</div>
+
+			<ul class="col-box resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
+				<li ng-bind-once ng-repeat="dish in category.dishes()" class="two-col dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart ng-class="{'starred-item': dish.top && !isMobileWidth}">
+					<span class="dish-item-name">
+						<i class="fa fa-star" ng-if="dish.top && isMobileWidth"></i> {{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span><br />
+					<span class="dish-item-description">{{dish.description}}</span>
+				</li>
+			</ul>
+		</div>
+
+		<br>
+
+		<button class="button green hide-desktop" ng-click="fullmenu=0">less food</button>
+
+	</div>
+
+	<div ng-show="!fullmenu">
+
+		<div class="restaurant-title-wrap">
+			<div class="restaurant-title">The Highlights</div>
+		</div>
+
+		<div ng-repeat="category in restaurant.categories()">
+			<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
+				<li ng-repeat="dish in category.dishes() | filter: {top: 1}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
+					<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
+					<span class="dish-item-description">{{dish.description}}</span>
+				</li>
+			</ul>
+		</div>
+
+		<br>
+		<button class="button green" ng-click="fullmenu=1">see full menu</button>
+
+	</div>
+
+</div>

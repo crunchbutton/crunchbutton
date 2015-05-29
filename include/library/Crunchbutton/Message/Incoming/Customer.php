@@ -1,5 +1,5 @@
 <?php
-	
+
 class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 	const ACTION_STATUS = 'status';
@@ -10,16 +10,16 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		$parsed = $this->parseBody($params['body']);
 		$action = $parsed['verb'];
-		
-		$this->order = Order::q('select * from `order` where phone="'.$params['from'].'" order by date desc limit 1')->get(0);
+
+		$this->order = Order::q('select * from `order` where phone=? order by date desc limit 1',[$params['from']])->get(0);
 		$this->support = Support::q('
 			select support.* from support
 			left join support_message using(id_support)
-			where support.phone="'.$params['from'].'"
+			where support.phone=?
 			and timestampdiff(hour, support_message.date, now()) < 4
 			order by support_message.date desc
 			limit 1
-		')->get(0);
+		',[$params['from']])->get(0);
 
 		$response = [];
 
@@ -40,7 +40,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		$this->response = (object)$response;
 	}
-	
+
 	public function status() {
 		if ($this->support->id_order) {
 			$response .= "\nOrder: #".$this->support->id_order;
@@ -54,14 +54,14 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				$response .= "\nDriver: ".$this->support->order()->status()->last()['driver']['name'];
 				$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
 			}
-			
+
 			$date = new DateTime($this->support->order()->status()->last()['date'], new DateTimeZone('America/Los_Angeles'));
 			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
 			$response .= "\nUpdated @ ".$date->format('n/j g:iA T');
 		}
 		return $response;
 	}
-	
+
 	public function reply($params) {
 
 		if (!$this->support->id_support || ($this->support->id_support && $this->support->id_order && $this->support->id_order != $this->order->id_order)) {
@@ -99,7 +99,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			$message .= ' DRIVER '.$params['admin']->name;
 		} elseif ($this->order->id_order) {
 			$message .= ' #'.$this->order->id_order.' '.$this->order->name;
-			
+
 			if ($created) {
 				// send a message before support
 				$types = $this->order->restaurant()->notification_types();
@@ -107,9 +107,9 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				if (count($types) > 0) {
 					$notifications = ' / RN: ' . join('/', $types);
 				}
-	
+
 				$date = '%DATETIMETZ:'.$this->order->date()->format('Y-m-d H:i:s').'%';
-	
+
 				$community = $this->order->restaurant()->communityNames();
 				if ($community) {
 					$community = ' (' . $community . ')';
@@ -134,7 +134,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 	}
 
 	public function help() {
-		$response = 
+		$response =
 			"Support usage: command|message\n".
 			"Commands: \n".
 			"    status - show status of last order\n".
@@ -155,7 +155,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support'],
 			self::ACTION_REPLY => [ '.*' ]
 		];
-		
+
 		foreach ($verbs[self::ACTION_HELP] as $k => $verb) {
 			$help .= ($help ? '$|^' : '').'\/?'.$verb;
 		}

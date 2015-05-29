@@ -2,115 +2,139 @@
 
 <div class="content-padding">
 
-
-	<h1 class="left title"><i class="fa fa-slideshare"></i>{{community.name}}<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
-
-	<div class="ticket-status-top" ng-if="community.id_community">
-		<div class="ticket-status-open" ng-if="community.active">Active</div>
-		<div class="ticket-status-closed" ng-if="!community.active">Inactive</div>
-	</div>
-
-
+	<h1 class="title box-title"><i class="fa fa-slideshare"></i>{{community.name}}</h1>
 	<div class="divider"></div>
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-	<br>
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div>
-		<div class="support-boxes-column">
-			<div class="support-box-wrap">
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Details</h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{community.name}}<span ng-if="community.name_alt && community.name_alt != community.name"> / {{community.name_alt}}</span></div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Permalink</div>
-							<div class="field-value">{{community.permalink}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Loc</div>
-							<div class="field-value">{{community.loc_lat}}, {{community.loc_lon}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">Timezone</div>
-							<div class="field-value">{{community.timezone}}</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key">&nbsp;</div>
-							<div class="field-value">&nbsp;</div>
-						</div>
-						<div class="field-row">
-							<div class="field-key"><strong>3rd Party Delivery Restaurants</strong></div>
-							<div class="field-value">
-								<span ng-if="community.close_3rd_party_delivery_restaurants"><strong>Closed</strong></span>
-								<span ng-if="!community.close_3rd_party_delivery_restaurants">Open</span>
-							</div>
-						</div>
-						<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
-							<div class="field-key">Closed by</div>
-							<div class="field-value">{{community.close_3rd_party_delivery_restaurants_admin}}</div>
-						</div>
-						<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
-							<div class="field-key">Closed at</div>
-							<div class="field-value">{{community.close_3rd_party_delivery_restaurants_date}}</div>
-						</div>
-						<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
-							<div class="field-key">Message</div>
-							<div class="field-value">{{community.close_3rd_party_delivery_restaurants_note}}</div>
-						</div>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/community/edit/{{community.permalink}}"><button class="button button-small button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
 
-						<div class="field-row">
-							<div class="field-key">&nbsp;</div>
-							<div class="field-value">&nbsp;</div>
-						</div>
-
-						<div class="field-row">
-							<div class="field-key"><strong>All Restaurants</strong></div>
-							<div class="field-value">
-								<span ng-if="community.close_all_restaurants"><strong>Closed</strong></span>
-								<span ng-if="!community.close_all_restaurants">Open</span>
-							</div>
-						</div>
-						<div class="field-row" ng-if="community.close_all_restaurants">
-							<div class="field-key">Closed by</div>
-							<div class="field-value">{{community.close_all_restaurants_admin}}</div>
-						</div>
-						<div class="field-row" ng-if="community.close_all_restaurants">
-							<div class="field-key">Closed at</div>
-							<div class="field-value">{{community.close_all_restaurants_date}}</div>
-						</div>
-						<div class="field-row" ng-if="community.close_all_restaurants">
-							<div class="field-key">Message</div>
-							<div class="field-value">{{community.close_all_restaurants_note}}</div>
-						</div>
-
-						<div class="field-row">
-							<div class="field-key">
-								<a href="/community/edit/{{community.permalink}}">Edit</a>
-							</div>
-							<div class="field-value"></div>
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{community.name}}<span ng-if="community.name_alt && community.name_alt != community.name"> / {{community.name_alt}}</span></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Permalink</div>
+						<div class="field-value">{{community.permalink}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
+							<span class="tag tag-green" ng-if="!community.close_all_restaurants && !community.is_auto_closed  && !community.close_3rd_party_delivery_restaurants">Open</span>
 						</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Autoclose</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
+							<span class="tag tag-red" ng-if="!community.auto_close">Disabled</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Type</div>
+						<div class="field-value">
+							<span class="tag tag-orange" ng-if="community.type == '3rd'">3rd</span>
+							<span class="tag tag-blue" ng-if="community.type == '1st'">1st</span>
+							<span class="tag tag-purple" ng-if="community.type == 'both'">Both</span>
+							<span class="tag tag-lightgrey" ng-if="community.type == 'none'">None</span>
+							<span class="tag tag-lightgrey" ng-if="community.type == 'takeout'">Takeout</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">All Restaurants</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="community.close_all_restaurants">Closed</span>
+							<span class="tag tag-green" ng-if="!community.close_all_restaurants">Open</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="community.close_all_restaurants">
+						<div class="field-key">Closed by</div>
+						<div class="field-value">{{community.close_all_restaurants_admin}}</div>
+					</div>
+					<div class="field-row" ng-if="community.close_all_restaurants">
+						<div class="field-key">Closed at</div>
+						<div class="field-value">{{community.close_all_restaurants_date}}</div>
+					</div>
+					<div class="field-row" ng-if="community.close_all_restaurants">
+						<div class="field-key">Message</div>
+						<div class="field-value">{{community.close_all_restaurants_note}}</div>
+					</div>
+
+					<div class="field-row">
+						<div class="field-key">3rd Party Restaurants</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="community.close_3rd_party_delivery_restaurants">Closed</span>
+							<span class="tag tag-green" ng-if="!community.close_3rd_party_delivery_restaurants">Open</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
+						<div class="field-key">Closed by</div>
+						<div class="field-value">{{community.close_3rd_party_delivery_restaurants_admin}}</div>
+					</div>
+					<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
+						<div class="field-key">Closed at</div>
+						<div class="field-value">{{community.close_3rd_party_delivery_restaurants_date}}</div>
+					</div>
+					<div class="field-row" ng-if="community.close_3rd_party_delivery_restaurants">
+						<div class="field-key">Message</div>
+						<div class="field-value">{{community.close_3rd_party_delivery_restaurants_note}}</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
 
-		<div class="support-boxes-column">
-			<div class="support-box-wrap">
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Location</h1>
-				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red">BETA</span>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
 
-				</map>
+			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+
+			<div class="no-box-content-color">
+
+				<div class="field-container">
+
+					<div class="field-row">
+						<div class="field-key">Latitude, Longitude</div>
+						<div class="field-value">{{community.loc_lat}}, {{community.loc_lon}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Timezone</div>
+						<div class="field-value">{{community.timezone}}</div>
+					</div>
+
+				</div>
+
+
 			</div>
 		</div>
+
 	</div>
 
 	<div class="divider"></div>
 
 	<br><br>
-	<h1 class="title"><i class="fa fa-coffee"></i>Restaurants<div class="title-loader" ng-if="loadingRestaurants"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<h1 class="title"><i class="fa fa-coffee"></i>Restaurants</h1>
 	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingRestaurants}"></div>
 	<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
 
@@ -122,7 +146,10 @@
 
 
 	<div class="right">
-		<p><a href="/orders?community={{community.id_community}}">View all orders</a></p>
+		<p>
+			<a href="/orders?limit=100&page=1&search=&restaurant=&community={{community.id_community}}&date=&view=map">Map last 100 orders</a> |
+			<a href="/orders?community={{community.id_community}}">View all orders</a>
+		</p>
 	</div>
 
 	<br><br>
@@ -131,6 +158,80 @@
 	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
 
 	<br><br>
+	<button class="addAliasButton" ng-click="aliasDialogContainer()">Add</button>
+	<div class="alias-dialog-container zoom-anim-dialog mfp-hide dialog">
+		<h1 ng-bind="alertTitle" ng-show="alertTitle"></h1>
+		<div ng-show="alias.id_community">
+
+			<h2 class="title left"><span>Aliases</span></h2>
+
+			<div class="divider"></div>
+
+			<form name="formAlias" novalidate>
+
+				<div class="ul-inputs">
+
+					<ul ng-class="{'submitted':formAliasSubmitted}" class="box-content2">
+
+						<li class="li-input" ng-class="{'error':formAlias.aliasAlias.$invalid}">
+							<div class="label">Alias:</div>
+							<div class="input"><input type="text" name="aliasAlias" ng-model="alias.alias" required placeholder="Alias"></div>
+							<div class="box-error">
+								<small ng-show="formAlias.aliasAlias.$error.required">Required.</small>
+							</div>
+							<div>Must be entered as all lowercase letters, or it won't work for customers!</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':formAlias.aliasNameAlt.$invalid}">
+							<div class="label">Alternative name:</div>
+							<div class="input"><input type="text" name="aliasNameAlt" ng-model="alias.name_alt" required placeholder="Alternative name"></div>
+							<div class="box-error">
+								<small ng-show="formAlias.aliasNameAlt.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':formAlias.aliasPrep.$invalid}">
+							<div class="label">Preposition (at, in, etc. e.g. "the best delivery at Yale"):</div>
+							<div class="input"><input type="text" name="aliasPrep" ng-model="alias.prep" required placeholder="Preposition"></div>
+							<div class="box-error">
+								<small ng-show="formAlias.aliasPrep.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':formAlias.aliasTop.$invalid}">
+							<div class="label">Display Location after preposition on Community Error Page? (only do this for one alias per community, and only when community has launched):</div>
+							<div class="input">
+								<select name="aliasTop" ng-model="alias.top" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+							</div>
+							<div class="box-error">
+								<small ng-show="formAlias.aliasTop.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':formAlias.aliasSort.$invalid}" ng-show="alias.top">
+							<div class="label">Sort:</div>
+							<div class="input">
+								<input type="number" ignore-mouse-wheel name="aliasSort" ng-model="alias.sort" ng-required="alias.top">
+							</div>
+							<div class="box-error">
+								<small ng-show="formAlias.aliasSort.$error.required">Required.</small>
+							</div>
+						</li>
+
+						<li class="li-input" ng-show="!isSavingAlias">
+							<button class="button green" ng-click="add_alias();">Add</button>
+						</li>
+						<li class="li-input" ng-show="isSavingAlias">
+							<i class="fa fa-circle-o-notch fa-spin"></i>
+						</li>
+					</ul>
+
+				</div>
+			</form>
+
+		</div>
+		<p ng-bind-html-unsafe="message" class="small-message"></p>
+	</div>
 
 	<h1 class="title"><i class="fa fa-link"></i>Aliases</h1>
 
@@ -140,11 +241,15 @@
 				<th>Alias</th>
 				<th>Preposition</th>
 				<th>Alternative name</th>
+				<th>Remove</th>
 			</tr>
 			<tr ng-repeat="a in aliases">
 				<td>{{a.alias}}</td>
 				<td>{{a.prep}}</td>
 				<td>{{a.name_alt}}</td>
+				<td>
+					<span class="orange link" ng-click="remove_alias(a.id_community_alias)">Remove</span>
+				</td>
 			</tr>
 		</table>
 	</div>

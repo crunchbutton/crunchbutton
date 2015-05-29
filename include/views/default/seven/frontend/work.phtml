@@ -4,7 +4,7 @@
 	<div class="jobs-bubble-wrap">
 		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
 			<div class="text" ng-switch="orangeMessage">
-				<span class="single-line" ng-switch-when="1">Free delivery food</span>
+				<span ng-switch-when="1">Free delivery<br>food</span>
 				<span ng-switch-when="2">Free pink gorilla suit</span>
 				<span class="single-line" ng-switch-when="3">Free hugs</span>
 				<span ng-switch-when="4">Now THOSE are benefits!</span>
@@ -25,6 +25,17 @@
 
 <br />
 <div class="content-padding col-box" ng-controller="SupportCtrl">
+
+	<div class="two-col">
+		<h4>Earn Free Food</h4>
+		<p>
+			Earn points by ordering food, sharing your order, or referring friends.
+		</p>
+		<br />
+		<a href ng-click="navigation.link('/free-food','push')"><button class="button lightorange">Earn Free Food</button></a>
+		<br /><br /><br /><br />
+	</div>
+
 	<div class="two-col">
 		<h4>Delivery drivers</h4>
 		<p>
@@ -44,7 +55,7 @@
 		<a href="mailto:{{reps}}"><button class="button lightorange">join up</button></a>
 		<br /><br /><br /><br />
 	</div>
-	
+
 
 	<div class="two-col">
 		<h4>Rockstar Developers &amp; Designers</h4>
@@ -53,12 +64,16 @@
 		<a href="mailto:{{devs}}"><button class="button lightorange">rock out</button></a>
 		<br /><br /><br /><br />
 	</div>
-	
 	<div class="two-col">
-		<h4>Who are you?!</h4>
-		<p>We're people! People who love food so much that we want to share our passion without asking you to even leave your homes.</p>
-		<br>
-		<button class="button green" ng-click="navigation.link('/about','push')">Meet the team</button>
-		<br /><br /><br /><br />
+		<div>
+			<h4>Who are you?!</h4>
+			<p>We're people! People who love food so much that we want to share our passion without asking you to even leave your homes.</p>
+			<br>
+			<button class="button green" ng-click="navigation.link('/about','push')">Meet the team</button>
+			<br /><br /><br /><br />
+		</div>
 	</div>
+
 </div>
+
+

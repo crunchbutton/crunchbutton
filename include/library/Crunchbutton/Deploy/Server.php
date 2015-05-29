@@ -8,7 +8,7 @@ class Crunchbutton_Deploy_Server extends Cana_Table {
 	}
 	
 	public static function byName($name) {
-		return Crunchbutton_Deploy_Server::q('select * from deploy_server where name="'.$name.'"')->get(0);
+		return Crunchbutton_Deploy_Server::q('select * from deploy_server where name=?', [$name])->get(0);
 	}
 
 	public static function currentVersion() {
@@ -27,13 +27,13 @@ class Crunchbutton_Deploy_Server extends Cana_Table {
 
 	public function version() {
 		if (!isset($this->_version)) {
-			$this->_version = Crunchbutton_Deploy_Version::q('
+			$this->_version = Crunchbutton_Deploy_Version::q("
 				select * from deploy_version
-				where status="success"
-				and id_deploy_server="'.$this->id_deploy_server.'"
+				where status='success'
+				and id_deploy_server=?
 				order by date desc
 				limit 1
-			')->get(0);
+			",[$this->id_deploy_server])->get(0);
 		}
 		return $this->_version;
 	}
@@ -42,9 +42,9 @@ class Crunchbutton_Deploy_Server extends Cana_Table {
 		if (!isset($this->_versions)) {
 			$this->_versions = Crunchbutton_Deploy_Version::q('
 				select * from deploy_version
-				where id_deploy_server="'.$this->id_deploy_server.'"
+				where id_deploy_server=?
 				order by date desc
-			');
+			', [$this->id_deploy_server]);
 		}
 		return $this->_versions;
 	}

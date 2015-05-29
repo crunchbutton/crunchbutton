@@ -2,6 +2,8 @@
 // customer / cockpit and drivers will see the value with the markup #2369
 $isDriverCockpit = ( $cockpit || $this->cockpit_url );
 
+$order->dishes();
+
 $restaurant = $order->restaurant();
 
 $icon = '';
@@ -173,7 +175,7 @@ if( $this->cockpit_url ){
 <?php } ?>
 <div class="xhatch separator-small"></div>
 
-<?php echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version, 'viewer' => $icon ]]);
+<?php echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version, 'viewer' => $icon, 'show_credit_card_tips' => $show_credit_card_tips, 'show_delivery_fees' => $show_delivery_fees ]]);
 
 ;?>
 <br /><br />

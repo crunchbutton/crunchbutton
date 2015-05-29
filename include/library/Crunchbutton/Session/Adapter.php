@@ -79,7 +79,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 	
 	public static function token($token) {
 		if (!$token) return false;
-		$res = Cana::db()->query('select * from session where token="'.c::db()->escape($token).'"');
+		$res = Cana::db()->query('select * from session where token=?', [$token]);
 		$session = $res->fetch();
 
 		if ($session->id_session) {
@@ -90,7 +90,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 	
 	public static function deleteToken($token) {
 		if (!$token) return false;
-		Cana::db()->query('delete from session where token="'.c::db()->escape($token).'"');	
+		Cana::db()->query('delete from session where token=?',[$token]);	
 	}
 	
 	public function auth() {

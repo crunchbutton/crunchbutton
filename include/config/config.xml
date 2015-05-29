@@ -4,10 +4,27 @@
 	<bundle>false</bundle>
 	<timezone>America/Los_Angeles</timezone>
 	<cache>
-		<mysql>false</mysql>
+		<default>file</default>
+		<redis>
+			<adapter>redis</adapter>
+		</redis>
+		<file>
+			<dir>data</dir>
+			<expire>216000</expire>
+		</file>
 	</cache>
 	<imgCache>http://i._DOMAIN_/cache/</imgCache>
 	<powered>Sex &amp; Drugs</powered>
+	<s3>
+		<key>AKIAJASPPY2YFBVPMY4A</key>
+		<secret>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</secret>
+		<buckets>
+			<image-restaurant>
+				<name>crunchbutton-image-restaurant</name>
+				<cache>_URL_</cache>
+			</image-restaurant>
+		</buckets>
+	</s3>
 	<db>
 		<live>
 			<user>***REMOVED***</user>
@@ -17,6 +34,14 @@
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</live>
+		<crondb>
+			<user>***REMOVED***</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton</db>
+			<host>45.56.80.7</host>
+			<prefix></prefix>
+			<encrypted>true</encrypted>
+		</crondb>
 		<beta>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
@@ -40,6 +65,7 @@
 			<prefix></prefix>
 		</travis>
 		<metrics>
+			<!-- THIS DB NO LONGER EXISTS. if postgres is needed, we can use our heroku hosting. - devin -->
 			<type>postgresql</type>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
@@ -86,10 +112,6 @@
 	</github>
 	<facebook>
 		<crunchbutton.localhost>
-			 <!-- Daniels dev
-				<app>***REMOVED***</app>
-				<secret>***REMOVED***</secret>
- 				-->
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
 		</crunchbutton.localhost>
@@ -142,12 +164,12 @@
 	</text>
 	<stripe>
 		<dev>
-			<secret>sk_0BKV9vsjL1Cqnd1nDYKg0o6TrkJJz</secret>
-			<public>pk_0BKVfM5Xxd4RmvUjzUhQxeUpKUMZx</public>
+			<secret>_KEY_</secret>
+			<public>_KEY_</public>
 		</dev>
 		<live>
-			<secret>***REMOVED***</secret>
-			<public>***REMOVED***</public>
+			<secret>_KEY_</secret>
+			<public>_KEY_</public>
 		</live>
 	</stripe>
 	<balanced>
@@ -264,4 +286,19 @@
 		<key>_KEY_</key>
 	</crypt>
 	<processor>balanced</processor>
+	<templates>
+		<live>
+			<compress>true</compress>
+		</live>
+		<beta>
+			<compress>true</compress>
+		</beta>
+		<local>
+			<compress>false</compress>
+		</local>
+	</templates>
+	<gcm>
+		<key>_KEY_</key>
+		<ip>_IP_</ip>
+	</gcm>
 </data>

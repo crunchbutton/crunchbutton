@@ -23,18 +23,33 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION = 'reward_points_order_2_days_row_operation';
 	const CONFIG_KEY_MAX_CAP_POINTS = 'reward_points_max_cap_points';
 
-	public function validateInviteCode( $code ){
-		$code = trim( $code );
-		// at first check if it belongs to an admin
-		$admin = Crunchbutton_Admin::byInviteCode( $code );
-		if( $admin->id_admin ){
-			$this->code = $code;
-			return [ 'id_admin' => $admin->id_admin ];
+	public function checkIfItIsEligibleForFirstTimeOrder(){
+		$user = c::user();
+		if( $user->phone ){
+			$orders = Order::totalOrdersByPhone( $user->phone );
+			if( $orders > 0 ){
+				return false;
+			}
 		}
-		// second check if it belongs to an user
-		$user = Crunchbutton_User::byInviteCode( $code );
-		if( $user->id_user ){
-			return [ 'id_user' => $user->id_user ];
+		return true;
+	}
+
+	public function validateInviteCode( $code ){
+		$codes = explode( ' ' , $code );
+		foreach( $codes as $code ){
+			$code = trim( $code );
+			// at first check if it belongs to an admin
+			$admin = Crunchbutton_Admin::byInviteCode( $code );
+			if( $admin->id_admin ){
+				$this->code = $code;
+				return [ 'id_admin' => $admin->id_admin ];
+			}
+			// second check if it belongs to an user
+			$user = Crunchbutton_User::byInviteCode( $code );
+			if( $user->id_user ){
+				$this->code = $code;
+				return [ 'id_user' => $user->id_user ];
+			}
 		}
 		return false;
 	}
@@ -48,6 +63,7 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->id_order = $params[ 'id_order' ];
 		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
 		$credit->note = $params[ 'note' ];
+		$credit->shared = ( $params[ 'shared' ] ? $params[ 'shared' ] : null );
 		$credit->save();
 
 		// save log to avoid duplicates
@@ -66,15 +82,22 @@ class Crunchbutton_Reward extends Cana_Table{
 		$credit->date = date( 'Y-m-d H:i:s' );
 		$credit->value = $params[ 'value' ];
 		$credit->id_order = $params[ 'id_order' ];
-		$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+		$credit->credit_type = $params[ 'credit_type' ];
 		$credit->note = $params[ 'note' ];
 		$credit->id_referral = $params[ 'id_referral' ];
 		$credit->save();
 	}
 
-	// Check if the user already received points for sharing this order
-	public function orderWasAlreadyShared( $id_order ){
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND note LIKE "%sharing%" LIMIT 1' );
+	public function orderWasAlreadySharedFacebook( $id_order ){
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND ( shared = "facebook" OR note LIKE "%facebook shared%" ) LIMIT 1' );
+		if( $credit->id_credit ){
+			return true;
+		}
+		return false;
+	}
+
+	public function orderWasAlreadySharedTwitter( $id_order ){
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND ( shared = "twitter" OR note LIKE "%twitter shared%" ) LIMIT 1' );
 		if( $credit->id_credit ){
 			return true;
 		}
@@ -99,12 +122,19 @@ class Crunchbutton_Reward extends Cana_Table{
 	}
 
 	// rewards: 2x after user shares order #3429
-	public function sharedOrder( $id_order ){
+	public function sharedOrder( $id_order, $social = 'facebook' ){
 		$settings = $this->loadSettings();
 		$points = $this->processOrder( $id_order );
-		return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_SHARED_ORDER_VALUE ],
-																		$settings[ Crunchbutton_Reward::CONFIG_KEY_SHARED_ORDER_OPERATION ],
-																		$points );
+		// See: #5026
+		switch ( $social ) {
+			case 'twitter':
+				return ( $points * 2 );
+				break;
+			case 'facebook':
+			default:
+				return $points;
+				break;
+		}
 	}
 
 	//
@@ -140,11 +170,13 @@ class Crunchbutton_Reward extends Cana_Table{
 			$admin = Crunchbutton_Admin::byInviteCode( $this->code )->get( 0 );
 			if( $admin->referral_admin_credit ){
 				return floatval( $admin->referral_admin_credit );
+			} else {
+				if( $admin->isDriver() ){
+					$settings = self::loadSettings();
+					return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
+				}
 			}
 		}
-
-		$settings = self::loadSettings();
-		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
 	}
 
 	public function refersNewUserCreditAmount(){
@@ -155,12 +187,23 @@ class Crunchbutton_Reward extends Cana_Table{
 	public function getReferredDiscountAmount(){
 		if( $this->code ){
 			$admin = Crunchbutton_Admin::byInviteCode( $this->code )->get( 0 );
-			if( $admin->referral_customer_credit ){
-				return floatval( $admin->referral_customer_credit );
+			if( $admin->id_admin ){
+				if( $admin->referral_customer_credit ){
+					return floatval( $admin->referral_customer_credit );
+				} else {
+					$settings = $this->loadSettings();
+					return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+				}
+
+			} else {
+				$user = Crunchbutton_User::byInviteCode( $this->code );
+				if( $user->id_user ){
+					$settings = $this->loadSettings();
+					return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+				}
 			}
 		}
-		$settings = $this->loadSettings();
-		return floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
+		return 0;
 	}
 
 	// rewards: 2x points when ordering in same week #3432
@@ -237,6 +280,46 @@ class Crunchbutton_Reward extends Cana_Table{
 			}
 		}
 		return floatval( $points );
+	}
+
+	public function createUniqueCode( $name, $phone, $step = 0 ){
+
+		$_name = explode( ' ', $name );
+
+		switch ( $step ) {
+			case 3:
+				if( $_name[ 2 ] ){
+					$code = $_name[ 0 ] . '-' . $_name[ 1 ] . '-' . $_name[ 2 ] . '-' . $phone;
+				}
+				break;
+			case 2:
+				if( $_name[ 2 ] ){
+					$code = $_name[ 0 ] . $_name[ 1 ] . $_name[ 2 ] . $phone;
+				} else {
+					$code = $_name[ 0 ] . '-' . $_name[ 1 ] . '-' . $phone;
+				}
+				break;
+			case 1:
+				if( $_name[ 1 ] ){
+					$code = $_name[ 0 ] . $_name[ 1 ] . $phone;
+				} else {
+					$code = $_name[ 0 ] . '-' . $phone;
+				}
+				break;
+			case 0:
+				$code = $_name[ 0 ] . trim( $phone );
+				break;
+		}
+
+		if( $code ){
+			if( !Crunchbutton_Reward::validateInviteCode( $code ) ){
+				return $code;
+			} else {
+				$step++;
+				return Crunchbutton_Reward::createUniqueCode( $name, $phone, $step );
+			}
+		}
+		return false;
 	}
 
 	public function loadSettings(){

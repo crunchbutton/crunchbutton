@@ -15,13 +15,18 @@ ini_set('display_errors',true);
 set_time_limit(100);
 ini_set('zlib.output_compression','On');
 ini_set('zlib.output_compression_level',9);
-ini_set('max_input_vars', 100000);
-ini_set('upload_max_filesize', '32M');
-ini_set('post_max_size', '32M');
-
 
 if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
+}
+// no reason to pass __url
+if (!$_REQUEST['__url']) {
+	$request = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+	$dir = dirname($_SERVER['SCRIPT_NAME']);
+	$base = substr($dir, -1) == '/' ? $dir : $dir.'/';
+	$url = preg_replace('/^'.str_replace('/','\\/',''.$dir).'/','',$request);
+	$url = substr($url, 0, 1) == '/' ? $url : '/'.$url;
+	$_REQUEST['__url'] = substr($url, 1);
 }
 
 if (isset($_GET['__host'])) {

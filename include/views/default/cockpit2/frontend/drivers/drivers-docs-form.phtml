@@ -115,8 +115,13 @@
 						<small ng-show="formBasic.basicAddress.$error.required">Required.</small>
 					</div>
 				</li>
-				<li class="li-input">
+				<li class="li-input li-input-line-height">
 					* After saving this form, you'll need to enter your Bank Account information below so we can pay you
+					<span class="contrast">
+						<br><br>
+						By entering your payment information, you agree to the <a href="https://stripe.com/connect/account-terms" target="_system">Stripe Connected Account Agreement</a> which allows us to send money directly to your bank account.
+					</span>
+
 					<br/><br/>
 					<button class="button green" ng-click="save_basic_info();">Save</button>
 				</li>
@@ -153,13 +158,15 @@
 					</div>
 				</li>
 				<li class="li-input" ng-show="!isTokenizing">
-					<button class="button green" ng-click="tokenize();">Save Bank Information</button> <span class="orange link" ng-show="isBeta" ng-click="bankInfoTest()">Test account</span>
+					<button class="button green" ng-click="createBankAccount();">Save Bank Information</button>
+					<span class="orange link" ng-show="isBeta" ng-click="bankInfoTest()">Test account</span>
 				</li>
 				<li class="li-input" ng-show="isTokenizing">
 					<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
 				</li>
 				<li>
 					<img src="/assets/cockpit/images/driver-payment-check.gif" />
+					<br>Most banks have your Account and Routing numbers ONLINE in your Account Information section.
 				</li>
 			</ul>
 		</div>

@@ -4,10 +4,18 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 
 	public function init() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
+		$limit = $this->request()['limit'] ?$this->request()['limit'] : 20;
+		$search = $this->request()['search'] ?$this->request()['search'] : '';
+		$page = $this->request()['page'] ?$this->request()['page'] : 1;
+		$status = $this->request()['status'] ?$this->request()['status'] : 'all';
+		$open = $this->request()['open'] ?$this->request()['open'] : 'all';
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
+		$keys = [];
+		
+		if ($limit == 'none') {
+			$page = 1;
+		}
 
 		if ($page == 1) {
 			$offset = '0';
@@ -30,12 +38,31 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		
 		if ($status != 'all') {
 			$q .= '
-				AND active="'.($status == 'active' ? '1' : '0').'"
+				AND community.active=?
+			';
+			$keys[] = $status == 'active' ? true : false;
+		}
+		
+		if ($open == 'open') {
+			$q .= '
+				AND (
+					community.is_auto_closed = false
+					AND community.close_all_restaurants = false
+					AND community.close_3rd_party_delivery_restaurants = false
+				)
+			';
+		} elseif ($open == 'closed') {
+			$q .= '
+				AND (
+					community.is_auto_closed = true
+					OR community.close_all_restaurants = true
+					OR community.close_3rd_party_delivery_restaurants = true
+				)
 			';
 		}
 		
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'community.name' => 'like',
@@ -44,32 +71,54 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 					'community.id_community' => 'liker'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 		
 		$q .= '
 			GROUP BY community.id_community
 		';
 		
-		// get the count
 		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
-		while ($c = $r->fetch()) {
-			$count++;
+
+		// get the count
+		if ($getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `community`.id_community) as c', $q), $keys);
+			while ($c = $r->fetch()) {
+				$count = $c->c;
+			}
 		}
 
 		$q .= '
 			ORDER BY community.name ASC
-			LIMIT '.$offset.', '.$limit.'
 		';
+		if ($limit != 'none') {
+			$q .= '
+				LIMIT ?
+				OFFSET ?
+			';
+			$keys[] = $getCount ? $limit : $limit+1;
+			$keys[] = $offset;
+		}
 		
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			community.*,
-			(SELECT MAX(`order`.date) FROM `order` WHERE `order`.id_restaurant = restaurant.id_restaurant) as _order_date,
+			(SELECT `order`.date FROM `order` WHERE `order`.id_community = community.id_community order by `order`.date desc limit 1) as _order_date,
 			COUNT(`restaurant`.id_restaurant) restaurants
-		', $q));
+		', $q), $keys);
+		
+
+		$i = 1;
+		$more = false;
+
 		while ($s = $r->fetch()) {
+			
+			if (!$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
 			/*
 			$restaurant = Restaurant::o($s);
 			$out = $s;
@@ -79,15 +128,32 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 				$out->communities[] = $community->properties();
 			}
 			*/
+			
+			// get whether its 3rd or not
+			$community = Community::o($s);
+			$s->type = $community->type();
+			
+			// ensure boolean values
+			$s->close_3rd_party_delivery_restaurants = $s->close_3rd_party_delivery_restaurants ? true : false;
+			$s->is_auto_closed = $s->is_auto_closed ? true : false;
+			$s->auto_close = $s->auto_close ? true : false;
+			$s->close_all_restaurants = $s->close_all_restaurants ? true : false;
+			$s->active = $s->active ? true : false;
+			
+			// pull up community closed log
+			// @todo seems to take a little longer. need to clean this up
+			$s->closedLog = $community->closedSince()[0];
 
 //			$data[] = $out;
 			$data[] = $s;
+			$i++;
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
-			'pages' => ceil($count / $limit),
-			'page' => $page,
+			'pages' => $pages,
+			'page' => intval($page),
 			'results' => $data
 		]);
 	}

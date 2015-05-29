@@ -50,7 +50,7 @@ class Controller_api_config_reward extends Crunchbutton_Controller_RestAccount {
 			$config = Crunchbutton_Config::getConfigByKey( $key );
 			if( $config->key ){
 				$value = trim( $this->request()[ $key ] );
-				if( $value ){
+				if( is_numeric( $value ) ){
 					$config->set( $value );
 					$config->save();
 				}

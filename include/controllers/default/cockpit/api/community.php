@@ -19,6 +19,9 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 					case 'close-3rd':
 						$this->close3rdParty();
 						break;
+					case 'auto-closed-message':
+						$this->autoClosedMessage();
+						break;
 					case 'dont-warn-till':
 						$this->dontWarnTill();
 						break;
@@ -62,6 +65,15 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 		}
 
+		exit;
+	}
+
+	public function autoClosedMessage(){
+		$id_community = $this->request()[ 'id_community' ];
+		$community = Crunchbutton_Community::o( $id_community );
+		$community->driver_restaurant_name = $this->request()[ 'auto_closed_message' ];
+		$community->save();
+		echo json_encode( [ 'success' => true ] );
 		exit;
 	}
 

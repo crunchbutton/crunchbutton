@@ -122,21 +122,29 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		// Credit card stuff
 		service.form.cardNumber = service.account.user.card;
-		service.form.cardMonth = ( service.account.user.card_exp_month ) ? service.account.user.card_exp_month : '';
-		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
+		service.form.cardMonth = ( service.account.user.card_exp_month ) ? ( service.account.user.card_exp_month ).toString() : '';
+		service.form.cardYear = ( service.account.user.card_exp_year ) ? ( service.account.user.card_exp_year ).toString() : '';
 
 		service.updateTotal();
 		if( !service.account.user.id_user ){
 			var userEntered = $.totalStorage( 'userEntered' );
 			if( userEntered ){
-				service.form.name = ( userEntered.name && userEntered.name != '' ? userEntered.name : service.form.name );
-				service.form.phone = $filter( 'formatPhone' )( ( userEntered.phone && userEntered.phone != '' ? userEntered.phone : service.form.phone ) );
-				service.form.address = ( userEntered.address && userEntered.address != '' ? userEntered.address : service.form.address );
-				service.form.notes = ( userEntered.notes && userEntered.notes != '' ? userEntered.notes : service.form.notes );
-				service.form.delivery_type = ( userEntered.delivery_type && userEntered.delivery_type != '' ? userEntered.delivery_type : service.form.delivery_type );
-				service.form.pay_type = ( userEntered.pay_type && userEntered.pay_type != '' ? userEntered.pay_type : service.form.pay_type );
-				service.form.cardMonth = ( userEntered.cardMonth && userEntered.cardMonth != '' ? userEntered.cardMonth : service.form.cardMonth );
-				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '' ? userEntered.cardYear : service.form.cardYear );
+				service.form.name = ( userEntered.name && userEntered.name != '') ? userEntered.name : service.form.name ;
+				service.form.phone = $filter( 'formatPhone' )( ( userEntered.phone && userEntered.phone != '') ? userEntered.phone : service.form.phone ) ;
+				service.form.address = ( userEntered.address && userEntered.address != '') ? userEntered.address : service.form.address ;
+				service.form.notes = ( userEntered.notes && userEntered.notes != '' ) ? userEntered.notes : service.form.notes ;
+				service.form.delivery_type = ( userEntered.delivery_type && userEntered.delivery_type != '') ? userEntered.delivery_type : service.form.delivery_type;
+				service.form.pay_type = ( userEntered.pay_type && userEntered.pay_type != '') ? userEntered.pay_type : service.form.pay_type ;
+				service.form.cardMonth = ( userEntered.cardMonth && userEntered.cardMonth !== '') ? userEntered.cardMonth : service.form.cardMonth;
+				service.form.cardMonth = ( service.form.cardMonth ).toString();
+				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '') ? userEntered.cardYear : service.form.cardYear ;
+				service.form.cardYear = ( service.form.cardYear ).toString();
+				if( service.form.cardMonth == '' ){
+					service.form.cardMonth = '-';
+				}
+				if( service.form.cardYear == '' ){
+					service.form.cardYear = '-';
+				}
 				if( userEntered.tip && userEntered.tip != '' ){
 					var _tip = userEntered.tip;
 					setTimeout(function() {
@@ -146,6 +154,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					}, 10 );
 				} else {
 					service.updateTotal();
+				}
+			} else {
+				if( service.form.cardMonth == '' ){
+					service.form.cardMonth = '-';
+				}
+				if( service.form.cardYear == '' ){
+					service.form.cardYear = '-';
 				}
 			}
 			service.startStoreEntederInfo = true;
@@ -238,11 +253,20 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		var elements = [];
 		var text = '';
 		if (breakdown.delivery) {
-			elements.push(service.info.dollarSign + breakdown.delivery.toFixed(2) + ' delivery');
+			var delivery_fee = breakdown.delivery;
+			// make customer fee display on front end in the regular fee #5597
+			if (breakdown.fee) {
+				delivery_fee = delivery_fee + breakdown.fee;
+				elements.push(service.info.dollarSign + delivery_fee.toFixed(2) + ' delivery fee');
+			} else {
+				elements.push(service.info.dollarSign + delivery_fee.toFixed(2) + ' delivery');
+			}
+		} else {
+			if (breakdown.fee) {
+				elements.push(service.info.dollarSign + breakdown.fee.toFixed(2) + ' service fee');
+			}
 		}
-		if (breakdown.fee) {
-			elements.push(service.info.dollarSign + breakdown.fee.toFixed(2) + ' fee');
-		}
+
 		if (breakdown.taxes) {
 			elements.push(service.info.dollarSign + breakdown.taxes.toFixed(2) + ' taxes');
 		}
@@ -272,16 +296,33 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 * @return float
 	 */
 	service._breackDownDelivery = function () {
+		if( service.form.pay_type == 'card' && service._removeDeliveryFee ){
+			return 0;
+		}
+
 		var delivery = 0;
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
-		if( service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message ){
+		if( service.form.pay_type == 'card' && service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message && service.restaurant.delivery_service ){
 			delivery = 0;
 		}
 		delivery = App.ceil(delivery);
 		return delivery;
 	}
+
+	service.removeDeliveryFee = function(){
+		service._removeDeliveryFee = true;
+		service._breackDownDelivery();
+	}
+
+	service.restoreDeliveryFee = function(){
+		service._removeDeliveryFee = false;
+		service._breackDownDelivery();
+	}
+
+
+
 	/**
 	 * Crunchbutton service
 	 *
@@ -393,9 +434,17 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 
 	service.errors = function(errors) {
+		console.error('Order posting errors:', errors);
 		var error = '';
 		for (var x in errors) {
-			if( x != 'debug' ){
+			if ( x == 'set-processor') {
+				App.config.processor.type = errors[x];
+				if (App.config.processor.type == 'stripe') {
+					Stripe.setPublishableKey(App.config.processor.stripe);
+				}
+				continue;
+			}
+			if( x != 'debug'){
 				error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';
 			}
 		}
@@ -476,10 +525,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber) || (!service.form.cardNumber) ) ) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth) || (!service.form.cardMonth) ) ) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth) || (!service.form.cardMonth) || service.form.cardMonth == '-' ) ) {
 			errors['card_month'] = 'Please enter the card expiration month.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) ) ) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) || service.form.cardYear == '-' ) ) {
 			errors['card_year'] = 'Please enter the card expiration year.';
 		}
 		if (!service.cart.hasItems()) {
@@ -539,8 +588,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				var success = function (results) {
 					// Get the closest address from that lat/lng
 					var theClosestAddress = service.location.theClosestAddress(results, latLong);
+
 					var isTheAddressOk = service.restaurant.id_restaurant == 26 ? true : service.location.validateAddressType(theClosestAddress.result);
 					if (isTheAddressOk) {
+
 						theClosestAddress = theClosestAddress.location;
 						if( service.form.address != theClosestAddress.formatted() ){
 							theClosestAddress.setEntered( service.form.address );
@@ -554,6 +605,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						}
 
 						var distance = service.location.distance( { from : { lat : lat, lon : lon }, to : { lat : service.restaurant.loc_lat, lon : service.restaurant.loc_long } } );
+
 						distance = service.location.km2Miles( distance );
 
 						if (!service.restaurant.deliveryHere(distance)) {
@@ -655,7 +707,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				};
 			}
 
-			// Play the crunch audio just once, when the user clicks at the Get Food button
+			// Play the crunch audio just once, when the user clicks at the Place Order button
 			if (!service._crunchSoundPlayded) {
 				App.playAudio('crunch');
 				service._crunchSoundPlayded = true;
@@ -664,8 +716,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			// Clean the phone string
 			order.phone = order.phone.replace(/-/g, '');
 
+			// Only use redeemed points if the user knows about them #4851
+			order.use_delivery_points = true;
+
+			var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
+			order.processor = processor;
+
 			var url = App.service + 'order';
-console.log('order',order);
+
 			$http( {
 				method: 'POST',
 				url: url,
@@ -677,6 +735,9 @@ console.log('order',order);
 							var uuid = json.uuid;
 						} else {
 							console.error('Error',json);
+							if (json && json.errors && json.errors[0]) {
+								console.error('Credit Card processing Error:', json.errors[0]);
+							}
 							App.log.order(json, 'processing error');
 							if( !json.errors ){
 								json = {
@@ -706,7 +767,7 @@ console.log('order',order);
 
 						// order success
 						App.vibrate();
-						
+
 						MainNavigationService.navStack = [];
 						MainNavigationService.control();
 
@@ -863,6 +924,8 @@ console.log('order',order);
 		service.info.subtotal = breakdown.subtotal.toFixed(2);
 		service.info.fee = breakdown.fee.toFixed(2);
 		service.info.delivery = breakdown.delivery.toFixed(2);
+		// #5597
+		service.info.delivery_service_fee = ( breakdown.delivery + breakdown.fee ).toFixed(2);
 		service.info.total = total;
 
 		if (service.form.pay_type == 'card' && credit > 0) {
@@ -894,7 +957,7 @@ console.log('order',order);
 	service._years = function () {
 		var years = [];
 		years.push({
-			value: '',
+			value: '-',
 			label: 'Year'
 		});
 		var date = new Date().getFullYear();
@@ -910,7 +973,7 @@ console.log('order',order);
 	service._months = function () {
 		var months = [];
 		months.push({
-			value: '',
+			value: '-',
 			label: 'Month'
 		});
 		for (var x = 1; x <= 12; x++) {
@@ -975,7 +1038,9 @@ console.log('order',order);
 				}
 			}	)
 			.error(function( data, status ) {
-				error( data, status );
+				if( error ){
+					error( data, status );
+				}
 			} );
 	}
 
@@ -1091,8 +1156,8 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 	service.facebook = FacebookService;
 
-	service.load = function(){
 
+	service.load = function(){
 		var url = App.service + 'order/' + $routeParams.id;
 
 		var error = function(){
@@ -1116,6 +1181,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 					service.order._new = service.newOrder;
 				} else {
 					service.order._new = false;
+				}
+
+				if ($routeParams.new) {
+					service.order._new = true;
 				}
 
 				var arr = data.date.split(/[- :]/);

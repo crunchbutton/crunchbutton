@@ -2,108 +2,85 @@
 
 <div class="content-padding">
 
-	<h1 class="title"><i class="fa fa-bank"></i>
+	<h1 class="title"><i class="fa fa-bank"></i>Scheduled Driver Payments<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
-		<span ng-switch on="status">
-			<span ng-switch-when="deleted">Deleted </span>
-			<span ng-switch-when="archived">Archived </span>
-			<span ng-switch-default>Scheduled </span>
-		</span> Driver Payments
-	</h1>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+			<tr>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
+				</td>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" ng-options="opt.type as opt.label for opt in payment_statuses" class="cart-customize-select"></select>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div ng-if="result">
 
-		<h3 class="title" ng-if="status == 'scheduled'">
-			Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
-		</h3>
+	<div ng-if="count">
 
 		<div class="box-content2 box-content-table">
-			<table>
+			<table class="tb-zebra">
 				<tr>
-					<th>Total of Payments</th>
-					<td>{{result.total_payments}}</td>
+					<th>ID</th>
+					<th>Driver</th>
+					<th>Type</th>
+					<th>Amount</th>
+					<th>Status</th>
+					<th>Scheduled at</th>
+					<th></th>
 				</tr>
-				<tr>
-					<th>Total of Reimbursements</th>
-					<td>{{result.total_reimbursements}}</td>
+
+				<tr ng-repeat="payment in payments">
+					<td>
+					<!-- link auqi -->
+						<a ng-if="payment.id_payment_schedule" href="/settlement/drivers/scheduled/{{payment.id_payment_schedule}}">
+							{{payment.id_payment_schedule}}
+						</span>
+					</td>
+					<td>{{payment.driver}}</td>
+					<td>{{payment.pay_type}}</td>
+					<td>$ {{payment.amount | formatPrice}}</td>
+					<td>
+
+						<span class="tag tag-red" ng-if="payment.status == 'error'">Error</span>
+						<span class="tag tag-orange" ng-if="payment.status == 'scheduled'">Scheduled</span>
+						<span class="tag tag-lightgrey" ng-if="payment.status == 'processing'">Processing</span>
+						<span class="tag tag-blue" ng-if="payment.status == 'deleted'">Deleted</span>
+						<span class="tag tag-purple" ng-if="payment.status == 'archived'">Archived</span>
+
+					</td>
+					<td>{{payment.date}}</td>
+					<td>
+
+						<button ng-click="archive( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-archive"></i>&nbsp;&nbsp;Archive</button>
+
+						<button ng-click="delete( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</button>
+
+					</td>
 				</tr>
-				<tr ng-if="status == 'scheduled'">
-					<th>Scheduled</th>
-					<td>{{result.scheduled}}</td>
-				</tr>
-				<tr ng-if="status == 'scheduled'">
-					<th>Processing</th>
-					<td>{{result.processing}}</td>
-				</tr>
-				<tr ng-if="status == 'scheduled'" ng-class="{'orange' : result.error > 0 }">
-					<th>Errors</th>
-					<td>{{result.error}}</td>
-				</tr>
+
 			</table>
 		</div>
 
-		<div ng-show="result.drivers">
+		<table class="tb-pagination right" ng-if="pages > 1" page-key>
+			<tbody>
+				<tr>
+					<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
+					<td class="td-info">Page {{query.page}} of {{pages}}</td>
+					<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="divider"></div>
 
-			<h1 class="title left"><i class="fa fa-bank"></i>Payments</h1>
-
-			<div class="box-filter right">
-				<button class="button green" ng-class="{ 'inactive' : filter }" ng-click="filter = false">All</button>
-				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'reimbursement' }" ng-click="filter = 'reimbursement'">Reimbursement</button>
-				<button class="button button-big green" ng-class="{ 'inactive' : filter != 'payment' }" ng-click="filter = 'payment'">Payments</button>
-			</div>
-
-			<div class="divider"></div>
-
-			<div ng-if="status == 'scheduled'">
-				<h3 class="title">
-					Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
-				</h3>
-				<h3 ng-click="do_err_payments()" class="title">
-					<strong class="orange link">Process errors all again</strong>
-				</h3>
-			</div>
-
-			<div class="box-content2 box-content-table">
-				<table class="tb-zebra">
-					<tr>
-						<th>ID</th>
-						<th>Driver</th>
-						<th>Scheduled at</th>
-						<th>Type</th>
-						<th>Amount</th>
-						<th>Status</th>
-						<th ng-if="status == 'scheduled'"></th>
-						<th></th>
-					</tr>
-					<tr ng-repeat="driver in result.drivers" ng-show="!filter || filter == driver.pay_type">
-						<td><a href="/settlement/drivers/{{status}}/{{driver.id_payment_schedule}}">{{driver.id_payment_schedule}}</td>
-						<td>{{driver.driver}}</td>
-						<td>{{driver.date}}</td>
-						<td>{{driver.pay_type}}</td>
-						<td>${{driver.amount | formatPrice}}</td>
-						<td class="deploy-status-{{driver.status}}">
-							{{driver.status}}
-						</td>
-						<td>
-						<td ng-if="status == 'scheduled'">
-							<ul class="ul-inputs">
-								<li class="li-input" ng-show="!isPaying">
-									<button class="button save" ng-click="archive( driver.id_payment_schedule );"><i class="fa fa-archive"></i></button>
-									<button class="button cancel" ng-click="delete( driver.id_payment_schedule )"><i class="fa fa-trash"></i></button>
-								</li>
-								<li class="li-input" ng-show="isPaying">
-									<i class="fa fa-circle-o-notch fa-spin"></i>
-								</li>
-							</ul>
-						</td>
-							{{driver.log}}
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
 	</div>
-</div>
 
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>
+</div>

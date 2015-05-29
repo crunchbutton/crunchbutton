@@ -5,8 +5,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		switch ($this->method()) {
@@ -19,8 +18,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 				}
 
 				if (!$community->id_community) {
-					header('HTTP/1.0 404 Not Found');
-					exit;
+					$this->error(404);
 				}
 
 				switch ( c::getPagePiece(3) ) {
@@ -34,10 +32,10 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						break;
 
 					case 'closelog':
-						$aliases = $community->forceCloseLog();
+						$log = $community->forceCloseLog( true, false, 60 );
 						$out = [];
-						foreach( $aliases as $alias ){
-							$out[] = $alias->exports();
+						foreach( $log as $closed ){
+							$out[] = $closed->exports();
 						}
 						echo json_encode( $out );exit;
 						break;
@@ -53,8 +51,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 			case 'post':
 
 				if (!c::admin()->permission()->check(['global'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					exit;
+					$this->error(401);
 				}
 
 
@@ -74,7 +71,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							case 'add':
 								$alias = new Crunchbutton_Community_Alias;
 								$alias->id_community = $this->request()[ 'id_community' ];
-								$alias->alias = $this->request()[ 'alias' ];
+								$alias->alias = strtolower( $this->request()[ 'alias' ] );
 								$alias->prep = $this->request()[ 'prep' ];
 								$alias->name_alt = $this->request()[ 'name_alt' ];
 								$alias->top = $this->request()[ 'top' ];
@@ -179,6 +176,10 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$community->close_3rd_party_delivery_restaurants_note = $this->request()[ 'close_3rd_party_delivery_restaurants_note' ];
 						} else {
 							$community->close_3rd_party_delivery_restaurants_note = '';
+						}
+
+						if( $this->request()[ 'driver_restaurant_name' ] ){
+							$community->driver_restaurant_name = $this->request()[ 'driver_restaurant_name' ];
 						}
 
 						$dont_warn_till = $this->request()[ 'dont_warn_till_fmt' ];

@@ -70,15 +70,12 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!$order->id_order) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
 		}
 
 		if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) && $restaurant->id_restaurant != $order->id_restaurant) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
-
 
 		// update an order
 		if ($this->method() == 'put') {
@@ -87,7 +84,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			$changed = false;
 			foreach ($this->request() as $k => $v) {
 				if (in_array($k, $allowed)) {
-					$order->{$k} = c::db()->escape($v);
+					$order->{$k} = $v;
 					$changed = true;
 				}
 			}
@@ -101,8 +98,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'refund':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					exit;
+					$this->error(401);
 				}
 				$status = $order->refund();
 				if( $status ){
@@ -114,8 +110,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'do_not_reimburse_driver':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					exit;
+					$this->error(401);
 				}
 				$order->do_not_reimburse_driver = ( $order->do_not_reimburse_driver == 1 ? 0 : 1 );
 				$order->save();
@@ -124,8 +119,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'do_not_pay_driver':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					exit;
+					$this->error(401);
 				}
 				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? 0 : 1 );
 				$order->save();
@@ -134,12 +128,27 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'do_not_pay_restaurant':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					exit;
+					$this->error(401);
 				}
 				$order->do_not_pay_restaurant = ( $order->do_not_pay_restaurant == 1 ? 0 : 1 );
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
+				break;
+
+			case 'resend_notification':
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+					$this->error(401);
+				}
+				echo json_encode(['status' => $order->resend_notify() ? 'success' : 'error']);
+
+				break;
+
+			case 'resend_notification_drivers':
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+					$this->error(401);
+				}
+				echo json_encode(['status' => $order->resend_notify_drivers() ? 'success' : 'error']);
+
 				break;
 
 			case 'eta':
@@ -162,7 +171,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			case 'status':
 				echo json_encode($order->status()->last());
 				break;
-				
+
 			case 'ticket':
 				echo $order->getSupport(true)->json();
 				break;

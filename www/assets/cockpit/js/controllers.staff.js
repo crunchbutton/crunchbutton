@@ -104,18 +104,16 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 
 	angular.extend( $scope, ViewListService );
 
-	// activate viewlist service
 	$scope.view({
 		scope: $scope,
-		// set of variables in the query string that should trigger changes
 		watch: {
 			search: '',
 			type: 'all',
 			status: 'active',
 			working: 'all',
-			pexcard: 'all'
+			pexcard: 'all',
+			fullcount: false
 		},
-		//$scope.query comes from viewlist
 		update: function() {
 			StaffService.list($scope.query, function(d) {
 				$scope.staff = d.results;
@@ -125,56 +123,6 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 	});
 });
 
-NGApp.controller('StaffListCtrl', function( $scope, StaffService ) {
-
-	$scope.showForm = true;
-
-	$scope.search = {};
-
-	$scope.ready = true;
-	$scope.search._types = StaffService.typeSearch();
-	$scope.search._status = StaffService.statusSearch();
-	$scope.search.type = 'all';
-	$scope.search.status = 'all';
-	$scope.search.name = '';
-	$scope.page = 1;
-
-	var list = function(){
-		$scope.searched = true;
-		$scope.isSearching = true;
-		var search = { 'type': $scope.search.type, 'name': $scope.search.name, 'status': $scope.search.status, 'page': $scope.page };
-		StaffService.list( search, function( data ){
-			$scope.isSearching = false;
-			$scope.pages = data.pages;
-			$scope.next = data.next;
-			$scope.prev = data.prev;
-			$scope.staff = data.results;
-			$scope.count = data.count;
-		} );
-	};
-
-	var waiting = false;
-
-	$scope.doSearch = function(){
-		$scope.page = 1;
-		list();
-	};
-
-	$scope.nextPage = function(){
-		$scope.page = $scope.next;
-		list();
-	};
-
-	$scope.prevPage = function(){
-		$scope.page = $scope.prev;
-		list();
-	};
-
-	$scope.payinfo = function( id_admin ){
-		$scope.navigation.link( '/staff/payinfo/' + id_admin );
-	};
-
-});
 
 NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
 
@@ -182,11 +130,11 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 
 	$scope.open_card = function( id_card ){
 		change_card_status( id_card, PexCardService.status.OPEN );
-	};
+	}
 
 	$scope.block_card = function( id_card ){
 		change_card_status( id_card, PexCardService.status.BLOCKED );
-	};
+	}
 
 	var change_card_status = function( id_card, status ){
 		if( confirm( 'Confirm change card status to ' + status + '?' ) ){
@@ -205,9 +153,22 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 				}
 			);
 		}
-	};
+	}
 
 	$scope.pexcard = {};
+
+	$scope.remove_assignment = function( pexcard_id ){
+		if( confirm( 'Confirm remove assignment?' ) ){
+			PexCardService.admin_pexcard_remove( pexcard_id, function( json ){
+				if( json.success ){
+					load();
+					$scope.flash.setMessage( 'Driver assigned removed!', 'success' );
+				} else {
+					$scope.flash.setMessage( 'Error removing assignment!', 'error' );
+				}
+			} );
+		}
+	}
 
 	$scope.add_funds = function(){
 		if( $scope.form.$invalid ){
@@ -478,6 +439,9 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 				if( json.using_pex_date ){
 					$scope.payInfo.using_pex_date = new Date( json.using_pex_date );
 				}
+				if( json.date_terminated ){
+					$scope.payInfo.date_terminated = new Date( json.date_terminated );
+				}
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
 				$scope.payment._using_pex = StaffPayInfoService.typesUsingPex();
 				$scope.payment._types = StaffPayInfoService.typesPayment();
@@ -513,6 +477,13 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		} else {
 			$scope.payInfo.using_pex_date_formatted = null;
 		}
+
+		if( $scope.payInfo.date_terminated && !isNaN( $scope.payInfo.date_terminated.getTime() ) ){
+			$scope.payInfo.date_terminated_formatted = $filter( 'date' )( $scope.payInfo.date_terminated, 'yyyy-MM-dd' )
+		} else {
+			$scope.payInfo.date_terminated_formatted = null;
+		}
+
 		$scope.isSaving = true;
 		StaffPayInfoService.save( $scope.payInfo, function( data ){
 			$scope.isSaving = false;

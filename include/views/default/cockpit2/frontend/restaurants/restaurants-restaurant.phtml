@@ -2,111 +2,177 @@
 
 <div class="content-padding">
 
-
-	<h1 class="left title"><i class="fa fa-coffee"></i>{{restaurant.name}}<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
-
-	<div class="ticket-status-top">
-		<div class="ticket-status-open">{{order.status.status}}</div>
-	</div>
+	<h1 class="title box-title"><i class="fa fa-coffee"></i>{{restaurant.name}}</h1>
 
 	<div class="divider"></div>
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-	<br>
-	
-	<div>
-		<div class="support-boxes-column">
-			<div class="support-box-wrap">
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Details</h1>
-				<div class="box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-key">Name</div>
-							<div class="field-value">{{restaurant.name}}</div>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(restaurant.address)">{{restaurant.address}}</a></div>
+					</div>
+
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.active">Active</span>
+							<span class="tag tag-red" ng-if="!restaurant.active">Inactive</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Phone</div>
-							<div class="field-value"><a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Open</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="!restaurant.open_for_business">Closed</span>
+								<span ng-if="restaurant.open_for_business">
+								<span class="tag tag-green" ng-if="restaurant.open">Open</span>
+								<span class="tag tag-red" ng-if="!restaurant.open">Closed</span>
+							</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Address</div>
-							<div class="field-value"><a href ng-click="routeAddress(restaurant.address)">{{restaurant.address}}</a></div>
+					</div>
+
+					
+					<div class="field-row">
+						<div class="field-key">Type</div>
+						<div class="field-value">
+							<span class="tag tag-orange" ng-if="restaurant.delivery && restaurant.delivery_service">3rd</span>
+							<span class="tag tag-blue" ng-if="restaurant.delivery && !restaurant.delivery_service">1st</span>
+							<span class="tag tag-lightgrey" ng-if="restaurant.takeout && !restaurant.delivery">Takeout</span>
+							<span class="tag tag-lightgrey" ng-if="!restaurant.takeout && !restaurant.delivery">None</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Delivery by</div>
-							<div class="field-value">{{restaurant.delivery_service ? 'Crunchbutton' : 'Restaurant'}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Relationship</div>
+						<div class="field-value">
+							<span class="tag tag-purple" ng-if="restaurant.formal_relationship">Formal</span>
+							<span class="tag tag-grey" ng-if="!restaurant.formal_relationship">Informal</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Relationship</div>
-							<div class="field-value">{{restaurant.formal_relationship ? 'Formal' : 'Informal'}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Notification Sent</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.order_notifications_sent">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.order_notifications_sent">No</span>
 						</div>
-						<div class="field-row">
-							<div class="field-key">Notification Sent</div>
-							<div class="field-value">{{restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Community</div>
+						<div class="field-value">
+							<a href="/community/{{restaurant.id_community}}">{{restaurant.community}}</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-			
-		<div class="support-boxes-column">
-			<div class="support-box-wrap">
-				<h1>Location</h1>
-				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-	
-				</map>
+		
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Payment Info</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/restaurant/payment-info/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Balanced</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.payment_type.balanced_bank && restaurant.payment_type.balanced_id">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.payment_type.balanced_bank || !restaurant.payment_type.balanced_id">No</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Stripe</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.payment_type.stripe_id || !restaurant.payment_type.stripe_account_id">No</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		
 
-		<h1 class="title"><i class="fa fa-car"></i>Orders</h1>		
 
-		<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
-		<div class="box-content2 box-content-table">
-			<table class="tb-zebra">
-				<tr>
-					<th>Info</th>
-					<th>Date</th>
-					<th>Restaurant</th>
-					<th>Driver</th>
-					<th>Order</th>
-					<th>Status</th>
-				</tr>
-				<tr ng-repeat="order in orders">
-					<td><a href="/order/{{order.id_order}}">{{order.id_order}}</td>
-					<td>{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
-					<td>
-						<a href="/restaurant/{{order.id_restaurant}}">{{order._restaurant_name}}</a><br>
-						<a href="/community/{{order._community_name}}">{{order._community_name}}</a>
-					</td>
-					<td><a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></td>
-					<td>${{order.final_price_plus_delivery_markup}}</td>
-					<td>
-						<b>{{order.status.status}}</b><br>
-						<span ng-if="order.status"><span am-time-ago="order.status.date | localtime | timestamp"></span></span>
-					</td>
-				</tr>
-			</table>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Location</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red">BETA</span>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
 		</div>
-		
-		<table class="tb-pagination right" ng-if="pages > 1" page-key>
-			<tbody>
-				<tr>
-					<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
-					<td class="td-info">Page {{query.page}} of {{pages}}</td>
-					<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
-				</tr>
-			</tbody>
-		</table>
-		
-		<div class="divider"></div>
-		
-		
-		
-		
-		
-		
-	
+
 	</div>
+	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
+
+	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
+	<div class="box-content2 box-content-table">
+		<table class="tb-zebra">
+			<tr>
+				<th>Info</th>
+				<th>Date</th>
+				<th>Restaurant</th>
+				<th>Driver</th>
+				<th>Order</th>
+				<th>Status</th>
+			</tr>
+			<tr ng-repeat="order in orders">
+				<td><a href="/order/{{order.id_order}}">{{order.id_order}}</td>
+				<td>{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td>
+					<a href="/restaurant/{{order.id_restaurant}}">{{order._restaurant_name}}</a><br>
+					<a href="/community/{{order._community_name}}">{{order._community_name}}</a>
+				</td>
+				<td><a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a></td>
+				<td>${{order.final_price_plus_delivery_markup}}</td>
+				<td>
+					<b>{{order.status.status}}</b><br>
+					<span ng-if="order.status"><span am-time-ago="order.status.date | localtime | timestamp"></span></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<table class="tb-pagination right" ng-if="pages > 1" page-key>
+		<tbody>
+			<tr>
+				<td class="td-prev"><button class="button orange" ng-if="query.page > 1" ng-click="setPage(query.page-1)">prev</button></td>
+				<td class="td-info">Page {{query.page}} of {{pages}}</td>
+				<td class="td-next"><button class="button orange" ng-if="query.page < pages" ng-click="setPage(query.page+1)">next</button></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="divider"></div>
+
 
 </div>
 

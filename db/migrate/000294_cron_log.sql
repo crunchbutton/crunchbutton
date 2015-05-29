@@ -1,0 +1,1 @@
+INSERT INTO `cron_log` (`id_cron_log`, `description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`) VALUES (NULL, 'Send a digest of all CS tickets since last digest every morning at 10 am', 'Crunchbutton_Cron_Job_CSTicketsDigest', '2015-03-24 10:00:00', 'day', '1', 'idle', NULL, NULL, '0');

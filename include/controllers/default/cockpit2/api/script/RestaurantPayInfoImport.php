@@ -39,7 +39,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 						$payment->summary_email = $email;
 					}
 				} else {
-					$email = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = 1 AND type = "' . Crunchbutton_Notification::TYPE_EMAIL . '" LIMIT 1' );
+					$email = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = true AND type = "' . Crunchbutton_Notification::TYPE_EMAIL . '" LIMIT 1' );
 					if( $email->id_notification ){
 						$payment->summary_email = $email->value;
 					}
@@ -49,7 +49,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 
 			if( $method == 'fax' ){
 				$payment->method = 'fax';
-				$fax = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = 1 AND type = "' . Crunchbutton_Notification::TYPE_FAX . '" LIMIT 1' );
+				$fax = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = true AND type = "' . Crunchbutton_Notification::TYPE_FAX . '" LIMIT 1' );
 				if( $fax->id_notification ){
 					$payment->summary_fax = $fax->value;
 				}

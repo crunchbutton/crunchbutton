@@ -1,27 +1,20 @@
-
-
 <div class="top-pad"></div>
 
 <div class="content-padding">
 
-	<h1 class="title left"><i class="fa fa-user"></i>{{staff.name}}</h1>
-	<div class="ticket-status-top" ng-if="staff.id_admin">
-		<div class="ticket-status-open" ng-if="staff.active">Active</div>
-		<div class="ticket-status-closed" ng-if="!staff.active">Inactive</div>
-	</div>
-
+	<h1 class="title box-title"><i class="fa fa-user"></i>{{staff.name}}</h1>
 	<div class="divider"></div>
-
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-
-	<br>
-
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="support-boxes">
 
-		<div class="support-box-wrap">
-			<h1>Info</h1>
-			<div class="box-content-color">
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Info</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
 				<div class="field-container">
 					<div class="field-row">
 						<div class="field-key">Name</div>
@@ -43,46 +36,257 @@
 						<div class="field-key">Timezone</div>
 						<div class="field-value">{{staff.timezone}}</div>
 					</div>
-					<div class="field-row">
-						<div class="field-key">Communities</div>
-						<div class="field-value">
-							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
-								{{community}}
-							</span>
-							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/1" target="_blank"><i class="fa fa-plus-circle"></i></a>
-						</div>
+					<div class="field-row" ng-if="staff.date_terminated_formatted">
+						<div class="field-key">Inactive since</div>
+						<div class="field-value">{{staff.date_terminated_formatted}}</div>
 					</div>
 				</div>
 
 			</div>
 		</div>
 
-		<div class="support-box-wrap">
-			<h1>Location</h1>
-			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
 
-			</map>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Payment Info</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/staff/{{staff.login}}/pexcard" ng-if="staff.pexcard.active"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Funds</button></a>
+						<a href="/pexcard/card/driver/{{staff.id_admin}}" ng-if="!staff.pexcard.active"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Card</button></a>
+						<a href="/staff/{{staff.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">PEX Card</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.pexcard.active">Active</span>
+							<span class="tag tag-red" ng-if="!staff.pexcard.active">Inctive</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="staff.pexcard.active">
+						<div class="field-key">PEX Serial</div>
+						<div class="field-value">{{staff.pexcard.card_serial}}</div>
+					</div>
+					<div class="field-row" ng-if="staff.pexcard.active">
+						<div class="field-key">PEX Last Four</div>
+						<div class="field-value">{{staff.pexcard.last_four}}</div>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
 
-	<h1 class="title"><i class="fa fa-calendar"></i>Shifts</h1>
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Start</th>
-				<th>End</th>
-				<th>Community</th>
-				<th>Current</th>
-			</tr>
-			<tr ng-repeat="shift in staff.shifts" ng-class="{'highlight':shift.current}">
-				<td>{{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}</td>
-				<td>{{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}</td>
-				<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
-				<td>
-					<span ng-if="shift.current"><i class="fa fa-check"></i></span>
-				</td>
-			</tr>
-		</table>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Tools</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key"><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement</a></div>
+						<div class="field-value"></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key"><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></div>
+						<div class="field-value"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Driver Info</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/drivers/onboarding/{{staff.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Communities</div>
+						<div class="field-value">
+							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
+								{{community}}
+							</span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/{{staff.id_admin}}" target="_blank"><i class="fa fa-plus-circle"></i></a>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Vehicle</div>
+						<div class="field-value">
+							<span class="tag tag-orange" ng-if="staff.vehicle == 'car'">Car</span>
+							<span class="tag tag-purple" ng-if="staff.vehicle == 'bike'">Bike</span>
+							<span class="tag tag-grey" ng-if="staff.vehicle != 'bike' && staff.vehicle != 'car'">None</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Referral Code</div>
+						<div class="field-value">
+							{{staff.invite_code}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Total Number Activations</div>
+						<div class="field-value">
+							{{staff.referral_total}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Total Number Activations in Past Week</div>
+						<div class="field-value">
+							{{staff.referral_total_last_week}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Additional Info</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<div class="field-container">
+
+					<div class="field-row" ng-if="staff.phone_type">
+						<div class="field-key">Phone</div>
+						<div class="field-value">
+							{{staff.phone_type}}
+							<span ng-if="staff.phone_subtype"> - {{staff.phone_subtype}}</span>
+							<span ng-if="staff.phone_version"> - {{staff.phone_version}}</span>
+							<span ng-if="staff.iphone_type"> - {{staff.iphone_type}}</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.cell_carrier">
+						<div class="field-key">Cell Carrier</div>
+						<div class="field-value">
+							{{staff.cell_carrier}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.is_driver">
+						<div class="field-key">Student</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.student">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.student">No</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.is_driver">
+						<div class="field-key">Permashifts</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.permashifts">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.permashifts">No</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.weekly_hours">
+						<div class="field-key">Desired Weekly Hours</div>
+						<div class="field-value">
+							{{staff.weekly_hours}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.tshirt_size">
+						<div class="field-key">T-shirt Size</div>
+						<div class="field-value">
+							{{staff.tshirt_size}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.address">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(staff.address)">{{staff.address}}</a></div>
+					</div>
+
+					<div class="field-row" ng-if="staff.payment_type">
+						<div class="field-key">Pay Structure</div>
+						<div class="field-value">
+							<span class="tag tag-blue" ng-if="staff.payment_type == 'orders'">Commission</span>
+							<span class="tag tag-purple" ng-if="staff.payment_type == 'hours'">Hourly with tips</span>
+							<span class="tag tag-orange" ng-if="staff.payment_type == 'hours_without_tips'">Hourly without tips (but a higher hourly rate)</span>
+							<span class="tag tag-green" ng-if="staff.payment_type == 'making_whole'">Making whole</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.hour_rate">
+						<div class="field-key">Hour rate</div>
+						<div class="field-value">
+							{{staff.hour_rate}}
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Shifts</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red" ng-if="!staff.shifts.length">No Shifts</span>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color box-content-table" ng-if="staff.shifts.length">
+				<table class="tb-zebra">
+					<tr>
+						<th>Time</th>
+						<th>Community</th>
+						<th class="tb-small"></th>
+					</tr>
+					<tr ng-repeat="shift in staff.shifts">
+						<td>
+							<span class="listview-smaller">
+								<span class="listview-bold">Start</span>: {{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}<br>
+								<span class="listview-bold">End</span>: {{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}
+							</span>
+						</td>
+						<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
+						<td>
+							<span class="tag tag-green" ng-if="shift.current">Now</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Location</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<span class="tag tag-red">BETA</span>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+			<? /*
+			<div class="no-box-content-color box-content-table">
+				<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+			</div>
+			*/ ?>
+		</div>
 	</div>
 
 
@@ -111,17 +315,6 @@
 		</table>
 	</div>
 	*/ ?>
-
-	<h1 class="title"><i class="fa fa-cog"></i>Tools</h1>
-	<div class="box-content2 box-content-table">
-		<table>
-			<tr><td><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement </a></td></tr>
-			<tr><td><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></td></tr>
-			<tr><td><a href="/staff/{{staff.login}}/payinfo">Payment Info</a></td></tr>
-			<tr ng-if="staff.pexcard"><td><a href="/staff/{{staff.login}}/pexcard">Pexcard / Add funds</a></td></tr>
-			<tr ng-if="!staff.pexcard"><td><a href="/pexcard/card/driver/{{staff.id_admin}}">Pexcard</a></td></tr>
-		</table>
-	</div>
 
 
 </div>

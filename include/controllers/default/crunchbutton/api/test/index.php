@@ -2,6 +2,30 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+
+		$reward = new Crunchbutton_Reward;
+		$code = 'h64i5tnbju';
+		echo '<pre>';var_dump( $reward->checkIfItIsEligibleForFirstTimeOrder() );exit();
+		$valid = $reward->checkIfItIsEligibleForFirstTimeOrder();
+		$valid = $reward->validateInviteCode( $code );
+		echo '<pre>';var_dump( $valid );exit();
+
+
+
+
+foreach (Crunchbutton_Util::frontendTemplates( false, true ) as $file) {
+	echo $file."\n";
+	$fi = explode('/',$file);
+	array_shift($fi);
+	$fi = implode('/',$fi);
+	$fi = $fi ? $fi : $file;
+	echo $fi;
+	/*
+	<script type="text/ng-template" id="assets/view/<?=$fi?>.html">
+		<?=$this->render('frontend/'.$file, ['filter' => false])?>
+	</script>
+	*/
+}
 exit;
 
 			Log::critical([
@@ -9,8 +33,8 @@ exit;
 				'host' => $_SERVER['__HTTP_HOST'],
 				'type' => 'notification'
 			]);
-		
-	
+
+
 	exit;
 		$b = ['cock'];
 
@@ -22,14 +46,14 @@ exit;
 		$order = new Order(635);
 		$order->que();
 		exit;
-		
+
 
 		c::timeout(function() {
 			mail('_EMAIL','asdasdsad','fdfdfd');
 		});
 		exit;
 
-		
+
 		$r = Restaurant::o(11);
 		echo $r->phone();
 		exit;

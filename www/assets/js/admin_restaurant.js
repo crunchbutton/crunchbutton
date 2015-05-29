@@ -1387,6 +1387,7 @@ var DOM_MAP = {
 				'textarea#restaurant-notes-todo' : ['notes_todo'],
 				'textarea#restaurant-notes-owner' : ['notes_owner'],
 				'select#restaurant-timezone' : ['timezone'],
+				'select#restaurant-delivery_radius_type' : ['delivery_radius_type'],
 				'select#restaurant-id-community' : ['id_community'],
 				'select#restaurant-summary_method' : ['summary_method'],
 				'select#restaurant-payment_method' : ['payment_method'],

@@ -5,7 +5,7 @@ class Crunchbutton_Order_Status extends Cana_Table {
 	private $_actions;
 
 	public function __construct($order) {
-		$actions = Order_Action::q('select * from order_action where id_order="'.$order->id_order.'" order by timestamp desc');
+		$actions = Order_Action::q('select * from order_action where id_order=? order by timestamp desc', [$order->id_order]);
 		$this->_order = $order;
 
 		$this->_actions = [];
@@ -29,6 +29,10 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			} elseif ($unset && $status->id_admin != $unset) {
 				$unset = null;
 			}
+			elseif($status->type == Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN) {
+				unset($this->_actions[$k]);
+
+			}
 		}
 
 		$this->_statusOrder = [
@@ -41,25 +45,31 @@ class Crunchbutton_Order_Status extends Cana_Table {
 	}
 
 	private function _exportStatus($action) {
+		$date = $action->date();
+		$date_timestamp = Crunchbutton_Util::dateToUnixTimestamp( $date );
 		return [
 			'status' => str_replace('delivery-','',$action->type),
-			'date' => $action->date()->format('Y-m-d H:i:s'),
-			'timestamp' => $action->date()->getTimestamp(),
+			'date' => $date->format('Y-m-d H:i:s'),
+			'timestamp' => $date->getTimestamp(),
+			'date_timestamp' => $date_timestamp,
 			'order' => $this->_statusOrder[$action->type],
 			'driver' => [
 				'id_admin' => $action->id_admin,
 				'name' =>  Admin::o($action->id_admin)->name,
+				'phone' =>  Admin::o($action->id_admin)->phone
 			]
 		];
 	}
 
-	public function last(  ) {
+	public function last() {
 		if (!count($this->actions())) {
 			$date = $this->order()->date();
+			$date_timestamp = Crunchbutton_Util::dateToUnixTimestamp( $date );
 			return [
 				'status' => 'new',
 				'date' => $date->format('Y-m-d H:i:s'),
 				'timestamp' => $date->getTimestamp(),
+				'date_timestamp' => $date_timestamp,
 				'order' => 0,
 				'driver' => null
 			];

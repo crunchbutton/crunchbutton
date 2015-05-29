@@ -184,6 +184,29 @@
 									} ?>
 								</li>
 							</ul>
+
+
+						<?php
+							$is_auto_closed = $community[ 'community' ]->is_auto_closed;
+							if( $is_auto_closed ){
+								$current_message = $community[ 'community' ]->driver_restaurant_name;
+
+						?>
+													<br>
+							<br>
+						<strong>Auto closed message</strong>
+							<ul class="padded separate-sections">
+								<li class="input">
+									<input style="width:100%" type="text" name="auto_closed_message" id="auto_closed_message" maxlenght="100" value="<?php echo $current_message; ?>" placeholder="Auto closed message">
+								</li>
+								<li>
+									<button type="button" onclick="community.autoClosedMessage();" class="close_3rd_party_delivery_restaurants_save btn btn-blue">Save changes</button>
+								</li>
+
+							</ul>
+							<?php
+							}
+							?>
 						</div>
 				</div>
 			</div>
@@ -211,9 +234,6 @@
 				<br />
 				<?php } ?>
 				<?php if (c::admin()->permission()->check(['global','drivers-working-hours', 'drivers-all', 'drivers-working-hours-view'])) { ?>
-				<a href="/drivers/hours"> <i class="icon-time"></i> Working hours</a>
-				<br />
-				<br />
 				<a href="/drivers/schedule"> <i class="icon-calendar"></i> Schedule</a>
 				<?php } ?>
 
@@ -412,6 +432,36 @@ community.closeAll = function(){
 	$.ajax( {
 		type: 'POST',
 		url: '/api/community/close-all',
+		data: data,
+		complete: function( request ) {
+			console.log('request',request);
+			if( request.success ){
+				alert( 'Saved!' )
+			} else {
+				alert( 'Oops! Please try again!' );
+			}
+		}
+	} );
+};
+
+
+community.autoClosedMessage = function(){
+	var input = $('#auto_closed_message');
+	var save = true;
+
+	if( input.val() == '' ){
+		alert( 'Plese type message!' );
+		input.focus();
+		return;
+	}
+
+	var data = {
+			'id_community': '<?php echo $community[ 'community' ]->id_community; ?>',
+			'auto_closed_message': input.val()
+		};
+	$.ajax( {
+		type: 'POST',
+		url: '/api/community/auto-closed-message',
 		data: data,
 		complete: function( request ) {
 			console.log('request',request);

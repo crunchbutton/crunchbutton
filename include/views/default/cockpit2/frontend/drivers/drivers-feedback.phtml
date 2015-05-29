@@ -1,49 +1,52 @@
 <div class="top-pad"></div>
 <div class="content-padding">
-<div class="drivercontain">
-    <h1 ng-if="!finished" class="title left"><i ng-if="!finished" class="fa fa-quote-left"></i><span ng-if="!finished">Feedback</span></h1>
-    <div class="divider"></div>
-<h1 class="title left" ng-if="finished">Thank you, your feedback has been submitted!</h1>
-   <h2 ng-if="!finished">Help Us Help You</h2>
-   <br>
-    <form ng-if="!finished">
-    <div class="driver-feedback">
- <div class="form-group">
-            <label class="driverlabel">
-                <span>*</span>How can we make Crunchbutton a more awesome experience? Tell us anything you can!
-            </label>
-            <br>
-            
-            <div class="drivertextbox">
-            <div ng-if="errors.message">Please tell us how to improve!</div>
-                <textarea ng-model="feedback.message" name="message" class="driverform-control"></textarea>
-            </div>
-        </div>
+	<h1 class="title box-title"><i class="fa fa-quote-left"></i>Feedback</h1>
 
-        <div class="form-group">
-            <label class="driverlabel">
-                Driving Community: (optional)
-            </label>
-            <div class="drivertextbox">
-                <input type="text" ng-model="feedback.community" name="community" class="driverform-control" >
-            </div>
-        </div>
-        
-         <div class="form-group">
-            <label class="driverlabel">
-                Name: (optional)
-            </label>
-            <div class="drivertextbox">
-                <input type="text" class="driverform-control" ng-model="feedback.name" name="name" >
-            </div>
-        </div>
-        
-    <button ng-click="post()" type="submit" class="button orange" name="submit">Submit</button>
-    </div><!--close driver-feedback div-->
-  </form>
+		<div class="divider"></div>
+		<h1 class="title left" ng-if="finished">Thank you, your feedback has been submitted!</h1>
 
+		<form ng-if="!finished">
 
- 
+			<div class="support-boxes">
 
-</div>
+			<div class="support-box-wrap box-content2">
+				<div class="support-box-wrap-header">
+					<h1 ng-if="!finished" class="title left"><span ng-if="!finished">Help us help you</span></h1>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color">
+
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+						<li class="li-input" ng-class="{'error':form.driverAddress.$invalid}">
+							<div class="label">
+								<p>
+									<span>*</span> How can we make Crunchbutton a more awesome experience? Tell us anything you can!<br>
+									<span ng-if="errors.message"><br>Please tell us how to improve!</span>
+								</p>
+							</div>
+							<div class="input">
+								<textarea ng-model="feedback.message" name="message" class="driverform-control"></textarea>
+							</div>
+						</li>
+
+						<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
+							<div class="label">Driving Community: (optional)</div>
+							<div class="input"><input type="text" ng-model="feedback.community" name="community" class="driverform-control" ></div>
+						</li>
+
+						<li class="li-input">
+							<div class="label">Name: (optional)</div>
+							<div class="input"><input type="text" class="driverform-control" ng-model="feedback.name" name="name" ></div>
+						</li>
+
+					</ul>
+					<br>
+
+					<button ng-click="post()" type="submit" class="button orange" name="submit">Submit</button>
+				</div>
+			</div>
+		</form>
+
 </div>

@@ -1,3 +1,5 @@
+
+
 NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routeParams ) {
 
 	var service = {};
@@ -89,7 +91,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	}
 
 	service.accept = function( id_order, callback ){
-		orders.accept( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		orders.accept( { 'id_order': id_order }, function( json ){
+			App.playAudio('orders-delivered');
+			callback( json ); } );
 	}
 
 	service.undo = function( id_order, callback ){
@@ -97,11 +101,15 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	}
 
 	service.pickedup = function( id_order, callback ){
-		orders.pickedup( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		orders.pickedup( { 'id_order': id_order }, function( json ){
+			App.playAudio('orders-delivered');
+			callback( json ); } );
 	}
 
 	service.delivered = function( id_order, callback ){
-		orders.delivered( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		orders.delivered( { 'id_order': id_order }, function( json ){
+			App.playAudio('orders-delivered');
+			callback( json ); } );
 	}
 
 	service.reject = function( id_order, callback ){
@@ -115,21 +123,107 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 			callback( order );
 		} );
 	}
+	return service;
+} );
 
 
-	//Driver fee
-	service.driver_take = function( callback ){
-		var totalTake = 0;
-		var id_order = $routeParams.id;
-		orders.get( { 'id_order': id_order }, function( order ) {
-			totalTake = (1 * order._tip) + (1 * order.delivery_fee);
+
+
+NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $routeParams, DriverOrdersService, MainNavigationService) {
+	var service = {
+		order: null
+	};
+
+	service.prep = function() {
+		service.order = null;
+		service.ready = false;
+		service.text_customer_5_min_away_sending = false;
+	};
+
+	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+		console.log(service.order);
+		service.order = null;
+	});
+
+	service.load = function( callback ) {
+		DriverOrdersService.get( function( json ){
+			service.order = json;
+			service.ready = true;
+			$rootScope.unBusy();
+			var totalTake = 0;
+			totalTake = (1 * json._tip) + (1 * json.delivery_fee);
 			$rootScope.driverTake = { total: totalTake };
-			if (callback) {
-				callback( order );
-			}
-		} );
 
+			if( callback ){
+				callback();
+			}
+		});
 	}
+
+	service.text_customer_5_min_away_sending = null;
+
+	service.text_customer_5_min_away = function(){
+		if( confirm( 'Confirm send message to customer?' ) ){
+
+				service.text_customer_5_min_away_sending = true;
+
+				if( service && service.textLoader && service.textLoader.start ){
+					service.textLoader.start();
+				}
+
+				DriverOrdersService.text_customer_5_min_away(service.order.id_order,
+					 function( json ){
+							if (json.status) {
+								 service.load();
+							} else {
+								 App.alert('Message failed to send. Please try again.');
+							}
+							if( service && service.textLoader && service.textLoader.start ){
+								service.textLoader.stop();
+							}
+							service.text_customer_5_min_away_sending = false;
+					 }
+				);
+		}
+	}
+
+	service.accept = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.accept( service.order.id_order,
+			function( json ){
+				if( json.status ) {
+					service.load();
+				} else {
+					service.load();
+					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
+				}
+			}
+		);
+	};
+
+	service.undo = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.undo( service.order.id_order, service.load );
+	};
+
+	service.pickedup = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.pickedup( service.order.id_order, service.load );
+	};
+
+	service.delivered = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.delivered( service.order.id_order, function(){
+			service.load();
+			MainNavigationService.link('/drivers/orders');
+		} );
+	};
+
+	service.reject = function() {
+		$rootScope.makeBusy();
+		DriverOrdersService.reject( service.order.id_order, service.load );
+	};
 
 	return service;
 } );

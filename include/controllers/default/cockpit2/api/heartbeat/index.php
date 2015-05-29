@@ -22,12 +22,12 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		$tickets = null;
 
 		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
-			$q = 'SELECT count(*) as c from support where status="open"';
+			$q = "SELECT count(*) as c from support where status='open'";
 			$q = c::db()->get($q);
 			$tickets = $q->get(0)->c;
 
 			// get the last support message #4337
-			$q = 'SELECT UNIX_TIMESTAMP( date ) AS timestamp FROM support INNER JOIN support_message ON support_message.id_support = support.id_support WHERE status = "open" ORDER BY id_support_message DESC LIMIT 1';
+			$q = "SELECT UNIX_TIMESTAMP( date ) AS timestamp FROM support INNER JOIN support_message ON support_message.id_support = support.id_support WHERE status = 'open' ORDER BY id_support_message DESC LIMIT 1";
 			$q = c::db()->get($q);
 			$timestamp = $q->get(0)->timestamp;
 		}
@@ -63,9 +63,9 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 			(new Admin_Location([
 				'id_admin' => c::admin()->id_admin,
 				'date' => date('Y-m-d H:i:s'),
-				'lat' => c::db()->escape($lat),
-				'lon' => c::db()->escape($lon),
-				'accuracy' => c::db()->escape($this->request()['accuracy'])
+				'lat' => $lat,
+				'lon' => $lon,
+				'accuracy' => $this->request()['accuracy']
 			]))->save();
 		}
 

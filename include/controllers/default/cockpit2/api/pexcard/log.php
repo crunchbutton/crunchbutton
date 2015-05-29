@@ -12,12 +12,13 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 			$this->_load_action( $this->request()['id_pexcard_action'] );
 		}
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$action = $this->request()['_action'] ? c::db()->escape($this->request()['_action']) : 'all';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$action = $this->request()['_action'] ? $this->request()['_action'] : 'all';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -36,14 +37,16 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 
 		if ($status != 'all') {
 			$q .= '
-				AND pa.status = "' . $status  . '"
+				AND pa.status = ?
 			';
+			$keys[] = $status;
 		}
 
 		if ($type != 'all') {
 			$q .= '
-				AND pa.type = "' . $type . '"
+				AND pa.type = ?
 			';
+			$keys[] = $type;
 		}
 
 		if ($action != 'all') {
@@ -64,15 +67,16 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 
 				default:
 					$q .= '
-						AND ( pa.action = "' . $action . '" )
+						AND ( pa.action = ? )
 					';
+					$keys[] = $action;
 					break;
 			}
 		}
 
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'a.name' => 'like',
@@ -83,17 +87,22 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 					'ap.last_four' => 'like'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 
 		// get the count
-		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		$count = intval( $r->_items[0]->c );
 
 		$q .= '
 			ORDER BY pa.id_pexcard_action DESC
-			LIMIT '.$offset.', '.$limit . '
+			LIMIT ?
+			OFFSET ?
 		';
+		$keys[] = $limit;
+		$keys[] = $offset;
 
 		// do the query
 		$d = [];
@@ -114,7 +123,7 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 				ap.id_pexcard,
 				ap.card_serial,
 				ap.last_four
-			', $q));
+			', $q), $keys);
 
 		while ($o = $r->fetch()) {
 			$date = new DateTime($o->date, new DateTimeZone(c::config()->timezone));;

@@ -17,8 +17,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 
 			if (!$staff->id_admin) {
-				header('HTTP/1.0 404 Not Found');
-				exit;
+				$this->error(404);
 			}
 
 			switch (c::getPagePiece(3)) {
@@ -50,8 +49,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _permissionDenied(){
 		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 	}
 
@@ -71,7 +69,41 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 	private function _view($staff) {
 		$out = $staff->exports();
 		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin )->get( 0 );
-		$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
+
+		if( $staff->isDriver() ){
+
+			$out[ 'is_driver' ] = true;
+		}
+		$driver_info = $staff->driver_info()->exports();
+
+		$driver_info[ 'student' ] = strval( $driver_info[ 'student' ] );
+		$driver_info[ 'permashifts' ] = strval( $driver_info[ 'permashifts' ] );
+
+		$driver_info[ 'iphone_type' ] = '';
+		$driver_info[ 'android_type' ] = '';
+		$driver_info[ 'android_version' ] = '';
+
+		if( $driver_info[ 'phone_type' ] == 'Android' ){
+			$driver_info[ 'android_type' ] = $driver_info[ 'phone_subtype' ];
+			$driver_info[ 'android_version' ] = $driver_info[ 'phone_version' ];
+		}
+		if( $driver_info[ 'phone_type' ] == 'iPhone' ){
+			$driver_info[ 'iphone_type' ] = $driver_info[ 'phone_subtype' ];
+		}
+
+		$out = array_merge( $out, $driver_info );
+
+		$payment_type = $staff->payment_type();
+		$out[ 'payment_type' ] = $payment_type->payment_type;
+		$out[ 'hour_rate' ] = intval( $payment_type->hour_rate );
+
+		if( $staff->driver_info()->pexcard_date ){
+			$out[ 'pexcard_date' ] = $staff->driver_info()->pexcard_date()->format( 'Y,m,d' );
+		}
+
+		if( $out[ 'weekly_hours' ] ){
+			$out[ 'weekly_hours' ] = intval( $out[ 'weekly_hours' ] );
+		}
 
 		/*
 		$out['shifts'] = [];
@@ -91,12 +123,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 */
+
 		echo json_encode($out);
 	}
 
 	private function _phones(){
 		$out = [];
-		$staffs = Admin::q( 'SELECT * FROM admin WHERE active = 1 AND phone IS NOT NULL ORDER BY name ASC' );
+		$staffs = Admin::q( 'SELECT * FROM admin WHERE active = true AND phone IS NOT NULL ORDER BY name ASC' );
 		foreach( $staffs as $staff ){
 			$out[] = [ 'phone' => $staff->phone, 'name' => $staff->name ];
 		}
@@ -105,14 +138,16 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _list() {
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 20;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : '';
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$working = $this->request()['working'] ? c::db()->escape($this->request()['working']) : 'all';
-		$pexcard = $this->request()['pexcard'] ? c::db()->escape($this->request()['pexcard']) : 'all';
-		$community = $this->request()['community'] ? c::db()->escape($this->request()['community']) : null;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$type = $this->request()['type'] ? $this->request()['type'] : '';
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$working = $this->request()['working'] ? $this->request()['working'] : 'all';
+		$pexcard = $this->request()['pexcard'] ? $this->request()['pexcard'] : 'all';
+		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -126,14 +161,15 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		';
 
 		$q .= '
-				INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
-				';
+			INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
+		';
 
 		if ($type == 'driver') {
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%"
+				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE ?
 			';
+			$keys[] = Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%';
 
 			if ($community) {
 				$q .= '
@@ -145,8 +181,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if( $type == 'marketing-rep'  ){
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = "' . Crunchbutton_Group::TYPE_DRIVER . '"
+				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = ?
 			';
+			$keys[] = Crunchbutton_Group::TYPE_DRIVER;
 		}
 
 		$q .='
@@ -155,39 +192,47 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($status != 'all') {
 			$q .= '
-				AND active="'.($status == 'active' ? '1' : '0').'"
+				AND active=?
 			';
+			$keys[] = $status == 'active' ? true : false;
 		}
 
 		if ($community) {
 			$q .= '
-				AND community.id_community="'.$community.'"
+				AND community.id_community=?
 			';
+			$keys[] = $community;
 		}
-
+		
 		if ( $pexcard != 'all' ) {
 			$q .= '
-				AND apt.using_pex = "'.($pexcard == 'yes' ? '1' : '0').'"
+				AND apt.using_pex = ?
 			';
+			$keys[] = $pexcard == 'yes' ? true : false;
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'admin.name' => 'like',
 					'admin.phone' => 'like',
 					'admin.login' => 'like',
 					'admin.email' => 'like',
-					'admin.id_admin' => 'liker'
+					'admin.id_admin' => 'liker',
+					'admin.invite_code' => 'eq'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 		// get the count
 		$count = 0;
-		if ($working == 'all') {
-			$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q));
+
+		// get the count
+		if ($working == 'all' && $getCount) {
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `admin`.id_admin) as c', $q), $keys);
 			while ($c = $r->fetch()) {
 				$count = $c->c;
 			}
@@ -198,18 +243,39 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			ORDER BY `admin`.name ASC
 		';
 		if ($working == 'all') {
-			$q .= ' LIMIT '.$offset.', '.$limit;
+			$q .= '
+				LIMIT ?
+				OFFSET ?
+			';
+			$keys[] = $getCount ? $limit : $limit+1;
+			$keys[] = $offset;
 		}
+
+		$docs = Cockpit_Driver_Document::driver();
 
 		// do the query
 		$data = [];
-		$r = c::db()->query(str_replace('-WILD-','admin.*, apt.using_pex', $q));
+		$query = str_replace('-WILD-','
+			admin.*, 
+			bool_and(apt.using_pex) using_pex, 
+			max(apt.id_admin_payment_type) id_admin_payment_type
+		', $q);
+
+		$r = c::db()->query($query, $keys );
+
+		$i = 1;
 		while ($s = $r->fetch()) {
 
-			$admin = Admin::o($s);
+			if (!$export && !$getCount && $i == $limit + 1) {
+				$more = true;
+				break;
+			}
 
-			$staff = $admin->exports(['permissions', 'groups']);
+			$admin = Admin::o( $s );
 
+			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
+
+			$staff['id_admin_payment_type'] = $s->id_admin_payment_type;
 			$staff['pexcard'] = ( $s->using_pex ) ? true : false;
 
 			if( $staff['pexcard'] ){
@@ -259,7 +325,38 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$staff[ 'type' ] = $commas . 'Marketing Rep';
 			}
 
+
+			if ($type == 'driver') {
+				$sentAllDocs = true;
+
+				$payment_type = $admin->payment_type();
+
+				foreach( $docs as $doc ){
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+						$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
+					if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+						$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+						continue;
+					}
+
+					// see: https://github.com/crunchbutton/crunchbutton/issues/3393
+					if( $doc->isRequired( $staff[ 'vehicle' ] ) ){
+						$docStatus = Cockpit_Driver_Document_Status::document( $admin->id_admin, $doc->id_driver_document );
+						if( !$docStatus->id_driver_document_status ){
+							$sentAllDocs = false;
+						}
+					}
+				}
+				$staff[ 'sent_all_docs' ] = $sentAllDocs;
+			}
+
+
 			$data[] = $staff;
+			$i++;
 		}
 
 		if ($working == 'all') {
@@ -269,10 +366,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 		echo json_encode([
+			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
 			'pages' => $pages,
-			'page' => $page,
+			'page' => intval($page),
 			'results' => $data
-		]);
+		], JSON_NUMERIC_CHECK);
 	}
 }

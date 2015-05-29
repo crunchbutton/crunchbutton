@@ -28,6 +28,21 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver = Cockpit_Admin::o( $id_admin );
 		}
 
+		// Check unique referral code
+		$invite_code = trim( $this->request()[ 'invite_code' ] );
+		if ( preg_match('/\s/',$invite_code) ){
+			$this->_error( 'please remove white spaces from invite code' );
+		} else {
+			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
+			if( $admin->count() == 0 ){
+				$driver->invite_code = $invite_code;
+			} else {
+				if( $admin->id_admin != $driver->id_admin ){
+					$this->_error( 'this invite code is already in use' );
+				}
+			}
+		}
+
 		$phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
 		if( trim( $phone ) == '' ){
 			$this->_error( 'the phone is missing' );
@@ -38,6 +53,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$driver->name = $this->request()[ 'name' ];
+		$driver->dob = $this->request()[ 'dob' ];
 		$driver->phone = $phone;
 		$driver->txt = $phone;
 		$driver->testphone = $phone;
@@ -58,11 +74,15 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver->pass = $driver->makePass( $pass );
 		}
 
-		// if it is a new driver it should create a randon pass
 		$random_pass = '';
 		if( $newDriver ){
-			$random_pass = Crunchbutton_Util::randomPass();
-			$driver->pass = $driver->makePass( $random_pass );
+			if( trim( $pass ) == '' ){
+				$random_pass = Crunchbutton_Util::randomPass();
+				$driver->pass = $driver->makePass( $random_pass );
+			} else {
+				$random_pass = $pass;
+				$driver->pass = $driver->makePass( $pass );
+			}
 		}
 
 		$driver->save();
@@ -123,6 +143,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
+		if( $this->request[ 'timezone' ] ){
+			$driver->timezone = $this->request[ 'timezone' ];
+			$driver->save();
+		}
+
 
 		// Driver info
 		$driver_info = $driver->driver_info();
@@ -141,6 +166,9 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		}
 		if( $driver_info->phone_type == 'Android' ){
 			$driver_info->phone_subtype = $this->request()[ 'android_type' ];
+//			//michal line below:
+//			$driver_info->phone_subtype = ( $this->request()[ 'android_type' ] == Cockpit_Driver_Info::ANDROID_TYPE_OTHER ? $this->request()[ 'android_type_other' ] : $this->request()[ 'android_type' ] );
+
 			$driver_info->phone_version = $this->request()[ 'android_version' ];
 		}
 
@@ -154,17 +182,18 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver_info->student = $this->request()[ 'student' ];
 		$driver_info->permashifts = $this->request()[ 'permashifts' ];
 		$driver_info->weekly_hours = $this->request()[ 'weekly_hours' ];
+		$driver_info->tshirt_size = $this->request()[ 'tshirt_size' ];
 
 		$driver_info->save();
 
+
 		$payment_type = $driver->payment_type();
-		if( intval( $this->request()[ 'hourly' ] ) == 1 ){
-			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
-			if( !$payment_type->hour_rate ){
-				$payment_type->hour_rate = 6; // #4224
-			}
-		} else {
-			$payment_type->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+		$payment_type->payment_type = $this->request()[ 'payment_type' ];
+		$payment_type->hour_rate = $this->request()[ 'hour_rate' ];
+
+		if( $newDriver ){
+			$payment_type->using_pex = 1;
+			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 		}
 		$payment_type->save();
 

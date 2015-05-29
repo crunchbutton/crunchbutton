@@ -40,6 +40,21 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		switch ( $action ) {
 
+			case 'save':
+				$shifts = $this->request()[ 'shifts' ];
+				foreach ( $shifts as $shift => $ranking ) {
+					$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $shift . '" AND id_admin = "' . $id_admin . '"' );
+					if( !$preference->id_community_shift ){
+						$preference = new Crunchbutton_Admin_Shift_Preference;
+						$preference->id_community_shift = $shift;
+						$preference->id_admin = $id_admin;
+					}
+					$preference->ranking = $ranking;
+					$preference->save();
+				}
+				$this->_scheduleList();
+				break;
+
 			case 'shiftsAvailableToWork':
 				$shifts = $this->request()[ 'shifts' ];
 				// Start week on Thursday #3084
@@ -171,11 +186,12 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$communities = $this->_communities();
 		foreach( $communities as $community ) {
+			$_community = Crunchbutton_Community::o( $community );
 			foreach( $days as $day ){
 				$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community, $day->format( 'Y-m-d' ) );
 				foreach ( $segments as $segment ) {
 					$export = $segment->export();
-					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ] . ' - ' . $export[ 'period' ][ 'weekday' ] , 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ] );
+					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ] . ' - ' . $export[ 'period' ][ 'weekday' ] , 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ], 'community' => $_community->name );
 					if( $wantToWork[ $segment->id_community_shift ] ){
 						$data[ 'assigned' ] = Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift );
 						$data[ 'ranking' ] = $wantToWork[ $segment->id_community_shift ];

@@ -49,11 +49,11 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function byPhone($phone, $limit = true) {
 		$phone = preg_replace('/[^0-9]/i','',$phone);
-		return User::q('select * from user where phone="'.$phone.'" order by id_user desc'. ($limit ? ' limit 1' : ''));
+		return User::q('select * from user where phone=? order by id_user desc'. ($limit ? ' limit 1' : ''), [$phone]);
 	}
 
 	public function lastOrder() {
-		$order = Order::q('select * from `order` where id_user="'.$this->id_user.'" and id_user is not null order by date desc limit 1');
+		$order = Order::q('select * from `order` where id_user=? and id_user is not null order by date desc limit 1', [$this->id_user]);
 		return $order;
 	}
 
@@ -64,19 +64,19 @@ class Crunchbutton_User extends Cana_Table {
 
 		if (!isset($this->_orders)) {
 			if ($type == 'compact') {
-				$q = '
-					select o.date, o.id_order, o.uuid, r.name restaurant_name, r.permalink restaurant_permalink, r.timezone timezone, "compressed" type from `order` o
+				$q = "
+					select o.date, o.id_order, o.uuid, r.name as restaurant_name, r.permalink as restaurant_permalink, r.timezone as timezone, 'compressed' as type from `order` o
 					inner join restaurant r on r.id_restaurant = o.id_restaurant
 					where
-						id_user="'.$this->id_user.'"
+						id_user=?
 						and id_user is not null
 						order by date desc
-				';
+				";
 			} else {
-				$q = 'select * from `order` where id_user="'.$this->id_user.'"';
+				$q = 'select * from `order` where id_user=?';
 			}
 
-			$this->_orders = Order::q($q);
+			$this->_orders = Order::q($q, [$this->id_user]);
 		}
 		return $this->_orders;
 	}
@@ -85,8 +85,8 @@ class Crunchbutton_User extends Cana_Table {
 		return Project::q('
 			SELECT project.* FROM project
 			LEFT JOIN user_project on user_project.id_project=project.id_project
-			WHERE user_project.id_user="'.$this->id_user.'"
-		');
+			WHERE user_project.id_user=?
+		', [$this->id_user]);
 	}
 
 	public function projects() {
@@ -102,11 +102,11 @@ class Crunchbutton_User extends Cana_Table {
 			select user.* from user
 			left join user_auth using(id_user)
 			where
-				user_auth.auth="'.Cana::db()->escape($id).'"
+				user_auth.auth=?
 				and user_auth.`type`="facebook"
-				and user.active=1
-				and user_auth.active=1
-			')->get(0);
+				and user.active=true
+				and user_auth.active=true
+			',[$id])->get(0);
 	}
 
 	public static function facebookCreate($id, $auth = false) {
@@ -151,7 +151,7 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function auths() {
 		if (!isset($this->_auths)) {
-			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=1');
+			$this->_auths = User_Auth::q('select * from user_auth where id_user=? and active=true', [$this->id_user]);
 		}
 		return $this->_auths;
 	}
@@ -172,8 +172,8 @@ class Crunchbutton_User extends Cana_Table {
 	public function presets() {
 		if (!isset($this->_presets)) {
 			$this->_presets = Preset::q('
-				select * from preset where id_user="'.$this->id_user.'"
-			');
+				select * from preset where id_user=?
+			', [$this->id_user]);
 		}
 		return $this->_presets;
 	}
@@ -192,40 +192,50 @@ class Crunchbutton_User extends Cana_Table {
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
 		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' )
 
-		$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
-		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
-		$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
-		$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
-		$lastOrder = Order::lastDeliveredOrder( $this->id_user );
-		if( $lastOrder->id_restaurant ){
-			$communities = [];
-			foreach ( $lastOrder->restaurant()->community() as $community ) {
-				$communities[] = $community->id_community;
+		if ($this->id_user) {
+			$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
+			$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
+			$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
+			$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
+			$lastOrder = Order::lastDeliveredOrder( $this->id_user );
+			if( $lastOrder->id_restaurant ){
+				$communities = [];
+				foreach ( $lastOrder->restaurant()->community() as $community ) {
+					$communities[] = $community->id_community;
+				}
+				$out[ 'last_order' ] = array( 'address' => $lastOrder->address, 'communities' => $communities );
+			} else {
+				$out[ 'last_order' ] = false;
 			}
-			$out[ 'last_order' ] = array( 'address' => $lastOrder->address, 'communities' => $communities );
-		} else {
-			$out[ 'last_order' ] = false;
+
+			$lastNote = $this->getLastNote();
+			if( $lastNote ){
+				$out['last_notes'] = trim( $lastNote );
+			}
+			foreach ($this->presets() as $preset) {
+				$out['presets'][$preset->id_restaurant] = $preset->exports();
+			}
+			
+			// Get user payment type
+			$payment_type = $this->payment_type();
+			if( $payment_type ){
+				$out[ 'card' ] = $payment_type->card;
+				$out[ 'card_type' ] = $payment_type->card_type;
+				$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
+				$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
+			}
+			
+
+			$out['tipper'] = $this->tipper();
+
+			$out[ 'points' ] = Crunchbutton_Credit::exportPoints();
 		}
 
-		$lastNote = $this->getLastNote();
-		if( $lastNote ){
-			$out['last_notes'] = trim( $lastNote );
-		}
-
-		foreach ($this->presets() as $preset) {
-			$out['presets'][$preset->id_restaurant] = $preset->exports();
-		}
+		
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();
 
-		// Get user payment type
-		$payment_type = $this->payment_type();
-		if( $payment_type ){
-			$out[ 'card' ] = $payment_type->card;
-			$out[ 'card_type' ] = $payment_type->card_type;
-			$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
-			$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
-		}
+		
 		if( $out['card'] ){
 			$out['card_ending'] = substr( $out['card'], -4, 4 );
 		}
@@ -236,30 +246,15 @@ class Crunchbutton_User extends Cana_Table {
 
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
+		
 
-		$out['tipper'] = $this->tipper();
-
-
-		// Reward stuff
-		$reward = new Crunchbutton_Reward;
-		$reward = $reward->loadSettings();
-		$out[ 'points' ] = [];
-		$out[ 'points' ][ 'free_delivery' ] = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
-		$out[ 'points' ][ 'total' ] = Crunchbutton_Credit::points( $this->id_user );
-		if( $out[ 'points' ][ 'free_delivery' ] > 0 && $out[ 'points' ][ 'free_delivery' ] < $out[ 'points' ][ 'total' ] ){
-			$out[ 'points' ][ 'show' ] = $out[ 'points' ][ 'free_delivery' ];
-			$out[ 'points' ][ 'free_delivery_message' ] = true;
-		} else {
-			$out[ 'points' ][ 'free_delivery_message' ] = false;
-			$out[ 'points' ][ 'show' ] = $out[ 'points' ][ 'total' ];
-			$out[ 'points' ][ 'away_free_delivery' ] = $out[ 'points' ][ 'free_delivery' ] - $out[ 'points' ][ 'total' ];
-		}
+		$out['image'] = $this->image(false);
 
 		return $out;
 	}
 
 	public function payment_type(){
-		return Crunchbutton_User_Payment_Type::getUserPaymentType( $this->id_user );
+		return Crunchbutton_User_Payment_Type::getUserPaymentType($this->id_user);
 	}
 
 	public function getLastNote(){
@@ -374,6 +369,145 @@ class Crunchbutton_User extends Cana_Table {
 
 	public static function uuid($uuid) {
 		return self::q('select * from `user` where uuid="'.$uuid.'"')->get(0);
+	}
+	
+	// should be removed after we move to stripe
+	public function tempConvertBalancedToStripe() {
+		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
+			return false;
+		}
+		
+		$status = true;
+
+		/**
+		 * This script contacts balanced and finds the associated stripe tokens, accounts, and cards
+		 *
+		 * 1.
+		 * a) if there is a balanced customer id (CU or AC) get the card from it. then update stripe with the name and email.
+		 * b) if there is a balanced card (CC) retrieve the stripe token (tok_) , create a customer, and add that token
+		 *
+		 * 2. store stripe ids for the user in the db
+		 */
+
+		$p = Crunchbutton_User_Payment_Type::q('
+			select p.* from user_payment_type p
+			left join `user` using(id_user)
+			where
+				`user`.id_user=?
+				and p.balanced_id is not null
+				and (p.stripe_id is null or (p.stripe_id is not null and p.stripe_id not like "card_%"))
+				and p.active = true
+			order by p.id_user_payment_type desc
+		', [$this->id_user]);
+		
+		// we dont have a stripe account for this user
+		if (!$this->stripe_id) {
+			
+		}
+
+
+		foreach ($p as $paymentType) {
+			echo "\nWorking on ".$paymentType->balanced_id.' - user #'.$paymentType->id_user."\n";
+
+			try {
+				if (substr($paymentType->balanced_id,0,2) != 'CC') {
+					// CU or AC. who knows wtf the dif is.
+					$account = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id);
+					$cards = $account->cards;
+
+					if (get_class($cards) == 'RESTful\Collection') {
+						foreach ($cards as $c) {
+							$card = $c;
+						}
+					}
+				} else {
+					// CC
+					$card = Crunchbutton_Balanced_Card::byId($paymentType->balanced_id);
+				}
+
+			} catch (Exception $e) {
+				echo "ERROR: Failed to get balanced id\n";
+				$status = 'no-balanced-id';
+				continue;
+			}
+
+			$stripeCardId = $card->meta->{'stripe_customer.funding_instrument.id'};
+
+			if (!$stripeCardId) {
+				echo "ERROR: No card meta.\n";
+				$status = 'no-card-meta';
+				continue;
+			}
+
+			$paymentType->stripe_id = $stripeCardId;
+
+			if ($account) {
+				$stripeAccountId = $account->meta->{'stripe.customer_id'};
+			}
+			
+			if ($this->stripe_id && $stripeAccountId && $this->stripe_id != $stripeAccountId) {
+				die('customer id from balanced ('.$stripeAccountId.') does not match the one in the db ('.$this->stripe_id.') for this payment method');
+			}
+
+			if (!$stripeAccountId) {
+				try {
+					$stripeAccount = \Stripe\Customer::create([
+						'description' => $paymentType->user()->name,
+						'email' => $paymentType->user()->email,
+						'source' => $stripeCardId
+					]);
+				} catch (Exception $e) {
+					echo 'ERROR: '.$e->getMessage()."\n";
+					$status = strtolower(str_replace(' ','-',$e->getMessage()));
+					continue;
+				}
+
+				$stripeAccountId = $stripeAccount->id;
+
+			} else {
+				if ($account) {
+					$account->description = $paymentType->user()->name;
+					$account->email = $paymentType->user()->email;
+					$account->save();
+				}
+			}
+			
+			if (strpos($paymentType->stripe_id, 'tok_') === 0) {
+				// the card is only a token. we need the real card
+				
+				$cards = \Stripe\Customer::retrieve($stripeAccountId)->sources->all(['object' => 'card'])->data;
+				$dbCards = Crunchbutton_User_Payment_Type::q('
+					select * from user_payment_type
+					where id_user=?
+					and stripe_id is not null
+				',[$this->id_user]);
+
+				$usedCards = [];
+				foreach ($dbCards as $card) {
+					$usedCards[] = $card->stripe_id;
+				}
+				print_r($usedCards);
+				
+				foreach ($cards as $card) {
+					echo 'checking card: '.$card->id."\n";
+					if (!in_array($card->id, $usedCards)) {
+						$paymentType->stripe_id = $stripeCardId = $card->id;
+					}
+				}
+				
+				echo 'new stripe id is: '.$paymentType->stripe_id."\n";
+			}
+
+			$paymentType->user()->stripe_id = $stripeAccountId;
+			$paymentType->user()->save();
+			$paymentType->save();
+
+			echo 'Stripe IDs: card '.$stripeCardId.' - account '.$stripeAccountId."\n";
+		}
+
+		echo "\ndone";
+		return $status;
+
 	}
 
 	public function __construct($id = null) {

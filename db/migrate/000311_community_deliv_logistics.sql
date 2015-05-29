@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD `delivery_logistics` TINYINT(1)  NULL  DEFAULT '0';

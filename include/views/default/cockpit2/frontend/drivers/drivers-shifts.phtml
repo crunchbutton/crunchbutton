@@ -8,12 +8,10 @@
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 	</div>
-	
-	<div class="divider"></div>
 
 	<div class="divider"></div>
 
-	<h2 class="link title" ng-click="schedules()">Rank next week's shift preferences</h2>
+	<h2 class="link title" >Setup next week's shifts</h2>
 
 	<div class="drivers-shifts-list">
 
@@ -39,7 +37,7 @@
 								</span>
 
 								<span ng-if="driver.name">
-									<span class="driver-name">{{driver.name}}</span><br>
+									<span class="driver-name">{{driver.name}} - <i>{{driver.community}}</i></span><br>
 									<a href ng-click="callText(driver.phone)" class="driver-phone">{{driver.phone | formatPhone}}</a>
 								</span>
 
@@ -54,7 +52,7 @@
 		</div>
 
 		<div ng-if="!drivershifts.length" class="box-content">
-			You currently have no shifts.
+			You are not currently scheduled for any shifts.
 		</div>
 
 	</div>

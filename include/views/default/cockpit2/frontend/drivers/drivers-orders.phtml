@@ -12,76 +12,103 @@
 
 	<div class="divider"></div>
 
-
-	<div class="dialog-message dialog-message-nice">
-		<b>In order to get paid</b></br> <div class="dialog-subtext">you MUST mark your orders as accepted & delivered!</div>
+	<div ng-if="!showOrders">
+		<div class="dialog-message dialog-message-nice">
+			Hi! This is where you will see orders during your shift.
+		</div>
 	</div>
 
+	<div ng-if="showOrders">
 
-	<div class="drivers-order-list">
+		<div class="dialog-message dialog-message-nice">
+			&#x1F481;
+			<b>In order to get paid</b></br> <div class="dialog-subtext">you MUST mark your orders as accepted & delivered!</div>
+		</div>
 
-		<div ng-if="driverorders.length">
 
-			<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.status.status">
-				<div ng-class="{'notMyOrder': order.status.driver.id_admin !== account.user.id_admin, 'myOrder': order.status.driver.id_admin == account.user.id_admin}">
-					<h6 class="row-status" ng-if="order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new'">
-						<span ng-switch="order.status.status">
-							<span ng-switch-when="delivered">Delivered</span>
-							<span ng-switch-when="pickedup">Picked up</span>
-							<span ng-switch-when="accepted">Accepted</span>
-							<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.date | date:'shortTime'}}</span>
-						</span>
-					</h6>
+		<div class="drivers-order-list">
 
-					<div class="order-item-content">
-						<!-- action -->
-						<div class="column-action">
-							<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.status.status == 'new' || !order.status.status" > Accept </button>
-							<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'accepted'"> Picked up </button>
-							<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'pickedup' "> Delivered </button>
-							<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'delivered' "> View </button>
+			<div ng-if="driverorders.length">
+
+				<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.status.status">
+					<div ng-class="{'notMyOrder': order.status.driver.id_admin !== account.user.id_admin, 'myOrder': order.status.driver.id_admin == account.user.id_admin}">
+						<h6 class="row-status" ng-if="order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new'">
+							<span ng-switch="order.status.status">
+								<span ng-switch-when="delivered">Delivered</span>
+								<span ng-switch-when="pickedup">Picked up</span>
+								<span ng-switch-when="accepted">Accepted</span>
+								<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.date_timestamp | tsToHour}}</span>
+							</span>
+						</h6>
+
+						<div class="order-item-content">
+							<!-- action -->
+							<div class="column-action">
+								<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.status.status == 'new' || !order.status.status" > Accept </button>
+								<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'accepted'"> Picked up </button>
+								<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'pickedup' "> Delivered </button>
+								<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'delivered' "> View </button>
+							</div>
+
+							<!-- date -->
+							<a ng-click="showOrder( order.id_order )">
+
+							<div class="column-date" ng-click="showOrder( order.id_order )">
+								<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
+								<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
+								<div class="hour">{{order.timestamp | tsToHour}}</div>
+							</div>
+
+							<!-- vertical divider -->
+							<div class="vert-divider"></div>
+							</a>
+							<!-- info -->
+							<div class="column-info">
+								<a href="http://maps.apple.com/?q={{order.restaurant_address}}" ng-if="iOS" target="_system">
+									<div class="restaurant-pointer">
+										{{order.restaurant}}
+									</div>
+								</a>
+
+								<a href="http://maps.google.com/maps?q={{order.restaurant_address}}" ng-if="!iOS" target="_system">
+									<div class="restaurant-pointer">
+										{{order.restaurant}}
+									</div>
+								</a>
+
+								<div class="customer-pointer">
+									{{order.name}}
+								</div>
+
+								<div class="phone-pointer">
+									<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
+								</div>
+
+								<a href="http://maps.apple.com/?q={{order.address}}" ng-if="iOS" target="_system">
+									<div ng-if="order.address" class="customer-address">
+										{{order.addressFirstLine}}
+									</div>
+								</a>
+
+								<a href="http://maps.google.com/maps?q={{order.address}}" ng-if="!iOS" target="_system">
+									<div ng-if="order.address" class="customer-address">
+										{{order.addressFirstLine}}
+									</div>
+								</a>
+							</div>
+							<div class="divider"></div>
 						</div>
-
-						<!-- date -->
-						<div class="column-date" ng-click="showOrder( order.id_order )">
-							<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-							<div class="orderid">#{{order.id_order}}</div>
-							<div class="hour">{{order.date_hour | date:'h:mm a'}}</div>
-						</div>
-
-						<!-- vertical divider -->
-						<div class="vert-divider"></div>
-
-						<!-- info -->
-						<div class="column-info">
-							<div class="restaurant-pointer" ng-click="showOrder( order.id_order )">
-								{{order.restaurant}}
-							</div>
-
-							<div class="customer-pointer">
-								{{order.name}}
-							</div>
-
-							<div class="phone-pointer">
-								<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
-							</div>
-
-							<div ng-if="order.address" class="customer-address">
-								{{order.address}}
-							</div>
-
-						</div>
-						<div class="divider"></div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<div ng-if="!driverorders.length">
-			<h3>You currently have no orders to deliver.</h3>
-		</div>
+			<div ng-if="!driverorders.length">
+				<h3>You currently have no orders to deliver.</h3>
+			</div>
 
-		<div class="last-updated"><p>Updated <span class="last-updated-time" am-time-ago="newDriverOrders.time.getTime()"></span></p></div>
+			<div class="last-updated"><p>Updated <span class="last-updated-time" am-time-ago="newDriverOrders.time.getTime()"></span></p></div>
+
+		</div>
 
 	</div>
 

@@ -25,6 +25,23 @@ class Crunchbutton_Referral extends Cana_Table{
 			->load($id);
 	}
 
+	public function newReferredUsersByUser( $id_user ){
+		if( $id_user ){
+			$query = 'SELECT u.*
+									FROM referral r
+									INNER JOIN user u ON u.id_user = r.id_user_invited
+									WHERE r.id_user_inviter = "' . $id_user . '" AND r.new_user = 1 AND r.warned = 0
+									ORDER BY r.id_referral ASC';
+			$users = Crunchbutton_User::q( $query );
+			if( $users->count() ){
+				// Update warned = 1
+				c::db()->query( 'UPDATE referral SET warned = 1 WHERE id_user_inviter = "' . $id_user . '" AND warned = 0' );
+				return $users;
+			}
+		}
+		return false;
+	}
+
 	public function checkCookie(){
 		if ( isset( $_COOKIE['referral'] ) && $_COOKIE['referral'] != '' ) {
 			return $_COOKIE['referral'];
@@ -106,9 +123,27 @@ class Crunchbutton_Referral extends Cana_Table{
 		$out[ 'id_admin' ] = $this->id_admin_inviter;
 		$out[ 'id_referral' ] = $this->id_referral;
 		$out[ 'id_order' ] = $this->id_order;
-		$out[ 'admin_credit' ] = ( $this->admin_credit ? floatval( $this->admin_credit ) : Crunchbutton_Reward::adminRefersNewUserCreditAmount() );
+		if( $out[ 'id_admin' ] ){
+			$admin = Admin::o( $out[ 'id_admin' ] );
+			if( $admin->referral_admin_credit ){
+				$credit = floatval( $admin->referral_admin_credit );
+			} else {
+				if( $admin->isDriver() ){
+					$referral = new Crunchbutton_Reward;
+					$settings = $referral->loadSettings();
+					$credit = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
+				}
+			}
+		}
+
+		if( $credit != $this->admin_credit ){
+			$this->admin_credit = $credit;
+			$this->save();
+		}
+
+		$out[ 'admin_credit' ] = $credit;
 		$out[ 'user' ] = [ 'id_user' => $this->invitedUser()->id_user, 'name' => $this->invitedUser()->name ];
-		$out[ 'date' ] = $this->date()->format( 'M jS Y g:i:s A' );
+		$out[ 'date' ] = $this->date()->format( Settlement::date_format() );
 		return $out;
 	}
 

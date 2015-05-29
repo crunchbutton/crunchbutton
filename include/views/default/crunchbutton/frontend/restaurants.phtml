@@ -13,7 +13,7 @@
 		<h2 ng-bind-html-unsafe="tagline"></h2>
 	</div>
 	<div>
-		<h2 ng-if="allClosed && community_closed" class="community-closed-message home-welcome home-tagline main-content-readable">{{community_closed}}</h2>
+		<h2 ng-if="allClosed && community_closed" ng-bind-html-unsafe="community_closed" class="community-closed-message home-welcome home-tagline main-content-readable"></h2>
 	</div>
 
 	<? /*
@@ -30,7 +30,7 @@
 
 				<div class="meal-item-content">
 					<div class="ladda-label" ng-spinner="loadingRestaurant[restaurant.id_restaurant]" data-spinner-color="#333333" data-spinner-scale=".5">
-						<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
+						<div class="meal-pic" style="background: url({{restaurant.img}});"></div>
 						<h2 class="meal-restaurant">{{restaurant.name}}</h2>
 						<h3 class="meal-food">{{restaurant._short_description}}</h3>
 						<div ng-switch on="restaurant._tag">

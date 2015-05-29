@@ -20,7 +20,8 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				$c = $this->_card->debits->create([
 					'amount' => $params['amount'] * 100,
 					'appears_on_statement_as' => 'Crunchbutton',
-					'description' => $params['restaurant']->name
+					'description' => $params['restaurant']->name,
+					'statement_descriptor' => $params['restaurant']->statementName()
 				]);
 
 			} catch (Exception $e) {
@@ -51,6 +52,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
+
 			if ($c->id) {
 				$success = true;
 				$txn = $c->id;

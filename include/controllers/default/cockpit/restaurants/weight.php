@@ -12,8 +12,8 @@ class Controller_Restaurants_Weight extends Crunchbutton_Controller_Account {
 		if ( $_REQUEST[ 'lat' ] && $_REQUEST[ 'lon' ] ) {
 
 			$restaurants = Restaurant::byRange( [
-				'lat' => c::db()->escape($_REQUEST['lat']),
-				'lon' => c::db()->escape($_REQUEST['lon']),
+				'lat' => $_REQUEST['lat'],
+				'lon' => $_REQUEST['lon'],
 				'range' => 2,
 			] );
 

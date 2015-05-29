@@ -31,7 +31,10 @@ class Crunchbutton_Notification extends Cana_Table
 				$mail = new Crunchbutton_Email_Order_Stealthfax( [ 'order' => $order ] );
 
 				$temp = tempnam('/tmp','fax');
-				file_put_contents($temp, $mail->message());
+
+				$mail->message();
+
+				file_put_contents( $temp, $mail->message() );
 				//chmod($temp, 0777);
 				rename($temp, $temp.'.html');
 
@@ -68,7 +71,6 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirmFaxWasReceived();
 				}
 
 				break;
@@ -79,6 +81,7 @@ class Crunchbutton_Notification extends Cana_Table
 				]);
 
 				$temp = tempnam('/tmp','fax');
+				$mail->message();
 				file_put_contents($temp, $mail->message());
 				//chmod($temp, 0777);
 				rename($temp, $temp.'.html');
@@ -116,7 +119,6 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirmFaxWasReceived();
 				}
 
 				return $fax->success;

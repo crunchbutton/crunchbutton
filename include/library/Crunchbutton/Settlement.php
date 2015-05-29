@@ -6,8 +6,6 @@
  * settlement settles fund distribution. this can be CB, driver, or restaurant
  *
  */
-
-
 class Crunchbutton_Settlement extends Cana_Model {
 
 	const DEFAULT_NOTES = 'Crunchbutton Orders';
@@ -53,13 +51,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-									INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
-									WHERE DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $order->date()->format('Y-m-d H:i') . '"
-										AND oa.id_admin = "' . $id_driver . '"
+									INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = ?
+									WHERE DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= ?
+										AND oa.id_admin = ?
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
-		$_orders = Order::q( $query );
+		$_orders = Order::q( $query, [ Crunchbutton_Order_Action::DELIVERY_DELIVERED, $order->date()->format('Y-m-d H:i'), $id_driver]);
 		foreach ( $_orders as $order ) {
 			$orders[] = $this->orderExtractVariables( $order );
 		}
@@ -73,8 +71,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 							WHERE asa.id_admin = "' . $id_driver . '"';
 
 		if( $this->filters[ 'start' ] ){
-			$query .= 'AND DATE( cs.date_start ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"';
-			$query .= 'AND DATE( cs.date_start ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"';
+			$query .= 'AND DATE( cs.date_start ) >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'';
+			$query .= 'AND DATE( cs.date_start ) <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '\'';
 		}
 
 		$shifts = Crunchbutton_Community_Shift::q( $query );
@@ -110,8 +108,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT DISTINCT(o.id_order) AS id, o.* FROM `order` o
 							INNER JOIN order_action oa ON oa.id_order = o.id_order
 							WHERE
-									DATE( o.date ) >= "' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '"
-								AND DATE( o.date ) <= "' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '"
+									DATE( o.date ) >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'
+								AND DATE( o.date ) <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '\'
 								AND ( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '"
 											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
@@ -166,14 +164,25 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// shifts we have to pay hourly
 	public function workedShiftsByPeriod( $id_admin, $filters ){
+
+		$admin = Admin::o( $id_admin );
+		if( !$admin->active  ){
+			if( $admin->date_terminated ){
+				$where = 'AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $admin->date_terminated . '"';
+			} else {
+				$where = 'AND 1 = 0';
+			}
+		}
+
 		$start = ( new DateTime( $filters[ 'start' ] ) )->format( 'Y-m-d' );
 		$end = ( new DateTime( $filters[ 'end' ] ) )->format( 'Y-m-d' );
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
-																							WHERE
-																									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $start . '"
-																									AND
-																									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $end . '"' );
+		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
+								WHERE
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $start . '"
+										AND
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $end . '"' . $where;
+		return Crunchbutton_Community_Shift::q( $query );
 	}
 
 
@@ -270,6 +279,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					if( $pay_type->using_pex_date ){
 						$pay[ $driver ][ 'using_pex_date' ] = $pay_type->using_pex_date()->format( 'Ymd' );
 					}
+
 					if( $pay_type->id_admin_payment_type ){
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = $pay_type->payment_type;
 					} else {
@@ -282,8 +292,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
 				$order[ 'pay_info' ][ 'delivery_fee' ] = $this->orderDeliveryFeeDriverPay( $order );
+				$order[ 'pay_info' ][ 'delivery_fee_collected' ] = $this->orderDeliveryFeeDriverCollected( $order );
 				$order[ 'pay_info' ][ 'tip' ] = $this->orderTipDriverPay( $order );
-				$order[ 'pay_info' ][ 'customer_fee' ] = $this->orderCustomerFeeDriverPay( $order );
+				$order[ 'pay_info' ][ 'customer_fee' ] = $order[ 'service_fee' ];
+				$order[ 'pay_info' ][ 'customer_fee_collected' ] = $this->orderCustomerFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'markup' ] = $this->orderMarkupDriverPay( $order );
 				$order[ 'pay_info' ][ 'credit_charge' ] = $this->orderCreditChargeDriverPay( $order );
 				$order[ 'pay_info' ][ 'restaurant_fee' ] = $this->orderRestaurantFeeDriverPay( $order );
@@ -291,6 +303,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'standard_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
+				$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
 				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
 				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
 
@@ -305,11 +318,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				if( $order[ 'driver_paid' ] && !$recalculatePaidOrders ){
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
+					$order[ 'pay_info' ][ 'total_payment_per_order' ] = 0;
+					$order[ 'pay_info' ][ 'delivery_fee_collected' ] = 0;
+					$order[ 'pay_info' ][ 'customer_fee_collected' ] = 0;
 				}
 
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
 					$order[ 'pay_info' ][ 'tip' ] = 0;
 					$order[ 'pay_info' ][ 'delivery_fee' ] = 0;
+					$order[ 'pay_info' ][ 'total_payment_per_order' ] = 0;
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
 
@@ -325,12 +342,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'tip' ] += $order[ 'pay_info' ][ 'tip' ];
 				$pay[ $driver ][ 'customer_fee' ] += $order[ 'pay_info' ][ 'customer_fee' ];
 				$pay[ $driver ][ 'markup' ] += $order[ 'pay_info' ][ 'markup' ];
+				$pay[ $driver ][ 'delivery_fee_collected' ] += $order[ 'pay_info' ][ 'delivery_fee_collected' ];
+				$pay[ $driver ][ 'customer_fee_collected' ] += $order[ 'pay_info' ][ 'customer_fee_collected' ];
 				$pay[ $driver ][ 'credit_charge' ] += $order[ 'pay_info' ][ 'credit_charge' ];
 				$pay[ $driver ][ 'restaurant_fee' ] += $order[ 'pay_info' ][ 'restaurant_fee' ];
 				$pay[ $driver ][ 'gift_card' ] += $order[ 'pay_info' ][ 'gift_card' ];
 				$pay[ $driver ][ 'standard_reimburse' ] += $order[ 'pay_info' ][ 'standard_reimburse' ];
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
+				$pay[ $driver ][ 'total_payment_per_order' ] += $order[ 'pay_info' ][ 'total_payment_per_order' ];
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
 			}
 		}
@@ -378,12 +398,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$tip += $order[ 'pay_info' ][ 'tip' ];
 					}
 				}
-
 				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
-				$pay[ $id_driver ][ 'total_payment' ] = ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] );
+				$pay[ $id_driver ][ 'total_payment' ] = max( ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] + $pay[ $id_driver ][ 'customer_fee_collected' ] ), 0 );
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+				$pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
 			}
 		}
 
@@ -427,7 +447,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		usort( $pay, function( $a, $b ) {
 			return $a[ 'name'] > $b[ 'name' ];
 		} );
-
 		return $pay;
 	}
 
@@ -435,16 +454,29 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'delivery_service' ] * ( $arr[ 'formal_relationship' ] ? 0 : 1 );
 	}
 
-	public function orderCalculateTotalDueDriver( $pay ){
+	public function orderCalculateTotalDueDriver( $pay, $force = false ){
+
+		$pay_by_order = $pay[ 'pay_by_order' ];
+
+		// #5325
+		if( $force ){
+			$delivery_fee = $pay[ 'delivery_fee' ];
+			$pay_by_order = 1;
+		} else {
+			$delivery_fee = $pay[ 'delivery_fee' ];
+		}
+
 		$total_due = 	( ( $pay[ 'subtotal' ] +
 										$pay[ 'tax' ] +
-										$pay[ 'delivery_fee' ] +
-										$pay[ 'customer_fee' ] +
-										$pay[ 'markup' ] +
+										$delivery_fee +
 										$pay[ 'credit_charge' ] +
 										$pay[ 'restaurant_fee' ] +
 										$pay[ 'gift_card' ] -
-										$pay[ 'total_reimburse' ] ) * $pay[ 'pay_by_order' ] ) + $pay[ 'tip' ];
+										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ] +
+										// total driver collected in cash
+										$pay[ 'customer_fee_collected' ] +
+										$pay[ 'markup' ] +
+										$pay[ 'delivery_fee_collected' ];
 		return $total_due;
 	}
 
@@ -557,6 +589,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $arr[ 'delivery_fee' ] * $arr[ 'credit' ] * $arr[ 'delivery_service' ];
 	}
 
+	// We need to make this change: add the $3 delivery fee to the amount being subtracted for cash orders from payment for hourly drivers.
+	public function orderDeliveryFeeDriverCollected( $arr ){
+		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] );
+	}
+
+	// Drivers must pay us back our markup they collected in cash.
+	public function __orderCustomerFeeDriverPay( $arr ){
+		return - ( $arr[ 'service_fee' ] * $arr[ 'cash' ] );
+	}
+
+
 	// Reimburse: To quote above, drivers are only reimbursed (that is, reimbursed for subtotal + tax)
 	// on orders where they front the money (i.e. on credit orders to non-formal-relationship stores)
 	// https://github.com/crunchbutton/crunchbutton/issues/3232#issuecomment-47254475
@@ -633,7 +676,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'restaurant_fee_percent' ] = $order->restaurant_fee_percent();
 		$values[ 'delivery_service_markup' ] = $order->delivery_service_markup;
 		$values[ 'delivery_service_markup_value' ] = $order->delivery_service_markup_value;
+
 		$values[ 'id_admin' ] = $order->getDeliveryDriver()->id_admin; // driver
+		$payment_type = Admin::o( $values[ 'id_admin' ] )->payment_type();
+		$payment_type = $payment_type->payment_type;
+		$values[ 'pay_type_hour' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? 1 : 0;
+		$values[ 'pay_type_order' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ) ? 1 : 0;
 		$values[ 'id_order' ] = $order->id_order; // driver
 
 		$values[ 'gift_card_total' ] = $order->chargedByCredit();
@@ -692,7 +740,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		if( $values[ 'id_admin' ] ){
-			$admin = Admin::o( $values[ 'id_admin' ] );
+			$admin = Cockpit_Admin::o( intval( $values[ 'id_admin' ] ) );
 			$values[ 'driver' ] = $admin->name;
 		} else {
 			$values[ 'driver' ] = '';
@@ -701,9 +749,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'name' ] = $order->name;
 		$values[ 'pay_type' ] = $order->pay_type;
 		$values[ 'restaurant' ] = $order->restaurant()->name;
-		$values[ 'date' ] = $order->date()->format( 'M jS Y g:i:s A' );
+		$values[ 'date' ] = $order->date()->format( Settlement::date_format() );
 		$values[ 'formatted_date' ] = $order->date()->format( 'Ymd' );
-		$values[ 'short_date' ] = $order->date()->format( 'M jS Y' );
+		$values[ 'short_date' ] = $order->date()->format( Settlement::date_format( 'short' ) );
 
 		return $values;
 	}
@@ -745,6 +793,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 				$schedule->note = $notes;
+				$schedule->processor = Crunchbutton_Payment::processor();
 				$schedule->id_admin = c::user()->id_admin;
 				$schedule->save();
 				$id_payment_schedule = $schedule->id_payment_schedule;
@@ -766,6 +815,27 @@ class Crunchbutton_Settlement extends Cana_Model {
 		} );
 	}
 
+
+	public function scheduleRestaurantArbitraryPayment( $id_restaurant, $amount, $pay_type, $notes ){
+
+		$schedule = new Cockpit_Payment_Schedule;
+		$schedule->id_restaurant = $id_restaurant;
+		$schedule->date = date( 'Y-m-d H:i:s' );
+		$schedule->amount = $amount;
+		$schedule->adjustment = 0;
+		$schedule->processor = Crunchbutton_Payment::processor();
+		$schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
+		$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
+		$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+		$schedule->note = $notes;
+		$schedule->id_admin = c::user()->id_admin;
+		$schedule->save();
+		$id_payment_schedule = $schedule->id_payment_schedule;
+
+		return $this->payRestaurant( $id_payment_schedule );
+
+	}
+
 	public function scheduleDriverArbitraryPayment( $id_driver, $amount, $pay_type, $notes ){
 
 		$this->log( 'scheduleDriverArbitraryPayment: start', [ $id_driver, $amount, $type, $notes ] );
@@ -778,6 +848,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$schedule->adjustment = 0;
 		$schedule->arbritary = 1;
 		$schedule->note = $notes;
+		$schedule->processor = Crunchbutton_Payment::processor();
 		$schedule->id_admin = c::user()->id_admin;
 		$schedule->type = Cockpit_Payment_Schedule::TYPE_DRIVER;
 		$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
@@ -787,18 +858,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$this->log( 'scheduleDriverArbitraryPayment: end', $schedule->properties() );
 
-		$this->payDriver( $id_payment_schedule );
+		// $this->payDriver( $id_payment_schedule );
 
 		return $id_payment_schedule;
 
-	}
-
-	public function sendDriverArbitraryPayment( $id_payment_schedule ){
-		if( $this->doDriverPayments( $id_payment_schedule ) ){
-			return $id_payment_schedule;
-		} else {
-			return false;
-		}
 	}
 
 	public function scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ){
@@ -866,6 +929,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$schedule->adjustment = $adjustment;
 			$schedule->range_date = $range;
 			$schedule->pay_type = $type;
+			$schedule->processor = Crunchbutton_Payment::processor();
 			$schedule->type = Cockpit_Payment_Schedule::TYPE_DRIVER;
 			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 			$schedule->log = 'Schedule created';
@@ -915,7 +979,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 
 			$this->log( 'scheduleDriverPayment', $schedule->properties() );
-			$this->doDriverPayments( $id_payment_schedule );
 		}
 	}
 
@@ -944,35 +1007,20 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function doDriverErrPayments(){
-		$schedules = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE status = "' . Cockpit_Payment_Schedule::STATUS_ERROR . '"' );
-		foreach( $schedules as $_schedule ){
-			$id_payment_schedule = $_schedule->id_payment_schedule;
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-				$settlement->payDriver( $id_payment_schedule );
-			} );
+		$schedules = Cockpit_Payment_Schedule::q("SELECT * FROM payment_schedule WHERE status = '" . Cockpit_Payment_Schedule::STATUS_ERROR . "'");
+		foreach( $schedules as $schedule ){
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+			$schedule->log = 'Schedule created';
+			$schedule->save();
 		}
 	}
 
-	public function doDriverPayments( $id_payment_schedule = false ){
-		if( $id_payment_schedule ){
-			$this->log( 'doDriverPayments', $id_payment_schedule );
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-				$settlement->payDriver( $id_payment_schedule );
-			} );
-		} else {
-			$schedule = new Cockpit_Payment_Schedule;
-			$lastDate = $schedule->lastDriverStatusDate();
-			$schedules = $schedule->driversSchedulesFromDate( $lastDate );
-			$settlement = new Crunchbutton_Settlement( $this->filters );
-			foreach( $schedules as $_schedule ){
-				$id_payment_schedule = $_schedule->id_payment_schedule;
-				Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-					$settlement->payDriver( $id_payment_schedule );
-				} );
-			}
-			return;
+	public function doDriverPayments(){
+		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_DRIVER . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" AND ( log = "Schedule created" OR log IS NULL ) ORDER BY id_payment_schedule DESC LIMIT 50';
+		$scheduled_payments = Cockpit_Payment_Schedule::q( $query );
+		$settlement = new Crunchbutton_Settlement;
+		foreach( $scheduled_payments as $scheduled ){
+			$settlement->payDriver( $scheduled->id_payment_schedule );
 		}
 	}
 
@@ -1060,6 +1108,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		$this->log( 'payRestaurant', $schedule->properties() );
+
 		if( $schedule->id_payment_schedule ){
 
 			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
@@ -1072,16 +1121,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$amount = floatval( $schedule->amount );
 
-				$payment_method = $schedule->restaurant()->payment_type()->payment_method;
+				$restaurant = $schedule->restaurant();
+
+				$payment_method = $restaurant->payment_type()->payment_method;
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
 
-					$payment_type = $schedule->restaurant()->payment_type();
+					$payment_type = $restaurant->payment_type();
 
-					if( !$payment_type->balanced_id || !$payment_type->balanced_bank ){
+					if( !$restaurant->hasPaymentType() ){
 						$schedule->log = 'There is no account info for this restaurant.';
-						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+						$message = 'Restaurant Payment error! Restaurant: ' . $restaurant->name;
 						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
 						$message .= "\n". 'amount: ' . $schedule->amount;
 						$message .= "\n". $schedule->log;
@@ -1331,14 +1382,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$amount = floatval( $schedule->amount );
 
-				$payment_type = $schedule->driver()->payment_type();
+				$driver = $schedule->driver();
+
+				$payment_type = $driver->payment_type();
 
 				$payment_method = $payment_type->payment_method;
 
 				// Deposit payment method
 				if( $payment_method == Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT ){
 
-					if( !$payment_type->balanced_id || !$payment_type->balanced_bank ){
+					if( !$driver->hasPaymentInfo( $schedule->processor ) ){
 						$schedule->log = 'There is no account info for this driver.';
 						$message = 'Restaurant Payment error! Driver: ' . $schedule->driver()->name;
 						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
@@ -1353,13 +1406,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 					if( $amount > 0 ){
 
 						try {
+
+							$processor = 	$schedule->processor;
+							if( !$processor ){
+								$processor = Payment::processor();
+							}
+
 							$id_payment = ( $schedule->id_payment ) ? $schedule->id_payment : null;
 							$p = Payment::credit_driver( [ 'id_driver' => $schedule->id_driver,
 																			'id_payment' => $id_payment,
 																			'amount' => $amount,
 																			'note' => $schedule->note,
 																			'pay_type' => $schedule->pay_type,
-																			'type' => 'balanced' ] );
+																			'processor' => $processor ] );
 						} catch ( Exception $e ) {
 							$schedule->log = $e->getMessage();
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
@@ -1480,16 +1539,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function driverPaymentError( $id_payment_schedule ){
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+		$schedule->save();
 		if( $schedule->id_payment_schedule ){
 			$driver = $schedule->driver();
 			if( $driver->id_admin ){
 
 				$first_name = Crunchbutton_Message_Sms::greeting( $driver->firstName() );
 
-				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at http://cockpit.la/drivers/docs/payment. Text if you have questions!';
+				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at http://cockpit.la/drivers/docs/payment. Just email us back at payment@_DOMAIN_ if you have questions!';
 				if( $driver->phone ){
 					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SETTLEMENT_FAIL ] );
-					Crunchbutton_Support::createNewWarning( [ 'phone' => $driver->phone, 'body' => $message ] );
+					// Crunchbutton_Support::createNewWarning( [ 'phone' => $driver->phone, 'body' => $message ] );
 				}
 				if( $driver->email ){
 					$mail = new Cockpit_Email_Driver_Broadcast( [ 'driver' => $driver,
@@ -1511,36 +1572,45 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function driverSummary( $id_payment_schedule ){
+
+		$date_format = Settlement::date_format();
+
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_DRIVER ){
+
 			$settlement = new Settlement;
+
 			$summary = $schedule->exports();
 
 			$summary[ 'adjustment' ] = floatval( $summary[ 'adjustment' ] );
+			$summary[ 'collected_in_cash' ] = 0;
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'summary_email' ] = $schedule->driver()->payment_type()->summary_email;
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'payment_method' ] = $schedule->driver()->payment_type()->payment_method;
 			$summary[ 'salary_type' ] = ( $schedule->driver_payment_hours ) ? Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS : Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
+			$summary[ 'driver_payment_type' ] = $schedule->driver()->payment_type()->payment_type;
+			$summary[ 'show_credit_card_tips' ] = $schedule->driver()->showCreditCardTips();
+			$summary[ 'show_delivery_fees' ] = $schedule->driver()->showDeliveryFees();
 			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_DRIVER;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
-				$summary[ 'balanced_status' ] = $payment->balanced_status;
-				$summary[ 'balanced_failure_reason' ] = $payment->balanced_failure_reason;
-				$balanced_date_checked = $payment->balanced_date_checked();
-				if( $balanced_date_checked ){
-					$summary[ 'balanced_date_checked' ] = $balanced_date_checked->format( 'M jS Y g:i:s A T' );
+				$summary[ 'payment_status' ] = $payment->payment_status;
+				$summary[ 'payment_failure_reason' ] = $payment->payment_failure_reason;
+				$payment_date_checked = $payment->payment_date_checked();
+				if( $payment_date_checked ){
+					$summary[ 'payment_date_checked' ] = $payment_date_checked->format( $date_format );
 				}
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
 				$summary[ 'check_id' ] = $payment->check_id;
-				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
-				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
-				$status = Cockpit_Payment_Schedule::statusToDriver( $schedule );
+				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( $date_format );
+				$summary[ 'payment_date' ] = $payment->date()->format( $date_format );
+				$status = Cockpit_Payment_Schedule::statusToDriver( $schedule, false );
 				$summary[ 'expected_date' ] = $status[ 'paid_date' ];
 			}
 			if( $schedule->status_date ){
-				$summary[ 'status_date' ] = $schedule->status_date()->format( 'M jS Y g:i:s A T' );
+				$summary[ 'status_date' ] = $schedule->status_date()->format( $date_format );
 			}
 
 			$invites = $schedule->invites();
@@ -1590,7 +1660,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 			foreach( $orders as $order ){
 				$_order = $order->order();
 				if( $_order->id_order ){
+
 					$variables = $settlement->orderExtractVariables( $_order );
+
 					$pay_info = $settlement->driversProcess( [ $variables ], true, false, false );
 
 					$type = $variables[ 'cash' ] ? 'Cash' : 'Card';
@@ -1601,7 +1673,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$_total_payment = $pay_info[ 1 ][ 'total_payment' ];
 					}
 
-					$_total_payment = max( 0, $_total_payment );
+					$_total_payment = $_total_payment;
 					$_total_reimburse = max( 0, $pay_info[ 0 ][ 'total_reimburse' ] );
 
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
@@ -1610,13 +1682,25 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'date' => $variables[ 'short_date' ],
 																										'tip' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'tip' ],
 																										'restaurant' => $variables[ 'restaurant' ],
+																										'markup' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ],
 																										'delivery_fee' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee' ],
+																										'delivery_fee_collected' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ],
+																										'customer_fee_collected' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'customer_fee_collected' ],
 																										'pay_type' => $type,
 																										'total_reimburse' => $_total_reimburse,
 																										'total_payment' => $_total_payment
 																									];
-					if( $type == 'Cash' ){
-						$summary[ '_total_received_cash_' ] = $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
+					if( $variables[ 'cash' ] ){
+						// aqui aqui
+						// Hourly drivers are ALSO collecting the $3 delivery fee for all cash orders, and keeping it. They shouldn't be! #5053
+						$summary[ 'collected_in_cash' ] += $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ];
+
+						// if( $summary[ 'driver_payment_hours' ] ){
+							$summary[ 'delivery_fee_collected' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] );
+							$summary[ 'customer_fee_collected' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'customer_fee_collected' ] );
+							$summary[ 'collected_in_cash' ] += ( $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'delivery_fee_collected' ] + $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'customer_fee_collected' ] );
+						// }
+						$summary[ '_total_received_cash_' ] += $variables[ 'final_price_plus_delivery_markup' ] + $variables[ 'delivery_fee' ];
 						$summary[ '_total_cash_orders_' ]++;
 					}
 
@@ -1645,8 +1729,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$index = 0;
 			$summary[ 'calcs' ] = [ 'total_reimburse' => floatval( $total_reimburse ),
 															'total_payment' => floatval( $total_payment ),
+															'total_received_cash' => floatval( $summary[ '_total_received_cash_' ] ),
 															'tax' => floatval( $calcs[ $index ][ 'tax' ] ),
 															'delivery_fee' => floatval( $calcs[ $index ][ 'delivery_fee' ] ),
+															'delivery_fee_collected' => floatval( $calcs[ $index ][ 'delivery_fee_collected' ] ),
+															'customer_fee_collected' => floatval( $calcs[ $index ][ 'customer_fee_collected' ] ),
 															'tip' => floatval( $calcs[ $index ][ 'tip' ] ),
 															'customer_fee' => floatval( $calcs[ $index ][ 'customer_fee' ] ),
 															'markup' => floatval( $calcs[ $index ][ 'markup' ] ),
@@ -1661,6 +1748,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
 				$summary[ 'total_payment' ] = max( $summary[ 'amount' ], 0 );
 				$summary[ 'calcs' ][ 'total_payment' ] = floatval( $summary[ 'total_payment' ] );
+				$summary[ 'calcs' ][ 'collected_in_cash' ] = floatval( $summary[ 'collected_in_cash' ] * -1 );
+				$summary[ 'calcs' ][ 'earnings' ] = floatval( ( $summary[ 'calcs' ][ 'collected_in_cash' ] ) + $summary[ 'calcs' ][ 'total_payment' ] );
 			}
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
 				$summary[ 'total_reimburse' ] = max( $summary[ 'amount' ], 0 );
@@ -1670,6 +1759,19 @@ class Crunchbutton_Settlement extends Cana_Model {
 			return $summary;
 		} else {
 			return false;
+		}
+	}
+
+	public function date_format( $format = 'full' ){
+		switch ( $format ) {
+			case 'short':
+				return 'M jS Y (D)';
+				break;
+
+			case 'full':
+			default:
+				return 'M jS Y (D) g:i:s A T';
+				break;
 		}
 	}
 
@@ -1814,12 +1916,25 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function checkPaymentStatus( $type = 'driver' ){
 		// get all payments with pending status - drivers
-		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND ( p.balanced_status != '" . Crunchbutton_Payment::BALANCED_STATUS_SUCCEEDED . "' OR p.balanced_status IS NULL ) " );
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND ( p.payment_status != '" . Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED . "' OR p.payment_status IS NULL ) " );
 		foreach( $payments as $payment ){
 			$id_payment = $payment->id_payment;
-			Cana::timeout(function() use( $id_payment ) {
+			Cana::timeout( function() use( $id_payment ) {
 				$payment = Crunchbutton_Payment::o( $id_payment );
-				$status = $payment->checkBalancedStatus();
+				$status = $payment->checkPaymentStatus();
+			} );
+			$message = 'id_payment : ' . $payment->id_payment;
+			$this->log( 'checkPaymentStatus', $message );
+		}
+	}
+
+	public function checkSucceededPaymentStatus( $type = 'driver' ){
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.payment_status = '" . Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED . "' AND p.payment_status IS NOT NULL AND DATE( p.payment_date_checked ) >= DATE( DATE_SUB( NOW(), INTERVAL 14 day) ) AND DATE( p.payment_date_checked ) <= DATE( DATE_SUB( NOW(), INTERVAL 10 day) ) AND balanced_id IS NOT NULL ORDER BY p.payment_date_checked;" );
+		foreach( $payments as $payment ){
+			$id_payment = $payment->id_payment;
+			Cana::timeout( function() use( $id_payment ) {
+				$payment = Crunchbutton_Payment::o( $id_payment );
+				$status = $payment->checkPaymentStatus();
 			} );
 			$message = 'id_payment : ' . $payment->id_payment;
 			$this->log( 'checkPaymentStatus', $message );
@@ -1828,16 +1943,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function shifts( $id_driver = 0 ){
 		$where = ( $id_driver == 0 ) ? '' : ' AND asa.id_admin = ' . $id_driver;
-		return Crunchbutton_Community_Shift::q( "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex, apt.using_pex_date
-																							FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
-																							INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
-																							INNER JOIN admin a ON a.id_admin = asa.id_admin
-																							WHERE
-																								DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
-																								AND
-																								DATE_FORMAT(cs.date_start, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'"
-																							 . $where );
+		$query = "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex, apt.using_pex_date
+								FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
+								INNER JOIN admin a ON a.id_admin = asa.id_admin
+								WHERE
+									DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
+									AND
+									DATE_FORMAT(cs.date_start, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'"
+								 . $where;
+		return Crunchbutton_Community_Shift::q( $query );
 	}
 
 	public function amount_per_invited_user(){

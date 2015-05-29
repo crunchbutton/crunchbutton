@@ -4,6 +4,10 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 	public function __construct($id = null) {
 		$this->_changeSetName = 'Crunchbutton_Restaurant';
+		$this->changeOptions([
+			'created' => true
+		]);
+
 		parent::__construct($id);
 	}
 
@@ -12,7 +16,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 	// get the last payment
 	public function getLastPayment(){
 		if (!isset($this->_lastPayment)) {
-			$this->_lastPayment = Payment::q('select * from payment where id_restaurant="'.$this->id_restaurant.'" order by date desc limit 1')->get(0);
+			$this->_lastPayment = Payment::q('select * from payment where id_restaurant=? order by date desc limit 1', [$this->id_restaurant])->get(0);
 		}
 		return $this->_lastPayment;
 	}
@@ -20,7 +24,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 	// get the last sent payment
 	public function sendPayment($filters = []) {
 		if (!isset($this->_lastPayment)) {
-			$this->_lastPayment = Payment::q('select * from payment where id_restaurant="'.$this->id_restaurant.'" order by date desc limit 1')->get(0);
+			$this->_lastPayment = Payment::q('select * from payment where id_restaurant=? order by date desc limit 1', [$this->id_restaurant])->get(0);
 		}
 		return $this->_lastPayment;
 	}
@@ -62,15 +66,21 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 		if (!isset($this->_payableOrders)) {
 			$q = 'SELECT * FROM `order`
-							WHERE id_restaurant="'.$this->id_restaurant.'"
-								AND DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
-								AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
+							WHERE id_restaurant=?
+								AND DATE(`date`) >= ?
+								AND DATE(`date`) <= ?
 								AND NAME NOT LIKE "%test%"
 							ORDER BY `pay_type` ASC, `date` ASC ';
-			$orders = Order::q($q);
+			$orders = Order::q($q, [$this->id_restaurant, (new DateTime($filters['start']))->format('Y-m-d'), (new DateTime($filters['end']))->format('Y-m-d')]);
 			$this->_payableOrders = $orders;
 		}
 		return $this->_payableOrders;
+	}
+	
+	public function exports($ignore = [], $where = []) {
+		$out = parent::exports($ignore, $where);
+		$out['payment_type'] = $this->payment_type()->exports();
+		return $out;
 	}
 
 }

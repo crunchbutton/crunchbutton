@@ -2,7 +2,14 @@
 
 <div class="content-padding">
 
-	<h1 class="title"><i class="fa fa-automobile"></i>Driver Onboarding<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-automobile"></i>Driver Onboarding</h1>
+		<div class="page-title-nav">
+			<a href="/drivers/onboarding/docs"><button class="button button-green nav-button-grey"><i class="fa fa-briefcase"></i><span>Documents</span></button></a>
+			<a href="/drivers/onboarding/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Driver</span></button></a>
+		</div>
+	</div>
+	<div class="divider"></div>
 
 	<div class="box-content2 box-content-table">
 		<table>
@@ -13,31 +20,24 @@
 	</div>
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<h2>
-		<a href="/drivers/onboarding/docs">Documents</a> |
-		<a href="/drivers/onboarding/new">Create a new driver</a>
-	</h2>
-	<br><br>
 
 	<div class="box-content2 box-content-table">
 		<table class="tb-zebra">
 			<tr>
 				<th>Name</th>
-				<th>Login</th>
-				<th>Vehicle</th>
 				<th>Community</th>
 				<th>Created by</th>
-				<th></th>
+				<th class="tb-small tb-center">Vehicle</th>
+				<th class="tb-small tb-center">Active</th>
+				<th class="tb-small tb-center">Payment</th>
+				<th class="tb-small tb-center">Docs</th>
+				<th class="tb-small"> </th>
 			</tr>
 			<tr ng-repeat="driver in drivers" ng-attr-tabindex="{{$index+1}}" tab-select="/drivers/onboarding/{{driver.id_admin}}">
 				<td>
-					<a href="/drivers/onboarding/{{driver.id_admin}}">{{driver.name}}</a>
-				</td>
-				<td>
-					<span ng-if="driver.login">{{driver.login}}</span>
-				</td>
-				<td>
-					{{driver.vehicle}}
+					<span class="listview-bold">{{driver.name}}</span>
+					<br><span class="listview-smaller">{{driver.login}}</span>
+					<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
 				</td>
 				<td>
 					<span class="staff-community-repeat" ng-repeat="community in driver.communities">
@@ -47,13 +47,27 @@
 				<td>
 					{{driver.author}}
 				</td>
-				<td>
-					<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
-						Docs ok
-					</span>
-					<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
-						Docs missing
-					</span>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-orange" ng-if="driver.vehicle == 'car'">Car</span>
+					<span class="tag tag-purple" ng-if="driver.vehicle == 'bike'">Bike</span>
+					<span class="tag tag-grey" ng-if="driver.vehicle != 'bike' && driver.vehicle != 'car'">None</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-green" ng-if="driver.active">Active</span>
+					<span class="tag tag-red" ng-if="!driver.active">Inactive</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-green" ng-if="driver.status.payment">OK</span>
+					<span class="tag tag-red" ng-if="!driver.status.payment">Missing</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-green" ng-if="driver.sent_all_docs">OK</span>
+					<span class="tag tag-red" ng-if="!driver.sent_all_docs">Missing</span>
+				</td>
+				<td nowrap class="tb-v-center">
+					<a href="/staff/{{driver.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>
+					<a href="/drivers/onboarding/{{driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver Info</button></a>
+					<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 				</td>
 			</tr>
 		</table>

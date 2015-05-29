@@ -101,12 +101,12 @@
 
 					<div class="logo"><a href="javascript:;" ng-instant="navigation.home()"><div class="logo-img"></div></a></div>
 
-					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
+					<div title="Back" ng-show="navigation.buttons.back" class="hide-before-init nav-back" ng-instant="back()"></div>
 
-					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon config-icon-desktop-hide" ng-instant="navigation.link('/location')"></div>
-					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-click="navigation.menu()"></div>
+					<div title="Change location" ng-show="navigation.buttons.location" class="hide-before-init location-icon config-icon-desktop-hide" ng-instant="navigation.link('/location')"></div>
+					<div title="Menu" ng-show="navigation.buttons.menu" class="hide-before-init menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-click="navigation.menu()"></div>
 
-					<div class="signin-box-header">
+					<div class="signin-box-header hide-before-init">
 						<div ng-show="account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
 						<div ng-show="!account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
 					</div>
@@ -124,7 +124,7 @@
 
 
 		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper button-bottom-bar" data-position="fixed">
-			<button class="button-bottom button-orange" ng-click="navigation.order.submit();"><div>Get Food</div></button>
+			<button class="button-bottom button-orange" ng-click="navigation.order.submit();"><div>Place Order</div></button>
 			<button class="button-bottom button-orange" ng-click="navigation.order.checkout();"><div>Checkout</div></button>
 		</div>
 
@@ -139,17 +139,17 @@
 
 			<div class="divider"></div>
 
-			<div class="footer">
+			<div class="footer hide-before-init">
 
 				<? if (!$this->export) : ?>
 					<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 				<? endif ; ?>
 
 				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
-					<a ng-show="account.user.id_user" href="javascript:;" ng-click="navigation.link('/free-food')">Free food</a>
+					<a ng-show="account.user.id_user" href="javascript:;" ng-click="navigation.link('/free-food')">Free Food</a>
 					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
 					<? if (c::config()->site->config('apply-to-drive')->val()) : ?>
-						<a href="https://docs.google.com/forms/d/1zmBx0XOxXi8UpqKX3n7lzXHJUbJqsMrjomqprYBRh0E/viewform?edit_requested=true">Apply to Drive</a>
+						<a href="/drivers/apply">Apply to Drive</a>
 					<? endif ; ?>
 					<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
 
@@ -180,6 +180,7 @@
 <div ng-include="'assets/view/account.facebook.html'"></div>
 <div ng-include="'assets/view/restaurant.closed.inline.html'"></div>
 <div ng-include="'assets/view/giftcard.html'"></div>
+<div ng-include="'assets/view/referral.html'"></div>
 <div ng-include="'assets/view/suggestion.html'"></div>
 <div ng-include="'assets/view/support.html'"></div>
 <div ng-include="'assets/view/connection.error.html'"></div>
