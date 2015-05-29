@@ -4,6 +4,7 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 
 	const CARD_STATUS_OPEN = 'OPEN';
 	const CARD_STATUS_BLOCKED = 'BLOCKED';
+	const LIMTS_EXCEEDED = 'Usage limits exceeded';
 
 	public function card_list(){
 		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
@@ -11,6 +12,9 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 				$_cards = ( object ) [ 'body' => [] ];
 				$_cards->body = [];
 				$cards = Crunchbutton_Pexcard_Details::account();
+				if( $cards && $cards->body && $cards->body->Message && $cards->body->Message &&  $cards->body->Message == Crunchbutton_Pexcard_Card::LIMTS_EXCEEDED ){
+					return $cards->body->Message;
+				}
 				if( $cards->body && $cards->body->CHAccountList ){
 					foreach( $cards->body->CHAccountList as $card ){
 						$_cards->body[] = ( object ) [ 	'id' => $card->AccountId,

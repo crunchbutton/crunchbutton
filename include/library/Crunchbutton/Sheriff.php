@@ -1,14 +1,14 @@
 <?php
 class Crunchbutton_Sheriff extends Cana_Model {
 	public function restaurants() {
-		return Restaurant::q('SELECT * FROM restaurant WHERE active = 1 and id_restaurant=1 ORDER BY name ASC');
+		return Restaurant::q('SELECT * FROM restaurant WHERE active = true and id_restaurant=true ORDER BY name ASC');
 		
 			
 			/*
 		} else {
 			$_restaurants_id = c::admin()->getRestaurantsUserHasCurationPermission();
 			$in = join( ',', $_restaurants_id );
-			$restaurants = Restaurant::q("SELECT * FROM restaurant WHERE active = 1 AND id_restaurant IN( {$in} ) ORDER BY name ASC");
+			$restaurants = Restaurant::q("SELECT * FROM restaurant WHERE active = true AND id_restaurant IN( {$in} ) ORDER BY name ASC");
 		}
 		*/
 	}

@@ -3,34 +3,33 @@ console.log('App.tokenizeCard');
 	var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
 	console.debug('Processor: ', processor);
 
-	var legacy_card = {
-		card_number: card.number,
-		expiration_month: card.expiration_month,
-		expiration_year: card.expiration_year,
-		security_code: null
-	};
-
-	if (App.isPhoneGap) {
-		//card = legacy_card;
-	}
-
 	switch(processor) {
 		case 'stripe':
-			App.tokenizeCard_stripe( legacy_card, complete );
+			App.tokenizeCard_stripe( card, complete );
 			break;
 		case 'balanced':
 			App.tokenizeCard_balanced( card, complete );
-		break;
+			break;
 		default:
+			App.alert('There was an error communicating with our payment processor.');
 			console.log( 'Processor error::', App.config.processor );
-		break;
+			break;
 	}
 };
 
 App.tokenizeCard_stripe = function( card, complete ) {
-	var res = { status: false };
-	var card = { number: card.card_number, exp_month: card.expiration_month, exp_year: card.expiration_year };
+	var res = {
+		status: false
+	};
+
+	var card = {
+		number: card.number,
+		exp_month: card.expiration_month,
+		exp_year: card.expiration_year
+	};
+
 	Stripe.card.createToken( card , function( status, response ){
+		console.debug('Recieved response from stripe: ', status, response);
 		if ( response.error ) {
 			switch( response.error.code ){
 				case 'incorrect_number':
@@ -70,7 +69,7 @@ App.tokenizeCard_stripe = function( card, complete ) {
 				id : response.card.id,
 				uri: response.id,
 				lastfour: response.card.last4,
-				card_type: response.card.type,
+				card_type: response.card.brand.toLowerCase(),
 				month: response.card.exp_month,
 				year: response.card.exp_year,
 				status : true

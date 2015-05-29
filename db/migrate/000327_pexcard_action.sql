@@ -1,0 +1,1 @@
+ALTER TABLE pexcard_action CHANGE COLUMN `action` `action` enum('shift-started','shift-finished','order-accepted','order-cancelled','arbritary','remove-funds','order-rejected') DEFAULT NULL;

@@ -17,7 +17,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		isSupport: false,
 		isAdmin: false,
 		isMarketingRep: false,
-		restaurants: []
+		restaurants: [],
+		init: false
 	};
 
 	service.isLoggedIn = function(){
@@ -53,6 +54,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 	});
 
 	$rootScope.$on('userAuth', function(e, data) {
+		service.init = true;
 
 		service.user = data;
 
@@ -102,7 +104,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 
 		App.snap.close();
 
-		$rootScope.reload();
+		// hopefully this doesnt break anything
+		//$rootScope.reload();
 
 	} );
 

@@ -27,16 +27,16 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin
 								WHERE
-									DATE_FORMAT( cs.date_start, "%Y%m%d" ) >= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START . '"
+									cs.date_start >= ?
 								AND
-									DATE_FORMAT( cs.date_end, "%Y%m%d" ) <= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END . '"
+									cs.date_end <= ?
 								AND
 									asa.id_admin_shift_assign NOT IN ( SELECT id_admin_shift_assign FROM payment_schedule_shift pss )
 								AND
 									apt.payment_type = "hours"';
 
 
-		$assigned_shifts = Crunchbutton_Admin_Shift_Assign::q( $query );
+		$assigned_shifts = Crunchbutton_Admin_Shift_Assign::q( $query, [Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START, Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END]);
 
 		$pay = [];
 
@@ -104,15 +104,15 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 
 		$settlement = new Crunchbutton_Settlement;
 
-		$query = 'SELECT * FROM `order` AS o WHERE DATE_FORMAT( o.date, "%Y%m%d" ) >= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START . '" AND DATE_FORMAT( o.date, "%Y%m%d" ) <= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END . '" AND o.delivery_service = 1 AND o.id_order NOT IN ( SELECT id_order FROM order_transaction WHERE type = "' . Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER . '" )';
+		$query = 'SELECT * FROM `order` AS o WHERE DATE_FORMAT( o.date, "%Y%m%d" ) >= ? AND DATE_FORMAT( o.date, "%Y%m%d" ) <= ? AND o.delivery_service = true AND o.id_order NOT IN ( SELECT id_order FROM order_transaction WHERE type = ? )';
 
-		$orders = Crunchbutton_Order::q( $query );
+		$orders = Crunchbutton_Order::q( $query, [Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START, Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END, Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER]);
 
 		$payments = [];
 
 		foreach( $orders as $order ){
 			$driver = $order->getDeliveryDriver();
-			$schedule_order = Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_order = ' . $order->id_order );
+			$schedule_order = Cockpit_Payment_Schedule_Order::q('SELECT * FROM payment_schedule_order WHERE id_order = ?', [$order->id_order]);
 			if( $schedule_order->id_payment_schedule ){
 				$payment_schedule = Cockpit_Payment_Schedule::o( $schedule_order->id_payment_schedule );
 				if( $payment_schedule->id_payment ){
@@ -181,16 +181,16 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin
 								WHERE
-									DATE_FORMAT( cs.date_start, "%Y%m%d" ) >= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START . '"
+									cs.date_start >= ?
 								AND
-									DATE_FORMAT( cs.date_end, "%Y%m%d" ) <= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END . '"
+									cs.date_end <= ?
 								AND
 									asa.id_admin_shift_assign NOT IN ( SELECT id_admin_shift_assign FROM payment_schedule_shift pss )
 								AND
 									apt.payment_type = "hours"';
 
 
-		$assigned_shifts = Crunchbutton_Admin_Shift_Assign::q( $query );
+		$assigned_shifts = Crunchbutton_Admin_Shift_Assign::q( $query, [Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START, Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END]);
 
 		$pay = [];
 
@@ -289,19 +289,19 @@ class Controller_Api_Script_CheckPaidOrdersNShifts extends Crunchbutton_Controll
 
 		$query = 'SELECT * FROM `order` o
 								WHERE
-									DATE_FORMAT( o.date, "%Y%m%d" ) >= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START . '"
+									DATE_FORMAT( o.date, "%Y%m%d" ) >= ?
 								AND
-									DATE_FORMAT( o.date, "%Y%m%d" ) <= "' . Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END . '"
+									DATE_FORMAT( o.date, "%Y%m%d" ) <= ?
 								AND
-									o.delivery_service = 1
+									o.delivery_service = true
 								AND o.id_order NOT IN ( SELECT pso.id_order FROM payment_schedule_order pso
 																					INNER JOIN payment_schedule ps
 																						ON
 																							ps.id_payment_schedule = pso.id_payment_schedule
 																						AND
-																							ps.pay_type = "' . $pay_type . '" )';
+																							ps.pay_type = ?)';
 
-		$_orders = Crunchbutton_Order::q( $query );
+		$_orders = Crunchbutton_Order::q( $query, [Controller_Api_Script_CheckPaidOrdersNShifts::DATE_START, Controller_Api_Script_CheckPaidOrdersNShifts::DATE_END, $pay_type]);
 
 		$settlement = new Crunchbutton_Settlement;
 

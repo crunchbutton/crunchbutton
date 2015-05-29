@@ -2,8 +2,9 @@
 
 class Crunchbutton_Auth_Facebook extends Cana_Model {
 	public function __construct($token = null, $user = null) {
-		$this->_facebook = c::facebook();
 
+		$token = ( !$token && $_REQUEST['fbrtoken'] ) ? $_REQUEST['fbrtoken'] : $token;
+		$this->_facebook = c::facebook();
 		if ($token) {
 			$this->facebook()->setAccessToken($token);
 		}
@@ -13,7 +14,7 @@ class Crunchbutton_Auth_Facebook extends Cana_Model {
 		} else {
 			$this->_user = $user;
 		}
-		
+
 	}
 
 	public function check() {
@@ -32,7 +33,7 @@ class Crunchbutton_Auth_Facebook extends Cana_Model {
 	}
 
 	public function login() {
-		header('Location: '.$this->facebook()->getLoginUrl().'&scope=email');	
+		header('Location: '.$this->facebook()->getLoginUrl().'&scope=email');
 		exit;
 	}
 
@@ -44,7 +45,7 @@ class Crunchbutton_Auth_Facebook extends Cana_Model {
 	public function fbuser() {
 		return $this->_fbuser;
 	}
-	
+
 	public function user() {
 		return $this->_user;
 	}

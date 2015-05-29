@@ -10,7 +10,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$out['id'] = $this->uuid;
 
-		$date = new DateTime( $this->date, new DateTimeZone( $this->restaurant()->timezone ) );
+		$date = $this->date();
+
 		$out['do_not_pay_restaurant'] = ( $out['do_not_pay_restaurant'] ? 1 : 0 );
 		$out['do_not_pay_driver'] = ( $out['do_not_pay_driver'] ? 1 : 0 );
 		$out['do_not_reimburse_driver'] = ( $out['do_not_reimburse_driver'] ? 1 : 0 );
@@ -27,15 +28,35 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
 		$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
 		$out['user'] = $this->user()->uuid;
+		//$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
+
+		$out['timestamp'] = $this->date()->format('U');				// unix epoc
+		$out['date'] = $this->date()->format('c');					// date in timezone that the order was placed in
+
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
+
+		$agent = $this->agent();
+		$out['agent'] = $agent->os.' '.$agent->browser;
+
+		// resources
+		$resources = Crunchbutton_Community_Resource::byCommunity( $this->id_community, 'order_page' );
+		if( $resources ){
+			$out['resources'] = [];
+			foreach( $resources as $resource ){
+				$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->download_url() ];
+			}
+		}
+
 		$credit = $this->chargedByCredit();
 		if( $credit > 0 ){
 			$out['credit'] = $credit;
 		} else {
 			$out['credit'] = 0;
 		}
+
+		$out['orders_by_phone'] = $this->totalOrdersByPhone( $this->phone );
 
 		$paymentType = $this->paymentType();
 		if( $paymentType->id_user_payment_type ){
@@ -61,9 +82,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['summary'] = $this->orderMessage('summary');
 
 		if( $this->restaurant()->delivery_estimated_time ){
-			$out[ '_delivery_estimated_time' ] = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes')->format('h:i A');
+			$estimate = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes');
+			$out[ '_delivery_estimated_time' ] = $estimate->format('h:i A');
+			$out[ '_delivery_estimated_time_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $estimate );
 		} else {
 			$out[ '_delivery_estimated_time' ] = false;
+			$out[ '_delivery_estimated_time_timestamp' ] = false;
 		}
 		$out[ '_instructions_payment' ] = $this->driverInstructionsPaymentStatus();
 		$out[ '_instructions_food' ] = $this->driverInstructionsFoodStatus();
@@ -204,7 +228,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$status = $this->status()->last();
 		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
 		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
-
+		$status[ 'date_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $status_date );
 		$status[ '_outside_of_24h' ] = Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $date ) );
 		$status[ '_date_formatted' ] = $status_date->format( 'M jS Y g:i:s A' );
 
@@ -212,9 +236,26 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['eta'] = $this->eta()->exports();
 		$driver = $this->status()->driver();
 
+		$actions = $this->actions();
+
+		$out[ 'actions' ] = [];
+
+		foreach ( $actions as $action ) {
+			$_action = [];
+			$_admin = $action->admin();
+			$_action[ 'id_order_action' ] = $action->id_order_action;
+			$_action[ 'type' ] = $action->type;
+			$_action[ 'note' ] = $action->note;
+			$_action[ 'date' ] = Crunchbutton_Util::dateToUnixTimestamp( $action->date() );
+			$_action[ 'admin' ] = [ 'id_admin' => $_admin->id_admin, 'login' => $_admin->login, 'name' => $_admin->name, 'phone' => $_admin->phone ];
+			$out[ 'actions' ][] = $_action;
+		}
+
+
 		if( $driver ){
 			$out['driver'] = $driver->exports();
 		}
+		$out['hasCustomerBeenTexted5Minutes'] = $this->hasCustomerBeenTexted5Minutes();
 		return $out;
 	}
 
@@ -222,15 +263,30 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		switch ( $text ) {
 			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
-				$pattern = "%s, this is %s from Crunchbutton. I'm just 5 min away with your food!";
+
+				$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN])->get(0);
+				if( $action->id_order_action ){
+					return true;
+				}
+
+				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
 				$driver = $this->driver();
 				if( $driver->id_admin ){
-					$message = sprintf( $pattern, $this->name, $driver->firstName() );
+
+					$message = sprintf( $pattern, $driver->firstName() );
+					(new Order_Action([
+						'id_order' => $this->id_order,
+						'id_admin' => c::admin()->id_admin,
+						'timestamp' => date('Y-m-d H:i:s'),
+						'type' => Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN
+					]))->save();
+
 					Crunchbutton_Message_Sms::send( [
 						'to' => $this->phone,
 						'message' => $message,
 						'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_NOTIFIES_CUSTOMER
 					] );
+
 					Log::debug([ 'order' => $this->id_order, 'action' => 'driver notifies a customer', 'message' => $message , 'type' => 'driver-customer' ] );
 				}
 				break;
@@ -240,6 +296,14 @@ class Cockpit_Order extends Crunchbutton_Order {
 				break;
 		}
 
+	}
+
+	public function hasCustomerBeenTexted5Minutes(){
+		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`="delivery-text-5min" AND id_order=? limit 1',[$this->id_order])->get(0);
+		if ($texts->id_order) {
+			return DATE_FORMAT(new DateTime($texts->timestamp), 'g:i A');
+			//return $texts->timestamp->date()->format('h:i A');
+		} else return false;
 	}
 
 

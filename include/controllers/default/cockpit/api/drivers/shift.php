@@ -74,15 +74,12 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		$id_community_shift = $this->request()[ 'id_community_shift' ];
 		$ids_admin_permanently = $this->request()[ 'id_admin_permanently' ];
 
-		$ids_admin = $this->request()[ 'id_admin' ];
-		$id_community_shift = $this->request()[ 'id_community_shift' ];
-		$ids_admin_permanently = $this->request()[ 'id_admin_permanently' ];
-
 		$to_remove = [];
 		$to_remove_permanency = [];
 		$to_add = $ids_admin;
 
 		$assigneds = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign WHERE id_community_shift = "' . $id_community_shift . '"  ORDER BY id_admin' );
+
 		foreach( $assigneds as $assigned ){
 
 			// about the shift
@@ -92,9 +89,11 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					unset( $to_add[ $key ] );
 				} else {
 					$to_remove[] = $assigned;
+					$_to_remove[] = $assigned->id_admin;
 				}
 			} else {
 				$to_remove[] = $assigned;
+				$_to_remove[] = $assigned->id_admin;
 			}
 
 			// about permanency
@@ -103,11 +102,15 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				if( $key === false ){
 					if( $assigned->isPermanent() ){
 						$to_remove_permanency[] = $assigned;
+						$_to_remove_permanency[] = $assigned->id_admin;
 						// unset( $ids_admin_permanently[ $key ] );
 					}
 				}
 			} else {
-				$to_remove_permanency[] = $assigned;
+				if( $assigned->isPermanent() ){
+					$to_remove_permanency[] = $assigned;
+					$_to_remove_permanency[] = $assigned->id_admin;
+				}
 			}
 		}
 
@@ -122,7 +125,9 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if( count( $to_remove_permanency ) > 0 ){
+
 			foreach( $to_remove_permanency as $remove ){
+
 				$shift = $remove->shift();
 
 				$id_father = $shift->id_community_shift_father;
@@ -139,9 +144,15 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					// Remove next shifts assignments for the permanency
 					$remove_assignment_after = ( $now->format( 'YmdHis' ) > $shift->dateEnd()->format( 'YmdHis' ) ? $now : $shift->dateEnd() ) ;
 
-					$assignments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa
-																																INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift AND cs.id_community_shift_father = ' . $id_father . '
-																																WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) > "' . $remove_assignment_after->format( 'Y-m-d' ) . '" AND asa.id_admin = "' . $id_admin . '" AND asa.warned = "0"' );
+					$assignments = Crunchbutton_Admin_Shift_Assign::q('
+						SELECT asa.* FROM admin_shift_assign asa
+						INNER JOIN community_shift cs
+							ON cs.id_community_shift = asa.id_community_shift
+							AND cs.id_community_shift_father = ?
+						WHERE cs.date_start > ?
+							AND asa.id_admin = ?
+							AND asa.warned = false
+					', [$id_father, $remove_assignment_after->format( 'Y-m-d' ), $id_admin]);
 
 					foreach( $assignments as $assignment ){
 						$assignment->delete();
@@ -169,7 +180,6 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 		}
-
 
 		echo json_encode( array( 'success' => true ) );
 	}

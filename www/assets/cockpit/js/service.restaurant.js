@@ -22,8 +22,17 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		'query' : {
 			method: 'GET',
 			params : {}
-		}
+		},
 	});
+
+	var payinfo = $resource( App.service + 'restaurant/payinfo/:action/:id_restaurant', { action: '@action' }, {
+			'payment_method' : { 'method': 'GET', params : { 'action' : 'payment-method' } },
+			'payment_method_save' : { 'method': 'POST', params : { 'action' : 'payment-method' } },
+			'balanced_to_sprite' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
+			'balanced_to_sprite_account' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
+			'stripe' : { 'method': 'POST', params : { 'action' : 'stripe' } },
+		}
+	);
 
 	service.list = function(params, callback) {
 		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
@@ -56,6 +65,39 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		} );
 	}
 
+	service.payment_method = function( id_restaurant, callback ){
+		payinfo.payment_method( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.payment_method_save = function( params, callback ){
+		payinfo.payment_method_save( params,  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.balanced_to_sprite = function( id_restaurant, callback ){
+		payinfo.balanced_to_sprite( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.balanced_to_sprite_account = function( params, callback ){
+		payinfo.balanced_to_sprite_account( params,  function( data ){
+			callback( data );
+		} );
+	}
+
+
+	service.stripe = function( params, callback ){
+		payinfo.stripe( params,  function( data ){
+			callback( data );
+		} );
+	}
+
+
+
 	service.paid_list = function( callback ){
 		restaurants.paid_list( function( data ){
 			callback( data );
@@ -66,6 +108,37 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		restaurants.eta( function( data ){
 			callback( data );
 		} );
+	}
+
+
+	service.yesNo = function(){
+		var methods = [];
+		methods.push( { value: 0, label: 'No' } );
+		methods.push( { value: 1, label: 'Yes' } );
+		return methods;
+	}
+
+	service.summaryMethod = function(){
+		var methods = [];
+		methods.push( { value: 'fax', label: 'Fax' } );
+		methods.push( { value: 'email', label: 'Email' } );
+		methods.push( { value: 'no summary', label: 'No Summary' } );
+		return methods;
+	}
+
+	service.paymentMethod = function(){
+		var methods = [];
+		methods.push( { value: 'check', label: 'Check' } );
+		methods.push( { value: 'deposit', label: 'Deposit' } );
+		methods.push( { value: 'no payment', label: 'No Payment' } );
+		return methods;
+	}
+
+	service.accountType = function(){
+		var methods = [];
+		methods.push( { value: 'individual', label: 'Individual' } );
+		methods.push( { value: 'corporation', label: 'Corporation' } );
+		return methods;
 	}
 
 	return service;
@@ -206,7 +279,7 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 
 	service.cardYears = function(){
 		var years = [];
-		years.push( { value: 0, label: 'Year' } );
+		years.push( { value: '', label: 'Year' } );
 		var date = new Date().getFullYear();
 		for ( var x = date; x <= date + 20; x++ ) {
 			years.push( { value: x.toString(), label: x.toString() } );
@@ -216,7 +289,7 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 
 	service.cardMonths = function(){
 		var months = [];
-		months.push( { value: 0, label: 'Month' } );
+		months.push( { value: '', label: 'Month' } );
 		for ( var x = 1; x <= 12; x++ ) {
 			months.push( { value: x.toString(), label: x.toString() } );
 		}

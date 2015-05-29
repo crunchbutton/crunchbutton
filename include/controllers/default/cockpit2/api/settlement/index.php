@@ -6,6 +6,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$this->resultsPerPage = 20;
 
+		// $this->_driverScheduled();
+		// exit;
+
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -91,8 +94,8 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 						break;
 					case 'drivers':
 						switch ( c::getPagePiece( 3 ) ) {
-							case 'balanced-status':
-								$this->_driverCheckBalancedStatus();
+							case 'payment-status':
+								$this->_driverCheckPaymentStatus();
 								break;
 							case 'begin':
 								$this->_driverBegin();
@@ -459,11 +462,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		echo $mail->message();
 	}
 
-	private function _driverCheckBalancedStatus(){
+	private function _driverCheckPaymentStatus(){
 		$id_payment = $this->request()['id_payment'];
 		$payment = Crunchbutton_Payment::o( $id_payment );
 		if( $payment->id_payment ){
-			$status = $payment->checkBalancedStatus();
+			$status = $payment->checkPaymentStatus();
 			echo json_encode( [ 'success' => $status ] );
 		} else {
 			echo json_encode( [ 'error' => 'Payment not found!' ] );
@@ -578,8 +581,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
 					$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
 					$_order[ 'tip' ] = $order[ 'pay_info' ][ 'tip' ] ;
-					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
+					$_order[ 'customer_fee' ] = $order[ 'pay_info' ][ 'customer_fee' ] ;
+					$_order[ 'customer_fee_collected' ] = $order[ 'pay_info' ][ 'customer_fee_collected' ] ;
 					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
+					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ] ;
+					$_order[ 'delivery_fee_collected' ] = $order[ 'pay_info' ][ 'delivery_fee_collected' ] ;
 					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
 					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
 					$_order[ 'date' ] = $order[ 'date' ];
@@ -596,8 +602,13 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$driver[ 'adjustment' ] = 0;
 			$driver[ 'adjustment_notes' ] = '';
 			$driver[ 'standard_reimburse' ] = ( $driver[ 'standard_reimburse' ] ? $driver[ 'standard_reimburse' ] : 0 );
+			$driver[ 'total_service_fee' ] = ( $driver[ 'service_fee' ] ? $driver[ 'service_fee' ] : 0 );
 			$driver[ 'total_reimburse' ] = ( $driver[ 'total_reimburse' ] ? $driver[ 'total_reimburse' ] : 0 );
 			$driver[ 'total_payment' ] = ( $driver[ 'total_payment' ] ? $driver[ 'total_payment' ] : 0 );
+			$driver[ 'total_payment_per_order' ] = ( $driver[ 'total_payment_per_order' ] ? $driver[ 'total_payment_per_order' ] : 0 );
+			$driver[ 'delivery_fee_collected' ] = ( $driver[ 'delivery_fee_collected' ] ? $driver[ 'delivery_fee_collected' ] : 0 );
+			$driver[ 'customer_fee_collected' ] = ( $driver[ 'customer_fee_collected' ] ? $driver[ 'customer_fee_collected' ] : 0 );
+
 			$driver[ 'pay' ] = true;
 
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
@@ -746,26 +757,43 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$this->_error();
 			}
 		} else {
+
+			$resultsPerPage = $this->resultsPerPage;
+
+			$page = max( $this->request()['page'], 1 );
+			$search = $this->request()['search'];
+			$pay_type = max( $this->request()['type'], 0 );
+			$status = max( $this->request()['status'], 0 );
+			$start = ( ( $page - 1 ) * $resultsPerPage );
+
 			$schedule = new Cockpit_Payment_Schedule;
-			$schedules = $schedule->driverNotCompletedSchedules();
-			$out = [ 'drivers' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total_payments' => 0, 'total_reimbursements' => 0 ];
+			$schedules = $schedule->search( [ 'limit' => $start . ',' . $resultsPerPage, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'status' => $status ] );
+
+			$payments_total = $schedule->search( [ 'total' => true, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'status' => $status ] );
+
+			$results = [];
 			foreach( $schedules as $_schedule ){
 				$data = $_schedule->exports();
 				if( !$data[ 'amount' ] ){
 					$data[ 'amount' ] = 0;
 				}
 				$data[ 'date' ] = $_schedule->date()->format( 'M jS Y g:i:s A' );
-				$out[ 'drivers' ][] = $data;
-				$out[ $_schedule->status ]++;
-				if( $_schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
-					$out[ 'total_reimbursements' ]++;
-				} else {
-					$out[ 'total_payments' ]++;
-				}
+				$results[] = $data;
 			}
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
-			echo json_encode( $out );
+
+			if( $payments_total > 0 ){
+				$pages = ceil( $payments_total / $resultsPerPage );
+			}
+
+			$data = [];
+			$data[ 'count' ] = $payments_total;
+			$data[ 'pages' ] = $pages;
+			$data[ 'prev' ] = ( $page > 1 ) ? $page - 1 : null;
+			$data[ 'page' ] = intval( $page );
+			$data[ 'next' ] = ( $page < $pages ) ? $page + 1 : null;
+			$data[ 'results' ] = $results;
+
+			echo json_encode( $data );
 		}
 	}
 
@@ -774,18 +802,19 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$resultsPerPage = $this->resultsPerPage;
 
 		$page = max( $this->request()['page'], 1 );
-		$id_driver = max( $this->request()['id_driver'], 0 );
+		$search = $this->request()['search'];
 		$pay_type = max( $this->request()['pay_type'], 0 );
-		$balanced_status = max( $this->request()['balanced_status'], 0 );
+		$payment_status = max( $this->request()['payment_status'], 0 );
 		$start = ( ( $page - 1 ) * $resultsPerPage );
-		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'balanced_status' => $balanced_status ] );
-		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_driver' => $id_driver, 'type' => 'driver', 'pay_type' => $pay_type, 'balanced_status' => $balanced_status ] );
+
+		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
+		$payments_total = Crunchbutton_Payment::listPayments( [ 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
 		$payments_total = $payments_total->count();
 
 		$list = [];
 		foreach( $payments as $payment ){
 			$data = $payment->exports();
-			$data[ 'date' ] = $payment->date()->format( 'M jS Y g:i:s A' );
+			$data[ 'date' ] = $payment->date()->format( Settlement::date_format() );
 			unset( $data[ 'id_restaurant' ] );
 			unset( $data[ 'check_id' ] );
 			unset( $data[ 'note' ] );
@@ -799,7 +828,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		if( $payments_total > 0 ){
 			$pages = ceil( $payments_total / $resultsPerPage );
 		}
-
 
 		$data = [];
 		$data[ 'count' ] = $payments_total;
@@ -835,12 +863,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( [ 'error' => 'Payment already in process!' ] );
 				exit;
 			}
-			$settlement = new Settlement;
-			if( $settlement->doDriverPayments( $id_payment_schedule ) ){
-				echo json_encode( [ 'success' => true ] );
-			} else {
-				echo json_encode( [ 'error' => 'Problem finishing the payment!' ] );
-			}
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+			$schedule->log = 'Schedule created';
+			$schedule->save();
+			echo json_encode( [ 'success' => true ] );
 		} else {
 			echo json_encode( [ 'error' => 'Payment schedule not found!' ] );
 		}

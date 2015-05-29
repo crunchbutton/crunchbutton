@@ -9,21 +9,6 @@
 		</div>
 	</h1>
 
-	<div class="box-content2 box-content-table">
-		<table>
-			<tr>
-				<th>Type</th>
-				<td>
-					<select ng-model="query.type" name="searchType" tabindex="2">
-						<option value="all">All</option>
-						<option value="payment">Payments</option>
-						<option value="reimbursement">Reimbusement</option>
-					</select>
-				</td>
-			</tr>
-		</table>
-	</div>
-
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="divider"></div>
@@ -41,31 +26,13 @@
 	<div ng-if="!summary.results && !loading" class="box-content2">
 		<p>Not payments yet. Go deliver some food!</p>
 	</div>
-
-	<h1 class="title" ng-if="!loading"><i class="fa fa-users"></i>Customer Referrals</h1>
-	<div class="box-content2 box-content-table" ng-if="summary.referral.invites">
-		<table class="tb-zebra">
-			<tr>
-				<th>Name</th>
-				<th>Date</th>
-				<th>Amount</th>
-			</tr>
-			<tr ng-repeat="invite in summary.referral.invites">
-				<td>{{invite.user.name}}</td>
-				<td>{{invite.date}}</td>
-				<td>${{summary.referral.amount_per_user | formatPrice}}</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><strong>Total</strong></td>
-				<td>${{summary.referral.invites_total_payment | formatPrice}}</td>
-			</tr>
-		</table>
-	</div>
-
-	<div ng-if="!summary.referral.invites && !loading">
-		<div ng-include="'assets/view/general-profile-referal.html'"></div>
-	</div>
+	<p>
+	<b>When do I get my $$$?</b><br>
+	</p>
+	<p>
+	We deposit your payment every Friday for the previous Mon-Sun. You get to keep all cash received from cash orders as an advance towards that too.
+	</p>
+<a class="docs-download-form invite-referral-code-link" href="/invite">Want to earn more money?</a>
 
 </div>
 

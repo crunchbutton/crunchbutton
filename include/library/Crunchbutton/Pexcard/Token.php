@@ -3,7 +3,7 @@
 class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 
 	public function getToken(){
-		$token = Crunchbutton_Pexcard_Token::q( 'SELECT * FROM pexcard_token WHERE env = "' . Crunchbutton_Pexcard_Resource::env() . '" AND active = 1 ORDER BY date DESC LIMIT 1' );
+		$token = Crunchbutton_Pexcard_Token::q( 'SELECT * FROM pexcard_token WHERE env = "' . Crunchbutton_Pexcard_Resource::env() . '" AND active = true ORDER BY date DESC LIMIT 1' );
 		if( !$token->count() ){
 			return Crunchbutton_Pexcard_Token::createToken();
 		}
@@ -13,7 +13,7 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function desactiveToken(){
-		$token = Crunchbutton_Pexcard_Token::q( 'SELECT * FROM pexcard_token WHERE env = "' . Crunchbutton_Pexcard_Resource::env() . '" AND active = 1 ORDER BY date DESC LIMIT 1' );
+		$token = Crunchbutton_Pexcard_Token::q( 'SELECT * FROM pexcard_token WHERE env = "' . Crunchbutton_Pexcard_Resource::env() . '" AND active = true ORDER BY date DESC LIMIT 1' );
 		if( $token->id_pexcard_token ){
 			$token->active = 0;
 			$token->save();

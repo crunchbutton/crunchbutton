@@ -31,7 +31,7 @@ class Crunchbutton_Auth_Local extends Cana_Model {
 			SELECT l.*, s.ip FROM login l
 			INNER JOIN session s ON s.login_id=l.id
 			WHERE s.session="'.$this->id().'"
-			AND s.active=1
+			AND s.active=true
 		';
 
 		$result = Caffeine::db()->query($query);
@@ -54,16 +54,17 @@ class Crunchbutton_Auth_Local extends Cana_Model {
 	}
 	
 	public function check($user, $pass) {
-		$user = Caffeine::db()->escape(trim($user));
+		throw new exception('this function shouldnt be used');
+		$user = trim($user);
 		$pass = trim($pass);
 	
 		$query = '
 			SELECT * 
 			FROM login 
-			WHERE login="'.$user.'"
-			AND active=1
+			WHERE login=?
+			AND active=true
 		';
-		$result = Caffeine::db()->query($query);
+		$result = Caffeine::db()->query($query, [$user]);
 		$row = $result->fetch();
 
 		if (!empty($row->login) && $pass == Caffeine::app()->crypt()->decrypt($row->pass)) {
@@ -74,22 +75,24 @@ class Crunchbutton_Auth_Local extends Cana_Model {
 	}
 	
 	public function setPass($user = null, $pass) {
-		$pass = Caffeine::db()->escape(trim($pass));
+		throw new exception('this function shouldnt be used');
+		$pass = Caffeine::app()->crypt()->encrypt(trim($pass));
 		$user = !is_null($user) ? $user : $this->user();
 		
 		$query = '
 			UPDATE login
-			SET pass="'.Caffeine::app()->crypt()->encrypt($pass).'"
-			WHERE id="'.$user->id.'"
+			SET pass=:pass
+			WHERE id=:id
 		';
-		Caffeine::db()->query($query);
+		Caffeine::db()->query($query, ['user' => $pass, 'id' => $user->id]);
 	}
 
 
 	public function login($user,$pass) {
+		throw new exception('this function shouldnt be used');
 		
 		if ($row = $this->check($user,$pass)) {
-			$user = Caffeine::db()->escape(trim($user));
+			$user = trim($user);
 			$pass = trim($pass);
 		
 			$query = '

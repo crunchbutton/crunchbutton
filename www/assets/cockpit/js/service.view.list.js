@@ -5,17 +5,37 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 
 	service.view = function(params) {
 		var scope = params.scope;
-
 		var query = $location.search();
+		var defaultLimit = query.limit || (App.isMobile() ? 5 : 20);
 
 		scope.query = {
-			limit: query.limit || (App.isMobile() ? 5 : 20),
-			page: query.page || 1
+			limit: defaultLimit,
+			page: query.page || 1,
+			fullcount: true
 		};
 		scope.query.page = parseInt(scope.query.page);
 
+		var previous = null;
+		var getQuery = function() {
+			var q = '';
+			for (var x in scope.query) {
+				q += x + scope.query[x];
+			}
+			return q;
+		};
+
 		var watch = function() {
-			$location.search(scope.query);
+			if (previous == getQuery()) {
+				return;
+			}
+
+			if (!previous) {
+				$location.search(scope.query).replace();
+			} else {
+				$location.search(scope.query);
+			}
+
+			previous = getQuery();
 			update();
 		};
 
@@ -31,12 +51,17 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		scope.watch = function(vars) {
 			for (var x in vars) {
 				scope.query[x] = query[x] || vars[x];
-				scope.$watch('query.' + x, inputWatch);
+				if( x ){
+					scope.$watch('query.' + x, inputWatch);
+				}
 			}
 		};
 
 		scope.count = 0;
 		scope.pages = 0;
+		scope.more = false;
+
+		scope.allowAll = params.allowAll ? true : false;
 
 		scope.$watch('query.limit', inputWatch);
 		scope.$watch('query.page', watch);
@@ -44,6 +69,22 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		scope.setPage = function(page) {
 			scope.query.page = page;
 			App.scrollTop(0);
+		};
+
+		scope.viewAll = function() {
+			if (!scope.allowAll) {
+				return;
+			}
+			scope.query.page = 1;
+			scope.query.limit = 'none';
+		};
+
+		scope.viewLess = function() {
+			if (!scope.allowAll) {
+				return;
+			}
+			scope.query.page = 1;
+			scope.query.limit = defaultLimit;
 		};
 
 		scope.sort = function(by) {
@@ -64,12 +105,12 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			}
 		};
 
-
 		scope.loader = false;
 
 		scope.complete = function(d) {
 			scope.count = d.count;
 			scope.pages = d.pages;
+			scope.more = d.more;
 
 			if (scope.loader) {
 				clearTimeout(scope.loader);

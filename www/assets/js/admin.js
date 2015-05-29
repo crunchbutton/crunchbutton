@@ -885,7 +885,59 @@ App.orders = {
 		params.export = 'csv';
 		location.href = '/orders/content?' + jQuery.param(params);
 	},
+
 	createEvents: function(){
+
+		$(document).on('click', '.check-refunded', function() {
+
+			var el = $(this);
+
+			$( '.refunded-' + el.attr('data-uuid') ).show();
+
+			el.html(' Checking <i class="icon-spinner icon-spin"></i>');
+
+			var fail = function( result ){
+				console.log( result.responseText);
+				el.html('REFUND');
+				var er = result.errors ? "\n\n" + result.errors : 'See the console.log!';
+				alert('Checking fail: ' + er);
+			}
+			$.ajax({
+				url: '/api/refund/check/' + el.attr('data-uuid'),
+				success: function( result ){
+					console.log('result',result);
+						try {
+							if( result.status && result.status == 'success' ){
+								alert( 'Order already refunded!' );
+								$( '.was-refunded-' + el.attr('data-uuid') ).html( 'REFUNDED' );
+								el.hide();
+								var do_not_reimburse_driver = $( '.do_not_reimburse_driver-' + el.attr('data-uuid') );
+								do_not_reimburse_driver.show();
+								var do_not_reimburse_driver_value = ( do_not_reimburse_driver.attr( 'data-value' ) == 1 ? 0 : 1 );
+								do_not_reimburse_driver.attr( 'data-value', do_not_reimburse_driver_value );
+								if( do_not_reimburse_driver_value ){
+									do_not_reimburse_driver.find( 'span' ).html( '<i class="icon-check"></i>' );
+								} else {
+									do_not_reimburse_driver.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
+								}
+							} else if( result.status && result.status == 'false' ){
+								alert( 'Not refunded yet!' )
+								el.html('Check if it was refunded');
+							} else {
+								fail( result );
+								el.html('Check if it was refunded');
+							}
+						}
+						catch (err) {
+							fail( result );
+						}
+					},
+				error: function( result ){
+					fail( result );
+				}
+			})
+		});
+
 		$(document).on('click', '.refund', function() {
 
 			var el = $(this);
@@ -921,12 +973,13 @@ App.orders = {
 				alert('Refunding fail! ' + er);
 			}
 			$.ajax({
-				url: '/api/order/' + el.attr('data-uuid') + '/refund',
+				url: '/api/refund/' + el.attr('data-uuid'),
 				success: function( result ){
+					console.log('result',result);
 						try {
-
 							if( result.status && result.status == 'success' ){
 								el.html('REFUNDED');
+								$( '.check-was-refunded-' + el.attr('data-uuid') ).hide();
 							} else {
 								fail( result );
 							}

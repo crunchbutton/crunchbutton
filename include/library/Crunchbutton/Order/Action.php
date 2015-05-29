@@ -10,6 +10,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	const RESTAURANT_ACCEPTED = 'restaurant-accepted';
 	const RESTAURANT_REJECTED = 'restaurant-rejected';
 	const RESTAURANT_READY		= 'restaurant-ready';
+	const DELIVERY_ORDER_TEXT_5_MIN = 'delivery-text-5min';
 
 	public function __construct($id = null) {
 		parent::__construct();

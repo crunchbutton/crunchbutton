@@ -262,24 +262,36 @@
 								Pay with a card, NOT CASH, to use your ${{giftcard.value}} gift card!</span>
 							</div>
 
+							<div ng-repeat="success in giftcard.giftcards.success">
+								<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+									<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
+									<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free</span>
+								</div>
+							</div>
+
 							<div ng-show="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 								<!-- Gift card success -->
 								<div ng-repeat="success in giftcard.giftcards.success">
-									<div ng-show="!success.error && !success.message">
-										Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
-									</div>
-									<div ng-show="!success.error && success.message">
-										{{success.message}}
-									</div>
-									<div ng-show="success.error == 'other restaurant'">
-										The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+									<div ng-if="!success.delivery_free">
+										<div ng-show="!success.error && !success.message">
+											Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
+										</div>
+										<div ng-show="!success.error && success.message">
+											{{success.message}}
+										</div>
+										<div ng-show="success.error == 'other restaurant'">
+											The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+										</div>
 									</div>
 								</div>
 								<!-- Gift card errors -->
 								<div ng-repeat="error in giftcard.giftcards.error">
 									<div ng-switch on="error.error">
 										<div ng-switch-when="gift card already used">
-										The gift card ({{error.giftcard}}) you are trying to use was already redeemed.
+											The gift card ({{error.giftcard}}) you are trying to use was already redeemed.
+										</div>
+										<div ng-switch-when="custom">
+											{{error.message}}
 										</div>
 									</div>
 								</div>
@@ -371,17 +383,27 @@
 				&nbsp;
 				<span ng-show="order.form.pay_type=='card'">by card</span>
 			</div>
-			<div ng-show="points.free_delivery_message" class="points-message-edit-info"><strong>You have {{points.free_delivery}} points! This delivery fee is on us.</strong></div>
+
+			<div ng-show="points.free_delivery_message && restaurant.delivery_service == '1'" >
+				<strong ng-if="order.form.pay_type == 'card'">You have {{points.show}} points! This delivery fee is on us.</strong>
+				<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
+			</div>
+
 		</div>
 
 	</form>
 
-	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper button-bottom-inline"><button class="button-bottom button-orange" ng-click="order.submit();"><div>Get Food</div></button></div>
+	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper button-bottom-inline"><button class="button-bottom button-orange" ng-click="order.submit();"><div>Place Order</div></button></div>
 
 	<!-- stored user info -->
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
 
-		<div ng-show="points.free_delivery_message" class="points-message-stored-info"><strong>You have {{points.free_delivery}} points! This delivery fee is on us.</strong></div>
+
+		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message  && restaurant.delivery_service == '1'">
+			<strong ng-if="order.form.pay_type == 'card'">You have {{points.show}} points! This delivery fee is on us.</strong>
+			<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
+		</div>
+
 
 		<div>
 			<label>Your phone number:&nbsp;</label>

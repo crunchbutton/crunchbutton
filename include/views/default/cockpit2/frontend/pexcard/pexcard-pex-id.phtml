@@ -6,8 +6,6 @@
 
 		<div class="divider"></div>
 
-		<navigation-back></navigation-back>
-
 		<form name="form" novalidate>
 
 			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
@@ -50,14 +48,6 @@
 				<li class="li-info">
 					<div class="label">Last Name:</div>
 					<div class="data">{{card.lastName}}</div>
-				</li>
-				<li class="li-info">
-					<div class="label">Ledger Balance:</div>
-					<div class="data">$ {{card.ledgerBalance | formatPrice}}</div>
-				</li>
-				<li class="li-info">
-					<div class="label">Available Balance:</div>
-					<div class="data">$ {{card.availableBalance | formatPrice}}</div>
 				</li>
 				<li class="li-info">
 					<div class="label">Status:</div>

@@ -39,29 +39,29 @@ class Crunchbutton_Suggestion extends Cana_Table {
 		$query = 'SELECT `suggestion`.* FROM `suggestion` LEFT JOIN restaurant USING(id_restaurant) WHERE id_suggestion IS NOT NULL ';
 
 		if ($search['type']) {
-			$query .= ' and type="'.$search['type'].'" ';
+			$query .= " and type='".$search['type']."' ";
 		}
 
 		if ($search['status']) {
-			$query .= ' and status="'.$search['status'].'" ';
+			$query .= " and status='".$search['status']."' ";
 		}
 
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
-			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
+			$query .= " and DATE(`date`)>='".$s->format('Y-m-d')."' ";
 		}
 
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
-			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
+			$query .= " and DATE(`date`)<='".$s->format('Y-m-d')."' ";
 		}
 
 		if ($search['restaurant']) {
-			$query .= ' and `suggestion`.id_restaurant="'.$search['restaurant'].'" ';
+			$query .= ' and `suggestion`.id_restaurant='.$search['restaurant'].' ';
 		}
 
 		if ($search['community']) {
-			$query .= ' and `suggestion`.id_community="'.$search['community'].'" ';
+			$query .= ' and `suggestion`.id_community='.$search['community'].' ';
 		}
 
 		if ($search['search']) {

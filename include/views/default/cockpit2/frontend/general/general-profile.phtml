@@ -1,48 +1,61 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-
-	<h1 class="title "><i class="fa fa-user"></i>Profile</h1>
-
-	<ul class="ul-info box-content2">
-		<li class="li-info">
-			<div class="label">Name:</div>
-			<div class="data">{{account.user.name}}</div>
-		</li>
-		<li class="li-info">
-			<div class="label">Login:</div>
-			<div class="data">{{account.user.login}}</div>
-		</li>
-		<li class="li-info" ng-if="account.user.phone">
-			<div class="label">Phone:</div>
-			<div class="data">{{account.user.phone | formatPhone}}</div>
-		</li>
-		<li class="li-info" ng-if="account.user.email">
-			<div class="label">Email:</div>
-			<div class="data">{{account.user.email}}</div>
-		</li>
-		<li class="li-info" ng-if="account.user.timezone">
-			<div class="label">Timezone:</div>
-			<div class="data">{{account.user.timezone}}</div>
-		</li>
-	</ul>
 	
-	<div ng-if="account.user.invite_code">
-		<div ng-include="'assets/view/general-profile-referal.html'"></div>
-	</div>
-	
-	<div ng-if="account.user.permissions.GLOBAL">
-		<h1 class="title"><i class="fa fa-cog"></i>Preferences</h1>
+	<div class="support-boxes">
 
-		<div class="tb-info box-content2">
-			<div profile-preference class="tb-info-item" content="Notify on all support tickets" type="bool" key="notification-desktop-support-all"></div>
-			<div profile-preference class="tb-info-item" content="Display demo orders" type="bool" key="demo"></div>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1><i class="fa fa-user"></i>Profile</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul class="ul-info">
+					<li class="li-info">
+						<div class="label">Name:</div>
+						<div class="data">{{account.user.name}}</div>
+					</li>
+					<li class="li-info">
+						<div class="label">Login:</div>
+						<div class="data">{{account.user.login}}</div>
+					</li>
+					<li class="li-info" ng-if="account.user.phone">
+						<div class="label">Phone:</div>
+						<div class="data">{{account.user.phone | formatPhone}}</div>
+					</li>
+					<li class="li-info" ng-if="account.user.email">
+						<div class="label">Email:</div>
+						<div class="data">{{account.user.email}}</div>
+					</li>
+					<li class="li-info" ng-if="account.user.timezone">
+						<div class="label">Timezone:</div>
+						<div class="data">{{account.user.timezone}}</div>
+					</li>
+				</ul>
+
+			</div>
 		</div>
-	</div>
-	
-	<div ng-if="account.isDriver">
-		<p><a href="/drivers/welcome">Run setup</a></p>
-		<br><br>
-	</div>
+
+		<div class="support-box-wrap box-content2" ng-if="account.user.permissions.GLOBAL">
+			<div class="support-box-wrap-header">
+				<h1><i class="fa fa-cog"></i>Config</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="tb-info no-box-content-color">
+				<div profile-preference class="tb-info-item" content="Notify on all support tickets" type="bool" key="notification-desktop-support-all"></div>
+				<div profile-preference class="tb-info-item" content="Display demo orders" type="bool" key="demo"></div>
+			</div>
+		</div>
+
+		<div ng-if="account.isDriver" class="hide-desktop">
+
+			<a href="/drivers/welcome"><button class="button button-small-green">Run setup</button></a>
+
+		</div>
+
+
 
 </div>

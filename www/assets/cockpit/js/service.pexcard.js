@@ -14,7 +14,13 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 		'logs' : { 'method': 'GET', params : { action: 'log' } },
 		'cardlog' : { 'method': 'GET', params : { action: 'cardlog' } },
 		'action' : { 'method': 'GET', params : { action: 'log' } },
-	}	);
+		'list' : {
+			url: App.service + 'pexcards',
+			method: 'GET',
+			params : {},
+			isArray: true
+		}
+	});
 
 	var config = $resource( App.service + 'config/pexcard/:action', { action: '@action' }, {
 				// list methods
@@ -77,6 +83,13 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 			callback( data );
 		} );
 	}
+	
+	service.list = function(callback ){
+		pexcard.list( {}, function( data ){
+			callback( data );
+		} );
+	}
+
 
 	service.driver_search = function( params, callback ){
 		pexcard.driver_search( params, function( data ){

@@ -23,7 +23,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		];
 		$paymentType = $this->payment_type();
 		if ($paymentType->id_admin_payment_type) {
-			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->balanced_id && $this->ssn()) {
+			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->stripe_account_id && $paymentType->stripe_id && $this->ssn() && $this->dob) {
 				$status['payment'] = true;
 			}
 		}
@@ -44,8 +44,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	}
 
 	public function location() {
-		if (!isset($this->_location)) {
-			$this->_location = Admin_Location::q('SELECT * FROM admin_location WHERE id_admin="'.$this->id_admin.'" ORDER BY date DESC LIMIT 1')->get(0);
+		if (!isset($this->_location) && $this->id_admin) {
+			$this->_location = Admin_Location::q('SELECT * FROM admin_location WHERE id_admin=? ORDER BY date DESC LIMIT 1', [$this->id_admin])->get(0);
 		}
 		return $this->_location;
 	}
@@ -68,15 +68,15 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 	public function deliveries() {
 		if (!isset($this->_deliveries)) {
-			$o = Order::q('
+			$o = Order::q("
 				select o.*, oa.type as status, oa.timestamp as status_time from `order` o
 				left join order_action oa using (id_order)
 				where
-					id_admin="'.$this->id_admin.'"
-					and (oa.type="delivery-pickedup" or oa.type="delivery-accepted" or oa.type="delivery-delivered" or oa.type="delivery-rejected" or oa.type="delivery-transfered")
+					id_admin=?
+					and (oa.type='delivery-pickedup' or oa.type='delivery-accepted' or oa.type='delivery-delivered' or oa.type='delivery-rejected' or oa.type='delivery-transfered')
 					and o.date >= (curdate() - interval 50 day)
 				order by oa.timestamp asc
-			');
+			", [$this->id_admin]);
 			$orders = [];
 			foreach ($o as $order) {
 				if (!$orders[$order->id_order]) {
@@ -102,6 +102,22 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_deliveries;
 	}
 
+	public function pex() {
+		if (!isset($this->_pex)) {
+			$this->_pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
+		}
+		return $this->_pex;
+	}
+
+	public function totalReferralActivations($period = null) {
+		$query = 'SELECT COUNT(*) AS total FROM referral WHERE id_admin_inviter = ? AND new_user = true ';
+		if ($period) {
+			$query .= ' AND date >= DATE_SUB( NOW(), INTERVAL ' . $period . ' DAY )';
+		}
+		$total = Crunchbutton_Referral::q( $query, [$this->id_admin])->get(0);
+		return intval( $total->total );
+	}
+
 	public function exports( $params = [] ) {
 		$out = parent::exports( $params );
 		$out['shifts'] = [];
@@ -110,6 +126,16 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out['referral_admin_credit'] = floatval( $this->referral_admin_credit );
 		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
 		$out['invite_code'] = $this->invite_code;
+		$out['dob'] = $this->dob;
+
+		$out['referral_total'] = $this->totalReferralActivations();
+		$out['referral_total_last_week'] = $this->totalReferralActivations( 7 );
+
+		$out['pexcard'] = [
+			'card_serial' => $this->pex()->card_serial,
+			'last_four' => $this->pex()->last_four,
+			'active' => $this->pex()->card_serial && $this->pex()->card_serial ? true : false
+		];
 
 		$author = $this->author();
 		if( $author->id_admin ){
@@ -122,50 +148,224 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			$out['location'] = $this->location()->exports();
 		}
 
-		$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
+		if ($params['working'] !== false) {
 
-		if ($next) {
+			$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
 
-			foreach ($next as $shift) {
+			if ($next) {
 
-				$shift = $shift->exports();
+				foreach ($next as $shift) {
 
-				$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
-				$start = $date->getTimestamp();
+					$shift = $shift->exports();
 
-				$today = new DateTime( 'now' , new DateTimeZone( $this->timezone ) );
+					$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
+					$start = $date->getTimestamp();
 
-				if( $date->format( 'Ymd' ) == $today->format( 'Ymd' ) ){
-					$out['working_today'] = true;
-				}
+					$today = new DateTime( 'now' , new DateTimeZone( $this->timezone ) );
 
-				if ($start <= time() ) {
-					$now = new DateTime( 'now' , new DateTimeZone($this->timezone));
-					$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
-					$diff = $now->diff( $date );
-					$shift['current'] = true;
-					$out['working'] = true;
-
-					$out['shift_ends'] = $diff->h;
-					$out['shift_ends_formatted'] = $diff->h;
-					if( $diff->i ){
-						$out['shift_ends'] .= '' . str_replace(  '0.', '.', strval( number_format( $diff->i / 60, 2 ) ) );
-						if( $diff->h ){
-							$out['shift_ends_formatted'] .= ' hour' . ( ( $diff->h > 1 ) ? 's' : '' );
-							$out['shift_ends_formatted'] .= ' and ';
-						}
-						 $out['shift_ends_formatted'] .= str_pad( $diff->i, '0', 2 ) . ' minute' . ( $diff->i > 1 ? 's' : '' ) ;
+					if( $date->format( 'Ymd' ) == $today->format( 'Ymd' ) ){
+						$out['working_today'] = true;
 					}
-				} else {
-					$shift['current'] = false;
+
+					if ($start <= time() ) {
+						$now = new DateTime( 'now' , new DateTimeZone($this->timezone));
+						$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
+						$diff = $now->diff( $date );
+						$shift['current'] = true;
+						$out['working'] = true;
+
+						$out['shift_ends'] = $diff->h;
+						$out['shift_ends_formatted'] = $diff->h;
+						if( $diff->i ){
+							$out['shift_ends'] .= '' . str_replace(  '0.', '.', strval( number_format( $diff->i / 60, 2 ) ) );
+							if( $diff->h ){
+								$out['shift_ends_formatted'] .= ' hour' . ( ( $diff->h > 1 ) ? 's' : '' );
+								$out['shift_ends_formatted'] .= ' and ';
+							}
+							 $out['shift_ends_formatted'] .= str_pad( $diff->i, '0', 2 ) . ' minute' . ( $diff->i > 1 ? 's' : '' ) ;
+						}
+					} else {
+						$shift['current'] = false;
+					}
+					$out['shifts'][] = $shift;
 				}
-				$out['shifts'][] = $shift;
 			}
+		}
+
+		if( $this->date_terminated ){
+			$date = $this->dateTerminated();
+			$out['date_terminated_formatted'] = $date->format( 'm/d/Y' );
 		}
 
 		$out['status'] = $this->status();
 
 		return $out;
+	}
+	
+	public function tempConvertBalancedToStripe() {
+		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
+			//return false;
+		}
+
+		$p = Crunchbutton_Admin_Payment_Type::q('
+			select p.* from admin_payment_type p
+			where id_admin=?
+			and balanced_bank is not null
+			and stripe_account_id is null
+			order by p.id_admin_payment_type desc
+		',[$this->id_admin]);
+		
+		// nothing left to import
+		if ($p->count() < 1 && $this->stripe_id) {
+			return true;
+		}
+
+		$idStripe = $paymentType->stripe_id ? $paymentType->stripe_id : $this->stripe_id;
+		
+		echo "\nWorking on admin #".$this->id_admin."\n";
+
+		if (!$idStripe) {
+
+			// create a stripe managed account
+			try {
+				$name = explode(' ',$paymentType->legal_name_payment);
+				$address = explode("\n", $paymentType->address);
+				$address[1] = explode(',', $address[1]);
+				$address[1][1] = explode(' ', $address[1][1]);
+
+				$ip = c::db()->get('select session.* from session where id_admin=? and ip is not null order by session.date_activity desc limit 1', [$paymentType->id_admin])->get(0)->ip;
+
+				$dob = explode('-',$this->dob);
+				$ssn = substr($this->ssn(), -4);
+
+				$stripeAccount = \Stripe\Account::create([
+					'managed' => true,
+					'country' => 'US',
+					'email' => $paymentType->summary_email ? $paymentType->summary_email : $this->email,
+					'tos_acceptance' => [
+						'date' => time(),
+						'ip' => $ip ? $ip : '76.171.15.26'
+					],
+					'legal_entity' => [
+						'type' => 'individual',
+						'first_name' => array_shift($name),
+						'last_name' => implode(' ',$name),
+						'dob' => [ // @note: this viloates stripes docs but this is the correct way
+							'day' => $dob[2], 
+							'month' => $dob[1], 
+							'year' => $dob[0]
+						], 
+						'ssn_last_4' => $ssn,
+						'address' => [
+							'line1' => $address[0], 
+							'city' => $address[1][0],
+							'state' => $address[1][1][0],
+							'postal_code' => $address[1][1][1],
+							'country' => 'US'
+						]
+					]
+				]);
+				
+				$created = true;
+
+			} catch (Exception $e) {
+				echo 'ERROR: '.$e->getMessage()."\n";
+				return false;
+			}
+		} else {
+			try {
+				$stripeAccount = \Stripe\Account::retrieve($idStripe);
+			} catch (Exception $e) {
+				echo 'ERROR: '.$e->getMessage()."\n";
+				return false;
+			}
+		}
+
+		$idStripe = $stripeAccount->id;
+
+		if ($idStripe) {
+			echo 'Stripe account '.$idStripe."\n";
+			
+			if ($created) {
+				$this->stripe_id = $idStripe;
+				$this->save();
+			}
+
+		} else {
+			echo "ERROR: no stripe account\n";
+		}
+
+		// get their bank info
+		foreach ($p as $paymentType) {
+			echo "Balanced bank account ".$paymentType->balanced_bank."\n";
+
+			$handle = fopen('/Users/arzynik/Downloads/2015-05-19-1431998893-***REMOVED***.csv', 'r');
+			if (substr($paymentType->balanced_id,0,2) != 'BA') {
+				$bkey = 4;
+				$skey = 5;
+			}
+
+			while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+				if ($data[$bkey] == $paymentType->balanced_bank) {
+					$stripeBankToken = $data[$skey];
+					echo "Found token in csv ".$stripeBankToken."\n";
+					break;
+				}
+			}
+
+			
+			if (!$stripeBankToken) {
+				try {
+					$bank = Crunchbutton_Balanced_BankAccount::byId($paymentType->balanced_bank);
+				} catch (Exception $e) {
+					print_r($e);
+					echo "ERROR: Failed to get balanced id\n";
+					continue;
+				}
+
+				$stripeBankToken = $bank->meta->{'stripe_customer.funding_instrument.id'};
+			}
+
+			if (!$stripeBankToken) {
+				echo "ERROR: No bank meta.\n";
+				continue;
+			}
+
+			if (strpos($stripeBankToken, 'btok_') === 0) {
+				echo "Stripe bank token is ".$stripeBankToken."\n";
+			} else {
+				echo "WARNING: Not sure what to do with this: ".$stripeBankToken."\n";
+				continue;
+			}
+
+
+			if ($idStripe && $stripeBankToken) {
+				// do something with the token
+
+				$stripeAccount->bank_account = $stripeBankToken;
+				try {
+					$stripeAccount->save();
+
+					foreach ($stripeAccount->bank_accounts->all()->data as $stripeBankAccount) {			
+						break;
+					}
+
+					echo "Stripe bank account is ".$stripeBankAccount->id."\n";
+
+					$paymentType->stripe_id = $idStripe;
+					$paymentType->stripe_account_id = $stripeBankAccount->id;
+					$paymentType->save();
+				} catch (Exception $e) {
+					echo 'ERROR: '.$e->getMessage()."\n";
+					return false;
+				}
+
+
+			}
+
+		}
+
+		
 	}
 
 }

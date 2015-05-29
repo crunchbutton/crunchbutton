@@ -1,8 +1,8 @@
 <?php
 
 class Crunchbutton_Session_Twilio extends Cana_Table {
-	
-	public static function get( $data = false ) {
+
+	public static function capture( $data = false ) {
 
 		$sess = self::q('select * from session_twilio where id_session="'.c::auth()->session()->id_session.'"');
 
@@ -12,7 +12,7 @@ class Crunchbutton_Session_Twilio extends Cana_Table {
 			$phone = str_replace( '+1','', $data['From'] );
 			$phone = str_replace( '-','', $phone );
 			$sess = self::q( "SELECT st.* FROM session_twilio st
-												INNER JOIN support s ON st.id_session_twilio = s.id_session_twilio 
+												INNER JOIN support s ON st.id_session_twilio = s.id_session_twilio
 												WHERE st.phone = '{$phone}' AND DATEDIFF( NOW(), s.datetime ) <= 10
 												ORDER BY st.id_session_twilio DESC LIMIT 1" );
 			$sess->id_session = c::auth()->session()->id_session;
@@ -32,11 +32,11 @@ class Crunchbutton_Session_Twilio extends Cana_Table {
 	public function sessionByPhone( $phone ){
 		$phone = str_replace( '+1','', $phone );
 		$sess = Crunchbutton_Session_Twilio::q( "SELECT st.* FROM session_twilio st
-												INNER JOIN support s ON st.id_session_twilio = s.id_session_twilio 
+												INNER JOIN support s ON st.id_session_twilio = s.id_session_twilio
 												WHERE st.phone = '{$phone}' AND DATEDIFF( NOW(), s.datetime ) <= 10
 												ORDER BY st.id_session_twilio DESC LIMIT 1" );
 		if ( $sess->id_session_twilio ) {
-			return $sess;	
+			return $sess;
 		}
 		return false;
 	}

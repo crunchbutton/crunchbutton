@@ -3,7 +3,13 @@
 class Crunchbutton_Pexcard_Details extends Crunchbutton_Pexcard_Resource {
 
 	public function account( $AccountId = null ){
-		return Crunchbutton_Pexcard_Resource::request( 'detailsaccount', [ 'id' => $AccountId ] );
+		// Get cached results
+		$content = Crunchbutton_Pexcard_Resource::cache( $AccountId );
+		if( !$content ){
+			$content = Crunchbutton_Pexcard_Resource::request( 'detailsaccount', [ 'id' => $AccountId ] );
+			$content = Crunchbutton_Pexcard_Resource::saveCache( $content, $AccountId );
+		}
+		return $content;
 	}
 
 	public function cards( $AccountId ){
@@ -17,7 +23,6 @@ class Crunchbutton_Pexcard_Details extends Crunchbutton_Pexcard_Resource {
 			return $_cards;
 		}
 	}
-
 }
 
 ?>

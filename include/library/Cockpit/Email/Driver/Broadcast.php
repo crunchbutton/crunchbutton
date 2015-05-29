@@ -13,8 +13,8 @@ class Cockpit_Email_Driver_Broadcast extends Crunchbutton_Email {
 
 			$params['to'] 				= $driver->email;
 			$params['subject'] 		= $params['subject'];
-			$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
-			$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
+			$params['from'] 			= 'Crunchbutton <payment@_DOMAIN_>';
+			$params['reply']			= 'Crunchbutton <payment@_DOMAIN_>';
 
 			$this->buildView( $params );
 

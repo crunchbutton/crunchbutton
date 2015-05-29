@@ -11,20 +11,51 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!$restaurant->id_restaurant) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
 		}
 
 		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
+		
+		$this->restaurant = $restaurant;
+		
+		switch (c::getPagePiece(3)) {
+			case 'image':
+				$this->_image();
+				break;
+			default:
+				$this->_restaurant();
+				break;
+			
+		}
+	}
+	
+	private function _image() {
+		// pull path of a temporary file
 
 		switch ($this->method()) {
 			case 'get':
-				echo $restaurant->json();
+				die($this->restaurant->image());
+				header('Location: '.$this->restaurant->image());
 				break;
 
+			case 'post':
+			case 'put':
+				if ($_FILES) {
+					foreach ($_FILES as $file) {
+						$this->restaurant->updateImage($file['tmp_name']);
+					}
+				}
+				break;
+		}
+	}
+	
+	private function _restaurant() {
+		switch ($this->method()) {
+			case 'get':
+				echo $this->restaurant->json();
+				break;
 			case 'post':
 				// do nothing for now
 				break;

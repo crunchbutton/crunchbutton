@@ -19,6 +19,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
 
+	const PROCESS_TYPE_RESTAURANT 	= 'restaurant';
+	const PROCESS_TYPE_WEB			= 'web';
+	const PROCESS_TYPE_ADMIN		= 'admin';
+
 	/**
 	 * Process an order
 	 *
@@ -71,21 +75,25 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$this->id_restaurant = $params['restaurant'];
 
-		if( $processType == 'web' ){
+		if ( $params['processor'] && $params['pay_type'] == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && Crunchbutton_User_Payment_Type::processor() != $params['processor']) {
+			$errors['processor'] = 'We recently upgraded our credit card processing security. Please press "Place Order" again to automagicly use our fancy new system.';
+			$errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
+		}
+
+		if( $processType == static::PROCESS_TYPE_WEB ){
 			// Check if the restaurant is active #2938
 			if( $this->restaurant()->active == 0 ){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
 
-		if( $processType == 'restaurant' ){
+		if( $processType == static::PROCESS_TYPE_RESTAURANT ){
 			// Check if the restaurant is active for restaurant order placement
 			// https://github.com/crunchbutton/crunchbutton/issues/3350#issuecomment-48255149
 			if( $this->restaurant()->active_restaurant_order_placement == 0 ){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
-
 
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
@@ -99,6 +107,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				]);
 			}
 		}
+
 		if( $this->delivery_type == self::SHIPPING_TAKEOUT ){
 			if( $this->restaurant()->takeout == 0 && $this->restaurant()->delivery == 1 ){
 				$this->delivery_type = self::SHIPPING_DELIVERY;
@@ -119,7 +128,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
 
-		if ($processType == 'restaurant') {
+		if ($processType == static::PROCESS_TYPE_RESTAURANT) {
 			$subtotal = $params['subtotal'];
 			$delivery_service_markup = $this->restaurant()->delivery_service_markup ? $this->restaurant()->delivery_service_markup : 0;
 			$price_delivery_markup = number_format($subtotal * $delivery_service_markup / 100, 2);
@@ -151,7 +160,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						}
 						$subtotal_plus_delivery_service_markup += $price_delivery_markup;
 						$subtotal += $price;
-	//                    $subtotal += $option->option()->optionPrice($d['options']);
+						// $subtotal += $option->option()->optionPrice($d['options']);
 						$dish->_options[] = $option;
 					}
 				}
@@ -226,7 +235,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );
 		}
 
-
 		$this->order = json_encode($params['cart']);
 
 		if (!c::user()->id_user) {
@@ -275,7 +283,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if ($errors) {
-		// Log the order - validation error
+			// Log the order - validation error
 			Log::debug([
 				'action' 				=> 'validation error',
 				'address' 			=> $params['address'],
@@ -331,19 +339,82 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					Log::debug([ 'inviter' => $inviter ]);
 					if( $totalOrdersByPhone <= 1 && $inviter ){
 						// get the value of the discount
-						$value = $reward->getReferredDiscountAmount();
-						$admin_credit = $reward->adminRefersNewUserCreditAmount();
-						$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
-						if( $value ){
-							$this->giftcardValue = $value;
-							break;
+						if( $inviter[ 'id_admin' ] ){
+							$value = $reward->getReferredDiscountAmount();
+							$admin_credit = $reward->adminRefersNewUserCreditAmount();
+							$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
+							if( $value ){
+								$this->giftcardValue = $value;
+								break;
+							}
+						} elseif( $inviter[ 'id_user' ] ){
+
+							$referral = new Crunchbutton_Referral();
+							$referral->id_admin_inviter = null;
+							$referral->id_user_inviter = $inviter[ 'id_user'];
+							$referral->id_user_invited = $this->id_user;
+							$referral->admin_credit = null;
+							$referral->invite_code = $word;
+							$referral->new_user = 1;
+							$referral->date = date('Y-m-d H:i:s');
+							$referral->save();
+
+							$settings = $reward->loadSettings();
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Cash Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																							] );
+							}
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_VALUE ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_POINT,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Points Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																							] );
+							}
+
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_REFER_NEW_USER_AMOUNT ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $inviter[ 'id_user'],
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Cash Invited ID: ' . $this->id_user . ' code: ' . $word,
+																							] );
+							}
+
+							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_REFER_NEW_USER_VALUE ];
+							if( $credits_amount ){
+								$reward->saveRewardAsCredit( [ 	'id_user' => $inviter[ 'id_user'],
+																								'value' => $credits_amount,
+																								'id_order' => null,
+																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_POINT,
+																								'id_referral' => $referral->id_referral,
+																								'note' => 'Points Invited ID: ' . $this->id_user . ' code: ' . $word,
+																							] );
+							}
+
 						}
+
 					}
 				}
 			}
-			// if the code doenst belong to a user check if it belongs to a gift card
+			// if the code doesn't belong to a user check if it belongs to a gift card
 			if( !$this->giftCardInviter ) {
-				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant, $this->phone );
 				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 					if( $giftcard->id_promo ){
 						if( !$giftCardAdded ){
@@ -366,12 +437,39 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'$this->notes' => $this->notes
 		]);
 
+		$delivery_free = false;
+		if( $params['use_delivery_points'] ){
+			// Point redemption system improvements for customer-customer referrals #4248
+			// https://github.com/crunchbutton/crunchbutton/issues/5092#issuecomment-90966989
+			// of the same amount of the delivery order
+			if ( $this->restaurant()->hasDeliveryService() && $this->delivery_type == 'delivery' && $this->delivery_fee && $this->pay_type == 'card' ) {
+				$reward = new Crunchbutton_Reward;
+				$reward = $reward->loadSettings();
+				$user_points = Crunchbutton_Credit::points( $user->id_user );
+				if( $user_points >= intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] ) ){
+					$delivery_free = true;
+					// Add credit
+					$credit = new Crunchbutton_Credit();
+					$credit->id_user = $this->id_user;
+					$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
+					$credit->id_restaurant = $this->id_restaurant;
+					$credit->id_promo = null;
+					$credit->date = date('Y-m-d H:i:s');
+					$credit->value = $this->delivery_fee;
+					$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+					$credit->paid_by = 'CRUNCHBUTTON';
+					$credit->note = 'Reward: delivery free';
+					$credit->save();
+				}
+			}
+		}
+
 		// process the payment
 		$res = $this->verifyPayment();
 
 		// failed to process the card
 		if ($res !== true) {
-			Log::debug([
+			Log::debug( [
 				'action' 				=> 'credit card error',
 				'address' 			=> $params['address'],
 				'phone' 				=> $params['phone'],
@@ -387,12 +485,45 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'errors' 				=> $res['errors'],
 				'cart' 					=> $params['cart'],
 				'type' 					=> 'order-log'
-			]);
+			] );
+
+			// Remove the delivery free credit
+			if( $delivery_free ){
+				$credit = new Crunchbutton_Credit();
+				$credit->id_user = $this->id_user;
+				$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
+				$credit->id_restaurant = $this->id_restaurant;
+				$credit->id_promo = null;
+				$credit->date = date('Y-m-d H:i:s');
+				$credit->value = $this->delivery_fee;
+				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
+				$credit->paid_by = 'CRUNCHBUTTON';
+				$credit->note = 'Reward: removed delivery free cash';
+				$credit->save();
+			}
+
 			return $res['errors'];
 
 		// successfully processed the card
 		} else {
 			$this->txn = $this->transaction();
+		}
+
+		// Remove the user points if they were used to get free delivery
+		if( $delivery_free ){
+			$free_delivery_points = intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] );
+			$credit = new Crunchbutton_Credit();
+			$credit->id_user = $this->id_user;
+			$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
+			$credit->id_restaurant = null;
+			$credit->id_promo = null;
+			$credit->date = date('Y-m-d H:i:s');
+			$credit->value = $free_delivery_points;
+			$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_POINT;
+			$credit->paid_by = 'CRUNCHBUTTON';
+			$credit->note = 'Reward: removed delivery free points';
+			$this->reward_delivery_free = 1;
+			$credit->save();
 		}
 
 		$user->location_lat = $params['lat'];
@@ -443,11 +574,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 				switch (Crunchbutton_User_Payment_Type::processor()) {
 					case 'stripe':
-						$payment_type->stripe_id = $this->_customer->id;
+						$payment_type->stripe_id = $this->_paymentType;
+						$user->stripe_id = $this->_customer;
+						$user->save();
 						break;
-
 					case 'balanced':
-					default:
 						$payment_type->balanced_id = $this->_paymentType->id;
 						break;
 				}
@@ -495,7 +626,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		if ($processType != 'restaurant') {
+		if ($processType != static::PROCESS_TYPE_RESTAURANT) {
 			c::auth()->session()->id_user = $user->id_user;
 			c::auth()->session()->generateAndSaveToken();
 		}
@@ -513,7 +644,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
 
-		Log::debug([ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ]);
+		Log::debug( [ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ] );
 
 		// If the payment succeds then redeem the gift card
 		if ( trim( $this->notes ) != '' ){
@@ -538,9 +669,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 				$reward = new Crunchbutton_Reward;
 				// the new user earns discount
-				if( $this->giftCardInviter[ 'id_user'] ){
-					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_user'] . ' code: ' . $this->giftCardInviter[ 'word'];
-				} else if( $this->giftCardInviter[ 'id_admin'] ){
+				if( $this->giftCardInviter[ 'id_admin'] ){
 					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_admin'] . ' code: ' . $this->giftCardInviter[ 'word'];
 				}
 
@@ -548,42 +677,21 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 																				'value' => $this->giftCardInviter[ 'value'],
 																				'id_order' => $this->id_order,
 																				'id_referral' => $referral->id_referral,
+																				'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
 																				'note' => $notes,
 																			] );
 
-				if( $this->giftCardInviter[ 'id_user'] ){
-					$credits_amount = $reward->refersNewUserCreditAmount();
-					if( $credits_amount ){
-						// the regular user that indicates his friend earns money too - configurable option
-						$reward->saveRewardAsCredit( [ 	'id_user' => $this->giftCardInviter[ 'id_user'],
-																						'value' => $credits_amount,
-																						'id_order' => null,
-																						'id_referral' => $referral->id_referral,
-																						'note' => 'Invited ID: ' . $this->id_user . ' code: ' . $this->giftCardInviter[ 'word'],
-																					] );
-					}
-				} else if( $this->giftCardInviter[ 'id_admin'] ){
+				if( $this->giftCardInviter[ 'id_admin'] ){
 					$credits_amount = $reward->adminRefersNewUserCreditAmount();
 					Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
 				}
-
-				// Give points to the user that invites the new user
-				$points = $reward->getReferNewUser();
-				if( floatval( $points ) > 0 ){
-					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->giftCardInviter[ 'id_user'], 'points' => $points, 'note' => 'points by referrer new user O#' . $this->id_order . ' U#' . $this->id_user ] );
-				}
-				// Give points to the user that was invited
-				$points = $reward->getRefered();
-				if( floatval( $points ) > 0 ){
-					$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $this->giftCardInviter[ 'id_user'] ] );
-				}
 			} else {
-				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant, $this->phone );
 				$giftCardAdded = false;
 				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 					if( $giftcard->id_promo ){
 						if( !$giftCardAdded ){
-							$giftcard->addCredit( $user->id_user );
+							$giftcard->addCredit( $user->id_user, $this->delivery_fee );
 						}
 						$giftCardAdded = true;
 					}
@@ -597,6 +705,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 
 		$this->debitFromUserCredit( $user->id_user );
+
 		if ( $params['make_default'] == 'true' ) {
 			$preset = $user->preset($this->restaurant()->id_restaurant);
 			if ($preset->id_preset) {
@@ -625,37 +734,34 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$order = $this;
 
 		if ( $params['make_default'] == 'true' ) {
-			// Cana::timeout(function() use($order) {
-				Preset::cloneFromOrder($order);
-			// });
+			Preset::cloneFromOrder($order);
 		}
 
-		Cana::timeout(function() use($order) {
-			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
-		});
+		if ($processType != static::PROCESS_TYPE_RESTAURANT) {
 
-		if ($processType != 'restaurant') {
-			Cana::timeout(function() use($order) {
-				$rules = new Crunchbutton_Order_Rules();
-				$rules->run( $order );
-			});
 			// Reward
 			$reward = new Crunchbutton_Reward;
 			// rewards: earn points when an order has been placed #2458
 			$points = $reward->processOrder( $order->id_order );
 			if( floatval( $points ) > 0 ){
-				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
+				if( User_Auth::userHasAuth( $order->id_user ) ){
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by order #' . $order->id_order ] );
+				}
 			}
 			// rewards: 4x points when ordering 2 days in a row #3434
 			$points = $reward->orderTwoDaysInARow( $order->id_user );
 			if( floatval( $points ) > 0 ){
-				$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+				if( User_Auth::userHasAuth( $order->id_user ) ){
+					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by 2 days in a row' ] );
+				}
 			}
 			if( !$points ){
 				// rewards: 2x points when ordering in same week #3432
 				$points = $reward->orderTwiceSameWeek( $order->id_user );
 				if( floatval( $points ) > 0 ){
-					$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+					if( User_Auth::userHasAuth( $order->id_user ) ){
+						$reward->saveReward( [ 'id_order' => $order->id_order, 'id_user' => $order->id_user, 'points' => $points, 'note' => 'points by ordering twice same week' ] );
+					}
 				}
 			}
 		}
@@ -759,7 +865,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				}
 			}
 		}
-		return $totalCredit;
+		return number_format( $totalCredit, 2 );
 	}
 
 	public function charged(){
@@ -780,12 +886,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public static function uuid($uuid) {
-		return self::q('select * from `order` where uuid="'.$uuid.'"');
+		return self::q('select * from `order` where uuid=?', [$uuid]);
 	}
 
 	// return an order based on its local_gid - see #3086
 	public static function gid( $gid ) {
-		return self::q( 'SELECT * FROM `order` WHERE local_gid="'.$gid.'"' );
+		return self::q( 'SELECT * FROM `order` WHERE local_gid=?', [$gid]);
 	}
 
 	/**
@@ -805,12 +911,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function accepted() {
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="accepted"');
+		$nl = Notification_Log::q("select * from notification_log where id_order=? and status='accepted'", [$this->id_order]);
 		return $nl->count() ? true : false;
 	}
 
 	public function fax_succeeds() {
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type="phaxio" and status="success"');
+		$nl = Notification_Log::q("select * from notification_log where id_order=? and type='phaxio' and status='success'", [$this->id_order]);
 		return $nl->count() ? true : false;
 	}
 
@@ -844,32 +950,27 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
+				$processorId = Crunchbutton_User_Payment_Type::processor() == 'balanced' ? 'balanced_id' : 'stripe_id';
 
-				if( $user ){
+				if ($user) {
 					$paymentType = $user->payment_type();
 				}
 
-				if (!$this->_card['id'] && !$paymentType->id_user_payment_type && $user->balanced_id) {
-					// user only has a balanced customer id, not a payment. copy payment type over
-					$paymentType = (new User_Payment_Type([
-						'id_user' => $user->id_user,
-						'active' => 1,
-//						'stripe_id' => $user->stripe_id,
-						'balanced_id' => $user->balanced_id,
-						'card' => $user->card,
-						'card_exp_month' => $user->card_exp_month,
-						'card_exp_year' => $user->card_exp_year,
-						'date' => date('Y-m-d H:i:s')
-					]))->save();
-				}
+				// use a stored users card and the apporiate payment type
 
 				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
-					// use a stored users card and the apporiate payment type
 
-					if ($paymentType->balanced_id) {
+					if (Crunchbutton_User_Payment_Type::processor() == 'stripe' && $paymentType->stripe_id) {
+						$charge = new Charge_Stripe([
+							'card_id' => $paymentType->stripe_id,
+							'customer_id' => $user->stripe_id
+						]);
+
+					} elseif (Crunchbutton_User_Payment_Type::processor() == 'balanced' && $paymentType->balanced_id) {
 
 						if (substr($paymentType->balanced_id,0,2) != 'CC') {
 							// we have stored the customer and not the payment type. need to fix that
+							// @todo: i dont really understand wtf this is for - devin
 							$cards = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id)->cards;
 							if (get_class($cards) == 'RESTful\Collection') {
 								foreach ($cards as $card) {
@@ -891,14 +992,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$charge = new Charge_Balanced([
 							'card_id' => $paymentType->balanced_id
 						]);
-
-					} elseif ($paymentType->stripe_id) {
-						$charge = new Charge_Stripe([
-							'stripe_id' => $paymentType->stripe_id
-						]);
+					} else {
+						// there is a mismatch with stripe and balanced
 					}
 				}
 
+				// create the objects with no params
 				if (!$charge) {
 					switch (Crunchbutton_User_Payment_Type::processor()) {
 						case 'balanced':
@@ -906,7 +1005,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							break;
 						case 'stripe':
 							$charge = new Charge_Stripe([
-								'stripe_id' => $user->stripe_id
+								'customer_id' => $user->stripe_id
 							]);
 							break;
 					}
@@ -924,6 +1023,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						'card' => $this->_card,
 						'name' => $this->name,
 						'address' => $this->address,
+						'email' => $user->email,
 						'phone' => $this->phone,
 						'user' => $user,
 						'restaurant' => $this->restaurant()
@@ -962,7 +1062,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return self::q('select * from `order` order by `date` DESC');
 	}
 
-	public static function deliveryOrders( $hours = 24, $all = false ){
+	public static function deliveryOrders( $hours = 24, $all = false, $admin = null){
 		if (c::admin()->getConfig('demo')->value == '1') {
 			//$restaurant = Restaurant::q('select * from restaurant where name="devins driver test restaurant"');
 			$query = '
@@ -976,9 +1076,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		} else {
 
 			$interval = $hours . ' HOUR';
-			$id_admin = c::admin()->id_admin;
+
 			if( !$all ){
-				$admin = Admin::o( $id_admin );
+				if (!$admin) {
+					$admin = c::admin();
+				}
 				$deliveryFor = $admin->allPlacesHeDeliveryFor();
 				if( count( $deliveryFor ) == 0 ){
 					$deliveryFor[] = 0;
@@ -988,7 +1090,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$where = 'WHERE 1=1 ';
 			}
 
-			$where .= ' AND o.delivery_service = 1 ';
+			$where .= ' AND o.delivery_service = true ';
 			$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
@@ -1001,7 +1103,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
 						FROM `order` o
 						WHERE o.delivery_type = 'delivery'
-						AND o.delivery_service = 1
+						AND o.delivery_service = true
 						AND o.id_order NOT IN
 						(SELECT id_order
 						FROM order_action
@@ -1027,7 +1129,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$where = 'WHERE 1=1 ';
 		}
 
-		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND o.delivery_service = true ';
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );
@@ -1042,10 +1144,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
-									oa.id_admin = "' . $id_admin . '"
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
-		return Crunchbutton_Order_Action::q( $query );
+									oa.id_admin = ?
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= ?
+									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= ?';
+		return Crunchbutton_Order_Action::q( $query, [$id_admin, $date_start->format( 'YmdHi' ), $date_end->format( 'YmdHi' )]);
 	}
 
 	public static function deliveredByCBDrivers( $search ){
@@ -1063,12 +1165,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if ( $search[ 'start' ] ) {
 			$s = new DateTime( $search[ 'start' ] );
-			$where .= ' AND DATE( `o.date`) >= "' . $s->format( 'Y-m-d' ) . '"';
+			$where .= ' AND DATE( `o.date`) >= \'' . $s->format( 'Y-m-d' ) . '\'';
 		}
 
 		if ( $search[ 'end' ] ) {
 			$s = new DateTime( $search[ 'end' ] );
-			$where .= ' AND DATE( `o.date` ) <= "' . $s->format( 'Y-m-d' ) . '"';
+			$where .= ' AND DATE( `o.date` ) <= \'' . $s->format( 'Y-m-d' ) . '\'';
 		}
 
 		if( $search[ 'limit' ] ){
@@ -1078,7 +1180,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
-							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
+							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = true
 							' . $innerJoin . $where . '
 							ORDER BY o.id_order DESC ' . $limit;
 
@@ -1168,9 +1270,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $orders;
 	}
 
-	public function dishes() {
-		if (!isset($this->_dishes)) {
-			$this->_dishes = Order_Dish::q('select * from order_dish where id_order="'.$this->id_order.'"');
+	public function dishes( $forceLoad = false ) {
+		if( $forceLoad ){
+			$this->_dishes = false;
+			unset( $this->_dishes );
+		}
+		if ( !$this->_dishes ) {
+			$this->_dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = "'.$this->id_order.'"' );
 		}
 		return $this->_dishes;
 	}
@@ -1235,18 +1341,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function notify(){
-		$order = $this;
-		foreach ( $order->restaurant()->notifications() as $n ) {
-			// Admin notification type means it needs a driver
-			if( $n->type != Crunchbutton_Notification::TYPE_ADMIN ){
-				Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
-				$n->send( $order );
-			}
-		}
-		if( intval( $order->restaurant()->delivery_service ) == 1 ){
+		$this->notifyRestaurants();
+		if( intval( $this->restaurant()->delivery_service ) == 1 ){
 			$this->notifyDrivers();
 		}
 	}
+
+	public function notifyRestaurants() {
+		foreach ( $this->restaurant()->notifications() as $n ) {
+			// admin type is depreciated. so lets not use it
+			if ($n->type == Crunchbutton_Notification::TYPE_ADMIN) {
+				continue;
+			}
+			Log::debug([ 'order' => $this->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
+			$n->send( $this );
+		}
+	}
+
+	// return a list of drivers that are currently working for the community to notify
+	public function getDriversToNotify() {
+		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder($this->id_order);
+		return $drivers;
+	}
+
 
 	public function notifyDrivers(){
 
@@ -1258,77 +1375,33 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$needDrivers = false;
 		$hasDriversWorking = false;
 
-		$driversToNotify = [];
-
-		foreach ( $order->restaurant()->notifications() as $n ) {
-			// Admin notification type means it needs a driver
-			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
-				$needDrivers = true;
-				$admin = $n->admin();
-				// Store the drivers
-				$driversToNotify[ $admin->id_admin ] = $admin;
-			}
-		}
-
 		// check if the restaurant is using our delivery system
 		if( intval( $order->restaurant()->delivery_service ) == 1 ){
 			$needDrivers = true;
-			// get the restaurant community and its drivers
-			$communities = $order->restaurant()->communities();
-			foreach( $communities as $community ){
-				if( $community->id_community ){
-					$drivers = $community->getDriversOfCommunity();
-					foreach( $drivers as $driver ){
-						$driversToNotify[ $driver->id_admin ] = $driver;
-					}
-				}
-			}
 		}
 
-		$driverAlreadyNotified = [];
-
-		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+		$drivers = $this->getDriversToNotify();
 		if( $drivers ){
 			foreach( $drivers as $driver ){
-				$driverAlreadyNotified[] = $driver->id_admin;
 				foreach( $driver->activeNotifications() as $adminNotification ){
 					$adminNotification->send( $order );
 					$hasDriversWorking = true;
-					$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value;
+					$message = '#'.$order->id_order.' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 				}
 			}
 		}
 
-
-		// Send notification to drivers
-		if( count( $driversToNotify ) > 0 ){
-			foreach( $driversToNotify as $driver ){
-				if( $driver->isWorking() ){
-					if( in_array( $driver->id_admin, $driverAlreadyNotified ) ){
-						$message = '#'.$order->id_order.' notification to ' . $driver->name . ' already sent';
-						Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-						continue;
-					}
-					foreach( $driver->activeNotifications() as $adminNotification ){
-						$hasDriversWorking = true;
-						$adminNotification->send( $order );
-						Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => 'admin', 'type' => 'notification']);
-					}
-				}
-			}
-			Crunchbutton_Admin_Notification_Log::register( $this->id_order );
-		}
+		Crunchbutton_Admin_Notification_Log::register( $this->id_order );
 
 		if( $needDrivers && !$hasDriversWorking ){
-			Log::debug([ 'order' => $order->id_order, 'action' => 'there is no drivers to get the order', 'type' => 'notification']);
 			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 		}
 	}
 
 	public function driver(){
 		if( !$this->_driver && $this->id_order ){
-			$this->_driver = Admin::q( "SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = {$this->id_order} AND type != 'delivery-rejected' ORDER BY id_order_action DESC LIMIT 1" );
+			$this->_driver = Admin::q('SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = ? AND type != "delivery-rejected" ORDER BY id_order_action DESC LIMIT 1', [$this->id_order]);
 		}
 		return $this->_driver;
 	}
@@ -1337,6 +1410,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$order = $this;
 		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
 		$order->notifyDrivers();
+		return true;
 	}
 
 	public function resend_notify(){
@@ -1348,6 +1422,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
 		$order->ignoreDrivers = true;
 		$order->notify();
+		return true;
 	}
 
 	public function confirm() {
@@ -1363,7 +1438,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" ) ');
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' OR status ='success' )", [$this->id_order]);
 		if( $nl->count() > 0 ){
 			// Log
 			Log::debug([ 'order' => $this->id_order, 'count' => $nl->count(), 'action' => 'confirmation call already in process', 'host' => c::config()->host_callback, 'type' => 'notification']);
@@ -1420,59 +1495,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->sendNativeAppLink();
 	}
 
-	public function que( $sendReceipt = true ) {
-
-		$order = $this;
-
-		Cana::timeout(function() use($order) {
-			/* @var $order Crunchbutton_Order */
-			$order->notify();
-		});
-
-		if( $sendReceipt ){
-			c::timeout(function() use($order) {
-				$order->receipt();
-			}, 30 * 1000); // 30 seconds
-		} else {
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'receipt already sent', 'type' => 'notification' ]);
-		}
-
-		// Start the timer to check if the order was confirmed. #1049
-		// if ($this->restaurant()->confirmation) {
-			// $timer = c::config()->twilio->warningOrderNotConfirmedTime;
-
-			// Log
-			// Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
-			/* Removed for while by @pererinha asked by @DavidKlumpp at 11/07/2013
-			c::timeout(function() use($order, $timer) {
-				$order->warningOrderNotConfirmed();
-			}, $timer );
-			*/
-		// }
-	}
-
-	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
-	public function queConfirmFaxWasReceived(){
-
-		// Issue #1239
-		return false;
-
-		$order = $this;
-
-		$isConfirmed = Order::isConfirmed( $order->id_order );
-
-		if ( $isConfirmed || !$order->restaurant()->confirmation) {
-			return;
-		}
-
-		$confirmTimeFaxReceived = c::config()->twilio->confirmTimeFaxReceived;
-
-		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
-
-		c::timeout(function() use($order) {
-			$order->confirm();
-		}, $confirmTimeFaxReceived );
+	public function que() {
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_ORDER,
+			'id_order' => $this->id_order
+		]);
 	}
 
 	public function queConfirm() {
@@ -1483,13 +1510,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return;
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$order->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" ) ');
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' )", [$order->id_order]);
 		if( $nl->count() > 0 ){
 			return;
 		}
 
 		// Query to count the number of confirmations sent
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$order->id_order.'" AND status="callback" AND `type`="confirm"');
+		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND status='callback' AND `type`='confirm'", [$order->id_order]);
 
 		if( $nl->count() > 0 ){ // if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification - #974
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
@@ -1506,12 +1533,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		// $order = $this;
-
-		Cana::timeout(function() use($order) {
-			/* @var $order Crunchbutton_Order */
-			$order->confirm();
-		}, $confirmationTime );
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_ORDER_CONFIRM,
+			'id_order' => $this->id_order,
+			'seconds' => $confirmationTime / 1000
+		]);
 
 	}
 
@@ -1844,13 +1870,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				// #3925
 				if( !$this->restaurant()->formal_relationship ) {
 					$msg .= "DO NOT call the restaurant. If you have any questions about your order, text or call us back directly!\n";
+					$msg .= "\n";
+				} else {
+					// Removed the delivery estimate #3925
+					if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
+						$msg .= "Your order will arrive around ";
+						$msg .= $this->restaurant()->calc_delivery_estimated_time();
+						$msg .= "!\n\n";
+					}
 				}
-				// Start Telling Customers Estimated Delivery Time #2476
-				if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
-					$msg .= "Your order will arrive around ";
-					$msg .= $this->restaurant()->calc_delivery_estimated_time();
-					$msg .= "!\n\n";
-				}
+
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
@@ -1917,7 +1946,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$msg .= " \n\n";
 				// Payment is card and user tipped
 				if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
-					$msg .= 'TIP ' . $this->tip() . $spacer;
+					// remove the tip amount from the notification SMS sent to drivers #5418
+					// $msg .= 'TIP ' . $this->tip() . $spacer;
 				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
 					$msg .= 'TIP BY CASH' . $spacer;
 				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
@@ -2093,13 +2123,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$out['_tz'] = $date->format('T');
 
 		$out['summary'] = $this->orderMessage('summary');
+		$out['user_has_auth'] = User_Auth::userHasAuth( $this->id_user );
 
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
-		if( $credit->id_credit ){
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
+		if( $out['user_has_auth'] ){
+			$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+			if( $credit->id_credit ){
+				$reward = new Crunchbutton_Reward;
+				$points = $reward->processOrder( $this->id_order );
+				$sharedTwitter = $reward->orderWasAlreadySharedTwitter( $this->id_order );
+				$sharedFacebook = $reward->orderWasAlreadySharedFacebook( $this->id_order );
+				$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ), 'shared' => [ 'twitter' => $sharedTwitter, 'facebook' => $sharedFacebook ] );
+			}
+		} else {
 			$reward = new Crunchbutton_Reward;
 			$points = $reward->processOrder( $this->id_order );
-			$shared = $reward->orderWasAlreadyShared( $this->id_order );
-			$out['reward'] = array( 'points' => $points, 'shared' => $shared );
+			$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ) );
 		}
 
 		return $out;
@@ -2109,7 +2148,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $this->id_user_payment_type ){
 			return Crunchbutton_User_Payment_Type::o( $this->id_user_payment_type );
 		}
-
 	}
 
 	public function refundGiftFromOrder(){
@@ -2153,14 +2191,30 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function tellDriverTheOrderWasCanceled(){
 		$driver = $this->getDeliveryDriver();
+
 		if( $driver->id_admin && $driver->phone ){
-			$message = 'Sorry, ' . $this->restaurant()->name . ' order #' . $this->id_order . ' from ' . $this->name . ' was canceled! :(';
-			Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
-			Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_ORDER_CANCELED ] );
+
+			$sendMessageToDriver = true;
+
+			$status = $this->status();
+
+			if( $status ){
+				$last = $status->last();
+				if( $last[ 'status' ] == 'delivered' ){
+					$sendMessageToDriver = false;
+				}
+			}
+
+			if( $sendMessageToDriver ){
+				$message = "System notification: Sorry, " . $this->restaurant()->name . " order #" . $this->id_order . " from " . $this->name . " was just canceled. Please don't deliver it!";
+				Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
+				Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_ORDER_CANCELED ] );
+			}
 		}
+
 	}
 
-	public function refund() {
+	public function refund($amt = null) {
 
 		if (!$this->refunded){
 
@@ -2176,22 +2230,34 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					switch ($this->processor) {
 						case 'stripe':
 						default:
-							$env = c::getEnv();
-							Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-							$ch = Stripe_Charge::retrieve($this->txn);
 							try {
-								$ch->refund();
+								$params = $amt ? ['amount' => $amt * 100] : null;
+								$ch = \Stripe\Charge::retrieve($this->txn);
+								$re = $ch->refunds->create();
+
 							} catch (Exception $e) {
-								var_dump($e);
-								return (object)['status' => false, 'errors' => null];
+								echo $e->getMessage();
+								return (object)['status' => false, 'errors' => $e->getMessage()];
 							}
 							break;
 
 						case 'balanced':
 							try {
 								// refund the debit
-								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
-								$ch->refund();
+								// See #5191
+								$amount = $this->charged();
+								$amount = floatval( number_format( $amount, 2 ) );
+								$amount = intval( $amount * 100 );
+								$ch = Crunchbutton_Balanced_Debit::byId( $this->txn );
+
+								Log::debug([
+										'order' => $this->id_order,
+										'action' => 'refund',
+										'status' => 'trying to refund',
+										'amount' => $amount
+									]);
+
+								$ch->refund( $amount );
 
 							} catch (Exception $e) {
 
@@ -2223,6 +2289,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							try {
 								// cancel the hold
 								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
+								Log::debug([
+										'order' => $this->id_order,
+										'action' => 'cancel hold',
+										'status' => 'trying to cancel hold',
+										'amount' => $amount
+									]);
 								if ($hold) {
 									$res = $hold->void();
 								}
@@ -2281,15 +2353,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	// Gets the last order tipped by the user
-	public function lastTippedOrder( $id_user = null ) {
+	public static function lastTippedOrder( $id_user = null ) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
-		return self::q('select * from `order` where id_user="'.$id_user.'" and tip is not null and tip > 0 order by id_order desc limit 0,1');
+		return self::q('select * from `order` where id_user=? and tip is not null and tip > 0 order by id_order desc limit 1 offset 0',[$id_user]);
 	}
 
 	public function lastTipByDelivery($id_user = null, $delivery ) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
-			$order = self::q('select * from `order` where id_user="'.$id_user.'" and delivery_type = "' . $delivery . '" and tip is not null order by id_order desc limit 0,1');
+			$order = self::q('select * from `order` where id_user=? and delivery_type = ? and tip is not null order by id_order desc limit 1 offset 0', [$id_user, $delivery]);
 			if( $order->tip ){
 				return $order->tip;
 			}
@@ -2300,7 +2372,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function lastDeliveredOrder($id_user = nul) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
-			$order = self::q('SELECT * FROM `order` WHERE id_user = ' . $id_user . ' AND delivery_type = "delivery" ORDER BY id_order DESC LIMIT 1');
+			$order = self::q("SELECT * FROM `order` WHERE id_user = ? AND delivery_type = 'delivery' ORDER BY id_order DESC LIMIT 1", [$id_user]);
 			if( $order->id_order ){
 				return Order::o( $order->id_order );
 			}
@@ -2308,14 +2380,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return null;
 	}
 
-	public function lastTip( $id_user = null ) {
+	public static function lastTip( $id_user = null ) {
 			$last_order = self::lastTippedOrder( $id_user );
 			if( $last_order->tip ){
 				return $last_order->tip;
 			}
 			return null;
 	}
-	public function lastTipType( $id_user = null ) {
+	public static function lastTipType( $id_user = null ) {
 			$last_order = self::lastTippedOrder( $id_user );
 			if( $last_order->tip_type ){
 				return strtolower( $last_order->tip_type );
@@ -2374,8 +2446,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( !$this->id_order ){
 			 return 0;
 		}
-		$query = 'SELECT SUM( value ) as total FROM promo WHERE id_order_reference = ' . $this->id_order;
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT SUM( value ) as total FROM promo WHERE id_order_reference = ?';
+		$row = Cana::db()->get( $query, [$this->id_order])->get(0);
 		if( $row->total ){
 			return $row->total;
 		}
@@ -2383,8 +2455,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function hasCredit(){
-		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . ' AND ( credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" OR credit_type != "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" ) AND id_promo IS NULL';
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ? AND ( credit_type = ? OR credit_type != ? ) AND id_promo IS NULL';
+		$row = Cana::db()->get( $query ,[$this->id_order, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT])->get(0);
 		if( $row->total ){
 			return $row->total;
 		}
@@ -2414,8 +2486,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function totalOrdersByPhone( $phone ){
 		$phone = trim( str_replace( '-', '', str_replace( ' ', '', $phone ) ) );
-		$query = "SELECT COUNT(*) AS total FROM `order` WHERE phone = '{$phone}'";
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE phone = ?';
+		$row = Cana::db()->get( $query, [$phone])->get(0);
 		if( intval( $row->total ) ){
 			return intval( $row->total );
 		}
@@ -2423,8 +2495,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function totalOrdersByCustomer( $id_user ){
-		$query = "SELECT COUNT(*) AS total FROM `order` WHERE id_user = '{$id_user}'";
-		$row = Cana::db()->get( $query )->get(0);
+		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE id_user = ?';
+		$row = Cana::db()->get( $query, [$id_user])->get(0);
 		if( $row->total ){
 			return $row->total;
 		}
@@ -2518,14 +2590,30 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		]))->save();
 
 		if ($notify) {
-			$this->textCustomerAboutDriver();
+			// Notify customer about their driver
+			$q = Queue::create([
+				'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_YOUR_DRIVER,
+				'id_order' => $this->id_order,
+				'seconds' => 0
+			]);
 		}
+
+		// Add/Remove pex card funds
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
+			'id_order' => $this->id_order,
+			'seconds' => 0
+		]);
+
+		return true;
 
 		// Pexcard stuff - #3992
 		$pexcard = $admin->pexcard();
 		if( $pexcard->id_admin_pexcard ){
 			switch ( $status ) {
+
 				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+
 						// Add $10 for the first accepted order - #3993
 						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
 						if( $shift->id_admin_shift_assign ){
@@ -2552,7 +2640,68 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return true;
 	}
 
+	public function pexcardFunds(){
+
+		$order = Order::o( $this->id_order );
+
+		$status = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? ORDER BY id_order_action DESC LIMIT 1', [ $order->id_order ] )->get( 0 );
+
+		if( $status->id_order_action && $status->id_admin ){
+
+			$driver = Admin::o( $status->id_admin );
+
+			if( $driver->id_admin ){
+
+				// Pexcard stuff - #3992
+				$pexcard = $driver->pexcard();
+
+				if( $pexcard->id_admin_pexcard ){
+
+					$status = $status->type;
+
+					switch ( $status ) {
+
+						case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+
+								// Add $10 for the first accepted order - #3993
+								$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $driver->id_admin );
+
+								if( $shift->id_admin_shift_assign ){
+									$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
+								}
+
+								// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
+								$loadCard = true;
+
+								if( $order->pay_type == 'card' && $order->restaurant()->formal_relationship ){
+									$loadCard = false;
+								}
+
+								if( $loadCard ){
+
+									$pexcard->addFundsOrderAccepeted( $order->id_order );
+
+									Log::debug([ 'actions' => 'pex card LOADED', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+								} else {
+									Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+
+								}
+							break;
+
+						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+
+							Log::debug([ 'actions' => 'pex card funds REMOVED', 'id_order' => $order->id_order, 'type' => 'pexcard-load' ]);
+
+							$pexcard->removeFundsOrderRejected( $order->id_order );
+							break;
+					}
+				}
+			}
+		}
+	}
+
 	public function deliveryReply($admin) {
+
 		$act = false;
 
 		foreach ($this->_actions as $action) {
@@ -2617,9 +2766,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								ac.id_order = {$this->id_order}
 							AND ( ac.type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "'
 										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "'
-										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "' )";
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_REJECTED . "'
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "' )
+							ORDER BY id_order_action DESC LIMIT 1";
 		$action = Crunchbutton_Order_Action::q( $query );
 		if( $action->count() > 0 ){
+			$action = $action->get( 0 );
+			if( $action->type == Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+				return false;
+			}
 			return true;
 		}
 		return false;
@@ -2642,7 +2797,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if( $driver ){
 			// Check if the order was rejected and change the message
-			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = "' . Crunchbutton_Order_Action::DELIVERY_REJECTED . '" AND id_order = "' . $this->id_order . '"' );
+			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = ? AND id_order = ?', [Crunchbutton_Order_Action::DELIVERY_REJECTED, $this->id_order]);
 			if( $action->count() > 0 ){
 				$message = $firstName . "Sorry, your updated driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			} else {
@@ -2654,12 +2809,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function hasGiftCardIssued(){
 		// check if it has a gift card
-		$promo = Crunchbutton_Promo::q( "SELECT * FROM promo p WHERE p.id_order_reference = {$this->id_order}" );
+		$promo = Crunchbutton_Promo::q('SELECT * FROM promo p WHERE p.id_order_reference = ?', [$this->id_order]);
 		if( $promo->count() > 0 ){
 			return true;
 		}
 		// check if it has credit
-		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order} AND ( c.credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR c.credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )" );
+		$credit = Crunchbutton_Credit::q('SELECT * FROM credit c WHERE c.id_order_reference = ? AND ( c.credit_type = ? OR c.credit_type != ? )', [$this->id_order, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $credit->count() > 0 ){
 			return true;
 		}
@@ -2697,7 +2852,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				if( $driver->id_admin && $driver->hasPexCard() ){
 					return 'Pay restaurant with your own cash, not PEX';
 				} else {
-					return 'Pay the restaurant with cash';
+					return 'Pay the restaurant with own cash';
 				}
 			} else {
 				return 'Do not pay the restaurant';
@@ -2708,7 +2863,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				if( $driver->id_admin && $driver->hasPexCard() ){
 					return 'Pay restaurant with your own cash, not PEX';
 				} else {
-					return 'Pay the restaurant with cash';
+					return 'Pay the restaurant with own cash';
 				}
 			} else {
 				if( $driver->id_admin && $driver->hasPexCard() ){
@@ -2777,7 +2932,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function deliveryStatus($type = null) {
 		if (!$this->_actions) {
-			$this->_actions = Order_Action::q('select * from order_action where id_order="'.$this->id_order.'" order by timestamp');
+			$this->_actions = Order_Action::q('select * from order_action where id_order=? order by timestamp', [$this->id_order]);
 			$this->_deliveryStatus = ['accepted' => false, 'delivered' => false, 'pickedup' => false];
 			$acpt = [];
 
@@ -2816,7 +2971,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function eta($refresh = false) {
 		if (!isset($this->_eta) || $refresh) {
-			$eta = Order_Eta::q('select * from order_eta where id_order="'.$this->id_order.'" order by date desc limit 1')->get(0);
+			$eta = Order_Eta::q('select * from order_eta where id_order=? order by date desc limit 1', [$this->id_order])->get(0);
 			if (!$eta->id_order_eta || $refresh) {
 				$eta = Order_Eta::create($this);
 			}
@@ -2836,6 +2991,31 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$out['_driver_id'] = $this->status()->last()['driver']['id_admin'];
 
 		return $out;
+	}
+
+	public function checkIfOrderWasRefunded( $force = false ){
+		if( $this->refunded && !$force ){
+			return true;
+		}
+		if( $this->txn ){
+			$env = ( $this->env == 'live' ) ? 'live' : 'dev';
+			$api_key = c::config()->balanced->{$env}->secret;
+			Balanced\Settings::$api_key = $api_key;
+			$url = '/debits/' . $this->txn . '/refunds';
+			$refund = json_decode( json_encode( ( object ) Balanced\Refund::get( $url ) ) );
+			if( $refund && $refund->status && $refund->status == 'succeeded' ){
+				$this->refunded = 1;
+				$this->do_not_reimburse_driver = 1;
+				$this->do_not_pay_driver = 1;
+				$this->save();
+				return true;
+			}
+			else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 	public function save() {

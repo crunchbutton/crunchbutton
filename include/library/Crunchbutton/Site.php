@@ -4,7 +4,7 @@ class Crunchbutton_Site extends Cana_Table {
 	public function config($key = null) {
 		if (!isset($this->_config)) {
 			$global = Crunchbutton_Config::q('select * from config where id_site is null');
-			$site = Crunchbutton_Config::q('select * from config where id_site="'.$this->id_site.'"');
+			$site = Crunchbutton_Config::q('select * from config where id_site=?',[$this->id_site]);
 
 			foreach ($global as $c) {
 				$this->_config[$c->key] = $c;
@@ -59,7 +59,7 @@ class Crunchbutton_Site extends Cana_Table {
 		$sites = Crunchbutton_Site::q('
 			SELECT *
 			FROM site
-			WHERE active=1
+			WHERE active=true
 			ORDER BY sort ASC
 		');
 		$tsite = null;
@@ -68,6 +68,14 @@ class Crunchbutton_Site extends Cana_Table {
 				$tsite = $site;
 				break;
 			}
+		}
+		
+		// default if there is no site (only happens if the site table is empty which should never happen)
+		if (!$tsite) {
+			$tsite = new Site([
+				'theme' => 'crunchbutton',
+				'name' => 'Default'
+			]);
 		}
 
 		if (preg_match('/(iphone|android)/',$_SERVER['HTTP_USER_AGENT'])) {

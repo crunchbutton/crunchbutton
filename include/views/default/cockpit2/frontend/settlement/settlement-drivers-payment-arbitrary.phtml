@@ -6,15 +6,19 @@
 
 	<div class="divider"></div>
 
-	<navigation-back></navigation-back>
-
 	<form name="form" ng-show="drivers">
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content2">
 			<li class="li-input" ng-class="{'error':form.paymentDriver.$invalid}">
 				<div class="label">Select a driver:</div>
 				<div class="input">
-					<select name="paymentDriver" ng-model="payment.id_driver" required ng-options="opt.id_admin as opt.name for opt in drivers"></select>
+
+					<ui-select ng-model="payment.id_driver" theme="selectize" ng-disabled="disabled" style="width: 300px;" title="Select a driver">
+						<ui-select-match placeholder="Select a driver">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="driver.id_admin as driver in drivers | propsFilter: {name: $select.search}">
+							{{driver.name}}
+						</ui-select-choices>
+					</ui-select>
 				</div>
 				<div class="box-error">
 					<small ng-show="form.paymentDriver.$error.required">Required.</small>
@@ -37,7 +41,7 @@
 				</div>
 			</li>
 			<li class="li-input" ng-class="{'error':form.paymentNotes.$invalid}">
-				<div class="label">Payment notes:</div>
+				<div class="label">Message displayed to driver in payment summary and automated email that gets sent right now:</div>
 				<div class="input"><input type="text" name="paymentNotes" ng-model="payment.notes" required maxlength="255" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="form.paymentNotes.$error.required">Required.</small>

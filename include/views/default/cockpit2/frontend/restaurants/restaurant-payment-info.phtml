@@ -1,0 +1,311 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="left title"><i class="fa fa-coffee"></i>{{restaurant.name}} - Payment Info</h1>
+
+	<div class="divider"></div>
+
+	<form name="formStripeAccount" novalidate>
+
+		<h2 class="title">Stripe</h2>
+
+		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.formStripe">
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.legalNamePayment.$invalid}">
+				<div class="label">Legal Name for Payment:</div>
+				<div class="input"><input type="text" required name="legalNamePayment" maxlength="250" ng-model="restaurant.payment_type.legal_name_payment" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.legalNamePayment.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.summaryEmail.$invalid}">
+				<div class="label">Summary Email:</div>
+				<div class="input"><input type="text" required name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.summaryEmail.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.accountType.$invalid}">
+				<div class="label">Type</div>
+				<select name="accountType" required ng-model="restaurant.stripeAccount.account_type" ng-options="opt.value as opt.label for opt in accountType"></select>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.accountType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.taxID.$invalid}">
+				<div class="label">SSN or EIN:</div>
+				<div class="input"><input type="text" name="taxID" maxlength="250" ng-model="restaurant.payment_type.tax_id" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.taxID.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li ng-show="!restaurant.payment_type.has_balanced_bank" class="li-input" ng-class="{'error':formStripeAccount.routingNumber.$invalid}">
+				<div class="label">Routing Number:</div>
+				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="routingNumber" maxlength="250" ng-model="restaurant.stripeAccount.routing_number" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.routingNumber.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li ng-show="!restaurant.payment_type.has_balanced_bank" class="li-input" ng-class="{'error':formStripeAccount.accountNumber.$invalid}">
+				<div class="label">Account Number:</div>
+				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="accountNumber" maxlength="250" ng-model="restaurant.stripeAccount.account_number" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.accountNumber.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li>
+				<h2 class="title">Address</h2>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddress.$invalid}">
+				<div class="label">Address:</div>
+				<div class="input"><input type="text" required name="checkAddress" maxlength="250" ng-model="restaurant.payment_type.check_address" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddress.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressCity.$invalid}">
+				<div class="label">City:</div>
+				<div class="input"><input type="text" required name="checkAddressCity" maxlength="50" ng-model="restaurant.payment_type.check_address_city" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressCity.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressState.$invalid}">
+				<div class="label">State:</div>
+				<div class="input"><input type="text" required name="checkAddressState" maxlength="50" ng-model="restaurant.payment_type.check_address_state" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressState.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressZip.$invalid}">
+				<div class="label">Zip:</div>
+				<div class="input"><input type="text" required name="checkAddressZip" maxlength="20" ng-model="restaurant.payment_type.check_address_zip" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressZip.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressCountry.$invalid}">
+				<div class="label">Country:</div>
+				<div class="input"><input type="text" required name="checkAddressCountry" maxlength="20" ng-model="restaurant.payment_type.check_address_country" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="formStripeAccount.checkAddressCountry.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isSavingStripeAccount">
+
+				<div ng-show="!restaurant.payment_type.has_balanced_bank">
+					<button class="button save" ng-click="saveStripeAccount();">Save Stripe</button>
+				</div>
+
+				<div ng-show="restaurant.payment_type.has_balanced_bank">
+					<button class="button save" ng-click="createStripeAccountAndMigrate();">Create Stripe account and migrate balanced bank</button>
+				</div>
+
+				<div ng-show="!restaurant.payment_type.has_balanced_bank">
+					<br>
+					<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.formStripe = false">Cancel</span>
+
+					<span class="link" ng-click="testAccount()">Account Test</span>
+				</div>
+
+			</li>
+
+			<li class="li-input" ng-show="isSavingStripeAccount">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+
+		</ul>
+
+		<ul class="ul-inputs" ng-show="!restaurant.stripeAccount.formStripe && restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id">
+
+			<li class="li-input">
+				<div class="label">
+					This restaurant already has a Stripe Account
+				</div>
+				<div class="input">
+					<span class="link" ng-click="restaurant.stripeAccount.formStripe=true">Edit Stripe Account</span>
+				</div>
+			</li>
+
+		</ul>
+
+		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.formStripeMigrate && !restaurant.stripeAccount.formStripe && !restaurant.payment_type.stripe_account_id">
+
+			<li class="li-input" ng-show="!isMigrating">
+
+				<button class="button save" ng-click="migrateFromBalancedToStripe();">Migrate Balanced Bank to Stripe</button>
+
+				<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.formStripe = false">Cancel Edit Stripe Account</span>
+
+				<span class="link" ng-click="restaurant.stripeAccount.formStripe=true">Show Stripe create form</span>
+
+			</li>
+
+			<li class="li-input" ng-show="isMigrating">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+
+		</ul>
+
+		<br/><br/><br/>
+	</form>
+
+	<form name="formBasic" novalidate>
+
+		<h2 class="title">Basic Info</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input">
+				<div class="label">Legal Name for Payment:</div>
+				<div class="input"><input type="text" name="legalNamePayment" maxlength="250" ng-model="restaurant.payment_type.legal_name_payment" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Tax ID #:</div>
+				<div class="input"><input type="text" name="taxID" maxlength="250" ng-model="restaurant.payment_type.tax_id" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formBasic.paymentMethod.$invalid}">
+				<div class="label">Payment Method</div>
+				<select name="paymentMethod" required ng-model="restaurant.payment_type.payment_method" ng-options="opt.value as opt.label for opt in paymentMethod"></select>
+				<div class="box-error">
+					<small ng-show="formBasic.paymentMethod.$error.required">Required.</small>
+				</div>
+			</li>
+
+		</ul>
+
+		<br/><br/><br/>
+
+		<h2 class="title">Address</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input">
+				<div class="label">Address:</div>
+				<div class="input"><input type="text" name="checkAddress" maxlength="250" ng-model="restaurant.payment_type.check_address" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">City:</div>
+				<div class="input"><input type="text" name="checkAddressCity" maxlength="50" ng-model="restaurant.payment_type.check_address_city" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">State:</div>
+				<div class="input"><input type="text" name="checkAddressState" maxlength="50" ng-model="restaurant.payment_type.check_address_state" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Zip:</div>
+				<div class="input"><input type="text" name="checkAddressZip" maxlength="20" ng-model="restaurant.payment_type.check_address_zip" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Country:</div>
+				<div class="input"><input type="text" name="checkAddressCountry" maxlength="20" ng-model="restaurant.payment_type.check_address_country" placeholder=""></div>
+			</li>
+		</ul>
+
+		<br/><br/><br/>
+
+		<h2 class="title">Payment Info</h2>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+			<li class="li-input" ng-class="{'error':formBasic.chargeCreditFee.$invalid}">
+				<div class="label">Charge Credit Fees</div>
+				<select name="chargeCreditFee" required ng-model="restaurant.payment_type.charge_credit_fee" ng-options="opt.value as opt.label for opt in yesNo"></select>
+				<div class="box-error">
+					<small ng-show="formBasic.chargeCreditFee.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formBasic.waiveFeeFirstMonth.$invalid}">
+				<div class="label">Waive Fee 1st Month?</div>
+				<select name="waiveFeeFirstMonth" required ng-model="restaurant.payment_type.waive_fee_first_month" ng-options="opt.value as opt.label for opt in yesNo"></select>
+				<div class="box-error">
+					<small ng-show="formBasic.waiveFeeFirstMonth.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formBasic.payApologyCredits.$invalid}">
+				<div class="label">Pay For Apology Credits?</div>
+				<select name="payApologyCredits" required ng-model="restaurant.payment_type.pay_apology_credits" ng-options="opt.value as opt.label for opt in yesNo"></select>
+				<div class="box-error">
+					<small ng-show="formBasic.payApologyCredits.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Max Apology Credit:</div>
+				<div class="input"><input type="number" name="maxApologyCredit" ignore-mouse-wheel ng-model="restaurant.payment_type.max_apology_credit" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Max Promotion Paying:</div>
+				<div class="input"><input type="number" name="maxPayPromotion" ignore-mouse-wheel ng-model="restaurant.payment_type.max_pay_promotion" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Contact Name:</div>
+				<div class="input"><input type="text" name="contactName" maxlength="250" ng-model="restaurant.payment_type.contact_name" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':formBasic.summaryMethod.$invalid}">
+				<div class="label">Summary Method:</div>
+				<select name="summaryMethod" required ng-model="restaurant.payment_type.summary_method" ng-options="opt.value as opt.label for opt in summaryMethod"></select>
+				<div class="box-error">
+					<small ng-show="formBasic.summaryMethod.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="restaurant.payment_type.summary_method == 'fax'">
+				<div class="label">Summary Fax:</div>
+				<div class="input"><input type="text" name="summaryFax" maxlength="250" ng-model="restaurant.payment_type.summary_fax" placeholder=""></div>
+			</li>
+
+			<li class="li-input" ng-show="restaurant.payment_type.summary_method == 'email'">
+				<div class="label">Summary Email:</div>
+				<div class="input"><input type="text" name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email" placeholder=""></div>
+			</li>
+
+			<li class="li-input">
+				<div class="label">Summary Frequency:</div>
+				<div class="input"><input type="number" name="maxPayPromotion" ignore-mouse-wheel ng-model="restaurant.payment_type.summary_frequency" placeholder=""></div>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<br><br><br>
+
+	<ul class="ul-inputs">
+		<li class="li-input" ng-show="!isSaving">
+			<button class="button save" ng-click="save();">Save</button>
+
+		</li>
+		<li class="li-input" ng-show="isSaving">
+			<i class="fa fa-circle-o-notch fa-spin"></i>
+		</li>
+	</ul>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

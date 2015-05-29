@@ -21,8 +21,8 @@ class MetricsHttpException extends Exception {
 // @param period - period of time to group on (valid: 'hour', 'day', 'week', 'month', 'year')
 // @param type - the type of metric requested
 //
-// Outputs JSON in object format {id_community => {labels => [], data => []}} 
-// where labels are the same for all communities (with data backfilled to zero 
+// Outputs JSON in object format {id_community => {labels => [], data => []}}
+// where labels are the same for all communities (with data backfilled to zero
 // for missing values).
 //
 // valid time suffixes: s (second), m (minute), h (hour), d (day), w (week), M (month), y (year)
@@ -45,6 +45,7 @@ class MetricsHttpException extends Exception {
 //  - prettifyLabels - transforms SQL labels for dates into dates that look good for the front end
 class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 	public function init() {
+
 		try {
 			// selected communities = split string on , for community=
 			$allowedCommunities = Cockpit_Metrics::availableCommunities();
@@ -79,7 +80,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 
 	/**
 	 * returns a filtered set of community IDs for the given set of
-	 * communityIDs (or retrieves all active communities if none passed). 
+	 * communityIDs (or retrieves all active communities if none passed).
 	 * communityIDs should be an array of integer-likes.
 	 **/
 	public static function filterCommunities($communityIDs = null) {
@@ -211,17 +212,17 @@ class _Community_Metric_Container {
 	 * formatQueryResults takes in a Cana Tabe iterator and groups it by the specified column, backfilling labels via labelCol
 	 * @param $queryResult - Cana Iterator
 	 * @param $groupCol - the name of the column to group data on
-	 * @param $labelCol (string) - name of the column to pull labels 
+	 * @param $labelCol (string) - name of the column to pull labels
 	 *    from (should be able to be lexicographically sorted, unless labels specified)
 	 * @param $dataCol - column with actual data and/or numeric values
 	 * @param $isInt (optional) - whether the valueis integral (true) or float (false)
 	 * @param $fillValue (optional) - value to substitute in for missing labels
-	 * @param $labels (optional) - ordered array of labels to pull (must exactly match 
+	 * @param $labels (optional) - ordered array of labels to pull (must exactly match
 	 *     labels in data)
 	 *
 	 * @return {'data' => {$groupKey => <ARRAY OF DATA>}, 'meta' => {'labels' => <ARRAY OF LABELS>, 'startDate': <ISO 80601 date>, 'endDate': <ISO 80601 date>}}
-	 * where labels are shared between *all* group keys (same object) and data 
-	 * is backfilled to match up with labels. Labels will be lexicogrpahically 
+	 * where labels are shared between *all* group keys (same object) and data
+	 * is backfilled to match up with labels. Labels will be lexicogrpahically
 	 * sorted from lowest to highest. Missing communities are also backfilled into data.
 	 **/
 	public function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0, $labels = null) {
@@ -578,5 +579,8 @@ class _Community_Metric_Container {
 		// replace labels that we already know are ordered here
 		$resp['meta']['labels'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 		return $resp;
+
+		$this->error(404);
+
 	}
 }

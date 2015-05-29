@@ -6,7 +6,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var drivers = $resource( App.service + 'driver/:action/:method/:id_admin/:page/:search/:phone', { id_admin: '@id_admin', action: '@action' }, {
 				'get' : { 'method': 'GET', params : { action : null } },
 				'notify' : { 'method': 'POST', params : { action: 'notify' } },
-				'list' : { 'method': 'GET', params : { action: 'list', method: 'method' } },
+				'referral' : { 'method': 'POST', params : { action: 'referral' } },
 				'pexcard' : { 'method': 'GET', params : { action: 'list', method: 'pexcard' }, isArray: true },
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'setupValidate' : { 'method': 'GET', params : { action: 'setup' } },
@@ -23,11 +23,16 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				'options' : { 'method': 'GET' }
 			}
 		);
-    
-    var tshirt_sizes = $resource( App.service + 'driver/onboarding/tshirt_sizes', {}, {
-				'options' : { 'method': 'GET' }
-			}
-		);
+
+	var tshirt_sizes = $resource( App.service + 'driver/onboarding/tshirt_sizes', {}, {
+			'options' : { 'method': 'GET' }
+		}
+	);
+
+	var defaults = $resource( App.service + 'driver/onboarding/defaults', {}, {
+			'options' : { 'method': 'GET' }
+		}
+	);
 
 	var carrier_types = $resource( App.service + 'driver/onboarding/carrier_types', {}, {
 				'options' : { 'method': 'GET' }
@@ -56,8 +61,8 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			callback( json );
 		} );
 	}
-    
-    service.tshirt_sizes = function( callback ){
+
+	service.tshirt_sizes = function( callback ){
 		tshirt_sizes.options( {}, function( json ){
 			callback( json );
 		} );
@@ -68,8 +73,6 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			callback( json );
 		} );
 	}
-
-
 
 	service.yesNo = function(){
 		var options = [];
@@ -137,10 +140,10 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
-	// get driver's list
-	service.list = function( page, search, callback ){
-		drivers.list( { page : page, search : search }, function( data ){
-			callback( data );
+	// referral code
+	service.referral = function( phone, name, callback ){
+		drivers.referral( { 'phone': phone, 'name': name }, function( json ){
+			callback( json );
 		} );
 	}
 
@@ -204,15 +207,13 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	service.get = function( id_admin, callback ){
 		if( id_admin ){
 			drivers.get( { 'id_admin': id_admin }, function( driver ){
-				if( driver.communities ){
-					angular.forEach( driver.communities, function( name, id_community ){
-						driver.id_community = id_community;
-					} );
-				}
 				callback( driver );
 			} );
 		} else {
-			callback( {} );
+			defaults.options( {}, function( json ){
+				callback( json );
+			} );
+			// callback( {} );
 		}
 	}
 

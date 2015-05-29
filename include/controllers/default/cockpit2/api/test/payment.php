@@ -29,7 +29,7 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 		$out = [ 'ok' => [], 'nope' => [] ];
 
 		// Get the payments schedule with error
-		$payments_schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE status = "' . Cockpit_Payment_Schedule::STATUS_PROCESSING . '" ORDER BY id_payment_schedule ASC' );
+		$payments_schedule = Cockpit_Payment_Schedule::q("SELECT * FROM payment_schedule WHERE status = '" . Cockpit_Payment_Schedule::STATUS_PROCESSING . "' ORDER BY id_payment_schedule ASC");
 		foreach( $payments_schedule as $payment_schedule ){
 			$nope = false;
 
@@ -133,7 +133,14 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 				$range = $schedule->range_date;
 				if( $range ){
 					$range = explode( '=>' , $range );
-					$orders = Crunchbutton_Order::q( 'SELECT DISTINCT( o.id_order ) FROM `order` o INNER JOIN order_action oa ON oa.id_order = o.id_order WHERE DATE_FORMAT( o.date, "%m/%d/%Y" ) >= "' . trim( $range[ 0 ] ) . '" AND DATE_FORMAT( o.date, "%m/%d/%Y" ) <= "' . trim( $range[ 1 ] ) . '" AND oa.type = "delivery-delivered" AND oa.id_admin = ' . $schedule->id_driver );
+					$orders = Crunchbutton_Order::q('
+						SELECT DISTINCT( o.id_order ) FROM `order` o
+						INNER JOIN order_action oa ON oa.id_order = o.id_order
+						WHERE
+							DATE_FORMAT( o.date, "%m/%d/%Y" ) >= ?
+							AND DATE_FORMAT( o.date, "%m/%d/%Y" ) <= ?
+							AND oa.type = "delivery-delivered" AND oa.id_admin = ?
+					',[trim( $range[ 0 ] ), trim( $range[ 1 ] ), $schedule->id_driver]);
 				}
 			} else {
 				$has_orders = true;
@@ -154,13 +161,14 @@ class Controller_Api_Test_Payment extends Crunchbutton_Controller_RestAccount {
 				if( $range ){
 					$range = explode( '=>' , $range );
 
-					$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM admin_shift_assign asa
-																												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-																											WHERE asa.id_admin = ' . $schedule->id_driver . '
-																												AND
-																											DATE_FORMAT( cs.date_start, "%m/%d/%Y" ) >= "' . trim( $range[ 0 ] ) . '"
-																												AND
-																											DATE_FORMAT( cs.date_end, "%m/%d/%Y" ) <= "' . trim( $range[ 1 ] ) . '"' );
+					$shifts = Crunchbutton_Community_Shift::q('
+						SELECT cs.*, asa.id_admin_shift_assign
+						FROM admin_shift_assign asaINNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+						WHERE
+							asa.id_admin = ?
+							AND cs.date_start >= ?
+							AND cs.date_end <= ?
+					', [$schedule->id_driver, trim( $range[ 0 ] ), trim( $range[ 1 ] )]);
 					$_total = 0;
 					$_amount = 0;
 					$_hours = 0;

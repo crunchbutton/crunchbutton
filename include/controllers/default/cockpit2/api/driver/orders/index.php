@@ -10,7 +10,6 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 			switch ( c::getPagePiece( 3 ) ) {
 
-
 				case 'revenue':
 					$id_admin = c::admin()->id_admin;
 					$revenueCurrentShift = Admin::revenueCurrentShift( $id_admin );
@@ -80,6 +79,13 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'text-customer-5-min-away':
+
+								$q = Queue::create([
+									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_MINUTES_WAY,
+									'id_order' => $order->id_order,
+									'seconds' => 0
+								]);
+
 								$order->textCustomer( Cockpit_Order::I_AM_5_MINUTES_AWAY );
 								break;
 						}
@@ -107,15 +113,20 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			$orders = Order::deliveryOrders( $lastHours );
 
 			foreach ( $orders as $order ) {
+				$restaurant = $order->restaurant();
+				$timestamp = Crunchbutton_Util::dateToUnixTimestamp( $order->date() );
+				$status = $order->status()->last();
 				$exports[] = Model::toModel( [
 					'id_order' => $order->id_order,
-					'status' => $order->status()->last(),
+					'status' => $status,
 					'name' => $order->name,
 					'address' => $order->address,
 					'phone' => $order->phone,
 					'date' => $order->date(),
+					'timestamp' => $timestamp,
 					'date_hour' => $order->date()->format( 'g:i A'),
-					'restaurant' => $order->restaurant()->name,
+					'restaurant' => $restaurant->name,
+					'restaurant_address' => $restaurant->address,
 				] );
 			}
 

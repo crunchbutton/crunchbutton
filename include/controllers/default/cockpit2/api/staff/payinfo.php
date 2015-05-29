@@ -55,10 +55,14 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			case 'save-bank':
 				$this->saveBankInfo( $admin );
 				break;
+			case 'save-stripe-bank':
+				$this->saveStripeBankInfo( $admin );
+				break;
 		}
 	}
 
 	private function savePayInfo( $admin ){
+
 		$payment_type = $admin->payment_type();
 		if( !$payment_type->id_admin_payment_type ){
 			$payment_type = new Crunchbutton_Admin_Payment_Type;
@@ -68,9 +72,23 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
 
 		if( $this->request()[ 'using_pex_date_formatted' ] ){
-			$payment_type->using_pex_date = ( new DateTime( $this->request()[ 'using_pex_date_formatted' ] ) )->format( 'Y-m-d H:i:s' );
+			$date = new DateTime( $this->request()[ 'using_pex_date_formatted' ] );
+			if( $date->format( 'Ymd' ) > date( 'Ymd' ) ){
+				$this->_error( 'Date started using Pex Card should not be in the future!' );
+			}
+			$payment_type->using_pex_date = $date->format( 'Y-m-d H:i:s' );
+		}
+
+		if( $payment_type->using_pex && !$payment_type->using_pex_date ){
+			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
+		}
+
+		if( $this->request()[ 'date_terminated_formatted' ] ){
+			$admin->date_terminated = ( new DateTime( $this->request()[ 'date_terminated_formatted' ] ) )->format( 'Y-m-d' );
+			$admin->save();
 		} else {
-			$payment_type->using_pex_date = null;
+			$admin->using_pex_date = null;
+			$admin->save();
 		}
 
 		if( $payment_type->using_pex == 1 && !$payment_type->using_pex_date ){
@@ -109,6 +127,29 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$this->payInfo( $admin );
 	}
 
+	private function saveStripeBankInfo( $admin ){
+
+		$token = $this->request()[ 'token' ];
+
+		if( !$token ){
+			$this->_error( 'Invalid token!' );
+		}
+
+		$paymentType = $admin->payment_type();
+
+		$stripe = $paymentType->createStripe( [ 'bank_account' => $token ] );
+
+		if( $stripe && !is_array( $stripe ) ){
+			$paymentType->testAccount();
+			$this->payInfo( $admin );
+			exit;
+		} else {
+			echo json_encode( $stripe );exit;
+		}
+		$this->_error( 'Error creating stripe account' );
+	}
+
+
 	private function saveBankInfo( $admin ){
 		$payment_type = $admin->payment_type();
 		if( !$payment_type->id_admin_payment_type ){
@@ -128,12 +169,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		// claim it
 		$payment_type->claimBankAccount( $payment_type->balanced_bank );
 
-		// When a driver enters their payment info, make a $0.01 deposit into their bank account #4029
-		$settlement = new Crunchbutton_Settlement();
-		$id_payment_schedule = $settlement->scheduleDriverArbitraryPayment( $admin->id_admin, 0.01, Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT, 'Test Deposit' );
-		Cana::timeout( function() use( $settlement, $id_payment_schedule ) {
-			$settlement->payDriver( $id_payment_schedule );
-		} );
+		$payment_type->testAccount();
 
 		$this->payInfo( $admin );
 	}
@@ -151,6 +187,9 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
 			if( $payment_type->using_pex_date ){
 				$out[ 'using_pex_date' ] = $payment_type->using_pex_date()->format( 'Y,m,d' );
+			}
+			if( $admin->date_terminated ){
+				$out[ 'date_terminated' ] = $admin->dateTerminated()->format( 'Y,m,d' );
 			}
 
 			echo json_encode( $out );

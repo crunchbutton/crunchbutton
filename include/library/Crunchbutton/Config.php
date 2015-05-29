@@ -6,11 +6,11 @@ class Crunchbutton_Config extends Cana_Table {
 			select * from config where `key`="'.$key.'" and id_site
 		';
 		if ($site) {
-			$q .= ' ="'.$site.'"';
+			$q .= ' = ?';
 		} else {
 			$q .= ' is null';
 		}
-		$config = Crunchbutton_Config::q($q);
+		$config = Crunchbutton_Config::q($q, [$site]);
 		if (!$config->id_config) {
 			$config = Crunchbutton_Config::blank($key, $value, $site);
 		}
@@ -19,7 +19,7 @@ class Crunchbutton_Config extends Cana_Table {
 	}
 
 	public static function getVal( $key ){
-		$config = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '{$key}'" );
+		$config = Crunchbutton_Config::q('SELECT * FROM config WHERE `key` = ?', [$key] );
 		if( $config->value ){
 			return $config->value;
 		}
@@ -27,7 +27,7 @@ class Crunchbutton_Config extends Cana_Table {
 	}
 
 	public static function getConfigByKey( $key ){
-		return Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '{$key}' LIMIT 1 " );
+		return Crunchbutton_Config::q('SELECT * FROM config WHERE `key` = ? LIMIT 1', [$key]);
 	}
 
 	public static function blank($key, $value, $site = null) {

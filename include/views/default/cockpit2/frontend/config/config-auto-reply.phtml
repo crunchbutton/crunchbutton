@@ -1,0 +1,60 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title"><i class="fa fa-reply"></i>Auto Reply - Customer Services</h1>
+
+	<div class="divider"></div>
+
+	<div ng-if="messages.length">
+
+		<div class="box-content2 box-content-table">
+			<table class="tb-zebra">
+				<tr>
+					<th>#</th>
+					<th>Message</th>
+					<th></th>
+				</tr>
+				<tr ng-repeat="message in messages">
+					<td>{{message.id_config}}</td>
+					<td>{{message.text}}</td>
+					<td>
+						<span class="orange link" ng-click="remove(message.id_config)">Remove</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+	<div ng-if="!messages.length">
+		There is no messages, this feature is disabled!
+		<br>
+		<br>
+		<br>
+	</div>
+
+	<form name="form" novalidate>
+		<div class="ul-inputs">
+			<p><strong>Add Message</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':form.message.$invalid}">
+					<div class="label">Message:</div>
+					<div class="input">
+						<input type="text" name="message" ng-model="message.text" required>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.message.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-if="!isSaving">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+
+		</div>
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

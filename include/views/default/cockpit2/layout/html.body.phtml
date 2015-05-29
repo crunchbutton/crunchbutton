@@ -3,16 +3,18 @@
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
 
-			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
-				<i class="fa fa-truck"></i>
-			</div>
+			<div class="menu-tabs">
+				<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
+					<i class="fa fa-truck"></i>
+				</div>
 
-			<div class="menu-tab" ng-if="account.isMarketingRep || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'marketing-rep')}" ng-click="menu.toggle='marketing-rep'">
-				<i class="fa fa-male"></i>
-			</div>
+				<div class="menu-tab" ng-if="account.isMarketingRep || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'marketing-rep')}" ng-click="menu.toggle='marketing-rep'">
+					<i class="fa fa-male"></i>
+				</div>
 
-			<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
-				<i class="fa fa-dashboard"></i>
+				<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
+					<i class="fa fa-dashboard"></i>
+				</div>
 			</div>
 			<div class="divider"></div>
 			<? /*
@@ -159,15 +161,16 @@
 						</tr>
 					</table>
 				</a>
-
+				<? /* hiding for now
 				<a href="/drivers/drivers-locations" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-locations')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-location-arrow"></i></td>
 							<td class="side-menu-label">Track Locations</a></td>
-				</tr>
-				</table>
+					</tr>
+					</table>
 				</a>
+				*/ ?>
 
 				<a href="/drivers/docs/pexcard" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-pex-card')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -177,6 +180,36 @@
 						</tr>
 					</table>
 				</a>
+
+				<a href="/invite" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-invite')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
+							<td class="side-menu-label">Earn More Money</a></td>
+				</tr>
+				</table>
+				</a>
+
+
+				<a href="/resources/" class="menu-link" ng-if="account.user.permissions.GLOBAL && account.isDriver && menu.toggle=='driver' && account.user.has_resource" ng-class="{'nav-active': (navigation.page == 'community-resources')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-files-o"></i></td>
+							<td class="side-menu-label">Resources</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<span ng-if="account.isDriver && menu.toggle=='driver'" ng-repeat="resource in account.user.side_resource">
+					<a href="{{resource.url}}" target="_system" class="menu-link">
+						<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+							<tr>
+								<td class="side-menu-icon"><i class="fa fa-files-o"></i></td>
+								<td class="side-menu-label">{{resource.name}}</a></td>
+							</tr>
+						</table>
+					</a>
+				</span>
 
 				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -254,6 +287,15 @@
 					</table>
 				</a>
 
+				<a href="/community/resources/" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'resources')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-files-o"></i></td>
+							<td class="side-menu-label">Resources</a></td>
+						</tr>
+					</table>
+				</a>
+
 				<a href="/restaurants" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'restaurants' || navigation.page == 'restaurant')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -290,7 +332,16 @@
 					</table>
 				</a>
 
-				<a href="/tools" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'pexcard' || navigation.page == 'blasts' || navigation.page == 'tools' || navigation.page == 'config' || navigation.page == 'config-rewards')}">
+				<a href="/suggestions" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'suggestions')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-volume-up"></i></td>
+							<td class="side-menu-label">Suggestions</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<a href="/tools" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'pexcard' || navigation.page == 'blasts' || navigation.page == 'tools' || navigation.page == 'config' || navigation.page == 'promo' || navigation.page == 'config-rewards')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-cogs"></i></td>
@@ -298,8 +349,8 @@
 						</tr>
 					</table>
 				</a>
-                
-                <a href="/drivers/feedback" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
+
+        <a href="/drivers/feedback" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-quote-left"></i></td>
@@ -386,11 +437,11 @@
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
 							</div>
-							<div class="notification notification-support notification-support-mobile" ng-click="navigation.menu('right')">
+							<div class="hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="navigation.menu('right')">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
-							<div class="notification notification-support notification-support-desktop" ng-click="supportToggle()" hotkey="{s: supportToggle}">
+							<div class="hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="supportToggle()">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
@@ -401,10 +452,13 @@
 							*/ ?>
 						</div>
 
-						<div class="logo"><span class="dot"></span><span class="green">cockpit</span></div>
+						<div class="logo"><span class="dot"></span><span class="green">{{navTitle || 'cockpit'}}</span></div>
 
 					</div>
 				</div>
+			</div>
+			<div ng-controller="DriversOrderNavCtrl">
+				<div ng-include="'assets/view/drivers-accept-nav.html'"></div>
 			</div>
 
 			<div class="snap-content-inner bg" ng-scroll-position>
@@ -431,15 +485,34 @@
 
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
+
 		<h1 class="dialog-call-number">{{number | formatPhone}}</h1>
 
-		<a href="sms:{{number}}" class="number-action" target="_system">
-			<button class="button green">Text</button>
-		</a>
+		<div class="hide-desktop">
 
-		<a href="tel:{{number}}" class="number-action" target="_system">
-			<button class="button green">Call</button>
-		</a>
+			<a href="sms:{{number}}" class="number-action" target="_system">
+				<button class="button green">Text</button>
+			</a>
+
+			<a href="tel:{{number}}" class="number-action" target="_system">
+				<button class="button green">Call</button>
+			</a>
+
+		</div>
+
+		<div class="hide-mobile" ng-show="hideSMSBox && hideCallBox">
+
+			<a href="" ng-click="hideSMSBox = false" class="number-action">
+				<button class="button green">Text</button>
+			</a>
+
+			<a href="" ng-click="hideCallBox = false" class="number-action">
+				<button class="button green">Call</button>
+			</a>
+
+		</div>
+
+		<ng-include src="'assets/view/support-phone.html'"></ng-include>
 
 		<? /*
 		<a href class="number-action" target="_system" ng-if="account.user.permissions.GLOBAL">
@@ -453,4 +526,10 @@
 
 		<a ng-click="complete()" class="dialog-close-link">Close</a>
 	</div>
+
+	<!-- Gift card / credit -->
+	<div class="credit-dialog zoom-anim-dialog mfp-hide dialog">
+		<ng-include src="'assets/view/credit-dialog.html'"></ng-include>
+	</div>
+
 </div>

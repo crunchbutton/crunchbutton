@@ -14,8 +14,12 @@
 
 		<div ng-if="shifts.length">
 
-
 			<div class="drivers-shift drivers-schedule">
+
+		<div class="dialog-message dialog-message-error">
+			<b><i class="fa fa-hand-o-right"></i> Don't forget: You must save your changes below!</b>
+		</div>
+
 
 			<div>
 				<ul class="ul-inputs box-content2">
@@ -34,7 +38,7 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
 							<td>
-								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
 								<div class="schedule-period">
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
@@ -62,33 +66,36 @@
 				<div class="box-content2">
 
 					<table class="tb-grid">
-						<tr ng-repeat="shift in shifts" ng-if="shift.ranking > 0">
-							<td>
-								<div class="schedule-day">{{shift.day}}</div>
-								<div class="schedule-period">
-									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
-								</div>
-							</td>
-							<td class="td-large schedule-buttons">
-								<button class="button schedule-action-down" ng-if="shift.ranking_next" ng-click="rankingChange( shift.id_community_shift,  shift.ranking_next )">
-									<i class="fa fa-sort-desc"></i>
-								</button>
-								<button class="button schedule-action-up" ng-if="shift.ranking_prev" ng-click="rankingChange( shift.id_community_shift, shift.ranking_prev )">
-									<i class="fa fa-sort-asc"></i>
-								</button>
-								<button class="button schedule-action-not" ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">
-									<i class="fa fa-thumbs-o-down"></i>
-								</button>
-								<button class="button schedule-action-lock" ng-if="shift.assigned">
-									<i class="fa fa-lock"></i>
-								</button>
-							</td>
-						</tr>
+						<tbody ng-repeat="shift in shifts" ng-if="shift.ranking > 0" >
+							<tr>
+								<td>
+									<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
+									<div class="schedule-period">
+										{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
+									</div>
+								</td>
+								<td class="td-larger schedule-buttons">
+									<button class="button schedule-action-down" ng-if="shift.ranking_next" ng-click="rankingChange( shift.id_community_shift,  shift.ranking_next )">
+										<i class="fa fa-sort-desc"></i>
+									</button>
+									<button class="button schedule-action-up" ng-if="shift.ranking_prev" ng-click="rankingChange( shift.id_community_shift, shift.ranking_prev )">
+										<i class="fa fa-sort-asc"></i>
+									</button>
+									<button class="button schedule-action-not" ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">
+										<i class="fa fa-thumbs-o-down"></i>
+									</button>
+									<button class="button schedule-action-lock" ng-if="shift.assigned">
+										<i class="fa fa-lock"></i>
+									</button>
+								</td>
+							</tr>
+						</tbody>
 					</table>
-
+					<div class="divider"></div>
 				</div>
 
 			</div>
+
 
 			<div ng-if="not > 0" class="shifts-not">
 
@@ -99,7 +106,7 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">
 							<td>
-								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
 								<div class="schedule-period">
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
@@ -111,10 +118,30 @@
 							</td>
 						</tr>
 					</table>
-
+					<div class="divider"></div>
 				</div>
 			</div>
 
+			</div>
+
+
+			<div class="box-content2">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<ul class="ul-inputs">
+									<li class="li-input" ng-show="!isSaving">
+										<button class="button save" ng-click="save();">Save</button>
+									</li>
+									<li class="li-input" ng-show="isSaving">
+										<i class="fa fa-circle-o-notch fa-spin"></i>
+									</li>
+								</ul>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 
 		</div>

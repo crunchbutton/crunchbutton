@@ -32,6 +32,18 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 					$out[ 'tshirt_options' ] = Cockpit_Driver_Info::tshirtSizes();
 					echo json_encode( $out );exit();
 					break;
+				case 'defaults':
+					$out = [];
+					// See #5173
+					$out[ 'referral_admin_credit' ] = 7;
+					$out[ 'referral_customer_credit' ] = 3;
+					echo json_encode( $out );exit();
+					break;
+				case 'tshirt_sizes':
+					$out = [];
+					$out[ 'tshirt_options' ] = Cockpit_Driver_Info::tshirtSizes();
+					echo json_encode( $out );exit();
+					break;
 			}
 		}
 

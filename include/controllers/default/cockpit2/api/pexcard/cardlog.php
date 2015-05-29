@@ -8,11 +8,12 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 			$this->_error();
 		}
 
-		$limit = $this->request()['limit'] ? c::db()->escape($this->request()['limit']) : 50;
-		$search = $this->request()['search'] ? c::db()->escape($this->request()['search']) : '';
-		$type = $this->request()['type'] ? c::db()->escape($this->request()['type']) : 'all';
-		$status = $this->request()['status'] ? c::db()->escape($this->request()['status']) : 'all';
-		$page = $this->request()['page'] ? c::db()->escape($this->request()['page']) : 1;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 50;
+		$search = $this->request()['search'] ? $this->request()['search'] : '';
+		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
+		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$keys = [];
 
 		if ($page == 1) {
 			$offset = '0';
@@ -58,12 +59,13 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 
 		if ($type != 'all') {
 			$q .= '
-				AND log.type = "' . $type  . '"
+				AND log.type = ?
 			';
+			$keys[] = $type;
 		}
 
 		if ($search) {
-			$q .= Crunchbutton_Query::search([
+			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
 					'log.staff_name' => 'like',
@@ -71,21 +73,26 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 					'log.card_serial' => 'like'
 				]
 			]);
+			$q .= $s['query'];
+			$keys = array_merge($keys, $s['keys']);
 		}
 
 
 		// get the count
-		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q));
+		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q), $keys);
 		$count = intval( $r->_items[0]->c );
 
 		$q .= '
 			ORDER BY log.timestamp DESC
-			LIMIT '.$offset.', '.$limit . '
+			LIMIT ?
+			OFFSET ?
 		';
+		$keys[] = $limit;
+		$keys[] = $offset;
 
 		// do the query
 		$d = [];
-		$r = c::db()->query(str_replace('-WILD-','*', $q));
+		$r = c::db()->query(str_replace('-WILD-','*', $q), $keys);
 		// echo str_replace('-WILD-','*', $q);exit;
 
 		while ($o = $r->fetch()) {

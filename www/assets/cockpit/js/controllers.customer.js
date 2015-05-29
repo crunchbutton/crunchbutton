@@ -22,7 +22,8 @@ NGApp.controller('CustomersCtrl', function ($rootScope, $scope, CustomerService,
 		scope: $scope,
 		watch: {
 			search: '',
-			sort: ''
+			sort: '',
+			fullcount: false
 		},
 		update: function() {
 			CustomerService.list($scope.query, function(d) {
@@ -33,19 +34,39 @@ NGApp.controller('CustomersCtrl', function ($rootScope, $scope, CustomerService,
 	});
 });
 
-NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService, $rootScope) {
+NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService, CreditService, $rootScope) {
+
 	$scope.loading = true;
 
 	CustomerService.get($routeParams.id, function(d) {
 		$rootScope.title = d.name + ' | Customers';
 		$scope.customer = d;
+
+		if ($scope.customer.address.indexOf(',') > -1) {
+			var address = $scope.customer.address.split(',');
+			$scope.customer.address = address.shift() + "\n" + address.join(',');
+		}
+
 		$scope.loading = false;
 	});
-	
+
+	var credits = function(){
+		CreditService.history( $routeParams.id, function( d ){
+			$scope.credits = d;
+		} );
+	}
+
 	OrderService.list({user: $routeParams.id}, function(d) {
 		$scope.orders = d.results;
 		$scope.count = d.count;
 		$scope.pages = d.pages;
 		$scope.loading = false;
 	});
+
+	credits();
+
+	$rootScope.$on( 'creditAdded', function(e, data) {
+		credits();
+	} );
+
 });

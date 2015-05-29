@@ -6,9 +6,18 @@
 
 		<div class="divider"></div>
 
-		<navigation-back></navigation-back>
+		<div ng-show="account.user.has_pexcard">
+			<div class="support-box-wrap box-content2">
 
-		<form name="form" novalidate>
+				<div class="box-content-table">
+					<p>
+						Your PEX card is active and will be loaded with money to spend at restaurants when orders come in
+					</p>
+				</div>
+			</div>
+
+		</div>
+		<form name="form" novalidate ng-show="!account.user.has_pexcard">
 
 			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
@@ -21,8 +30,8 @@
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.lastFourDigits.$invalid}">
-					<div class="label">Last four digits:</div>
-					<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last four digits"></div>
+					<div class="label">Last 4 digits (of 16 digit card number):</div>
+					<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last 4 digits (of 16 digit card number)"></div>
 					<div class="box-error">
 						<small ng-show="form.lastFourDigits.$error.required">Required.</small>
 					</div>
@@ -57,14 +66,6 @@
 				<li class="li-info">
 					<div class="label">Last Name:</div>
 					<div class="data">{{card.lastName}}</div>
-				</li>
-				<li class="li-info">
-					<div class="label">Ledger Balance:</div>
-					<div class="data">$ {{card.ledgerBalance | formatPrice}}</div>
-				</li>
-				<li class="li-info">
-					<div class="label">Available Balance:</div>
-					<div class="data">$ {{card.availableBalance | formatPrice}}</div>
 				</li>
 				<li class="li-info">
 					<div class="label">Status:</div>

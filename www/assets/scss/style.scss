@@ -489,7 +489,7 @@ html[xmlns] .clearfix {
 
 .social-button-text,
 .social-button i {
-	padding: 6px;
+	padding: 6px 3px;
 	float: left;
 }
 
@@ -3113,7 +3113,7 @@ h1.about-header {
 .drivers-apply .form-control {
     -webkit-box-shadow: none;
     box-shadow: none;
-    padding: .2em .5em; 
+    padding: .2em .5em;
     color: #555;
     line-height: 1.4em;
     background-color: #fff;
@@ -3138,13 +3138,13 @@ h1.about-header {
 
 
 .drivers-apply .button-bottom {
-    width: 11em; 
+    width: 11em;
     background-color:rgb(247, 128, 83);
     color:white;
     border-radius:4px;
-    border:none;  
+    border:none;
 }
-   
+
 i {
     font-style:italic;
     font-weight:300;
@@ -3203,4 +3203,71 @@ i {
 
 .points-message-edit-info {
 	text-align: center;
+}
+
+/*points progress bar*/
+.points progress[value] {
+  /*-webkit-appearance: progress-bar;*/
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20em;
+  height: 1.5em;
+}
+.points progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+.points progress[value]::-webkit-progress-value {
+  background-image:
+  -webkit-linear-gradient(-45deg,
+		  transparent 33%, rgba(0, 0, 0, .1) 33%,
+		  rgba(0,0, 0, .1) 66%, transparent 66%),
+  -webkit-linear-gradient(top,
+		  rgba(255, 255, 255, .25),
+		  rgba(0, 0, 0, .25)),
+  -webkit-linear-gradient(left, #ec5d2f, #ec5d2f);
+  border-radius: 10px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+.reward-info {
+	
+}
+.reward-info p {
+	text-align: center;
+	line-height: .8em;
+}
+.reward-info .social-button {
+	margin-top: 0;
+	font-size: .9em;
+	padding-top:2px;
+	height: 20px;
+	width: 50px;
+	display: inline-block;
+}
+.reward-info .social-button i {
+	margin-right:2px;
+	padding: 3px;
+}
+.reward-info .social-button .social-button-text{
+	box-shadow:none;
+	padding:0 2px;
+	border:0;
+}
+.reward-info .fa-facebook{
+	font-size: 12px;
+}
+
+.rewards-container {
+	margin-bottom: 1em;
+}
+
+.no-init .hide-before-init {
+	display: none !important;
+}
+
+.allow-select {
+	-webkit-touch-callout: auto;
+	-webkit-user-select: auto;
 }

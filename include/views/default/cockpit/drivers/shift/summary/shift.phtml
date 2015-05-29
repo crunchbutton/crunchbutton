@@ -176,6 +176,15 @@
 										}
 									?>
 									<?php
+
+
+									if( count( $driversDontWantWorkHere ) ){
+										foreach( $driversDontWantWorkHere as $driver ){
+											$alreadyShown[] = $driver->id_admin;
+										}
+									}
+
+
 									$otherDrivers = $shift->community()->getDriversOfCommunity();
 									$hasDrivers = false;
 									foreach( $otherDrivers as $admin ){
@@ -207,7 +216,7 @@
 											<td>
 												<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin" id="form-id_admin-<?php echo $admin->id_admin; ?>">
 											</td>
-											<td>
+											<td title="id_admin: <?php echo $admin->id_admin; ?>">
 											<?php echo $admin->name; ?>
 												<br/>
 												<?php echo $admin->phone(); ?>
@@ -284,7 +293,7 @@
 												<td>
 													<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin" id="form-id_admin-<?php echo $admin->id_admin; ?>">
 												</td>
-												<td>
+												<td title="id_admin: <?php echo $admin->id_admin; ?>">
 												<?php echo $admin->name; ?>
 												<br/>
 												<?php echo $admin->phone(); ?>

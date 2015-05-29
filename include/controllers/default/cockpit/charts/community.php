@@ -21,7 +21,7 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 			case 'orders-per-day':
 
 				$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
-				$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
+				$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true ORDER BY name ASC' );
 
 				if( !$hasPermissionFullPermission ){
 					$_communities = [];
@@ -49,7 +49,7 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 
 	public function data(){
 		$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true' );
 		$_communities = [];
 		foreach ( $communities as $community ) {
 			$permission_name = strtolower( $community->name );

@@ -1,24 +1,22 @@
+<?
+	$angular = '1.3.15';
+?>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 
- <? /*
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.18/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.18/angular-route.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.18/angular-resource.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.18/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular-route.min.js"></script>
+<? /*
+	// there is current an issue with the 1.3.x branch of angular and request canceling
+	// https://github.com/angular/angular.js/issues/9332
+	// https://github.com/crunchbutton/crunchbutton/issues/5603
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular-resource.min.js"></script>
 */ ?>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-route.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-resource.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular-animate.min.js"></script>
 
 <script src="//cdn.socket.io/socket.io-1.2.0.js"></script>
-<!-- Metrics libraries -->
-<script src="/assets/cockpit/js/Chart.js"></script>
 
 <!-- Payment stuff -->
-<? /*
-<script src="https://js.stripe.com/v2/"></script>
-*/ ?>
 <script src="https://js.balancedpayments.com/1.1/balanced.js"></script>
 
 <script src="/assets/cockpit/js/moment.min.js"></script>
@@ -28,8 +26,16 @@
 <script src="/assets/cockpit/js/angular-hotkeys.min.js"></script>
 <script src="/assets/cockpit/js/angular-google-maps.min.js"></script>
 <script src="/assets/cockpit/js/favico.min.js"></script>
+<script src="/assets/cockpit/js/Chart.js"></script>
 <script src="/assets/cockpit/js/angular-chart.min.js"></script>
-<script src="/assets/cockpit/js/angular-multi-select.js"></script>
+<script src="/assets/cockpit/js/angular-chart.js"></script>
+<script src="/assets/cockpit/js/angular-resource.js"></script>
+
+
+<?/*
+<script src="/assets/cockpit/js/hammer.min.js"></script>
+<script src="/assets/cockpit/js/angular-gestures.min.js"></script>
+*/?>
 
 <script src="/assets/js/snap.js"></script>
 <script src="/assets/js/date.js"></script>
@@ -44,6 +50,7 @@
 <script src="/assets/js/ladda.js"></script>
 <script src="/assets/js/jquery.autosize-min.js"></script>
 <script src="/assets/js/location.js"></script>
+<script src="/assets/js/howler-min.js"></script>
 
 <script src="/assets/cockpit/js/cockpit.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 
@@ -54,6 +61,7 @@
 
 <!-- AngularJS Controllers -->
 <script src="/assets/cockpit/js/controllers.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/controllers.resource.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/controllers.drivers.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/controllers.staff.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/controllers.settlement.js?v=<?=Deploy_Server::currentVersion()?>"></script>
@@ -74,12 +82,17 @@
 <script src="/assets/cockpit/js/controllers.tv.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/controllers.report.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/controllers.metrics.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/controllers.promo.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/controllers.dashboard.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/controllers.credit.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/controllers.suggestion.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <!-- AngularJS Filters -->
 <script src="/assets/js/filters.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 
 <!-- AngularJS Directives -->
 <script src="/assets/js/directives.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/directives.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/select.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 
 <script src="/assets/cockpit/js/angular-file-upload.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 
@@ -121,4 +134,9 @@
 <script src="/assets/cockpit/js/angular-cached-resource.min.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/service.feedback.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/service.metrics.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/service.communityresource.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/service.promo.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/service.dashboard.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/service.credit.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script src="/assets/cockpit/js/service.suggestion.js?v=<?=Deploy_Server::currentVersion()?>"></script>
 <script src="/assets/cockpit/js/service.csv.js?v=<?=Deploy_Server::currentVersion()?>"></script>

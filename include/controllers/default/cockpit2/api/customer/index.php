@@ -5,8 +5,7 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			header('HTTP/1.1 401 Unauthorized');
-			exit;
+			$this->error(401);
 		}
 
 		$customer = User::uuid(c::getPagePiece(2));
@@ -25,18 +24,35 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 */
 
 		if (!$customer->id_user) {
-			header('HTTP/1.0 404 Not Found');
-			exit;
+			$this->error(404);
+		}
+		
+		$this->customer = $customer;
+
+		switch (c::getPagePiece(3)) {
+			case 'balanced-stripe':
+				$this->_tempStripeToBalanced();
+				break;
+			default:
+				$this->_customer();
+				break;
 		}
 
+	}
+	
+	private function _customer() {
 		switch ($this->method()) {
 			case 'get':
-				echo $customer->json();
+				echo $this->customer->json();
 				break;
-
 			case 'post':
-				// do nothing for now
+				$this->error(400);
 				break;
 		}
+	}
+	
+	private function _tempStripeToBalanced() {
+		$status = $this->customer->tempConvertBalancedToStripe();
+		echo $status ? 'success' : 'fail';
 	}
 }

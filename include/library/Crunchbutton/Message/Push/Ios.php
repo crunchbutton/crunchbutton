@@ -3,7 +3,7 @@
 class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 	public static function send($to, $message = null, $id = null, $count = null) {
 
-		$sound = 'www/edm.wav';
+		$sound = 'www/new-order.wav';
 		$count = 1;
 		$id = 'push';
 		$category = '';
@@ -28,6 +28,8 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 				$category = $to['category'];
 			}
 			
+			$env = $to['env'] ? $to['env'] : c::getEnv();
+			
 			$to = $to['to'];
 		}
 
@@ -41,12 +43,10 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 		
 		$message = trim($message);
 
-		$env = c::getEnv();
-
 		$certs = c::config()->dirs->root.'ssl/';
 
 		// @todo: change this after aproved
-		if (1==2 && $env == 'live') {
+		if ($env == 'live') {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
 				$certs.'aps_production_com.crunchbutton.cockpit.pem'
@@ -57,6 +57,8 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 				$certs.'aps_development_com.crunchbutton.cockpit.pem'
 			);
 		}
+		
+		ob_start();
 
 		$push->setRootCertificationAuthority($certs.'entrust_root_certification_authority.pem');
 		$push->connect();
@@ -85,9 +87,12 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 
 		$push->send();
 		$push->disconnect();
+		
+		$res = ob_get_contents();
+		ob_end_clean();
 
 		$aErrorQueue = $push->getErrors();
 
-		return $aErrorQueue ? $aErrorQueue : true;
+		return ['res' => $res, 'status' => $aErrorQueue ? $aErrorQueue : true, 'errors' => $aErrorQueue];
 	}
 }

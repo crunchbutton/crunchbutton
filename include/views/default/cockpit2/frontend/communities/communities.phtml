@@ -1,52 +1,41 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-slideshare"></i>Communities<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-slideshare"></i>Communities</h1>
+		<div class="page-title-nav">
+			<a href="/community/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i></button></a>
+		</div>
+	</div>
+	<div class="divider"></div>
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
 			</tr>
+			<tr>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" name="searchType" tabindex="2">
+						<option value="all">All</option>
+						<option value="active">Active</option>
+						<option value="inactive">Inactive</option>
+					</select>
+				</td>
+				<th>Open</th>
+				<td>
+					<select ng-model="query.open" name="searchType" tabindex="3">
+						<option value="all">All</option>
+						<option value="open">Open</option>
+						<option value="closed">Closed</option>
+					</select>
+				</td>
 		</table>
 	</div>
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<h2>
-		<a href="/community/new">Create a new community</a>
-	</h2>
-	<br><br>
-
 	<ng-include src="'assets/view/listview-communities.html'"></ng-include>
 	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
-
-	<br><br>
-	<h1 class="title"><i class="fa fa fa-list"></i>Closed Communities</h1>
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Type</th>
-				<th>Closed at</th>
-				<th>Closed By</th>
-				<th>Closed Notes</th>
-				<th>How long</th>
-			</tr>
-			<tbody ng-repeat="c in closed_communities">
-				<tr>
-					<td colspan="5">
-						<strong>
-						<a href="/community/{{c.permalink}}">{{c.name}}</a></strong>
-					</td>
-				</tr>
-				<tr ng-repeat="l in c.log">
-					<td>{{l.type}}</td>
-					<td>{{l.closed_at}}</td>
-					<td>{{l.closed_by}}</td>
-					<td>{{l.note}}</td>
-					<td>{{l.how_long}}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
 
 </div>

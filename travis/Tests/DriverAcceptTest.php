@@ -61,11 +61,13 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'notes' => 'TEST',
 			'lat' => '33.175101',
 			'lon' => '-96.677810',
-			'local_gid' => 'RAND'
+			'local_gid' => 'RAND',
+			'processor' => Crunchbutton_User_Payment_Type::processor()
 		];
 
 		$order = new Order;
 		$charge = $order->process($_POST);
+		print_r($charge);
 	}
 
 	public static function tearDownAfterClass() {
@@ -89,9 +91,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testDriverAccept() {
-
 		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $this->driver);
-		// var_dump($status);
 		$this->assertTrue($status === true);
 	}
 }

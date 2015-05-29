@@ -1,25 +1,30 @@
-<div class="box-content2 box-content-table" ng-if="summary.results">
+<div class="box-content2 box-content-table" ng-if="summary.results && !isMobile">
 	<table class="tb-zebra">
 		<tr>
-			<th>Type</th>
+			<th></th>
 			<th>Period</th>
-			<th>Amount</th>
+			<th>Earnings</th>
+			<th>Amount Already Collected in Cash</th>
+			<th>Deposit Amount</th>
 			<th>Status</th>
-			<th>Transfer Initiated</th>
+			<th>Deposit Initiated</th>
 			<th>Est. In Account</th>
 		</tr>
-		<tr ng-repeat="payment in summary.results" ng-show="!filter || filter == payment.type">
+		<tr ng-repeat="payment in summary.results" ng-hide="payment.type == 'Reimbursement' && payment.amount == 0">
 			<td>
-				<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.type}}</a>
-				<span ng-if="payment.total_cash_orders" class="note">
-					<br>
-					*Already received in cash: ${{payment.total_received_cash | formatPrice}} + Cash Tips ({{payment.total_cash_orders}} orders)
-				</span>
+				<a href="/drivers/payment/{{payment.id_payment_schedule}}">
+					View Details
+				</a>
 			</td>
 			<td>{{payment.range_date}}</td>
-			<td positive-or-negative-color="{{payment.amount}}">
+			<td positive-or-negative-color="{{payment.earnings}}">
+				${{payment.earnings | formatPrice}}
+			</td>
+			<td positive-or-negative-color="{{payment.collected_in_cash}}">
+				${{payment.collected_in_cash | formatPrice}}
+			</td>
+			<td positive-or-negative-color="{{payment.collected_in_cash}}">
 				${{payment.amount | formatPrice}}
-				<span ng-if="payment.total_cash_orders">*</span>
 			</td>
 			<td>
 				<span ng-class="{
@@ -35,7 +40,61 @@
 				</span>
 			</td>
 			<td>{{payment.send_date}}</td>
-			<td>{{payment.paid_date}}</td>
+			<td><a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.paid_date}}</a></td>
+		</tr>
+	</table>
+</div>
+<div class="box-content2 box-content-table" ng-if="summary.results && isMobile">
+	<table class="tb-zebra">
+		<tr>
+			<th>Amounts</th>
+			<th>Date</th>
+		</tr>
+		<tr ng-repeat="payment in summary.results">
+			<td>
+				<br>
+				<br>
+				{{payment.range_date}}
+				<br>
+				<br>
+				<span ng-class="{
+					'span-driver-summary-paid': payment.status == 'Paid',
+					'span-driver-summary-pending': payment.status == 'Pending',
+					'span-driver-summary-pending': payment.status == 'Error',
+					'span-driver-summary-processing': payment.status == 'Processing'
+				}">
+				<span ng-switch="payment.status">
+					<span ng-switch-when="Pending">Not Yet Paid</span>
+					<span ng-switch-when="Error">Payment Error!*</span>
+					<span ng-switch-default>{{payment.status}}</span>
+				</span>
+			</td>
+			<td>
+				Earnings:
+				<span positive-or-negative-color="{{payment.earnings}}">
+					${{payment.earnings | formatPrice}}
+				</span>
+				<br>
+				<br>
+				Collected in Cash:
+				<span positive-or-negative-color="{{payment.collected_in_cash}}">
+					${{payment.collected_in_cash | formatPrice}}
+				</span>
+				<br>
+				<br>
+				Deposit Amount:
+				<span positive-or-negative-color="{{payment.amount}}">
+					${{payment.amount | formatPrice}}
+				</span>
+			</td>
+			<td>
+				Deposit Initiated:
+				{{payment.send_date}}
+				<br>
+				<br>
+				Est. In Account:
+			<a href="/drivers/payment/{{payment.id_payment_schedule}}">{{payment.paid_date}}</a>
+			</td>
 		</tr>
 	</table>
 </div>

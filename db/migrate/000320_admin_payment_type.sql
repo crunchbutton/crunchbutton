@@ -1,0 +1,2 @@
+ALTER TABLE `admin_payment_type` CHANGE `payment_method` `payment_method` ENUM('deposit')  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT 'deposit';
+update `admin_payment_type` set `payment_method`=null where `payment_method`="";

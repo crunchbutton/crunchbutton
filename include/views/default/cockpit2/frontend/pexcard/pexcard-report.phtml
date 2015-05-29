@@ -6,8 +6,6 @@
 
 		<div class="divider"></div>
 
-		<navigation-back></navigation-back>
-
 		<form name="form" novalidate>
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content2">
@@ -53,47 +51,113 @@
 			<thead>
 				<tr>
 					<td>Driver Name</td>
-					<td>Email</td>
-					<td>Number of Orders</td>
-					<td>Card Orders Spent</td>
-					<td>Pex Card Spent</td>
-					<td>Diff</td>
-					<td>Card and Cash Orders Spent</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="driver in result.drivers_expenses">
-					<td><a href="/staff/{{driver.login}}">{{driver.driver}}</a></td>
-					<td><a href="mailto:{{driver.email}}">{{driver.email}}</a></td>
-					<td>{{driver.orders}}</td>
-					<td positive-or-negative-color="{{driver.card_amount}}">$ {{driver.card_amount | formatPrice}}</td>
-					<td positive-or-negative-color="{{driver.pexcard_amount}}">$ {{driver.pexcard_amount | formatPrice}}</td>
-					<td positive-or-negative-color="{{driver.diff}}">$ {{driver.diff | formatPrice}}</td>
-					<td positive-or-negative-color="{{driver.card_cash_amount}}">$ {{driver.card_cash_amount | formatPrice}}</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<h2 class="title">
-			<span>Cards without driver</span>
-		</h2>
-
-		<table class="tb-grid tb-zebra">
-			<thead>
-				<tr>
-					<td>Card Serial</td>
+					<td>Serial</td>
 					<td>Last Four</td>
-					<td>Card Spent</td>
+					<td>Email</td>
+					<td>Orders</td>
+					<td>Pex Card Spent</td>
+					<td>Should Have Spent</td>
+					<td>Card and Cash Orders Total Price</td>
+					<td>Diff</td>
+					<td></td>
 				</tr>
 			</thead>
-			<tbody>
-				<tr ng-repeat="card in result.card_expenses">
+			<tbody ng-repeat="driver in result.drivers_expenses">
+				<tr>
 					<td>
-						<a title="Assign Pex Card to Driver" href="/pexcard/card/{{card.card_serial}}">{{card.card_serial}}</a>
+						<span ng-if="driver.login">
+							<a href="/staff/{{driver.login}}">{{driver.driver}}</a>
+						</span>
 					</td>
-					<td>{{card.last_four}}</td>
-					<td>$ {{card.amount | formatPrice}}</td>
+					<td>{{driver.card_serial}}</td>
+					<td>{{driver.last_four}}</td>
+					<td>
+						<span ng-if="driver.login"><a href="mailto:{{driver.email}}">{{driver.email}}</a></span>
+					</td>
+					<td>{{driver.orders}}</td>
+					<td positive-or-negative-color="{{driver.pexcard_amount}}">$ {{driver.pexcard_amount | formatPrice}}</td>
+					<td positive-or-negative-color="{{driver.card_amount}}">$ {{driver.card_amount | formatPrice}}</td>
+					<td positive-or-negative-color="{{driver.card_cash_amount}}">$ {{driver.card_cash_amount | formatPrice}}</td>
+					<td positive-or-negative-color="{{driver.diff}}">$ {{driver.diff | formatPrice}}</td>
+					<td>
+						<span class="link icon-bigger" ng-click="driver.details=!driver.details"><i class="fa fa-info-circle"></i></span>
+					</td>
 				</tr>
+
+				<tr class="tb-mini-grid title" ng-show="driver.details && driver.transactions.length">
+					<th colspan="10"><strong>Spent with Pex Card</strong></th>
+				</tr>
+				<tr class="tb-mini-grid subtitle" ng-show="driver.details && driver.transactions.length">
+					<th colspan="3"><strong>Date</strong></th>
+					<th colspan="3"><strong>Description</strong></th>
+					<th colspan="4"><strong>Amount</strong></th>
+				</tr>
+				<tr class="tb-mini-grid" ng-repeat="transaction in driver.transactions" ng-show="driver.details">
+					<td colspan="3">{{transaction.date}}</td>
+					<td colspan="3">{{transaction.description}}</td>
+					<td colspan="4" positive-or-negative-color="{{transaction.amount}}">$ {{transaction.amount | formatPrice}}</td>
+				</tr>
+
+				<tr ng-if="driver.card_orders" class="tb-mini-grid title" ng-show="driver.details && driver.delivered_orders.length">
+					<th colspan="10">Orders Where Pex Should've Been Used</th>
+				</tr>
+				<tr ng-if="driver.card_orders" class="tb-mini-grid subtitle" ng-show="driver.details && driver.delivered_orders.length">
+					<th colspan="1"><strong>#</strong></th>
+					<th colspan="1"><strong>Date</strong></th>
+					<th colspan="2"><strong>Restaurant</strong></th>
+					<th colspan="2"><strong>Amount</strong></th>
+					<th colspan="1"><strong>Type</strong></th>
+					<th colspan="3"><strong>Status</strong></th>
+				</tr>
+				<tr class="tb-mini-grid" ng-repeat="order in driver.delivered_orders" ng-if="driver.card_orders && order.pay_type=='card'" ng-show="driver.details">
+					<td colspan="1">
+						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
+					</td>
+					<td colspan="1">{{order.date}}</td>
+					<td colspan="2">{{order.restaurant}}</td>
+					<td colspan="2" positive-or-negative-color="{{order.amount}}">$ {{order.amount | formatPrice}}</td>
+					<td colspan="1">
+						<span class="tag tag-blue" ng-if="order.pay_type=='card'">card</span>
+						<span class="tag tag-grey" ng-if="order.pay_type=='cash'">cash</span>
+					</td>
+					<td colspan="3">
+						<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
+						<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+					</td>
+				</tr>
+
+				<tr ng-if="driver.cash_orders" class="tb-mini-grid title" ng-show="driver.details && driver.delivered_orders.length">
+					<th colspan="10">Orders Where Pex Should not have Been Used</th>
+				</tr>
+				<tr ng-if="driver.cash_orders" class="tb-mini-grid subtitle" ng-show="driver.details && driver.delivered_orders.length">
+					<th colspan="1"><strong>#</strong></th>
+					<th colspan="1"><strong>Date</strong></th>
+					<th colspan="2"><strong>Restaurant</strong></th>
+					<th colspan="2"><strong>Amount</strong></th>
+					<th colspan="1"><strong>Type</strong></th>
+					<th colspan="3"><strong>Status</strong></th>
+				</tr>
+				<tr class="tb-mini-grid" ng-repeat="order in driver.delivered_orders" ng-if="driver.cash_orders && order.pay_type=='cash'" ng-show="driver.details">
+					<td colspan="1">
+						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
+					</td>
+					<td colspan="1">{{order.date}}</td>
+					<td colspan="2">{{order.restaurant}}</td>
+					<td colspan="2" positive-or-negative-color="{{order.amount}}">$ {{order.amount | formatPrice}}</td>
+					<td colspan="1">
+						<span class="tag tag-blue" ng-if="order.pay_type=='card'">card</span>
+						<span class="tag tag-grey" ng-if="order.pay_type=='cash'">cash</span>
+					</td>
+					<td colspan="3">
+						<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
+						<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+					</td>
+				</tr>
+
+				<tr ng-show="driver.details">
+					<th style="border-bottom:1px solid #CCC;" colspan="10"><br>&nbsp;<br></th>
+				</tr>
+
 			</tbody>
 		</table>
 

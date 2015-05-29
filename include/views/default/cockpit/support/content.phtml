@@ -14,7 +14,7 @@
 
 				<br/>
 					<span>
-						<input type="text" name="search" id="search" value="<?php echo $this->search; ?>" style="margin:4px !important;" placeholder="Search" />	
+						<input type="text" name="search" id="search" value="<?php echo $this->search; ?>" style="margin:4px !important;" placeholder="Search" />
 					</span>
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
@@ -47,7 +47,7 @@
 
 					&nbsp;&nbsp;&nbsp;
 					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>&search=<?php echo $this->search; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
-				
+
 					&nbsp;&nbsp;&nbsp;
 					<button class="send-sms-button btn btn-blue"><i class="icon-comment-alt"></i>&nbsp;Send SMS</button>
 
@@ -60,7 +60,7 @@
 					<span id="warning-loaded" style="display:none;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
 			</div>
 		</div>
-		<?php 
+		<?php
 		if( $this->total > 0 ) { ?>
 		<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
 			<thead>
@@ -78,12 +78,12 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php 
+				<?php
 					$zebra = '-dark';
-					foreach ( $this->tickets as $support ){ 
+					foreach ( $this->tickets as $support ){
 						$zebra = ( $zebra == '' ) ? '-dark' : '';
-						$lastReplyFrom = $support->lastReplyFrom();	
-						if( $lastReplyFrom == 'client' ){
+						$lastReplyFrom = $support->lastMessage();
+						if( $lastReplyFrom->from == 'client' || $lastReplyFrom->type == 'auto-reply' ){
 							$class = 'row-red';
 						} else {
 							$class = 'row-green';
@@ -133,7 +133,7 @@
 							$admin_time = $support->lastMessage()->relativeTime();
 							$chat = false;
 							break;
-					} 
+					}
 					if( $support->type == Crunchbutton_Support::TYPE_TICKET ){
 						$type = 'Ticket';
 					}
@@ -144,11 +144,11 @@
 								#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;
 							</a>
 						</td>
-						<td nowrap><?php 
+						<td nowrap><?php
 							$date = $support->date();
-							echo $date->format( 'M/d' ); 
+							echo $date->format( 'M/d' );
 							echo '<br/>';
-							echo $date->format( 'H:iA T' ); 
+							echo $date->format( 'H:iA T' );
 						?></td>
 						<td ><?php echo $type; ?></td>
 						<td><?php echo $name; ?></td>
@@ -178,14 +178,14 @@
 							<?php } ?>
 						</td>
 					</tr>
-				<?php 
-					} 
+				<?php
+					}
 				?>
 			</tbody>
 		</table>
 
-		<?php 
-		$paginationLink = $this->paginationLink . '&page='; 
+		<?php
+		$paginationLink = $this->paginationLink . '&page=';
 		$lastPage = ceil( $this->total / $this->resultsPerPage );
 
 		$nextPage = ( $this->page + 1 <= $lastPage ) ? $this->page + 1 : $this->page;
@@ -195,7 +195,7 @@
 		<div class="table-footer">
 			<div class="dataTables_info">Showing <?php echo $this->startingAt; ?> to <?php echo $this->endingAt; ?> of <?php echo $this->total; ?> entries</div>
 			<div class="dataTables_paginate paging_full_numbers">
-				
+
 				<a class="first paginate_button <?php if( $this->page == 1 ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink ?>1')">First</a>
 				<a class="previous paginate_button <?php if( $this->page == 1 ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $prevPage ?>')">Previous</a>
 
@@ -203,11 +203,11 @@
 					<?php
 					$step = 2;
 					$pageTotal = 5;
-					
+
 					if( $this->page <= 2 ){
 						$pageStart = 1;
 					} else {
-						$pageStart = $this->page - $step;	
+						$pageStart = $this->page - $step;
 					}
 					$pageEnd = ( $pageStart + $pageTotal ) - 1;
 					if( $pageEnd > $lastPage ){
@@ -220,7 +220,7 @@
 						$class = ( $i == $this->page ) ? 'paginate_active' : 'paginate_button';
 						?>
 						<a class="<?php echo $class; ?>" href="#" onclick="load('<?php echo $paginationLink . $i ?>');"><?php echo $i; ?></a>
-						<?php	
+						<?php
 					}
 					?>
 				</span>

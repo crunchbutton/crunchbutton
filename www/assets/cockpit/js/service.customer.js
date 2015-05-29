@@ -1,4 +1,3 @@
-
 NGApp.factory('CustomerService', function(ResourceFactory) {
 
 	var service = {};
@@ -31,7 +30,7 @@ NGApp.factory('CustomerService', function(ResourceFactory) {
 			callback(data);
 		});
 	}
-	
+
 	service.post = function(params, callback) {
 		customer.save(params, function(data) {
 			callback(data);

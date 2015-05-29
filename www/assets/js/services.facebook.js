@@ -45,7 +45,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 						data: $.param( { 'post_id': success.post_id, 'uuid': service._order_uuid } ),
 						headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 					} ).success( function(){
-						$rootScope.$broadcast( 'orderShared' );
+						$rootScope.$broadcast( 'orderSharedFacebook' );
 					} );
 				}
 			});
@@ -56,12 +56,35 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		}
 	}
 
-	service.postInvite = function(url) {
+	service.postInvite = function(url, code) {
+		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for free delivery!';
 		App.share({
 			url: url,
 			name: 'Noms',
 			caption: ' ',
-			description: url
+			description: description
+		});
+	}
+
+	service.shareOrder = function( url, code ) {
+		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for free delivery!';
+		App.share({
+			url: url,
+			name: 'Crunchbutton',
+			caption: 'Crunchbutton',
+			description: description,
+			url: url,
+			picture: status.picture,
+			success : function( success ){
+				$http( {
+					method: 'POST',
+					url: App.service + 'facebook/reward/',
+					data: $.param( { 'post_id': success.post_id, 'uuid': service._order_uuid } ),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				} ).success( function(){
+					$rootScope.$broadcast( 'orderSharedFacebook' );
+				} );
+			}
 		});
 	}
 
@@ -77,7 +100,6 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// process status is called any time a status change event is triggered with facebook
 	service.processStatus = function(status) {
-		console.log(status);
 
 		if (status.status === 'connected' && status.authResponse) {
 
@@ -110,6 +132,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 					// if it is phonegap call a special facebook connection
 					var data = {};
+
 					url = App.service + 'user/facebook?fbrtoken=' + service.token;
 
 					// Just call the user api, this will create a facebook user
@@ -162,12 +185,17 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// sign out of facebook
 	service.signout = function(callback) {
-		FB.logout(function() {
+		var complete = function() {
 			service.logged = false;
 			if (typeof callback === 'function') {
 				callback();
 			}
-		});
+		};
+		try {
+			FB.logout(complete);
+		} catch (e) {
+			complete();
+		}
 	}
 
 	return service;

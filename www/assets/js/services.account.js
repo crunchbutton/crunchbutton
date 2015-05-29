@@ -43,6 +43,24 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 		}
 	}
 
+	service.updatePoints = function( callback ){
+		var url = App.service + 'user/points';
+		$http( {
+			method: 'GET',
+			url: url
+			} ).success( function( data ) {
+				if( data.id_user != '' ){
+					$rootScope.$safeApply( function(){
+						service.user.points = data;
+						App.config.user.points = data;
+					} );
+				}
+				if( callback ){
+					callback( data );
+				}
+			}	);
+	}
+
 	service.isLogged = function(){
 		if( App.config.user && App.config.user.id_user != '' ){
 			service.user = App.config.user;
@@ -194,6 +212,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 				if( data.id_user != '' ){
 					service.user = data;
 					App.config.user = data;
+					$rootScope.$broadcast('userUpdated', service.user);
 					$rootScope.$safeApply();
 				}
 				if( callback ){
@@ -462,7 +481,7 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 
 	// perform a logout
 	service.signout = function() {
-		if ( App.confirm('Confirm sign out?', 'Crunchbutton', service.signoutConfirmed ) ) {
+		if ( App.confirm('Are you sure you want to log out?', 'Crunchbutton', service.signoutConfirmed ) ) {
 			service.signoutConfirmed( 1 );
 		}
 	}

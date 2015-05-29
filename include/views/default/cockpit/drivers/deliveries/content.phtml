@@ -23,7 +23,7 @@
 				<td style="vertical-align:top;">
 					<a href="/vieworder/<?php echo $order->uuid; ?>" target="blank">Order #<?php echo $order->id_order; ?></a>
 					<br/>
-					<a href="http://cbtn.io/<?php echo $order->id_order; ?>" target="blank">http://cbtn.io/<?php echo $order->id_order; ?></a>
+					<a href="https://cockpit.la/<?php echo $order->id_order; ?>" target="blank">https://cockpit.la/<?php echo $order->id_order; ?></a>
 					<br />
 					<?php echo $order->restaurant()->name; ?>
 					<br />
@@ -54,7 +54,7 @@
 							if( $order->driver()->email ){
 								echo '<br/><i class="icon icon-envelope"></i> ' . $order->driver()->email;
 							}
-							$activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$order->driver()->id_admin} AND active = 1" );
+							$activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$order->driver()->id_admin} AND active = true" );
 							if ( count( $activeNotifications ) > 0 ) {
 								?>
 								<hr/>

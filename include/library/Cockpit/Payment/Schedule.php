@@ -27,10 +27,10 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 
-	public function checkBalancedStatus(){
+	public function checkPaymentStatus(){
 		$payment = $this->payment();
 		if( $payment->id_payment ){
-			return $payment->checkBalancedStatus();
+			return $payment->checkPaymentStatus();
 		}
 		return false;
 	}
@@ -100,15 +100,15 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $this->_status_date;
 	}
 
-	public function statusToDriver( $schedule ){
+	public function statusToDriver( $schedule, $full = false ){
 		$out = [];
 		if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE && $schedule->id_payment ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$collected_in_cash = 0;
 			$expected = $schedule->payment()->date();
-			$out[ 'range_date' ] = $schedule->range_date;
-			$out[ 'send_date' ] = ( string ) $expected->format( 'M jS Y' );
+			$out[ 'send_date' ] = ( string ) $expected->format( Settlement::date_format( 'short' ) );
 			$expected->modify( '+3 Weekday' );
-			$out[ 'paid_date' ] = ( string ) $expected->format( 'M jS Y' );
+			$out[ 'paid_date' ] = ( string ) $expected->format( Settlement::date_format( 'short' ) );
 			if( $now->format( 'Ymd' ) >= $expected->format( 'Ymd' ) ){
 				$out[ 'status' ] = 'Paid';
 			} else {
@@ -118,6 +118,13 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 			$out[ 'status' ] = 'Error';
 			$out[ 'paid_date' ] = '-';
 		}
+		$out[ 'range_date' ] = $schedule->range_date;
+		if( $schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT && $full ){
+			$summary = Settlement::driverSummary( $schedule->id_payment_schedule );
+			$collected_in_cash = $summary[ 'collected_in_cash' ];
+			$out[ 'collected_in_cash' ] = ( $collected_in_cash * -1 );
+		}
+
 		return $out;
 	}
 
@@ -154,24 +161,24 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function driverByStatus( $status ){
-		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+		$query = "SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
 								WHERE
-									ps.status = "' . $status . '"
-								ORDER BY ps.id_payment_schedule DESC';
+									ps.status = '" . $status . "'
+								ORDER BY ps.id_payment_schedule DESC";
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
 	public function driverNotCompletedSchedules(){
-		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
+		$query = "SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
 								WHERE
-									( ps.status = "' . Cockpit_Payment_Schedule::STATUS_ERROR . '"
+									( ps.status = '" . Cockpit_Payment_Schedule::STATUS_ERROR . "'
 								OR
-									ps.status = "' . Cockpit_Payment_Schedule::STATUS_PROCESSING . '"
+									ps.status = '" . Cockpit_Payment_Schedule::STATUS_PROCESSING . "'
 								OR
-									ps.status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" )
-								ORDER BY ps.id_payment_schedule DESC';
+									ps.status = '" . Cockpit_Payment_Schedule::STATUS_SCHEDULED . "' )
+								ORDER BY ps.id_payment_schedule DESC";
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
@@ -197,6 +204,48 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 
 	public function invites(){
 		return $this->referrals();
+	}
+
+	public function search( $search ){
+
+		$query = '';
+		$where = ' WHERE 1=1 AND ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '"';
+		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
+
+		if( $search[ 'type' ] ){
+			if( $search[ 'type' ] == 'driver' ){
+
+				if( $search[ 'search' ] ){
+					$where .= ' AND a.name LIKE "%' . $search[ 'search' ] . '%"';
+				}
+
+				if( $search[ 'pay_type' ] ){
+					$where .= ' AND ps.pay_type = "' . $search[ 'pay_type' ] . '"';
+				}
+
+				if( $search[ 'status' ] ){
+					$where .= ' AND ps.status = "' . $search[ 'status' ] . '"';
+				}
+
+				$query = 'SELECT -WILD- FROM payment_schedule ps
+								INNER JOIN admin a ON a.id_admin = ps.id_driver
+								' . $where . '
+								ORDER BY ps.id_payment_schedule DESC ' . $limit;
+			}
+		}
+
+		if( $search[ 'total' ] ){
+			$query = str_replace('-WILD-','COUNT(*) AS total', $query );
+			if( $query != '' ){
+				$total = c::db()->get( $query )->get( 0 );
+				return $total->total;
+			}
+		} else {
+			$query = str_replace('-WILD-','ps.*, a.name AS driver, ps.id_payment_schedule', $query );
+			if( $query != '' ){
+				return Cockpit_Payment_Schedule::q( $query );
+			}
+		}
 	}
 
 	public function shifts(){

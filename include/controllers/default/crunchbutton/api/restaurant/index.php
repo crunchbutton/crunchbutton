@@ -75,7 +75,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 			// only save if its a valid community
 			if ($c->id_community) {
-				$rc = Crunchbutton_Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$restaurant->id_restaurant.'"');
+				$rc = Crunchbutton_Restaurant_Community::q('select * from restaurant_community where id_restaurant=?', [$restaurant->id_restaurant]);
 				if (!$rc->id_restaurant_community) {
 					$rc = new Crunchbutton_Restaurant_Community;
 					$rc->id_restaurant = $restaurant->id_restaurant;
@@ -88,7 +88,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 		// Removes restaurant from community
 		if( $this->request()['id_community'] == 0 ){
-			$rc = Crunchbutton_Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$restaurant->id_restaurant.'"');
+			$rc = Crunchbutton_Restaurant_Community::q('select * from restaurant_community where id_restaurant=?', [$restaurant->id_restaurant]);
 			$rc->delete();
 		}
 

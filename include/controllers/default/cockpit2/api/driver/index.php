@@ -48,6 +48,19 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'all-admins-with-login':
+				$out = [];
+				$drivers = Admin::q( 'SELECT * FROM admin a INNER JOIN admin_payment_type apt ON a.id_admin = apt.id_admin WHERE a.name IS NOT NULL and a.login IS NOT NULL ORDER BY a.name ASC' );
+				foreach( $drivers as $driver ){
+					if( $driver->isDriver() ){
+						$community = $driver->communityDriverDelivery();
+						$name = $driver->name . ' (' . $driver->login . ') ' . $community->name;
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $name ];
+					}
+				}
+				echo json_encode( $out );
+				break;
+
 			case 'list-payment-type':
 				$out = [];
 				$drivers = Admin::drivers();
@@ -59,6 +72,12 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'referral':
+				$name = strtolower( trim( $this->request()[ 'name' ] ) );
+				$phone = Crunchbutton_Phone::clean( $this->request()[ 'phone' ] );
+				$code = Crunchbutton_Reward::createUniqueCode( $name, $phone );
+				echo json_encode( [ 'code' => $code ] );exit;
+				break;
 			default:
 				if ($this->method() == 'post') {
 					// save a setting
@@ -66,6 +85,9 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 
 				$json = $driver->exports();
 				$driver_info = $driver->driver_info()->exports();
+
+				$driver_info[ 'student' ] = intval( $driver_info[ 'student' ] );
+				$driver_info[ 'permashifts' ] = intval( $driver_info[ 'permashifts' ] );
 
 				$driver_info[ 'iphone_type' ] = '';
 				$driver_info[ 'android_type' ] = '';
@@ -82,7 +104,8 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				$json = array_merge( $json, $driver_info );
 
 				$payment_type = $driver->payment_type();
-				$json[ 'hourly' ] = ( $payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? '1' : '0';
+				$json[ 'payment_type' ] = $payment_type->payment_type;
+				$json[ 'hour_rate' ] = intval( $payment_type->hour_rate );
 
 				if( $driver->driver_info()->pexcard_date ){
 					$json[ 'pexcard_date' ] = $driver->driver_info()->pexcard_date()->format( 'Y,m,d' );

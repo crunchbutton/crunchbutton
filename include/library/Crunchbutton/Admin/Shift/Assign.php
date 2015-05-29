@@ -17,12 +17,16 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 	}
 
 	public function isFirstWeek( $id_admin, $date ){
-		$query = 'SELECT YEARWEEK( cs.date_start ) first_week, YEARWEEK( "' . $date . '" ) current_week
-							FROM community_shift cs
-								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
-								AND asa.id_admin = ' . $id_admin . ' ORDER BY cs.date_start ASC LIMIT 1';
-		$result = c::db()->get( $query );
-		$result = $result->get( 0 );
+		$query = '
+			SELECT
+				YEARWEEK( cs.date_start ) first_week,
+				YEARWEEK( ? ) current_week
+			FROM community_shift cs
+			INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+			AND asa.id_admin = ?
+			ORDER BY cs.date_start ASC LIMIT 1
+		';
+		$result = c::db()->get($query, [$date, $id_admin])->get(0);
 		if( $result->first_week && $result->current_week ){
 			return ( $result->first_week == $result->current_week );
 		}
@@ -46,9 +50,11 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 	}
 
 	public function shiftsByAdminPeriod( $id_admin, $date_start, $date_end ){
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
-																							INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin .
-																							' WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $date_start . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $date_end . '"' );
+		return Crunchbutton_Community_Shift::q('
+			SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+			INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ?
+			WHERE cs.date_start >= ? AND cs.date_end <= ?
+		', [$id_admin, $date_start, $date_end]);
 	}
 
 	public function assignAdminToShift( $id_admin, $id_community_shift, $permanently ){

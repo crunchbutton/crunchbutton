@@ -1,6 +1,9 @@
 <?php
 
 class Crunchbutton_Order_Eta extends Cana_Table {
+
+	const METHOD_SMART_ETA = 'smart-eta';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -34,6 +37,24 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 		$eta->save();
 
 		return $eta;
+	}
+
+	public function _smartEta( $order ){
+		if( !Crunchbutton_Order_Eta::hasSmartETA( $order->id_order ) ){
+			$restaurant = $order->restaurant();
+			$time = $restaurant->smartETA();
+			if( $time <= 0 ){
+				return;
+			}
+			$eta = new Order_Eta([
+				'id_order' => $order->id_order,
+				'time' => $time,
+				'distance' => null,
+				'date' => date('Y-m-d h:i:s'),
+				'method' => Crunchbutton_Order_Eta::METHOD_SMART_ETA
+			]);
+			$eta->save();
+		}
 	}
 
 	private static function _methodGoogle($order) {
@@ -104,6 +125,23 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 		];
 
 		//&key=API_KEY
+	}
+
+	public function registerSmartETA(){
+		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '" . Crunchbutton_Order::SHIPPING_DELIVERY . "' AND o.delivery_service = true AND o.date > DATE_SUB( NOW(), INTERVAL 10 minute ) ORDER BY o.id_order ASC";
+		$orders = Crunchbutton_Order::q( $query );
+		foreach( $orders as $order ){
+			Crunchbutton_Order_Eta::_smartEta( $order );
+		}
+	}
+
+	public function hasSmartETA( $id_order ){
+		$query = 'SELECT * FROM order_eta WHERE id_order = "' . $id_order . '" AND method = "' . Crunchbutton_Order_Eta::METHOD_SMART_ETA . '"';
+		$eta = Crunchbutton_Order_Eta::q( $query )->get( 0 );
+		if( $eta->id_order_eta ){
+			return true;
+		}
+		return false;
 	}
 
 	public function order() {

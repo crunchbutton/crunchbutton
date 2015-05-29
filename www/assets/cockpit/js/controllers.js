@@ -1,30 +1,43 @@
-NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
-	if (!AccountService || !AccountService.user || !AccountService.user.id_admin) {
-		MainNavigationService.link('/login');
-		return;
-	}
 
-	var id_order = $location.path().replace( '/', '' );
-	if( !isNaN( parseInt( id_order ) ) ){
-		MainNavigationService.link('/drivers/order/' + id_order);
-	} else {
-		if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
-			setTimeout(function(){
-				MainNavigationService.link('/drivers/welcome');
-				$rootScope.$apply();
-			},100);
+NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
+
+
+	var redirect = function() {
+		// redirect to login if there is no user
+		if (!AccountService.user || !AccountService.user.id_admin) {
+			MainNavigationService.link('/login');
 			return;
 		}
 
-		if (AccountService.user.permissions.GLOBAL) {
-			MainNavigationService.link('/home');
-		} else if (AccountService.isRestaurant) {
-			MainNavigationService.link('/restaurant/order/placement/dashboard');
-		} else if (AccountService.isDriver) {
-			MainNavigationService.link('/drivers/orders');
+		var id_order = $location.path().replace( '/', '' );
+		if( !isNaN( parseInt( id_order ) ) ){
+			MainNavigationService.link('/drivers/order/' + id_order);
 		} else {
-			MainNavigationService.link('/login');
+			if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
+				setTimeout(function(){
+					MainNavigationService.link('/drivers/welcome');
+					$rootScope.$apply();
+				},100);
+				return;
+			}
+
+			if (AccountService.user.permissions.GLOBAL) {
+				MainNavigationService.link('/home');
+			} else if (AccountService.isRestaurant) {
+				MainNavigationService.link('/restaurant/order/placement/dashboard');
+			} else if (AccountService.isDriver) {
+				MainNavigationService.link('/drivers/orders');
+			} else {
+				MainNavigationService.link('/login');
+			}
 		}
+	};
+
+	// wait for login to complete
+	if (!AccountService.init) {
+		$scope.$on('userAuth', redirect);
+	} else {
+		redirect()
 	}
 });
 
@@ -79,7 +92,10 @@ NGApp.controller('LegalCtrl', function ($scope) {
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 
 	$scope.loggingIn = false;
-
+	var l;
+	setTimeout(function(){
+		l = Ladda.create($('.button-login .ladda-button').get(0));
+	},700);
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 	$scope.login = function() {
 		if( !$scope.username ){
@@ -99,6 +115,7 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 			return;
 		}
 		$scope.loggingIn = true;
+		l.start();
 		AccountService.login( $scope.username, $scope.password, function( status ) {
 			if( status ){
 				MainNavigationService.link( '/' );
@@ -106,12 +123,15 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 				$scope.error = true;
 			}
 			$scope.loggingIn = false;
+			l.stop();
 		} );
 	}
 
 	// needs to be updated when the html is
 	$scope.welcome = Math.floor((Math.random() * 8) + 1);
 	console.debug('welcome message', $scope.welcome);
+
+
 });
 
 NGApp.controller( 'ProfileCtrl', function ($scope) {
@@ -146,13 +166,25 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 });
 
 NGApp.controller( 'CallText', function ($scope, $rootScope) {
+
 	$rootScope.$on('callText', function(e, num) {
+
 		$(':focus').blur();
 		$scope.number = num;
 		$scope.complete = $rootScope.closePopup;
 		App.dialog.show('.notification-call-text-container');
 
+		$scope.hideCallBox = true;
+		$scope.hideSMSBox = true;
+
 	});
+
+	// variables to controll the template 'assets/view/support-phone.html'
+	// when it is called by a modal
+	$scope.isModal = true;
+	$scope.hideCallBox = true;
+	$scope.hideSMSBox = true;
+
 });
 
 NGApp.filter('capitalize', function() {

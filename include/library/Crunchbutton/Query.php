@@ -16,7 +16,7 @@ class Crunchbutton_Query extends Cana_Model {
 			$words = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $search, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 			$sq = '';
 
-			foreach ($words as $word) {
+			foreach ($words as $k => $word) {
 				$sq .= ($sq ? ' AND ' : '').'(';
 				
 				if ($word{0} == '-') {
@@ -31,19 +31,24 @@ class Crunchbutton_Query extends Cana_Model {
 				}
 				
 				foreach ($params['fields'] as $key => $type) {
-
+					$w = null;
 					$sqq .= $sqq ? ' '.($match ? 'OR' : 'AND').' ' : '';
 
 					if ($type == 'like' || $type == 'liker' || $type == 'likel') {
-						$sqq .= ' '.$key.' '.($match ? '' : 'NOT').' LIKE "'.($type == 'like' || $type == 'likel' ? '%' : '').$word.($type == 'like' || $type == 'liker' ? '%' : '').'" ';
+						$sqq .= ' '.$key.' '.($match ? '' : 'NOT').' LIKE ? ';
+						$w = ($type == 'like' || $type == 'likel' ? '%' : '').$word.($type == 'like' || $type == 'liker' ? '%' : '');
 					} elseif ($type == 'eq') {
-						$sqq .= ' '.$key.' '.($match ? '' : '!').'= "'.$word.'" ';
+						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
+					} elseif ($type == 'inteq') {
+						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
+						$word = intval($word);
 					} elseif ($type == 'gt') {
-						$sqq .= ' '.$key.' > "'.$word.'" ';
+						$sqq .= ' '.$key.' > ? ';
 					} elseif ($type == 'lt') {
-						$sqq .= ' '.$key.' < "'.$word.'" ';
+						$sqq .= ' '.$key.' < ? ';
 					}
 					$sqq .= "\n";
+					$keys[] = $w ? $w : $word;
 				}
 
 				$sq .= $sqq.')';
@@ -54,7 +59,7 @@ class Crunchbutton_Query extends Cana_Model {
 			';
 			$sq = '';
 		}
-		
-		return $q;
+
+		return ['query' => $q, 'keys' => $keys];
 	}
 }

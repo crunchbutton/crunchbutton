@@ -3,7 +3,7 @@
 class Crunchbutton_Order_Dish extends Cana_Table {
 	public function options() {
 		if (!isset($this->_options)) {
-			$this->_options = Order_Dish_Option::q('select * from order_dish_option where id_order_dish="'.$this->id_order_dish.'"');
+			$this->_options = Order_Dish_Option::q('select * from order_dish_option where id_order_dish=?', [$this->id_order_dish]);
 		}
 		return $this->_options;
 	}
@@ -13,7 +13,7 @@ class Crunchbutton_Order_Dish extends Cana_Table {
 								FROM 
 									dish_option d INNER JOIN `option` o ON o.id_option = d.id_option 
 								WHERE 
-									d.id_dish = ' . $this->id_dish . '
+									d.id_dish = ?
 									AND 
 										o.type = "check" 
 									AND 
@@ -21,12 +21,12 @@ class Crunchbutton_Order_Dish extends Cana_Table {
 									AND 
 										o.id_option_parent IS NULL
 									AND 
-										d.id_option NOT IN ( SELECT id_option FROM order_dish_option WHERE id_order_dish = ' . $this->id_order_dish . ' )';
-		return Dish_Option::q($query);
+										d.id_option NOT IN ( SELECT id_option FROM order_dish_option WHERE id_order_dish = ? )';
+		return Dish_Option::q($query, [$this->id_dish, $this->id_order_dish]);
 	}
 
 	public function dish() {
-		return Dish::q('select * from dish where id_dish="'.$this->id_dish.'"');
+		return Dish::q('select * from dish where id_dish=?', [$this->id_dish]);
 	}
 	
 	public function exports() {

@@ -63,7 +63,9 @@
 		<td class="stealthfax-grid">Qty</td>
 		<td class="stealthfax-grid">Item</td>
 	</thead>
-	<? foreach ($order->dishes() as $dish) : ?>
+	<?
+	$dishes = $order->dishes( true );
+	foreach ( $dishes as $dish) : ?>
 		<tr>
 			<td class="stealthfax-grid">1</td>
 			<td class="stealthfax-grid"><?

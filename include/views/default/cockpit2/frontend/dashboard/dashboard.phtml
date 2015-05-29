@@ -1,0 +1,38 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="left title"><i class="fa fa-car"></i>Dashboard</h1>
+
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-boxes">
+
+
+		<div class="support-box-wrap box-content2" ng-repeat="(dashTitle, dashboard) in dashboards">
+			<div class="support-box-wrap-header">
+				<h1>{{dashTitle}}</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<table class="basic-table">
+					<tr ng-repeat="title in dashboard | limitTo:1">
+						<th ng-repeat="(key, value) in title">{{key}}</th>
+					</tr>
+					<tr ng-repeat="row in dashboard">
+						<td ng-repeat="data in row">{{data}}</td>
+					</tr>
+				</table>
+				
+				<br>
+				<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()">Refund</button>
+
+			</div>
+		</div>
+
+	</div>
+
+
+</div>

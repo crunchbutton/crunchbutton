@@ -96,4 +96,25 @@ class Cana_Controller_Rest extends Cana_Controller {
     public function method() {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
+	
+	public function error($id = null, $exit = true) {
+
+		switch ($id) {
+			case 404:
+				header('HTTP/1.0 404 Not Found');
+				break;
+
+			case 401:
+				header('HTTP/1.1 401 Unauthorized');
+				break;
+			
+			case 406:
+				header('HTTP/1.0 406 Not Acceptable');
+				break;
+		}
+
+		if ($exit) {
+			exit;
+		}
+	}
 }

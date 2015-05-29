@@ -13,11 +13,13 @@ if( $version == 'restaurant' ){
 	$isRestaurant = true;
 	$isDriverCockpit = false;
 }
+
 if( $version == 'customer' ){
 	$user = true;
 	$isRestaurant = false;
 	$isDriverCockpit = false;
 }
+
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
@@ -30,7 +32,14 @@ if( $version == 'customer' ){
 			<td class="topitem">Price</td>
 		<?php } ?>
 	</thead>
-	<?php foreach ($order->dishes() as $dish) { ?>
+	<?php
+	$dishes = $order->dishes( true );
+	// force load the dishes #5297
+	if( !$dishes || !$dishes->count() ){
+		$dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = "' . $order->id_order . '"' );
+	}
+	?>
+	<?php foreach ($dishes as $dish) { ?>
 		<tr>
 			<td class="fooditem">1</td>
 			<td class="fooditem"><?php
@@ -180,9 +189,14 @@ if( $version == 'customer' ){
 	</tr>
 	<?php
 	// change fax for 3rd party restaurants #2962
-	$showTipAndDeliveryFee = !( $viewer == 'restaurant' && $order->restaurant()->delivery_service );
+	if( $viewer != 'driver' ){
+		$showTipAndDeliveryFee = true;
+		$show_credit_card_tips = true;
+	} else {
+		$showTipAndDeliveryFee = !$order->restaurant()->delivery_service;
+	}
 
-	if( $showTipAndDeliveryFee ){
+	if( $showTipAndDeliveryFee && $show_credit_card_tips && $viewer != 'driver' ){
 		if ( $order->pay_type == 'card' && $order->tip ) { ?>
 			<tr>
 				<td></td>
@@ -199,13 +213,15 @@ if( $version == 'customer' ){
 		<?php }
 	}
 
-	if( $showTipAndDeliveryFee ){
-
+	if( $viewer != 'driver' || $show_delivery_fees ){
 		 if ( $order->restaurant()->delivery_fee ) { ?>
 			<tr>
 				<td></td>
 				<td style="text-align:right">Delivery Fee</td>
-				<td>$<?php echo $order->deliveryFee(); ?></td>
+				<td>
+				$<?php
+					echo number_format( $order->deliveryFee() + $order->serviceFee(), 2 );
+				?></td>
 				<?php if( $isDriverCockpit ) {  ?>
 				<td style="font-size:12px;color:#666;">
 					&mdash;
@@ -218,6 +234,7 @@ if( $version == 'customer' ){
 
 	?>
 
+	<?php /* #5597 ?>
 	<?php if ( $order->restaurant()->fee_customer ) { ?>
 		<tr>
 			<td></td>
@@ -230,6 +247,7 @@ if( $version == 'customer' ){
 			<?php } ?>
 		</tr>
 	<?php } ?>
+	<?php */ ?>
 
 	<tr>
 		<td></td>
@@ -290,8 +308,28 @@ if( $version == 'customer' ){
 	<?php if( $user && $order->chargedByCredit() > 0 ) { ?>
 	<tr style="font-weight:bold;">
 		<td></td>
-		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
-		<td>$<?php echo number_format($order->chargedByCredit(),2); ?></td>
+		<td style="text-align:right">
+			<?php
+			if( $order->pay_type == 'card' ) { ?>
+				<?php if( $order->reward_delivery_free ) { ?>
+					Delivery paid by Crunchbutton
+				<?php } else { ?>
+					Gift Card
+				<?php } ?>
+			<?php } else { ?>
+				Already Paid by Gift Card
+			<?php } ?>
+		</td>
+		<td>
+		<?php
+			if( $order->pay_type == 'card' ) { ?>
+				<?php if( !$order->reward_delivery_free ) { ?>
+					$<?php echo number_format($order->chargedByCredit(),2); ?>
+				<?php } ?>
+			<?php } else { ?>
+				$<?php echo number_format($order->chargedByCredit(),2); ?>
+			<?php } ?>
+		</td>
 	</tr>
 
 	<tr style="font-weight:bold;">

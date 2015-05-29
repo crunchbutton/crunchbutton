@@ -473,7 +473,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 
 	$scope.summary = function(){
 
-		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0, 'worked_hours': 0 };
+		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_payment': 0, 'total_reimburse':0, 'adjustment' : 0, 'worked_hours': 0, 'delivery_fee_collected': 0, 'customer_fee_collected': 0 };
 
 		var total_drivers = 0;
 		var total_payments = 0;
@@ -488,6 +488,8 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		var total_refunded = 0;
 		var total_invited_users = 0;
 		var total_payment_invited_users = 0;
+		var delivery_fee_collected = 0;
+		var customer_fee_collected = 0;
 		for( x in $scope.result.drivers ){
 			$scope.result.drivers[ x ].total_payments = ( $scope.result.drivers[ x ].total_payment_without_adjustment + $scope.result.drivers[ x ].adjustment );
 			if( $scope.result.drivers[ x ].pay ){
@@ -503,7 +505,12 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 				if( $scope.result.drivers[ x ].standard_reimburse ){
 					total_standard_reimbursements += $scope.result.drivers[ x ].standard_reimburse;
 				}
-
+				if( $scope.result.drivers[ x ].delivery_fee_collected ){
+					delivery_fee_collected += $scope.result.drivers[ x ].delivery_fee_collected;
+				}
+				if( $scope.result.drivers[ x ].customer_fee_collected ){
+					customer_fee_collected += $scope.result.drivers[ x ].customer_fee_collected;
+				}
 
 				total_orders += $scope.result.drivers[ x ].orders_count;
 				total_not_included += $scope.result.drivers[ x ].not_included;
@@ -540,6 +547,8 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		$scope.total_worked_hours = total_worked_hours;
 		$scope.total_invited_users = total_invited_users;
 		$scope.total_payment_invited_users = total_payment_invited_users;
+		$scope.delivery_fee_collected = delivery_fee_collected;
+		$scope.customer_fee_collected = customer_fee_collected;
 		$scope.sum = sum;
 	}
 
@@ -653,53 +662,6 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 
 });
 
-NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, SettlementService ) {
-
-	$scope.ready = false;
-	$scope.filter = false;
-
-	$scope.status = SettlementService.PAYMENT_STATUS_SCHEDULED;
-
-	$scope.update = function(){
-		SettlementService.drivers.scheduled( function( json ){
-			$scope.result = json;
-			$scope.ready = true;
-		} );
-	}
-
-	$scope.do_err_payments = function(){
-		SettlementService.drivers.do_err_payments( function(){
-			$scope.update();
-		} );
-	}
-
-	$scope.delete = function( id_payment_schedule ){
-		if( confirm( 'Confirm delete payment ' + id_payment_schedule + '?' ) ){
-			SettlementService.drivers.delete( id_payment_schedule, function(){
-				$scope.update();
-			} );
-		}
-	}
-
-	$scope.archive = function( id_payment_schedule ){
-		if( confirm( 'Confirm archive payment ' + id_payment_schedule + '?' ) ){
-			SettlementService.drivers.archive( id_payment_schedule, function(){
-				$scope.update();
-			} );
-		}
-	}
-
-	$scope.payment = function( id_payment ){
-		$scope.navigation.link( '/settlement/drivers/scheduled/' + id_payment );
-	}
-
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		$scope.update();
-	}
-
-});
-
 NGApp.controller( 'SettlementDriversDeletedCtrl', function ( $scope, SettlementService ) {
 
 	$scope.ready = false;
@@ -801,6 +763,56 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 	}
 });
 
+NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService, ViewListService) {
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 0,
+			status: 0
+		},
+		update: function() {
+			$scope.ready = false;
+			SettlementService.drivers.scheduled({
+				'page': $scope.query.page,
+				'search': $scope.query.search,
+				'id_driver': $scope.query.driver,
+				'type': $scope.query.type,
+				'status': $scope.query.status
+			}, function( data ){
+				$scope.payments = data.results;
+				$scope.complete(data);
+			});
+		}
+	});
+
+	$scope.query.status = 0;
+	$scope.query.type = 0;
+	$scope.pay_types = SettlementService.pay_types();
+	$scope.payment_statuses = SettlementService.scheduled_statuses();
+	$scope.update();
+
+	$scope.delete = function( id_payment_schedule ){
+		if( confirm( 'Confirm delete payment ' + id_payment_schedule + '?' ) ){
+			SettlementService.drivers.delete( id_payment_schedule, function(){
+				$scope.update();
+			} );
+		}
+	}
+
+	$scope.archive = function( id_payment_schedule ){
+		if( confirm( 'Confirm archive payment ' + id_payment_schedule + '?' ) ){
+			SettlementService.drivers.archive( id_payment_schedule, function(){
+				$scope.update();
+			} );
+		}
+	}
+
+});
+
 NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService, ViewListService) {
 
 	angular.extend($scope, ViewListService);
@@ -808,9 +820,9 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	$scope.view({
 		scope: $scope,
 		watch: {
+			search: '',
 			type: 0,
-			status: 0,
-			driver: 0,
+			status: 0
 		},
 		update: function() {
 			$scope.query.status = parseInt($scope.query.status);
@@ -819,9 +831,10 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 			$scope.ready = false;
 			SettlementService.drivers.payments({
 				'page': $scope.query.page,
+				'search': $scope.query.search,
 				'id_driver': $scope.query.driver,
 				'pay_type': $scope.query.type,
-				'balanced_status': $scope.query.status
+				'payment_status': $scope.query.status
 			}, function( data ){
 				$scope.payments = data.results;
 				$scope.complete(data);
@@ -837,9 +850,9 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-	$scope.balanced_status = function( id_payment ){
+	$scope.payment_status = function( id_payment ){
 		$scope.balancedRefresh = id_payment;
-		SettlementService.drivers.balanced_status( id_payment, function( json ){
+		SettlementService.drivers.payment_status( id_payment, function( json ){
 			if( json.error ){
 				App.alert( 'Oops, something bad happened: ' + json.error );
 			} else {
@@ -853,7 +866,7 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 	if( $scope.account.isLoggedIn() ){
 		$scope.pay_type = 0;
 		$scope.pay_types = SettlementService.pay_types();
-		$scope.balanced_statuses = SettlementService.balanced_statuses();
+		$scope.payment_statuses = SettlementService.payment_statuses();
 		drivers();
 		$scope.update();
 	}
@@ -865,7 +878,7 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	$scope.id_driver = 0;
 
 	var drivers = function(){
-		DriverService.listAllAdmins( function( data ){
+		DriverService.listAllAdminsWithLogin( function( data ){
 			var drivers = [];
 			$scope.drivers = data;
 			$scope.ready = true;
@@ -877,6 +890,7 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	}
 
 	var load = function(){
+		$scope.payment = {};
 		drivers();
 		payments_type();
 	}
@@ -888,6 +902,11 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 	$scope.pay = function(){
 
 		if( $scope.isPaying ){
+			return;
+		}
+
+		if( !$scope.payment.id_driver ){
+			App.alert( 'Select a driver!' );
 			return;
 		}
 
@@ -970,9 +989,9 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 		} );
 	}
 
-	$scope.balanced_status = function(){
+	$scope.payment_status = function(){
 			$scope.makeBusy();
-			SettlementService.drivers.balanced_status( $routeParams.id, function( json ){
+			SettlementService.drivers.payment_status( $routeParams.id, function( json ){
 				if( json.error ){
 					App.alert( 'Oops, something bad happened: ' + json.error );
 				} else {

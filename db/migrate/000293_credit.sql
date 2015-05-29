@@ -1,0 +1,1 @@
+ALTER TABLE `credit` ADD `shared` enum('facebook','twitter') DEFAULT null;

@@ -6,8 +6,6 @@
 
 	<div class="divider"></div>
 
-	<navigation-back></navigation-back>
-
 	<h2 class="title">
 		<span ng-if="!community.id_community">Add community</span>
 		<span ng-if="community.id_community">Edit community</span>
@@ -135,6 +133,14 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-show="community.is_auto_closed" ng-class="{'error':form.communityDriverRestaurantName.$invalid}">
+				<div class="label">Auto closed message:</div>
+				<div class="input"><input type="text" name="communityDriverRestaurantName" ng-model="community.driver_restaurant_name" ng-required="community.is_auto_closed"></div>
+				<div class="box-error">
+					<small ng-show="form.communityDriverRestaurantName.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input" ng-class="{'error':form.communityCloseAllRestaurants.$invalid}">
 				<div class="label">Close All Restaurants:</div>
 				<div class="input">
@@ -166,7 +172,7 @@
 
 			<li class="li-input" ng-show="community.close_3rd_party_delivery_restaurants || community.is_auto_closed" ng-class="{'error':form.communityClose3rdPartyRestaurantsNote.$invalid}">
 				<div class="label">Close 3rd Party Delivery Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
-				<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants || community.is_auto_closed"></div>
+				<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"></div>
 				<div class="box-error">
 					<small ng-show="form.communityClose3rdPartyRestaurantsNote.$error.required">Required.</small>
 				</div>
@@ -197,7 +203,7 @@
 	<ul class="ul-inputs">
 		<li class="li-input" ng-show="!isSaving">
 			<button class="button save" ng-click="save();">Save</button>
-			<button class="button cancel" ng-click="cancel()">Cancel</button>
+
 		</li>
 		<li class="li-input" ng-show="isSaving">
 			<i class="fa fa-circle-o-notch fa-spin"></i>
@@ -206,95 +212,7 @@
 
 	<br><br><br>
 
-	<div ng-show="alias.id_community">
 
-		<h2 class="title left"><span>Aliases</span></h2>
-
-		<div class="divider"></div>
-
-		<form name="formAlias" novalidate>
-
-			<div class="ul-inputs">
-
-				<ul ng-class="{'submitted':formAliasSubmitted}" class="box-content2">
-
-					<li class="li-input" ng-class="{'error':formAlias.aliasAlias.$invalid}">
-						<div class="label">Alias:</div>
-						<div class="input"><input type="text" name="aliasAlias" ng-model="alias.alias" required placeholder="Alias"></div>
-						<div class="box-error">
-							<small ng-show="formAlias.aliasAlias.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formAlias.aliasNameAlt.$invalid}">
-						<div class="label">Alternative name:</div>
-						<div class="input"><input type="text" name="aliasNameAlt" ng-model="alias.name_alt" required placeholder="Alternative name"></div>
-						<div class="box-error">
-							<small ng-show="formAlias.aliasNameAlt.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formAlias.aliasPrep.$invalid}">
-						<div class="label">Preposition (at, in, etc. e.g. "the best delivery at Yale"):</div>
-						<div class="input"><input type="text" name="aliasPrep" ng-model="alias.prep" required placeholder="Preposition"></div>
-						<div class="box-error">
-							<small ng-show="formAlias.aliasPrep.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formAlias.aliasTop.$invalid}">
-						<div class="label">Display Location after preposition on Community Error Page? (only do this for one alias per community, and only when community has launched):</div>
-						<div class="input">
-							<select name="aliasTop" ng-model="alias.top" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-						</div>
-						<div class="box-error">
-							<small ng-show="formAlias.aliasTop.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formAlias.aliasSort.$invalid}" ng-show="alias.top">
-						<div class="label">Sort:</div>
-						<div class="input">
-							<input type="number" ignore-mouse-wheel name="aliasSort" ng-model="alias.sort" ng-required="alias.top">
-						</div>
-						<div class="box-error">
-							<small ng-show="formAlias.aliasSort.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-show="!isSavingAlias">
-						<button class="button green" ng-click="add_alias();">Add</button>
-					</li>
-					<li class="li-input" ng-show="isSavingAlias">
-						<i class="fa fa-circle-o-notch fa-spin"></i>
-					</li>
-				</ul>
-				<div class="box-content2 box-content-table">
-					<table class="tb-zebra">
-						<tr>
-							<th>Alias</th>
-							<th>Preposition</th>
-							<th>Alternative name</th>
-							<th>Top</th>
-							<th>Sort</th>
-							<th></th>
-						</tr>
-						<tr ng-repeat="a in aliases">
-							<td>{{a.alias}}</td>
-							<td>{{a.prep}}</td>
-							<td>{{a.name_alt}}</td>
-							<td>{{a.top}}</td>
-							<td>{{a.sort}}</td>
-							<td>
-								<span class="orange link" ng-click="remove_alias(a.id_community_alias)">Remove</span>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</form>
-
-	</div>
 
 </div>
 

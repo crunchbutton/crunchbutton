@@ -6,7 +6,7 @@ class Crunchbutton_File extends Cana_Table {
 			$this->_notes = Note::q('
 				SELECT note.* FROM note
 				WHERE note.id_file="'.$this->id_file.'"
-				AND note.active=1
+				AND note.active=true
 			');
 		}
 		return $this->_notes;

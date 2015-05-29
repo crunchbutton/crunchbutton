@@ -22,9 +22,17 @@
 include/config/config.xml
 
 # files in cache
-cache
-logs/*
-www/cache/*
+/cache
+/logs/*
+/www/cache/*
+
+# files in build
+/www/build/*
+!.gitkeep
+/www/assets/css/bundle.css
+/www/assets/cockpit/css/bundle.css
+/www/assets/js/bundle.js
+/www/assets/cockpit/js/bundle.js
 
 #upload files
 www/upload/drivers-doc/*
@@ -40,3 +48,5 @@ workflow*
 
 composer.lock
 vendor/*
+
+npm-debug.log

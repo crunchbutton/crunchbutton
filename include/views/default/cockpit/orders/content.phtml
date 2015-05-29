@@ -59,8 +59,13 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
-								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND
+								<a href="javascript:;" class="refund was-refunded-<?=$order->uuid?>" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND
 								</a>
+
+								<br>
+								<br>
+								<a href="javascript:;" class="check-refunded check-was-refunded-<?=$order->uuid?>" data-uuid="<?=$order->uuid?>">Check if it was refunded</a>
+
 							<? endif ; ?>
 						<?php } ?>
 
@@ -269,7 +274,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<?php } ?>
 						<tr>
 							<td>Service Fee</td>
-							<td>$<?=$order->serviceFee()?> ($<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
+							<td>$<?=$order->serviceFee()?> (%<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
 						</tr>
 						<tr>
 							<td nowrap="">Delivery Fee</td>

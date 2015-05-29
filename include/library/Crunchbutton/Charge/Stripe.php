@@ -2,98 +2,123 @@
 
 class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 	public function __construct($params = []) {
-	
+		$this->_customer = $params['customer_id'];
+		$this->_card = $params['card_id'];
 	}
 	
 	public function charge($params = []) {
 		
-		$env = c::getEnv();
-		
-		Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+		c::stripe();
 
 		$success = false;
-		$reason = false;
-
-		$user = $params[ 'user' ];
-
-		// Start with no customer id
-		$customer_id = false;
-
-		// The user changed its card or it is a new one
-		if( $params['card']['id'] ){
-			// The first thing we need to do is check customer
-			$token = $params['card']['uri'];
-			// lets see if the customer exists
-			if ( !$user || !$user->payment_type()->stripe_id ) {
-					// if there is no user, create one
-					try {
-						$customer = Stripe_Customer::create( array(
-													'description' => "Crunchbutton",
-													'card' => $token
-												) );
-					} catch ( Exception $e ) {
-						print_r( $e );
-						die('creating customer error: 1');
-					}
-				} elseif ( $user && $user->payment_type()->stripe_id ) {
-					// if there is already a user, update it
-					try {
-						$customer = Stripe_Customer::retrieve( $user->payment_type()->stripe_id );
-						$customer->card = $token;
-						$customer->save();
-					} catch ( Exception $e ) {
-						print_r( $e );
-						die('creating customer error: 2');
-					}
-				}
-				$customer_id = $customer->id;
-			} 
-			// If we don't have a card token it means the user is already a customer
-			else if( $user->payment_type()->stripe_id ) {
-				$customer_id = $user->payment_type()->stripe_id;
-			}
-
-			// yay, we have a valid customer
-			if( $customer_id ){
-				// Now we have to charge it
-				try {
-					$charge = Stripe_Charge::create([
-						'amount' => $params['amount'] * 100,
-						'currency' => 'usd',
-						'customer' => $customer_id,
-						'description' => $params['restaurant']->name,
-					] );
-				} 
-				// Shit happens
-				catch(Stripe_CardError $e) {
-					Log::debug( [ 'card error' => 'card declined', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Your card was declined. Please try again!';
-				} catch (Stripe_InvalidRequestError $e) {
-					Log::debug( [ 'card error' => 'invalid request', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Stripe_AuthenticationError $e) {
-					Log::debug( [ 'card error' => 'auth error', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Stripe_ApiConnectionError $e) {
-					Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Stripe_Error $e) {
-					Log::debug( [ 'card error' => 'api connection', 'Exception' => $e->getJsonBody(), 'type' => 'stripe error' ]);
-					$errors[] = 'Please update your credit card information.';
-				} catch (Exception $e) {
-					$errors[] = 'Not enough card information.';
-				}
-
-			if ( $charge->paid && !$charge->refunded ) {
-				$success = true;
-				$txn = $charge->id;
-			} 
-		} 
-		if (!$success && !$errors) {
-			$errors[] = 'Not enough card information.';
+		
+		if (!$params['card'] && !$this->_customer) {
+			$errors[] = 'Missing all card information. Please try entering your card information again.';
 		}
 
-		return [ 'status' => $success, 'txn' => $txn, 'errors' => $errors, 'customer' => $customer ];
+		// The user changed its card or it is a new one
+		if ($params['card']) {
+			
+			// create a customer if it doesnt exist
+			if (!$this->_customer) {
+				try {
+					$customer = \Stripe\Customer::create([
+						'description' => $params['name'],
+						'email' => $params['email'],
+						'source' => $params['card']['uri']
+					]);
+
+				} catch(\Stripe\Error\Card $e) {
+					$errors[] = $e->getMessage();
+				} catch (\Stripe\Error\InvalidRequest $e) {
+					$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
+				} catch (\Stripe\Error\Authentication $e) {
+					$errors[] = 'Payment authention failed';
+				} catch (\Stripe\Error\ApiConnection $e) {
+					$errors[] = 'Connection error communicating with Stripe.';
+				} catch (\Stripe\Error\Base $e) {
+					$error[] = 'Some wierd error when communicating with Stripe.';
+					
+				} catch (Exception $e) {
+					$errors[] = 'Could not create a new user for some strange reason.';
+				}
+
+				$this->_customer = $customer->id;
+						
+			// there is already a customer
+			} else {
+				try {
+					$customer = \Stripe\Customer::retrieve($this->_customer);
+					$customer->sources->create(['card' => $params['card']['uri']]);
+					/* @todo: stripe broke this right now
+					$customer->sources->default_source = $params['card']['id'];
+					$customer->save();
+					*/
+
+				} catch(\Stripe\Error\Card $e) {
+					$errors[] = $e->getMessage();
+				} catch (\Stripe\Error\InvalidRequest $e) {
+					$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
+				} catch (\Stripe\Error\Authentication $e) {
+					$errors[] = 'Payment authention failed';
+				} catch (\Stripe\Error\ApiConnection $e) {
+					$errors[] = 'Connection error communicating with Stripe.';
+				} catch (\Stripe\Error\Base $e) {
+					$error[] = 'Some wierd error when communicating with Stripe.';
+					
+				} catch (Exception $e) {
+					$errors[] = 'Could not add new card for some reason. Try using the old one.';
+				}
+			}
+			
+			$this->_card = $params['card']['id'];
+		}
+
+		if (!$errors) {
+			// Now we have to charge it
+			try {
+				$charge = \Stripe\Charge::create([
+					'amount' => $params['amount'] * 100,
+					'currency' => 'usd',
+					'customer' => $this->_customer,
+					'source' => $this->_card,
+					'description' => $params['restaurant']->name,
+					'capture' => c::config()->site->config('processor_payments_capture')->value ? true : false,
+					'statement_descriptor' => $params['restaurant']->statementName()
+				]);
+
+			} catch(\Stripe\Error\Card $e) {
+				$errors[] = $e->getMessage();
+			} catch (\Stripe\Error\InvalidRequest $e) {
+				$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
+			} catch (\Stripe\Error\Authentication $e) {
+				$errors[] = 'Payment authention failed';
+			} catch (\Stripe\Error\ApiConnection $e) {
+				$errors[] = 'Connection error communicating with Stripe.';
+			} catch (\Stripe\Error\Base $e) {
+				$error[] = 'Some wierd error when communicating with Stripe.';
+
+			} catch (Exception $e) {
+				$errors[] = 'An almost completly vague payment error.';
+			}
+		}
+
+		if ($charge && $charge->paid && !$charge->refunded) {
+			$success = true;
+			$txn = $charge->id;
+		} 
+
+		if (!$success && !$errors) {
+			$errors[] = 'Completly vague payment error. Contact support and complain. We love complaints.'."\n\n".'angrycustomers@_DOMAIN_';
+		}
+
+		return [
+			'status' => $success,
+			'txn' => $txn,
+			'errors' => $errors,
+			'customer' => $this->_customer,
+			'card' => $this->_card
+		];
 
 	}	
 }

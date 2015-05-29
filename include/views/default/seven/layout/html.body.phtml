@@ -45,6 +45,14 @@
 					</tr>
 				</table>
 			</li>
+			<li ng-if="account.user.id_user" ng-click="navigation.link('/free-food', null, true)" ng-class="{'nav-active': (navigation.page == 'free-food')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-star"></i></td>
+						<td class="side-menu-label">Free food</a></td>
+					</tr>
+				</table>
+			</li>
 			<li ng-click="navigation.link('/work', null, true)" ng-class="{'nav-active': (navigation.page == 'work')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -134,9 +142,9 @@
 					</div>
 
 					<div title="Crunchbutton" class="logo animated-resize" ng-click="navigation.home()"></div>
-					
+
 					<div class="desktop-top-nav hide-mobile hide-before-init">
-						<a href="/work"><u>We're hiring!</u></a>
+						<a href="/work"><u>Work with us!</u></a>
 						<a href="/">Home</a>
 						<a href="/help">Help</a>
 						<a href="/orders" ng-if="account.user.id_user">Account</a>
@@ -149,8 +157,8 @@
 			</div>
 		</div>
 
-		<div class="button-bottom-wrapper fixed">
-			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Get Food</div></button></div>
+		<div ng-show="isMobileWidth" class="button-bottom-wrapper fixed">
+			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Place Order</div></button></div>
 			<div class="button-pushable" ng-show="!navigation.order.form.name && !navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.checkout();"><div>Checkout</div></button></div>
 		</div>
 
@@ -161,26 +169,7 @@
 
 			<div class="divider"></div>
 
-			<div class="footer">
-				<div class="divider line"></div>
-				<div class="content-padding">
-					<? if (!$this->export) : ?>
-						<div class="fb-like-box" data-width="200" data-href="https://www.facebook.com/crunchbutton" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div>
-					<? endif ; ?>
 
-					<div class="social">
-						<a href="http://facebook.com/crunchbutton" target="_blank" class="fa fa-facebook"></a>
-						<a href="http://twitter.com/crunchbutton" target="_blank" class="fa fa-twitter"></a>
-						<a href="http://www.linkedin.com/company/crunchbutton" target="_blank" class="fa fa-linkedin"></a>
-					</div>
-					<span ng-controller="BottomCtrl">
-						<div class="divider"></div>
-						<div class="copyright">&copy; <?=date('Y')?> <a ng-click="navigation.link('/legal')">Crunchbutton</a></div>
-						<div class="divider"></div>
-					</span>
-					<br>
-				</div>
-			</div>
 
 		</div>
 
@@ -190,17 +179,100 @@
 	<div class="divider"></div>
 </div>
 
+<div class="footer hide-before-init">
+	<div class="content-padding">
+		<div class="footer-columns">
+			<div class="footer-column-description">
+				<div class="logo"></div>
+				<p>
+					Push a button. Get food. We deliver your favorite restaurants straight to your door.
+					<br><br>
+					Mail us: <a href="mailto:{{hello}}">{{hello}}</a><br>
+					Text us: <a href="tel:+1{{textUs}}">{{textUsFormatted}}</a>
+				</p>
+			</div>
+			<div class="footer-column-info">
+				<ul>
+					<li><b>Popular</b></li>
+					<li ng-repeat="alias in topCommunities | limitTo:5">
+						<a href="/{{alias.alias}}">{{alias.name}}</a>
+					</li>
+				</ul>
+			</div>
+			<div class="footer-column-info">
+				<ul>
+					<li><b>Information</b></li>
+					<li><a href="/about">About Us</a></li>
+					<li><a href="/owners">Restaurant Signup</a></li>
+					<li><a href="/work">Work with Us</a></li>
+					<li><a href="/help">Help &amp; FAQ</a></li>
+					<li><a href="/legal">Legal</a></li>
+				</ul>
+			</div>
+			<div class="footer-column-quote">
+				<div class="quote-wrap"><p>
+					<sup class="fa fa-quote-left"></sup>
+					<i>Here is something funny written by someone else.</i>
+					<sub class="fa fa-quote-right"></sub>
+				</p></div>
+				<div class="quote-author">
+					<div class="quote-author-image" style="background-image: url(http://graph.facebook.com/witgi/picture?width=120&height=120)"></div>
+					<div class="quote-author-info">
+						<p>
+							<b>Devin Smith</b><br>
+							CTO &amp; co-founder
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<? /*
+		<? if (!$this->export) : ?>
+			<div class="fb-like-box" data-width="200" data-href="https://www.facebook.com/crunchbutton" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div>
+		<? endif ; ?>
+		*/ ?>
+
+		<br><br><br><br>
+		<div class="divider line"></div>
+		<br><br>
+
+		<div class="social">
+			<a href="http://facebook.com/crunchbutton" target="_blank"><i class="fa fa-facebook"></i></a>
+			<a href="http://twitter.com/crunchbutton" target="_blank"><i class="fa fa-twitter"></i></a>
+			<a href="http://instagram.com/crunchbutton" target="_blank"><i class="fa fa-instagram"></i></a>
+			<a href="http://www.linkedin.com/company/crunchbutton" target="_blank"><i class="fa fa-linkedin"></i></a>
+		</div>
+
+		<div class="footer-download">
+			<a href="/download"><div class="app-store"></div></a>
+			<a href="/download"></a><div class="play-store"></div></a>
+		</div>
+		<div class="divider"></div>
+		<div class="copyright">&copy <?=date('Y')?> <a href="/">Crunchbutton</a></div>
+		<div class="divider"></div>
+		<? /*
+		<span ng-controller="BottomCtrl">
+			<div class="divider"></div>
+			<div class="copyright">&copy; <?=date('Y')?> <a ng-click="navigation.link('/legal')">Crunchbutton</a></div>
+		</span>
+		<br>
+		*/ ?>
+	</div>
+</div>
+
 <div ng-include="'assets/view/notification.alert.html'"></div>
 <div ng-include="'assets/view/restaurant.closed.html'"></div>
 <div ng-include="'assets/view/account.html'"></div>
 <div ng-include="'assets/view/account.reset.html'"></div>
 <div ng-include="'assets/view/restaurant.closed.inline.html'"></div>
+<div ng-include="'assets/view/referral.html'"></div>
 <div ng-include="'assets/view/giftcard.html'"></div>
 <div ng-include="'assets/view/support.html'"></div>
 <div ng-include="'assets/view/connection.error.html'"></div>
 
 <div id="fb-root"></div>
 <div class="is-ui2"></div>
+<div class="body-loader hide-after-init"></div>
 <div class="preload-home"></div>
 
 <div class="location-overpull-preload-one"></div>

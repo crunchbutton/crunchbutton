@@ -33,15 +33,15 @@ class Crunchbutton_Deploy_Version extends Cana_Table {
 			return;
 		}
 
-		$que = self::q('
+		$que = self::q("
 			select deploy_version.* from deploy_version
 			left join deploy_server using (id_deploy_server)
 			where
-				deploy_server.hostname="'.$host.'"
-				and status="new"
+				deploy_server.hostname=?
+				and status='new'
 				and date <= NOW()
 			order by date desc
-		');
+		", [$host]);
 		return $que;
 	}
 	

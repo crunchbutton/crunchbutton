@@ -22,7 +22,7 @@ class Controller_assets extends Crunchbutton_Controller_AssetBundle {
 
 		if (preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL'])) {
 			$path = c::config()->dirs->www.'assets/'.$path.'/';
-			$file = $file.'.scss';
+			//$file = $file.'.scss';
 			Scss::serve($path.$file);
 		}
 	}

@@ -1,26 +1,65 @@
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
-			<th>ID</th>
 			<th>Name</th>
-			<th>Permalink</th>
-			<th>Timezone</th>
-			<th>Last Order</th>
 			<th class="tb-center">Restaurants</th>
-			<th>Active</th>
-			<th></th>
+			<? /* <th class="tb-center">Drivers</th> */ ?>
+			<th>Last Order</th>
+			<th>Status info</th>
+			<th class="tb-small">Status</th>
+			<th class="tb-small" nowrap>Autoclose</th>
+			<th class="tb-small">Type</th>
+			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="community in communities track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}">
-			<td><a href="/community/{{community.permalink || community.id_community}}">{{community.id_community}}</td>
-			<td>{{community.name}}</td>
-			<td>{{community.permalink}}</td>
-			<td>{{community.timezone | formatTimezone}}</td>
-			<td>
-				<span ng-if="community._order_date"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
+			<td nowrap>
+				<span class="listview-bold">{{community.name}}</span>
+				<br><span class="listview-smaller listview-light">{{community.timezone}}</span>
 			</td>
-			<td class="tb-center"><a href="/restaurants?community={{community.id_community}}">{{community.restaurants}}</a></td>
-			<td><i class="fa fa-check" ng-if="community.active"></i></td>
-			<td class="tb-center"><a href="/community/edit/{{community.permalink}}">Edit</a></td>
+			<td class="tb-center"><a href="/restaurants?community={{community.id_community}}" class="listview-smaller">{{community.restaurants}}</a></td>
+			<? /* <td class="tb-center"><a href="/staff?limit=20&page=1&search={{community.name}}&type=driver&status=active&working=all&pexcard=all">{{community.drivers}}</a></td>*/ ?>
+			<td>
+				<span ng-if="community._order_date" class="listview-smaller"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
+			</td>
+			<td>
+				<span class="listview-smaller" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">
+					<span class="listview-bold">{{community.closedLog.closed_by}}</span> @ {{community.closedLog.closed_at}}<br>
+					<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
+				</span>
+				<? /*
+				@todo: might be faster?
+				<span ng-if="community.close_all_restaurants">
+					All restaurants closed by {{community.close_all_restaurants_id_admin}} on {{community.close_all_restaurants_date}}<br>
+					{{community.close_all_restaurants_note}}
+				</span>
+				<span ng-if="community.close_all_restaurants && community.close_3rd_party_delivery_restaurants">
+					<br>
+				</span>
+				<span ng-if="community.close_3rd_party_delivery_restaurants == '1'">
+					3rd party delivery restaurants closed by {{community.close_3rd_party_delivery_restaurants_id_admin}} on {{community.close_3rd_party_delivery_restaurants_date}}<br>
+					{{community.close_3rd_party_delivery_restaurants_note}}
+				</span>
+				*/ ?>
+			</td>
+			<td class="tb-center tb-v-center">
+				<span class="tag tag-red" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
+				<span class="tag tag-green" ng-if="!community.close_all_restaurants && !community.is_auto_closed  && !community.close_3rd_party_delivery_restaurants">Open</span>
+			</td>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
+				<span class="tag tag-red" ng-if="!community.auto_close">Disabled</span>
+			</td>
+			<td class="tb-center tb-v-center">
+				<span class="tag tag-orange" ng-if="community.type == '3rd'">3rd</span>
+				<span class="tag tag-blue" ng-if="community.type == '1st'">1st</span>
+				<span class="tag tag-purple" ng-if="community.type == 'both'">Both</span>
+				<span class="tag tag-lightgrey" ng-if="community.type == 'none'">None</span>
+				<span class="tag tag-lightgrey" ng-if="community.type == 'takeout'">Takeout</span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="/community/edit/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+				<a href="/community/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+			</td>
 		</tr>
 	</table>
 </div>

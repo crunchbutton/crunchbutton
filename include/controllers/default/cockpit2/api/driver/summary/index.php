@@ -4,7 +4,20 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 		$this->_schedules = [];
-		$this->_driverSummary();
+		switch ( c::getPagePiece( 3 ) ) {
+			case 'status':
+				$this->_driverStatus();
+				break;
+
+			default:
+				$this->_driverSummary();
+				break;
+		}
+	}
+
+	private function _driverStatus(){
+
+		$this->_error();
 	}
 
 	private function _driverSummary(){
@@ -38,12 +51,15 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 		$settlement = new Settlement();
 		$driver = Admin::o( $id_driver );
+		$keys = [];
+
+		$keys[] = $id_driver;
 
 		$out = [];
 
 		// $out = array_merge( $out, $this->_invites( $id_driver ) );
 
-		$page = $this->request()[ 'page' ] ? c::db()->escape( $this->request()[ 'page' ] ) : 1;
+		$page = $this->request()[ 'page' ] ? $this->request()[ 'page' ] : 1;
 
 		$limit = 20;
 
@@ -56,27 +72,37 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			$offset = ( $page - 1 ) * $limit;
 		}
 
-		$pay_type = c::db()->escape( $this->request()[ 'type' ] );
+		$pay_type = $this->request()[ 'type' ];
 
-		if( $pay_type != 'all' ){
+		$keys[] = $limit;
+		$keys[] = $offset;
+
+		if( $pay_type && $pay_type != 'all' ){
 			$where = ' AND pay_type = "' . $pay_type . '"';
+			// $keys[] = $pay_type;
 		}
 
-		$query = 'SELECT COUNT( * ) AS total FROM payment_schedule WHERE id_driver = "' . $id_driver . '"' . $where;
+		$query = 'SELECT COUNT( * ) AS total FROM payment_schedule WHERE id_driver = ? ' . $where;
+
 		$result = c::db()->get( $query );
 		$out[ 'count' ] = intval( $result->_items[ 0 ]->total );
 		$out[ 'pages' ] = ceil( $out[ 'count' ] / $limit );
-
-		$query = 'SELECT * FROM payment_schedule WHERE id_driver = "' . $id_driver . '" ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ' . $offset . ',' . $limit;
-
-		$payments = Cockpit_Payment_Schedule::q( $query );
+		$query = 'SELECT * FROM payment_schedule WHERE id_driver = ? ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ? OFFSET ?';
+		$payments = Cockpit_Payment_Schedule::q( $query, $keys);
 		$has_error = false;
 
 		foreach( $payments as $payment ){
 			$_payment = [];
 			$_payment[ 'id_payment_schedule' ] = $payment->id_payment_schedule;
-			$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment ) );
-			$_payment[ 'amount' ] = ( !$payment->amount ? 0 : $payment->amount );
+			$_payment = array_merge( $_payment, Cockpit_Payment_Schedule::statusToDriver( $payment, true ) );
+			$_payment[ 'amount' ] = floatval( ( !$payment->amount ? 0 : $payment->amount ) );
+			if( $payment->pay_type != Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
+				$_payment[ 'earnings' ] = ( $_payment[ 'amount' ] + $_payment[ 'collected_in_cash' ] );
+			} else {
+				$_payment[ 'collected_in_cash' ] = 0;
+				$_payment[ 'earnings' ] = 0;
+			}
+
 			$_payment[ 'type' ] = ( $payment->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ) ? 'Reimbursement' : 'Payment';
 			if( $payment->arbritary ){
 				$_payment[ 'range_date' ] = $payment->note;
@@ -84,6 +110,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 			if( $_payment[ 'status' ] == 'Error' ){
 				$has_error = true;
 			}
+
 			$out[ 'results' ][] = $_payment;
 		}
 		$out[ 'has_error' ] = $has_error;

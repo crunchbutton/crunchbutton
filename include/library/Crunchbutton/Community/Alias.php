@@ -10,16 +10,16 @@ class Crunchbutton_Community_Alias extends Cana_Table {
 	}
 
 	public static function alias( $alias ) {
-		$query = sprintf("
-				SELECT
-					ca.alias, c.permalink, c.id_community, ca.prep, ca.name_alt, c.loc_lat, c.loc_lon
-				FROM
-					community_alias ca
-				INNER JOIN
-					community c ON c.id_community = ca.id_community
-				WHERE ca.alias = '%s'",
-				c::db()->escape( $alias ) );
-		$res = Cana::db()->query( $query );
+		$query = '
+			SELECT
+				ca.alias, c.permalink, c.id_community, ca.prep, ca.name_alt, c.loc_lat, c.loc_lon
+			FROM
+				community_alias ca
+			INNER JOIN
+				community c ON c.id_community = ca.id_community
+			WHERE ca.alias = :alias
+		';
+		$res = Cana::db()->query( $query, ['alias' => $alias ] );
 		while ( $row = $res->fetch() ) {
 			return array( 'id_community' => $row->id_community, 'permalink' => $row->permalink, 'prep' => $row->prep, 'name_alt' => $row->name_alt, 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon );
 		}

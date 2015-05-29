@@ -49,11 +49,11 @@ class Cana_App extends Cana_Model {
 		// set up default timezone for strict data standards
 		date_default_timezone_set($this->_config->timezone);
 		
-		try {
-			$this->buildDb($this->_env);
-		} catch (Exception $e) {
-			throw new Cana_Exception('Could not connect to the database');
-		}
+		//try {
+			$this->_db = $this->buildDb($this->_env);
+		//} catch (Exception $e) {
+			//throw new Cana_Exception('Could not connect to the database');
+		//}
 
 		if (!isset($params['postInitSkip'])) {
 			$this->postInit($params);
@@ -123,9 +123,9 @@ class Cana_App extends Cana_Model {
 			$connect->pass = $this->crypt()->decrypt($connect->pass);
 		}
 
-		$this->_db = new Cana_Db($connect);
-		
-		return $this;
+		$db = new Cana_Db($connect);
+		unset($connect);
+		return $db;
 	}
 	
 	
@@ -347,10 +347,7 @@ class Cana_App extends Cana_Model {
 	
 	public function cache() {
 		if (!isset($this->_cache)) {
-			$this->_cache = new Cache(array(
-				'dir'		=> $this->config()->dirs->cache.'data/',
-				'expire'	=> 60*60*60
-			));
+			$this->_cache = new Cache($this->config()->cache->default);
 		}
 		return $this->_cache;
 	}

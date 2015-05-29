@@ -92,6 +92,7 @@
 						<td>Total Reimbursements</td>
 						<td>$ {{total_reimbursements | formatPrice}}</td>
 					</tr>
+
 					<tr positive-or-negative-color="{{total_payments}}">
 						<td>Total Payments</td>
 						<td>$ {{total_payments | formatPrice}}</td>
@@ -170,9 +171,12 @@
 					<td class="td-medium">Drivers</td>
 					<td>Type</td>
 					<td>Reimbursement</td>
+					<td>Total Delivery Fee <br>Collected In Cash</td>
+					<td>Total Customer Fee <br>Collected In Cash</td>
 					<td>Payment</td>
 					<td>Total Spent</td>
 					<td>Standard Reimburse</td>
+					<td>Per-Order Pay</td>
 					<td></td>
 				</tr>
 			</thead>
@@ -185,9 +189,12 @@
 					<td>{{driver.name}}</td>
 					<td>{{driver.pay_type.payment_type}}</td>
 					<td>$ {{driver.total_reimburse | formatPrice}}</td>
+					<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
+					<td>$ {{driver.customer_fee_collected | formatPrice}}</td>
 					<td>$ {{driver.total_payment | formatPrice}}</td>
 					<td>$ {{driver.total_spent | formatPrice}}</td>
 					<td>$ {{driver.standard_reimburse | formatPrice}}</td>
+					<td>$ {{driver.total_payment_per_order | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -235,6 +242,17 @@
 				<td>Crunchbutton Fees</td>
 				<td>$ {{sum.restaurant_fee | formatPrice}}</td>
 			</tr>
+
+			<tr positive-or-negative-color="{{sum.delivery_fee_collected}}">
+				<td>Total Delivery Fee Collected In Cash by Hourly Drivers</td>
+				<td>$ {{sum.delivery_fee_collected | formatPrice}}</td>
+			</tr>
+
+			<tr positive-or-negative-color="{{sum.customer_fee_collected}}">
+				<td>Total Customer Fee Collected In Cash</td>
+				<td>$ {{sum.customer_fee_collected | formatPrice}}</td>
+			</tr>
+
 			<tr positive-or-negative-color="{{sum.gift_card}}">
 				<td>Gift Card</td>
 				<td>$ {{sum.gift_card | formatPrice}}</td>
@@ -356,6 +374,14 @@
 									<td>Markup</td>
 									<td>$ {{driver.markup | formatPrice}}</td>
 								</tr>
+								<tr positive-or-negative-color="{{delivery_fee_collected}}">
+									<td>Total Delivery Fee Collected In Cash</td>
+									<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{customer_fee_collected}}">
+									<td>Total Customer Fee Collected In Cash</td>
+									<td>$ {{driver.customer_fee_collected | formatPrice}}</td>
+								</tr>
 								<tr positive-or-negative-color="{{driver.credit_charge}}">
 									<td>Credit Card Charge</td>
 									<td>$ {{driver.credit_charge | formatPrice}}</td>
@@ -457,6 +483,7 @@
 									<td>Type</td>
 									<td>Tip</td>
 									<td>Delivery Fee</td>
+									<td>Customer Fee</td>
 									<td>Reimburse</td>
 									<td>Payment</td>
 									<td>Date</td>
@@ -475,6 +502,7 @@
 									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.customer_fee | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_reimburse | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_payment | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
