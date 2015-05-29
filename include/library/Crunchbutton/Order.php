@@ -483,6 +483,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'restaurant' 		=> $params['restaurant'],
 				'notes' 				=> $params['notes'],
 				'errors' 				=> $res['errors'],
+				'geomatched' 					=> $params['geomatched'],
 				'cart' 					=> $params['cart'],
 				'type' 					=> 'order-log'
 			] );
@@ -642,6 +643,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->date = date('Y-m-d H:i:s');
 		$this->delivery_service = $this->restaurant()->hasDeliveryService();
 		$this->id_community = $this->restaurant()->community()->id_community;
+
+		$this->geomatched = ( intval( $params['geomatched'] ) ? 1 : 0 );
+
 		$this->save();
 
 		Log::debug( [ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ] );
