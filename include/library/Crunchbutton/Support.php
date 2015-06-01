@@ -21,11 +21,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			->table('support')
 			->idVar('id_support')
 			->load($id);
-		if(!$id) {
-			date_default_timezone_set('UTC'); // always save in utc
-			$this->datetime = date('Y-m-d H:i:s e');
-			$this->status = 'open';
-	  }
+
+		$this->datetime = date('Y-m-d H:i:s');
+		$this->status = 'open';
 	}
 
 	public function getFirstCustomerMessage(){
