@@ -56,25 +56,24 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	};
 
 	$scope.iOS = App.iOS();
-	
+
 	var load = function() {
 		DriverOrdersViewService.load();
 		watching = null;
 	};
-	
+
 	var watching = null;
 
 	if (!AccountService.init) {
-		// we got here before the auth service was complete. 
+		// we got here before the auth service was complete.
 		watching = $rootScope.$on('userAuth', load);
 	}
-	
-	if (AccountService.isLoggedIn()) {
-	    load();
-	    setTimeout(function() {
-			DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0));
-		}, 1000 );
-	}
+
+
+	load();
+	setTimeout(function() {
+		DriverOrdersViewService.textLoader = Ladda.create($('#textCustomer5').get(0));
+	}, 1000 );
 
 });
 
@@ -179,28 +178,26 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 
 	$scope.isMobile = App.isMobile();
 
-	if( $scope.account.isLoggedIn() ){
-		$scope.id_admin = parseInt( $scope.account.user.id_admin );
-		if( $scope.account.isAdmin ){
-			if( $routeParams.id ){
-				$scope.id_admin = parseInt( $routeParams.id );
-			}
+	$scope.id_admin = parseInt( $scope.account.user.id_admin );
+	if( $scope.account.isAdmin ){
+		if( $routeParams.id ){
+			$scope.id_admin = parseInt( $routeParams.id );
 		}
-		$scope.view( {
-			scope: $scope,
-			watch: { type: 'all' },
-			update: function() {
-		// 		var data = {};
-		// angular.extend( data, query );
-		// data.id_admin = id_admin;
-				$scope.query.id_admin = $scope.id_admin;
-				DriverService.summary( $scope.query, function( data ){
-					$scope.summary = data;
-					$scope.complete( data );
-				} );
-			}
-		} );
 	}
+	$scope.view( {
+		scope: $scope,
+		watch: { type: 'all' },
+		update: function() {
+	// 		var data = {};
+	// angular.extend( data, query );
+	// data.id_admin = id_admin;
+			$scope.query.id_admin = $scope.id_admin;
+			DriverService.summary( $scope.query, function( data ){
+				$scope.summary = data;
+				$scope.complete( data );
+			} );
+		}
+	} );
 
 } );
 
@@ -328,10 +325,7 @@ NGApp.controller( 'DriversPaymentCtrl', function ( $scope, DriverService, $route
 		} );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 });
 
 
@@ -365,9 +359,8 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 		$scope.navigation.link( '/drivers/shifts/schedule' );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		$scope.list();
-	}
+
+	$scope.list();
 
 } );
 
@@ -544,9 +537,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		} );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		list();
-	}
+	list();
 
 } );
 
@@ -1148,15 +1139,14 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 		$scope.navigation.link( '/staff/list' );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		// just to cache the config process stuff
-		ConfigService.getProcessor( function( json ){
-			$scope.processor = json.processor.type;
-			$scope.isBalanced = ( json.processor.type == 'balanced' );
-			$scope.isStripe = ( json.processor.type == 'stripe' );
-			load();
-		} );
-	}
+
+	// just to cache the config process stuff
+	ConfigService.getProcessor( function( json ){
+		$scope.processor = json.processor.type;
+		$scope.isBalanced = ( json.processor.type == 'balanced' );
+		$scope.isStripe = ( json.processor.type == 'stripe' );
+		load();
+	} );
 
 });
 

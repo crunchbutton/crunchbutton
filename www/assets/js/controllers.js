@@ -1303,11 +1303,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	// Force unbusy
 	App.busy.unBusy();
 
-	if( !AccountService.isLogged() ){
-		$location.path( '/' );
-		return;
-	}
-
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 	$scope.order = {};

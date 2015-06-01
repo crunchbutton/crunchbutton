@@ -313,9 +313,8 @@ NGApp.controller('PexConfigCtrl', function ($scope, PexCardService) {
 		} );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+
+	load();
 
 } );
 

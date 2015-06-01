@@ -4,12 +4,10 @@ NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 
 NGApp.controller( 'SettlementRestaurantsNoPaymentCtrl', function ( $scope, RestaurantService ) {
 	$scope.result = [];
-	if( $scope.account.isLoggedIn() ){
-		RestaurantService.no_payment_method( function( json ){
-			$scope.ready = true;
-			$scope.result.restaurants = json;
-		} );
-	}
+	RestaurantService.no_payment_method( function( json ){
+		$scope.ready = true;
+		$scope.result.restaurants = json;
+	} );
 } );
 
 NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, SettlementService ) {
@@ -220,11 +218,7 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 			}
 		}
 	}
-
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		range();
-	}
+	range();
 
 });
 
@@ -243,10 +237,7 @@ NGApp.controller( 'SettlementRestaurantsScheduledCtrl', function ( $scope, Settl
 		$scope.navigation.link( '/settlement/restaurants/scheduled/' + id_payment );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		$scope.update();
-	}
+	$scope.update();
 
 });
 
@@ -265,10 +256,7 @@ NGApp.controller( 'SettlementRestaurantsSummaryCtrl', function ( $scope, $routeP
 		$scope.navigation.link( '/settlement/restaurants/payment/' + $routeParams.id );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });
 
@@ -314,11 +302,8 @@ NGApp.controller( 'SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootS
 		list();
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		restaurants();
-		list();
-	}
+	restaurants();
+	list();
 
 });
 
@@ -352,10 +337,7 @@ NGApp.controller( 'SettlementRestaurantsScheduledViewCtrl', function ( $scope, $
 		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });
 
@@ -393,10 +375,7 @@ NGApp.controller( 'SettlementRestaurantsPaymentCtrl', function ( $scope, $routeP
 		} )
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });
 
@@ -653,12 +632,9 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		}
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		range();
-		// Load the drivers list
-		DriverService.listSimple( function( json ){ $scope.drivers = json; } )
-	}
+	range();
+	// Load the drivers list
+	DriverService.listSimple( function( json ){ $scope.drivers = json; } )
 
 });
 
@@ -668,13 +644,10 @@ NGApp.controller( 'SettlementDriversDeletedCtrl', function ( $scope, SettlementS
 	$scope.filter = false;
 	$scope.status = SettlementService.PAYMENT_STATUS_DELETED;
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		SettlementService.drivers.deleted( function( json ){
-			$scope.result = json;
-			$scope.ready = true;
-		} );
-	}
+	SettlementService.drivers.deleted( function( json ){
+		$scope.result = json;
+		$scope.ready = true;
+	} );
 
 });
 
@@ -684,13 +657,10 @@ NGApp.controller( 'SettlementDriversArchivedCtrl', function ( $scope, Settlement
 	$scope.filter = false;
 	$scope.status = SettlementService.PAYMENT_STATUS_ARCHIVED;
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		SettlementService.drivers.archived( function( json ){
-			$scope.result = json;
-			$scope.ready = true;
-		} );
-	}
+	SettlementService.drivers.archived( function( json ){
+		$scope.result = json;
+		$scope.ready = true;
+	} );
 
 });
 
@@ -707,11 +677,9 @@ NGApp.controller( 'SettlementDriversOldPaymentsCtrl', function ( $scope, $routeP
 
 	var id_driver = 0;
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		id_driver = ( $routeParams.id ? $routeParams.id : $scope.account.id_admin );
-		load();
-	}
+	id_driver = ( $routeParams.id ? $routeParams.id : $scope.account.id_admin );
+	load();
+
 });
 
 NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
@@ -757,10 +725,7 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 		$scope.navigation.link( '/settlement/drivers/payment/' + id_payment );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 });
 
 NGApp.controller( 'SettlementDriversScheduledCtrl', function ( $scope, $rootScope, $location, SettlementService, DriverService, ViewListService) {
@@ -862,14 +827,12 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		$scope.pay_type = 0;
-		$scope.pay_types = SettlementService.pay_types();
-		$scope.payment_statuses = SettlementService.payment_statuses();
-		drivers();
-		$scope.update();
-	}
+	$scope.pay_type = 0;
+	$scope.pay_types = SettlementService.pay_types();
+	$scope.payment_statuses = SettlementService.payment_statuses();
+	drivers();
+	$scope.update();
+
 });
 
 NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $rootScope, SettlementService, DriverService) {
@@ -930,10 +893,8 @@ NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $r
 		);
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+
+	load();
 
 });
 
@@ -1001,10 +962,7 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 			} );
 		}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });
 
@@ -1023,9 +981,6 @@ NGApp.controller( 'SettlementDriversSummaryCtrl', function ( $scope, $routeParam
 		$scope.navigation.link( '/settlement/drivers/payment/' + $routeParams.id );
 	}
 
-	// Just run if the user is loggedin
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 });

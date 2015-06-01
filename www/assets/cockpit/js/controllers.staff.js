@@ -201,9 +201,7 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 		} )
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+	load();
 
 } );
 
@@ -541,8 +539,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		$scope.navigation.link( '/staff/list' );
 	}
 
-	if( $scope.account.isLoggedIn() ){
-		load();
-	}
+
+	load();
 
 });
