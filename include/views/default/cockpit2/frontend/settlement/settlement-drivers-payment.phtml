@@ -112,6 +112,10 @@
 					<td>Worked hours</td>
 					<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
 				</tr>
+				<tr ng-if="result.range_date">
+					<td>Period</td>
+					<td>{{result.range_date}}</td>
+				</tr>
 				<tr ng-if="!result.hourly && result.calcs.tax && pay_type_payment" positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
