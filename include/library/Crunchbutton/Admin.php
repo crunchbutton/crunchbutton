@@ -299,15 +299,18 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		foreach( $restaurants as $restaurant ){
 			$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->id_restaurant;
 		}
+
 		$adminCommunities = [];
 		$groups = $this->groups();
 		foreach ( $groups as $group ) {
-			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
-			foreach( $communities as $community ){
-				$restaurants = $community->getRestaurants();
-				foreach( $restaurants as $restaurant ){
-					if( $restaurant->delivery_service ){
-						$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->id_restaurant;
+			if( $group->type == Crunchbutton_Group::TYPE_DRIVER ){
+				$community = $group->community();
+				if( $community->id_community ){
+					$restaurants = $community->getRestaurants();
+					foreach( $restaurants as $restaurant ){
+						if( $restaurant->delivery_service ){
+							$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->id_restaurant;
+						}
 					}
 				}
 			}
@@ -332,11 +335,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		$adminCommunities = [];
 		$groups = $this->groups();
 		foreach ( $groups as $group ) {
-			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
-			foreach( $communities as $community ){
-				if( $community->active ){
-					return Crunchbutton_Community::o( $community->id_community );
-				}
+			if( $group->id_community && $group->type == Crunchbutton_Group::TYPE_DRIVER ){
+				return $group->community();
 			}
 		}
 		return false;
@@ -395,10 +395,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function communitiesHeDeliveriesFor() {
 		if (!isset($this->_communitiesHeDeliveriesFor)) {
 			$this->_communitiesHeDeliveriesFor = Community::q('
-				SELECT c.* FROM community c
-				LEFT JOIN `group` g ON g.name=c.driver_group
-				LEFT JOIN admin_group ag ON ag.id_group=g.id_group
-				WHERE ag.id_admin=?
+				SELECT c.* FROM community c INNER JOIN `group` g ON g.id_community = c.id_community LEFT JOIN admin_group ag ON ag.id_group=g.id_group WHERE ag.id_admin=?
 			', [$this->id_admin]);
 		}
 		return $this->_communitiesHeDeliveriesFor;
@@ -424,7 +421,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			} else {
 				$hours = 0;
 			}
-			
+
 			return intval( $hours );
 		}
 		return false;
@@ -1101,9 +1098,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		$groups = $driver->groups();
 		if ($groups) {
 			foreach ( $groups as $group ) {
-				$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
-				foreach( $communities as $community ){
-					$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
+				if( $group->id_community ){
+					$_resources = Crunchbutton_Community_Resource::byCommunity( $group->id_community );
 					if( $_resources ){
 						foreach( $_resources as $resource ){
 							if( $resource->active ){

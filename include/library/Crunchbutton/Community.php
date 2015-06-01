@@ -165,6 +165,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$out[ 'dont_warn_till' ] = null;
 		}
 
+		$out[ 'driver_group' ] = $this->driver_group()->name;
+
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports(['categories' => true]);
 		}
@@ -243,11 +245,23 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			->load($id);
 	}
 
+	function driver_group(){
+		if( !$this->_driver_group ){
+			$this->_driver_group = Crunchbutton_Group::o( $this->id_driver_group );
+		}
+		return $this->_driver_group;
+	}
+
+	// this method will create (if necessary) and return a the driver's group
 	function groupOfDrivers(){
 		if (!isset($this->_groupOfDrivers)) {
-			$group = Crunchbutton_Group::byName($this->driverGroup());
+			$group = $this->driver_group();
 			if (!$group->id_group) {
-				$group = Crunchbutton_Group::createDriverGroup($this->driverGroup(), $this->name);
+				$group_name = Crunchbutton_Group::driverGroupOfCommunity( $this->name );
+				$group = Crunchbutton_Group::createDriverGroup( $group_name, $this->name, $this->id_community);
+				$this->id_driver_group = $group->id_group;
+				$this->driver_group = $group_name;
+				$this->save();
 			}
 			$this->_groupOfDrivers = $group;
 		}
@@ -266,6 +280,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function communityByDriverGroup( $group ){
+		die('deprecated #5359');
 		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = ?', [$group]);
 	}
 
@@ -274,7 +289,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function getDriversOfCommunity(){
-		$group = $this->driverGroup();
+
+		$group = $this->driver_group()->id_group;
 
 		$query = 'SELECT a.* FROM admin a
 												INNER JOIN (
@@ -287,11 +303,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ?
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a
-														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = ?
+														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = ?
 														) drivers
 													)
 											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC';
+
 		return Admin::q( $query, [$this->id_community, $group]);
 	}
 
@@ -410,12 +426,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	// legacy - returns the driver's group name
 	public function driverGroup(){
-		if( !$this->driver_group ){
-			$this->driver_group = Crunchbutton_Group::driverGroupOfCommunity( $this->name );
-			$this->save();
+		$group = $this->driver_group();
+		if( $group->name ){
+			return $group->name;
 		}
-		return $this->driver_group;
 	}
 
 	public function marketingRepGroup(){

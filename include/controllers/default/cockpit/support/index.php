@@ -18,7 +18,12 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 				$id_admin = c::getPagePiece(2);
 				c::view()->id_admin = $id_admin;
-				c::view()->admins = Crunchbutton_Admin::q( 'SELECT DISTINCT(a.id_admin) AS id, a.*, c.name AS community FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin INNER JOIN `group` g ON g.id_group = ag.id_group INNER JOIN community c ON c.driver_group = g.name WHERE a.phone != "" AND c.active = true ORDER BY a.name' );
+				c::view()->admins = Crunchbutton_Admin::q( 'SELECT DISTINCT(a.id_admin) AS id, a.*, c.name AS community
+																										  FROM admin a
+																										INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+																										INNER JOIN `group` g ON g.id_group = ag.id_group
+																										INNER JOIN community c ON c.id_driver_group = g.id_group
+																										WHERE a.phone != "" AND c.active = true ORDER BY a.name' );
 				c::view()->layout('layout/ajax');
 				c::view()->display('support/new-chat');
 				break;
@@ -26,7 +31,12 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 			case 'make-call':
 				$id_admin = c::getPagePiece(2);
 				c::view()->id_admin = $id_admin;
-				c::view()->admins = Crunchbutton_Admin::q( 'SELECT DISTINCT(a.id_admin) AS id, a.*, c.name AS community FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin INNER JOIN `group` g ON g.id_group = ag.id_group INNER JOIN community c ON c.driver_group = g.name WHERE a.phone != "" AND c.active = true ORDER BY a.name' );
+				c::view()->admins = Crunchbutton_Admin::q( 'SELECT DISTINCT(a.id_admin) AS id, a.*, c.name AS community
+																										  FROM admin a
+																										INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+																										INNER JOIN `group` g ON g.id_group = ag.id_group
+																										INNER JOIN community c ON c.id_driver_group = g.id_group
+																										WHERE a.phone != "" AND c.active = true ORDER BY a.name' );
 				c::view()->layout('layout/ajax');
 				c::view()->display('support/make-call');
 				break;

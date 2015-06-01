@@ -34,7 +34,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_permissionDenied();
 					$this->_has_pexcard($staff);
 					break;
-				
+
 				case 'reverify':
 					$this->_permissionDenied();
 					$this->_reverify($staff);
@@ -57,7 +57,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$this->error(401);
 		}
 	}
-	
+
 	private function _reverify($staff) {
 		$status = $staff->stripeVerificationStatus();
 		$reverify = $staff->autoStripeVerify();
@@ -184,7 +184,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 			if ($community) {
 				$q .= '
-					LEFT JOIN community ON community.driver_group=g.name
+					LEFT JOIN community ON community.id_community=g.id_community
 				';
 			}
 		}
@@ -214,7 +214,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $community;
 		}
-		
+
 		if ( $pexcard != 'all' ) {
 			$q .= '
 				AND apt.using_pex = ?
@@ -269,8 +269,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		// do the query
 		$data = [];
 		$query = str_replace('-WILD-','
-			admin.*, 
-			bool_and(apt.using_pex) using_pex, 
+			admin.*,
+			bool_and(apt.using_pex) using_pex,
 			max(apt.id_admin_payment_type) id_admin_payment_type
 		', $q);
 

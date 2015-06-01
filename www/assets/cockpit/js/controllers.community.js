@@ -85,7 +85,6 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			} else {
 				community();
 				$scope.navigation.link( '/community/edit/' + json.permalink );
-				load_alias();
 			}
 		} );
 	}

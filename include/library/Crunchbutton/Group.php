@@ -65,10 +65,12 @@ class Crunchbutton_Group extends Cana_Table {
 		return $group;
 	}
 
-	public function createDriverGroup( $name, $description ){
+	public function createDriverGroup( $name, $description, $id_community ){
 		$description = $description . ' drivers group';
 		$group = new Crunchbutton_Group();
 		$group->name = $name;
+		$group->type = Crunchbutton_Group::TYPE_DRIVER;
+		$group->id_community = $id_community;
 		$group->description = $description;
 		$group->save();
 		return $group;
@@ -166,6 +168,13 @@ class Crunchbutton_Group extends Cana_Table {
 				}
 			}
 		}
+	}
+
+	public function community(){
+		if( !$this->_community && $this->id_community ){
+			$this->_community = Crunchbutton_Community::o( $this->id_community );
+		}
+		return $this->_community;
 	}
 
 	public function hasUser( $id_admin ){
