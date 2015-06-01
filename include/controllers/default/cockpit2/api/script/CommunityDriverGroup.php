@@ -6,6 +6,8 @@ class Controller_Api_Script_CommunityDriverGroup extends Crunchbutton_Controller
 
 	public function init() {
 
+		die('script alredy ran');
+
 		$errs = array( 'not' => array( 'no-group' => array(), 'dup-group' => array() ) );
 
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY id_community DESC' );
