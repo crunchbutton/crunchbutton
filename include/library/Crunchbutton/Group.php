@@ -7,7 +7,7 @@ class Crunchbutton_Group extends Cana_Table {
 	const MARKETING_REP_GROUP = 'marketing-rep';
 
 	const TYPE_MARKETING_REP = 'marketing-rep';
-	const TYPE_DRIVER = 'marketing-rep';
+	const TYPE_DRIVER = 'driver';
 
 	public function driverGroupOfCommunity( $community ){
 		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( str_replace( "'", '', str_replace( '"', '', str_replace( ".", '', $community ) ) ) ) ), 0, 20);
@@ -25,10 +25,10 @@ class Crunchbutton_Group extends Cana_Table {
 			->load($id);
 	}
 
-	
+
 	public function getRestaurantCommunityName( $community ){
 		die('#5430 deprecated');
-		
+
 		$communities = Restaurant::getCommunities();
 		foreach( $communities as $_community ){
 			if( Crunchbutton_Group::driverGroupOfCommunity( $_community ) == $community ){
