@@ -68,9 +68,8 @@ class Controller_api_community_resource extends Crunchbutton_Controller_RestAcco
 		$driver = c::user();
 		$groups = $driver->groups();
 		foreach ( $groups as $group ) {
-			$communities = Crunchbutton_Community::communityByDriverGroup( $group->name );
-			foreach( $communities as $community ){
-				$_resources = Crunchbutton_Community_Resource::byCommunity( $community->id_community );
+			if( $group->type == Crunchbutton_Group::TYPE_DRIVER ){
+				$_resources = Crunchbutton_Community_Resource::byCommunity( $group->id_community );
 				if( $_resources ){
 					foreach( $_resources as $resource ){
 						if( !$resources[ $community->id_community ] ){

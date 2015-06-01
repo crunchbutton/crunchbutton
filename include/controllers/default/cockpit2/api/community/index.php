@@ -122,7 +122,6 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							if( $_community->id_community ){
 								$this->_error( 'Sorry, this permalink was already taken!' );
 							}
-							$community->driver_group = Crunchbutton_Group::driverGroupOfCommunity( $this->request()[ 'name' ] );
 						} else {
 							if( $community->permalink != $this->request()[ 'permalink' ] ){
 								$_community = Crunchbutton_Community::permalink( $this->request()[ 'permalink' ] );
@@ -194,13 +193,13 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$community->dont_warn_till = null;
 						}
 
-
-
 						$community->save();
 
 						if( $community->id_community ){
 							// force driver group creation
-							Crunchbutton_Group::getDeliveryGroupByCommunity($community->driver_group);
+							if( !$community->id_driver_group ){
+								$group = $community->groupOfDrivers();
+							}
 							echo $community->json();
 						} else {
 							$this->_error( 'error' );
