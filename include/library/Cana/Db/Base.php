@@ -46,7 +46,7 @@ class Cana_Db_Base {
 				$query = str_replace( ":$k", $v, $query );
 			}
 		}
-		return $query;
+		echo '<pre>' . $query . '</pre>';exit();
 	}
 
 	public function query($query, $args = []) {

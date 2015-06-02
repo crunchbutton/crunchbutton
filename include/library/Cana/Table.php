@@ -512,7 +512,7 @@ class Cana_Table extends Cana_Model { //
 	}
 
 	// show query
-	public static function sq($query, $args = null, $db = null) {
+	public static function sq($query, $args = [], $db = null) {
 		$db = $db ? $db : Cana::db();
 		return $db->show_query($query, $args);
 	}
