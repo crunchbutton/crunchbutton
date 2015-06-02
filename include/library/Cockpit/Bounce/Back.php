@@ -34,8 +34,9 @@ class Cockpit_Bounce_Back extends Cana_Table {
 	public function startRules( $rule, $days, $giftCardValue, $pattern ){
 		$giftCardParams = [ 'note' => 'user bounce back system', 'issued' => 'text', 'type' => 'gift_card' ];
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$days_ago = $now->modify( '-' . $days . ' days' )->format( 'Ymd' );
-		$query = "SELECT DISTINCT( o.phone ) AS phone FROM `order` o WHERE DATE_FORMAT( o.date, '%Y%m%d' ) = '" . $days_ago . "' AND o.phone NOT IN ( SELECT DISTINCT( o.phone ) FROM `order` o WHERE DATE_FORMAT( o.date, '%Y%m%d' ) > '" . $days_ago . "' ORDER BY o.id_order )";
+		$days_ago = $now->modify( '-' . $days . ' days' )->format( 'Y-m-d' );
+
+		$query = "SELECT DISTINCT( o.phone ) AS phone FROM `order` o WHERE o.date BETWEEN '{$days_ago} 00:00:00' AND '{$days_ago} 23:59:59' AND o.phone NOT IN ( SELECT DISTINCT( o.phone ) FROM `order` o WHERE o.date > '$days_ago 23:59:59' ORDER BY o.id_order )";
 		$phones = c::db()->get( $query );
 
 		$data = [];
