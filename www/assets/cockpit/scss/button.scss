@@ -164,6 +164,10 @@
 	border-color: $buttonBlue;
 	color: $buttonBlue;
 }
+.button.button-empty.button-red:hover, .button.button-empty.button-border.button-red {
+	border-color: $buttonRed;
+	color: $buttonRed;
+}
 
 .button.button-empty.button-border.button-green:hover {
 	background: $buttonGreen;
@@ -175,6 +179,10 @@
 }
 .button.button-empty.button-border.button-blue:hover {
 	background: $buttonBlue;
+	color: #fff;
+}
+.button.button-empty.button-border.button-red:hover {
+	background: $buttonRed;
 	color: #fff;
 }
 

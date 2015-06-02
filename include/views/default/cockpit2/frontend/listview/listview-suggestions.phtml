@@ -2,28 +2,27 @@
 	<table class="tb-zebra">
 		<tr>
 			<th>Suggestion</th>
-			<th>Type</th>
-			<th>Content</th>
+			<th>Location</th>
 			<th>Date</th>
 			<th>Info</th>
+			<th>Type</th>
 			<th>Status</th>
 			<th></th>
 		</tr>
 		<tr ng-repeat="suggestion in suggestions track by $index" ng-attr-tabindex="{{$index+1}}">
 			<td>{{suggestion.name}}</td>
 			<td>
-				<span class="tag tag-blue" ng-if="suggestion.type == 'dish'">Dish</span>
-				<span class="tag tag-purple" ng-if="suggestion.type == 'restaurant'">Restaurant</span>
-			</td>
-			<td>
-				<!-- {{}} -->
-				<span ng-bind-html-unsafe="suggestion.content"></span>
+				<span ng-bind-html-unsafe="suggestion.content" class="listview-smaller"></span>
 			</td>
 			<td nowrap="nowrap">{{suggestion.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
-			<td nowrap="nowrap">
+			<td nowrap="nowrap" class="listview-smaller">
 				<div ng-if="suggestion.customer"><i class="fa fa-smile-o"></i> <a href="/customer/{{suggestion.id_user}}">{{suggestion.customer}}</a></div>
 				<div ng-if="suggestion.restaurant"><i class="fa fa-coffee"></i> <a href="/restaurant/{{suggestion.id_restaurant}}">{{suggestion.restaurant}}</a></div>
 				<div ng-if="suggestion.community"><i class="fa fa-slideshare"></i> <a href="/community/{{suggestion.id_community}}">{{suggestion.community}}</a></div>
+			</td>
+			<td>
+				<span class="tag tag-blue" ng-if="suggestion.type == 'dish'">Dish</span>
+				<span class="tag tag-purple" ng-if="suggestion.type == 'restaurant'">Restaurant</span>
 			</td>
 			<td>
 				<span class="tag tag-red" ng-if="suggestion.status == 'new'">New</span>
@@ -31,8 +30,8 @@
 				<span class="tag tag-green" ng-if="suggestion.status == 'applied'">Applied</span>
 			</td>
 			<td nowrap>
-				<a ng-show="suggestion.status != 'deleted'" href="" ng-click="remove( suggestion.id_suggestion )"><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Delete</button></a>
-				<a ng-show="suggestion.status != 'applied'" href="" ng-click="apply( suggestion.id_suggestion )"><button class="button button-small button-empty button-green"><i class="fa fa-fa-check-square-o"></i>&nbsp;&nbsp;Set as Applied</button></a>
+				<a ng-show="suggestion.status != 'deleted'" href="" ng-click="remove( suggestion.id_suggestion )"><button class="button button-small button-empty button-red"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;Reject</button></a>
+				<a ng-show="suggestion.status != 'applied'" href="" ng-click="apply( suggestion.id_suggestion )"><button class="button button-small button-empty button-blue"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;Applied</button></a>
 			</td>
 		</tr>
 	</table>
