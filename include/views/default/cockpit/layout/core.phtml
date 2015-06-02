@@ -141,13 +141,7 @@
 					<span>Customers <i class="icon-caret-down"></i></span>
 				</a>
 				<ul id="admin-nav-customers" class="collapse">
-					<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) { ?>
-						<li class="">
-							<a href="/suggestions">
-								<i class="icon-envelope-alt"></i> Suggestions
-							</a>
-						</li>
-					<? } ?>
+
 					<? if (c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) { ?>
 						<li class="">
 							<a href="/giftcards">
