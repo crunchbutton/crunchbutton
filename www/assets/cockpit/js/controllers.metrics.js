@@ -11,13 +11,14 @@ NGApp.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $location, MetricsService, CSVService, $http) {
+
 	// pretty straightforward, we always want the charts to have zero as base
 	Chart.defaults.global.scaleBeginAtZero = true;
 	Chart.defaults.global.animation = false;
 	Chart.defaults.global.maintainAspectRatio = false;
 	Chart.defaults.global.responsive = true;
 	Chart.defaults.global.scaleFontSize = 10;
-	console.log('METRICSCTRL');
+
 	$scope.showCharts = 0;
 	$scope.sortMethods = [
 		{'kind': 'last', 'description': 'Last Value'},

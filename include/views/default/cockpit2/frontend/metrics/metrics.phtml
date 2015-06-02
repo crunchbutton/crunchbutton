@@ -43,9 +43,14 @@
 			</div>
 		</form>
 	</div>
-	<div  ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities'>
-		<h2>{{community.name}} <small>({{community.timezone}})<small></h2>
-		<div ng-repeat='chartOption in settings.charts' style="display:inline;width:40%;height:300px;" ng-switch on='chartOption.format'>
+<div class="support-boxes metrics-boxes">
+	<div ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities' class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>{{community.name}}</h1>
+			<div class="divider"></div>
+		</div>
+
+		<div ng-repeat='chartOption in settings.charts' ng-switch on='chartOption.format'>
 			<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
 			<canvas ng-switch-when='line' class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
 				options="chartData[community.id_community][chartOption.type].options"
@@ -56,6 +61,7 @@
 				labels="chartData[community.id_community][chartOption.type].labels"
 				legend="false"></canvas>
 		</div>
+	</div>
 	</div>
 	<div ng-if='settings.combineCharts' ng-repeat='chartOption in settings.charts' ng-switch on='chartOption.format'>
 		<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
