@@ -490,10 +490,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Get the hollidays of the current week
 		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override
 																															WHERE id_restaurant = {$restaurant->id_restaurant}
-																															AND (
-																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$monday}' AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$sunday}' )
+																															AND
+																															( date_start >= '{$monday} 00:00:00' AND date_start <= '{$sunday} 23:59:59' )
 																															OR
-																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) < '{$monday}' AND DATE_FORMAT( date_end, '%Y-%m-%d' ) > '{$monday}' )	) " );
+																															(  date_start < '{$monday} 00:00:00' AND date_end > '{$monday} 23:59:59' ) " );
 		$hoursStartFinishOverrideClose = [];
 		if( $overrides->count() ){
 
