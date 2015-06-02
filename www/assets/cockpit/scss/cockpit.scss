@@ -17,6 +17,7 @@ $desktopWidth: 1025px;
 $buttonGreen: #1ab394;
 $buttonOrange: #e1574c;
 $buttonBlue: #2485c4;
+$buttonRed: #eb5667;
 
 @import 'border';
 @import 'button';
@@ -2564,18 +2565,27 @@ b, strong{ font-weight: bold; }
 	-webkit-column-count: 2;
 	-webkit-column-gap: 15px;
 	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
 }
 
 .tripple-cols {
 	-webkit-column-count: 3;
 	-webkit-column-gap: 15px;
 	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
 }
 
 .quadruple-cols {
 	-webkit-column-count: 4;
 	-webkit-column-gap: 15px;
 	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
 }
 
 .field-container .field-row-button .field-two-rows {
@@ -3401,7 +3411,7 @@ input[type="checkbox"].switch + div:before {
 	text-align: center;
 }
 
-.box-content-table .tb-small {
+.box-content-table .tb-small, td.tb-small {
 	width: 1em;
 }
 
@@ -3966,7 +3976,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	opacity: .8;
 }
 
-.box-content-table td.tb-v-center, .box-content-table th.tb-v-center {
+.box-content-table td.tb-v-center, .box-content-table th.tb-v-center, td.tb-v-center {
 	vertical-align: middle;
 }
 
