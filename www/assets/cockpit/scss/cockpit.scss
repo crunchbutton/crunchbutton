@@ -2516,6 +2516,9 @@ b, strong{ font-weight: bold; }
 .support-boxes .box-content2 {
 	padding: 0;
 }
+.support-boxes.metrics-boxes .box-content2 {
+	@include gpu();
+}
 
 .field-container {
 	width: 100%;
