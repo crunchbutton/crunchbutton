@@ -19,8 +19,10 @@ class Controller_Support_Phone extends Crunchbutton_Controller_Account {
 		}
 		
 		$capability = new Services_Twilio_Capability(c::config()->twilio->live->sid, c::config()->twilio->live->token);
-		$capability->allowClientOutgoing($callerId);
-		$capability->allowClientIncoming(c::admin()->name);
+		
+		$capability->allowClientOutgoing('_KEY_');
+		$capability->allowClientIncoming(c::admin()->firstName());
+		
 		c::view()->token = $capability->generateToken();
 		c::view()->phone = $_REQUEST['phone'];
 
