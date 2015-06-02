@@ -21,7 +21,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function lastRestaurantStatusDate(){
-		$query = "SELECT MAX( DATE_FORMAT( date, '%m/%d/%Y' ) ) AS date FROM payment_schedule WHERE id_restaurant IS NOT NULL";
+		$query = "SELECT MAX( date ) AS date FROM payment_schedule WHERE id_restaurant IS NOT NULL";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->date;
 	}
@@ -36,7 +36,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function lastDriverStatusDate(){
-		$query = "SELECT MAX( DATE_FORMAT( date, '%m/%d/%Y' ) ) AS date FROM payment_schedule WHERE id_driver IS NOT NULL";
+		$query = "SELECT MAX( date ) AS date FROM payment_schedule WHERE id_driver IS NOT NULL";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->date;
 	}
@@ -128,18 +128,19 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $out;
 	}
 
-	public function driversSchedulesFromDate( $date ){
-		$query = 'SELECT ps.*, a.name AS driver FROM payment_schedule ps
-								INNER JOIN admin a ON a.id_admin = ps.id_driver
-								WHERE DATE_FORMAT( ps.date, \'%m/%d/%Y\' ) = "' . $date . '" ORDER BY ps.id_payment_schedule DESC';
-		return Cockpit_Payment_Schedule::q( $query );
-	}
-
 
 	public function restaurantSchedulesFromDate( $date ){
+
+		$datetime = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
+
+		$datetime = $datetime->format( 'Y-m-d' );
+
+		$where = " ps.date BETWEEN '{$datetime} 00:00:00' AND '{$datetime} 23:59:59'";
+
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
-								WHERE DATE_FORMAT( ps.date, \'%m/%d/%Y\' ) = "' . $date . '" ORDER BY ps.id_payment_schedule DESC';
+								WHERE ' . $where . ' ORDER BY ps.id_payment_schedule DESC';
+								echo $query;exit;
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
