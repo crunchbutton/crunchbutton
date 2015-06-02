@@ -1010,6 +1010,12 @@ input {
 	cursor: pointer;
 }
 
+.notifications .notification.notification-call {
+	background: $buttonRed;
+	border-color: $buttonRed;
+	color: #fff;
+}
+
 .notifications .notification:last-child {
 	margin-right: 1px;
 }
@@ -4089,4 +4095,17 @@ h1.title.box-title {
 
 .support-widget-box-wrap {
 	margin-bottom: 1.1em;
+}
+
+.blink {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1.2s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
 }

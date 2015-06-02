@@ -504,7 +504,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor, TwilioService) {
 
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
@@ -534,6 +534,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.supportToggle = function() {
 		$rootScope.supportToggled = !$rootScope.supportToggled;
 	};
+	$rootScope.twilio = TwilioService;
 
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){
