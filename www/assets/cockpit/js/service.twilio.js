@@ -1,5 +1,5 @@
 
-NGApp.factory('TwilioService', function($resource, $rootScope) {
+NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 
 	var service = {};
 	var resource = $resource(App.service + 'twilio/client');
@@ -69,8 +69,21 @@ NGApp.factory('TwilioService', function($resource, $rootScope) {
 	$rootScope.$on('twilio-client-call-start', function() {
 		$rootScope.callStatus = 'connecting';
 	});
+	
+	
+	var load = function() {
+		if (AccountService.user.permissions.GLOBAL || AccountService.user.permissions['SUPPORT-ALL'] || AccountService.user.permissions['SUPPORT-VIEW'] || AccountService.user.permissions['SUPPORT-CRUD']) {
+			service.init();
+		}
+		watching = null;
+	};
 
-	service.init();
+	var watching = null;
+
+	if (!AccountService.init) {
+		// we got here before the auth service was complete.
+		watching = $rootScope.$on('userAuth', load);
+	}
 
 	return service;
 
