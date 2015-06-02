@@ -10,16 +10,18 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 	}
 
 	public function removeByDateIdAdmin( $date, $id_admin ){
+		die ('#5584 deprecated');
 		return c::db()->query( "DELETE from admin_hour WHERE id_admin = $id_admin AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
 	}
 
 	public function hoursByDateRestaurant( $id_restaurant, $date ){
-		$hours = Crunchbutton_Admin_Hour::q( "SELECT DISTINCT( a.id_admin_hour ) id, a.*, 
-																							DATE_FORMAT( date_start, '%H' ) start_hour, 
-																							DATE_FORMAT( date_start, '%d' ) start_day, 
+		die ('#5584 deprecated');
+		$hours = Crunchbutton_Admin_Hour::q( "SELECT DISTINCT( a.id_admin_hour ) id, a.*,
+																							DATE_FORMAT( date_start, '%H' ) start_hour,
+																							DATE_FORMAT( date_start, '%d' ) start_day,
 																							DATE_FORMAT( date_end, '%H' ) end_hour,
-																							DATE_FORMAT( date_end, '%d' ) end_day 
-																					FROM admin_hour a 
+																							DATE_FORMAT( date_end, '%d' ) end_day
+																					FROM admin_hour a
 																						INNER JOIN notification n ON a.id_admin = n.id_admin AND id_restaurant = {$id_restaurant}
 																						WHERE ( DATE_FORMAT( date_start, '%Y-%m-%d' ) = '{$date}' || DATE_FORMAT( date_end, '%Y-%m-%d' ) = '{$date}' )" );
 		$hasDriver = [];
@@ -54,7 +56,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 			$join = '';
 			if( !$admins[ $hour->id_admin ] ){
 				$admins[ $hour->id_admin ] = [ 'name' => $hour->admin()->name, 'login' => $hour->admin()->login, 'hours' => '', 'id_admin' => $hour->id_admin ];
-			} else {	
+			} else {
 				$join = $_join;
 			}
 			$admins[ $hour->id_admin ][ 'hours' ] = $admins[ $hour->id_admin ][ 'hours' ] . $join . $hour->segment();
@@ -72,7 +74,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 			}
 			$min = $dateTime->format( 'i' );
 			$ampm = $dateTime->format( 'a' );
-			return intval( $hour ) . ( intval( $min ) > 0 ? ':' . intval( $min ) : '' ) . ' ' . $ampm ;	
+			return intval( $hour ) . ( intval( $min ) > 0 ? ':' . intval( $min ) : '' ) . ' ' . $ampm ;
 		}
 	}
 
@@ -90,7 +92,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 	}
 
 	public function date_start(){
-		if ( !isset( $this->_date_start ) ) {			
+		if ( !isset( $this->_date_start ) ) {
 			$this->_date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->admin()->timezone ) );
 		}
 		return $this->_date_start;
