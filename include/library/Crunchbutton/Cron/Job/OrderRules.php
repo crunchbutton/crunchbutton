@@ -6,7 +6,7 @@ class Crunchbutton_Cron_Job_OrderRules extends Crunchbutton_Cron_Log {
 
 		$q = '
 			select * from `order`
-			where date >= DATE_FORMAT(now(), "%Y-%m-%d %H:%i:00")
+			where date >= now()
 			limit 10
 		';
 		$orders = Order::q($q);
