@@ -72,7 +72,7 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 	
 	
 	var load = function() {
-		if (AccountService.user.permissions.GLOBAL || AccountService.user.permissions['SUPPORT-ALL'] || AccountService.user.permissions['SUPPORT-VIEW'] || AccountService.user.permissions['SUPPORT-CRUD']) {
+		if (AccountService.permcheck(['global', 'support-all', 'support-view', 'support-crud'])) {
 			service.init();
 		}
 		watching = null;
