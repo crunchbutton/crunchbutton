@@ -52,7 +52,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.type = ?
-									WHERE DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= ?
+									WHERE o.date <= ?
 										AND oa.id_admin = ?
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
@@ -71,8 +71,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 							WHERE asa.id_admin = "' . $id_driver . '"';
 
 		if( $this->filters[ 'start' ] ){
-			$query .= 'AND DATE( cs.date_start ) >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'';
-			$query .= 'AND DATE( cs.date_start ) <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '\'';
+			$query .= 'AND cs.date_start >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . ' 00:00:00\'';
+			$query .= 'AND cs.date_start <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . ' 23:59:59\'';
 		}
 
 		$shifts = Crunchbutton_Community_Shift::q( $query );
@@ -108,8 +108,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT DISTINCT(o.id_order) AS id, o.* FROM `order` o
 							INNER JOIN order_action oa ON oa.id_order = o.id_order
 							WHERE
-									DATE( o.date ) >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'
-								AND DATE( o.date ) <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . '\'
+									o.date >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . '\'
+								AND o.date <= \'' . ( new DateTime( $this->filters[ 'end' ] ) )->format( 'Y-m-d' ) . ' 23:59:59\'
 								AND ( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '"
 											OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
@@ -118,6 +118,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 								AND o.name NOT LIKE "%test%"
 							ORDER BY o.date DESC ';
 		$_orders = [];
+
 		$orders = Order::q( $query );
 		foreach( $orders as $order ) {
 			if( $order->getDeliveryDriver() && $order->getDeliveryDriver()->id_admin == $id_driver ){
@@ -154,8 +155,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-									WHERE DATE(o.date) >= "' . $start->format('Y-m-d') . '"
-										AND DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $end->format('Y-m-d H:i') . '"
+									WHERE o.date >= "' . $start->format('Y-m-d') . '"
+										AND o.date <= "' . $end->format('Y-m-d H:i') . '"
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
@@ -168,7 +169,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$admin = Admin::o( $id_admin );
 		if( !$admin->active  ){
 			if( $admin->date_terminated ){
-				$where = 'AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $admin->date_terminated . '"';
+				$where = 'AND cs.date_start <= "' . $admin->date_terminated . '"';
 			} else {
 				$where = 'AND 1 = 0';
 			}
@@ -179,9 +180,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
 								WHERE
-										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $start . '"
+											cs.date_start >= "' . $start . '"
 										AND
-										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $end . '"' . $where;
+											cs.date_start <= "' . $end . ' 23:59:59"' . $where;
 		return Crunchbutton_Community_Shift::q( $query );
 	}
 
@@ -1929,7 +1930,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function checkSucceededPaymentStatus( $type = 'driver' ){
-		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps INNER JOIN payment p ON ps.id_payment = p.id_payment WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' AND ps.type = '{$type}' AND p.payment_status = '" . Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED . "' AND p.payment_status IS NOT NULL AND DATE( p.payment_date_checked ) >= DATE( DATE_SUB( NOW(), INTERVAL 14 day) ) AND DATE( p.payment_date_checked ) <= DATE( DATE_SUB( NOW(), INTERVAL 10 day) ) AND balanced_id IS NOT NULL ORDER BY p.payment_date_checked;" );
+		$payments = Crunchbutton_Payment::sq( "SELECT p.* FROM payment_schedule ps
+																						INNER JOIN payment p ON ps.id_payment = p.id_payment
+																						WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "'
+																							AND ps.type = '{$type}' AND p.payment_status = '" . Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED . "'
+																							AND p.payment_status IS NOT NULL AND p.payment_date_checked >= NOW() - INTERVAL 14 DAY
+																							AND p.payment_date_checked <= NOW() - INTERVAL 10 DAY
+																							AND balanced_id IS NOT NULL ORDER BY p.payment_date_checked;" );
 		foreach( $payments as $payment ){
 			$id_payment = $payment->id_payment;
 			Cana::timeout( function() use( $id_payment ) {
@@ -1949,9 +1956,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								WHERE
-									DATE_FORMAT(cs.date_start, '%m/%d/%Y') >= '" . (new DateTime($this->filters['start']))->format('m/d/Y') . "'
+									cs.date_start >= '" . ( new DateTime($this->filters['start']) )->format('Y-m-d') . "'
 									AND
-									DATE_FORMAT(cs.date_start, '%m/%d/%Y') <= '" . (new DateTime($this->filters['end']))->format('m/d/Y') . "'"
+									cs.date_start <= '" . (new DateTime($this->filters['end']))->format('Y-m-d') . " 23:59:59'"
 								 . $where;
 		return Crunchbutton_Community_Shift::q( $query );
 	}
