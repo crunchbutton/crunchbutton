@@ -2576,6 +2576,9 @@ b, strong{ font-weight: bold; }
 	-webkit-column-count: 4;
 	-webkit-column-gap: 15px;
 	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
 }
 
 .field-container .field-row-button .field-two-rows {
