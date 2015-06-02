@@ -371,7 +371,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
 					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
-					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
+					WHERE o.date > NOW() - INTERVAL $days DAY AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
 		return c::db()->get( $query, [$this->id_community]);
 	}
 
