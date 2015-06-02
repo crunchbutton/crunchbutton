@@ -289,13 +289,6 @@
 						</a>
 					</li>
 				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','rules'] ) ) { ?>
-					<li class="">
-						<a href="/rules">
-							<i class="icon-filter"></i> Rules settings
-						</a>
-					</li>
-				<? } ?>
 				<? if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) { ?>
 					<li class="">
 						<a href="/referral">
