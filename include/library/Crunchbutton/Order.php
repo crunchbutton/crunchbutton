@@ -1095,14 +1095,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 
 			$where .= ' AND o.delivery_service = true ';
-			$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+			$where .= ' AND date > NOW() - INTERVAL ' . $interval . ' ';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
 		return Order::q($query);
 	}
 
 	public static function outstandingOrders(){
-		$id_admin = c::admin()->id_admin;
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now = $now->format( 'Y-m-d' );
+
 		$query = "SELECT id_order,
 						TIMESTAMPDIFF(HOUR, o.date, NOW()) AS hours
 						FROM `order` o
@@ -1113,7 +1116,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						FROM order_action
 						WHERE type = 'delivery-delivered')
 						-- remove the commment below to get this the orders from today
-						 AND DATE(o.date) = DATE(NOW())
+						 AND o.date BETWEEN '{$now} 00:00:00' AND '{$now} 23:59:59'
 						HAVING hours >= 2 ORDER BY id_order DESC ";
 		return Order::q( $query );
 
@@ -1133,9 +1136,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$where = 'WHERE 1=1 ';
 		}
 
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		$now->modify( ' - ' . $hours . ' hour' );
+		$interval = $now->format( 'Y-m-d H:i:s' );
 		$where .= ' AND o.delivery_service = true ';
-		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+		$where .= ' AND date > "' . $interval . '"';
+
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
+
 		return Order::q( $query );
 	}
 
@@ -1149,9 +1158,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
 									oa.id_admin = ?
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= ?
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= ?';
-		return Crunchbutton_Order_Action::q( $query, [$id_admin, $date_start->format( 'YmdHi' ), $date_end->format( 'YmdHi' )]);
+									AND o.date >= ?
+									AND o.date <= ?';
+		return Crunchbutton_Order_Action::q( $query, [$id_admin, $date_start->format( 'Y-m-d H:i:s' ), $date_end->format( 'Y-m-d H:i:s' )]);
 	}
 
 	public static function deliveredByCBDrivers( $search ){
