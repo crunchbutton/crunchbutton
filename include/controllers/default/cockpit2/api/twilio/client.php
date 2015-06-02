@@ -1,9 +1,15 @@
 <?php
 
-class Controller_Support_Phone extends Crunchbutton_Controller_Account {
+
+//inits the client
+
+class Controller_Api_Twilio_Client extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-	
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+			header('HTTP/1.1 401 Unauthorized');
+			exit;
+		}
 
 		switch (c::getPagePiece(2)) {
 			case 'test':
@@ -18,13 +24,8 @@ class Controller_Support_Phone extends Crunchbutton_Controller_Account {
 		
 		$capability->allowClientOutgoing($callerId);
 		$capability->allowClientIncoming(c::admin()->id_admin);
-		
-		c::view()->token = $capability->generateToken();
-		c::view()->phone = $_REQUEST['phone'];
 
-		c::view()->layout('layout/twilio');
-		c::view()->display('twilio/outgoing');
+		echo json_encode(['token' => $capability->generateToken()]);
 
 	}
 }
-
