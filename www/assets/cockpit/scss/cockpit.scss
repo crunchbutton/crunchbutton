@@ -2564,12 +2564,18 @@ b, strong{ font-weight: bold; }
 	-webkit-column-count: 2;
 	-webkit-column-gap: 15px;
 	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
 }
 
 .tripple-cols {
 	-webkit-column-count: 3;
 	-webkit-column-gap: 15px;
 	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
 }
 
 .quadruple-cols {
@@ -3404,7 +3410,7 @@ input[type="checkbox"].switch + div:before {
 	text-align: center;
 }
 
-.box-content-table .tb-small {
+.box-content-table .tb-small, td.tb-small {
 	width: 1em;
 }
 
@@ -3969,7 +3975,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	opacity: .8;
 }
 
-.box-content-table td.tb-v-center, .box-content-table th.tb-v-center {
+.box-content-table td.tb-v-center, .box-content-table th.tb-v-center, td.tb-v-center {
 	vertical-align: middle;
 }
 
