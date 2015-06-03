@@ -1079,7 +1079,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		} else {
 
-			$interval = $hours . ' HOUR';
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->modify( '- ' . $hours . ' hours' );
+			$interval = $now->format( 'Y-m-d H:i:s' );
 
 			if( !$all ){
 				if (!$admin) {
@@ -1095,7 +1097,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 
 			$where .= ' AND o.delivery_service = true ';
-			$where .= ' AND date > NOW() - INTERVAL ' . $interval . ' ';
+			$where .= ' AND date > "' . $interval . '" ';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
 		return Order::q($query);
@@ -1123,7 +1125,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public static function deliveryOrderTimes( $hours = 24, $all = false ){
-		$interval = $hours . ' HOUR';
+
 		$id_admin = c::admin()->id_admin;
 		if( !$all ){
 			$admin = Admin::o( $id_admin );
