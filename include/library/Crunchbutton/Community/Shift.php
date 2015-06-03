@@ -120,20 +120,21 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$shift = Crunchbutton_Community_Shift::q( $query, [$id_community, $now_formated])->get(0);
 
 			if ($shift->id_community){
-				$date = $shift->dateStart()->format( 'Y-m-d' );
+				$date_start = $shift->dateStart()->format( 'Y-m-d' ) . ' 00:00:00';
+				$date_end = $shift->dateStart()->format( 'Y-m-d' ) . ' 23:59:59';
 				$query = '
 					SELECT cs.* FROM community_shift cs
 						INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
 						INNER JOIN admin a ON asa.id_admin = a.id_admin AND a.active = true
 					WHERE
 						cs.id_community = ?
-						AND cs.date_start = ?
+						AND cs.date_start BETWEEN ? AND ?
 						AND cs.active = true
 						AND cs.id_community_shift != ?
 					ORDER BY cs.date_start ASC
 				';
 
-				$shifts = Crunchbutton_Community_Shift::q( $query, [$id_community, $date, $shift->id_community_shift]);
+				$shifts = Crunchbutton_Community_Shift::q( $query, [$id_community, $date_start, $date_end, $shift->id_community_shift]);
 
 				if( $shifts->count() > 0 ){
 					$last_date = $shift->dateEnd();
