@@ -62,6 +62,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	}
 
 	public function exports($guid = null) {
+		// @todo: #5734
 		$out = $this->properties();
 		$out['name'] = Phone::name($this);
 		$out['first_name'] = explode(' ',$out['name'])[0];
@@ -137,10 +138,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 	public function relativeTime( $forceUTC = false ) {
 		$date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
-		if( $forceUTC ){
-			$date->setTimezone( new DateTimeZone( 'utc' ) );
-		}
-		return Crunchbutton_Util::relativeTime( $date->format( 'Y-m-d H:i:s' ), 'utc', 'utc' );
+		return Crunchbutton_Util::relativeTime( $date->format( 'Y-m-d H:i:s' ));
 	}
 
 	public function date( $timezone = false ) {

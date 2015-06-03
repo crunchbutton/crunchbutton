@@ -212,6 +212,7 @@
 			<driver>_KEY_</driver>
 			<customer>_KEY_</customer>
 			<restaurant>_KEY_</restaurant>
+			<test>_KEY_</test>
 		</apps>
 		<live>
 			<sid>_KEY_</sid>

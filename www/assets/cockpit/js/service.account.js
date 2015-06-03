@@ -20,6 +20,23 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		restaurants: [],
 		init: false
 	};
+	
+	service.permcheck = function(perms) {
+		if (typeof perms != 'object') {
+			perms = [perms];
+		}
+
+		var pass = false;
+
+		for (var x in perms) {
+			if (service.user.permissions[perms[x].toUpperCase()] === true) {
+				pass = true;
+			} else if (service.user.permissions[perms[x].toUpperCase()] === false) {
+				return false;
+			}
+		}
+		return pass;
+	};
 
 	service.isLoggedIn = function(){
 		return ( service.user && service.user.id_admin ) ? true : false;

@@ -1,5 +1,7 @@
 <?=$this->display('layout/html.top')?>
 
+<script src="https://static.twilio.com/libs/twiliojs/1.2/twilio.min.js"></script>
+
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/cockpit/js/bundle.js?v=<?=Deploy_Server::currentVersion()?>&s=cockpit"></script>
 <? else : ?>
@@ -7,6 +9,7 @@
 <? endif ; ?>
 
 <?=$this->display('layout/html.bottom')?>
+
 
 <script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
 <script src="//js.stripe.com/v2/" bundle="false"></script>

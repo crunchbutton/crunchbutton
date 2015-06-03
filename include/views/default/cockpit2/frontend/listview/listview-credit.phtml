@@ -1,29 +1,30 @@
-<div class="box-content2 box-content-table" ng-show="credits.count">
+<div class="box-content-table" ng-show="credits.count">
 	<table class="tb-zebra">
 		<tr>
 			<th class="tb-small tb-center">Date</th>
 			<th class="tb-small tb-center">Type</th>
-			<th class="tb-small tb-center">Amount / Left</th>
+			<th class="tb-small tb-center">Amt</th>
 			<th class="tb-small tb-center">Note</th>
-			<th class="tb-small tb-center">Gift Card</th>
-			<th class="tb-small tb-center">Order</th>
+			<th class="tb-small tb-center">Code</th>
+			<th class="tb-small tb-center"></th>
 		</tr>
 		<tr ng-repeat="c in credits.results">
 			<td>
-				{{c.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}
+				<span class="listview-smaller">{{c.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</span>
 			</td>
-			<td>
+			<td class="tb-v-center tb-center">
 				<span class="tag tag-red" ng-if="c.type == 'Debit'">Debit</span>
 				<span class="tag tag-blue" ng-if="c.type == 'Credit'">Credit</span>
 			</td>
-			<td>
+			<td class="tb-v-center">
 				<span ng-if="c.value" positive-or-negative-color="{{c.value}}">${{c.value | formatPrice}}</span>
 				<span ng-if="c.left" positive-or-negative-color="{{c.left}}"> / ${{c.left | formatPrice}}</span>
 			</td>
-			<td>{{c.note}}</td>
+			<td><span class="listview-smaller">{{c.note}}</span></td>
 			<td>{{c.promo.code}}</td>
-			<td>
-				<a ng-if="c.id_order" href="/order/{{c.id_order}}">{{c.id_order}}</a>
+
+			<td nowrap class="tb-v-center">
+				<a ng-if="c.id_order" href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Order</button></a>
 			</td>
 		</tr>
 	</table>

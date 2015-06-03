@@ -1010,6 +1010,12 @@ input {
 	cursor: pointer;
 }
 
+.notifications .notification.notification-call {
+	background: $buttonRed;
+	border-color: $buttonRed;
+	color: #fff;
+}
+
 .notifications .notification:last-child {
 	margin-right: 1px;
 }
@@ -2510,6 +2516,9 @@ b, strong{ font-weight: bold; }
 .support-boxes .box-content2 {
 	padding: 0;
 }
+canvas.chart {
+	@include gpu();
+}
 
 .field-container {
 	width: 100%;
@@ -2568,6 +2577,7 @@ b, strong{ font-weight: bold; }
 	float: left;
 	clear: both;
 	margin-bottom: 1em;
+	width: 100%;
 }
 
 .tripple-cols {
@@ -2577,6 +2587,7 @@ b, strong{ font-weight: bold; }
 	float: left;
 	clear: both;
 	margin-bottom: 1em;
+	width: 100%;
 }
 
 .quadruple-cols {
@@ -2586,6 +2597,7 @@ b, strong{ font-weight: bold; }
 	float: left;
 	clear: both;
 	margin-bottom: 1em;
+	width: 100%;
 }
 
 .field-container .field-row-button .field-two-rows {
@@ -3415,7 +3427,7 @@ input[type="checkbox"].switch + div:before {
 	width: 1em;
 }
 
-.box-content-table input:not(type=date) {
+.box-content-table input:not([type="date"]) {
 	font-size: 1.0em;
 	box-sizing: border-box;
 	width: 90%;
@@ -4089,4 +4101,17 @@ h1.title.box-title {
 
 .support-widget-box-wrap {
 	margin-bottom: 1.1em;
+}
+
+.blink {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1.2s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
 }

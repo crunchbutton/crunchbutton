@@ -433,6 +433,9 @@
 								<p>{{flash.getMessage()}}</p>
 							</div>
 
+							<div class="hide-mobile notification notification-call" ng-class="{'blink' : callStatus == 'connecting'}" ng-click="twilio.hangup()" ng-if="callStatus == 'connecting' || callStatus == 'connected'">
+								<i class="fa fa-phone"></i>
+							</div>
 							<div class="notification notification-orders" ng-click="navigation.link('/drivers/orders')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
