@@ -28,10 +28,10 @@ class Controller_Api_Report extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$start = explode( '/' , $start );
-		$start = $start[ 2 ] . $start[ 0 ] . $start[ 1 ];
+		$start = $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ];
 
 		$end = explode( '/' , $end );
-		$end = $end[ 2 ] . $end[ 0 ] . $end[ 1 ];
+		$end = $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ];
 
 		echo json_encode( Crunchbutton_Report_FirstTimeUserGiftCodesUsedPerSchoolPerDay::report( $start, $end ) );exit;;
 
