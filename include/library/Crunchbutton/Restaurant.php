@@ -1534,6 +1534,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$regular_calc = sprintf( $formula, $lat, 'loc_lat', $lat, 'loc_lat', $lon, 'loc_long' );
 
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 30 day' );
+		$interval = $now->format( 'Y-m-d' ) . ' 00:00:00';
+
 		$query = "
 			SELECT
 				count(*) as _weight,
@@ -1543,7 +1547,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				{$regular_calc} AS distance,
 				restaurant.*
 			FROM restaurant
-				LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
+				LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > '{$interval}'
 				WHERE
 					active = true AND delivery_radius_type = 'restaurant'
 				GROUP BY restaurant.id_restaurant
@@ -1572,7 +1576,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
   				{$restaurant_calc} AS distance,
   				r.*
   			FROM restaurant r
-  			LEFT JOIN `order` o ON o.id_restaurant = r.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
+  			LEFT JOIN `order` o ON o.id_restaurant = r.id_restaurant AND o.date > '{$interval}'
   			INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant
   			INNER JOIN community c ON c.id_community = rc.id_community
   			WHERE
@@ -1591,7 +1595,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
   	$query .= " ORDER BY _weight DESC; ";
 
-		$restaurants = self::q($query, $keys);
+		$restaurants = self::q($query);
 		foreach ($restaurants as $restaurant) {
 			$sum += $restaurant->_weight;
 		}
@@ -2055,6 +2059,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function getOrdersFromLastDaysByCommunity( $community, $days = 14 ){
+		die('deprecated #5584');
 		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
 					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.community = '$community'
 					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
