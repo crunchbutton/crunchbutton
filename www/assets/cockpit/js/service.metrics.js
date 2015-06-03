@@ -259,7 +259,8 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 	// overwrite default options
 	function defaultChartJSOptions() {
 		return {
-			
+			tooltipTemplate: "<%= value %>"
+			//multiTooltipTemplate 
 		};
 	}
 	/**
