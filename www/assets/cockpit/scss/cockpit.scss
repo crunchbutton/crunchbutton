@@ -3427,7 +3427,7 @@ input[type="checkbox"].switch + div:before {
 	width: 1em;
 }
 
-.box-content-table input:not(type=date) {
+.box-content-table input:not([type="date"]) {
 	font-size: 1.0em;
 	box-sizing: border-box;
 	width: 90%;
