@@ -150,9 +150,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 											' . $where . '
 											AND
-												DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") >= "' . $start . '"
+												o.date >= "' . $start . '"
 											AND
-												DATE_FORMAT(o.date,"%Y-%m-%d %H:%i") <= "' . $end . '"
+												o.date <= "' . $end . '"
 											GROUP BY a.id_admin ORDER BY driver' ;
 		$expenses = c::db()->get( $query );
 		return $expenses;
@@ -162,7 +162,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT acctId
 								FROM pexcard_transaction
 									WHERE
-										DATE_FORMAT( transactionTime_pst, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										transactionTime_pst BETWEEN "' . $start . '" AND "' . $end . '"
 										AND transactionType != "Transfer"
 								GROUP BY acctId
 								ORDER BY amount DESC';
@@ -174,7 +174,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT *
 								FROM pexcard_transaction
 									WHERE
-										DATE_FORMAT( transactionTime_pst, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+										transactionTime_pst BETWEEN "' . $start . '" AND "' . $end . '"
 										AND transactionType != "Transfer"
 										AND acctId = "' . $acctId . '"
 								ORDER BY transactionTime ASC, isPending DESC';
@@ -200,7 +200,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
 											' . $where . '
 											AND
-											DATE_FORMAT( o.date, "%Y-%m-%d %H:%i" ) BETWEEN "' . $start . '" AND "' . $end . '"
+											o.date BETWEEN "' . $start . '" AND "' . $end . '"
 											AND a.id_admin = "' . $id_admin . '"
 											ORDER BY o.pay_type DESC, o.date ASC';
 		return Crunchbutton_Order::q( $query );
