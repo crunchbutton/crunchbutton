@@ -156,7 +156,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									WHERE o.date >= "' . $start->format('Y-m-d') . '"
-										AND o.date <= "' . $end->format('Y-m-d H:i') . '"
+										AND o.date <= "' . $end->format('Y-m-d H:i:s') . '"
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
@@ -1930,12 +1930,21 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function checkSucceededPaymentStatus( $type = 'driver' ){
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		$now->modify( '- 10 days' );
+		$_10_days_ago = $now->format( 'Y-m-d H:i:s' );
+
+		$now->modify( '- 4 days' );
+		$_14_days_ago = $now->format( 'Y-m-d H:i:s' );
+
 		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps
 																						INNER JOIN payment p ON ps.id_payment = p.id_payment
 																						WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "'
 																							AND ps.type = '{$type}' AND p.payment_status = '" . Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED . "'
-																							AND p.payment_status IS NOT NULL AND p.payment_date_checked >= NOW() - INTERVAL 14 DAY
-																							AND p.payment_date_checked <= NOW() - INTERVAL 10 DAY
+																							AND p.payment_status IS NOT NULL AND p.payment_date_checked >= '{$_14_days_ago}'
+																							AND p.payment_date_checked <= '{$_10_days_ago}'
 																							AND balanced_id IS NOT NULL ORDER BY p.payment_date_checked;" );
 		foreach( $payments as $payment ){
 			$id_payment = $payment->id_payment;
@@ -1960,7 +1969,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 									AND
 									cs.date_start <= '" . (new DateTime($this->filters['end']))->format('Y-m-d') . " 23:59:59'"
 								 . $where;
-		return Crunchbutton_Community_Shift::q( $query );
+		return Crunchbutton_Community_Shift::sq( $query );
 	}
 
 	public function amount_per_invited_user(){
