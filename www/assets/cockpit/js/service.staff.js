@@ -256,3 +256,24 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 	return service;
 
 } );
+
+
+NGApp.factory( 'StaffPermissionService', function( $resource, $routeParams ) {
+
+	var service = {};
+
+	// Create a private resource 'staff'
+	var staff = $resource( App.service + 'staff/permission/:id_admin/:action', { id_admin: '@id_admin', action: '@action' }, {
+				'load' : { 'method': 'GET', params : { action: '' } },
+			}
+		);
+
+	service.load = function( callback ){
+		staff.load( { 'id_admin': $routeParams.id }, function( data ){
+			callback( data );
+		} );
+	}
+
+	return service;
+
+} );
