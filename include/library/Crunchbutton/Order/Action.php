@@ -60,8 +60,8 @@ class Crunchbutton_Order_Action extends Cana_Table {
 								WHERE
 									oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
 									AND oa.id_admin = "' . $id_admin . '"
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) >= "' . $date_start->format( 'YmdHi' ) . '"
-									AND DATE_FORMAT( o.date, "%Y%m%d%H%i" ) <= "' . $date_end->format( 'YmdHi' ) . '"';
+									AND o.date >= "' . $date_start->format( 'Y-m-d' ) . ' 00:00:00"
+									AND o.date <= "' . $date_end->format( 'Y-m-d' ) . ' 23:59:59"';
 		return Crunchbutton_Order_Action::q( $query );
 	}
 
