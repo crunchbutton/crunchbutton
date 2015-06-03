@@ -1065,6 +1065,17 @@ input {
 	color: #5d5f63;
 	margin-top: 1em;
 }
+.li-input .code{
+	font-size: 1.1em;
+	color: #666;
+	background:#F5F5F5;
+	padding:0.2em;
+	font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+	margin-top: 1em;
+}
+	.li-input .code.tag{
+		color:#FFF;
+	}
 .li-input input,
 .li-input select,
 .li-input textarea{
@@ -4110,7 +4121,7 @@ h1.title.box-title {
     -webkit-animation-iteration-count: infinite;
 }
 
-@-webkit-keyframes blinker {  
+@-webkit-keyframes blinker {
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }

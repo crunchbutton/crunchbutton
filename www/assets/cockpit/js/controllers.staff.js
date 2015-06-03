@@ -31,6 +31,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffPexCardCtrl',
 			templateUrl: 'assets/view/staff-pexcard.html'
 		})
+		.when('/staff/:id/permission', {
+			action: 'staff',
+			controller: 'StaffPermissionCtrl',
+			templateUrl: 'assets/view/staff-permission.html'
+		})
 		.when('/staff/marketing-rep/faq', {
 			action: 'marketing-rep-help',
 			controller: 'StaffMarketingFaqCtrl',
@@ -123,6 +128,21 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 	});
 });
 
+
+NGApp.controller('StaffPermissionCtrl', function( $scope, StaffPermissionService, StaffService ) {
+
+	$scope.yesNo = StaffService.yesNo();
+
+	var load = function(){
+		StaffPermissionService.load( function( json ){
+			$scope.list = json.permissions;
+			$scope.ready = true;
+		} )
+	}
+
+	load();
+
+} );
 
 NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
 
