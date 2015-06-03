@@ -14,7 +14,7 @@ foreach( $messages as $message ){
 						<span class="name"><strong>
 							<?php if( $message->name ) { echo $message->name; } else { echo '<i>No name</i>'; } ?>
 						</strong> <span class="badge badge-blue">user</span></span>
-						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?></span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( false )?></span>
 					</div>
 				<?php echo nl2br( $message->body ); ?>
 				<?php
@@ -39,7 +39,7 @@ foreach( $messages as $message ){
 									</strong>
 								<span class="badge badge-green">SMS</span>
 								</span>
-								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( false ); ?></span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
 							<?php
@@ -63,7 +63,7 @@ foreach( $messages as $message ){
 									</strong>
 								<span class="badge badge-green">NOTE</span>
 								</span>
-								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( false ); ?></span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
 							<?php
@@ -89,7 +89,7 @@ foreach( $messages as $message ){
 							<span class="badge badge-gray">Log</span>
 							<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
 						</span>
-						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( false ); ?></span>
 					</div>
 					<?php echo nl2br( $message->body ); ?>
 					<?php
