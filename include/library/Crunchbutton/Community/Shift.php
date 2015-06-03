@@ -163,8 +163,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 									INNER JOIN admin a ON asa.id_admin = a.id_admin AND a.active = true
 								WHERE
 									cs.id_community = "' . $id_community . '"
-									AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i:%s" ) <= "' . $now_formated . '"
-									AND DATE_FORMAT( cs.date_end, "%Y-%m-%d %H:%i:%s" ) >= "' . $now_formated . '"
+									AND cs.date_start <= "' . $now_formated . '"
+									AND cs.date_end >= "' . $now_formated . '"
 									AND cs.active = true
 								ORDER BY cs.date_start ASC LIMIT 1';
 			$shift = Crunchbutton_Community_Shift::q( $query );
@@ -175,15 +175,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $date . '" AND cs.active = true ORDER BY c.name, cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE cs.date_start BETWEEN "' . $date . ' 00:00:00" AND "' . $date . ' 23:59:59" AND cs.active = true ORDER BY c.name, cs.date_start ASC' );
 	}
 
 	public function shiftsByCommunityPeriod( $id_community, $from, $to ){
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND id_community = "' . $id_community . '" ORDER BY cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE cs.date_start >= "' . $from . ' 00:00:00" AND cs.date_end <= "' . $to . ' 23:59:59" AND id_community = "' . $id_community . '" ORDER BY cs.date_start ASC' );
 	}
 
 	public function shiftsByDriverByPeriod( $id_admin, $from, $to ){
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND asa.id_admin = "' . $id_admin . '" ORDER BY cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= "' . $from . ' 00:00:00" AND cs.date_end <= "' . $to . ' 23:59:59" AND asa.id_admin = "' . $id_admin . '" ORDER BY cs.date_start ASC' );
 	}
 
 	public function week(){
@@ -329,6 +329,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$day = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
 		$weekday = $day->format( 'w' );
 
+		// @todo - once we change to postgre we have to change this query
 		$shifts = Crunchbutton_Community_Shift::q('
 			SELECT * FROM community_shift
 			WHERE
@@ -452,7 +453,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function removeRecurringChildren( $id_community_shift_father ){
 		$now =  new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		c::db()->query( 'DELETE FROM community_shift WHERE id_community_shift_father = ' . $id_community_shift_father . ' AND DATE_FORMAT( date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' ) . '"' );
+		c::db()->query( 'DELETE FROM community_shift WHERE id_community_shift_father = ' . $id_community_shift_father . ' AND date_start >= "' . $now->format( 'Y-m-d' ) . '"' );
 	}
 
 	public function remove( $id_community_shift ){
@@ -474,7 +475,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function removeHoursFromDay( $id_community, $date ){
-		return c::db()->query( "DELETE FROM community_shift WHERE id_community = $id_community AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
+		return c::db()->query( "DELETE FROM community_shift WHERE id_community = $id_community AND date_start BETWEEN '{$date} 00:00:00' AND '{$date} 23:59:59'" );
 	}
 
 	public function copyHoursFromTo( $id_community, $dayFrom, $dayTo ){
@@ -852,7 +853,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin )
 																									FROM admin_shift_assign asa
 																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift AND cs.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '"
-																									WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '" AND cs.active = true' );
+																									WHERE cs.date_start BETWEEN "' . $now->format( 'Y-m-d' ) . ' 00:00:00" AND "' . $now->format( 'Y-m-d' ) . ' 23:59:59" AND cs.active = true' );
+
+		$now_start = $now->format( 'Y-m-d' ) . ' 00:00:00';
+		$now_end = $now->format( 'Y-m-d' ) . ' 23:59:59';
 
 		foreach( $adminsWithShifts as $admin ){
 
@@ -863,11 +867,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$shifts = Crunchbutton_Community_Shift::q('
 				SELECT cs.* FROM admin_shift_assign asa
 				INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift
-				WHERE cs.date_start = ?
+				WHERE cs.date_start BETWEEN ? AND ?
 				AND asa.id_admin = ?
 				AND cs.active = true
 				ORDER BY date_start ASC
-			', [$now->format( 'Y-m-d' ), $id_admin]);
+			', [ $now_start, $now_end , $id_admin]);
 
 			if( $shifts->count() > 1 ){
 				$hours = [];
@@ -987,7 +991,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$message = '';
 
-			$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $dateStart . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $dateEnd . '" AND asa.id_admin = "' . $driver->id_admin . '" ORDER BY cs.date_start ASC' );
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= "' . $dateStart . ' 00:00:00" AND cs.date_end <= "' . $dateEnd . ' 23:59:59" AND asa.id_admin = "' . $driver->id_admin . '" ORDER BY cs.date_start ASC' );
 
 			if( $shifts->count() > 0 ){
 
