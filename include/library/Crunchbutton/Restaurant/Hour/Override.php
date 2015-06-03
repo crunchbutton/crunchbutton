@@ -23,15 +23,15 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$today_mysql = $today->format( 'Y-m-d' );
 
-		$today->modify( '+30 days' );	
+		$today->modify( '+30 days' );
 		$month_mysql = $today->format( 'Y-m-d' );
 
 		$query = "SELECT r.name, ho.* FROM restaurant_hour_override ho
 								INNER JOIN restaurant r ON r.id_restaurant = ho.id_restaurant
-								WHERE 
-									DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$today_mysql}' 
+								WHERE
+									date_start >= '{$today_mysql} 00:00:00'
 									AND
-									DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$month_mysql}' 
+									date_start <= '{$month_mysql} 23:59:59'
 									{$where}
 								ORDER BY r.name ASC, ho.date_start ASC";
 		return Crunchbutton_Restaurant_Hour_Override::q( $query );
