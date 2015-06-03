@@ -368,10 +368,15 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function getOrdersFromLastDaysByCommunity( $days = 14 ){
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- ' . $days . ' days' );
+		$days_ago = $now->format( 'Y-m-d' );
+
 		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
 					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
-					WHERE o.date > NOW() - INTERVAL $days DAY AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
+					WHERE o.date > '$days_ago' AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
 		return c::db()->get( $query, [$this->id_community]);
 	}
 
