@@ -1930,7 +1930,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function checkSucceededPaymentStatus( $type = 'driver' ){
-		$payments = Crunchbutton_Payment::sq( "SELECT p.* FROM payment_schedule ps
+		$payments = Crunchbutton_Payment::q( "SELECT p.* FROM payment_schedule ps
 																						INNER JOIN payment p ON ps.id_payment = p.id_payment
 																						WHERE ps.status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "'
 																							AND ps.type = '{$type}' AND p.payment_status = '" . Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED . "'
