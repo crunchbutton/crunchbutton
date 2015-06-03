@@ -1969,7 +1969,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 									AND
 									cs.date_start <= '" . (new DateTime($this->filters['end']))->format('Y-m-d') . " 23:59:59'"
 								 . $where;
-		return Crunchbutton_Community_Shift::sq( $query );
+		return Crunchbutton_Community_Shift::q( $query );
 	}
 
 	public function amount_per_invited_user(){
