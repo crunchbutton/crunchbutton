@@ -2,12 +2,7 @@
 NGApp.factory('MetricsService', function ($resource, $http, $q) {
 
 	var service = {};
-	var log = console.log;
-	// pretty logging in console :)
-	var log_debug = 'debug' in console ? console.debug : console.log;
-	var log_info = 'info' in console ? console.info : console.log;
-	var log_warn = 'warn' in console ? console.warn : console.log;
-	var log_error = 'error' in console ? console.error : console.log;
+
 	var ALL_COMMUNITIES_SELECTED = 'all';
 	var relativeTimeRegex = /-?[1-9][0-9]*[hmdMsw]$/;
 	// validateTime checks that time matches expectations and can be sent to backend
@@ -45,12 +40,12 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 		var communityArray = communities.split(/,/);
 		if (communityArray.length === 0) {
-			log_warn('no communities selected');
+			console.warn('no communities selected');
 			return false;
 		}
 		for (var i = 0; i < communityArray.length; i++) {
 			if (!parseInt(communityArray[i], 10)) {
-				log_warn('non-integer community', communityArray[i]);
+				console.warn('non-integer community', communityArray[i]);
 				return false;
 			}
 		}
@@ -160,7 +155,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		});
 		var scaleStepWidth = Math.max(Math.ceil((globalMax - globalMin) / steps), 1);
 		if (isNaN(scaleStepWidth)) {
-			log_error('could not set scale for globalMax', globalMax, 'globalMin', globalMin, 'steps', steps);
+			console.error('could not set scale for globalMax', globalMax, 'globalMin', globalMin, 'steps', steps);
 			return;
 		} else {
 			console.log('scale start', globalMin, 'scale end', globalMax, 'steps', steps, 'scale step width', scaleStepWidth);
@@ -260,9 +255,12 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		});
 		return deserialized;
 	};
+	
+	// overwrite default options
 	function defaultChartJSOptions() {
 		return {
-			bezierCurve: false
+			tooltipTemplate: "<%= value %>"
+			//multiTooltipTemplate 
 		};
 	}
 	/**

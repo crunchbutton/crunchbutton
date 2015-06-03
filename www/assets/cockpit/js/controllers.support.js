@@ -152,7 +152,7 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 
 } );
 
-NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService, CallService, MainNavigationService) {
+NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService, CallService, MainNavigationService, TwilioService) {
 
 	$scope.call = { staff : '', to : 'customer', _to: CallService.call_to() };
 	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to() };
@@ -219,6 +219,11 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 			}
 		} );
 	}
+	
+	$scope.call.voip = function() {
+		TwilioService.call($scope.call.phone);
+		App.dialog.close();
+	};
 
 	// Reset stuff when calling from modal
 	$rootScope.$on('callText', function(e, num) {
