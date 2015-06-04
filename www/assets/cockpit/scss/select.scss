@@ -54,6 +54,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 	zoom: 1;
 	*display: inline;
 	vertical-align: middle;
+	width: 100%;
 }
 
 .select2-container,
@@ -217,20 +218,21 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 
 	background-clip: padding-box;
 
-	background: #ccc;
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #ccc), color-stop(0.6, #eee));
-	background-image: -webkit-linear-gradient(center bottom, #ccc 0%, #eee 60%);
-	background-image: -moz-linear-gradient(center bottom, #ccc 0%, #eee 60%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#eeeeee', endColorstr = '#cccccc', GradientType = 0);
-	background-image: linear-gradient(top, #ccc 0%, #eee 60%);
 }
 
-.select2-container .select2-choice .select2-arrow b {
+.select2-container .select2-choice .select2-arrow b:after {
+	content: "\f078";
+	font: normal normal normal 14px/1 FontAwesome;
+	position: absolute;
 	display: block;
-	width: 100%;
-	height: 100%;
-	background: url('select2.png') no-repeat 0 1px;
+	height: 12px;
+	width: 12px;
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 8px;
+	color: #888;
 }
+
 
 .select2-search {
 	display: inline-block;
@@ -575,6 +577,7 @@ disabled look for disabled choices in the results dropdown
 	width: 12px;
 	font-size: 12px;
 	font-weight: bold;
+	margin-top: 1px;
 }
 
 .select2-container-multi .select2-choices .select2-search-choice .select2-search-choice-close:hover {
@@ -640,22 +643,6 @@ disabled look for disabled choices in the results dropdown
 	height: 100px;
 	overflow: scroll;
 }
-/* Retina-ize icons */
-
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 144dpi)  {
-	.select2-search input, .select2-search-choice-close, .select2-container .select2-choice abbr, .select2-container .select2-choice .select2-arrow b {
-		background-image: url('select2x2.png') !important;
-		background-repeat: no-repeat !important;
-		background-size: 60px 40px !important;
-	}
-	.select2-search input {
-		background-position: 100% -21px !important;
-	}
-}
-
-
-
-
 
 
 
@@ -835,49 +822,6 @@ disabled look for disabled choices in the results dropdown
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
-/**
-* Adjust the dropdown arrow button icon position for the single-select Select2 elements
-* to make it line up vertically now that we increased the height of .select2-container.
-*
-* 1. Class repetition to address missing .select2-chosen in Select2 v.3.3.2.
-*/
-.select2-container .select2-choice .select2-arrow b,
-.select2-container .select2-choice div b {
-	background-position: 0 3px;
-}
-
-.select2-dropdown-open .select2-choice .select2-arrow b,
-.select2-dropdown-open .select2-choice div b {
-	background-position: -18px 3px;
-}
-
-.select2-container.input-sm .select2-choice .select2-arrow b,
-.input-group-sm .select2-container .select2-choice .select2-arrow b,
-.select2-container.input-sm .select2-choice div b,
-.input-group-sm .select2-container .select2-choice div b {
-	background-position: 0 1px;
-}
-
-.select2-dropdown-open.input-sm .select2-choice .select2-arrow b,
-.input-group-sm .select2-dropdown-open .select2-choice .select2-arrow b,
-.select2-dropdown-open.input-sm .select2-choice div b,
-.input-group-sm .select2-dropdown-open .select2-choice div b {
-	background-position: -18px 1px;
-}
-
-.select2-container.input-lg .select2-choice .select2-arrow b,
-.input-group-lg .select2-container .select2-choice .select2-arrow b,
-.select2-container.input-lg .select2-choice div b,
-.input-group-lg .select2-container .select2-choice div b {
-	background-position: 0 9px;
-}
-
-.select2-dropdown-open.input-lg .select2-choice .select2-arrow b,
-.input-group-lg .select2-dropdown-open .select2-choice .select2-arrow b,
-.select2-dropdown-open.input-lg .select2-choice div b,
-.input-group-lg .select2-dropdown-open .select2-choice div b {
-	background-position: -18px 9px;
-}
 
 /**
 * Address Bootstrap's validation states and change Select2's border colors and focus states.

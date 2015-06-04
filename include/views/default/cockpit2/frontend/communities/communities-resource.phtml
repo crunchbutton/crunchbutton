@@ -58,7 +58,7 @@
 				<div class="label">Communities:</div>
 				<div class="input">
 
-					<ui-select multiple ng-model="resource.communities" theme="select2" close-on-select="true" style="width: 300px;" title="Select a community">
+					<ui-select multiple ng-model="resource.communities" theme="select2" close-on-select="true" title="Select a community">
 						<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
 						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
 							{{community.name}}
