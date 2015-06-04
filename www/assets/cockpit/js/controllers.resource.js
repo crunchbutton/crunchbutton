@@ -85,7 +85,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 			communities();
 		} )
 	} else {
-		$scope.resource = { 'all': 0, 'page': 1, 'side': 1, 'order_page': 1, 'active': 1 };
+		$scope.resource = { 'all': 0, 'page': 1, 'side': 1, 'order_page': 1, 'active': 1, 'communities': [] };
 		communities();
 	}
 
@@ -104,6 +104,6 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 			App.alert( 'File not saved! ');
 		}
 	});
-	
+
 
 });

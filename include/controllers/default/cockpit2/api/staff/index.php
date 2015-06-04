@@ -30,6 +30,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_status($staff);
 					break;
 
+				case 'group':
+					$this->_permissionDenied();
+					$this->_group($staff);
+					break;
+
 				case 'has_pexcard':
 					$this->_permissionDenied();
 					$this->_has_pexcard($staff);
@@ -66,6 +71,20 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _locations($staff) {
 		echo $staff->locations()->json();
+	}
+
+	private function _group( $staff ){
+		$staff->removeGroups();
+		$groups = $this->request()[ 'groups' ];
+		if( $groups ){
+			foreach ( $groups as $group ) {
+				$new = new Crunchbutton_Admin_Group();
+				$new->id_admin = $staff->id_admin;
+				$new->id_group = intval( $group );
+				$new->save();
+			}
+		}
+		echo json_encode( [ 'success' => true ] );
 	}
 
 	private function _status($staff) {
@@ -157,6 +176,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$working = $this->request()['working'] ? $this->request()['working'] : 'all';
 		$pexcard = $this->request()['pexcard'] ? $this->request()['pexcard'] : 'all';
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$group = $this->request()['group'] ? $this->request()['group'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
@@ -174,6 +194,14 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$q .= '
 			INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
 		';
+
+		if( $group ){
+			$q .= '
+				INNER JOIN admin_group ag ON ag.id_admin = admin.id_admin AND ag.id_group = ?
+			';
+			$keys[] = $group;
+		}
+
 
 		if ($type == 'driver') {
 			$q .= '
@@ -372,7 +400,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$i++;
 		}
 
-		if ($working == 'all') {
+		if ($working == 'all' ) {
 			$pages = ceil($count / $limit);
 		} else {
 			$pages = 1;

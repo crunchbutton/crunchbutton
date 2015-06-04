@@ -1,0 +1,128 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-unlock-alt"></i>
+		<span>Permissions: </span>
+		<span>{{info.type}} - {{info.name}}</span>
+	</h1>
+
+	<div class="divider"></div>
+
+	<div>
+
+		<div class="support-box-wrap box-content2" ng-repeat="permission in list">
+
+			<div class="support-box-wrap-header">
+				<h1>{{permission.description}}</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul class="ul-inputs">
+
+					<li class="li-input divider-line" ng-class="{'li-input-disabled': permission.disabled }"  ng-repeat="permission in permission.permissions">
+
+						<?php /* yes/no type */  ?>
+						<div ng-if="!permission.type">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-disabled="permission.disabled" class="switch" ng-model="permission.has"/><div></div>
+							</label>
+						</div>
+
+						<div class="label">{{permission.description}}</div>
+
+						<?php /* combo type */  ?>
+						<div ng-if="permission.type == 'combo'">
+
+								<div ng-switch="permission.element">
+
+									<div ng-switch-when="Restaurant">
+										<ui-select multiple ng-model="permission.permitted" ng-disabled="permission.disabled" theme="select2" close-on-select="true" style="width: 300px;" title="Select a restaurant">
+											<ui-select-match placeholder="Select a restaurant...">{{$item.name}}</ui-select-match>
+											<ui-select-choices repeat="restaurant.id_restaurant as restaurant in restaurants | propsFilter: {name: $select.search}">
+												{{restaurant.name}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+
+									<div ng-switch-when="Community">
+										<ui-select multiple ng-model="permission.permitted" ng-disabled="permission.disabled" theme="select2" close-on-select="true" style="width: 300px;" title="Select a community">
+											<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+											<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+												{{community.name}}
+											</ui-select-choices>
+										</ui-select>
+									</div>
+								</div>
+
+						</div>
+
+						<?php /*
+						<div class="notes" ng-if="permission.dependency">
+							<strong>Dependency: </strong>
+							<span ng-repeat="dependency in permission.dependency" class="italic">{{dependency}}</span>
+						</div>
+						*/  ?>
+
+						<?php /* additional permissions */  ?>
+						<div ng-if="permission.additional">
+							<ul class="ul-inputs">
+								<br>
+								<h2>{{permission.additional.label}}</h2>
+								<div class="divider"></div>
+
+								<li class="li-input" ng-repeat="additional_permission in permission.additional.permissions">
+
+									<?php /* yes/no type */  ?>
+									<div ng-if="!additional_permission.type">
+										<label class="switch-wrap">
+											<input type="checkbox" ng-disabled="additional_permission.disabled" class="switch" ng-model="additional_permission.has"/><div></div>
+										</label>
+									</div>
+
+									<div class="label">{{additional_permission.description}}</div>
+									<?php /*
+									<div class="notes" ng-if="permission.dependency">
+										<strong>Dependency: </strong>
+										<span ng-repeat="dependency in permission.dependency" class="italic">{{dependency}}</span>
+									</div>
+									*/ ?>
+
+									<div class="divider"></div>
+								</li>
+							</ul>
+
+						</div>
+
+
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="support-box-wrap box-content2">
+
+		<div class="no-box-content-color">
+			<ul class="ul-inputs">
+				<li class="li-input" ng-show="!isSaving">
+					<button class="button save" ng-click="save();">Save</button>
+					<span class="link orange" ng-click="back()">Back</span>
+				</li>
+				<li class="li-input" ng-show="isSaving">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

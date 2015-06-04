@@ -321,7 +321,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 	text-decoration: none;
 
 	border: 0;
-	background: url('select2.png') right top no-repeat;
+	background: url('/assets/cockpit/images/select2.png') right top no-repeat;
 	cursor: pointer;
 	outline: 0;
 }
@@ -406,7 +406,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 	display: block;
 	width: 100%;
 	height: 100%;
-	background: url('select2.png') no-repeat 0 1px;
+	background: url('/assets/cockpit/images/select2.png') no-repeat 0 1px;
 }
 
 /* results */
@@ -529,7 +529,7 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 
 	font-size: 1px;
 	outline: none;
-	background: url('select2.png') right top no-repeat;
+	background: url('/assets/cockpit/images/select2.png') right top no-repeat;
 	content: "X";
 	color: red;
 }

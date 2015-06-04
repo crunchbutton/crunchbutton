@@ -1065,6 +1065,14 @@ input {
 	color: #5d5f63;
 	margin-top: 1em;
 }
+.li-input .italic{
+	font-style: italic !import;
+	color: #333;
+}
+
+.li-input-disabled input[type="checkbox"].switch + div {
+	background: #CCC !important;
+}
 .li-input .code{
 	font-size: 1.1em;
 	color: #666;
@@ -1095,6 +1103,14 @@ input {
 		height: 10em;
 		background: #FFF;
 	}
+
+	.li-input.divider-line{
+		border-bottom:1px solid #F5F5F5;
+		padding-top:1em;
+		padding-bottom:1em;
+	}
+
+	.li-input.li-group{}
 
 .li-input textarea{
 	height: 50px;
@@ -1396,6 +1412,7 @@ td.documents-check {
 	-ms-user-select: none;
 	user-select: none;
 }
+
 .no-underline{
 	text-decoration:none;
 	color: inherit;
@@ -3347,6 +3364,9 @@ h1.driver-title {
 	width: 90%;
 	@include box-border-radius();
 }
+	.support-side-chat .ul-inputs .li-input select[multiple]{
+		height: 3em;
+	}
 
 .support-side-chat .ul-inputs .li-input .button{
 	font-size:1em;
@@ -3925,6 +3945,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .li-input-line-height {
 	line-height: 1.5em;
 }
+
 
 .listview-bold {
 	font-weight: 600;

@@ -665,7 +665,6 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function addPermissions( $permissions ){
-
 		if( $permissions && is_array( $permissions ) ){
 			foreach( $permissions as $key => $val ){
 				if( !$this->hasPermission( $key ) ){
@@ -771,6 +770,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			if( $this->groups() ){
 				foreach ($this->groups() as $group) {
 					$groups[$group->id_group] = $group->name;
+
+					$description = ( $group->description ) ? $group->description : $group->name;
+					$groups_description[$group->id_group] = trim( $description );
 				}
 			}
 		}
@@ -818,6 +820,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'testphone' => $this->testphone,
 			'permissions' => $permissions,
 			'groups' => $groups,
+			'groups_description' => $groups_description,
 			'vehicle' => $this->vehicle(),
 			'communities' => $communities,
 			'active' => ( $this->active == 1 ),

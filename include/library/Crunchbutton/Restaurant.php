@@ -46,7 +46,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function active(){
-		return Crunchbutton_Restaurant::q( 'SELECT id_restaurant, name FROM restaurant WHERE active = true ORDER BY name ASC' );
+		return Crunchbutton_Restaurant::q( 'SELECT r.id_restaurant, r.name, c.name AS community FROM restaurant r LEFT JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant LEFT JOIN community c ON c.id_community = rc.id_community WHERE r.active = true ORDER BY r.name ASC' );
 	}
 
 	public function with_no_payment_method(){
