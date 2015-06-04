@@ -115,6 +115,15 @@ class Crunchbutton_Group extends Cana_Table {
 	}
 
 
+	public function exports(){
+		$out = $this->properties();
+		if( $this->id_community ){
+			$out[ 'community' ] = $this->community()->name;
+		}
+		$out[ 'members' ] = $this->users()->count();
+		return $out;
+	}
+
 	public static function find($search = []) {
 
 		$query = 'SELECT `group`.* FROM `group` WHERE id_group IS NOT NULL ';

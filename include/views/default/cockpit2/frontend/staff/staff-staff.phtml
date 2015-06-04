@@ -45,6 +45,31 @@
 			</div>
 		</div>
 
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Permissions</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/permission/staff/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Groups</div>
+						<div class="field-value">
+							<span class="staff-community-repeat" ng-repeat="group in staff.groups_description">
+								{{group}}
+							</span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<a href="" ng-click="groups()"><i class="fa fa-plus-circle"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
@@ -289,7 +314,7 @@
 		</div>
 	</div>
 
-
+	<ng-include src="'assets/view/staff-group.html'"></ng-include>
 
 
 	<? /*

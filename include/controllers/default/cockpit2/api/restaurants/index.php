@@ -53,7 +53,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				$restaurants = Crunchbutton_Restaurant::active();
 				$export = [];
 				foreach( $restaurants as $restaurant ){
-					$export[] = array( 'id_restaurant' => $restaurant->id_restaurant, 'name' => $restaurant->name );
+					$name = $restaurant->name;
+					if( $restaurant->community ){
+						$name .= ' - ' . $restaurant->community;
+					}
+					$export[] = array( 'id_restaurant' => $restaurant->id_restaurant, 'name' => $name );
 				}
 				echo json_encode( $export );
 				break;

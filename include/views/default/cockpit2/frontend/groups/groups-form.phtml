@@ -1,0 +1,58 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-users"></i>
+		<span ng-if="!group.id_group">Add group</span>
+		<span ng-if="group.id_group">Edit group {{group.name}}</span>
+	</h1>
+
+	<div class="divider"></div>
+
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>Details</h1>
+			<div class="divider"></div>
+		</div>
+
+		<div class="no-box-content-color">
+
+			<form name="form" novalidate>
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.groupName.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" ng-disabled="group.id_group" name="groupName" ng-model="group.name" required placeholder="Name" ng-minlength="2" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.groupName.$error.required">Required.</small>
+							<small ng-show="form.groupName.$error.minlength">Name is too short. Name is required to be at least 2 characters.</small>
+							<small ng-show="form.groupName.$error.maxlength">Name cannot be longer than 255 characters.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.groupDescription.$invalid}">
+						<div class="label">Description:</div>
+						<div class="input"><input type="text" name="groupDescription" ng-model="group.description" required placeholder="Description" ng-minlength="2" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.groupDescription.$error.required">Required.</small>
+							<small ng-show="form.groupDescription.$error.minlength">Description is too short. Description is required to be at least 2 characters.</small>
+							<small ng-show="form.groupDescription.$error.maxlength">Description cannot be longer than 255 characters.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save</button>
+						<span class="link orange" ng-click="cancel()">Cancel</span>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</form>
+
+		</div>
+	</div>
+
+</div>
+<hack-expand-content></hack-expand-content>

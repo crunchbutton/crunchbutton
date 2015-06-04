@@ -1,0 +1,77 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-users"></i>Group {{group.name}}</h1>
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Details</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/group/edit/{{group.name}}"><button class="button button-small button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{group.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Description</div>
+						<div class="field-value">{{group.description}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Type</div>
+						<div class="field-value">
+							<span class="tag tag-purple" ng-if="group.type == 'driver'">Driver</span>
+							<span class="tag tag-orange" ng-if="group.type == 'marketing-rep'">Marketing Rep</span>
+							<span class="tag tag-blue" ng-if="!group.type">Permission Group</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="group.community">
+						<div class="field-key">Community</div>
+						<div class="field-value">
+							<a href="/community/{{group.id_community}}">{{group.community}}</a>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Members</div>
+						<div class="field-value">
+							{{group.members}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Permissions</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/permission/group/{{group.name}}"><button class="button button-small button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="divider"></div>
+
+	<h1 class="title"><i class="fa fa-users"></i>Members</h1>
+	<div class="bar-loader bar-loader-drivers" ng-class="{'bar-loader-loading': loadingStaff}"></div>
+	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
+
+
+</div>

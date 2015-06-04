@@ -1,0 +1,30 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Type</th>
+			<th>Community</th>
+			<th>Members</th>
+			<th class="tb-small"></th>
+		</tr>
+		<tr ng-repeat="group in groups track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/group/{{group.permalink || group.id_group}}">
+			<td nowrap>
+				<span class="listview-bold">{{group.name}}</span>
+			</td>
+			<td>{{group.description}}</td>
+			<td>
+				<span class="tag tag-purple" ng-if="group.type == 'driver'">Driver</span>
+				<span class="tag tag-orange" ng-if="group.type == 'marketing-rep'">Marketing Rep</span>
+				<span class="tag tag-blue" ng-if="!group.type">Permission Group</span>
+			</td>
+			<td>{{group.community}}</td>
+			<td>{{group.members}}</td>
+			<td nowrap class="tb-v-center">
+				<a href="/permission/group/{{group.name}}"><button class="button button-small button-empty button-green"><i class="fa fa-unlock-alt"></i>&nbsp;&nbsp;Permissions</button></a>
+				<a href="/group/edit/{{group.name}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+				<a href="/group/{{group.name}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+			</td>
+		</tr>
+	</table>
+</div>

@@ -30,6 +30,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 		'query' : {
 			method: 'GET',
 			params : {}
+		},
+		'group' : {
+			url: App.service + 'staff/:id_admin/group',
+			method: 'POST',
+			params : {}
 		}
 	});
 
@@ -59,6 +64,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.has_pexcard = function(id_admin, callback) {
 		staff.has_pexcard({id_admin: id_admin}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.group = function(params, callback) {
+		staff.group(params,  function(data) {
 			callback(data);
 		});
 	}
@@ -250,27 +261,6 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 						}
 				} );
 			}
-		} );
-	}
-
-	return service;
-
-} );
-
-
-NGApp.factory( 'StaffPermissionService', function( $resource, $routeParams ) {
-
-	var service = {};
-
-	// Create a private resource 'staff'
-	var staff = $resource( App.service + 'staff/permission/:id_admin/:action', { id_admin: '@id_admin', action: '@action' }, {
-				'load' : { 'method': 'GET', params : { action: '' } },
-			}
-		);
-
-	service.load = function( callback ){
-		staff.load( { 'id_admin': $routeParams.id }, function( data ){
-			callback( data );
 		} );
 	}
 

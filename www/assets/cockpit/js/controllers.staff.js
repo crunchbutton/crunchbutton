@@ -26,6 +26,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffPayInfoCtrl',
 			templateUrl: 'assets/view/staff-payinfo.html'
 		})
+		.when('/staff/:id/group', {
+			action: 'staff',
+			controller: 'StaffGroupCtrl',
+			templateUrl: 'assets/view/staff-group.html'
+		})
 		.when('/staff/:id/pexcard', {
 			action: 'staff',
 			controller: 'StaffPexCardCtrl',
@@ -57,16 +62,31 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 NGApp.controller('StaffMarketingFaqCtrl',function(){});
 
 NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $location, StaffService, MapService) {
+
 	$scope.staff = null;
 	$scope.map = null;
 	$scope.loading = true;
 	var marker;
 
-	StaffService.get($routeParams.id, function(staff) {
-		$rootScope.title = staff.name + ' | Staff';
-		$scope.staff = staff;
-		$scope.loading = false;
+	$rootScope.$on( 'groups-assigned', function(e, data) {
+		load();
 	});
+
+	var load = function(){
+		StaffService.get($routeParams.id, function(staff) {
+			$rootScope.title = staff.name + ' | Staff';
+			$scope.staff = staff;
+			$scope.loading = false;
+		});
+	}
+
+	load();
+
+	$scope.groups = function(){
+		$(':focus').blur();
+		$scope.complete = $rootScope.closePopup;
+		App.dialog.show( '.assign-groups-container' );
+	}
 
 	StaffService.locations($routeParams.id, function(d) {
 		$scope.locations = d;
@@ -74,12 +94,10 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 	});
 
 	$scope.$watch('staff', function() {
-		console.log('staff');
 		update();
 	});
 
 	$scope.$watch('map', function() {
-		console.log('map');
 		//update();
 	});
 
@@ -128,21 +146,6 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 	});
 });
 
-
-NGApp.controller('StaffPermissionCtrl', function( $scope, StaffPermissionService, StaffService ) {
-
-	$scope.yesNo = StaffService.yesNo();
-
-	var load = function(){
-		StaffPermissionService.load( function( json ){
-			$scope.list = json.permissions;
-			$scope.ready = true;
-		} )
-	}
-
-	load();
-
-} );
 
 NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
 
@@ -434,6 +437,44 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 	}
 
 	start();
+
+} );
+
+NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, GroupService, StaffService ) {
+
+	$scope.assigned = {};
+
+	StaffService.get($routeParams.id, function(staff) {
+		$rootScope.title = staff.name + ' | Groups';
+		$scope.staff = staff;
+
+
+		GroupService.list( { 'limit': 'none' }, function( data ) {
+			$scope.groups = data.results;
+			$scope.ready = true;
+		} );
+
+		$scope.assigned.groups = [];
+
+		angular.forEach( $scope.staff.groups, function(name, id_group) {
+			$scope.assigned.groups.push( id_group );
+		} );
+
+	});
+
+	$scope.save = function(){
+		var params = {};
+		params.groups = $scope.assigned.groups;
+		params.id_admin = $routeParams.id;
+		StaffService.group( params, function( json ){
+			if( json.success ){
+				App.alert( 'Groups assigned!' );
+				$rootScope.$broadcast( 'groups-assigned' );
+			} else {
+				App.alert( 'Error assigning groups!' );
+			}
+		} );
+	}
 
 } );
 
