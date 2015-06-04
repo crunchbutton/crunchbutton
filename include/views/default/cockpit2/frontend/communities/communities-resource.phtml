@@ -58,22 +58,12 @@
 				<div class="label">Communities:</div>
 				<div class="input">
 
-					<? //isteven ?>
 					<ui-select multiple ng-model="resource.communities" theme="select2" close-on-select="true" style="width: 300px;" title="Select a community">
 						<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
 						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
 							{{community.name}}
 						</ui-select-choices>
 					</ui-select>
-
-					<? /*
-					<ui-select ng-model="resource.b" theme="selectize" ng-disabled="disabled" style="width: 300px;" title="Choose a country">
-						<ui-select-match placeholder="Select or search a country in the list...">{{$item.name}}</ui-select-match>
-						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
-							{{community.name}}
-						</ui-select-choices>
-					</ui-select>
-					*/ ?>
 
 				</div>
 			</li>
