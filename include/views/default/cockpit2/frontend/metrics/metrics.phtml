@@ -11,6 +11,15 @@
 				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh fa-2x"></i></button>
 			</div>
 			<div class="label">Communities:</div>
+				
+				
+			<ui-select multiple ng-model="multiSelectCommunities" theme="select2" close-on-select="true" title="Select a community">
+				<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+				<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+					{{community.name}}
+				</ui-select-choices>
+			</ui-select>
+				
 			<div multi-select input-model="multiSelectCommunities" button-label="name" item-label="name" tick-property="selected"
 				on-item-click='updateSelected()'
 				on-close='updateSelected()'
@@ -39,10 +48,13 @@
 				</tbody>
 			</table>
 			<div><input type='checkbox' ng-model='settings.combineCharts' ng-change='calculateCombinedData()'>Combine Charts</input></div>
+			<? /* i dont know why even want this option
 			<div><input type='checkbox' ng-model='settings.showEmpty' ng-change='showEmptyChanged()'>Show Empty Charts</input></div>
+			*/ ?>
 			</div>
 		</form>
 	</div>
+	
 <div class="support-boxes metrics-boxes">
 	<div ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities' class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
@@ -51,7 +63,7 @@
 		</div>
 
 		<div ng-repeat='chartOption in settings.charts' ng-switch on='chartOption.format'>
-			<h3 style='text-align:center'>{{availableCharts[chartOption.type].description}}</h3>
+			<h3 style='text-align:center' ng-if="settings.charts.length > 1">{{availableCharts[chartOption.type].description}}</h3>
 			<canvas ng-switch-when='line' class="chart chart-line" data="chartData[community.id_community][chartOption.type].data"
 				options="chartData[community.id_community][chartOption.type].options"
 				labels="chartData[community.id_community][chartOption.type].labels"
