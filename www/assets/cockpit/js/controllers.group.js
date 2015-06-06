@@ -97,6 +97,8 @@ NGApp.controller('GroupCtrl', function ($scope, $routeParams, $rootScope, GroupS
 
 	$scope.loading = true;
 
+	$scope.loadingStaff = true;
+
 	GroupService.get($routeParams.id, function(d) {
 
 		$rootScope.title = d.name + ' | Group';
