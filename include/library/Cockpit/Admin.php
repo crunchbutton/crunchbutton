@@ -124,7 +124,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 						}
 						break;
 					case 'legal_entity.address.state':
-						if ($stripeAccount->legal_entity->address->state) {
+						if (!$stripeAccount->legal_entity->address->state) {
 							$stripeAccount->legal_entity->address->state = $address['state'];
 							$saving++;
 						}
