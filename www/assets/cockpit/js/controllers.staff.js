@@ -533,7 +533,7 @@ NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, G
 
 } );
 
-NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoService ) {
+NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoService, ConfigService ) {
 
 	$scope.bank = { 'showForm': true };
 	$scope.payInfo = {};
@@ -619,43 +619,95 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		} )
 	}
 
-	$scope.tokenize = function(){
-		if( $scope.formBank.$invalid ){
-			App.alert( 'Please fill in all required fields' );
-			$scope.bankSubmitted = true;
-			return;
-		}
-		$scope.isTokenizing = true;
+	var balanced = function(){
 		var payload = { name: $scope.payInfo.legal_name_payment,
 										account_number: $scope.bank.account_number,
 										routing_number: $scope.bank.routing_number };
 		StaffPayInfoService.bankAccount( payload, function( json ){
 			if( json.href ){
+				json.id_admin = $scope.payInfo.id_admin;
 				json.legal_name_payment = $scope.payInfo.legal_name_payment;
 				StaffPayInfoService.save_bank( json, function( data ){
 					if( data.error ){
 						App.alert( data.error);
 						return;
 					} else {
-						load();
-						$scope.isTokenizing = false;
-						$scope.saved = true;
-						setTimeout( function() { $scope.saved = false; }, 1500 );
+						bank_info_saved();
 					}
 				} );
 
 			} else {
-				App.alert( 'Error!' );
+				App.alert( 'Error saving account! Please make sure you typed your account information correctly.' );
 				$scope.isTokenizing = false;
 			}
 		} );
+	}
+
+	var stripe = function(){
+		Stripe.bankAccount.createToken( {
+			country: 'US',
+			currency: 'USD',
+			routing_number: $scope.bank.routing_number,
+			account_number: $scope.bank.account_number
+		}, function( header, response ){
+			if( response.id ){
+				var params = {
+					'token': response.id,
+					'id_admin': $scope.payInfo.id_admin
+				};
+				StaffPayInfoService.save_stripe_bank( params, function( d ){
+					if( d.id_admin ){
+						bank_info_saved();
+					} else {
+						var error = d.error ? d.error : '';
+						App.alert( 'Error: ' + error );
+					}
+				} );
+			} else {
+				App.alert( 'Error creating a Stripe token' );
+			}
+		} );
+	}
+
+	var bank_info_saved = function(){
+		document.activeElement.blur();
+		load();
+		$scope.isTokenizing = false;
+		$scope.saved = true;
+		$scope.bank.account_number = '';
+		$scope.bank.routing_number = '';
+		$scope.bank.showForm = false;
+		App.alert( 'Bank information saved!' );
+		setTimeout( function() { $scope.saved = false; }, 1500 );
+	}
+
+	$scope.tokenize = function(){
+
+		if( $scope.formBank.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.bankSubmitted = true;
+			return;
+		}
+
+		$scope.isTokenizing = true;
+		if ( $scope.isBalanced ) {
+			balanced();
+		} else if ( $scope.isStripe ) {
+			stripe();
+		}
 	}
 
 	$scope.list = function(){
 		$scope.navigation.link( '/staff/list' );
 	}
 
+	// just to cache the config process stuff
+	ConfigService.getProcessor( function( json ){
+		$scope.processor = json.processor.type;
+		$scope.isBalanced = ( json.processor.type == 'balanced' );
+		$scope.isStripe = ( json.processor.type == 'stripe' );
+		load();
+	} );
 
-	load();
 
 });
