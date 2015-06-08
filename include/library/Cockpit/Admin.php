@@ -79,7 +79,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		];
 	}
 	
-	public function autoStripeVerify() {
+	public function autoStripeVerify($force = false) {
 		$stripeAccount = $this->stripeAccount();
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
@@ -93,8 +93,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$address = $this->addressParts($formattedAddress);
 
 		// make sure we can verify it
-		if ($status['status'] == 'unverified' && !$status['contacted'] && $status['due_by']) {
+		if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
 			$saving = 0;
+
 			foreach ($status['fields'] as $field) {
 				switch ($field) {
 					case 'legal_entity.first_name':
