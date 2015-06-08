@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `closed_message` VARCHAR(250) DEFAULT NULL;

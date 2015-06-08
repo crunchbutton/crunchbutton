@@ -877,6 +877,83 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function closedMessage(){
+		return $this->closed_message;
+	}
+
+	public function saveClosedMessage(){
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 1 day' );
+		$from = $now->format( 'Y-m-d' ) . ' 00:00:00';
+		$now->modify( '+ 6 days' );
+		$to = $now->format( 'Y-m-d' ) . ' 23:59:59';
+
+		$shifts = Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift WHERE cs.date_start >= ? AND cs.date_end <= ? AND id_community = ? ORDER BY cs.date_start ASC', [ $from, $to, $this->id_community ] );
+
+		$hours = [];
+
+		foreach( $shifts as $shift ){
+
+			$start = $shift->dateStart();
+			$end = $shift->dateEnd();
+
+			$hours[ strtolower( $start->format( 'D' ) ) ] = [];
+
+			$hours[ strtolower( $start->format( 'D' ) ) ] = [ 'from' => $start->format( 'H:i' ), 'to' => null, 'status' => 'open' ];
+
+			if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) ){
+				$hours[ strtolower( $start->format( 'D' ) ) ][ 'to' ] = '00:00';
+				$hours[ strtolower( $end->format( 'D' ) ) ] = [ 'from' => $end->format( 'H:i' ), 'to' => null, 'status' => 'open' ];
+			}
+			$hours[ strtolower( $end->format( 'D' ) ) ][ 'to' ] = $end->format( 'H:i' );
+		}
+
+		uksort( $hours,
+			function( $a, $b ) {
+				$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+				return( $weekdays[ $a ] > $weekdays[ $b ] );
+			} );
+
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+		foreach( $weekdays as $day ){
+			if( $_hours[ $day ] ){
+				$index = array_search( $day, $weekdays );
+				// Get the prev day to compare
+				if( $index == 0 ){
+					$index_prev = count( $weekdays ) - 1;
+				} else if( $index == ( count( $weekdays ) - 1 ) ){
+					$index_prev = 0;
+				} else {
+					$index_prev--;
+				}
+				$prev_day = $weekdays[ $index_prev ];
+				// the current day
+				if( $_hours[ $day ] ){
+					// If this days starts at midnight that is a chance this hours belongs to prev day
+					if( $_hours[ $day ] && $_hours[ $day ][ 0 ] && $_hours[ $day ][ 0 ][ 'from' ] && $_hours[ $day ][ 0 ][ 'from' ] == '0:00' ){
+						if( $_hours[ $prev_day ] && $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ] && $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ][ 'from' ] && $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ][ 'to' ] == '0:00' ){
+							$_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ] = array( 'from' => $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ][ 'from' ], 'to' => $_hours[ $day ][ 0 ][ 'to' ] );
+							unset( $_hours[ $day ][ 0 ] );
+							$_hours[ $day ] = array_values( $_hours[ $day ] );
+						}
+					}
+				}
+			}
+		}
+
+		// Convert the hours to format am/pm and merge the segments
+		$_partial = [];
+		$_hours = $hours;
+		foreach ( $_hours as $day => $hours ) {
+			$segments = [];
+			$segments[] = $hours[ 'from' ] . ' - ' . $hours[ 'to' ];
+			$_partial[ $day ] = join( ', ', $segments );
+		}
+		$this->closed_message = str_replace( '<br/>', "\n", Hour::closedMessage( $_partial ) );
+		$this->save();
+	}
+
 	public function _openedAt( $date, $field ){
 		$query = '
 			SELECT
