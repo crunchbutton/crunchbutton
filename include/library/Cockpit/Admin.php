@@ -87,6 +87,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		$formattedAddress = $this->formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
+			$paymentType->address = $formattedAddress;
 			$paymentType->save();
 		}
 
