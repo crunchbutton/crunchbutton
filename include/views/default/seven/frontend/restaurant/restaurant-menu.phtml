@@ -1,5 +1,5 @@
 
-<div ng-show="!order.cart.hasItems()" class="restaurant-box" ng-class="{'restaurant-items':!isMobileWidth}">
+<div ng-show="!order.cart.hasItems()" class="restaurant-box hide-desktop">
 	<div class="restaurant-box-inner">
 		<span class="restaurant-box-icon">
 			<i class="fa fa-arrow-down"></i>
@@ -10,7 +10,7 @@
 	</div>
 </div>
 
-<div class="restaurant-items">
+<div class="restaurant-items restaurant-items-list">
 
 	<div ng-show="fullmenu">
 		<div ng-bind-once class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">

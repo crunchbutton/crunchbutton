@@ -1875,6 +1875,13 @@ a.button{
 		padding: 1.5em;
 		color: #fff;
 	}
+	.restaurant-box {
+		box-sizing: border-box;
+		margin: 0 auto;
+		margin-top: 1.2em;
+		width: 28em;
+		font-size: .9em;
+	}
 
 	.restaurant-side-bar .restaurant-title{
 		background: #373737;
@@ -1890,10 +1897,13 @@ a.button{
 	.cart-items {
 		background: #373737;
 	}
+	.restaurant-items-list {
+		padding-top: 0;
+	}
 	.restaurant-items {
-		padding-top: 1.5em;
 		float: left;
-		width: 64.6%;
+		width: 65.1%;
+		box-sizing: border-box;
 	}
 	.restaurant-name {
 		margin-top: -29em;
@@ -1943,6 +1953,7 @@ a.button{
 		color: #d9462f;
 	}
 
+	/*
 	.starred-item {
 		background: #fffaf8;
 		border: 1px solid #e46436;
@@ -1954,9 +1965,13 @@ a.button{
 		line-height: 1.5em;
 		height: 3em;
 	}
+	*/
 	.dish-item-name {
-		font-weight: bold;
+		font-weight: normal;
 		font-size: 1.2em;
+	}
+	.starred-item .dish-item-name {
+		font-weight: bold;
 	}
 	.dish-item-price {
 		font-size: 1.1em;
