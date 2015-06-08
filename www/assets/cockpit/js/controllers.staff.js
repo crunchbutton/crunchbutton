@@ -448,11 +448,11 @@ NGApp.controller('StaffCommunityCtrl', function( $scope, $routeParams, $rootScop
 
 	$rootScope.$on( 'CommunitiesAssign', function(e, data ) {
 
-		$scope.ready = true;
 
 		App.dialog.show( '.assign-communities-container' );
 
 		CommunityService.listSimple( function( data ) {
+			$scope.ready = true;
 			$scope.communities = data;
 		} );
 
@@ -488,12 +488,12 @@ NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, G
 
 	$rootScope.$on( 'GroupsAssign', function(e, data) {
 
-		$scope.ready = true;
 
 		App.dialog.show( '.assign-groups-container' );
 
 		GroupService.list( { 'limit': 'none' }, function( data ) {
 			$scope.groups = data.results;
+			$scope.ready = true;
 		} );
 
 		$scope.assigned.groups = [];
