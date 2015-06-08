@@ -35,15 +35,62 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 	}
 	
+	public function formatAddress($address = '') {
+		if (!$address) {
+			$address = $this->payment_type()->address;
+		}
+		
+		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address);
+
+		$res = @json_decode(@file_get_contents($url));
+		if (!$res) {
+			return $address;
+		}
+		$res = $res->results[0];
+		
+		/*
+		$parts = [];
+		foreach ($res->address_components as $item) {
+			$parts[$item->types[0]] = $item->short_name;
+		}
+		*/
+		
+		$f = explode(',',$res->formatted_address);
+		array_pop($f);
+		$formatted = array_shift($f)."\n".trim(implode(',',$f));
+
+		return $formatted;
+	}
+	
+	public function addressParts($address = '') {
+		if (!$address) {
+			$pt = $this->payment_type();
+			$address = $pt->address;
+		}
+		$parts = explode("\n", trim($address));
+		$parts[1] = explode(',', trim($parts[1]));
+		$parts[1][1] = explode(' ', trim($parts[1][1]));
+
+		return [
+			'address' =>$parts[0],
+			'city' => $parts[1][0],
+			'state' => $parts[1][1][0],
+			'zip' => $parts[1][1][1]
+		];
+	}
+	
 	public function autoStripeVerify() {
 		$stripeAccount = $this->stripeAccount();
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
 
-		$address = explode("\n", $paymentType->address);
-		$address[1] = explode(',', $address[1]);
-		$address[1][1] = explode(' ', $address[1][1]);
+		$formattedAddress = $this->formatAddress($paymentType->address);
+		if ($formattedAddress != $paymentType->address) {
+			$paymentType->save();
+		}
+
+		$address = $this->addressParts($formattedAddress);
 
 		// make sure we can verify it
 		if ($status['status'] == 'unverified' && !$status['contacted'] && $status['due_by']) {
@@ -64,25 +111,25 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 						break;
 					case 'legal_entity.address.line1':
 						if (!$stripeAccount->legal_entity->address->line1) {
-							$stripeAccount->legal_entity->address->line1 = $address[0];
+							$stripeAccount->legal_entity->address->line1 = $address['address'];
 							$saving++;
 						}
 						break;
 					case 'legal_entity.address.city':
 						if (!$stripeAccount->legal_entity->address->city) {
-							$stripeAccount->legal_entity->address->city = $address[1][0];
+							$stripeAccount->legal_entity->address->city = $address['city'];
 							$saving++;
 						}
 						break;
 					case 'legal_entity.address.state':
 						if ($stripeAccount->legal_entity->address->state) {
-							$stripeAccount->legal_entity->address->state = $address[1][1][0];
+							$stripeAccount->legal_entity->address->state = $address['state'];
 							$saving++;
 						}
 						break;
 					case 'legal_entity.address.postal_code':
 						if (!$stripeAccount->legal_entity->address->postal_code) {
-							$stripeAccount->legal_entity->address->postal_code = $address[1][1][1];
+							$stripeAccount->legal_entity->address->postal_code = $address['zip'];
 							$saving++;
 						}
 						break;
