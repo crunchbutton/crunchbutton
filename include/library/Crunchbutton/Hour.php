@@ -736,10 +736,85 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $hour . ( ( $minute > 0 ) ? ':' . str_pad( $minute, 2, '0', STR_PAD_LEFT ) : '' ) . $ampm;
 	}
 
+	public function closedMessage( $hours ){
+
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+
+		$_partial = $hours;
+
+		$_group = [];
+
+		// Group the days with the same hour
+		foreach( $_partial as $day => $hours ){
+			if( !$_group[ $hours ] ){
+				$_group[ $hours ] = [];
+			}
+			$_group[ $hours ][] = $day;
+		}
+
+		// Group the days e.g. 'Mon, Tue, Wed, Sat' will became 'Mon - Wed, Sat'
+		foreach( $_group as $hours => $days ){
+			if( count( $days ) <= 1 ){
+				$_group[ $hours ] = ucfirst( join( ', ', $days ) );
+				continue;
+			}
+
+			$_sequence_index = 0;
+			$_in_sequences = [];
+			$_no_sequences = [];
+			$nextShouldBe = false;
+
+			for( $i = 0; $i < count( $days ); $i++ ){
+
+				$index = array_search( $days[ $i ], $weekdays );
+
+				if( $nextShouldBe !== false ){
+					if( $nextShouldBe == $index ){
+						$_in_sequences[ $_sequence_index ][ $days[ $i -1 ] ] = array_search( $days[ $i -1 ], $weekdays );
+						$_in_sequences[ $_sequence_index ][ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
+						unset( $_no_sequences[ $days[ $i -1 ] ] );
+						unset( $_no_sequences[ $days[ $i ] ] );
+					} else {
+						$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
+						$_sequence_index++;
+					}
+				} else {
+					$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
+				}
+
+				$nextShouldBe = ( ( $index + 1 ) < ( count( $weekdays ) ) ) ? ( $index + 1 ) : 0;
+			}
+			$_sequences = [];
+			foreach ( $_in_sequences as $key => $value ) {
+				if( count( $_in_sequences[ $key ] ) == 2 ){
+					$separator = ', ';
+				} else {
+					$separator = ' - ';
+				}
+				$data = [];
+				$keys = array_keys( $_in_sequences[ $key ] );
+				$_sequences[ array_shift( $_in_sequences[ $key ] ) ] = ucfirst( array_shift( $keys ) ) . $separator . ucfirst( array_pop( $keys ) );
+			}
+			foreach ( $_no_sequences as $key => $value ) {
+				$_sequences[ $_no_sequences[ $key ] ] = ucfirst( $key );
+			}
+			ksort( $_sequences );
+			$_group[ $hours ] = join( ', ', $_sequences );
+		}
+
+		$_organized = [];
+		// Organize the messy
+		foreach( $_group as $hours => $days ){
+			if( trim( $hours ) != '' ){
+				$_organized[] = $days . ': ' . $hours;
+			}
+		}
+		return join( ' <br/> ', $_organized );
+	}
+
 	public function restaurantClosedMessage( $restaurant ){
 
 		$_hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
-
 		// Remove the closes status
 		foreach ( $_hours as $day => $hours ) {
 			foreach( $hours as $key => $hour ){
@@ -795,72 +870,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 			$_partial[ $day ] = join( ', ', $segments );
 		}
-
-		$_group = [];
-		// Group the days with the same hour
-		foreach( $_partial as $day => $hours ){
-			if( !$_group[ $hours ] ){
-				$_group[ $hours ] = [];
-			}
-			$_group[ $hours ][] = $day;
-		}
-
-		// Group the days e.g. 'Mon, Tue, Wed, Sat' will became 'Mon - Wed, Sat'
-		foreach( $_group as $hours => $days ){
-			if( count( $days ) <= 1 ){
-				$_group[ $hours ] = ucfirst( join( ', ', $days ) );
-				continue;
-			}
-
-			$_sequence_index = 0;
-			$_in_sequences = [];
-			$_no_sequences = [];
-			$nextShouldBe = false;
-			for( $i = 0; $i < count( $days ); $i++ ){
-				$index = array_search( $days[ $i ], $weekdays );
-
-				if( $nextShouldBe !== false ){
-					if( $nextShouldBe == $index ){
-						$_in_sequences[ $_sequence_index ][ $days[ $i -1 ] ] = array_search( $days[ $i -1 ], $weekdays );
-						$_in_sequences[ $_sequence_index ][ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
-						unset( $_no_sequences[ $days[ $i -1 ] ] );
-						unset( $_no_sequences[ $days[ $i ] ] );
-					} else {
-						$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
-						$_sequence_index++;
-					}
-				} else {
-					$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
-				}
-
-				$nextShouldBe = ( ( $index + 1 ) < ( count( $weekdays ) ) ) ? ( $index + 1 ) : 0;
-			}
-			$_sequences = [];
-			foreach ( $_in_sequences as $key => $value ) {
-				if( count( $_in_sequences[ $key ] ) == 2 ){
-					$separator = ', ';
-				} else {
-					$separator = ' - ';
-				}
-				$data = [];
-				$keys = array_keys( $_in_sequences[ $key ] );
-				$_sequences[ array_shift( $_in_sequences[ $key ] ) ] = ucfirst( array_shift( $keys ) ) . $separator . ucfirst( array_pop( $keys ) );
-			}
-			foreach ( $_no_sequences as $key => $value ) {
-				$_sequences[ $_no_sequences[ $key ] ] = ucfirst( $key );
-			}
-			ksort( $_sequences );
-			$_group[ $hours ] = join( ', ', $_sequences );
-		}
-
-		$_organized = [];
-		// Organize the messy
-		foreach( $_group as $hours => $days ){
-			if( trim( $hours ) != '' ){
-				$_organized[] = $days . ': ' . $hours;
-			}
-		}
-		return join( ' <br/> ', $_organized );
+		return Hour::closedMessage( $_partial );
 	}
-
 }
