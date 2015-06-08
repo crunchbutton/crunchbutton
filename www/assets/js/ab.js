@@ -38,7 +38,8 @@ App.AB = {
 			},
 			{
 				name: 'empty-cart-desktop-food',
-				line: 'Choose Food!'
+				line: 'Choose Food!',
+				disabled: true
 			}
 		],
 		restaurantPage: [

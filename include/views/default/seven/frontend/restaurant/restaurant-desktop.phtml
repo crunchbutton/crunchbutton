@@ -1,4 +1,16 @@
 <div class="restaurant-right-bar">
+	
+	
+<div ng-show="!order.cart.hasItems()" class="restaurant-box hide-mobile">
+	<div class="restaurant-box-inner">
+		<span class="restaurant-box-icon">
+			<i class="fa fa-arrow-left"></i>
+		</span>
+		<span class="restaurant-box-content">
+			<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartDesktop}}</span>
+		</span>
+	</div>
+</div>
 
 	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin">
 
