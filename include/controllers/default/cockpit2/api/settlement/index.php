@@ -6,8 +6,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$this->resultsPerPage = 20;
 
-		// $this->_driverScheduled();
-		// exit;
 
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
@@ -609,7 +607,13 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$driver[ 'delivery_fee_collected' ] = ( $driver[ 'delivery_fee_collected' ] ? $driver[ 'delivery_fee_collected' ] : 0 );
 			$driver[ 'customer_fee_collected' ] = ( $driver[ 'customer_fee_collected' ] ? $driver[ 'customer_fee_collected' ] : 0 );
 
-			$driver[ 'pay' ] = true;
+			// #5489
+			$_driver = Admin::o( $driver[ 'id_admin' ] );
+			if( $_driver->phone || $_driver->pass || $_driver->txt || $_driver->email ){
+				$driver[ 'pay' ] = true;
+			} else {
+				$driver[ 'pay' ] = false;
+			}
 
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
 
