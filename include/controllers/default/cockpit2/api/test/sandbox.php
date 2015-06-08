@@ -3,7 +3,8 @@
 class Controller_Api_Test_Sandbox extends Crunchbutton_Controller_Account {
 	public function init() {
 
-		die('hard');
-
+		$community = Community::o( 92 );
+		$community->saveClosedMessage();
+		echo $community->closedMessage();
 	}
 }
