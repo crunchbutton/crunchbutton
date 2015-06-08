@@ -26,11 +26,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffPayInfoCtrl',
 			templateUrl: 'assets/view/staff-payinfo.html'
 		})
-		.when('/staff/:id/group', {
-			action: 'staff',
-			controller: 'StaffGroupCtrl',
-			templateUrl: 'assets/view/staff-group.html'
-		})
 		.when('/staff/:id/pexcard', {
 			action: 'staff',
 			controller: 'StaffPexCardCtrl',
@@ -68,9 +63,10 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 	$scope.loading = true;
 	var marker;
 
-	$rootScope.$on( 'groups-assigned', function(e, data) {
+	$rootScope.$on( 'AssignmentgFinished', function(e, data) {
 		load();
 	});
+
 
 	var load = function(){
 		StaffService.get($routeParams.id, function(staff) {
@@ -82,11 +78,16 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 
 	load();
 
-	$scope.groups = function(){
+	$scope.assignGroups = function(){
 		$(':focus').blur();
-		$scope.complete = $rootScope.closePopup;
-		App.dialog.show( '.assign-groups-container' );
+		$rootScope.$broadcast( 'GroupsAssign', { 'groups': $scope.staff.groups } );
 	}
+
+	$scope.assignCommunities = function(){
+		$(':focus').blur();
+		$rootScope.$broadcast( 'CommunitiesAssign', { 'communities': $scope.staff.communities } );
+	}
+
 
 	StaffService.locations($routeParams.id, function(d) {
 		$scope.locations = d;
@@ -440,27 +441,70 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 
 } );
 
+
+NGApp.controller('StaffCommunityCtrl', function( $scope, $routeParams, $rootScope, CommunityService, StaffService ) {
+
+	$scope.assigned = {};
+
+	$rootScope.$on( 'CommunitiesAssign', function(e, data ) {
+
+		$scope.ready = true;
+
+		App.dialog.show( '.assign-communities-container' );
+
+		CommunityService.listSimple( function( data ) {
+			$scope.communities = data;
+		} );
+
+		$scope.assigned.communities = [];
+
+		if( data.communities ){
+			angular.forEach( data.communities, function(name, id_community) {
+				$scope.assigned.communities.push( parseInt( id_community ) );
+			} );
+		}
+
+	} );
+
+	$scope.save = function(){
+		var params = {};
+		params.communities = $scope.assigned.communities;
+		params.id_admin = $routeParams.id;
+		StaffService.community( params, function( json ){
+			if( json.success ){
+				App.alert( 'Communities assigned!' );
+				$rootScope.$broadcast( 'AssignmentgFinished' );
+			} else {
+				App.alert( 'Error assigning communities!' );
+			}
+		} );
+	}
+
+} );
+
 NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, GroupService, StaffService ) {
 
 	$scope.assigned = {};
 
-	StaffService.get($routeParams.id, function(staff) {
-		$rootScope.title = staff.name + ' | Groups';
-		$scope.staff = staff;
+	$rootScope.$on( 'GroupsAssign', function(e, data) {
 
+		$scope.ready = true;
+
+		App.dialog.show( '.assign-groups-container' );
 
 		GroupService.list( { 'limit': 'none' }, function( data ) {
 			$scope.groups = data.results;
-			$scope.ready = true;
 		} );
 
 		$scope.assigned.groups = [];
 
-		angular.forEach( $scope.staff.groups, function(name, id_group) {
-			$scope.assigned.groups.push( id_group );
-		} );
+		if( data.groups ){
+			angular.forEach( data.groups, function(name, id_group) {
+				$scope.assigned.groups.push( id_group );
+			} );
+		}
 
-	});
+	} );
 
 	$scope.save = function(){
 		var params = {};
@@ -469,7 +513,7 @@ NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, G
 		StaffService.group( params, function( json ){
 			if( json.success ){
 				App.alert( 'Groups assigned!' );
-				$rootScope.$broadcast( 'groups-assigned' );
+				$rootScope.$broadcast( 'AssignmentgFinished' );
 			} else {
 				App.alert( 'Error assigning groups!' );
 			}
