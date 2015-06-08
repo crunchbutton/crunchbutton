@@ -274,7 +274,6 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 	 **/
 	service.getChartData = function (chartType, chartData, settings) {
 		var deferred = $q.defer();
-		console.log('chartType: ', chartType);
 		var url = App.service + 'metrics/?type=' + chartType;
 		// add strings to URL
 		['period'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + settings[k]; } });
@@ -406,6 +405,8 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 	};
 	service.serializeSettings = function (settings, multiSelectCommunities, availableCommunities) {
+
+
 		var serializable = {};
 		var communities = [];
 		serializable.charts = service.serializeChartOptions(settings.charts);
@@ -421,14 +422,19 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		// force bools to be actual true or false
 		['combineCharts', 'showEmpty'].forEach(function (k) { serializable[k] = !!settings[k]; });
 		['period'].forEach(function (k) { serializable[k] = settings[k]; });
+		
+		for (var x in multiSelectCommunities) {
+			 communities.push(multiSelectCommunities[x].id_community);
+		}
 
-		multiSelectCommunities.map(function (comm) { if (comm.selected) { communities.push(comm.id_community); } });
+		
 		// if they haven't explicitly chosen communities, we want to make sure that new communities get added in each time
-		if (communities.length === Object.keys(availableCommunities).length) {
+		if (availableCommunities && communities.length === availableCommunities.length) {
 			serializable.communities = ALL_COMMUNITIES_SELECTED;
 		} else {
 			serializable.communities = communities.join(',');
 		}
+
 		return serializable;
 	};
 	service.deserializeSettings = function (serialized, availableCommunities) {

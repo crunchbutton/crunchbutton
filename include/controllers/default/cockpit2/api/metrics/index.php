@@ -70,7 +70,12 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 			$communities = self::filterCommunities();
 		} else {
 			// 'active' gets handled below
-			$communities = self::filterCommunities(explode(',', $_REQUEST['communities']));
+			if (!is_array($_REQUEST['communities'])) {
+				$communities = explode(',', $_REQUEST['communities']);
+			} else {
+				$communities = $_REQUEST['communities'];
+			}
+			$communities = self::filterCommunities($communities);
 		}
 		$period = $_REQUEST['period'] ? $_REQUEST['period'] : 'd';
 		$chartType = $_REQUEST['type'] ? $_REQUEST['type'] : 'orders';
