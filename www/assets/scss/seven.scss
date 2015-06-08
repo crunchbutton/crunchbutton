@@ -1896,16 +1896,16 @@ a.button{
 		width: 64.6%;
 	}
 	.restaurant-name {
-		margin-top: -28em;
+		margin-top: -29em;
 		padding: 3.2em 0 0 0;
 	}
 	.restaurant-name h1, .restaurant-name h2 {
-		color: #000000;
-		background: rgba(255,255,255,.8);
+		color: #fff;
+		/* background: rgba(255,255,255,.8); */
 		text-shadow: none;
 		font-family: "ff-kava-web-pro", "Open Sans", sans-serif;
 		font-weight: normal;
-		padding: .2em .2em .12em .2em;
+		padding: .15em 0 .12em 0;
 		display: inline-block;
 		width: auto;
 		white-space: pre-line;
@@ -1914,7 +1914,7 @@ a.button{
 		font-size: 4.2em;
 	}
 	.restaurant-name h2 {
-		font-size: 2.7em;
+		font-size: 2.2em;
 	}
 	.restaurant-menu-category:first-child .restaurant-category {
 		padding-top: 0;
@@ -4031,7 +4031,7 @@ font-familt: "Museo Slab";
 	}
 	.restaurant-pic {
 		height: 35em;
-		-webkit-filter: brightness(0.90) contrast(125%);
+		-webkit-filter: brightness(0.60) contrast(125%);
 
 	}
 	.restaurant-pic-overlay {
@@ -4051,7 +4051,7 @@ font-familt: "Museo Slab";
 		display: none;
 	}
 	.restaurant-content-body {
-		margin-top: -12em !important;
+		margin-top: -14em !important;
 		-webkit-filter: brightness(0.999);
 		padding: 0 0 1.5em 1.5em !important;
 		box-sizing: border-box;
