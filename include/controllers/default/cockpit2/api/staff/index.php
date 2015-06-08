@@ -32,7 +32,14 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 				case 'group':
 					$this->_permissionDenied();
+					$this->_isPost();
 					$this->_group($staff);
+					break;
+
+				case 'community':
+					$this->_permissionDenied();
+					$this->_isPost();
+					$this->_community($staff);
 					break;
 
 				case 'has_pexcard':
@@ -82,6 +89,33 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$new->id_admin = $staff->id_admin;
 				$new->id_group = intval( $group );
 				$new->save();
+			}
+		}
+		echo json_encode( [ 'success' => true ] );
+	}
+
+	private function _community( $staff ){
+		$communities = $staff->communitiesHeDeliveriesFor();
+		foreach( $communities as $community ){
+			$group = $community->groupOfDrivers();
+			if( $group->id_group ){
+				$staff->removeGroup( $group->id_group );
+			}
+		}
+
+		$communities = $this->request()[ 'communities' ];
+
+		// relate the communities with the driver
+		if( count( $communities ) > 0 && $communities != '' ){
+			foreach ( $communities as $community ) {
+				$community = Crunchbutton_Community::o( $community );
+				if( $community->id_community ){
+					$group = $community->groupOfDrivers();
+					$adminGroup = new Crunchbutton_Admin_Group();
+					$adminGroup->id_admin = $staff->id_admin;
+					$adminGroup->id_group = $group->id_group;
+					$adminGroup->save();
+				}
 			}
 		}
 		echo json_encode( [ 'success' => true ] );
@@ -164,6 +198,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$out[] = [ 'phone' => $staff->phone, 'name' => $staff->name ];
 		}
 		echo json_encode( $out );exit;
+	}
+
+	private function _isPost(){
+		if( $this->method() != 'post' ){
+			$this->error(404);
+		}
 	}
 
 	private function _list() {

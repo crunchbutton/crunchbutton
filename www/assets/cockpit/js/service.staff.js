@@ -35,6 +35,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			url: App.service + 'staff/:id_admin/group',
 			method: 'POST',
 			params : {}
+		},
+		'community' : {
+			url: App.service + 'staff/:id_admin/community',
+			method: 'POST',
+			params : {}
 		}
 	});
 
@@ -69,7 +74,13 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 	}
 
 	service.group = function(params, callback) {
-		staff.group(params,  function(data) {
+		staff.group( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.community = function(params, callback) {
+		staff.community( params, function(data) {
 			callback(data);
 		});
 	}

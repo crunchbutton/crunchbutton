@@ -1,14 +1,14 @@
 <?php
 
 class Controller_api_drivers_driver extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
-		
+
 		if (!c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] ) ) {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 			exit;
 		}
-		
+
 		$id_admin = $this->request()[ 'id_admin' ];
 		$restaurants = $this->request()[ 'id_restaurant' ];
 		$communities = $this->request()[ 'id_community' ];

@@ -64,7 +64,7 @@
 							<span class="staff-community-repeat" ng-repeat="group in staff.groups_description">
 								{{group}}
 							</span>
-							&nbsp;&nbsp;&nbsp;&nbsp;<a href="" ng-click="groups()"><i class="fa fa-plus-circle"></i></a>
+							&nbsp;&nbsp;&nbsp;&nbsp;<span class="link orange" ng-click="assignGroups()"><i class="fa fa-plus-circle"></i></span>
 						</div>
 					</div>
 				</div>
@@ -144,7 +144,7 @@
 							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
 								{{community}}
 							</span>
-							&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://cockpit.crunchbutton.com/drivers/assign/driver/{{staff.id_admin}}" target="_blank"><i class="fa fa-plus-circle"></i></a>
+							&nbsp;&nbsp;&nbsp;&nbsp;<span class="link orange" ng-click="assignCommunities()"><i class="fa fa-plus-circle"></i></span>
 						</div>
 					</div>
 					<div class="field-row">
@@ -315,6 +315,7 @@
 	</div>
 
 	<ng-include src="'assets/view/staff-group.html'"></ng-include>
+	<ng-include src="'assets/view/staff-community.html'"></ng-include>
 
 
 	<? /*
