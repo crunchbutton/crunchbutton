@@ -299,6 +299,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			'last_four' => $this->pex()->last_four,
 			'active' => $this->pex()->card_serial && $this->pex()->card_serial ? true : false
 		];
+		
+		$out['verified'] = $this->payment_type()->verified ? true : false;
 
 		$author = $this->author();
 		if( $author->id_admin ){

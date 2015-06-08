@@ -87,6 +87,17 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		$(':focus').blur();
 		$rootScope.$broadcast( 'CommunitiesAssign', { 'communities': $scope.staff.communities } );
 	}
+	
+	$scope.reverify = function() {
+		StaffService.reverify($scope.staff.id_admin, function(data) {
+			console.debug('Verification result', data);
+			if (data.status.status == 'unverified') {
+				App.alert('Could not finish verification. Missing fields: ' + data.status.fields.join(','));
+			} else {
+				App.alert('Looks like it might have reverified successfully.');
+			}
+		});
+	};
 
 
 	StaffService.locations($routeParams.id, function(d) {
