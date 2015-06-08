@@ -230,10 +230,14 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		$scope.orderSelectedCommunities();
 	};
+	
 	$scope.updateSelected = function () {
+		console.log($scope.multiSelectCommunities);
 		$scope.orderSelectedCommunities();
 		$scope.persistSettings();
 	};
+	$scope.$watch('multiSelectCommunities', $scope.updateSelected);
+
 	$scope.orderSelectedCommunities = function () {
 		var communityOrdering = $scope.communityOrdering;
 		if (!communityOrdering) {
