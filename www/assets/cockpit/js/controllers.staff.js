@@ -95,6 +95,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 				App.alert('Could not finish verification. Missing fields: ' + data.status.fields.join(','));
 			} else {
 				App.alert('Looks like it might have reverified successfully.');
+				load();
 			}
 		});
 	};

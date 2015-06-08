@@ -79,7 +79,7 @@
 						<a href="/staff/{{staff.login}}/pexcard" ng-if="staff.pexcard.active"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Funds</button></a>
 						<a href="/pexcard/card/driver/{{staff.id_admin}}" ng-if="!staff.pexcard.active"><button class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add PEX Card</button></a>
 						<a href="/staff/{{staff.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-						<a href ng-click="reverify()"><button class="button button-small button-empty button-green"><i class="fa fa-check"></i>&nbsp;&nbsp;Reverify</button></a>
+						<a href ng-click="reverify()" ng-if="!staff.verified"><button class="button button-small button-empty button-green"><i class="fa fa-check"></i>&nbsp;&nbsp;Reverify</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
