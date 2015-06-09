@@ -133,41 +133,25 @@
 
 	<div class="divider"></div>
 
-	<br><br>
-	<h1 class="title"><i class="fa fa-coffee"></i>Restaurants</h1>
-	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingRestaurants}"></div>
-	<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
+	<!-- ui-tab directive -->
+	<ui-tabs ng-if="!loading">
+		<ui-tab title="Orders"  default="true" id="orders" path="assets/view/communities-community-tab-orders.html" method="orders"></ui-tab>
+		<ui-tab title="Restaurants" id="restaurants" path="assets/view/communities-community-tab-restaurants.html" method="restaurants"></ui-tab>
+		<ui-tab title="Drivers" id="drivers" path="assets/view/communities-community-tab-drivers.html" method="drivers"></ui-tab>
+		<ui-tab title="Aliases" id="aliases" path="assets/view/communities-community-tab-aliases.html" method="aliases"></ui-tab>
+		<ui-tab title="Open/Close Logs" id="logs" path="assets/view/communities-community-tab-logs.html" method="logs"></ui-tab>
+	</ui-tabs>
 
-
-	<br><br>
-	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
-	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
-	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
-
-
-	<div class="right">
-		<p>
-			<a href="/orders?limit=100&page=1&search=&restaurant=&community={{community.id_community}}&date=&view=map">Map last 100 orders</a> |
-			<a href="/orders?community={{community.id_community}}">View all orders</a>
-		</p>
-	</div>
-
-	<br><br>
-	<h1 class="title"><i class="fa fa-road"></i>Drivers</h1>
-	<div class="bar-loader bar-loader-drivers" ng-class="{'bar-loader-loading': loadingStaff}"></div>
-	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
-
-	<br><br>
-	<button class="addAliasButton" ng-click="aliasDialogContainer()">Add</button>
+	<!-- alias form -->
 	<div class="alias-dialog-container zoom-anim-dialog mfp-hide dialog">
 		<h1 ng-bind="alertTitle" ng-show="alertTitle"></h1>
-		<div ng-show="alias.id_community">
+		<div>
 
 			<h2 class="title left"><span>Aliases</span></h2>
 
 			<div class="divider"></div>
 
-			<form name="formAlias" novalidate>
+			<ng-form name="formAlias">
 
 				<div class="ul-inputs">
 
@@ -219,7 +203,7 @@
 						</li>
 
 						<li class="li-input" ng-show="!isSavingAlias">
-							<button class="button green" ng-click="add_alias();">Add</button>
+							<button class="button green" ng-click="aliasAdd();">Add</button>
 						</li>
 						<li class="li-input" ng-show="isSavingAlias">
 							<i class="fa fa-circle-o-notch fa-spin"></i>
@@ -227,57 +211,10 @@
 					</ul>
 
 				</div>
-			</form>
+			</ng-form>
 
 		</div>
 		<p ng-bind-html-unsafe="message" class="small-message"></p>
 	</div>
-
-	<h1 class="title"><i class="fa fa-link"></i>Aliases</h1>
-
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Alias</th>
-				<th>Preposition</th>
-				<th>Alternative name</th>
-				<th>Remove</th>
-			</tr>
-			<tr ng-repeat="a in aliases">
-				<td>{{a.alias}}</td>
-				<td>{{a.prep}}</td>
-				<td>{{a.name_alt}}</td>
-				<td>
-					<span class="orange link" ng-click="remove_alias(a.id_community_alias)">Remove</span>
-				</td>
-			</tr>
-		</table>
-	</div>
-
-	<br><br>
-	<h1 class="title"><i class="fa fa fa-list"></i>Open/Close Log</h1>
-	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Type</th>
-				<th>Closed at</th>
-				<th>Closed By</th>
-				<th>Closed Notes</th>
-				<th>How long</th>
-				<th>Opened at</th>
-				<th>Opened by</th>
-			</tr>
-			<tr ng-repeat="c in closelogs">
-				<td>{{c.type}}</td>
-				<td>{{c.closed_at}}</td>
-				<td>{{c.closed_by}}</td>
-				<td>{{c.note}}</td>
-				<td>{{c.how_long}}</td>
-				<td>{{c.opened_at}}</td>
-				<td>{{c.opened_by}}</td>
-			</tr>
-		</table>
-	</div>
-
 
 </div>
