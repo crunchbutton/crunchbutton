@@ -86,7 +86,7 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 
 		$restaurant = $this->_restaurant();
 		$paymentType = $restaurant->payment_type();
-		$stripeAccount = $restaurant->getAndMakeStripe([
+		$stripeAccount = $paymentType->getAndMakeStripe([
 			'bank_account' => $token,
 			'account_type' => $this->request()['account_type']
 		]);
