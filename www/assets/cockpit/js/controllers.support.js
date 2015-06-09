@@ -62,11 +62,16 @@ NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, T
 		});
 
 	var loadTicket = function(id) {
-		TicketService.get(id, function(ticket) {
+		var displayTicket = function(ticket) {
 			TicketViewService.scope.ticket = ticket;
 			TicketViewService.scroll(!loaded);
 			loaded = true;
-		});
+		};
+		if (typeof id == 'string') {
+			TicketService.get(id, displayTicket);
+		} else {
+			displayTicket(id);
+		}
 	};
 
 	var sendingNote = false;
