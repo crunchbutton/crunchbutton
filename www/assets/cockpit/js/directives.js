@@ -415,6 +415,7 @@ NGApp.directive('uiTabs', function ( $compile ) {
 							if( tab.method && !tab.method_called ){
 								try{
 									eval( '$scope.' + tab.method + '()' );
+									tab.method_called = true;
 								} catch(e){
 									console.log( 'ui-tabs:error: ', e );
 								}
