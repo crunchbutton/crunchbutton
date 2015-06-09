@@ -4150,3 +4150,21 @@ h1.title.box-title {
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
 }
+
+.ui-tab-header li{
+	@include box-border-radius();
+	display: inline;
+	cursor:pointer;
+	list-style-type: none;
+	padding: 1em;
+	margin-right:1em;
+	font-size:1.2em;
+	padding: .2em .4em .2em .4em;
+	background:#FFF;
+}
+	.ui-tab-header li.ui-tab-header-active{
+		background:$green;
+	}
+.ui-tab-content{
+	margin-top: 3em;
+}
