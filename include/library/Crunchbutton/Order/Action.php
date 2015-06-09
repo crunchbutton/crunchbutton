@@ -1,6 +1,7 @@
 <?php
 
 class Crunchbutton_Order_Action extends Cana_Table {
+
 	const DELIVERY_NEW   = 'delivery-new';
 	const DELIVERY_PICKEDUP   = 'delivery-pickedup';
 	const DELIVERY_ACCEPTED   = 'delivery-accepted';
@@ -11,6 +12,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	const RESTAURANT_REJECTED = 'restaurant-rejected';
 	const RESTAURANT_READY		= 'restaurant-ready';
 	const DELIVERY_ORDER_TEXT_5_MIN = 'delivery-text-5min';
+	const TICKET_NOT_GEOMATCHED = 'ticket-not-geomatched';
 
 	public function __construct($id = null) {
 		parent::__construct();
