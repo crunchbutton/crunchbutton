@@ -186,7 +186,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 						$scope.restaurant.stripeAccount.routing_number = '';
 						$scope.restaurant.stripeAccount.account_number = '';
 					} else {
-						App.alert( 'Error creating a Stripe token' );
+						App.alert( 'Error updating Stripe info' );
 					}
 					$scope.isSavingStripeAccount = false;
 				} );
@@ -209,7 +209,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 					}
 				} );
 			} else {
-				saveInfo();
+				saveInfo(null);
 			}
 			
 

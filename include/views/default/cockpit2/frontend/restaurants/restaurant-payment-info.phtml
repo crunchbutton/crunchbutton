@@ -38,7 +38,7 @@
 
 			<li class="li-input" ng-class="{'error':formStripeAccount.routingNumber.$invalid}">
 				<div class="label">Routing Number:</div>
-				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="routingNumber" maxlength="250" ng-model="restaurant.stripeAccount.routing_number" placeholder=""></div>
+				<div class="input"><input type="text" name="routingNumber" maxlength="250" ng-model="restaurant.stripeAccount.routing_number" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="formStripeAccount.routingNumber.$error.required">Required.</small>
 				</div>
@@ -46,7 +46,7 @@
 
 			<li class="li-input" ng-class="{'error':formStripeAccount.accountNumber.$invalid}">
 				<div class="label">Account Number:</div>
-				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="accountNumber" maxlength="250" ng-model="restaurant.stripeAccount.account_number" placeholder=""></div>
+				<div class="input"><input type="text" name="accountNumber" maxlength="250" ng-model="restaurant.stripeAccount.account_number" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="formStripeAccount.accountNumber.$error.required">Required.</small>
 				</div>
@@ -83,8 +83,6 @@
 		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.formStripeMigrate && !restaurant.stripeAccount.formStripe && !restaurant.payment_type.stripe_account_id">
 
 			<li class="li-input" ng-show="!isMigrating">
-
-				<button class="button save" ng-click="migrateFromBalancedToStripe();">Migrate Balanced Bank to Stripe</button>
 
 				<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.formStripe = false">Cancel Edit Stripe Account</span>
 
