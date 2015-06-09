@@ -3033,6 +3033,41 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function ticketsForNotGeomatchedOrders(){
+
+		// it should start runing just after we push code - #5488
+		// the lines bellow are going to check if the code was already pushed
+		$order = Order::q( 'SELECT * FROM `order` WHERE geomatched IS NOT NULL ORDER by id_order DESC LIMIT 1' );
+		if( !$order->id_order ){
+			return;
+		}
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 5 min' );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
+		$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
+		foreach( $orders as $order ){
+			if( !$order->orderHasGeomatchedTicket() ){
+					$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+					$action = new Crunchbutton_Order_Action;
+					$action->id_order = $order->id_order;
+					$action->timestamp = date( 'Y-m-d H:i:s' );
+					$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
+					$action->save();
+					exit();
+			}
+		}
+	}
+
+	public function orderHasGeomatchedTicket(){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED ] );
+		if( $action->id_order_action ){
+			return true;
+		}
+		return false;
+	}
+
 	public function save() {
 		$new = $this->id_order ? false : true;
 
