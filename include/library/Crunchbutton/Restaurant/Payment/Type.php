@@ -65,6 +65,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		
 		if ($paymentType->stripe_id) {
 			$stripeAccount = \Stripe\Account::retrieve($this->stripe_id);
+
 			if ($params['bank_account']) {
 				$stripeAccount->bank_account = $params['bank_account'];
 				$stripeAccount->save();
@@ -72,13 +73,23 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				if ($stripeAccount->bank_accounts->data[0]->id) {
 					$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
 				}
-				$paymentType->save();
+
 			}
+
 			if ($params['tax_id']) {
 				$stripeAccount->legal_entity->business_tax_id = $params['tax_id'];
 				$stripeAccount->legal_entity->type = $entity;
-				$stripeAccount->save();
 			}
+
+			$stripeAccount->legal_entity->address = [
+				'line1' => $paymentType->check_address, 
+				'city' => $paymentType->check_address_city,
+				'state' => $paymentType->check_address_state,
+				'postal_code' => $paymentType->check_address_zip,
+				'country' => 'US'
+			];
+			
+			$stripeAccount->save();
 			
 			return $stripeAccount;
 		}
@@ -97,10 +108,10 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				'type' => $entity,
 				'business_tax_id' => $params['tax_id'],
 				'address' => [
-					'line1' => $address['address'], 
-					'city' => $address['city'],
-					'state' => $address['state'],
-					'postal_code' => $address['zip'],
+					'line1' => $paymentType->check_address, 
+					'city' => $paymentType->check_address_city,
+					'state' => $paymentType->check_address_state,
+					'postal_code' => $paymentType->check_address_zip,
 					'country' => 'US'
 				]
 			]
