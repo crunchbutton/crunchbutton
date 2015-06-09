@@ -37,22 +37,6 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		return $out;
 	}
 
-	public function getStripe(){
-
-		if( $this->stripe_id ){
-
-			$env = c::getEnv();
-
-			\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-
-			$stripeAccount = \Stripe\Account::retrieve( $this->stripe_id );
-
-			return $stripeAccount;
-
-		}
-		return null;
-	}
-
 	public function stripeTransfer( $amount ){
 
 		if( $this->stripe_id ){
@@ -67,100 +51,71 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		return false;
 	}
 
-	public function migrateFromBalanced( $params ){
-
-		if( $this->balanced_bank ){
-			try {
-				$bank = Crunchbutton_Balanced_BankAccount::byId( $this->balanced_bank );
-			} catch ( Exception $e ) {
-				echo "ERROR: Failed to get balanced id\n";
-				exit();
-			}
-
-			$stripeBankToken = $bank->meta->{ 'stripe_customer.funding_instrument.id' };
-
-			$stripeAccount = $this->getStripe();
-			if( $stripeAccount ){
-				$stripeAccount->bank_account = $stripeBankToken;
-				$stripeAccount->save();
-				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
-				$this->save();
-			} else {
-				return $this->createStripe( [ 'bank_account' => $stripeBankToken, 'account_type' => $params[ 'account_type' ]	 ] );
-			}
-
+	
+	// if there is not already a stripe account, it will make one
+	public function getAndMakeStripe($params = []) {
+		// params accepts taxid and bank account to create
+		
+		$paymentType = $this;
+		$restaurant = $this->restaurant();
+		
+		if ($paymentType->stripe_id) {
+			return $paymentType->stripe_id;
 		}
-		return false;
-	}
 
-	public function createStripe( $params ){
-
-		$env = c::getEnv();
-
-		\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-
-		$account_type = $params[ 'account_type' ];
-		$name = explode( ' ', $this->legal_name_payment );
-		$first_name = array_shift( $name );
-		$last_name = implode( ' ',$name );
-
-		$this->payment_method = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT;
-		$this->save();
-
-		try {
-
-			$info = [
-				'managed' => true,
-				'country' => $this->check_address_country,
-				'email' => $this->summary_email,
-				'bank_account' => $params[ 'bank_account' ],
-				'tos_acceptance' => [
-					'date' => time(),
-					'ip' => $_SERVER['REMOTE_ADDR']
-				],
-				'legal_entity' => [
-					'type' => $account_type,
-					'first_name' => $first_name,
-					'last_name' => $last_name,
-					'address' => [
-						'line1' => $this->check_address,
-						'city' => $this->check_address_city,
-						'state' => $this->check_address_state,
-						'country' => $this->check_address_country,
-					]
+		$entity = $params['entity'] == 'individual' ? 'individual' : 'corporation';
+		
+		$info = [
+			'managed' => true,
+			'country' => 'US',
+			'email' => $paymentType->summary_email ? $paymentType->summary_email : $restaurant->email,
+			'tos_acceptance' => [
+				'date' => time(),
+				'ip' => '76.171.15.26'
+			],
+			'legal_entity' => [
+				'type' => $entity,
+				'address' => [
+					'line1' => $address['address'], 
+					'city' => $address['city'],
+					'state' => $address['state'],
+					'postal_code' => $address['zip'],
+					'country' => 'US'
 				]
-			];
-
-			if( $params[ 'account_type' ] ){
-				$info[ 'legal_entity' ][ 'type' ] = $params[ 'account_type' ];
-			}
-
-
-			if( $params[ 'dob' ] ){
-				$info[ 'legal_entity' ][ 'dob' ] = [ // @note: this viloates stripes docs but this is the correct way
-																							'day' => $params[ 'dob' ][ 'day' ],
-																							'month' => $params[ 'dob' ][ 'month' ],
-																							'year' => $params[ 'dob' ][ 'year' ]
-																						];
-			}
-
-			if( $params[ 'ssn' ] ){
-				$info[ 'legal_entity' ][ 'ssn_last_4' ] = $params[ 'ssn' ];
-			}
-
-			$stripeAccount = \Stripe\Account::create( $info );
-
-			if( $stripeAccount->id && $stripeAccount->bank_accounts->data[0]->id ){
-				$this->stripe_id = $stripeAccount->id;
-				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
-				$this->save();
-				return true;
-			} else {
-				return false;
-			}
-		} catch (Exception $e) {
-			return [ 'error' => $e->getMessage() ];
+			]
+		];
+		
+		if ($entity == 'individual') {
+			$info['legal_entity']['first_name'] = array_shift($name);
+			$info['legal_entity']['last_name'] = implode(' ',$name);
+			$info['legal_entity']['ssn_last_4'] = $ssn;
+		} else {
+			$info['legal_entity']['business_name'] = $paymentType->legal_name_payment ? $paymentType->legal_name_payment : $restaurant->name;
 		}
+		
+		if ($params['bank_account']) {
+			$info['bank_account'] = $params['bank_account'];
+		}
+		
+		try {
+			$stripeAccount = \Stripe\Account::create($info);
+		} catch (Exception $e) {
+			return $e->getMessage();
+		}
+
+		if ($stripeAccount->id) {
+			$paymentType->stripe_id = $stripeAccount->id;
+			
+			$paymentType->payment_method = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT;
+			
+			if ($stripeAccount->bank_accounts->data[0]->id) {
+				$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
+			}
+			$paymentType->save();
+			
+			return $stripeAccount;
+		}
+
 		return false;
 	}
 

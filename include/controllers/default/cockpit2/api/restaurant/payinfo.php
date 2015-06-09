@@ -25,10 +25,6 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 				$this->_stripe();
 			break;
 
-			case 'balanced-to-stripe':
-				$this->_migrateFromBalancedToStripe();
-			break;
-
 			default:
 			$this->_error();
 			break;
@@ -90,23 +86,16 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 
 		$restaurant = $this->_restaurant();
 		$paymentType = $restaurant->payment_type();
+		$stripeAccount = $restaurant->getAndMakeStripe([
+			'bank_account' => $token,
+			'account_type' => $this->request()['account_type']
+		]);
 
-		if( $paymentType->createStripe( [ 'bank_account' => $token, 'account_type' => $this->request()[ 'account_type' ] ] ) ){
+		if ($stripeAccount){
 			$this->_exports();
+		} else {
+			$this->_error( 'Error creating stripe account' );
 		}
-		$this->_error( 'Error creating stripe account' );
-
-	}
-
-	private function _migrateFromBalancedToStripe(){
-
-		$restaurant = $this->_restaurant();
-		$paymentType = $restaurant->payment_type();
-
-		if( $paymentType->migrateFromBalanced( [ 'account_type' => $this->request()[ 'account_type' ] ] ) ){
-			$this->_exports();
-		}
-		$this->_error( 'Error creating stripe account' );
 
 	}
 

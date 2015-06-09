@@ -8,7 +8,7 @@
 
 	<form name="formStripeAccount" novalidate>
 
-		<h2 class="title">Stripe</h2>
+		<h2 class="title">Required Info</h2>
 
 		<ul ng-class="{'submitted':stripeAccountSubmitted}" class="ul-inputs" ng-show="restaurant.stripeAccount.formStripe">
 
@@ -17,14 +17,6 @@
 				<div class="input"><input type="text" required name="legalNamePayment" maxlength="250" ng-model="restaurant.payment_type.legal_name_payment" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="formStripeAccount.legalNamePayment.$error.required">Required.</small>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':formStripeAccount.summaryEmail.$invalid}">
-				<div class="label">Summary Email:</div>
-				<div class="input"><input type="text" required name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email" placeholder=""></div>
-				<div class="box-error">
-					<small ng-show="formStripeAccount.summaryEmail.$error.required">Required.</small>
 				</div>
 			</li>
 
@@ -44,7 +36,7 @@
 				</div>
 			</li>
 
-			<li ng-show="!restaurant.payment_type.has_balanced_bank" class="li-input" ng-class="{'error':formStripeAccount.routingNumber.$invalid}">
+			<li class="li-input" ng-class="{'error':formStripeAccount.routingNumber.$invalid}">
 				<div class="label">Routing Number:</div>
 				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="routingNumber" maxlength="250" ng-model="restaurant.stripeAccount.routing_number" placeholder=""></div>
 				<div class="box-error">
@@ -52,7 +44,7 @@
 				</div>
 			</li>
 
-			<li ng-show="!restaurant.payment_type.has_balanced_bank" class="li-input" ng-class="{'error':formStripeAccount.accountNumber.$invalid}">
+			<li class="li-input" ng-class="{'error':formStripeAccount.accountNumber.$invalid}">
 				<div class="label">Account Number:</div>
 				<div class="input"><input type="text" ng-required="!restaurant.payment_type.has_balanced_bank" name="accountNumber" maxlength="250" ng-model="restaurant.stripeAccount.account_number" placeholder=""></div>
 				<div class="box-error">
@@ -60,66 +52,12 @@
 				</div>
 			</li>
 
-			<li>
-				<h2 class="title">Address</h2>
-			</li>
-
-			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddress.$invalid}">
-				<div class="label">Address:</div>
-				<div class="input"><input type="text" required name="checkAddress" maxlength="250" ng-model="restaurant.payment_type.check_address" placeholder=""></div>
-				<div class="box-error">
-					<small ng-show="formStripeAccount.checkAddress.$error.required">Required.</small>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressCity.$invalid}">
-				<div class="label">City:</div>
-				<div class="input"><input type="text" required name="checkAddressCity" maxlength="50" ng-model="restaurant.payment_type.check_address_city" placeholder=""></div>
-				<div class="box-error">
-					<small ng-show="formStripeAccount.checkAddressCity.$error.required">Required.</small>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressState.$invalid}">
-				<div class="label">State:</div>
-				<div class="input"><input type="text" required name="checkAddressState" maxlength="50" ng-model="restaurant.payment_type.check_address_state" placeholder=""></div>
-				<div class="box-error">
-					<small ng-show="formStripeAccount.checkAddressState.$error.required">Required.</small>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressZip.$invalid}">
-				<div class="label">Zip:</div>
-				<div class="input"><input type="text" required name="checkAddressZip" maxlength="20" ng-model="restaurant.payment_type.check_address_zip" placeholder=""></div>
-				<div class="box-error">
-					<small ng-show="formStripeAccount.checkAddressZip.$error.required">Required.</small>
-				</div>
-			</li>
-
-			<li class="li-input" ng-class="{'error':formStripeAccount.checkAddressCountry.$invalid}">
-				<div class="label">Country:</div>
-				<div class="input"><input type="text" required name="checkAddressCountry" maxlength="20" ng-model="restaurant.payment_type.check_address_country" placeholder=""></div>
-				<div class="box-error">
-					<small ng-show="formStripeAccount.checkAddressCountry.$error.required">Required.</small>
-				</div>
-			</li>
-
 			<li class="li-input" ng-show="!isSavingStripeAccount">
 
-				<div ng-show="!restaurant.payment_type.has_balanced_bank">
-					<button class="button save" ng-click="saveStripeAccount();">Save Stripe</button>
+				<div>
+					<button class="button save" ng-click="saveStripeAccount();">Save To Stripe</button>
 				</div>
 
-				<div ng-show="restaurant.payment_type.has_balanced_bank">
-					<button class="button save" ng-click="createStripeAccountAndMigrate();">Create Stripe account and migrate balanced bank</button>
-				</div>
-
-				<div ng-show="!restaurant.payment_type.has_balanced_bank">
-					<br>
-					<span ng-show="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id" class="link" ng-click="restaurant.stripeAccount.formStripe = false">Cancel</span>
-
-					<span class="link" ng-click="testAccount()">Account Test</span>
-				</div>
 
 			</li>
 
@@ -170,13 +108,8 @@
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
 			<li class="li-input">
-				<div class="label">Legal Name for Payment:</div>
-				<div class="input"><input type="text" name="legalNamePayment" maxlength="250" ng-model="restaurant.payment_type.legal_name_payment" placeholder=""></div>
-			</li>
-
-			<li class="li-input">
-				<div class="label">Tax ID #:</div>
-				<div class="input"><input type="text" name="taxID" maxlength="250" ng-model="restaurant.payment_type.tax_id" placeholder=""></div>
+				<div class="label">Summary Email:</div>
+				<div class="input"><input type="text" required name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email" placeholder=""></div>
 			</li>
 
 			<li class="li-input" ng-class="{'error':formBasic.paymentMethod.$invalid}">

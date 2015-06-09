@@ -34,64 +34,20 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			return true;
 		}
 	}
-	
-	public function formatAddress($address = '') {
-		if (!$address) {
-			$address = $this->payment_type()->address;
-		}
-		
-		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address);
 
-		$res = @json_decode(@file_get_contents($url));
-		if (!$res) {
-			return $address;
-		}
-		$res = $res->results[0];
-		
-		/*
-		$parts = [];
-		foreach ($res->address_components as $item) {
-			$parts[$item->types[0]] = $item->short_name;
-		}
-		*/
-		
-		$f = explode(',',$res->formatted_address);
-		array_pop($f);
-		$formatted = array_shift($f)."\n".trim(implode(',',$f));
-
-		return $formatted;
-	}
-	
-	public function addressParts($address = '') {
-		if (!$address) {
-			$pt = $this->payment_type();
-			$address = $pt->address;
-		}
-		$parts = explode("\n", trim($address));
-		$parts[1] = explode(',', trim($parts[1]));
-		$parts[1][1] = explode(' ', trim($parts[1][1]));
-
-		return [
-			'address' =>$parts[0],
-			'city' => $parts[1][0],
-			'state' => $parts[1][1][0],
-			'zip' => $parts[1][1][1]
-		];
-	}
-	
 	public function autoStripeVerify($force = false) {
 		$stripeAccount = $this->stripeAccount();
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
 
-		$formattedAddress = $this->formatAddress($paymentType->address);
+		$formattedAddress = Util::formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
 			$paymentType->address = $formattedAddress;
 			$paymentType->save();
 		}
 
-		$address = $this->addressParts($formattedAddress);
+		$address = Util::addressParts($formattedAddress);
 
 		// make sure we can verify it
 		if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {

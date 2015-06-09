@@ -126,10 +126,6 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		} );
 	}
 
-	$scope.createStripeAccountAndMigrate = function(){
-		$scope.saveStripeAccount( true );
-	}
-
 	$scope.migrateFromBalancedToStripe = function(){
 
 		if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.balanced_bank ){
@@ -158,8 +154,8 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		$scope.restaurant.payment_type.check_address_country = 'US';
 	}
 
-	$scope.saveStripeAccount = function( migrateFromBalanced ){
-
+	$scope.saveStripeAccount = function(){
+//
 		if( $scope.formStripeAccount.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.stripeAccountSubmitted = true;
@@ -170,53 +166,41 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 		RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
 
-			if( migrateFromBalanced ){
-				var params = {
-							'id_restaurant': $scope.restaurant.id_restaurant,
-							'account_type': $scope.restaurant.stripeAccount.account_type
-						};
-				RestaurantService.balanced_to_sprite_account( params, function( d ){
-					App.alert( 'Stripe info saved' );
-					load();
-				} );
+			Stripe.bankAccount.createToken( {
+				country: 'US',
+				currency: 'USD',
+				routing_number: $scope.restaurant.stripeAccount.routing_number,
+				account_number: $scope.restaurant.stripeAccount.account_number
+			}, function( header, response ){
 
-			} else {
+				if( response.id ){
 
-				Stripe.bankAccount.createToken( {
-					country: 'US',
-					currency: 'USD',
-					routing_number: $scope.restaurant.stripeAccount.routing_number,
-					account_number: $scope.restaurant.stripeAccount.account_number
-				}, function( header, response ){
+					var params = {
+						'id_restaurant': $scope.restaurant.id_restaurant,
+						'token': response.id,
+						'name': $scope.restaurant.payment_type.legal_name_payment,
+						'tax_id': $scope.restaurant.payment_type.tax_id,
+						'account_type': $scope.restaurant.stripeAccount.account_type,
+						'email': $scope.restaurant.payment_type.summary_email
+					};
 
-					if( response.id ){
-
-						var params = {
-							'id_restaurant': $scope.restaurant.id_restaurant,
-							'token': response.id,
-							'name': $scope.restaurant.payment_type.legal_name_payment,
-							'tax_id': $scope.restaurant.payment_type.tax_id,
-							'account_type': $scope.restaurant.stripeAccount.account_type,
-							'email': $scope.restaurant.payment_type.summary_email
-						};
-
-						RestaurantService.stripe( params, function( d ){
-							if( d.id_restaurant ){
-								App.alert( 'Stripe info saved' );
-								$scope.restaurant.stripeAccount.formStripe = false;
-								$scope.restaurant.stripeAccount.routing_number = '';
-								$scope.restaurant.stripeAccount.account_number = '';
-							} else {
-								App.alert( 'Error creating a Stripe token' );
-							}
-							$scope.isSavingStripeAccount = false;
-						} );
-					} else {
-						App.alert( 'Error creating a Stripe token' );
+					RestaurantService.stripe( params, function( d ){
+						if( d.id_restaurant ){
+							App.alert( 'Stripe info saved' );
+							$scope.restaurant.stripeAccount.formStripe = false;
+							$scope.restaurant.stripeAccount.routing_number = '';
+							$scope.restaurant.stripeAccount.account_number = '';
+						} else {
+							App.alert( 'Error creating a Stripe token' );
+						}
 						$scope.isSavingStripeAccount = false;
-					}
-				} );
-			}
+					} );
+				} else {
+					App.alert( 'Error creating a Stripe token' );
+					$scope.isSavingStripeAccount = false;
+				}
+			} );
+			
 
 		} );
 	}
