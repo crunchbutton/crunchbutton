@@ -59,6 +59,8 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$paymentType = $this;
 		$restaurant = $this->restaurant();
 		
+		$entity = $params['entity'] == 'individual' ? 'individual' : 'company';
+		
 		if ($paymentType->stripe_id) {
 			$stripeAccount = \Stripe\Account::retrieve($this->stripe_id);
 			if ($params['bank_account']) {
@@ -70,11 +72,16 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				}
 				$paymentType->save();
 			}
+			if ($params['tax_id']) {
+				$stripeAccount->legal_entity->business_tax_id = $params['tax_id'];
+				$stripeAccount->legal_entity->type = $entity;
+				$stripeAccount->save();
+			}
 			
 			return $stripeAccount;
 		}
 
-		$entity = $params['entity'] == 'individual' ? 'individual' : 'company';
+		
 		
 		$info = [
 			'managed' => true,
