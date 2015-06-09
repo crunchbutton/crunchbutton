@@ -1,0 +1,24 @@
+<h1 class="title"><i class="fa fa fa-list"></i>Open/Close Log</h1>
+<div class="bar-loader bar-loader-drivers" ng-class="{'bar-loader-loading': loadingLogs}"></div>
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Type</th>
+			<th>Closed at</th>
+			<th>Closed By</th>
+			<th>Closed Notes</th>
+			<th>How long</th>
+			<th>Opened at</th>
+			<th>Opened by</th>
+		</tr>
+		<tr ng-repeat="c in closelogs">
+			<td>{{c.type}}</td>
+			<td>{{c.closed_at}}</td>
+			<td>{{c.closed_by}}</td>
+			<td>{{c.note}}</td>
+			<td>{{c.how_long}}</td>
+			<td>{{c.opened_at}}</td>
+			<td>{{c.opened_by}}</td>
+		</tr>
+	</table>
+</div>
