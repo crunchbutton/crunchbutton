@@ -60,6 +60,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$restaurant = $this->restaurant();
 		
 		$entity = $params['entity'] == 'individual' ? 'individual' : 'corporation'; // stripe docs are wrong. not company
+		$name = explode(' ',$paymentType->contact_name);
 		
 		// some fields are duplicated because stripe docs are wrong for them
 		
@@ -117,9 +118,12 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			]
 		];
 		
-		if ($entity == 'individual') {
+		if ($name) {
 			$info['legal_entity']['first_name'] = array_shift($name);
 			$info['legal_entity']['last_name'] = implode(' ',$name);
+		}
+		
+		if ($entity == 'individual') {
 			$info['legal_entity']['ssn_last_4'] = $ssn;
 		} else {
 			$info['legal_entity']['business_name'] = $paymentType->legal_name_payment ? $paymentType->legal_name_payment : $restaurant->name;
