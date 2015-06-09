@@ -151,10 +151,9 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 
 
 NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
+
+
 	$scope.loading = true;
-	$scope.loadingOrders = true;
-	$scope.loadingRestaurants = true;
-	$scope.loadingStaff = true;
 	$scope.isSaving = false;
 	$scope.isSavingAlias = false;
 
@@ -165,15 +164,55 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	});
 
 
-	$scope.aliasDialogContainer = function(){
-		App.dialog.show('.alias-dialog-container');
-	};
-	var load_alias = function(){
-		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink, sort: $scope.community.next_sort };
-		CommunityService.alias.list( $routeParams.id, function( json ){
-			$scope.aliases = json;
+	// method to load orders - called at ui-tab directive
+	$scope.orders = function(){
+		$scope.loadingOrders = true;
+		OrderService.list( { community: $scope.community.id_community, limit: 5}, function(d) {
+			$scope.orders = d.results;
+			$scope.loadingOrders = false;
 		} );
 	}
+
+// method to load restaurants - called at ui-tab directive
+	$scope.restaurants = function(){
+		$scope.loadingRestaurants = true;
+		RestaurantService.list({community: $scope.community.id_community, limit: 50}, function(d) {
+			$scope.restaurants = d.results;
+			$scope.loadingRestaurants = false;
+		});
+	}
+
+	// method to load drivers - called at ui-tab directive
+	$scope.drivers = function(){
+		$scope.loadingStaff = true;
+		StaffService.list( { community: $scope.community.id_community, limit: 50, type: 'driver'}, function(d) {
+			$scope.staff = d.results;
+			$scope.loadingStaff = false;
+		});
+	}
+
+	// method to load aliases - called at ui-tab directive
+	$scope.aliases = function(){
+		$scope.loadingAliases = true;
+		CommunityService.alias.list( $routeParams.id, function( json ){
+			$scope.aliases = json;
+			$scope.loadingAliases = false;
+		} );
+	}
+
+	// method to load logs - called at ui-tab directive
+	$scope.logs = function(){
+		$scope.loadingLogs = true;
+		CommunityService.closelog.list( $routeParams.id, function( json ){
+			$scope.closelogs = json;
+			$scope.loadingLogs = false;
+		} );
+	}
+
+	$scope.aliasDialogContainer = function(){
+		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink, sort: $scope.community.next_sort };
+		App.dialog.show('.alias-dialog-container');
+	};
 
 	$scope.remove_alias = function( id_community_alias ){
 		if( confirm( 'Confirm remove the alias?' ) ){
@@ -189,8 +228,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		}
 	}
 
-	$scope.add_alias = function(){
-
+	$scope.aliasAdd = function(){
 		if( $scope.formAlias.$invalid ){
 			$scope.formAliasSubmitted = true;
 			return;
@@ -213,15 +251,8 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} );
 	}
 
-	var load_closelog = function(){
-		CommunityService.closelog.list( $routeParams.id, function( json ){
-			$scope.closelogs = json;
-		} );
-	}
-
 	var update = function(force) {
 		if ((!$scope.map || !$scope.community) &&  !force) {
-
 			return;
 		}
 		MapService.trackCommunity({
@@ -236,25 +267,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		$rootScope.title = d.name + ' | Community';
 		$scope.community = d;
 		$scope.loading = false;
-
-		load_alias();
-		load_closelog();
-
 		update();
 
-		OrderService.list({community: d.id_community, limit: 5}, function(d) {
-			$scope.orders = d.results;
-			$scope.loadingOrders = false;
-		});
-
-		RestaurantService.list({community: d.id_community, limit: 50}, function(d) {
-			$scope.restaurants = d.results;
-			$scope.loadingRestaurants = false;
-		});
-
-		StaffService.list({community: d.id_community, limit: 50, type: 'driver'}, function(d) {
-			$scope.staff = d.results;
-			$scope.loadingStaff = false;
-		});
 	});
 });

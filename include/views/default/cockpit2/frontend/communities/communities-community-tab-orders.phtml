@@ -1,0 +1,10 @@
+<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
+<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
+<ng-include src="'assets/view/listview-orders.html'"></ng-include>
+
+<div class="right">
+	<p>
+		<a href="/orders?limit=100&page=1&search=&restaurant=&community={{community.id_community}}&date=&view=map">Map last 100 orders</a> |
+		<a href="/orders?community={{community.id_community}}">View all orders</a>
+	</p>
+</div>

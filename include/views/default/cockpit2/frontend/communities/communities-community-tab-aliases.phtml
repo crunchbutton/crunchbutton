@@ -1,0 +1,22 @@
+<button class="addAliasButton" ng-click="aliasDialogContainer()">Add</button>
+
+<h1 class="title"><i class="fa fa-link"></i>Aliases</h1>
+<div class="bar-loader bar-loader-drivers" ng-class="{'bar-loader-loading': loadingAliases}"></div>
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Alias</th>
+			<th>Preposition</th>
+			<th>Alternative name</th>
+			<th>Remove</th>
+		</tr>
+		<tr ng-repeat="a in aliases">
+			<td>{{a.alias}}</td>
+			<td>{{a.prep}}</td>
+			<td>{{a.name_alt}}</td>
+			<td>
+				<span class="orange link" ng-click="remove_alias(a.id_community_alias)">Remove</span>
+			</td>
+		</tr>
+	</table>
+</div>
