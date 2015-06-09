@@ -74,7 +74,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			return $stripeAccount;
 		}
 
-		$entity = $params['entity'] == 'individual' ? 'individual' : 'corporation';
+		$entity = $params['entity'] == 'individual' ? 'individual' : 'company';
 		
 		$info = [
 			'managed' => true,
