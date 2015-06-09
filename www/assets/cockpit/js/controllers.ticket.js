@@ -144,6 +144,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	var update = function() {
 		TicketService.get($routeParams.id, function(ticket) {
+			
+			
+			
 			$scope.ticket = ticket;
 			$scope.loading = false;
 
@@ -157,6 +160,8 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 					});
 				}
 			}
+			$rootScope.$broadcast('triggerViewTicket', $scope.ticket);
+
 			draw();
 		});
 	};
@@ -173,6 +178,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	update();
 
-	$rootScope.$broadcast('triggerViewTicket', $routeParams.id);
+	
 
 });
