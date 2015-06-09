@@ -53,46 +53,57 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
 			$saving = 0;
 
-			foreach ($status['fields'] as $field) {
-				switch ($field) {
-					case 'legal_entity.first_name':
-						if (!$stripeAccount->legal_entity->first_name) {
-							$stripeAccount->legal_entity->first_name = array_shift($name);
-							$saving++;
-						}
-						break;
-					case 'legal_entity.last_name':
-						if (!$stripeAccount->legal_entity->last_name) {
-							$stripeAccount->legal_entity->last_name = array_pop($name);
-							$saving++;
-						}
-						break;
-					case 'legal_entity.address.line1':
-						if (!$stripeAccount->legal_entity->address->line1) {
-							$stripeAccount->legal_entity->address->line1 = $address['address'];
-							$saving++;
-						}
-						break;
-					case 'legal_entity.address.city':
-						if (!$stripeAccount->legal_entity->address->city) {
-							$stripeAccount->legal_entity->address->city = $address['city'];
-							$saving++;
-						}
-						break;
-					case 'legal_entity.address.state':
-						if (!$stripeAccount->legal_entity->address->state) {
-							$stripeAccount->legal_entity->address->state = $address['state'];
-							$saving++;
-						}
-						break;
-					case 'legal_entity.address.postal_code':
-						if (!$stripeAccount->legal_entity->address->postal_code) {
-							$stripeAccount->legal_entity->address->postal_code = $address['zip'];
-							$saving++;
-						}
-						break;
+			if (!$force) {
+				foreach ($status['fields'] as $field) {
+					switch ($field) {
+						case 'legal_entity.first_name':
+							if (!$stripeAccount->legal_entity->first_name) {
+								$stripeAccount->legal_entity->first_name = array_shift($name);
+								$saving++;
+							}
+							break;
+						case 'legal_entity.last_name':
+							if (!$stripeAccount->legal_entity->last_name) {
+								$stripeAccount->legal_entity->last_name = implode(' ',$name);
+								$saving++;
+							}
+							break;
+						case 'legal_entity.address.line1':
+							if (!$stripeAccount->legal_entity->address->line1) {
+								$stripeAccount->legal_entity->address->line1 = $address['address'];
+								$saving++;
+							}
+							break;
+						case 'legal_entity.address.city':
+							if (!$stripeAccount->legal_entity->address->city) {
+								$stripeAccount->legal_entity->address->city = $address['city'];
+								$saving++;
+							}
+							break;
+						case 'legal_entity.address.state':
+							if (!$stripeAccount->legal_entity->address->state) {
+								$stripeAccount->legal_entity->address->state = $address['state'];
+								$saving++;
+							}
+							break;
+						case 'legal_entity.address.postal_code':
+							if (!$stripeAccount->legal_entity->address->postal_code) {
+								$stripeAccount->legal_entity->address->postal_code = $address['zip'];
+								$saving++;
+							}
+							break;
+					}
 				}
+			} else {
+				$stripeAccount->legal_entity->first_name = array_shift($name);
+				$stripeAccount->legal_entity->last_name = implode(' ',$name);
+				$stripeAccount->legal_entity->address->line1 = $address['address'];
+				$stripeAccount->legal_entity->address->city = $address['city'];
+				$stripeAccount->legal_entity->address->state = $address['state'];
+				$stripeAccount->legal_entity->address->postal_code = $address['zip'];
+				$saving = 6;
 			}
+
 			if ($saving) {
 				$stripeAccount->save();
 			}
