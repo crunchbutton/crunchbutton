@@ -59,7 +59,9 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$paymentType = $this;
 		$restaurant = $this->restaurant();
 		
-		$entity = $params['entity'] == 'individual' ? 'individual' : 'company';
+		$entity = $params['entity'] == 'individual' ? 'individual' : 'corporation'; // stripe docs are wrong. not company
+		
+		// some fields are duplicated because stripe docs are wrong for them
 		
 		if ($paymentType->stripe_id) {
 			$stripeAccount = \Stripe\Account::retrieve($this->stripe_id);
@@ -73,6 +75,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				$paymentType->save();
 			}
 			if ($params['tax_id']) {
+				$stripeAccount->tax_id = $params['tax_id'];
 				$stripeAccount->legal_entity->business_tax_id = $params['tax_id'];
 				$stripeAccount->legal_entity->type = $entity;
 				$stripeAccount->save();
@@ -86,6 +89,8 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$info = [
 			'managed' => true,
 			'country' => 'US',
+			'tax_id' => $params['tax_id'],
+			'business_tax_id' => $params['tax_id'],
 			'email' => $paymentType->summary_email ? $paymentType->summary_email : $restaurant->email,
 			'tos_acceptance' => [
 				'date' => time(),
@@ -93,6 +98,8 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			],
 			'legal_entity' => [
 				'type' => $entity,
+				'business_tax_id' => $params['tax_id'],
+				'tax_id' => $params['tax_id'],
 				'address' => [
 					'line1' => $address['address'], 
 					'city' => $address['city'],
