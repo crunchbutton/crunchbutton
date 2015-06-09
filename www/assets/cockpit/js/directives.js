@@ -158,7 +158,7 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			});
 			outstanding.push(deferred);
 		}
-		
+
 		var cancelers = [];
 
 		function createResource(url, options, actions) {
@@ -359,5 +359,89 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 			});
 			$timeout(l.stop, 100);
 		}
+	}
+});
+
+
+NGApp.directive('uiTab', function () {
+		return {
+				require: '^uiTabs',
+				link: function ( scope, element, attrs, controller ) {
+						controller.addTab( {
+								id: attrs.id,
+								title: attrs.title,
+								default: attrs.default,
+								path: attrs.path,
+								method: attrs.method
+						} );
+				}
+		};
+});
+
+
+NGApp.directive('uiTabs', function ( $compile ) {
+
+	var template = '<div>' +
+										'<ul class="ui-tab-header">' +
+											'<li ng-click="setCurrent( tab );" ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs">{{ tab.title }}</li>' +
+										'</ul>' +
+										'<ul class="ui-tab-content">' +
+											'<li ng-repeat="tab in _tabs" ng-if="_current.id == tab.id">' +
+												'<ng-include src=tab.path></ng-include>' +
+											'</li>' +
+										'</ul>' +
+									'</div>';
+	return {
+		restrict: 'E',
+		scope: true,
+				controller: function ( $scope ) {
+						var current = null;
+						var tabs = [];
+
+						this.getTabs = function () {
+								return tabs;
+						}
+						this.addTab = function ( tab ) {
+							if( tab.default ){
+								this.setCurrent( tab );
+							}
+							if( tab.method ){
+								tab.method_called = false;
+							}
+							tabs.push( tab );
+						};
+						this.setCurrent = function( tab ){
+							current = tab;
+							if( tab.method && !tab.method_called ){
+								try{
+									eval( '$scope.' + tab.method + '()' );
+								} catch(e){
+									console.log( 'ui-tabs:error: ', e );
+								}
+							}
+						}
+						this.getCurrent = function(){
+							return current;
+						}
+				},
+				link: function (scope, element, attrs, controller) {
+
+					scope.$watch( controller.getTabs, function ( tab ) {
+						scope._tabs = tab;
+					} );
+
+					scope.$watch( controller.getCurrent, function ( tab ) {
+						scope._current = tab;
+					} );
+
+					scope.setCurrent = function( tab ){
+						controller.setCurrent( tab );
+					};
+
+					element.children().css( 'display', 'none' );
+					var tabs = angular.element( template );
+					element.append( tabs );
+					$compile( tabs )( scope );
+				}
 	}
 });
