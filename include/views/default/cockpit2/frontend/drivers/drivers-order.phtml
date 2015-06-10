@@ -279,11 +279,26 @@
 				</br>
 			</div>
 			<div class="divider"></div><br><br><br>
-			<div class="order-info2 order-info-small">
-				If prices in store differ from what it says above, plz let us know!<br>
-				Just email your receipt and the order number to <a href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
-				1 in 3 menu updates will earn you a random $ amount bonus ;)
+
+			<div ng-switch="randomFooter">
+				<div ng-switch-when="2">
+					<div class="order-info2 order-info-small">
+						If prices in store differ from what it says above, plz let us know!<br>
+						Just email your receipt and the order number to <a href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
+						1 in 3 menu updates will earn you a random $ amount bonus ;)
+					</div>
+				</div>
+				<div ng-switch-when="1">
+					<div class="order-info2 order-info-small">
+						Got any suggestions to make delivery faster from this restaurant? <br>
+						Faster parking nearby, calling in orders, skipping lines, etc?<br>
+						Just email your ideas and the restaurant name to <a href="mailto:faster@crunchbutton.com">faster@crunchbutton.com</a><br>
+						1 in 2 suggestions will earn you a random $ amount bonus ;)
+					</div>
+				</div>
 			</div>
+
+
 		</div>
 	</div>
 </div>
