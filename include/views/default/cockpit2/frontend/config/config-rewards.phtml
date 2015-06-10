@@ -152,12 +152,63 @@
 					</div>
 				</li>
 			</ul>
+
+			<p><strong>Refferral: Other actions</strong><br><br></p>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+
+				<li class="li-input" ng-class="{'error':form.rewardPointsCreateAnAccountValue.$invalid}">
+					<div class="label">Is enabled?</div>
+					<div class="input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="config.referral.referral_is_enable"/><div></div>
+						</label>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.rewardPointsCreateAnAccountValue.$invalid}">
+					<div class="label">Credit to inviter $:</div>
+					<div class="input">
+						<input type="number" ng-disabled="!config.referral.referral_is_enable" ignore-mouse-wheel name="rewardPointsCreateAnAccountValue" ng-model="config.referral.referral_inviter_credit_value" ng-required="config.referral.referral_is_enable">
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsCreateAnAccountValue.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.rewardPointsWinCluckbuttonValue.$invalid}">
+					<div class="label">Limit of invites:</div>
+					<div class="input">
+						<input type="number" ng-disabled="!config.referral.referral_is_enable" ignore-mouse-wheel name="rewardPointsWinCluckbuttonValue" ng-model="config.referral.referral_invites_limit_per_code" ng-required="config.referral.referral_is_enable">
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsWinCluckbuttonValue.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input">
+					<div class="label">Add credit to invited?</div>
+					<div class="input" ng-class="{'li-input-disabled': !config.referral.referral_is_enable }" >
+						<label class="switch-wrap">
+							<input type="checkbox" ng-disabled="!config.referral.referral_is_enable" class="switch" ng-model="config.referral.referral_add_credit_to_invited"/><div></div>
+						</label>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.rewardPointsWinCluckbuttonValue.$invalid}">
+					<div class="label">Credit to invited $</div>
+					<div class="input" >
+						<input type="number" ng-disabled="!config.referral.referral_add_credit_to_invited || !config.referral.referral_is_enable" ignore-mouse-wheel name="rewardPointsWinCluckbuttonValue" ng-model="config.referral.referral_invited_credit_value" ng-required="config.referral.referral_add_credit_to_invited && config.referral.referral_is_enable">
+					</div>
+					<div class="box-error">
+						<small ng-show="form.rewardPointsWinCluckbuttonValue.$error.required">Required.</small>
+					</div>
+				</li>
+			</ul>
+
 			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input">
 					<button class="button green" ng-click="save();">Save</button>
 				</li>
 			</ul>
 		</div>
+
 	</form>
 
 </div>
