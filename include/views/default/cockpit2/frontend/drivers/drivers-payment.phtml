@@ -68,10 +68,22 @@
 						<td>Worked hours</td>
 						<td>${{result.shifts_hours_amount | formatPrice}}</td>
 					</tr>
+
 					<tr ng-if="!result.hourly && result.calcs.delivery_fee && pay_type_payment && result.show_delivery_fees" positive-or-negative-color="{{result.calcs.delivery_fee}}">
 						<td>Delivery Fee</td>
 						<td>${{result.calcs.delivery_fee | formatPrice}}</td>
 					</tr>
+
+					<tr ng-if="!result.hourly && result.delivery_fee_collected" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
+						<td>Delivery Fee (Collected in Cash)</td>
+						<td>${{result.calcs.delivery_fee_collected | formatPrice}}</td>
+					</tr>
+
+					<tr ng-if="result.calcs.markup" positive-or-negative-color="{{result.calcs.markup}}">
+						<td>Crunchbutton Fees You Collected in Cash</td>
+						<td>${{result.calcs.markup | formatPrice}}</td>
+					</tr>
+
 
 					<tr ng-if="result.calcs.tip && pay_type_payment && result.show_credit_card_tips" positive-or-negative-color="{{result.calcs.tip}}">
 						<td>Tip</td>
