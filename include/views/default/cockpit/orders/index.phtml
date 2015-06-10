@@ -40,9 +40,9 @@
 										<input type="number" name="limit" value="25" min="0">
 									</span>
 								</li>
-							</ul>	
+							</ul>
 						</div>
-						
+
 						<div class="span6 separate-sections">
 							<ul class="padded separate-sections">
 								<li class="input">
@@ -55,15 +55,15 @@
 										<label><input type="checkbox" checked="checked" name="date-range-all">&nbsp;All Dates</label>
 									</span>
 									<div class="clearfix"></div>
-			
+
 								</li>
 								<li>
 									<label class="span3">Processor</label>
 									<span class="span8 pull-right">
 										<select name="processor" class="uniform">
-											<option value="" selected>[ All ]</option>
-											<option value="balanced" selected>balanced</option>
-											<option value="stripe">stripe</option>
+											<option value="">[ All ]</option>
+											<option value="stripe" selected>stripe</option>
+											<option value="balanced">balanced</option>
 										</select>
 									</span>
 									<div class="clearfix"></div>
@@ -73,16 +73,16 @@
 									<span class="span8 pull-right">
 										<select name="restaurant" class="chzn-select">
 										echo '<option value="" selected>[ All ]</option>';
-											<?php  
+											<?php
 											$restaurants = Restaurant::q('select * from restaurant order by name');
 											if( $hasPermissionToAllRestaurants ){
 												foreach ( $restaurants as $restaurant ) {
-													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->communityNames()?></option><?php 
+													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->communityNames()?></option><?php
 												}
 											} else {
 												foreach ( $restaurants as $restaurant ) {
 													if( c::admin()->permission()->check( [ "orders-list-restaurant-{$restaurant->id_restaurant}" ] ) ){
-														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->communityNames()?></option><?php 
+														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->communityNames()?></option><?php
 													}
 												}
 											}
@@ -105,15 +105,15 @@
 									</span>
 									<div class="clearfix"></div>
 								</li>
-							</ul>	
+							</ul>
 						</div>
 					</form>
 
 				</div>
-				
+
 			</div>
 			<center>
-				<button type="submit" class="btn btn-blue admin-order-search"> Search </button>	
+				<button type="submit" class="btn btn-blue admin-order-search"> Search </button>
 				&nbsp;&nbsp;
 				<?php if( c::admin()->permission()->check(['global','orders-all','orders-new-users']) ) { ?>
 				<a class="btn btn-green" href="/orders/lastusers/">New users</a>
@@ -154,7 +154,7 @@
 		$(document).on('click', '.admin-order-export', function() {
 			App.orders.export();
 		});
-		
+
 		$(document).on('keyup', 'input[name="order-search"]', function(e) {
 			if (e.which == 13) {
 				App.orders.load();
@@ -172,7 +172,7 @@
 				$( 'input[name="date-range-start"]' ).datepicker( "option", "minDate", selectedDate );
 			}
 		});
-		
+
 		$( 'input[name="date-range-start"]' ).datepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
