@@ -34,7 +34,7 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 		// hack to deal with date without using mysql date functions
 		$to = new DateTime( $to, new DateTimeZone( c::config()->timezone ) );
 		$to->modify( '+ 1 day' );
-		$to = $to->format( 'Y-m-d' );
+		$to = $to->format( 'Y-m-d' ) . ' 23:59:59';
 
 		// echo '<pre>';var_dump( $from, $to );exit();
 		return Crunchbutton_Community_Shift::q('
@@ -48,6 +48,7 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 	}
 
 	public function highestRankingByPeriod( $id_admin, $from, $to ){
+			$to .= ' 23:59:59';
 			$shift = Crunchbutton_Community_Shift::q('
 				SELECT cs.*, asp.ranking FROM community_shift cs
 				INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift

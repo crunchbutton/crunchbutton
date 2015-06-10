@@ -98,8 +98,19 @@
 										</td>
 									</tr>
 									<?php
-									$firstDayOfWeek = $shift->firstDayOfWeek()->format( 'Y-m-d' );
-									$lastDayOfWeek = $shift->lastDayOfWeek()->format( 'Y-m-d' );
+
+									$shift_date = new DateTime( $shift->dateStart()->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+
+									if( $shift_date->format( 'l' ) == 'Thursday' ){
+										$thursday = $shift_date;
+									} else {
+										$shift_date->modify( 'last thursday' );
+										$thursday = $shift_date;
+									}
+
+									$firstDayOfWeek = $thursday->format( 'Y-m-d' );
+									$thursday->modify( '+ 6 days' );
+									$lastDayOfWeek = $thursday->format( 'Y-m-d' );
 
 									foreach( $preferences as $preference ){
 										$admin = $preference->admin();
