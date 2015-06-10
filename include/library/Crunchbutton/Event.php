@@ -38,12 +38,12 @@ class Crunchbutton_Event {
 		return $res;	
 	}
 	
-	public static function emit($to, $event, $payload = []) {
+	public static function emit($to, $event, $payload = [], $async = true) {
 
 		$work = new Event_Payload($to, $event, $payload);
 
 		c::timeout(function() use($work) {
 			Event::q($work);
-		});
+		},0,$async);
 	}
 }
