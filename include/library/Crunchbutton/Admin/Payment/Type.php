@@ -180,15 +180,12 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 	}
 
 	public function using_pex_date(){
-		if (!isset($this->_using_pex_date)) {
-			if( $this->using_pex ){
-				if( $this->using_pex_date ){
-					$this->_using_pex_date = new DateTime($this->using_pex_date, new DateTimeZone(c::config()->timezone));
-				} else {
-					$this->_using_pex_date = new DateTime( '2015-04-01 00:00:01', new DateTimeZone(c::config()->timezone));
-				}
+		if( $this->using_pex ){
+			if( $this->using_pex_date && $this->using_pex_date != '' ){
+				$this->_using_pex_date = new DateTime($this->using_pex_date, new DateTimeZone(c::config()->timezone));
+			} else {
+				$this->_using_pex_date = new DateTime( '2015-04-01 00:00:01', new DateTimeZone(c::config()->timezone));
 			}
-
 		}
 		return $this->_using_pex_date;
 	}
