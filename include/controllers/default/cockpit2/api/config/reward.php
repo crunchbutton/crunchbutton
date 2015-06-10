@@ -44,6 +44,19 @@ class Controller_api_config_reward extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _configSave(){
+
+		// save referral stuff
+		$referral = $this->request()[ 'referral' ];
+		foreach( $referral as $key => $val ){
+			$key = str_replace( '_', '-', $key );
+			$config = Crunchbutton_Config::getConfigByKey( $key );
+			if( $config->key ){
+				$config->set( intval( $val ) );
+				$config->save();
+			}
+		}
+
+		// save reward stuff
 		$reward = new Crunchbutton_Reward;
 		$settings = $reward->loadSettings();
 		foreach( $settings as $key => $value ){
@@ -56,6 +69,7 @@ class Controller_api_config_reward extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 		}
+
 		echo json_encode( [ 'success' => 'success' ] );exit();
 	}
 
@@ -69,6 +83,21 @@ class Controller_api_config_reward extends Crunchbutton_Controller_RestAccount {
 			}
 			$out[ $key ] = $value;
 		}
+
+		// referral stuff
+
+		$referral[ Crunchbutton_Referral::KEY_IS_REFERRAL_ENABLE ] = Crunchbutton_Referral::isReferralEnable();
+		$referral[ Crunchbutton_Referral::KEY_ADD_CREDIT_INVITED ] = Crunchbutton_Referral::getAddCreditToInvited();
+		$referral[ Crunchbutton_Referral::KEY_INVITES_LIMIT_PER_CODE ] = intval( Crunchbutton_Referral::getInvitesLimit() );
+		$referral[ Crunchbutton_Referral::KEY_INVITER_CREDIT_VALUE ] = intval( Crunchbutton_Referral::getInviterCreditValue() );
+		$referral[ Crunchbutton_Referral::KEY_INVITED_CREDIT_VALUE ] = intval( Crunchbutton_Referral::getInvitedCreditValue() );
+
+		foreach( $referral as $key => $val ){
+			$out[ 'referral' ][ str_replace( '-', '_', $key ) ] = $val;
+		}
+
+
+
 		echo json_encode( $out );
 		exit;
 	}
