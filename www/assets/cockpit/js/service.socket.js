@@ -120,8 +120,9 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 		console.debug('Connected to socket.io');
 		
 		
-		
-		$rootScope.$on('userAuth', function(e, data) {
+		var load = function(e, data) {
+			console.debug('Socket authenticating...');
+			
 			if (AccountService.user && AccountService.user.id_admin) {
 
 				console.debug('Have a user, authenticating with socket server');
@@ -132,7 +133,17 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 					host: location.host
 				});
 			}
-		});
+			watching = null;
+		};
+
+		var watching = null;
+
+		if (!AccountService.init) {
+			// we got here before the auth service was complete.
+			watching = $rootScope.$on('userAuth', load);
+		} else {
+			load();
+		}
 	});
 
 	$rootScope.$on('user-preference', function(e, data) {

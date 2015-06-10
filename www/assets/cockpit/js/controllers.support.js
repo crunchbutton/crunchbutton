@@ -7,6 +7,18 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			title: 'Support',
 			reloadOnSearch: false
 		})
+		.when('/chat', {
+			action: 'chat',
+			controller: 'ChatCtrl',
+			templateUrl: 'assets/view/chat.html',
+			title: 'Chat'
+		})
+		.when('/chat/:room', {
+			action: 'chat',
+			controller: 'ChatCtrl',
+			templateUrl: 'assets/view/chat.html',
+			title: 'Chat'
+		})
 		.when('/support/phone', {
 			action: 'support',
 			controller: 'SupportPhoneCtrl',
@@ -15,6 +27,23 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			reloadOnSearch: false
 		});
 }]);
+
+NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketService, AccountService) {
+	$scope.room = $routeParams.room || 'lobby';
+
+	SocketService.listen('chat.' + $scope.room, $scope)
+		.on('message', function(d) {
+			console.log(d);
+		});
+	/*
+	$scope.send = function() {
+		//SocketService.socket.emit('chat.' + $scope.room, 'message');
+		SocketService.socket.emit('event.message', {
+			url: 'api/'
+		});
+	};
+	*/
+});
 
 
 NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService, AccountService) {
