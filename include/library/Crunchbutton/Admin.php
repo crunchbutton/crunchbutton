@@ -395,7 +395,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function communitiesHeDeliveriesFor() {
 		if (!isset($this->_communitiesHeDeliveriesFor)) {
 			$this->_communitiesHeDeliveriesFor = Community::q('
-				SELECT c.* FROM community c INNER JOIN `group` g ON g.id_community = c.id_community LEFT JOIN admin_group ag ON ag.id_group=g.id_group WHERE ag.id_admin=?
+				SELECT c.* FROM community c INNER JOIN admin_group ag ON ag.id_group=c.id_driver_group WHERE ag.id_admin=?
 			', [$this->id_admin]);
 		}
 		return $this->_communitiesHeDeliveriesFor;

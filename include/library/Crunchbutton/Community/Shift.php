@@ -987,41 +987,47 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		// Get the shifts of this range
 		$drivers = Crunchbutton_Admin::drivers();
+
 		echo '<pre>';
 		foreach( $drivers as $driver ){
 
-			$message = '';
+			$communities = $driver->communitiesHeDeliveriesFor();
 
-			$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= "' . $dateStart . ' 00:00:00" AND cs.date_end <= "' . $dateEnd . ' 23:59:59" AND asa.id_admin = "' . $driver->id_admin . '" ORDER BY cs.date_start ASC' );
+			foreach( $communities as $community ){
 
-			if( $shifts->count() > 0 ){
+				$message = '';
 
-				$commas = '';
+				$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= "' . $dateStart . ' 00:00:00" AND cs.date_end <= "' . $dateEnd . ' 23:59:59" AND asa.id_admin = "' . $driver->id_admin . '" AND cs.id_community = "' . $community->id_community . '" ORDER BY cs.date_start ASC' );
 
-				foreach( $shifts as $shift ){
-					if( $message == '' ){
-						$message = sprintf( $template, $driver->firstName(), $shift->community()->name );
+				if( $shifts->count() > 0 ){
+
+					$commas = '';
+
+					foreach( $shifts as $shift ){
+						if( $message == '' ){
+							$message = sprintf( $template, $driver->firstName(), $shift->community()->name );
+						}
+						$message .= $commas;
+						$message .= $shift->dateStart()->format( 'D ga' ) . '-' . $shift->dateEnd()->format( 'ga T' );
+						$commas = ', ';
 					}
-					$message .= $commas;
-					$message .= $shift->dateStart()->format( 'D ga' ) . '-' . $shift->dateEnd()->format( 'ga T' );
-					$commas = ', ';
-				}
 
-				$message .= '.';
-				Log::debug( [ 'action' => $message, 'type' => 'driver-schedule' ] );
-				echo $message;
-				echo "\n";
+					$message .= '.';
+					Log::debug( [ 'action' => $message, 'type' => 'driver-schedule' ] );
+					echo $message;
+					echo "\n";
 
-				if( $driver->phone ){
-					// Send the sms
-					Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ] );
-					// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
-				}
+					if( $driver->phone ){
+						// Send the sms
+						Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ] );
+						// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
+					}
 
-				// Send the email
-				if( $driver->email ){
-					$mail = new Cockpit_Email_Driver_Shift( [ 'email' => $driver->email, 'message' => $message ] );
-					$mail->send();
+					// Send the email
+					if( $driver->email ){
+						$mail = new Cockpit_Email_Driver_Shift( [ 'email' => $driver->email, 'message' => $message ] );
+						$mail->send();
+					}
 				}
 			}
 		}
