@@ -12,14 +12,14 @@
 			<td nowrap>
 				<span class="listview-bold">{{group.name}}</span>
 			</td>
-			<td>{{group.description}}</td>
+			<td><span class="listview-smaller">{{group.description}}</span></td>
 			<td>
-				<span class="tag tag-purple" ng-if="group.type == 'driver'">Driver</span>
-				<span class="tag tag-orange" ng-if="group.type == 'marketing-rep'">Marketing Rep</span>
-				<span class="tag tag-blue" ng-if="!group.type">Permission Group</span>
+				<span class="tag tag-orange" ng-if="group.type == 'driver'">Driver</span>
+				<span class="tag tag-purple" ng-if="group.type == 'marketing-rep'">Marketing</span>
+				<span class="tag tag-grey" ng-if="!group.type">Group</span>
 			</td>
-			<td>{{group.community}}</td>
-			<td>{{group.members}}</td>
+			<td><a href="/community/{{group.id_community}}">{{group.community}}</a></td>
+			<td class="tb-center">{{group.members}}</td>
 			<td nowrap class="tb-v-center">
 				<a href="/permission/group/{{group.name}}"><button class="button button-small button-empty button-green"><i class="fa fa-unlock-alt"></i>&nbsp;&nbsp;Permissions</button></a>
 				<a href="/group/edit/{{group.name}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
