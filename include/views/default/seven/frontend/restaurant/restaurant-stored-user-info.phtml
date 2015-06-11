@@ -27,7 +27,11 @@
 				<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
 				<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
 				<span ng-show="order.form.pay_type=='card' && !credit.number">Card ending in {{user.card_ending}}</span>
-				<span ng-show="order.form.pay_type=='cash'">Pay and tip with <b>cash</b></span>
+				<span ng-show="order.form.pay_type=='cash'">Pay and tip with <b>cash</b>
+					<span ng-if="config.driver_change_amount">
+						<br><i>Drivers only cary ${{config.driver_change_amount}} in change</i>
+					</span>
+				</span>
 			</p>
 		</div>
 		<div class="divider"></div>

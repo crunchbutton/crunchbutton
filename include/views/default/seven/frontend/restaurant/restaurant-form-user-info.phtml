@@ -129,8 +129,19 @@
 					<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
 					<div class="divider"></div>
 				</div>
-
+				
 				<div class="divider spacer-two-two"></div>
+				
+
+				<div ng-if="config.driver_change_amount && order.form.pay_type == 'cash'">
+					<p class="delivery-free restaurant-delivery-free">
+						<i>Drivers only cary ${{config.driver_change_amount}} in change.</i><br><br>
+					</p>
+				</div>
+
+
+
+				
 
 				<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
