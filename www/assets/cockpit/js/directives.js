@@ -370,6 +370,7 @@ NGApp.directive('uiTab', function () {
 						controller.addTab( {
 								id: attrs.id,
 								title: attrs.title,
+								icon: attrs.icon,
 								default: attrs.default,
 								path: attrs.path,
 								method: attrs.method
@@ -382,9 +383,9 @@ NGApp.directive('uiTab', function () {
 NGApp.directive('uiTabs', function ( $compile ) {
 
 	var template = '<div>' +
-										'<ul class="ui-tab-header">' +
-											'<li ng-click="setCurrent( tab );" ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs">{{ tab.title }}</li>' +
-										'</ul>' +
+										'<div class="ui-tab-header-wrap"><ul class="ui-tab-header">' +
+											'<li ng-click="setCurrent( tab );" ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs"><i class="fa fa-{{tab.icon}}" ng-hide="!tab.icon"></i>{{ tab.title }}</li>' +
+										'</ul></div>' +
 										'<ul class="ui-tab-content">' +
 											'<li ng-repeat="tab in _tabs" ng-if="_current.id == tab.id">' +
 												'<ng-include src=tab.path></ng-include>' +

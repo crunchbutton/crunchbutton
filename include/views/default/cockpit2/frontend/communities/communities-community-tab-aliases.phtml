@@ -1,7 +1,11 @@
-<button class="addAliasButton" ng-click="aliasDialogContainer()">Add</button>
 
-<h1 class="title"><i class="fa fa-link"></i>Aliases</h1>
-<div class="bar-loader bar-loader-drivers" ng-class="{'bar-loader-loading': loadingAliases}"></div>
+<div class="page-title-wrap">
+	<div class="page-title-nav">
+		<a href ng-click="aliasDialogContainer()"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Alias</span></button></a>
+	</div>
+</div>
+
+<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingAliases}"></div>
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
