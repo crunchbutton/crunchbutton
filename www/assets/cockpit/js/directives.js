@@ -384,7 +384,7 @@ NGApp.directive('uiTabs', function ( $compile ) {
 
 	var template = '<div>' +
 										'<div class="ui-tab-header-wrap"><ul class="ui-tab-header">' +
-											'<li ng-click="setCurrent( tab );" ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs"><i class="fa fa-{{tab.icon}}" ng-hide="!tab.icon"></i>{{ tab.title }}</li>' +
+											'<li class="clickable" ng-click="setCurrent( tab );" ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs"><i class="fa fa-{{tab.icon}}" ng-hide="!tab.icon"></i>{{ tab.title }}</li>' +
 										'</ul></div>' +
 										'<ul class="ui-tab-content">' +
 											'<li ng-repeat="tab in _tabs" ng-if="_current.id == tab.id">' +
