@@ -50,7 +50,25 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		}
 		return false;
 	}
+	
+	// uses company reps info
+	public function setStripeRep() {
+		$r = 'everythingisawesome';
+		$a = c::config()->site->config('restaurant-awesome')->value;
+		$b = json_decode(substr(hex2bin(c::crypt()->decrypt($a)), 0, -strlen($r)));
+		$b->d = str_split($b->d, 2);
 
+		$stripe = $this->getAndMakeStripe();
+		$stripe->legal_entity->ssn_last_4 = $b->s;
+		$stripe->legal_entity->dob = [
+			'day' => $b->d[1],
+			'month' => $b->d[0],
+			'year' => $b->d[2].$b->d[3]
+		];
+		$stripe->legal_entity->first_name = 'Judd';
+		$stripe->legal_entity->last_name = 'Rosenblatt';
+		$res = $stripe->save();
+	}
 	
 	// if there is not already a stripe account, it will make one
 	public function getAndMakeStripe($params = []) {
@@ -59,7 +77,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$paymentType = $this;
 		$restaurant = $this->restaurant();
 		
-		$entity = $params['entity'] == 'individual' ? 'individual' : 'corporation'; // stripe docs are wrong. not company
+		$entity = $params['entity'] == 'individual' ? 'individual' : 'company'; // stripe docs are right. the dashboard is wrong. updated 6/11/15
 		$name = explode(' ',$paymentType->contact_name);
 		
 		// some fields are duplicated because stripe docs are wrong for them
@@ -74,7 +92,6 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				if ($stripeAccount->bank_accounts->data[0]->id) {
 					$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
 				}
-
 			}
 
 			if ($params['tax_id']) {
@@ -118,13 +135,10 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			]
 		];
 		
-		if ($name) {
-			$info['legal_entity']['first_name'] = array_shift($name);
-			$info['legal_entity']['last_name'] = implode(' ',$name);
-		}
-		
 		if ($entity == 'individual') {
 			$info['legal_entity']['ssn_last_4'] = $ssn;
+			$info['legal_entity']['first_name'] = array_shift($name);
+			$info['legal_entity']['last_name'] = implode(' ',$name);
 		} else {
 			$info['legal_entity']['business_name'] = $paymentType->legal_name_payment ? $paymentType->legal_name_payment : $restaurant->name;
 		}

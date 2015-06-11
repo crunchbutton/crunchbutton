@@ -1406,8 +1406,11 @@ td.documents-check {
 }
 
 .link{
-	cursor: pointer;
 	text-decoration: underline;
+}
+
+.link, .clickable {
+	cursor: pointer;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
