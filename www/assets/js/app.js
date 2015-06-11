@@ -361,6 +361,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.textUs = textUs;
 	var textUsFormatted = '4441-387 )646('.split('').reverse().join('');
 	$scope.textUsFormatted = textUsFormatted;
+	$rootScope.config = App.config.site;
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908
 	$rootScope.softKeyboard = function( e ){
