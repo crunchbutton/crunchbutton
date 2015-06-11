@@ -360,7 +360,11 @@
 								</tr>
 								<tr positive-or-negative-color="{{driver.delivery_fee}}" ng-if="driver.salary_type == 'orders'">
 									<td>Delivery Fee</td>
-									<td>$ {{driver.delivery_fee | formatPrice}}</td>
+									<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
+								</tr>
+								<tr positive-or-negative-color="{{driver.delivery_fee_collected}}" ng-if="driver.salary_type == 'orders'">
+									<td>Delivery Fee Collected</td>
+									<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{driver.tip}}">
 									<td>Tip</td>
@@ -373,10 +377,6 @@
 								<tr positive-or-negative-color="{{driver.markup}}">
 									<td>Markup</td>
 									<td>$ {{driver.markup | formatPrice}}</td>
-								</tr>
-								<tr positive-or-negative-color="{{delivery_fee_collected}}">
-									<td>Total Delivery Fee Collected In Cash</td>
-									<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
 								</tr>
 								<tr positive-or-negative-color="{{customer_fee_collected}}">
 									<td>Total Customer Fee Collected In Cash</td>
@@ -483,7 +483,9 @@
 									<td>Type</td>
 									<td>Tip</td>
 									<td>Delivery Fee</td>
+									<td>Delivery Collected</td>
 									<td>Customer Fee</td>
+									<td>Customer Fee Collected</td>
 									<td>Reimburse</td>
 									<td>Payment</td>
 									<td>Date</td>
@@ -502,7 +504,9 @@
 									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee_collected | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.customer_fee | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.customer_fee_collected | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_reimburse | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_payment | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>

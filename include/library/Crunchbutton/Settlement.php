@@ -288,9 +288,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 					}
 				}
-
 				$order[ 'pay_info' ] = [];
 				$order[ 'pay_info' ][ 'pay_by_order' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
+				$order[ 'pay_info' ][ 'hourly' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
+				$order[ 'pay_info' ][ 'cash' ] = $order[ 'cash' ];
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
 				$order[ 'pay_info' ][ 'delivery_fee' ] = $this->orderDeliveryFeeDriverPay( $order );
@@ -312,7 +313,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if(
 					( $order[ 'do_not_reimburse_driver' ] == 1 ) ||
 					( $order[ 'driver_reimbursed' ] && !$recalculatePaidOrders ) || // Do not reimburse reimbursed orders
-					( $pay[ $driver ][ 'using_pex' ] && !$pay[ $driver ][ 'tftt' ] ) || // Do not reimburse drivers that are using pex card #3876
+					( $pay[ $driver ][ 'using_pex' ] && !$pay[ $driver ][ 'using_pex_date' ] ) || // Do not reimburse drivers that are using pex card #3876
 					( $pay[ $driver ][ 'using_pex' ] && $pay[ $driver ][ 'using_pex_date' ] && intval( $pay[ $driver ][ 'using_pex_date' ] ) <= intval( $order[ 'formatted_date' ] ) )
 					 ){
 					$order[ 'pay_info' ][ 'total_reimburse' ] = 0;
@@ -468,7 +469,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$delivery_fee = $pay[ 'delivery_fee' ];
 		}
 
-		$total_due = 	( ( $pay[ 'subtotal' ] +
+		$total_due = 	( ( ( $pay[ 'subtotal' ] +
 										$pay[ 'tax' ] +
 										$delivery_fee +
 										$pay[ 'credit_charge' ] +
@@ -476,9 +477,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 										$pay[ 'gift_card' ] -
 										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ] +
 										// total driver collected in cash
-										$pay[ 'customer_fee_collected' ] +
+										$pay[ 'customer_fee_collected' ]+
 										$pay[ 'markup' ] +
-										$pay[ 'delivery_fee_collected' ];
+										$pay[ 'delivery_fee_collected' ] ) ;
+		// if the driver is paid by order and the order was paid in cash we owe nothing
+		if(  $pay[ 'hourly' ] && $pay[ 'cash' ] ){
+			$total_due = 0;
+		}
 		return $total_due;
 	}
 
