@@ -583,6 +583,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'customer_fee_collected' ] = $order[ 'pay_info' ][ 'customer_fee_collected' ] ;
 					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
 					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ] ;
+					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
 					$_order[ 'delivery_fee_collected' ] = $order[ 'pay_info' ][ 'delivery_fee_collected' ] ;
 					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
 					$_order[ 'total_payment' ] = $order[ 'pay_info' ][ 'total_payment' ] ;
