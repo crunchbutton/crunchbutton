@@ -41,14 +41,14 @@ class Crunchbutton_Query extends Cana_Model {
 						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
 					} elseif ($type == 'inteq') {
 						$sqq .= ' '.$key.' '.($match ? '' : '!').'= ? ';
-						$word = intval($word);
+						$w = intval($word);
 					} elseif ($type == 'gt') {
 						$sqq .= ' '.$key.' > ? ';
 					} elseif ($type == 'lt') {
 						$sqq .= ' '.$key.' < ? ';
 					}
 					$sqq .= "\n";
-					$keys[] = $w ? $w : $word;
+					$keys[] = !is_null($w) ? $w : $word;
 				}
 
 				$sq .= $sqq.')';
