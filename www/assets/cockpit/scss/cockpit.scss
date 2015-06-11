@@ -3398,7 +3398,7 @@ input[type="checkbox"].switch + div {
 	border: 1px solid rgba(0,0,0,.2);
 	border-radius: 999px;
 	margin: 0 auto .8em;
-	background: #dd3131;
+	background: $buttonRed;
 	overflow: hidden;
 	transition-duration: .3s;
 	transition-property: padding, width, background;
@@ -3410,7 +3410,7 @@ input[type="checkbox"].switch + div {
 input[type="checkbox"].switch:checked + div {
 	padding-left: .8em;
 	width: 1em;
-	background: #3fae25;
+	background: $buttonGreen;
 }
 
 input[type="checkbox"].switch + div:before {
