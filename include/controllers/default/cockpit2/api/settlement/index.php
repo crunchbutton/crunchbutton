@@ -4,6 +4,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		$this->_driverScheduled();
+
+		exit();
+
 		$this->resultsPerPage = 20;
 
 
