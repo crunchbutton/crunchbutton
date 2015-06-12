@@ -17,6 +17,10 @@ class Crunchbutton_Util extends Cana_Model {
 		return false;
 	}
 
+	public function isMySQL(){
+		return ( strtolower( c::db()->driver() ) == 'mysql' );
+	}
+
 	// https://gist.github.com/maggiben/9457434
 	public static function humanReadableNumbers( $number ){
 		if( $number < 1000 ){
@@ -346,13 +350,13 @@ class Crunchbutton_Util extends Cana_Model {
 		// returns a string prefixed with '$' suitable for display
 		return money_format('$%i', $price);
 	}
-	
-	
+
+
 	public static function formatAddress($address = '') {
 		if (!$address) {
 			return false;
 		}
-		
+
 		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address);
 
 		$res = @json_decode(@file_get_contents($url));
@@ -360,21 +364,21 @@ class Crunchbutton_Util extends Cana_Model {
 			return $address;
 		}
 		$res = $res->results[0];
-		
+
 		/*
 		$parts = [];
 		foreach ($res->address_components as $item) {
 			$parts[$item->types[0]] = $item->short_name;
 		}
 		*/
-		
+
 		$f = explode(',',$res->formatted_address);
 		array_pop($f);
 		$formatted = array_shift($f)."\n".trim(implode(',',$f));
 
 		return $formatted;
 	}
-	
+
 	public static function addressParts($address = '') {
 		if (!$address) {
 			return false;
