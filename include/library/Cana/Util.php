@@ -9,6 +9,7 @@
  */
 
 class Cana_Util extends Cana_Model {
+
 	public static function gitVersion() {
 		$v = @file_get_contents(Cana::config()->dirs->root.'.git/ORIG_HEAD');
 		return trim($v);
