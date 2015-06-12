@@ -75,7 +75,6 @@ NGApp.controller( 'RestaurantWeightAdjustmentCtrl', function ($rootScope, $scope
 
 			CommunityService.by_alias( $scope.address, function( community ){
 				if( community.id_community ){
-					console.log('community',community);
 					$scope.position.lat = community.loc_lat;
 					$scope.position.lon = community.loc_lon;
 					load();
@@ -99,7 +98,6 @@ NGApp.controller( 'RestaurantWeightAdjustmentCtrl', function ($rootScope, $scope
 		} else {
 			App.alert( 'Type an address or an alias!' );
 		}
-
 	}
 
 	$scope.save_weight = function( restaurant ){
@@ -122,7 +120,7 @@ NGApp.controller( 'RestaurantWeightAdjustmentCtrl', function ($rootScope, $scope
 			$scope.restaurants = data;
 			if( !$scope.restaurants.length ){
 				$scope.restaurants = null;
-				App.alert( 'No restaurant at this address!' );
+				App.alert( 'There is restaurant at this address!' );
 			}
 			$scope.loading = false;
 		} );
