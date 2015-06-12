@@ -2,7 +2,7 @@
 
 <div class="content-padding">
 
-	<h1 class="title box-title"><i class="fa fa-users"></i>Group {{group.name}}</h1>
+	<h1 class="title box-title"><i class="fa fa-shield"></i>Group {{group.name}}</h1>
 	<div class="divider"></div>
 	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
@@ -32,9 +32,9 @@
 					<div class="field-row">
 						<div class="field-key">Type</div>
 						<div class="field-value">
-							<span class="tag tag-purple" ng-if="group.type == 'driver'">Driver</span>
-							<span class="tag tag-orange" ng-if="group.type == 'marketing-rep'">Marketing Rep</span>
-							<span class="tag tag-blue" ng-if="!group.type">Permission Group</span>
+							<span class="tag tag-orange" ng-if="group.type == 'driver'">Driver</span>
+							<span class="tag tag-purple" ng-if="group.type == 'marketing-rep'">Marketing </span>
+							<span class="tag tag-grey" ng-if="!group.type">Group</span>
 						</div>
 					</div>
 					<div class="field-row" ng-if="group.community">

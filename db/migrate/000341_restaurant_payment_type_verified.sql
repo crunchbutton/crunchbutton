@@ -1,0 +1,1 @@
+ALTER TABLE `restaurant_payment_type` ADD `verified` TINYINT(1)  NOT NULL  DEFAULT '0';

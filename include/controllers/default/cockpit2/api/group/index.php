@@ -131,8 +131,10 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 		$data = [];
 
 		$r = c::db()->query(str_replace('-WILD-','
-			g.*,c.name AS community,
-			COUNT( ag.id_admin ) AS members
+			g.*,
+			c.name AS community,
+			c.id_community AS id_community,
+			COUNT(ag.id_admin) AS members
 		', $q), $keys);
 
 
