@@ -1089,10 +1089,6 @@ input {
 	color: #5d5f63;
 	margin-top: 1em;
 }
-.li-input .italic{
-	font-style: italic !import;
-	color: #333;
-}
 
 .li-input-disabled input[type="checkbox"].switch + div {
 	background: #CCC !important;
@@ -4141,6 +4137,13 @@ h1.title.box-title {
 .fa.support-box-widget-icon {
 	font-size: 4.4em;
 	float: left;
+}
+.italic{
+	font-style: italic !important;
+	color: #333;
+}
+.no-wrap{
+	white-space: nowrap;
 }
 
 .support-widget-box-wrap {

@@ -87,7 +87,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		$(':focus').blur();
 		$rootScope.$broadcast( 'CommunitiesAssign', { 'communities': $scope.staff.communities } );
 	}
-	
+
 	$scope.reverify = function() {
 		StaffService.reverify($scope.staff.id_admin, function(data) {
 			console.debug('Verification result', data);
