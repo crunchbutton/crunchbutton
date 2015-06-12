@@ -530,11 +530,17 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.server = App.server;
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
+	$rootScope.twilio = TwilioService;
+	
 	$rootScope.supportToggled = false;
 	$rootScope.supportToggle = function() {
 		$rootScope.supportToggled = !$rootScope.supportToggled;
 	};
-	$rootScope.twilio = TwilioService;
+	
+	$rootScope.menuToggled = true;
+	$rootScope.menuToggle = function() {
+		$rootScope.menuToggled = !$rootScope.menuToggled;
+	};
 
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){
