@@ -62,6 +62,47 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				echo json_encode( $export );
 				break;
 
+			case 'save-weight':
+				$id_restaurant = $this->request()[ 'id_restaurant' ];
+				$restaurant = Crunchbutton_Restaurant::o( $id_restaurant );
+				if( $restaurant->id_restaurant ){
+					$restaurant->weight_adj = $this->request()[ 'weight_adj' ];
+					$restaurant->save();
+					echo json_encode( [ 'success' => true ] );exit;
+				}
+
+				break;
+
+			case 'weight-adjustment':
+
+				$lat = $this->request()[ 'lat' ];;
+				$lon = $this->request()[ 'lon' ];;;
+
+				$restaurants = Restaurant::byRange( [ 'lat' => $lat, 'lon' => $lon, 'range' => 2 ] );
+
+				$sort = [];
+				foreach ( $restaurants as $restaurant ) {
+					$sort[] = $restaurant;
+				}
+
+				usort( $sort, function($a, $b){ return $a->_weight < $b->_weight; } );
+
+				$out = [];
+				foreach( $sort as $r ){
+					$out[] = [ 'id_restaurant' => $r->id_restaurant,
+											'name' => $r->name,
+											'image' => $r->image,
+											'weight' => intval( $r->_weight_old ),
+											'weight_adj' => $r->weight_adj,
+											'effective_weight' => $r->_weight,
+											'open' => $restaurant->open(),
+											'delivery' => ( $r->delivery ? true : false ),
+										];
+				}
+				echo json_encode( $out );exit;
+
+				break;
+
 			case 'no-payment-method':
 				$restaurants = Crunchbutton_Restaurant::with_no_payment_method();
 				$export = [];

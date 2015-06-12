@@ -8,41 +8,56 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 			$this->error(401);
 		}
 
-		switch ($this->method()) {
+		switch ( $this->method() ) {
+
 			case 'get':
 
-				$community = Community::permalink( c::getPagePiece(2) );
-
-				if (!$community->id_community) {
-					$community = Community::o( c::getPagePiece(2) );
-				}
-
-				if (!$community->id_community) {
-					$this->error(404);
-				}
-
-				switch ( c::getPagePiece(3) ) {
-					case 'aliases':
-						$aliases = $community->aliases();
-						$out = [];
-						foreach( $aliases as $alias ){
-							$out[] = $alias->exports();
+				switch ( c::getPagePiece( 2 ) ) {
+					case 'by-alias':
+						$community = Crunchbutton_Community_Alias::alias( c::getPagePiece( 3 ) );
+						if( $community ){
+							echo json_encode( $community );exit;
+						} else {
+							echo json_encode( [ 'error' => 'not found' ] );exit;
 						}
-						echo json_encode( $out );exit;
-						break;
 
-					case 'closelog':
-						$log = $community->forceCloseLog( true, false, 60 );
-						$out = [];
-						foreach( $log as $closed ){
-							$out[] = $closed->exports();
-						}
-						echo json_encode( $out );exit;
 						break;
 
 					default:
-						echo $community->json();
-						exit();
+						$community = Community::permalink( c::getPagePiece(2) );
+
+						if (!$community->id_community) {
+							$community = Community::o( c::getPagePiece(2) );
+						}
+
+						if (!$community->id_community) {
+							$this->error(404);
+						}
+
+						switch ( c::getPagePiece(3) ) {
+							case 'aliases':
+								$aliases = $community->aliases();
+								$out = [];
+								foreach( $aliases as $alias ){
+									$out[] = $alias->exports();
+								}
+								echo json_encode( $out );exit;
+								break;
+
+							case 'closelog':
+								$log = $community->forceCloseLog( true, false, 60 );
+								$out = [];
+								foreach( $log as $closed ){
+									$out[] = $closed->exports();
+								}
+								echo json_encode( $out );exit;
+								break;
+
+							default:
+								echo $community->json();
+								exit();
+								break;
+						}
 						break;
 				}
 

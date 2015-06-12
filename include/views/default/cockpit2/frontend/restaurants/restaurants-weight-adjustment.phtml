@@ -1,0 +1,64 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<h1 class="title"><i class="fa fa-tasks"></i>Weight Adjustment</h1>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-enter="search()" placeholder="Address or Alias" ng-model="address" id="search" tabindex="1"></td>
+			</tr>
+			<tr>
+				<td>
+					<div class="note">Important: at live the sort criteria are: (1) open; (2) delivery; (3) weight.</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="box-content2 box-content-table" ng-if="restaurants">
+		<table class="tb-zebra">
+			<tr>
+				<th></th>
+				<th>Name</th>
+				<th class="tb-center">Delivery</th>
+				<th class="tb-center">Open</th>
+				<th class="tb-center">Weight</th>
+				<th class="tb-center">Effective&nbsp;weight</th>
+				<th class="tb-center">Weight&nbsp;Adjustment</th>
+			</tr>
+			<tr ng-repeat="restaurant in restaurants">
+				<td class="tb-image-row">
+					<div class="customer-image-crop">
+						<img ng-if="restaurant.image" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>
+						<div ng-if="!restaurant.image" class="customer-image restaurant-image-null"></div>
+					</div>
+				</td>
+				<td>
+					<span class="listview-bold">{{restaurant.name}}</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-green" ng-if="restaurant.delivery">Yes</span>
+					<span class="tag tag-red" ng-if="!restaurant.delivery">No</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-green" ng-if="restaurant.open">Open</span>
+					<span class="tag tag-red" ng-if="!restaurant.open">Closed</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					{{restaurant.weight}}
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="listview-bold">{{restaurant.effective_weight}}</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<input step="any" type="number" ng-disable="loading" class="listview-input-number" ng-enter="save_weight(restaurant);" name="weight{{restaurant.id_restaurant}}" ng-model="restaurant.weight_adj" required ignore-mouse-wheel placeholder="">
+				</td>
+			</tr>
+		</table>
+	</div>
+
+
+
+</div>

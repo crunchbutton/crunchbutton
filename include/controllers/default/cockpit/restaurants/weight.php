@@ -27,7 +27,7 @@ class Controller_Restaurants_Weight extends Crunchbutton_Controller_Account {
 			c::view()->restaurants = $sort;
 			c::view()->layout( 'layout/ajax' );
 			c::view()->display('restaurants/weight/restaurants');
-		} 
+		}
 
 	}
 
@@ -37,10 +37,13 @@ class Controller_Restaurants_Weight extends Crunchbutton_Controller_Account {
 			return;
 		}
 
+		header('HTTP/1.1 301 Moved Permanently');
+		header('Location: https://cockpit.la/restaurants/weight-adjustment');
+
 		if( c::getPagePiece( 2 ) == 'restaurants' ) {
 			$this->_restaurants();
 		} else {
-			$this->_form();	
+			$this->_form();
 		}
 
 	}
