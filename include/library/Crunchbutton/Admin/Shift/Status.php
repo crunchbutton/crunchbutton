@@ -23,7 +23,7 @@ class Crunchbutton_Admin_Shift_Status extends Cana_Table {
 	}
 
 	public function getByAdminWeekYear( $id_admin, $week, $year ){
-		$status = Crunchbutton_Admin_Shift_Status::q( 'SELECT * FROM admin_shift_status WHERE id_admin = ' . $id_admin . ' AND year = ' . $year . ' AND week = ' . $week );
+		$status = Crunchbutton_Admin_Shift_Status::q( 'SELECT * FROM admin_shift_status WHERE id_admin = ' . $id_admin . ' AND year = ' . $year . ' AND week = ' . $week )->get( 0 );
 		if( !$status->id_admin_shift_status ){
 			$status = new Crunchbutton_Admin_Shift_Status();
 			$status->id_admin = $id_admin;

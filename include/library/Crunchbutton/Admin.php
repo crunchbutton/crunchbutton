@@ -988,6 +988,31 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 	}
 
+	public function shiftsCurrentAssigned(){
+		$firstDay = $this->firstDayOfWeek();
+		$from = $firstDay->format( 'Y-m-d' );
+		$firstDay->modify( '+6 days' );
+		$to = $firstDay->format( 'Y-m-d' );
+		return Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $this->id_admin, $from, $to );
+	}
+
+	public function firstDayOfWeek(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;
+		} else {
+			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
+		}
+		return $thursday;
+	}
+
+	public function shiftCurrentStatus(){
+		$firstDay = $this->firstDayOfWeek();
+		$year = $firstDay->format( 'Y' );
+		$week = $firstDay->format( 'W' );
+		return Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $this->id_admin, $week, $year );
+	}
+
 	public function note(){
 		return Crunchbutton_Admin_Note::lastNoteByAdmin( $this->id_admin )->get( 0 );
 	}
@@ -1123,6 +1148,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 		if( count( $resources ) ){
 			return $resources;
+		}
+		return false;
+	}
+
+	public function sendTextAboutSchedule(){
+		$receiveSMS = $this->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
+		if( $receiveSMS->id_admin_config ){
+			return $receiveSMS->value;
 		}
 		return false;
 	}

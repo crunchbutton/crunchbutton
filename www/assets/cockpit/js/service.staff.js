@@ -41,6 +41,21 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			method: 'POST',
 			params : {}
 		},
+		'note' : {
+			url: App.service + 'staff/:id_admin/note',
+			method: 'GET',
+			params : {}
+		},
+		'save_note' : {
+			url: App.service + 'staff/:id_admin/note',
+			method: 'POST',
+			params : {}
+		},
+		'send_text_about_schedule' : {
+			url: App.service + 'staff/:id_admin/text-message-about-schedule',
+			method: 'POST',
+			params : {}
+		},
 		'community' : {
 			url: App.service + 'staff/:id_admin/community',
 			method: 'POST',
@@ -66,6 +81,24 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 		} );
 	}
 
+	service.note = function(id_admin, callback) {
+		staff.note({id_admin: id_admin}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.save_note = function(params, callback) {
+		staff.save_note( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.send_text_about_schedule = function(params, callback) {
+		staff.send_text_about_schedule( params, function(data) {
+			callback(data);
+		});
+	}
+
 	service.locations = function(id_admin, callback) {
 		staff.locations({id_admin: id_admin}, function(data) {
 			callback(data);
@@ -77,7 +110,7 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			callback(data);
 		});
 	}
-	
+
 	service.reverify = function(id_admin, callback) {
 		staff.reverify({id_admin: id_admin}, function(data) {
 			callback(data);
