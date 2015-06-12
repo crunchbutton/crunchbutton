@@ -46,7 +46,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $totals[ 'gift_card' ], 0 );
 		$this->assertEquals( $totals[ 'delivery_fee_collected' ] , -3 );
 		$this->assertEquals( $totals[ 'standard_reimburse' ] , 39.75 );
-		$this->assertEquals( $totals[ 'total_reimburse' ], 0 );
+		$this->assertEquals( $totals[ 'total_reimburse' ], 39.75 );
 		$this->assertEquals( $totals[ 'total_payment' ], 14.6 );
 
 	}
