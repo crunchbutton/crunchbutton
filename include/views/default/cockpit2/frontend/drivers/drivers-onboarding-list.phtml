@@ -26,7 +26,13 @@
 			<tr>
 				<th>Name</th>
 				<th>Community</th>
-				<th>Created by</th>
+				<th>Schedule Status</th>
+				<th>Note</th>
+				<th nowrap="nowrap" class="tb-center">
+					Send Text<br>Message
+					<span class="link orange no-underline" title="Send sms about schedule?">*</span>
+				</th>
+				<th class="tb-small tb-center">Payment Type</th>
 				<th class="tb-small tb-center">Vehicle</th>
 				<th class="tb-small tb-center">Active</th>
 				<th class="tb-small tb-center">Payment</th>
@@ -34,7 +40,7 @@
 				<th class="tb-small"> </th>
 			</tr>
 			<tr ng-repeat="driver in drivers" ng-attr-tabindex="{{$index+1}}" tab-select="/drivers/onboarding/{{driver.id_admin}}">
-				<td>
+				<td nowrap="nowrap">
 					<span class="listview-bold">{{driver.name}}</span>
 					<br><span class="listview-smaller">{{driver.login}}</span>
 					<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
@@ -44,8 +50,38 @@
 						{{community}}
 					</span>
 				</td>
+				<td nowrap="nowrap">
+					<span class="tag tag-green" ng-if="driver.shift_status.completed == 1">Completed</span><span class="tag tag-orange" ng-if="!driver.shift_status.completed == 1">Not completed</span><br>
+					<span class="listview-smaller">
+						Wants to work: <strong>{{driver.shift_status.shifts}}</strong><br>
+						Is assigned to: <strong>{{driver.total_shifts}}</strong>
+					</span>
+				</td>
 				<td>
-					{{driver.author}}
+					<div class="listview-smaller" ng-if="driver.note.text">
+						{{driver.note.text}}
+						<br>
+						<span class="italic">
+							by {{driver.note.added_by}}
+							<span class="no-wrap">{{driver.note.date_utc | localtime | timestamp | date:'MM/dd @ HH:mm'}}</span>
+							<button class="button button-small button-empty button-green" ng-click="last_note(driver.id_admin);"><i class="fa fa-pencil"></i></button>
+						</span>
+					</div>
+					<div ng-if="!driver.note.text" class="listview-smaller">
+						<span class="italic">Add note</span>
+						<button class="button button-small button-empty button-green" ng-click="last_note(driver.id_admin);"><i class="fa fa-pencil"></i></button>
+					</div>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="listview-smaller">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-change="send_text_about_schedule( driver.id_admin, driver.send_text_about_schedule );" ng-model="driver.send_text_about_schedule"/><div></div>
+						</label>
+					</span>
+				</td>
+				<td class="tb-center tb-v-center">
+					<span class="tag tag-orange" ng-if="driver.payment_type == 'orders'">Orders</span>
+					<span class="tag tag-purple" ng-if="driver.payment_type == 'hours'">Hourly</span>
 				</td>
 				<td class="tb-center tb-v-center">
 					<span class="tag tag-orange" ng-if="driver.vehicle == 'car'">Car</span>
@@ -66,7 +102,7 @@
 				</td>
 				<td nowrap class="tb-v-center">
 					<a href="/staff/{{driver.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>
-					<a href="/drivers/onboarding/{{driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver Info</button></a>
+					<a href="/drivers/onboarding/{{driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver</button></a>
 					<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 				</td>
 			</tr>
@@ -85,4 +121,27 @@
 
 	<div class="divider"></div>
 
+</div>
+<div class="admin-note-container zoom-anim-dialog mfp-hide dialog">
+
+	<h2 class="title left"><span>{{note.driver}}</span></h2>
+
+	<div class="divider"></div>
+
+	<form name="formNote" novalidate>
+		<ul ng-class="{'submitted':formNoteSubmitted}" class="ul-inputs">
+			<li class="li-input" ng-class="{'error':formNote.driverNote.$invalid}">
+				<div class="label">Note:</div>
+				<div class="input">
+					<textarea name="driverNote" required ng-model="note.text"></textarea>
+				</div>
+				<div class="box-error">
+					<small ng-show="formNote.driverNote.$error.required">Required.</small>
+				</div>
+			</li>
+			<li class="li-input" ng-show="!isSavingNote">
+				<button class="button save" ng-click="save_note();">Save</button>
+			</li>
+		</ul>
+	</form>
 </div>

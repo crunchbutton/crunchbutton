@@ -591,6 +591,55 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, StaffService, ViewListService) {
 	angular.extend( $scope, ViewListService );
 
+	$scope.send_text_about_schedule = function( id_admin, value ){
+		params = { 'id_admin': id_admin, 'value': value };
+		StaffService.send_text_about_schedule( params, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error , 'error' );
+			}
+		} );
+	}
+
+	$scope.last_note = function( id_admin ){
+
+		$scope.note = {};
+		$scope.formNoteSubmitted = false;
+		$scope.isSavingNote = false;
+		App.dialog.show( '.admin-note-container' );
+		StaffService.note( id_admin, function( json ){
+			if( json.id_admin ){
+				$scope.note = json;
+			} else {
+				App.alert( 'Error loading note' , 'error' );
+			}
+		} );
+	}
+
+	$scope.save_note = function( id_admin, text ){
+		if( $scope.formNote.$invalid ){
+			$scope.formNoteSubmitted = true;
+			$scope.isSavingNote = false;
+			return;
+		}
+		StaffService.save_note( $scope.note, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error , 'error' );
+			} else {
+				load();
+				App.dialog.close();
+			}
+			$scope.formNoteSubmitted = false;
+			$scope.isSavingNote = false;
+		} );
+	}
+
+	var load = function(){
+		StaffService.list($scope.query, function(d) {
+			$scope.drivers = d.results;
+			$scope.complete(d);
+		});
+	}
+
 	$scope.view({
 		scope: $scope,
 		watch: {
@@ -602,10 +651,7 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 			fullcount: false
 		},
 		update: function() {
-			StaffService.list($scope.query, function(d) {
-				$scope.drivers = d.results;
-				$scope.complete(d);
-			});
+			load();
 		}
 	});
 });

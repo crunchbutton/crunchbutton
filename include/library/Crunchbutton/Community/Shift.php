@@ -330,14 +330,22 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$day = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
 		$weekday = $day->format( 'w' );
 
-		// @todo - once we change to postgre we have to change this query
-		$shifts = Crunchbutton_Community_Shift::q('
-			SELECT * FROM community_shift
-			WHERE
-				recurring = true
-				AND active = true
-				AND DATE_FORMAT( date_start, "%w" ) = ?
-		', [$weekday]);
+		if( Crunchbutton_Util::isMySQL() ){
+			$query = ' SELECT * FROM community_shift
+										WHERE
+									recurring = true
+									AND active = true
+									AND DATE_FORMAT( date_start, "%w" ) = ? ';
+		} else {
+			// postgree
+			$query = ' SELECT * FROM community_shift
+										WHERE
+									recurring = true
+									AND active = true
+									AND extract( dow from date_added ) = ? ';
+		}
+
+		$shifts = Crunchbutton_Community_Shift::q( $query, [ intval( $weekday ) ] );
 
 		// Create the recurring events
 		foreach( $shifts as $shift ){

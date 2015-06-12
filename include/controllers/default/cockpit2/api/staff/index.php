@@ -36,6 +36,21 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_group($staff);
 					break;
 
+				case 'text-message-about-schedule':
+					$this->_permissionDenied();
+					$this->_isPost();
+					$this->_textMessageAboutSchedule($staff);
+					break;
+
+				case 'note':
+					$this->_permissionDenied();
+					if( $this->method() == 'post' ){
+						$this->_saveLastNote($staff);
+					} else {
+						$this->_openLastNote($staff);
+					}
+					break;
+
 				case 'community':
 					$this->_permissionDenied();
 					$this->_isPost();
@@ -94,6 +109,38 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( [ 'success' => true ] );
 	}
 
+	private function _openLastNote( $staff ){
+		$note = $staff->note();
+		if( $note->id_admin_note ){
+			$out = $note->exports();
+			$out[ 'driver' ] = $staff->name;
+			echo json_encode( $out );exit;
+		} else {
+			echo json_encode( [ 'id_admin' => $staff->id_admin, 'driver' => $staff->name, 'text' => '' ] );exit;
+		}
+	}
+
+	private function _saveLastNote( $staff ){
+		if( $staff->id_admin ){
+			$text = $this->request()[ 'text' ];
+			$staff->addNote( $text );
+			$this->_openLastNote( $staff );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
+	private function _textMessageAboutSchedule( $staff ){
+		if( $staff->id_admin ){
+			$value = $this->request()[ 'value' ];
+			$value = ( $value && $value > 0 ) ? 1 : 0;
+			$staff->setConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING, $value );
+			echo json_encode( [ 'success' => 'success' ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
 	private function _community( $staff ){
 		$communities = $staff->communitiesHeDeliveriesFor();
 		foreach( $communities as $community ){
@@ -135,9 +182,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin )->get( 0 );
 
 		if( $staff->isDriver() ){
-
 			$out[ 'is_driver' ] = true;
 		}
+
 		$driver_info = $staff->driver_info()->exports();
 
 		$driver_info[ 'student' ] = strval( $driver_info[ 'student' ] );
@@ -408,9 +455,21 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 
 			if ($type == 'driver') {
+
 				$sentAllDocs = true;
 
 				$payment_type = $admin->payment_type();
+				// driver stuff
+				$staff[ 'send_text_about_schedule' ] = ( $admin->sendTextAboutSchedule() == 1 ? true : false );
+				// $staff[ 'orders_per_hour' ] = $admin->ordersPerHour();
+				$note = $admin->note();
+				if( $note->id_admin_note ){
+					$staff[ 'note' ] = $note->exports();
+				}
+				$shift_status = $admin->shiftCurrentStatus();
+				$staff[ 'shift_status' ] = $shift_status->exports();
+				$assigned_shifts = $admin->shiftsCurrentAssigned();
+				$staff[ 'total_shifts' ] = $assigned_shifts->count();
 
 				foreach( $docs as $doc ){
 

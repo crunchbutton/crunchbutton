@@ -20,7 +20,9 @@ class Crunchbutton_Admin_Note extends Cana_Table {
 	public function exports() {
 		$out = [];
 		$out[ 'id_admin' ] = $this->id_admin;
+		$out[ 'id_admin_note' ] = $this->id_admin_note;
 		$out[ 'date' ] = $this->date()->format( 'M jS Y g:i:s A' );
+		$out[ 'date_utc' ] = Crunchbutton_Util::dateToUnixTimestamp( $this->date() );
 		$out[ 'text' ] = $this->text;
 		$out[ 'added_by' ] = $this->addedBy()->name;
 		return $out;
