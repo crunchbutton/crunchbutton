@@ -1,4 +1,4 @@
-<div class="hide angular-hider" ng-class="{ show: angularLoaded, 'support-toggled': supportToggled }">
+<div class="hide angular-hider" ng-class="{ show: angularLoaded, 'support-toggled': supportToggled, 'menu-toggled': !menuToggled }">
 	<div class="snap-drawers static-nav-viewport loggedout-hideable">
 		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu" ng-controller="SideMenuCtrl">
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
@@ -424,8 +424,13 @@
 				<div class="nav nav-top">
 					<div class="content">
 
-						<div title="Menu" class="menu side hide-before-init" ng-click="navigation.menu()" ng-hide="hasBack"></div>
-						<div title="Back" class="nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
+						<div title="Menu" class="clickable menu side hide-before-init hide-desktop" ng-click="navigation.menu()" ng-hide="hasBack"></div>
+						<div title="Back" class="clickable nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
+						
+						<div title="Menu" class="clickable menu side hide-before-init hide-mobile" ng-click="menuToggle()">
+							<i class="fa fa-bars"></i>
+						</div>
+
 
 						<div class="notifications" ng-show="account.user.id_admin">
 
@@ -433,18 +438,18 @@
 								<p>{{flash.getMessage()}}</p>
 							</div>
 
-							<div class="hide-mobile notification notification-call" ng-class="{'blink' : callStatus == 'connecting'}" ng-click="twilio.hangup()" ng-if="callStatus == 'connecting' || callStatus == 'connected'">
+							<div class="clickable hide-mobile notification notification-call" ng-class="{'blink' : callStatus == 'connecting'}" ng-click="twilio.hangup()" ng-if="callStatus == 'connecting' || callStatus == 'connected'">
 								<i class="fa fa-phone"></i>
 							</div>
-							<div class="notification notification-orders" ng-click="navigation.link('/drivers/orders')">
+							<div class="clickable notification notification-orders" ng-click="navigation.link('/drivers/orders')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
 							</div>
-							<div class="hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="navigation.menu('right')">
+							<div class="clickable hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="navigation.menu('right')">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
-							<div class="hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="supportToggle()">
+							<div class="clickable hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="supportToggle()">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>

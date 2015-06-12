@@ -530,11 +530,29 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.server = App.server;
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
+	$rootScope.twilio = TwilioService;
+	
 	$rootScope.supportToggled = false;
 	$rootScope.supportToggle = function() {
 		$rootScope.supportToggled = !$rootScope.supportToggled;
 	};
-	$rootScope.twilio = TwilioService;
+	Mousetrap.bind('alt+s', function() {
+		$rootScope.$apply(function() {
+			$rootScope.supportToggle();
+		});
+		return false;
+	});
+	
+	$rootScope.menuToggled = true;
+	$rootScope.menuToggle = function() {
+		$rootScope.menuToggled = !$rootScope.menuToggled;
+	};
+	Mousetrap.bind('alt+m', function() {
+		$rootScope.$apply(function() {
+			$rootScope.menuToggle();
+		});
+		return false;
+	});
 
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){

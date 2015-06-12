@@ -688,7 +688,7 @@ p {
 		top: 0;
 		position: absolute;
 	}
-	.snap-content-inner, .snap-drawer-right {
+	.snap-content-inner, .snap-drawer-right, .snap-drawer-left, .left-menu-fix {
 		-webkit-transform: translateX(0) !important;
 
 		-webkit-transition: margin cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
@@ -700,11 +700,26 @@ p {
 	.snap-content-inner {
 		margin-left: 233px;
 		margin-right: 13px;
-
+	}
+	
+	.support-toggled .snap-drawer-right {
+		margin-right: 0;
 	}
 	.support-toggled .snap-content-inner {
 		margin-right: 300px;
 	}
+
+	.menu-toggled .snap-drawer-left {
+		margin-left: -288px;
+	}
+	.menu-toggled .snap-content-inner {
+		margin-left: 13px;
+	}
+	.menu-toggled .left-menu-fix {
+		margin-left: -288px;
+	}
+
+
 	.left-menu-fix {
 		background: $sideBg;
 		position: fixed;
@@ -725,10 +740,7 @@ p {
 		width: 222px;
 		padding-top: 52px;
 	}
-	.support-toggled .snap-drawer-right {
-		margin-right: 0;
 
-	}
 	.nav-top {
 		background: #22242a;
 		border-bottom: none;
@@ -739,10 +751,19 @@ p {
 		width: 205px;
 	}
 	.menu {
-		display: none;
+		background: none;
+		float: left;
+		margin: 8px 0 0 20px;
+		color: #666;
+		font-size: 18px;
+		-webkit-transition: color cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
+	}
+	.menu:hover {
+		color: #fff;
 	}
 	.nav-top .logo {
 		margin-left: 10px;
+		line-height: .7em;
 	}
 	.logo {
 		text-align: left;
@@ -3911,12 +3932,12 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 @media screen and (min-width: $desktopWidth) {
 	.hide-desktop {
-		display: none;
+		display: none !important;
 	}
 }
 @media screen and (max-width: $mobileWidth) {
 	.hide-mobile {
-		display: none;
+		display: none !important;
 	}
 }
 
