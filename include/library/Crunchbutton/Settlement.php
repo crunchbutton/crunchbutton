@@ -482,7 +482,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										$pay[ 'delivery_fee_collected' ] ) ;
 		// if the driver is paid by order and the order was paid in cash we owe nothing
 		if(  $pay[ 'hourly' ] && $pay[ 'cash' ] ){
-			$total_due = 0;
+			// $total_due = 0;
 		}
 		return $total_due;
 	}
