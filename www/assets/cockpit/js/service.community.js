@@ -3,9 +3,10 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 	var service = {};
 
 	// Create a private resource 'community'
-	var communities = $resource( App.service + 'community/:action', { action: '@action' }, {
+	var communities = $resource( App.service + 'community/:action/:alias', { action: '@action', alias: '@alias' }, {
 				// list methods
 				'listSimple' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true },
+				'by_alias' : { 'method': 'GET', params : { 'action' : 'by-alias' } },
 			}
 		);
 
@@ -106,6 +107,14 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			callback( data );
 		} );
 	}
+
+	service.by_alias = function( alias, callback ){
+		communities.by_alias( { alias: alias }, function( data ){
+			callback( data );
+		} );
+	}
+
+
 
 	service.yesNo = function(){
 		var methods = [];

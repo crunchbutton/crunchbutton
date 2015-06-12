@@ -3952,6 +3952,14 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .listview-bold {
 	font-weight: 600;
 }
+.listview-input-number {
+	@include box-border-radius();
+	font-size: 1em;
+	color: #000;
+	border:1px solid #CCC;
+	width: 6em !important;
+	padding: .2em .4em .2em .4em;
+}
 
 .tag {
 	@include box-border-radius();

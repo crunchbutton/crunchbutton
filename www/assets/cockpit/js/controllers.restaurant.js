@@ -29,12 +29,16 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/restaurants.html',
 			reloadOnSearch: false
 		})
+		.when('/restaurants/weight-adjustment', {
+			action: 'restaurant',
+			controller: 'RestaurantWeightAdjustmentCtrl',
+			templateUrl: 'assets/view/restaurants-weight-adjustment.html'
+		})
 		.when('/restaurant/:id', {
 			action: 'restaurant',
 			controller: 'RestaurantCtrl',
 			templateUrl: 'assets/view/restaurants-restaurant.html'
 		})
-
 		.when('/restaurant/order/new', {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderNew',
@@ -57,6 +61,74 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
+NGApp.controller( 'RestaurantWeightAdjustmentCtrl', function ($rootScope, $scope, $routeParams, RestaurantService, CommunityService, PositionService ) {
+
+	$scope.address = '';
+
+	$scope.position = {};
+
+	$scope.search = function(){
+
+		if( $scope.address ){
+			$scope.loading = true;
+			$scope.restaurants = null;
+
+			CommunityService.by_alias( $scope.address, function( community ){
+				if( community.id_community ){
+					console.log('community',community);
+					$scope.position.lat = community.loc_lat;
+					$scope.position.lon = community.loc_lon;
+					load();
+				} else {
+					// search by address
+					PositionService.find( $scope.address,
+					function( address ){
+						var pos = PositionService.getPosition( address );
+						if( pos ){
+							$scope.position.lat = pos.lat;
+							$scope.position.lon = pos.lon;
+							load();
+						} else {
+							App.alert( 'Address not found!' );
+							$scope.loading = false;
+						}
+					} );
+				}
+			} );
+
+		} else {
+			App.alert( 'Type an address or an alias!' );
+		}
+
+	}
+
+	$scope.save_weight = function( restaurant ){
+		if( angular.isNumber( restaurant.weight_adj ) ){
+			RestaurantService.save_weight( restaurant, function( json ){
+				if( json.error ){
+					App.alert( 'Error saving weight: ' + json.error );
+				} else {
+					load();
+				}
+			} );
+		} else {
+			App.alert( 'Please type a valid number!' );
+		}
+	}
+
+	var load = function(){
+		$scope.loading = true;
+		RestaurantService.weight_adjustment( $scope.position, function( data ){
+			$scope.restaurants = data;
+			if( !$scope.restaurants.length ){
+				$scope.restaurants = null;
+				App.alert( 'No restaurant at this address!' );
+			}
+			$scope.loading = false;
+		} );
+	}
+
+} );
 
 NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $routeParams, RestaurantService ) {
 
@@ -94,16 +166,16 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 					}
 
 					$scope.restaurant.payment_type.has_balanced_bank = ( $scope.restaurant.payment_type.balanced_bank && !$scope.restaurant.payment_type.stripe_id );
-					
+
 					// prepopulate from the data we already have
 					if ($scope.restaurant.stripeAccount.formStripe) {
 						$scope.restaurant.payment_type.summary_email = $scope.restaurant.payment_type.summary_email || $scope.restaurant.email;
 						$scope.restaurant.payment_type.legal_name_payment = $scope.restaurant.payment_type.legal_name_payment || $scope.restaurant.name;
 						//$scope.restaurant.stripeAccount.account_type = 'corporate';
-						
+
 						var geocoder = new google.maps.Geocoder();
 						geocoder.geocode({address:$scope.restaurant.address}, function(results, status) {
-							
+
 							if (status == google.maps.GeocoderStatus.OK) {
 								var parts = [];
 								for (var x in results[0].address_components) {
@@ -165,7 +237,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		$scope.isSavingStripeAccount = true;
 
 		RestaurantService.payment_method_save( $scope.restaurant.payment_type, function( d ){
-			
+
 			var saveInfo = function(token) {
 				var params = {
 					'id_restaurant': $scope.restaurant.id_restaurant,
@@ -174,7 +246,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 					'account_type': $scope.restaurant.stripeAccount.account_type,
 					'email': $scope.restaurant.payment_type.summary_email
 				};
-				
+
 				if (token) {
 					params.token = params;
 				}
@@ -191,7 +263,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 					$scope.isSavingStripeAccount = false;
 				} );
 			};
-			
+
 			if ($scope.restaurant.stripeAccount.routing_number && $scope.restaurant.stripeAccount.account_number) {
 
 				Stripe.bankAccount.createToken( {
@@ -211,7 +283,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 			} else {
 				saveInfo(null);
 			}
-			
+
 
 		} );
 	}

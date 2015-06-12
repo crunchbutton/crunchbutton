@@ -10,6 +10,8 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			'paid_list' : { 'method': 'GET', params : { 'action' : 'paid-list' }, isArray: true },
 			'order_placement' : { 'method': 'GET', params : { 'action' : 'order-placement' } },
 			'eta' : { 'method': 'GET', params : { 'action' : 'eta' }, isArray: true },
+			'weight_adjustment' : { 'method': 'GET', params : { 'action' : 'weight-adjustment' }, isArray: true },
+			'save_weight' : { 'method': 'POSt', params : { 'action' : 'save-weight' } },
 		}
 	);
 
@@ -38,6 +40,18 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
+	}
+
+	service.weight_adjustment = function( params, callback ){
+		restaurants.weight_adjustment( params,  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.save_weight = function( params, callback ){
+		restaurants.save_weight( params,  function( data ){
+			callback( data );
+		} );
 	}
 
 
