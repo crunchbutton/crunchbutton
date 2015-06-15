@@ -260,7 +260,7 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 	}
 
 	service.drivers.view_summary = function( callback ){
-		var url = App.service + 'settlement/drivers/view-summary/' + $routeParams.id;
+		var url = App.service + 'settlement/summary/' + $routeParams.id;
 		$http( { method: 'POST', url: url } ).
 			success( function( data, status, headers, config ) {
 				callback( data );
