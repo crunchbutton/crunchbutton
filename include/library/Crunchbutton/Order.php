@@ -537,6 +537,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$user->email = $params['email'];;
 		$user->phone = $this->phone;
 
+		$phone = Crunchbutton_Phone::byPhone( $this->phone );
+		$user->id_phone = $phone->id_phone;
+
 		if ($this->delivery_type == 'delivery') {
 			$user->address = $this->address;
 		}
@@ -645,6 +648,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->id_community = $this->restaurant()->community()->id_community;
 
 		$this->geomatched = ( intval( $params['geomatched'] ) ? 1 : 0 );
+
+		$phone = Crunchbutton_Phone::byPhone( $this->phone );
+		$this->id_phone = $phone->id_phone;
 
 		$this->save();
 
@@ -2501,7 +2507,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function totalOrdersByPhone( $phone ){
 		$phone = trim( str_replace( '-', '', str_replace( ' ', '', $phone ) ) );
-		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE phone = ?';
+		$query = 'SELECT COUNT(*) AS total FROM `order` INNER JOIN phone using(id_phone) WHERE phone.phone = ?';
 		$row = Cana::db()->get( $query, [$phone])->get(0);
 		if( intval( $row->total ) ){
 			return intval( $row->total );
@@ -3069,7 +3075,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function save() {
+
 		$new = $this->id_order ? false : true;
+
+		if( !$this->id_phone ){
+			$phone = Phone::byPhone( $this->phone );
+			$this->id_phone = $phone->id_phone;
+		}
 
 		parent::save();
 

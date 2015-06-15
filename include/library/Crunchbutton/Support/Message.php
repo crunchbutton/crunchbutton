@@ -26,6 +26,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		$this->media = $this->media ? json_encode($this->media) : null;
 
+		if( !$this->id_phone ){
+			$phone = Phone::byPhone( $this->phone );
+			$this->id_phone = $phone->id_phone;
+		}
+
 		parent::save();
 
 		if ($new) {

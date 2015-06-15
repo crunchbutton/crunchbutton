@@ -691,6 +691,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		$this->phone = Phone::clean($this->phone);
 
+		if( !$this->id_phone ){
+			$phone = Phone::byPhone( $this->phone );
+			$this->id_phone = $phone->id_phone;
+		}
+
 		parent::save();
 		if($initial_save) {
 			// Crunchbutton_Hipchat_Notification::NewSupport($this);
@@ -1018,6 +1023,5 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 		return $out;
 	}
-
 
 }
