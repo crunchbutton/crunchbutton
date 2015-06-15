@@ -1,7 +1,7 @@
 <?php
 
 class Crunchbutton_Phone extends Cana_Table {
-	
+
 	const DAYS_THRESHOLD = '2';
 
 	public function __construct($id = null) {
@@ -11,11 +11,11 @@ class Crunchbutton_Phone extends Cana_Table {
 			->idVar('id_phone')
 			->load($id);
 	}
-	
+
 	public static function numbers() {
 		return explode(',',c::config()->site->config('twilio-number')->value);
 	}
-	
+
 	// return a number specific from number based on our numbers in the last 30 days
 	public function from() {
 		$phone = Phone::q('
@@ -28,9 +28,9 @@ class Crunchbutton_Phone extends Cana_Table {
 				and phone_log.id_phone_to="'.$this->id_phone.'"
 				and datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 				group by phone.id_phone
-			
+
 			union
-			
+
 			select phone.*, phone_log.date
 			from phone_log
 			left join phone on phone.id_phone=phone_log.id_phone_to
@@ -40,7 +40,7 @@ class Crunchbutton_Phone extends Cana_Table {
 				and phone_log.id_phone_from="'.$this->id_phone.'"
 				and datediff(now(), date) < '.self::DAYS_THRESHOLD.'
 				group by phone.id_phone
-				
+
 			order by date desc
 		');
 
@@ -53,10 +53,10 @@ class Crunchbutton_Phone extends Cana_Table {
 
 		return $use ? $use : self::least();
 	}
-	
+
 	// get the phone number that was used the least in the last 30 days
 	public static function least() {
-		
+
 		$numbers = self::numbers();
 		$use = null;
 		$keys = [];
@@ -67,7 +67,7 @@ class Crunchbutton_Phone extends Cana_Table {
 			$phones .= $phones ? ' OR '.$q : $q;
 			$keys[] = $number;
 		}
-		
+
 		$query = '
 			select count(*) c, phone_log.id_phone_from, phone.phone from phone_log
 			left join phone on phone.id_phone=phone_log.id_phone_from
@@ -80,13 +80,13 @@ class Crunchbutton_Phone extends Cana_Table {
 		while ($c = $r->fetch()) {
 			$logs[$c->phone] = $c->c;
 		}
-		
+
 		asort($logs);
 		$use = key($logs);
 
 		return $use ? $use : self::clean(c::config()->phone->support);
 	}
-	
+
 	public static function clean($phone) {
 		$phone =  preg_replace('/[^0-9]/','', str_replace('+1', '', $phone));
 
@@ -97,20 +97,20 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (strlen($phone) != 10) {
 			return false;
 		}
-		
+
 		return $phone;
 	}
-	
+
 	public static function dirty($phone) {
 		$phone = self::clean($phone);
 		return $phone ? ('+1'.$phone) : false;
 	}
-	
+
 	public function save() {
 		$this->phone = self::clean($this->phone);
 		return parent::save();
 	}
-	
+
 	public static function name($mixed, $returnId = false) {
 		if (is_object($mixed)) {
 			if ($mixed->phone) {
@@ -122,22 +122,22 @@ class Crunchbutton_Phone extends Cana_Table {
 		} else {
 			$phone = $mixed;
 		}
-		
+
 		$phone = self::clean($phone);
 
 		if (!$name && $phone) {
-	
+
 			$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
 			$user = Crunchbutton_Admin::q('select * from admin where phone=?', [$phone]);
 
 			if (!$user->id_admin) {
 				$user = Crunchbutton_Admin::q('select * from admin where phone=?',[$phoneFormat]);
 			}
-			
+
 			if (!$user->id_admin) {
 				$user = Crunchbutton_User::q('select * from `user` where phone=?',[$phone]);
 			}
-			
+
 			if ($user->id_admin || $user->id_user) {
 				$name = $user->name;
 			}
@@ -146,7 +146,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (!$name) {
 			$name = $phone;
 		}
-		
+
 		if ($returnId) {
 			return [
 				'name' => $name,
@@ -158,7 +158,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		}
 
 	}
-	
+
 	public static function byPhone($phone) {
 		$phone = self::clean($phone);
 
@@ -174,4 +174,80 @@ class Crunchbutton_Phone extends Cana_Table {
 		}
 		return $obj;
 	}
+
+	// create phone lookup table #4169
+	public function updatePhoneList(){
+
+		// insert new phones
+		// support
+		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		// support_message
+		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support_message t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		// user
+		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM user t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		// order
+		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `order` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		// admin
+		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM admin t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+
+		// update tables
+		// support
+		c::db()->query( "UPDATE support t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		// support_message
+		c::db()->query( "UPDATE support_message t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		// user
+		c::db()->query( "UPDATE user t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		// order
+		c::db()->query( "UPDATE `order` t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		// admin
+		c::db()->query( "UPDATE admin t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+
+		// now uses php to get the null ones because the phone is not cleaned
+		$users = User::q( 'SELECT * FROM user WHERE id_phone IS NULL AND phone IS NOT NULL' );
+		foreach( $users as $user ){
+			$phone = Phone::byPhone( $user->phone );
+			if( $phone->id_phone ){
+				$user->id_phone = $phone->id_phone;
+				$user->save();
+			}
+		}
+
+		$supports = Support::q( 'SELECT * FROM support WHERE id_phone IS NULL AND phone IS NOT NULL' );
+		foreach( $supports as $support ){
+			$phone = Phone::byPhone( $support->phone );
+			if( $phone->id_phone ){
+				$support->id_phone = $phone->id_phone;
+				$support->save();
+			}
+		}
+
+		$admins = Admin::q( 'SELECT * FROM admin WHERE id_phone IS NULL AND phone IS NOT NULL' );
+		foreach( $admins as $admin ){
+			$phone = Phone::byPhone( $admin->phone );
+			if( $phone->id_phone ){
+				$admin->id_phone = $phone->id_phone;
+				$admin->save();
+			}
+		}
+
+		$support_messages = Support_Message::q( 'SELECT * FROM support_message WHERE id_phone IS NULL AND phone IS NOT NULL' );
+		foreach( $support_messages as $support_message ){
+			$phone = Phone::byPhone( $support_message->phone );
+			if( $phone->id_phone ){
+				$support_message->id_phone = $phone->id_phone;
+				$support_message->save();
+			}
+		}
+
+		$orders = Order::q( 'SELECT * FROM `order` WHERE id_phone IS NULL AND phone IS NOT NULL' );
+		foreach( $orders as $order ){
+			$phone = Phone::byPhone( $order->phone );
+			if( $phone->id_phone ){
+				$order->id_phone = $phone->id_phone;
+				$order->save();
+			}
+		}
+
+	}
+
 }

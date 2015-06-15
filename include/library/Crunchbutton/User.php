@@ -215,7 +215,7 @@ class Crunchbutton_User extends Cana_Table {
 			foreach ($this->presets() as $preset) {
 				$out['presets'][$preset->id_restaurant] = $preset->exports();
 			}
-			
+
 			// Get user payment type
 			$payment_type = $this->payment_type();
 			if( $payment_type ){
@@ -224,18 +224,18 @@ class Crunchbutton_User extends Cana_Table {
 				$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
 				$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
 			}
-			
+
 
 			$out['tipper'] = $this->tipper();
 
 			$out[ 'points' ] = Crunchbutton_Credit::exportPoints();
 		}
 
-		
+
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();
 
-		
+
 		if( $out['card'] ){
 			$out['card_ending'] = substr( $out['card'], -4, 4 );
 		}
@@ -246,7 +246,7 @@ class Crunchbutton_User extends Cana_Table {
 
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
-		
+
 
 		$out['image'] = $this->image(false);
 
@@ -370,13 +370,13 @@ class Crunchbutton_User extends Cana_Table {
 	public static function uuid($uuid) {
 		return self::q('select * from `user` where uuid="'.$uuid.'"')->get(0);
 	}
-	
+
 	// should be removed after we move to stripe
 	public function tempConvertBalancedToStripe() {
 		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
 			return false;
 		}
-		
+
 		$status = true;
 
 		/**
@@ -399,10 +399,10 @@ class Crunchbutton_User extends Cana_Table {
 				and p.active = true
 			order by p.id_user_payment_type desc
 		', [$this->id_user]);
-		
+
 		// we dont have a stripe account for this user
 		if (!$this->stripe_id) {
-			
+
 		}
 
 
@@ -444,7 +444,7 @@ class Crunchbutton_User extends Cana_Table {
 			if ($account) {
 				$stripeAccountId = $account->meta->{'stripe.customer_id'};
 			}
-			
+
 			if ($this->stripe_id && $stripeAccountId && $this->stripe_id != $stripeAccountId) {
 				die('customer id from balanced ('.$stripeAccountId.') does not match the one in the db ('.$this->stripe_id.') for this payment method');
 			}
@@ -471,10 +471,10 @@ class Crunchbutton_User extends Cana_Table {
 					$account->save();
 				}
 			}
-			
+
 			if (strpos($paymentType->stripe_id, 'tok_') === 0) {
 				// the card is only a token. we need the real card
-				
+
 				$cards = \Stripe\Customer::retrieve($stripeAccountId)->sources->all(['object' => 'card'])->data;
 				$dbCards = Crunchbutton_User_Payment_Type::q('
 					select * from user_payment_type
@@ -487,14 +487,14 @@ class Crunchbutton_User extends Cana_Table {
 					$usedCards[] = $card->stripe_id;
 				}
 				print_r($usedCards);
-				
+
 				foreach ($cards as $card) {
 					echo 'checking card: '.$card->id."\n";
 					if (!in_array($card->id, $usedCards)) {
 						$paymentType->stripe_id = $stripeCardId = $card->id;
 					}
 				}
-				
+
 				echo 'new stripe id is: '.$paymentType->stripe_id."\n";
 			}
 
@@ -508,6 +508,14 @@ class Crunchbutton_User extends Cana_Table {
 		echo "\ndone";
 		return $status;
 
+	}
+
+	public function save(){
+		if( !$this->id_phone ){
+			$phone = Phone::byPhone( $this->phone );
+			$this->id_phone = $phone->id_phone;
+		}
+		parent::save();
 	}
 
 	public function __construct($id = null) {
