@@ -41,8 +41,8 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 			case 'status':
 
-				header('HTTP/1.1 301 Moved Permanently');
-				header('Location: https://cockpit.la/drivers/onboarding');
+				// header('HTTP/1.1 301 Moved Permanently');
+				// header('Location: https://cockpit.la/drivers/onboarding');
 
 				if ( c::admin()->permission()->check( [ 'global' ] ) ){
 					switch ( c::getPagePiece( 3 ) ) {
