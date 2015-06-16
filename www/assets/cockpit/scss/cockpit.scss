@@ -756,9 +756,11 @@ p {
 		margin: 8px 0 0 20px;
 		color: #666;
 		font-size: 18px;
+	}
+	.menu, .notifications .notification {
 		-webkit-transition: color cubic-bezier(0.250, 0.460, 0.450, 0.940) .2s;
 	}
-	.menu:hover {
+	.menu:hover, .notifications .notification:hover {
 		color: #fff;
 	}
 	.nav-top .logo {
