@@ -971,15 +971,18 @@ App.init = function(config) {
 	}
 	*/
 
-	// setup for system links
+	
 	if (App.isPhoneGap) {
+		// setup for system links
 		$(document).on('click', 'a[target=_system], a[target=_blank]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
+			console.debug('Opening link', e.currentTarget.href, e.target.href);
 			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
 			return false;
 		});
 
+		// tap copy bug hax
 		document.body.oncopy = function() {
 			if (!parent.navigator || !parent.navigator.splashscreen) {
 				return;
