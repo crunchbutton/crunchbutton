@@ -170,15 +170,15 @@
 						</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Total Number Activations</div>
+						<div class="field-key">Activations</div>
 						<div class="field-value">
-							{{staff.referral_total}}
+							{{staff.referral_total || 0}}
 						</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Total Number Activations in Past Week</div>
+						<div class="field-key">Activations in past week</div>
 						<div class="field-value">
-							{{staff.referral_total_last_week}}
+							{{staff.referral_total_last_week || 0}}
 						</div>
 					</div>
 				</div>
