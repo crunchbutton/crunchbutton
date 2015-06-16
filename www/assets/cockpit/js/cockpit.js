@@ -973,7 +973,7 @@ App.init = function(config) {
 
 	// setup for system links
 	if (App.isPhoneGap) {
-		$(document).on('click', 'a[target=_system]', function(e) {
+		$(document).on('click', 'a[target=_system], a[target=_blank]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 			parent.window.open(e.currentTarget.href || e.target.href, '_system', 'location=yes');
