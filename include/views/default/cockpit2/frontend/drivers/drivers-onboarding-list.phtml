@@ -26,7 +26,7 @@
 			<tr>
 				<th>Name</th>
 				<th>Community</th>
-				<th>Schedule Status</th>
+				<th>Schedule</th>
 				<th>Note</th>
 				<th nowrap="nowrap" class="tb-center">
 					Send Text<br>Message
@@ -51,10 +51,11 @@
 					</span>
 				</td>
 				<td nowrap="nowrap">
-					<span class="tag tag-green" ng-if="driver.shift_status.completed == 1">Completed</span><span class="tag tag-red" ng-if="!driver.shift_status.completed == 1">Not completed</span><br>
+					<span class="tag tag-green" ng-if="driver.shift_status.completed == 1">Complete</span>
+					<span class="tag tag-red" ng-if="!driver.shift_status.completed == 1">Incomplete</span><br>
 					<span class="listview-smaller">
-						Wants to work: <strong>{{driver.shift_status.shifts}}</strong><br>
-						Is assigned to: <strong>{{driver.total_shifts}}</strong>
+						Want: <strong>{{driver.shift_status.shifts}}</strong><br>
+						Assigned: <strong>{{driver.total_shifts}}</strong>
 					</span>
 				</td>
 				<td>
