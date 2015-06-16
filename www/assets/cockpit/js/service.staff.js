@@ -32,6 +32,10 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			method: 'GET',
 			isArray:true
 		},
+		'activations' : {
+			url: App.service + 'staff/activations',
+			method: 'GET'
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -77,6 +81,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.phones = function( callback ){
 		staff.phones( {}, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.activations = function( callback ){
+		staff.activations( {}, function( data ){
 			callback( data );
 		} );
 	}

@@ -70,6 +70,8 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 			$this->_error( 'enter a valid phone' );
 		}
 
+		$staff->dob = $this->request()[ 'dob' ];
+
 		$staff->name = $this->request()[ 'name' ];
 		$staff->phone = $phone;
 		$staff->txt = $phone;

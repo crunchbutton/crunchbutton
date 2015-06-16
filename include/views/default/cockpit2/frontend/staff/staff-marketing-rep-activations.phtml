@@ -1,0 +1,56 @@
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-trophy"></i><span>Your Activations</span></h1>
+
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-boxes" ng-show="!loading">
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Info</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Total activations</div>
+						<div class="field-value">{{activations.total}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Total activations paid</div>
+						<div class="field-value">{{activations.paid}}</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="support-box-wrap box-content2"  ng-if="activations.not_paid_activations.length">
+
+				<div class="support-box-wrap-header">
+					<h1>Unpaid activations</h1>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color">
+					<div class="field-container">
+						<div class="field-row" class="no-box-content-color" ng-repeat="invite in activations.not_paid_activations">
+							<div class="field-key">{{invite.customer}}</div>
+							<div class="field-value">{{invite.date}}</div>
+						</div>
+					</div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+

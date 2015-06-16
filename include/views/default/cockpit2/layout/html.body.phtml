@@ -66,7 +66,25 @@
 					</table>
 				</a>
 
-                <a href="/drivers/feedback" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
+				<a href="/staff/marketing-rep/request-materials" class="menu-link" ng-if="account.isMarketingRep && menu.toggle=='marketing-rep'" ng-class="{'nav-active': (navigation.page == 'marketing-rep-request-materials')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-cubes"></i></td>
+							<td class="side-menu-label">Marketing Materials</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<a href="/staff/marketing-rep/activations" class="menu-link" ng-if="account.isMarketingRep && menu.toggle=='marketing-rep'" ng-class="{'nav-active': (navigation.page == 'marketing-rep-activations')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-trophy"></i></td>
+							<td class="side-menu-label">Your Activations</a></td>
+						</tr>
+					</table>
+				</a>
+
+        <a href="/drivers/feedback" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-quote-left"></i></td>
@@ -426,7 +444,7 @@
 
 						<div title="Menu" class="clickable menu side hide-before-init hide-desktop" ng-click="navigation.menu()" ng-hide="hasBack"></div>
 						<div title="Back" class="clickable nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
-						
+
 						<div title="Menu" class="clickable menu side hide-before-init hide-mobile" ng-click="menuToggle()">
 							<i class="fa fa-bars"></i>
 						</div>
