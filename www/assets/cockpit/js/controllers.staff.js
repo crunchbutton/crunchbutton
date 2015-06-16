@@ -6,11 +6,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
-		.when('/staff/marketing/new', {
-			action: 'staff',
-			controller: 'StaffMarketingFormCtrl',
-			templateUrl: 'assets/view/staff-marketing-form.html'
-		})
 		.when('/staff/marketing/:id', {
 			action: 'staff',
 			controller: 'StaffMarketingFormCtrl',
@@ -41,6 +36,16 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffMarketingFaqCtrl',
 			templateUrl: 'assets/view/staff-marketing-rep-help.html'
 		})
+		.when('/staff/marketing-rep/request-materials', {
+			action: 'marketing-rep-request-materials',
+			controller: 'StaffMarketingRequestMaterialsCtrl',
+			templateUrl: 'assets/view/staff-marketing-rep-request-materials.html'
+		})
+		.when('/staff/marketing-rep/activations', {
+			action: 'marketing-rep-activations',
+			controller: 'StaffMarketingActivationsCtrl',
+			templateUrl: 'assets/view/staff-marketing-rep-activations.html'
+		})
 		.when('/staff/marketing-rep/docs', {
 			action: 'marketing-rep-docs',
 			controller: 'StaffMarketingDocsCtrl',
@@ -54,7 +59,30 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 
-NGApp.controller('StaffMarketingFaqCtrl',function(){});
+NGApp.controller('StaffMarketingFaqCtrl',function( $scope ){
+
+	$scope.$watch( 'account', function( newValue, oldValue, scope ) {
+		if( $scope.account.user ){
+			$scope.referral_customer_credit = $scope.account.user.referral_customer_credit;
+		}
+	}, true);
+});
+
+
+NGApp.controller( 'StaffMarketingRequestMaterialsCtrl', function(  $scope, StaffService ){});
+
+
+
+NGApp.controller('StaffMarketingActivationsCtrl',function( $scope, StaffService ){
+
+	$scope.loading = true;
+
+	StaffService.activations( function( json ){
+		$scope.loading = false;
+		$scope.activations = json;
+	} );
+});
+
 
 NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $location, StaffService, MapService) {
 
@@ -310,7 +338,7 @@ NGApp.controller( 'StaffMarketingDocsCtrl', function ( $scope, $routeParams, $fi
 } );
 
 
-NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, StaffService, CommunityService ) {
+NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, StaffService, CommunityService, CustomerRewardService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
@@ -349,7 +377,6 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 		$scope.action = ( $routeParams.id == 'new' ) ? 'new' : 'edit';
 
 		if( $scope.action == 'edit' ){
-
 			StaffService.marketing.load( $routeParams.id, function( staff ){
 				if( !staff.id_admin ){
 					$scope.navigation.link( '/staff/marketing/new' );
@@ -357,6 +384,12 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 				}
 				$scope.staff = staff;
 				docs();
+			} );
+		} else {
+
+			CustomerRewardService.reward.config.load( function( d ){
+				$scope.staff = { 	referral_admin_credit: d[ CustomerRewardService.constants.key_admin_refer_user_amt ],
+													referral_customer_credit: d[ CustomerRewardService.constants.key_customer_get_referred_amt ] };
 			} );
 		}
 
@@ -376,7 +409,7 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 			return;
 		}
 
-		if( $scope.form.$invalid ){
+		if( $scope.form.$invalid || !$scope.staff.id_community ){
 			$scope.submitted = true;
 			$scope.isSaving = false;
 			return;
