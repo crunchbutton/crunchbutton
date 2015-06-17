@@ -43,7 +43,7 @@ class Controller_api_credit_log extends Crunchbutton_Controller_RestAccount {
 
 		$out = [];
 
-		$limit = $this->request()['limit'] ? $this->request()['limit'] : 5;
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
 		$page = $this->request()['page'] ? intval( $this->request()['page'] ) : 1;
 
 		$keys = [ $this->user()->id_user, Crunchbutton_Credit::CREDIT_TYPE_CASH ];
@@ -121,6 +121,9 @@ class Controller_api_credit_log extends Crunchbutton_Controller_RestAccount {
 
 	private function _status(){
 		$status = Crunchbutton_Credit::creditsByIdUser( $this->user()->id_user );
+		$status->credit = floatval( $status->credit );
+		$status->credit_left = floatval( $status->credit_left );
+		$status->debit = $status->debit * -1;
 		echo json_encode( $status );exit;
 	}
 
