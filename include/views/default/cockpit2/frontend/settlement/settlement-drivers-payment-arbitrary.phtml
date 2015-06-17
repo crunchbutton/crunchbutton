@@ -13,7 +13,7 @@
 				<div class="label">Select a driver:</div>
 				<div class="input">
 
-					<ui-select ng-model="payment.id_driver" theme="selectize" ng-disabled="disabled" style="width: 300px;" title="Select a driver">
+					<ui-select ng-model="payment.id_driver" theme="select2" ng-disabled="disabled" style="width: 90%;" title="Select a driver">
 						<ui-select-match placeholder="Select a driver">{{$select.selected.name}}</ui-select-match>
 						<ui-select-choices repeat="driver.id_admin as driver in drivers | propsFilter: {name: $select.search}">
 							{{driver.name}}
