@@ -1,0 +1,19 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-smile-o"></i>Customer Credits</h1>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-lock"></i>&nbsp;&nbsp;<a href="/customer/{{customer.id_user}}">{{customer.name}}</a></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-credit.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+</div>

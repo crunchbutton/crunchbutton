@@ -47,7 +47,12 @@
 				<div class="support-box-widget-label">Orders from this customer</div>
 				<div class="support-box-widget-content">{{customer.orders_from_this_phone}}</div>
 			</a>
+
 		</div>
+
+		<div class="divider"></div>
+
+		<br>
 
 		<div class="support-box-wrap box-content2" style="-webkit-column-width: 80%;">
 			<div class="support-box-wrap-header">
@@ -59,17 +64,38 @@
 				</div>
 				<div class="divider"></div>
 			</div>
-			<div class="support-widget-box-wrap">
-				<ng-include src="'assets/view/listview-credit.html'"></ng-include>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Total Credit</div>
+						<div class="field-value" positive-or-negative-color="{{credits.credit}}">${{credits.credit}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Total Debits</div>
+						<div class="field-value" positive-or-negative-color="{{credits.debit}}">${{credits.debit}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Credit Left</div>
+						<div class="field-value" positive-or-negative-color="{{credits.credit_left}}">${{credits.credit_left}}</div>
+					</div>
+					<div class="field-row" ng-if="credits.credit">
+						<div class="field-key"></div>
+						<div class="field-value">
+							<a href="/customer/credit/{{customer.id_user}}">View credits log</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
 	</div>
 
 	<br><br>
-	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
-	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
-	<ng-include src="'assets/view/listview-orders.html'"></ng-include>
+
+	<ui-tabs ng-if="!loading">
+		<ui-tab title="Orders" icon="car" default="true" id="orders" path="assets/view/listview-orders.html" method="orders"></ui-tab>
+	</ui-tabs>
 
 </div>
 

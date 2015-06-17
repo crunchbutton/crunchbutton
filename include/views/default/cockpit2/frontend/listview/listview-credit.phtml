@@ -1,14 +1,14 @@
-<div class="box-content-table" ng-show="credits.count">
+<div class="box-content-table" ng-show="credits">
 	<table class="tb-zebra">
 		<tr>
-			<th class="tb-small tb-center">Date</th>
+			<th class="tb-small">Date</th>
 			<th class="tb-small tb-center">Type</th>
 			<th class="tb-small tb-center">Amt</th>
-			<th class="tb-small tb-center">Note</th>
+			<th class="tb-small">Note</th>
 			<th class="tb-small tb-center">Code</th>
 			<th class="tb-small tb-center"></th>
 		</tr>
-		<tr ng-repeat="c in credits.results">
+		<tr ng-repeat="c in credits track by $index" ng-attr-tabindex="{{$index+1}}">
 			<td>
 				<span class="listview-smaller">{{c.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</span>
 			</td>
@@ -16,27 +16,16 @@
 				<span class="tag tag-red" ng-if="c.type == 'Debit'">Debit</span>
 				<span class="tag tag-blue" ng-if="c.type == 'Credit'">Credit</span>
 			</td>
-			<td class="tb-v-center">
+			<td nowrap class="tb-center tb-v-center">
 				<span ng-if="c.value" positive-or-negative-color="{{c.value}}">${{c.value | formatPrice}}</span>
 				<span ng-if="c.left" positive-or-negative-color="{{c.left}}"> / ${{c.left | formatPrice}}</span>
 			</td>
 			<td><span class="listview-smaller">{{c.note}}</span></td>
-			<td>{{c.promo.code}}</td>
+			<td nowrap class="tb-center tb-v-center">{{c.promo.code}}</td>
 
 			<td nowrap class="tb-v-center">
-				<a ng-if="c.id_order" href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Order</button></a>
+				<a ng-if="c.id_order" href="/order/{{c.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;Order</button></a>
 			</td>
 		</tr>
 	</table>
-	<br>
-	<table class="tb-pagination right">
-		<tbody>
-			<tr>
-				<td>Showing {{credits.results.length}} of {{credits.count}}</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<div ng-show="!credits.count">
-	<div class="content-padding">&nbsp;No credits</div>
 </div>
