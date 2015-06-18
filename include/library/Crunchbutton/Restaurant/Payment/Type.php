@@ -59,6 +59,13 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$b->d = str_split($b->d, 2);
 
 		$stripe = $this->getAndMakeStripe();
+
+		if ($stripe->legal_entity->verification->status == 'verified') {
+			$this->verified = true;
+			$this->save();
+			return true;
+		}
+
 		$stripe->legal_entity->ssn_last_4 = $b->s;
 		$stripe->legal_entity->dob = [
 			'day' => $b->d[1],
@@ -68,6 +75,8 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		$stripe->legal_entity->first_name = 'Judd';
 		$stripe->legal_entity->last_name = 'Rosenblatt';
 		$res = $stripe->save();
+
+		return $res;
 	}
 	
 	// if there is not already a stripe account, it will make one
