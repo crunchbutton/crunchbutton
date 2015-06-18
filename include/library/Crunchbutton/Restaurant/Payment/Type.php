@@ -52,18 +52,24 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 	}
 	
 	// uses company reps info
-	public function setStripeRep() {
+	public function setStripeRep($so = null) {
 		$r = 'everythingisawesome';
 		$a = c::config()->site->config('restaurant-awesome')->value;
 		$b = json_decode(substr(hex2bin(c::crypt()->decrypt($a)), 0, -strlen($r)));
 		$b->d = str_split($b->d, 2);
 
-		$stripe = $this->getAndMakeStripe();
+		if (is_null($so)) {
+			$stripe = $this->getAndMakeStripe();
+		} else {
+			$stripe = $so;
+		}
 
 		if ($stripe->legal_entity->verification->status == 'verified') {
-			$this->verified = true;
-			$this->save();
-			return true;
+			if (!$this->verified) {
+				$this->verified = true;
+				$this->save();
+			}
+			return $stripe;
 		}
 
 		$stripe->legal_entity->ssn_last_4 = $b->s;
@@ -74,9 +80,12 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		];
 		$stripe->legal_entity->first_name = 'Judd';
 		$stripe->legal_entity->last_name = 'Rosenblatt';
-		$res = $stripe->save();
+		
+		if (is_null($so)) {
+			$res = $stripe->save();
+		}
 
-		return $res;
+		return $stripe;
 	}
 	
 	// if there is not already a stripe account, it will make one
@@ -144,6 +153,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			]
 		];
 		
+		/*
 		if ($entity == 'individual') {
 			$info['legal_entity']['ssn_last_4'] = $ssn;
 			$info['legal_entity']['first_name'] = array_shift($name);
@@ -155,6 +165,7 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		if ($params['bank_account']) {
 			$info['bank_account'] = $params['bank_account'];
 		}
+		*/
 		
 		try {
 			$stripeAccount = \Stripe\Account::create($info);
@@ -163,6 +174,9 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 		}
 
 		if ($stripeAccount->id) {
+			// set legal info
+			$stripeAccount = $this->setStripeRep($stripeAccount);
+			
 			$paymentType->stripe_id = $stripeAccount->id;
 			
 			$paymentType->payment_method = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT;
