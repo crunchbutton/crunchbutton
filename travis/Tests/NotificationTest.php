@@ -5,26 +5,29 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 	public static function setUpBeforeClass() {
 		$name = get_called_class();
 
-		$r = (new Restaurant([
+		$r = new Restaurant([
 			'name' => $name,
 			'active' => 1
-		]))->save();
+		]);
+		$r->save();
 
-		$a = (new Admin([
+		$a = new Admin([
 			'name' => $name,
 			'login' => null,
 			'active' => 1
-		]))->save();
+		]);
+		$a->save();
 		
-		$u = (new User([
+		$u = new User([
 			'name' => $name,
 			'phone' => '_PHONE_',
 			'address' => '123 main',
 			'active' => 1
-		]))->save();
+		]);
+		$u->save();
 		
-		$o = (new Order([
-			'name' => $u->name,
+		$o = new Order([
+			'name' => $name,
 			'address' => $u->address,
 			'phone' => $u->phone,
 			'price' => '10',
@@ -38,7 +41,8 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'id_community' => '',
 			'id_restaurat' => $r->id_restaurant,
 			'active' => 1
-		]))->save();
+		]);
+		$o->save();
 
 	}
 
@@ -60,9 +64,12 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 		$this->order = Order::q('select * from `order` where name="'.$name.'" order by id_order desc limit 1')->get(0);
 	}
 	
+	/*
+	// this doesnt even test anything
 	public function testCustomerReceipt() {
 		$this->order->receipt();
 	}
+	*/
 
 	public function testNotifyDriverSms() {
 
