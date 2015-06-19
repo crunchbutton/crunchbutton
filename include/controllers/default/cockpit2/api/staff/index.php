@@ -207,6 +207,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$payment_type = $staff->payment_type();
 		$out[ 'payment_type' ] = $payment_type->payment_type;
 		$out[ 'hour_rate' ] = intval( $payment_type->hour_rate );
+		$out['stripe_id'] = $payment_type->stripe_id;
 
 		if( $staff->driver_info()->pexcard_date ){
 			$out[ 'pexcard_date' ] = $staff->driver_info()->pexcard_date()->format( 'Y,m,d' );
