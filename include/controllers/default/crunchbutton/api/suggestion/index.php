@@ -65,6 +65,25 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					echo json_encode(['error' => 'error']);
 					exit;
 				}
+			
+				// notify by email if we are in the area
+				if (c::getPagePiece(2) == 'notify') {
+
+					$suggesion = new Suggestion;
+
+					$suggesion->id_user = c::user()->id_user ? c::user()->id_user : null;
+
+					$suggesion->status = 'new';
+					$suggesion->type = 'email';
+					$suggesion->name = $this->request()['name'];
+					$suggesion->content = $this->request()['content'];
+					$suggesion->ip = $_SERVER['REMOTE_ADDR'];
+					$suggesion->date = date('Y-m-d H:i:s');
+					$suggesion->save();
+					
+					echo $suggesion->json();
+				}
+
 
 				// If is admin changes the Suggestion attributes
 				if ($_SESSION['admin']) {

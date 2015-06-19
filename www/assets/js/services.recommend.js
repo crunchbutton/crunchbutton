@@ -2,7 +2,7 @@
 NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, AccountService ){
 
 	var service = {
-		form : { restaurant : '' },
+		form : { restaurant : '', email: ''},
 		greetings : false
 	};
 
@@ -15,12 +15,43 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, 
 		recommendations.push( id );
 	}
 
+	service.notify = function(cb) {
+
+		var email = service.form.email || AccountService.user.email;
+		
+		if (!email){
+			App.alert( 'Please enter your email address');
+			$( '.recommend-restaurant' ).focus();
+			return;
+		}
+		
+		var pos = service.position.pos();
+
+		var content = 'Address entered: ' + pos.entered() + '\n' + 
+			'Address reverse: ' + pos.address() + '\n' + 
+			'City: ' + pos.city() + '\n' + 
+			'Region: ' + pos.region() + '\n' + 
+			'Lat: ' + pos.lat() + '\n' + 
+			'Lon: ' + pos.lon();
+
+		var url = App.service + 'suggestion/notify';
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { name: email, content : content } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success(cb);
+		
+	};
+
 	service.send = function(){
 		if ( service.form.restaurant == '' ){
 			App.alert( "Please enter the restaurant\'s name." );
 			$( '.recommend-restaurant' ).focus();
 			return;
 		}
+		
+		service.loadingNotifyme = true;
 
 		var pos = service.position.pos();
 

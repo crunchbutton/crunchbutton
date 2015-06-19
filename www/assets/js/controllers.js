@@ -698,6 +698,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		}
 		// Remove the location from cockie
 		PositionsService.removeNotServedLocation();
+		
+		App.go( '/location/unavailable');
 	});
 
 	$rootScope.$on( 'NewLocationAdded', function(e, data) {
@@ -866,6 +868,17 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 				error
 			);
 		}, error );
+	};
+});
+
+NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
+	$scope.recommend = RecommendRestaurantService;
+	
+	$scope.notifyMe = function() {
+		$scope.loadingNotifyme = true;
+		RecommendRestaurantService.notify();
+		$scope.loadingNotifyme = false;
+		$scope.complete = true;
 	};
 });
 
