@@ -140,7 +140,8 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$stripe = $paymentType->getAndMakeStripe( [ 'bank_account' => $token ] );
 
 		if( $stripe && !is_array( $stripe ) ){
-			$paymentType->testAccount();
+			// i dont think we need this anymore
+			//$paymentType->testAccount();
 			$this->payInfo( $admin );
 			exit;
 		} else {
@@ -169,7 +170,8 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		// claim it
 		$payment_type->claimBankAccount( $payment_type->balanced_bank );
 
-		$payment_type->testAccount();
+		// i dont think we need this anymore
+		//$payment_type->testAccount();
 
 		$this->payInfo( $admin );
 	}
