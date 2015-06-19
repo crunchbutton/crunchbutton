@@ -137,7 +137,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 
 		$paymentType = $admin->payment_type();
 
-		$stripe = $paymentType->createStripe( [ 'bank_account' => $token ] );
+		$stripe = $paymentType->getAndMakeStripe( [ 'bank_account' => $token ] );
 
 		if( $stripe && !is_array( $stripe ) ){
 			$paymentType->testAccount();

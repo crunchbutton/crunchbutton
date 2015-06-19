@@ -1142,6 +1142,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 					}
 				} );
 			} else {
+				$scope.isTokenizing = false;
 				App.alert( 'Error creating a Stripe token' );
 			}
 		} );

@@ -37,35 +37,50 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		return Crunchbutton_Admin_Payment_Type::save_social_security_number( $id_admin, $ssn );
 	}
 
-	public function createStripe( $params ){
+	public function getAndMakeStripe( $params ){
 
 		$admin = $this->admin();
+		$paymentType = $this;
 
-		$env = c::getEnv();
+		$params[ 'email' ] = $paymentType->summary_email ? $paymentType->summary_email : $admin->email;
 
-		\Stripe\Stripe::setApiKey( c::config()->stripe->{ $env }->secret );
+		$name = explode(' ', $paymentType->legal_name_payment);
+		$first_name = array_shift($name);
+		$last_name = implode( ' ', $name);
 
-		$account_type = 'individual';
-
-		$name = explode( ' ', $this->legal_name_payment );
-		$first_name = array_shift( $name );
-		$last_name = implode( ' ',$name );
-
-		$params[ 'email' ] = ( $this->summary_email ? $this->summary_email : $admin->email );
-
-		$params[ 'ssn' ] = substr( $admin->ssn(), -4 );
 		$dob = explode( '-', $admin->dob );
 		$params[ 'dob' ] = [ 'day' => $dob[ 2 ], 'month' => $dob[ 1 ], 'year' => $dob[ 0 ] ];
+		
+		
+		if ($paymentType->stripe_id) {
+			$stripeAccount = \Stripe\Account::retrieve($paymentType->stripe_id);
 
-		$address = explode( "\n", $this->address );
-		$address[ 1 ] = explode( ',', $address[ 1 ] );
-		$address[ 1 ][ 1 ] = explode( ' ', $address[ 1 ][ 1 ] );
+			if ($params['bank_account']) {
+				$stripeAccount->bank_account = $params['bank_account'];
+				$stripeAccount->save();
+				
+				if ($stripeAccount->bank_accounts->data[0]->id) {
+					$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
+					$paymentType->save();
+				}
+			}
+			
+			if ($save) {	
+				$stripeAccount->save();
+			}
+			
+			return $stripeAccount;
+		}
 
-		$params[ 'address' ] = $address[ 0 ];
-		$params[ 'city' ] = $address[ 1 ][ 0 ];
-		$params[ 'state' ] = $address[ 1 ][ 1 ][ 0 ];
-		$params[ 'zip' ] = $address[ 1 ][ 1 ][ 1 ];
-		$params[ 'country' ] = 'US';
+
+		$formattedAddress = Util::formatAddress($paymentType->address);
+		if ($formattedAddress != $paymentType->address) {
+			$paymentType->address = $formattedAddress;
+			$paymentType->save();
+		}
+		$address = Util::addressParts($formattedAddress);
+		
+		$params[ 'ssn' ] = substr( $admin->ssn(), -4 );
 
 		try {
 
@@ -79,42 +94,40 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 					'ip' => $_SERVER['REMOTE_ADDR']
 				],
 				'legal_entity' => [
-					'type' => $account_type,
+					'type' => 'individual',
 					'first_name' => $first_name,
 					'last_name' => $last_name,
 					'address' => [
-						'line1' => $params[ 'address' ],
-						'city' => $params[ 'city' ],
-						'state' => $params[ 'state' ],
-						'country' => $params[ 'country' ],
+						'line1' => $address['address'],
+						'city' => $address['city'],
+						'state' => $address['state'],
+						'postal_code' => $address['zip'],
+						'country' => 'US',
 					]
 				]
 			];
 
-			if( $params[ 'account_type' ] ){
-				$info[ 'legal_entity' ][ 'type' ] = $params[ 'account_type' ];
+			if ($params['dob']) {
+				$info[ 'legal_entity' ][ 'dob' ] = [
+					'day' => $params[ 'dob' ][ 'day' ],
+					'month' => $params[ 'dob' ][ 'month' ],
+					'year' => $params[ 'dob' ][ 'year' ]
+				];
 			}
 
-			if( $params[ 'dob' ] ){
-				$info[ 'legal_entity' ][ 'dob' ] = [ // @note: this viloates stripes docs but this is the correct way
-																							'day' => $params[ 'dob' ][ 'day' ],
-																							'month' => $params[ 'dob' ][ 'month' ],
-																							'year' => $params[ 'dob' ][ 'year' ]
-																						];
+			if ($params['ssn']) {
+				$info[ 'legal_entity' ][ 'ssn_last_4' ] = $params['ssn'];
 			}
 
-			if( $params[ 'ssn' ] ){
-				$info[ 'legal_entity' ][ 'ssn_last_4' ] = $params[ 'ssn' ];
-			}
+			$stripeAccount = \Stripe\Account::create($info);
 
-			$stripeAccount = \Stripe\Account::create( $info );
-
-			if( $stripeAccount->id && $stripeAccount->bank_accounts->data[0]->id ){
+			if ($stripeAccount->id && $stripeAccount->bank_accounts->data[0]->id) {
 
 				$this->stripe_id = $stripeAccount->id;
 				$this->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
 				$this->save();
-				return true;
+				return $stripeAccount;
+
 			} else {
 				return false;
 			}
@@ -124,21 +137,6 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		return false;
 	}
 
-	public function getStripe(){
-
-		if( $this->stripe_id ){
-
-			$env = c::getEnv();
-
-			\Stripe\Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-
-			$stripeAccount = \Stripe\Account::retrieve( $this->stripe_id );
-
-			return $stripeAccount;
-
-		}
-		return null;
-	}
 
 	// @todo: i dont understand why we NEED a payment type for admin but ok. - devin
 	public static function byAdmin($id_admin) {
