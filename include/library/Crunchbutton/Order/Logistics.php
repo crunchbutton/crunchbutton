@@ -2,9 +2,10 @@
 
 class Crunchbutton_Order_Logistics extends Cana_Model {
 	const TIME_MAX_DELAY = 120; // seconds
-	const MAX_DESTINATIONS = 3; // unique destinations
 	const TIME_BUNDLE = 600; // seconds
-	const CALCULATE_CURRENT_ORDER_ONLY = true; // dont try to plan routes with other orders that have not been acepted
+    const TIME_BUFFER = 2; // seconds
+    const MAX_BUNDLE_SIZE = 5;
+    const PRIORITY_ALGO_VERSION = 1;
 
 	public function __construct($order) {
 		$this->_order = $order;
@@ -14,132 +15,152 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 	
 	public function process() {
 		
-		$time = time();
-		$driverPrios = [];
-		$driverVolumes = [];
-		$driverOrders = [];
+		$time = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $cur_id_restaurant = $this->order()->id_restaurant;
+        $cur_id_order = $this->order()->id_order;
 
+        // Route to drivers who have the fewest accepted orders for that restaurant, greater than 0.
+        $minAcceptCount = NULL;
+        $driverOrderCounts = [];
+
+        foreach ($this->drivers() as $driver) {
+            // Get orders in the last hour for this driver
+            $ordersUnfiltered = Order::deliveryOrders(1, false, $driver);
+
+            // Get priority orders that have been routed to that driver in the last
+            //  n seconds for that restaurant
+            $priorityOrders = Crunchbutton_Order_Priority::priorityOrders(self::TIME_MAX_DELAY + self::TIME_BUFFER,
+                $driver->id_admin, $cur_id_restaurant);
+            $acceptCount = 0;
+            $tooEarlyFlag = false;
+            foreach ($ordersUnfiltered as $order) {
+                // Don't count this order
+                //  Redundant check with the 'new' check below, but this check is cheaper
+                // MVP: We only care about the restaurant corresponding to the order restaurant
+                // This could be added to the order query directly, but I'm leaving it
+                //  as is for future iterations where we need all of the restaurants.
+
+                if ($order->id_order == $cur_id_order || $order->id_restaurant != $cur_id_restaurant) {
+                    continue;
+                }
+
+                $lastStatus = NULL;
+                $lastStatusDriver = NULL;
+                $lastStatusTimestamp = NULL;
+                $osl = $order->status()->last();
+                if ($osl && array_key_exists('status', $osl)){
+                    $lastStatus = $osl['status'];
+                }
+                if ($osl && array_key_exists('driver', $osl)){
+                    $lastStatusDriver = $osl['driver'];
+                }
+                if ($osl && array_key_exists('timestamp', $osl)){
+                    $lastStatusTimestamp = $osl['timestamp'];
+                }
+
+                $lastStatusAdmin = NULL;
+                if ($lastStatusDriver && array_key_exists('id_admin', $lastStatusDriver)){
+                    $lastStatusAdmin = $lastStatusDriver['id_admin'];
+                }
+                $total = $lastStatusTimestamp + self::TIME_BUNDLE;
+                // if the order is another drivers, or already delivered or picked up, we don't care
+                if ($lastStatusAdmin && ($lastStatusAdmin != $driver->id_admin ||
+                        $lastStatus == 'delivered' || $lastStatus == 'pickedup')) {
+                    continue;
+                }
+
+                if ($lastStatus == 'accepted'){
+                    // Count accepted orders that have happened in the last n minutes
+                    // This won't work properly if the earlier filters for restaurant and such are not implemented
+
+                    if ($lastStatusTimestamp && $lastStatusTimestamp + self::TIME_BUNDLE > $time->getTimeStamp()) {
+                        $acceptCount++;
+                    } else{
+                        // The driver accepted an order from the restaurant earlier than the time window.
+                        //  Assumption is he's got the food and bundling doesn't help him.
+                        $tooEarlyFlag = true;
+                    }
+                }
+                else if ($lastStatus == 'new' && Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)) {
+                    // Interested in new orders if they show up in the priority list with the top priority
+                    //  and these haven't expired yet.
+                    // This won't work properly if the earlier filters for restaurant and such are not implemented
+                    $acceptCount++;
+                }
+
+            }
+            if ($tooEarlyFlag) {
+                $acceptCount = 0;
+            }
+            if ($acceptCount > 0 && $acceptCount < self::MAX_BUNDLE_SIZE) {
+                if (is_null($minAcceptCount) || $acceptCount <= $minAcceptCount) {
+                    // Don't care about drivers that have more than the current min
+                    $driverOrderCounts[$driver->id_admin] = $acceptCount;
+                    $minAcceptCount = $acceptCount;
+                }
+            }
+        }
+        // Use an array here in the case of ties
+        $selectedDriverIds = [];
+
+		foreach ($driverOrderCounts as $idAdmin => $orderCount) {
+            if ($orderCount == $minAcceptCount){
+                $selectedDriverIds[] = $idAdmin;
+            }
+		}
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $nowDate = $now->format('Y-m-d H:i:s');
+
+        // Make sure that it really is expired, but adding a buffer
+        $now2 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now2->modify('- ' . self::TIME_BUFFER . ' seconds');
+        $nowDate2 = $now->format('Y-m-d H:i:s');
+
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('+ ' . self::TIME_MAX_DELAY . ' seconds');
+        $laterDate = $now->format('Y-m-d H:i:s');
+		// Give the selected driver the order immediately, without delay.
+        //  Other drivers get the delay.
+
+        // If there are a large amount of drivers, it's more efficient to
+        //  restructure all of this with a single loop instead of a loop + second array search.
+        // Either use $drivers or a hash table lookup instead.
 		foreach ($this->drivers() as $driver) {
+//            print "Cur order:".$cur_id_order."\n";
+            if (count($selectedDriverIds)){
+                if (in_array($driver->id_admin, $selectedDriverIds)){
+                    $driver->__seconds = 0;
+                    $priority_given = Crunchbutton_Order_Priority::PRIORITY_HIGH;
+                    $seconds_delay = 0;
+                    $priority_expiration = $laterDate;
+                }
+                else{
+                    $driver->__seconds = self::TIME_MAX_DELAY;
+                    $priority_given = Crunchbutton_Order_Priority::PRIORITY_LOW;
+                    $seconds_delay = self::TIME_MAX_DELAY;
+                    $priority_expiration = $laterDate;
+                }
+            } else {
+                $driver->__seconds = 0;
+                $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_ONE;
+                $seconds_delay = 0;
+                $priority_expiration = $nowDate2;
+            }
+            $time->format('Y-m-d H:i:s');
+            $priority = new Crunchbutton_Order_Priority([
+                'id_order' => $cur_id_order,
+                'id_restaurant' => $cur_id_restaurant,
+                'id_admin' => $driver->id_admin,
+                'priority_time' => $nowDate,
+                'priority_algo_version' => self::PRIORITY_ALGO_VERSION,
+                'priority_given' => $priority_given,
+                'seconds_delay' => $seconds_delay,
+                'priority_expiration' => $priority_expiration
+            ]);
 
-			$prios[$driver->id_admin] = [];
-			$acceptedRestaurants = [];
-			$destinations = new Crunchbutton_Order_Logistics_DestinationList;
-			
-			// get the drivers valid location based on an expiration time
-			$location = $driver->location();
-			if ($location && !$location->valid()) {
-				$location = null;
-			}
-
-			$ordersUnfiltered = Order::deliveryOrders(12, false, $driver);
-			
-			// get some information about the orders list
-			// we need to know which restaurants they have already accepted orders at first
-			foreach ($ordersUnfiltered as $order) {
-
-				// if the order is another drivers, or already delivered, we dont care
-				if ($order->status()->last()->driver->id_admin && ($order->status()->last()->driver->id_admin != $dirver->id_admin || $order->status()->last()->status == 'delivered')) {
-					continue;
-				}
-				
-				// skip all orders that arent the one being run in this queue. they will run in their own queue job
-				if (self::CALCULATE_CURRENT_ORDER_ONLY && $order->status()->last()->status == 'new' && $order->id_order != $this->order()->id_order) {
-					continue;
-				}
-				
-				$driverPrios[$driver->id_admin][$order->id_order] = 0;
-
-				// get a list of accepted restaurants so we can bundle unaccepted orders
-				if ($order->status()->last()->status == 'accepted') {
-					$orderTime = strtotime($order->date);
-					
-					// only bundle them if it is within the bundle time limit
-					// @todo: there should be 2 bundle times, so that it counts the time of the oldest order for that restaurant, not just newest
-					//   that way the diver deosnt stay at chipotle forever
-					if ($orderTime + self::TIME_BUNDLE < $time) {
-						$acceptedRestaurants[$order->restaurant()->id_restaurant] = $order;
-					}
-				}
-				$orders[] = $order;
-			}
-			
-			$driverVolumes[$driver->id_admin] = count($orders);
-
-			foreach ($orders as $order) {
-				
-				// bundle priority
-				if (array_key_exists($order->restaurant()->id_restaurant, $acceptedRestaurants)) {
-					$driverPrios[$driver->id_admin][$order->id_order] = 1;
-				}
-
-				$customer = new Crunchbutton_Order_Logistics_Destination([
-					'address' => $order->address,
-					'from' => $location,
-					'driver' => $driver,
-					'type' => 'customer',
-					'status' => $order->status()->last()->status == 'new' ? 'new' : 'progress',
-					'id_order' => $order->id_order
-				]);
-				$destinations->add($customer);
-				
-				$restaurant = new Crunchbutton_Order_Logistics_Destination([
-					'address' => $order->restaurant()->address,
-					'from' => $location,
-					'driver' => $driver,
-					'type' => 'restaurant',
-					'status' => $order->status()->last()->status == 'new' ? 'new' : 'progress',
-					'id_order' => $order->id_order
-				]);
-				$destinations->add($restaurant);
-
-				if ($location) {
-					// add small amount just for having location
-					// this way drivers without location enabled do not have preference on anything other than bundled
-					$driverPrios[$driver->id_admin][$order->id_order] += .1;
-				}
-
-				echo 'Order #'.$order->id_order.' - status: '.json_encode($order->status()->last())."\n";
-			}
-			
-			$driverOrders[$driver->id_admin] = $orders;
-			$driverDestinations[$driver->id_admin] = $destinations;
+            $priority->save();
 		}
-		
-		// assign a score based on travel time of the restaurant and driver + their current orders
-		foreach ($this->drivers() as $driver) {
-			// calculate each possible destination set with the drivers current orders
-			$destinationCalculations = $driverDestinations[$driver->id_admin]->calculateEach($driver);
-
-			foreach ($destinationCalculations['results'] as $id => $result) {
-				$idOrder = $destinationCalculations['list'][$id]->getOrderId();
-				$time = $result->time;
-
-				// assign score. formula is just bullshit right now
-				$driverPrios[$driver->id_admin][$idOrder] += (1 - ($time / 200));
-			}
-		}
-		
-		// calculate the current max destinations to get a ratio
-		$maxDestinations = 0;
-		foreach ($driverDestinations as $dst) {
-			if (count($dst) > $maxDestinations) {
-				$maxDestinations = count($dst);
-			}
-		}
-		
-		// now that we have all our data we need to assign priorties by fliping our matrix
-		
-		foreach ($driverPrios as $idAdmin => $orders) {
-			foreach ($orders as $idOrder => $prio) {
-			}
-		}
-		
-		// perform priority calculations
-		foreach ($this->drivers() as $driver) {
-			
-		}
-		
-		$this->_drivers = $drivers;
 	}
 
 	
@@ -151,5 +172,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
 		if (!isset($this->_order)) {
 			$this->_order = Order::o($this->id_order);
 		}
+        return $this->_order;
 	}
 }
