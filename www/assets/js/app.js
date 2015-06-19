@@ -207,6 +207,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'LocationCtrl',
 			templateUrl: 'assets/view/location.html'
 		})
+		.when('/location/unavailable', {
+			action: 'location',
+			controller: 'LocationUnavailableCtrl',
+			templateUrl: 'assets/view/location-unavailable.html'
+		})
 		.when('/splash', {
 			action: 'splash',
 			controller: 'SplashCtrl',
