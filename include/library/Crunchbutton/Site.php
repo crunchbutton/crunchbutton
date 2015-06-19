@@ -47,7 +47,11 @@ class Crunchbutton_Site extends Cana_Table {
 		$conf = [];
 		foreach ($config as $c) {
 			if ($c->exposed) {
-				$conf[$c->key] = $c->value;
+				if (strpos($c->value, '{') > -1 || strpos($c->value, '[') > -1) {
+					$conf[$c->key] = json_decode($c->value);
+				} else {
+					$conf[$c->key] = $c->value;
+				}
 			}
 		}
 		return $conf;

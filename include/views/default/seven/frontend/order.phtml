@@ -76,11 +76,11 @@
 
 						<div class="col-box">
 
-							<button class="button facebook button-refer" ng-click="referral.facebook();" ng-if="account.user.has_auth && !order.reward.shared.facebook">
+							<button class="button facebook button-refer" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
 								<i class="fa fa-facebook-square"></i> <span>Share</span>
 							</button>
 
-							<button class="button twitter button-refer" ng-click="referral.twitter()" ng-if="account.user.has_auth && !order.reward.shared.twitter">
+							<button class="button twitter button-refer" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
 								<i class="fa fa-twitter-square"></i> <span>Tweet</span>
 							</button>
 						</div>

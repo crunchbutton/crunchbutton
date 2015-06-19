@@ -1336,7 +1336,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	}
 
 	$scope.referral.twitter = function(){
-		var text = App.config.site['share-text-twitter'].replace('%c', AccountService.user.invite_code);
+		var text = App.AB.get('share-order-text-twitter').replace('%c', AccountService.user.invite_code).replace('%r', $scope.order._restaurant_name);
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
 	}
 
@@ -1476,7 +1476,7 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	}
 
 	$scope.referral.twitter = function(){
-		var text = App.config.site['share-text-twitter'].replace('%c', AccountService.user.invite_code);
+		var text = App.AB.get('share-text-twitter').replace('%c', AccountService.user.invite_code);
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
 	}
 	$scope.hello = 50;

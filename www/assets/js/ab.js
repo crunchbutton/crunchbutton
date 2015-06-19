@@ -62,6 +62,11 @@ App.AB = {
 	},
 	init: function() {
 		// we dont have ab variables. generate them
+		if (App.config.site.ab) {
+			for (var x in App.config.site.ab) {
+				App.AB.options[x] = App.config.site.ab[x];
+			}
+		}
 		App.AB.create(true);
 		App.AB.load();
 	},
@@ -110,6 +115,9 @@ App.AB = {
 			}
 		}
 		return null;
+	},
+	get: function(option) {
+		return App.AB.pluck(option, App.config.ab[option]).line;
 	},
 	save: function() {
 		$.ajax({

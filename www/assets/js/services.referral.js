@@ -41,7 +41,7 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 	}
 
 	service.sms = function(){
-		var text = App.config.site['share-text-referral'].replace('%c', service.invite_code);
+		var text = App.AB.get('share-text-referral').replace('%c', service.invite_code);
 		if( App.iOS() ){
 			return 'sms:&body=' + text + ' ' + service.invite_url;
 		} else {
