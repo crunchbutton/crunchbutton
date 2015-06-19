@@ -57,7 +57,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.postInvite = function(url, code) {
-		var text = App.config.site['share-text-twitter'].replace('%c', code);
+		var text = App.AB.get('share-text-twitter').replace('%c', code);
 		App.share({
 			url: url,
 			name: 'Noms',
@@ -67,7 +67,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.shareOrder = function( url, code ) {
-		var text = App.config.site['share-text-twitter'].replace('%c', code);
+		var text = App.AB.get('share-text-twitter').replace('%c', code);
 		App.share({
 			url: url,
 			name: 'Crunchbutton',
