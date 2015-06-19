@@ -20,7 +20,8 @@ NGApp.factory( 'TwitterService', function( $http, $location, $rootScope, Account
 	}
 
 	service.referralText = function( invite_code ){
-		return 'i love @crunchbutton delivery :) use my code ' + invite_code + ' in the Notes section for free delivery!';
+		var text = App.config.site['share-text-twitter'].replace('%c', invite_code);
+		return text;
 	}
 
 	service.referralHashtags = function(){

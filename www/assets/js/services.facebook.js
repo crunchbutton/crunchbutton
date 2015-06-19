@@ -57,22 +57,22 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.postInvite = function(url, code) {
-		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for free delivery!';
+		var text = App.config.site['share-text-twitter'].replace('%c', code);
 		App.share({
 			url: url,
 			name: 'Noms',
 			caption: ' ',
-			description: description
+			description: text
 		});
 	}
 
 	service.shareOrder = function( url, code ) {
-		var description = 'i love @crunchbutton delivery :) use my code ' + code + ' in the Notes section for free delivery!';
+		var text = App.config.site['share-text-twitter'].replace('%c', code);
 		App.share({
 			url: url,
 			name: 'Crunchbutton',
 			caption: 'Crunchbutton',
-			description: description,
+			description: text,
 			url: url,
 			picture: status.picture,
 			success : function( success ){
