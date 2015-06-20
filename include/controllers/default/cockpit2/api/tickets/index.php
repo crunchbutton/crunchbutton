@@ -24,14 +24,25 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				-WILD-
 			FROM support s
 			inner join support_message sm on sm.id_support=s.id_support
-			inner JOIN `user` u ON u.id_user=s.id_user
-			inner JOIN `order` o ON o.id_order=s.id_order
+			inner join support_message smr on smr.id_support=s.id_support
+			left JOIN `order` o ON o.id_order=s.id_order
+			left join `phone` p on p.id_phone=sm.id_phone
+			left JOIN `user` u ON u.id_phone=p.id_phone
+			left JOIN `admin` a ON a.id_phone=p.id_phone
 
 			where
 				sm.id_support_message=(
 					SELECT MAX(support_message.id_support_message) a
 					FROM support_message
-					WHERE support_message.id_support=s.id_support
+					WHERE
+						support_message.id_support=s.id_support
+						AND support_message.from="client"
+				)
+				and smr.id_support_message=(
+					SELECT MAX(support_message.id_support_message) a
+					FROM support_message
+					WHERE
+						support_message.id_support=s.id_support
 				)
 		';
 
@@ -96,17 +107,21 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		$d = [];
 		$query = str_replace('-WILD-','
 			s.id_support,
-			max(sm.body) as message,
 			s.name,
 			s.phone,
 			s.type,
-			max(sm.id_support_message) as id_support_message,
-			max(sm.id_admin) as id_admin,
-			max(sm.date) as date,
-			max(sm.name) as message_name,
 			max(sm.phone) as message_phone,
-			max(sm.from) as "from",
-			max(u.name) as user_name,
+			max(sm.from) as from_client,
+			max(smr.from) as from_recent,
+			max(sm.body) as message_client,
+			max(smr.body) as message_recent,
+			max(sm.id_support_message) as id_support_message_client,
+			max(smr.id_support_message) as id_support_message_recent,
+			UNIX_TIMESTAMP(max(sm.date)) as timestamp_client,
+			UNIX_TIMESTAMP(max(smr.date)) as timestamp_recent,
+			max(u.name) as name_user,
+			max(a.name) as name_admin,
+			max(a.id_admin) as id_admin,
 			max(u.id_user) as id_user,
 			s.status
 		', $q);
@@ -128,6 +143,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				$o->id_admin_from = $n['id_admin'];
 			}
 
+			/*
 			$support = Support::o( $o->id_support );
 			$message = $support->lastMessage();
 			$message = $message->get( 0 );
@@ -136,6 +152,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$o->timestamp = $date->getTimestamp();
 			$o->date = $date->format( 'Y-m-d H:i:s' );
 			$o->ts = Crunchbutton_Util::dateToUnixTimestamp( $date );
+			*/
+
 			$d[] = $o;
 			$i++;
 		}
