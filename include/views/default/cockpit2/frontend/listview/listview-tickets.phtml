@@ -10,16 +10,16 @@
 
 		<tr ng-repeat="ticket in lotsoftickets">
 			<td>
-				<a href="/staff/{{ticket.id_admin_from}}" ng-if="ticket.id_admin_from">{{ticket.name}}</a>
-				<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin_from & ticket.id_user">{{ticket.name}}</a>
+				<a href="/staff/{{ticket.id_admin}}" ng-if="ticket.name_admin">{{ticket.name}}</a>
+				<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin & ticket.id_user">{{ticket.name}}</a>
 				<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
 			</td>
 			<td>
 				<span class="listview-smaller">
-					<i ng-if="ticket.timestamp" am-time-ago="ticket.timestamp*1000"></i>
-					<i ng-if="!ticket.timestamp"><i>Unknown</i></i>
+					<i ng-if="ticket.timestamp_client" am-time-ago="ticket.timestamp_client*1000"></i>
+					<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
 					<br>
-					<span>{{ticket.message}}</span>
+					<span>{{ticket.message_client}}</span>
 				</span>
 			</td>
 			<td class="tb-v-center tb-center">
