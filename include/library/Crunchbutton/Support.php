@@ -149,17 +149,16 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function clearPhone( $phone ){
-		$phone = str_replace( ' ' , '', $phone );
-		$phone = str_replace( '-' , '', $phone );
-		$phone = str_replace( '(' , '', $phone );
-		$phone = str_replace( ')' , '', $phone );
-		return $phone;
+		return Phone::clean( $phone );
 	}
-		public function phone(){
-		$phone = $this->phone;
-		$phone = preg_replace('/[^\d]*/i','',$phone);
-		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
-		return $phone;
+
+	public function phone(){
+		if( !$this->_phone ) {
+			$phone = Phone::o( $this->id_phone );
+			$phone = $phone->phone;
+			$this->_phone = Phone::formatted( $phone );
+		}
+		return $this->_phone;
 	}
 
 	public function createNewChat( $params ){
@@ -395,10 +394,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	public function lastAutoReplyByPhone( $phone ){
 		$query = 'SELECT sm.* FROM support s
 							INNER JOIN support_message sm ON sm.id_support = s.id_support
-							WHERE s.phone = "' . $phone . '"
+							INNER JOIN phone p ON p.id_phone = s.id_phone
+							WHERE p.phone = "' . $phone . '"
 							AND sm.type = "' . Crunchbutton_Support_Message::TYPE_AUTO_REPLY . '"
 							ORDER BY id_support_message DESC LIMIT 1';
-		$support_message = Crunchbutton_Support_Message::q( $query )->get( 0 );
+		$support_message = Crunchbutton_Support_Message::sq( $query )->get( 0 );
 		if( $support_message->id_support_message ){
 			return $support_message;
 		}
@@ -691,10 +691,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		$this->phone = Phone::clean($this->phone);
 
-		if( !$this->id_phone ){
-			$phone = Phone::byPhone( $this->phone );
-			$this->id_phone = $phone->id_phone;
-		}
+		$phone = Phone::byPhone( $this->phone );
+		$this->id_phone = $phone->id_phone;
 
 		parent::save();
 		if($initial_save) {

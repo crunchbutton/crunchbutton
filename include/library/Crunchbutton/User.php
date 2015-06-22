@@ -48,8 +48,12 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public function byPhone($phone, $limit = true) {
-		$phone = preg_replace('/[^0-9]/i','',$phone);
-		return User::q('select * from user where phone=? order by id_user desc'. ($limit ? ' limit 1' : ''), [$phone]);
+		$phone = Phone::clean( $phone );
+		$user = User::q('select * from user INNER JOIN phone p using(id_phone) WHERE p.phone = ? order by id_user desc'. ($limit ? ' limit 1' : ''), [$phone]);
+		if( $limit ){
+			$user = $user->get( 0 );
+		}
+		return $user;
 	}
 
 	public function lastOrder() {
@@ -187,6 +191,15 @@ class Crunchbutton_User extends Cana_Table {
 		return false;
 	}
 
+	public function phone(){
+		if( !$this->_phone ) {
+			$phone = Phone::o( $this->id_phone );
+			$phone = $phone->phone;
+			$this->_phone = Phone::formatted( $phone );
+		}
+		return $this->_phone;
+	}
+
 	public function exports() {
 		$out = $this->properties();
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
@@ -196,6 +209,7 @@ class Crunchbutton_User extends Cana_Table {
 			$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
 			$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
 			$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
+			$out[ 'phone' ] = $this->phone();
 			$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
 			$lastOrder = Order::lastDeliveredOrder( $this->id_user );
 			if( $lastOrder->id_restaurant ){

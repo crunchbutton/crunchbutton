@@ -111,6 +111,11 @@ class Crunchbutton_Phone extends Cana_Table {
 		return parent::save();
 	}
 
+	public static function formatted( $phone ){
+		$phone = preg_replace('/[^\d]*/i','',$phone);
+		return preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
+	}
+
 	public static function name($mixed, $returnId = false) {
 		if (is_object($mixed)) {
 			if ($mixed->phone) {
