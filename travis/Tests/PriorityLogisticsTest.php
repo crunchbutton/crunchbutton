@@ -81,6 +81,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
             'timezone' => 'America/Los_Angeles',
             'driver-group' => 'drivers-testlogistics',
             'range' => 2,
+            'private' => 1,
             'delivery_logistics' => true
         ]);
         $c->save();

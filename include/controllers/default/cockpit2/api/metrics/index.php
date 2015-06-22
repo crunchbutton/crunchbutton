@@ -318,59 +318,79 @@ class _Community_Metric_Container {
 			return clone $labels;
 		}
 	}
-	public function getData() {
-		switch($this->chartType) {
-		case 'users':
-			return $this->_uniqueUsersQuery();
-			break;
-		case 'new-users':
-			return $this->_newUsersQuery();
-			break;
-		case 'new-orders':
-			return $this->_newOrdersQuery();
-			break;
-		case 'new-users-gross-revenue':
-			return $this->_firstOrderRevenueQuery('gross-revenue');
-			break;
-		case 'new-users-delivery-tips':
-			return $this->_firstOrderRevenueQuery('tips');
-			break;
-		case 'new-users-delivery-fee':
-			return $this->_firstOrderRevenueQuery('delivery-fee');
-			break;
-		case 'repeat-users':
-			return $this->_repeatUserQuery();
-			break;
-		case 'repeat-orders':
-			return $this->_repeatOrderQuery();
-			break;
-		case 'repeat-users-gross-revenue':
-			return $this->_repeatRevenueQuery('gross-revenue');
-			break;
-		case 'repeat-users-delivery-tips':
-			return $this->_repeatRevenueQuery('tips');
-			break;
-		case 'repeat-users-delivery-fee':
-			return $this->_repeatRevenueQuery('delivery-fee');
-			break;
-		case 'orders-by-hour':
-			return $this->_ordersByHourQuery();
-			break;
-		case 'orders-by-day-of-week':
-			return $this->_ordersByDayOfWeekQuery();
-			break;
-		case 'orders':
-			return $this->_buildOrdersQuery();
-			break;
-		case 'refunded':
-			return $this->_refundedOrdersQuery();
-			break;
-		case 'gross-revenue':
-			return $this->_grossRevenueQuery();
-			break;
-		default:
-			throw new MetricsHttpException(400, 'invalid chart type: ' . $this->chartType);
-		}
+
+    public function getData()
+    {
+        switch ($this->chartType) {
+            case 'users':
+                return $this->_uniqueUsersQuery();
+                break;
+            case 'new-users':
+                return $this->_newUsersQuery();
+                break;
+            case 'new-orders':
+                return $this->_newOrdersQuery();
+                break;
+            case 'new-users-gross-revenue':
+                return $this->_firstOrderRevenueQuery('gross-revenue');
+                break;
+            case 'new-users-delivery-tips':
+                return $this->_firstOrderRevenueQuery('tips');
+                break;
+            case 'new-users-delivery-fee':
+                return $this->_firstOrderRevenueQuery('delivery-fee');
+                break;
+            case 'repeat-users':
+                return $this->_repeatUserQuery();
+                break;
+            case 'repeat-orders':
+                return $this->_repeatOrderQuery();
+                break;
+            case 'repeat-users-gross-revenue':
+                return $this->_repeatRevenueQuery('gross-revenue');
+                break;
+            case 'repeat-users-delivery-tips':
+                return $this->_repeatRevenueQuery('tips');
+                break;
+            case 'repeat-users-delivery-fee':
+                return $this->_repeatRevenueQuery('delivery-fee');
+                break;
+            case 'orders-by-hour':
+                return $this->_ordersByHourQuery();
+                break;
+            case 'orders-by-day-of-week':
+                return $this->_ordersByDayOfWeekQuery();
+                break;
+            case 'orders':
+                return $this->_buildOrdersQuery();
+                break;
+            case 'refunded':
+                return $this->_refundedOrdersQuery();
+                break;
+            case 'gross-revenue':
+                return $this->_grossRevenueQuery();
+                break;
+            case 'order-projections-by-hour':
+                return $this->_orderProjectionsByHourQuery();
+                break;
+            case 'order-projections-by-day-of-week':
+                return $this->_orderProjectionsByDayOfWeekQuery();
+                break;
+            case 'community-open-hours':
+                return $this->_openHoursQuery();
+                break;
+            case 'community-auto-close-hours':
+                return $this->_autoCloseHoursQuery();
+                break;
+            case 'community-force-close-hours':
+                return $this->_forceCloseHoursQuery();
+                break;
+            case 'community2-closure-rate':
+                return $this->_closureRateQuery();
+                break;
+            default:
+                throw new MetricsHttpException(400, 'invalid chart type: ' . $this->chartType);
+        }
 	}
 	public static function _buildOrderFilter($table) {
 		$out = '(' . $table . '.likely_test = FALSE OR ' . $table . '.likely_test IS NULL)';
@@ -548,6 +568,7 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count', false);
 	}
+
 	public function _ordersByHourQuery() {
 		$q = '
 			SELECT
@@ -567,6 +588,7 @@ class _Community_Metric_Container {
 		}
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'count', true, 0, $hourLabels);
 	}
+
 	public function _ordersByDayOfWeekQuery() {
 		$q = '
 			SELECT
@@ -588,4 +610,105 @@ class _Community_Metric_Container {
 		$this->error(404);
 
 	}
+
+    public function _orderProjectionsByHourQuery() {
+        // TODO: Need to make sure the after-midnight projections work properly
+        // TODO: Get some sort of timestamp on the plots
+        $q = 'select distinct id_community, start_hour, DATE_FORMAT(start_hour, "%Hh") hour_of_day, '.
+            'forecast from order_forecasts_hourly as a inner join '.
+            '(select id_community, max(date(estimation_time)) as max_estimation_time from order_forecasts_hourly '.
+            'group by id_community) as b using (id_community) where date(a.estimation_time)=b.max_estimation_time '.
+            'AND ' . self::_buildCommunityFilter($this->communities, 'a').
+            'order by estimation_time desc;';
+        $hourLabels = [];
+        for($i = 0; $i < 24; $i++) {
+            $hourLabels[] = sprintf("%02d", $i)  . 'h';
+        }
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'forecast', false, 0, $hourLabels);
+    }
+
+    public function _orderProjectionsByDayOfWeekQuery() {
+        // TODO: Get some sort of timestamp on the plots
+        $q = 'select distinct id_community, date_for_forecast, DAYOFWEEK(date_for_forecast) day_of_week, '.
+            'forecast from order_forecasts_daily as a inner join '.
+            '(select id_community, max(date(estimation_time)) as max_estimation_time from order_forecasts_daily '.
+            'group by id_community) as b using (id_community) where date(a.estimation_time)=b.max_estimation_time '.
+            'AND ' . self::_buildCommunityFilter($this->communities, 'a').
+            'order by estimation_time desc;';
+        $resp = self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'day_of_week', 'forecast', false, 0, [1, 2, 3, 4, 5, 6, 7]);
+        // replace labels that we already know are ordered here
+        $resp['meta']['labels'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return $resp;
+
+    }
+
+    public function _openHoursQuery() {
+        $periodFormat = self::_getPeriodFormat($this->period);
+        $q = '
+			SELECT
+				id_community,
+				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				SUM(num_open_hours) open_hours
+			FROM community_opens_closes
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
+			GROUP BY id_community, date_group
+			';
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'open_hours');
+    }
+
+
+    public function _autoCloseHoursQuery() {
+        $periodFormat = self::_getPeriodFormat($this->period);
+        $q = '
+			SELECT
+				id_community,
+				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				SUM(num_auto_close_hours) auto_close_hours
+			FROM community_opens_closes
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
+			GROUP BY id_community, date_group
+			';
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'auto_close_hours');
+    }
+
+
+    public function _forceCloseHoursQuery() {
+        $periodFormat = self::_getPeriodFormat($this->period);
+        $q = '
+			SELECT
+				id_community,
+				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				SUM(num_force_close_hours) force_close_hours
+			FROM community_opens_closes
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
+			GROUP BY id_community, date_group
+			';
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'force_close_hours');
+    }
+
+    public function _closureRateQuery() {
+        $periodFormat = self::_getPeriodFormat($this->period);
+        $q = '
+            SELECT
+                a.id_community,
+                a.date_group,
+                if(a.all_hours=0, 0.0, (force_close_hours + auto_close_hours) / all_hours) as closure_rate FROM
+			(SELECT
+				id_community,
+				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				SUM(num_force_close_hours) force_close_hours,
+				SUM(num_auto_close_hours) auto_close_hours,
+				SUM(num_open_hours) open_hours,
+				sum(num_open_hours + num_auto_close_hours + num_force_close_hours) all_hours
+			FROM community_opens_closes
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
+			GROUP BY id_community, date_group) as a
+			';
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'closure_rate', false, 0);
+    }
+
 }
