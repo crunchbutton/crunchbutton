@@ -83,6 +83,7 @@ class Cockpit_Metrics
             ['type' => 'community-open-hours', 'format' => 'line', 'description' => 'Community open hours'],
             ['type' => 'community-force-close-hours', 'format' => 'line', 'description' => 'Community force close hours'],
             ['type' => 'community-auto-close-hours', 'format' => 'line', 'description' => 'Community auto close hours'],
+            ['type' => 'community-total-close-hours', 'format' => 'line', 'description' => 'Community total close hours'],
             ['type' => 'community2-closure-rate', 'format' => 'line', 'description' => 'Community closure %'],
         ];
     }

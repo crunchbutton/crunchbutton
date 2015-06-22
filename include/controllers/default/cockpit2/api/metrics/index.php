@@ -385,6 +385,9 @@ class _Community_Metric_Container {
             case 'community-force-close-hours':
                 return $this->_forceCloseHoursQuery();
                 break;
+            case 'community-total-close-hours':
+                return $this->_totalCloseHoursQuery();
+                break;
             case 'community2-closure-rate':
                 return $this->_closureRateQuery();
                 break;
@@ -654,7 +657,7 @@ class _Community_Metric_Container {
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
 			';
-        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'open_hours');
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'open_hours', true, 0);
     }
 
 
@@ -670,7 +673,7 @@ class _Community_Metric_Container {
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
 			';
-        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'auto_close_hours');
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'auto_close_hours', true, 0);
     }
 
 
@@ -686,7 +689,22 @@ class _Community_Metric_Container {
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
 			';
-        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'force_close_hours');
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'force_close_hours', true, 0);
+    }
+
+    public function _totalCloseHoursQuery() {
+        $periodFormat = self::_getPeriodFormat($this->period);
+        $q = '
+			SELECT
+				id_community,
+				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				SUM(num_force_close_hours + num_auto_close_hours) total_close_hours
+			FROM community_opens_closes
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
+			GROUP BY id_community, date_group
+			';
+        return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'total_close_hours', true, 0);
     }
 
     public function _closureRateQuery() {
