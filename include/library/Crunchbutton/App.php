@@ -469,7 +469,7 @@ class Crunchbutton_App extends Cana_App {
 		$config['site']['ab']['share-text-referral'] = [
 			[
 				'name' => 'referral-hey',
-				'line' => 'Hey, get food delivered at _DOMAIN_/app & get your first delivery free if you enter %c in the Notes section of your order (i get free food too)'
+				'line' => 'Hey, get food delivered at _DOMAIN_/app and get your first delivery free if you enter %c in the Notes section of your order (i get free food too)'
 			]
 		];
 		$config['site']['ab']['share-text-twitter'] = [
