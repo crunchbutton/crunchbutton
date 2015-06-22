@@ -6,10 +6,19 @@ class Controller_Api_Settlement_Summary extends Crunchbutton_Controller_Account 
 
 		$id_payment =  c::getPagePiece( 3 );
 
-		$payment = Payment::o( $id_payment );
-		if( !$payment->id_payment ){
-			$this->_error();
+		if ( $_GET[ 'schedule' ] ) {
+			$payment = Payment_Schedule::o( $id_payment );
+			if( !$payment->id_payment_schedule ){
+				$this->_error();
+			}
+		} else {
+			$payment = Payment::o( $id_payment );
+			if( !$payment->id_payment ){
+				$this->_error();
+			}
 		}
+
+
 		if( $payment->id_restaurant ){
 			$this->_permission();
 		} else if( $payment->id_driver ){
@@ -19,7 +28,11 @@ class Controller_Api_Settlement_Summary extends Crunchbutton_Controller_Account 
 			}
 
 			$settlement = new Crunchbutton_Settlement;
-			$summary = $settlement->driverSummaryByIdPayment( $id_payment );
+			if ( $_GET[ 'schedule' ] ) {
+				$summary = $settlement->driverSummary( $id_payment );
+			} else {
+				$summary = $settlement->driverSummaryByIdPayment( $id_payment );
+			}
 			$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 			echo $mail->message();
 

@@ -82,7 +82,11 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 			if( $this->id_restaurant ){
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
 			} else if( $this->id_driver ){
-				$this->_date->setTimezone(new DateTimeZone($this->driver()->timezone));
+				if( $this->driver()->timezone ){
+					$this->_date->setTimezone(new DateTimeZone($this->driver()->timezone));
+				} else {
+					$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
+				}
 			}
 		}
 		return $this->_date;
