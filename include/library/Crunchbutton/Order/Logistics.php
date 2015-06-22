@@ -62,7 +62,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
                 if ($lastStatusDriver && array_key_exists('id_admin', $lastStatusDriver)){
                     $lastStatusAdmin = $lastStatusDriver['id_admin'];
                 }
-                $total = $lastStatusTimestamp + self::TIME_BUNDLE;
                 // if the order is another drivers, or already delivered or picked up, we don't care
                 if ($lastStatusAdmin && ($lastStatusAdmin != $driver->id_admin ||
                         $lastStatus == 'delivered' || $lastStatus == 'pickedup')) {
