@@ -3,7 +3,7 @@
 class Crunchbutton_Controller_RestAccount extends Crunchbutton_Controller_Rest {
     public function __construct() {
     	if (c::config()->site->name == 'Cockpit2') {
-    		if (!c::admin()->id_admin || !c::user()->id_admin) {
+    		if (!c::admin()->id_admin) {
     			// just prevents any other pages from being displayed since this is a blank page basicly
     			$this->error(401);
     		}
