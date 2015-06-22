@@ -700,13 +700,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 
 		// Start week on Thursday #3084
-		$now = new DateTime( 'next sunday', new DateTimeZone( c::config()->timezone ) );
-		if( $now->format( 'l' ) == 'Thursday' ){
-			$now->modify( '+ 1 week' );
-			$day = $now;
-		} else {
-			$day = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone ) );
-		}
+		$day = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone ) );
 
 		$_week = $day->format( 'W' );
 		$_year = $day->format( 'Y' );
@@ -726,6 +720,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		// Get the communities with active and delivery_service restaurants
 		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
+
 		foreach( $communities as $community ){
 
 			// Check if the community has shift for current week
@@ -752,20 +747,25 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				if( $receiveSMS ){
 					$log = 'driver set up to RECEIVE sms: ' . $driver->name . ' - ' . $community->name;
 					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-					// echo $log."\n";
+					echo $log."\n";
 					if( $preferences->completed == 0 ){
 						$driversWillReceiveTheNotification[] = array(  'id_admin' => $driver->id_admin, 'name' => $driver->name, 'txt' => $driver->txt, 'phone' => $driver->phone );
+					} else {
+						$log = 'driver Already finished its schedule: ' . $driver->name;
+						Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+						echo $log."\n";
 					}
 				} else {
 					$log = 'driver set up to NOT receive sms: ' . $driver->name;
 					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-					// echo $log."\n";
+					echo $log."\n";
 				}
 			}
 			if( $shifts->count() == 0 ){
 				$communitiesWithoutShift[] = $community->name;
 			}
 		}
+
 		echo "\n";
 		$log = 'communitiesWithoutShift: ' . count( $communitiesWithoutShift ) . ', list ' . join( ', ', $communitiesWithoutShift );
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
@@ -827,8 +827,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					$message = str_replace('|', "\n", $message);
 				}
 
-				echo "Sending sms to support users...\n";
-
 				// #4060 - dont send from driver number
 				$rets = Crunchbutton_Message_Sms::send([
 					'to' => $num,
@@ -836,9 +834,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT
 				]);
 
-				foreach ($rets as $ret) {
-					if (!$ret->sid) {
-						echo 'Error Sending sms to: '.$ret->to;
+				if( $rets ){
+					foreach ($rets as $ret) {
+						if (!$ret->sid) {
+							echo 'Error Sending sms to: '.$ret->to;
+						}
 					}
 				}
 			}
