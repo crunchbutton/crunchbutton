@@ -41,6 +41,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 			LEFT JOIN order_action ON order_action.id_order=`order`.id_order
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
+			LEFT JOIN phone ON phone.id_phone=`order`.id_phone
 
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
@@ -63,7 +64,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		if ($phone) {
 			$q .= '
-				AND `order`.phone=?
+				AND phone.phone=?
 			';
 			$keys[] = $phone;
 		}
@@ -107,7 +108,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				case ( strpos( $search, 'phone:' ) !== false ):
 					$phone = str_replace( 'phone:' , '', $search );
 					$phone = str_replace( '-' , '', $phone );
-					$q .= 'AND order.phone = ? ';
+					$q .= 'AND phone.phone = ? ';
 					$keys[] = $phone;
 					break;
 
