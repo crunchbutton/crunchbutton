@@ -22,7 +22,11 @@ class Controller_assets_view extends Cana_Controller {
 
 		if (file_exists(c::config()->dirs->view.'default/crunchbutton/'.$filePath.'.phtml')) {
 			//$filePath = 'frontend/'.$file;
+		} elseif (file_exists(c::config()->dirs->view.'default/seven/'.$filePath.'.phtml')) {
+			
 		} elseif(file_exists(c::config()->dirs->view.'default/crunchbutton/'.$file.'/index.phtml')) {
+			$filePath = $file.'/index';
+		} elseif (file_exists(c::config()->dirs->view.'default/seven/'.$file.'/index.phtml')) {
 			$filePath = $file.'/index';
 		} else {
 			$filePath = null;

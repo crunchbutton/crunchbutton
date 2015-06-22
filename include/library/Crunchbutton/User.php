@@ -195,7 +195,7 @@ class Crunchbutton_User extends Cana_Table {
 		if( !$this->_phone ) {
 			$phone = Phone::o( $this->id_phone );
 			$phone = $phone->phone;
-			$this->_phone = Phone::formatted( $phone );
+			$this->_phone = $phone;
 		}
 		return $this->_phone;
 	}
@@ -242,7 +242,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			$out['tipper'] = $this->tipper();
 
-			$out[ 'points' ] = Crunchbutton_Credit::exportPoints();
+			$out[ 'points' ] = Crunchbutton_Credit::exportPoints($this);
 		}
 
 
