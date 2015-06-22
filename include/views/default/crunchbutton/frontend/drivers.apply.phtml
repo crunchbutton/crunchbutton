@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 <div class="content-padding drivers-apply">
 	<div class="apply-item-title text-your-order" name="userForm">
-		Application
+		Driver Application
 	</div>
 	<p>
 		<br>
@@ -23,7 +23,7 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> Last Name:</h4>
-			
+
 			<div class="textbox">
 				<div ng-if="errors.lastName">Please enter your last name:</div>
 				<input type="text" ng-model="apply.lastName" name="lastName" class="form-control form-control-large" >
@@ -32,7 +32,7 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> Email:</h4>
-			
+
 			<div class="textbox">
 				<div ng-if="errors.email">Please enter your email:</div>
 				<input type="text" class="form-control form-control-large" ng-model="apply.email" name="email" >
@@ -62,7 +62,7 @@
 				<input type="tel" class="form-control form-control-large" ng-model="apply.number" name="number" >
 			</div>
 		</div>
-		
+
 <!--		<div class="form-group"></div>-->
 
 		<div class="form-group">
@@ -150,8 +150,8 @@
 			</div>
 		</div>
 
-		
+
 		<button class="button lightorange button-bottom" ng-click="post()">Submit</button>
-		
+
 	</form>
 </div>
