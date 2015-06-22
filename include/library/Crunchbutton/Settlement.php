@@ -288,9 +288,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$pay[ $driver ][ 'pay_type' ][ 'payment_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 					}
 				}
+
 				$order[ 'pay_info' ] = [];
 				$order[ 'pay_info' ][ 'pay_by_order' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
-				$order[ 'pay_info' ][ 'hourly' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
+				$order[ 'pay_info' ][ 'hourly' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
 				$order[ 'pay_info' ][ 'cash' ] = $order[ 'cash' ];
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
@@ -475,14 +476,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 										$pay[ 'credit_charge' ] +
 										$pay[ 'restaurant_fee' ] +
 										$pay[ 'gift_card' ] -
-										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ] +
-										// total driver collected in cash
-										$pay[ 'customer_fee_collected' ]+
-										$pay[ 'markup' ] +
-										$pay[ 'delivery_fee_collected' ] ) ;
-		// if the driver is paid by order and the order was paid in cash we owe nothing
-		if(  $pay[ 'hourly' ] && $pay[ 'cash' ] ){
-			// $total_due = 0;
+										$pay[ 'total_reimburse' ] ) * $pay_by_order ) + $pay[ 'tip' ] ) ;
+
+		// get the customer fee collected in cash
+		if( $pay[ 'cash' ] ){
+			$total_due += $pay[ 'customer_fee_collected' ];
+			$total_due += $pay[ 'markup' ];
+		}
+
+		if( $pay_by_order == 0 && $pay[ 'cash' ] ){
+			$total_due + $pay[ 'delivery_fee_collected' ];
 		}
 		return $total_due;
 	}

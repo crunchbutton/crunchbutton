@@ -486,6 +486,7 @@
 									<td>Delivery Collected</td>
 									<td>Customer Fee</td>
 									<td>Customer Fee Collected</td>
+									<td>Markup</td>
 									<td>Reimburse</td>
 									<td>Payment</td>
 									<td>Date</td>
@@ -507,6 +508,7 @@
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee_collected | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.customer_fee | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.customer_fee_collected | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.markup | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_reimburse | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.total_payment | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
