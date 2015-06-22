@@ -210,7 +210,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/location/unavailable', {
 			action: 'location',
 			controller: 'LocationUnavailableCtrl',
-			templateUrl: 'assets/view/location-unavailable.html'
+			templateUrl: 'assets/view/location.unavailable.html'
 		})
 		.when('/splash', {
 			action: 'splash',
