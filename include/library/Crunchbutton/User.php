@@ -242,7 +242,7 @@ class Crunchbutton_User extends Cana_Table {
 
 			$out['tipper'] = $this->tipper();
 
-			$out[ 'points' ] = Crunchbutton_Credit::exportPoints();
+			$out[ 'points' ] = Crunchbutton_Credit::exportPoints($this);
 		}
 
 
