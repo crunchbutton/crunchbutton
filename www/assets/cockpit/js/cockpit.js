@@ -531,7 +531,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
 	$rootScope.twilio = TwilioService;
-	
+
 	$rootScope.supportToggled = false;
 	$rootScope.supportToggle = function() {
 		$rootScope.supportToggled = !$rootScope.supportToggled;
@@ -542,7 +542,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		});
 		return false;
 	});
-	
+
 	$rootScope.menuToggled = true;
 	$rootScope.menuToggle = function() {
 		$rootScope.menuToggled = !$rootScope.menuToggled;
@@ -971,7 +971,7 @@ App.init = function(config) {
 	}
 	*/
 
-	
+
 	if (App.isPhoneGap) {
 		// setup for system links
 		$(document).on('click', 'a[target=_system], a[target=_blank]', function(e) {

@@ -17,6 +17,10 @@ class Crunchbutton_Util extends Cana_Model {
 		return false;
 	}
 
+	public function url(){
+		return 'http://' . $_SERVER['HTTP_HOST'];
+	}
+
 	public function isMySQL(){
 		return ( strtolower( c::db()->driver() ) == 'mysql' );
 	}

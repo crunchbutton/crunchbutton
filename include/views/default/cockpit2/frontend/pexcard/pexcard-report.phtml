@@ -72,7 +72,7 @@
 					<td>{{driver.card_serial}}</td>
 					<td>{{driver.last_four}}</td>
 					<td>
-						<span ng-if="driver.login"><a href="mailto:{{driver.email}}">{{driver.email}}</a></span>
+						<span ng-if="driver.login"><a target="_system" href="mailto:{{driver.email}}">{{driver.email}}</a></span>
 					</td>
 					<td>{{driver.orders}}</td>
 					<td positive-or-negative-color="{{driver.pexcard_amount}}">$ {{driver.pexcard_amount | formatPrice}}</td>
