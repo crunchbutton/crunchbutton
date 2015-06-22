@@ -13,7 +13,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	}
 
 	public function download_url(){
-		return '/api/community/resource/download/' . $this->id_community_resource;
+		return Util::url() . '/api/community/resource/download/' . $this->id_community_resource;
 	}
 
 	public function path(){
