@@ -236,7 +236,11 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 	public function pex() {
 		if (!isset($this->_pex)) {
-			$this->_pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
+			if ($this->id_admin) {
+				$this->_pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
+			} else {
+				$this->_pex = new Cockpit_Admin_Pexcard;
+			}
 		}
 		return $this->_pex;
 	}
