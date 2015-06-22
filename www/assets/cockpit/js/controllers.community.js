@@ -150,6 +150,51 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 });
 
 
+NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, MapService ) {
+
+	$rootScope.$on( 'openClosingTimeContainer', function(e, data) {
+		App.dialog.show('.open-close-community-dialog-container');
+		CommunityService.get( $routeParams.id, function( d ) {
+				$scope.community = d;
+				$scope.community.is_auto_closed = parseInt( $scope.community.is_auto_closed ) == 1 ? true : false;
+				$scope.community.close_all_restaurants = parseInt( $scope.community.close_all_restaurants ) == 1 ? true : false;
+				$scope.community.close_3rd_party_delivery_restaurants = parseInt( $scope.community.close_3rd_party_delivery_restaurants ) == 1 ? true : false;
+				$scope.community.dont_warn_till_enabled = parseInt( $scope.community.dont_warn_till_enabled ) == 1 ? true : false;
+			});
+
+			$scope.isSaving = false;
+	});
+
+	$scope.formOpenCloseSave = function(){
+
+		if( !$scope.community.dont_warn_till_enabled ){
+			$scope.community.dont_warn_till = null;
+		}
+
+		if( $scope.formOpenClose.$invalid ){
+			$scope.formOpenCloseSubmitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
+			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
+		}
+
+		CommunityService.saveOpenClose( $scope.community, function( json ){
+			$scope.isSaving = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$rootScope.closePopup();
+				$rootScope.$broadcast( 'communityOpenClosedSaved', json );
+			}
+		} );
+	}
+
+} );
+
 NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
 
 
@@ -209,6 +254,19 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} );
 	}
 
+	// method to load logs - called at ui-tab directive
+	$scope.logs = function(){
+		$scope.loadingLogs = true;
+		CommunityService.closelog.list( $routeParams.id, function( json ){
+			$scope.closelogs = json;
+			$scope.loadingLogs = false;
+		} );
+	}
+
+	$scope.openClosingTimeContainer = function(){
+		$rootScope.$broadcast( 'openClosingTimeContainer' );
+	}
+
 	$scope.aliasDialogContainer = function(){
 		$scope.alias = { id_community: $scope.community.id_community, permalink: $scope.community.permalink, sort: $scope.community.next_sort };
 		App.dialog.show('.alias-dialog-container');
@@ -263,11 +321,21 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		});
 	};
 
-	CommunityService.get($routeParams.id, function(d) {
-		$rootScope.title = d.name + ' | Community';
-		$scope.community = d;
-		$scope.loading = false;
-		update();
 
+	var load = function(){
+		CommunityService.get($routeParams.id, function(d) {
+			$rootScope.title = d.name + ' | Community';
+			$scope.community = d;
+			$scope.loading = false;
+			update();
+		});
+	}
+
+	load();
+
+	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
+		$scope.logs();
+		$scope.community = data;
 	});
+
 });

@@ -24,6 +24,11 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			url: App.service + 'community/:id_community/:action',
 			method: 'POST',
 			params : { 'action' : 'save' }
+		},
+		'saveOpenClose' : {
+			url: App.service + 'community/:id_community/:action',
+			method: 'POST',
+			params : { 'action' : 'save-open-close' }
 		}
 		/*,
 		@depreciated
@@ -98,6 +103,12 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 
 	service.save = function(params, callback) {
 		community.save(params,  function(data) {
+			callback(data);
+		});
+	}
+
+	service.saveOpenClose = function(params, callback) {
+		community.saveOpenClose(params,  function(data) {
 			callback(data);
 		});
 	}

@@ -54,6 +54,13 @@
 						</div>
 					</div>
 					<div class="field-row">
+						<div class="field-key">Is Auto Closed</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="community.is_auto_closed">Yes</span>
+							<span class="tag tag-green" ng-if="!community.is_auto_closed">No</span>
+						</div>
+					</div>
+					<div class="field-row">
 						<div class="field-key">All Restaurants</div>
 						<div class="field-value">
 							<span class="tag tag-red" ng-if="community.close_all_restaurants">Closed</span>
@@ -139,8 +146,11 @@
 		<ui-tab title="Restaurants" icon="coffee" id="restaurants" path="assets/view/communities-community-tab-restaurants.html" method="restaurants"></ui-tab>
 		<ui-tab title="Drivers" icon="road" id="drivers" path="assets/view/communities-community-tab-drivers.html" method="drivers"></ui-tab>
 		<ui-tab title="Aliases" icon="link" id="aliases" path="assets/view/communities-community-tab-aliases.html" method="aliases"></ui-tab>
-		<ui-tab title="Open/Close Logs" id="logs" icon="list" path="assets/view/communities-community-tab-logs.html" method="logs"></ui-tab>
+		<ui-tab title="Open/Close" id="logs" icon="list" path="assets/view/communities-community-tab-logs.html" method="logs"></ui-tab>
 	</ui-tabs>
+
+
+	<ng-include src="'assets/view/communities-community-open-close-form.html'"></ng-include>
 
 	<!-- alias form -->
 	<div class="alias-dialog-container zoom-anim-dialog mfp-hide dialog">

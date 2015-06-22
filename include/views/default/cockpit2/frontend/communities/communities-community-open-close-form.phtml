@@ -1,0 +1,87 @@
+<!-- alias form -->
+<div class="open-close-community-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="CommunityOpenCloseCtrl">
+
+	<h1 ng-bind="alertTitle" ng-show="alertTitle"></h1>
+	<div>
+
+		<h2 class="title left"><span>Open Close Community</span></h2>
+
+		<div class="divider"></div>
+
+		<ng-form name="formOpenClose">
+
+			<div class="ul-inputs">
+
+				<ul ng-class="{'submitted':formOpenCloseSubmitted}" class="ul-inputs">
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-disabled="!community.is_auto_closed" ng-model="community.is_auto_closed"/><div></div>
+						</label>
+						<div class="label">Is current Auto Closed:</div>
+					</li>
+
+					<li class="li-input  divider-line" ng-show="community.is_auto_closed" ng-class="{'error':formOpenClose.autoClosedMessage.$invalid}">
+						<div class="label">Auto closed message:</div>
+						<div class="input"><input type="text" name="autoClosedMessage" ng-model="community.driver_restaurant_name" ng-required="community.is_auto_closed"></div>
+						<div class="box-error">
+							<small ng-show="formOpenClose.autoClosedMessage.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community.close_all_restaurants"/><div></div>
+						</label>
+						<div class="label">Close All Restaurants:</div>
+					</li>
+
+					<li class="li-input  divider-line" ng-show="community.close_all_restaurants" ng-class="{'error':formOpenClose.communityCloseAllRestaurantsNote.$invalid}">
+						<div class="label">Close All Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
+						<div class="input"><input type="text" name="communityCloseAllRestaurantsNote" ng-model="community.close_all_restaurants_note" ng-required="community.close_all_restaurants"></div>
+						<div class="box-error">
+							<small ng-show="formOpenClose.communityCloseAllRestaurantsNote.$error.required">Required.</small>
+						</div>
+					</li>
+
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community.close_3rd_party_delivery_restaurants"/><div></div>
+						</label>
+						<div class="label">Close 3rd Party Delivery Restaurants:</div>
+					</li>
+
+					<li class="li-input  divider-line" ng-show="community.close_3rd_party_delivery_restaurants" ng-class="{'error':formOpenClose.communityClose3rdPartyRestaurantsNote.$invalid}">
+						<div class="label">Close 3rd Party Delivery Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
+						<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"></div>
+						<div class="box-error">
+							<small ng-show="formOpenClose.communityClose3rdPartyRestaurantsNote.$error.required">Required.</small>
+						</div>
+					</li>
+
+
+					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants" >
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community.dont_warn_till_enabled"/><div></div>
+						</label>
+						<div class="label">If it is closed and it has drivers doesn't warn CS till (PST):</div>
+					</li>
+
+					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}">
+						<div class="input" ng-if="community.dont_warn_till_enabled">
+							<input type="datetime-local" ng-disabled="!community.dont_warn_till_enabled" ng-required="community.dont_warn_till_enabled" name="dontWarnTill" ng-model="community.dont_warn_till" placeholder="">
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSavingAlias">
+						<button class="button green" ng-click="formOpenCloseSave();">Save</button>
+					</li>
+					<li class="li-input" ng-show="isSavingAlias">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
+		</ng-form>
+	</div>
+</div>
