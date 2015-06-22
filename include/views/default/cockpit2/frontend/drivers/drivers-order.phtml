@@ -27,23 +27,23 @@
 			</div>
 		</div>
 		<br>
-		<a href="http://maps.apple.com/?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}" ng-if="iOS" target="_blank">
+		<a href="http://maps.apple.com/?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}" ng-if="iOS" target="_system">
 			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=400x100&markers=color:green%7Clabel:A%7C{{oc.order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{oc.order._restaurant_lat}},{{oc.order._restaurant_lon}}&sensor=false&visual_refresh=true&scale=2');"></div>
 		</a>
-		<a href="http://maps.google.com/maps?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}" ng-if="!iOS" target="_blank">
+		<a href="http://maps.google.com/maps?daddr={{oc.order.address}}&saddr={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
 			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=400x100&markers=color:green%7Clabel:A%7C{{oc.order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{oc.order._restaurant_lat}},{{oc.order._restaurant_lon}}&sensor=false&visual_refresh=true&scale=2');"></div>
 		</a>
 		<div class="info-block">
 			<div class="order-icon3"><i class="icon-chef"></i></div>
 			<div class="order-info">
 				<div class="info-name">{{oc.order._restaurant_name}}</div>
-				<div class="info-phone"><a href="tel:+1{{oc.order._restaurant_phone}}" target="_blank">{{oc.order._restaurant_phone | formatPhone}}</a></div>
+				<div class="info-phone"><a href="tel:+1{{oc.order._restaurant_phone}}" target="_system">{{oc.order._restaurant_phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 				<div class="info-address"><p class="order-info-address">
-					<a href="http://maps.apple.com/?q={{oc.order._restaurant_address}}" ng-if="iOS" target="_blank">
+					<a href="http://maps.apple.com/?q={{oc.order._restaurant_address}}" ng-if="iOS" target="_system">
 						<span>{{oc.order._restaurant_address}}</span>
 					</a>
-					<a href="http://maps.google.com/maps?q={{oc.order._restaurant_address}}" ng-if="!iOS" target="_blank">
+					<a href="http://maps.google.com/maps?q={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
 						<span>{{oc.order._restaurant_address}}</span>
 					</a>
 				</div>
@@ -56,10 +56,10 @@
 				<div class="info-phone"><a href ng-click="callText(oc.order.phone)">{{oc.order.phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 				<div class="info-address"><p class="order-info-address">
-					<a href="http://maps.apple.com/?q={{oc.order.address}}" ng-if="iOS" target="_blank">
+					<a href="http://maps.apple.com/?q={{oc.order.address}}" ng-if="iOS" target="_system">
 						<span>{{oc.order.address}}</span>
 					</a>
-					<a href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_blank">
+					<a href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_system">
 						<span>{{oc.order.address}}</span>
 					</a>
 				</div>
@@ -73,7 +73,7 @@
 			<div ng-repeat="resource in oc.order.resources" class="order-info-resource">
 				<div class="order-icon3"><i class="fa fa-file"></i></div>
 				<div class="order-info2 order-info-small">
-					<a href="{{resource.path}}" target="_blank">{{resource.name}}</a>
+					<a href="{{resource.path}}" target="_system">{{resource.name}}</a>
 				</div>
 			</div>
 		</div>
@@ -284,7 +284,7 @@
 				<div ng-switch-when="2">
 					<div class="order-info2 order-info-small">
 						If prices in store differ from what it says above, plz let us know!<br>
-						Just email your receipt and the order number to <a href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
+						Just email your receipt and the order number to <a target="_system" href="mailto:menus@crunchbutton.com">menus@crunchbutton.com</a>.<br>
 						1 in 3 menu updates will earn you a random $ amount bonus ;)
 					</div>
 				</div>
@@ -292,7 +292,7 @@
 					<div class="order-info2 order-info-small">
 						Got any suggestions to make delivery faster from this restaurant? <br>
 						Faster parking nearby, calling in orders, skipping lines, etc?<br>
-						Just email your ideas and the restaurant name to <a href="mailto:faster@crunchbutton.com">faster@crunchbutton.com</a><br>
+						Just email your ideas and the restaurant name to <a target="_system" href="mailto:faster@crunchbutton.com">faster@crunchbutton.com</a><br>
 						1 in 2 suggestions will earn you a random $ amount bonus ;)
 					</div>
 				</div>
