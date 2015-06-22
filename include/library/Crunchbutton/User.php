@@ -195,7 +195,7 @@ class Crunchbutton_User extends Cana_Table {
 		if( !$this->_phone ) {
 			$phone = Phone::o( $this->id_phone );
 			$phone = $phone->phone;
-			$this->_phone = Phone::formatted( $phone );
+			$this->_phone = $phone;
 		}
 		return $this->_phone;
 	}
