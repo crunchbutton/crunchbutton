@@ -26,10 +26,8 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		$this->media = $this->media ? json_encode($this->media) : null;
 
-		if( !$this->id_phone ){
-			$phone = Phone::byPhone( $this->phone );
-			$this->id_phone = $phone->id_phone;
-		}
+		$phone = Phone::byPhone( $this->phone );
+		$this->id_phone = $phone->id_phone;
 
 		parent::save();
 
@@ -56,14 +54,14 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
  	public function byPhone( $phone, $id_support = false ){
 
- 		$phone = str_replace( '-', '', $phone );
+ 		$phone = Phone::clean( $phone );
 
  		$where = ( $id_support ) ? ' OR sm.id_support = "' . $id_support . '" ' : '';
 
- 		return Crunchbutton_Support_Message::q( "SELECT sm.* FROM support_message sm
-																							INNER JOIN support s ON s.id_support = sm.id_support
-																								WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '" . $phone . "' " . $where . "
-																								ORDER BY sm.id_support_message ASC" );
+ 		return Crunchbutton_Support_Message::q( 'SELECT sm.* FROM support_message sm
+ 																							INNER JOIN support s ON s.id_support = sm.id_support
+ 																							INNER JOIN phone p ON p.id_phone = s.id_phone
+ 																							WHERE p.phone = ? ', [ $phone ] );
 	}
 
 	public function exports($guid = null) {

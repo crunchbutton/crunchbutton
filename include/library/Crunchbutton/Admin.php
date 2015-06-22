@@ -147,7 +147,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getByPhone( $phone, $activeOnly = false){
-		return Crunchbutton_Admin::q("SELECT * FROM admin a WHERE ".($activeOnly ? 'active=true AND' : '')." (REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}') ORDER BY id_admin DESC LIMIT 1 ")->get(0);
+		return Crunchbutton_Admin::q( "SELECT * FROM admin a INNER JOIN phone p ON a.id_phone = p.id_phone AND p.phone = ? ".($activeOnly ? 'WHERE a.active=true ' : '')." ORDER BY id_admin DESC LIMIT 1", [ Phone::clean( $phone ) ] )->get( 0 );
 	}
 
 	public function getByPhoneSetup( $phone ){
@@ -155,14 +155,13 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getCSAdminByPhone( $phone ){
+		die('@deprecated');
 		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
 		return Crunchbutton_Admin::q( "SELECT * FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = '" . $group->id_group ."' WHERE REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY a.id_admin DESC LIMIT 1 " );
 	}
 
 	public function checkIfThePhoneBelongsToAnAdmin( $phone ){
-		$phone = str_replace( '-', '', $phone );
-		$phone = str_replace( ' ', '', $phone );
-		return Crunchbutton_Admin::q( "SELECT * FROM admin WHERE REPLACE( phone, '-', '' ) = '$phone' OR REPLACE( txt, '-', '' ) = '$phone' OR REPLACE( testphone, '-', '' ) = '$phone'" );
+		return Crunchbutton_Admin::q( "SELECT * FROM admin a INNER JOIN phone p ON a.id_phone = p.id_phone AND p.phone = ?", [ Phone::clean( $phone ) ] );
 	}
 
 	public function totalOrdersDelivered(){
@@ -186,10 +185,12 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function phone(){
-		$phone = $this->phone;
-		$phone = preg_replace('/[^\d]*/i','',$phone);
-		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
-		return $phone;
+		if( !$this->_phone ) {
+			$phone = Phone::o( $this->id_phone );
+			$phone = $phone->phone;
+			$this->_phone = Phone::formatted( $phone );
+		}
+		return $this->_phone;
 	}
 
 	public function getTxtNumber(){
@@ -206,8 +207,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getPhoneNumber(){
-		if( $this->phone ){
-			return $this->phone;
+		if( $this->id_phone ){
+			return $this->phone();
 		}
 		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
 		foreach( $notifications as $notification ){
@@ -813,7 +814,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'id_admin' => $this->id_admin,
 			'login' => $this->login,
 			'name' => $this->name,
-			'phone' => $this->phone,
+			'phone' => $this->phone(),
 			'txt' => $this->txt,
 			'email' => $this->email,
 			'timezone' => $this->timezone,
@@ -1050,14 +1051,13 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function save() {
+
 		$this->phone = Phone::clean($this->phone);
 		$this->txt = Phone::clean($this->txt);
 		$this->testphone = Phone::clean($this->testphone);
 
-		if( !$this->id_phone ){
-			$phone = Phone::byPhone( $this->phone );
-			$this->id_phone = $phone->id_phone;
-		}
+		$phone = Phone::byPhone( $this->phone );
+		$this->id_phone = $phone->id_phone;
 
 		// if it is a new record saves the author
 		if( !$this->id_admin && c::admin()->id_admin ){

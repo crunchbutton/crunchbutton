@@ -2506,7 +2506,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function totalOrdersByPhone( $phone ){
-		$phone = trim( str_replace( '-', '', str_replace( ' ', '', $phone ) ) );
+		$phone = Phone::clean( $phone );
 		$query = 'SELECT COUNT(*) AS total FROM `order` INNER JOIN phone using(id_phone) WHERE phone.phone = ?';
 		$row = Cana::db()->get( $query, [$phone])->get(0);
 		if( intval( $row->total ) ){
@@ -3078,10 +3078,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$new = $this->id_order ? false : true;
 
-		if( !$this->id_phone ){
-			$phone = Phone::byPhone( $this->phone );
-			$this->id_phone = $phone->id_phone;
-		}
+		$phone = Phone::byPhone( $this->phone );
+		$this->id_phone = $phone->id_phone;
 
 		parent::save();
 
