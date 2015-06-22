@@ -115,49 +115,12 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 					break;
 
-					// save a community
-					default:
+					// save close/open
+					case 'save-open-close':
 
-						// save a community
 						$id_community = $this->request()[ 'id_community' ];
-						$is_new = false;
-						if( $id_community ){
-							$community = Crunchbutton_Community::o( $id_community );
-							if( !$community->id_community ){
-								$community = new Crunchbutton_Community;
-								$is_new = true;
-							}
-						} else {
-							$community = new Crunchbutton_Community;
-							$is_new = true;
-						}
-
-						if( $is_new ){
-							$_community = Crunchbutton_Community::permalink( $this->request()[ 'permalink' ] );
-							if( $_community->id_community ){
-								$this->_error( 'Sorry, this permalink was already taken!' );
-							}
-						} else {
-							if( $community->permalink != $this->request()[ 'permalink' ] ){
-								$_community = Crunchbutton_Community::permalink( $this->request()[ 'permalink' ] );
-								if( $_community->id_community ){
-									$this->_error( 'Sorry, this permalink was already taken!' );
-								}
-							}
-						}
-
-						$community->active = $this->request()[ 'active' ];
-						$community->auto_close = $this->request()[ 'auto_close' ];
-						$community->loc_lat = $this->request()[ 'loc_lat' ];
-						$community->loc_lon = $this->request()[ 'loc_lon' ];
-						$community->name = $this->request()[ 'name' ];
-						$community->permalink = $this->request()[ 'permalink' ];
-						$community->private = 0;
-						$community->image = $this->request()[ 'image' ];
-						$community->range = $this->request()[ 'range' ];
+						$community = Crunchbutton_Community::o( $id_community );
 						$community->is_auto_closed = intval( $this->request()[ 'is_auto_closed' ] );
-						$community->timezone = $this->request()[ 'timezone' ];
-						$community->id_driver_restaurant = $this->request()[ 'id_driver_restaurant' ];
 
 						if( intval( $this->request()[ 'close_all_restaurants' ] ) != intval( $community->close_all_restaurants ) ){
 							$community->close_all_restaurants = intval( $this->request()[ 'close_all_restaurants' ] );
@@ -207,6 +170,59 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						if( intval( $this->request()[ 'dont_warn_till_enabled' ] ) == 0 ){
 							$community->dont_warn_till = null;
 						}
+
+						$community->save();
+
+						if( $community->id_community ){
+							echo $community->json();
+						} else {
+							$this->_error( 'error' );
+						}
+
+					break;
+
+					// save a community
+					default:
+
+						// save a community
+						$id_community = $this->request()[ 'id_community' ];
+						$is_new = false;
+						if( $id_community ){
+							$community = Crunchbutton_Community::o( $id_community );
+							if( !$community->id_community ){
+								$community = new Crunchbutton_Community;
+								$is_new = true;
+							}
+						} else {
+							$community = new Crunchbutton_Community;
+							$is_new = true;
+						}
+
+						if( $is_new ){
+							$_community = Crunchbutton_Community::permalink( $this->request()[ 'permalink' ] );
+							if( $_community->id_community ){
+								$this->_error( 'Sorry, this permalink was already taken!' );
+							}
+						} else {
+							if( $community->permalink != $this->request()[ 'permalink' ] ){
+								$_community = Crunchbutton_Community::permalink( $this->request()[ 'permalink' ] );
+								if( $_community->id_community ){
+									$this->_error( 'Sorry, this permalink was already taken!' );
+								}
+							}
+						}
+
+						$community->active = $this->request()[ 'active' ];
+						$community->auto_close = $this->request()[ 'auto_close' ];
+						$community->loc_lat = $this->request()[ 'loc_lat' ];
+						$community->loc_lon = $this->request()[ 'loc_lon' ];
+						$community->name = $this->request()[ 'name' ];
+						$community->permalink = $this->request()[ 'permalink' ];
+						$community->private = 0;
+						$community->image = $this->request()[ 'image' ];
+						$community->range = $this->request()[ 'range' ];
+						$community->timezone = $this->request()[ 'timezone' ];
+						$community->id_driver_restaurant = $this->request()[ 'id_driver_restaurant' ];
 
 						$community->save();
 
