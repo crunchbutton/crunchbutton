@@ -1,4 +1,3 @@
-<div class="top-pad"></div>
 
 <div class="content-padding" ng-hide="isModal">
 	<h1 class="title"><i class="fa fa-comments-o"></i> Make a call / Send SMS</h1>
@@ -8,13 +7,13 @@
 
 	<div ng-class="{'two-col': !isModal}" ng-hide="hideCallBox">
 
-		<div class="ul-inputs box-content2">
+		<div class="ul-inputs" ng-class="{'box-content2': !isModal}">
 
 			<form name="formCall" novalidate>
 
 				<ul ng-class="{'submitted':formCallSubmitted}" class="ul-inputs">
 
-					<li class="li-input">
+					<li class="li-input" ng-show="!isModal">
 						<strong>Make a call</strong>
 					</li>
 
@@ -25,7 +24,7 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formCall.phone.$invalid}">
+					<li class="li-input" ng-class="{'error':formCall.phone.$invalid}" ng-show="!isModal">
 						<div class="label">Phone:</div>
 						<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="call.phone"></div>
 						<div class="box-error">
@@ -33,7 +32,7 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formCall.to.$invalid}">
+					<li class="li-input" ng-class="{'error':formCall.to.$invalid}" ng-show="!isModal">
 						<div class="label">Are you calling to:</div>
 						<div class="input">
 							<select name="to" ng-model="call.to" required ng-options="opt.to as opt.label for opt in call._to"></select>
@@ -42,11 +41,16 @@
 							<small ng-show="formCall.to.$error.required">Required.</small>
 						</div>
 					</li>
+					
+					<div ng-show="!isModal"><br></div>
 
-					<li class="li-input" ng-show="!formCallSending">
-						<button class="button save" ng-click="call.make();"><i class="fa fa-phone"></i> Cell Call</button>
-						<button class="button save hide-mobile" ng-click="call.voip();"><i class="fa fa-phone"></i> VOIP Call</button>
-					</li>
+					
+					<div class="double-cols" ng-show="!formCallSending">
+						<button class="button button-empty button-border button-green ng-scope button-full" ng-click="call.make()"><i class="fa fa-mobile"></i>&nbsp;&nbsp;Cell</button>
+						<button class="button button-empty button-border button-green ng-scope button-full" ng-click="call.voip()"><i class="fa fa-phone"></i>&nbsp;&nbsp;VOIP</button>
+					</div>
+					<div class="divider"></div>
+					
 					<li class="li-input" ng-show="formCallSending">
 						<i class="fa fa-circle-o-notch fa-spin"></i>
 					</li>
@@ -60,13 +64,13 @@
 
 	<div ng-class="{'two-col': !isModal}" ng-hide="hideSMSBox">
 
-		<div class="ul-inputs box-content2">
+		<div class="ul-inputs" ng-class="{'box-content2': !isModal}">
 
 			<form name="formSMS" novalidate>
 
 				<ul ng-class="{'submitted':formSMSSubmitted}" class="ul-inputs">
 
-					<li class="li-input">
+					<li class="li-input" ng-show="!isModal">
 						<strong>Send SMS</strong>
 					</li>
 
@@ -85,7 +89,7 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formSMS.phone.$invalid}">
+					<li class="li-input" ng-class="{'error':formSMS.phone.$invalid}" ng-show="!isModal">
 						<div class="label">Phone:</div>
 						<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="sms.phone"></div>
 						<div class="box-error">
@@ -94,15 +98,15 @@
 					</li>
 
 					<li class="li-input" ng-class="{'error':formSMS.message.$invalid}">
-						<div class="label">Message:</div>
-						<div class="input"><input type="text" name="message" required  placeholder="Message" ng-model="sms.message"></div>
+						<div class="label" ng-show="!isModal">Message:</div>
+						<div class="input"><textarea name="message" required placeholder="Message" ng-model="sms.message"></textarea></div>
 						<div class="box-error">
 							<small ng-show="formSMS.message.$error.required">Required.</small>
 						</div>
 					</li>
 
 					<li class="li-input" ng-show="!formSMSSending">
-						<button class="button save" ng-click="sms.send();"><i class="fa fa-comment"></i> Send SMS</button>
+						<button class="button button-empty button-border button-green button-full" ng-click="sms.send();"><i class="fa fa-comment"></i> Send Text</button>
 					</li>
 					<li class="li-input" ng-show="formSMSSending">
 						<i class="fa fa-circle-o-notch fa-spin"></i>
