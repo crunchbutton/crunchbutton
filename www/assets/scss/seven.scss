@@ -3,6 +3,9 @@
 @import 'seven.spinner';
 
 $link: #d74924;
+$bodyBgColor: #fffef8;
+$bgPaymentColor: #373737;
+$bgSideColor: #474747;
 
 body {
 	line-height: 1;
@@ -14,7 +17,7 @@ body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
 body, .bg {
-	background: #fffef8;
+	background: $bodyBgColor;
 }
 
 ol, ul {
@@ -1868,23 +1871,33 @@ a.button{
 	.restaurant-right-bar{
 		float: right;
 	}
+	.restaurant-comment {
+		background: none;
+		width: 26em;
+		float: right;
+		margin-top: -11em;
+	}
+	.faq-sun {
+		border-left: 2.4em solid transparent;
+	}
 
 	.restaurant-side-bar {
 		width: 30em;
-		background: #474747;
+		background: $bgSideColor;
 		padding: 1.5em;
 		color: #fff;
 	}
 	.restaurant-box {
 		box-sizing: border-box;
 		margin: 0 auto;
-		margin-top: 1.2em;
+		margin-top: 1.4em;
 		width: 28em;
 		font-size: .9em;
+		margin-right: 1.4em;
 	}
 
 	.restaurant-side-bar .restaurant-title{
-		background: #373737;
+		background: $bgPaymentColor;
 	}
 
 	.restaurant-side-bar .divider.dots {
@@ -1895,15 +1908,16 @@ a.button{
 		color: #f88f68;
 	}
 	.cart-items {
-		background: #373737;
+		background: $bgPaymentColor;
 	}
 	.restaurant-items-list {
 		padding-top: 0;
 	}
 	.restaurant-items {
 		float: left;
-		width: 65.1%;
+		width: 65.5%;
 		box-sizing: border-box;
+		margin-top: .2em;
 	}
 	.restaurant-name {
 		margin-top: -29em;
@@ -1944,13 +1958,11 @@ a.button{
 		color: inherit;
 		background: none;
 		padding: 0;
-		margin-bottom: 2.1em;
+		margin-bottom: 1.4em;
+		height: auto;
 	}
-	.dish-item-description {
-		color: #333333;
-	}
-	.dish-item-price {
-		color: #d9462f;
+	.restaurant-category {
+		margin-top: 1.6em;
 	}
 
 	/*
@@ -1968,7 +1980,8 @@ a.button{
 	*/
 	.dish-item-name {
 		font-weight: normal;
-		font-size: 1.2em;
+		font-size: 1.4em;
+		line-height: 1.7em;
 	}
 	.starred-item .dish-item-name {
 		font-weight: bold;
@@ -1979,18 +1992,24 @@ a.button{
 	}
 	.dish-item-description {
 		color: #e7806c;
-		font-size: 1.0em;
-		text-overflow: ellipsis;
+		font-size: 1.2em;
+		text-overflow: inherit;
 		display: block;
-		white-space: nowrap;
-		overflow: hidden;
-		/* @test
-		color: #fff;
-		opacity: .8; */
+		white-space: pre-wrap;
+		overflow: show;
+		line-height: 1.7em;
+	}
+	
+	.dish-item-description {
+		color: #333333;
+	}
+	.dish-item-price {
+		color: #d9462f;
 	}
 
+
 	.payment-content{
-		background: #373737;
+		background: $bgPaymentColor;
 		color: #fff;
 		padding-bottom: 2em;
 	}
@@ -2018,7 +2037,7 @@ a.button{
 			white-space: nowrap;
 		}
 	.restaurant-side-user-info{
-		background: #474747;
+		background: $bgSideColor;
 	}
 
 }
@@ -4047,7 +4066,14 @@ font-familt: "Museo Slab";
 	.restaurant-pic {
 		height: 35em;
 		-webkit-filter: brightness(0.60) contrast(125%);
-
+	}
+	.restaurant-message {
+		font-size: 1.4em;
+		margin-bottom: 0;
+		float: right;
+		color: #fff;
+		margin-top: -3em;
+		margin-right: .2em;
 	}
 	.restaurant-pic-overlay {
 		display: none;
@@ -4068,9 +4094,9 @@ font-familt: "Museo Slab";
 	.restaurant-content-body {
 		margin-top: -14em !important;
 		-webkit-filter: brightness(0.999);
-		padding: 0 0 1.5em 1.5em !important;
+		padding: 0 0 1.2em 1.2em !important;
 		box-sizing: border-box;
-		background: #fffef8 url(	data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVQI12MwAwAAOAA3oSbS9QAAAABJRU5ErkJggg==) no-repeat top right;
+		background: $bodyBgColor;
 		background-size: 333px 100%;
 	}
 	.restaurant-content-body-background {

@@ -77,13 +77,25 @@ NGApp.directive('addToCart', function(OrderService) {
 							$(this).remove();
 						});
 						animate.appendTo('body');
-							animate.css({
+						var pos;
+						if (App.rootScope.isMobileWidth) {
+							pos = {
 								top: 15,
 								left: $(document).width()-50,
 								width: 44,
 								height: 28,
 								opacity: .3
-							});
+							};
+						} else {
+							pos = {
+								top: 300,
+								left: $(document).width()*.7,
+								width: 44,
+								height: 28,
+								opacity: .3
+							};
+						}
+						animate.css(pos);
 					},0);
 				}
 

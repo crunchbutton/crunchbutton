@@ -19,8 +19,6 @@
 
 			<div ng-if="restaurant.eta" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
 
-			<div restaurant-is-closed></div>
-
 			<!-- desktop version -->
 			<ng-include ng-if="!isMobileWidth" src="'assets/view/restaurant-desktop.html'"></ng-include>
 
