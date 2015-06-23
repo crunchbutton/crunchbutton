@@ -69,6 +69,12 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$payment_type->id_admin = $admin->id_admin;
 		}
 
+		if( $this->request()[ 'dob' ] ){
+			$admin->dob = $this->request()[ 'dob' ];
+			$admin->save();
+		}
+
+
 		$payment_type->using_pex = ( intval( $this->request()[ 'using_pex' ] ) ? intval( $this->request()[ 'using_pex' ] ) : 0 );
 
 		if( $this->request()[ 'using_pex_date_formatted' ] ){
@@ -140,8 +146,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		$stripe = $paymentType->getAndMakeStripe( [ 'bank_account' => $token ] );
 
 		if( $stripe && !is_array( $stripe ) ){
-			// i dont think we need this anymore
-			//$paymentType->testAccount();
+			$paymentType->stripeVerify();
 			$this->payInfo( $admin );
 			exit;
 		} else {
@@ -183,6 +188,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'id_admin' ] = $admin->id_admin;
 			$out[ 'name' ] = $admin->name;
 			$out[ 'login' ] = $admin->login;
+			$out[ 'dob' ] = $admin->dob;
 			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
 			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin )->get( 0 );
