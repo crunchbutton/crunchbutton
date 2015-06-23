@@ -5,7 +5,12 @@ class Crunchbutton_Order_Status extends Cana_Table {
 	private $_actions;
 
 	public function __construct($order) {
-		$actions = Order_Action::q('select * from order_action where id_order=? order by timestamp desc', [$order->id_order]);
+		$actions = Order_Action::q('
+			select * from order_action
+			where id_order=?
+			and type!=?
+			order by timestamp desc
+		', [$order->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED]);
 		$this->_order = $order;
 
 		$this->_actions = [];
