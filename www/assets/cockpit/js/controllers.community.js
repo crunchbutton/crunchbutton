@@ -150,7 +150,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 });
 
 
-NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, MapService ) {
+NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService ) {
 
 	$rootScope.$on( 'openClosingTimeContainer', function(e, data) {
 		App.dialog.show('.open-close-community-dialog-container');

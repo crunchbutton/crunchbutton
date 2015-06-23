@@ -3,8 +3,9 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 	var service = { 'PAY_TYPE_REIMBURSEMENT' : 'reimbursement', 'PAY_TYPE_PAYMENT' : 'payment' };
 
 	// Create a private resource 'Driver'
-	var drivers = $resource( App.service + 'driver/:action/:id_admin', { action: '@action', id_admin: '@id_admin' }, {
+	var drivers = $resource( App.service + 'driver/:action/:id_admin/:id_community', { action: '@action', id_admin: '@id_admin', id_community: '@id_community' }, {
 				// list methods
+				'byCommunity' : { 'method': 'GET', params : { 'action' : 'by-community' }, isArray: true },
 				'listSimple' : { 'method': 'GET', params : { 'action' : 'all' }, isArray: true },
 				'listAllAdmins' : { 'method': 'GET', params : { 'action' : 'all-admins' }, isArray: true },
 				'listAllAdminsWithLogin' : { 'method': 'GET', params : { 'action' : 'all-admins-with-login' }, isArray: true },
@@ -49,6 +50,13 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 			callback( data );
 		} );
 	}
+
+	service.byCommunity = function( id_community, callback ){
+		drivers.byCommunity( { id_community: id_community }, function( data ){
+			callback( data );
+		} );
+	}
+
 
 	service.listAllAdmins = function( callback ){
 		drivers.listAllAdmins( function( data ){

@@ -2559,6 +2559,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $this->_statuss;
 	}
 
+	public function clearStatus(){
+		$this->_statuss = null;
+	}
+
 
 	public function undoStatus() {
 		$status = $this->status()->last();
@@ -2590,7 +2594,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 
-	public function setStatus($status, $notify = false, $admin = null) {
+	public function setStatus($status, $notify = false, $admin = null, $note = null, $force = false) {
 		if (!$status) {
 			return false;
 		}
@@ -2599,14 +2603,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$admin = c::user();
 		}
 
-		if ($this->status()->driver() && $this->status()->driver()->id_admin != $admin->id_admin) {
-			return false;
+		if( !$force ){
+			if ($this->status()->driver() && $this->status()->driver()->id_admin != $admin->id_admin) {
+				return false;
+			}
 		}
 
 		(new Order_Action([
 			'id_order' => $this->id_order,
 			'id_admin' => $admin->id_admin,
 			'timestamp' => date('Y-m-d H:i:s'),
+			'note' => $note,
 			'type' => $status
 		]))->save();
 
@@ -2625,38 +2632,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'id_order' => $this->id_order,
 			'seconds' => 0
 		]);
-
-		return true;
-
-		// Pexcard stuff - #3992
-		$pexcard = $admin->pexcard();
-		if( $pexcard->id_admin_pexcard ){
-			switch ( $status ) {
-
-				case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
-
-						// Add $10 for the first accepted order - #3993
-						$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $admin->id_admin );
-						if( $shift->id_admin_shift_assign ){
-							$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
-						}
-						// https://github.com/crunchbutton/crunchbutton/issues/3992#issuecomment-70799809
-						$loadCard = true;
-						if( $this->pay_type == 'card' && $this->restaurant()->formal_relationship ){
-							$loadCard = false;
-						}
-						if( $loadCard ){
-							$pexcard->addFundsOrderAccepeted( $this->id_order );
-							Log::debug([ 'actions' => 'pex card LOADED', 'id_order' => $this->id_order, 'type' => 'pexcard-load' ]);
-						} else {
-							Log::debug([ 'actions' => 'pex card NOT loaded', 'id_order' => $this->id_order, 'type' => 'pexcard-load' ]);
-						}
-					break;
-				case Crunchbutton_Order_Action::DELIVERY_REJECTED:
-					$pexcard->removeFundsOrderCancelled( $this->id_order );
-					break;
-			}
-		}
 
 		return true;
 	}
@@ -3053,15 +3028,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
 		$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
 		foreach( $orders as $order ){
-			if( !$order->orderHasGeomatchedTicket() ){
-					$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
-					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
-					$action = new Crunchbutton_Order_Action;
-					$action->id_order = $order->id_order;
-					$action->timestamp = date( 'Y-m-d H:i:s' );
-					$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
-					$action->save();
-					exit();
+			if( !$order->isNativeApp() ){
+				if( !$order->orderHasGeomatchedTicket() ){
+						$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+						Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+						$action = new Crunchbutton_Order_Action;
+						$action->id_order = $order->id_order;
+						$action->timestamp = date( 'Y-m-d H:i:s' );
+						$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
+						$action->save();
+						exit();
+				}
 			}
 		}
 	}

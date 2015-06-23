@@ -1,0 +1,52 @@
+<div class="change-status-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="OrderDeliveryStatusCtrl">
+
+	<h2 class="title left"><span>Delivery Status</span></h2>
+
+	<div class="divider"></div>
+
+	<ng-form name="formDeliveryStatus">
+
+		<div class="ul-inputs">
+
+			<ul ng-class="{'submitted':formDeliveryStatusSubmitted}" class="ul-inputs">
+
+				<li class="li-input divider-line">
+					<div class="label">Driver</div>
+					<div class="input">
+						<select ng-model="status.driver.id_admin" ng-change="driverChanged()" name="driver" ng-options="driver.id_admin as driver.name for driver in drivers"></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="formDeliveryStatus.driver.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input divider-line">
+					<div class="label">Status</div>
+					<div class="input">
+						<select ng-model="status.status" name="status" ng-options="_status.value as _status.label for _status in statuses"></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="formDeliveryStatus.status.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input divider-line">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="notify_customer"/><div></div>
+					</label>
+					<div class="label">Notify customer about new driver</div>
+				</li>
+
+				<li class="li-input divider-line">
+					<button class="button green" ng-click="formDeliveryStatusSave();">Save</button>
+				</li>
+				<li class="li-input divider-line">
+					<button class="button orange" ng-click="text5MinAway();">
+						<span ng-show="text5MinAwaySending"><i class="fa fa-spinner fa-spin"></i> Sending</span>
+						<span ng-show="!text5MinAwaySending"><i class="fa fa-clock-o"></i> Text Customer I'm 5 Min Away</span>
+					</button>
+				</li>
+			</ul>
+		</div>
+	</ng-form>
+</div>

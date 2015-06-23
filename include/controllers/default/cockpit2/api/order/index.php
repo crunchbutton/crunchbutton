@@ -172,6 +172,67 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				echo json_encode($order->status()->last());
 				break;
 
+			case 'text-5-min-away':
+				$order->textCustomer( Cockpit_Order::I_AM_5_MINUTES_AWAY, true );
+				echo json_encode(['success' => 'true']);
+				break;
+
+			case 'status-change':
+
+				$id_admin = $this->request()[ 'id_admin' ];
+				$new_status = $this->request()[ 'status' ];
+				$notify_customer = intval( $this->request()[ 'notify_customer' ] ) == 1 ? true : false ;
+
+				$admin = Admin::o( $id_admin );
+
+				if( !$admin->id_admin || trim( $new_status ) == '' ){
+					$this->error( 404 );
+				}
+
+				$note = 'Status changed by ' . c::user()->name . ' (' . c::user()->login . ')';
+
+				$change = false;
+
+				$status = $order->status()->last();
+				if( $status[ 'driver' ] ){
+					if( $status[ 'driver' ][ 'id_admin' ] != $admin->id_admin ){
+						// Set order as rejected
+						$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, false, $driver, $note );
+						$order->clearStatus();
+						$change = true;
+					}
+				}
+
+				if( $status[ 'status' ] != $new_status ){
+					$change = true;
+				}
+
+				if( $change ){
+					switch ( $new_status ) {
+						case 'pickedup':
+							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, $notify_customer, $admin, $note, true );
+							break;
+
+						case 'delivered':
+							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, $notify_customer, $admin, $note, true );
+							break;
+
+						case 'accepted':
+							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, $notify_customer, $admin, $note, true );
+							break;
+
+						case 'rejected':
+							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, $notify_customer, $admin, $note, true );
+							break;
+					}
+				}
+
+				$order->clearStatus();
+				echo json_encode( $order->status()->last() );
+
+				break;
+
 			case 'ticket':
 				echo $order->getSupport(true)->json();
 				break;

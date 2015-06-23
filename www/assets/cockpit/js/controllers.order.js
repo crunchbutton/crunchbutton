@@ -128,7 +128,6 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 	options.push( { value: '200', label: '200' } );
 	$scope.limits = options;
 
-
 });
 
 NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService, SocketService) {
@@ -165,6 +164,10 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		});
 	};
 
+	$rootScope.$on( 'orderDeliveryStatusChanged', function(e, data) {
+		update();
+	});
+
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
 		MapService.style(map);
@@ -186,6 +189,10 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 
 	$scope.isRefunding = false;
 
+	$scope.changeOrderStatus = function(){
+		$rootScope.$broadcast( 'orderDeliveryStatusChange', { id_order: $routeParams.id, id_community: $scope.order.id_community }  );
+	}
+
 	$scope.refund = function(){
 
 		if( $scope.isRefunding ){
@@ -202,9 +209,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 
 			$scope.isRefunding = true;
 			OrderService.refund( $scope.order.id_order, function( result ){
-
 				$scope.isRefunding = false;
-
 				if( result.success ){
 					$rootScope.reload();
 				} else {
@@ -249,7 +254,6 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		} );
 	}
 
-
 	$scope.resend_notification_drivers = function(){
 		$scope.isDriverNotifying = true;
 		OrderService.resend_notification_drivers( $scope.order, function(result) {
@@ -266,3 +270,85 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 
 	update();
 });
+
+NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, OrderService, DriverService ) {
+
+	var id_order = null;
+	var id_community = null;
+	var id_driver = null;
+
+	$rootScope.$on( 'orderDeliveryStatusChange', function(e, data) {
+		$scope.status = null;
+		$scope.notify_customer = false;
+		id_order = data.id_order;
+		id_community = data.id_community;
+		App.dialog.show('.change-status-dialog-container');
+		load();
+	} );
+
+	$scope.driverChanged = function(){
+		$scope.notify_customer = ( id_driver != $scope.status.driver.id_admin );
+	}
+
+	var load = function(){
+
+		$scope.text5MinAwaySending = false;
+
+		OrderService.delivery_status( id_order, function( data ){
+			$scope.status = data;
+			if( data && data.driver && data.driver.id_admin ){
+				id_driver = data.driver.id_admin;
+			}
+		} );
+		DriverService.byCommunity( id_community, function( data ){
+			$scope.drivers = data;
+		} );
+	}
+
+	$scope.statuses = OrderService.statuses;
+
+	$scope.text5MinAway = function(){
+
+		if( $scope.text5MinAwaySending ){
+			return;
+		}
+
+		if( confirm( 'Confirm send message to customer?' ) ){
+			$scope.text5MinAwaySending = true;
+			OrderService.text_5_min_away( id_order, function( json ){
+				if( json.success ){
+					$rootScope.$broadcast( 'orderDeliveryStatusChanged', json );
+				} else {
+					App.alert( 'Error saving: ' + json.error );
+				}
+				$scope.text5MinAwaySending = false;
+			} );
+		}
+	}
+
+	$scope.formDeliveryStatusSave = function(){
+
+		if( $scope.formDeliveryStatus.$invalid ){
+			$scope.formDeliveryStatusSubmitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		var params = { 	id_order: id_order,
+										notify_customer: $scope.notify_customer,
+										status: $scope.status.status,
+										id_admin: $scope.status.driver.id_admin };
+
+		OrderService.change_delivery_status( params, function( json ){
+			$scope.isSaving = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$rootScope.closePopup();
+				$rootScope.$broadcast( 'orderDeliveryStatusChanged', json );
+			}
+		} );
+	}
+
+} );

@@ -61,6 +61,18 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $out );
 				break;
 
+			case 'by-community':
+				$community = Crunchbutton_Community::o( c::getPagePiece( 3 ) );
+				$out = [];
+				if( $community->id_community ){
+					$drivers = $community->getDriversOfCommunity();
+					foreach( $drivers as $driver ){
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name ];
+					}
+				}
+				echo json_encode( $out );
+				break;
+
 			case 'list-payment-type':
 				$out = [];
 				$drivers = Admin::drivers();
