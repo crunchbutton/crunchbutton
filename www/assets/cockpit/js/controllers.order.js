@@ -13,7 +13,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService) {
+NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService, CommunityService) {
 	angular.extend($scope, ViewListService);
 
 //	var query = $location.search();
@@ -96,21 +96,27 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 		angular.copy( $scope.query, params );
 		console.log('params',params);
 		OrderService.exports( params, function(){
-			alert(1);
 		} );
 	}
 
 
 	$scope.moreOptions = function(){
 		$scope.show_more_options = !$scope.show_more_options;
-		if( $scope.show_more_options && !$scope.restaurants ){
-			$scope.restaurants = [];
-			RestaurantService.shortlist( function( json ){
-				$scope.restaurants = json;
-			} );
-		} else {
-			$scope.query.restaurant = null;
-			$scope.query.restaurant = null;
+
+		if( $scope.show_more_options) {
+
+			if( !$scope.restaurants ){
+				$scope.restaurants = [];
+				RestaurantService.shortlist( function( json ){
+					$scope.restaurants = json;
+				} );
+			}
+
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
 		}
 	}
 
