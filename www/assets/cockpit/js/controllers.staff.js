@@ -117,16 +117,14 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 	}
 
 	$scope.reverify = function( callback ) {
-		StaffService.reverify($scope.staff.id_admin, function( data ) {
-			if( callback ){
-				callback();
-			}
+		StaffService.reverify( $scope.staff.id_admin, function( data ) {
 			if (data.status.status == 'unverified') {
 				App.alert('Could not finish verification. Missing fields: ' + data.status.fields.join(','));
 			} else {
 				App.alert('Looks like it might have reverified successfully.');
 				load();
 			}
+			if( callback ){ callback(); }
 		});
 	};
 
