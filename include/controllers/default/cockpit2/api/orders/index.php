@@ -147,14 +147,13 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			GROUP BY `order`.id_order
 			ORDER BY `order`.id_order DESC
 		';
-		if (!$export) {
-			$q .= '
-				LIMIT ?
-				OFFSET ?
-			';
-			$keys[] = $getCount ? $limit : $limit+1;
-			$keys[] = $offset;
-		}
+
+		$q .= '
+			LIMIT ?
+			OFFSET ?
+		';
+		$keys[] = $getCount ? $limit : $limit+1;
+		$keys[] = $offset;
 
 		// do the query
 		$data = [];
@@ -178,42 +177,44 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 		while ($o = $r->fetch()) {
 
-			if (!$export && !$getCount && $i == $limit + 1) {
-				$more = true;
-				break;
-			}
-
-			$o->status = Order::o( $o->id_order )->status()->last();
-			$restaurant = Restaurant::o( $o->id_restaurant );
-			$o->delivery_it_self = $restaurant->deliveryItSelf();
-			// See: #3763
-			if( !$o->lat ){
-				$user = User::o( $o->id_user );
-				if( $user->id_user && $user->location_lon == $o->lon && $user->location_lat ){
-					$o->lat = $user->location_lat;
-				} else if( !$o->lon && $user->location_lon && $user->location_lat ){
-					$o->lon = $user->location_lon;
-					$o->lat = $user->location_lat;
+			if( $export ){
+				$o = Order::o( $o->id_order );
+			} else {
+				if (!$export && !$getCount && $i == $limit + 1) {
+					$more = true;
+					break;
 				}
-			}
 
-			$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
-
-			foreach (get_object_vars($o) as $key => $value) {
-				$type = gettype($value);
-
-				if (($type == 'string' || $type == 'integer') && in_array($key, $boolFields)) {
-					$o->{$key} = $o->{$key} ? true : false;
-				} elseif ($type == 'string' && is_numeric($value)) {
-					if (strpos($value, '.') === false) {
-						$o->{$key} = intval($o->{$key});
-					} else {
-						$o->{$key} = floatval($o->{$key});
+				$o->status = Order::o( $o->id_order )->status()->last();
+				$restaurant = Restaurant::o( $o->id_restaurant );
+				$o->delivery_it_self = $restaurant->deliveryItSelf();
+				// See: #3763
+				if( !$o->lat ){
+					$user = User::o( $o->id_user );
+					if( $user->id_user && $user->location_lon == $o->lon && $user->location_lat ){
+						$o->lat = $user->location_lat;
+					} else if( !$o->lon && $user->location_lon && $user->location_lat ){
+						$o->lon = $user->location_lon;
+						$o->lat = $user->location_lat;
 					}
 				}
 
-			}
+				$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
 
+				foreach (get_object_vars($o) as $key => $value) {
+					$type = gettype($value);
+
+					if (($type == 'string' || $type == 'integer') && in_array($key, $boolFields)) {
+						$o->{$key} = $o->{$key} ? true : false;
+					} elseif ($type == 'string' && is_numeric($value)) {
+						if (strpos($value, '.') === false) {
+							$o->{$key} = intval($o->{$key});
+						} else {
+							$o->{$key} = floatval($o->{$key});
+						}
+					}
+				}
+			}
 			$data[] = $o;
 			$i++;
 		}
@@ -221,10 +222,10 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$pages = ceil($count / $limit);
 
 		if ($export) {
-			// @todo: make these layouts actulay do something. they are from old cockpit and need to be migrated
 			c::view()->orders = $data;
+			c::view()->title = 'Orders_Export_' . date( 'Y-m-d' );
 			c::view()->layout('layout/csv');
-			c::view()->display('orders/csv', ['display' => true, 'filter' => false]);
+			c::view()->display('csv/orders', ['display' => true, 'filter' => false]);
 		} else {
 
 			echo json_encode([

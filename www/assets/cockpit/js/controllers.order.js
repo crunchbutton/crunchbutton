@@ -13,7 +13,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService) {
+NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService) {
 	angular.extend($scope, ViewListService);
 
 //	var query = $location.search();
@@ -88,6 +88,41 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			});
 		}
 	});
+
+	$scope.show_more_options = false;
+
+	$scope.exports = function(){
+		var params = {};
+		angular.copy( $scope.query, params );
+		console.log('params',params);
+		OrderService.exports( params, function(){
+			alert(1);
+		} );
+	}
+
+
+	$scope.moreOptions = function(){
+		$scope.show_more_options = !$scope.show_more_options;
+		if( $scope.show_more_options && !$scope.restaurants ){
+			$scope.restaurants = [];
+			RestaurantService.shortlist( function( json ){
+				$scope.restaurants = json;
+			} );
+		} else {
+			$scope.query.restaurant = null;
+			$scope.query.restaurant = null;
+		}
+	}
+
+
+	var options = [];
+	options.push( { value: '20', label: '20' } );
+	options.push( { value: '50', label: '50' } );
+	options.push( { value: '100', label: '100' } );
+	options.push( { value: '200', label: '200' } );
+	$scope.limits = options;
+
+
 });
 
 NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService, SocketService) {
@@ -207,15 +242,15 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 			}
 		} );
 	}
-	
-	
+
+
 	$scope.resend_notification_drivers = function(){
 		$scope.isDriverNotifying = true;
 		OrderService.resend_notification_drivers( $scope.order, function(result) {
 			$scope.isDriverNotifying = false;
 		});
 	}
-	
+
 	$scope.resend_notification = function(){
 		$scope.isRestaurantNotifying = true;
 		OrderService.resend_notification( $scope.order, function(result) {

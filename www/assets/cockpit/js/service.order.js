@@ -1,5 +1,5 @@
 
-NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
+NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 
 	var service = {};
 
@@ -55,12 +55,24 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 		});
 	}
 
+	service.exports = function(params, callback) {
+		params.export = true;
+		var url = App.service + 'orders/';
+		var str = [];
+		for ( var k in params ) {
+			var v = params[ k ];
+			str.push( k + "=" + encodeURIComponent( v ) );
+		}
+		url += '?' + str.join( '&' );
+		window.open( url );
+	}
+
 	service.get = function(id_order, callback) {
 		order.load({id_order: id_order}, function(data) {
 			callback(data);
 		});
 	}
-	
+
 	service.ticket = function(id_order, callback) {
 		order.ticket({id_order: id_order}, function(data) {
 			callback(data);
@@ -79,18 +91,18 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			callback( data );
 		});
 	}
-	
+
 	service.askRefund = function(order, callback) {
 
 		var question = 'Are you sure you want to refund this order?';
 		if (parseFloat(order.credit ) > 0) {
 			question += "\nA gift card was used at this order the refund value will be $" + $scope.ticket.order.charged + ' + $' + $scope.ticket.order.credit + ' as gift card.' ;
 		}
-		
+
 		var fail = function() {
 			callback(false);
 		};
-		
+
 		var success = function() {
 			service.refund(order.id_order, function(result) {
 				if (result.success) {
@@ -124,7 +136,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 			callback( data );
 		});
 	}
-	
+
 	service.resend_notification_drivers = function( o, callback ){
 		var fail = function() {
 			callback({status:false});
@@ -151,7 +163,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope) {
 
 		App.confirm(question, 'Renotify #' + o.id_order, success, fail);
 	}
-	
+
 	service.resend_notification = function( o, callback ){
 		var fail = function() {
 			callback({status:false});
