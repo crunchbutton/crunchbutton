@@ -1877,6 +1877,9 @@ a.button{
 		float: right;
 		margin-top: -11em;
 	}
+	.faq-sun {
+		border-left: 2.4em solid transparent;
+	}
 
 	.restaurant-side-bar {
 		width: 30em;
@@ -4094,7 +4097,6 @@ font-familt: "Museo Slab";
 		padding: 0 0 1.2em 1.2em !important;
 		box-sizing: border-box;
 		background: $bodyBgColor;
-		/* url(	data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVQI12MwAwAAOAA3oSbS9QAAAABJRU5ErkJggg==)  no-repeat top right  */
 		background-size: 333px 100%;
 	}
 	.restaurant-content-body-background {
