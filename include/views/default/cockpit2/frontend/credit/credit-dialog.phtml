@@ -8,6 +8,7 @@
 
 			<ul ng-class="{'submitted':formCreditSubmitted}" class="ul-inputs">
 
+				<? /*
 				<li class="li-input">
 					<div class="label">Customer</div>
 					<div class="input">
@@ -15,6 +16,7 @@
 						<span ng-show="!isLoading"><strong>{{credit.name}}</strong></span>
 					</div>
 				</li>
+				*/ ?>
 
 				<li class="li-input" ng-class="{'error':formCredit.value.$invalid}">
 					<div class="label">Value:</div>
@@ -37,7 +39,7 @@
 				</li>
 
 				<li class="li-input" ng-show="!isSaving">
-					<button class="button button-empty button-border button-orange ng-scope" ng-class="{'button-disabled': isLoading }" ng-click="save()"><i class="fa fa-gift"></i>&nbsp;&nbsp;Add Gift Card</button>
+					<button class="button button-empty button-border button-orange button-full" ng-class="{'button-disabled': isLoading }" ng-click="save()"><i class="fa fa-gift"></i>&nbsp;&nbsp;Add Gift Card</button>
 				</li>
 				<li class="li-input" ng-show="isSaving">
 					<i class="fa fa-circle-o-notch fa-spin"></i>
