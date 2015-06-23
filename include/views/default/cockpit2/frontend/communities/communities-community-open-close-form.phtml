@@ -2,7 +2,7 @@
 
 	<div>
 
-		<h2 class="title left"><span>Open Close Community</span></h2>
+		<h1 class="title"><span>Community Status</span></h1>
 
 		<div class="divider"></div>
 
@@ -66,14 +66,14 @@
 						<div class="label">If it is closed and it has drivers doesn't warn CS till (PST):</div>
 					</li>
 
-					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}">
-						<div class="input" ng-if="community.dont_warn_till_enabled">
+					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}" ng-if="community.dont_warn_till_enabled">
+						<div class="input">
 							<input type="datetime-local" ng-disabled="!community.dont_warn_till_enabled" ng-required="community.dont_warn_till_enabled" name="dontWarnTill" ng-model="community.dont_warn_till" placeholder="">
 						</div>
 					</li>
 
 					<li class="li-input" ng-show="!isSavingAlias">
-						<button class="button green" ng-click="formOpenCloseSave();">Save</button>
+						<button class="button button-empty button-border button-green button-full" ng-click="formOpenCloseSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
 					</li>
 					<li class="li-input" ng-show="isSavingAlias">
 						<i class="fa fa-circle-o-notch fa-spin"></i>
