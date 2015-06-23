@@ -312,6 +312,9 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 			$scope.status = data;
 			if( data && data.driver && data.driver.id_admin ){
 				id_driver = data.driver.id_admin;
+				if( id_driver ){
+					$scope.showText5MinAwayButton = true;
+				}
 			}
 			processOptions();
 		} );

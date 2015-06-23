@@ -40,7 +40,7 @@
 				<li class="li-input divider-line">
 					<button class="button green" ng-click="formDeliveryStatusSave();">Save</button>
 				</li>
-				<li class="li-input divider-line">
+				<li class="li-input divider-line" ng-if="showText5MinAwayButton">
 					<button class="button orange" ng-click="text5MinAway();">
 						<span ng-show="text5MinAwaySending"><i class="fa fa-spinner fa-spin"></i> Sending</span>
 						<span ng-show="!text5MinAwaySending"><i class="fa fa-clock-o"></i> Text Customer I'm 5 Min Away</span>
