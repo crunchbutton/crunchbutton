@@ -69,21 +69,41 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function getUsers( $forceAll = false ){
+
 		$support = array();
+
 		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
-		if( $group->id_group ){
-			$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
-			if ( $users->count() > 0 ) {
-				foreach ( $users as $user ) {
-					// Check all the places where we send text message to CS and send it just to drivers that are current working.
-					if( $user->name && $user->txt ){
-						if( $forceAll || $user->isWorking() ){
-							$support[ $user->name ] = $user->txt;
+
+		if( $forceAll ){
+			if( $group->id_group ){
+				$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
+				if ( $users->count() > 0 ) {
+					foreach ( $users as $user ) {
+						if( $user->name && ( $user->phone || $user->txt ) ){
+							$phone = ( $user->txt ) ? $user->txt : $user->phone;
+							$support[ $user->name ] = $phone;
 						}
 					}
 				}
 			}
+		} else {
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		$users = Admin::q( 'SELECT DISTINCT(a.id_admin), a.* FROM admin a
+														INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin
+														INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+													WHERE cs.id_community = ' . $group->id_community . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = true AND a.active = true ');
+				if ( $users->count() > 0 ) {
+					foreach ( $users as $user ) {
+						if( $user->name && ( $user->phone || $user->txt ) ){
+							$phone = ( $user->txt ) ? $user->txt : $user->phone;
+							$support[ $user->name ] = $phone;
+						}
+					}
+				}
 		}
+
 		// no users, return a empty array
 		return $support;
 	}
