@@ -636,11 +636,12 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 			$scope.isSaving = false;
 			if( data.error ){
 				App.alert( data.error);
+				$scope.isSaving = false;
 				return;
 			} else {
 				load();
 				$scope.saved = true;
-				setTimeout( function() { $scope.saved = false; }, 1500 );
+				setTimeout( function() { $scope.saved = false; }, 500 );
 			}
 		} );
 	}

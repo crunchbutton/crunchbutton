@@ -50,25 +50,25 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 
 		$dob = explode( '-', $admin->dob );
 		$params[ 'dob' ] = [ 'day' => $dob[ 2 ], 'month' => $dob[ 1 ], 'year' => $dob[ 0 ] ];
-		
-		
+
+
 		if ($paymentType->stripe_id) {
 			$stripeAccount = \Stripe\Account::retrieve($paymentType->stripe_id);
 
 			if ($params['bank_account']) {
 				$stripeAccount->bank_account = $params['bank_account'];
 				$stripeAccount->save();
-				
+
 				if ($stripeAccount->bank_accounts->data[0]->id) {
 					$paymentType->stripe_account_id = $stripeAccount->bank_accounts->data[0]->id;
 					$paymentType->save();
 				}
 			}
-			
-			if ($save) {	
+
+			if ($save) {
 				$stripeAccount->save();
 			}
-			
+
 			return $stripeAccount;
 		}
 
@@ -79,7 +79,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 			$paymentType->save();
 		}
 		$address = Util::addressParts($formattedAddress);
-		
+
 		$params[ 'ssn' ] = substr( $admin->ssn(), -4 );
 
 		try {
@@ -165,6 +165,10 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		$auth = c::config()->balanced->{$env}->secret;
 		$request = new \Cana_Curl($url, null, 'get', null, $headers, null, [ 'user' => $auth, 'pass' => '' ] );
 		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
+	}
+
+	public function stripeVerify(){
+		$this->admin()->autoStripeVerify( true );
 	}
 
 	public function testAccount(){
