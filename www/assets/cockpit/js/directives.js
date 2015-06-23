@@ -453,17 +453,18 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 		restrict: 'E',
 		replace: true,
 		scope: {
-			title: '@',
+			buttonTitle: '@',
 			isRunning: '@',
 			method:'&action'
     },
-		template: '<a href ng-click="run()" title="{{title}}">' +
+		template: '<a href ng-click="run()">' +
 								'<button class="button button-small button-empty" ng-class="{\'button-green\':!isRunning}" >' +
-									'<i class="fa fa-check" ng-if="!isRunning"></i>' +
-									'<i class="fa fa-spinner fa-spin" ng-if="isRunning"></i>' +
-									'&nbsp;&nbsp;{{title}}</button>' +
+									'<i class="fa fa-check" ng-if="!isRunning"></i><i class="fa fa-spinner fa-spin" ng-if="isRunning"></i>&nbsp;&nbsp;{{buttonTitle}}' +
+								'</button>' +
 							'</a>',
 		link: function ( scope, elem, attrs, ctrl ) {
+			scope.title = attrs.title;
+			scope.isRunning = false;
 			var expressionHandler = scope.method();
 			scope.run = function(){
 				if( !scope.isRunning ){
