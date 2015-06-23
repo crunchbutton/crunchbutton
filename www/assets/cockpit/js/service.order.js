@@ -228,8 +228,6 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
-
-
 	$rootScope.$on('order-route', function(event, args) {
 
 		var eta = {
