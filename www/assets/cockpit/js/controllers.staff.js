@@ -118,7 +118,6 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 
 	$scope.reverify = function( callback ) {
 		StaffService.reverify($scope.staff.id_admin, function( data ) {
-			console.log('callback',callback);
 			if( callback ){
 				callback();
 			}
@@ -126,7 +125,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 				App.alert('Could not finish verification. Missing fields: ' + data.status.fields.join(','));
 			} else {
 				App.alert('Looks like it might have reverified successfully.');
-				// load();
+				load();
 			}
 		});
 	};
