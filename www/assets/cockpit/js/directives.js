@@ -395,55 +395,82 @@ NGApp.directive('uiTabs', function ( $compile ) {
 	return {
 		restrict: 'E',
 		scope: true,
-				controller: function ( $scope ) {
-						var current = null;
-						var tabs = [];
+		controller: function ( $scope ) {
+				var current = null;
+				var tabs = [];
 
-						this.getTabs = function () {
-								return tabs;
-						}
-						this.addTab = function ( tab ) {
-							if( tab.default ){
-								this.setCurrent( tab );
-							}
-							if( tab.method ){
-								tab.method_called = false;
-							}
-							tabs.push( tab );
-						};
-						this.setCurrent = function( tab ){
-							current = tab;
-							if( tab.method && !tab.method_called ){
-								try{
-									eval( '$scope.' + tab.method + '()' );
-									tab.method_called = true;
-								} catch(e){
-									console.log( 'ui-tabs:error: ', e );
-								}
-							}
-						}
-						this.getCurrent = function(){
-							return current;
-						}
-				},
-				link: function (scope, element, attrs, controller) {
-
-					scope.$watch( controller.getTabs, function ( tab ) {
-						scope._tabs = tab;
-					} );
-
-					scope.$watch( controller.getCurrent, function ( tab ) {
-						scope._current = tab;
-					} );
-
-					scope.setCurrent = function( tab ){
-						controller.setCurrent( tab );
-					};
-
-					element.children().css( 'display', 'none' );
-					var tabs = angular.element( template );
-					element.append( tabs );
-					$compile( tabs )( scope );
+				this.getTabs = function () {
+						return tabs;
 				}
+				this.addTab = function ( tab ) {
+					if( tab.default ){
+						this.setCurrent( tab );
+					}
+					if( tab.method ){
+						tab.method_called = false;
+					}
+					tabs.push( tab );
+				};
+				this.setCurrent = function( tab ){
+					current = tab;
+					if( tab.method && !tab.method_called ){
+						try{
+							eval( '$scope.' + tab.method + '()' );
+							tab.method_called = true;
+						} catch(e){
+							console.log( 'ui-tabs:error: ', e );
+						}
+					}
+				}
+				this.getCurrent = function(){
+					return current;
+				}
+		},
+		link: function (scope, element, attrs, controller) {
+
+			scope.$watch( controller.getTabs, function ( tab ) {
+				scope._tabs = tab;
+			} );
+
+			scope.$watch( controller.getCurrent, function ( tab ) {
+				scope._current = tab;
+			} );
+
+			scope.setCurrent = function( tab ){
+				controller.setCurrent( tab );
+			};
+
+			element.children().css( 'display', 'none' );
+			var tabs = angular.element( template );
+			element.append( tabs );
+			$compile( tabs )( scope );
+		}
+	}
+});
+
+NGApp.directive( 'spinnerActionButton', function ( $parse ) {
+	return {
+		restrict: 'E',
+		replace: true,
+		scope: {
+			title: '@',
+			isRunning: '@',
+			method:'&action'
+    },
+		template: '<a href ng-click="run()" title="{{title}}">' +
+								'<button class="button button-small button-empty" ng-class="{\'button-green\':!isRunning}" >' +
+									'<i class="fa fa-check" ng-if="!isRunning"></i>' +
+									'<i class="fa fa-spinner fa-spin" ng-if="isRunning"></i>' +
+									'&nbsp;&nbsp;{{title}}</button>' +
+							'</a>',
+		link: function ( scope, elem, attrs, ctrl ) {
+			var expressionHandler = scope.method();
+			scope.run = function(){
+				if( !scope.isRunning ){
+					scope.isRunning = true;
+					expressionHandler( function(){ scope.isRunning = false; } );
+				}
+			}
+		}
 	}
 });

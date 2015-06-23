@@ -116,18 +116,20 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		$rootScope.$broadcast( 'CommunitiesAssign', { 'communities': $scope.staff.communities } );
 	}
 
-	$scope.reverify = function() {
-		StaffService.reverify($scope.staff.id_admin, function(data) {
-			console.debug('Verification result', data);
+	$scope.reverify = function( callback ) {
+		StaffService.reverify($scope.staff.id_admin, function( data ) {
+			console.log('callback',callback);
+			if( callback ){
+				callback();
+			}
 			if (data.status.status == 'unverified') {
 				App.alert('Could not finish verification. Missing fields: ' + data.status.fields.join(','));
 			} else {
 				App.alert('Looks like it might have reverified successfully.');
-				load();
+				// load();
 			}
 		});
 	};
-
 
 	StaffService.locations($routeParams.id, function(d) {
 		$scope.locations = d;
