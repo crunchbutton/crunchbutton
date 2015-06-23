@@ -1,18 +1,19 @@
 <div class="restaurant-right-bar">
 	
+	<div restaurant-is-closed></div>
 	
-<div ng-show="!order.cart.hasItems()" class="restaurant-box hide-mobile">
-	<div class="restaurant-box-inner">
-		<span class="restaurant-box-icon">
-			<i class="fa fa-arrow-left"></i>
-		</span>
-		<span class="restaurant-box-content">
-			<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartDesktop}}</span>
-		</span>
+	<div ng-show="!order.cart.hasItems() && open" class="restaurant-box hide-mobile">
+		<div class="restaurant-box-inner">
+			<span class="restaurant-box-icon">
+				<i class="fa fa-arrow-left"></i>
+			</span>
+			<span class="restaurant-box-content">
+				<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartDesktop}}</span>
+			</span>
+		</div>
 	</div>
-</div>
 
-	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin">
+	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin" ng-show="order.cart.hasItems()">
 
 		<!-- cart -->
 		<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
