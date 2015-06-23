@@ -699,7 +699,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		// Remove the location from cockie
 		PositionsService.removeNotServedLocation();
 		
-		App.go( '/location/unavailable');
+		if (App.isUI2()) {
+			App.go( '/location/unavailable');
+		}
 	});
 
 	$rootScope.$on( 'NewLocationAdded', function(e, data) {
