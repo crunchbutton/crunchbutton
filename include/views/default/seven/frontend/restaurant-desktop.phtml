@@ -1,7 +1,8 @@
 <div class="restaurant-right-bar">
 	
+	<div restaurant-is-closed></div>
 	
-	<div ng-show="!order.cart.hasItems()" class="restaurant-box hide-mobile">
+	<div ng-show="!order.cart.hasItems() && open" class="restaurant-box hide-mobile">
 		<div class="restaurant-box-inner">
 			<span class="restaurant-box-icon">
 				<i class="fa fa-arrow-left"></i>
