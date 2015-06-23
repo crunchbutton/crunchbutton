@@ -24,7 +24,6 @@ class Crunchbutton_Queue extends Cana_Table {
 	const STATUS_RUNNING						= 'running';
 	const STATUS_STOPPED						= 'stopped';
 
-
 	public static function process($all = false) {
 
 		if (!$all) {

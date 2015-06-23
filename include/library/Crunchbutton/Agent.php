@@ -14,6 +14,10 @@ class Crunchbutton_Agent extends Cana_Table {
 		return ( $this->os == 'iphone' );
 	}
 
+	public function isAndroid(){
+		return ( $this->os == 'android' );
+	}
+
 	public function hasUserAlreadyOrderedUsingNativeApp( $phone ){
 		$order = Order::q( "SELECT * FROM `order` o INNER JOIN agent a ON o.id_agent = a.id_agent AND a.os = 'iphone' AND a.browser = 'applewebkit' WHERE o.phone = '" . $phone . "'" );
 		if( $order->count() > 1 ){
@@ -23,10 +27,11 @@ class Crunchbutton_Agent extends Cana_Table {
 	}
 
 	public function isNativeApp(){
-		if( $this->isIPhone() ){
-			if( $this->browser == 'applewebkit' ){
-				return true;
-			}
+		if(  $this->browser == 'applewebkit' ){
+			return true;
+		}
+		if( $this->isAndroid() ){
+			return true;
 		}
 		return false;
 	}

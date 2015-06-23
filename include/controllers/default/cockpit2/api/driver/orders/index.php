@@ -79,14 +79,11 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'text-customer-5-min-away':
-
 								$q = Queue::create([
 									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_MINUTES_WAY,
 									'id_order' => $order->id_order,
 									'seconds' => 0
 								]);
-
-								$order->textCustomer( Cockpit_Order::I_AM_5_MINUTES_AWAY );
 								break;
 						}
 

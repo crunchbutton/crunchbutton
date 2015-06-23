@@ -259,25 +259,33 @@ class Cockpit_Order extends Crunchbutton_Order {
 		return $out;
 	}
 
-	public function textCustomer( $text ){
+	public function textCustomer( $text, $force = false ){
 
 		switch ( $text ) {
+
 			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
 
-				$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN])->get(0);
-				if( $action->id_order_action ){
-					return true;
+				if( !$force ){
+					$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN])->get(0);
+					if( $action->id_order_action ){
+						return true;
+					}
 				}
 
 				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
 				$driver = $this->driver();
 				if( $driver->id_admin ){
 
+					if( $driver->id_admin != c::user()->id_admin ){
+						$note = 'Text sent by ' . c::user()->name . ' (' . c::user()->login . ')';
+					}
+
 					$message = sprintf( $pattern, $driver->firstName() );
 					(new Order_Action([
 						'id_order' => $this->id_order,
-						'id_admin' => c::admin()->id_admin,
+						'id_admin' => $driver->id_admin,
 						'timestamp' => date('Y-m-d H:i:s'),
+						'note' => $note,
 						'type' => Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN
 					]))->save();
 
@@ -287,7 +295,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 						'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_NOTIFIES_CUSTOMER
 					] );
 
-					Log::debug([ 'order' => $this->id_order, 'action' => 'driver notifies a customer', 'message' => $message , 'type' => 'driver-customer' ] );
 				}
 				break;
 

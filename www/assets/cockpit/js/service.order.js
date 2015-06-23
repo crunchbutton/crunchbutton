@@ -38,6 +38,21 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			method: 'GET',
 			params : {}
 		},
+		'delivery_status' : {
+			url: App.service + 'order/:id_order/status',
+			method: 'GET',
+			params : {}
+		},
+		'change_delivery_status' : {
+			url: App.service + 'order/:id_order/status-change',
+			method: 'POST',
+			params : {}
+		},
+		'text_5_min_away' : {
+			url: App.service + 'order/:id_order/text-5-min-away',
+			method: 'POST',
+			params : {}
+		},
 		'resend_notification_drivers' : {
 			url: App.service + 'order/:id_order/resend_notification_drivers',
 			method: 'GET',
@@ -137,6 +152,18 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
+	service.text_5_min_away = function( id_order, callback ){
+		order.text_5_min_away( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
+	service.delivery_status = function( id_order, callback ){
+		order.delivery_status( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
 	service.resend_notification_drivers = function( o, callback ){
 		var fail = function() {
 			callback({status:false});
@@ -195,6 +222,14 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
+	service.change_delivery_status = function(params, callback) {
+		order.change_delivery_status(params, function(data) {
+			callback(data);
+		});
+	}
+
+
+
 	$rootScope.$on('order-route', function(event, args) {
 
 		var eta = {
@@ -206,7 +241,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			eta.distance += args.legs[x].distance.value * 0.000621371;
 		}
 
-		if (args.order.status.status == 'accepted' ||args.order.status.status == 'transferred') {
+		if (args.order.status.status == 'accepted' || args.order.status.status == 'transferred') {
 			if (args.restaurant.formal_relationship == 1 || args.restaurant.order_notifications_sent) {
 				eta.time += 5;
 			} else {
@@ -223,6 +258,14 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 
 		$rootScope.$broadcast('order-route-' + args.order.id_order, eta);
 	});
+
+	var statuses = [];
+	statuses.push( { value: 'accepted', label: 'Accepted' } );
+	statuses.push( { value: 'pickedup', label: 'Pickedup' } );
+	statuses.push( { value: 'delivered', label: 'Delivered' } );
+	statuses.push( { value: 'rejected', label: 'Rejected' } );
+
+	service.statuses = statuses;
 
 	return service;
 
