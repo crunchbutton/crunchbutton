@@ -60,11 +60,14 @@ $headers = [
 	'Max Apology Credit',
 	'Delivery Driver ID',
 	'Delivery Driver Name',
+
 ];
+
+
 echo implode(',', $headers)."\n";
 ?>
 <? foreach ($this->orders as $order) :
-
+	/* @var $order Crunchbutton_Order */
 	$date = $order->date();
 	$giftcard = $order->hasGiftCard();
 	$credit = $order->hasCredit();

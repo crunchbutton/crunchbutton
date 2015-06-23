@@ -12,8 +12,9 @@
 		<table>
 			<tr>
 				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="moreOptions()"></i></td>
 			</tr>
-			<tr>
+			<tr ng-if="show_more_options">
 				<th>Start</th>
 				<td>
 					<input type="date" ng-model="query.datestart" tabindex="2">
@@ -21,6 +22,25 @@
 				<th>End</th>
 				<td>
 					<input type="date" ng-model="query.dateend" tabindex="3">
+				</td>
+				<td></td>
+			</tr>
+			<tr ng-if="show_more_options">
+				<th>Restaurant</th>
+				<td>
+				<ui-select ng-model="query.restaurant" theme="select2" close-on-select="true" style="width: 300px;" title="Select a restaurant">
+					<ui-select-match placeholder="Select a restaurant">{{$select.selected.name}}</ui-select-match>
+					<ui-select-choices repeat="restaurant.id_restaurant as restaurant in restaurants | propsFilter: {name: $select.search}">
+						{{restaurant.name}}
+					</ui-select-choices>
+				</ui-select>
+				</td>
+				<th>Orders displayed</th>
+				<td>
+					<select ng-model="query.limit" ng-options="limit.value as limit.label for limit in limits"></select>
+				</td>
+				<td>
+					<a href="" ng-click="exports()"><button class="button button-small button-empty button-green"><i class="fa fa-download"></i>&nbsp;&nbsp;Export</button></a>
 				</td>
 			</tr>
 		</table>
@@ -30,6 +50,6 @@
 
 	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list'"></ng-include>
 	<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
-	
+
 	<ng-include src="'assets/view/mapview-orders.html'" ng-show="query.view=='map'"></ng-include>
 </div>
