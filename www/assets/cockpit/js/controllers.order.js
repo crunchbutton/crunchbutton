@@ -287,7 +287,21 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 	} );
 
 	$scope.driverChanged = function(){
+		processOptions();
+	}
+
+	var processOptions = function(){
 		$scope.notify_customer = ( id_driver != $scope.status.driver.id_admin );
+		$scope.statuses = [];
+		angular.forEach( OrderService.statuses, function( value, key ) {
+			var add = true;
+			if( ( value.value == 'rejected' && id_driver != $scope.status.driver.id_admin ) ){
+				add = false;
+			}
+			if( add ){
+				$scope.statuses.push( value );
+			}
+		} );
 	}
 
 	var load = function(){
@@ -298,14 +312,16 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 			$scope.status = data;
 			if( data && data.driver && data.driver.id_admin ){
 				id_driver = data.driver.id_admin;
+				if( id_driver ){
+					$scope.showText5MinAwayButton = true;
+				}
 			}
+			processOptions();
 		} );
 		DriverService.byCommunity( id_community, function( data ){
 			$scope.drivers = data;
 		} );
 	}
-
-	$scope.statuses = OrderService.statuses;
 
 	$scope.text5MinAway = function(){
 
