@@ -451,7 +451,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				if( $staff[ 'type' ] ){
 					$commas = ', ';
 				}
-				$staff[ 'type' ] = $commas . 'Marketing Rep';
+				$staff[ 'type' ] .= $commas . 'Marketing Rep';
 			}
 
 
