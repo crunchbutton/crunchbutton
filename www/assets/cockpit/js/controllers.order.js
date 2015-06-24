@@ -94,7 +94,6 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 	$scope.exports = function(){
 		var params = {};
 		angular.copy( $scope.query, params );
-		console.log('params',params);
 		OrderService.exports( params, function(){
 		} );
 	}
@@ -119,7 +118,6 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			}
 		}
 	}
-
 
 	var options = [];
 	options.push( { value: '20', label: '20' } );

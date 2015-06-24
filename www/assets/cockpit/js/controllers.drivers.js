@@ -588,8 +588,65 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 	list();
 
 } );
-NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, StaffService, ViewListService) {
+
+NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, StaffService, ViewListService, CommunityService) {
+
 	angular.extend( $scope, ViewListService );
+
+	var load = function(){
+		StaffService.list($scope.query, function(d) {
+			$scope.drivers = d.results;
+			$scope.complete(d);
+		});
+	}
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'driver',
+			status: 'active',
+			working: 'all',
+			pexcard: 'all',
+			community: '',
+			send_text: 'all',
+			fullcount: true
+		},
+		update: function() {
+			load();
+		}
+	});
+
+	$scope.moreOptions = function(){
+		$scope.show_more_options = !$scope.show_more_options;
+
+		if( $scope.show_more_options) {
+
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
+		}
+	}
+
+	var limits = [];
+	limits.push( { value: '20', label: '20' } );
+	limits.push( { value: '50', label: '50' } );
+	limits.push( { value: '100', label: '100' } );
+	limits.push( { value: '200', label: '200' } );
+	$scope.limits = limits;
+
+	var statuses = [];
+	statuses.push( { value: 'active', label: 'Active' } );
+	statuses.push( { value: 'inactive', label: 'Inactive' } );
+	$scope.statuses = statuses;
+
+	var send_text_options = [];
+	send_text_options.push( { value: 'all', label: 'All' } );
+	send_text_options.push( { value: '1', label: 'Yes' } );
+	send_text_options.push( { value: '0', label: 'No' } );
+	$scope.send_text_options = send_text_options;
 
 	$scope.send_text_about_schedule = function( id_admin, value ){
 		params = { 'id_admin': id_admin, 'value': value };
@@ -633,27 +690,6 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 		} );
 	}
 
-	var load = function(){
-		StaffService.list($scope.query, function(d) {
-			$scope.drivers = d.results;
-			$scope.complete(d);
-		});
-	}
-
-	$scope.view({
-		scope: $scope,
-		watch: {
-			search: '',
-			type: 'driver',
-			status: 'active',
-			working: 'all',
-			pexcard: 'all',
-			fullcount: false
-		},
-		update: function() {
-			load();
-		}
-	});
 });
 
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, DriverOnboardingService, CommunityService, StaffPayInfoService ) {
@@ -758,7 +794,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 				$scope.driver.vehicle = vehicle_default
 			}
 
-			// logs();
 			docs();
 		} );
 
@@ -1128,7 +1163,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 			routing_number: $scope.bank.routing_number,
 			account_number: $scope.bank.account_number
 		}, function( header, response ){
-			
+
 			if( response.id ){
 				var params = {
 					'token': response.id,

@@ -265,6 +265,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$pexcard = $this->request()['pexcard'] ? $this->request()['pexcard'] : 'all';
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
 		$group = $this->request()['group'] ? $this->request()['group'] : null;
+		$send_text = $this->request()['send_text'] ? $this->request()['send_text'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
@@ -303,6 +304,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					LEFT JOIN community ON community.id_community=g.id_community
 				';
 			}
+			$q .= '
+					LEFT JOIN admin_config ac ON ac.id_admin = admin.id_admin AND ac.key = ?
+			';
+			$keys[] = Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING;
 		}
 
 		if( $type == 'marketing-rep'  ){
@@ -319,7 +324,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($status != 'all') {
 			$q .= '
-				AND active=?
+				AND admin.active=?
 			';
 			$keys[] = $status == 'active' ? true : false;
 		}
@@ -369,8 +374,27 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			GROUP BY `admin`.id_admin
+		';
+
+		if ($type == 'driver') {
+			if( $send_text != 'all' ){
+				if( intval( $send_text ) == 0 ){
+					$q .= '
+						HAVING ac.value IS NULL OR ac.value = 0
+					';
+				}
+				if( intval( $send_text ) >= 1 ){
+					$q .= '
+						HAVING ac.value = 1
+					';
+				}
+			}
+		}
+
+		$q .= '
 			ORDER BY `admin`.name ASC
 		';
+
 		if ($working == 'all') {
 			$q .= '
 				LIMIT ?
@@ -384,11 +408,24 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		// do the query
 		$data = [];
-		$query = str_replace('-WILD-','
-			admin.*,
-			bool_and(apt.using_pex) using_pex,
-			max(apt.id_admin_payment_type) id_admin_payment_type
-		', $q);
+
+		if ($type == 'driver') {
+			$wild = '
+						admin.*,
+						bool_and(apt.using_pex) using_pex,
+						max(apt.id_admin_payment_type) id_admin_payment_type,
+						ac.value AS send_text_about_schedule
+					';
+		} else {
+			$wild = '
+						admin.*,
+						bool_and(apt.using_pex) using_pex,
+						max(apt.id_admin_payment_type) id_admin_payment_type
+					';
+		}
+
+		$query = str_replace('-WILD-', $wild , $q);
+
 
 		$r = c::db()->query($query, $keys );
 
@@ -461,7 +498,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 				$payment_type = $admin->payment_type();
 				// driver stuff
-				$staff[ 'send_text_about_schedule' ] = ( $admin->sendTextAboutSchedule() == 1 ? true : false );
+				$staff[ 'send_text_about_schedule' ] = ( $s->send_text_about_schedule ? true : false );
 				// $staff[ 'orders_per_hour' ] = $admin->ordersPerHour();
 				$note = $admin->note();
 				if( $note->id_admin_note ){
