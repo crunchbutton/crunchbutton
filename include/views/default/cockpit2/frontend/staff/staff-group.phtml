@@ -5,7 +5,7 @@
 			<div class="input">
 				<ui-select multiple ng-model="assigned.groups" theme="select2" close-on-select="true" style="width: 300px;" title="Select a group">
 					<ui-select-match placeholder="Select a group...">{{$item.description}} {{$item.name}}</ui-select-match>
-					<ui-select-choices repeat="group.id_group as group in groups | propsFilter: { name: $select.search }">{{group.description}} {{group.name}}</ui-select-choices>
+					<ui-select-choices repeat="group.id_group as group in groups | propsFilter: { name: $select.search, description: $select.search }">{{group.description}} {{group.name}}</ui-select-choices>
 				</ui-select>
 			</div>
 		</li>

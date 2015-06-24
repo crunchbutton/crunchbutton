@@ -142,6 +142,7 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 		$more = false;
 
 		while ($s = $r->fetch()) {
+			$s->description = ( !$s->description ? '' : $s->description );
 			$data[] = $s;
 			$i++;
 		}
