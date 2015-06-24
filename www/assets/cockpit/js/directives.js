@@ -475,20 +475,39 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 	}
 });
 
-NGApp.directive('errSrc', function( $parse ) {
+NGApp.directive('imgListViewSrc', function( $parse ) {
 	return {
 		restrict: 'A',
+		scope: {
+			image:'=imgListViewSrc'
+    },
+
 		link: function(scope, element, attrs) {
-			switch( attrs.errSrc ){
-				case 'restaurant':
-				if( scope.restaurant.image ){
-					var img = new Image();
-					img.src = attrs.src;
-					img.onload = function(){
-						scope.restaurant.hasImage = true;
-					};
-				}
-				break;
+
+			var error = function(){
+				element.empty();
+				element.append( '<div ng-if="!restaurant.hasImage" class="customer-image ' + attrs.imgNull + '"></div>' );
+			}
+			var success = function( src ){
+				element.empty();
+				element.append( '<img class="customer-image" src="' + src + '"></img>' );
+			}
+
+			var loading = function(){
+				// implement some loading image here
+			}
+
+			if( scope.image ){
+				var img = new Image();
+				img.src = attrs.imgPath + scope.image;
+				img.onload = function(){
+			 		success( img.src );
+				};
+				img.onerror = function(){
+			 		error();
+				};
+			} else {
+				error();
 			}
 		}
 }
