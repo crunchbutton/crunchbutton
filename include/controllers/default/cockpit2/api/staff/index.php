@@ -443,7 +443,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				if( $staff[ 'type' ] ){
 					$commas = ', ';
 				}
-				$staff[ 'type' ] = $commas . 'Support';
+				$staff[ 'type' ] .= $commas . 'Support';
 			}
 
 			if( $staff[ 'isMarketingRep' ] ){
