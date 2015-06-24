@@ -1,11 +1,11 @@
 <?php
 
 class Cockpit_Admin extends Crunchbutton_Admin {
-	
+
 	public function stripeVerificationStatus() {
 		if (!isset($this->_stripeVerificationStatus)) {
 			$stripeAccount = $this->stripeAccount();
-			
+
 			$data = [
 				'status' => $stripeAccount->legal_entity->verification->status,
 				'fields' => $stripeAccount->verification->fields_needed,
@@ -17,7 +17,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $this->_stripeVerificationStatus;
 	}
-	
+
 	public function stripeAccount() {
 		if (!isset($this->_stripeAccount)) {
 			$paymentType = $this->payment_type();
@@ -25,7 +25,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 		return $this->_stripeAccount;
 	}
-	
+
 	public function isStripeVerified() {
 		$status = $this->stripeVerificationStatus();
 		if ($status->status == 'unverified') {
@@ -107,7 +107,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			if ($saving) {
 				$stripeAccount->save();
 			}
-			
+
 			if ($saving == count($status['fields'])) {
 				$status = true;
 			}
@@ -237,7 +237,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	public function pex() {
 		if (!isset($this->_pex)) {
 			if ($this->id_admin) {
-				$this->_pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
+				$pex = Cockpit_Admin_Pexcard::getByAdmin($this->id_admin)->get(0);
+				if( $pex ){
+					$this->_pex = $pex->get( 0 );
+				}
 			} else {
 				$this->_pex = new Cockpit_Admin_Pexcard;
 			}
@@ -272,7 +275,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			'last_four' => $this->pex()->last_four,
 			'active' => $this->pex()->card_serial && $this->pex()->card_serial ? true : false
 		];
-		
+
 		$out['verified'] = $this->payment_type()->verified ? true : false;
 
 		$author = $this->author();
@@ -339,7 +342,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		return $out;
 	}
-	
+
 	public function tempConvertBalancedToStripe() {
 		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
 			//return false;
@@ -352,14 +355,14 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			and stripe_account_id is null
 			order by p.id_admin_payment_type desc
 		',[$this->id_admin]);
-		
+
 		// nothing left to import
 		if ($p->count() < 1 && $this->stripe_id) {
 			return true;
 		}
 
 		$idStripe = $paymentType->stripe_id ? $paymentType->stripe_id : $this->stripe_id;
-		
+
 		echo "\nWorking on admin #".$this->id_admin."\n";
 
 		if (!$idStripe) {
@@ -389,13 +392,13 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 						'first_name' => array_shift($name),
 						'last_name' => implode(' ',$name),
 						'dob' => [ // @note: this viloates stripes docs but this is the correct way
-							'day' => $dob[2], 
-							'month' => $dob[1], 
+							'day' => $dob[2],
+							'month' => $dob[1],
 							'year' => $dob[0]
-						], 
+						],
 						'ssn_last_4' => $ssn,
 						'address' => [
-							'line1' => $address[0], 
+							'line1' => $address[0],
 							'city' => $address[1][0],
 							'state' => $address[1][1][0],
 							'postal_code' => $address[1][1][1],
@@ -403,7 +406,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 						]
 					]
 				]);
-				
+
 				$created = true;
 
 			} catch (Exception $e) {
@@ -423,7 +426,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		if ($idStripe) {
 			echo 'Stripe account '.$idStripe."\n";
-			
+
 			if ($created) {
 				$this->stripe_id = $idStripe;
 				$this->save();
@@ -451,7 +454,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				}
 			}
 
-			
+
 			if (!$stripeBankToken) {
 				try {
 					$bank = Crunchbutton_Balanced_BankAccount::byId($paymentType->balanced_bank);
@@ -484,7 +487,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				try {
 					$stripeAccount->save();
 
-					foreach ($stripeAccount->bank_accounts->all()->data as $stripeBankAccount) {			
+					foreach ($stripeAccount->bank_accounts->all()->data as $stripeBankAccount) {
 						break;
 					}
 
@@ -503,7 +506,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		}
 
-		
+
 	}
 
 }
