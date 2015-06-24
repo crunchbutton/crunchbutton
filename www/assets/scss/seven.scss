@@ -4114,6 +4114,10 @@ font-familt: "Museo Slab";
 	.fb-like-box {
 		display: none;
 	}
+	.order-map-wrap {
+		float: right;
+		width: 40%;
+	}
 
 }
 @media screen and (max-width: 1024px) {
@@ -4204,4 +4208,52 @@ font-familt: "Museo Slab";
 .allow-select {
 	-webkit-touch-callout: auto !important;
 	-webkit-user-select: auto !important;
+}
+
+
+.order-status-loader {
+	
+}
+
+.order-status-loader-labels, .order-status-loader {
+	width: 100%;
+	clear: both;
+}
+.order-status-loader-labels {
+	
+}
+
+.order-status-loader-active {
+	background: #00bea0;
+}
+
+.order-status-loader-label, .order-status-loader-block {
+	display: block;
+	float: left;
+	box-sizing: border-box;
+	width: 25%;
+	height: 1.5em;
+	text-align: center;
+}
+.order-status-loader-label {
+	margin-top: .5em;
+}
+.order-status-loader-block:last-child {
+	border-right: 1px solid #00b195;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+.order-status-loader-block:first-child {
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+}
+.order-status-loader-block {
+	border-top: 1px solid #00b195;
+	border-bottom: 1px solid #00b195;
+	border-left: 1px solid #00b195;
+	
+}
+.order-status-loader-indicator {
+	position: absolute;
+	margin-top: -90px;
 }

@@ -2080,6 +2080,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		unset($out['id_order']);
 		unset($out['delivery_service_markup']);
 		unset($out['delivery_service_markup_value']);
+		unset($out['txn']);
+		
+		$out['status'] = $status = $this->status()->last();
 
 		$out['id'] = $this->uuid;
 

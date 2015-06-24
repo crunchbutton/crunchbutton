@@ -12,6 +12,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$date = $this->date();
 
+		$out['txn'] = $this->txn;
 		$out['do_not_pay_restaurant'] = ( $out['do_not_pay_restaurant'] ? 1 : 0 );
 		$out['do_not_pay_driver'] = ( $out['do_not_pay_driver'] ? 1 : 0 );
 		$out['do_not_reimburse_driver'] = ( $out['do_not_reimburse_driver'] ? 1 : 0 );
