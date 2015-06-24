@@ -64,6 +64,7 @@ NGApp.controller('StaffMarketingFaqCtrl',function( $scope ){
 	$scope.$watch( 'account', function( newValue, oldValue, scope ) {
 		if( $scope.account.user ){
 			$scope.referral_customer_credit = $scope.account.user.referral_customer_credit;
+			$scope.referral_admin_credit = $scope.account.user.referral_admin_credit;
 		}
 	}, true);
 });
