@@ -6,7 +6,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 	service.view = function(params) {
 		var scope = params.scope;
 		var query = $location.search();
-		var defaultLimit = query.limit || (App.isMobile() ? 5 : 20);
+		var defaultLimit = query.limit || (App.isMobile() ? '5' : '20');
 
 		scope.query = {
 			limit: defaultLimit,

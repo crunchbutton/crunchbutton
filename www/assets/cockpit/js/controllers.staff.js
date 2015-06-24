@@ -175,7 +175,7 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 			status: 'active',
 			working: 'all',
 			pexcard: 'all',
-			fullcount: false
+			fullcount: true
 		},
 		update: function() {
 			StaffService.list($scope.query, function(d) {
