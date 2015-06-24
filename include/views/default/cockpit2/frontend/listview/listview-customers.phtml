@@ -11,10 +11,7 @@
 		</tr>
 		<tr ng-repeat="customer in customers track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/customer/{{customer.id_user}}">
 			<td class="tb-image-row"><a href="/customer/{{customer.id_user}}">
-				<div class="customer-image-crop">
-					<img ng-if="customer.image" class="customer-image" src="{{customer.image}}"></img>
-					<div ng-if="!customer.image" class="customer-image customer-image-null"></div>
-				</div>
+				<div class="customer-image-crop" img-list-view-src="customer.image" img-path="" img-null="customer-image-null"></div>
 			</a></td>
 			<td>
 				<span class="listview-bold">{{customer.name}}</span>
