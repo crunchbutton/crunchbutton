@@ -439,7 +439,6 @@ NGApp.directive('uiTabs', function ( $compile ) {
 			scope.setCurrent = function( tab ){
 				controller.setCurrent( tab );
 			};
-
 			element.children().css( 'display', 'none' );
 			var tabs = angular.element( template );
 			element.append( tabs );
@@ -474,4 +473,23 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 			}
 		}
 	}
+});
+
+NGApp.directive('errSrc', function( $parse ) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			switch( attrs.errSrc ){
+				case 'restaurant':
+				if( scope.restaurant.image ){
+					var img = new Image();
+					img.src = attrs.src;
+					img.onload = function(){
+						scope.restaurant.hasImage = true;
+					};
+				}
+				break;
+			}
+		}
+}
 });

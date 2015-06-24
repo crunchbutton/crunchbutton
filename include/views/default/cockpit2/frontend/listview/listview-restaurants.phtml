@@ -14,8 +14,8 @@
 		<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/restaurant/{{restaurant.permalink}}">
 			<td class="tb-image-row"><a href="/restaurant/{{restaurant.permalink}}">
 				<div class="customer-image-crop">
-					<img ng-if="restaurant.image" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>
-					<div ng-if="!restaurant.image" class="customer-image restaurant-image-null"></div>
+					<img err-src="restaurant" ng-show="restaurant.hasImage" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>
+					<div ng-if="!restaurant.hasImage" class="customer-image restaurant-image-null"></div>
 				</div>
 			</a></td>
 			<td>
@@ -40,8 +40,6 @@
 				<span ng-if="restaurant.orders == '0'">0</span>
 			</td>
 			<td><span ng-if="restaurant._order_date"><span am-time-ago="restaurant._order_date"></span></span></td>
-
-
 			<td nowrap class="tb-center tb-v-center">
 				<span class="tag tag-green" ng-if="restaurant.active">Active</span>
 				<span class="tag tag-red" ng-if="!restaurant.active">Inactive</span>
