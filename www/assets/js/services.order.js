@@ -1191,6 +1191,8 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 				var arr = data.date.split(/[- :]/);
 				service.order._date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
+				
+				service.order._time = service.order.date_formated.split(',').shift();
 
 				var order_address = ( service.order.address ) ? service.order.address.replace(/\r|\n/g,' ') : '';
 				var restaurant_address = ( service.order._restaurant_address ) ? service.order._restaurant_address.replace(/\r|\n/g,' ') : '';

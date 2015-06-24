@@ -31,8 +31,38 @@
 			</div>
 		</div>
 
-		<div class="content-padding">
-			<div class="order-tagline"><p><b>Your order is on its way</b> and saved for easy 1 click reordering</p></div>
+		<div class="content-padding-mobile">
+			<div class="content-padding-mobile">
+				<div class="order-tagline" ng-if="!order.delivery_service"><p><b>Your order is on its way</b> and saved for easy 1 click reordering</p></div>
+				<div ng-if="order.delivery_service">
+					<div class="order-status-loader-labels">
+						<div class="order-status-loader-label">{{order._time}}</div>
+						<div class="order-status-loader-label"></div>
+						<div class="order-status-loader-label"></div>
+						<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA: 
+							<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
+							<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
+						</div>
+						<div class="order-status-loader-label" ng-if="order.status.status == 'delivered' && 1==2">
+							<? /* needs to be formatted */?>
+							{{order.status.date}}
+						</div>
+
+					</div>
+					<div class="order-status-loader">
+						<div class="order-status-loader-block order-status-loader-active" >&nbsp;</div>
+						<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status != 'new'}">&nbsp;</div>
+						<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status != 'new' && order.status.status != 'accepted'}">&nbsp;</div>
+						<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status == 'delivered'}">&nbsp;</div>
+					</div>
+					<div class="order-status-loader-labels">
+						<div class="order-status-loader-label">Ordered</div>
+						<div class="order-status-loader-label">Accepted</div>
+						<div class="order-status-loader-label">Picked up</div>
+						<div class="order-status-loader-label">Delivered</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="divider dots spacer-two-one" ng-if="order._new"></div>
@@ -170,24 +200,7 @@
 					<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
 				</p>
 			</div>
-			<div class="divider"></div>
 
-			<div class="order-icon"><div class="icon-clock"></div></div>
-			<div class="order-info order-info-oneline">
-				<p>
-					Ordered at {{order.date_formated}}
-				</p>
-			</div>
-			<div class="divider"></div>
-
-			<div class="order-icon"><div class="icon-timer"></div></div>
-			<div class="order-info order-info-oneline">
-				<p>
-					Estimated by&nbsp;
-					<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
-					<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
-				</p>
-			</div>
 			<div class="divider"></div>
 		</div>
 
@@ -211,17 +224,7 @@
 				</div>
 			</div>
 
-			<div class="divider spacer-one-two"></div>
-
-			<span ng-if="order.delivery_type == 'delivery'">
-				<a href="{{order.mapLink}}" target="_system"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true&style=feature:road.arterial|element:geometry.fill|visibility:on|weight:1.5|lightness:-15|gamma:0.95|hue:0xff0000|saturation:-87|color:0xf67f52&style=feature:road.highway|element:geometry.fill|hue:0xff4d00|lightness:39|color:0xf67f52&style=feature:landscape|color:0xfffef8&style=feature:water|hue:0x00f6ff|color:0x119c87&style=element:labels.icon|hue:0x00ddff|saturation:-42&style=feature:poi|element:geometry.fill|color:0xfffef8&style=feature:road.local|color:0x119c87|visibility:simplified');"></div></a>
-			</span>
-
-			<span ng-if="order.delivery_type == 'takeout'">
-				<a href="{{order.mapLink}}" target="_system"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
-			</span>
-
-			<div class="divider spacer-two-two"></div>
+			<div class="spacer-two-two"></div>
 			<br><br>
 
 			<span ng-if="order.delivery_type == 'delivery'">
