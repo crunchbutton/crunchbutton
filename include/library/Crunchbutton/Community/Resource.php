@@ -11,9 +11,20 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	public function www(){
 		return Util::uploadWWW() . 'resource/';
 	}
+	
+	public function localToS3() {
+		$path = $this->path().$this->file;
+
+		$upload = new Crunchbutton_Upload([
+			'file' => $path,
+			'resource' => $this->file,
+			'bucket' => c::config()->s3->buckets->{'resource'}->name
+		]);
+		return $upload->upload();
+	}
 
 	public function download_url(){
-		return Util::url() . '/api/community/resource/download/' . $this->id_community_resource;
+		return Util::url() . '/api/community/resource/download/' . $this->id_community_resource . '/'.$this->file;
 	}
 
 	public function path(){

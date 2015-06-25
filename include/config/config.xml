@@ -23,6 +23,10 @@
 				<name>crunchbutton-image-restaurant</name>
 				<cache>_URL_</cache>
 			</image-restaurant>
+			<resource>
+				<name>crunchbutton-resource</name>
+				<cache>_URL_</cache>
+			</resource>
 		</buckets>
 	</s3>
 	<db>

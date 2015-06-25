@@ -32,7 +32,7 @@
 		</div>
 
 		<div class="content-padding-mobile">
-			<div class="content-padding-mobile">
+			
 				<div class="order-tagline" ng-if="!order.delivery_service"><p><b>Your order is on its way</b> and saved for easy 1 click reordering</p></div>
 				<div ng-if="order.delivery_service">
 					<div class="order-status-loader-labels">
@@ -62,14 +62,14 @@
 						<div class="order-status-loader-label">Delivered</div>
 					</div>
 				</div>
-			</div>
+			
 		</div>
 
 		<div class="divider dots spacer-two-one" ng-if="order._new"></div>
 
 		<div class="two-col content-padding-mobile">
 			<div ng-hide="account.user.has_auth">
-				<div class="content-padding order-buttons">
+				<div class="order-buttons">
 					<p>
 						Create an account and earn {{order.reward.points}} points towards a <b>free delivery</b> and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our&nbsp;
 						<a ng-show="!isAndroid" data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
