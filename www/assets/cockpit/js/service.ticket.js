@@ -29,7 +29,7 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			method: 'POST',
 			params : {}
 		},
-		'query' : {
+		'tickets_query' : {
 			method: 'GET',
 			params : {}
 		}
@@ -37,20 +37,20 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 
 	// @todo: there is a bug when calling the same service using resourcefactory. it cancels it out
 	var ticketshort = ResourceFactory.createResource( App.service + 'tickets/:id_support', { id_support: '@id_support'}, {
-		'query' : {
+		'tickets_query' : {
 			method: 'GET',
 			params : {}
 		}
 	});
 
 	service.list = function(params, callback) {
-		tickets.query(params).$promise.then(function success(data, responseHeaders) {
+		tickets.tickets_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
 
 	service.shortlist = function(params, callback) {
-		ticketshort.query(params).$promise.then(function success(data, responseHeaders) {
+		ticketshort.tickets_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
