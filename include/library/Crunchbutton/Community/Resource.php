@@ -39,6 +39,9 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 			'resource' => $name,
 			'bucket' => c::config()->s3->buckets->{'resource'}->name
 		]);
+		
+		$this->file = $name;
+		$this->save();
 
 		return $upload->upload();
 	}
