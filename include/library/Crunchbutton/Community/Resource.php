@@ -14,6 +14,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	
 	public function localToS3() {
 		$path = $this->path().$this->file;
+		echo $path;
 
 		$upload = new Crunchbutton_Upload([
 			'file' => $path,
