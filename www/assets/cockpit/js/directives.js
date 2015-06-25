@@ -72,7 +72,6 @@ NGApp.directive('tabSelect', function(MainNavigationService) {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			var go = function() {
-				console.log('going to ', attrs.tabSelect)
 				MainNavigationService.link(attrs.tabSelect);
 				scope.$apply();
 			};
@@ -363,15 +362,23 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 });
 
 
-NGApp.directive('uiTab', function () {
+NGApp.directive('uiTab', function ( $routeParams ) {
 		return {
 				require: '^uiTabs',
 				link: function ( scope, element, attrs, controller ) {
+						var isDefault = attrs.default;
+						if( $routeParams.tab ){
+							if( $routeParams.tab == attrs.id ){
+								isDefault = true;
+							} else {
+								isDefault = false;
+							}
+						}
 						controller.addTab( {
 								id: attrs.id,
 								title: attrs.title,
 								icon: attrs.icon,
-								default: attrs.default,
+								default: isDefault,
 								path: attrs.path,
 								method: attrs.method
 						} );
@@ -380,11 +387,14 @@ NGApp.directive('uiTab', function () {
 });
 
 
-NGApp.directive('uiTabs', function ( $compile ) {
-
+NGApp.directive('uiTabs', function ( $compile, $timeout ) {
+// <i class="fa fa-refresh"></i>
 	var template = '<div>' +
 										'<div class="ui-tab-header-wrap"><ul class="ui-tab-header">' +
-											'<li class="clickable" ng-click="setCurrent( tab );" ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs"><i class="fa fa-{{tab.icon}}" ng-hide="!tab.icon"></i>{{ tab.title }}</li>' +
+											'<li ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs">' +
+												'<span class="clickable" ng-click="setCurrent( tab );"><i class="fa fa-{{tab.icon}}" ng-hide="!tab.icon"></i>{{ tab.title }}</span>' +
+												'&nbsp;&nbsp;<span title="Reload" ng-show="_current.id == tab.id" class="clickable" ng-click="loadContent( tab );"><i ng-class="{\'fa-spin\':tab.isLoading}" class="fa fa-refresh"></i></span>' +
+											'</li>' +
 										'</ul></div>' +
 										'<ul class="ui-tab-content">' +
 											'<li ng-repeat="tab in _tabs" ng-if="_current.id == tab.id">' +
@@ -396,24 +406,29 @@ NGApp.directive('uiTabs', function ( $compile ) {
 		restrict: 'E',
 		scope: true,
 		controller: function ( $scope ) {
+
 				var current = null;
 				var tabs = [];
+				var preloadTimer = 2000;
 
 				this.getTabs = function () {
 						return tabs;
-				}
+				};
 				this.addTab = function ( tab ) {
 					if( tab.default ){
 						this.setCurrent( tab );
-					}
-					if( tab.method ){
-						tab.method_called = false;
+					} else {
+						// pre load tab content
+						var those = this;
+						$timeout( function(){
+							those.loadContent( tab, true );
+						}, preloadTimer );
+						preloadTimer += preloadTimer;
 					}
 					tabs.push( tab );
 				};
-				this.setCurrent = function( tab ){
-					current = tab;
-					if( tab.method && !tab.method_called ){
+				this.loadContent = function( tab, force ){
+					if( tab.method && ( !tab.method_called || force ) ){
 						try{
 							eval( '$scope.' + tab.method + '()' );
 							tab.method_called = true;
@@ -421,6 +436,10 @@ NGApp.directive('uiTabs', function ( $compile ) {
 							console.log( 'ui-tabs:error: ', e );
 						}
 					}
+				};
+				this.setCurrent = function( tab ){
+					current = tab;
+					this.loadContent( tab );
 				}
 				this.getCurrent = function(){
 					return current;
@@ -439,10 +458,19 @@ NGApp.directive('uiTabs', function ( $compile ) {
 			scope.setCurrent = function( tab ){
 				controller.setCurrent( tab );
 			};
+
+			scope.loadContent = function( tab ){
+				controller.loadContent( tab, true );
+				tab.isLoading = true;
+				$timeout( function(){ tab.isLoading = false; }, 1000 );
+			}
+
 			element.children().css( 'display', 'none' );
 			var tabs = angular.element( template );
 			element.append( tabs );
 			$compile( tabs )( scope );
+
+						console.log('link', tabs);
 		}
 	}
 });

@@ -17,7 +17,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'CommunityFormCtrl',
 			templateUrl: 'assets/view/communities-form.html'
 		})
-		.when('/community/:id', {
+		.when('/community/:id/:tab?', {
 			action: 'community',
 			controller: 'CommunityCtrl',
 			templateUrl: 'assets/view/communities-community.html'
@@ -197,7 +197,6 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 
 NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
 
-
 	$scope.loading = true;
 	$scope.isSaving = false;
 	$scope.isSavingAlias = false;
@@ -208,9 +207,8 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		update();
 	});
 
-
 	// method to load orders - called at ui-tab directive
-	$scope.orders = function(){
+	$scope.loadOrders = function(){
 		$scope.loadingOrders = true;
 		OrderService.list( { community: $scope.community.id_community, limit: 5}, function(d) {
 			$scope.orders = d.results;
@@ -219,25 +217,25 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	}
 
 // method to load restaurants - called at ui-tab directive
-	$scope.restaurants = function(){
+	$scope.loadRestaurants = function(){
 		$scope.loadingRestaurants = true;
-		RestaurantService.list({community: $scope.community.id_community, limit: 50}, function(d) {
+		RestaurantService.list( { community: $scope.community.id_community, limit: 50 }, function(d) {
 			$scope.restaurants = d.results;
 			$scope.loadingRestaurants = false;
 		});
 	}
 
 	// method to load drivers - called at ui-tab directive
-	$scope.drivers = function(){
+	$scope.loadDrivers = function(){
 		$scope.loadingStaff = true;
-		StaffService.list( { community: $scope.community.id_community, limit: 50, type: 'driver'}, function(d) {
-			$scope.staff = d.results;
+		StaffService.list( { community: $scope.community.id_community, limit: 50, type: 'driver'}, function(data) {
+			$scope.staff = data.results;
 			$scope.loadingStaff = false;
 		});
 	}
 
 	// method to load aliases - called at ui-tab directive
-	$scope.aliases = function(){
+	$scope.loadAliases = function(){
 		$scope.loadingAliases = true;
 		CommunityService.alias.list( $routeParams.id, function( json ){
 			$scope.aliases = json;
@@ -246,16 +244,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	}
 
 	// method to load logs - called at ui-tab directive
-	$scope.logs = function(){
-		$scope.loadingLogs = true;
-		CommunityService.closelog.list( $routeParams.id, function( json ){
-			$scope.closelogs = json;
-			$scope.loadingLogs = false;
-		} );
-	}
-
-	// method to load logs - called at ui-tab directive
-	$scope.logs = function(){
+	$scope.loadLogs = function(){
 		$scope.loadingLogs = true;
 		CommunityService.closelog.list( $routeParams.id, function( json ){
 			$scope.closelogs = json;
