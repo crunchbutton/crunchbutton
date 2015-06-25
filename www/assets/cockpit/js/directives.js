@@ -135,6 +135,7 @@ NGApp.directive('profilePreference', function (AccountService, $http, $rootScope
  */
 /* global array */
 NGApp.factory('ResourceFactory', ['$q', '$resource',
+
 	function($q, $resource) {
 
 		function abortablePromiseWrap(promise, deferred, outstanding) {
@@ -161,6 +162,7 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 		var cancelers = [];
 
 		function createResource(url, options, actions) {
+
 			var resource;
 			var outstanding = [];
 			actions = actions || {};
@@ -176,17 +178,20 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 			var isLoading = null;
 
 			Object.keys(actions).forEach(function(action) {
+
 				var method = resource[action];
 
-				resource[action] = function() {
+				// create a unique id so it doesnt cancel actions with same name
+				var action_unique_id = url + action;
+
+				resource[action_unique_id] = function() {
 
 					if (isLoading) {
 						isLoading.reject('Aborted');
-
-						cancelers[action].resolve();
+						cancelers[action_unique_id].resolve();
 						var canceller = $q.defer();
-						actions[action].timeout = canceller.promise;
-						cancelers[action] = canceller;
+						actions[action_unique_id].timeout = canceller.promise;
+						cancelers[action_unique_id] = canceller;
 					}
 
 					var deferred = $q.defer(),
@@ -202,11 +207,10 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 						abort: function() {
 							// i dont think this is called unless we resolve the primise, which were not doing
 							console.error('Resource Aborted');
-							cancelers[action].resolve();
-
+							cancelers[action_unique_id].resolve();
 							var canceller = $q.defer();
-							actions[action].timeout = canceller.promise;
-							cancelers[action] = canceller;
+							actions[action_unique_id].timeout = canceller.promise;
+							cancelers[action_unique_id] = canceller;
 							deferred.reject('Aborted');
 						}
 					};
@@ -409,7 +413,7 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 
 				var current = null;
 				var tabs = [];
-				var preloadTimer = 1500;
+				var preloadTimer = 300;
 
 				this.getTabs = function () {
 						return tabs;
