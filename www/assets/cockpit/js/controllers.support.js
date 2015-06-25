@@ -253,7 +253,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 			}
 		} );
 	}
-	
+
 	$scope.call.voip = function() {
 		TwilioService.call($scope.call.phone);
 		App.dialog.close();
