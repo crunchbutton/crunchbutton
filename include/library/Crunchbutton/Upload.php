@@ -13,10 +13,10 @@ class Crunchbutton_Upload {
 		$fileInfo = pathinfo($this->file);
 		$fullPath = trim($fileInfo['dirname'].'/'.$fileInfo['basename']);
 		$fileName = trim($fileInfo['basename']);
-
+echo $fullPath;
 		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
 		$r = S3::putObject(S3::inputFile($fullPath, false), $this->bucket, $this->resource ? $this->resource : $fileName, S3::ACL_PUBLIC_READ);
-		
+		var_dump($r);
 		return $r == 1 ? true : false;
 	}
 }
