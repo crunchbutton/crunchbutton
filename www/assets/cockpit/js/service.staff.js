@@ -36,7 +36,7 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			url: App.service + 'staff/activations',
 			method: 'GET'
 		},
-		'query' : {
+		'staff_query' : {
 			method: 'GET',
 			params : {}
 		},
@@ -68,7 +68,7 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 	});
 
 	service.list = function(params, callback) {
-		staff.query(params).$promise.then(function success(data, responseHeaders) {
+		staff.staff_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}

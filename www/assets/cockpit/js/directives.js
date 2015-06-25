@@ -181,17 +181,14 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 
 				var method = resource[action];
 
-				// create a unique id so it doesnt cancel actions with same name
-				var action_unique_id = url + action;
-
-				resource[action_unique_id] = function() {
+				resource[action] = function() {
 
 					if (isLoading) {
 						isLoading.reject('Aborted');
-						cancelers[action_unique_id].resolve();
+						cancelers[action].resolve();
 						var canceller = $q.defer();
-						actions[action_unique_id].timeout = canceller.promise;
-						cancelers[action_unique_id] = canceller;
+						actions[action].timeout = canceller.promise;
+						cancelers[action] = canceller;
 					}
 
 					var deferred = $q.defer(),
@@ -207,10 +204,10 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 						abort: function() {
 							// i dont think this is called unless we resolve the primise, which were not doing
 							console.error('Resource Aborted');
-							cancelers[action_unique_id].resolve();
+							cancelers[action].resolve();
 							var canceller = $q.defer();
-							actions[action_unique_id].timeout = canceller.promise;
-							cancelers[action_unique_id] = canceller;
+							actions[action].timeout = canceller.promise;
+							cancelers[action] = canceller;
 							deferred.reject('Aborted');
 						}
 					};
@@ -392,7 +389,6 @@ NGApp.directive('uiTab', function ( $routeParams ) {
 
 
 NGApp.directive('uiTabs', function ( $compile, $timeout ) {
-// <i class="fa fa-refresh"></i>
 	var template = '<div>' +
 										'<div class="ui-tab-header-wrap"><ul class="ui-tab-header">' +
 											'<li ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs">' +
@@ -422,12 +418,12 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 					if( tab.default ){
 						this.setCurrent( tab );
 					} else {
-						// pre load tab content
-						var those = this;
-						$timeout( function(){
-							those.loadContent( tab, true );
-						}, preloadTimer );
-						preloadTimer += preloadTimer;
+						if( tab.preload ){
+							// pre load tab content
+							var those = this;
+							$timeout( function(){ those.loadContent( tab, true ); }, preloadTimer );
+							preloadTimer += preloadTimer;
+						}
 					}
 					tabs.push( tab );
 				};

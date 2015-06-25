@@ -29,7 +29,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			method: 'GET',
 			params : {}
 		},
-		'query' : {
+		'order_query' : {
 			method: 'GET',
 			params : {}
 		},
@@ -65,7 +65,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 	});
 
 	service.list = function(params, callback) {
-		order.query(params).$promise.then(function success(data, responseHeaders) {
+		order.order_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
