@@ -4099,7 +4099,7 @@ h1.title.box-title {
 .support-box-wrap .customer-name-large {
 	font-size: 2.5em;
 	font-weight: 200;
-	padding: .5em 0 1em 0;
+	padding: .5em 0 .1em 0;
 	text-align: center;
 	float: none;
 }
@@ -4203,4 +4203,8 @@ h1.title.box-title {
 .ui-tab-content .page-title-wrap {
 	margin-top: -2.6em;
 	margin-right: .5em;
+}
+
+.customer-image-updater:hover {
+	background: red;
 }
