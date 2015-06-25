@@ -2,19 +2,28 @@
 
 <div class="content-padding">
 
-	<h1 class="title box-title"><i class="fa fa-coffee"></i>{{restaurant.name}}</h1>
-
-	<div class="divider"></div>
-	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="support-boxes">
+		
+		
+		<div class="support-box-wrap box-content2">
+			<br>
+			<div class="no-box-content-color customer-content-box">
+				<div class="customer-image-crop customer-image-crop-large customer-image-updater">
+					<img ng-if="restaurant.image" class="customer-image-large" src="https://i.crunchbutton.com/200x200/{{restaurant.image}}?crop=1"></img>
+					<div ng-if="!restaurant.image" class="customer-image-large restaurant-image-null"></div>
+				</div>
+				<h1 class="customer-name-large">{{restaurant.name}}</h1>
+			</div>
+		</div>
+
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Details</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						
+						<a href="https://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}" target="_blank"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>

@@ -6,7 +6,7 @@ class Crunchbutton_Upload {
 	public function __construct($params = []) {
 		$this->file = $params['file'];
 		$this->resource = $params['resource'];
-		$this->bucket = $params['bucket';
+		$this->bucket = $params['bucket'];
 	}
 
 	public function upload() {
