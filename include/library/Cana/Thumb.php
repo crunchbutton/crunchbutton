@@ -164,7 +164,9 @@ class Cana_Thumb extends Cana_Model {
 				$image['info'][1] = $this->_height;
 			}
 			
-			if ($image['width'] == 0 || $image['height'] == 0 || !$image['width'] || !$image['height'] || $image['width'] > $this->_maxsize || $image['height'] > $this->_maxsize || ($image['width'] > $image['info'][0] && $image['height'] > $image['info'][1])) {
+			if ($image['width'] == 0 || $image['height'] == 0 || !$image['width'] || !$image['height'] || $image['width'] > $this->_maxsize || $image['height'] > $this->_maxsize) {
+				//  || ($image['width'] > $image['info'][0] && $image['height'] > $image['info'][1])
+				// not sure what we needed this - devin
 			    $image['width'] = $image['info'][0];
 			    $image['height'] = $image['info'][1];
 			}
@@ -174,7 +176,7 @@ class Cana_Thumb extends Cana_Model {
 			if ($this->_refresh) {
 				unlink($image['file']);
 			}
-			
+
 			if (!file_exists($image['file']) || $this->_refresh || (file_exists($image['file']) && filemtime($image['file']) < filemtime($image['src']))) {
 				$out = $this->buildImCmd($image);
 			}
@@ -211,7 +213,8 @@ class Cana_Thumb extends Cana_Model {
 		// crop resizing
 	    if ($this->_crop) {
 	    	$cmd.= '^ -gravity '.$this->_gravity.' -extent '.$image['width'].'x'.$image['height'];
-	    }
+		} else {
+		}
 
 	    // rounded corners
 	    if ($this->_rounded) {

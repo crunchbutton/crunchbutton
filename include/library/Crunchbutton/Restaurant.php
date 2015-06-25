@@ -1078,6 +1078,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function getImgFormats() {
 		return [
 			['height' => 596, 'width' => 596, 'crop' => 0],
+			['height' => 200, 'width' => 200, 'crop' => 1],
 			['height' => 66, 'width' => 66, 'crop' => 0],
 			['height' => 425, 'width' => 1200, 'crop' => 1]
 		];
@@ -1088,21 +1089,45 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $img;
 	}
 
-	public function updateImage($tmpFile = null) {
-		if (!$tmpFile) {
+	public function updateImage($file = null, $name = null) {
+		if (!$file) {
+			$file = $this->imagePath().$this->image;
+		}
+		
+		$bucket = c::config()->s3->buckets->{'image-restaurant'}->name;
+		
+		// download the source from s3 and resize
+		if (!file_exists($file)) {
+			$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
+			$fp = fopen($file, 'wb');
+			if (($object = S3::getObject($bucket, $this->file, $fp)) !== false) {
+				var_dump($object);
+			} else {
+				$file = false;
+			}
+
+		} else {
+			$info = pathinfo($file);
+			$ext = $info['extension'];
+			if (!$ext) {
+				$pos = strrpos($_FILES['image']['name'], '.');
+        		$ext = substr($_FILES['image']['name'], $pos+1);
+			}
+
+			// upload the source image
+			$upload = new Crunchbutton_Upload([
+				'file' => $file,
+				'resource' => $this->permalink.'.'.$ext,
+				'bucket' => $bucket
+			]);
+			$r[] = $upload->upload();
+
+			$formats = $this->getImgFormats();
+		}
+		
+		if (!$file) {
 			return false;
 		}
-
-		$info = pathinfo($tmpFile);
-
-		$formats = $this->getImgFormats();
-
-		// upload the source image
-		$upload = new Crunchbutton_Upload([
-			'file' => $tmpFile,
-			'resource' => $this->permalink.'.jpg'
-		]);
-		$upload->upload();
 
 		// loop through each thumb and upload
 		foreach ($formats as $format) {
@@ -1110,23 +1135,28 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$format['img']			= $info['basename'];
 			$format['cache'] 		= '/tmp/';
 			$format['path'] 		= $info['dirname'].'/';
+			$format['format']		= 'jpg';
+			$format['quality']		= '70';
 
 			try {
 				$thumb = new Cana_Thumb($format);
 			} catch (Exception $e) {
 				print_r($e->getMessage());
+				$r[] = false;
 				$thumb = null;
 			}
 
 			if ($thumb) {
 				$upload = new Crunchbutton_Upload([
 					'file' => $thumb->_image['file'],
-					'resource' => $this->permalink.'-'.$format['width'].'x'.$format['height'].'.'.$info['extension'],
-					'bucket' => c::config()->s3->buckets->{'image-restaurant'}->name
+					'resource' => $this->permalink.'-'.$format['width'].'x'.$format['height'].'.'.$format['format'],
+					'bucket' => $bucket
 				]);
-				$upload->upload();
+				$r[] = $upload->upload();
 			}
 		}
+		
+		return in_array(false, $r) ? false : true;
 
 	}
 
