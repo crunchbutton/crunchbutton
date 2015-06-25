@@ -68,15 +68,6 @@ i {
 		background: $navColor;
 	}
 }
-@media screen and (min-width: $desktopWidth) {
-	body {
-		background: $background;
-	}
-	.order-box-top {
-		padding-left: 222px;
-		box-sizing: border-box;
-	}
-}
 
 ol, ul {
 	list-style: none;
@@ -3927,6 +3918,21 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	padding-top: 22px;
 	height: 4.4em;
 }
+
+
+@media screen and (min-width: $desktopWidth) {
+	body {
+		background: $background;
+	}
+	.order-box-top {
+		margin-left: 222px;
+		box-sizing: border-box;
+	}
+	.order-box-top.order-box-top-show {
+		margin-top: -14px;
+	}
+}
+
 
 
 
