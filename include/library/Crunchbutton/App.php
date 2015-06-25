@@ -193,6 +193,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		c::stripe();
+		c::s3();
 
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
@@ -610,5 +611,10 @@ class Crunchbutton_App extends Cana_App {
 		//var_dump($this->_metricsDB);
 		//exit;
 		return $this->_metricsDB;
+	}
+	
+	public function s3() {
+		new Crunchbutton_S3;
+		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
 	}
 }
