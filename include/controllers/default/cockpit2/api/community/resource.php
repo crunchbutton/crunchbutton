@@ -41,6 +41,11 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 			case 'download':
 				$this->_download();
 				break;
+			
+			case 's3':
+				$this->_permission();
+				$this->_s3();
+				break;
 
 			default:
 				$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 3 ) );
@@ -50,6 +55,12 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 				$this->_error();
 				break;
 		}
+	}
+	
+	private function _s3() {
+		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 3 ) );
+		$s = $resource->localToS3();
+		var_dump($s);
 	}
 
 	private function _driver(){
