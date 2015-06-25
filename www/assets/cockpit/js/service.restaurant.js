@@ -21,7 +21,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			method: 'GET',
 			params : {}
 		},
-		'query' : {
+		'restaurant_query' : {
 			method: 'GET',
 			params : {}
 		},
@@ -37,7 +37,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 	);
 
 	service.list = function(params, callback) {
-		restaurant.query(params).$promise.then(function success(data, responseHeaders) {
+		restaurant.restaurant_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}
