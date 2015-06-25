@@ -409,7 +409,7 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 
 				var current = null;
 				var tabs = [];
-				var preloadTimer = 2000;
+				var preloadTimer = 1500;
 
 				this.getTabs = function () {
 						return tabs;
