@@ -17,8 +17,8 @@
 			<td class="tb-v-center">
 				<span class="tag tag-red" ng-if="resource.all">All</span>
 				<span class="listview-smaller" ng-if="!resource.all">
-					<span ng-repeat="community in resource.communities">
-						<span class="tag tag-lightgrey">{{community.name}}</span>
+					<span ng-repeat="community in resource.communities" class="staff-community-repeat">
+						<a href="/community/{{community.id_community}}">{{community.name}}</a>
 					</span>
 				</span>
 			</td>
