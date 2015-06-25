@@ -469,8 +469,6 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 			var tabs = angular.element( template );
 			element.append( tabs );
 			$compile( tabs )( scope );
-
-						console.log('link', tabs);
 		}
 	}
 });
