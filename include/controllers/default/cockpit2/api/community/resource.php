@@ -46,6 +46,11 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 				$this->_permission();
 				$this->_s3();
 				break;
+			
+			case 's3all':
+				$this->_permission();
+				$this->_s3all();
+				break;
 
 			default:
 				$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 3 ) );
@@ -57,10 +62,23 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		}
 	}
 	
+	private function _s3all() {
+		$resources = Crunchbutton_Community_Resource::q('
+			select * from community_resource where `file` is not null
+		');
+		foreach ($resources as $resource) {
+			if ($resource->file != $resource->s3base()) {
+				echo 'uploading '.$resource->name."\n";
+				$s = $resource->localToS3();
+				var_dump($s);
+				echo "\n\n";
+			}
+		}
+	}
+	
 	private function _s3() {
-		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 3 ) );
+		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 4 ) );
 		$s = $resource->localToS3();
-		var_dump($s);
 	}
 
 	private function _driver(){
@@ -103,24 +121,8 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 
 	private function _download(){
 		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 4 ) );
-		if( $resource->id_community_resource ){
-			$file = $resource->doc_path();
-			$name = $resource->name;
-			$ext = pathinfo( $file, PATHINFO_EXTENSION );
-			$name .= '.' . $ext;
-			if( file_exists( $file ) ){
-				header( 'Content-Description: File Transfer' );
-				header( 'Content-Type: application/octet-stream' );
-				header( 'Content-Disposition: attachment; filename=' . $name );
-				header( 'Expires: 0' );
-				header( 'Cache-Control: must-revalidate' );
-				header( 'Pragma: public' );
-				header( 'Content-Length: ' . filesize( $file ) );
-				readfile( $file );
-				exit;
-			} else {
-				$this->_error( 'download:file-not-found' );
-			}
+		if ($resource->id_community_resource) {
+			header('Location: https://'.$resource->s3File());
 		}
 		$this->_error();
 	}
@@ -130,26 +132,22 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		if( $_FILES ){
 			$ext = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
 			if( Util::allowedExtensionUpload( $ext ) ){
-				$name = pathinfo( $_FILES['file']['name'], PATHINFO_FILENAME );
+				$name = $_REQUEST['filename'] ? $_REQUEST['filename'] : pathinfo( $_FILES['file']['name'], PATHINFO_FILENAME );
 				$name = str_replace( $ext, '', $name );
 				$random = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
 				$name = Util::slugify( $random . '-' . $name );
 				$name = substr( $name, 0, 40 ) . '.'. $ext;
-				$file = Crunchbutton_Community_Resource::path() . $name;
-
-				if( !file_exists( Util::uploadPath() ) ){
-					$this->_error( '"www/upload" folder doesn`t exist!' );
+				$file = $_FILES['file']['tmp_name'];
+				
+				$r = Crunchbutton_Community_Resource::toS3($file, $name);
+				
+				if ($r) {
+					echo json_encode( [ 'success' => $name ] );
+					exit;
+				} else {
+					$this->_error( 'failed uploading to s3' );
 				}
 
-				if( !file_exists( Crunchbutton_Community_Resource::path() ) ){
-					$this->_error( '"www/upload/resource/" folder doens`t exist!' );
-				}
-
-				if ( copy( $_FILES[ 'file' ][ 'tmp_name' ], $file ) ) {
-					chmod( $file, 0777 );
-				}
-				echo json_encode( [ 'success' => $name ] );
-				exit;
 			} else {
 				$this->_error( 'invalid extension' );
 			}
@@ -170,6 +168,11 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		if( !$resource->id_community_resource ){
 			$resource = new Crunchbutton_Community_Resource;
 		}
+		
+		// name is changing. rename on s3
+		if (($resource->id_community_resource && ($resource->name != $this->request()[ 'name' ] || $resource->file != $this->request()[ 'file' ])) || !$resource->id_community_resource) {
+			$s3save = true;
+		}
 
 		$resource->id_admin = c::user()->id_admin;
 		$resource->name = $this->request()[ 'name' ];
@@ -181,6 +184,14 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		$resource->active = ( $this->request()[ 'active' ] ? 1 : 0 );
 		$resource->date = date( 'Y-m-d H:i:s' );
 		$resource->save();
+
+		if ($s3save) {
+			$r = $resource->rename();
+			if (!$r) {
+				$this->_error( 'could not update s3 resource' );
+				exit;
+			}
+		}
 
 		Crunchbutton_Community_Resource_Community::removeByResource( $resource->id_community_resource );
 
