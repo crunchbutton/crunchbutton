@@ -140,14 +140,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			foreach ($params['cart'] as $d) {
 				$dish = new Order_Dish;
 				$dish->id_dish = $d['id'];
-				$price = $dish->dish()->price;
+				$price = number_format( $dish->dish()->price, 2);
 				$price_delivery_markup = $price;
 				if( $delivery_service_markup ){
 					$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
 					$price_delivery_markup = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price_delivery_markup );
 				}
-				$subtotal += $price;
-				$subtotal_plus_delivery_service_markup += $price_delivery_markup;
+				$subtotal += number_format( $price, 2 );
+				$subtotal_plus_delivery_service_markup += number_format( $price_delivery_markup, 2 );
 				if ($d['options']) {
 					foreach ($d['options'] as $o) {
 						$option = new Order_Dish_Option;
@@ -158,9 +158,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
 							$price_delivery_markup = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price_delivery_markup );
 						}
-						$subtotal_plus_delivery_service_markup += $price_delivery_markup;
-						$subtotal += $price;
-						// $subtotal += $option->option()->optionPrice($d['options']);
+						$subtotal_plus_delivery_service_markup += number_format( $price_delivery_markup, 2 );
+						$subtotal += number_format( $price, 2 );
 						$dish->_options[] = $option;
 					}
 				}
@@ -2081,7 +2080,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		unset($out['delivery_service_markup']);
 		unset($out['delivery_service_markup_value']);
 		unset($out['txn']);
-		
+
 		$out['status'] = $status = $this->status()->last();
 
 		$out['id'] = $this->uuid;
