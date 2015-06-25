@@ -69,11 +69,11 @@ if( $version == 'customer' ){
 						if ($option->option()->type == 'select') {
 							continue;
 						}
-						$price += $option->option()->price;
+						// $price += $option->option()->price;
 						$regular_price += $option->option()->price;
 						// add the delivery markup
-						if( $delivery_service_markup > 0 && $price > 0 ){
-							$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
+						if( $delivery_service_markup > 0 && $option->option()->price > 0 ){
+							$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $option->option()->price + ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
 							$price = $price + $option_price;
 						}
 						if($option->option()->id_option_parent) {
@@ -181,7 +181,7 @@ if( $version == 'customer' ){
 		if( intval( $delivery_service_markup ) > 0 && !$order->price_plus_delivery_markup ){
 			echo number_format( $order->price - $order->delivery_service_markup_value, 2);
 		} else {
-			echo number_format( $order->price, 2 );
+			echo number_format( $order->price, 2 ) ;
 		}
 		?>
 		</td>

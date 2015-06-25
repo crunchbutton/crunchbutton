@@ -137,12 +137,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 						continue;
 					}
 
-					$price += $option->option()->price;
 					$regular_price += $option->option()->price;
 
 					// add the delivery markup
 					if( $delivery_service_markup > 0 && $price > 0 ){
-						$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
+						$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $option->option()->price + ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
 						$price = $price + $option_price;
 					}
 
