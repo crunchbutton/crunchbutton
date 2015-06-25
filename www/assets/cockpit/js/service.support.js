@@ -34,7 +34,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				AccountService.user.prefs[payload.key] = payload.value;
 				$rootScope.$apply();
 			});
-			
+
 			if (AccountService.isSupport) {
 
 
