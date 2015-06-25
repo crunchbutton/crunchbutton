@@ -24,11 +24,46 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 			case 'image':
 				$this->_image();
 				break;
+			case 's3':
+				$this->_s3();
+				break;
+			case 's3all':
+				$this->_s3all();
+				break;
 			default:
 				$this->_restaurant();
 				break;
 			
 		}
+	}
+	
+	private function _s3all() {
+		if (!c::admin()->permission()->check(['global'])) {
+			$this->error(401);
+		}
+
+
+		$restaurants = Crunchbutton_Restaurant::q('
+			select * from restaurant where `image` is not null
+		');
+
+		foreach ($restaurants as $restaurant) {
+			//if ($resource->file != $resource->s3base()) {
+				echo 'uploading '.$restaurant->name."\n";
+				$s = $restaurant->updateImage();
+				var_dump($s);
+				echo "\n\n";
+			//}
+		}
+	}
+	
+	private function _s3() {
+		if (!c::admin()->permission()->check(['global'])) {
+			$this->error(401);
+		}
+
+		$r = $this->restaurant->updateImage();
+		var_dump($r);
 	}
 	
 	private function _image() {
@@ -44,7 +79,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 			case 'put':
 				if ($_FILES) {
 					foreach ($_FILES as $file) {
-						$this->restaurant->updateImage($file['tmp_name']);
+						$this->restaurant->updateImage($file['tmp_name'], $file['name']);
 					}
 				}
 				break;
