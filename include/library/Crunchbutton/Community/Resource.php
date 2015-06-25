@@ -12,16 +12,79 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 		return Util::uploadWWW() . 'resource/';
 	}
 	
-	public function localToS3() {
-		$path = $this->path().$this->file;
-		echo $path;
+	// shouldnt need this in the future once we only allow uploads after the resource is in the db
+	public static function toS3($path, $name) {
+
+		$res = new Crunchbutton_Community_Resource;
+		$r = $res->localToS3($path, $name);
+		
+		return $r;
+	}
+	
+	public function localToS3($path = null, $name = null) {
+		if (!$path) {
+			$path = $this->path().$this->file;
+		}
+		
+		if (!$name) {
+			$name = $this->s3Base();
+		}
+		
+		if (!$path || !$name) {
+			return false;
+		}
 
 		$upload = new Crunchbutton_Upload([
 			'file' => $path,
-			'resource' => $this->file,
+			'resource' => $name,
 			'bucket' => c::config()->s3->buckets->{'resource'}->name
 		]);
+		
+		$this->file = $name;
+		$this->save();
+
 		return $upload->upload();
+	}
+	
+	// auto rename with the proper format
+	public function rename() {
+		$r = S3::copyObject(
+			c::config()->s3->buckets->{'resource'}->name, $this->file,
+			c::config()->s3->buckets->{'resource'}->name, $this->s3Base(),
+		S3::ACL_PUBLIC_READ);
+
+		if ($r) {
+			$r = S3::deleteObject(c::config()->s3->buckets->{'resource'}->name, $this->file);
+		}
+		
+		if ($r) {
+			$this->file = $this->s3Base();
+			$this->save();
+		}
+		
+		return $r ? true : false;
+	}
+	
+	public function s3Base($file = null, $name = null) {
+		if (!$file) {
+			$file = $this->file;
+		}
+		if (!$name) {
+			$name = $this->name;
+		}
+		$pos = strrpos($file, '.');
+        $ext = substr($file, $pos+1);
+
+		$name = strtolower($name);
+		$name = preg_replace('/[^a-z0-9]/i','-',$name);
+		$name = preg_replace('/\-{2,}/','-', $name);
+		$name = trim($name, '-');
+
+		return $this->id_community_resource.'-'.$name.'.'.$ext;
+	}
+	
+	public function s3File() {
+		return c::config()->s3->buckets->{'resource'}->cache.'/'.$this->file;
 	}
 
 	public function download_url(){
