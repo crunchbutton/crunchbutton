@@ -10,7 +10,13 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 				break;
 
 			default:
+
 				$staff = Admin::o( c::getPagePiece( 3 ) );
+
+				if (!$staff->id_admin) {
+					$staff = Admin::login(c::getPagePiece(3), true);
+				}
+
 				if( !$staff->isMarketingRep() ){
 					$this->_error();
 				}
@@ -23,6 +29,7 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 				if( $staff->id_admin ){
 					$out = $staff->exports();
 					$out[ 'id_community' ] = $staff->getMarketingRepGroups();
+					$out[ 'isCampusManager' ] = $staff->isCampusManager();
 					echo json_encode( $out );exit;
 					exit();
 				}
@@ -150,6 +157,23 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 				$adminGroup->id_admin = $staff->id_admin;
 				$adminGroup->id_group = $group->id_group;
 				$adminGroup->save();
+			}
+		}
+
+
+		$campus_manager = $this->request()[ 'isCampusManager' ];
+		$campusManagerGroup = Crunchbutton_Group::byName( Crunchbutton_Group::CAMPUS_MANAGER_GROUP );
+		$campusManagerGroup = $campusManagerGroup->get( 0 );
+		if( $campus_manager ){
+			if( !$staff->isCampusManager() ){
+				$adminGroup = new Crunchbutton_Admin_Group();
+				$adminGroup->id_admin = $staff->id_admin;
+				$adminGroup->id_group = $campusManagerGroup->id_group;
+				$adminGroup->save();
+			}
+		} else {
+			if( $staff->isCampusManager() ){
+				$staff->removeGroup( $campusManagerGroup->id_group );
 			}
 		}
 

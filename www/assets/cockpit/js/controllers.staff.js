@@ -423,15 +423,11 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 
 				var url = '/staff/marketing/' + json.success.id_admin;
 
-				if( $scope.staff.id_admin ){
-					$scope.reload();
+				if( $scope.staff.login ){
+					$scope.navigation.link( '/staff/' + json.success.login );
 				} else {
 					$scope.navigation.link( url );
 				}
-
-				setTimeout( function(){
-					App.alert( 'Marketing rep saved!' );
-				}, 500 );
 
 				$scope.isSaving = false;
 

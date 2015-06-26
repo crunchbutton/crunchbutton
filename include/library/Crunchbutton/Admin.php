@@ -375,6 +375,23 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_isMarketingRep;
 	}
 
+	public function isCampusManager(){
+		if (!isset($this->_isCampusManager)) {
+			$query = '
+				SELECT COUNT(*) AS Total FROM admin_group ag
+				INNER JOIN `group` g ON g.id_group = ag.id_group
+				WHERE
+					ag.id_admin = ?
+					AND g.name = ?
+			';
+			$result = c::db()->get( $query, [$this->id_admin, Crunchbutton_Group::CAMPUS_MANAGER_GROUP]);
+			$this->_isCampusManager = ( $result->_items[0]->Total > 0 );
+		}
+		return $this->_isCampusManager;
+	}
+
+
+
 	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {
 		if ( !isset( $this->_isSupport ) ) {
 			$result = c::db()->get('SELECT COUNT(*) AS c FROM admin_group ag
