@@ -1098,6 +1098,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		
 		// download the source from s3 and resize
 		if (!file_exists($file)) {
+			echo 'no file';
 			$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
 			$fp = fopen($file, 'wb');
 			if (($object = S3::getObject($bucket, $this->file, $fp)) !== false) {
