@@ -114,11 +114,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
         // Make sure that it really is expired, but adding a buffer
         $now2 = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $now2->modify('- ' . self::TIME_BUFFER . ' seconds');
-        $nowDate2 = $now->format('Y-m-d H:i:s');
+        $nowDate2 = $now2->format('Y-m-d H:i:s');
 
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . self::TIME_MAX_DELAY . ' seconds');
-        $laterDate = $now->format('Y-m-d H:i:s');
+        $laterDate = $later->format('Y-m-d H:i:s');
 		// Give the selected driver the order immediately, without delay.
         //  Other drivers get the delay.
 
@@ -146,7 +146,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model {
                 $seconds_delay = 0;
                 $priority_expiration = $nowDate2;
             }
-            $time->format('Y-m-d H:i:s');
             $priority = new Crunchbutton_Order_Priority([
                 'id_order' => $cur_id_order,
                 'id_restaurant' => $cur_id_restaurant,

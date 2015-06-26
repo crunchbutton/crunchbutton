@@ -3,6 +3,7 @@
 class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
 {
 
+    // TODO: Test that this works correctly for different time zones
     public static function setUpBeforeClass()
     {
         $name = get_called_class();
