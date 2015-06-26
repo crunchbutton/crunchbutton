@@ -137,12 +137,14 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver">
 			<div class="support-box-wrap-header">
-				<h1>Driver Info</h1>
+				<h1 ng-if="staff.isDriver">Driver Info</h1>
+				<h1 ng-if="staff.isMarketingRep">Marketing Rep Info</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href="/drivers/onboarding/{{staff.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-automobile"></i>&nbsp;&nbsp;Edit Driver</button></a>
+						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-paper-plane-o"></i></i>&nbsp;&nbsp;Edit Mkt Rep</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -150,7 +152,7 @@
 
 			<div class="no-box-content-color">
 				<div class="field-container">
-					<div class="field-row">
+					<div class="field-row" ng-if="staff.isDriver">
 						<div class="field-key">Communities</div>
 						<div class="field-value">
 							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
@@ -159,12 +161,19 @@
 							&nbsp;&nbsp;&nbsp;&nbsp;<span class="link orange" ng-click="assignCommunities()"><i class="fa fa-plus-circle"></i></span>
 						</div>
 					</div>
-					<div class="field-row">
+					<div class="field-row" ng-if="staff.isDriver">
 						<div class="field-key">Vehicle</div>
 						<div class="field-value">
 							<span class="tag tag-orange" ng-if="staff.vehicle == 'car'">Car</span>
 							<span class="tag tag-purple" ng-if="staff.vehicle == 'bike'">Bike</span>
 							<span class="tag tag-grey" ng-if="staff.vehicle != 'bike' && staff.vehicle != 'car'">None</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Is Campus Manager</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.isCampusManager">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.isCampusManager">No</span>
 						</div>
 					</div>
 					<div class="field-row">
@@ -183,6 +192,12 @@
 						<div class="field-key">Activations in past week</div>
 						<div class="field-value">
 							{{staff.referral_total_last_week || 0}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Credit amount to customer</div>
+						<div class="field-value">
+							{{staff.referral_customer_credit}}
 						</div>
 					</div>
 				</div>

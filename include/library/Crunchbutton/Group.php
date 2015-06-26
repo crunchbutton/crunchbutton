@@ -5,6 +5,7 @@ class Crunchbutton_Group extends Cana_Table {
 	const DRIVER_GROUPS_PREFIX = 'drivers-';
 	const MARKETING_REP_GROUPS_PREFIX = 'mktrep-';
 	const MARKETING_REP_GROUP = 'marketing-rep';
+	const CAMPUS_MANAGER_GROUP = 'campus-manager';
 
 	const TYPE_MARKETING_REP = 'marketing-rep';
 	const TYPE_DRIVER = 'driver';
@@ -24,7 +25,6 @@ class Crunchbutton_Group extends Cana_Table {
 			->idVar('id_group')
 			->load($id);
 	}
-
 
 	public function getRestaurantCommunityName( $community ){
 		die('#5430 deprecated');
