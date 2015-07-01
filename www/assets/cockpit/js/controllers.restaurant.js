@@ -331,6 +331,30 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 	});
 });
 
+NGApp.controller('RestaurantNotesToDriverCtrl', function ($scope, $rootScope, RestaurantService ) {
+
+	var id_restaurant = null;
+	var callback = null;
+
+	$rootScope.$on( 'openEditNotesToDriver', function(e, data) {
+		id_restaurant = data.id_restaurant;
+		callback = data.callback;
+		App.dialog.show('.notes-to-drivers-container');
+		RestaurantService.get( id_restaurant, function(d) {
+			$scope.restaurant = d;
+		});
+	});
+	$scope.save_notes_to_driver = function(){
+		RestaurantService.save_notes_to_driver( $scope.restaurant, function( json ){
+			if( callback ){
+				callback();
+			}
+			id_restaurant = null;
+			callback = null;
+		} );
+	}
+});
+
 
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;

@@ -73,6 +73,17 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 				break;
 
+			case 'save-notes-to-driver':
+				$id_restaurant = $this->request()[ 'id_restaurant' ];
+				$restaurant = Crunchbutton_Restaurant::o( $id_restaurant );
+				if( $restaurant->id_restaurant ){
+					$restaurant->notes_to_driver = $this->request()[ 'notes_to_driver' ];
+					$restaurant->save();
+					echo json_encode( [ 'success' => true ] );exit;
+				}
+
+				break;
+
 			case 'weight-adjustment':
 
 				$lat = $this->request()[ 'lat' ];;
