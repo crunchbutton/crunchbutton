@@ -40,21 +40,13 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	$rootScope.title = 'Ticket #' + $routeParams.id;
 	$scope.loading = true;
-	$scope.isRefunding = false;
 
 	SocketService.listen('ticket.' + $routeParams.id, $scope).on('update', function(d) { update(); });
 
 	$scope.refund = function(){
-		if ($scope.isRefunding) {
-			return;
-		}
-
-		// ask the admin if they want to refund
-		$scope.isRefunding = true;
-		OrderService.askRefund($scope.ticket.order, function() {
-			$scope.isRefunding = false;
+		OrderService.askRefund( $scope.ticket.order.id_order, function(){
 			update();
-		});
+		} );
 	}
 
 	$scope.do_not_pay_driver = function(){

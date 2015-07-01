@@ -1,0 +1,46 @@
+<div class="refund-order-container zoom-anim-dialog mfp-hide dialog">
+	<div ng-controller="OrderRefundCtrl" ng-show="refund">
+		<h2 class="title left"><span>Refund Order #: {{order.id_order}}</span></h2>
+		<div class="divider"></div>
+		<form name="formRefund" novalidate>
+			<ul ng-class="{'submitted':formRefundSubmitted}" class="ul-inputs">
+				<li class="li-input" ng-class="{'error':formRefund.amount.$invalid}">
+					<div class="label">Amount:</div>
+					<div class="input">
+						<div class="input"><input step="any" type="number" name="amount" ng-model="refund.amount" required readonly="readonly" ignore-mouse-wheel placeholder=""></div>
+					</div>
+					<div class="box-error">
+						<small ng-show="formRefund.amount.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':formRefund.reason.$invalid}">
+					<div class="label">Reason:</div>
+					<div class="input">
+						<select name="reason" required ng-model="refund.reason" ng-options="opt.value as opt.label for opt in reasons" ></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="formRefund.reason.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':formRefund.reasonOther.$invalid}" ng-show="refund.reason == 'Other'">
+					<div class="label">Description:</div>
+					<div class="input">
+						<input type="text" maxlength="200" name="reasonOther" ng-required="refund.reason == 'Other'" ng-model="refund.reason_other"/>
+					</div>
+					<div class="box-error">
+						<small ng-show="formRefund.reasonOther.$error.required">Required.</small>
+					</div>
+				</li>
+				<li ng-if="order.credit">
+					<div class="label">A gift card was used at this order the refund value will be ${{order.charged}} ${{order.credit}} as gift card.</div>
+				</li>
+				<li class="li-input" ng-show="!isRefunding">
+					<button class="button save" ng-click="refund_order();">Refund</button>
+				</li>
+				<li class="li-input" ng-show="isRefunding">
+					<button class="button save"><i class="fa fa-spinner fa-spin"></i> Refunding </button>
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>

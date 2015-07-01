@@ -2237,7 +2237,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund($amt = null) {
+	public function refund($amt = null, $note = null) {
 
 		if (!$this->refunded){
 
@@ -2351,6 +2351,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->do_not_reimburse_driver = 1;
 			$this->do_not_pay_driver = 1;
 			$this->save();
+
+			// saves an order transaction
+			$transaction = new Crunchbutton_Order_Transaction;
+			// needs to be changed when we start to do partial refund
+			$transaction->amt = $this->charged();
+			$transaction->type = Crunchbutton_Order_Transaction::TYPE_REFUNDED;
+			$transaction->date = date( 'Y-m-d H:i:s' );;
+			$transaction->note = $note;
+			$transaction->id_order = $this->id_order;
+			$transaction->id_user_payment_type = $this->id_user_payment_type;
+			$transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+			$transaction->id_admin = c::user()->id_admin;
+			$transaction->save();
+
 			return (object)['status' => true];
 		}
 		return (object)['status' => false];

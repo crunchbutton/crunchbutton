@@ -7,6 +7,7 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 
 	const TYPE_PAID_TO_RESTAURANT = 'paid-to-restaurant';
 	const TYPE_PAID_TO_DRIVER = 'paid-to-driver';
+	const TYPE_REFUNDED = 'refunded';
 	const TYPE_REIMBURSED_TO_DRIVER = 'reimbursed-driver';
 	const PAYMENT_TYPE_GIFT = 'gift';
 	const PAYMENT_TYPE_CARD = 'card';
