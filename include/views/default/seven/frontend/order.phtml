@@ -10,7 +10,7 @@
 <div ng-if="order.id">
 	
 	<div class="content-padding">
-		<div ng-if="order.delivery_service">
+		<div ng-if="order.delivery_service && order.status.status != 'delivered'">
 			<div class="order-status-loader-labels">
 				<div class="order-status-loader-label">{{order._time}}</div>
 				<div class="order-status-loader-label"></div>
@@ -41,7 +41,7 @@
 		<div class="divider"></div>
 	</div>
 	
-	<div class="divider dots spacer-one-two"></div>
+	<div class="divider dots spacer-one-two" ng-if="order.delivery_service && order.status.status != 'delivered'"></div>
 
 	<div class="content-padding-desktop">
 
