@@ -267,7 +267,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'repsApplyCtrl',
 			templateUrl: 'assets/view/reps.apply.html'
 		})
-    .when('/thankyou', {
+		.when('/thankyou', {
 			action: 'thankyou',
 			controller: 'ThankyouCtrl',
 			templateUrl: 'assets/view/thankyou.html'
@@ -286,6 +286,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'order',
 			controller: 'OrderCtrl',
 			templateUrl: 'assets/view/order.html'
+		})
+		.when('/order/:id/:action', {
+			action: 'order',
+			controller: 'OrderCtrl',
+			templateUrl: 'assets/view/order.confirm.html'
 		})
 		.when('/cities', {
 			action: 'cities',

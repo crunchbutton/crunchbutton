@@ -3662,16 +3662,6 @@ select {
 	}
 }
 
-.order-tagline h1 {
-	font-size: 1.3em;
-	font-weight: bold;
-}
-
-.order-tagline h2 {
-	font-size: 1.2em;
-	margin-top: .6em;
-}
-
 .snap-opened .snap-content-inner {
 	pointer-events: none;
 }
@@ -3968,7 +3958,24 @@ font-familt: "Museo Slab";
 	display: inline-block;
 }
 
+@media screen and (max-width: 1024px) {
+	.order-tagline {
+		font-size: 1.4em;
+	}
+	.order-tagline p {
+		line-height: 1.8em;
+	}
+}
+
 @media screen and (min-width: 1025px) {
+	.order-tagline {
+		font-weight: 100;
+		font-size: 2.3em;
+		margin-bottom: 1.4em;
+	}
+	.order-tagline b {
+		font-weight: bold;
+	}
 	.restaurants-repeated:nth-child(3n+0) .restaurants-item {
 		margin-right: 0;
 	}
