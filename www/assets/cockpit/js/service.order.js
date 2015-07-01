@@ -58,7 +58,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			method: 'GET',
 			params : {}
 		},
-		'refund' : { url: App.service + 'order/:id_order/refund', method: 'GET', params : {} },
+		'refund' : { url: App.service + 'order/:id_order/refund', method: 'POST', params : {} },
 		'do_not_reimburse_driver' : { url: App.service + 'order/:id_order/do_not_reimburse_driver', method: 'GET', params : {} },
 		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
 		'do_not_pay_restaurant' : { url: App.service + 'order/:id_order/do_not_pay_restaurant', method: 'GET', params : {} }
@@ -101,37 +101,14 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
-	service.refund = function( id_order, callback ){
-		order.refund( { id_order: id_order }, function( data ) {
+	service.refund = function( params, callback ){
+		order.refund( params, function( data ) {
 			callback( data );
 		});
 	}
 
-	service.askRefund = function(order, callback) {
-
-		var question = 'Are you sure you want to refund this order?';
-		if (parseFloat(order.credit ) > 0) {
-			question += "\nA gift card was used at this order the refund value will be $" + $scope.ticket.order.charged + ' + $' + $scope.ticket.order.credit + ' as gift card.' ;
-		}
-
-		var fail = function() {
-			callback(false);
-		};
-
-		var success = function() {
-			service.refund(order.id_order, function(result) {
-				if (result.success) {
-					callback(true);
-				} else {
-					console.log(result.responseText);
-					var er = result.errors ? '<br>' + result.errors : 'See the console.log!';
-					App.alert('Refunding fail! ' + er);
-					fail();
-				}
-			});
-		};
-
-		App.confirm(question, 'Refund #' + id_order, success, fail);
+	service.askRefund = function( id_order, callback ){
+		$rootScope.$broadcast( 'openRefundOrderOptions', { id_order: id_order, callback: callback } );
 	}
 
 	service.do_not_reimburse_driver = function( id_order, callback ){

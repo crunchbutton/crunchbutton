@@ -128,6 +128,59 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 
 });
 
+NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService ) {
+
+	var id_order = null;
+	var callback = null;
+	$scope.refund = null;
+	$scope.isRefunding = false;
+	$scope.formRefundSubmitted = false;
+
+	$rootScope.$on( 'openRefundOrderOptions', function(e, data) {
+		id_order = data.id_order;
+		callback = data.callback;
+		App.dialog.show('.refund-order-container');
+		OrderService.get(id_order, function(d) {
+			$scope.order = d;
+			$scope.refund = {};
+			$scope.refund.id_order = d.id_order;
+			$scope.refund.amount = parseFloat( d.charged );
+
+		});
+	});
+
+	var options = [];
+	options.push( { value: 'Customer canceled', label: 'Customer canceled' } );
+	options.push( { value: 'Food really late', label: 'Food really late' } );
+	options.push( { value: 'Wrong food delivered', label: 'Wrong food delivered' } );
+	options.push( { value: 'Canceled due to lack of drivers', label: 'Canceled due to lack of drivers' } );
+	options.push( { value: 'Other', label: 'Other' } );
+	$scope.reasons = options;
+
+	$scope.refund_order = function(){
+
+		if( $scope.formRefund.$invalid ){
+			$scope.formRefundSubmitted = true;
+			return;
+		}
+
+		$scope.isRefunding = true;
+		OrderService.refund( $scope.refund, function( result ){
+				$scope.isRefunding = false;
+				if( result.success ){
+					if( callback ){
+						callback();
+					}
+					$rootScope.closePopup();
+				} else {
+					console.log( result.responseText );
+					var er = result.errors ? "<br>" + result.errors : 'See the console.log!';
+					App.alert('Refunding fail! ' + er);
+				}
+		} );
+	}
+});
+
 NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService, SocketService) {
 
 	SocketService.listen('order.' + $routeParams.id, $scope)
@@ -185,38 +238,14 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		cleanup();
 	});
 
-	$scope.isRefunding = false;
-
 	$scope.changeOrderStatus = function(){
 		$rootScope.$broadcast( 'orderDeliveryStatusChange', { id_order: $routeParams.id, id_community: $scope.order.id_community }  );
 	}
 
 	$scope.refund = function(){
-
-		if( $scope.isRefunding ){
-			return;
-		}
-
-		var question = 'Are you sure you want to refund this order?';
-		if( parseFloat( $scope.order.credit ) > 0 ){
-			question += "\n";
-			question += 'A gift card was used at this order the refund value will be $' + $scope.order.charged + ' + $' + $scope.order.credit + ' as gift card.' ;
-		}
-
-		if ( confirm( question ) ){
-
-			$scope.isRefunding = true;
-			OrderService.refund( $scope.order.id_order, function( result ){
-				$scope.isRefunding = false;
-				if( result.success ){
-					$rootScope.reload();
-				} else {
-					console.log( result.responseText );
-					var er = result.errors ? "<br>" + result.errors : 'See the console.log!';
-					App.alert('Refunding fail! ' + er);
-				}
-			} );
-		}
+		OrderService.askRefund( $routeParams.id, function(){
+			$rootScope.reload();
+		} );
 	}
 
 	$scope.do_not_pay_driver = function(){

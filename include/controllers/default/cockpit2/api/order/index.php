@@ -100,7 +100,15 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 					$this->error(401);
 				}
-				$status = $order->refund();
+
+				$reason = $this->request()[ 'reason' ];
+
+				if( $this->request()[ 'reason_other' ] && $reason == 'Other' ){
+					$reason = $this->request()[ 'reason_other' ];
+				}
+
+				$status = $order->refund( null, $reason );
+
 				if( $status ){
 					echo json_encode( [ 'success' => true ] );
 				} else {
