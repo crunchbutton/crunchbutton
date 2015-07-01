@@ -100,8 +100,6 @@ NGApp.directive('profilePreference', function (AccountService, $http, $rootScope
 		},
 		controller: function ($scope) {
 			$scope.account = AccountService;
-			console.log($scope.key, AccountService.user.prefs[$scope.key]);
-
 			$scope.change = function() {
 
 				var value = !AccountService.user.prefs[$scope.key];
