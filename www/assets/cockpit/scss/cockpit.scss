@@ -1126,6 +1126,9 @@ input {
 .li-input textarea{
 	height: 50px;
 }
+	.li-input textarea.big{
+		height: 100px;
+	}
 	.li-input .small input,
 	.li-input .small select,
 	.li-input .small textarea{
@@ -4064,6 +4067,17 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 .listview-light {
 	opacity: .8;
+}
+
+.listview-text-block {
+	font-size:.8em;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-height:56px /* fallback */
 }
 
 .box-content-table td.tb-v-center, .box-content-table th.tb-v-center, td.tb-v-center {

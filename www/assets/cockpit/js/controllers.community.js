@@ -216,7 +216,9 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} );
 	}
 
-// method to load restaurants - called at ui-tab directive
+	$scope.current_page = 'community';
+
+	// method to load restaurants - called at ui-tab directive
 	$scope.loadRestaurants = function(){
 		$scope.loadingRestaurants = true;
 		RestaurantService.list( { community: $scope.community.id_community, limit: 50 }, function(d) {
@@ -250,6 +252,13 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 			$scope.closelogs = json;
 			$scope.loadingLogs = false;
 		} );
+	}
+
+	$scope.notes_to_driver_edit = function( id_restaurant ){
+		$rootScope.$broadcast( 'openEditNotesToDriver', {id_restaurant:id_restaurant, callback: function(){
+			$rootScope.closePopup();
+			$scope.loadRestaurants();
+		} } );
 	}
 
 	$scope.openClosingTimeContainer = function(){
