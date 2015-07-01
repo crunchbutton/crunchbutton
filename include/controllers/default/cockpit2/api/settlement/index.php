@@ -808,12 +808,13 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$page = max( $this->request()['page'], 1 );
 		$search = $this->request()['search'];
+		$id_driver = $this->request()['id_driver'];
 		$pay_type = max( $this->request()['pay_type'], 0 );
 		$payment_status = max( $this->request()['payment_status'], 0 );
 		$start = ( ( $page - 1 ) * $resultsPerPage );
 
-		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
-		$payments_total = Crunchbutton_Payment::listPayments( [ 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status ] );
+		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status, 'id_driver' => $id_driver ] );
+		$payments_total = Crunchbutton_Payment::listPayments( [ 'search' => $search, 'type' => 'driver', 'pay_type' => $pay_type, 'payment_status' => $payment_status, 'id_driver' => $id_driver ] );
 		$payments_total = $payments_total->count();
 
 		$list = [];

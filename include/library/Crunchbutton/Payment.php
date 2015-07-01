@@ -279,9 +279,12 @@ class Crunchbutton_Payment extends Cana_Table {
 								ORDER BY p.id_payment DESC ' . $limit;
 
 			}
+
 			if( $search[ 'type' ] == 'driver' ){
 
-				if( $search[ 'search' ] ){
+				if( $search[ 'id_driver' ] ){
+					$where .= ' AND p.id_driver = "' . $search[ 'id_driver' ] . '"';
+				} else if( $search[ 'search' ] ){
 					$where .= ' AND a.name LIKE "%' . $search[ 'search' ] . '%"';
 				}
 

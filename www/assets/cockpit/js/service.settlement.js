@@ -272,7 +272,7 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 
 	service.pay_types = function(){
 		var types = [];
-		types.push( { type: 0, label: 'All' } );
+		types.push( { type: '0', label: 'All' } );
 		types.push( { type: service.PAY_TYPE_PAYMENT, label: 'Payment' } );
 		types.push( { type: service.PAY_TYPE_REIMBURSEMENT, label: 'Reimbursement' } );
 		return types;
@@ -280,7 +280,7 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 
 	service.payment_statuses = function(){
 		var types = [];
-		types.push( { type: 0, label: 'All' } );
+		types.push( { type: '0', label: 'All' } );
 		types.push( { type: service.PAYMENT_STATUS_PENDING, label: 'Pending' } );
 		types.push( { type: service.PAYMENT_STATUS_SUCCEEDED, label: 'Succeeded' } );
 		types.push( { type: service.PAYMENT_STATUS_FAILED, label: 'Failed' } );

@@ -786,18 +786,16 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 		scope: $scope,
 		watch: {
 			search: '',
-			type: 0,
-			status: 0
+			type: '0',
+			id_driver: '0',
+			status: '0'
 		},
 		update: function() {
-			$scope.query.status = parseInt($scope.query.status);
-			$scope.query.type = parseInt($scope.query.type);
-
 			$scope.ready = false;
 			SettlementService.drivers.payments({
 				'page': $scope.query.page,
 				'search': $scope.query.search,
-				'id_driver': $scope.query.driver,
+				'id_driver': $scope.query.id_driver,
 				'pay_type': $scope.query.type,
 				'payment_status': $scope.query.status
 			}, function( data ){
@@ -835,17 +833,26 @@ NGApp.controller( 'SettlementDriversPaymentsCtrl', function ( $scope, $rootScope
 
 });
 
-NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $rootScope, SettlementService, DriverService) {
+NGApp.controller( 'SettlementDriversPaymentArbitraryCtrl', function ( $scope, $rootScope, $routeParams, SettlementService, DriverService, StaffService) {
 
 	$scope.ready = false;
 	$scope.id_driver = 0;
 
 	var drivers = function(){
-		DriverService.listAllAdminsWithLogin( function( data ){
-			var drivers = [];
-			$scope.drivers = data;
-			$scope.ready = true;
-		} );
+		if( $routeParams.id_driver ){
+			StaffService.get($routeParams.id_driver, function(staff) {
+				$scope.staff = staff;
+				console.log('$scope.staff',$scope.staff);
+				$scope.payment = { id_driver: $scope.staff.id_admin };
+				$scope.ready = true;
+			});
+		} else {
+			DriverService.listAllAdminsWithLogin( function( data ){
+				var drivers = [];
+				$scope.drivers = data;
+				$scope.ready = true;
+			} );
+		}
 	}
 
 	var payments_type = function(){
