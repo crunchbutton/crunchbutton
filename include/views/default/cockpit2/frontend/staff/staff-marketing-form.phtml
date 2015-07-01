@@ -6,11 +6,6 @@
 
 	<div class="divider"></div>
 
-	<h2 class="title">
-		<span ng-if="!staff.id_admin">Add rep</span>
-		<span ng-if="staff.id_admin">Edit rep</span>
-	</h2>
-
 	<div>
 
 		<form name="form" novalidate>
@@ -120,7 +115,7 @@
 
 					<li class="li-input" ng-class="{'error':form.staffInviteCode.$invalid}">
 						<div class="label">Referral Code:</div>
-						<div class="input"><input type="text" name="staffInviteCode" ng-model="staff.invite_code" required placeholder="Referral Code"></div>
+						<div class="input"><input type="text" name="staffInviteCode" ng-model="staff.invite_code" placeholder="Referral Code"></div>
 						<div class="box-error">
 							<small ng-show="form.staffInviteCode.$error.required">Required.</small>
 						</div>
