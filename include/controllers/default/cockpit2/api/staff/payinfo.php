@@ -193,10 +193,10 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
 			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin )->get( 0 );
 			$out[ 'pexcard' ] = ( $cards && count( $cards ) > 0 );
-			if( $payment_type->using_pex_date ){
+			if( $payment_type->using_pex_date && $payment_type->using_pex_date()){
 				$out[ 'using_pex_date' ] = $payment_type->using_pex_date()->format( 'Y,m,d' );
 			}
-			if( $admin->date_terminated ){
+			if( $admin->date_terminated && $admin->dateTerminated()){
 				$out[ 'date_terminated' ] = $admin->dateTerminated()->format( 'Y,m,d' );
 			}
 
