@@ -3933,7 +3933,12 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	}
 }
 
-
+.driver-routing-number{
+	width: 438px;
+	height: 230px;
+	background: url(../images/driver-payment-check.gif);
+	background-size: contain;
+}
 
 
 @media screen and (min-width: $desktopWidth) {
@@ -3944,6 +3949,10 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 @media screen and (max-width: $mobileWidth) {
 	.hide-mobile {
 		display: none !important;
+	}
+	.driver-routing-number{
+		width: 320px;
+		height: 173px;
 	}
 }
 
