@@ -2,5 +2,5 @@
 	<p>{{content}}</p>
 </div>
 <div class="tb-info-data" ng-if="type=='bool'">
-	<label class="switch-wrap"><input type="checkbox" class="switch" ng-change="change(value)" ng-model="account.user.prefs[key]"><div></div></label>
+	<label class="switch-wrap" ng-click="change(); $event.preventDefault(); $event.stopPropagation();"><input type="checkbox" class="switch" ng-model="account.user.prefs[key]"><div></div></label>
 </div>

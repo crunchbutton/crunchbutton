@@ -89,7 +89,7 @@ NGApp.directive('tabSelect', function(MainNavigationService) {
 });
 
 
-NGApp.directive('profilePreference', function (AccountService, $http, $rootScope) {
+NGApp.directive('profilePreference', function (AccountService, $http, $rootScope ) {
 	return {
 		restrict: 'A',
 		templateUrl: 'assets/view/general-profile-preference.html',
@@ -100,19 +100,12 @@ NGApp.directive('profilePreference', function (AccountService, $http, $rootScope
 		},
 		controller: function ($scope) {
 			$scope.account = AccountService;
-			console.log(AccountService.user.prefs[$scope.key]);
+			console.log($scope.key, AccountService.user.prefs[$scope.key]);
 
+			$scope.change = function() {
 
-//			$scope.value = AccountService.user.prefs[$scope.key];
-//			AccountService.user.prefs['demo'] = true;
-/*
-			if ($scope.type == 'bool') {
-				$scope.value = $scope.value == '1' ? true : false;
-			}
-*/
-			$scope.change = function(value) {
-				value = AccountService.user.prefs[$scope.key];
-				console.log($scope.key, value);
+				var value = !AccountService.user.prefs[$scope.key];
+				AccountService.user.prefs[$scope.key] = value;
 
 				$rootScope.$broadcast('user-preference', {key: $scope.key, value: value});
 
