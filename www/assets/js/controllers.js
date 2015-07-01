@@ -1323,6 +1323,11 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
+	$scope.confirm = $routeParams.action == 'confirm' ? true : false;
+	
+	$scope.receipt = function () {
+		App.go( '/order/' + $scope.order.uuid, 'push' );
+	};
 
 	AccountService.updatePoints( function( points ){
 		$scope.account.user.points = points;

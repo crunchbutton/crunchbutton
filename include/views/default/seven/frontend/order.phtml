@@ -8,66 +8,44 @@
 </div>
 
 <div ng-if="order.id">
-
-	<div class="col-box content-padding-desktop">
-		<div class="two-col content-padding-mobile" ng-if="order._new">
-			<div class="order-bubble-wrap">
-				<div class="bubble-tail bubble-tail-green bubble-animated">
-					<div class="text" ng-switch="cherryMessage">
-						<span ng-switch-when="1" class="single-line">Yay! Food!</span>
-						<span ng-switch-when="2" class="single-line">It's on it's way.</span>
-						<span ng-switch-when="3" class="small">Questions? Please contact the restaurant.</span>
-						<span ng-switch-when="4">Feedback? Send us a text.</span>
-						<span ng-switch-when="5">We'd love to hear your thoughts...</span>
-						<span ng-switch-when="6">suggestions, or even complaints!</span>
-						<span ng-switch-when="7">The customer is always right!</span>
-						<span class="single-line" ng-switch-when="8"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-						<span ng-switch-default class="single-line"><b>Sit back &amp Relax!</b></span>
-					</div>
-					<div class="bubble-tail-spacer"></div>
+	
+	<div class="content-padding">
+		<div ng-if="order.delivery_service">
+			<div class="order-status-loader-labels">
+				<div class="order-status-loader-label">{{order._time}}</div>
+				<div class="order-status-loader-label"></div>
+				<div class="order-status-loader-label"></div>
+				<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA: 
+					<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
+					<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
 				</div>
-				<div class="hot-dog-relax animated-resize" ng-instant="cherryMessage = (cherryMessage > 7 ? 0 : (cherryMessage + 1))" instant-pass-thru></div>
-				<div class="divider"></div>
+				<div class="order-status-loader-label" ng-if="order.status.status == 'delivered' && 1==2">
+					<? /* needs to be formatted */?>
+					{{order.status.date}}
+				</div>
+
+			</div>
+			<div class="order-status-loader">
+				<div class="order-status-loader-block order-status-loader-active" >&nbsp;</div>
+				<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status != 'new'}">&nbsp;</div>
+				<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status != 'new' && order.status.status != 'accepted'}">&nbsp;</div>
+				<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status == 'delivered'}">&nbsp;</div>
+			</div>
+			<div class="order-status-loader-labels">
+				<div class="order-status-loader-label">Ordered</div>
+				<div class="order-status-loader-label">Accepted</div>
+				<div class="order-status-loader-label">Picked up</div>
+				<div class="order-status-loader-label">Delivered</div>
 			</div>
 		</div>
+		<div class="divider"></div>
+	</div>
+	
+	<div class="divider dots spacer-one-two"></div>
+
+	<div class="content-padding-desktop">
 
 		<div class="content-padding-mobile">
-			
-				<div class="order-tagline" ng-if="!order.delivery_service"><p><b>Your order is on its way</b> and saved for easy 1 click reordering</p></div>
-				<div ng-if="order.delivery_service">
-					<div class="order-status-loader-labels">
-						<div class="order-status-loader-label">{{order._time}}</div>
-						<div class="order-status-loader-label"></div>
-						<div class="order-status-loader-label"></div>
-						<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA: 
-							<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
-							<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
-						</div>
-						<div class="order-status-loader-label" ng-if="order.status.status == 'delivered' && 1==2">
-							<? /* needs to be formatted */?>
-							{{order.status.date}}
-						</div>
-
-					</div>
-					<div class="order-status-loader">
-						<div class="order-status-loader-block order-status-loader-active" >&nbsp;</div>
-						<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status != 'new'}">&nbsp;</div>
-						<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status != 'new' && order.status.status != 'accepted'}">&nbsp;</div>
-						<div class="order-status-loader-block" ng-class="{'order-status-loader-active': order.status.status == 'delivered'}">&nbsp;</div>
-					</div>
-					<div class="order-status-loader-labels">
-						<div class="order-status-loader-label">Ordered</div>
-						<div class="order-status-loader-label">Accepted</div>
-						<div class="order-status-loader-label">Picked up</div>
-						<div class="order-status-loader-label">Delivered</div>
-					</div>
-				</div>
-			
-		</div>
-
-		<div class="divider dots spacer-two-one" ng-if="order._new"></div>
-
-		<div class="two-col content-padding-mobile">
 			<div ng-hide="account.user.has_auth">
 				<div class="order-buttons">
 					<p>
@@ -89,46 +67,40 @@
 
 				<div class="order-buttons">
 
-					<p ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery" class="delivery-free order-delivery-free">
-						You have <strong>{{account.user.points.show}}</strong> points! The next delivery fee is on us.
-					</p>
-					<div ng-if="!account.user.points.free_delivery_message">
-						<p class="delivery-free">
-							You just earned <strong>{{order.reward.points}}</strong> points!
-							<span ng-if="account.user.points.away_free_delivery > 0"> You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</span>
-						</p>
-					</div>
-					<div class="hide-mobile">
-						<p>
-							Want more points? Share on Facebook or Twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
+					<div class="hide-mobile col-box">
+						<p class="two-col">
+							Want free delivery? Share on Facebook or Twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
 							<br><br>
 						</p>
 
-						<div class="col-box">
+						<div class="two-col">
+							<div class="col-box">
 
-							<button class="button facebook button-refer" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
-								<i class="fa fa-facebook-square"></i> <span>Share</span>
-							</button>
+								<button class="button facebook button-refer" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
+									<i class="fa fa-facebook-square"></i> <span>Share</span>
+								</button>
 
-							<button class="button twitter button-refer" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
-								<i class="fa fa-twitter-square"></i> <span>Tweet</span>
-							</button>
+								<button class="button twitter button-refer" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
+									<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+								</button>
+							</div>
+							<div ng-if="order.reward.shared.facebook">
+								Thanks for sharing on Facebook.
+							</div>
+
+							<div ng-if="order.reward.shared.twitter">
+								Thanks for sharing on Twitter.
+							</div>
 						</div>
 
-						<div ng-if="order.reward.shared.facebook">
-							Thanks for sharing on Facebook.
-						</div>
 
-						<div ng-if="order.reward.shared.twitter">
-							Thanks for sharing on Twitter.
-						</div>
 						<div class="divider"></div>
 
 					</div>
 
 
 					<div class="hide-desktop">
-						<p class="order-earn-mobile">Earn more free deliveries by inviting more friends</p>
+						<p class="order-earn-mobile">Earn more free deliveries by inviting friends.</p>
 						<a href="{{referral.sms}}">
 							<button class="button lightorange">
 								<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
@@ -141,14 +113,13 @@
 
 		</div>
 	</div>
+	
+	<div class="divider dots spacer-two-two"></div>
 
 
-	<div class="order-content">
+	<div class="order-content col-box content-padding-desktop">
 
-		<div class="divider dots spacer-two-two"></div>
-
-
-		<div class="content-padding">
+		<div class="content-padding-mobile two-col">
 
 			<div class="order-icon"><div class="icon-chef"></div></div>
 			<div class="order-info">
@@ -173,11 +144,11 @@
 			</div>
 			<div class="divider"></div>
 		</div>
+		
+		<div class="divider dots spacer-two-two hide-desktop"></div>
 
-		<div class="divider dots spacer-two-two"></div>
-
-		<div class="content-padding">
-
+		<div class="content-padding-mobile two-col">
+			
 			<div class="order-icon">
 				<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
 				<div ng-hide="(order.delivery_type == 'delivery')" class="icon-takeout"></div>
@@ -196,17 +167,13 @@
 			</div>
 			<div class="order-info order-info-oneline">
 				<p>
-					<span ng-show="(order.pay_type == 'card')">Paid by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b></span></span>
-					<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
+					<span ng-show="(order.pay_type == 'card')">Paid <b>$<span ng-bind-html-unsafe="order.charged | formatPrice"></span></b> by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b></span></span>
+					<span ng-hide="(order.pay_type == 'card')">Pay <b>$<span ng-bind-html-unsafe="order.charged | formatPrice"></span></b> <span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
 				</p>
 			</div>
 
 			<div class="divider"></div>
-		</div>
 
-		<div class="divider dots spacer-two-two"></div>
-
-		<div class="content-padding">
 
 			<div class="order-icon"><div class="icon-user"></div></div>
 			<div class="order-info">
@@ -217,15 +184,6 @@
 			</div>
 			<div class="divider"></div>
 
-			<div ng-if="order.notes">
-				<div class="order-comment-arrow"></div>
-				<div class="order-comment">
-					<p ng-bind-html-unsafe="order.notes | nl2br"></p>
-				</div>
-			</div>
-
-			<div class="spacer-two-two"></div>
-			<br><br>
 
 			<span ng-if="order.delivery_type == 'delivery'">
 				<div class="order-icon"><div class="icon-map-home"></div></div>
@@ -236,32 +194,26 @@
 				<div class="divider"></div>
 			</span>
 
-			<div class="order-icon"><div class="icon-map-restaurant"></div></div>
-			<div class="order-info">
-				<p class="order-info-address"><a href="{{order.mapLink}}" target="_system"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
+			<div ng-hide="(order.delivery_type == 'delivery')">
+				<div class="order-icon"><div class="icon-map-restaurant"></div></div>
+				<div class="order-info">
+					<p class="order-info-address"><a href="{{order.mapLink}}" target="_system"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
+				</div>
+				<div class="divider"></div>
 			</div>
-			<div class="divider"></div>
 
 		</div>
-
-		<div class="divider dots spacer-two-two"></div>
-
-		<div class="content-padding">
-
-			<h4>Your receipt:</h4>
-			<p>
-				<span ng-bind-html-unsafe="order._message"></span>
-				<br><br>
-				Total: $<span ng-bind-html-unsafe="order.charged | formatPrice"></span>
-				<br><br>
-			</p>
-
-
-			<div class="credit" ng-if="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
-
-			<div class="divider spacer-two-two"></div>
-			<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_system" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
-		</div>
-
+		
 	</div>
+
+	<div class="divider dots spacer-one-two"></div>
+
+	<div class="content-padding">
+		<? /*
+		<div class="credit" ng-if="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+*/ ?>
+		<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_system" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
+	</div>
+
+	
 </div>

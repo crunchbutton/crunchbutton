@@ -815,7 +815,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 								$rootScope.$safeApply( function(){
 									$rootScope.$broadcast( 'newOrder' );
 									OrderViewService.newOrder = true;
-									App.go( '/order/' + uuid, 'push' );
+									App.go( '/order/' + uuid + '/confirm', 'push' );
 								} );
 
 							} );
@@ -1177,16 +1177,6 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 				if (service.order.credit) {
 					service.order._credit = parseFloat(service.order.credit).toFixed(2);
-				}
-
-				if (service.newOrder) {
-					service.order._new = service.newOrder;
-				} else {
-					service.order._new = false;
-				}
-
-				if ($routeParams.new) {
-					service.order._new = true;
 				}
 
 				var arr = data.date.split(/[- :]/);
