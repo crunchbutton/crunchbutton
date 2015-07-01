@@ -87,8 +87,8 @@
 				<input type="radio" name="carrier" ng-model="apply.carrier" value="ATandT" id="apply-carrier-att"><label for="apply-carrier-att">AT&amp;T</label><br>
 				<input type="radio" name="carrier" ng-model="apply.carrier" value="Sprint" id="apply-carrier-sprint"><label for="apply-carrier-sprint">Sprint</label><br>
 				<input type="radio" name="carrier" ng-model="apply.carrier" value="T-Mobile" id="apply-carrier-tmobile"><label for="apply-carrier-tmobile">T-Mobile</label><br>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" id="apply-carrier-other"><label for="apply-carrier-other">Other:</label>
-				<div ng-if="errors.otherCarrier">Please specify your carrier:</div>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" id="apply-carrier-other"><label for="apply-carrier-other">Other:&nbsp;&nbsp;</label>
+				<div ng-if="errors.otherCarrier">Please specify your carrier:&nbsp;</div>
 				<input ng-click="apply.carrier='Other'" class="form-control form-control-small" type="text" name="otherCarrier" ng-model="apply.otherCarrier">
 			</div>
 		</div>
@@ -144,7 +144,7 @@
 				<input type="radio" ng-model="apply.source" name="source" value="friend" id="apply-source-friend"><label for="apply-source-friend">Through a Friend</label><br>
 				<input type="radio" ng-model="apply.source" name="source" value="campus-marketing" id="apply-source-marketing"><label for="apply-source-marketing">Marketing on Campus</label><br>
 				<input type="radio" ng-model="apply.source" name="source" value="cb-website" id="apply-source-website"><label for="apply-source-website">Via Crunchbutton Website</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:</label>
+				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:&nbsp;&nbsp;</label>
 				<div ng-if="errors.otherSource">Please specify how you found out about us:</div>
 				<input ng-click="apply.source='other'" class="form-control form-control-small" type="text" ng-model="apply.otherSource" name="otherSource">
 			</div>
