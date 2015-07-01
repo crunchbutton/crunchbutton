@@ -562,6 +562,23 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	}
 
+	$rootScope.openMap = function( type, address1, address2 ){
+		if( App.iOS() ){
+			setTimeout( function(){
+				switch( type ){
+					case 'route':
+						var url = 'maps://?daddr=' + address1 + '&saddr=' + address2;
+					break;
+					case 'query':
+						var url = 'maps://?q=' + address1 ;
+					break;
+				}
+				parent.window.open( url, '_system', 'location=yes' );
+			} );
+		}
+
+	}
+
 	$rootScope.walkTo = function( selector, adjust ){
 		adjust = adjust ? adjust : 0;
 		var el = angular.element( selector );
