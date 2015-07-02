@@ -4,11 +4,16 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (preg_replace('/[^0-9]/','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2)) {
+		if (preg_replace('/[^a-z0-9]/i','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2) && c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] )) {
 			$driver = Admin::o( c::getPagePiece(2) );
 			if (!$driver->id_admin) {
 				$driver = Admin::login(c::getPagePiece(2), true);
 			}
+			
+			if (!$driver) {
+				$this->error(404);
+			}
+
 			if( !$driver->isDriver() ){
 				$this->_error();
 			}
