@@ -6,7 +6,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="2">
+				<td colspan="4">
 					<i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1">
 				</td>
 			</tr>
@@ -17,6 +17,13 @@
 						<option value="all">All</option>
 						<option value="open">Open</option>
 						<option value="closed">Closed</option>
+					</select>
+				</td>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" name="searchType" tabindex="3">
+						<option value="all">All</option>
+						<option value="system">System</option>
 					</select>
 				</td>
 			</tr>

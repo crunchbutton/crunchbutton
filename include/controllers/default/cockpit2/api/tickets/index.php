@@ -29,23 +29,30 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			left join `phone` p on p.id_phone=sm.id_phone
 			left JOIN `user` u ON u.id_phone=p.id_phone
 			left JOIN `admin` a ON a.id_phone=p.id_phone
-
 			where
-				sm.id_support_message=(
-					SELECT MAX(support_message.id_support_message) a
-					FROM support_message
-					WHERE
-						support_message.id_support=s.id_support
-						AND support_message.from="client"
-				)
-				and smr.id_support_message=(
-					SELECT MAX(support_message.id_support_message) a
-					FROM support_message
-					WHERE
-						support_message.id_support=s.id_support
-				)
-		';
+			';
 
+		if( $type == 'all' ){
+			$q .= '
+					sm.id_support_message=(
+						SELECT MAX(support_message.id_support_message) a
+						FROM support_message
+						WHERE
+							support_message.id_support=s.id_support
+							AND ( support_message.from="client" OR support_message.from="system" )
+					)
+					and smr.id_support_message=(
+						SELECT MAX(support_message.id_support_message) a
+						FROM support_message
+						WHERE
+							support_message.id_support=s.id_support
+					)
+			';
+		} else if( $type == 'system' ){
+			$q .= '
+				s.type = "' . Crunchbutton_Support::TYPE_WARNING . '"
+			';
+		}
 		if ($status != 'all') {
 			$q .= "
 				AND s.status='".($status == 'closed' ? 'closed' : 'open')."'
