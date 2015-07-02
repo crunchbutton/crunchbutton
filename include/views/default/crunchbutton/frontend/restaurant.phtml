@@ -265,7 +265,7 @@
 							<div ng-repeat="success in giftcard.giftcards.success">
 								<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
 									<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
-									<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free</span>
+									<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get your delivery free</span>
 								</div>
 							</div>
 
@@ -386,7 +386,7 @@
 
 			<div ng-show="points.free_delivery_message && restaurant.delivery_service == '1'" >
 				<strong ng-if="order.form.pay_type == 'card'">You have {{points.show}} points! This delivery fee is on us.</strong>
-				<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
+				<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get your delivery free.</strong>
 			</div>
 
 		</div>
@@ -401,7 +401,7 @@
 
 		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message  && restaurant.delivery_service == '1'">
 			<strong ng-if="order.form.pay_type == 'card'">You have {{points.show}} points! This delivery fee is on us.</strong>
-			<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free.</strong>
+			<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get your delivery free.</strong>
 		</div>
 
 
