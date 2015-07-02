@@ -25,21 +25,14 @@ NGApp.controller('DownloadCtrl', function ($scope, $http, AccountService, Accoun
 
 NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) {
 
-	var array_without_test = [];
-	for (var iiii in App.communities){
+	$scope.communities = [];
 
-		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)
-			|| ((App.communities[iiii]).name.indexOf('Marina')>-1) || ((App.communities[iiii]).name.indexOf('burrito')>-1)
-			|| ((App.communities[iiii]).name.indexOf('duplication')>-1)){
-			//do nothing
+	for (var iiii in App.communities) {
+		if (!App.communities[iiii].name.match(/driver|duplication|test|five minute|apply|5-dollar|marina del rey/i)) {
+			$scope.communities.push(App.communities[iiii]);
 		}
-		else{
-			//only add communities without "test" and without "no drivers"
-			array_without_test.push(App.communities[iiii]);
-		}
-
 	}
-	$scope.communities = array_without_test;
+
 	$scope.apply = {};
 	$scope.errors = {};
     $scope.post = function(){
