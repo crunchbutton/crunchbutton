@@ -84,7 +84,7 @@ class Controller_api_driver_summary extends Crunchbutton_Controller_RestAccount 
 
 		$query = 'SELECT COUNT( * ) AS total FROM payment_schedule WHERE id_driver = ? ' . $where;
 
-		$result = c::db()->get( $query );
+		$result = c::db()->get( $query, [$id_driver]);
 		$out[ 'count' ] = intval( $result->_items[ 0 ]->total );
 		$out[ 'pages' ] = ceil( $out[ 'count' ] / $limit );
 		$query = 'SELECT * FROM payment_schedule WHERE id_driver = ? ' . $where . ' ORDER BY id_payment_schedule DESC LIMIT ? OFFSET ?';
