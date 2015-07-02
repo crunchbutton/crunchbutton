@@ -35,7 +35,6 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		$r['timestamp'] = $timestamp;
 		$r['tickets'] = $tickets;
 
-
 		// orders
 		foreach (Order::deliveryOrders(12) as $order) {
 			$r['orders']['total']++;
@@ -51,7 +50,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 					break;
 			}
 		}
-		
+
 		$r['working'] = c::user()->isWorking();
 
 
