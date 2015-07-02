@@ -72,7 +72,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 		if (!oldValue || newValue.count != oldValue.count || newValue.timestamp != oldValue.timestamp ) {
 			getTickets();
 		}
-	});
+	}, true);
 });
 
 NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService, SocketService) {
@@ -287,7 +287,7 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, Tick
 				$scope.lotsoftickets = d.results;
 			});
 		}
-	});
+	}, true);
 
 	TicketService.list($scope.ticketparams, function(d) {
 		$scope.lotsoftickets = d.results;
