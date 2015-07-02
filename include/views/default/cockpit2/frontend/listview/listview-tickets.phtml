@@ -10,9 +10,14 @@
 
 		<tr ng-repeat="ticket in lotsoftickets">
 			<td nowrap>
-				<a href="/staff/{{ticket.id_admin}}" ng-if="ticket.name_admin">{{ticket.name}}</a>
-				<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin & ticket.id_user">{{ticket.name}}</a>
-				<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
+				<span ng-if="ticket.type == 'WARNING'">
+					<i>System</i>
+				</span>
+				<span ng-if="ticket.type != 'WARNING'">
+					<a href="/staff/{{ticket.id_admin}}" ng-if="ticket.name_admin">{{ticket.name}}</a>
+					<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin && ticket.id_user">{{ticket.name}}</a>
+					<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
+				</span>
 			</td>
 			<td>
 				<span class="listview-smaller">
