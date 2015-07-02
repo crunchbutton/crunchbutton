@@ -23,7 +23,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			->load($id);
 
 		$this->datetime = date('Y-m-d H:i:s');
-		$this->status = 'open';
+		if( !$this->id_support ){
+			$this->status = 'open';
+		}
 	}
 
 	public function getFirstCustomerMessage(){
@@ -707,6 +709,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$initial_save = false;
 		if(!Support::o($this->id_support)->id_support) {
 			$initial_save = true;
+			if( !$this->status ){
+				$this->status = 'open';
+			}
 		}
 
 		$this->phone = Phone::clean($this->phone);
@@ -861,14 +866,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		$out = [];
 
-
 		$out = $this->properties();
-
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
 		$out['driver'] = ( $this->order()->id_order && $this->order()->driver()->id_admin ) ? $this->order()->driver()->exports() : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
-
 
 		// Export the comments
 		$out[ 'comments' ] = [];
