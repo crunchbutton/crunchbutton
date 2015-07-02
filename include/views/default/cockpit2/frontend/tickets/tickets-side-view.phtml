@@ -90,7 +90,6 @@
 				'support-chat-contents-message-unset': message.sending,
 				'support-chat-contents-message-note': message.is_note,
 				'support-chat-contents-message-system': message.from == 'system' }">
-
 					<a href="/{{message.is_support || message.is_driver ? 'staff' : 'customer'}}/{{message.id_admin}}">
 					<div class="support-chat-contents-message-name">
 						<span class="support-chat-contents-message-icon">
@@ -109,7 +108,8 @@
 					</div>
 					</a>
 					<div class="support-chat-contents-message-time">
-						<span am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span>
+						<span ng-if="!message.sending" am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span>
+						<span ng-if="message.sending">sending...</span>
 					</div>
 					<div class="support-chat-contents-message-body">{{message.body}}
 						<div ng-repeat="image in message.media">

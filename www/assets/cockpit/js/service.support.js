@@ -88,7 +88,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		var add_as_note = ( add_as_note ? true : false );
 		var guid = App.guid();
 		TicketService.message({
-			id_support: service.scope.viewTicket,
+			id_support: service.scope.viewTicket.id_support,
 			body: message,
 			guid: guid,
 			note: add_as_note
