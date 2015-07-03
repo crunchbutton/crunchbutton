@@ -64,24 +64,29 @@
 								<div class="info">Ledger balance: <strong positive-or-negative-color="{{card.ledgerBalance}}">$ {{ card.ledgerBalance | formatPrice}}</strong></div>
 								<div class="info">Status: <strong>{{card.status}}</strong></div>
 							</div>
-
 							<ul ng-class="{'submitted':submitted}" class="ul-inputs">
-
 								<li class="li-input buttons" ng-show="!isLoadingBalance">
 									<span class="link no-underline green" ng-click="current_balanced();">Load</span>
 								</li>
-
 								<li class="li-input" ng-show="isLoadingBalance">
 									<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
 								</li>
 							</ul>
-
 						</div>
 				</div>
 			</div>
 		</td></tr>
 		<tr><td class="support-chat-contents">
-			<div class="support-chat-contents-scroll">
+			<div class="support-chat-contents-scroll" ticket-messages-scroll>
+
+				<div ng-if="ticket.messages.length && ticket.total_messages">
+					<button ng-if="ticket.messages.length < ticket.total_messages" ng-click="ticket.loadMessages()" class="button button-small button-empty button-green">
+						<span ng-if="!ticket.isLoadingMessages"><i class="fa fa-comment"></i></span>
+						<span ng-if="ticket.isLoadingMessages"><i class="fa fa-spinner fa-spin"></i></span>
+						&nbsp;&nbsp;More Messages</button>
+						&nbsp;&nbsp;Messages {{ticket.messages.length}} of {{ticket.total_messages}}.
+					<br><br>
+				</div>
 
 				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 				'support-chat-contents-message-support': message.is_support,
@@ -115,10 +120,7 @@
 						<div ng-repeat="image in message.media">
 							<img class="support-side-image" src="{{image}}">
 						</div>
-
-
 					</div>
-
 				</div>
 			</div>
 		</td></tr>

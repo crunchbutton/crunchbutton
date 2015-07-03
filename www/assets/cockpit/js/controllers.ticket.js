@@ -59,6 +59,64 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		} );
 	}
 
+	var couldLoadMoreMessages = true;
+
+	$scope.messages = function( callback ){
+
+		if( $scope.ticket.messages && $scope.ticket.messages.length >= $scope.ticket.total_messages ){
+			return;
+		}
+
+		if( !couldLoadMoreMessages ){
+			return;
+		}
+
+		couldLoadMoreMessages = false;
+
+		$scope.ticket.messages_page++;
+
+		$scope.ticket.isLoadingMessages = true;
+
+		var params = { id_support: $routeParams.id, page: $scope.ticket.messages_page }
+
+		TicketService.messages( params, function( data ){
+
+			var currentScroll = $('.support-chat-contents-scroll')[0].scrollHeight;
+
+			var new_messages = [];
+			for( x in data ){
+				if( data[ x ].id_support_message ){
+					new_messages.push( data[ x ] );
+				}
+			}
+
+			for( x in $scope.ticket.messages ){
+				if( $scope.ticket.messages[ x ].id_support_message ){
+					new_messages.push( $scope.ticket.messages[ x ] );
+				}
+			}
+			$scope.ticket.messages = [];
+			$scope.ticket.messages = new_messages;
+			if( callback ){
+				callback();
+			}
+
+			setTimeout(function() {
+				var finalScroll = $('.support-chat-contents-scroll')[0].scrollHeight;
+				var goToScroll = finalScroll - currentScroll;
+				$('.support-chat-contents-scroll')[0].scrollTop = goToScroll;
+				setTimeout(function() { couldLoadMoreMessages = true }, 500 );
+			}, 100 );
+
+			$scope.ticket.isLoadingMessages = false;
+
+		} );
+	}
+
+	$rootScope.$on( 'loadMoreMessages', function(e, data) {
+		$scope.messages();
+	} );
+
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
@@ -145,9 +203,10 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	};
 
 	var update = function() {
-		TicketService.get($routeParams.id, function(ticket) {
 
+		TicketService.get($routeParams.id, function(ticket) {
 			$scope.ticket = ticket;
+			$scope.ticket.messages_page = 0;
 			$scope.loading = false;
 
 			if (!cleanup) {
@@ -161,10 +220,22 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 				}
 			}
 			$rootScope.$broadcast('triggerViewTicket', $scope.ticket);
-
 			draw();
+			$scope.ticket.isLoadingMessages = false;
+			$scope.messages( function(){ scrollDown() } );
+
+			$scope.ticket.loadMessages = function(){
+				$scope.messages();
+			}
+
 		});
 	};
+
+	var scrollDown = function(){
+		setTimeout( function(){
+				$('.support-chat-contents-scroll').stop( true, false ).animate( { scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight }, 0 );
+			}, 500 );
+	}
 
 	$scope.openCloseTicket = function(){
 		TicketService.openClose( $routeParams.id, function() { update(); } );

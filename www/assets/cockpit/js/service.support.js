@@ -115,7 +115,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 					guid: guid
 				});
 			});
-
 			service.scroll();
 		}
 
