@@ -28,12 +28,21 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 			fullcount: false
 		},
 		update: function() {
-			TicketService.list($scope.query, function(d) {
-				$scope.lotsoftickets = d.results;
-				$scope.complete(d);
-			});
+			update();
 		}
 	});
+
+	var update = function(){
+		TicketService.list($scope.query, function(d) {
+			$scope.lotsoftickets = d.results;
+			$scope.complete(d);
+		});
+	}
+
+	$scope.closeTicket = function( id_support ){
+		TicketService.openClose( id_support, function() { update(); } );
+	}
+
 });
 
 
