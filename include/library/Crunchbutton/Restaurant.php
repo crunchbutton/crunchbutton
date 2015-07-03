@@ -1123,6 +1123,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			]);
 			$r[] = $upload->upload();
 
+			// update the local file for backwards compatability
+			$images_path = '/home/i.crunchbutton/www/image/';
+			if (!$this->image) {
+				$this->image = $this->id_restaurant.'.'.$ext;
+				$this->save();
+			}
+			$current_image = $images_path.$this->image;
+			if (@copy($file, $current_image)) {
+				@chmod($current_image,0777);
+			}
+
 			$formats = $this->getImgFormats();
 		}
 		
