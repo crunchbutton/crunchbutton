@@ -29,8 +29,18 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if ($this->method() == 'get') {
-			echo $ticket->json();
-			exit;
+			switch ( c::getPagePiece( 3 ) ) {
+				case 'messages':
+					$page = c::getPagePiece( 4 );
+					$out = $ticket->exports( [ 'messages_page' => $page ] );
+					echo json_encode( $out[ 'messages' ] );exit;
+					break;
+
+				default:
+					$out = $ticket->exports( [ 'exclude' => [ 'messages' => true ] ] );
+					echo json_encode( $out );exit;
+					break;
+			}
 		}
 
 		if (c::getPagePiece(3) == 'open-close' && $this->method() == 'post' ) {
@@ -43,7 +53,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 				$ticket->save();
 				$ticket->addSystemMessage( c::admin()->name . ' opened this ticket' );
 			}
-			echo $ticket->json();
+			echo json_encode( [ 'success' => true ] );exit;
 			exit;
 		}
 		if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
@@ -65,4 +75,5 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		header('HTTP/1.0 409 Conflict');
 		exit;
 	}
+
 }
