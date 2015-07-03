@@ -34,9 +34,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 	// when the socket is fully authenticated
 	service.q(function() {
 		service.connected = true;
-		$rootScope.$apply(function() {
-			$rootScope.socketConnected = true;
-		});
+		$rootScope.socketConnected = true;
 		
 		if( AccountService && AccountService.user && AccountService.user.id_admin ){
 
@@ -122,9 +120,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 	
 	service.socket.on('disconnect', function (data) {
 		console.debug('Disconnected from event server.');
-		$rootScope.$apply(function() {
-			$rootScope.socketConnected = true;
-		});
+		$rootScope.socketConnected = true;
 	});
 
 	service.socket.on('connect', function (data) {
