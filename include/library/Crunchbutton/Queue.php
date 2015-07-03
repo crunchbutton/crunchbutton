@@ -47,12 +47,19 @@ class Crunchbutton_Queue extends Cana_Table {
 			$q->status = self::STATUS_RUNNING;
 			$q->save();
 
-			$type = 'TYPE_CLASS_'.str_replace('-','_',strtoupper($q->type));
+			$queue_type = $q->queue_type()->type;
+
+			// Legacy
+			if( !$queue_type && $q->type ){
+				$queue_type = $q->type;
+			}
+
+			$type = 'TYPE_CLASS_'.str_replace('-','_',strtoupper($queue_type));
 			$class = constant('self::'.$type);
 			if (!$class) {
 				$q->status = self::STATUS_FAILED;
 				$q->date_end = date('Y-m-d H:i:s');
-				$q->data = 'Invalid class type of: '.$q->type;
+				$q->data = 'Invalid class type of: '.$queue_type;
 				continue;
 			}
 
@@ -68,6 +75,13 @@ class Crunchbutton_Queue extends Cana_Table {
 			}
 		}
 		return $queue->count();
+	}
+
+	public function queue_type(){
+		if( !$this->_queue_type ){
+			$this->_queue_type = Crunchbutton_Queue_Type::o( $this->id_queue_type );
+		}
+		return $this->_queue_type;
 	}
 
 	// dump the que and do nothing
@@ -100,6 +114,14 @@ class Crunchbutton_Queue extends Cana_Table {
 		if (!$params['date_start']) {
 			$params['date_start'] = date('Y-m-d H:i:s');
 		}
+
+		$type = Crunchbutton_Queue_Type::byType( $params[ 'type' ] );
+
+		if( !$type ){
+			return;
+		}
+
+		$params['id_queue_type'] = $type->id_queue_type;
 
 		if ($params['seconds']) {
 			$params['date_start'] = date('Y-m-d H:i:s', time() + $params['seconds']);
