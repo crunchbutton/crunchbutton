@@ -3906,6 +3906,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	margin-top: -100px;
 	overflow: hidden;
 }
+.logo-connection-status {
+	@include transition(color linear 0.08s);
+}
 
 .box-content-new .dialog-subtext {
 	margin-top: 0;
