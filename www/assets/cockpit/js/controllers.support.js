@@ -269,31 +269,39 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 } );
 
 NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, TicketViewService, CallService) {
+
 	$scope.ticketparams = {
 		status: 'open'
 	};
+
 	$scope.callparams = {
 		status: ['in-progress','ringing'],
 		limit: 5,
 		today: true
 	};
 
+	$scope.closeTicket = function( id_support ){
+		TicketService.openClose( id_support, function() { update(); } );
+	}
+
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
 		}
 		if (!oldValue || newValue.count != oldValue.count || newValue.timestamp != oldValue.timestamp ) {
-			TicketService.list($scope.ticketparams, function(d) {
-				$scope.lotsoftickets = d.results;
-			});
+			update();
 		}
 	}, true);
 
-	TicketService.list($scope.ticketparams, function(d) {
-		$scope.lotsoftickets = d.results;
-	});
+	var update = function(){
+		TicketService.list($scope.ticketparams, function(d) {
+			$scope.lotsoftickets = d.results;
+		});
+	}
 
 	CallService.list($scope.callparams, function(d) {
 		$scope.calls = d.results;
 	});
+
+	update();
 });
