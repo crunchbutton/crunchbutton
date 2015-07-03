@@ -1077,10 +1077,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function getImgFormats() {
 		return [
-			['height' => 596, 'width' => 596, 'crop' => 0],
-			['height' => 200, 'width' => 200, 'crop' => 1],
-			['height' => 66, 'width' => 66, 'crop' => 0],
-			['height' => 425, 'width' => 1200, 'crop' => 1]
+			'normal' => ['height' => 596, 'width' => 596, 'crop' => 0],
+			'thumb' => ['height' => 200, 'width' => 200, 'crop' => 1],
+			'icon' => ['height' => 66, 'width' => 66, 'crop' => 0],
+			'header' => ['height' => 425, 'width' => 1200, 'crop' => 1]
 		];
 	}
 
@@ -1111,8 +1111,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$info = pathinfo($file);
 			$ext = $info['extension'];
 			if (!$ext) {
-				$pos = strrpos($_FILES['image']['name'], '.');
-        		$ext = substr($_FILES['image']['name'], $pos+1);
+				$pos = strrpos($name, '.');
+        		$ext = substr($name, $pos+1);
 			}
 
 			// upload the source image
@@ -1122,6 +1122,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				'bucket' => $bucket
 			]);
 			$r[] = $upload->upload();
+
+			// update the local file for backwards compatability
+			$images_path = '/home/i.crunchbutton/www/image/';
+			if (!$this->image) {
+				$this->image = $this->id_restaurant.'.'.$ext;
+				$this->save();
+			}
+			$current_image = $images_path.$this->image;
+			if (@copy($file, $current_image)) {
+				@chmod($current_image,0777);
+			}
 
 			$formats = $this->getImgFormats();
 		}
@@ -1172,6 +1183,18 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$this->_weight = $res->weight;
 		}
 		return $this->_weight;
+	}
+	
+	public function getImages() {
+		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
+		$out = [
+			'original' => $imgPrefix.$this->permalink.'.jpg',
+		];
+
+		foreach ($this->getImgFormats() as $key => $format) {
+			$out[$key] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
+		}
+		return $out;
 	}
 
 	/**
@@ -1224,16 +1247,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
 
-		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
-
 		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
-		$out['images'] = [
-			$imgPrefix.$this->permalink.'.jpg',
-		];
-
-		foreach ($this->getImgFormats() as $format) {
-			$out['images'][] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
-		}
+		$out['images'] = $this->getImages();
 
 
 		if (!$ignore['categories']) {

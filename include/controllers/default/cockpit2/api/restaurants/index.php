@@ -249,6 +249,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			$out->delivery_service = $out->delivery_service ? true : false;
 			$out->delivery = $out->delivery ? true : false;
 			$out->takeout = $out->takeout ? true : false;
+			$out->images = $restaurant->getImages();
 
 
 /*
