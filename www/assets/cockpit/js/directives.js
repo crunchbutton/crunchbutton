@@ -367,6 +367,67 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 });
 
 
+NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
+	return {
+		restrict: 'AE',
+		replace: false,
+		scope: true,
+		link: function ( scope, elem, attrs, ctrl ) {
+
+			var id_restaurant = attrs.idRestaurant;
+			console.log(attrs);
+			var button = elem.find('button')[0];
+
+			scope.init = true;
+
+			if (!window.Ladda) {
+				return;
+			}
+
+			var l = Ladda.create(button);
+
+			angular.element(button).on('click', function() {
+				angular.element(elem.find('input')[0]).click();
+			});
+
+			scope.uploader = new FileUploader({
+				url: '/api/restaurant/' + id_restaurant + '/image',
+				autoUpload: true
+			});
+
+			scope.uploader.onBeforeUploadItem = function() {
+				l.start();
+			};
+
+			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUploadError', {} );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			return;
+
+
+			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
+				return;
+				console.log(newValue);
+				if( !isNaN( uploader.progress ) ){
+					var progress = ( uploader.progress / 100 );
+					l.setProgress( progress );
+				}
+			});
+			$timeout(l.stop, 100);
+		}
+	}
+});
+
+
 NGApp.directive('uiTab', function ( $routeParams ) {
 		return {
 				require: '^uiTabs',
@@ -529,7 +590,7 @@ NGApp.directive('imgListViewSrc', function( $parse ) {
 
 			if( scope.image ){
 				var img = new Image();
-				img.src = attrs.imgPath + scope.image;
+				img.src = scope.image;
 				img.onload = function(){
 			 		success( img.src );
 				};
