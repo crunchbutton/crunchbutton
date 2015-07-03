@@ -15,6 +15,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 	var listening = {};
 	service.socket = eventSocket;
 	service.connected = false;
+	$rootScope.socketConnected = false;
 	
 	service.createQ = function() {
 		if (service.defferedConnection) {
@@ -33,6 +34,9 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 	// when the socket is fully authenticated
 	service.q(function() {
 		service.connected = true;
+		$rootScope.$apply(function() {
+			$rootScope.socketConnected = true;
+		});
 		
 		if( AccountService && AccountService.user && AccountService.user.id_admin ){
 
@@ -115,10 +119,16 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 			service.defferedConnection.resolve();
 		}
 	});
+	
+	service.socket.on('disconnect', function (data) {
+		console.debug('Disconnected from event server.');
+		$rootScope.$apply(function() {
+			$rootScope.socketConnected = true;
+		});
+	});
 
 	service.socket.on('connect', function (data) {
 		console.debug('Connected to socket.io');
-		
 		
 		var load = function(e, data) {
 			console.debug('Socket authenticating...');
