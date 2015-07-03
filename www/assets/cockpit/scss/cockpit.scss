@@ -3450,6 +3450,9 @@ input[type="checkbox"].switch + div:before {
 .tb-info-item {
 	display:table-row;
 }
+.profile-preference .tb-info-content {
+	padding-bottom: 1em;
+}
 .tb-info-content, .tb-info-data {
 	display: table-cell;
 	vertical-align: top;
@@ -3903,6 +3906,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	margin-top: -100px;
 	overflow: hidden;
 }
+.logo-connection-status {
+	@include transition(color linear 0.08s);
+}
 
 .box-content-new .dialog-subtext {
 	margin-top: 0;
@@ -4236,4 +4242,17 @@ h1.title.box-title {
 
 .customer-image-updater:hover {
 	background: red;
+}
+
+.nav-account {
+	float: right;	
+}
+
+.nav-account .user-name {
+	font-family: Ruda, sans-serif;
+	color: #fff;
+	font-size: 1.4em;
+	line-height: 2.3em;
+	margin-right: 2em;
+	text-decoration: none;
 }
