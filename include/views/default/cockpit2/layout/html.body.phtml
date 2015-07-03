@@ -242,15 +242,6 @@
 
 			<div ng-if="menu.toggle=='admin'">
 
-				<a href="/profile" class="menu-link" ng-class="{'nav-active': (navigation.page == 'profile')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-user"></i></td>
-							<td class="side-menu-label">Account</a></td>
-						</tr>
-					</table>
-				</a>
-
 				<a href="/deploy" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.permissions['SERVER-DEPLOY'] || account.user.permissions['SERVER-DEPLOY-ADMIN']) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'deploy' || navigation.page == 'deploy-server' || navigation.page == 'deploy-version')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -377,14 +368,6 @@
 					</table>
 				</a>
 
-				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
-							<td class="side-menu-label">X-it</a></td>
-						</tr>
-					</table>
-				</a>
 
 			</div>
 
@@ -449,7 +432,6 @@
 							<i class="fa fa-bars"></i>
 						</div>
 
-
 						<div class="notifications" ng-show="account.user.id_admin">
 
 							<div class="flash-message {{flash.getLevel()}}" ng-show="flash.hasMessage()">
@@ -477,8 +459,15 @@
 							</div>
 							*/ ?>
 						</div>
+						
+												
+						<div class="nav-account hide-mobile">
+							<a href="/profile" class="user-name">{{account.user.name}}</a>
+						</div>
 
-						<div class="logo"><span class="dot"></span><span class="green">{{navTitle || 'cockpit'}}</span></div>
+
+
+						<div class="logo"><span class="logo-connection-status" ng-class="{'green': socketConnected}">{{navTitle || 'cockpit'}}</span></div>
 
 					</div>
 				</div>
