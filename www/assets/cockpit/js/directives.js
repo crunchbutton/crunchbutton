@@ -16,6 +16,19 @@ NGApp.directive('chatSend', function(TicketViewService) {
 	};
 });
 
+NGApp.directive('ticketMessagesScroll', function( $rootScope ) {
+	return {
+		link: function( scope, elem, attrs ) {
+			elem.on( 'scroll', function(){
+				var distance = 100;
+				if( elem[0].scrollTop <= distance ){
+					$rootScope.$broadcast( 'loadMoreMessages' );
+				}
+			} );
+		}
+  };
+} );
+
 NGApp.directive('fitHeight', function() {
 	return {
 		restrict: 'A',

@@ -862,7 +862,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return $hasCreatePermission;
 	}
 
-	public function exports() {
+	public function exports( $params = array() ) {
 
 		$out = [];
 
@@ -871,6 +871,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$out['driver'] = ( $this->order()->id_order && $this->order()->driver()->id_admin ) ? $this->order()->driver()->exports() : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
+
+		$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
 
 		// Export the comments
 		$out[ 'comments' ] = [];
@@ -893,10 +895,27 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$out[ 'staff' ] = $admin->exports();
 		}
 
-		$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
+		$load_messages = true;
 
-		foreach ( $messages as $message ) {
-			$out['messages'][] = $message->exports();
+		if( $params[ 'exclude' ] && $params[ 'exclude' ][ 'messages' ] ){
+			$load_messages = false;
+		}
+
+		if( $load_messages ){
+			if( $params[ 'messages_page' ] ){
+				$page = $params[ 'messages_page' ];
+				$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 25 );
+				$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support, $page, $limit );
+			} else {
+				$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
+			}
+			if( $messages ){
+				foreach ( $messages as $message ) {
+					$out['messages'][] = $message->exports();
+				}
+			} else {
+				$out['messages'] = [];
+			}
 		}
 
 		return $out;
