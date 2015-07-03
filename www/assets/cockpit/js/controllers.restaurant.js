@@ -359,6 +359,7 @@ NGApp.controller('RestaurantNotesToDriverCtrl', function ($scope, $rootScope, Re
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;
 	$scope.loadingOrders = true;
+	$scope.id_restaurant = $routeParams.id;
 
 	$scope.$on('mapInitialized', function(event, map) {
 		$scope.map = map;
