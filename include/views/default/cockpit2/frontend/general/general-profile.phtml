@@ -45,8 +45,8 @@
 			</div>
 
 			<div class="tb-info no-box-content-color">
-				<div profile-preference class="tb-info-item" content="Notify on all support tickets" type="bool" key="notification-desktop-support-all"></div>
-				<div profile-preference class="tb-info-item" content="Display demo orders" type="bool" key="demo"></div>
+				<div profile-preference class="tb-info-item profile-preference" content="Notify on all support tickets" type="bool" key="notification-desktop-support-all"></div>
+				<div profile-preference class="tb-info-item profile-preference" content="Display demo orders" type="bool" key="demo"></div>
 			</div>
 		</div>
 
@@ -55,6 +55,9 @@
 			<a href="/drivers/welcome"><button class="button button-small-green">Run setup</button></a>
 
 		</div>
+		
+		
+		<button ng-click="account.logout()" class="button button-orange button-empty button-border">Logout</button>
 
 
 
