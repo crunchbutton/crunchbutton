@@ -1600,10 +1600,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$rangeDif = $range - 2;
 		$lat = floatval($params['lat']);
 		$lon = floatval($params['lon']);
+		
+		$locCast = function($loc) {
+			return 'CAST('.$loc.' as DECIMAL(19,15))';
+		};
 
 		$formula = '( ( ACOS( SIN( %F * PI() / 180 ) * SIN( %s * PI() / 180 ) + COS( %F * PI() / 180 ) * COS( %s * PI() / 180 ) * COS( ( %F - %s ) * PI() / 180 ) ) * 180 / PI() ) * 60 * 1.1515 )';
 
-		$regular_calc = sprintf( $formula, $lat, 'loc_lat', $lat, 'loc_lat', $lon, 'loc_long' );
+		$regular_calc = sprintf( $formula, $lat, $locCast('loc_lat'), $lat, $locCast('loc_lat'), $lon, $locCast('loc_long') );
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 30 day' );
@@ -1635,8 +1639,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$query .= " UNION ";
 
-		$community_calc = sprintf( $formula, $lat, 'c.loc_lat', $lat, 'c.loc_lat', $lon, 'c.loc_lon' );
-		$restaurant_calc = sprintf( $formula, $lat, 'r.loc_lat', $lat, 'r.loc_lat', $lon, 'r.loc_long' );
+		$community_calc = sprintf( $formula, $lat, $locCast('c.loc_lat'), $lat, $locCast('c.loc_lat'), $lon, $locCast('c.loc_lon') );
+		$restaurant_calc = sprintf( $formula, $lat, $locCast('r.loc_lat'), $lat, $locCast('r.loc_lat'), $lon, $locCast('r.loc_long') );
 
 		$query .= "
   			SELECT
@@ -1665,6 +1669,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
   					{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
 
   	$query .= " ORDER BY _weight DESC; ";
+		
+		die($query);
 
 		$restaurants = self::q($query);
 		foreach ($restaurants as $restaurant) {
