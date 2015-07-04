@@ -1668,9 +1668,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
   				AND
   					{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
 
-  	$query .= " ORDER BY _weight DESC; ";
-		
-		die($query);
+		$query .= " ORDER BY _weight DESC; ";
 
 		$restaurants = self::q($query);
 		foreach ($restaurants as $restaurant) {
