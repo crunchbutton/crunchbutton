@@ -1185,8 +1185,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_weight;
 	}
 	
-	public function getImages() {
-		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
+	public function getImages($loc = 'cache') {
+		if ($loc == 'cache') {
+			$url = c::config()->s3->buckets->{'image-restaurant'}->cache;
+		} else {
+			$url = 's3.amazonaws.com/'.c::config()->s3->buckets->{'image-restaurant'}->name;
+		}
+		$imgPrefix = 'https://'.$url.'/';
 		$out = [
 			'original' => $imgPrefix.$this->permalink.'.jpg',
 		];
