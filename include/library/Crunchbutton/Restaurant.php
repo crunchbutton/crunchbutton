@@ -1114,12 +1114,26 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$pos = strrpos($name, '.');
         		$ext = substr($name, $pos+1);
 			}
+			$ext = strtolower($ext);
+			switch ($ext) {
+				case 'jpg':
+				case 'jpeg':
+					$type = 'image/jpeg';
+					break;
+				case 'gif':
+					$type = 'image/gif';
+					break;
+				case 'png':
+					$type = 'image/png';
+					break;
+			}
 
 			// upload the source image
 			$upload = new Crunchbutton_Upload([
 				'file' => $file,
 				'resource' => $this->permalink.'.'.$ext,
-				'bucket' => $bucket
+				'bucket' => $bucket,
+				'type' => $type
 			]);
 			$r[] = $upload->upload();
 
