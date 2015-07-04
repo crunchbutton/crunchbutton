@@ -50,15 +50,6 @@ WHERE delivery_min_amt = '';
 
 
 -- remove NOT NULL restriction
-ALTER TABLE restaurant MODIFY `payment_method` enum('check','deposit') DEFAULT 'check';
-
-
-UPDATE restaurant
-SET payment_method = NULL
-WHERE payment_method = '';
-
-
--- remove NOT NULL restriction
 ALTER TABLE restaurant MODIFY `confirmation_type` enum('regular','stealth') DEFAULT 'regular';
 
 
@@ -102,3 +93,12 @@ WHERE `type` = '';
 UPDATE restaurant_hour_override
 SET `date_start` = NULL
 WHERE `date_start` = "0000-00-00 00:00:00";
+
+-- fix bad date_start and date_end
+UPDATE community_shift
+SET `date_start` = NULL
+WHERE `date_start` = "0000-00-00 00:00:00";
+
+UPDATE community_shift
+SET `date_end` = NULL
+WHERE `date_end` = "0000-00-00 00:00:00";
