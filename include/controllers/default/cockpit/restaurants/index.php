@@ -140,6 +140,35 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					c::view()->layout('layout/ajax');
 					c::view()->display('restaurants/hour_override');
 					break;
+				
+
+				case 's3':
+					if (!c::admin()->permission()->check(['global'])) {
+						exit;
+					}
+					$r = $restaurant->updateImage();
+					var_dump($r);
+					break;
+				
+				case 's3all':
+					if (!c::admin()->permission()->check(['global'])) {
+						exit;
+					}
+					$restaurants = Crunchbutton_Restaurant::q('
+						select * from restaurant where `image` is not null
+					');
+
+					foreach ($restaurants as $restaurant) {
+						//if ($resource->file != $resource->s3base()) {
+							echo 'uploading '.$restaurant->name."\n";
+							$s = $restaurant->updateImage();
+							var_dump($s);
+							echo "\n\n";
+						//}
+					}
+					break;
+				
+
 				case 'image':
 					// @permission
 					if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-all', 'restaurant-'.$restaurant->id_restaurant.'-edit','restaurant-'.$restaurant->id_restaurant.'-image'])) {
