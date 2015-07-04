@@ -81,6 +81,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 	public function exports($ignore = [], $where = []) {
 		$out = parent::exports($ignore, $where);
+		$out['images'] = $this->getImages('name');
 		$out['payment_type'] = $this->payment_type()->exports();
 		return $out;
 	}

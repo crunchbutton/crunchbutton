@@ -11,15 +11,17 @@
 			<div class="no-box-content-color customer-content-box">
 				<div class="restaurant-image-button-wrap">
 					<div class="restaurant-image-upload-button" restaurant-image-upload id_restaurant="{{id_restaurant}}">
-						<button class="ladda-button ladda-button-nohover button button-empty button-small" data-color="" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-image"></i>&nbsp;&nbsp;Upload Image</span></button>
+						<button class="ladda-button ladda-button-nohover button button-empty button-small button-green" data-color="" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-image"></i>&nbsp;&nbsp;Upload Image</span></button>
 						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden">
 					</div>
 				</div>
 				
-				<div class="customer-image-crop customer-image-crop-large customer-image-updater restaurant-image-updater">
-					<img ng-if="restaurant.image" class="customer-image-large" src="{{restaurant.images.thumb}}"></img>
-					<div ng-if="!restaurant.image" class="customer-image-large restaurant-image-null"></div>
-				</div>
+				<a href="{{restaurant.images.original}}" target="_blank">
+					<div class="customer-image-crop customer-image-crop-large customer-image-updater restaurant-image-updater">
+						<img ng-if="restaurant.image" class="customer-image-large" src="{{restaurant.images.thumb}}" id="restaurant-image-thumb"></img>
+						<div ng-if="!restaurant.image" class="customer-image-large restaurant-image-null"></div>
+					</div>
+				</a>
 			
 				<h1 class="customer-name-large">{{restaurant.name}}</h1>
 			</div>

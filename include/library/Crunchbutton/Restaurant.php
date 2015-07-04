@@ -1098,10 +1098,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		
 		// download the source from s3 and resize
 		if (!file_exists($file)) {
-			echo 'no file';
+			echo 'no file:' . $file. "\n";
 			$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
 			$fp = fopen($file, 'wb');
-			if (($object = S3::getObject($bucket, $this->file, $fp)) !== false) {
+			if (($object = S3::getObject($bucket, $this->permalink.'.jpg', $fp)) !== false) {
 				var_dump($object);
 			} else {
 				$file = false;
@@ -1114,12 +1114,26 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$pos = strrpos($name, '.');
         		$ext = substr($name, $pos+1);
 			}
+			$ext = strtolower($ext);
+			switch ($ext) {
+				case 'jpg':
+				case 'jpeg':
+					$type = 'image/jpeg';
+					break;
+				case 'gif':
+					$type = 'image/gif';
+					break;
+				case 'png':
+					$type = 'image/png';
+					break;
+			}
 
 			// upload the source image
 			$upload = new Crunchbutton_Upload([
 				'file' => $file,
 				'resource' => $this->permalink.'.'.$ext,
-				'bucket' => $bucket
+				'bucket' => $bucket,
+				'type' => $type
 			]);
 			$r[] = $upload->upload();
 
@@ -1185,8 +1199,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_weight;
 	}
 	
-	public function getImages() {
-		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
+	public function getImages($loc = 'cache') {
+		if ($loc == 'cache') {
+			$url = c::config()->s3->buckets->{'image-restaurant'}->cache;
+		} else {
+			$url = 's3.amazonaws.com/'.c::config()->s3->buckets->{'image-restaurant'}->name;
+		}
+		$imgPrefix = 'https://'.$url.'/';
 		$out = [
 			'original' => $imgPrefix.$this->permalink.'.jpg',
 		];
@@ -1247,8 +1266,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
 
-		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
 		$out['images'] = $this->getImages();
+		$out['img']    = $out['images']['normal'];
+		
+		// @todo: will remove later
+		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
+		
 
 
 		if (!$ignore['categories']) {
