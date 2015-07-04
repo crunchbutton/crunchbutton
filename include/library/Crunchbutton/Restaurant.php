@@ -1098,10 +1098,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		
 		// download the source from s3 and resize
 		if (!file_exists($file)) {
-			echo 'no file';
+			echo 'no file:' . $file. "\n";
 			$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
 			$fp = fopen($file, 'wb');
-			if (($object = S3::getObject($bucket, $this->file, $fp)) !== false) {
+			if (($object = S3::getObject($bucket, $this->permalink.'.jpg', $fp)) !== false) {
 				var_dump($object);
 			} else {
 				$file = false;
@@ -1252,8 +1252,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
 
-		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
 		$out['images'] = $this->getImages();
+		$out['img']    = $out['images']['normal'];
+		
+		// @todo: will remove later
+		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
+		
 
 
 		if (!$ignore['categories']) {
