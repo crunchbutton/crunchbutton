@@ -375,7 +375,6 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 		link: function ( scope, elem, attrs, ctrl ) {
 
 			var id_restaurant = attrs.idRestaurant;
-			console.log(attrs);
 			var button = elem.find('button')[0];
 
 			scope.init = true;
@@ -400,29 +399,15 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
-				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
-				scope.uploader.clearQueue();
+				//scope.uploader.clearQueue();
 				l.stop();
+				$('#restaurant-image-thumb').get(0).src = $('#restaurant-image-thumb').get(0).src + '?' + new Date();
 			};
 
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
-				$rootScope.$broadcast( 'resourceUploadError', {} );
-				scope.uploader.clearQueue();
+				//scope.uploader.clearQueue();
 				l.stop();
 			};
-
-			return;
-
-
-			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
-				return;
-				console.log(newValue);
-				if( !isNaN( uploader.progress ) ){
-					var progress = ( uploader.progress / 100 );
-					l.setProgress( progress );
-				}
-			});
-			$timeout(l.stop, 100);
 		}
 	}
 });
