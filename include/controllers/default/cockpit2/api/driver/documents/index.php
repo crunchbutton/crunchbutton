@@ -7,37 +7,41 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 		switch ( c::getPagePiece( 3 ) ) {
 
 			case 'download':
-				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
-				if( $hasPermission ){
-					$id_driver_document_status = c::getPagePiece( 4 );
-					$document = Cockpit_Driver_Document_Status::o( $id_driver_document_status );
-					if( $document->id_driver_document_status ){
 
-						$name = $document->driver()->name . ' - ' .$document->driver_document()->name;
-						$ext = pathinfo( $document->file, PATHINFO_EXTENSION );
-						$name .= '.' . $ext;
-						
-						$file = $document->getFile();
-						
-						if($file){
-							header( 'Content-Description: File Transfer' );
-							header( 'Content-Type: application/octet-stream' );
-							header( 'Content-Disposition: attachment; filename=' . $name );
-							header( 'Expires: 0' );
-							header( 'Cache-Control: must-revalidate' );
-							header( 'Pragma: public' );
-							header( 'Content-Length: ' . filesize( $file ) );
-							readfile( $file );
-							exit;
-						} else {
-							$this->_error( 'download:file-not-found' );
-						}
-					} else {
-						$this->_error( 'download:file-not-found' );
-					}
-				} else {
-					$this->_error( 'download:permission-denied' );
+				$id_driver_document_status = c::getPagePiece(4);
+				$document = Cockpit_Driver_Document_Status::o($id_driver_document_status);
+
+				if (!$document->id_driver_document_status) {
+					$this->_error( 'download:file-not-found' );
+					exit;
 				}
+
+				if (!c::admin()->permission()->check( ['global', 'drivers-all'] ) && $document->id_admin != c::user()->id_admin) {
+					$this->_error( 'download:permission-denied' );
+					exit;
+				}
+
+				$name = $document->driver()->name . ' - ' .$document->driver_document()->name;
+				$ext = pathinfo( $document->file, PATHINFO_EXTENSION );
+				$name .= '.' . $ext;
+
+				$file = $document->getFile();
+
+				if (!$file) {
+					$this->_error( 'download:file-not-found' );
+					exit;
+				}
+
+				header( 'Content-Description: File Transfer' );
+				header( 'Content-Type: application/octet-stream' );
+				header( 'Content-Disposition: attachment; filename=' . $name );
+				header( 'Expires: 0' );
+				header( 'Cache-Control: must-revalidate' );
+				header( 'Pragma: public' );
+				header( 'Content-Length: ' . filesize( $file ) );
+				readfile( $file );
+				exit;
+
 				break;
 
 			case 'list':
