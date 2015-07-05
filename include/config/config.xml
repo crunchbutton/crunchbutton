@@ -27,6 +27,10 @@
 				<name>crunchbutton-resource</name>
 				<cache>_URL_</cache>
 			</resource>
+			<document-upload>
+				<name>crunchbutton-document-upload</name>
+				<cache></cache>
+			</document-upload>
 		</buckets>
 	</s3>
 	<db>

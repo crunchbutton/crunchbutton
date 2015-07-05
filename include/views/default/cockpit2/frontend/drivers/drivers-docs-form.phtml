@@ -34,7 +34,7 @@
 					<a class="docs-download-form" href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
 					<!-- if he already have this doc, show the download link -->
 					<span ng-show="1==2 && doc.status && doc.status.file.substring(9, 14) !== 'blank'" title="Sent at {{doc.status.date_formated}}">
-						<a class="docs-download" href="{{doc.status.url}}" target="_blank">Download Doc</a>
+						<a class="docs-download" href="/api/driver/documents/download/{{doc.status.id_driver_document_status}}" target="_blank">Download Doc</a>
 					</span>
 				</td>
 				<td class="td-download">
@@ -61,7 +61,7 @@
 				</td>
 				<td class="td-medium driver-docs-card" ng-click="edit(driver.id_admin)">
 					<h2 class="driver-docs-card driver-docs-name"><b>{{doc.name}}</b></h2>
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download-card" href="{{doc.status.url}}" target="_blank"><b>Download Doc</b></a></span>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a class="docs-download-card" href="/api/driver/documents/download/{{doc.status.id_driver_document_status}}" target="_blank"><b>Download Doc</b></a></span>
 				</td>
 				<td class="td-medium td-download">
 					<div class="upbutton" driver-docs-upload>
