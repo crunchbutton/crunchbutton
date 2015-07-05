@@ -1616,8 +1616,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$query = "
 			SELECT
 				count(*) as _weight,
-				restaurant.loc_lat,
-				restaurant.loc_long,
+				".$locCast('restaurant.loc_lat').",
+				".$locCast('restaurant.loc_long').",
 				'byrange' as type,
 				{$regular_calc} AS distance,
 				restaurant.*
@@ -1639,14 +1639,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$query .= " UNION ";
 
-		$community_calc = sprintf( $formula, $lat, $locCast('c.loc_lat'), $lat, $locCast('c.loc_lat'), $lon, $locCast('c.loc_lon') );
-		$restaurant_calc = sprintf( $formula, $lat, $locCast('r.loc_lat'), $lat, $locCast('r.loc_lat'), $lon, $locCast('r.loc_long') );
+		$community_calc = sprintf( $formula, $lat, $locCast('max(c.loc_lat)'), $lat, $locCast('max(c.loc_lat)'), $lon, $locCast('max(c.loc_lon)') );
+		$restaurant_calc = sprintf( $formula, $lat, $locCast('max(r.loc_lat)'), $lat, $locCast('max(r.loc_lat)'), $lon, $locCast('max(r.loc_long)') );
 
 		$query .= "
   			SELECT
   				count(*) as _weight,
-  				c.loc_lat AS loc_lat,
-  				c.loc_lon AS loc_long,
+  				".$locCast('max(c.loc_lat)')." AS loc_lat,
+  				".$locCast('max(c.loc_lon)')." AS loc_long,
   				'byrange' as type,
   				{$restaurant_calc} AS distance,
   				r.*
