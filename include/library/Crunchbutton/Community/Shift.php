@@ -1106,6 +1106,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 				$start = $shift->dateStart();
 				$end = $shift->dateEnd();
+				
+				if (!$start || !$end) {
+					continue;
+				}
 
 				$day = strtolower( $start->format( 'D' ) );
 				$time_open = $start->format( 'H:i' );
