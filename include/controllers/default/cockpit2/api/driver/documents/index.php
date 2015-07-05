@@ -12,11 +12,14 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$id_driver_document_status = c::getPagePiece( 4 );
 					$document = Cockpit_Driver_Document_Status::o( $id_driver_document_status );
 					if( $document->id_driver_document_status ){
-						$file = $document->doc_path();
+
 						$name = $document->driver()->name . ' - ' .$document->driver_document()->name;
-						$ext = pathinfo( $file, PATHINFO_EXTENSION );
+						$ext = pathinfo( $document->file, PATHINFO_EXTENSION );
 						$name .= '.' . $ext;
-						if( file_exists( $file ) ){
+						
+						$file = $document->getFile();
+						
+						if($file){
 							header( 'Content-Description: File Transfer' );
 							header( 'Content-Type: application/octet-stream' );
 							header( 'Content-Disposition: attachment; filename=' . $name );
@@ -58,30 +61,15 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				if( $_FILES ){
 					$ext = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
 					if( Util::allowedExtensionUpload( $ext ) ){
-						$name = pathinfo( $_FILES['file']['name'], PATHINFO_FILENAME );
+						
+						$name = $_REQUEST['filename'] ? $_REQUEST['filename'] : pathinfo( $_FILES['file']['name'], PATHINFO_FILENAME );
 						$name = str_replace( $ext, '', $name );
 						$random = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
 						$name = Util::slugify( $random . '-' . $name );
 						$name = substr( $name, 0, 40 ) . '.'. $ext;
-						$file = Cockpit_Driver_Document_Status::path() . $name;
-
-						if( !file_exists( Util::uploadPath() ) ){
-							Log::debug( [ 'action' => 'upload file error', 'error' => '"www/upload" folder doesn`t exist!', 'type' => 'drivers-onboarding'] );
-							$this->_error( '"www/upload" folder doesn`t exist!' );
-						}
-
-						if( !file_exists( Cockpit_Driver_Document_Status::path() ) ){
-							Log::debug( [ 'action' => 'upload file error', 'error' => '"www/upload/drivers-doc/" folder doens`t exist!', 'type' => 'drivers-onboarding'] );
-							$this->_error( '"www/upload/drivers-doc/" folder doens`t exist!' );
-						}
-
-						if ( copy( $_FILES[ 'file' ][ 'tmp_name' ], $file ) ) {
-							chmod( $file, 0777 );
-						} else {
-							Log::debug( [ 'action' => 'upload file error', 'error' => 'copy file error', 'type' => 'drivers-onboarding'] );
-						}
-
-						Log::debug( [ 'action' => 'upload file success', 'file name' => $name, 'type' => 'drivers-onboarding'] );
+						$file = $_FILES['file']['tmp_name'];
+				
+						$r = Cockpit_Driver_Document_Status::toS3($file, $name);
 
 						echo json_encode( ['success' => $name, 'id_driver_document' => $_POST['id_driver_document']] );
 						exit;
