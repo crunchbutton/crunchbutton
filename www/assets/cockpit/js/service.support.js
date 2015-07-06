@@ -1,25 +1,31 @@
 NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, NotificationService, AccountService, SocketService, TicketService) {
+
 	var service = {
 		isTyping: false,
+		id_support: false,
+		messages: [],
 		socket: SocketService.socket
 	};
+
 	service.setViewTicket = function(id) {
 		service.scope.viewTicket = id;
-		if( id ){
-			$rootScope.navigation.link( '/ticket/' + id );
-		}
+		service.messages = [];
 	};
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
+
 		NotificationService.check();
 
-		service.scope.viewTicket = ticket;
-		$rootScope.supportToggled = true;
+		if( !$rootScope.supportToggled ){
 
-		if (service.scope.viewTicket) {
-			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
+			service.scope.viewTicket = ticket;
+
+			$rootScope.supportToggled = true;
+
+			if (service.scope.viewTicket) {
+				service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
+			}
 		}
-
 	});
 
 	var notified  = new Array();
@@ -27,7 +33,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	$rootScope.$on('userAuth', function(e, data) {
 
 		if (AccountService.user && AccountService.user.id_admin) {
-
 
 			service.socket.on('user.preference', function(payload) {
 				console.debug('Recieved preference update', payload);
@@ -87,16 +92,21 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.send = function(message, add_as_note, callback) {
 		var add_as_note = ( add_as_note ? true : false );
 		var guid = App.guid();
+		if( !service.id_support ){
+			return;
+		}
 		TicketService.message({
-			id_support: service.scope.viewTicket.id_support,
+			id_support: service.id_support,
 			body: message,
 			guid: guid,
 			note: add_as_note
 		}, function(d) {
-			for (var x in service.scope.ticket.messages) {
-				if (service.scope.ticket.messages[x].guid == guid) {
+			console.log('d',d);
+			for (var x in service.messages) {
+				console.log('service.messages[x].guid',service.messages[x].guid);
+				if (service.messages[x].guid == guid) {
 					d.guid = guid;
-					service.scope.ticket.messages[x] = d;
+					service.messages[x] = d;
 					notified.push(d.id_support_message);
 					break;
 				}
@@ -107,17 +117,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			callback()
 		} else {
 			service.scope.$apply(function() {
-				service.scope.ticket.messages.push({
-					body: message,
-					name: AccountService.user.firstName,
-					timestamp: new Date().getTime(),
-					sending: true,
-					guid: guid
-				});
+				$rootScope.$broadcast( 'newSupportMessage', { body: message, name: AccountService.user.firstName, timestamp: new Date().getTime(), sending: true, guid: guid } );
 			});
-			service.scroll();
 		}
-
 	};
 
 	service.scroll = function(instant) {

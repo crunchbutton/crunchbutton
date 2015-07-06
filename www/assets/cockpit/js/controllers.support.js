@@ -46,11 +46,9 @@ NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketSe
 });
 
 
-NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService, AccountService) {
+NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService) {
 
-	$scope.params = {
-		status: 'open'
-	};
+	$scope.params = { status: 'open' };
 
 	var getTickets = function() {
 		if (!AccountService || !AccountService.user || !AccountService.user.permissions) {
@@ -65,6 +63,10 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 		getTickets();
 	}
 
+	$scope.loadTicket = function( id_support ){
+		TicketViewService.setViewTicket( id_support );
+	}
+
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
@@ -75,59 +77,164 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 	}, true);
 });
 
-NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService, SocketService) {
+NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService) {
 
-	var loaded = false;
+	var id_support = null;
+
+	var reset = function(){
+		$scope.ticket = { messages: { page: 0, total: false, list: [], isLoading: false } };
+	}
+
+	reset();
+
+	var couldLoadMoreMessages = true;
+
+	var loadData = function( callback ){
+		if( $scope.ticket.messages.list && $scope.ticket.messages.total !== false && $scope.ticket.messages.list.length >= $scope.ticket.messages.total ){
+			return;
+		}
+
+		if( !couldLoadMoreMessages ){
+			return;
+		}
+
+		couldLoadMoreMessages = false;
+
+		$scope.ticket.messages.page++;
+
+		$scope.ticket.messages.isLoading = true;
+
+		if( !id_support ){
+			return;
+		}
+
+		var params = { id_support: id_support, page: $scope.ticket.messages.page };
+
+		TicketService.side_info( params, function( data ){
+
+			var currentScroll = $('.support-chat-contents-scroll')[0].scrollHeight;
+
+			$scope.ticket.id_support = data.id_support;
+			$scope.ticket.pexcard = data.pexcard;
+			$scope.ticket.restaurant = data.restaurant;
+			$scope.ticket.order = data.order;
+			$scope.ticket.messages.total = data.messages.total;
+
+			var messages = [];
+			for( x in data.messages.list ){
+				if( data.messages.list[ x ].id_support_message ){
+					messages.push( data.messages.list[ x ] );
+				}
+			}
+
+			for( x in $scope.ticket.messages.list ){
+				if( $scope.ticket.messages.list[ x ].id_support_message ){
+					messages.push( $scope.ticket.messages.list[ x ] );
+				}
+			}
+
+			$scope.ticket.messages.list = messages;
+			TicketViewService.messages = messages;
+
+			if( callback ){
+				callback();
+			}
+
+			setTimeout(function() {
+				var finalScroll = $('.support-chat-contents-scroll')[0].scrollHeight;
+				var goToScroll = finalScroll - currentScroll;
+				$('.support-chat-contents-scroll')[0].scrollTop = goToScroll;
+				setTimeout(function() { couldLoadMoreMessages = true }, 500 );
+			}, 100 );
+
+			$scope.ticket.messages.isLoading = false;
+
+		} );
+	}
+
+	$scope.loadMoreMessages = function(){
+		loadData();
+	}
+
+	$rootScope.$on( 'loadMoreMessages', function(e, data) {
+		$scope.loadMoreMessages();
+	} );
+
+	var loadTicket = function( id, callback ) {
+		TicketViewService.id_support = id_support;
+		var displayTicket = function( ticket ) {
+			TicketViewService.scope.ticket = ticket;
+		};
+		if (typeof id == 'string') {
+			id_support = TicketViewService.scope.viewTicket;
+			TicketService.get( id, displayTicket );
+		} else {
+			id_support = TicketViewService.scope.viewTicket.id;
+			displayTicket( id );
+		}
+
+		loadData( callback );
+	};
+
+	$rootScope.$on( 'newSupportMessage', function(e, data) {
+		$scope.ticket.messages.list.push( data );
+		scrollDown();
+	} );
+
+	loadTicket( TicketViewService.scope.viewTicket, function(){ loadTicketPage(); } );
+
+	var loadTicketPage = function(){
+		scrollDown();
+		if( parseInt( $routeParams.id ) != parseInt( id_support ) ){
+			$timeout( function(){
+				MainNavigationService.link( '/ticket/' + id_support );
+			}, 500 );
+		}
+	}
+
+	var scrollDown = function(){
+		$timeout( function(){
+			$('.support-chat-contents-scroll').stop( true, false ).animate( { scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight }, 0 );
+		}, 300 );
+	}
 
 	SocketService.listen('ticket.' + TicketViewService.scope.viewTicket, TicketViewService.scope)
 		.on('message', function(d) {
-			for (var x in TicketViewService.scope.ticket.messages) {
-				if (TicketViewService.scope.ticket.messages[x].guid == d.guid) {
+			for (var x in TicketViewService.messages) {
+				if (TicketViewService.messages[x].guid == d.guid) {
 					return;
 				}
 			}
-			TicketViewService.scope.ticket.messages.push(d);
+			TicketViewService.messages.push(d);
 			TicketViewService.scroll();
 		});
 
-	var loadTicket = function(id) {
-		var displayTicket = function(ticket) {
-			TicketViewService.scope.ticket = ticket;
-			TicketViewService.scroll(!loaded);
-			loaded = true;
-		};
-		if (typeof id == 'string') {
-			TicketService.get(id, displayTicket);
-		} else {
-			displayTicket(id);
-		}
-	};
+	// var sendingNote = false;
 
-	var sendingNote = false;
-
-	$scope.add_note = function(){
-		if( !sendingNote ){
-			sendingNote = true;
-		}
-		if ( sendingNote ) {
-			if( $scope.message_text ){
-				$scope.send( $scope.message_text, true, function(){
-					$scope.message_text = '';
-					loadTicket(TicketViewService.scope.viewTicket );
-				} );
-			} else {
-				App.alert( 'Please type something!' );
-			}
-		};
-	}
+	// $scope.add_note = function(){
+	// 	if( !sendingNote ){
+	// 		sendingNote = true;
+	// 	}
+	// 	if ( sendingNote ) {
+	// 		if( $scope.message_text ){
+	// 			$scope.send( $scope.message_text, true, function(){
+	// 				$scope.message_text = '';
+	// 				loadTicket(TicketViewService.scope.viewTicket );
+	// 			} );
+	// 		} else {
+	// 			App.alert( 'Please type something!' );
+	// 		}
+	// 	};
+	// }
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
-		loadTicket(ticket == 'refresh' ? TicketViewService.scope.ticket : ticket);
+		TicketViewService.setViewTicket( ticket == 'refresh' ? TicketViewService.scope.ticket.id_support : ticket.id_support );
+		$scope.ticket.messages.list && $scope.ticket.messages.total !== false && $scope.ticket.messages.list.length >= $scope.ticket.messages.total
+		loadTicket( ticket == 'refresh' ? TicketViewService.scope.ticket : ticket, function(){ loadData(); } );
 	});
 
 	$scope.send = TicketViewService.send;
 
-	loadTicket(TicketViewService.scope.viewTicket);
 });
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
@@ -226,7 +333,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		CallService.send_sms( $scope.sms, function( json ){
 			$scope.formSMSSending = false;
 			if( json.success ){
-				MainNavigationService.link('/ticket/' + json.success);
+				MainNavigationService.link( '/ticket/' + json.success);
 				if( $scope.complete ){
 					$scope.complete();
 				}
@@ -268,7 +375,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 
 } );
 
-NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, TicketViewService, CallService) {
+NGApp.controller('SupportCtrl', function($scope, $rootScope, $timeout, TicketService, TicketViewService, CallService) {
 
 	$scope.ticketparams = {
 		status: 'open'
@@ -282,6 +389,13 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, Tick
 
 	$scope.closeTicket = function( id_support ){
 		TicketService.openClose( id_support, function() { update(); } );
+	}
+
+	$scope.loadTicket = function( id_support ){
+		TicketViewService.setViewTicket( 0 );
+		$timeout( function(){
+			TicketViewService.setViewTicket( id_support );
+		}, 100 );
 	}
 
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {

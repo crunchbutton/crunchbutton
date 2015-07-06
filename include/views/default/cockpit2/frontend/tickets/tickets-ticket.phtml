@@ -293,7 +293,7 @@
 					<div class="field-row field-container">
 						<div colspan="2">
 							<div class="comments-box">
-								<textarea id="support-comment" ng-model="comment_text" class="support-comment"></textarea>
+								<textarea id="support-comment" ng-model="comment.text" class="support-comment"></textarea>
 							</div>
 						</div>
 					</div>
@@ -301,14 +301,14 @@
 
 				<div class="double-cols">
 					<button ng-click="close_and_comment();" class="button button-border button-empty button-orange" ng-class="{ 'button-disabled': ticket.status == 'closed'}">
-					<span ng-if="comment_text && ticket.status == 'open'">Comment &amp; </span>Close</button>
-					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment_text}">Comment</button>
+					<span ng-if="comment.text && ticket.status == 'open'">Comment &amp; </span>Close</button>
+					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment.text}">Comment</button>
 				</div>
 
-				<div class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
+				<div class="field-row field-container field-row-button field-two-rows" ng-if="!comment.isSaving">
 
 				</div>
-				<div ng-if="isCommentSaving">
+				<div ng-if="comment.isSaving">
 					<div colspan="2">
 						<button class="button">
 							<i class="fa fa-circle-o-notch fa-spin"></i> Saving

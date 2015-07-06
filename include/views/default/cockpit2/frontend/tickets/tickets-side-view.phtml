@@ -1,21 +1,23 @@
-
 <div ng-controller="SideTicketCtrl" class="support-side-chat">
+
 	<table class="support-side-chat-table">
+
 		<tr><td class="support-chat-header">
+
 			<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
 			<a class="support-chat-header-issue" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
+
 			<div class="divider"></div>
+
 			<div class="support-chat-header-details">
 
 				<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
 				<div ng-if="ticket.order">
 					{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} /
-
-						<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
-						<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+					<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
+					<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 					<br>ETA: {{ticket.order.eta.time}} minutes
 				</div>
-
 
 				<div ng-if="ticket.pexcard" ng-controller="SideSupportPexCardCtrl">
 
@@ -79,16 +81,17 @@
 		<tr><td class="support-chat-contents">
 			<div class="support-chat-contents-scroll" ticket-messages-scroll>
 
-				<div ng-if="ticket.messages.length && ticket.total_messages">
-					<button ng-if="ticket.messages.length < ticket.total_messages" ng-click="ticket.loadMessages()" class="button button-small button-empty button-green">
-						<span ng-if="!ticket.isLoadingMessages"><i class="fa fa-comment"></i></span>
-						<span ng-if="ticket.isLoadingMessages"><i class="fa fa-spinner fa-spin"></i></span>
+				<div ng-if="ticket.messages.list.length && ticket.messages.total">
+
+					<button ng-if="ticket.messages.list.length < ticket.messages.total" ng-click="loadMoreMessages()" class="button button-small button-empty button-green">
+						<span ng-if="!ticket.messages.isLoading"><i class="fa fa-comment"></i></span>
+						<span ng-if="ticket.messages.isLoading"><i class="fa fa-spinner fa-spin"></i></span>
 						&nbsp;&nbsp;More Messages</button>
-						&nbsp;&nbsp;Messages {{ticket.messages.length}} of {{ticket.total_messages}}.
+						&nbsp;&nbsp;Messages {{ticket.messages.list.length}} of {{ticket.messages.total}}.
 					<br><br>
 				</div>
 
-				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
+				<div ng-repeat="message in ticket.messages.list" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 				'support-chat-contents-message-support': message.is_support,
 				'support-chat-contents-message-driver': message.is_driver,
 				'support-chat-contents-message-customer': (!message.is_support && !message.is_driver),
