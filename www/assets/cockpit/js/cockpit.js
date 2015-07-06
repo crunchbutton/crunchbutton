@@ -28,6 +28,11 @@ App.localStorage = App.isPhoneGap;
 if (App.isPhoneGap) {
 	App.service = 'https://cockpit.la/api/';
 }
+
+if ( navigator.appVersion.indexOf( 'Win' ) !=-1 ){
+	App.isWindows = true;
+};
+
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
 var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select'], function( $httpProvider ) {
@@ -929,7 +934,7 @@ App.init = function(config) {
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
 			menu: $('#side-menu, #side-menu-right'),
-			menuDragDistance: 95,
+			menuDragDistance: ( App.isWindows ? 0 : 95 ),
 			disable: ''
 		});
 
