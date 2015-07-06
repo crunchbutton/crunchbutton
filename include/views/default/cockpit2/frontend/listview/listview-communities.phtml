@@ -6,8 +6,9 @@
 			<? /* <th class="tb-center">Drivers</th> */ ?>
 			<th>Last Order</th>
 			<th>Status info</th>
-			<th class="tb-small">Status</th>
-			<th class="tb-small" nowrap>Autoclose</th>
+			<th nowrap>Is Auto Closed</th>
+			<th nowrap>All Restaurants</th>
+			<th nowrap>3rd Party Restaurants</th>
 			<th class="tb-small">Type</th>
 			<th class="tb-small"></th>
 		</tr>
@@ -41,13 +42,17 @@
 				</span>
 				*/ ?>
 			</td>
-			<td class="tb-center tb-v-center">
-				<span class="tag tag-red" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
-				<span class="tag tag-green" ng-if="!community.close_all_restaurants && !community.is_auto_closed  && !community.close_3rd_party_delivery_restaurants">Open</span>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-red" ng-if="community.is_auto_closed">Yes</span>
+				<span class="tag tag-green" ng-if="!community.is_auto_closed">No</span>
 			</td>
 			<td nowrap class="tb-center tb-v-center">
-				<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
-				<span class="tag tag-red" ng-if="!community.auto_close">Disabled</span>
+				<span class="tag tag-red" ng-if="community.close_all_restaurants">Closed</span>
+				<span class="tag tag-green" ng-if="!community.close_all_restaurants">Open</span>
+			</td>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-red" ng-if="community.close_3rd_party_delivery_restaurants">Closed</span>
+				<span class="tag tag-green" ng-if="!community.close_3rd_party_delivery_restaurants">Open</span>
 			</td>
 			<td class="tb-center tb-v-center">
 				<span class="tag tag-orange" ng-if="community.type == '3rd'">3rd</span>
