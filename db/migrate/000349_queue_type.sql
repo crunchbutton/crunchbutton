@@ -1,3 +1,11 @@
+CREATE TABLE `queue_type` (
+  `id_queue_type` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id_queue_type`),
+  UNIQUE KEY `type` (`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
 INSERT INTO queue_type ( `type` ) VALUES ( 'order' );
 INSERT INTO queue_type ( `type` ) VALUES ( 'notification-driver' );
 INSERT INTO queue_type ( `type` ) VALUES ( 'order-confirm' );
