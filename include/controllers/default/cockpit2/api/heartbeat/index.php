@@ -22,7 +22,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		$tickets = null;
 
 		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
-			$q = "SELECT count(*) as c from support where status='open'";
+			$q = "SELECT COUNT( DISTINCT( s.id_support ) ) AS c FROM support s INNER JOIN support_message sm ON s.id_support = sm.id_support WHERE s.status = 'open' ";
 			$q = c::db()->get($q);
 			$tickets = $q->get(0)->c;
 
