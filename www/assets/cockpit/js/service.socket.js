@@ -11,12 +11,13 @@ NGApp.factory('eventSocket', function (socketFactory, $rootScope, $q) {
 });
 
 NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope, $q) {
+
 	var service = {};
 	var listening = {};
 	service.socket = eventSocket;
 	service.connected = false;
 	$rootScope.socketConnected = false;
-	
+
 	service.createQ = function() {
 		if (service.defferedConnection) {
 			service.defferedConnection.reject();
@@ -28,14 +29,14 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 			service.defferedConnection.promise.then(fn);
 		};
 	};
-	
+
 	service.createQ();
 
 	// when the socket is fully authenticated
 	service.q(function() {
 		service.connected = true;
 		$rootScope.socketConnected = true;
-		
+
 		if( AccountService && AccountService.user && AccountService.user.id_admin ){
 
 			service.socket.emit( 'event.subscribe', 'user.preference.' + AccountService.user.id_admin);
@@ -56,7 +57,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 			service.q(function() {
 				service.socket.emit('event.subscribe', group, listening[group]);
 			});
-			
+
 			listening[group] = [scope.$id];
 			console.debug('Creating listener to ' + group, listening[group]);
 		} else {
@@ -73,7 +74,7 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 		scope.$on('$destroy', function() {
 			if (listening[group] && listening[group].indexOf(scope.$id) >= 0) {
 				listening[group].splice(listening[group].indexOf(scope.$id),1);
-				
+
 				service.q(function() {
 					service.socket.emit('event.unsubscribe', group);
 				});
@@ -112,12 +113,12 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 	// response after sending auth credentials
 	service.socket.on('auth', function (data) {
 		console.debug('socket auth response:', data);
-		
+
 		if (data.status) {
 			service.defferedConnection.resolve();
 		}
 	});
-	
+
 	service.socket.on('disconnect', function (data) {
 		console.debug('Disconnected from event server.');
 		$rootScope.socketConnected = true;
@@ -125,10 +126,10 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 
 	service.socket.on('connect', function (data) {
 		console.debug('Connected to socket.io');
-		
+
 		var load = function(e, data) {
 			console.debug('Socket authenticating...');
-			
+
 			if (AccountService.user && AccountService.user.id_admin) {
 
 				console.debug('Have a user, authenticating with socket server');

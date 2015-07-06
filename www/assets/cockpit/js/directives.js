@@ -551,6 +551,14 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 	}
 });
 
+NGApp.directive('eatClick', function() {
+	return function(scope, element, attrs) {
+		$(element).click(function(event) {
+			event.preventDefault();
+		});
+	}
+});
+
 NGApp.directive('imgListViewSrc', function( $parse ) {
 	return {
 		restrict: 'A',

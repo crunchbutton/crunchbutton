@@ -9,11 +9,10 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 			method: 'GET',
 			params : {}
 		},
-		'messages' : {
-			url: App.service + 'ticket/:id_support/messages/:page',
+		'side_info' : {
+			url: App.service + 'ticket/:id_support/side-info/:page',
 			method: 'GET',
-			params : {},
-			isArray: true
+			params : {}
 		},
 		'save' : {
 			url: App.service + 'ticket/:id_support',
@@ -55,8 +54,8 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 		});
 	}
 
-	service.messages = function(params, callback) {
-		tickets.messages(params).$promise.then(function success(data, responseHeaders) {
+	service.side_info = function(params, callback) {
+		tickets.side_info(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}

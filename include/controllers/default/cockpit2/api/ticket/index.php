@@ -30,10 +30,36 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 		if ($this->method() == 'get') {
 			switch ( c::getPagePiece( 3 ) ) {
-				case 'messages':
+
+				case 'side-info':
+
 					$page = c::getPagePiece( 4 );
-					$out = $ticket->exports( [ 'messages_page' => $page ] );
-					echo json_encode( $out[ 'messages' ] );exit;
+
+					$data = $ticket->exports( [ 'messages_page' => $page ] );
+
+					$out = [];
+					$out[ 'id_support' ] = $data[ 'id_support' ];
+
+					if( $data[ 'pexcard' ] ){
+						$out[ 'pexcard' ] = $data[ 'pexcard' ];
+					}
+					if( $data[ 'restaurant' ] ){
+						$out[ 'restaurant' ] = [ 'name' => $data[ 'restaurant' ][ 'name' ], 'community' => $data[ 'restaurant' ][ 'community' ] ];
+					}
+					if( $data[ 'order' ] ){
+						$out[ 'order' ] = [ 'pay_type' => $data[ 'order' ][ 'pay_type' ],
+																'delivery_type' => $data[ 'order' ][ 'delivery_type' ],
+																'status' => $data[ 'order' ][ 'status' ],
+																'confirmed' => $data[ 'order' ][ 'confirmed' ],
+																'eta' => $data[ 'order' ][ 'eta' ] ];
+					}
+
+
+
+					$out[ 'messages' ] = [];
+					$out[ 'messages' ][ 'total' ] = $data[ 'total_messages' ];
+					$out[ 'messages' ][ 'list' ] = $data[ 'messages' ];
+					echo json_encode( $out );exit;
 					break;
 
 				default:
