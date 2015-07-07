@@ -186,9 +186,7 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	var loadTicketPage = function(){
 		scrollDown();
 		if( parseInt( $routeParams.id ) != parseInt( id_support ) ){
-			$timeout( function(){
-				MainNavigationService.link( '/ticket/' + id_support );
-			}, 500 );
+			MainNavigationService.link( '/ticket/' + id_support );
 		}
 	}
 

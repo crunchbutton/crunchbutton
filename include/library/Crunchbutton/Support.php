@@ -900,14 +900,17 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		if( $params[ 'exclude' ] && $params[ 'exclude' ][ 'messages' ] ){
 			$load_messages = false;
 		}
-
 		if( $load_messages ){
-			if( $params[ 'messages_page' ] ){
-				$page = $params[ 'messages_page' ];
-				$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 25 );
-				$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support, $page, $limit );
+			if( $this->type != Crunchbutton_Support::TYPE_WARNING ){
+				if( $params[ 'messages_page' ] ){
+					$page = $params[ 'messages_page' ];
+					$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 25 );
+					$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support, $page, $limit );
+				} else {
+					$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
+				}
 			} else {
-				$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
+				$messages = $this->messages();
 			}
 			if( $messages ){
 				foreach ( $messages as $message ) {

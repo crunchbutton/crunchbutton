@@ -246,7 +246,6 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			default:
-
 				$out = $order->ordersExports();
 				$out['user'] = $order->user()->id_user ? $order->user()->exports() : null;
 				$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports() : null;

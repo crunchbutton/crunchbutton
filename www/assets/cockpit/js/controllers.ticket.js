@@ -13,7 +13,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, TicketViewService, ViewListService) {
+NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketService, TicketViewService, ViewListService) {
 	$rootScope.title = 'Tickets';
 
 	angular.extend($scope, ViewListService);
@@ -39,6 +39,13 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Tic
 		});
 	}
 
+	$scope.loadTicket = function( id_support ){
+		TicketViewService.setViewTicket( 0 );
+		$timeout( function(){
+			TicketViewService.setViewTicket( id_support );
+		}, 100 );
+	}
+
 	$scope.closeTicket = function( id_support ){
 		TicketService.openClose( id_support, function() { update(); } );
 	}
@@ -60,7 +67,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.ticket.order.do_not_pay_driver = ( $scope.ticket.order.do_not_pay_driver ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
@@ -71,7 +77,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		OrderService.do_not_pay_restaurant( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.ticket.order.do_not_pay_restaurant = ( $scope.ticket.order.do_not_pay_restaurant ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
@@ -82,7 +87,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		OrderService.do_not_reimburse_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.ticket.order.do_not_reimburse_driver = ( $scope.ticket.order.do_not_reimburse_driver ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}

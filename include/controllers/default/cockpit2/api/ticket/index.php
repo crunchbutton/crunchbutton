@@ -64,6 +64,9 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 				default:
 					$out = $ticket->exports( [ 'exclude' => [ 'messages' => true ] ] );
+					$out[ 'order' ][ 'do_not_reimburse_driver' ] = ( intval( $out[ 'order' ][ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
+					$out[ 'order' ][ 'do_not_pay_driver' ] = ( intval( $out[ 'order' ][ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
+					$out[ 'order' ][ 'do_not_pay_restaurant' ] = ( intval( $out[ 'order' ][ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;
 					echo json_encode( $out );exit;
 					break;
 			}
