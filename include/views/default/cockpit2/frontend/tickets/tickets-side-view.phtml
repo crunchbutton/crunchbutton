@@ -5,10 +5,11 @@
 		<tr>
 			<td class="support-chat-header">
 
-			<div ng-if="sideBarIsLoading">
+			<div ng-if="isSideBarReloading">
 				<i class="fa fa-spinner fa-spin"></i>
 			</div>
-			<div ng-if="!sideBarIsLoading">
+
+			<div ng-if="!isSideBarReloading">
 
 				<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
 
@@ -91,55 +92,59 @@
 		</tr>
 		<tr>
 		<td class="support-chat-contents">
-			<div class="support-chat-contents-scroll" ticket-messages-scroll>
 
-				<div ng-if="ticket.total">
-					<button ng-if="ticket.has_more" ng-click="loadMoreMessages()" class="button button-small button-empty button-green">
-						<span ng-if="!isLoading"><i class="fa fa-comment"></i></span>
-						<span ng-if="isLoading"><i class="fa fa-spinner fa-spin"></i></span>
-						&nbsp;&nbsp;More Messages</button>
-						&nbsp;&nbsp;Messages {{ticket.loaded}} of {{ticket.total}}.
-					<br><br>
-				</div>
-				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
-				'support-chat-contents-message-support': message.is_support,
-				'support-chat-contents-message-driver': message.is_driver,
-				'support-chat-contents-message-customer': (!message.is_support && !message.is_driver),
-				'support-chat-contents-message-unset': message.sending,
-				'support-chat-contents-message-note': message.is_note,
-				'support-chat-contents-message-system': message.from == 'system' }">
-					<a href="/{{message.is_support || message.is_driver ? 'staff' : 'customer'}}/{{message.id_admin}}">
-					<div class="support-chat-contents-message-name">
-						<span class="support-chat-contents-message-icon">
-							<span ng-if="message.from == 'system'">
-								<i class="fa fa-bolt"></i>
-							</span>
-							<span ng-if="message.from != 'system'">
-								<i class="fa fa-comment" ng-if="message.is_support"></i>
-								<i class="fa fa-file-text-o" ng-if="message.is_note"></i>
-								<i class="fa fa-car" ng-if="!message.is_note && !message.is_support && message.is_driver"></i>
-								<i class="fa fa-user" ng-if="!message.is_note && !message.is_support && !message.is_driver"></i>
-							</span>
-						</span>
-						<span ng-if="message.is_note">Note by </span>
-						{{(message.first_name && message.first_name != 'false') ? message.first_name : message.name}}
+			<div class="support-chat-contents-scroll" ticket-messages-scroll>
+				<div ng-if="!isSideBarReloading">
+					<div ng-if="ticket.total">
+						<button ng-if="ticket.has_more" ng-click="loadMoreMessages()" class="button button-small button-empty button-green">
+							<span ng-if="!isLoading"><i class="fa fa-comment"></i></span>
+							<span ng-if="isLoading"><i class="fa fa-spinner fa-spin"></i></span>
+							&nbsp;&nbsp;More Messages</button>
+							&nbsp;&nbsp;Messages {{ticket.loaded}} of {{ticket.total}}.
+						<br><br>
 					</div>
-					</a>
-					<div class="support-chat-contents-message-time">
-						<span ng-if="!message.sending" am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span>
-						<span ng-if="message.sending">sending...</span>
-					</div>
-					<div class="support-chat-contents-message-body">{{message.body}}
-						<div ng-repeat="image in message.media">
-							<img class="support-side-image" src="{{image}}">
+					<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
+					'support-chat-contents-message-support': message.is_support,
+					'support-chat-contents-message-driver': message.is_driver,
+					'support-chat-contents-message-customer': (!message.is_support && !message.is_driver),
+					'support-chat-contents-message-unset': message.sending,
+					'support-chat-contents-message-note': message.is_note,
+					'support-chat-contents-message-system': message.from == 'system' }">
+						<a href="/{{message.is_support || message.is_driver ? 'staff' : 'customer'}}/{{message.id_admin}}">
+						<div class="support-chat-contents-message-name">
+							<span class="support-chat-contents-message-icon">
+								<span ng-if="message.from == 'system'">
+									<i class="fa fa-bolt"></i>
+								</span>
+								<span ng-if="message.from != 'system'">
+									<i class="fa fa-comment" ng-if="message.is_support"></i>
+									<i class="fa fa-file-text-o" ng-if="message.is_note"></i>
+									<i class="fa fa-car" ng-if="!message.is_note && !message.is_support && message.is_driver"></i>
+									<i class="fa fa-user" ng-if="!message.is_note && !message.is_support && !message.is_driver"></i>
+								</span>
+							</span>
+							<span ng-if="message.is_note">Note by </span>
+							{{(message.first_name && message.first_name != 'false') ? message.first_name : message.name}}
+						</div>
+						</a>
+						<div class="support-chat-contents-message-time">
+							<span ng-if="!message.sending" am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span>
+							<span ng-if="message.sending">sending...</span>
+						</div>
+						<div class="support-chat-contents-message-body">{{message.body}}
+							<div ng-repeat="image in message.media">
+								<img class="support-side-image" src="{{image}}">
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</td></tr>
 		<tr><td class="support-side-chat-row">
-			<div class="support-chat-box-wrap">
-				<textarea id="support-chat-box" ng-model="message_text" class="support-chat-box" placeholder="Type something and press enter..." chat-send></textarea>
+			<div ng-if="!isSideBarReloading">
+				<div class="support-chat-box-wrap">
+					<textarea id="support-chat-box" ng-model="message_text" class="support-chat-box" placeholder="Type something and press enter..." chat-send></textarea>
+				</div>
 			</div>
 		</td></tr>
 	</table>

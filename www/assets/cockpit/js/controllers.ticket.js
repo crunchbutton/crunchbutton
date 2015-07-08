@@ -159,7 +159,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 					});
 				}
 			}
-			$rootScope.$broadcast('triggerViewTicket', $scope.ticket);
+			$rootScope.$broadcast( 'triggerViewTicket', $scope.ticket );
 			draw();
 		});
 	};

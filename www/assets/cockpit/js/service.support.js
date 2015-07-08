@@ -133,17 +133,14 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 		NotificationService.check();
 
-		// if( !$rootScope.supportToggled ){
+		service.scope.viewTicket = ticket;
+		service.scope.ticket = ticket;
 
-			service.scope.viewTicket = ticket;
-			service.scope.ticket = ticket;
+		$rootScope.supportToggled = true;
 
-			$rootScope.supportToggled = true;
-
-			if (service.scope.viewTicket) {
-				service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
-			}
-		// }
+		if (service.scope.viewTicket) {
+			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
+		}
 	});
 
 	var notified  = new Array();
