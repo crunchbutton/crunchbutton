@@ -40,6 +40,7 @@ class Crunchbutton_Blast extends Cana_Table {
 	}
 
 	public function run() {
+
 		if ($this->status != 'canceled' && $this->status != 'complete' && $this->status != 'failed') {
 
 			$this->status = 'blasting';
@@ -50,7 +51,6 @@ class Crunchbutton_Blast extends Cana_Table {
 			if ($this->progress() == $this->users()->count()) {
 				echo 'progress: '.$this->progress()."\n";
 				echo 'users: '.$this->users()->count()."\n";
-
 				$this->status = 'complete';
 				$this->save();
 			} else {
@@ -87,9 +87,12 @@ class Crunchbutton_Blast extends Cana_Table {
 		foreach ($users as $user) {
 			$ran = true;
 
+			$phone = $user->phone;
+			$message = $user->message();
+
 			$status = Crunchbutton_Message_Sms::send([
-				'to' => $user->phone,
-				'message' => $user->message(),
+				'to' => $phone,
+				'message' => $message,
 				'reason' => Crunchbutton_Message_Sms::REASON_BLAST
 			]);
 
@@ -99,10 +102,19 @@ class Crunchbutton_Blast extends Cana_Table {
 				'status' => $status ? '1' : '0'
 			]);
 
+			$this->_support_ticket( $phone, $message );
+
 			$log->save();
 		}
 
 		return $ran;
+	}
+
+	private function _support_ticket( $phone, $message ){
+		$admin = Admin::getByPhone( $phone );
+		if( $admin->id_admin ){
+			Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $phone, 'dont_open_ticket' => true ] );
+		}
 	}
 
 	public function progress() {
