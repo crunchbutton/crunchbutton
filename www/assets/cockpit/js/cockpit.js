@@ -35,7 +35,7 @@ if ( navigator.appVersion.indexOf( 'Win' ) !=-1 ){
 
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
-var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select'], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select','pasvaz.bindonce'], function( $httpProvider ) {
 
 });
 

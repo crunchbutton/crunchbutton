@@ -77,7 +77,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 	}, true);
 });
 
-NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService) {
+NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService ) {
 
 	var id_support = null;
 
@@ -89,15 +89,20 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	TicketViewService.sideInfo.setTicket( id_support );
 
-	var loadData = function( side_bar_loading ){
+	var loadData = function(){
 		if( TicketViewService.sideInfo.load() ){
 			$scope.isLoading = true;
 			$scope.ticket = null;
 		}
-		if( side_bar_loading ){
-			$scope.sideBarIsLoading = true;
-		}
 	}
+
+	$scope.$watchCollection( 'ticket', function( newValue, oldValue ) {
+		if( newValue && newValue.total && !$rootScope.supportToggled ){
+			$timeout( function(){
+				$rootScope.supportToggled = true;
+			}, 300 );
+		}
+	} );
 
 	$scope.isLoading = false;
 
@@ -106,10 +111,10 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	}
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
-		$scope.ticket = data;
 		$scope.isLoading = false;
-		$scope.sideBarIsLoading = false;
-	});
+		$scope.isSideBarReloading = false;
+		$scope.ticket = data;
+	} );
 
 	$rootScope.$on( 'loadMoreMessages', function(e, data) {
 		$scope.loadMoreMessages();
@@ -128,8 +133,10 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
 		if( ticket.id_support != TicketViewService.sideInfo.id_support ){
+			$scope.isSideBarReloading = true;
+			$rootScope.$safeApply();
 			TicketViewService.sideInfo.setTicket( ticket.id_support );
-			loadData( true );
+			loadData();
 			socketStuff();
 		}
 	});

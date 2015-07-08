@@ -872,8 +872,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
 
-		$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
-
 		// Export the comments
 		$out[ 'comments' ] = [];
 		$comments = $this->comments();
@@ -903,7 +901,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		if( $load_messages ){
 			if( $this->type == Crunchbutton_Support::TYPE_WARNING ){
 				$messages = $this->messages();
+				$out[ 'total_messages' ] = $messages->count();
 			} else {
+				$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
 				if( $params[ 'messages_page' ] ){
 					$page = $params[ 'messages_page' ];
 					$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 25 );
