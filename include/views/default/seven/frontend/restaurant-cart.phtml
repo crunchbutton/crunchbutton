@@ -39,9 +39,14 @@
 					<div ng-switch on="option.type">
 
 						<!-- Customizable - select -->
-						<div ng-switch-when="select" class="cart-item-customize-item-select">
+						<div id="option-{{option.id_option}}" ng-switch-when="select" class="cart-item-customize-item-select">
 							<label class="cart-item-customize-select-name">{{option.name}}</label>
-							<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
+							<div class="cart-item-customize-select-input">
+								<div class="cart-item-customize-item-select-input-container">
+									<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
+								</div>
+							</div>
+							<div class="divider"></div>
 						</div>
 
 						<!-- Customizable - checkbox -->
