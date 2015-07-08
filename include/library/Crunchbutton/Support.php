@@ -906,7 +906,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
 				if( $params[ 'messages_page' ] ){
 					$page = $params[ 'messages_page' ];
-					$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 25 );
+					$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 15 );
 					$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support, $page, $limit );
 				} else {
 					$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
