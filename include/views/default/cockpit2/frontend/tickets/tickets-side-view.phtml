@@ -2,96 +2,106 @@
 
 	<table class="support-side-chat-table">
 
-		<tr><td class="support-chat-header">
+		<tr>
+			<td class="support-chat-header">
 
-			<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
-			<a class="support-chat-header-issue" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
+			<div ng-if="sideBarIsLoading">
+				<i class="fa fa-spinner fa-spin"></i>
+			</div>
+			<div ng-if="!sideBarIsLoading">
 
-			<div class="divider"></div>
+				<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
 
-			<div class="support-chat-header-details">
+				<a ng-if="ticket.id_support" class="support-chat-header-issue" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
 
-				<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
-				<div ng-if="ticket.order">
-					{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} /
-					<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
-					<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-					<br>ETA: {{ticket.order.eta.time}} minutes
-				</div>
+				<div ng-if="!ticket.id_support" class="support-chat-header-issue"><i class="fa fa-spinner fa-spin"></i></div>
 
-				<div ng-if="ticket.pexcard" ng-controller="SideSupportPexCardCtrl">
+				<div class="divider"></div>
 
-						<div class="link no-underline" ng-click="ticket.pexcard.show_info = !ticket.pexcard.show_info"><i class="fa fa-credit-card"></i> Card Serial: {{ticket.pexcard.card_serial}}</div>
+				<div class="support-chat-header-details">
 
-						<div ng-show="ticket.pexcard.show_info">
+					<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
+					<div ng-if="ticket.order">
+						{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} /
+						<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
+						<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+						<br>ETA: {{ticket.order.eta.time}} minutes
+					</div>
 
-							<h2>Add Funds</h2>
+					<div ng-if="ticket.pexcard" ng-controller="SideSupportPexCardCtrl">
 
-							<form name="form" novalidate>
+							<div class="link no-underline" ng-click="ticket.pexcard.show_info = !ticket.pexcard.show_info"><i class="fa fa-credit-card"></i> Card Serial: {{ticket.pexcard.card_serial}}</div>
 
+							<div ng-show="ticket.pexcard.show_info">
+
+								<h2>Add Funds</h2>
+
+								<form name="form" novalidate>
+
+									<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+										<li class="li-input" ng-class="{'error':form.amount.$invalid}">
+											<div class="input">
+												<input type="number" step="any" ignore-mouse-wheel name="amount" required ng-model="pexcard.amount" placeholder="0.00">
+											</div>
+											<div class="box-error">
+												<small ng-show="form.amount.$error.required">Required.</small>
+											</div>
+										</li>
+
+										<li class="li-input" class="error" ng-class="{'error':form.note.$invalid}">
+											<div class="input"><input type="text" name="note" required ng-model="pexcard.note" placeholder="Description"></div>
+											<div class="box-error">
+												<small ng-show="form.note.$error.required">Required.</small>
+											</div>
+										</li>
+
+										<li class="li-input buttons" ng-show="!isAdding">
+											<button class="button green" ng-click="add_funds();">Add</button>
+										</li>
+
+										<li class="li-input" ng-show="isAdding">
+											<span><i class="fa fa-circle-o-notch fa-spin"></i> Adding funds</span>
+										</li>
+
+									</ul>
+
+								</form>
+
+								<h2>Current balance</h2>
+
+								<div ng-show="card">
+									<div class="info">Available balance: <strong positive-or-negative-color="{{card.availableBalance}}">$ {{ card.availableBalance | formatPrice}}</strong></div>
+									<div class="info">Ledger balance: <strong positive-or-negative-color="{{card.ledgerBalance}}">$ {{ card.ledgerBalance | formatPrice}}</strong></div>
+									<div class="info">Status: <strong>{{card.status}}</strong></div>
+								</div>
 								<ul ng-class="{'submitted':submitted}" class="ul-inputs">
-
-									<li class="li-input" ng-class="{'error':form.amount.$invalid}">
-										<div class="input">
-											<input type="number" step="any" ignore-mouse-wheel name="amount" required ng-model="pexcard.amount" placeholder="0.00">
-										</div>
-										<div class="box-error">
-											<small ng-show="form.amount.$error.required">Required.</small>
-										</div>
+									<li class="li-input buttons" ng-show="!isLoadingBalance">
+										<span class="link no-underline green" ng-click="current_balanced();">Load</span>
 									</li>
-
-									<li class="li-input" class="error" ng-class="{'error':form.note.$invalid}">
-										<div class="input"><input type="text" name="note" required ng-model="pexcard.note" placeholder="Description"></div>
-										<div class="box-error">
-											<small ng-show="form.note.$error.required">Required.</small>
-										</div>
+									<li class="li-input" ng-show="isLoadingBalance">
+										<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
 									</li>
-
-									<li class="li-input buttons" ng-show="!isAdding">
-										<button class="button green" ng-click="add_funds();">Add</button>
-									</li>
-
-									<li class="li-input" ng-show="isAdding">
-										<span><i class="fa fa-circle-o-notch fa-spin"></i> Adding funds</span>
-									</li>
-
 								</ul>
-
-							</form>
-
-							<h2>Current balance</h2>
-
-							<div ng-show="card">
-								<div class="info">Available balance: <strong positive-or-negative-color="{{card.availableBalance}}">$ {{ card.availableBalance | formatPrice}}</strong></div>
-								<div class="info">Ledger balance: <strong positive-or-negative-color="{{card.ledgerBalance}}">$ {{ card.ledgerBalance | formatPrice}}</strong></div>
-								<div class="info">Status: <strong>{{card.status}}</strong></div>
 							</div>
-							<ul ng-class="{'submitted':submitted}" class="ul-inputs">
-								<li class="li-input buttons" ng-show="!isLoadingBalance">
-									<span class="link no-underline green" ng-click="current_balanced();">Load</span>
-								</li>
-								<li class="li-input" ng-show="isLoadingBalance">
-									<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
-								</li>
-							</ul>
-						</div>
+					</div>
 				</div>
 			</div>
-		</td></tr>
-		<tr><td class="support-chat-contents">
+		</td>
+		</tr>
+		<tr>
+		<td class="support-chat-contents">
 			<div class="support-chat-contents-scroll" ticket-messages-scroll>
 
-				<div ng-if="ticket.messages.list.length && ticket.messages.total">
-
-					<button ng-if="ticket.messages.list.length < ticket.messages.total" ng-click="loadMoreMessages()" class="button button-small button-empty button-green">
-						<span ng-if="!ticket.messages.isLoading"><i class="fa fa-comment"></i></span>
-						<span ng-if="ticket.messages.isLoading"><i class="fa fa-spinner fa-spin"></i></span>
+				<div ng-if="ticket.total">
+					<button ng-if="ticket.has_more" ng-click="loadMoreMessages()" class="button button-small button-empty button-green">
+						<span ng-if="!isLoading"><i class="fa fa-comment"></i></span>
+						<span ng-if="isLoading"><i class="fa fa-spinner fa-spin"></i></span>
 						&nbsp;&nbsp;More Messages</button>
-						&nbsp;&nbsp;Messages {{ticket.messages.list.length}} of {{ticket.messages.total}}.
+						&nbsp;&nbsp;Messages {{ticket.loaded}} of {{ticket.total}}.
 					<br><br>
 				</div>
-
-				<div ng-repeat="message in ticket.messages.list" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
+				<div ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 				'support-chat-contents-message-support': message.is_support,
 				'support-chat-contents-message-driver': message.is_driver,
 				'support-chat-contents-message-customer': (!message.is_support && !message.is_driver),

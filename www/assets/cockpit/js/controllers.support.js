@@ -81,159 +81,64 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	var id_support = null;
 
-	var reset = function(){
-		$scope.ticket = { messages: { page: 0, total: false, list: [], isLoading: false } };
+	if (typeof TicketViewService.scope.viewTicket == 'string') {
+		id_support = TicketViewService.scope.viewTicket;
+	} else {
+		id_support = TicketViewService.scope.viewTicket.id;
 	}
 
-	reset();
+	TicketViewService.sideInfo.setTicket( id_support );
 
-	var couldLoadMoreMessages = true;
-
-	var loadData = function( callback ){
-		if( $scope.ticket.messages.list && $scope.ticket.messages.total !== false && $scope.ticket.messages.list.length >= $scope.ticket.messages.total ){
-			return;
+	var loadData = function( side_bar_loading ){
+		if( TicketViewService.sideInfo.load() ){
+			$scope.isLoading = true;
+			$scope.ticket = null;
 		}
-
-		if( !couldLoadMoreMessages ){
-			return;
+		if( side_bar_loading ){
+			$scope.sideBarIsLoading = true;
 		}
-
-		couldLoadMoreMessages = false;
-
-		$scope.ticket.messages.page++;
-
-		$scope.ticket.messages.isLoading = true;
-
-		if( !id_support ){
-			return;
-		}
-
-		var params = { id_support: id_support, page: $scope.ticket.messages.page };
-
-		TicketService.side_info( params, function( data ){
-
-			var currentScroll = $('.support-chat-contents-scroll')[0].scrollHeight;
-
-			$scope.ticket.id_support = data.id_support;
-			$scope.ticket.pexcard = data.pexcard;
-			$scope.ticket.restaurant = data.restaurant;
-			$scope.ticket.order = data.order;
-			$scope.ticket.messages.total = data.messages.total;
-
-			var messages = [];
-			for( x in data.messages.list ){
-				if( data.messages.list[ x ].id_support_message ){
-					messages.push( data.messages.list[ x ] );
-				}
-			}
-
-			for( x in $scope.ticket.messages.list ){
-				if( $scope.ticket.messages.list[ x ].id_support_message ){
-					messages.push( $scope.ticket.messages.list[ x ] );
-				}
-			}
-
-			$scope.ticket.messages.list = messages;
-			TicketViewService.messages = messages;
-
-			if( callback ){
-				callback();
-			}
-
-			setTimeout(function() {
-				var finalScroll = $('.support-chat-contents-scroll')[0].scrollHeight;
-				var goToScroll = finalScroll - currentScroll;
-				$('.support-chat-contents-scroll')[0].scrollTop = goToScroll;
-				setTimeout(function() { couldLoadMoreMessages = true }, 500 );
-			}, 100 );
-
-			$scope.ticket.messages.isLoading = false;
-
-		} );
 	}
+
+	$scope.isLoading = false;
 
 	$scope.loadMoreMessages = function(){
-		loadData();
+		loadData()
 	}
+
+	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
+		$scope.ticket = data;
+		$scope.isLoading = false;
+		$scope.sideBarIsLoading = false;
+	});
 
 	$rootScope.$on( 'loadMoreMessages', function(e, data) {
 		$scope.loadMoreMessages();
 	} );
 
-	var loadTicket = function( id, callback ) {
-		TicketViewService.id_support = id_support;
-		var displayTicket = function( ticket ) {
-			TicketViewService.scope.ticket = ticket;
-		};
-		if (typeof id == 'string') {
-			id_support = TicketViewService.scope.viewTicket;
-			TicketService.get( id, displayTicket );
-		} else {
-			id_support = TicketViewService.scope.viewTicket.id;
-			displayTicket( id );
-		}
-
-		loadData( callback );
-	};
-
-	$rootScope.$on( 'newSupportMessage', function(e, data) {
-		$scope.ticket.messages.list.push( data );
-		scrollDown();
-	} );
-
-	loadTicket( TicketViewService.scope.viewTicket, function(){ loadTicketPage(); } );
-
-	var loadTicketPage = function(){
-		scrollDown();
-		if( parseInt( $routeParams.id ) != parseInt( id_support ) ){
-			MainNavigationService.link( '/ticket/' + id_support );
-		}
-	}
-
-	var scrollDown = function(){
-		$timeout( function(){
-			$('.support-chat-contents-scroll').stop( true, false ).animate( { scrollTop: $('.support-chat-contents-scroll')[0].scrollHeight }, 0 );
-		}, 300 );
-	}
-
-	SocketService.listen('ticket.' + TicketViewService.scope.viewTicket, TicketViewService.scope)
-		.on('message', function(d) {
-			for (var x in TicketViewService.messages) {
-				if (TicketViewService.messages[x].guid == d.guid) {
+	var socketStuff = function(){
+		SocketService.listen('ticket.' + id_support, TicketViewService.scope ).on('message', function(d) {
+			for ( var x in TicketViewService.sideInfo.data.messages ) {
+				if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
 					return;
 				}
 			}
-			TicketViewService.messages.push(d);
-			TicketViewService.scroll();
+			TicketViewService.sideInfo.add_message( d );
 		});
+	}
 
-	// var sendingNote = false;
-
-	// $scope.add_note = function(){
-	// 	if( !sendingNote ){
-	// 		sendingNote = true;
-	// 	}
-	// 	if ( sendingNote ) {
-	// 		if( $scope.message_text ){
-	// 			$scope.send( $scope.message_text, true, function(){
-	// 				$scope.message_text = '';
-	// 				loadTicket(TicketViewService.scope.viewTicket );
-	// 			} );
-	// 		} else {
-	// 			App.alert( 'Please type something!' );
-	// 		}
-	// 	};
-	// }
-
-	$rootScope.$on('triggerViewTicket', function(e, ticket) {
-		TicketViewService.setViewTicket( ticket == 'refresh' ? TicketViewService.scope.ticket.id_support : ticket.id_support );
-		$scope.ticket.messages.list && $scope.ticket.messages.total !== false && $scope.ticket.messages.list.length >= $scope.ticket.messages.total
-		loadTicket( ticket == 'refresh' ? TicketViewService.scope.ticket : ticket, function(){ loadData(); } );
+	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
+		if( ticket.id_support != TicketViewService.sideInfo.id_support ){
+			TicketViewService.sideInfo.setTicket( ticket.id_support );
+			loadData( true );
+			socketStuff();
+		}
 	});
 
 	$scope.send = TicketViewService.send;
+	loadData();
+	socketStuff();
 
-});
+} );
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
 	TicketViewService.scope = $scope;
@@ -387,13 +292,6 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, $timeout, TicketSer
 
 	$scope.closeTicket = function( id_support ){
 		TicketService.openClose( id_support, function() { update(); } );
-	}
-
-	$scope.loadTicket = function( id_support ){
-		TicketViewService.setViewTicket( 0 );
-		$timeout( function(){
-			TicketViewService.setViewTicket( id_support );
-		}, 100 );
 	}
 
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {

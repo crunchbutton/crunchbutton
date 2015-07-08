@@ -39,19 +39,11 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 		});
 	}
 
-	$scope.loadTicket = function( id_support ){
-		TicketViewService.setViewTicket( 0 );
-		$timeout( function(){
-			TicketViewService.setViewTicket( id_support );
-		}, 100 );
-	}
-
 	$scope.closeTicket = function( id_support ){
 		TicketService.openClose( id_support, function() { update(); } );
 	}
 
 });
-
 
 NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, TicketViewService, MapService, SocketService) {
 
