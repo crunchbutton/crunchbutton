@@ -133,14 +133,10 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (!$name && $phone) {
 
 			$phoneFormat = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/','\\1-\\2-\\3', $phone);
-			$user = Crunchbutton_Admin::q('select * from admin where phone=?', [$phone]);
+			$user = Crunchbutton_Admin::q('select * from admin where ( phone=? or phone=?) order by id_admin desc limit 1', [$phone, $phoneFormat]);
 
 			if (!$user->id_admin) {
-				$user = Crunchbutton_Admin::q('select * from admin where phone=?',[$phoneFormat]);
-			}
-
-			if (!$user->id_admin) {
-				$user = Crunchbutton_User::q('select * from `user` where phone=?',[$phone]);
+				$user = Crunchbutton_User::q('select * from `user` where phone=? order by id_user desc limit 1',[$phone]);
 			}
 
 			if ($user->id_admin || $user->id_user) {
