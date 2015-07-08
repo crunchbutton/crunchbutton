@@ -14,6 +14,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketService, TicketViewService, ViewListService) {
+
 	$rootScope.title = 'Tickets';
 
 	angular.extend($scope, ViewListService);
