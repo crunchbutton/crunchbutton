@@ -75,6 +75,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				return false;
 			}
 
+			if( service.sideInfo.data.total !== null && service.sideInfo.data.loaded >= service.sideInfo.data.total ){
+				return;
+			}
+
 			service._private.could_load = false;
 
 			service.sideInfo.data.page++;
