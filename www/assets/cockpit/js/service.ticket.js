@@ -1,4 +1,3 @@
-
 NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParams) {
 
 	var service = {};
@@ -87,6 +86,7 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	service.openClose = function(id_support, callback) {
 		tickets.openClose({id_support: id_support}, function(data) {
 			callback(data);
+			$rootScope.$broadcast( 'updateHeartbeat' );
 		});
 	}
 
