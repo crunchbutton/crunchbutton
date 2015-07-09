@@ -206,78 +206,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function createMerchant($params = []) {
-
-		$type = $params['type'] == 'business' ? 'business' : 'person';
-
-		try {
-			$p = [
-				'type' => $type,
-				'name' => $params['name'] ? $params['name'] : $this->name,
-				'phone_number' => $this->phone,
-				'country_code' => 'USA',
-				'street_address' => $params['address'] ? $params['address'] : $this->address,
-				'postal_code' => $params['zip'] ? $params['zip'] : $this->zip
-			];
-			switch ($type) {
-				case 'person':
-					$p['dob'] = $params['dob'];
-					break;
-				case 'business':
-					$p['tax_id'] = $params['taxid'];
-					$p['person'] = $params['person'];
-					break;
-			}
-
-			$merchant = c::balanced()->createMerchant(
-				'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
-				$p,
-				null,
-				null,
-				$this->name
-			);
-		} catch (Balanced\Exceptions\HTTPError $e) {
-			print_r($e);
-			exit;
-		}
-		$payment = $this->payment_type();
-		$payment->id_restaurant = $this->id_restaurant;
-		$payment->balanced_id = $merchant->id;
-		$payment->save();
-
-		return $merchant;
-
+		// @balanced
+		return false;
 	}
 
 	public function merchant() {
-
-		$payment_type = $this->payment_type();
-
-		if ($payment_type->balanced_id) {
-			$a = Crunchbutton_Balanced_Merchant::byId($payment_type->balanced_id);
-			if ($a->id) {
-				$merchant = $a;
-			}
-		}
-
-		if (!$merchant) {
-			$a = Crunchbutton_Balanced_Merchant::byRestaurant($this);
-			if ($a->id) {
-				if (c::env() == 'live') {
-					$payment = $r->payment_type();
-					$payment->id_restaurant = $r->id_restaurant;
-					$payment->balanced_id = $a->id;
-					$payment->save();
-				}
-				$merchant = $a;
-			}
-		}
-
-		if (!$merchant) {
-			die('no merchant');
-			$merchant = $this->createMerchant();
-		}
-
-		return $merchant;
+		// @balanced
+		return false;
 	}
 
 	public function activeDrivers(){
@@ -442,18 +377,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function saveBankInfo($name, $account, $routing, $type) {
-		try {
-			$bank = c::balanced()->createBankAccount($name, $account, $routing, $type);
-			$bank->associateToCustomer('/customers/'.$this->merchant()->id);
-			$payment_type = $this->payment_type();
-			$payment_type->id_restaurant = $this->id_restaurant;
-			$payment_type->balanced_bank = $bank->id;
-			$payment_type->save();
-			echo json_encode( [ 'success' => 'success' ] );
-		} catch (Exception $e) {
-			print_r($e);
-			exit;
-		}
+		// @balanced
+		return false;
 	}
 
 	/**

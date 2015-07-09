@@ -180,17 +180,6 @@
 			<public>_KEY_</public>
 		</live>
 	</stripe>
-	<balanced>
-		<live>
-			<secret>***REMOVED***</secret>
-			<uri>/1.1/marketplaces/***REMOVED***</uri>
-		</live>
-		<dev>
-			<secret>ak-test-78Lbl2ZDE9ll0zEkHMQBsDZBhCSOjdJV</secret>
-			<uri>/1.1/marketplaces/TEST-MP6kDcB0F9VsdCGOwYMicIzL</uri>
-		</dev>
-		<sharedMerchant>_KEY_</sharedMerchant>
-	</balanced>
 	<suggestion>
 		<dev>
 			<phone>_PHONE_</phone>
@@ -297,7 +286,7 @@
 	<crypt>
 		<key>_KEY_</key>
 	</crypt>
-	<processor>balanced</processor>
+	<processor>stripe</processor>
 	<templates>
 		<live>
 			<compress>true</compress>

@@ -30,9 +30,6 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 		$this->customer = $customer;
 
 		switch (c::getPagePiece(3)) {
-			case 'balanced-stripe':
-				$this->_tempStripeToBalanced();
-				break;
 			default:
 				$this->_customer();
 				break;
@@ -49,10 +46,5 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 				$this->error(400);
 				break;
 		}
-	}
-	
-	private function _tempStripeToBalanced() {
-		$status = $this->customer->tempConvertBalancedToStripe();
-		echo $status ? 'success' : 'fail';
 	}
 }

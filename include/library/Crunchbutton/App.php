@@ -506,15 +506,6 @@ class Crunchbutton_App extends Cana_App {
 		return $env;
 	}
 
-	public function balanced() {
-		if (!$this->_balanced) {
-			\Balanced\Settings::$api_key = c::config()->balanced->{c::getEnv()}->secret;
-			$marketplace = Balanced\Marketplace::mine();
-			$this->_balanced = $marketplace;
-		}
-		return $this->_balanced;
-	}
-
 	public function stripe() {
 		if (!$this->_stripe) {
 			\Stripe\Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
