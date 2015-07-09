@@ -204,6 +204,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 						if ( copy( $_FILES['image']['tmp_name'],$file ) ) {
 							$restaurant->image = $image_name;
 							$restaurant->save();
+							$restaurant->updateImage();
 							chmod($file,0777);
 						}
 
