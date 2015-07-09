@@ -21,17 +21,17 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	};
 
 	service.sideInfo.force_first_page = function(){
-		service.sideInfo.data.loaded = 0;
-		service.sideInfo.data.page = 0;
-		service.sideInfo.data.total = null;
-		if( !service._private ){
-			service._private = { first_load: true, current_scroll: 0, could_load: true };
-		} else {
-			service._private.current_scroll = 0;
-			service._private.first_load = true;
-			service._private.could_load = true;
-		}
-
+		// service.sideInfo.data.loaded = 0;
+		// service.sideInfo.data.page = 0;
+		// service.sideInfo.data.total = null;
+		// if( !service._private ){
+		// 	service._private = { first_load: true, current_scroll: 0, could_load: true };
+		// } else {
+		// 	service._private.current_scroll = 0;
+		// 	service._private.first_load = true;
+		// 	service._private.could_load = true;
+		// }
+		service.sideInfo.reset();
 		service.sideInfo.load();
 	}
 
