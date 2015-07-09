@@ -172,6 +172,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						// update the chat room
 						if( service.sideInfo.id_support && d.id_support ){
+							service.sideInfo.reset();
 							service.sideInfo.load();
 						}
 
