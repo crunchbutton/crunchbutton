@@ -1010,8 +1010,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function image() {
-		$img = (strpos($this->image,'http://') !== 0 ? 'https://i._DOMAIN_/' : '') . $this->image;
-		return $img;
+		return $this->getImages()['original'];
 	}
 
 	public function updateImage($file = null, $name = null) {
@@ -1195,7 +1194,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['img']    = $out['images']['normal'];
 		
 		// @todo: will remove later
-		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
+		//$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
 		
 
 
