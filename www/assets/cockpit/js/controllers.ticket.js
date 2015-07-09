@@ -50,10 +50,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	var id_support = $routeParams.id;
 
-	if( TicketViewService && TicketViewService.sideInfo && TicketViewService.sideInfo.id_support != id_support ){
-		$rootScope.supportToggled = false;
-	}
-
 	$scope.refund = function(){
 		OrderService.askRefund( $scope.ticket.order.id_order, function(){
 			update();
