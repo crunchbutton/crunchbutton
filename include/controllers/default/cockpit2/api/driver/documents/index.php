@@ -65,9 +65,9 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				foreach ($docs as $doc) {
 					
 					if (file_exists(Cockpit_Driver_Document_Status::path().$doc->file)) {
-						//$r = Cockpit_Driver_Document_Status::toS3(Cockpit_Driver_Document_Status::path().$doc->file, $doc->file);
-						$s = $doc->localToS3();
-						print_r($s);
+						$r = Cockpit_Driver_Document_Status::toS3(Cockpit_Driver_Document_Status::path().$doc->file, $doc->file);
+						//$r = $doc->localToS3();
+						print_r($r);
 					}
 					
 					
