@@ -5,11 +5,7 @@
 		<tr>
 			<td class="support-chat-header">
 
-			<div ng-if="isSideBarReloading">
-				<i class="fa fa-spinner fa-spin"></i>
-			</div>
-
-			<div ng-if="!isSideBarReloading">
+			<div>
 
 				<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
 
@@ -94,7 +90,7 @@
 		<td class="support-chat-contents">
 
 			<div class="support-chat-contents-scroll" ticket-messages-scroll>
-				<div ng-if="!isSideBarReloading">
+				<div>
 					<div ng-if="ticket.total">
 						<button ng-if="ticket.has_more" ng-click="loadMoreMessages()" class="button button-small button-empty button-green">
 							<span ng-if="!isLoading"><i class="fa fa-comment"></i></span>
@@ -141,7 +137,7 @@
 			</div>
 		</td></tr>
 		<tr><td class="support-side-chat-row">
-			<div ng-if="!isSideBarReloading">
+			<div>
 				<div class="support-chat-box-wrap">
 					<textarea id="support-chat-box" ng-model="message_text" class="support-chat-box" placeholder="Type something and press enter..." chat-send></textarea>
 				</div>
