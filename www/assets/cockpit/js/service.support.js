@@ -20,6 +20,21 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.sideInfo.update_controller()
 	};
 
+	service.sideInfo.force_first_page = function(){
+		service.sideInfo.data.loaded = 0;
+		service.sideInfo.data.page = 0;
+		service.sideInfo.data.total = null;
+		if( !service._private ){
+			service._private = { first_load: true, current_scroll: 0, could_load: true };
+		} else {
+			service._private.current_scroll = 0;
+			service._private.first_load = true;
+			service._private.could_load = true;
+		}
+
+		service.sideInfo.load();
+	}
+
 	service.sideInfo.scroll = function( action ){
 
 		var container = $('.support-chat-contents-scroll');
@@ -106,15 +121,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						messages.push( service.sideInfo.data.messages[ x ] );
 					}
 				}
-
 				service.sideInfo.data.messages = messages;
-
 				service.sideInfo.data.loaded = service.sideInfo.data.messages.length;
-
 				service.sideInfo.data.has_more = ( service.sideInfo.data.loaded >= service.sideInfo.data.total ) ? false : true;
-
 				service.sideInfo.update_controller();
-
 				if( service._private.first_load ){
 					service.sideInfo.scroll( 'begin' );
 					service._private.first_load = false;
@@ -172,8 +182,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						// update the chat room
 						if( service.sideInfo.id_support && d.id_support ){
-							service.sideInfo.reset();
-							service.sideInfo.load();
+							service.sideInfo.force_first_page();
 						}
 
 						if (d.id_admin == AccountService.user.id_admin) {
