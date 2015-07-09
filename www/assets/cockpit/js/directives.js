@@ -568,31 +568,36 @@ NGApp.directive('imgListViewSrc', function( $parse ) {
 
 		link: function(scope, element, attrs) {
 
+			scope.$watch('image', function() {
+				update();
+			});
+
 			var error = function(){
-				element.empty();
-				element.append( '<div ng-if="!restaurant.hasImage" class="customer-image ' + attrs.imgNull + '"></div>' );
+				element.html( '<div ng-if="!restaurant.hasImage" class="customer-image ' + attrs.imgNull + '"></div>' );
 			}
 			var success = function( src ){
-				element.empty();
-				element.append( '<img class="customer-image" src="' + src + '"></img>' );
+				element.html( '<img class="customer-image" src="' + src + '"/>' );
 			}
 
 			var loading = function(){
 				// implement some loading image here
 			}
 
-			if( scope.image ){
-				var img = new Image();
-				img.src = scope.image;
-				img.onload = function(){
-			 		success( img.src );
-				};
-				img.onerror = function(){
-			 		error();
-				};
-			} else {
-				error();
+			var update = function(){
+				if( scope.image ){
+					var img = new Image();
+					img.src = scope.image;
+					img.onload = function(){
+				 		success( img.src );
+					};
+					img.onerror = function(){
+				 		error();
+					};
+				} else {
+					error();
+				}
 			}
+
 		}
 }
 });
