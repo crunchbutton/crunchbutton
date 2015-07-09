@@ -151,6 +151,9 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				$o->id_admin_from = $n['id_admin'];
 			}
 
+			$support = Support::o( $o->id_support );
+			$lastReplyFrom = $support->lastMessage();
+			$o->last_reply = $lastReplyFrom->from;
 			/*
 			$support = Support::o( $o->id_support );
 			$message = $support->lastMessage();
