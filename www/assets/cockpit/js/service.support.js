@@ -170,6 +170,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						notified.push(d.id_support_message);
 
+						// update the chat room
+						if( service.sideInfo.id_support && d.id_support ){
+							service.sideInfo.load();
+						}
+
 						if (d.id_admin == AccountService.user.id_admin) {
 							return;
 						}
