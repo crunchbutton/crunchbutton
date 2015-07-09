@@ -112,7 +112,6 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
 		$scope.isLoading = false;
-		$scope.isSideBarReloading = false;
 		$scope.ticket = data;
 	} );
 
@@ -134,7 +133,6 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
 		if( ticket.id_support != TicketViewService.sideInfo.id_support ){
 			TicketViewService.sideInfo.setTicket( 0 );
-			$scope.isSideBarReloading = true;
 			TicketViewService.sideInfo.setTicket( ticket.id_support );
 			loadData();
 			socketStuff();
