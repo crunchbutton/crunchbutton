@@ -574,9 +574,6 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		StaffPayInfoService.load( function( json ){
 			if( json.id_admin ){
 				$scope.payInfo = json;
-				if( json.balanced_bank ){
-					$scope.bank.showForm = false;
-				}
 				$scope.payInfo.using_pex = parseInt( $scope.payInfo.using_pex );
 				$scope.ready = true;
 				$scope.payment = {};
@@ -585,6 +582,10 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 				}
 				if( json.date_terminated ){
 					$scope.payInfo.date_terminated = new Date( json.date_terminated );
+				}
+				
+				if(json.stripe_id && json.stripe_account_id ){
+					$scope.bank.showForm = false;
 				}
 				$scope.payment._methods = StaffPayInfoService.methodsPayment();
 				$scope.payment._using_pex = StaffPayInfoService.typesUsingPex();
@@ -650,30 +651,6 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		} )
 	}
 
-	var balanced = function(){
-		var payload = { name: $scope.payInfo.legal_name_payment,
-										account_number: $scope.bank.account_number,
-										routing_number: $scope.bank.routing_number };
-		StaffPayInfoService.bankAccount( payload, function( json ){
-			if( json.href ){
-				json.id_admin = $scope.payInfo.id_admin;
-				json.legal_name_payment = $scope.payInfo.legal_name_payment;
-				StaffPayInfoService.save_bank( json, function( data ){
-					if( data.error ){
-						App.alert( data.error);
-						return;
-					} else {
-						bank_info_saved();
-					}
-				} );
-
-			} else {
-				App.alert( 'Error saving account! Please make sure you typed your account information correctly.' );
-				$scope.isTokenizing = false;
-			}
-		} );
-	}
-
 	var stripe = function(){
 		Stripe.bankAccount.createToken( {
 			country: 'US',
@@ -721,11 +698,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		}
 
 		$scope.isTokenizing = true;
-		if ( $scope.isBalanced ) {
-			balanced();
-		} else if ( $scope.isStripe ) {
-			stripe();
-		}
+		stripe();
 	}
 
 	$scope.list = function(){
@@ -735,8 +708,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 	// just to cache the config process stuff
 	ConfigService.getProcessor( function( json ){
 		$scope.processor = json.processor.type;
-		$scope.isBalanced = ( json.processor.type == 'balanced' );
-		$scope.isStripe = ( json.processor.type == 'stripe' );
+		$scope.isStripe = true;
 		load();
 	} );
 

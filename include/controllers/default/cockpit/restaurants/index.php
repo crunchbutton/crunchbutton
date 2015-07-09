@@ -155,7 +155,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 						exit;
 					}
 					$restaurants = Crunchbutton_Restaurant::q('
-						select * from restaurant where `image` is not null
+						select * from restaurant where `image` is not null and permalink is not null
 					');
 
 					foreach ($restaurants as $restaurant) {
