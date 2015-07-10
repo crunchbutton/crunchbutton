@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+date_default_timezone_set('America/Los_Angeles');
+
 require_once('../include/library/Crunchbutton/S3.php');
 
 $key = 'AKIAJASPPY2YFBVPMY4A';
