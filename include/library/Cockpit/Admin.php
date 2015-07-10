@@ -40,7 +40,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
-		$ssn = $paymentType->social_security_number($this->id_admin);
+		$ssn = substr($paymentType->social_security_number($this->id_admin), -4);
 
 		$formattedAddress = Util::formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
