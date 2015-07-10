@@ -6,123 +6,118 @@
 
 	<div class="divider"></div>
 
-	<h2 class="title">
-		<span ng-if="!resource.id_community_resource">Add resource</span>
-		<span ng-if="resource.id_community_resource">Edit resource</span>
-	</h2>
-
 	<form name="form" novalidate>
 
-		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+		<div class="support-box-wrap box-content2">
 
-			<li class="li-input" ng-class="{'error':form.name.$invalid}">
-				<div class="label">Name:</div>
-				<div class="input"><input type="text" name="name" ng-model="resource.name" required placeholder="Name" ng-minlength="2" ng-maxlength="255" ></div>
-				<div class="box-error">
-					<small ng-show="form.name.$error.required">Required.</small>
-					<small ng-show="form.name.$error.minlength">Name is too short. Name is required to be at least 2 characters.</small>
-					<small ng-show="form.name.$error.maxlength">Name cannot be longer than 255 characters.</small>
-				</div>
-			</li>
+			<div class="support-box-wrap-header">
+				<h1>File</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<li class="li-input" ng-class="{'error':form.name.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="name" ng-model="resource.name" required placeholder="Name" ng-minlength="2" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.name.$error.required">Required.</small>
+							<small ng-show="form.name.$error.minlength">Name is too short. Name is required to be at least 2 characters.</small>
+							<small ng-show="form.name.$error.maxlength">Name cannot be longer than 255 characters.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':form.file.$invalid}">
+						<div class="label">File:</div>
+						<div class="input">
+							<div class="input"><input type="text" name="file" readonly="readonly" ng-model="resource.temp_name" required placeholder="File"></div>
+						</div>
+						<div>
+							<br>
+							<div class="upbutton" resource-upload>
+								<button class="save button upload">FILE</button>
+								<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden">
+							</div>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.file.$error.required">Required.</small>
+						</div>
+						<br>
+						<br>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Visible</h1>
+				<div class="divider"></div>
+			</div>
 
-			<li class="li-input" ng-class="{'error':form.file.$invalid}">
-				<div class="label">File:</div>
-				<div class="input">
-					<div class="input"><input type="text" name="file" readonly="readonly" ng-model="resource.file" required placeholder="File"></div>
-				</div>
-				<div>
-					<br>
-					<div class="upbutton" resource-upload>
-						<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
-						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden">
-					</div>
-				</div>
-				<div class="box-error">
-					<small ng-show="form.file.$error.required">Required.</small>
-				</div>
-				<br>
-				<br>
-			</li>
+			<div class="no-box-content-color">
 
-			<li class="li-input" ng-class="{'error':form.all.$invalid}">
-				<div class="label">Show it to all communities:</div>
-				<div class="input">
-					<select name="all" required ng-model="resource.all" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-				<div class="box-error">
-					<small ng-show="form.all.$error.required">Required.</small>
-				</div>
-			</li>
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-			<li class="li-input" ng-show="resource.all == 0">
-				<div class="label">Communities:</div>
-				<div class="input">
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.all"/><div></div>
+						</label>
+						<div class="label">Show it to all communities:</div>
+					</li>
 
-					<ui-select multiple ng-model="resource.communities" theme="select2" close-on-select="true" title="Select a community">
-						<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
-						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
-							{{community.name}}
-						</ui-select-choices>
-					</ui-select>
+					<li class="li-input" ng-show="!resource.all">
+						<div class="label">Communities:</div>
+						<div class="input">
 
-				</div>
-			</li>
+							<ui-select multiple ng-model="resource.communities" theme="select2" close-on-select="true" title="Select a community">
+								<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+								<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+									{{community.name}}
+								</ui-select-choices>
+							</ui-select>
 
-			<li class="li-input" ng-class="{'error':form.orderPage.$invalid}">
-				<div class="label">Show at order page (for drivers):</div>
-				<div class="input">
-					<select name="orderPage" required ng-model="resource.order_page" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-				<div class="box-error">
-					<small ng-show="form.orderPage.$error.required">Required.</small>
-				</div>
-			</li>
+						</div>
+					</li>
 
-			<li class="li-input" ng-class="{'error':form.page.$invalid}">
-				<div class="label">Show at resource page:</div>
-				<div class="input">
-					<select name="page" required ng-model="resource.page" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-				<div class="box-error">
-					<small ng-show="form.page.$error.required">Required.</small>
-				</div>
-			</li>
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.order_page"/><div></div>
+						</label>
+						<div class="label">Show at order page (for drivers):</div>
+					</li>
 
-			<li class="li-input" ng-class="{'error':form.side.$invalid}">
-				<div class="label">Show at side menu:</div>
-				<div class="input">
-					<select name="side" required ng-model="resource.side" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-				<div class="box-error">
-					<small ng-show="form.side.$error.required">Required.</small>
-				</div>
-			</li>
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.page"/><div></div>
+						</label>
+						<div class="label">Show at resource page:</div>
+					</li>
 
-			<li class="li-input" ng-class="{'error':form.active.$invalid}">
-				<div class="label">Active:</div>
-				<div class="input">
-					<select name="active" required ng-model="resource.active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-				<div class="box-error">
-					<small ng-show="form.active.$error.required">Required.</small>
-				</div>
-			</li>
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.side"/><div></div>
+						</label>
+						<div class="label">Show at side menu:</div>
+					</li>
 
-		</ul>
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.active"/><div></div>
+						</label>
+						<div class="label">Active:</div>
+					</li>
+
+					<li class="li-input">
+						<button ng-click="save();" class="ladda-button button save save-upload" data-color="mint" data-style="zoom-in">
+							<span class="ladda-label"><strong>Save</strong></span>
+						</button>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
 
 	</form>
-
-	<ul class="ul-inputs">
-		<li class="li-input" ng-show="!isSaving">
-			<button class="button save" ng-click="save();">Save</button>
-
-		</li>
-		<li class="li-input" ng-show="isSaving">
-			<i class="fa fa-circle-o-notch fa-spin"></i>
-		</li>
-	</ul>
-
-	<br><br><br>
 
 </div>
 
