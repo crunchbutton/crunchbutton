@@ -17,7 +17,7 @@ class Crunchbutton_Order_Dish extends Cana_Table {
 									AND 
 										o.type = ?
 									AND 
-										d.default = 1true
+										d.default = true
 									AND 
 										o.id_option_parent IS NULL
 									AND 
