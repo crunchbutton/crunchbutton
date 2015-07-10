@@ -17,9 +17,9 @@ before_script:
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
   - php travis/dbmigrate.php
-  - sudo apt-get clean
-  - sudo apt-get update
-  - sudo apt-get install apache2 gdebi
+  #- sudo apt-get clean
+  #- sudo apt-get update
+  #- sudo apt-get install apache2 gdebi
   - wget http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
   - sudo gdebi --n pgloader_3.2.0+dfsg-1_amd64.deb
   - psql -c 'create database crunchbutton_travis;' -U postgres
@@ -53,6 +53,10 @@ notifications:
 
 addons:
   postgresql: "9.3"
+  apt:
+    packages:
+    - apache2
+    - gdebi
 #  sauce_connect:
 #  username: "Your Sauce Labs username"
 #  access_key: "Your Sauce Labs access key"
