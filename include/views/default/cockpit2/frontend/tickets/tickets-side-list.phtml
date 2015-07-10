@@ -3,7 +3,7 @@
 		<div ng-if="account.user.permissions.GLOBAL">
 			<h1>Tickets</h1>
 			<div class="tickets-side-tickets">
-				<div ng-repeat="ticket in tickets" ng-click="loadTicket( ticket.id_support )" class="tickets-side-item" ng-class="{'tickets-side-item-unread': (ticket.id_support_message_client == ticket.id_support_message_recent || ticket.from_recent=='system'), 'tickets-side-item-read': (ticket.id_support_message_client != ticket.id_support_message_recent && ticket.from_recent!='system')}">
+				<div ng-repeat="ticket in tickets" ng-click="loadTicket( ticket.id_support )" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
 					<div class="tickets-side-tickets-wrap">
 						<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
 							<span ng-if="ticket.type == 'WARNING'">
