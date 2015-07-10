@@ -3,16 +3,16 @@ language:
 
 php:
   - 5.4
-  - 5.5.21
+#  - 5.5.21
 #  - 5.6.7
 # add this when we move to heroku
+
+sudo: false
 
 env:
   - TRAVIS=1
   
-# install:
-
-before_script:
+install:
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
@@ -20,22 +20,24 @@ before_script:
   #- sudo apt-get clean
   #- sudo apt-get update
   #- sudo apt-get install apache2 gdebi
-  - wget http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
-  - sudo gdebi --n pgloader_3.2.0+dfsg-1_amd64.deb
-  - psql -c 'create database crunchbutton_travis;' -U postgres
-  - mysqldump -d --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
-  - mysqldump --no-create-info --skip-triggers --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
-  - touch pgloader.conf
-  - pgloader mysql://root@localhost:3306/crunchbutton_travis postgresql:///crunchbutton_travis
-  - sudo a2enmod actions
-  - sudo a2enmod rewrite
-  - chmod -R 0777 ./*
+  #- wget http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
+  #- sudo gdebi --n pgloader_3.2.0+dfsg-1_amd64.deb
+  #- psql -c 'create database crunchbutton_travis;' -U postgres
+  #- mysqldump -d --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
+  #- mysqldump --no-create-info --skip-triggers --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
+  #- touch pgloader.conf
+  #- pgloader mysql://root@localhost:3306/crunchbutton_travis postgresql:///crunchbutton_travis
+  - a2enmod actions
+  - a2enmod rewrite
   - echo "export PATH=/home/travis/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
   - cat travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
   - cat travis/sites.conf | sed -e "s,PATH,`pwd`/www,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
   - echo 'export APACHE_ARGUMENTS="-D TRAVIS"' | sudo tee -a /etc/apache2/envvars > /dev/null
-  - sudo service apache2 restart
+  - service apache2 restart
   - npm install assert chai phantom path util events
+  
+before_script:
+  - chmod -R 0777 ./*
   
 #  - "export DISPLAY=:99.0"
 #  - "sh -e /etc/init.d/xvfb start"
