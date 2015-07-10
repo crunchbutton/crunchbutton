@@ -30,7 +30,7 @@ class Crunchbutton_Referral extends Cana_Table{
 			$query = '
 				SELECT u.*
 				FROM referral r
-				INNER JOIN user u ON u.id_user = r.id_user_invited
+				INNER JOIN `user` u ON u.id_user = r.id_user_invited
 				WHERE r.id_user_inviter = ? AND r.new_user = true AND r.warned = false
 				ORDER BY r.id_referral ASC
 			';
