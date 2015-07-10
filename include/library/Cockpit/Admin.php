@@ -40,6 +40,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
+		$ssn = substr($paymentType->social_security_number($this->id_admin), -4);
 
 		$formattedAddress = Util::formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
@@ -92,6 +93,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 								$saving++;
 							}
 							break;
+						case 'legal_entity.ssn_last_4':
+							if (!$stripeAccount->legal_entity->ssn_last_4 && $ssn) {
+								$stripeAccount->legal_entity->ssn_last_4 = $ssn;
+								$saving++;
+							}
+							break;
 					}
 				}
 			} else {
@@ -101,6 +108,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$stripeAccount->legal_entity->address->city = $address['city'];
 				$stripeAccount->legal_entity->address->state = $address['state'];
 				$stripeAccount->legal_entity->address->postal_code = $address['zip'];
+				if ($ssn) {
+					$stripeAccount->legal_entity->ssn_last_4 = $ssn;
+				}
 				$saving = 6;
 			}
 
