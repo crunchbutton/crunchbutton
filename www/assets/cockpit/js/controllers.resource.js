@@ -42,17 +42,22 @@ NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewLis
 	});
 } );
 
-NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, CommunityResourceService, CommunityService ) {
+NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, CommunityResourceService, CommunityService ) {
 
 	$scope.save = function(){
-
-		if( $scope.form.$invalid ){
-			$scope.submitted = true;
+		if( $scope.isSaving ){
 			return;
 		}
-
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			App.alert( 'Please fill all the required fields!' );
+			return;
+		}
+		$rootScope.$broadcast( 'triggerStartUpload' );
 		$scope.isSaving = true;
+	}
 
+	var save = function(){
 		CommunityResourceService.save( $scope.resource, function( json ){
 			$scope.isSaving = false;
 			if( json.error ){
@@ -65,8 +70,6 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 			}
 		} );
 	}
-
-	$scope.yesNo = CommunityResourceService.yesNo();
 
 	var communities = function(){
 		CommunityService.listSimple( function( json ){
@@ -85,13 +88,21 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 			communities();
 		} )
 	} else {
-		$scope.resource = { 'all': 0, 'page': 1, 'side': 1, 'order_page': 1, 'active': 1, 'communities': [] };
+		$scope.resource = { 'all': false, 'page': true, 'side': true, 'order_page': true, 'active': true, 'communities': [] };
 		communities();
 	}
+
+	$rootScope.$on( 'triggerUploadFileAdded', function(e, file_name) {
+		$scope.resource.temp_name = file_name;
+	});
 
 	// this is a listener to upload error
 	$scope.$on( 'resourceUploadError', function(e, data) {
 		App.alert( 'Upload error, please try again or send us a message.' );
+	} );
+
+	$scope.$on( 'triggerUploadProgress', function(e, progress) {
+		console.log('progress',progress);
 	} );
 
 	// this is a listener to upload success
@@ -100,6 +111,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 		var response = data.response;
 		if( response.success ){
 			$scope.resource.file = response.success;
+			save();
 		} else {
 			App.alert( 'File not saved! ');
 		}
