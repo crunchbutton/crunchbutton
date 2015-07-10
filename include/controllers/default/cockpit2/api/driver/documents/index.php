@@ -59,37 +59,77 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 			case 'approve':
 				$this->_approve();
 				break;
-			
+
 			case 's3all':
 				$docs = Cockpit_Driver_Document_Status::q('select * from driver_document_status');
 				foreach ($docs as $doc) {
-					
+
 					if (file_exists(Cockpit_Driver_Document_Status::path().$doc->file)) {
 						$r = Cockpit_Driver_Document_Status::toS3(Cockpit_Driver_Document_Status::path().$doc->file, $doc->file);
 						//$r = $doc->localToS3();
 						print_r($r);
 					}
-					
-					
+
+
 				}
 				break;
 
 			case 'upload':
 
 				if( $_FILES ){
-					$ext = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
-					if( Util::allowedExtensionUpload( $ext ) ){
-						
-						$name = $_REQUEST['filename'] ? $_REQUEST['filename'] : pathinfo( $_FILES['file']['name'], PATHINFO_FILENAME );
-						$name = str_replace( $ext, '', $name );
-						$random = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
-						$name = Util::slugify( $random . '-' . $name );
-						$name = substr( $name, 0, 40 ) . '.'. $ext;
-						$file = $_FILES['file']['tmp_name'];
-				
-						$r = Cockpit_Driver_Document_Status::toS3($file, $name);
 
-						echo json_encode( ['success' => $name, 'id_driver_document' => $_POST['id_driver_document']] );
+					$ext = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
+
+					if( Util::allowedExtensionUpload( $ext ) ){
+
+						// check the permission
+						$id_admin = $_POST[ 'id_admin' ];
+						$user = c::user();
+						$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+						if( !$hasPermission ){
+							$this->_error();
+							exit;
+						}
+
+						$id_driver_document = $_POST[ 'id_driver_document' ];
+
+						if( $id_admin && $id_driver_document ){
+							$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $id_driver_document );
+							if( !$docStatus->id_driver_document_status ){
+								$docStatus->id_admin = $id_admin;
+								$docStatus->id_driver_document = $id_driver_document;
+							} else {
+								$oldFile = Cockpit_Driver_Document_Status::path() . $docStatus->file;
+								if( file_exists( $oldFile ) ){
+									@unlink( $oldFile );
+								}
+							}
+							$docStatus->datetime = date('Y-m-d H:i:s');
+							$docStatus->save();
+
+							$docStatus->file = $docStatus->id_driver_document_status . '.'. $ext;
+							$docStatus->save();
+
+							$file = $_FILES['file']['tmp_name'];
+
+							$r = Cockpit_Driver_Document_Status::toS3($file, $docStatus->file);
+
+
+							// save driver's log
+							$log = new Cockpit_Driver_Log();
+							$log->id_admin = $id_admin;
+							$log->action = Cockpit_Driver_Log::ACTION_DOCUMENT_SENT;
+							$log->info = $docStatus->id_driver_document . ': ' . $docStatus->file;
+							$log->datetime = date('Y-m-d H:i:s');
+							$log->save();
+
+							Log::debug( [ 'action' => 'file saved success', 'id_driver_document' => $id_driver_document, 'type' => 'drivers-onboarding'] );
+
+							echo json_encode( ['success' => 'success'] );
+						} else {
+							$this->_error();
+						}
+
 						exit;
 					} else {
 						$this->_error( 'invalid extension' );
@@ -100,7 +140,8 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				break;
 
 			case 'save':
-
+				// deprecated
+				return;
 				// check the permission
 				$id_admin = $this->request()[ 'id_admin' ];
 				$user = c::user();
@@ -123,9 +164,13 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 							@unlink( $oldFile );
 						}
 					}
+
 					$docStatus->datetime = date('Y-m-d H:i:s');
 					$docStatus->file = $this->request()[ 'file' ];
 					$docStatus->save();
+
+					$docStatus->rename();
+					$docStatus = Cockpit_Driver_Document_Status::o( $docStatus->id_driver_document_status );
 
 					// save driver's log
 					$log = new Cockpit_Driver_Log();
