@@ -26,6 +26,5 @@ foreach ($dir as $fileinfo) {
 		}
 		$r = S3::putObject(S3::inputFile($path.$file, false), $bucket, $file, S3::ACL_PRIVATE);
 		echo ($r ? 'success' : 'FAILED')."\n";
-		exit;
 	}
 }
