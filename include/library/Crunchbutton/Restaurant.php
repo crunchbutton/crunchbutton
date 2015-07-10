@@ -1062,6 +1062,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$r[] = $upload->upload();
 
 			// update the local file for backwards compatability
+			// shit is on dif servers so this isnt gonna work
+			/*
 			$images_path = '/home/i.crunchbutton/www/image/';
 
 			$rand = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
@@ -1072,6 +1074,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if (@copy($file, $current_image)) {
 				@chmod($current_image,0777);
 			}
+			*/
 
 			$formats = $this->getImgFormats();
 		}
@@ -1269,6 +1272,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 			}
 		} else {
+			// @performance: this is slowing things down alot
 			$out[ 'hours' ] = $this->hours_next_24_hours( true );
 			$next_open_time = $this->next_open_time( true );
 			if( $next_open_time ){
@@ -1313,7 +1317,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// get the legacy data
 		if( !$isCockpit ){
-			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
+			// @performance: slowing shit down
+			//$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
 		if( $isCockpit ){
@@ -1541,8 +1546,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$query = "
 			SELECT
 				count(*) as _weight,
-				".$locCast('restaurant.loc_lat').",
-				".$locCast('restaurant.loc_long').",
+				".$locCast('restaurant.loc_lat')." as loc_lat,
+				".$locCast('restaurant.loc_long')." as loc_long,
 				'byrange' as type,
 				{$regular_calc} AS distance,
 				restaurant.*
