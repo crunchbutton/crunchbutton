@@ -1269,6 +1269,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 			}
 		} else {
+			// @performance: this is slowing things down alot
 			$out[ 'hours' ] = $this->hours_next_24_hours( true );
 			$next_open_time = $this->next_open_time( true );
 			if( $next_open_time ){
@@ -1313,7 +1314,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// get the legacy data
 		if( !$isCockpit ){
-			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
+			// @performance: slowing shit down
+			//$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
 		if( $isCockpit ){
