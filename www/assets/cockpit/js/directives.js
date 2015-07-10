@@ -281,7 +281,11 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
-				$rootScope.$broadcast( 'driverDocsUploaded', { id_driver_document: response.id_driver_document, response: response } );
+				if( response.success ){
+					$rootScope.$broadcast( 'driverDocsUploaded', { success: true } );
+				} else {
+					$rootScope.$broadcast( 'driverDocsUploaded', { error: true } );
+				}
 				scope.uploader.clearQueue();
 				l.stop();
 			};
