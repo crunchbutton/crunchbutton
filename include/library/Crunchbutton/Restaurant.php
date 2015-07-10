@@ -1017,9 +1017,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if (!$file) {
 			$file = $this->imagePath().$this->image;
 		}
-		
+
 		$bucket = c::config()->s3->buckets->{'image-restaurant'}->name;
-		
+
 		// download the source from s3 and resize
 		if (!file_exists($file)) {
 			echo 'no file:' . $file. "\n";
@@ -1075,7 +1075,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 			$formats = $this->getImgFormats();
 		}
-		
+
 		if (!$file) {
 			return false;
 		}
@@ -1106,7 +1106,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$r[] = $upload->upload();
 			}
 		}
-		
+
 		return in_array(false, $r) ? false : true;
 
 	}
@@ -1123,7 +1123,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return $this->_weight;
 	}
-	
+
 	public function getImages($loc = 'cache') {
 		if ($loc == 'cache') {
 			$url = c::config()->s3->buckets->{'image-restaurant'}->cache;
@@ -1193,10 +1193,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$out['images'] = $this->getImages();
 		$out['img']    = $out['images']['normal'];
-		
+
 		// @todo: will remove later
 		//$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
-		
+
 
 
 		if (!$ignore['categories']) {
@@ -1525,7 +1525,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$rangeDif = $range - 2;
 		$lat = floatval($params['lat']);
 		$lon = floatval($params['lon']);
-		
+
 		$locCast = function($loc) {
 			return 'CAST('.$loc.' as DECIMAL(19,15))';
 		};
@@ -1813,7 +1813,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// return the hours info used at iphone native app
 	public function hours_legacy( $isCockpit ){
-
+		return [];
 		$data = [];
 		$data[ 'open_for_business' ] = $this->open_for_business;
 		$data[ '_open' ] = $this->open();

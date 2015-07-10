@@ -11,25 +11,25 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	public function www(){
 		return Util::uploadWWW() . 'resource/';
 	}
-	
+
 	// shouldnt need this in the future once we only allow uploads after the resource is in the db
 	public static function toS3($path, $name) {
 
 		$res = new Crunchbutton_Community_Resource;
 		$r = $res->localToS3($path, $name);
-		
+
 		return $r;
 	}
-	
+
 	public function localToS3($path = null, $name = null) {
 		if (!$path) {
 			$path = $this->path().$this->file;
 		}
-		
+
 		if (!$name) {
 			$name = $this->s3Base();
 		}
-		
+
 		if (!$path || !$name) {
 			return false;
 		}
@@ -39,13 +39,13 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 			'resource' => $name,
 			'bucket' => c::config()->s3->buckets->{'resource'}->name
 		]);
-		
+
 		$this->file = $name;
 		$this->save();
 
 		return $upload->upload();
 	}
-	
+
 	// auto rename with the proper format
 	public function rename() {
 		$r = S3::copyObject(
@@ -56,15 +56,15 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 		if ($r) {
 			$r = S3::deleteObject(c::config()->s3->buckets->{'resource'}->name, $this->file);
 		}
-		
+
 		if ($r) {
 			$this->file = $this->s3Base();
 			$this->save();
 		}
-		
+
 		return $r ? true : false;
 	}
-	
+
 	public function s3Base($file = null, $name = null) {
 		if (!$file) {
 			$file = $this->file;
@@ -82,7 +82,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 
 		return $this->id_community_resource.'-'.$name.'.'.$ext;
 	}
-	
+
 	public function s3File() {
 		return c::config()->s3->buckets->{'resource'}->cache.'/'.$this->file;
 	}
@@ -142,6 +142,12 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 				$out[ 'communities' ][] = $community->id_community;
 			}
 		}
+		$out[ 'all' ] = intval( $out[ 'all' ] ) == 0 ? false: true;
+		$out[ 'page' ] = intval( $out[ 'page' ] ) == 0 ? false: true;
+		$out[ 'side' ] = intval( $out[ 'side' ] ) == 0 ? false: true;
+		$out[ 'side' ] = intval( $out[ 'side' ] ) == 0 ? false: true;
+		$out[ 'order_page' ] = intval( $out[ 'order_page' ] ) == 0 ? false: true;
+		$out[ 'active' ] = intval( $out[ 'active' ] ) == 0 ? false: true;
 		$out[ 'path' ] = $this->download_url();
 		return $out;
 	}

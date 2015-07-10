@@ -44,8 +44,10 @@ NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewLis
 
 NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, CommunityResourceService, CommunityService ) {
 
+	$scope.resource = { communities: [] };
+
 	$scope.save = function(){
-		if( $scope.isSaving ){
+		if( $scope.isUploading || $scope.isSaving ){
 			return;
 		}
 		if( $scope.form.$invalid ){
@@ -54,11 +56,13 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 			return;
 		}
 		$rootScope.$broadcast( 'triggerStartUpload' );
-		$scope.isSaving = true;
+		$scope.isUploading = true;
 	}
 
 	var save = function(){
+		$scope.isSaving = true;
 		CommunityResourceService.save( $scope.resource, function( json ){
+			$scope.isUploading = false;
 			$scope.isSaving = false;
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
