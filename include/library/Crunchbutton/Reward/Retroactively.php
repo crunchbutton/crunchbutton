@@ -58,10 +58,18 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 		$inviterCredits = $reward->getReferNewUser();
 		$invitedCredits = $reward->getRefered();
 
-		$referrals = Crunchbutton_Referral::q( 'SELECT * FROM referral WHERE id_user_inviter IS NOT NULL AND new_user = 1' );
+		$referrals = Crunchbutton_Referral::q( 'SELECT * FROM referral WHERE id_user_inviter IS NOT NULL AND new_user = true' );
 		foreach( $referrals as $referral ){
 
-			$inviter_credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE id_user = "' . $referral->id_user_inviter . '" AND id_referral = "' . $referral->id_referral . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" ORDER BY id_credit DESC LIMIT 1' );
+			$inviter_credits = Crunchbutton_Credit::q('
+				SELECT * FROM credit
+				WHERE
+					id_user = ?
+					AND id_referral = ?
+					AND credit_type = ?
+				ORDER BY id_credit DESC
+				LIMIT 1
+			', [$referral->id_user_inviter, $referral->id_referral, Crunchbutton_Credit::CREDIT_TYPE_CASH]);
 			$addInviterCredit = 0;
 			if( !$inviter_credits->id_credit ){
 				$addInviterCredit = $inviterCredits;
@@ -82,7 +90,13 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 				$credit->save();
 			}
 
-			$invited_credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE id_user = "' . $referral->id_user_invited . '" AND id_referral = "' . $referral->id_referral . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_CASH . '" ORDER BY id_credit DESC LIMIT 1' );
+			$invited_credits = Crunchbutton_Credit::q('
+				SELECT * FROM credit
+				WHERE id_user = ?
+				AND id_referral = ?
+				AND credit_type = ?
+				ORDER BY id_credit DESC LIMIT 1
+			', [$referral->id_user_invited, $referral->id_referral, Crunchbutton_Credit::CREDIT_TYPE_CASH]);
 			$addInvitedCredit = 0;
 			if( !$invited_credits->id_credit ){
 				$addInvitedCredit = $invitedCredits;
