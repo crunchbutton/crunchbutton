@@ -1543,8 +1543,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$query = "
 			SELECT
 				count(*) as _weight,
-				".$locCast('restaurant.loc_lat').",
-				".$locCast('restaurant.loc_long').",
+				".$locCast('restaurant.loc_lat')." as loc_lat,
+				".$locCast('restaurant.loc_long')." as loc_long,
 				'byrange' as type,
 				{$regular_calc} AS distance,
 				restaurant.*
