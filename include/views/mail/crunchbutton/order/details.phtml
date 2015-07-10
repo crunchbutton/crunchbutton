@@ -36,7 +36,7 @@ if( $version == 'customer' ){
 	$dishes = $order->dishes( true );
 	// force load the dishes #5297
 	if( !$dishes || !$dishes->count() ){
-		$dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = "' . $order->id_order . '"' );
+		$dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = ?', [$order->id_order]);
 	}
 	?>
 	<?php foreach ($dishes as $dish) { ?>
