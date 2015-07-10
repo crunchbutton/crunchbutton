@@ -54,7 +54,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/staff/marketing-rep/docs/payment', {
 			action: 'marketing-rep-docs',
 			controller: 'DriversPaymentFormCtrl',
-			templateUrl: 'assets/view/drivers-payment-info-form.html'
+			templateUrl: 'assets/view/staff-payment-info-form.html'
 		});
 }]);
 
@@ -583,7 +583,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 				if( json.date_terminated ){
 					$scope.payInfo.date_terminated = new Date( json.date_terminated );
 				}
-				
+
 				if(json.stripe_id && json.stripe_account_id ){
 					$scope.bank.showForm = false;
 				}
