@@ -55,8 +55,12 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 			App.alert( 'Please fill all the required fields!' );
 			return;
 		}
-		$rootScope.$broadcast( 'triggerStartUpload' );
-		$scope.isUploading = true;
+		if( $scope.resource.temp_name == $scope.resource.file ){
+			save();
+		} else {
+			$rootScope.$broadcast( 'triggerStartUpload' );
+			$scope.isUploading = true;
+		}
 	}
 
 	var save = function(){
@@ -70,12 +74,15 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 				if( $routeParams.id ){
 					App.alert( 'Resource saved!' );
 				}
-				$scope.navigation.link( '/community/resource/' + json.id_resource );
+				load();
 			}
 		} );
 	}
 
 	var communities = function(){
+		if( $scope.communities ){
+			return;
+		}
 		CommunityService.listSimple( function( json ){
 			$scope.communities = [];
 			angular.forEach( json, function( community, key ) {
@@ -86,11 +93,16 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 		} );
 	}
 
-	if( $routeParams.id ){
+	var load = function(){
 		CommunityResourceService.get( $routeParams.id, function( json ){
 			$scope.resource = json;
+			$scope.resource.temp_name = $scope.resource.file;
 			communities();
-		} )
+		} );
+	}
+
+	if( $routeParams.id ){
+		load();
 	} else {
 		$scope.resource = { 'all': false, 'page': true, 'side': true, 'order_page': true, 'active': true, 'communities': [] };
 		communities();
