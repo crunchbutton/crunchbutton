@@ -1062,6 +1062,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$r[] = $upload->upload();
 
 			// update the local file for backwards compatability
+			// shit is on dif servers so this isnt gonna work
+			/*
 			$images_path = '/home/i.crunchbutton/www/image/';
 
 			$rand = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
@@ -1072,6 +1074,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if (@copy($file, $current_image)) {
 				@chmod($current_image,0777);
 			}
+			*/
 
 			$formats = $this->getImgFormats();
 		}
