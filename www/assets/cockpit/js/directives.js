@@ -312,10 +312,11 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 	return {
 		restrict: 'AE',
-		replace: false,
 		scope: true,
 		link: function ( scope, elem, attrs, ctrl ) {
-			var button = elem.find('button')[0];
+
+			var upload_button = elem.find('.upload')[0];
+			var save_button = angular.element('.save-upload')[0];
 
 			scope.init = true;
 
@@ -323,45 +324,45 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 				return;
 			}
 
-			var l = Ladda.create(button);
+			var l = null;
 
-			angular.element(button).on('click', function() {
+			angular.element(upload_button).on('click', function() {
 				angular.element(elem.find('input')[0]).click();
 			});
 
 			scope.uploader = new FileUploader({
 				url: '/api/community/resource/upload/',
-				autoUpload: true
+				autoUpload: false
 			});
 
-			scope.uploader.onBeforeUploadItem = function() {
-				l.start();
+			$rootScope.$on( 'triggerStartUpload', function(e, data) {
+				l = Ladda.create( save_button );
+				scope.uploader.uploadAll();
+				try{ l.start();} catch(e){}
+			});
+
+			scope.uploader.onAfterAddingFile = function(fileItem) {
+				$rootScope.$broadcast( 'triggerUploadFileAdded', fileItem.file.name );
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
 				scope.uploader.clearQueue();
-				l.stop();
+				watchProgress = false;
+				try{ l.stop();} catch(e){}
 			};
+
+			scope.uploader.onProgressAll = function( progress ) {
+				var progress = ( scope.uploader.progress / 100 );
+				try{ l.setProgress( progress );} catch(e){}
+  		};
 
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'resourceUploadError', {} );
 				scope.uploader.clearQueue();
+				watchProgress = false;
 				l.stop();
 			};
-
-			return;
-
-
-			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
-				return;
-				console.log(newValue);
-				if( !isNaN( uploader.progress ) ){
-					var progress = ( uploader.progress / 100 );
-					l.setProgress( progress );
-				}
-			});
-			$timeout(l.stop, 100);
 		}
 	}
 });
