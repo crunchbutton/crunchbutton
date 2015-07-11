@@ -1947,7 +1947,7 @@ a.button{
 	.dish-item-name {
 		color: #d9462f;
 		text-decoration: underline;
-		
+
 	}
 	.dish-item:not(.starred-item) {
 		line-height: 1.8em;
@@ -1999,7 +1999,7 @@ a.button{
 		overflow: show;
 		line-height: 1.7em;
 	}
-	
+
 	.dish-item-description {
 		color: #333333;
 	}
@@ -2132,7 +2132,29 @@ select.form-input {
 	min-width: 6em;
 	padding-right: 3em;
 }
-.cart-item-customize-item-select:after {
+.cart-item-customize-item-select{
+	display: table;
+	table-layout: fixed;
+}
+.cart-item-customize-select-name {
+	font-size: 1.2em;
+	margin-right: 1em;
+	display: table-cell;
+	font-weight: bold;
+	margin-bottom: .4em;
+	white-space: nowrap;
+	padding-right:.3em;
+	width: 100%;
+}
+.cart-item-customize-item select {
+	border-color: #f77748;
+	background: #FFF;
+	max-width: 97%;
+	padding-right: 3em;
+	margin-left: 0;
+	margin-bottom: .8em;
+}
+.cart-item-customize-item-select-input-container:after {
 	font-family: FontAwesome;
 	font-size: 1.7em;
 	color: #f77748;
@@ -3578,23 +3600,6 @@ select {
 	font-size: 1.2em;
 }
 
-
-
-.cart-item-customize-select-name {
-	font-size: 1.2em;
-	margin-right: 1em;
-	display: inline-block;
-	font-weight: bold;
-	margin-bottom: .4em;
-}
-.cart-item-customize-item select {
-	border-color: #f77748;
-	background: #FFF;
-	max-width: 97%;
-	padding-right: 3em;
-	margin-left: 0;
-	margin-bottom: .8em;
-}
 .cart-button:active {
 	color: #fec2aa;
 }
@@ -3787,6 +3792,9 @@ select {
 		/*max-width: 767px;*/
 		max-width: 1024px;
 		margin: 0 auto;
+	}
+	.cart-item-customize-select-input{
+		max-width: 210px;
 	}
 }
 
@@ -4219,7 +4227,7 @@ font-familt: "Museo Slab";
 
 
 .order-status-loader {
-	
+
 }
 
 .order-status-loader-labels, .order-status-loader {
@@ -4227,7 +4235,7 @@ font-familt: "Museo Slab";
 	clear: both;
 }
 .order-status-loader-labels {
-	
+
 }
 
 .order-status-loader-active {
@@ -4258,7 +4266,7 @@ font-familt: "Museo Slab";
 	border-top: 1px solid #00b195;
 	border-bottom: 1px solid #00b195;
 	border-left: 1px solid #00b195;
-	
+
 }
 .order-status-loader-indicator {
 	position: absolute;

@@ -1,6 +1,6 @@
 // MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService, OrderViewService){ 
-	
+NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService, OrderViewService){
+
 	// This variable will store the animation type.
 	$rootScope.animationClass = '';
 
@@ -13,7 +13,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		},
 		navStack: []
 	};
-	
+
 	service.menu = App.toggleMenu;
 	service.modal = AccountModalService;
 
@@ -22,7 +22,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 				cartItems &&
 				service.restaurant && service.restaurant && service.restaurant._open &&
 				!App.rootScope.notificationBarStatus ){
-			angular.element( '.button-bottom-wrapper' ).addClass( 'button-bottom-show' );	
+			angular.element( '.button-bottom-wrapper' ).addClass( 'button-bottom-show' );
 		} else {
 			angular.element( '.button-bottom-wrapper' ).removeClass( 'button-bottom-show' );
 		}

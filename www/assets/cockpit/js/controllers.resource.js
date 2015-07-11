@@ -42,18 +42,31 @@ NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewLis
 	});
 } );
 
-NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, CommunityResourceService, CommunityService ) {
+NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, CommunityResourceService, CommunityService ) {
+
+	$scope.resource = { communities: [] };
 
 	$scope.save = function(){
-
-		if( $scope.form.$invalid ){
-			$scope.submitted = true;
+		if( $scope.isUploading || $scope.isSaving ){
 			return;
 		}
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			App.alert( 'Please fill all the required fields!' );
+			return;
+		}
+		if( $scope.resource.temp_name == $scope.resource.file ){
+			save();
+		} else {
+			$rootScope.$broadcast( 'triggerStartUpload' );
+			$scope.isUploading = true;
+		}
+	}
 
+	var save = function(){
 		$scope.isSaving = true;
-
 		CommunityResourceService.save( $scope.resource, function( json ){
+			$scope.isUploading = false;
 			$scope.isSaving = false;
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
@@ -61,14 +74,15 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 				if( $routeParams.id ){
 					App.alert( 'Resource saved!' );
 				}
-				$scope.navigation.link( '/community/resource/' + json.id_resource );
+				load();
 			}
 		} );
 	}
 
-	$scope.yesNo = CommunityResourceService.yesNo();
-
 	var communities = function(){
+		if( $scope.communities ){
+			return;
+		}
 		CommunityService.listSimple( function( json ){
 			$scope.communities = [];
 			angular.forEach( json, function( community, key ) {
@@ -79,19 +93,32 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 		} );
 	}
 
-	if( $routeParams.id ){
+	var load = function(){
 		CommunityResourceService.get( $routeParams.id, function( json ){
 			$scope.resource = json;
+			$scope.resource.temp_name = $scope.resource.file;
 			communities();
-		} )
+		} );
+	}
+
+	if( $routeParams.id ){
+		load();
 	} else {
-		$scope.resource = { 'all': 0, 'page': 1, 'side': 1, 'order_page': 1, 'active': 1, 'communities': [] };
+		$scope.resource = { 'all': false, 'page': true, 'side': true, 'order_page': true, 'active': true, 'communities': [] };
 		communities();
 	}
+
+	$rootScope.$on( 'triggerUploadFileAdded', function(e, file_name) {
+		$scope.resource.temp_name = file_name;
+	});
 
 	// this is a listener to upload error
 	$scope.$on( 'resourceUploadError', function(e, data) {
 		App.alert( 'Upload error, please try again or send us a message.' );
+	} );
+
+	$scope.$on( 'triggerUploadProgress', function(e, progress) {
+		console.log('progress',progress);
 	} );
 
 	// this is a listener to upload success
@@ -100,6 +127,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, Commu
 		var response = data.response;
 		if( response.success ){
 			$scope.resource.file = response.success;
+			save();
 		} else {
 			App.alert( 'File not saved! ');
 		}

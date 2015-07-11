@@ -16,6 +16,19 @@ NGApp.directive('chatSend', function(TicketViewService) {
 	};
 });
 
+NGApp.directive('ticketMessagesScroll', function( $rootScope ) {
+	return {
+		link: function( scope, elem, attrs ) {
+			elem.on( 'scroll', function(){
+				var distance = 100;
+				if( elem[0].scrollTop <= distance ){
+					$rootScope.$broadcast( 'loadMoreMessages' );
+				}
+			} );
+		}
+  };
+} );
+
 NGApp.directive('fitHeight', function() {
 	return {
 		restrict: 'A',
@@ -268,7 +281,11 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
-				$rootScope.$broadcast( 'driverDocsUploaded', { id_driver_document: response.id_driver_document, response: response } );
+				if( response.success ){
+					$rootScope.$broadcast( 'driverDocsUploaded', { success: true } );
+				} else {
+					$rootScope.$broadcast( 'driverDocsUploaded', { error: true } );
+				}
 				scope.uploader.clearQueue();
 				l.stop();
 			};
@@ -299,9 +316,70 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 	return {
 		restrict: 'AE',
+		scope: true,
+		link: function ( scope, elem, attrs, ctrl ) {
+
+			var upload_button = elem.find('.upload')[0];
+			var save_button = angular.element('.save-upload')[0];
+
+			scope.init = true;
+
+			if (!window.Ladda) {
+				return;
+			}
+
+			var l = null;
+
+			angular.element(upload_button).on('click', function() {
+				angular.element(elem.find('input')[0]).click();
+			});
+
+			scope.uploader = new FileUploader({
+				url: '/api/community/resource/upload/',
+				autoUpload: false
+			});
+
+			$rootScope.$on( 'triggerStartUpload', function(e, data) {
+				l = Ladda.create( save_button );
+				scope.uploader.uploadAll();
+				try{ l.start();} catch(e){}
+			});
+
+			scope.uploader.onAfterAddingFile = function(fileItem) {
+				$rootScope.$broadcast( 'triggerUploadFileAdded', fileItem.file.name );
+			};
+
+			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
+				scope.uploader.clearQueue();
+				watchProgress = false;
+				try{ l.stop();} catch(e){}
+			};
+
+			scope.uploader.onProgressAll = function( progress ) {
+				var progress = ( scope.uploader.progress / 100 );
+				try{ l.setProgress( progress );} catch(e){}
+  		};
+
+			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'resourceUploadError', {} );
+				scope.uploader.clearQueue();
+				watchProgress = false;
+				l.stop();
+			};
+		}
+	}
+});
+
+
+NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
+	return {
+		restrict: 'AE',
 		replace: false,
 		scope: true,
 		link: function ( scope, elem, attrs, ctrl ) {
+
+			var id_restaurant = attrs.idRestaurant;
 			var button = elem.find('button')[0];
 
 			scope.init = true;
@@ -317,7 +395,7 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 			});
 
 			scope.uploader = new FileUploader({
-				url: '/api/community/resource/upload/',
+				url: '/api/restaurant/' + id_restaurant + '/image',
 				autoUpload: true
 			});
 
@@ -326,29 +404,15 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
-				$rootScope.$broadcast( 'resourceUpload', { id_driver_document: response.id_driver_document, response: response } );
-				scope.uploader.clearQueue();
+				//scope.uploader.clearQueue();
 				l.stop();
+				$('#restaurant-image-thumb').get(0).src = $('#restaurant-image-thumb').get(0).src + '?' + new Date();
 			};
 
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
-				$rootScope.$broadcast( 'resourceUploadError', {} );
-				scope.uploader.clearQueue();
+				//scope.uploader.clearQueue();
 				l.stop();
 			};
-
-			return;
-
-
-			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
-				return;
-				console.log(newValue);
-				if( !isNaN( uploader.progress ) ){
-					var progress = ( uploader.progress / 100 );
-					l.setProgress( progress );
-				}
-			});
-			$timeout(l.stop, 100);
 		}
 	}
 });
@@ -492,6 +556,14 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 	}
 });
 
+NGApp.directive('eatClick', function() {
+	return function(scope, element, attrs) {
+		$(element).click(function(event) {
+			event.preventDefault();
+		});
+	}
+});
+
 NGApp.directive('imgListViewSrc', function( $parse ) {
 	return {
 		restrict: 'A',
@@ -501,31 +573,36 @@ NGApp.directive('imgListViewSrc', function( $parse ) {
 
 		link: function(scope, element, attrs) {
 
+			scope.$watch('image', function() {
+				update();
+			});
+
 			var error = function(){
-				element.empty();
-				element.append( '<div ng-if="!restaurant.hasImage" class="customer-image ' + attrs.imgNull + '"></div>' );
+				element.html( '<div ng-if="!restaurant.hasImage" class="customer-image ' + attrs.imgNull + '"></div>' );
 			}
 			var success = function( src ){
-				element.empty();
-				element.append( '<img class="customer-image" src="' + src + '"></img>' );
+				element.html( '<img class="customer-image" src="' + src + '"/>' );
 			}
 
 			var loading = function(){
 				// implement some loading image here
 			}
 
-			if( scope.image ){
-				var img = new Image();
-				img.src = attrs.imgPath + scope.image;
-				img.onload = function(){
-			 		success( img.src );
-				};
-				img.onerror = function(){
-			 		error();
-				};
-			} else {
-				error();
+			var update = function(){
+				if( scope.image ){
+					var img = new Image();
+					img.src = scope.image;
+					img.onload = function(){
+				 		success( img.src );
+					};
+					img.onerror = function(){
+				 		error();
+					};
+				} else {
+					error();
+				}
 			}
+
 		}
 }
 });

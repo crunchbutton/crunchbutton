@@ -31,7 +31,7 @@ class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAcco
 					  INNER JOIN admin a ON a.id_admin = p.id_driver
 					  WHERE YEAR( p.date ) = " . $this->year . "
 					  AND p.pay_type = 'payment'
-					  AND p.balanced_id IS NOT NULL
+					  AND p.stripe_id IS NOT NULL
 					  AND p.env = 'live' AND p.payment_status = 'succeeded'
 					GROUP BY id_driver
 					ORDER BY a.name ASC

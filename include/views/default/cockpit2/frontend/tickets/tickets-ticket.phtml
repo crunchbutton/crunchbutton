@@ -73,36 +73,40 @@
 						</div>
 					</div>
 
-
 					<div class="field-row" ng-if="ticket.order.refunded">
-						<div class="field-key">Order Refunded</div>
-						<div class="field-value">Yes</div>
-					</div>
-					<div class="field-row link no-underline" ng-click="do_not_reimburse_driver()" ng-if="ticket.order.refunded">
-						<div class="field-key">
-							<i ng-if="!ticket.order.do_not_reimburse_driver" class="fa fa-square-o"></i>
-							<i ng-if="ticket.order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
-						</div>
+						<div class="field-key">Refunded</div>
 						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
+					</div>
+					<div ng-if="ticket.order.delivery_service && ticket.order.refunded" class="field-row link no-underline">
+						<div class="field-key">
 							Do Not Reimburse Driver?
 						</div>
-					</div>
-					<div class="field-row link no-underline" ng-click="do_not_pay_driver()" ng-if="ticket.order.refunded">
-						<div class="field-key">
-							<i ng-if="!ticket.order.do_not_pay_driver" class="fa fa-square-o"></i>
-							<i ng-if="ticket.order.do_not_pay_driver" class="fa fa-check-square-o"></i>
-						</div>
 						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="do_not_reimburse_driver()" class="switch" ng-model="ticket.order.do_not_reimburse_driver"/><div></div>
+							</label>
+						</div>
+					</div>
+					<div ng-if="ticket.order.delivery_service && ticket.order.refunded" class="field-row link no-underline">
+						<div class="field-key">
 							Do Not Pay Driver?
 						</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="do_not_pay_driver()" class="switch" ng-model="ticket.order.do_not_pay_driver"/><div></div>
+							</label>
+						</div>
 					</div>
-					<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="ticket.order.refunded">
+					<div class="field-row link no-underline" ng-if="ticket.order.refunded">
 						<div class="field-key">
-							<i ng-if="!ticket.order.do_not_pay_restaurant" class="fa fa-square-o"></i>
-							<i ng-if="ticket.order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+							Pay restaurant despite refund <br>(e.g. this refund was our fault)
 						</div>
 						<div class="field-value">
-							Pay restaurant despite refund <br>(e.g. this refund was our fault)
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="do_not_pay_restaurant()" class="switch" ng-model="ticket.order.do_not_pay_restaurant"/><div></div>
+							</label>
 						</div>
 					</div>
 				</div>
@@ -238,8 +242,14 @@
 
 		<div class="support-box-wrap box-content2" ng-if="ticket.order.driver.id_admin" class="support-box-wrap">
 			<div class="support-box-wrap-header">
-				<h1>Driver <a href="/staff/{{ticket.order.driver.id_admin}}">#{{ticket.order.driver.id_admin}}</a></h1>
+				<h1>Driver #{{ticket.order.driver.id_admin}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/staff/{{ticket.order.driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
+
 			</div>
 
 			<div class="no-box-content-color">
@@ -293,7 +303,7 @@
 					<div class="field-row field-container">
 						<div colspan="2">
 							<div class="comments-box">
-								<textarea id="support-comment" ng-model="comment_text" class="support-comment"></textarea>
+								<textarea id="support-comment" ng-model="comment.text" class="support-comment"></textarea>
 							</div>
 						</div>
 					</div>
@@ -301,14 +311,14 @@
 
 				<div class="double-cols">
 					<button ng-click="close_and_comment();" class="button button-border button-empty button-orange" ng-class="{ 'button-disabled': ticket.status == 'closed'}">
-					<span ng-if="comment_text && ticket.status == 'open'">Comment &amp; </span>Close</button>
-					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment_text}">Comment</button>
+					<span ng-if="comment.text && ticket.status == 'open'">Comment &amp; </span>Close</button>
+					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment.text}">Comment</button>
 				</div>
 
-				<div class="field-row field-container field-row-button field-two-rows" ng-if="!isCommentSaving">
+				<div class="field-row field-container field-row-button field-two-rows" ng-if="!comment.isSaving">
 
 				</div>
-				<div ng-if="isCommentSaving">
+				<div ng-if="comment.isSaving">
 					<div colspan="2">
 						<button class="button">
 							<i class="fa fa-circle-o-notch fa-spin"></i> Saving

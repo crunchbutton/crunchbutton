@@ -3,12 +3,14 @@ language:
 
 php:
   - 5.4
-  - 5.5.21
+  #- 5.6.9
+#  - 5.5.21
 #  - 5.6.7
 # add this when we move to heroku
 
 env:
   - TRAVIS=1
+  - TRAVIS=1 TRAVISPOSTGRES=1
   
 # install:
 
@@ -20,7 +22,8 @@ before_script:
   - sudo apt-get clean
   - sudo apt-get update
   - sudo apt-get install apache2 gdebi
-  - wget http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
+  #- wget http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
+  - wget https://s3.amazonaws.com/crunchbutton-storage/pgloader_3.2.0%2Bdfsg-1_amd64.deb
   - sudo gdebi --n pgloader_3.2.0+dfsg-1_amd64.deb
   - psql -c 'create database crunchbutton_travis;' -U postgres
   - mysqldump -d --lock-tables=false -u root crunchbutton_travis >> mysqldump.sql
@@ -53,6 +56,10 @@ notifications:
 
 addons:
   postgresql: "9.3"
+#  apt:
+#    packages:
+#    - cmake
+#    - time
 #  sauce_connect:
 #  username: "Your Sauce Labs username"
 #  access_key: "Your Sauce Labs access key"

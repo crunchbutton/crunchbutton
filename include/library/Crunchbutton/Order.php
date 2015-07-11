@@ -581,9 +581,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$user->stripe_id = $this->_customer;
 						$user->save();
 						break;
-					case 'balanced':
-						$payment_type->balanced_id = $this->_paymentType->id;
-						break;
 				}
 
 				$payment_type->save();
@@ -959,7 +956,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
-				$processorId = Crunchbutton_User_Payment_Type::processor() == 'balanced' ? 'balanced_id' : 'stripe_id';
 
 				if ($user) {
 					$paymentType = $user->payment_type();
@@ -975,32 +971,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							'customer_id' => $user->stripe_id
 						]);
 
-					} elseif (Crunchbutton_User_Payment_Type::processor() == 'balanced' && $paymentType->balanced_id) {
-
-						if (substr($paymentType->balanced_id,0,2) != 'CC') {
-							// we have stored the customer and not the payment type. need to fix that
-							// @todo: i dont really understand wtf this is for - devin
-							$cards = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id)->cards;
-							if (get_class($cards) == 'RESTful\Collection') {
-								foreach ($cards as $card) {
-									$c = $card;
-								}
-
-								$paymentType = (new User_Payment_Type([
-									'id_user' => $user->id_user,
-									'active' => 1,
-									'balanced_id' => $c->id,
-									'card' => str_replace('x','*',$c->number),
-									'card_exp_month' => $c->expiration_year,
-									'card_exp_year' => $c->expiration_month,
-									'date' => date('Y-m-d H:i:s')
-								]))->save();
-							}
-						}
-
-						$charge = new Charge_Balanced([
-							'card_id' => $paymentType->balanced_id
-						]);
 					} else {
 						// there is a mismatch with stripe and balanced
 					}
@@ -1009,9 +979,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				// create the objects with no params
 				if (!$charge) {
 					switch (Crunchbutton_User_Payment_Type::processor()) {
-						case 'balanced':
-							$charge = new Charge_Balanced();
-							break;
 						case 'stripe':
 							$charge = new Charge_Stripe([
 								'customer_id' => $user->stripe_id
@@ -1102,10 +1069,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 
 			$where .= ' AND o.delivery_service = true ';
-			$where .= ' AND date > "' . $interval . '" ';
+			$where .= ' AND date > ? ';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
-		return Order::q($query);
+		return Order::q($query, [$interval]);
 	}
 
 	public static function outstandingOrders(){
@@ -1148,11 +1115,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$now->modify( ' - ' . $hours . ' hour' );
 		$interval = $now->format( 'Y-m-d H:i:s' );
 		$where .= ' AND o.delivery_service = true ';
-		$where .= ' AND date > "' . $interval . '"';
+		$where .= ' AND date > ? ';
 
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 
-		return Order::q( $query );
+		return Order::q( $query,[$interval]);
 	}
 
 	public function revenueByAdminPeriod( $id_admin, $date_start, $date_end ){
@@ -1296,7 +1263,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			unset( $this->_dishes );
 		}
 		if ( !$this->_dishes ) {
-			$this->_dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = "'.$this->id_order.'"' );
+			$this->_dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = ?', [$this->id_order]);
 		}
 		return $this->_dishes;
 	}
@@ -2150,7 +2117,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $out['user_has_auth'] ){
-			$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+			$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 			if( $credit->id_credit ){
 				$reward = new Crunchbutton_Reward;
 				$points = $reward->processOrder( $this->id_order );

@@ -52,13 +52,15 @@ class Crunchbutton_App extends Cana_App {
 
 		// db by hostname
 		// travis
-		if (getenv('TRAVIS')) {
+		if (getenv('TRAVISPOSTGRES')) {
+			$db = 'travispostgres';
+		} elseif (getenv('TRAVIS')) {
 			$db = 'travis';
 		// anything local
 		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
 		// anything by heroku use its own db
-		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co|cockpit.la|cockpit._DOMAIN_)$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/^heroku.*$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
@@ -87,13 +89,19 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// special settings for live web views
-		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
+		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
 				header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 				exit;
 			}
+		}
+		
+		if (preg_match('/^old.cockpit._DOMAIN_$/',$_SERVER['SERVER_NAME']) && $_SERVER['HTTPS'] == 'on') {
+			die('dont use https');
+			header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+			exit;
 		}
 
 		$params['postInitSkip'] = true;
@@ -138,7 +146,7 @@ class Crunchbutton_App extends Cana_App {
 
 
 		// set host callback by hostname
-		$config->host_callback = ($db == 'local' || $db == 'travis' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
+		$config->host_callback = ($db == 'local' || $db == 'travis' || $db == 'travispostgres' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
 
 		// set facebook config by hostname
 		if ($config->facebook->{$_SERVER['SERVER_NAME']}) {
@@ -504,15 +512,6 @@ class Crunchbutton_App extends Cana_App {
 			$env = c::env();
 		}
 		return $env;
-	}
-
-	public function balanced() {
-		if (!$this->_balanced) {
-			\Balanced\Settings::$api_key = c::config()->balanced->{c::getEnv()}->secret;
-			$marketplace = Balanced\Marketplace::mine();
-			$this->_balanced = $marketplace;
-		}
-		return $this->_balanced;
 	}
 
 	public function stripe() {

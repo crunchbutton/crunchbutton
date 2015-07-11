@@ -1,0 +1,156 @@
+<div ng-show="!order.id">
+	<!-- Orders loader -->
+</div>
+
+<div ng-show="order.id">
+
+	<div class="content-padder-before"></div>
+
+	<div class="order-info content-padder main-content-readable">
+		<span class="order-thanks-message" ng-show="order._new">
+			<div class="toon-cherry"></div>
+			<span class="order-thanks-message-crunched">Crunched!</span>
+			<span class="order-thanks-message-block"> Your order is placed</span>
+			<span class="order-thanks-message-small">and saved for easy 1 click reordering</span>
+			<div class="divider"></div>
+		</span>
+
+<? /*
+		<? if (!$this->export) : ?>
+			<div ng-show="account.user.has_auth" class="order-phone-message">
+				You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+			</div>
+		<? endif ; ?>
+*/ ?>
+
+		<div class="order-details">
+			<div ng-hide="account.user.has_auth">
+				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
+				<br />
+				<div class="order-details-highlight">
+					Create an account and earn {{order.reward.points}} points towards a free delivery.
+					<br />
+				</div>
+			</div>
+
+			<div ng-show="account.user.has_auth">
+			<?php /*
+				<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
+					<i class="fa fa-facebook"></i><span class="social-button-text">Share what you ordered</span>
+					<div class="divider"></div>
+				</div>
+				*/ ?>
+				<div class="rewards-container" ng-if="order.reward.points">
+					<div class="order-details-highlight">
+						<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
+							You have <strong>{{account.user.points.show}}</strong> points!
+							 The next delivery fee is on us.
+							 <br><br>
+							 <div class="divider dots"></div>
+							 <br>
+						</div>
+						<div>
+							You just earned <strong>{{order.reward.points}}</strong> points!
+							<span ng-if="!account.user.points.free_delivery_message">
+								<strong> {{account.user.points.free_delivery}}</strong> points gets you a free delivery.
+							</span>
+						</div>
+					</div>
+					<div class="reward-info">
+						<br>
+						<div ng-if="account.user.has_auth && !order.reward.shared.facebook">
+							<p>Double your points by sharing on Facebook:<br><br></p>
+							<div class="social-button facebook-button" ng-click="referral.facebook();">
+								<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
+								<div class="divider"></div>
+							</div>
+						</div>
+						<div ng-if="order.reward.shared.facebook">
+							Thanks for sharing on Facebook.
+						</div>
+						<div class="divider"></div>
+						<br>
+						<div ng-if="account.user.has_auth && !order.reward.shared.twitter">
+							<p>Triple them by sharing on Twitter:<br><br></p>
+							<twitter-button count="none">Twitter</twitter-button>
+						</div>
+						<div ng-if="order.reward.shared.twitter">
+							Thanks for sharing on Twitter.
+						</div>
+						<div class="divider"></div>
+						<div ng-show="referral.invite_url && referral.enabled">
+							<br>
+							<b>Earn a FREE DELIVERY for every new customer you refer with your link!</b>
+							<br>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="divider dots"></div>
+			<br />
+
+
+			<div ng-if="order.delivery_service == 1">
+				For updates on your order, please text your driver, whose number you'll be texted.
+			</div>
+
+			<div ng-if="order.delivery_service == 0">
+				For updates on your order, please call
+				<div>
+					{{order._restaurant_name}}:
+					<b>
+						<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
+						<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
+					</b>
+				</div>
+			</div>
+
+			<br>
+
+			You can reach Crunchbutton by texting <b>
+			<span ng-show="isMobile"><a href="sms:+16467831444" target="_system">{{ '6467831444' | formatPhone }}</a></span>
+			<span ng-show="!isMobile">{{ '6467831444' | formatPhone }}</span>
+			</b>
+
+			<br><br>
+			<div class="divider dots"></div>
+			<br>
+
+			<div ng-show="(order.delivery_type == 'delivery')">
+				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
+			</div>
+
+			<div ng-hide="(order.delivery_type == 'delivery')">
+				<b>Takeout order</b><br><br>
+			</div>
+
+			<b>Your phone #:</b><br>{{ order.phone | formatPhone }}<br><br>
+
+			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
+
+			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
+
+			<b ng-show="(order.pay_type == 'card')">Your total:<br></b>
+			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br></b>
+
+			${{order.charged | formatPrice}}
+
+			<div class="credit" ng-show="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+
+			<br><br>
+
+
+
+		</div>
+	</div>
+
+	<br>
+
+
+	<a href="/printorder/{{ order.uuid }}" target="_system" class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
+
+
+	<div class="divider"></div>
+</div>

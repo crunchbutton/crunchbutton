@@ -24,18 +24,6 @@ class Crunchbutton_Payment extends Cana_Table {
 
 		switch ( Crunchbutton_Payment::processor() ) {
 
-			case Crunchbutton_Payment::PROCESSOR_BALANCED:
-				try {
-					$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
-				} catch ( Exception $e ) {
-						throw new Exception( $e->getMessage() );
-						exit;
-				}
-				if( $credit && $credit->id ){
-					$payment->balanced_id = $credit->id;
-				}
-			break;
-
 			case Crunchbutton_Payment::PROCESSOR_STRIPE:
 				try {
 					$credit = Crunchbutton_Stripe_Credit::credit( $payment_type->stripe_id, $payment->amount, 'Crunchbutton Orders' );
@@ -53,7 +41,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->id_admin = c::user()->id_admin;
 		$payment->save();
 
-		if( $payment->balanced_id || $payment->stripe_id ){
+		if( $payment->stripe_id ){
 			return $payment->id_payment;
 		} else {
 			return false;
@@ -106,10 +94,6 @@ class Crunchbutton_Payment extends Cana_Table {
 
 		if( $this->amount > 0 ){
 
-			if( $this->balanced_id && $this->env ){
-				return $this->checkBalancedStatus();
-			}
-
 			if( $this->stripe_id && $this->env ){
 				return $this->checkStripeStatus();
 			}
@@ -122,39 +106,6 @@ class Crunchbutton_Payment extends Cana_Table {
 		return false;
 	}
 
-	public function checkBalancedStatus(){
-
-		if( $this->amount > 0 ){
-			if( $this->balanced_id && $this->env ){
-				$env = ( $this->env == 'live' ) ? 'live' : 'dev';
-				$api_key = c::config()->balanced->{$env}->secret;
-				Balanced\Settings::$api_key = $api_key;
-				$url = '/credits/' . $this->balanced_id;
-				$credit = Balanced\Credit::get( $url );
-				switch ( $credit->status ) {
-					case Crunchbutton_Payment::PAYMENT_STATUS_FAILED:
-						$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_FAILED;
-						$this->payment_failure_reason = $credit->failure_reason;
-						$this->schedule_error();
-						break;
-					case Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED:
-						$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED;
-						break;
-					case Crunchbutton_Payment::PAYMENT_STATUS_PENDING;
-					default:
-						$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_PENDING;
-						break;
-				}
-				$this->payment_date_checked = date('Y-m-d H:i:s');
-				$this->save();
-			}
-		} else {
-			$this->payment_date_checked = date('Y-m-d H:i:s');
-			$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED;
-			$this->save();
-		}
-		return $this->payment_status;
-	}
 
 	public function schedule(){
 		$schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment = "' . $this->id_payment . '" ORDER BY id_payment_schedule DESC' );
@@ -211,18 +162,6 @@ class Crunchbutton_Payment extends Cana_Table {
 
 		switch ( $processor ) {
 
-			case Crunchbutton_Payment::PROCESSOR_BALANCED:
-				try {
-					$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note );
-				} catch ( Exception $e ) {
-						throw new Exception( $e->getMessage() );
-						exit;
-				}
-				if( $credit && $credit->id ){
-					$payment->balanced_id = $credit->id;
-				}
-			break;
-
 			case Crunchbutton_Payment::PROCESSOR_STRIPE:
 				try {
 					$credit = Crunchbutton_Stripe_Credit::credit( $payment_type->stripe_id, $payment->amount, $payment->note );
@@ -240,7 +179,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->id_admin = c::user()->id_admin;
 		$payment->save();
 
-		if( $payment->balanced_id || $payment->stripe_id ){
+		if($payment->stripe_id ){
 			return $payment->id_payment;
 		} else {
 			return false;
@@ -251,9 +190,6 @@ class Crunchbutton_Payment extends Cana_Table {
 	public function infoLink(){
 		if( $this->type() == 'stripe' ){
 			return '<a href="https://manage.stripe.com/transfers/' . $this->stripe_id . '">' . $this->stripe_id . '</a>';
-		}
-		if( $this->type() == 'balanced' ){
-			return $this->balanced_id;
 		}
 	}
 

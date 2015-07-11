@@ -5,7 +5,6 @@
 			<th><a ng-click="sort('name')">Customer</a></th>
 			<th><a ng-click="sort('address')">Location</a></th>
 			<th><a ng-click="sort('order')">Last&nbsp;Order</a></th>
-			<th>Balanced</th>
 			<th>Stripe</th>
 			<th></th>
 		</tr>
@@ -22,10 +21,6 @@
 				<br><span class="listview-smaller">{{customer.address}}</span>
 			</td>
 			<td><span ng-if="customer._order_date"><span am-time-ago="customer._order_date"></span></span></td>
-			<td nowrap class="tb-center tb-v-center">
-				<span class="tag tag-green" ng-if="customer._balanced_id">Yes</span>
-				<span class="tag tag-red" ng-if="!customer._balanced_id">No</span>
-			</td>
 			<td nowrap class="tb-center tb-v-center">
 				<span class="tag tag-green" ng-if="customer._stripe_id">Yes</span>
 				<span class="tag tag-red" ng-if="!customer._stripe_id">No</span>

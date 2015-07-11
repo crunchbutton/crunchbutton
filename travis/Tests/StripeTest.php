@@ -61,7 +61,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 		if ($r['status']) {
 			(new User_Payment_Type([
 				'id_user' => $this->user->id_user,
-				'balanced_id' => $card['id'],
+				'stripe_id' => $card['id'],
 				'card' => '************1111',
 				'card_type' => $card['card_type'],
 				'card_exp_year' => $card['year'],

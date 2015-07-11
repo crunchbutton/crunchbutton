@@ -88,32 +88,35 @@
 							<span class="tag tag-green">Yes</span>
 						</div>
 					</div>
-					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline" ng-click="do_not_reimburse_driver()">
+					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline">
 						<div class="field-key">
 							Do Not Reimburse Driver?
 						</div>
 						<div class="field-value">
-							<i ng-if="!order.do_not_reimburse_driver" class="fa fa-square-o"></i>
-							<i ng-if="order.do_not_reimburse_driver" class="fa fa-check-square-o"></i>
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="do_not_reimburse_driver()" class="switch" ng-model="order.do_not_reimburse_driver"/><div></div>
+							</label>
 						</div>
 					</div>
 
-					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline" ng-click="do_not_pay_driver()">
+					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline">
 						<div class="field-key">
 							Do Not Pay Driver?
 						</div>
 						<div class="field-value">
-							<i ng-if="!order.do_not_pay_driver" class="fa fa-square-o"></i>
-							<i ng-if="order.do_not_pay_driver" class="fa fa-check-square-o"></i>
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="do_not_pay_driver()" class="switch" ng-model="order.do_not_pay_driver"/><div></div>
+							</label>
 						</div>
 					</div>
-					<div class="field-row link no-underline" ng-click="do_not_pay_restaurant()" ng-if="order.refunded">
+					<div class="field-row link no-underline" ng-if="order.refunded">
 						<div class="field-key">
 							Pay restaurant despite refund <br>(e.g. this refund was our fault)
 						</div>
 						<div class="field-value">
-							<i ng-if="!order.do_not_pay_restaurant" class="fa fa-square-o"></i>
-							<i ng-if="order.do_not_pay_restaurant" class="fa fa-check-square-o"></i>
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="do_not_pay_restaurant()" class="switch" ng-model="order.do_not_pay_restaurant"/><div></div>
+							</label>
 						</div>
 					</div>
 
@@ -214,6 +217,7 @@
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Delivery Fee:</td><td nowrap class="dish-price">${{order.delivery_fee || 0 | number:2}}</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tax:</td><td nowrap class="dish-price">${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order._tip || 0 | number:2}} ({{order._tip/order.price*100}}%)</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Gift Card (Credit):</td><td nowrap class="dish-price">${{order.credit || 0 | number:2}} </td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 				</table>
 

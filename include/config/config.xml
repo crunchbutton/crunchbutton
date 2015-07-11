@@ -27,6 +27,10 @@
 				<name>crunchbutton-resource</name>
 				<cache>_URL_</cache>
 			</resource>
+			<document-upload>
+				<name>crunchbutton-document-upload</name>
+				<cache></cache>
+			</document-upload>
 		</buckets>
 	</s3>
 	<db>
@@ -68,6 +72,10 @@
 			<host>localhost</host>
 			<prefix></prefix>
 		</travis>
+		<travispostgres>
+			<dsn>pgsql:host=localhost;dbname=crunchbutton_travis;user=postgres</dsn>
+			<type>PostgreSQL</type>
+		</travispostgres>
 		<metrics>
 			<!-- THIS DB NO LONGER EXISTS. if postgres is needed, we can use our heroku hosting. - devin -->
 			<type>postgresql</type>
@@ -176,17 +184,6 @@
 			<public>_KEY_</public>
 		</live>
 	</stripe>
-	<balanced>
-		<live>
-			<secret>***REMOVED***</secret>
-			<uri>/1.1/marketplaces/***REMOVED***</uri>
-		</live>
-		<dev>
-			<secret>ak-test-78Lbl2ZDE9ll0zEkHMQBsDZBhCSOjdJV</secret>
-			<uri>/1.1/marketplaces/TEST-MP6kDcB0F9VsdCGOwYMicIzL</uri>
-		</dev>
-		<sharedMerchant>_KEY_</sharedMerchant>
-	</balanced>
 	<suggestion>
 		<dev>
 			<phone>_PHONE_</phone>
@@ -293,7 +290,7 @@
 	<crypt>
 		<key>_KEY_</key>
 	</crypt>
-	<processor>balanced</processor>
+	<processor>stripe</processor>
 	<templates>
 		<live>
 			<compress>true</compress>

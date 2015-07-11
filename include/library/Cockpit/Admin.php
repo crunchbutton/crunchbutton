@@ -40,6 +40,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
+		$ssn = substr($paymentType->social_security_number($this->id_admin), -4);
 
 		$formattedAddress = Util::formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
@@ -92,6 +93,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 								$saving++;
 							}
 							break;
+						case 'legal_entity.ssn_last_4':
+							if (!$stripeAccount->legal_entity->ssn_last_4 && $ssn) {
+								$stripeAccount->legal_entity->ssn_last_4 = $ssn;
+								$saving++;
+							}
+							break;
 					}
 				}
 			} else {
@@ -101,6 +108,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$stripeAccount->legal_entity->address->city = $address['city'];
 				$stripeAccount->legal_entity->address->state = $address['state'];
 				$stripeAccount->legal_entity->address->postal_code = $address['zip'];
+				if ($ssn) {
+					$stripeAccount->legal_entity->ssn_last_4 = $ssn;
+				}
 				$saving = 6;
 			}
 
@@ -155,7 +165,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		];
 		$paymentType = $this->payment_type();
 		if ($paymentType->id_admin_payment_type) {
-			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->stripe_account_id && $paymentType->stripe_id && $this->ssn() && $this->dob) {
+			if ($paymentType->legal_name_payment && $paymentType->address && $paymentType->stripe_account_id && $paymentType->stripe_id && $this->hasSSN() && $this->dob) {
 				$status['payment'] = true;
 			}
 		}
@@ -343,172 +353,6 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 
-	public function tempConvertBalancedToStripe() {
-		if (!$this->id_user || c::env() != 'live' || c::admin()->id_admin != 1) {
-			//return false;
-		}
-
-		$p = Crunchbutton_Admin_Payment_Type::q('
-			select p.* from admin_payment_type p
-			where id_admin=?
-			and balanced_bank is not null
-			and stripe_account_id is null
-			order by p.id_admin_payment_type desc
-		',[$this->id_admin]);
-
-		// nothing left to import
-		if ($p->count() < 1 && $this->stripe_id) {
-			return true;
-		}
-
-		$idStripe = $paymentType->stripe_id ? $paymentType->stripe_id : $this->stripe_id;
-
-		echo "\nWorking on admin #".$this->id_admin."\n";
-
-		if (!$idStripe) {
-
-			// create a stripe managed account
-			try {
-				$name = explode(' ',$paymentType->legal_name_payment);
-				$address = explode("\n", $paymentType->address);
-				$address[1] = explode(',', $address[1]);
-				$address[1][1] = explode(' ', $address[1][1]);
-
-				$ip = c::db()->get('select session.* from session where id_admin=? and ip is not null order by session.date_activity desc limit 1', [$paymentType->id_admin])->get(0)->ip;
-
-				$dob = explode('-',$this->dob);
-				$ssn = substr($this->ssn(), -4);
-
-				$stripeAccount = \Stripe\Account::create([
-					'managed' => true,
-					'country' => 'US',
-					'email' => $paymentType->summary_email ? $paymentType->summary_email : $this->email,
-					'tos_acceptance' => [
-						'date' => time(),
-						'ip' => $ip ? $ip : '76.171.15.26'
-					],
-					'legal_entity' => [
-						'type' => 'individual',
-						'first_name' => array_shift($name),
-						'last_name' => implode(' ',$name),
-						'dob' => [ // @note: this viloates stripes docs but this is the correct way
-							'day' => $dob[2],
-							'month' => $dob[1],
-							'year' => $dob[0]
-						],
-						'ssn_last_4' => $ssn,
-						'address' => [
-							'line1' => $address[0],
-							'city' => $address[1][0],
-							'state' => $address[1][1][0],
-							'postal_code' => $address[1][1][1],
-							'country' => 'US'
-						]
-					]
-				]);
-
-				$created = true;
-
-			} catch (Exception $e) {
-				echo 'ERROR: '.$e->getMessage()."\n";
-				return false;
-			}
-		} else {
-			try {
-				$stripeAccount = \Stripe\Account::retrieve($idStripe);
-			} catch (Exception $e) {
-				echo 'ERROR: '.$e->getMessage()."\n";
-				return false;
-			}
-		}
-
-		$idStripe = $stripeAccount->id;
-
-		if ($idStripe) {
-			echo 'Stripe account '.$idStripe."\n";
-
-			if ($created) {
-				$this->stripe_id = $idStripe;
-				$this->save();
-			}
-
-		} else {
-			echo "ERROR: no stripe account\n";
-		}
-
-		// get their bank info
-		foreach ($p as $paymentType) {
-			echo "Balanced bank account ".$paymentType->balanced_bank."\n";
-
-			$handle = fopen('/Users/arzynik/Downloads/2015-05-19-1431998893-***REMOVED***.csv', 'r');
-			if (substr($paymentType->balanced_id,0,2) != 'BA') {
-				$bkey = 4;
-				$skey = 5;
-			}
-
-			while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-				if ($data[$bkey] == $paymentType->balanced_bank) {
-					$stripeBankToken = $data[$skey];
-					echo "Found token in csv ".$stripeBankToken."\n";
-					break;
-				}
-			}
-
-
-			if (!$stripeBankToken) {
-				try {
-					$bank = Crunchbutton_Balanced_BankAccount::byId($paymentType->balanced_bank);
-				} catch (Exception $e) {
-					print_r($e);
-					echo "ERROR: Failed to get balanced id\n";
-					continue;
-				}
-
-				$stripeBankToken = $bank->meta->{'stripe_customer.funding_instrument.id'};
-			}
-
-			if (!$stripeBankToken) {
-				echo "ERROR: No bank meta.\n";
-				continue;
-			}
-
-			if (strpos($stripeBankToken, 'btok_') === 0) {
-				echo "Stripe bank token is ".$stripeBankToken."\n";
-			} else {
-				echo "WARNING: Not sure what to do with this: ".$stripeBankToken."\n";
-				continue;
-			}
-
-
-			if ($idStripe && $stripeBankToken) {
-				// do something with the token
-
-				$stripeAccount->bank_account = $stripeBankToken;
-				try {
-					$stripeAccount->save();
-
-					foreach ($stripeAccount->bank_accounts->all()->data as $stripeBankAccount) {
-						break;
-					}
-
-					echo "Stripe bank account is ".$stripeBankAccount->id."\n";
-
-					$paymentType->stripe_id = $idStripe;
-					$paymentType->stripe_account_id = $stripeBankAccount->id;
-					$paymentType->save();
-				} catch (Exception $e) {
-					echo 'ERROR: '.$e->getMessage()."\n";
-					return false;
-				}
-
-
-			}
-
-		}
-
-
-	}
-
     public function score() {
         $qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
         $s = Cockpit_Admin_Score::q($qString, [$this->id_admin,]);
@@ -523,6 +367,5 @@ class Cockpit_Admin extends Crunchbutton_Admin {
             return $s->get(0)->score;
         }
     }
-
 
 }

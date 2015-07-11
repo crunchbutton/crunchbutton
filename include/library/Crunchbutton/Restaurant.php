@@ -66,20 +66,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function hasPaymentType(){
 		$paymentType = $this->paymentType();
-		switch ( Crunchbutton_Payment::processor() ) {
-			case Crunchbutton_Payment::PROCESSOR_BALANCED:
-				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
-					return true;
-				}
-				break;
-
-			case Crunchbutton_Payment::PROCESSOR_STRIPE:
-				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
-					return true;
-				}
-				break;
+		if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	public function meetDeliveryMin($order) {
@@ -206,78 +197,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function createMerchant($params = []) {
-
-		$type = $params['type'] == 'business' ? 'business' : 'person';
-
-		try {
-			$p = [
-				'type' => $type,
-				'name' => $params['name'] ? $params['name'] : $this->name,
-				'phone_number' => $this->phone,
-				'country_code' => 'USA',
-				'street_address' => $params['address'] ? $params['address'] : $this->address,
-				'postal_code' => $params['zip'] ? $params['zip'] : $this->zip
-			];
-			switch ($type) {
-				case 'person':
-					$p['dob'] = $params['dob'];
-					break;
-				case 'business':
-					$p['tax_id'] = $params['taxid'];
-					$p['person'] = $params['person'];
-					break;
-			}
-
-			$merchant = c::balanced()->createMerchant(
-				'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
-				$p,
-				null,
-				null,
-				$this->name
-			);
-		} catch (Balanced\Exceptions\HTTPError $e) {
-			print_r($e);
-			exit;
-		}
-		$payment = $this->payment_type();
-		$payment->id_restaurant = $this->id_restaurant;
-		$payment->balanced_id = $merchant->id;
-		$payment->save();
-
-		return $merchant;
-
+		// @balanced
+		return false;
 	}
 
 	public function merchant() {
-
-		$payment_type = $this->payment_type();
-
-		if ($payment_type->balanced_id) {
-			$a = Crunchbutton_Balanced_Merchant::byId($payment_type->balanced_id);
-			if ($a->id) {
-				$merchant = $a;
-			}
-		}
-
-		if (!$merchant) {
-			$a = Crunchbutton_Balanced_Merchant::byRestaurant($this);
-			if ($a->id) {
-				if (c::env() == 'live') {
-					$payment = $r->payment_type();
-					$payment->id_restaurant = $r->id_restaurant;
-					$payment->balanced_id = $a->id;
-					$payment->save();
-				}
-				$merchant = $a;
-			}
-		}
-
-		if (!$merchant) {
-			die('no merchant');
-			$merchant = $this->createMerchant();
-		}
-
-		return $merchant;
+		// @balanced
+		return false;
 	}
 
 	public function activeDrivers(){
@@ -439,21 +365,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			exit;
 		}
 
-	}
-
-	public function saveBankInfo($name, $account, $routing, $type) {
-		try {
-			$bank = c::balanced()->createBankAccount($name, $account, $routing, $type);
-			$bank->associateToCustomer('/customers/'.$this->merchant()->id);
-			$payment_type = $this->payment_type();
-			$payment_type->id_restaurant = $this->id_restaurant;
-			$payment_type->balanced_bank = $bank->id;
-			$payment_type->save();
-			echo json_encode( [ 'success' => 'success' ] );
-		} catch (Exception $e) {
-			print_r($e);
-			exit;
-		}
 	}
 
 	/**
@@ -1077,31 +988,30 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function getImgFormats() {
 		return [
-			['height' => 596, 'width' => 596, 'crop' => 0],
-			['height' => 200, 'width' => 200, 'crop' => 1],
-			['height' => 66, 'width' => 66, 'crop' => 0],
-			['height' => 425, 'width' => 1200, 'crop' => 1]
+			'normal' => ['height' => 596, 'width' => 596, 'crop' => 0],
+			'thumb' => ['height' => 200, 'width' => 200, 'crop' => 1],
+			'icon' => ['height' => 66, 'width' => 66, 'crop' => 0],
+			'header' => ['height' => 425, 'width' => 1200, 'crop' => 1]
 		];
 	}
 
 	public function image() {
-		$img = (strpos($this->image,'http://') !== 0 ? 'https://i._DOMAIN_/' : '') . $this->image;
-		return $img;
+		return $this->getImages()['original'];
 	}
 
 	public function updateImage($file = null, $name = null) {
 		if (!$file) {
 			$file = $this->imagePath().$this->image;
 		}
-		
+
 		$bucket = c::config()->s3->buckets->{'image-restaurant'}->name;
-		
+
 		// download the source from s3 and resize
 		if (!file_exists($file)) {
-			echo 'no file';
+			echo 'no file:' . $file. "\n";
 			$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
 			$fp = fopen($file, 'wb');
-			if (($object = S3::getObject($bucket, $this->file, $fp)) !== false) {
+			if (($object = S3::getObject($bucket, $this->permalink.'.jpg', $fp)) !== false) {
 				var_dump($object);
 			} else {
 				$file = false;
@@ -1111,21 +1021,50 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$info = pathinfo($file);
 			$ext = $info['extension'];
 			if (!$ext) {
-				$pos = strrpos($_FILES['image']['name'], '.');
-        		$ext = substr($_FILES['image']['name'], $pos+1);
+				$pos = strrpos($name, '.');
+        		$ext = substr($name, $pos+1);
+			}
+			$ext = strtolower($ext);
+			switch ($ext) {
+				case 'jpg':
+				case 'jpeg':
+					$type = 'image/jpeg';
+					break;
+				case 'gif':
+					$type = 'image/gif';
+					break;
+				case 'png':
+					$type = 'image/png';
+					break;
 			}
 
 			// upload the source image
 			$upload = new Crunchbutton_Upload([
 				'file' => $file,
 				'resource' => $this->permalink.'.'.$ext,
-				'bucket' => $bucket
+				'bucket' => $bucket,
+				'type' => $type
 			]);
 			$r[] = $upload->upload();
 
+			// update the local file for backwards compatability
+			// shit is on dif servers so this isnt gonna work
+			/*
+			$images_path = '/home/i.crunchbutton/www/image/';
+
+			$rand = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
+			$this->image = $this->id_restaurant.'.'.$rand.'.'.$ext;
+			$this->save();
+
+			$current_image = $images_path.$this->image;
+			if (@copy($file, $current_image)) {
+				@chmod($current_image,0777);
+			}
+			*/
+
 			$formats = $this->getImgFormats();
 		}
-		
+
 		if (!$file) {
 			return false;
 		}
@@ -1156,7 +1095,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$r[] = $upload->upload();
 			}
 		}
-		
+
 		return in_array(false, $r) ? false : true;
 
 	}
@@ -1172,6 +1111,23 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$this->_weight = $res->weight;
 		}
 		return $this->_weight;
+	}
+
+	public function getImages($loc = 'cache') {
+		if ($loc == 'cache') {
+			$url = c::config()->s3->buckets->{'image-restaurant'}->cache;
+		} else {
+			$url = 's3.amazonaws.com/'.c::config()->s3->buckets->{'image-restaurant'}->name;
+		}
+		$imgPrefix = 'https://'.$url.'/';
+		$out = [
+			'original' => $imgPrefix.$this->permalink.'.jpg',
+		];
+
+		foreach ($this->getImgFormats() as $key => $format) {
+			$out[$key] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
+		}
+		return $out;
 	}
 
 	/**
@@ -1224,16 +1180,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
 
-		$imgPrefix = 'https://'.c::config()->s3->buckets->{'image-restaurant'}->cache.'/';
+		$out['images'] = $this->getImages();
+		$out['img']    = $out['images']['normal'];
 
-		$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
-		$out['images'] = [
-			$imgPrefix.$this->permalink.'.jpg',
-		];
+		// @todo: will remove later
+		//$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
 
-		foreach ($this->getImgFormats() as $format) {
-			$out['images'][] = $imgPrefix.$this->permalink.'-'.$format['width'].'x'.$format['height'].'.jpg';
-		}
 
 
 		if (!$ignore['categories']) {
@@ -1284,11 +1236,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( !$isCockpit ){
 			$ignore['notifications'] = true;
 			$out[ 'notes_owner' ] = NULL;
-			$out[ 'balanced_id' ] = NULL;
-			$out[ 'balanced_bank' ] = NULL;
 			$out[ 'notes' ] = NULL;
 			$out[ 'email' ] = NULL;
 		}
+		unset($out[ 'balanced_id' ]);
+		unset($out[ 'balanced_bank' ]);
+		
 
 		if (!$ignore['notifications']) {
 			$where = [];
@@ -1306,6 +1259,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 			}
 		} else {
+			// @performance: this is slowing things down alot
 			$out[ 'hours' ] = $this->hours_next_24_hours( true );
 			$next_open_time = $this->next_open_time( true );
 			if( $next_open_time ){
@@ -1350,7 +1304,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// get the legacy data
 		if( !$isCockpit ){
-			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
+			// @performance: slowing shit down
+			//$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
 		if( $isCockpit ){
@@ -1563,9 +1518,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$lat = floatval($params['lat']);
 		$lon = floatval($params['lon']);
 
+		$locCast = function($loc) {
+			return 'CAST('.$loc.' as DECIMAL(19,15))';
+		};
+
 		$formula = '( ( ACOS( SIN( %F * PI() / 180 ) * SIN( %s * PI() / 180 ) + COS( %F * PI() / 180 ) * COS( %s * PI() / 180 ) * COS( ( %F - %s ) * PI() / 180 ) ) * 180 / PI() ) * 60 * 1.1515 )';
 
-		$regular_calc = sprintf( $formula, $lat, 'loc_lat', $lat, 'loc_lat', $lon, 'loc_long' );
+		$regular_calc = sprintf( $formula, $lat, $locCast('loc_lat'), $lat, $locCast('loc_lat'), $lon, $locCast('loc_long') );
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 30 day' );
@@ -1574,8 +1533,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$query = "
 			SELECT
 				count(*) as _weight,
-				restaurant.loc_lat,
-				restaurant.loc_long,
+				".$locCast('restaurant.loc_lat')." as loc_lat,
+				".$locCast('restaurant.loc_long')." as loc_long,
 				'byrange' as type,
 				{$regular_calc} AS distance,
 				restaurant.*
@@ -1597,14 +1556,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$query .= " UNION ";
 
-		$community_calc = sprintf( $formula, $lat, 'c.loc_lat', $lat, 'c.loc_lat', $lon, 'c.loc_lon' );
-		$restaurant_calc = sprintf( $formula, $lat, 'r.loc_lat', $lat, 'r.loc_lat', $lon, 'r.loc_long' );
+		$community_calc = sprintf( $formula, $lat, $locCast('max(c.loc_lat)'), $lat, $locCast('max(c.loc_lat)'), $lon, $locCast('max(c.loc_lon)') );
+		$restaurant_calc = sprintf( $formula, $lat, $locCast('max(r.loc_lat)'), $lat, $locCast('max(r.loc_lat)'), $lon, $locCast('max(r.loc_long)') );
 
 		$query .= "
   			SELECT
   				count(*) as _weight,
-  				c.loc_lat AS loc_lat,
-  				c.loc_lon AS loc_long,
+  				".$locCast('max(c.loc_lat)')." AS loc_lat,
+  				".$locCast('max(c.loc_lon)')." AS loc_long,
   				'byrange' as type,
   				{$restaurant_calc} AS distance,
   				r.*
@@ -1626,7 +1585,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
   				AND
   					{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
 
-  	$query .= " ORDER BY _weight DESC; ";
+		$query .= " ORDER BY _weight DESC; ";
 
 		$restaurants = self::q($query);
 		foreach ($restaurants as $restaurant) {
@@ -1846,7 +1805,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// return the hours info used at iphone native app
 	public function hours_legacy( $isCockpit ){
-
+		return [];
 		$data = [];
 		$data[ 'open_for_business' ] = $this->open_for_business;
 		$data[ '_open' ] = $this->open();

@@ -13,7 +13,8 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, ViewListService) {
+NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketService, TicketViewService, ViewListService) {
+
 	$rootScope.title = 'Tickets';
 
 	angular.extend($scope, ViewListService);
@@ -28,21 +29,26 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, TicketService, Vie
 			fullcount: false
 		},
 		update: function() {
-			TicketService.list($scope.query, function(d) {
-				$scope.lotsoftickets = d.results;
-				$scope.complete(d);
-			});
+			update();
 		}
 	});
+
+	var update = function(){
+		TicketService.list($scope.query, function(d) {
+			$scope.lotsoftickets = d.results;
+			$scope.complete(d);
+		});
+	}
+
+	$scope.closeTicket = function( id_support ){
+		TicketService.openClose( id_support, function() { update(); } );
+	}
+
 });
 
+NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, TicketViewService, MapService, SocketService) {
 
-NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, MapService, SocketService) {
-
-	$rootScope.title = 'Ticket #' + $routeParams.id;
-	$scope.loading = true;
-
-	SocketService.listen('ticket.' + $routeParams.id, $scope).on('update', function(d) { update(); });
+	var id_support = $routeParams.id;
 
 	$scope.refund = function(){
 		OrderService.askRefund( $scope.ticket.order.id_order, function(){
@@ -54,7 +60,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.ticket.order.do_not_pay_driver = ( $scope.ticket.order.do_not_pay_driver ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
@@ -65,7 +70,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		OrderService.do_not_pay_restaurant( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.ticket.order.do_not_pay_restaurant = ( $scope.ticket.order.do_not_pay_restaurant ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
@@ -76,24 +80,25 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		OrderService.do_not_reimburse_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.ticket.order.do_not_reimburse_driver = ( $scope.ticket.order.do_not_reimburse_driver ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
 		} );
 	}
 
-	$scope.isCommentSaving = false;
+	$scope.comment = { isSaving: false, text: null };
 
-	var saveComment = function( close ){
+	$scope.saveComment = function( close ){
+		if( $scope.comment.isSaving ){
+			return;
+		}
 		if( close && $scope.ticket.status != 'open' ){
 			return;
 		}
-		if( $scope.comment_text ){
-			$scope.isCommentSaving = true;
-			TicketService.message( { 'id_support': $routeParams.id, 'body': $scope.comment_text, 'note': true }, function(){
-				$scope.comment_text = '';
-				$scope.isCommentSaving = false;
+		if( $scope.comment.text ){
+			$scope.comment.isSaving = true;
+			TicketService.message( { 'id_support': id_support, 'body': $scope.comment.text, 'note': true }, function(){
+				$scope.comment.isSaving = false;
 				if( close ){
 					if( $scope.ticket.status == 'open' ){
 						$scope.openCloseTicket();
@@ -101,6 +106,8 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 				} else {
 					update();
 				}
+				$scope.comment.isSaving = false;
+				$scope.comment.text = '';
 			} );
 		} else {
 			App.alert( 'Please type something!' );
@@ -108,11 +115,11 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	}
 
 	$scope.comment = function(){
-		saveComment( false );
+		$scope.saveComment( false );
 	}
 
 	$scope.close_and_comment = function(){
-		saveComment( true );
+		$scope.saveComment( true );
 	}
 
 	var cleanup;
@@ -136,11 +143,13 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	};
 
 	var update = function() {
-		TicketService.get($routeParams.id, function(ticket) {
-
+		$rootScope.title = 'Ticket #' + id_support;
+		$scope.loading = true;
+		SocketService.listen('ticket.' + id_support, $scope).on('update', function(d) { update(); });
+		$scope.comment.isSaving = false;
+		TicketService.get( id_support, function(ticket) {
 			$scope.ticket = ticket;
 			$scope.loading = false;
-
 			if (!cleanup) {
 				if( ticket && ticket.order ){
 					cleanup = $rootScope.$on('order-route-' + ticket.order.id_order, function(event, args) {
@@ -151,14 +160,13 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 					});
 				}
 			}
-			$rootScope.$broadcast('triggerViewTicket', $scope.ticket);
-
+			$rootScope.$broadcast( 'triggerViewTicket', $scope.ticket );
 			draw();
 		});
 	};
 
 	$scope.openCloseTicket = function(){
-		TicketService.openClose( $routeParams.id, function() { update(); } );
+		TicketService.openClose( id_support, function() { update(); } );
 	}
 
 	$scope.$on('mapInitialized', function(event, map) {
@@ -168,7 +176,5 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	});
 
 	update();
-
-
 
 });
