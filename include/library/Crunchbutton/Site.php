@@ -69,8 +69,6 @@ class Crunchbutton_Site extends Cana_Table {
 		$tsite = null;
 		foreach ($sites as $site) {
 			if (preg_match($site->domain, $domain)) {
-				echo $domain.'--'.$site->domain;
-				exit;
 				$tsite = $site;
 				break;
 			}
