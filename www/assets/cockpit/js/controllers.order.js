@@ -252,7 +252,6 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		OrderService.do_not_pay_driver( $scope.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.order.do_not_pay_driver = ( $scope.order.do_not_pay_driver ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
@@ -263,7 +262,6 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		OrderService.do_not_pay_restaurant( $scope.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.order.do_not_pay_restaurant = ( $scope.order.do_not_pay_restaurant ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}
@@ -274,7 +272,6 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		OrderService.do_not_reimburse_driver( $scope.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
-				$scope.order.do_not_reimburse_driver = ( $scope.order.do_not_reimburse_driver ? 0 : 1 );
 			} else {
 				$scope.flash.setMessage( 'Error!' );
 			}

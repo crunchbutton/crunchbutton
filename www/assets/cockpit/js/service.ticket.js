@@ -1,4 +1,3 @@
-
 NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParams) {
 
 	var service = {};
@@ -6,6 +5,11 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	var tickets = ResourceFactory.createResource( App.service + 'tickets/:id_support', { id_support: '@id_support'}, {
 		'load' : {
 			url: App.service + 'ticket/:id_support',
+			method: 'GET',
+			params : {}
+		},
+		'side_info' : {
+			url: App.service + 'ticket/:id_support/side-info/:page',
 			method: 'GET',
 			params : {}
 		},
@@ -49,6 +53,12 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 		});
 	}
 
+	service.side_info = function(params, callback) {
+		tickets.side_info(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
+	}
+
 	service.shortlist = function(params, callback) {
 		ticketshort.tickets_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
@@ -76,6 +86,7 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	service.openClose = function(id_support, callback) {
 		tickets.openClose({id_support: id_support}, function(data) {
 			callback(data);
+			$rootScope.$broadcast( 'updateHeartbeat' );
 		});
 	}
 

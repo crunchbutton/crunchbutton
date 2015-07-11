@@ -56,7 +56,7 @@ print_r(Order::q('select now() as id'));
 		exit;
 		
 
-		echo c::balanced()->uri;
+		//echo c::balanced()->uri;
 		exit;
 
 		$r = new Restaurant;

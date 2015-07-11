@@ -7,34 +7,41 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 		switch ( c::getPagePiece( 3 ) ) {
 
 			case 'download':
-				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
-				if( $hasPermission ){
-					$id_driver_document_status = c::getPagePiece( 4 );
-					$document = Cockpit_Driver_Document_Status::o( $id_driver_document_status );
-					if( $document->id_driver_document_status ){
-						$file = $document->doc_path();
-						$name = $document->driver()->name . ' - ' .$document->driver_document()->name;
-						$ext = pathinfo( $file, PATHINFO_EXTENSION );
-						$name .= '.' . $ext;
-						if( file_exists( $file ) ){
-							header( 'Content-Description: File Transfer' );
-							header( 'Content-Type: application/octet-stream' );
-							header( 'Content-Disposition: attachment; filename=' . $name );
-							header( 'Expires: 0' );
-							header( 'Cache-Control: must-revalidate' );
-							header( 'Pragma: public' );
-							header( 'Content-Length: ' . filesize( $file ) );
-							readfile( $file );
-							exit;
-						} else {
-							$this->_error( 'download:file-not-found' );
-						}
-					} else {
-						$this->_error( 'download:file-not-found' );
-					}
-				} else {
-					$this->_error( 'download:permission-denied' );
+
+				$id_driver_document_status = c::getPagePiece(4);
+				$document = Cockpit_Driver_Document_Status::o($id_driver_document_status);
+
+				if (!$document->id_driver_document_status) {
+					$this->_error( 'download:file-not-found' );
+					exit;
 				}
+
+				if (!c::admin()->permission()->check( ['global', 'drivers-all'] ) && $document->id_admin != c::user()->id_admin) {
+					$this->_error( 'download:permission-denied' );
+					exit;
+				}
+
+				$name = $document->driver()->name . ' - ' .$document->driver_document()->name;
+				$ext = pathinfo( $document->file, PATHINFO_EXTENSION );
+				$name .= '.' . $ext;
+
+				$file = $document->getFile();
+
+				if (!$file) {
+					$this->_error( 'download:file-not-found' );
+					exit;
+				}
+
+				header( 'Content-Description: File Transfer' );
+				header( 'Content-Type: application/octet-stream' );
+				header( 'Content-Disposition: attachment; filename=' . $name );
+				header( 'Expires: 0' );
+				header( 'Cache-Control: must-revalidate' );
+				header( 'Pragma: public' );
+				header( 'Content-Length: ' . filesize( $file ) );
+				readfile( $file );
+				exit;
+
 				break;
 
 			case 'list':
@@ -53,37 +60,76 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$this->_approve();
 				break;
 
+			case 's3all':
+				$docs = Cockpit_Driver_Document_Status::q('select * from driver_document_status');
+				foreach ($docs as $doc) {
+
+					if (file_exists(Cockpit_Driver_Document_Status::path().$doc->file)) {
+						$r = Cockpit_Driver_Document_Status::toS3(Cockpit_Driver_Document_Status::path().$doc->file, $doc->file);
+						//$r = $doc->localToS3();
+						print_r($r);
+					}
+
+
+				}
+				break;
+
 			case 'upload':
 
 				if( $_FILES ){
+
 					$ext = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
+
 					if( Util::allowedExtensionUpload( $ext ) ){
-						$name = pathinfo( $_FILES['file']['name'], PATHINFO_FILENAME );
-						$name = str_replace( $ext, '', $name );
-						$random = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 8 );
-						$name = Util::slugify( $random . '-' . $name );
-						$name = substr( $name, 0, 40 ) . '.'. $ext;
-						$file = Cockpit_Driver_Document_Status::path() . $name;
 
-						if( !file_exists( Util::uploadPath() ) ){
-							Log::debug( [ 'action' => 'upload file error', 'error' => '"www/upload" folder doesn`t exist!', 'type' => 'drivers-onboarding'] );
-							$this->_error( '"www/upload" folder doesn`t exist!' );
+						// check the permission
+						$id_admin = $_POST[ 'id_admin' ];
+						$user = c::user();
+						$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+						if( !$hasPermission ){
+							$this->_error();
+							exit;
 						}
 
-						if( !file_exists( Cockpit_Driver_Document_Status::path() ) ){
-							Log::debug( [ 'action' => 'upload file error', 'error' => '"www/upload/drivers-doc/" folder doens`t exist!', 'type' => 'drivers-onboarding'] );
-							$this->_error( '"www/upload/drivers-doc/" folder doens`t exist!' );
-						}
+						$id_driver_document = $_POST[ 'id_driver_document' ];
 
-						if ( copy( $_FILES[ 'file' ][ 'tmp_name' ], $file ) ) {
-							chmod( $file, 0777 );
+						if( $id_admin && $id_driver_document ){
+							$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $id_driver_document );
+							if( !$docStatus->id_driver_document_status ){
+								$docStatus->id_admin = $id_admin;
+								$docStatus->id_driver_document = $id_driver_document;
+							} else {
+								$oldFile = Cockpit_Driver_Document_Status::path() . $docStatus->file;
+								if( file_exists( $oldFile ) ){
+									@unlink( $oldFile );
+								}
+							}
+							$docStatus->datetime = date('Y-m-d H:i:s');
+							$docStatus->save();
+
+							$docStatus->file = $docStatus->id_driver_document_status . '.'. $ext;
+							$docStatus->save();
+
+							$file = $_FILES['file']['tmp_name'];
+
+							$r = Cockpit_Driver_Document_Status::toS3($file, $docStatus->file);
+
+
+							// save driver's log
+							$log = new Cockpit_Driver_Log();
+							$log->id_admin = $id_admin;
+							$log->action = Cockpit_Driver_Log::ACTION_DOCUMENT_SENT;
+							$log->info = $docStatus->id_driver_document . ': ' . $docStatus->file;
+							$log->datetime = date('Y-m-d H:i:s');
+							$log->save();
+
+							Log::debug( [ 'action' => 'file saved success', 'id_driver_document' => $id_driver_document, 'type' => 'drivers-onboarding'] );
+
+							echo json_encode( ['success' => 'success'] );
 						} else {
-							Log::debug( [ 'action' => 'upload file error', 'error' => 'copy file error', 'type' => 'drivers-onboarding'] );
+							$this->_error();
 						}
 
-						Log::debug( [ 'action' => 'upload file success', 'file name' => $name, 'type' => 'drivers-onboarding'] );
-
-						echo json_encode( ['success' => $name, 'id_driver_document' => $_POST['id_driver_document']] );
 						exit;
 					} else {
 						$this->_error( 'invalid extension' );
@@ -94,7 +140,8 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				break;
 
 			case 'save':
-
+				// deprecated
+				return;
 				// check the permission
 				$id_admin = $this->request()[ 'id_admin' ];
 				$user = c::user();
@@ -117,9 +164,13 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 							@unlink( $oldFile );
 						}
 					}
+
 					$docStatus->datetime = date('Y-m-d H:i:s');
 					$docStatus->file = $this->request()[ 'file' ];
 					$docStatus->save();
+
+					$docStatus->rename();
+					$docStatus = Cockpit_Driver_Document_Status::o( $docStatus->id_driver_document_status );
 
 					// save driver's log
 					$log = new Cockpit_Driver_Log();

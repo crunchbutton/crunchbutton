@@ -46,11 +46,9 @@ NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketSe
 });
 
 
-NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, TicketViewService, AccountService) {
+NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService) {
 
-	$scope.params = {
-		status: 'open'
-	};
+	$scope.params = { status: 'open' };
 
 	var getTickets = function() {
 		if (!AccountService || !AccountService.user || !AccountService.user.permissions) {
@@ -65,6 +63,10 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 		getTickets();
 	}
 
+	$scope.loadTicket = function( id_support ){
+		TicketViewService.setViewTicket( id_support );
+	}
+
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
@@ -75,60 +77,73 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, TicketService, 
 	}, true);
 });
 
-NGApp.controller('SideTicketCtrl', function($scope, $rootScope, TicketService, TicketViewService, SocketService) {
+NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService ) {
 
-	var loaded = false;
+	var id_support = null;
 
-	SocketService.listen('ticket.' + TicketViewService.scope.viewTicket, TicketViewService.scope)
-		.on('message', function(d) {
-			for (var x in TicketViewService.scope.ticket.messages) {
-				if (TicketViewService.scope.ticket.messages[x].guid == d.guid) {
+	if (typeof TicketViewService.scope.viewTicket == 'string') {
+		id_support = TicketViewService.scope.viewTicket;
+	} else {
+		id_support = TicketViewService.scope.viewTicket.id;
+	}
+
+	TicketViewService.sideInfo.setTicket( id_support );
+
+	var loadData = function(){
+		if( TicketViewService.sideInfo.load() ){
+			$scope.isLoading = true;
+			$scope.ticket = null;
+		}
+	}
+
+	$scope.$watchCollection( 'ticket', function( newValue, oldValue ) {
+		if( newValue && newValue.total && !$rootScope.supportToggled ){
+			$timeout( function(){
+				$rootScope.supportToggled = true;
+			}, 300 );
+		}
+	} );
+
+	$scope.isLoading = false;
+
+	$scope.loadMoreMessages = function(){
+		loadData()
+	}
+
+	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
+		$scope.isLoading = false;
+		$scope.ticket = data;
+	} );
+
+	$rootScope.$on( 'loadMoreMessages', function(e, data) {
+		$scope.loadMoreMessages();
+	} );
+
+	var socketStuff = function(){
+		SocketService.listen('ticket.' + id_support, TicketViewService.scope ).on('message', function(d) {
+			for ( var x in TicketViewService.sideInfo.data.messages ) {
+				if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
 					return;
 				}
 			}
-			TicketViewService.scope.ticket.messages.push(d);
-			TicketViewService.scroll();
+			TicketViewService.sideInfo.add_message( d );
 		});
-
-	var loadTicket = function(id) {
-		var displayTicket = function(ticket) {
-			TicketViewService.scope.ticket = ticket;
-			TicketViewService.scroll(!loaded);
-			loaded = true;
-		};
-		if (typeof id == 'string') {
-			TicketService.get(id, displayTicket);
-		} else {
-			displayTicket(id);
-		}
-	};
-
-	var sendingNote = false;
-
-	$scope.add_note = function(){
-		if( !sendingNote ){
-			sendingNote = true;
-		}
-		if ( sendingNote ) {
-			if( $scope.message_text ){
-				$scope.send( $scope.message_text, true, function(){
-					$scope.message_text = '';
-					loadTicket(TicketViewService.scope.viewTicket );
-				} );
-			} else {
-				App.alert( 'Please type something!' );
-			}
-		};
 	}
 
-	$rootScope.$on('triggerViewTicket', function(e, ticket) {
-		loadTicket(ticket == 'refresh' ? TicketViewService.scope.ticket : ticket);
-	});
+	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
+		if( ticket.id_support != TicketViewService.sideInfo.id_support ){
+			TicketViewService.sideInfo.setTicket( 0 );
+			TicketViewService.sideInfo.setTicket( ticket.id_support );
+			loadData();
+			socketStuff();
+		}
+	} );
 
 	$scope.send = TicketViewService.send;
+	loadData();
+	socketStuff();
 
-	loadTicket(TicketViewService.scope.viewTicket);
-});
+} );
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
 	TicketViewService.scope = $scope;
@@ -226,7 +241,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		CallService.send_sms( $scope.sms, function( json ){
 			$scope.formSMSSending = false;
 			if( json.success ){
-				MainNavigationService.link('/ticket/' + json.success);
+				MainNavigationService.link( '/ticket/' + json.success);
 				if( $scope.complete ){
 					$scope.complete();
 				}
@@ -268,32 +283,41 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 
 } );
 
-NGApp.controller('SupportCtrl', function($scope, $rootScope, TicketService, TicketViewService, CallService) {
+NGApp.controller('SupportCtrl', function($scope, $rootScope, $timeout, TicketService, TicketViewService, CallService) {
+
 	$scope.ticketparams = {
 		status: 'open'
 	};
+
 	$scope.callparams = {
 		status: ['in-progress','ringing'],
 		limit: 5,
 		today: true
 	};
 
+	$scope.closeTicket = function( id_support ){
+		TicketService.openClose( id_support, function() { update(); } );
+	}
+
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
 		}
 		if (!oldValue || newValue.count != oldValue.count || newValue.timestamp != oldValue.timestamp ) {
-			TicketService.list($scope.ticketparams, function(d) {
-				$scope.lotsoftickets = d.results;
-			});
+			update();
 		}
 	}, true);
 
-	TicketService.list($scope.ticketparams, function(d) {
-		$scope.lotsoftickets = d.results;
-	});
+	var update = function(){
+		TicketService.list($scope.ticketparams, function(d) {
+			$scope.lotsoftickets = d.results;
+			TicketViewService.scope.tickets = d.results;
+		});
+	}
 
 	CallService.list($scope.callparams, function(d) {
 		$scope.calls = d.results;
 	});
+
+	update();
 });

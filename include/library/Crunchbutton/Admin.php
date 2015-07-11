@@ -39,6 +39,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function ssn( $ssn = false ){
 		return $this->social_security_number( $ssn );
 	}
+	
+	public function hasSSN() {
+		if (!$this->id_admin) {
+			return false;
+		}
+		$id = Crunchbutton_Admin_Info::q('select id_admin_info from admin_info where `key`=? and id_admin=?',['ssn', $this->id_admin])->get(0);
+		return $id->id_admin_info ? true : false;
+	}
 
 	public function save_ssn( $ssn ){
 		return $this->save_social_security_number( $this->id_admin, $ssn );
@@ -102,7 +110,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	public function hasPaymentType(){
 		$payment_type = $this->payment_type();
-		if( $payment_type->balanced_id && $payment_type->balanced_bank ){
+		if( $payment_type->stripe_id && $payment_type->stripe_account_id ){
 			return true;
 		}
 		return false;
@@ -1118,18 +1126,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 
 		$paymentType = $this->paymentType();
-		switch ( $processor ) {
-			case Crunchbutton_Payment::PROCESSOR_BALANCED:
-				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
-					return true;
-				}
-				break;
-
-			case Crunchbutton_Payment::PROCESSOR_STRIPE:
-				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
-					return true;
-				}
-				break;
+		if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+			return true;
 		}
 		return false;
 	}

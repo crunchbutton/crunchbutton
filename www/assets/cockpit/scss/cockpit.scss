@@ -3225,6 +3225,13 @@ h1.driver-title {
 	float: left;
 	font-size: 1.2em;
 }
+.support-side-header-closed-tickets{
+	text-decoration: none;
+	font-weight:bold;
+	float: right;
+  margin-top: -2em;
+  margin-right: 1em;
+}
 
 .support-chat-header-back .fa {
 	font-size: .9em;
@@ -3449,6 +3456,9 @@ input[type="checkbox"].switch + div:before {
 }
 .tb-info-item {
 	display:table-row;
+}
+.profile-preference .tb-info-content {
+	padding-bottom: 1em;
 }
 .tb-info-content, .tb-info-data {
 	display: table-cell;
@@ -3903,6 +3913,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	margin-top: -100px;
 	overflow: hidden;
 }
+.logo-connection-status {
+	@include transition(color linear 0.08s);
+}
 
 .box-content-new .dialog-subtext {
 	margin-top: 0;
@@ -4237,3 +4250,38 @@ h1.title.box-title {
 .customer-image-updater:hover {
 	background: red;
 }
+
+.nav-account {
+	float: right;
+}
+
+.nav-account .user-name {
+	font-family: Ruda, sans-serif;
+	color: #fff;
+	font-size: 1.4em;
+	line-height: 2.3em;
+	margin-right: 2em;
+	text-decoration: none;
+}
+
+.restaurant-image-upload-button {
+
+}
+
+.restaurant-image-button-wrap {
+	text-align: right;
+}
+
+.restaurant-image-updater {
+	margin-top: -1.4em;
+}
+
+.ladda-button.ladda-button-nohover:hover {
+	background-color: inherit;
+	border-color: inherit;
+}
+.text-muted{ color:#888888; }
+.text-warning{ color:#F8AC58; }
+.text-success{ color:#3c763d; }
+.text-info{ color:#23c6c8; }
+.text-danger{ color:#de5750; font-weight: bold; }

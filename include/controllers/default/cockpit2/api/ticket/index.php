@@ -29,8 +29,47 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if ($this->method() == 'get') {
-			echo $ticket->json();
-			exit;
+			switch ( c::getPagePiece( 3 ) ) {
+
+				case 'side-info':
+
+					$page = c::getPagePiece( 4 );
+
+					$data = $ticket->exports( [ 'messages_page' => $page ] );
+
+					$out = [];
+					$out[ 'id_support' ] = $data[ 'id_support' ];
+
+					if( $data[ 'pexcard' ] ){
+						$out[ 'pexcard' ] = $data[ 'pexcard' ];
+					}
+					if( $data[ 'restaurant' ] ){
+						$out[ 'restaurant' ] = [ 'name' => $data[ 'restaurant' ][ 'name' ], 'community' => $data[ 'restaurant' ][ 'community' ] ];
+					}
+					if( $data[ 'order' ] ){
+						$out[ 'order' ] = [ 'pay_type' => $data[ 'order' ][ 'pay_type' ],
+																'delivery_type' => $data[ 'order' ][ 'delivery_type' ],
+																'status' => $data[ 'order' ][ 'status' ],
+																'confirmed' => $data[ 'order' ][ 'confirmed' ],
+																'eta' => $data[ 'order' ][ 'eta' ] ];
+					}
+
+
+
+					$out[ 'messages' ] = [];
+					$out[ 'messages' ][ 'total' ] = $data[ 'total_messages' ];
+					$out[ 'messages' ][ 'list' ] = $data[ 'messages' ];
+					echo json_encode( $out );exit;
+					break;
+
+				default:
+					$out = $ticket->exports( [ 'exclude' => [ 'messages' => true ] ] );
+					$out[ 'order' ][ 'do_not_reimburse_driver' ] = ( intval( $out[ 'order' ][ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
+					$out[ 'order' ][ 'do_not_pay_driver' ] = ( intval( $out[ 'order' ][ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
+					$out[ 'order' ][ 'do_not_pay_restaurant' ] = ( intval( $out[ 'order' ][ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;
+					echo json_encode( $out );exit;
+					break;
+			}
 		}
 
 		if (c::getPagePiece(3) == 'open-close' && $this->method() == 'post' ) {
@@ -43,7 +82,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 				$ticket->save();
 				$ticket->addSystemMessage( c::admin()->name . ' opened this ticket' );
 			}
-			echo $ticket->json();
+			echo json_encode( [ 'success' => true ] );exit;
 			exit;
 		}
 		if (c::getPagePiece(3) == 'message' && $this->method() == 'post') {
@@ -65,4 +104,5 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		header('HTTP/1.0 409 Conflict');
 		exit;
 	}
+
 }

@@ -2,20 +2,25 @@
 	<div ng-controller="SideTicketsCtrl">
 		<div ng-if="account.user.permissions.GLOBAL">
 			<h1>Tickets</h1>
+			<a class="support-side-header-closed-tickets" href="/tickets">No open tickets</a>
+			<div class="divider"></div>
 			<div class="tickets-side-tickets">
-				<div ng-repeat="ticket in tickets" ng-click="setViewTicket(ticket.id_support)" class="tickets-side-item" ng-class="{'tickets-side-item-unread': (ticket.id_support_message_client == ticket.id_support_message_recent || ticket.from_recent=='system'), 'tickets-side-item-read': (ticket.id_support_message_client != ticket.id_support_message_recent && ticket.from_recent!='system')}">
+				<div ng-repeat="ticket in tickets" ng-click="loadTicket( ticket.id_support )" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
 					<div class="tickets-side-tickets-wrap">
-						<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}">{{ticket.name}}</a>
+						<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
+							<span ng-if="ticket.type == 'WARNING'">
+								<i>System</i>
+							</span>
+							<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
+						</a>
 						<span title="{{ ticket.timestamp | tsToHour }}" class="tickets-side-time" am-time-ago="ticket.timestamp_client*1000"></span>
-
 						<div class="divider"></div>
 						<br>
-						<span class="tickets-side-message">{{ticket.message_client}}</span>
+						<span class="tickets-side-message" ng-class="{ 'text-warning': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }">{{ticket.message_client}}</span>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<div ng-if="!account.user.permissions.GLOBAL">
 			<br>
 			<p>To contact Crunchbutton support, please text <br><br><a href ng-click="callText('16467831444')">(646) 783-1444</a></p>

@@ -3,10 +3,6 @@
 class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 	public function run() {
 
-		// send hipchat notification
-		// @pererinha is this still needed?
-		//Crunchbutton_Hipchat_Notification::OrderPlaced($this->order());
-
 		// send customer a receipt in 30 seconds
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT,

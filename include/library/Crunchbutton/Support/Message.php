@@ -52,16 +52,36 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		self::notify_by_sms();
 	}
 
- 	public function byPhone( $phone, $id_support = false ){
+	public function totalMessagesByPhone( $phone ){
+		$phone = Phone::clean( $phone );
+		$query = 'SELECT COUNT(*) AS total FROM support_message sm INNER JOIN support s ON s.id_support = sm.id_support INNER JOIN phone p ON p.id_phone = s.id_phone WHERE p.phone = ? ORDER BY sm.id_support_message ASC';
+		$r = c::db()->get( $query, [ $phone ] )->get( 0 );
+ 		return intval( $r->total );
+	}
 
+ 	public function byPhone( $phone, $id_support = false, $page = false, $limit = false ){
  		$phone = Phone::clean( $phone );
-
  		$where = ( $id_support ) ? ' OR sm.id_support = "' . $id_support . '" ' : '';
-
+ 		if( $page && $limit ){
+ 			$total = Crunchbutton_Support_Message::totalMessagesByPhone( $phone );
+ 			$pages = ceil( $total / $limit );
+ 			if( $page > $pages ){
+ 				return false;
+ 			}
+ 			$start = $total - ( $limit * $page );
+ 			$end = ( ( $start + $limit ) <= $total ) ? ( $limit ) : 0;
+ 			if( $start < 0 ){
+ 				$end = $start + $limit;
+ 				$start = 0;
+ 			}
+ 			$_limit = ' LIMIT ' . $start . ',' . $end;
+ 		} else {
+ 			$_limit = '';
+ 		}
  		return Crunchbutton_Support_Message::q( 'SELECT sm.* FROM support_message sm
  																							INNER JOIN support s ON s.id_support = sm.id_support
  																							INNER JOIN phone p ON p.id_phone = s.id_phone
- 																							WHERE p.phone = ? ', [ $phone ] );
+ 																							WHERE p.phone = ? ORDER BY sm.id_support_message ASC ' . $_limit, [ $phone ] );
 	}
 
 	public function exports($guid = null) {
@@ -77,9 +97,6 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		} else {
 			$out['relative'] = $this->relativeTime( true );
 		}
-
-
-
 
 		$out['hour'] = $this->date()->format( 'H:i' );
 		$out['guid'] = $guid;

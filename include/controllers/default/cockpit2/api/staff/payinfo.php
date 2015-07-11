@@ -52,9 +52,6 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			case 'save':
 				$this->savePayInfo( $admin );
 				break;
-			case 'save-bank':
-				$this->saveBankInfo( $admin );
-				break;
 			case 'save-stripe-bank':
 				$this->saveStripeBankInfo( $admin );
 				break;
@@ -153,32 +150,6 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			echo json_encode( $stripe );exit;
 		}
 		$this->_error( 'Error creating stripe account' );
-	}
-
-
-	private function saveBankInfo( $admin ){
-		$payment_type = $admin->payment_type();
-		if( !$payment_type->id_admin_payment_type ){
-			$payment_type = new Crunchbutton_Admin_Payment_Type;
-			$payment_type->id_admin = $admin->id_admin;
-		}
-		if( !$payment_type->payment_method ){
-			$payment_type->payment_method = Crunchbutton_Admin_Payment_Type::PAYMENT_METHOD_DEPOSIT;
-		}
-		if( $this->request()[ 'legal_name_payment' ] ){
-			$payment_type->legal_name_payment = $this->request()[ 'legal_name_payment' ];
-		}
-		$payment_type->balanced_bank = $this->request()[ 'id' ];
-		$payment_type->balanced_id = $this->request()[ 'href' ];
-		$payment_type->save();
-
-		// claim it
-		$payment_type->claimBankAccount( $payment_type->balanced_bank );
-
-		// i dont think we need this anymore
-		//$payment_type->testAccount();
-
-		$this->payInfo( $admin );
 	}
 
 	private function payInfo( $admin ){

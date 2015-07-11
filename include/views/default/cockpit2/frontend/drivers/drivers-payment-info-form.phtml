@@ -1,0 +1,91 @@
+<div ng-controller="DriversPaymentFormCtrl">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Payment Information</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="formBasic" novalidate>
+		<div class="ul-inputs box-content2">
+			<ul ng-class="{'submitted':basicSubmitted}">
+				<li class="li-input" ng-class="{'error':formBasic.basicLegalName.$invalid}">
+					<div class="label">"Legal Name (as it appears on your checks):</div>
+					<div class="input"><input type="text" name="basicLegalName" ng-model="basicInfo.legal_name_payment" required placeholder="Legal Name" ng-maxlength="250"></div>
+					<div class="box-error">
+						<small ng-show="formBasic.basicLegalName.$error.required">Required.</small>
+						<small ng-show="formBasic.basicLegalName.$error.maxlength">Name cannot be longer than 250 characters.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':formBasic.basicSocialSecurityNumber.$invalid}">
+					<div class="label">Social Security Number:</div>
+					<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="basicInfo.social_security_number" required placeholder="Social Security Number" social-security-number-validate ng-maxlength="15"></div>
+					<div class="box-error">
+						<small ng-show="formBasic.basicSocialSecurityNumber.$error.required">Required.</small>
+						<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Social Security Number. Please use the format: XXX-XX-XXXX.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':formBasic.basicAddress.$invalid}">
+					<div class="label">Address:</div>
+					<div class="input">
+						<textarea name="basicAddress" ng-model="basicInfo.address" required placeholder="Address"></textarea>
+					</div>
+					<div class="box-error">
+						<small ng-show="formBasic.basicAddress.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input li-input-line-height">
+					* After saving this form, you'll need to enter your Bank Account information below so we can pay you
+					<span class="contrast">
+						<br><br>
+						By entering your payment information, you agree to the <a href="https://stripe.com/connect/account-terms" target="_system">Stripe Connected Account Agreement</a> which allows us to send money directly to your bank account.
+					</span>
+
+					<br/><br/>
+					<button class="button green" ng-click="save_basic_info();">Save</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+
+	<form name="formBank" novalidate>
+		<h2 class="title">Bank Account</h2>
+		<div class="ul-inputs box-content2">
+			<p ng-show="!bank.showForm">
+				<span ng-click="bank.showForm = 1" class="link orange">Edit</span>
+			</p>
+			<ul ng-class="{'submitted':bankSubmitted}" ng-show="bank.showForm">
+				<li class="li-input" ng-class="{'error':formBank.accountNumber.$invalid}">
+					<div class="label">Account Number:</div>
+					<div class="notes">
+						This is NOT your debit card number - it's the long number from your checks - see below
+					</div>
+					<div class="input">
+						<input type="tel" name="accountNumber" ng-model="bank.account_number" required />
+					</div>
+					<div class="box-error">
+						<small ng-show="formBank.accountNumber.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':formBank.routingNumber.$invalid}">
+					<div class="label">Routing Number:</div>
+					<div class="input">
+						<input type="tel" name="routingNumber" ng-model="bank.routing_number" required="required"/>
+					</div>
+					<div class="box-error">
+						<small ng-show="formBank.routingNumber.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-show="!isTokenizing">
+					<button class="button green" ng-click="createBankAccount();">Save Bank Information</button>
+					<span class="orange link" ng-show="isBeta" ng-click="bankInfoTest()">Test account</span>
+				</li>
+				<li class="li-input" ng-show="isTokenizing">
+					<span><i class="fa fa-circle-o-notch fa-spin"></i> Processing</span>
+				</li>
+				<li>
+					<div class="driver-routing-number"></div>
+					<br>Most banks have your Account and Routing numbers ONLINE in your Account Information section.
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

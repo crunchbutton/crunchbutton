@@ -1,6 +1,3 @@
-
-
-
 NGApp.factory('PushService', function($http, MainNavigationService, DriverOrdersService) {
 
 	var service = {
@@ -13,18 +10,20 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 	}
 
 	document.addEventListener('pushnotification', function(e) {
-		console.log('Push recieve event', e);
 		service.receive(e.msg);
 	}, false);
 
-	window.parent.pushnotification = function() {
-		console.log('Push recieve function', e);
-		service.receive(e.msg);
+	window.parent.pushnotification = function( e ) {
+		if( e.msg ){
+			service.receive(e.msg);
+		} else {
+			service.receive(e);
+		}
+
 	};
 
 	var saveToken = function(id, complete) {
 		service.id = id;
-
 		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
 			var key = 'push-android';
 		} else {
@@ -36,11 +35,11 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 			url: App.service + 'config',
 			data: {key: key, value: service.id}
 		});
-
 		complete();
 	};
 
 	service.register = function(complete) {
+
 		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
 			var params = {
 				'senderID': '1029345412368',

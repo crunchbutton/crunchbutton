@@ -15,14 +15,14 @@ class Crunchbutton_Order_Dish extends Cana_Table {
 								WHERE 
 									d.id_dish = ?
 									AND 
-										o.type = "check" 
+										o.type = ?
 									AND 
-										d.default = 1 
+										d.default = true
 									AND 
 										o.id_option_parent IS NULL
 									AND 
 										d.id_option NOT IN ( SELECT id_option FROM order_dish_option WHERE id_order_dish = ? )';
-		return Dish_Option::q($query, [$this->id_dish, $this->id_order_dish]);
+		return Dish_Option::q($query, [$this->id_dish, 'check', $this->id_order_dish]);
 	}
 
 	public function dish() {
