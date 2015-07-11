@@ -39,7 +39,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 						FROM support_message
 						WHERE
 							support_message.id_support=s.id_support
-							AND ( support_message.from="client" OR support_message.from="system" )
+							AND ( support_message.from=\'client\' OR support_message.from=\'system\' )
 					)
 					and smr.id_support_message=(
 						SELECT MAX(support_message.id_support_message) a
@@ -50,7 +50,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			';
 		} else if( $type == 'system' ){
 			$q .= '
-				s.type = "' . Crunchbutton_Support::TYPE_WARNING . '"
+				s.type = \'' . Crunchbutton_Support::TYPE_WARNING . '\'
 			';
 		}
 		if ($status != 'all') {
