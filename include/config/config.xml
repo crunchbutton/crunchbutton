@@ -72,6 +72,14 @@
 			<host>localhost</host>
 			<prefix></prefix>
 		</travis>
+		<travispostgres>
+			<user></user>
+			<pass></pass>
+			<db>crunchbutton_travis</db>
+			<host>localhost</host>
+			<prefix></prefix>
+			<type>PostgreSQL</type>
+		</travispostgres>
 		<metrics>
 			<!-- THIS DB NO LONGER EXISTS. if postgres is needed, we can use our heroku hosting. - devin -->
 			<type>postgresql</type>
