@@ -89,13 +89,18 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// special settings for live web views
-		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
+		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host'])) {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
 				header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 				exit;
 			}
+		}
+		
+		if (preg_match('/^cockpit._DOMAIN_$/',$_SERVER['SERVER_NAME']) && $_SERVER['HTTPS'] == 'on') {
+			header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+			exit;
 		}
 
 		$params['postInitSkip'] = true;
