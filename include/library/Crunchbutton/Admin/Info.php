@@ -14,7 +14,7 @@ class Crunchbutton_Admin_Info extends Cana_Table {
 	}
 
 	public function getInfo( $id_admin, $key ){
-		$info = Crunchbutton_Admin_Info::q( 'SELECT * FROM admin_info WHERE id_admin = ' . $id_admin . ' AND `key` = "' . $key . '" ORDER BY id_admin_info DESC LIMIT 1' );
+		$info = Crunchbutton_Admin_Info::q( 'SELECT * FROM admin_info WHERE id_admin = ? AND `key` = ? ORDER BY id_admin_info DESC LIMIT 1', [$id_admin, $key]);
 		if( $info->id_admin_info ){
 			return c::crypt()->decrypt( $info->value );
 		}
@@ -22,7 +22,7 @@ class Crunchbutton_Admin_Info extends Cana_Table {
 	}
 
 	public function storeInfo( $id_admin, $key, $value ){
-		$info = Crunchbutton_Admin_Info::q( 'SELECT * FROM admin_info WHERE id_admin = ' . $id_admin . ' AND `key` = "' . $key . '" ORDER BY id_admin_info DESC LIMIT 1' );
+		$info = Crunchbutton_Admin_Info::q( 'SELECT * FROM admin_info WHERE id_admin = ? AND `key` = ? ORDER BY id_admin_info DESC LIMIT 1', [$id_admin, $key]);
 		if( !$info->id_admin_info ){
 			$info = new Crunchbutton_Admin_Info;
 		}

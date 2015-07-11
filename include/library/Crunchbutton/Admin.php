@@ -39,6 +39,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function ssn( $ssn = false ){
 		return $this->social_security_number( $ssn );
 	}
+	
+	public function hasSSN() {
+		if (!$this->id_admin) {
+			return false;
+		}
+		$id = Crunchbutton_Admin_Info::q('select id_admin_info from admin_info where `key`=? and id_admin=?',['ssn', $this->id_admin])->get(0);
+		return $id->id_admin_info ? true : false;
+	}
 
 	public function save_ssn( $ssn ){
 		return $this->save_social_security_number( $this->id_admin, $ssn );
