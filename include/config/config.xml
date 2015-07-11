@@ -73,7 +73,7 @@
 			<prefix></prefix>
 		</travis>
 		<travispostgres>
-			<dsn>pgsql:host=;dbname=crunchbutton_travis;user=;password=</dsn>
+			<dsn>pgsql:host=;dbname=crunchbutton_travis;user=postgres;password=</dsn>
 			<type>PostgreSQL</type>
 		</travispostgres>
 		<metrics>
