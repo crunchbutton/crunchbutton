@@ -75,8 +75,6 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$db = 'fail';
 		}
-		
-		die($db);
 
 		// overwrite if we specify the db
 		if ($cliEnv) {
