@@ -17,6 +17,8 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 				$args->dsn .= ';port='.$args->port;
 			}
 		}
+		
+		echo "\n\nDSN: ".$args->dsn."\n\n";
 
 		$db = new \PDO($args->dsn);
 		$this->driver($db->getAttribute(\PDO::ATTR_DRIVER_NAME));
