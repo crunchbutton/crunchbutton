@@ -66,11 +66,12 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		$query = 'SELECT DISTINCT( o.id_order ) id, oa.* FROM `order` o
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
 								WHERE
-									oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '"
-									AND oa.id_admin = "' . $id_admin . '"
-									AND o.date >= "' . $date_start->format( 'Y-m-d' ) . ' 00:00:00"
-									AND o.date <= "' . $date_end->format( 'Y-m-d' ) . ' 23:59:59"';
-		return Crunchbutton_Order_Action::q( $query );
+									oa.type = ?
+									AND oa.id_admin = ?
+									AND o.date >= ?
+									AND o.date <= ?
+										';
+		return Crunchbutton_Order_Action::q( $query, [Crunchbutton_Order_Action::DELIVERY_DELIVERED, $id_admin, $date_start->format( 'Y-m-d' ) . ' 00:00:00', $date_end->format( 'Y-m-d' ) . ' 23:59:59']);
 	}
 
 	public function minutesToDelivery(){

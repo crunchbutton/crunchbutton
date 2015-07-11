@@ -1069,10 +1069,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 
 			$where .= ' AND o.delivery_service = true ';
-			$where .= ' AND date > "' . $interval . '" ';
+			$where .= ' AND date > ? ';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
-		return Order::q($query);
+		return Order::q($query, [$interval]);
 	}
 
 	public static function outstandingOrders(){
@@ -1115,11 +1115,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$now->modify( ' - ' . $hours . ' hour' );
 		$interval = $now->format( 'Y-m-d H:i:s' );
 		$where .= ' AND o.delivery_service = true ';
-		$where .= ' AND date > "' . $interval . '"';
+		$where .= ' AND date > ? ';
 
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 
-		return Order::q( $query );
+		return Order::q( $query,[$interval]);
 	}
 
 	public function revenueByAdminPeriod( $id_admin, $date_start, $date_end ){
