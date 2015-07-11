@@ -509,4 +509,20 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 	}
 
+    public function score() {
+        $qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
+        $s = Cockpit_Admin_Score::q($qString, [$this->id_admin,]);
+        if (is_null($s) || $s->count()==0){
+            $sc = new Cockpit_Admin_Score([
+                'id_community' => $this->id_admin,
+                'score' => Cockpit_Admin_Score::DEFAULT_SCORE
+            ]);
+            $sc->save();
+            return $sc->score;
+        } else{
+            return $s->get(0)->score;
+        }
+    }
+
+
 }
