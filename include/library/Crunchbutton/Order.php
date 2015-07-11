@@ -581,9 +581,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$user->stripe_id = $this->_customer;
 						$user->save();
 						break;
-					case 'balanced':
-						$payment_type->balanced_id = $this->_paymentType->id;
-						break;
 				}
 
 				$payment_type->save();
@@ -959,7 +956,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
-				$processorId = Crunchbutton_User_Payment_Type::processor() == 'balanced' ? 'balanced_id' : 'stripe_id';
 
 				if ($user) {
 					$paymentType = $user->payment_type();
@@ -975,32 +971,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							'customer_id' => $user->stripe_id
 						]);
 
-					} elseif (Crunchbutton_User_Payment_Type::processor() == 'balanced' && $paymentType->balanced_id) {
-
-						if (substr($paymentType->balanced_id,0,2) != 'CC') {
-							// we have stored the customer and not the payment type. need to fix that
-							// @todo: i dont really understand wtf this is for - devin
-							$cards = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id)->cards;
-							if (get_class($cards) == 'RESTful\Collection') {
-								foreach ($cards as $card) {
-									$c = $card;
-								}
-
-								$paymentType = (new User_Payment_Type([
-									'id_user' => $user->id_user,
-									'active' => 1,
-									'balanced_id' => $c->id,
-									'card' => str_replace('x','*',$c->number),
-									'card_exp_month' => $c->expiration_year,
-									'card_exp_year' => $c->expiration_month,
-									'date' => date('Y-m-d H:i:s')
-								]))->save();
-							}
-						}
-
-						$charge = new Charge_Balanced([
-							'card_id' => $paymentType->balanced_id
-						]);
 					} else {
 						// there is a mismatch with stripe and balanced
 					}
@@ -1009,9 +979,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				// create the objects with no params
 				if (!$charge) {
 					switch (Crunchbutton_User_Payment_Type::processor()) {
-						case 'balanced':
-							$charge = new Charge_Balanced();
-							break;
 						case 'stripe':
 							$charge = new Charge_Stripe([
 								'customer_id' => $user->stripe_id

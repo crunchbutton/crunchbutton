@@ -66,20 +66,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function hasPaymentType(){
 		$paymentType = $this->paymentType();
-		switch ( Crunchbutton_Payment::processor() ) {
-			case Crunchbutton_Payment::PROCESSOR_BALANCED:
-				if( $paymentType->balanced_id && $paymentType->balanced_bank ){
-					return true;
-				}
-				break;
-
-			case Crunchbutton_Payment::PROCESSOR_STRIPE:
-				if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
-					return true;
-				}
-				break;
+		if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	public function meetDeliveryMin($order) {
@@ -374,11 +365,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			exit;
 		}
 
-	}
-
-	public function saveBankInfo($name, $account, $routing, $type) {
-		// @balanced
-		return false;
 	}
 
 	/**
@@ -1250,11 +1236,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( !$isCockpit ){
 			$ignore['notifications'] = true;
 			$out[ 'notes_owner' ] = NULL;
-			$out[ 'balanced_id' ] = NULL;
-			$out[ 'balanced_bank' ] = NULL;
 			$out[ 'notes' ] = NULL;
 			$out[ 'email' ] = NULL;
 		}
+		unset($out[ 'balanced_id' ]);
+		unset($out[ 'balanced_bank' ]);
+		
 
 		if (!$ignore['notifications']) {
 			$where = [];

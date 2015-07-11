@@ -215,12 +215,13 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							$this->_saveCategories($r);
 							break;
 						case 'fake-merchant':
+							// @todo: remove this. it was only used for balanced
 							if ($r->id_restaurant) {
 								$payment = $r->payment_type();
 								$payment->id_restaurant = $r->id_restaurant;
 								$payment->balanced_id = c::config()->balanced->sharedMerchant;
 								$payment->save();
-								echo json_encode( [ 'success' => 'success' ] );
+								echo json_encode( [ 'error' => 'error' ] );
 							}
 							break;
 
@@ -247,6 +248,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 
 						case 'fakeremove-merchant':
+							// @todo: remove this. it was only used for balanced
 							if ($r->id_restaurant) {
 								$payment = $r->payment_type();
 								$payment->id_restaurant = $r->id_restaurant;
@@ -361,6 +363,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 
 						case 'bankinfo':
+							// @balanced. old
 							if ($r->id_restaurant) {
 								$r->saveBankInfo($this->request()['name'],$this->request()['account'],$this->request()['routing'],$this->request()['type']);
 							}
