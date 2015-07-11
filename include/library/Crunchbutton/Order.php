@@ -2150,7 +2150,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $out['user_has_auth'] ){
-			$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $this->id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" LIMIT 1' );
+			$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? LIMIT 1', [$this->id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 			if( $credit->id_credit ){
 				$reward = new Crunchbutton_Reward;
 				$points = $reward->processOrder( $this->id_order );

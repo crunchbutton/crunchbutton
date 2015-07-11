@@ -236,7 +236,7 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 					$totalPointsRecalculated += $points;
 				}
 				// check if the order was shared
-				$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = "' . $id_order . '" AND c.type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND credit_type = "' . Crunchbutton_Credit::CREDIT_TYPE_POINT . '" AND note LIKE "%sharing%" LIMIT 1' );
+				$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? AND note LIKE "%sharing%" LIMIT 1', [$id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 				if( $credit->id_credit ){
 					$pointsPerSharing = $credit->value;
 					$points = $reward->sharedOrder( $id_order );
