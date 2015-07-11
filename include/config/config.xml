@@ -277,6 +277,22 @@
 			<secret>_KEY_</secret>
 		</dev>
 	</phaxio>
+	<google>
+		<live>
+			<key>_KEY_</key>
+		</live>
+		<dev>
+			<key>_KEY_</key>
+		</dev>
+	</google>
+	<optimizer>
+		<live>
+			<url>nothing</url>
+		</live>
+		<live>
+			<dev>http://192.168.56.101:5001/optimizer</dev>
+		</live>
+	</optimizer>
 	<lob>
 		<dev>
 			<key>_KEY_</key>
