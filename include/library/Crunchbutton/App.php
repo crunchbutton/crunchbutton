@@ -52,7 +52,9 @@ class Crunchbutton_App extends Cana_App {
 
 		// db by hostname
 		// travis
-		if (getenv('TRAVIS')) {
+		if (getenv('TRAVISPOSTGRES')) {
+			$db = 'travispostgres';
+		} elseif (getenv('TRAVIS')) {
 			$db = 'travis';
 		// anything local
 		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
@@ -138,7 +140,7 @@ class Crunchbutton_App extends Cana_App {
 
 
 		// set host callback by hostname
-		$config->host_callback = ($db == 'local' || $db == 'travis' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
+		$config->host_callback = ($db == 'local' || $db == 'travis' || $db == 'travispostgres' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
 
 		// set facebook config by hostname
 		if ($config->facebook->{$_SERVER['SERVER_NAME']}) {
