@@ -60,7 +60,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
 		// anything by heroku use its own db
-		} elseif (preg_match('/^heroku.(_DOMAIN_|crunchr.co|cockpit.la|cockpit._DOMAIN_)$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/^heroku.*$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
