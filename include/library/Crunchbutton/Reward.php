@@ -89,7 +89,7 @@ class Crunchbutton_Reward extends Cana_Table{
 	}
 
 	public function orderWasAlreadySharedFacebook( $id_order ){
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? AND ( shared = "facebook" OR note LIKE "%facebook shared%" ) LIMIT 1', [$id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? AND ( shared = \'facebook\' OR note LIKE \'%facebook shared%\' ) LIMIT 1', [$id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $credit->id_credit ){
 			return true;
 		}
@@ -97,7 +97,7 @@ class Crunchbutton_Reward extends Cana_Table{
 	}
 
 	public function orderWasAlreadySharedTwitter( $id_order ){
-		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? AND ( shared = "twitter" OR note LIKE "%twitter shared%" ) LIMIT 1', [$id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
+		$credit = Crunchbutton_Credit::q( 'SELECT * FROM credit c WHERE c.id_order = ? AND c.type = ? AND credit_type = ? AND ( shared = \'twitter\' OR note LIKE \'%twitter shared%\' ) LIMIT 1', [$id_order, Crunchbutton_Credit::TYPE_CREDIT, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $credit->id_credit ){
 			return true;
 		}
