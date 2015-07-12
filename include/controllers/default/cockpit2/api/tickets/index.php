@@ -100,10 +100,9 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				$count = $c->c;
 			}
 		}
-
+//			#, sm.id_support_message
 		$q .= '
 			GROUP BY s.id_support
-			#, sm.id_support_message
 			ORDER BY s.id_support DESC
 			LIMIT ?
 			OFFSET ?
