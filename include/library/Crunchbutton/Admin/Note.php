@@ -3,7 +3,7 @@
 class Crunchbutton_Admin_Note extends Cana_Table {
 
 	public function lastNoteByAdmin( $id_admin ){
-		return Crunchbutton_Admin_Note::q( 'SELECT * FROM admin_note WHERE id_admin = "' . $id_admin . '" ORDER BY id_admin_note DESC LIMIT 1' );
+		return Crunchbutton_Admin_Note::q( 'SELECT * FROM admin_note WHERE id_admin = ? ORDER BY id_admin_note DESC LIMIT 1', [$id_admin]);
 	}
 
 	public function date() {
