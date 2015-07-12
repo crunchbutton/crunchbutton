@@ -41,7 +41,6 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 			}
 			$columns[] = $row;
 		}
-		print_r($columns);
 		
 		return $columns;
 	}
