@@ -7,7 +7,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 		$restaurant = Restaurant::permalink(c::getPagePiece(2));
 
 		if (!$restaurant->id_restaurant) {
-			$restaurant = Restaurant::o(c::getPagePiece(2));
+			$restaurant = Restaurant::o((int)c::getPagePiece(2));
 		}
 
 		if (!$restaurant->id_restaurant) {
