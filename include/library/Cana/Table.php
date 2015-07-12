@@ -143,7 +143,7 @@ class Cana_Table extends Cana_Model { //
 				}
 				$fields[] = $row;
 			}
-
+print_r($fields);
 			$this->_fields = $fields;
 			$this->db()->fields($this->table(), $fields);
 		}
