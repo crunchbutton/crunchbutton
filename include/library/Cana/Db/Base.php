@@ -76,6 +76,17 @@ class Cana_Db_Base {
 			$args = null;
 		}
 		*/
+		/*
+		if ($args) {
+			foreach ($args as $k => $v) {
+				if ($v === true) {
+					$args[$k] = 'true';
+				} elseif ($v === false) {
+					$args[$k] = 'false';
+				}
+			}
+		}
+		*/
 
 		try {
 			$stmt->execute($args);

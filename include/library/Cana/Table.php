@@ -339,7 +339,7 @@ class Cana_Table extends Cana_Model { //
 
 			foreach ($fields as $field) {
 				if ($this->property($field->field) === false) {
-					continue;
+					//continue;
 				}
 				$query .= !$numset ? '' : ',';
 				$query .= ' :'.$field->field;
