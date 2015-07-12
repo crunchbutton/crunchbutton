@@ -331,7 +331,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$q .= '
 				AND admin.active=?
 			';
-			$keys[] = $status == 'active' ? 'true' : 'false';
+			$keys[] = $status == 'active' ? true : false;
+			//$keys[] = $status == 'active' ? 'true' : 'false';
 		}
 
 		if ($community) {
