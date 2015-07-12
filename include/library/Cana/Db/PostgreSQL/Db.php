@@ -34,7 +34,7 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 		$columns = [];
 
 		while ($row = $res->fetch()) {
-			if (preg_match('/nextval(/',$row->Default) {
+			if (preg_match('/nextval(/',$row->Default)) {
 				$row->auto = true;
 			} else {
 				$row->auto = false;
