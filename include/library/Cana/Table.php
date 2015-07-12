@@ -286,7 +286,7 @@ class Cana_Table extends Cana_Model { //
 		$numset = 0;
 
 		foreach ($fields as $field) {
-			if ($field->field->auto === true && $newItem) {
+			if ($field->auto === true && $newItem) {
 				continue;
 			}
 
@@ -338,6 +338,10 @@ class Cana_Table extends Cana_Model { //
 			$numset = 0;
 
 			foreach ($fields as $field) {
+				if ($field->auto === true) {
+					continue;
+				}
+
 				$query .= !$numset ? '' : ',';
 				$query .= ' :'.$field->field;
 				$numset++;
@@ -348,8 +352,7 @@ class Cana_Table extends Cana_Model { //
 			$query .= ' WHERE '.$this->idVar().'=:id';
 			$fs['id'] = $this->{$this->idVar()};
 		}
-//echo $query;
-//		print_r($fs);
+
 		$this->dbWrite()->query($query, $fs);
 
 		if ($newItem) {
