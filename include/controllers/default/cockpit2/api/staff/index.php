@@ -10,7 +10,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$this->_phones();
 			}
 
-			$staff = Admin::o(c::getPagePiece(2));
+			$staff = Admin::o((int)c::getPagePiece(2));
 
 			if (!$staff->id_admin) {
 				$staff = Admin::login(c::getPagePiece(2), true);
