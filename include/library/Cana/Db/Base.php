@@ -76,7 +76,7 @@ class Cana_Db_Base {
 			$args = null;
 		}
 		*/
-		/*
+
 		if ($args) {
 			foreach ($args as $k => $v) {
 				if ($v === true) {
@@ -86,7 +86,6 @@ class Cana_Db_Base {
 				}
 			}
 		}
-		*/
 
 		try {
 			$stmt->execute($args);
