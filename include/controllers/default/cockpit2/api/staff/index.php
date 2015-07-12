@@ -331,7 +331,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$q .= '
 				AND admin.active=?
 			';
-			$keys[] = $status == 'active' ? true : false;
+			$keys[] = $status == 'active' ? 'true' : 'false';
 		}
 
 		if ($community) {
@@ -385,12 +385,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			if( $send_text != 'all' ){
 				if( intval( $send_text ) == 0 ){
 					$q .= '
-						HAVING ac.value IS NULL OR ac.value = 0
+						HAVING ac.value IS NULL OR ac.value = false
 					';
 				}
 				if( intval( $send_text ) >= 1 ){
 					$q .= '
-						HAVING ac.value = 1
+						HAVING ac.value = true
 					';
 				}
 			}
@@ -419,7 +419,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 						admin.*,
 						bool_and(apt.using_pex) using_pex,
 						max(apt.id_admin_payment_type) id_admin_payment_type,
-						ac.value AS send_text_about_schedule
+						max(ac.value) AS send_text_about_schedule
 					';
 		} else {
 			$wild = '
