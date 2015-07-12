@@ -135,7 +135,11 @@ class Cana_Table extends Cana_Model { //
 
 				$row->null = $row->null == 'YES' ? true : false;
 				if ( strpos($row->type, 'enum') === false && strpos($row->type, 'int') !== false) {
-					$row->type = 'int';
+					if ($row->type == 'tinyint(1)') {
+						$row->type = 'bool';
+					} else {
+						$row->type = 'int';
+					}
 				}
 				$fields[] = $row;
 			}
@@ -290,6 +294,10 @@ class Cana_Table extends Cana_Model { //
 			}
 
 			switch ($field->type) {
+				case 'bool':
+					$this->{$field->field} = $this->{$field->field} ? true : false;
+					break;
+
 				case 'int':
 					$this->{$field->field} = intval($this->{$field->field});
 					break;
