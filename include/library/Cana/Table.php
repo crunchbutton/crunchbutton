@@ -246,6 +246,9 @@ class Cana_Table extends Cana_Model { //
 				case 'int':
 					$this->{$field->field} = (int)$this->{$field->field};
 					break;
+				case 'boolean':
+					$this->{$field->field} = $this->{$field->field} ? true : false;
+					break;
 			}
 		}
 
@@ -284,7 +287,7 @@ class Cana_Table extends Cana_Model { //
 
 		foreach ($fields as $field) {
 			if ($this->property($field->field) === false) {
-				continue;
+				//continue;
 			}
 
 			if ($this->{$field->field} == '' && $field->null) {
