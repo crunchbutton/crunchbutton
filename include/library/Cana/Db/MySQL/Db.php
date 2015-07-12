@@ -25,7 +25,19 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 	
 	public function getFields($table) {
 		$res = $this->db()->query('SHOW COLUMNS FROM `'.$table.'`');
-		return $res;
+		$columns = [];
+
+		while ($row = $res->fetch()) {
+			if ($row->Extra == 'auto_increment') {
+				$row->auto = true;
+			} else {
+				$row->auto = false;
+			}
+			unset($row->Extra);
+			$columns[] = $row;
+		}
+
+		return $columns;
 	}
 	
 	public function query($query, $args = [], $type = 'object') {

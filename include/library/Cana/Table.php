@@ -124,7 +124,7 @@ class Cana_Table extends Cana_Model { //
 			$fields = [];
 			$res = $this->db()->getFields($this->table());
 
-			while ($row = $res->fetch()) {
+			foreach ($res as $row) {
 				$row = get_object_vars($row);
 				$props = [];
 
@@ -143,7 +143,7 @@ class Cana_Table extends Cana_Model { //
 				}
 				$fields[] = $row;
 			}
-print_r($fields);
+
 			$this->_fields = $fields;
 			$this->db()->fields($this->table(), $fields);
 		}
@@ -338,8 +338,8 @@ print_r($fields);
 			$numset = 0;
 
 			foreach ($fields as $field) {
-				if ($this->property($field->field) === false) {
-					//continue;
+				if ($field->field->auto === true) {
+					continue;
 				}
 				$query .= !$numset ? '' : ',';
 				$query .= ' :'.$field->field;
