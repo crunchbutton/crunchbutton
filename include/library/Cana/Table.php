@@ -286,8 +286,8 @@ class Cana_Table extends Cana_Model { //
 		$numset = 0;
 
 		foreach ($fields as $field) {
-			if ($this->property($field->field) === false) {
-				//continue;
+			if ($field->field->auto === true && $newItem) {
+				continue;
 			}
 
 			if ($this->{$field->field} == '' && $field->null) {
@@ -338,9 +338,6 @@ class Cana_Table extends Cana_Model { //
 			$numset = 0;
 
 			foreach ($fields as $field) {
-				if ($field->field->auto === true) {
-					continue;
-				}
 				$query .= !$numset ? '' : ',';
 				$query .= ' :'.$field->field;
 				$numset++;
