@@ -83,7 +83,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 					'o.name' => 'like',
 					'o.phone' => 'like',
 					'o.address' => 'like',
-					's.id_support' => 'liker'
+					's.id_support' => 'inteq'
 				]
 			]);
 			$q .= $s['query'];
