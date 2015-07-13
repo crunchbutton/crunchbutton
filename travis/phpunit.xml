@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit bootstrap="Tests/bootstrap.php" colors="true">
+	<logging>
+        <log type="coverage-php" target="../build/coverage.cov"/>
+    </logging>
+
     <testsuites>
         <testsuite name="Crunchbutton Backend">
             <directory>./Tests/</directory>

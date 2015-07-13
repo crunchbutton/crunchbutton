@@ -15,6 +15,8 @@ env:
 # install:
 
 before_script:
+  - mkdir build
+  - composer install --dev --no-interaction
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
@@ -41,7 +43,7 @@ before_script:
 
 
 script:
-  - phpunit --configuration travis/phpunit.xml --coverage-text
+  - phpunit --configuration travis/phpunit.xml
   - phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
   
 notifications:
@@ -56,3 +58,6 @@ addons:
 #  sauce_connect:
 #  username: "Your Sauce Labs username"
 #  access_key: "Your Sauce Labs access key"
+
+after_script:
+  - php vendor/bin/coveralls -v
