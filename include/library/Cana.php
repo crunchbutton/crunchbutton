@@ -185,7 +185,9 @@ class Cana extends Cana_Model {
 			}
 		} else {
 			exec($cmd.' 2>&1 &', $o);
-			print_r($o);
+			if ($o) {
+				print_r($o);
+			}
 		}
 	}
 
