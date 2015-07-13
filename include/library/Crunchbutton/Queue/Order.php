@@ -18,9 +18,13 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			// get active community drivers
 			$drivers = $this->order()->getDriversToNotify();
 
+            $dl = $this->order()->community()->delivery_logistics;
 			// perform delivery logistics only if there are multiple drivers and it is enabled
-			if ($this->order()->community()->delivery_logistics && $drivers->count() > 1) {
-				$l = new Order_Logistics($this->order());
+			if ($dl && $drivers->count() > 1) {
+
+				$l = new Order_Logistics($dl, $this->order());
+                // TODO: Add logic here to check for current minimum ETA
+                // TODO: If ETA is too large, notify customer service
 
 				// queue notifications for drivers at specific times
 				foreach ($l->drivers() as $driver) {

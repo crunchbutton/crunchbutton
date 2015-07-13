@@ -1642,6 +1642,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE community = ? '.$where.' ORDER BY name ASC', [$community]);
 	}
 
+	public static function getRestaurantsWithGeoByCommunity( $community, $inactive = false ){
+		if( !$inactive ){
+			$where = 'AND active = true';
+		}
+		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE loc_lat IS NOT NULL AND loc_long IS NOT NULL AND community = ? '.$where.' ORDER BY name ASC', [$community]);
+	}
+
 	public function restaurantsUserHasPermission(){
 		$restaurants_ids = [];
 		$_permissions = new Crunchbutton_Admin_Permission();
@@ -2192,5 +2199,53 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
+
+    public function parking($time, $dow) {
+        $qString = "SELECT * FROM `order_logistics_parking` WHERE id_restaurant= ? and "
+            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+        $parking = Crunchbutton_Order_Logistics_Parking::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+        if (is_null($parking) || $parking->count()==0){
+            return null;
+        } else{
+            return $parking->get(0);
+        }
+    }
+
+    public function ordertime($time, $dow) {
+        $qString = "SELECT * FROM `order_logistics_ordertime` WHERE id_restaurant= ? and "
+            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+        $ot = Crunchbutton_Order_Logistics_Ordertime::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+        if (is_null($ot) || $ot->count()==0){
+            return null;
+        } else{
+            return $ot->get(0);
+        }
+    }
+
+    public function cluster($time, $dow) {
+        $qString = "SELECT * FROM `order_logistics_cluster` WHERE id_restaurant= ? and "
+            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+        $olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+        // Clear out the cluster that day just in case
+        if (is_null($olc) || $olc->count()==0){
+            $qString = "SELECT * FROM `order_logistics_cluster` WHERE id_restaurant= ? and "
+                ."day_of_week = ?";
+            $olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $dow]);
+            if (!is_null($olc) && $olc->count()==0) {
+                $olc->delete();
+            }
+            $olc = new Crunchbutton_Order_Logistics_Cluster([
+                'id_restaurant_cluster' => $this->id_restaurant,
+                'id_restaurant' => $this->id_restaurant,
+                'time_start_community' => '00:00:00',
+                'time_end_community' => '24:00:00',
+                'day_of_week' => $dow
+            ]);
+            $olc->save();
+            return $olc->id_restaurant_cluster;
+        } else{
+            return $olc->get(0)->id_restaurant_cluster;
+        }
+    }
 
 }
