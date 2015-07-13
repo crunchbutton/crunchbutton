@@ -1,4 +1,7 @@
 if [ -z "$TRAVISPOSTGRES" ]; then
+	echo "Skipping PostgreSQL stuff."
+else 
+	echo "Converting MySQL to PostgreSQL..."
 	sudo apt-get install gdebi
 	#- wget http://pgloader.io/files/pgloader_3.2.0+dfsg-1_amd64.deb
 	wget https://s3.amazonaws.com/crunchbutton-storage/pgloader_3.2.0%2Bdfsg-1_amd64.deb
