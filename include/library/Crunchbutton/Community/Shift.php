@@ -33,7 +33,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 												INNER JOIN restaurant_community rc ON rc.id_community = cs.id_community
 												INNER JOIN `order` o ON o.id_restaurant = rc.id_restaurant
-											WHERE o.id_order = ' . $id_order . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = true AND a.active = true ');
+											WHERE o.id_order = ? AND cs.date_start <= ? AND cs.date_end >= ? AND cs.active = true AND a.active = true ', [$id_order, $now->format( 'Y-m-d H:i:s' ), $now->format( 'Y-m-d H:i:s' )]);
 	}
 
 	public function duration( $timeIn = 'hours' ){
