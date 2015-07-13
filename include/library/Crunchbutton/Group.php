@@ -102,11 +102,11 @@ class Crunchbutton_Group extends Cana_Table {
 	public function hasPermission( $permission, $useRegex = false ){
 		$permissions = $this->permissions();
 		foreach( $permissions as $_permission ){
-			if( $_permission->permission == $permission && $_permission->allow == 1 ){
+			if( $_permission->permission == $permission && $_permission->allow){
 				return true;
 			}
 			if( $useRegex ){
-				if( preg_match( $permission, $_permission->permission )  && $_permission->allow == 1 ){
+				if( preg_match( $permission, $_permission->permission )  && $_permission->allow ){
 					return true;
 				}
 			}

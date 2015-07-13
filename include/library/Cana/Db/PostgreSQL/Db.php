@@ -31,7 +31,18 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 	
 	function getFields($table) {
 		$res = $this->db()->query("SELECT column_name as Field, data_type as Type, is_nullable as Null, column_default as Default FROM information_schema.columns WHERE table_name = '".$table."'");
-		return $res;
+		$columns = [];
+
+		while ($row = $res->fetch()) {
+			if ($row->default && preg_match('/^nextval\(/',$row->default)) {
+				$row->auto = true;
+			} else {
+				$row->auto = false;
+			}
+			$columns[] = $row;
+		}
+		
+		return $columns;
 	}
 	
 	public function query($query, $args = [], $type = 'object') {
@@ -54,6 +65,17 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 			$format = preg_replace($find, $replace, $m[6] ? $m[6] : $m[5]);
 			return 'to_char('.$m[2].', \''.$format.'\')';
 		}, $query);
+		
+
+		if ($args) {
+			foreach ($args as $k => $v) {
+				if ($v === true) {
+					$args[$k] = 'true';
+				} elseif ($v === false) {
+					$args[$k] = 'false';
+				}
+			}
+		}
 
 		return parent::query($query, $args, $type);
 	}

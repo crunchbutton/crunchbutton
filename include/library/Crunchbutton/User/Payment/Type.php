@@ -6,7 +6,7 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 		return c::config()->site->config('processor_payments')->value;
 	}	
 
-	public function getUserPaymentType($id_user = null) {
+	public static function getUserPaymentType($id_user = null) {
 		$id_user = $id_user ? $id_user : c::user()->id_user;
 
 		if ($id_user) {

@@ -25,12 +25,35 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 	
 	public function getFields($table) {
 		$res = $this->db()->query('SHOW COLUMNS FROM `'.$table.'`');
-		return $res;
+		$columns = [];
+
+		while ($row = $res->fetch()) {
+			if ($row->Extra == 'auto_increment') {
+				$row->auto = true;
+			} else {
+				$row->auto = false;
+			}
+			unset($row->Extra);
+			$columns[] = $row;
+		}
+
+		return $columns;
 	}
 	
 	public function query($query, $args = [], $type = 'object') {
 		// replace bool_and
 		$query = preg_replace('/(bool_and\((.*?))\)/i','max(\\2)', $query);
+		
+
+		if ($args) {
+			foreach ($args as $k => $v) {
+				if ($v === true) {
+					$args[$k] = '1';
+				} elseif ($v === false) {
+					$args[$k] = '0';
+				}
+			}
+		}
 
 		return parent::query($query, $args, $type);
 	}

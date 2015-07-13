@@ -7,11 +7,11 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 
 		$r = new Restaurant([
 			'name' => $name,
-			'active' => 1,
-			'delivery' => 1,
-			'credit' => 1,
+			'active' => true,
+			'delivery' => true,
+			'credit' => true,
 			'delivery_fee' => '1.5',
-			'confirmation' => 0,
+			'confirmation' => false,
 			'community' => 'test',
 			'timezone' => 'America/Los_Angeles',
 			'open_for_business' => true
@@ -29,7 +29,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 		$a = new Admin([
 			'name' => $name,
 			'login' => null,
-			'active' => 1
+			'active' => true
 		]);
 		$a->save();
 
@@ -37,7 +37,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'name' => $name,
 			'phone' => '_PHONE_',
 			'address' => '123 main',
-			'active' => 1
+			'active' => true
 		]);
 		$u->save();
 
@@ -45,7 +45,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'name' => $name,
 			'price' => '10',
 			'id_restaurant' => $r->id_restaurant,
-			'active' => 1
+			'active' => true
 		]);
 		$d->save();
 
@@ -73,24 +73,28 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 		$name = get_called_class();
 
-		Restaurant::q('select * from restaurant where name="'.$name.'"')->delete();
-		User::q('select * from user where name="'.$name.'"')->delete();
-		Order::q('select * from `order` where name="'.$name.'"')->delete();
-		Admin::q('select * from admin where name="'.$name.'"')->delete();
-		Dish::q('select * from dish where name="'.$name.'"')->delete();
+		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
+		User::q('select * from user where name=?', [$name])->delete();
+		Order::q('select * from `order` where name=?', [$name])->delete();
+		Admin::q('select * from admin where name=?', [$name])->delete();
+		Dish::q('select * from dish where name=?', [$name])->delete();
 	}
 
 	public function setUp() {
 		$name = get_called_class();
 
-		$this->restaurant = Restaurant::q('select * from restaurant where name="'.$name.'" order by id_restaurant desc limit 1')->get(0);
-		$this->driver = Admin::q('select * from admin where name="'.$name.'" order by id_admin desc limit 1')->get(0);
-		$this->user = User::q('select * from `user` where name="'.$name.'" order by id_user desc limit 1')->get(0);
-		$this->dish = Dish::q('select * from `dish` where name="'.$name.'" order by id_dish desc limit 1')->get(0);
-		$this->order = Order::q('select * from `order` where name="'.$name.'" order by id_order desc limit 1')->get(0);
+		$this->restaurant = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name])->get(0);
+		$this->driver = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name])->get(0);
+		$this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name])->get(0);
+		$this->dish = Dish::q('select * from `dish` where name=? order by id_dish desc limit 1', [$name])->get(0);
+		$this->order = Order::q('select * from `order` where name=? order by id_order desc limit 1', [$name])->get(0);
 	}
 
 	public function testDriverAccept() {
+		if (!$this->order) {
+			$this->assertTrue('Could not find order');
+			return;
+		}
 		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $this->driver);
 		$this->assertTrue($status === true);
 	}

@@ -16,7 +16,9 @@ if (trim(`whoami`) == 'mmeyers') {
 //die($_GLOBALS['host-crunchbutton']);
 
 if (trim(`whoami`) == 'arzynik' || trim(`whoami`) == 'mmeyers') {
+	ini_set('mysql.default_socket', '/Applications/MAMP/tmp/mysql/mysql.sock');
     ini_set('mysqli.default_socket', '/Applications/MAMP/tmp/mysql/mysql.sock');
+	ini_set('pdo_mysql.default_socket', '/Applications/MAMP/tmp/mysql/mysql.sock');
 }
 
 require_once('include/crunchbutton.php');

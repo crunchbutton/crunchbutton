@@ -22,19 +22,18 @@ class Crunchbutton_Order_Action extends Cana_Table {
 			->load($id);
 	}
 
-	public function byOrder( $id_order ){
-		$_id_order = ( $this->id_order ? $this->id_order : $id_order );
+	public static function byOrder( $id_order ){
 		return Crunchbutton_Order_Action::q('
 			SELECT oa.*, a.name, a.phone FROM order_action oa
 			INNER JOIN admin a ON oa.id_admin = a.id_admin
 			WHERE oa.id_order = ?
 			and oa.type!=?
 			ORDER BY oa.id_order_action DESC
-		', [$_id_order, self::TICKET_NOT_GEOMATCHED]);
+		', [$id_order, self::TICKET_NOT_GEOMATCHED]);
 	}
 
 	public function restaurant(){
-		return Crunchbutton_Restaurant::q( "SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = {$this->id_order}" );
+		return Crunchbutton_Restaurant::q('SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = ?', [$this->id_order]);
 	}
 
 	public function changeTransferDeliveryDriver( $id_order, $id_admin ){

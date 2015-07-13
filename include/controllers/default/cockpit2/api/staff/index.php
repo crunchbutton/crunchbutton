@@ -10,7 +10,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$this->_phones();
 			}
 
-			$staff = Admin::o(c::getPagePiece(2));
+			$staff = Admin::o((int)c::getPagePiece(2));
 
 			if (!$staff->id_admin) {
 				$staff = Admin::login(c::getPagePiece(2), true);
@@ -332,6 +332,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				AND admin.active=?
 			';
 			$keys[] = $status == 'active' ? true : false;
+			//$keys[] = $status == 'active' ? 'true' : 'false';
 		}
 
 		if ($community) {
@@ -347,6 +348,23 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $pexcard == 'yes' ? true : false;
 		}
+		
+
+		if ($type == 'driver') {
+			if( $send_text != 'all' ){
+				if( intval( $send_text ) == 0 ){
+					$q .= '
+						AND ac.value IS NULL OR ac.value = \'0\'
+					';
+				}
+				if( intval( $send_text ) >= 1 ){
+					$q .= '
+						AND ac.value = \'1\'
+					';
+				}
+			}
+		}
+
 
 		if ($search) {
 			$s = Crunchbutton_Query::search([
@@ -356,7 +374,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					'admin.phone' => 'like',
 					'admin.login' => 'like',
 					'admin.email' => 'like',
-					'admin.id_admin' => 'liker',
+					'admin.id_admin' => 'inteq',
 					'admin.invite_code' => 'eq',
 					'apt.stripe_id' => 'eq',
 					'apt.stripe_account_id' => 'eq'
@@ -381,21 +399,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			GROUP BY `admin`.id_admin
 		';
 
-		if ($type == 'driver') {
-			if( $send_text != 'all' ){
-				if( intval( $send_text ) == 0 ){
-					$q .= '
-						HAVING ac.value IS NULL OR ac.value = 0
-					';
-				}
-				if( intval( $send_text ) >= 1 ){
-					$q .= '
-						HAVING ac.value = 1
-					';
-				}
-			}
-		}
-
 		$q .= '
 			ORDER BY `admin`.name ASC
 		';
@@ -419,7 +422,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 						admin.*,
 						bool_and(apt.using_pex) using_pex,
 						max(apt.id_admin_payment_type) id_admin_payment_type,
-						ac.value AS send_text_about_schedule
+						max(ac.value) AS send_text_about_schedule
 					';
 		} else {
 			$wild = '

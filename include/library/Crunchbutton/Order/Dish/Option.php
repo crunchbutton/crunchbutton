@@ -2,7 +2,7 @@
 
 class Crunchbutton_Order_Dish_Option extends Cana_Table {
 	public function option() {
-		return Option::q('select * from `option` where id_option="'.$this->id_option.'"');
+		return Option::q('select * from `option` where id_option=?', [$this->id_option]);
 	}
 
 	public function __construct($id = null) {

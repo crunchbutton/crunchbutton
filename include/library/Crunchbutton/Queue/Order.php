@@ -13,7 +13,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		// send restaurants notifications
 		$this->order()->notifyRestaurants();
 
-		if (intval($this->order()->restaurant()->delivery_service) == 1){
+		if ($this->order()->restaurant()->delivery_service){
 
 			// get active community drivers
 			$drivers = $this->order()->getDriversToNotify();
