@@ -7,11 +7,11 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 
 		$r = new Restaurant([
 			'name' => $name,
-			'active' => 1,
-			'delivery' => 1,
-			'credit' => 1,
+			'active' => true,
+			'delivery' => true,
+			'credit' => true,
 			'delivery_fee' => '1.5',
-			'confirmation' => 0,
+			'confirmation' => false,
 			'community' => 'test',
 			'timezone' => 'America/Los_Angeles',
 			'open_for_business' => true
@@ -29,7 +29,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 		$a = new Admin([
 			'name' => $name,
 			'login' => null,
-			'active' => 1
+			'active' => true
 		]);
 		$a->save();
 
@@ -37,7 +37,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'name' => $name,
 			'phone' => '_PHONE_',
 			'address' => '123 main',
-			'active' => 1
+			'active' => true
 		]);
 		$u->save();
 
@@ -45,7 +45,7 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 			'name' => $name,
 			'price' => '10',
 			'id_restaurant' => $r->id_restaurant,
-			'active' => 1
+			'active' => true
 		]);
 		$d->save();
 
@@ -91,11 +91,11 @@ class DriverAcceptTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testDriverAccept() {
-		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $this->driver);
 		if (!$this->order) {
 			$this->assertTrue('Could not find order');
 			return;
 		}
+		$status = $this->order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true, $this->driver);
 		$this->assertTrue($status === true);
 	}
 }
