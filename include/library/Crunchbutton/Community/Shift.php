@@ -235,7 +235,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q($query, $params);
 	}
 
-	public function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null) {
+	public static function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null) {
 		$admin = Admin::o($id_admin);
 
 		// start using community's timezone - #4965

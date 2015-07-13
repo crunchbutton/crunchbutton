@@ -102,7 +102,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function restaurantIsOpen( $restaurant, $dt = null ){
+	public static function restaurantIsOpen( $restaurant, $dt = null ){
 
 		$time = ( $dt ? $dt : 'now' );
 		$today = new DateTime( $time, new DateTimeZone( $restaurant->timezone ) );
@@ -174,7 +174,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $hours_opened;
 	}
 
-	public function hoursByRestaurant( $restaurant, $gmt = false ){
+	public static function hoursByRestaurant( $restaurant, $gmt = false ){
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
 			$hours = Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
 			if ( $gmt ) {
@@ -194,15 +194,15 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $restaurant->_hours[ $gmt ] ;
 	}
 
-	public function getByRestaurantWeek( $restaurant, $utc = true){
+	public static function getByRestaurantWeek( $restaurant, $utc = true){
 		return Hour::getByRestaurantToExport( $restaurant, $utc);
 	}
 
-	public function getByRestaurantNext24Hours( $restaurant, $utc = true, $sd = null){
+	public static function getByRestaurantNext24Hours( $restaurant, $utc = true, $sd = null){
 		return Hour::getByRestaurantToExport( $restaurant, $utc, true, $sd);
 	}
 
-	public function getRestaurantRegularPlusHolidayHours( $restaurant ){
+	public static function getRestaurantRegularPlusHolidayHours( $restaurant ){
 
 		Crunchbutton_Config::getVal( 'auto_close_use_community_hours' );
 
@@ -242,7 +242,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return Hour::mergeHolidays( $_hours, $restaurant );
 	}
 
-	public function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false , $sd = null){
+	public static function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false , $sd = null){
 
 		$hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
 
@@ -458,7 +458,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	// This method merge restaurant hours with the holidays
-	public function mergeHolidays( $hours, $restaurant, $convertHours = true ){
+	public static function mergeHolidays( $hours, $restaurant, $convertHours = true ){
 
 		if( count( $hours ) == 0 ){
 			return $hours;
@@ -736,7 +736,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $hour . ( ( $minute > 0 ) ? ':' . str_pad( $minute, 2, '0', STR_PAD_LEFT ) : '' ) . $ampm;
 	}
 
-	public function closedMessage( $hours ){
+	public static function closedMessage( $hours ){
 
 		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
 
@@ -812,7 +812,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return join( ' <br/> ', $_organized );
 	}
 
-	public function restaurantClosedMessage( $restaurant ){
+	public static function restaurantClosedMessage( $restaurant ){
 
 		$_hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
 		// Remove the closes status

@@ -324,7 +324,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// Find out if the user posted a gift card code at the notes field and get its value
 		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
-			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
+			$totalOrdersByPhone = self::totalOrdersByPhone( $this->phone );
 			if( $totalOrdersByPhone < 1 ){
 				$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $this->notes );
 				$words = explode( ' ', $words );
@@ -2373,7 +2373,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return null;
 	}
 
-	public function lastDeliveredOrder($id_user = nul) {
+	public static function lastDeliveredOrder($id_user = nul) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
 			$order = self::q("SELECT * FROM `order` WHERE id_user = ? AND delivery_type = 'delivery' ORDER BY id_order DESC LIMIT 1", [$id_user]);
@@ -2488,7 +2488,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $time;
 	}
 
-	public function totalOrdersByPhone( $phone ){
+	public static function totalOrdersByPhone( $phone ){
 		$phone = Phone::clean( $phone );
 		$query = 'SELECT COUNT(*) AS total FROM `order` INNER JOIN phone using(id_phone) WHERE phone.phone = ?';
 		$row = Cana::db()->get( $query, [$phone])->get(0);
@@ -2498,7 +2498,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return 0;
 	}
 
-	public function totalOrdersByCustomer( $id_user ){
+	public static function totalOrdersByCustomer( $id_user ){
 		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE id_user = ?';
 		$row = Cana::db()->get( $query, [$id_user])->get(0);
 		if( $row->total ){

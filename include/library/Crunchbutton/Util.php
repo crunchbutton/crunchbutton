@@ -9,7 +9,7 @@ class Crunchbutton_Util extends Cana_Model {
 						( strpos( $_SERVER['HTTP_HOST'], 'dev.pit' ) !== false ) ) ? true : false;
 	}
 
-	public function dateToUnixTimestamp( $dateTime ){
+	public static function dateToUnixTimestamp( $dateTime ){
 		if ( is_a( $dateTime , 'DateTime' ) ) {
 			$tz = $dateTime->getTimestamp();
 			return gmdate( 'Y-m-d\TH:i:s\Z', $tz );
