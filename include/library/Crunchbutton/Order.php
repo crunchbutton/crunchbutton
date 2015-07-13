@@ -216,7 +216,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				- see #2236 and #2248
 				-> Removed the Util::ceil - see #2613
 				*/
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if($this->restaurant()->delivery_service){
 			$baseToCalcTax = $this->price;
 		} else {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
@@ -226,7 +226,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = number_format( round( $tax, 2 ), 2 );
 
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if($this->restaurant()->delivery_service){
 			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
 			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value + $tip, 2 );
 		} else {
@@ -1291,7 +1291,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				- see #2236 and #2248
 				-> Removed the Util::ceil - see #2613
 				*/
-		if( intval( $this->delivery_service ) == 1 ){
+		if($this->delivery_service){
 			$baseToCalcTax = $this->price;
 		} else {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
@@ -1329,7 +1329,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function notify(){
 		$this->notifyRestaurants();
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if($this->restaurant()->delivery_service){
 			$this->notifyDrivers();
 		}
 	}
@@ -1363,7 +1363,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$hasDriversWorking = false;
 
 		// check if the restaurant is using our delivery system
-		if( intval( $order->restaurant()->delivery_service ) == 1 ){
+		if($order->restaurant()->delivery_service){
 			$needDrivers = true;
 		}
 
@@ -2825,7 +2825,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function driverInstructionsPaymentStatus(){
 		// Clarify Cash/Credit Orders #4481
-		if( $this->restaurant()->formal_relationship == 1 ){
+		if( $this->restaurant()->formal_relationship ){
 			if( $this->pay_type == 'cash' ){
 				$driver = c::user();
 				if( $driver->id_admin && $driver->hasPexCard() ){
@@ -2856,7 +2856,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function driverInstructionsFoodStatus(){
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
-		if( $this->restaurant()->formal_relationship == 1 || $this->restaurant()->order_notifications_sent == 1 ){
+		if( $this->restaurant()->formal_relationship || $this->restaurant()->order_notifications_sent){
 			return 'Food already prepared';
 		} else {
 			return 'Place the order yourself';

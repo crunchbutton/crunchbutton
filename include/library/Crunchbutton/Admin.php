@@ -674,11 +674,11 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function hasPermission( $permission, $useRegex = false ){
 		$permissions = $this->permissions();
 		foreach( $permissions as $_permission ){
-			if( $_permission->permission == $permission && $_permission->allow == 1 ){
+			if( $_permission->permission == $permission && $_permission->allow){
 				return true;
 			}
 			if( $useRegex ){
-				if( preg_match( $permission, $_permission->permission )  && $_permission->allow == 1 ){
+				if( preg_match( $permission, $_permission->permission )  && $_permission->allow){
 					return true;
 				}
 			}
@@ -849,7 +849,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			'groups_description' => $groups_description,
 			'vehicle' => $this->vehicle(),
 			'communities' => $communities,
-			'active' => ( $this->active == 1 ),
+			'active' => $this->active,
 			'payment_type' => $paymentType->payment_type,
 			'hour_rate' => $paymentType->hour_rate,
 			'show_credit_card_tips' => $this->showCreditCardTips(),

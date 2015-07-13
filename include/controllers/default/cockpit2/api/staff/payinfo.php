@@ -94,7 +94,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$admin->save();
 		}
 
-		if( $payment_type->using_pex == 1 && !$payment_type->using_pex_date ){
+		if( $payment_type->using_pex && !$payment_type->using_pex_date ){
 			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 		}
 
