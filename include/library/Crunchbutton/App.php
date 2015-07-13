@@ -247,7 +247,7 @@ class Crunchbutton_App extends Cana_App {
 			foreach ($backtracels as $l) {
 				echo $l.'<br>';
 			}
-			exit;
+			exit(1);
 		}
 	}
 
