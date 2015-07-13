@@ -348,6 +348,23 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $pexcard == 'yes' ? true : false;
 		}
+		
+
+		if ($type == 'driver') {
+			if( $send_text != 'all' ){
+				if( intval( $send_text ) == 0 ){
+					$q .= '
+						AND ac.value IS NULL OR ac.value = \'0\'
+					';
+				}
+				if( intval( $send_text ) >= 1 ){
+					$q .= '
+						AND ac.value = \'1\'
+					';
+				}
+			}
+		}
+
 
 		if ($search) {
 			$s = Crunchbutton_Query::search([
@@ -381,21 +398,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$q .= '
 			GROUP BY `admin`.id_admin
 		';
-
-		if ($type == 'driver') {
-			if( $send_text != 'all' ){
-				if( intval( $send_text ) == 0 ){
-					$q .= '
-						HAVING ac.value IS NULL OR ac.value = false
-					';
-				}
-				if( intval( $send_text ) >= 1 ){
-					$q .= '
-						HAVING ac.value = true
-					';
-				}
-			}
-		}
 
 		$q .= '
 			ORDER BY `admin`.name ASC
