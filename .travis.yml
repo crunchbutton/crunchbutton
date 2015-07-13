@@ -15,6 +15,7 @@ env:
 # install:
 
 before_script:
+  - composer self-update
   - mkdir build
   - composer install --dev --no-interaction
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
