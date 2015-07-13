@@ -54,7 +54,6 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
         $this->numBadTimes = $numBadTimes;
     }
 
-
     public function getRoute($fakeOrderIds) {
         // Need a list of $fakeOrderIds to remove from the route
         return null;

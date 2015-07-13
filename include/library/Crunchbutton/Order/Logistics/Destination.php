@@ -15,6 +15,7 @@ class Crunchbutton_Order_Logistics_Destination extends Cana_Model {
     public $lateWindow;
     public $restaurantParkingTime; // minutes
     public $cluster;
+    public $isFake;
 
 
 	public function __construct($params = []) {

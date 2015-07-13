@@ -1010,6 +1010,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
         }
     }
 
+	public function fakecustomers() {
+		$qString = "SELECT * FROM `order_logistics_fakecustomer` WHERE id_community= ?";
+		$fcs = Crunchbutton_Order_Logistics_Fakecustomer::q($qString, [$this->id_community]);
+		if (is_null($fcs) || $fcs->count()==0){
+			return null;
+		} else{
+			return $fcs;
+		}
+	}
+
     public function communityCenter() {
         if (is_null($this->loc_lat) || is_null($this->loc_lon)) {
             return null;

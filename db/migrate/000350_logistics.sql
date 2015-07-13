@@ -68,3 +68,14 @@ CREATE TABLE `admin_score` (
   KEY `id_admin_idx` (`id_admin`),
   CONSTRAINT `admin_score` FOREIGN KEY (`id_admin`) REFERENCES `admin` (`id_admin`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `order_logistics_fakecustomer` (
+  `id_order_logistics_fakecustomer` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_community` int(11) unsigned DEFAULT NULL,
+  `lat` float NULL,
+  `lon` float NULL,
+  PRIMARY KEY (`id_order_logistics_fakecustomer`),
+  KEY `id_community_idx` (`id_community`),
+  CONSTRAINT `order_logistics_fakecustomer_ibfk_1` FOREIGN KEY (`id_community`) REFERENCES `community` (`id_community`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
