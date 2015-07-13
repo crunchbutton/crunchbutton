@@ -79,7 +79,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 					'af.phone' => 'like',
 					'at.name' => 'like',
 					'at.phone' => 'like',
-					'c.id_call' => 'liker'
+					'c.id_call' => 'inteq'
 				]
 			]);
 			$q .= $s['query'];
