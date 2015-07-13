@@ -86,7 +86,7 @@ class Crunchbutton_Promo extends Cana_Table
 		}
 	}
 
-	public function validateNotesField( $notes, $id_restaurant = false, $phone = false ){
+	public static function validateNotesField( $notes, $id_restaurant = false, $phone = false ){
 		$return = array();
 		$giftcards = array();
 		$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $notes );

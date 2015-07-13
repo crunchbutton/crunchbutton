@@ -37,10 +37,18 @@ class Crunchbutton_Agent extends Cana_Table {
 	}
 
 
-	public function getAgent(){
+	public static function getAgent(){
 		$userAgent = new Cana_UserAgent();
-		$query = "SELECT * FROM agent WHERE browser='{$userAgent->getBrowserName()}' AND version = '{$userAgent->getBrowserVersion()}' AND os = '{$userAgent->getOperatingSystem()}' AND engine = '{$userAgent->getEngine()}' LIMIT 1";
-		$agent = Crunchbutton_Agent::q( $query );
+		$query = '
+			SELECT * FROM agent
+			WHERE
+				browser=?
+				AND version = ?
+				AND os = ?
+				AND engine = ?
+			LIMIT 1
+		';
+		$agent = Crunchbutton_Agent::q( $query, [$userAgent->getBrowserName(), $userAgent->getBrowserVersion(), $userAgent->getOperatingSystem(), $userAgent->getEngine()]);
 		if( !$agent->id_agent ){
 			$agent = new Crunchbutton_Agent;
 			$agent->browser = $userAgent->getBrowserName();

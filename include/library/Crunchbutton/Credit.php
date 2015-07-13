@@ -312,11 +312,11 @@ class Crunchbutton_Credit extends Cana_Table
 		return 0;
 	}
 
-	public function formatPoints( $points ){
+	public static function formatPoints( $points ){
 		return Util::humanReadableNumbers( $points );
 	}
 
-	public function exportPoints($user){
+	public static function exportPoints($user){
 		if (!$user) {
 			$user = c::user();
 		}
@@ -341,7 +341,7 @@ class Crunchbutton_Credit extends Cana_Table
 		return $out;
 	}
 
-	public function points( $id_user ){
+	public static function points( $id_user ){
 		$query = 'SELECT SUM( value ) AS points FROM credit c WHERE c.id_user = ? AND credit_type = ? AND type = ?';
 		$row = Cana::db()->get( $query, [$id_user, Crunchbutton_Credit::CREDIT_TYPE_POINT, Crunchbutton_Credit::TYPE_CREDIT]);
 		if( $row->_items && $row->_items[0] ){
