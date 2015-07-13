@@ -8,7 +8,7 @@
     <testsuites>
         <testsuite name="Crunchbutton Backend">
             <directory>./Tests/</directory>
-			<exclude>./Tests/PriorityLogisticsTest.php</exclude>
+			<exclude>./Tests/NOTAREALFILE/PriorityLogisticsTest.php</exclude>
         </testsuite>
     </testsuites>
 
