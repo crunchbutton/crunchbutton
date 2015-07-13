@@ -65,6 +65,17 @@ class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 			$format = preg_replace($find, $replace, $m[6] ? $m[6] : $m[5]);
 			return 'to_char('.$m[2].', \''.$format.'\')';
 		}, $query);
+		
+
+		if ($args) {
+			foreach ($args as $k => $v) {
+				if ($v === true) {
+					$args[$k] = 'true';
+				} elseif ($v === false) {
+					$args[$k] = 'false';
+				}
+			}
+		}
 
 		return parent::query($query, $args, $type);
 	}
