@@ -60,7 +60,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 					'`order`.address' => 'like',
 					'restaurant.name' => 'like',
 					'community.name' => 'like',
-					'`user`.id_user' => 'liker'
+					'`user`.id_user' => 'inteq'
 				]
 			]);
 			$q .= $s['query'];

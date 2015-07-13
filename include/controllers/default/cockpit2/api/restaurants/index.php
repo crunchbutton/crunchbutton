@@ -185,7 +185,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					'restaurant.phone' => 'like',
 					'restaurant.community' => 'like',
 					'restaurant.permalink' => 'like',
-					'restaurant.id_restaurant' => 'liker'
+					'restaurant.id_restaurant' => 'inteq'
 				]
 			]);
 			$q .= $s['query'];
