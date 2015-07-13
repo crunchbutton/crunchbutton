@@ -2,12 +2,13 @@
 
 <phpunit bootstrap="Tests/bootstrap.php" colors="true">
 	<logging>
-        <log type="coverage-php" target="../build/coverage.cov"/>
+		<log type="coverage-clover" target="../build/logs/clover.xml"/>
     </logging>
 
     <testsuites>
         <testsuite name="Crunchbutton Backend">
             <directory>./Tests/</directory>
+			<exclude>./Tests/PriorityLogisticsTest.php</exclude>
         </testsuite>
     </testsuites>
 
