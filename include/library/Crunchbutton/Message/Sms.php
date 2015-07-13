@@ -166,7 +166,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		return $ret;
 	}
 
-	public function greeting( $name = null ){
+	public static function greeting( $name = null ){
 		if( $name ){
 			return $name . ', ' . "\n";
 		}
