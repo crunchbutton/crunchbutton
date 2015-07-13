@@ -1010,7 +1010,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
         }
     }
 
-    public function community_center() {
+    public function communityCenter() {
         if (is_null($this->loc_lat) || is_null($this->loc_lon)) {
             return null;
         }
@@ -1018,6 +1018,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
             return new Crunchbutton_Order_Location($this->loc_lat, $this->loc_lon);
         }
     }
+
+	public function doCreateFakeOrders() {
+		//TODO: Do not necessarily want to create fake orders all the time for bundling
+		return true;
+	}
 
 
 }

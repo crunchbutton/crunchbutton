@@ -289,9 +289,9 @@
 		<live>
 			<url>nothing</url>
 		</live>
-		<live>
-			<dev>http://192.168.56.101:5001/optimizer</dev>
-		</live>
+		<dev>
+			<url>http://192.168.56.101:5001/optimizer</url>
+		</dev>
 	</optimizer>
 	<lob>
 		<dev>

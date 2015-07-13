@@ -12,12 +12,34 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     // Start numbering from 10K because we're using the same field for now
     const LOGISTICS_COMPLEX_ALGO_VERSION = 10000;
 
+    const LC_CUTOFF_BAD_TIME = 90; // minutes
+    const LC_SLACK_MAX_TIME = 120; // minutes
+    const LC_HORIZON = 240; // minutes
+    const LC_MAX_RUN_TIME = 5000; // milliseconds
+    const LC_PENALTY_COEFFICIENT = 1.0;
+    const LC_PENALTY_THRESHOLD = 45; // minutes
+    const LC_CUSTOMER_DROPOFF_TIME = 5; // minutes
+    const LC_RESTAURANT_PICKUP_TIME = 5; // minutes
+
+    const STATUS_OK = 1;
+    const STATUS_ALL_OPTS_FAILED = 2;
+    const STATUS_ALL_DRIVERS_LATE = 3;
+
+    const DRIVER_OPT_SUCCESS = 1;
+    const DRIVER_OPT_FAILED = 2;
+
 
     public function __construct($delivery_logistics, $order)
     {
+        $this->_status = self::STATUS_OK;
+
         $this->_order = $order;
         $this->_drivers = $order->getDriversToNotify();
         $this->_delivery_logistics = $delivery_logistics;
+        $this->restaurantGeoCache = [];
+        $this->restaurantParkingCache = [];
+        $this->restaurantOrderTimeCache = [];
+        $this->restaurantClusterCache = [];
         $this->process();
     }
 
@@ -29,151 +51,345 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         // Otherwise community center to simplify things
     }
 
-    public function addOrderInfoToDestinationList($order, $dlist) {
+    public function getRestaurantGeo($order) {
+        $r_geo = null;
+        if (array_key_exists($order->id_restaurant, $this->restaurantGeoCache)) {
+            $r_geo = $this->restaurantGeoCache[$order->id_restaurant];
+        }
+        else{
+            $r = $order->restaurant();
+            $r_lat = $r->loc_lat;
+            $r_lon = $r->loc_long;
+            if (!is_null($r_lat) && !is_null($r_lon)) {
+                $r_geo = new Crunchbutton_Order_Location($r_lat, $r_lon);
+                $this->restaurantGeoCache[$order->id_restaurant] = $r_geo;
+            }
+        }
+        return $r_geo;
+    }
+
+    public function getRestaurantParkingTime($order, $communityTime, $dow) {
+        $r_pt = null;
+        if (array_key_exists($order->id_restaurant, $this->restaurantParkingCache)) {
+            $r_pt = $this->restaurantParkingCache[$order->id_restaurant];
+        }
+        else{
+            $r = $order->restaurant();
+            $parking = $r->parking($communityTime, $dow);
+            if (!is_null($parking) && !is_null($parking->parking_duration)) {
+                $r_pt = $parking->parking_duration;
+                $this->restaurantParkingCache[$order->id_restaurant] = $r_pt;
+            }
+        }
+        return $r_pt;
+    }
+
+    public function getRestaurantOrderTime($order, $communityTime, $dow) {
+        $r_ot = null;
+        if (array_key_exists($order->id_restaurant, $this->restaurantOrderTimeCache)) {
+            $r_ot = $this->restaurantOrderTimeCache[$order->id_restaurant];
+        }
+        else{
+            $r = $order->restaurant();
+            $ordertime = $r->ordertime($communityTime, $dow);
+            if (!is_null($ordertime) && !is_null($ordertime->order_time)) {
+                $r_ot = $ordertime->order_time;
+                $this->restaurantOrderTimeCache[$order->id_restaurant] = $r_ot;
+            }
+        }
+        return $r_ot;
+    }
+
+    public function getRestaurantCluster($order, $communityTime, $dow) {
+        $r_c = null;
+        if (array_key_exists($order->id_restaurant, $this->restaurantClusterCache)) {
+            $r_c = $this->restaurantClusterCache[$order->id_restaurant];
+        }
+        else{
+            $r = $order->restaurant();
+            $cluster = $r->cluster($communityTime, $dow);
+            if (!is_null($cluster) && !is_null($cluster->id_restaurant_cluster)) {
+                $r_c = $cluster->id_restaurant_cluster;
+                $this->restaurantCache[$order->id_restaurant] = $r_c;
+            }
+        }
+        return $r_c;
+    }
+
+    public function addOrderInfoToDestinationList($order, $isNewOrder, $dlist, $communityTime, $dow, $serverDT) {
         // Add restaurant, customer pair
 
-        $keep_flag = true;
+        $keepFlag = true;
 
-        $restaurant_destination = new Crunchbutton_Order_Logistics_Destination([
-            'id' => $order->id_restaurant,
-            'type' => Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT
-        ]);
+        $customer_geo = $order->getGeo();
+        $r_geo = null;
+        $r_pt = null;
+        $r_ordertime = null;
+        $r_cluster = null;
+        if (!is_null($customer_geo)) {
+            $r_geo = $this->getRestaurantGeo($order);
+            if (is_null($r_geo)){
+                $keepFlag = false;
+            }
+            else{
+                // Ugly nesting!!!!
+                $r_pt = $this->getRestaurantParkingTime($order, $communityTime, $dow);
+                if (is_null($r_pt)){
+                    $keepFlag = false;
+                }
+                else{
+                    $r_ordertime = $this->getRestaurantOrderTime($order, $communityTime, $dow);
+                    if (is_null($r_ordertime)){
+                        $keepFlag = false;
+                    }
+                    else{
+                        $r_cluster = $this->getRestaurantCluster($order, $communityTime, $dow);
+                        if (is_null($r_cluster)){
+                            $keepFlag = false;
+                        }
 
-        $customer_destination = new Crunchbutton_Order_Logistics_Destination([
-            'id' => $order->id_order,
-            'type' => Crunchbutton_Order_Logistics_Destination::TYPE_CUSTOMER
-        ]);
-
-        if ($keep_flag) {
-            $dlist->add($restaurant_destination);
-            $dlist->add($customer_destination);
+                    }
+                }
+            }
+        } else{
+            $keepFlag = false;
         }
-        return $keep_flag;
+
+        if ($keepFlag) {
+            if (is_null($serverDT) || is_null($order->date)) {
+                $keepFlag = false;
+            } else {
+                $orderDT = new DateTime($order->date, new DateTimeZone(c::config()->timezone));
+                $orderTime = round(($serverDT->getTimestamp() - $orderDT->getTimestamp()) / 60.0);
+                $earlyWindow = max(0, $orderTime + $r_ordertime);
+                $midWindow = $orderTime + Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD;
+                // TODO: Not sure we want to use the slack max time here.  Doesn't matter for now
+                $lateWindow = $orderTime + Crunchbutton_Order_Logistics::LC_SLACK_MAX_TIME;
+            }
+        }
+        if ($keepFlag) {
+            $restaurant_destination = new Crunchbutton_Order_Logistics_Destination([
+                'objectId' => $order->id_restaurant,
+                'type' => Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT,
+                'geo' => $r_geo,
+                'orderTime' => $orderTime,
+                'earlyWindow' => $earlyWindow,
+                'midWindow' => Crunchbutton_Order_Logistics::LC_HORIZON,
+                'lateWindow' => $lateWindow,
+                'restaurantParkingTime' => $r_pt,
+                'cluster' => $r_cluster
+            ]);
+
+            $customer_destination = new Crunchbutton_Order_Logistics_Destination([
+                'objectId' => $order->id_order,
+                'type' => Crunchbutton_Order_Logistics_Destination::TYPE_CUSTOMER,
+                'geo' => $customer_geo,
+                'orderTime' => $orderTime,
+                'earlyWindow' => $earlyWindow,
+                'midWindow' => $midWindow,
+                'lateWindow' => $lateWindow
+            ]);
+            $dlist->addDestinationPair($restaurant_destination, $customer_destination, $isNewOrder);
+        }
+        return $keepFlag;
     }
 
 
-    public function complexLogistics()
+    public function complexLogistics($distanceType = Crunchbutton_Optimizer_Input::DISTANCE_LATLON)
     {
-        $neworder = $this->order();
+        $newOrder = $this->order();
 
-        $cur_community = $neworder->community();
-        $community_center = $cur_community->community_center();
+        $curCommunity = $newOrder->community();
+        $communityCenter = $curCommunity->communityCenter();
+        $doCreateFakeOrders = $curCommunity->doCreateFakeOrders();
         $skipFlag = false;
+        $numGoodOptimizations = 0;
+        $numSelectedDrivers = 0;
 
-        if (is_null($community_center)){
+        if (is_null($communityCenter)){
             $skipFlag = true;
         } else{
             // Do this computation only if necessary
-            $cur_geo = $neworder->getGeo();
+            $cur_geo = $newOrder->getGeo();
             if (is_null($cur_geo)){
                 $skipFlag = true;
             }
         }
 
+        $bestScoreChange = -10000;
+        $numDriversWithGoodTimes = 0;
+
         if (!$skipFlag) {
-            $new_id_restaurant = $neworder->id_restaurant;
-            $new_id_order = $neworder->id_order;
-            $cur_community_tz = $cur_community->timezone;
+            $new_id_restaurant = $newOrder->id_restaurant;
+            $new_id_order = $newOrder->id_order;
+            $curCommunityTz = $curCommunity->timezone;
+
             $server_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
-            $cur_community_dt = new DateTime('now', new DateTimeZone($cur_community_tz));
-            $dow = $cur_community_dt->format('w');
+            $curCommunityDt = new DateTime('now', new DateTimeZone($curCommunityTz));
+            $curCommunityTime = $curCommunityDt->format('H:i:s');
+            $dow = $curCommunityDt->format('w');
 
             // Load community-specific model parameters
-            $cs = $cur_community->communityspeed($cur_community_dt->format('H:i:s'), $dow);
+            $cs = $curCommunity->communityspeed($curCommunityTime, $dow);
             if (is_null($cs)){
                 $cs = Crunchbutton_Order_Logistics_Communityspeed::DEFAULT_MPH;
             }
 
-            // Get this order info
-            $baseDlist = new DestinationList();
-            $skipFlag = $skipFlag && addOrderInfoToDestinationList($neworder, $baseDlist);
+            // Get this order info:
+            // Note: Moved out of here because the driver node needs to go first.
+            // TODO: Rewrite code to handle this out of order
+//            $skipFlag = $skipFlag && $this->addOrderInfoToDestinationList($newOrder, $baseDlist);
 
 
             foreach ($this->drivers() as $driver) {
+
+                $driverOrderCount = 0;
                 if (!$skipFlag) {
-                    // Get orders in the last hour for this driver
-                    $ordersUnfiltered = Order::deliveryOrders(1, false, $driver);
-                    $driver_geo = getDriverLocation($driver);
+                    $driver->_opt_status = self::DRIVER_OPT_FAILED;
+                    // Get orders in the last two hours for this driver
+                    $ordersUnfiltered = Order::deliveryOrders(2, false, $driver);
+                    $driver_geo = $this->getDriverLocation($driver);
 
-                    $driver_score = $driver->score();
-
-                    $dlist = clone $baseDlist;
+//                    $driver_score = $driver->score();
+                    //  TODO: Adjust mph to adjust for distances not being quite straight line.
+                    $driver_mph = $cs;
+                    $dlist = new Crunchbutton_Order_Logistics_DestinationList($distanceType);
+                    $dlist->driverMph = $driver_mph;
 
                     $driver_destination = new Crunchbutton_Order_Logistics_Destination([
-                        'id' => $driver->id_admin,
-                        'type' => Crunchbutton_Order_Logistics_Destination::TYPE_DRIVER
+                        'objectId' => $driver->id_admin,
+                        'type' => Crunchbutton_Order_Logistics_Destination::TYPE_DRIVER,
+                        'geo' => $driver_geo
                     ]);
 
-                    $dlist->add($driver_destination);
+                    $dlist->addDriverDestination($driver_destination);
 
                     // Interested in any priority orders for that driver or undelivered orders for that driver or
                     //   the current order of interest
-
 
                     // Get any priority orders that have been routed to that driver in the last
                     //  n seconds
                     $priorityOrders = Crunchbutton_Order_Priority::priorityOrders(self::TIME_MAX_DELAY + self::TIME_BUFFER,
                         $driver->id_admin, null);
                     foreach ($ordersUnfiltered as $order) {
+                        if (!$skipFlag) {
 
-
-                        if ($order->id_order == $new_id_order) {
-
-                        }
-
-                        $lastStatus = NULL;
-                        $lastStatusDriver = NULL;
-                        $lastStatusTimestamp = NULL;
-                        $osl = $order->status()->last();
-                        if ($osl && array_key_exists('status', $osl)) {
-                            $lastStatus = $osl['status'];
-                        }
-                        if ($osl && array_key_exists('driver', $osl)) {
-                            $lastStatusDriver = $osl['driver'];
-                        }
-                        if ($osl && array_key_exists('timestamp', $osl)) {
-                            $lastStatusTimestamp = $osl['timestamp'];
-                        }
-
-                        $lastStatusAdmin = NULL;
-                        if ($lastStatusDriver && array_key_exists('id_admin', $lastStatusDriver)) {
-                            $lastStatusAdmin = $lastStatusDriver['id_admin'];
-                        }
-                        // if the order is another drivers, or already delivered or picked up, we don't care
-                        if ($lastStatusAdmin && ($lastStatusAdmin != $driver->id_admin ||
-                                $lastStatus == 'delivered' || $lastStatus == 'pickedup')
-                        ) {
-                            continue;
-                        }
-
-                        if ($lastStatus == 'accepted') {
-                            // Count accepted orders that have happened in the last n minutes
-                            // This won't work properly if the earlier filters for restaurant and such are not implemented
-
-                            if ($lastStatusTimestamp && $lastStatusTimestamp + self::TIME_BUNDLE > $time->getTimeStamp()) {
-
-
-                            } else {
-                                // The driver accepted an order from the restaurant earlier than the time window.
-                                //  Assumption is he's got the food and bundling doesn't help him.
-                                $tooEarlyFlag = true;
+                            if ($order->id_order == $new_id_order) {
+                                $skipFlag = $skipFlag && $this->addOrderInfoToDestinationList($order, true, $dlist,
+                                        $curCommunityTime, $dow, $server_dt);
+                                $driverOrderCount ++;
                             }
-                        } else if ($lastStatus == 'new' && Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)) {
-                            // Interested in new orders if they show up in the priority list with the top priority
-                            //  and these haven't expired yet.
-                            // This won't work properly if the earlier filters for restaurant and such are not implemented
+                            else {
+                                $addOrder = true;
+                                $lastStatus = NULL;
+                                $lastStatusDriver = NULL;
+                                $lastStatusTimestamp = NULL;
+                                $osl = $order->status()->last();
+                                if ($osl && array_key_exists('status', $osl)) {
+                                    $lastStatus = $osl['status'];
+                                }
+                                if ($osl && array_key_exists('driver', $osl)) {
+                                    $lastStatusDriver = $osl['driver'];
+                                }
+                                if ($osl && array_key_exists('timestamp', $osl)) {
+                                    $lastStatusTimestamp = $osl['timestamp'];
+                                }
 
+                                $lastStatusAdmin = NULL;
+                                if ($lastStatusDriver && array_key_exists('id_admin', $lastStatusDriver)) {
+                                    $lastStatusAdmin = $lastStatusDriver['id_admin'];
+                                }
+                                // if the order is another drivers, or already delivered or picked up, we don't care
+                                if ($lastStatusAdmin && ($lastStatusAdmin != $driver->id_admin ||
+                                        $lastStatus == 'delivered' || $lastStatus == 'pickedup')
+                                ) {
+                                    $addOrder = false;
+                                }
+                                else{
+                                    if (($lastStatus != 'accepted') &&
+                                        !($lastStatus == 'new' && Order_Priority::checkOrderInArray($order->id_order, $priorityOrders))) {
+
+                                        $addOrder = false;
+                                    }
+                                }
+                                if ($addOrder) {
+                                    $skipFlag = $skipFlag && $this->addOrderInfoToDestinationList($order, false, $dlist,
+                                            $curCommunityTime, $dow, $server_dt);
+                                }
+                            }
                         }
 
                     }
 
-
                     // Run the optimization for each driver here
+                    // Run once without the new order, if needed
+
+                    $dicts = $dlist->createOptimizerInputs($doCreateFakeOrders);
+                    $dOld = $dicts['old']; // without new order
+                    $dNew = $dicts['new']; // with new order
+
+                    if (!is_null($dNew)){
+
+                        if ($dlist->hasOnlyNewOrder()){
+                            // Nothing to optimize in the original, so we create a dummy result
+                            $resultOld = (object) ['resultType' => Crunchbutton_Optimizer_Result::RTYPE_OK, 'score' => 0];
+                        }
+                        else{
+                            $rOld = Crunchbutton_Optimizer::optimize($dOld);
+                            $resultOld = new Crunchbutton_Optimizer_Result($rOld);
+                        }
+
+                        // Run with the new order
+                        $rNew = Crunchbutton_Optimizer::optimize($dNew);
+                        $resultNew = new Crunchbutton_Optimizer_Result($rNew);
+
+                        if ($resultOld->resultType == Crunchbutton_Optimizer_Result::RTYPE_OK &&
+                            $resultNew->resultType == Crunchbutton_Optimizer_Result::RTYPE_OK &&
+                            !is_null($resultOld->score) && !is_null($resultNew->score)) {
+
+                            $numGoodOptimizations += 1;
+                            $driver->_opt_status = self::DRIVER_OPT_SUCCESS;
+                            $scoreChange = $resultNew->score - $resultOld->score;
+                            $driver->_scoreChange = $scoreChange;
+                            if ($scoreChange > $bestScoreChange) {
+                                $bestScoreChange = $scoreChange;
+                            }
+                            if ($resultNew->numBadTimes == 0) {
+                                $numDriversWithGoodTimes += 1;
+                            }
+
+                        }
+                    }
+//                    else{
+//                        // Potentially set some error flags here
+//                    }
+
                 }
             }
 
+            if ($this->_status == self::STATUS_OK && $numDriversWithGoodTimes == 0) {
+                $this->_status = self::STATUS_ALL_DRIVERS_LATE;
+            }
+
+            if ($numGoodOptimizations == 0) {
+                $skipFlag = true;
+                $this->_status = self::STATUS_ALL_OPTS_FAILED;
+            } else if (!$skipFlag){
+                // Look for the best driver
+                foreach ($this->drivers() as $driver) {
+                    $driver->_priority = false;
+                    if ($driver->_opt_status = self::DRIVER_OPT_SUCCESS) {
+                        // Get the score
+                        if ($driver->_scoreChange == $bestScoreChange) {
+                            $driver->_priority = true;
+                            $numSelectedDrivers += 1;
+                        }
+                    };
+                }
+            }
 
         }
+
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $nowDate = $now->format('Y-m-d H:i:s');
 
@@ -194,13 +410,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         foreach ($this->drivers() as $driver) {
             if (skipFlag) {
                 $driver->__seconds = 0;
-                $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_GEO;
+                $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_ONE;
                 $seconds_delay = 0;
                 $priority_expiration = $nowDate2;
             } else {
 //            print "Cur order:".$cur_id_order."\n";
-                if (count($selectedDriverIds)) {
-                    if (in_array($driver->id_admin, $selectedDriverIds)) {
+                if ($numSelectedDrivers > 0) {
+                    if ($driver->_priority) {
                         $driver->__seconds = 0;
                         $priority_given = Crunchbutton_Order_Priority::PRIORITY_HIGH;
                         $seconds_delay = 0;
@@ -217,17 +433,18 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $seconds_delay = 0;
                     $priority_expiration = $nowDate2;
                 }
-                $priority = new Crunchbutton_Order_Priority([
-                    'id_order' => $cur_id_order,
-                    'id_restaurant' => $cur_id_restaurant,
-                    'id_admin' => $driver->id_admin,
-                    'priority_time' => $nowDate,
-                    'priority_algo_version' => self::LOGISTICS_SIMPLE_ALGO_VERSION,
-                    'priority_given' => $priority_given,
-                    'seconds_delay' => $seconds_delay,
-                    'priority_expiration' => $priority_expiration
-                ]);
+
             }
+            $priority = new Crunchbutton_Order_Priority([
+                'id_order' => $newOrder->id_order,
+                'id_restaurant' => $newOrder->id_restaurant,
+                'id_admin' => $driver->id_admin,
+                'priority_time' => $nowDate,
+                'priority_algo_version' => self::LOGISTICS_COMPLEX_ALGO_VERSION,
+                'priority_given' => $priority_given,
+                'seconds_delay' => $seconds_delay,
+                'priority_expiration' => $priority_expiration
+            ]);
             $priority->save();
         }
     }
@@ -243,8 +460,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         $driverOrderCounts = [];
 
         foreach ($this->drivers() as $driver) {
-            // Get orders in the last hour for this driver
-            $ordersUnfiltered = Order::deliveryOrders(1, false, $driver);
+            // Get orders in the last two hours for this driver
+            $ordersUnfiltered = Order::deliveryOrders(2, false, $driver);
 
             // Get priority orders that have been routed to that driver in the last
             //  n seconds for that restaurant
@@ -399,7 +616,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
     public function order()
     {
-        if (!isset($this->_order)) {
+        if (!isset($this->_order) && (isset($this->id_order))) {
             $this->_order = Order::o($this->id_order);
         }
         return $this->_order;
