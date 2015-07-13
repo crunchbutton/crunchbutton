@@ -15,22 +15,22 @@
     <filter>
         <whitelist>
             <directory suffix=".php">../include/</directory>
+			<exclude>
+				<directory>../include/Library/ApnsPHP</directory>
+				<directory>../include/Library/Balanced</directory>
+				<directory>../include/Library/Buzz</directory>
+				<directory>../include/Library/Github</directory>
+				<directory>../include/Library/Guzzle</directory>
+				<directory>../include/Library/Httpful</directory>
+				<directory>../include/Library/Mailgun</directory>
+				<directory>../include/Library/Ordrin</directory>
+				<directory>../include/Library/Pear</directory>
+				<directory>../include/Library/QueryPath</directory>
+				<directory>../include/Library/RESTful</directory>
+				<directory>../include/Library/Scss</directory>
+				<directory>../include/Library/Services</directory>
+				<directory>../include/Library/Symfony</directory>
+			</exclude>
         </whitelist>
-		<blacklist>
-			<directory>../include/Library/ApnsPHP</directory>
-			<directory>../include/Library/Balanced</directory>
-			<directory>../include/Library/Buzz</directory>
-			<directory>../include/Library/Github</directory>
-			<directory>../include/Library/Guzzle</directory>
-			<directory>../include/Library/Httpful</directory>
-			<directory>../include/Library/Mailgun</directory>
-			<directory>../include/Library/Ordrin</directory>
-			<directory>../include/Library/Pear</directory>
-			<directory>../include/Library/QueryPath</directory>
-			<directory>../include/Library/RESTful</directory>
-			<directory>../include/Library/Scss</directory>
-			<directory>../include/Library/Services</directory>
-			<directory>../include/Library/Symfony</directory>
-		</blacklist>
     </filter>
 </phpunit>
