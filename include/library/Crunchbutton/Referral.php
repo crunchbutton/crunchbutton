@@ -74,7 +74,7 @@ class Crunchbutton_Referral extends Cana_Table{
 			return;
 		}
 
-		if( $this->new_user == 1 ){
+		if( $this->new_user){
 			$credit = new Crunchbutton_Credit();
 			$credit->id_user = $this->id_user_inviter;
 			$credit->id_referral = $this->id_referral;
@@ -95,7 +95,7 @@ class Crunchbutton_Referral extends Cana_Table{
 	}
 
 	public function addCreditToInvited(){
-		if( $this->new_user == 1 ){
+		if( $this->new_user){
 			$credit = new Crunchbutton_Credit();
 			$credit->id_user = $this->id_user_invited;
 			$credit->id_referral = $this->id_referral;

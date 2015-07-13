@@ -124,7 +124,7 @@ class Cana_Table extends Cana_Model { //
 			$fields = [];
 			$res = $this->db()->getFields($this->table());
 
-			while ($row = $res->fetch()) {
+			foreach ($res as $row) {
 				$row = get_object_vars($row);
 				$props = [];
 
@@ -135,7 +135,11 @@ class Cana_Table extends Cana_Model { //
 
 				$row->null = $row->null == 'YES' ? true : false;
 				if ( strpos($row->type, 'enum') === false && strpos($row->type, 'int') !== false) {
-					$row->type = 'int';
+					if ($row->type == 'tinyint(1)') {
+						$row->type = 'boolean';
+					} else {
+						$row->type = 'int';
+					}
 				}
 				$fields[] = $row;
 			}
@@ -242,6 +246,9 @@ class Cana_Table extends Cana_Model { //
 				case 'int':
 					$this->{$field->field} = (int)$this->{$field->field};
 					break;
+				case 'boolean':
+					$this->{$field->field} = $this->{$field->field} ? true : false;
+					break;
 			}
 		}
 
@@ -279,7 +286,7 @@ class Cana_Table extends Cana_Model { //
 		$numset = 0;
 
 		foreach ($fields as $field) {
-			if ($this->property($field->field) === false) {
+			if ($field->auto === true && $newItem) {
 				continue;
 			}
 
@@ -290,6 +297,10 @@ class Cana_Table extends Cana_Model { //
 			}
 
 			switch ($field->type) {
+				case 'boolean':
+					$this->{$field->field} = $this->{$field->field} ? true : false;
+					break;
+
 				case 'int':
 					$this->{$field->field} = intval($this->{$field->field});
 					break;
@@ -327,9 +338,10 @@ class Cana_Table extends Cana_Model { //
 			$numset = 0;
 
 			foreach ($fields as $field) {
-				if ($this->property($field->field) === false) {
+				if ($field->auto === true) {
 					continue;
 				}
+
 				$query .= !$numset ? '' : ',';
 				$query .= ' :'.$field->field;
 				$numset++;
@@ -340,8 +352,7 @@ class Cana_Table extends Cana_Model { //
 			$query .= ' WHERE '.$this->idVar().'=:id';
 			$fs['id'] = $this->{$this->idVar()};
 		}
-//echo $query;
-//		print_r($fs);
+
 		$this->dbWrite()->query($query, $fs);
 
 		if ($newItem) {

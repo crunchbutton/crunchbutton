@@ -8,12 +8,12 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 
 		if( $hasPermission ){
 			if( c::getPagePiece( 3 ) ){
-				$admin = Admin::o( c::getPagePiece( 3 ) );
+				$admin = Admin::o((int)c::getPagePiece( 3 ) );
 				if (!$admin->id_admin) {
 					$admin = Admin::login(c::getPagePiece(3), true);
 				}
 			} else {
-				$admin = Admin::o( $this->request()[ 'id_admin' ] );
+				$admin = Admin::o((int)$this->request()[ 'id_admin' ] );
 				if (!$admin->id_admin) {
 					$admin = Admin::login($this->request()['id_admin'], true);
 				}
@@ -94,7 +94,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$admin->save();
 		}
 
-		if( $payment_type->using_pex == 1 && !$payment_type->using_pex_date ){
+		if( $payment_type->using_pex && !$payment_type->using_pex_date ){
 			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 		}
 

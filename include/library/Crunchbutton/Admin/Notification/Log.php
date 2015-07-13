@@ -2,25 +2,25 @@
 
 class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 
-	public function attempts( $id_order ){
-		$query = "SELECT COUNT(*) AS Total FROM `admin_notification_log` a WHERE id_order = {$id_order}";
-		$result = c::db()->get( $query );
+	public static function attempts( $id_order ){
+		$query = 'SELECT COUNT(*) AS Total FROM `admin_notification_log` a WHERE id_order = ?';
+		$result = c::db()->get( $query, [$id_order]);
 		return intval( $result->_items[0]->Total ); 
 	}
 
 	public function byOrder( $id_order ){
-		$query = "SELECT * FROM admin_notification_log a WHERE a.id_order = {$id_order} ORDER BY id_admin_notification_log ASC";
-		return Crunchbutton_Admin_Notification_Log::q( $query );
+		$query = 'SELECT * FROM admin_notification_log a WHERE a.id_order = ? ORDER BY id_admin_notification_log ASC';
+		return Crunchbutton_Admin_Notification_Log::q( $query, [$id_order]);
 	}
 
 	// Clear the log to restart the notification process 
 	public function cleanLog( $id_order ){
-		$query = "DELETE FROM admin_notification_log WHERE id_order = {$id_order}";
-		c::db()->query( $query );
+		$query = 'DELETE FROM admin_notification_log WHERE id_order = ?';
+		c::db()->query( $query, [$id_order]);
 	}
 
 	public function restaurant(){
-		return Crunchbutton_Restaurant::q( "SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = {$this->id_order}" );
+		return Crunchbutton_Restaurant::q('SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = ?', [$this->id_order]);
 	}
 
 	public function date() {

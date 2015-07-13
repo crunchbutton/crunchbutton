@@ -120,7 +120,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
 					$this->error(401);
 				}
-				$order->do_not_reimburse_driver = ( $order->do_not_reimburse_driver == 1 ? 0 : 1 );
+				$order->do_not_reimburse_driver = ( $order->do_not_reimburse_driver == 1 ? false : true );
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
 				break;
@@ -129,7 +129,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
 					$this->error(401);
 				}
-				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? 0 : 1 );
+				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? false : true );
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
 				break;

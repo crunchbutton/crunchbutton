@@ -57,7 +57,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out['credit'] = 0;
 		}
 
-		$out['orders_by_phone'] = $this->totalOrdersByPhone( $this->phone );
+		$out['orders_by_phone'] = self::totalOrdersByPhone( $this->phone );
 
 		$paymentType = $this->paymentType();
 		if( $paymentType->id_user_payment_type ){
@@ -306,7 +306,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 	}
 
 	public function hasCustomerBeenTexted5Minutes(){
-		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`="delivery-text-5min" AND id_order=? limit 1',[$this->id_order])->get(0);
+		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`=\'delivery-text-5min\' AND id_order=? limit 1',[$this->id_order])->get(0);
 		if ($texts->id_order) {
 			return DATE_FORMAT(new DateTime($texts->timestamp), 'g:i A');
 			//return $texts->timestamp->date()->format('h:i A');

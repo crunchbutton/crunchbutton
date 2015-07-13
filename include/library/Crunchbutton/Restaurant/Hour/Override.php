@@ -60,7 +60,8 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		}
 		return false;
 	}
-
+/*
+i dont think this is used anywhere
 	public static function restaurantIsOpen( $id_restaurant ){
 		$restaurant = Restaurant::o( $id_restaurant );
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
@@ -78,6 +79,7 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		}
 		return true;
 	}
+	*/
 
 	public function restaurant(){
 		return Restaurant::o( $this->id_restaurant );

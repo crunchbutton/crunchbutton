@@ -79,7 +79,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 					'af.phone' => 'like',
 					'at.name' => 'like',
 					'at.phone' => 'like',
-					'c.id_call' => 'liker'
+					'c.id_call' => 'inteq'
 				]
 			]);
 			$q .= $s['query'];
@@ -123,10 +123,10 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			c.recording_duration,
 			c.from,
 			c.to,
-			uf.name as user_from,
-			ut.name as user_to,
-			at.name as admin_to,
-			af.name as admin_from,
+			max(uf.name) as user_from,
+			max(ut.name) as user_to,
+			max(at.name) as admin_to,
+			max(af.name) as admin_from,
 			c.id_user_from,
 			c.id_user_to,
 			c.id_admin_from,

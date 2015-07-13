@@ -122,7 +122,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 		}
 	}
 
-	public function byCommunity( $id_community, $type = false ){
+	public static function byCommunity( $id_community, $type = false ){
 
 		$type = ( $type ) ? ' AND ' . $type . ' = true' : '';
 

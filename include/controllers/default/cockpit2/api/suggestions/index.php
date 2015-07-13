@@ -21,7 +21,7 @@ class Controller_api_suggestions extends Crunchbutton_Controller_Rest {
 				-WILD-
 			FROM suggestion s
 			LEFT JOIN restaurant r ON r.id_restaurant = s.id_restaurant
-			LEFT JOIN user u ON u.id_user = s.id_user
+			LEFT JOIN `user` u ON u.id_user = s.id_user
 			LEFT JOIN community c ON c.id_community = s.id_community
 
 			WHERE

@@ -115,7 +115,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
-	public function userHasFacebookAuth( $id_user ){
+	public static function userHasFacebookAuth( $id_user ){
 		$row = Cana::db()->get("
 			SELECT *
 			FROM user_auth
@@ -131,7 +131,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
-	public function userHasAuth( $id_user ){
+	public static function userHasAuth( $id_user ){
 		$row = Cana::db()->get('
 			SELECT *
 			FROM user_auth
@@ -146,7 +146,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
-	public function userHasEmailAuth( $id_user ){
+	public static function userHasEmailAuth( $id_user ){
 		$row = Cana::db()->get('
 			SELECT *
 			FROM user_auth
@@ -163,7 +163,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 	}
 
 	// This function creates a user_auth
-	public function createPhoneAuth( $user_id, $phone ){
+	public static function createPhoneAuth( $user_id, $phone ){
 		$id_user_auth = User_Auth::userHasEmailAuth( $user_id );
 		if( $id_user_auth ){
 			$phoneExists = User_Auth::checkPhoneExists( $phone );
@@ -185,7 +185,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
-	public function createPhoneAuthFromFacebook( $user_id, $phone ){
+	public static function createPhoneAuthFromFacebook( $user_id, $phone ){
 		$id_user_auth = User_Auth::userHasFacebookAuth( $user_id );
 		if( $id_user_auth ){
 			$phoneExists = User_Auth::checkPhoneExists( $phone );

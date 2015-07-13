@@ -82,7 +82,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if( $processType == static::PROCESS_TYPE_WEB ){
 			// Check if the restaurant is active #2938
-			if( $this->restaurant()->active == 0 ){
+			if(!$this->restaurant()->active){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
@@ -90,14 +90,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $processType == static::PROCESS_TYPE_RESTAURANT ){
 			// Check if the restaurant is active for restaurant order placement
 			// https://github.com/crunchbutton/crunchbutton/issues/3350#issuecomment-48255149
-			if( $this->restaurant()->active_restaurant_order_placement == 0 ){
+			if(!$this->restaurant()->active_restaurant_order_placement){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
 
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
-			if( $this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
+			if(!$this->restaurant()->delivery && $this->restaurant()->takeout){
 				$this->delivery_type = self::SHIPPING_TAKEOUT;
 			} else {
 				// log when an order is not delivery nor takeout
@@ -109,7 +109,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if( $this->delivery_type == self::SHIPPING_TAKEOUT ){
-			if( $this->restaurant()->takeout == 0 && $this->restaurant()->delivery == 1 ){
+			if(!$this->restaurant()->takeout && $this->restaurant()->delivery){
 				$this->delivery_type = self::SHIPPING_DELIVERY;
 			} else {
 				// log when an order is not delivery nor takeout
@@ -216,7 +216,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				- see #2236 and #2248
 				-> Removed the Util::ceil - see #2613
 				*/
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if($this->restaurant()->delivery_service){
 			$baseToCalcTax = $this->price;
 		} else {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
@@ -226,7 +226,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = number_format( round( $tax, 2 ), 2 );
 
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if($this->restaurant()->delivery_service){
 			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
 			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value + $tip, 2 );
 		} else {
@@ -324,7 +324,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// Find out if the user posted a gift card code at the notes field and get its value
 		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
-			$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
+			$totalOrdersByPhone = self::totalOrdersByPhone( $this->phone );
 			if( $totalOrdersByPhone < 1 ){
 				$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $this->notes );
 				$words = explode( ' ', $words );
@@ -1291,7 +1291,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				- see #2236 and #2248
 				-> Removed the Util::ceil - see #2613
 				*/
-		if( intval( $this->delivery_service ) == 1 ){
+		if($this->delivery_service){
 			$baseToCalcTax = $this->price;
 		} else {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
@@ -1329,7 +1329,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function notify(){
 		$this->notifyRestaurants();
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if($this->restaurant()->delivery_service){
 			$this->notifyDrivers();
 		}
 	}
@@ -1363,7 +1363,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$hasDriversWorking = false;
 
 		// check if the restaurant is using our delivery system
-		if( intval( $order->restaurant()->delivery_service ) == 1 ){
+		if($order->restaurant()->delivery_service){
 			$needDrivers = true;
 		}
 
@@ -2373,7 +2373,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return null;
 	}
 
-	public function lastDeliveredOrder($id_user = nul) {
+	public static function lastDeliveredOrder($id_user = nul) {
 		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		if( $id_user ){
 			$order = self::q("SELECT * FROM `order` WHERE id_user = ? AND delivery_type = 'delivery' ORDER BY id_order DESC LIMIT 1", [$id_user]);
@@ -2488,7 +2488,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $time;
 	}
 
-	public function totalOrdersByPhone( $phone ){
+	public static function totalOrdersByPhone( $phone ){
 		$phone = Phone::clean( $phone );
 		$query = 'SELECT COUNT(*) AS total FROM `order` INNER JOIN phone using(id_phone) WHERE phone.phone = ?';
 		$row = Cana::db()->get( $query, [$phone])->get(0);
@@ -2498,7 +2498,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return 0;
 	}
 
-	public function totalOrdersByCustomer( $id_user ){
+	public static function totalOrdersByCustomer( $id_user ){
 		$query = 'SELECT COUNT(*) AS total FROM `order` WHERE id_user = ?';
 		$row = Cana::db()->get( $query, [$id_user])->get(0);
 		if( $row->total ){
@@ -2825,7 +2825,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function driverInstructionsPaymentStatus(){
 		// Clarify Cash/Credit Orders #4481
-		if( $this->restaurant()->formal_relationship == 1 ){
+		if( $this->restaurant()->formal_relationship ){
 			if( $this->pay_type == 'cash' ){
 				$driver = c::user();
 				if( $driver->id_admin && $driver->hasPexCard() ){
@@ -2856,7 +2856,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function driverInstructionsFoodStatus(){
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
-		if( $this->restaurant()->formal_relationship == 1 || $this->restaurant()->order_notifications_sent == 1 ){
+		if( $this->restaurant()->formal_relationship || $this->restaurant()->order_notifications_sent){
 			return 'Food already prepared';
 		} else {
 			return 'Place the order yourself';
