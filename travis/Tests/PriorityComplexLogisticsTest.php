@@ -363,23 +363,23 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant5->id_restaurant)->delete();
     }
 
-    public function testMisc()
-    {
-        $cur_community_tz = $this->restaurant5->community()->timezone;
-        $now = new DateTime('now', new DateTimeZone($cur_community_tz));
-        var_dump($now);
-        $test = $now->format("w");
-        print "Day of week $test\n";
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        var_dump($o1->date);
-        $now2 = new DateTime($o1->date, new DateTimeZone($cur_community_tz));
-        var_dump($now2);
-        var_dump($now2->getTimestamp());
-    }
+//    public function testMisc()
+//    {
+//        $cur_community_tz = $this->restaurant5->community()->timezone;
+//        $now = new DateTime('now', new DateTimeZone($cur_community_tz));
+//        var_dump($now);
+//        $test = $now->format("w");
+//        print "Day of week $test\n";
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        var_dump($o1->date);
+//        $now2 = new DateTime($o1->date, new DateTimeZone($cur_community_tz));
+//        var_dump($now2);
+//        var_dump($now2->getTimestamp());
+//    }
 
 //    public function testOLPTZConversionLosAngeles()
 //    {
@@ -540,6 +540,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        print "$test\n";
 //        $o1->delete();
 //    }
+
+
+    public function testAdminLocationMissing()
+    {
+        $d1 = $this->driver1;
+        $loc = $d1->location();
+        $this->assertNull($loc);
+
+    }
 
     public function testOrderGeoMatchAvailable()
     {

@@ -238,11 +238,16 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
     // TODO: $withFakes operational only for situations with 1 new order for now
     // Could a imagine a situation down the line where this isn't the case, when projected orders are taken into account
     // Only a single fake is allowed as well.
-    public function createOptimizerInputs($fakeOrderPairs)
+    public function createOptimizerInputs($fakeOrder)
     {
-        $optInputsList = ['old' => null, 'new' => null];
+        $optInputsList = ['old' => null, 'new' => null, 'hasFakeOrder'=> false];
         $numOldNodes = $this->id_old_counter + 1;
         $numNewNodes = $this->id_new_counter + 1;
+
+        $fakeOrderPairs = null;
+        if (!is_null($fakeOrder)) {
+            $fakeOrderPairs = $fakeOrder->getFakeOrderPairs();
+        }
 
         if ($numNewNodes > 0 ) {
             if ($this->hasOnlyNewOrder()){
@@ -267,6 +272,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
                         [$this->id_new_counter + 2]);
                     $optInputsList['new'] = $new;
                     $this->newFakeOrderIds = [$this->id_new_counter + 1, $this->id_new_counter + 2];
+                    $optInputsList['hasFakeOrder'] = true;
                 } else{
                     // Only do the new optimization
                     $this->computeClusters(0, $numNewNodes);

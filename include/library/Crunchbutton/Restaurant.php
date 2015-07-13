@@ -1642,6 +1642,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE community = ? '.$where.' ORDER BY name ASC', [$community]);
 	}
 
+	public static function getRestaurantsWithGeoByCommunity( $community, $inactive = false ){
+		if( !$inactive ){
+			$where = 'AND active = true';
+		}
+		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE loc_lat IS NOT NULL AND loc_long IS NOT NULL AND community = ? '.$where.' ORDER BY name ASC', [$community]);
+	}
+
 	public function restaurantsUserHasPermission(){
 		$restaurants_ids = [];
 		$_permissions = new Crunchbutton_Admin_Permission();
