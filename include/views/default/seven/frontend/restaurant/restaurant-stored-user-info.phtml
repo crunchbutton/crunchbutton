@@ -1,0 +1,74 @@
+<div class="delivery-payment-info restaurant-side-bar restaurant-side-user-info" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
+
+	<div class="divider dots spacer-one-one"></div>
+
+	<div class="content-padding">
+
+		<p>We’ve saved your payment and delivery info for one click reordering.</p>
+
+		<div class="divider spacer-one-one"></div>
+
+		<div class="order-icon"><div class="icon-phone"></div></div>
+		<div class="order-info order-info-oneline">
+			<p>
+				<span ng-show="user.phone">{{ user.phone | formatPhone }}</span>
+				<span ng-show="!user.phone">no phone # provided</span>
+			</p>
+		</div>
+		<div class="divider"></div>
+		<div class="order-icon">
+				<div class="icon-credit" ng-show="order.form.pay_type=='card' && order.total() <= credit.number"></div>
+				<div class="icon-card" ng-show="order.form.pay_type=='card' && order.total() > credit.number"></div>
+				<div class="icon-cash" ng-show="order.form.pay_type=='cash'"></div>
+		</div>
+		<div class="order-info order-info-oneline">
+
+			<p>
+				<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
+				<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
+				<span ng-show="order.form.pay_type=='card' && !credit.number">Card ending in {{user.card_ending}}</span>
+				<span ng-show="order.form.pay_type=='cash'">Pay and tip with <b>cash</b>
+					<span ng-if="config.driver_change_amount">
+						<br><i>Drivers only cary ${{config.driver_change_amount}} in change</i>
+					</span>
+				</span>
+			</p>
+		</div>
+		<div class="divider"></div>
+
+
+		<div class="order-icon">
+			<div class="icon-map-home" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'"></div>
+			<div class="icon-map-restaurant" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'"></div>
+		</div>
+		<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+			<p>
+				Delivered to:<br />
+			</p>
+			<p class="restaurant-info-address">
+				<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
+				<i ng-hide="order.form.address">no address provided</i>
+			</p>
+		</div>
+		<div class="order-info" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
+			<p class="restaurant-info-address">
+				Pick up from:<br />
+				<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
+			</p>
+		</div>
+
+
+		<div class="divider"></div>
+
+
+		<div class="order-icon"><div class="icon-notes" ng-show="order.form.notes"></div></div>
+		<div class="order-info">
+			<p ng-bind-html-unsafe="order.form.notes | nl2br" class="restaurant-info-address"></p>
+		</div>
+		<div class="divider"></div>
+
+		<div class="divider spacer-one-two"></div>
+
+		<button class="button green" ng-click="order.showForm=true">Change info</button>
+	</div>
+</div>

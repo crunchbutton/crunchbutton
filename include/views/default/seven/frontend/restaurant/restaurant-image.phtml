@@ -1,0 +1,21 @@
+<div ng-if="restaurant.image" class="restaurant-pic-wrapper">
+
+	<div class="restaurant-pic hide-mobile" style="background: url({{restaurant.imglarge}});"></div>
+	<div class="restaurant-pic hide-desktop" style="background: url({{restaurant.img}});"><div class="restaurant-pic-overlay"></div></div>
+
+	<div class="restaurant-content-padding">
+
+		<div class="restaurant-name">
+			<h1 ng-resize-text>{{restaurant.name}}</h1><div></div>
+			<h2>{{restaurant.message || restaurant.short_description}}</h2>
+		</div>
+
+		<div class="giftcard-badge" ng-if="credit.hasValue">
+			<i class="fa fa-certificate"></i>
+			<div class="giftcard-badge-value"><sup>$</sup>{{Math.round(credit.value)}}</div>
+			<div class="giftcard-badge-text">gift card</div>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+</div>
