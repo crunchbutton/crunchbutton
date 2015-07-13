@@ -1,0 +1,171 @@
+<form class="payment-form restaurant-side-bar" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
+
+	<div class="divider dots spacer-one-one"></div>
+
+	<div ng-show="restaurant._open && order.showForm && order.cart.hasItems()">
+
+		<!-- user info -->
+		<div class="delivery-info-container">
+			<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
+				<div class="toggle-wrapper clearfix">
+					<button ng-click="order.toogleDelivery( 'delivery' )" ng-class="{'toggle-active': order.form.delivery_type=='delivery' }" class="payment-form-toggle">delivery</button>
+					<button ng-click="order.toogleDelivery( 'takeout' )" ng-class="{'toggle-active': order.form.delivery_type=='takeout' }" class="payment-form-toggle">takeout</button>
+					<div class="divider"></div>
+				</div>
+			</div>
+
+			<div class="payment-form-group form-group">
+				<i class="form-icon form-field"> </i>
+				<div class="form-field">
+					<div ng-show="(restaurant.delivery == '1' && restaurant.takeout != '1')">
+						<label class="pay-title-label">Delivery Info</label>
+					</div>
+
+					<div ng-show="(restaurant.delivery != '1' && restaurant.takeout == '1')">
+						<label class="pay-title-label">Takeout Info </label>
+						<span class="take-out-only">Take out only!</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="divider spacer-one-two"></div>
+
+
+			<div class="personal-info field-container">
+				<div class="payment-form-group form-group">
+					<i class="fa fa-user payment-form-icon form-icon form-field"></i>
+					<input ng-focus="softKeyboard($event);" type="text" name="pay-name" tabindex="2" ng-model="order.form.name" class="payment-form-input form-input form-field" placeholder="name">
+				</div>
+
+				<div class="payment-form-group form-group">
+					<i class="fa fa-envelope-o payment-form-icon form-icon form-field"></i>
+					<input ng-focus="softKeyboard($event);" type="email" name="pay-email" tabindex="3" ng-model="order.form.email" class="payment-form-input form-input form-field" placeholder="email">
+				</div>
+
+				<div class="payment-form-group form-group">
+					<i class="fa fa-phone payment-form-icon form-icon form-field"></i>
+					<input ng-focus="softKeyboard($event);" type="tel" name="pay-phone" tabindex="4" ng-format-phone ng-model="order.form.phone" class="payment-form-input form-input form-field" placeholder="phone number">
+				</div>
+
+				<div class="payment-form-group form-group">
+					<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
+					<p class="pickup-info" ng-if="order.form.delivery_type!='delivery'">Pickup from:<br><span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
+					<textarea ng-focus="softKeyboard($event);" ng-autosize ng-show="order.form.delivery_type=='delivery'" class="payment-form-input form-input form-field" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
+				</div>
+
+				<div class="payment-form-group form-group">
+
+					<i class="fa fa-bullhorn payment-form-icon form-icon form-field"></i>
+					<textarea ng-focus="softKeyboard($event);" ng-autosize name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6" class="payment-form-input form-input form-field" placeholder="notes"></textarea>
+
+					<!-- Gift card messages -->
+					<div class="giftcard-info">
+
+						<div class="warning" ng-if="giftcard.removed">
+							You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.
+						</div>
+
+						<div ng-if="restaurant.giftcard == 0 && giftcard.hasGiftCards">
+							This restaurant does not accept gift card.
+						</div>
+
+						<div ng-if="giftcard.hasValue && order.form.pay_type == 'cash' ">
+							Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
+						</div>
+
+					<div ng-repeat="success in giftcard.giftcards.success">
+						<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+							<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
+							<span ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get our delivery free</span>
+						</div>
+					</div>
+
+
+					<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
+						<!-- Gift card success -->
+						<div ng-repeat="success in giftcard.giftcards.success">
+							<div ng-if="!success.delivery_free && !success.message">
+								<div ng-show="!success.error">
+									Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
+								</div>
+								<div ng-show="success.error == 'other restaurant'">
+									The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+								</div>
+							</div>
+							<div ng-if="success.message">
+								{{success.message}}
+							</div>
+						</div>
+						<!-- Gift card errors -->
+						<div ng-repeat="error in giftcard.giftcards.error">
+							<div ng-switch on="error.error">
+								<div ng-switch-when="gift card already used">
+									The gift card ({{error.giftcard}}) you are trying to use was already redeemed.
+								</div>
+								<div ng-switch-when="custom">
+									{{error.message}}
+								</div>
+							</div>
+						</div>
+						<span ng-if="giftcard.justOneGiftCardError">
+							You can only use one gift card at a time!
+						</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- payment info -->
+		<div class="payment-info-container">
+
+
+			<div class="divider spacer-two-two"></div>
+			<div class="divider spacer-one-one"></div>
+
+			<div class="payment-info field-container">
+				<div class="toggle-wrapper clearfix">
+					<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button>
+					<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
+					<div class="divider"></div>
+				</div>
+				
+				<div class="divider spacer-two-two"></div>
+				
+
+				<div ng-if="config.driver_change_amount && order.form.pay_type == 'cash'">
+					<p class="delivery-free restaurant-delivery-free">
+						<i>Drivers only cary ${{config.driver_change_amount}} in change.</i><br><br>
+					</p>
+				</div>
+
+
+
+				
+
+				<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
+					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
+					<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber">
+				</div>
+
+				<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
+					<i class="fa payment-form-icon form-icon form-field"></i>
+					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select></div>
+					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year"></select></div>
+				</div>
+
+				<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
+					<i class="fa fa-thumbs-up payment-form-icon form-icon form-field"></i>
+					<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
+					<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		</div>
+	</div>
+
+</form>

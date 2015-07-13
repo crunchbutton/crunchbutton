@@ -313,5 +313,72 @@ class Cockpit_Order extends Crunchbutton_Order {
 		} else return false;
 	}
 
+    public function getGeo(){
+		if (!isset($this->_geo)){
+			$this->_geo = null;
+
+	        if (!isset($this->lat) || !isset($this->lon)) {
+				if (!isset($this->address)) {
+					$this->geo = null;
+				} else {
+					$loc = $this->findGeoMatchFromDb();
+					if (is_null($loc)) {
+						$loc = $this->findGeoMatchFromBadAddresses();
+						if (is_null($loc)) {
+							$loc = Crunchbutton_GoogleGeocode::geocode($this->address);
+							if (is_null($loc)) {
+								// Use community
+								$community = $this->community();
+								$lat = $community->loc_lat;
+								$lon = $community->loc_lon;
+								if (!is_null($lat) && !is_null($lon)) {
+									$loc = new Crunchbutton_Order_Location($lat, $lon);
+								} else {
+									$this->_geo = null;
+								}
+							}
+						}
+					}
+
+					// Save the geocode info
+					$this->lat = $loc->lat;
+					$this->lon = $loc->lon;
+					$this->save();
+					$this->_geo = $loc;
+				}
+			} else{
+				$this->_geo = new Crunchbutton_Order_Location($this->lat, $this->lon);
+			}
+        }
+		return $this->_geo;
+    }
+
+    /* Find same address in the database that is already geocoded */
+    public function findGeoMatchFromDb() {
+        $qString = "SELECT * FROM `order` WHERE id_community= ? and "
+            ."address = ? and lat is not null and lon is not null limit 1";
+        $order = Order::q($qString, [$this->id_community, $this->address]);
+        if (is_null($order) || $order->count()==0){
+            return null;
+        } else{
+            $o = $order->get(0);
+            return new Crunchbutton_Order_Location($o->lat, $o->lon);
+        }
+    }
+
+    /* Find same address in the database that is already geocoded */
+    public function findGeoMatchFromBadAddresses() {
+        $address_lc = preg_replace('/\s+/', ' ', trim(strtolower($this->address)));
+        $qString = "SELECT * FROM order_logistics_badaddress WHERE id_community= ? and "
+            ."address_lc = ? limit 1";
+        $ba = Crunchbutton_Order_Logistics_Badaddress::q($qString, [$this->id_community, $address_lc]);
+        if (is_null($ba) || $ba->count()==0){
+            return null;
+        } else{
+            $o = $ba->get(0);
+            return new Crunchbutton_Order_Location($o->lat, $o->lon);
+        }
+    }
+
 
 }

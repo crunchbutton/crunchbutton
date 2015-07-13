@@ -1,6 +1,6 @@
 <?php
 
-class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
+class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 {
 
     // TODO: Test that this works correctly for different time zones
@@ -104,6 +104,12 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
             'id_community' => $c->id_community
         ]);
         $r3c->save();
+
+        $r4c = new Restaurant_Community([
+            'id_restaurant' => $r4->id_restaurant,
+            'id_community' => $c->id_community
+        ]);
+        $r4c->save();
 
         $cs = new Community_Shift([
             'id_community' => $c->id_community,
@@ -264,6 +270,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         Restaurant::q('select * from restaurant where name = "' . $name . ' - ONE"')->delete();
         Restaurant::q('select * from restaurant where name = "' . $name . ' - TWO"')->delete();
         Restaurant::q('select * from restaurant where name = "' . $name . ' - THREE"')->delete();
+        Restaurant::q('select * from restaurant where name = "' . $name . ' - FOUR"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - ONE"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - TWO"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - THREE"')->delete();
@@ -594,7 +601,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
 
         $r1Id = $this->restaurant1->id_restaurant;
 
-        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o1->save();
 
         // Outside time window - bad
@@ -738,7 +745,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate, $this->community);
         $o1->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o1);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1);
         foreach ($ol->drivers() as $driver) {
             $this->assertTrue($driver->__seconds == 0);
         }
@@ -797,7 +804,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -865,7 +872,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant2->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -929,7 +936,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -997,7 +1004,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
         foreach ($ops as $op) {
             $op->delete();
         }
@@ -1065,7 +1072,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1138,7 +1145,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1213,7 +1220,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1292,7 +1299,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1420,7 +1427,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o3 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate3, $this->community);
         $o3->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o3);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o3);
 
         foreach ($ops as $op) {
             $op->delete();
@@ -1506,7 +1513,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -1596,7 +1603,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o2);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -1714,7 +1721,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o3 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o3->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o3);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o3);
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -1831,7 +1838,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o3 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o3->save();
 
-        $ol = new Crunchbutton_Order_Logistics($o3);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o3);
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -1924,16 +1931,16 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o4->save();
         $orders[] = $o4;
 
-        $ol = new Crunchbutton_Order_Logistics($o4);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o4);
         foreach ($orders as $order) {
             $order->delete();
         }
         foreach ($oas as $oa) {
             $oa->delete();
         }
-        foreach ($ol->drivers() as $driver) {
-            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
 
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
@@ -2032,7 +2039,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
         $o5->save();
         $orders[] = $o5;
 
-        $ol = new Crunchbutton_Order_Logistics($o5);
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2081,7 +2088,7 @@ class PriorityLogisticsTest extends PHPUnit_Framework_TestCase
             'id_restaurant' => $restaurant->id_restaurant,
             'id_admin' => $driver->id_admin,
             'priority_time' => $priorityTime,
-            'priority_algo_version' => Crunchbutton_Order_Logistics::PRIORITY_ALGO_VERSION,
+            'priority_algo_version' => Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE_ALGO_VERSION,
             'priority_given' => $priority,
             'seconds_delay' => $delay,
             'priority_expiration' => $expiration
