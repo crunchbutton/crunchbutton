@@ -68,7 +68,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 					'community.name' => 'like',
 					'community.permalink' => 'like',
 					'community.name_alt' => 'like',
-					'community.id_community' => 'liker'
+					'community.id_community' => 'eq'
 				]
 			]);
 			$q .= $s['query'];
