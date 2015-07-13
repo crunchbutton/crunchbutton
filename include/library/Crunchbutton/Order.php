@@ -82,7 +82,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if( $processType == static::PROCESS_TYPE_WEB ){
 			// Check if the restaurant is active #2938
-			if( $this->restaurant()->active == 0 ){
+			if(!$this->restaurant()->active){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
@@ -90,14 +90,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $processType == static::PROCESS_TYPE_RESTAURANT ){
 			// Check if the restaurant is active for restaurant order placement
 			// https://github.com/crunchbutton/crunchbutton/issues/3350#issuecomment-48255149
-			if( $this->restaurant()->active_restaurant_order_placement == 0 ){
+			if(!$this->restaurant()->active_restaurant_order_placement){
 				$errors['inactive'] = 'This restaurant is not accepting orders.';
 			}
 		}
 
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
-			if( $this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
+			if(!$this->restaurant()->delivery && $this->restaurant()->takeout){
 				$this->delivery_type = self::SHIPPING_TAKEOUT;
 			} else {
 				// log when an order is not delivery nor takeout
@@ -109,7 +109,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if( $this->delivery_type == self::SHIPPING_TAKEOUT ){
-			if( $this->restaurant()->takeout == 0 && $this->restaurant()->delivery == 1 ){
+			if(!$this->restaurant()->takeout && $this->restaurant()->delivery){
 				$this->delivery_type = self::SHIPPING_DELIVERY;
 			} else {
 				// log when an order is not delivery nor takeout
