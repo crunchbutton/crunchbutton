@@ -23,12 +23,15 @@
 				<directory>../include/Library/Guzzle</directory>
 				<directory>../include/Library/Httpful</directory>
 				<directory>../include/Library/Mailgun</directory>
+				<directory>../include/Library/Minify</directory>
 				<directory>../include/Library/Ordrin</directory>
 				<directory>../include/Library/Pear</directory>
+				<directory>../include/Library/Predis</directory>
 				<directory>../include/Library/QueryPath</directory>
 				<directory>../include/Library/RESTful</directory>
 				<directory>../include/Library/Scss</directory>
 				<directory>../include/Library/Services</directory>
+				<directory>../include/Library/Stripe</directory>
 				<directory>../include/Library/Symfony</directory>
 			</exclude>
         </whitelist>
