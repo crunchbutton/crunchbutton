@@ -16,7 +16,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $out;
 	}
 
-	public function driversCouldDeliveryOrder( $id_order ){
+	public static function driversCouldDeliveryOrder( $id_order ){
 		if( !$id_order ){
 			return false;
 		}
