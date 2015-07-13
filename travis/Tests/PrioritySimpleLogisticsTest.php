@@ -1938,9 +1938,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($oas as $oa) {
             $oa->delete();
         }
-        foreach ($ol->drivers() as $driver) {
-            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
 
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {

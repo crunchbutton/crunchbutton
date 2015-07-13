@@ -341,8 +341,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver1 = Admin::q('select * from admin where name="' . $name . ' - ONE" order by id_admin desc limit 1')->get(0);
         $this->driver2 = Admin::q('select * from admin where name="' . $name . ' - TWO" order by id_admin desc limit 1')->get(0);
         $this->driver3 = Admin::q('select * from admin where name="' . $name . ' - THREE" order by id_admin desc limit 1')->get(0);
-        $this->user = User::q('select * from `user` where name="' .  $name . ' - ONE" order by id_user desc limit 1')->get(0);
-        $this->user2 = User::q('select * from `user` where name="' .  $name . ' - TWO" order by id_user desc limit 1')->get(0);
+        $this->user = User::q('select * from user where name="' .  $name . ' - ONE" order by id_user desc limit 1')->get(0);
+        $this->user2 = User::q('select * from user where name="' .  $name . ' - TWO" order by id_user desc limit 1')->get(0);
         $this->community = Community::q('select * from community where name="' . $name . ' - ONE"  order by id_community desc limit 1')->get(0);
         $this->community2 = Community::q('select * from community where name="' . $name . ' - TWO" order by id_community desc limit 1')->get(0);
     }
@@ -363,155 +363,164 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant5->id_restaurant)->delete();
     }
 
-//    public function testMisc()
+    public function testMisc()
+    {
+        $cur_community_tz = $this->restaurant5->community()->timezone;
+        $now = new DateTime('now', new DateTimeZone($cur_community_tz));
+        var_dump($now);
+        $test = $now->format("w");
+        print "Day of week $test\n";
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+
+        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+        var_dump($o1->date);
+        $now2 = new DateTime($o1->date, new DateTimeZone($cur_community_tz));
+        var_dump($now2);
+        var_dump($now2->getTimestamp());
+    }
+
+//    public function testOLPTZConversionLosAngeles()
 //    {
-//        $cur_community_tz = $this->restaurant5->community()->timezone;
-//        $now = new DateTime('now', new DateTimeZone($cur_community_tz));
-//        var_dump($now);
-//        $test = $now->format("w");
-//        print "Day of week $test\n";
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        $dow = date("w", strftime($useDate));
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+//
+//        $olp1 = $this->defaultOLP($this->restaurant1, $start, $end, 5, $dow);
+//        $olp2 = $this->defaultOLP($this->restaurant1, $end, $end2, 10, $dow);
+//        $olp1->save();
+//        $olp2->save();
+//        $newTZ = $this->restaurant1->community()->timezone;
+//        $useDT->setTimezone(new DateTimeZone($newTZ));
+//        $parking = $this->restaurant1->parking($useDT->format('H:i:s'), $dow);
+//        $olp1->delete();
+//        $olp2->delete();
+//        $this->assertTrue($parking->parking_duration == 5);
 //    }
-
-    public function testOLPTZConversionLosAngeles()
-    {
-
-        $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-        $dow = date("w", strftime($useDate));
-
-        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-
-        $olp1 = $this->defaultOLP($this->restaurant1, $start, $end, 5, $dow);
-        $olp2 = $this->defaultOLP($this->restaurant1, $end, $end2, 10, $dow);
-        $olp1->save();
-        $olp2->save();
-        $newTZ = $this->restaurant1->community()->timezone;
-        $useDT->setTimezone(new DateTimeZone($newTZ));
-        $parking = $this->restaurant1->parking($useDT->format('H:i:s'), $dow);
-        $olp1->delete();
-        $olp2->delete();
-        $this->assertTrue($parking->parking_duration == 5);
-    }
-
-    public function testOLPTZConversionNewYork()
-    {
-
-        $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-//        var_dump($useDT);
-        $dow = date("w", strftime($useDate));
-
-        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-
-        $olp1 = $this->defaultOLP($this->restaurant5, $start, $end, 15, $dow);
-        $olp2 = $this->defaultOLP($this->restaurant5, $end, $end2, 20, $dow);
-        $olp1->save();
-        $olp2->save();
-        $newTZ = $this->restaurant5->community()->timezone;
-        $useDT->setTimezone(new DateTimeZone($newTZ));
-        $parking = $this->restaurant5->parking($useDT->format('H:i:s'), $dow);
-//        var_dump($useDT);
-//        print $useDT->format('H:i:s')."\n";
-        $olp1->delete();
-        $olp2->delete();
-        $this->assertTrue($parking->parking_duration == 20);
-    }
-
-    public function testOLOTTZConversionLosAngeles()
-    {
-
-        $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-        $dow = date("w", strftime($useDate));
-
-        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-        $olot1 = $this->defaultOLOT($this->restaurant1, $start, $end, 5, 1, $dow);
-        $olot2 = $this->defaultOLOT($this->restaurant1, $end, $end2, 10, 1, $dow);
-        $olot1->save();
-        $olot2->save();
-        $newTZ = $this->restaurant1->community()->timezone;
-        $useDT->setTimezone(new DateTimeZone($newTZ));
-        $ot = $this->restaurant1->ordertime($useDT->format('H:i:s'), $dow);
-        $olot1->delete();
-        $olot2->delete();
-        $this->assertTrue($ot->order_time == 5);
-        $this->assertTrue($ot->scale_factor == 1);
-    }
-
-    public function testOLOTTZConversionNewYork()
-    {
-
-        $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-        $dow = date("w", strftime($useDate));
-
-        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-        $olot1 = $this->defaultOLOT($this->restaurant5, $start, $end, 15, 1, $dow);
-        $olot2 = $this->defaultOLOT($this->restaurant5, $end, $end2, 20, 1, $dow);
-        $olot1->save();
-        $olot2->save();
-        $newTZ = $this->restaurant5->community()->timezone;
-        $useDT->setTimezone(new DateTimeZone($newTZ));
-        $ot = $this->restaurant5->ordertime($useDT->format('H:i:s'), $dow);
-//        var_dump($useDT);
-//        print $useDT->format('H:i:s')."\n";
-        $olot1->delete();
-        $olot2->delete();
-        $this->assertTrue($ot->order_time == 20);
-        $this->assertTrue($ot->scale_factor == 1);
-    }
-
-    public function testOLCSTZConversionLosAngeles()
-    {
-
-        $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-        $dow = date("w", strftime($useDate));
-
-        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 5, $dow);
-        $olcs2 = $this->defaultOLCS($this->community, $end, $end2, 10, $dow);
-        $olcs1->save();
-        $olcs2->save();
-        $newTZ = $this->community->timezone;
-        $useDT->setTimezone(new DateTimeZone($newTZ));
-        $cs = $this->community->communityspeed($useDT->format('H:i:s'), $dow);
-        $olcs1->delete();
-        $olcs2->delete();
-        $this->assertTrue($cs->mph == 5);
-    }
-
-    public function testOLCSTZConversionNewYork()
-    {
-
-        $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-        $dow = date("w", strftime($useDate));
-
-        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-        $olcs1 = $this->defaultOLCS($this->community2, $start, $end, 15, $dow);
-        $olcs2 = $this->defaultOLCS($this->community2, $end, $end2, 20, $dow);
-        $olcs1->save();
-        $olcs2->save();
-        $newTZ = $this->community2->timezone;
-        $useDT->setTimezone(new DateTimeZone($newTZ));
-        $cs = $this->community2->communityspeed($useDT->format('H:i:s'), $dow);
-        $olcs1->delete();
-        $olcs2->delete();
-        $this->assertTrue($cs->mph == 20);
-    }
+//
+//    public function testOLPTZConversionNewYork()
+//    {
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+////        var_dump($useDT);
+//        $dow = date("w", strftime($useDate));
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+//
+//        $olp1 = $this->defaultOLP($this->restaurant5, $start, $end, 15, $dow);
+//        $olp2 = $this->defaultOLP($this->restaurant5, $end, $end2, 20, $dow);
+//        $olp1->save();
+//        $olp2->save();
+//        $newTZ = $this->restaurant5->community()->timezone;
+//        $useDT->setTimezone(new DateTimeZone($newTZ));
+//        $parking = $this->restaurant5->parking($useDT->format('H:i:s'), $dow);
+////        var_dump($useDT);
+////        print $useDT->format('H:i:s')."\n";
+//        $olp1->delete();
+//        $olp2->delete();
+//        $this->assertTrue($parking->parking_duration == 20);
+//    }
+//
+//    public function testOLOTTZConversionLosAngeles()
+//    {
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        $dow = date("w", strftime($useDate));
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+//        $olot1 = $this->defaultOLOT($this->restaurant1, $start, $end, 5, 1, $dow);
+//        $olot2 = $this->defaultOLOT($this->restaurant1, $end, $end2, 10, 1, $dow);
+//        $olot1->save();
+//        $olot2->save();
+//        $newTZ = $this->restaurant1->community()->timezone;
+//        $useDT->setTimezone(new DateTimeZone($newTZ));
+//        $ot = $this->restaurant1->ordertime($useDT->format('H:i:s'), $dow);
+//        $olot1->delete();
+//        $olot2->delete();
+//        $this->assertTrue($ot->order_time == 5);
+//        $this->assertTrue($ot->scale_factor == 1);
+//    }
+//
+//    public function testOLOTTZConversionNewYork()
+//    {
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        $dow = date("w", strftime($useDate));
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+//        $olot1 = $this->defaultOLOT($this->restaurant5, $start, $end, 15, 1, $dow);
+//        $olot2 = $this->defaultOLOT($this->restaurant5, $end, $end2, 20, 1, $dow);
+//        $olot1->save();
+//        $olot2->save();
+//        $newTZ = $this->restaurant5->community()->timezone;
+//        $useDT->setTimezone(new DateTimeZone($newTZ));
+//        $ot = $this->restaurant5->ordertime($useDT->format('H:i:s'), $dow);
+////        var_dump($useDT);
+////        print $useDT->format('H:i:s')."\n";
+//        $olot1->delete();
+//        $olot2->delete();
+//        $this->assertTrue($ot->order_time == 20);
+//        $this->assertTrue($ot->scale_factor == 1);
+//    }
+//
+//    public function testOLCSTZConversionLosAngeles()
+//    {
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        $dow = date("w", strftime($useDate));
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+//        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 5, $dow);
+//        $olcs2 = $this->defaultOLCS($this->community, $end, $end2, 10, $dow);
+//        $olcs1->save();
+//        $olcs2->save();
+//        $newTZ = $this->community->timezone;
+//        $useDT->setTimezone(new DateTimeZone($newTZ));
+//        $cs = $this->community->communityspeed($useDT->format('H:i:s'), $dow);
+//        $olcs1->delete();
+//        $olcs2->delete();
+//        $this->assertTrue($cs->mph == 5);
+//    }
+//
+//    public function testOLCSTZConversionNewYork()
+//    {
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        $dow = date("w", strftime($useDate));
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+//        $olcs1 = $this->defaultOLCS($this->community2, $start, $end, 15, $dow);
+//        $olcs2 = $this->defaultOLCS($this->community2, $end, $end2, 20, $dow);
+//        $olcs1->save();
+//        $olcs2->save();
+//        $newTZ = $this->community2->timezone;
+//        $useDT->setTimezone(new DateTimeZone($newTZ));
+//        $cs = $this->community2->communityspeed($useDT->format('H:i:s'), $dow);
+//        $olcs1->delete();
+//        $olcs2->delete();
+//        $this->assertTrue($cs->mph == 20);
+//    }
 
 //    public function testGoogleGeocode()
 //    {
@@ -687,6 +696,37 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($geo->lon==$lon2);
     }
 
+
+    public function testOrderGoogleGeoAvailable()
+    {
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community2);
+        $lat = 34.0303058;
+        $lon = -118.2860374;
+        $lat2 = 35.0;
+        $lon2 = -119.5;
+        $o1->lat = $lat2;
+        $o1->lon = $lon2;
+        $o1->save();
+        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
+        $ba = $this->defaultOLBA($this->community2, strtolower($use_address), $lat2, $lon2);
+        $ba->save();
+        $geo = $o2->getGeo();
+        $o1->delete();
+        $o2->delete();
+        $ba->delete();
+        $this->assertTrue($geo->lat==$lat);
+        $this->assertTrue($geo->lon==$lon);
+    }
+
+
     public function testOrderGeoCommunityGeoAvailable()
     {
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -716,149 +756,182 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($geo->lat==$lat3);
         $this->assertTrue($geo->lon==$lon3);
     }
+//
+//    public function testAdminScore()
+//    {
+//        $useScore = 2.0;
+//        $s = $this->defaultScore($this->driver1, $useScore);
+//        $s->save();
+//        $sc = $this->driver1->score();
+//        $s->delete();
+//        $this->assertTrue($sc == $useScore);
+//    }
+//
+//    public function testAdminDefaultScore()
+//    {
+//        $useScore = 55.0;
+//        $s = $this->defaultScore($this->driver2, $useScore);
+//        $s->save();
+//        $sc = $this->driver1->score();
+//        $s->delete();
+//        $this->assertTrue($sc == Cockpit_Admin_Score::DEFAULT_SCORE);
+//    }
+//
+//    public function testRestaurantClusterExist()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $fakeClusterId = 999999;
+//        $olc = $this->defaultOLC($this->restaurant1, 0, '00:00:00', '01:00:00', $fakeClusterId);
+//        $olc->save();
+//        $cluster = $this->restaurant1->cluster('00:03:00', 0);
+//        $olc->delete();
+//        $this->assertTrue($cluster==$fakeClusterId);
+//    }
+//
+//    public function testRestaurantClusterWrongTime()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $fakeClusterId = 999999;
+//        $olc = $this->defaultOLC($this->restaurant1, 0, '00:00:00', '01:00:00', $fakeClusterId);
+//        $olc->save();
+//        $cluster = $this->restaurant1->cluster('02:00:00', 0);
+//        $olc->delete();
+//        $cl = Crunchbutton_Order_Logistics_Cluster::q('select * from order_logistics_cluster where id_restaurant= ?',
+//            [$this->restaurant1->id_restaurant]);
+//        $count = $cl->count();
+//        $cl->delete();
+//        $this->assertTrue($cluster==$this->restaurant1->id_restaurant);
+//        $this->assertTrue($count==1);
+//    }
+//
+//    public function testDestinationListCount()
+//    {
+//        $d1 = $this->defaultDriverDestination(10);
+//        $d2 = $this->defaultRestaurantDestination(11);
+//        $d3 = $this->defaultCustomerDestination(12);
+//
+//        $dl = new Crunchbutton_Order_Logistics_DestinationList();
+//        $dl->add($d1);
+//        $dl->add($d2);
+//        $dl->add($d3);
+//        $count = $dl->count();
+//        $clusterCount = count($dl->parking_clusters);
+//        $idMapCount = count($dl->id_map);
+//        $this->assertTrue($count==3);
+//        $this->assertTrue($clusterCount==0);
+//        $this->assertTrue($idMapCount==3);
+//        $this->assertTrue($dl->id_map[1]->id==10);
+//        $this->assertTrue($dl->id_map[2]->id==11);
+//        $this->assertTrue($dl->id_map[3]->id==12);
+//    }
+//
+//    public function testDestinationListClusters()
+//    {
+//        $d1 = $this->defaultRestaurantDestination(1000, 1);
+//        $d2 = $this->defaultRestaurantDestination(2000, 1);
+//        $d3 = $this->defaultRestaurantDestination(3000, 2);
+//        $d4 = $this->defaultRestaurantDestination(4000, 2);
+//
+//        $dl = new Crunchbutton_Order_Logistics_DestinationList();
+//        $dl->add($d1);
+//        $dl->add($d2);
+//        $dl->add($d3);
+//        $dl->add($d4);
+//        $count = $dl->count();
+//        $pc = $dl->parking_clusters;
+//        $clusterCount = count($pc);
+//        $idMapCount = count($dl->id_map);
+//        $this->assertTrue($count==4);
+//        $this->assertTrue($clusterCount==2);
+//        $this->assertTrue(count($pc[1])==2);
+//        $this->assertTrue(count($pc[2])==2);
+//        $this->assertTrue($idMapCount==4);
+//        $this->assertTrue($dl->id_map[1]->id==1000);
+//        $this->assertTrue($dl->id_map[2]->id==2000);
+//        $this->assertTrue($dl->id_map[3]->id==3000);
+//        $this->assertTrue($dl->id_map[4]->id==4000);
+//    }
+//
+//    public function testDestinationListClone()
+//    {
+//        $d1 = $this->defaultRestaurantDestination(1000, 1);
+//        $d2 = $this->defaultRestaurantDestination(2000, 1);
+//        $d3 = $this->defaultRestaurantDestination(3000, 2);
+//        $d4 = $this->defaultRestaurantDestination(4000, 2);
+//        $d5 = $this->defaultRestaurantDestination(5000, 3);
+//
+//        $dl = new Crunchbutton_Order_Logistics_DestinationList();
+//        $dl->add($d1);
+//        $dl->add($d2);
+//
+//        $dl2 = clone $dl;
+//        $dl->add($d3);
+//        $dl->add($d4);
+//        $dl2->add($d5);
+//        $count = $dl->count();
+//        $pc = $dl->parking_clusters;
+//        $clusterCount = count($pc);
+//        $idMapCount = count($dl->id_map);
+//        $count2 = $dl2->count();
+//        $pc2 = $dl2->parking_clusters;
+//        $clusterCount2 = count($pc2);
+//        $idMapCount2 = count($dl2->id_map);
+//        $this->assertTrue($count==4);
+//        $this->assertTrue($clusterCount==2);
+//        $this->assertTrue(count($pc[1])==2);
+//        $this->assertTrue(count($pc[2])==2);
+//        $this->assertTrue($idMapCount==4);
+//        $this->assertTrue($dl->id_map[1]->id==1000);
+//        $this->assertTrue($dl->id_map[2]->id==2000);
+//        $this->assertTrue($dl->id_map[3]->id==3000);
+//        $this->assertTrue($dl->id_map[4]->id==4000);
+//        $this->assertTrue($count2==3);
+//        $this->assertTrue($clusterCount2==2);
+//        $this->assertTrue(count($pc2[1])==2);
+//        $this->assertTrue(count($pc2[3])==1);
+//        $this->assertTrue($idMapCount2==3);
+//        $this->assertTrue($dl2->id_map[1]->id==1000);
+//        $this->assertTrue($dl2->id_map[2]->id==2000);
+//        $this->assertTrue($dl2->id_map[3]->id==5000);
+//    }
 
-    public function testAdminScore()
-    {
-        $useScore = 2.0;
-        $s = $this->defaultScore($this->driver1, $useScore);
-        $s->save();
-        $sc = $this->driver1->score();
-        $s->delete();
-        $this->assertTrue($sc == $useScore);
-    }
-
-    public function testAdminDefaultScore()
-    {
-        $useScore = 55.0;
-        $s = $this->defaultScore($this->driver2, $useScore);
-        $s->save();
-        $sc = $this->driver1->score();
-        $s->delete();
-        $this->assertTrue($sc == Cockpit_Admin_Score::DEFAULT_SCORE);
-    }
-
-    public function testRestaurantClusterExist()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $fakeClusterId = 999999;
-        $olc = $this->defaultOLC($this->restaurant1, 0, '00:00:00', '01:00:00', $fakeClusterId);
-        $olc->save();
-        $cluster = $this->restaurant1->cluster('00:03:00', 0);
-        $olc->delete();
-        $this->assertTrue($cluster==$fakeClusterId);
-    }
-
-    public function testRestaurantClusterWrongTime()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $fakeClusterId = 999999;
-        $olc = $this->defaultOLC($this->restaurant1, 0, '00:00:00', '01:00:00', $fakeClusterId);
-        $olc->save();
-        $cluster = $this->restaurant1->cluster('02:00:00', 0);
-        $olc->delete();
-        $cl = Crunchbutton_Order_Logistics_Cluster::q('select * from order_logistics_cluster where id_restaurant= ?',
-            [$this->restaurant1->id_restaurant]);
-        $count = $cl->count();
-        $cl->delete();
-        $this->assertTrue($cluster==$this->restaurant1->id_restaurant);
-        $this->assertTrue($count==1);
-    }
-
-    public function testDestinationListCount()
-    {
-        $d1 = $this->defaultDriverDestination(10);
-        $d2 = $this->defaultRestaurantDestination(11);
-        $d3 = $this->defaultCustomerDestination(12);
-
-        $dl = new Crunchbutton_Order_Logistics_DestinationList();
-        $dl->add($d1);
-        $dl->add($d2);
-        $dl->add($d3);
-        $count = $dl->count();
-        $clusterCount = count($dl->parking_clusters);
-        $idMapCount = count($dl->id_map);
-        $this->assertTrue($count==3);
-        $this->assertTrue($clusterCount==0);
-        $this->assertTrue($idMapCount==3);
-        $this->assertTrue($dl->id_map[1]->id==10);
-        $this->assertTrue($dl->id_map[2]->id==11);
-        $this->assertTrue($dl->id_map[3]->id==12);
-    }
-
-    public function testDestinationListClusters()
-    {
-        $d1 = $this->defaultRestaurantDestination(1000, 1);
-        $d2 = $this->defaultRestaurantDestination(2000, 1);
-        $d3 = $this->defaultRestaurantDestination(3000, 2);
-        $d4 = $this->defaultRestaurantDestination(4000, 2);
-
-        $dl = new Crunchbutton_Order_Logistics_DestinationList();
-        $dl->add($d1);
-        $dl->add($d2);
-        $dl->add($d3);
-        $dl->add($d4);
-        $count = $dl->count();
-        $pc = $dl->parking_clusters;
-        $clusterCount = count($pc);
-        $idMapCount = count($dl->id_map);
-        $this->assertTrue($count==4);
-        $this->assertTrue($clusterCount==2);
-        $this->assertTrue(count($pc[1])==2);
-        $this->assertTrue(count($pc[2])==2);
-        $this->assertTrue($idMapCount==4);
-        $this->assertTrue($dl->id_map[1]->id==1000);
-        $this->assertTrue($dl->id_map[2]->id==2000);
-        $this->assertTrue($dl->id_map[3]->id==3000);
-        $this->assertTrue($dl->id_map[4]->id==4000);
-    }
-
-    public function testDestinationListClone()
-    {
-        $d1 = $this->defaultRestaurantDestination(1000, 1);
-        $d2 = $this->defaultRestaurantDestination(2000, 1);
-        $d3 = $this->defaultRestaurantDestination(3000, 2);
-        $d4 = $this->defaultRestaurantDestination(4000, 2);
-        $d5 = $this->defaultRestaurantDestination(5000, 3);
-
-        $dl = new Crunchbutton_Order_Logistics_DestinationList();
-        $dl->add($d1);
-        $dl->add($d2);
-
-        $dl2 = clone $dl;
-        $dl->add($d3);
-        $dl->add($d4);
-        $dl2->add($d5);
-        $count = $dl->count();
-        $pc = $dl->parking_clusters;
-        $clusterCount = count($pc);
-        $idMapCount = count($dl->id_map);
-        $count2 = $dl2->count();
-        $pc2 = $dl2->parking_clusters;
-        $clusterCount2 = count($pc2);
-        $idMapCount2 = count($dl2->id_map);
-        $this->assertTrue($count==4);
-        $this->assertTrue($clusterCount==2);
-        $this->assertTrue(count($pc[1])==2);
-        $this->assertTrue(count($pc[2])==2);
-        $this->assertTrue($idMapCount==4);
-        $this->assertTrue($dl->id_map[1]->id==1000);
-        $this->assertTrue($dl->id_map[2]->id==2000);
-        $this->assertTrue($dl->id_map[3]->id==3000);
-        $this->assertTrue($dl->id_map[4]->id==4000);
-        $this->assertTrue($count2==3);
-        $this->assertTrue($clusterCount2==2);
-        $this->assertTrue(count($pc2[1])==2);
-        $this->assertTrue(count($pc2[3])==1);
-        $this->assertTrue($idMapCount2==3);
-        $this->assertTrue($dl2->id_map[1]->id==1000);
-        $this->assertTrue($dl2->id_map[2]->id==2000);
-        $this->assertTrue($dl2->id_map[3]->id==5000);
-    }
-
+//    public function testOptimizerAPI()
+//    {
+//        //opt.OptInput(nNodes, 1, 1.0, 5, 5, 120, 240, 5000)
+//        $i = new Crunchbutton_Optimizer_Input();
+//        $i->numNodes = 9;
+//        $i->driverMph = 1;
+//        $i->penaltyCoefficient = 1.0;
+//        $i->customerDropoffTime = 5;
+//        $i->restaurantPickupTime = 5;
+//        $i->slackMaxTime = 120;
+//        $i->horizon = 240;
+//        $i->maxRunTime = 5000;
+//        $i->distanceType = Crunchbutton_Optimizer_Input::DISTANCE_XY;
+//        $i->firstCoords = [40, 45, 45, 35, 40, 45, 40, 40, 40];
+//        $i->secondCoords = [50, 68, 70, 69, 69, 55, 69, 55, 69];
+//        $i->nodeTypes = [1, 3, 3, 2, 2, 3, 2, 3, 2];
+//        $i->orderTimes = [0, 50, 20, 50, 20, 15, 15, 60, 60];
+//        $i->earlyWindows = [0, 50, 20, 50, 20, 15, 15, 70, 70];
+//        $i->midWindows = [240, 90, 60, 240, 240, 55, 240, 100, 240];
+//        $i->lateWindows = [240, 170, 140, 170, 140, 135, 135, 180, 180];
+//        $i->pickupIdxs = [0, 3, 4, 0, 0, 6, 0, 8, 0];
+//        $i->deliveryIdxs = [0, 0, 0, 1, 2, 0, 5, 0, 7];
+//        $i->restaurantParkingTimes = [0, 0, 0, 5, 5, 0, 5, 0, 5];
+//        $i->clusters = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
+//        $d = $i->exports();
+//        $r = Crunchbutton_Optimizer::optimize($d);
+//        $this->assertNotNull($r);
+//        $result = new Crunchbutton_Optimizer_Result($r);
+//        $this->assertTrue($result->resultType==Crunchbutton_Optimizer_Result::RTYPE_OK);
+//        $this->assertNotNull($result->score);
+//        $this->assertTrue($result->score==17.8);
+//        $this->assertTrue($result->numBadTimes==0);
+//    }
 
 
 //    // One other new order in the system within the last n minutes, given to driver 1.
