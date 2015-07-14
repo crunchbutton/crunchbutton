@@ -7,32 +7,32 @@
 
     <testsuites>
         <testsuite name="Crunchbutton Backend">
-            <directory>./Tests/</directory>
+            <directory>./Tests</directory>
 			<exclude>./Tests/NOTAREALFILE/PriorityLogisticsTest.php</exclude>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">../include/</directory>
+            <directory suffix=".php" processUncoveredFilesFromWhitelist="true">../include</directory>
 			<exclude>
-				<directory>../include/Library/ApnsPHP</directory>
-				<directory>../include/Library/Balanced</directory>
-				<directory>../include/Library/Buzz</directory>
-				<directory>../include/Library/Github</directory>
-				<directory>../include/Library/Guzzle</directory>
-				<directory>../include/Library/Httpful</directory>
-				<directory>../include/Library/Mailgun</directory>
-				<directory>../include/Library/Minify</directory>
-				<directory>../include/Library/Ordrin</directory>
-				<directory>../include/Library/Pear</directory>
-				<directory>../include/Library/Predis</directory>
-				<directory>../include/Library/QueryPath</directory>
-				<directory>../include/Library/RESTful</directory>
-				<directory>../include/Library/Scss</directory>
-				<directory>../include/Library/Services</directory>
-				<directory>../include/Library/Stripe</directory>
-				<directory>../include/Library/Symfony</directory>
+				<directory>../include/library/ApnsPHP</directory>
+				<directory>../include/library/Balanced</directory>
+				<directory>../include/library/Buzz</directory>
+				<directory>../include/library/Github</directory>
+				<directory>../include/library/Guzzle</directory>
+				<directory>../include/library/Httpful</directory>
+				<directory>../include/library/Mailgun</directory>
+				<directory>../include/library/Minify</directory>
+				<directory>../include/library/Ordrin</directory>
+				<directory>../include/library/Pear</directory>
+				<directory>../include/library/Predis</directory>
+				<directory>../include/library/QueryPath</directory>
+				<directory>../include/library/RESTful</directory>
+				<directory>../include/library/Scss</directory>
+				<directory>../include/library/Services</directory>
+				<directory>../include/library/Stripe</directory>
+				<directory>../include/library/Symfony</directory>
 			</exclude>
         </whitelist>
     </filter>

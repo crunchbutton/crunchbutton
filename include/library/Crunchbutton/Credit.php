@@ -181,7 +181,7 @@ class Crunchbutton_Credit extends Cana_Table
 		return $this->_date;
 	}
 
-	public function creditByOrder( $id_order ) {
+	public static function creditByOrder( $id_order ) {
 		return Crunchbutton_Credit::q('
 			SELECT * FROM credit
 			WHERE
@@ -191,7 +191,7 @@ class Crunchbutton_Credit extends Cana_Table
 			', [$id_order, Crunchbutton_Credit::TYPE_DEBIT, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 	}
 
-	public function creditByOrderPaidBy( $id_order, $paid_by ) {
+	public static function creditByOrderPaidBy( $id_order, $paid_by ) {
 		$query = 'SELECT SUM(`value`) as credit FROM credit WHERE id_order = ? AND type = ? AND paid_by = ?  AND ( credit_type = ? OR credit_type != ? )';
 		$row = Cana::db()->get( $query, [$id_order, Crunchbutton_Credit::TYPE_DEBIT, $paid_by, Crunchbutton_Credit::CREDIT_TYPE_CASH, Crunchbutton_Credit::CREDIT_TYPE_POINT]);
 		if( $row->_items && $row->_items[0] ){
