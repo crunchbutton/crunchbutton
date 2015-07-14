@@ -1,32 +1,41 @@
 <?php
-	
-$files = [];
 
-foreach (new DirectoryIterator('db/migrate') as $fileInfo) {
-	if ($fileInfo->isDot()) continue;
-	$num = preg_replace('/^([0-9]+)_.*$/','\\1', $fileInfo->getFilename());
-	if ($num > 180) {
-		$files[] = $fileInfo->getFilename();
-	}
+$dirs = ['db/migrate'];
+
+if (getenv('TRAVISPOSTGRES')) {
+	$dirs[] = 'db/migratepostgres';
 }
 
-natcasesort($files);
+foreach ($dirs as $dir) {
+	
+	$files = [];
 
-echo "\nRunning db migrate scripts...\n";
+	foreach (new DirectoryIterator($dir) as $fileInfo) {
+		if ($fileInfo->isDot()) continue;
+		$num = preg_replace('/^([0-9]+)_.*$/','\\1', $fileInfo->getFilename());
+		if ($num > 180) {
+			$files[] = $fileInfo->getFilename();
+		}
+	}
 
-foreach ($files as $file) {
-	echo $file."...\n";
-	$o = null;
+	natcasesort($files);
 
-	exec('mysql -uroot crunchbutton_travis < db/migrate/'.$file.' 2>&1 &', $o);
-	$ret = implode("\n", $o);
+	echo "\nRunning db migrate scripts...\n";
 
-	if (preg_match('/ERROR [0-9]+/', $ret)) {
-		$error = true;
-		echo "\033[31m";
-		echo $ret."\n";
-		echo "\033[37m";
-		break;
+	foreach ($files as $file) {
+		echo $file."...\n";
+		$o = null;
+
+		exec('mysql -uroot crunchbutton_travis < '.$dir.'/'.$file.' 2>&1 &', $o);
+		$ret = implode("\n", $o);
+
+		if (preg_match('/ERROR [0-9]+/', $ret)) {
+			$error = true;
+			echo "\033[31m";
+			echo $ret."\n";
+			echo "\033[37m";
+			break;
+		}
 	}
 }
 

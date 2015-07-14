@@ -1,0 +1,1 @@
+ALTER TABLE `support` DROP `rep_name`;
