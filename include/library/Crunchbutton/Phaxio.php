@@ -21,7 +21,7 @@ class Crunchbutton_Phaxio {
 			.'-F "api_secret='.c::config()->phaxio->{$env}->secret.'"';
 
 		Log::debug([
-			'phaxio cmd' => $cmd,
+			'phaxio cmd' => $cmd.' 2>&1 &',
 			'action' => 'sending fax',
 			'type' => 'notification'
 		]);
