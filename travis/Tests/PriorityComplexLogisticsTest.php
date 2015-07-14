@@ -731,8 +731,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         $ba->delete();
-        $this->assertTrue($geo->lat==$lat);
-        $this->assertTrue($geo->lon==$lon);
+        // @pererinha: google has changed some stuff at their api and this values are totatally matching
+        // talked with @ed and he said it is ok to comment this lines for while
+        // 34.023281 with 34.0303058
+        // -118.2881961 with -118.2860374
+        // $this->assertTrue($geo->lat==$lat);
+        // $this->assertTrue($geo->lon==$lon);
     }
 
 
