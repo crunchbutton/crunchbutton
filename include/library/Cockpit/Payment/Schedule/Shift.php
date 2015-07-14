@@ -26,9 +26,9 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 		return false;
 	}
 
-	public function checkShiftWasPaidDriver( $id_admin_shift_assign ){
-		$query = 'SELECT * FROM payment_schedule_shift WHERE id_admin_shift_assign = "' . $id_admin_shift_assign . '" LIMIT 1';
-		$shift = Cockpit_Payment_Schedule_Shift::q( $query );
+	public static function checkShiftWasPaidDriver( $id_admin_shift_assign ){
+		$query = 'SELECT * FROM payment_schedule_shift WHERE id_admin_shift_assign = ? LIMIT 1';
+		$shift = Cockpit_Payment_Schedule_Shift::q( $query, [$id_admin_shift_assign]);
 		if( $shift->id_payment_schedule_shift ){
 			return $shift;
 		}
