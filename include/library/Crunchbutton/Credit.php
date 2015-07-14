@@ -539,7 +539,7 @@ class Crunchbutton_Credit extends Cana_Table
 	public function totalCreditsByPhone( $phone ){
 		$query = "SELECT SUM(value) AS credit
 								 FROM credit c
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 WHERE TYPE = 'CREDIT' AND ( credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )
 									 AND u.phone = '{$phone}' AND c.id_promo IS NOT NULL";
 		$results = c::db()->get( $query );
@@ -549,7 +549,7 @@ class Crunchbutton_Credit extends Cana_Table
 	public function totalRefundedCreditsByPhone( $phone ){
 		$query = "SELECT SUM(value) AS credit
 								 FROM credit c
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 WHERE TYPE = 'CREDIT' AND ( credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )
 									 AND u.phone = '{$phone}' AND id_promo IS NULL";
 		$results = c::db()->get( $query );
@@ -563,12 +563,12 @@ class Crunchbutton_Credit extends Cana_Table
 							FROM
 								(SELECT SUM(value) AS credit
 								 FROM credit c
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 WHERE TYPE = 'CREDIT' AND ( credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )
 									 AND u.phone = '{$phone}') credits,
 								(SELECT SUM(value) AS debit
 								 FROM credit c
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 WHERE TYPE = 'DEBIT' AND ( credit_type = '" . Crunchbutton_Credit::CREDIT_TYPE_CASH . "' OR credit_type != '" . Crunchbutton_Credit::CREDIT_TYPE_POINT . "' )
 									 AND u.phone = '{$phone}') debits";
 		$results = c::db()->get( $query );

@@ -14,14 +14,14 @@ class Controller_test_recoveryUserAuth extends Crunchbutton_Controller_Account {
 		foreach ( $auths as $auth ) {
 			$phone = $auth->email;
 			if( $phone ){
-				$user_auth_facebook = User_Auth::q( 'SELECT * FROM user_auth INNER JOIN user ON user.id_user = user_auth.id_user AND user.phone = "' . $phone . '" WHERE user_auth.type = "facebook"' );
+				$user_auth_facebook = User_Auth::q( 'SELECT * FROM user_auth INNER JOIN `user` ON user.id_user = user_auth.id_user AND `user`.phone = ? WHERE user_auth.type = \'facebook\'', [$phone]);
 				if( $user_auth_facebook->id_user ){
 					$auth->id_user = $user_auth_facebook->id_user;
 					$auth->active = 1;
 					$auth->save();
 					$this->users_ok[] = array( 'name' => $user_auth_facebook->name, 'phone' => $phone );
 				} else {
-					$user = User::q( 'SELECT * FROM user WHERE phone = "' . $phone . '" ORDER BY id_user DESC LIMIT 1' );
+					$user = User::q( 'SELECT * FROM `user` WHERE phone = "' . $phone . '" ORDER BY id_user DESC LIMIT 1' );
 					if( $user->id_user ){
 						$auth->id_user = $user->id_user;
 						$auth->active = 1;

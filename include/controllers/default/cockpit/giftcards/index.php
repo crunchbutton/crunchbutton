@@ -44,7 +44,7 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			c::view()->id_order_reference = $id_order_reference;
 			c::view()->id_restaurant = $id_restaurant;
 			c::view()->lastone = Crunchbutton_Promo::lastID();
-			// c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = true ORDER BY u.name ASC');;
+			// c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM `user` u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = true ORDER BY u.name ASC');;
 			c::view()->display('giftcards/new');
 
 		} else if( c::getPagePiece(1) == 'sms' ){
@@ -88,7 +88,7 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			}
 
 			if ($giftcard->id_promo) {
-				c::view()->users = Crunchbutton_User::q('SELECT u.id_user, u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = true ORDER BY u.name ASC');;
+				c::view()->users = Crunchbutton_User::q('SELECT u.id_user, u.name, u.phone, u.email FROM `user` u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = true ORDER BY u.name ASC');;
 				c::view()->giftcard = $giftcard;
 				c::view()->display('giftcards/giftcard');
 			} else {

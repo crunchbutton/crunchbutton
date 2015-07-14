@@ -63,7 +63,7 @@ class MailgunTest extends PHPUnit_Framework_TestCase {
 		$name = get_called_class();
 
 		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
-		User::q('select * from user where name=?', [$name])->delete();
+		User::q('select * from `user` where name=?', [$name])->delete();
 		Order_Dish::q('
 			select order_dish.* from order_dish
 			left join `order` using(id_order)

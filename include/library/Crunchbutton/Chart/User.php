@@ -218,7 +218,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= '{$day}'
@@ -251,7 +251,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= '{$day}'
@@ -292,7 +292,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= '{$day}'
@@ -301,7 +301,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																	 {$this->queryOnlyCommunties}
 																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
-																	INNER JOIN user u ON u.id_user = c.id_user )
+																	INNER JOIN `user` u ON u.id_user = c.id_user )
 																 GROUP BY u.phone ) ActiveUsers";
 						$union = ' UNION ';
 				}
@@ -370,7 +370,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
@@ -403,7 +403,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
@@ -443,7 +443,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
@@ -452,7 +452,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																	 {$this->queryOnlyCommunties}
 																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
-																	INNER JOIN user u ON u.id_user = c.id_user )
+																	INNER JOIN `user` u ON u.id_user = c.id_user )
 																 GROUP BY u.phone ) ActiveUsers";
 						$union = ' UNION ';
 				}
@@ -700,7 +700,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
@@ -732,7 +732,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
@@ -772,7 +772,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																				 u.id_user,
 																				 c.name
 																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
+																 INNER JOIN `user` u ON u.id_user = o.id_user
 																 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
@@ -780,7 +780,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																	 {$this->queryExcludeUsers}
 																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
-																	INNER JOIN user u ON u.id_user = c.id_user )
+																	INNER JOIN `user` u ON u.id_user = c.id_user )
 																 GROUP BY u.phone) ActiveUsers";
 						$union = ' UNION ';
 				}
@@ -820,7 +820,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 u.id_user,
 																			 c.name AS community
 																FROM `order` o
-																INNER JOIN user u ON u.id_user = o.id_user
+																INNER JOIN `user` u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -840,7 +840,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 u.id_user,
 																			 c.name AS community
 																FROM `order` o
-																INNER JOIN user u ON u.id_user = o.id_user
+																INNER JOIN `user` u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -888,7 +888,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 u.id_user,
 																			 c.name AS community
 																FROM `order` o
-																INNER JOIN user u ON u.id_user = o.id_user
+																INNER JOIN `user` u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -908,7 +908,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 u.id_user,
 																			 c.name AS community
 																FROM `order` o
-																INNER JOIN user u ON u.id_user = o.id_user
+																INNER JOIN `user` u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -956,7 +956,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 u.id_user,
 																			 c.name AS community
 																FROM `order` o
-																INNER JOIN user u ON u.id_user = o.id_user
+																INNER JOIN `user` u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 																INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 																INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -976,7 +976,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																			 u.id_user,
 																			 c.name AS community
 																FROM `order` o
-																INNER JOIN user u ON u.id_user = o.id_user
+																INNER JOIN `user` u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 																INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1017,7 +1017,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																		 u.id_user,
 																		 c.name AS community
 														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
+														 INNER JOIN `user` u ON u.id_user = o.id_user
 														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 						 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 						 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1054,7 +1054,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 																		 u.id_user,
 																		 c.name AS community
 														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
+														 INNER JOIN `user` u ON u.id_user = o.id_user
 														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 														 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 														 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1079,7 +1079,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 									 COUNT(DISTINCT((u.phone))) AS Total,
 									 c.name AS `Group`
 						FROM `order` o
-						INNER JOIN user u ON u.id_user = o.id_user
+						INNER JOIN `user` u ON u.id_user = o.id_user
 						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1102,7 +1102,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 									 COUNT(DISTINCT((u.phone))) AS Total,
 									 c.name AS `Group`
 						FROM `order` o
-						INNER JOIN user u ON u.id_user = o.id_user
+						INNER JOIN `user` u ON u.id_user = o.id_user
 						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1125,7 +1125,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 									 COUNT(DISTINCT((u.phone))) AS Total,
 									 c.name AS `Group`
 						FROM `order` o
-						INNER JOIN user u ON u.id_user = o.id_user
+						INNER JOIN `user` u ON u.id_user = o.id_user
 						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1219,7 +1219,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
 										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
+							INNER JOIN `user` u ON u.id_user = o.id_user
 							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE
@@ -1240,7 +1240,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$query = "SELECT YEARWEEK(date) AS `Week`,
 										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
+							INNER JOIN `user` u ON u.id_user = o.id_user
 							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
@@ -1260,7 +1260,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
+							INNER JOIN `user` u ON u.id_user = o.id_user
 							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE
@@ -1298,7 +1298,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								"SELECT YEARWEEK(date) AS `Week`,
 										 u.phone AS 'Phone'
 								FROM `order` o
-								INNER JOIN user u ON u.id_user = o.id_user
+								INNER JOIN `user` u ON u.id_user = o.id_user
 								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE YEARWEEK(o.date) = {$week}
@@ -1355,7 +1355,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								(SELECT min(id_order) id_order,
 												u.phone
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1 = 1
@@ -1382,7 +1382,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												c.name AS community
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1409,7 +1409,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												c.name AS community
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1489,7 +1489,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								(SELECT min(id_order) id_order,
 												u.phone
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1=1
@@ -1522,7 +1522,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1 = 1
@@ -1541,7 +1541,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1 = 1
@@ -1560,13 +1560,13 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1 = 1
 										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																			INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
-																			INNER JOIN user u ON u.id_user = c.id_user )
+																			INNER JOIN `user` u ON u.id_user = c.id_user )
 										 {$this->queryExcludeUsers}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -1598,7 +1598,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1=1
@@ -1617,7 +1617,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1=1
@@ -1635,13 +1635,13 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1=1
 												 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																		INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
-																		INNER JOIN user u ON u.id_user = c.id_user )
+																		INNER JOIN `user` u ON u.id_user = c.id_user )
 												{$this->queryExcludeUsers}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -1673,7 +1673,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1=1
@@ -1692,7 +1692,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1=1
@@ -1710,13 +1710,13 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 										(SELECT min(id_order) id_order,
 														u.phone
 										 FROM `order` o
-										 INNER JOIN user u ON u.id_user = o.id_user
+										 INNER JOIN `user` u ON u.id_user = o.id_user
 										 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										 WHERE 1=1
 										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c
 																			INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
-																			INNER JOIN user u ON u.id_user = c.id_user )
+																			INNER JOIN `user` u ON u.id_user = c.id_user )
 												{$this->queryExcludeUsers}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
@@ -1744,7 +1744,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 								(SELECT min(id_order) id_order,
 												u.phone
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 									LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								 WHERE 1=1
@@ -1772,7 +1772,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												r.name as restaurant
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 WHERE r.id_restaurant = '{$restaurant}'
 										{$this->queryExcludeUsers}
@@ -1800,7 +1800,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												c.name AS community
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1830,7 +1830,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												r.name as restaurant
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 WHERE r.id_restaurant = '{$restaurant}'
 										{$this->queryExcludeUsers}
@@ -1858,7 +1858,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												c.name as community
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1888,7 +1888,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												r.name as restaurant
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 WHERE r.id_restaurant = '{$restaurant}'
 										{$this->queryExcludeUsers}
@@ -1914,7 +1914,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												c.name AS community
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -1940,7 +1940,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												u.phone,
 												c.name AS community
 								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
@@ -2020,7 +2020,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$query = "SELECT
 										 COUNT( DISTINCT( o.phone ) ) AS Total
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
+							INNER JOIN `user` u ON u.id_user = o.id_user
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->Total;
@@ -2030,7 +2030,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$query = "SELECT
 										 COUNT( DISTINCT( o.phone ) ) AS Total
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
+							INNER JOIN `user` u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = ?
 								{$this->queryExcludeUsers}";

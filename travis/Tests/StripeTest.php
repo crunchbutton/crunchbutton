@@ -19,7 +19,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 		$name = get_called_class();
 		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
-		User::q('select * from user where name=?',[$name])->delete();
+		User::q('select * from `user` where name=?',[$name])->delete();
 	}
 	
 	public function setUp() {

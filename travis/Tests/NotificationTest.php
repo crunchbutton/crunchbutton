@@ -50,7 +50,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 		$name = get_called_class();
 
 		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
-		User::q('select * from user where name=?', [$name])->delete();
+		User::q('select * from `user` where name=?', [$name])->delete();
 		Order::q('select * from `order` where name=?', [$name])->delete();
 		Admin::q('select * from admin where name=?', [$name])->delete();
 	}
