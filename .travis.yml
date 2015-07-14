@@ -16,7 +16,7 @@ cache:
   bundler: true
   directories:
     - node_modules
-	- vendor
+    - vendor
     - $HOME/.composer/cache
   
 # install:
