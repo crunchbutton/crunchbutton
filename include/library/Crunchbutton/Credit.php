@@ -181,7 +181,7 @@ class Crunchbutton_Credit extends Cana_Table
 		return $this->_date;
 	}
 
-	public function creditByOrder( $id_order ) {
+	public static function creditByOrder( $id_order ) {
 		return Crunchbutton_Credit::q('
 			SELECT * FROM credit
 			WHERE
