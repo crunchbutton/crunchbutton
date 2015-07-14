@@ -1632,14 +1632,14 @@ NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
 			$scope.restaurant = r;
 			$scope.closedMessage = r.closedMessage();
 			$scope.active = ( r.inactive ? false : true );
-			$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
+			$scope.acceptingOrders = r.open_for_business;
 			App.dialog.show('.restaurant-closed-container');
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.restaurant = r;
 				scope.closedMessage = r.closedMessage();
 				$scope.active = ( r.inactive ? false : true );
-				$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
+				$scope.acceptingOrders = r.open_for_business;
 				App.dialog.show('.restaurant-closed-container');
 			});
 		}
