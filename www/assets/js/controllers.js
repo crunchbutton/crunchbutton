@@ -246,15 +246,8 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		sms : ReferralService.sms()
 	}
 
-	ReferralService.getStatus();
-
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
-	}
-
-	// Load the invite_url
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
 	}
 
 	$scope.$on( 'referralStatusLoaded', function( e, data ) {
@@ -1371,11 +1364,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$scope.$safeApply();
 	}
 
-	// Load the invite_url
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
-	}
-
 	$scope.$on( 'orderSharedFacebook', function(e, data) {
 		$scope.order.reward.shared.facebook = true;
 		$scope.$safeApply();
@@ -1430,8 +1418,6 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	if( !AccountService.user.invite_code ){
 		ReferralService.getInviteCode();
 	}
-
-	ReferralService.getStatus();
 
 	$scope.account = AccountService;
 
@@ -1703,4 +1689,3 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$.cookie( 'referral', $routeParams.id );
 	$location.path( '/' );
 });
-
