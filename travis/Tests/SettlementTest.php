@@ -67,7 +67,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$d2_o4->save();
 
 		// driver hourly
-		$d1 = new Admin( [ 'name' => $name . ' - HOUR', 'login' => null, 'active' => 1 ] );
+		$d1 = new Admin( [ 'name' => $name . ' HOUR', 'login' => null, 'active' => 1 ] );
 		$d1->save();
 		$pt1 = $d1->payment_type();
 		$pt1->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
@@ -76,7 +76,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$pt1->save();
 
 		// driver commissioned
-		$d2 = new Admin( [ 'name' => $name . ' - ORDER', 'login' => null, 'active' => 1 ] );
+		$d2 = new Admin( [ 'name' => $name . ' ORDER', 'login' => null, 'active' => 1 ] );
 		$d2->save();
 		$pt2 = $d2->payment_type();
 		$pt2->payment_type = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
