@@ -7,14 +7,14 @@
 
     <testsuites>
         <testsuite name="Crunchbutton Backend">
-            <directory>./Tests/</directory>
+            <directory>./Tests</directory>
 			<exclude>./Tests/NOTAREALFILE/PriorityLogisticsTest.php</exclude>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">../include/</directory>
+            <directory suffix=".php" processUncoveredFilesFromWhitelist="true">../include</directory>
 			<exclude>
 				<directory>../include/Library/ApnsPHP</directory>
 				<directory>../include/Library/Balanced</directory>
