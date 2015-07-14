@@ -12,6 +12,13 @@ env:
   - TRAVIS=1
   - TRAVIS=1 TRAVISPOSTGRES=1
   
+cache:
+  bundler: true
+  directories:
+    - node_modules
+    - vendor
+    - $HOME/.composer/cache
+  
 # install:
 
 before_script:
