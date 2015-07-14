@@ -1772,7 +1772,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
-	public function date_format( $format = 'full' ){
+	public static function date_format( $format = 'full' ){
 		switch ( $format ) {
 			case 'short':
 				return 'M jS Y (D)';

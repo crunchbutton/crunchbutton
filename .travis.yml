@@ -13,6 +13,7 @@ env:
   - TRAVIS=1 TRAVISPOSTGRES=1
   
 cache:
+  apt: true
   bundler: true
   directories:
     - node_modules

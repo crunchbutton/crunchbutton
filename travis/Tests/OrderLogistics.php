@@ -120,22 +120,22 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 		$name = get_called_class();
 
-		Restaurant::q('select * from restaurant where name="'.$name.'"')->delete();
-		User::q('select * from user where name="'.$name.'"')->delete();
-		Order::q('select * from `order` where name="'.$name.'"')->delete();
-		Admin::q('select * from admin where name="'.$name.' - ONE"')->delete();
-		Admin::q('select * from admin where name="'.$name.' - TWO"')->delete();
-		Dish::q('select * from dish where name="'.$name.'"')->delete();
+		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
+		User::q('select * from user where name=?', [$name])->delete();
+		Order::q('select * from `order` where name=?', [$name])->delete();
+		Admin::q('select * from admin where name=?', [$name. ' ONE'])->delete();
+		Admin::q('select * from admin where name=?', [$name. ' ONE'])->delete();
+		Dish::q('select * from dish where name=?', [$name])->delete();
 	}
 	
 	public function setUp() {
 		$name = get_called_class();
 
-		$this->restaurant = Restaurant::q('select * from restaurant where name="'.$name.'" order by id_restaurant desc limit 1')->get(0);
-		$this->driver1 = Admin::q('select * from admin where name="'.$name.' - ONE" order by id_admin desc limit 1')->get(0);
-		$this->driver2 = Admin::q('select * from admin where name="'.$name.' - TWO" order by id_admin desc limit 1')->get(0);
-		$this->user = User::q('select * from `user` where name="'.$name.'" order by id_user desc limit 1')->get(0);
-		$this->dish = Dish::q('select * from `dish` where name="'.$name.'" order by id_dish desc limit 1')->get(0);
+		$this->restaurant = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name])->get(0);
+		$this->driver1 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name. ' ONE'])->get(0);
+		$this->driver2 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name. ' ONE'])->get(0);
+		$this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name])->get(0);
+		$this->dish = Dish::q('select * from `dish` where name=? order by id_dish desc limit 1', [$name])->get(0);
 	}
 
 	public function testOrderLogistics() {

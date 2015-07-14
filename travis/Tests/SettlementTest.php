@@ -162,10 +162,10 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->start_date = $now->format( 'Y-m-d' );
 
 		$name = self::NAME;
-		$this->driver_hourly = Admin::q('select * from admin where name="' . $name . ' - HOUR" order by id_admin desc limit 1')->get(0);
-		$this->driver_commissioned = Admin::q('select * from admin where name="' . $name . ' - ORDER" order by id_admin desc limit 1')->get(0);
-		$this->community = Community::q('select * from community where name="' . $name . '" order by id_community desc limit 1')->get(0);
-		$this->order = Order::q('select * from `order` where name="'.$name.'" order by id_order desc limit 1')->get(0);
+		$this->driver_hourly = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name.' HOUR'])->get(0);
+		$this->driver_commissioned = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name.' ORDER'])->get(0);
+		$this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name])->get(0);
+		$this->order = Order::q('select * from `order` where name=? order by id_order desc limit 1', [$name])->get(0);
 
 		$settlement = new Settlement( [ 'start' => $this->start_date, 'end' => $this->end_date ] );
 		$orders = $settlement->startDriver();
@@ -219,12 +219,12 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 
 	public static function tearDownAfterClass() {
 		$name = self::NAME;
-		Restaurant::q('select * from restaurant where name="'.$name.' FORMAL"')->delete();
-		Restaurant::q('select * from restaurant where name="'.$name.' INFORMAL"')->delete();
-		Order::q('select * from `order` where name="'.$name.'"')->delete();
-		Admin::q('select * from admin where name="'.$name.' - ORDER"')->delete();
-		Admin::q('select * from admin where name="'.$name.' - HOUR"')->delete();
-		Community::q('select * from dish where name="'.$name.'"')->delete();
+		Restaurant::q('select * from restaurant where name=?', [$name.' FORMAL'])->delete();
+		Restaurant::q('select * from restaurant where name=?', [$name.' INFORMAL'])->delete();
+		Order::q('select * from `order` where name=?', [$name])->delete();
+		Admin::q('select * from admin where name=?', [$name.' ORDER'])->delete();
+		Admin::q('select * from admin where name=?', [$name.' HOUR'])->delete();
+		Community::q('select * from dish where name=?', [$name])->delete();
 	}
 
 }
