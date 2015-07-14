@@ -14,7 +14,6 @@ var Dish = function(id) {
 		for (x in data) {
 			self[x] = data[x];
 		}
-		self.top = parseInt(self.top);
 		self.options();
 	}
 	

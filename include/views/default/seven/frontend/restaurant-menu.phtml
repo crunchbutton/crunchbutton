@@ -42,7 +42,7 @@
 
 		<div ng-repeat="category in restaurant.categories()">
 			<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-				<li ng-repeat="dish in category.dishes() | filter: {top: 1}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
+				<li ng-repeat="dish in category.dishes() | filter: {top: true}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
 					<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
 					<span class="dish-item-description">{{dish.description}}</span>
 				</li>
