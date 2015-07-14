@@ -161,34 +161,34 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		} else {
 			$limit = ' LIMIT ' . $limit;
 		}
-		$query = 'SELECT * FROM payment_schedule WHERE id_driver = "' . $id_driver . '" ORDER BY id_payment_schedule DESC ' . $limit;
-		return Cockpit_Payment_Schedule::q( $query );
+		$query = 'SELECT * FROM payment_schedule WHERE id_driver = ? ORDER BY id_payment_schedule DESC ' . $limit;
+		return Cockpit_Payment_Schedule::q( $query, [$id_driver]);
 	}
 
 	public function driverByStatus( $status ){
 		$query = "SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
 								WHERE
-									ps.status = '" . $status . "'
+									ps.status = ?
 								ORDER BY ps.id_payment_schedule DESC";
-		return Cockpit_Payment_Schedule::q( $query );
+		return Cockpit_Payment_Schedule::q( $query, [$status]);
 	}
 
 	public function driverNotCompletedSchedules(){
 		$query = "SELECT ps.*, a.name AS driver FROM payment_schedule ps
 								INNER JOIN admin a ON a.id_admin = ps.id_driver
 								WHERE
-									( ps.status = '" . Cockpit_Payment_Schedule::STATUS_ERROR . "'
+									( ps.status = ?
 								OR
-									ps.status = '" . Cockpit_Payment_Schedule::STATUS_PROCESSING . "'
+									ps.status = ?
 								OR
-									ps.status = '" . Cockpit_Payment_Schedule::STATUS_SCHEDULED . "' )
+									ps.status = ? )
 								ORDER BY ps.id_payment_schedule DESC";
-		return Cockpit_Payment_Schedule::q( $query );
+		return Cockpit_Payment_Schedule::q( $query, [Cockpit_Payment_Schedule::STATUS_ERROR, Cockpit_Payment_Schedule::STATUS_PROCESSING, Cockpit_Payment_Schedule::STATUS_SCHEDULED]);
 	}
 
 	public function total_orders(){
-		$result = c::db()->get( 'SELECT COUNT(*) total FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
+		$result = c::db()->get( 'SELECT COUNT(*) total FROM payment_schedule_order WHERE id_payment_schedule = ? ORDER BY id_order DESC', [$this->id_payment_schedule]);
 		return $result->_items[0]->total;
 	}
 
@@ -196,15 +196,15 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 
 		if( c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order pso
-																								INNER JOIN `order` o ON pso.id_order = o.id_order
-																								WHERE pso.id_payment_schedule = "' . $this->id_payment_schedule . '" AND ( o.do_not_pay_driver = 0 OR o.do_not_pay_driver IS NULL ) ORDER BY o.id_order DESC' );
+												INNER JOIN `order` o ON pso.id_order = o.id_order
+												WHERE pso.id_payment_schedule = ?" AND ( o.do_not_pay_driver = 0 OR o.do_not_pay_driver IS NULL ) ORDER BY o.id_order DESC', [$this->id_payment_schedule]);
 		}
 
-		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
+		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = ? ORDER BY id_order DESC', [$this->id_payment_schedule]);
 	}
 
 	public function referrals(){
-		return Cockpit_Payment_Schedule_Referral::q( 'SELECT * FROM payment_schedule_referral WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_referral DESC' );
+		return Cockpit_Payment_Schedule_Referral::q( 'SELECT * FROM payment_schedule_referral WHERE id_payment_schedule = ? ORDER BY id_referral DESC', [$this->id_payment_schedule]);
 	}
 
 	public function invites(){
@@ -214,22 +214,26 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	public function search( $search ){
 
 		$query = '';
-		$where = ' WHERE 1=1 AND ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '"';
+		$where = ' WHERE 1=1 AND ps.status != ?';
+		$keys = [Cockpit_Payment_Schedule::STATUS_DONE] ;
 		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
 
 		if( $search[ 'type' ] ){
 			if( $search[ 'type' ] == 'driver' ){
 
 				if( $search[ 'search' ] ){
-					$where .= ' AND a.name LIKE "%' . $search[ 'search' ] . '%"';
+					$where .= ' AND a.name LIKE ?';
+					$keys = '%'.$search[ 'search' ].'%';
 				}
 
 				if( $search[ 'pay_type' ] ){
-					$where .= ' AND ps.pay_type = "' . $search[ 'pay_type' ] . '"';
+					$where .= ' AND ps.pay_type = ?';
+					$keys[] = $search[ 'pay_type' ];
 				}
 
 				if( $search[ 'status' ] ){
-					$where .= ' AND ps.status = "' . $search[ 'status' ] . '"';
+					$where .= ' AND ps.status = ?';
+					$keys[] = $search[ 'status' ];
 				}
 
 				$query = 'SELECT -WILD- FROM payment_schedule ps
@@ -242,7 +246,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		if( $search[ 'total' ] ){
 			$query = str_replace('-WILD-','COUNT(*) AS total', $query );
 			if( $query != '' ){
-				$total = c::db()->get( $query )->get( 0 );
+				$total = c::db()->get( $query, $keys)->get( 0 );
 				return $total->total;
 			}
 		} else {
@@ -254,7 +258,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function shifts(){
-		return Cockpit_Payment_Schedule_Shift::q( 'SELECT * FROM payment_schedule_shift WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_admin_shift_assign DESC' );
+		return Cockpit_Payment_Schedule_Shift::q( 'SELECT * FROM payment_schedule_shift WHERE id_payment_schedule = ? ORDER BY id_admin_shift_assign DESC', [$this->id_payment_schedule]);
 	}
 
 }

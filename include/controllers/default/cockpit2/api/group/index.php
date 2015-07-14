@@ -32,7 +32,7 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 			$group = new Group;
 			// check unique group name
 			$name = trim( $this->request()[ 'name' ] );
-			$groups = Group::q( 'SELECT * FROM `group` WHERE name = "' . $name . '"' );
+			$groups = Group::q( 'SELECT * FROM `group` WHERE name = ?', [$name]);
 			if( $groups->count() == 0 ){
 				$group->name = $name;
 			} else {

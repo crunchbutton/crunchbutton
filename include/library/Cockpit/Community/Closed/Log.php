@@ -20,7 +20,7 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 
 
 	public function checkIfLogAlreadyExists( $day, $id_community, $type ){
-		$log = Cockpit_Community_Closed_Log::q( 'SELECT * FROM community_closed_log WHERE day = "' . $day . '" AND id_community = "' . $id_community . '" AND type = "' . $type . '"' );
+		$log = Cockpit_Community_Closed_Log::q( 'SELECT * FROM community_closed_log WHERE day = ? AND id_community = ? AND type = ?', [$day, $id_community, $type]);
 		if( $log->id_community_closed_log ){
 			return true;
 		}
