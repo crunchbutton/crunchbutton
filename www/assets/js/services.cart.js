@@ -91,7 +91,7 @@ NGApp.factory('CartService', function () {
 				/* Customization stuff */
 				customization: {
 					customizable: (dish.options().length > 0),
-					expanded: ( expanded && (parseInt(dish.expand_view) > 0) ),
+					expanded: ( expanded && dish.expand_view ),
 					options: service._parseCustomOptions(dish_options, options),
 					rawOptions: dish_options
 				}

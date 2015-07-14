@@ -2101,7 +2101,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// Categories
 		$categories_map = [];
-		$_categories = Crunchbutton_Category::q( "SELECT * FROM category WHERE id_restaurant='{$self->id_restaurant}'" );
+		$_categories = Crunchbutton_Category::q('SELECT * FROM category WHERE id_restaurant=?', [$self->id_restaurant]);
 		foreach( $_categories as $_category ){
 			$category = new Crunchbutton_Category;
 			$category->id_restaurant = $id_restaurant;
@@ -2131,7 +2131,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// Options
 		$options_map = [];
-		$_options = Crunchbutton_Option::q( "SELECT * FROM `option` WHERE id_restaurant='{$self->id_restaurant}'" );
+		$_options = Crunchbutton_Option::q('SELECT * FROM `option` WHERE id_restaurant=?', [$self->id_restaurant]);
 		foreach( $_options as $_option ) {
 			$option = new Crunchbutton_Option;
 			foreach( $_option->_properties as $property => $value ){
@@ -2147,7 +2147,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// Fix the id_option_parent (option)
-		$_options = Crunchbutton_Option::q( "SELECT * FROM `option` WHERE id_restaurant='{$id_restaurant}'" );
+		$_options = Crunchbutton_Option::q('SELECT * FROM `option` WHERE id_restaurant=?', [$id_restaurant]);
 		foreach( $_options as $option ){
 			if( $option->id_option_parent ){
 				$option->id_option_parent = $options_map[ $option->id_option_parent ];
@@ -2156,7 +2156,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// Dish options
-		$_dish_options = Crunchbutton_Dish_Option::q( "SELECT do.* FROM dish_option do INNER JOIN dish d ON d.id_dish = do.id_dish AND d.id_restaurant = '{$self->id_restaurant}'" );
+		$_dish_options = Crunchbutton_Dish_Option::q('SELECT do.* FROM dish_option do INNER JOIN dish d ON d.id_dish = do.id_dish AND d.id_restaurant = ?',[$self->id_restaurant] );
 		foreach( $_dish_options as $_dish_option ){
 			$dish_option = new Crunchbutton_Dish_Option;
 			$dish_option->id_dish = $dishes_map[ $_dish_option->id_dish ];
@@ -2168,7 +2168,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// Payment type
-		$_payment = Crunchbutton_Restaurant_Payment_Type::q( "SELECT * FROM restaurant_payment_type WHERE id_restaurant='{$self->id_restaurant}' ORDER BY id_restaurant_payment_type DESC" );
+		$_payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant=? ORDER BY id_restaurant_payment_type DESC', [$self->id_restaurant]);
 		if( $_payment->id_restaurant_payment_type ){
 			$payment = new Crunchbutton_Restaurant_Payment_Type;
 			foreach( $_payment->_properties as $property => $value ){
