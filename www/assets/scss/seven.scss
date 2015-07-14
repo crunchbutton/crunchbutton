@@ -2133,27 +2133,28 @@ select.form-input {
 	padding-right: 3em;
 }
 .cart-item-customize-item-select{
-	display: table;
-	table-layout: fixed;
+	
 }
 .cart-item-customize-select-name {
 	font-size: 1.2em;
 	margin-right: 1em;
-	display: table-cell;
 	font-weight: bold;
 	margin-bottom: .4em;
 	white-space: nowrap;
 	padding-right:.3em;
-	width: 100%;
+	float: left;
 }
 .cart-item-customize-item select {
 	border-color: #f77748;
 	background: #FFF;
-	max-width: 97%;
 	padding-right: 3em;
 	margin-left: 0;
 	margin-bottom: .8em;
+	box-sizing: border-box;
+	float: right;
+	-webkit-appearance: menulist;
 }
+
 .cart-item-customize-item-select-input-container:after {
 	font-family: FontAwesome;
 	font-size: 1.7em;
@@ -2162,12 +2163,12 @@ select.form-input {
 	width: 1.4em;
 	border-left: 2px solid #f77748;
 	content: '\f0d7';
-	position: absolute;
-	margin-left: -1.6em;
-	margin-top: .1em;
+	margin-left: 2.8em;
 	padding-left: .37em;
 	padding-top: .3em;
 	pointer-events:none;
+	float: right;
+	display: none;
 }
 .form-input-select:after {
 	font-family: FontAwesome;
@@ -3793,9 +3794,6 @@ select {
 		max-width: 1024px;
 		margin: 0 auto;
 	}
-	.cart-item-customize-select-input{
-		max-width: 210px;
-	}
 }
 
 /*Application form styles:*/
@@ -3976,6 +3974,14 @@ font-familt: "Museo Slab";
 }
 
 @media screen and (min-width: 1025px) {
+	.cart-item-name {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		width: 75%;
+		display: inline-block;
+		line-height: 1em;
+	}
 	.order-tagline {
 		font-weight: 100;
 		font-size: 2.3em;
