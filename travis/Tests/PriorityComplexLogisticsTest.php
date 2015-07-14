@@ -344,7 +344,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - ONE'])->get(0);
 		$this->user2 = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - TWO'])->get(0);
         $this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - ONE'])->get(0);
-		$this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
+		$this->community2 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
     }
 	
 	public function tearDown()
