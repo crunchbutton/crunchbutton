@@ -2,7 +2,7 @@
 var Location = function( params ) {
 
 	var self = this;
-	
+
 	this._properties = {
 		verified: true,
 		city: null,
@@ -54,9 +54,9 @@ var Location = function( params ) {
 			case 'route':
 				self._properties.city = result.address_components[0].long_name;
 				if( result.address_components[1] ){
-					self._properties.region = result.address_components[1].short_name;	
+					self._properties.region = result.address_components[1].short_name;
 				} else {
-					self._properties.region = result.address_components[0].short_name;	
+					self._properties.region = result.address_components[0].short_name;
 				}
 				self._properties.detail = 4;
 				break;
@@ -75,16 +75,16 @@ var Location = function( params ) {
 			}
 		}
 	};
-	
+
 	// get address from lat/lon
 	self.setAddressFromResult = function(results) {
 		if (!results) {
 			return;
 		}
 		var result = results[0] || results;
-		self._properties.address = result.formatted_address;	
+		self._properties.address = result.formatted_address;
 	};
-	
+
 	// get zip form results
 	self.setZipFromResult = function(results) {
 		if (!results) {
@@ -96,9 +96,9 @@ var Location = function( params ) {
 				self._properties.zip = result.address_components[x].short_name;
 				return;
 			}
-		}	
+		}
 	};
-	
+
 	// calculate the distance of this object to another set of cords
 	self.distance = function(from) {
 		return App.loc.distance({
@@ -137,7 +137,7 @@ var Location = function( params ) {
 			if( diff ){
 				return address + ' (' + diff + ')';
 			}
-		} 
+		}
 		return address;
 	}
 
@@ -145,17 +145,17 @@ var Location = function( params ) {
 	self.zip = function() {
 		return self._properties.zip || '';
 	};
-	
+
 	// return latutude
 	self.lat = function() {
 		return self._properties.lat || 0;
 	};
 
-	// return longitude	
+	// return longitude
 	self.lon = function() {
-		return self._properties.lon || 0;	
+		return self._properties.lon || 0;
 	};
-	
+
 	// determine if useful for specific task
 	self.valid = function() {
 		switch (arguments[0]) {
@@ -172,7 +172,7 @@ var Location = function( params ) {
 				break;
 		}
 	};
-	
+
 	self.getDiff = function(){
 		if( !self.entered() ){
 			return;
@@ -210,31 +210,31 @@ var Location = function( params ) {
 	self.verified = function() {
 		return self._properties.verified;
 	};
-	
+
 	// return the type of location
 	self.type = function() {
 		return self._properties.type;
 	};
-	
+
 	// return the level of detail
 	self.detail = function() {
 		return self._properties.detail;
 	};
-	
+
 	self.region = function(){
 		return self._properties.region;
 	}
 
 	self.entered = function(){
-		return self._properties.entered;
+		return ( self._properties.entered ? self._properties.entered : self._properties.address ? self._properties.address : null );
 	}
 
 	self.markToRemove = function(){
-		return self._properties.removeFromCookie = true;	
+		return self._properties.removeFromCookie = true;
 	}
 
 	self.storeAtCookie = function(){
-		return !self._properties.removeFromCookie;	
+		return !self._properties.removeFromCookie;
 	}
 
 	self.setEntered = function( entered ){
@@ -262,7 +262,7 @@ var Location = function( params ) {
 			if( x != 'results' ){
 				properties[x] = this._properties[x];
 			}
-		}	
+		}
 		return new Location( properties );
 	}
 
