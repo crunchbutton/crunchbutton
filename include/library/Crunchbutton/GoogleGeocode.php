@@ -46,11 +46,12 @@ class Crunchbutton_GoogleGeocode
 
     static public function get_data($url) {
         $ch = curl_init();
-        $timeout = 5;
+        $timeout = 15;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         $data = curl_exec($ch);
+
         //getinfo gets the data for the request
         $info = curl_getinfo($ch);
         //output the data to get more information.
@@ -60,4 +61,3 @@ class Crunchbutton_GoogleGeocode
     }
 
 }
-
