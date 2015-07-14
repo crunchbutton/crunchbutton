@@ -9,7 +9,7 @@ class Cockpit_Payment_Schedule_Order extends Cana_Table {
 		return Cockpit_Payment_Schedule::o($this->id_payment_schedule);
 	}
 
-	public static static function checkOrderWasPaidRestaurant( $id_order ){
+	public static function checkOrderWasPaidRestaurant( $id_order ){
 		$query = 'SELECT * FROM payment_schedule_order pso
 								INNER JOIN payment_schedule ps ON ps.id_payment_schedule = pso.id_payment_schedule AND ps.type = ? AND ps.pay_type = ?
 							WHERE pso.id_order = ? LIMIT 1';
