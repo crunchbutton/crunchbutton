@@ -437,6 +437,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.$on('userAuth', function(e, data) {
 
+		ReferralService.getStatus();
+
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
 			if (data) {
@@ -465,7 +467,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				$rootScope.reload();
 			}
 			AccountService.forceDontReloadAfterAuth = false;
+
 		});
+
 		setTimeout( function(){
 			ReferralService.newReferredUsersByUser();
 		}, 4000 );
@@ -628,6 +632,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	if( App.config.user.id_user ){
 		ReferralService.newReferredUsersByUser();
+		ReferralService.getStatus();
 	}
 
 });
