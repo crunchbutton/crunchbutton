@@ -1417,10 +1417,7 @@ a.button{
 	}
 
 	.footer-columns {
-		display: flex;
-		flex-direction: row;
-		flex-flow: row wrap;
-		justify-content: space-between;
+		@include flex(row, row wrap, space-between);
 	}
 	.footer ul a {
 		text-decoration: none;
@@ -4026,10 +4023,7 @@ font-familt: "Museo Slab";
 		display: inline-block;
 	}
 	.col-box {
-		display: flex;
-		flex-direction: row;
-		flex-flow: row wrap;
-		justify-content: space-between;
+		@include flex(row, row wrap, space-between);
 	}
 	.col-box .two-col {
 		width: 46%;

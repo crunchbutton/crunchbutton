@@ -4099,10 +4099,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 @media screen and (min-width: $desktopWidth) {
 	.col-box {
-		display: flex;
-		flex-direction: row;
-		flex-flow: row wrap;
-		justify-content: space-between;
+		@include flex(row, row wrap, space-between);
 	}
 	.col-box .two-col {
 		width: 50%;
