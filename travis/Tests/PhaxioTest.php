@@ -90,15 +90,8 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 			'active' => 1,
 			'type' => 'fax'
 		]);
-		
-		ob_start();
-		$status = $n->send($this->order);
-		if ($status) {
-			ob_end_clean();
-		} else {
-			ob_end_flush();
-		}
 
+		$status = $n->send($this->order);
 	
 /*
 $temp = tempnam('/tmp','fax');
