@@ -2,7 +2,7 @@
 
 class SettlementTest extends PHPUnit_Framework_TestCase {
 
-	// because settlement filter stuff with 'test' on its name
+	// because settlement filters stuff with 'test' on its name
 	const NAME = 'Settlement Travis';
 
 	public static function setUpBeforeClass() {
