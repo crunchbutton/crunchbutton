@@ -925,7 +925,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function comments(){
-		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE sm.id_support = "' . $this->id_support . '" AND sm.type = "' . Crunchbutton_Support_Message::TYPE_NOTE . '" AND `from` != "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '" ORDER BY sm.date DESC' );
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE sm.id_support = ? AND sm.type = ? AND `from` != ? ORDER BY sm.date DESC', [$this->id_support, Crunchbutton_Support_Message::TYPE_NOTE, Crunchbutton_Support_Message::TYPE_FROM_SYSTEM]);
 	}
 
 	public function findsTheSendersName( $phone = null ){
@@ -934,17 +934,17 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 
 		// look at the users
-		$user = Crunchbutton_User::q( 'SELECT * FROM user WHERE phone = "' . $phone . '" LIMIT 1' );
+		$user = Crunchbutton_User::q( 'SELECT * FROM `user` WHERE phone = ? LIMIT 1', [$phone]);
 		if( count( $user ) && $user->get( 0 ) && $user->get( 0 )->name ){
 			return $user->get( 0 )->name;
 		}
 		// look at the orders
-		$order = Crunchbutton_User::q( 'SELECT * FROM `order` WHERE phone = "' . $phone . '" LIMIT 1' );
+		$order = Crunchbutton_User::q( 'SELECT * FROM `order` WHERE phone = ? LIMIT 1', [$phone]);
 		if( count( $order ) && $order->get( 0 ) && $order->get( 0 )->name ){
 			return $order->get( 0 )->name;
 		}
 		// look at the admins
-		$admin = Crunchbutton_User::q( 'SELECT * FROM  admin WHERE phone = "' . $phone . '" LIMIT 1' );
+		$admin = Crunchbutton_User::q( 'SELECT * FROM  admin WHERE phone = ? LIMIT 1', [$phone]);
 		if( count( $admin ) && $admin->get( 0 ) && $admin->get( 0 )->name ){
 			return $admin->get( 0 )->name;
 		}
@@ -956,17 +956,17 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$phone = $this->phone;
 		}
 		// look at the admins
-		$admin = Crunchbutton_User::q( 'SELECT * FROM  admin WHERE phone = "' . $phone . '" LIMIT 1' );
+		$admin = Crunchbutton_User::q( 'SELECT * FROM  admin WHERE phone = ? LIMIT 1', [$phone]);
 		if( count( $admin ) && $admin->get( 0 ) && $admin->get( 0 )->id_admin ){
 			return 'Driver: ';
 		}
 		// look at the users
-		$user = Crunchbutton_User::q( 'SELECT * FROM user WHERE phone = "' . $phone . '" LIMIT 1' );
+		$user = Crunchbutton_User::q( 'SELECT * FROM `user` WHERE phone = ? LIMIT 1', [$phone]);
 		if( count( $user ) && $user->get( 0 ) && $user->get( 0 )->id_user ){
 			return 'Customer: ';
 		}
 		// look at the orders
-		$order = Crunchbutton_User::q( 'SELECT * FROM `order` WHERE phone = "' . $phone . '" LIMIT 1' );
+		$order = Crunchbutton_User::q( 'SELECT * FROM `order` WHERE phone = ? LIMIT 1', [$phone]);
 		if( count( $order ) && $order->get( 0 ) && $order->get( 0 )->id_order ){
 			return 'Customer: ';
 		}
@@ -979,10 +979,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		$query = 'SELECT DISTINCT( sm.id_support ) AS id, s.* FROM support_message sm
 								INNER JOIN support s ON s.id_support = sm.id_support
-								WHERE sm.date > DATE_SUB( NOW(), interval ' . $days . ' day ) AND s.type != "' . Crunchbutton_Support::TYPE_WARNING . '"
+								WHERE sm.date > DATE_SUB( NOW(), interval ' . $days . ' day ) AND s.type != ?
 								ORDER BY sm.date ASC';
 
-		$tickets = Crunchbutton_Support::q( $query );
+		$tickets = Crunchbutton_Support::q( $query, [Crunchbutton_Support::TYPE_WARNING]);
 		$out = [ 'open' => [], 'closed' => [] ];
 		foreach( $tickets as $ticket ){
 			$data = [];
@@ -997,7 +997,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 			$type = $ticket->findsTheSendersType();
 			$data[ 'name' ] = $type . $_name;
-			$messages = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE id_support = "' . $ticket->id_support . '" AND sm.date > DATE_SUB( NOW(), interval ' . $days . ' day )' );
+			$messages = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE id_support = ? AND sm.date > DATE_SUB( NOW(), interval ' . $days . ' day )', [$ticket->id_support]);
 			$count = 0;
 			$prev_type = null;
 			$prev_from = null;

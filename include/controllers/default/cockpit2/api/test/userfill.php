@@ -1,7 +1,7 @@
 <?php
 
 
-$users = User::q('select user.* from user left join user_payment_type using(id_user)
+$users = User::q('select user.* from `user` left join user_payment_type using(id_user)
 where user.balanced_id is not null
 and user_payment_type.balanced_id is null');
 

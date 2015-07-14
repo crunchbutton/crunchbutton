@@ -185,7 +185,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		// support_message
 		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support_message t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// user
-		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM user t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `user` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// order
 		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `order` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// admin
@@ -204,7 +204,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		c::db()->query( "UPDATE admin t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
 
 		// now uses php to get the null ones because the phone is not cleaned
-		$users = User::q( 'SELECT * FROM user WHERE id_phone IS NULL AND phone IS NOT NULL' );
+		$users = User::q( 'SELECT * FROM `user` WHERE id_phone IS NULL AND phone IS NOT NULL' );
 		foreach( $users as $user ){
 			$phone = Phone::byPhone( $user->phone );
 			if( $phone->id_phone ){

@@ -274,7 +274,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         Admin::q('select * from admin where name="' . $name . ' - ONE"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - TWO"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - THREE"')->delete();
-        User::q('select * from user where name="' . $name . '"')->delete();
+        User::q('select * from `user` where name="' . $name . '"')->delete();
         Dish::q('select * from dish where name="' . $name . '"')->delete();
 
     }

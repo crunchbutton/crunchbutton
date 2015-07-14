@@ -324,8 +324,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         Admin::q('select * from admin where name="' . $name . ' - ONE"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - TWO"')->delete();
         Admin::q('select * from admin where name="' . $name . ' - THREE"')->delete();
-        User::q('select * from user where name="' . $name . ' - ONE"')->delete();
-        User::q('select * from user where name="' . $name . ' - TWO"')->delete();
+        User::q('select * from `user` where name="' . $name . ' - ONE"')->delete();
+        User::q('select * from `user` where name="' . $name . ' - TWO"')->delete();
         Dish::q('select * from dish where name="' . $name . '"')->delete();
 
     }
@@ -341,8 +341,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver1 = Admin::q('select * from admin where name="' . $name . ' - ONE" order by id_admin desc limit 1')->get(0);
         $this->driver2 = Admin::q('select * from admin where name="' . $name . ' - TWO" order by id_admin desc limit 1')->get(0);
         $this->driver3 = Admin::q('select * from admin where name="' . $name . ' - THREE" order by id_admin desc limit 1')->get(0);
-        $this->user = User::q('select * from user where name="' .  $name . ' - ONE" order by id_user desc limit 1')->get(0);
-        $this->user2 = User::q('select * from user where name="' .  $name . ' - TWO" order by id_user desc limit 1')->get(0);
+        $this->user = User::q('select * from `user` where name="' .  $name . ' - ONE" order by id_user desc limit 1')->get(0);
+        $this->user2 = User::q('select * from `user` where name="' .  $name . ' - TWO" order by id_user desc limit 1')->get(0);
         $this->community = Community::q('select * from community where name="' . $name . ' - ONE"  order by id_community desc limit 1')->get(0);
         $this->community2 = Community::q('select * from community where name="' . $name . ' - TWO" order by id_community desc limit 1')->get(0);
     }
