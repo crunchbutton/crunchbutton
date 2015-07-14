@@ -89,7 +89,7 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 
 		// Check unique login
 		$login = trim( $this->request()[ 'login' ] );
-		$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $login . '"' );
+		$admin = Admin::q( 'SELECT * FROM admin WHERE login = ?', [$login]);
 		if( $admin->count() == 0 && !$staff->id_admin ){
 			$staff->login = $login;
 		} else {
@@ -103,7 +103,7 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 		if ( preg_match('/\s/',$invite_code) ){
 			$this->_error( 'please remove white spaces from invite code' );
 		} else {
-			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
+			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = ?', [$invite_code]);
 			if( $admin->count() == 0 ){
 				$staff->invite_code = $invite_code;
 			} else {

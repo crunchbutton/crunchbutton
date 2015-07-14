@@ -26,7 +26,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 			$method = strtolower( trim( $row[ 3 ] ) );
 
 			// Get the current restaurant's payment type
-			$payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ' . $id_restaurant . ' ORDER BY id_restaurant_payment_type DESC LIMIT 1' );
+			$payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ? ORDER BY id_restaurant_payment_type DESC LIMIT 1', [$id_restaurant]);
 			if( !$payment->id_restaurant_payment_type ){
 				$payment = new Crunchbutton_Restaurant_Payment_Type;
 			}
@@ -39,7 +39,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 						$payment->summary_email = $email;
 					}
 				} else {
-					$email = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = true AND type = "' . Crunchbutton_Notification::TYPE_EMAIL . '" LIMIT 1' );
+					$email = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ? AND active = true AND type = ? LIMIT 1', [$id_restaurant, Crunchbutton_Notification::TYPE_EMAIL]);
 					if( $email->id_notification ){
 						$payment->summary_email = $email->value;
 					}
@@ -49,7 +49,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 
 			if( $method == 'fax' ){
 				$payment->method = 'fax';
-				$fax = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $id_restaurant . ' AND active = true AND type = "' . Crunchbutton_Notification::TYPE_FAX . '" LIMIT 1' );
+				$fax = Crunchbutton_Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ? AND active = true AND type = ? LIMIT 1', [$id_restaurant, Crunchbutton_Notification::TYPE_FAX]);
 				if( $fax->id_notification ){
 					$payment->summary_fax = $fax->value;
 				}
@@ -95,7 +95,7 @@ class Controller_Api_Script_RestaurantPayInfoImport extends Crunchbutton_Control
 			$method = strtolower( trim( $row[ 3 ] ) );
 
 			// Get the current restaurant's payment type
-			$payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ' . $id_restaurant . ' ORDER BY id_restaurant_payment_type DESC LIMIT 1' );
+			$payment = Crunchbutton_Restaurant_Payment_Type::q( 'SELECT * FROM restaurant_payment_type WHERE id_restaurant = ? ORDER BY id_restaurant_payment_type DESC LIMIT 1', [$id_restaurant]);
 			if( !$payment->id_restaurant_payment_type ){
 				$payment = new Crunchbutton_Restaurant_Payment_Type;
 			}
