@@ -1,10 +1,16 @@
 <?php
 
+
+echo "\nRunning db migrate scripts...\n";
+
 $dirs = ['db/migrate'];
 
 if (getenv('TRAVISPOSTGRES')) {
+	echo "Running db migrate scripts for Postgres...\n";
 	$dirs[] = 'db/migratepostgres';
 }
+
+$error = false;
 
 foreach ($dirs as $dir) {
 	
@@ -20,7 +26,6 @@ foreach ($dirs as $dir) {
 
 	natcasesort($files);
 
-	echo "\nRunning db migrate scripts...\n";
 
 	foreach ($files as $file) {
 		echo $file."...\n";
