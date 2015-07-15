@@ -961,7 +961,7 @@ April Moore;Charlotte;250;active;3/17/2015;1405;;;";
 			$date = $driver[ 4 ];
 
 			$driver = null;
-			$admins = Admin::q( 'SELECT * FROM admin WHERE name = "' . $name . '" AND active = true ORDER BY id_admin DESC LIMIT 1' );
+			$admins = Admin::q( 'SELECT * FROM admin WHERE name = ? AND active = true ORDER BY id_admin DESC LIMIT 1' , [$name]);
 			if( $admins->count() != 1 ){
 				$actives = 0;
 				foreach( $admins as $admin ){
@@ -980,7 +980,7 @@ April Moore;Charlotte;250;active;3/17/2015;1405;;;";
 			if( $driver ){
 				echo "'{$name}' => [ 'status' => '{$active}', 'date' => '{$date}', 'serial' => '{$serial}', 'id_admin' => '{$driver->id_admin}' ],\n";
 			} else {
-				$admins = Admin::q( 'SELECT * FROM admin WHERE name = "' . $name . '" AND active = 0' );
+				$admins = Admin::q( 'SELECT * FROM admin WHERE name = ? and active = true',[$name] );
 				if( !$admins->count() ){
 					echo '<pre>';var_dump( 'Error::', $name, $serial, $active );exit();
 				}

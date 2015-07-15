@@ -267,7 +267,7 @@ class Crunchbutton_App extends Cana_App {
 		if ($admin !== null) {
 			$this->_admin = $admin;
 		}
-		if (!$admin && getenv('CLI')) {
+		if (!$admin && !$this->_admin && getenv('CLI')) {
 			$this->_admin = new Admin;
 		}
 		return $this->_admin;
@@ -410,10 +410,6 @@ class Crunchbutton_App extends Cana_App {
 	public function buildAcl($db = null) {
 		$this->acl(new Crunchbutton_Acl($db, $this->auth()));
 		return $this;
-	}
-
-	public function revision() {
-		return isset($this->_revision) ? $this->_revision : Crunchbutton_Util::revision();
 	}
 
 	public function appDb() {

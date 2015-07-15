@@ -176,15 +176,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE cs.date_start BETWEEN "' . $date . ' 00:00:00" AND "' . $date . ' 23:59:59" AND cs.active = true ORDER BY c.name, cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE cs.date_start BETWEEN \'' . $date . ' 00:00:00\' AND \'' . $date . ' 23:59:59\' AND cs.active = true ORDER BY c.name, cs.date_start ASC' );
 	}
 
 	public function shiftsByCommunityPeriod( $id_community, $from, $to ){
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE cs.date_start >= "' . $from . ' 00:00:00" AND cs.date_end <= "' . $to . ' 23:59:59" AND id_community = "' . $id_community . '" ORDER BY cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND id_community = ? ORDER BY cs.date_start ASC', [$id_community]);
 	}
 
 	public function shiftsByDriverByPeriod( $id_admin, $from, $to ){
-		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= "' . $from . ' 00:00:00" AND cs.date_end <= "' . $to . ' 23:59:59" AND asa.id_admin = "' . $id_admin . '" ORDER BY cs.date_start ASC' );
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND asa.id_admin = ? ORDER BY cs.date_start ASC', [$id_admin]);
 	}
 
 	public function week(){

@@ -1,11 +1,11 @@
 <?php
 
 class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
-	
-    public function __construct() {
+
+	public function __construct() {
 		$headers = getallheaders();
 		$this->headerErrors = $headers['X-Requested-With'] == 'XMLHttpRequest' || $headers['Http-Error'] ? true : false;
-		
+
 		if ($this->headerErrors) {
 			ini_set('display_errors', 0);
 
@@ -23,9 +23,9 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 					case E_USER_ERROR:
 					case E_USER_NOTICE:
 					case E_RECOVERABLE_ERROR:
-						header('PHP-Fatal-Error: '. json_encode($e));
-						header('HTTP/1.0 500 Server Error');
-						break;
+					header('PHP-Fatal-Error: '. json_encode($e));
+					header('HTTP/1.0 500 Server Error');
+					break;
 				}
 			});
 
@@ -50,14 +50,16 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 			});
 		}
 
-    	$find = '/(api\.|log\.)/';
-    	if (preg_match($find, $_SERVER['SERVER_NAME'])) {
-    		$allow = preg_replace($find,'',$_SERVER['SERVER_NAME']);
+		$find = '/(api\.|log\.)/';
+		if (preg_match($find, $_SERVER['SERVER_NAME'])) {
+			$allow = preg_replace($find,'',$_SERVER['SERVER_NAME']);
 			header('Access-Control-Allow-Origin: http'.($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'.$allow);
 			header('Access-Control-Allow-Credentials: true');
-    	}
+		}
 
-    	header('Content-Type: application/json');
+		if (! headers_sent ()) {
+			header('Content-Type: application/json');
+		}
 		Cana::view()->layout('layout/ajax');
 
 		parent::__construct();
