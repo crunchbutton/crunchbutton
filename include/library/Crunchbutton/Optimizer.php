@@ -18,8 +18,8 @@ class Crunchbutton_Optimizer
         );
 
         $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
         try {
+            $result = file_get_contents($url, false, $context);
             $out = json_decode($result);
         } catch (Exception $e) {
             echo 'Crunchbutton_Optimizer::optimize: Caught exception: ',  $e->getMessage(), "\n";

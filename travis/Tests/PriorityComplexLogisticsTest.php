@@ -15,6 +15,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('+ ' . $hours . ' hours');
         $useDateLater = $now->format('Y-m-d H:i:s');
 
+        // La Taquiza
         $r1 = new Restaurant([
             'name' => $name . ' - ONE',
             'active' => 1,
@@ -25,11 +26,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'community' => 'test',
             'timezone' => 'America/Los_Angeles',
             'open_for_business' => true,
-            'delivery_service' => true
+            'delivery_service' => true,
+            'loc_lat' => 34.0251,
+            'loc_long' => -118.279
         ]);
         $r1->save();
         $restaurants[] = $r1;
 
+        // Five Guys
         $r2 = new Restaurant([
             'name' => $name . ' - TWO',
             'active' => 1,
@@ -40,11 +44,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'community' => 'test',
             'timezone' => 'America/Los_Angeles',
             'open_for_business' => true,
-            'delivery_service' => true
+            'delivery_service' => true,
+            'loc_lat' => 34.0269,
+            'loc_long' => -118.276
         ]);
         $r2->save();
         $restaurants[] = $r2;
 
+        // Chipotle
         $r3 = new Restaurant([
             'name' => $name . ' - THREE',
             'active' => 1,
@@ -55,11 +62,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'community' => 'test',
             'timezone' => 'America/Los_Angeles',
             'open_for_business' => true,
-            'delivery_service' => true
+            'delivery_service' => true,
+            'loc_lat' => 34.017,
+            'loc_long' => -118.282
         ]);
         $r3->save();
         $restaurants[] = $r3;
 
+        // McDonalds
         $r4 = new Restaurant([
             'name' => $name . ' - FOUR',
             'active' => 1,
@@ -70,12 +80,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'community' => 'test',
             'timezone' => 'America/Los_Angeles',
             'open_for_business' => true,
-            'delivery_service' => true
+            'delivery_service' => true,
+            'loc_lat' => 34.0261,
+            'loc_long' => -118.277
         ]);
         $r4->save();
         $restaurants[] = $r4;
 
-
+        // Taco Bell
         $r5 = new Restaurant([
             'name' => $name . ' - FIVE',
             'active' => 1,
@@ -86,10 +98,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'community' => 'test',
             'timezone' => 'America/New_York',
             'open_for_business' => true,
-            'delivery_service' => true
+            'delivery_service' => true,
+            'loc_lat' => 34.0266,
+            'loc_long' => -118.276
         ]);
         $r5->save();
-        $restaurants[] = $r4;
+        $restaurants[] = $r5;
 
 
         $c = new Community([
@@ -99,7 +113,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'driver-group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
-            'loc_lat' => 34.023281,
+            'loc_lat' => 34.02481,
             'loc_lon' => -118.2881961,
             'delivery_logistics' => 2
         ]);
@@ -381,28 +395,28 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        var_dump($now2->getTimestamp());
 //    }
 
-//    public function testOLPTZConversionLosAngeles()
-//    {
-//
-//        $useDate = '2015-07-01 05:00:00';
-//        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-//        $dow = date("w", strftime($useDate));
-//
-//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
-//        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
-//        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
-//
-//        $olp1 = $this->defaultOLP($this->restaurant1, $start, $end, 5, $dow);
-//        $olp2 = $this->defaultOLP($this->restaurant1, $end, $end2, 10, $dow);
-//        $olp1->save();
-//        $olp2->save();
-//        $newTZ = $this->restaurant1->community()->timezone;
-//        $useDT->setTimezone(new DateTimeZone($newTZ));
-//        $parking = $this->restaurant1->parking($useDT->format('H:i:s'), $dow);
-//        $olp1->delete();
-//        $olp2->delete();
-//        $this->assertTrue($parking->parking_duration == 5);
-//    }
+    public function testOLPTZConversionLosAngeles()
+    {
+
+        $useDate = '2015-07-01 05:00:00';
+        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $dow = $useDT->format('w');
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+
+        $olp1 = $this->defaultOLP($this->restaurant1, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant1, $end, $end2, 10, $dow);
+        $olp1->save();
+        $olp2->save();
+        $newTZ = $this->restaurant1->community()->timezone;
+        $useDT->setTimezone(new DateTimeZone($newTZ));
+        $parking = $this->restaurant1->parking($useDT->format('H:i:s'), $dow);
+        $olp1->delete();
+        $olp2->delete();
+        $this->assertTrue($parking->parking_duration == 5);
+    }
 //
 //    public function testOLPTZConversionNewYork()
 //    {
@@ -410,7 +424,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        $useDate = '2015-07-01 05:00:00';
 //        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
 ////        var_dump($useDT);
-//        $dow = date("w", strftime($useDate));
+//        $dow = $useDT->format('w');
 //
 //        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
 //        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
@@ -435,7 +449,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //
 //        $useDate = '2015-07-01 05:00:00';
 //        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-//        $dow = date("w", strftime($useDate));
+//        $dow = $useDT->format('w');
 //
 //        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
 //        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
@@ -458,7 +472,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //
 //        $useDate = '2015-07-01 05:00:00';
 //        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-//        $dow = date("w", strftime($useDate));
+//        $dow = $useDT->format('w');
 //
 //        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
 //        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
@@ -483,7 +497,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //
 //        $useDate = '2015-07-01 05:00:00';
 //        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-//        $dow = date("w", strftime($useDate));
+//        $dow = $useDT->format('w');
 //
 //        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
 //        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
@@ -505,7 +519,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //
 //        $useDate = '2015-07-01 05:00:00';
 //        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
-//        $dow = date("w", strftime($useDate));
+//        $dow = $useDT->format('w');
 //
 //        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
 //        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
@@ -542,229 +556,229 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //    }
 
 
-    public function testAdminLocationMissing()
-    {
-        $d1 = $this->driver1;
-        $loc = $d1->location();
-        $this->assertNull($loc);
+//    public function testAdminLocationMissing()
+//    {
+//        $d1 = $this->driver1;
+//        $loc = $d1->location();
+//        $this->assertNull($loc);
+//
+//    }
+//
+//    public function testOrderGeoMatchAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $o1->lat = $lat;
+//        $o1->lon = $lon;
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $o2->save();
+//        $geo = $o2->findGeoMatchFromDb();
+//        $o1->delete();
+//        $o2->delete();
+//        $this->assertTrue($geo->lat==$lat);
+//        $this->assertTrue($geo->lon==$lon);
+//    }
+//
+//    public function testOrderGeoMatchNotAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community2);
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $o1->lat = $lat;
+//        $o1->lon = $lon;
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $o2->save();
+//        $geo = $o2->findGeoMatchFromDb();
+//        $o1->delete();
+//        $o2->delete();
+//        $this->assertNull($geo);
+//    }
+//
+//    public function testOrderGeoMatchBadAddressAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community2);
+//        $o1->save();
+//
+//        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
+//        $ba = $this->defaultOLBA($this->community2, strtolower($use_address), $lat, $lon);
+//        $ba->save();
+//        $geo = $o1->findGeoMatchFromBadAddresses();
+//        $o1->delete();
+//        $ba->delete();
+//        $this->assertTrue($geo->lat==$lat);
+//        $this->assertTrue($geo->lon==$lon);
+//    }
+//
+//    public function testOrderGeoMatchBadAddressNotAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community2);
+//        $o1->save();
+//
+//        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
+//        $ba = $this->defaultOLBA($this->community, strtolower($use_address), $lat, $lon);
+//        $ba->save();
+//        $geo = $o1->findGeoMatchFromBadAddresses();
+//        $o1->delete();
+//        $ba->delete();
+//        $this->assertNull($geo);
+//    }
+//
+//    public function testOrderGeoSelfAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $o1->lat = $lat;
+//        $o1->lon = $lon;
+//        $o1->save();
+//        $geo = $o1->getGeo();
+//        $o1->delete();
+//        $this->assertTrue($geo->lat==$lat);
+//        $this->assertTrue($geo->lon==$lon);
+//    }
 
-    }
-
-    public function testOrderGeoMatchAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $lat = 34.0303;
-        $lon = -118.286;
-        $o1->lat = $lat;
-        $o1->lon = $lon;
-        $o1->save();
-        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $o2->save();
-        $geo = $o2->findGeoMatchFromDb();
-        $o1->delete();
-        $o2->delete();
-        $this->assertTrue($geo->lat==$lat);
-        $this->assertTrue($geo->lon==$lon);
-    }
-
-    public function testOrderGeoMatchNotAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community2);
-        $lat = 34.0303;
-        $lon = -118.286;
-        $o1->lat = $lat;
-        $o1->lon = $lon;
-        $o1->save();
-        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $o2->save();
-        $geo = $o2->findGeoMatchFromDb();
-        $o1->delete();
-        $o2->delete();
-        $this->assertNull($geo);
-    }
-
-    public function testOrderGeoMatchBadAddressAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $lat = 34.0303;
-        $lon = -118.286;
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community2);
-        $o1->save();
-
-        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
-        $ba = $this->defaultOLBA($this->community2, strtolower($use_address), $lat, $lon);
-        $ba->save();
-        $geo = $o1->findGeoMatchFromBadAddresses();
-        $o1->delete();
-        $ba->delete();
-        $this->assertTrue($geo->lat==$lat);
-        $this->assertTrue($geo->lon==$lon);
-    }
-
-    public function testOrderGeoMatchBadAddressNotAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $lat = 34.0303;
-        $lon = -118.286;
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community2);
-        $o1->save();
-
-        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
-        $ba = $this->defaultOLBA($this->community, strtolower($use_address), $lat, $lon);
-        $ba->save();
-        $geo = $o1->findGeoMatchFromBadAddresses();
-        $o1->delete();
-        $ba->delete();
-        $this->assertNull($geo);
-    }
-
-    public function testOrderGeoSelfAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $lat = 34.0303;
-        $lon = -118.286;
-        $o1->lat = $lat;
-        $o1->lon = $lon;
-        $o1->save();
-        $geo = $o1->getGeo();
-        $o1->delete();
-        $this->assertTrue($geo->lat==$lat);
-        $this->assertTrue($geo->lon==$lon);
-    }
-
-    public function testOrderGeoSameAddressAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $lat = 34.0303;
-        $lon = -118.286;
-        $o1->lat = $lat;
-        $o1->lon = $lon;
-        $o1->save();
-        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $o2->save();
-        $geo = $o2->getGeo();
-        $o1->delete();
-        $o2->delete();
-        $this->assertTrue($geo->lat==$lat);
-        $this->assertTrue($geo->lon==$lon);
-    }
-
-    public function testOrderGeoBadAddressAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $lat = 34.0303;
-        $lon = -118.286;
-        $lat2 = 35.0;
-        $lon2 = -119.5;
-        $o1->lat = $lat;
-        $o1->lon = $lon;
-        $o1->save();
-        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
-        $o2->save();
-        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user->address)));
-        $ba = $this->defaultOLBA($this->community, strtolower($use_address), $lat2, $lon2);
-        $ba->save();
-        $geo = $o2->getGeo();
-        $o1->delete();
-        $o2->delete();
-        $ba->delete();
-        $this->assertTrue($geo->lat==$lat2);
-        $this->assertTrue($geo->lon==$lon2);
-    }
-
-
-    public function testOrderGoogleGeoAvailable()
-    {
-
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
-
-        $r1Id = $this->restaurant1->id_restaurant;
-
-        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community2);
-        $lat = 34.0303058;
-        $lon = -118.2860374;
-        $lat2 = 35.0;
-        $lon2 = -119.5;
-        $o1->lat = $lat2;
-        $o1->lon = $lon2;
-        $o1->save();
-        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $o2->save();
-        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
-        $ba = $this->defaultOLBA($this->community2, strtolower($use_address), $lat2, $lon2);
-        $ba->save();
-        $geo = $o2->getGeo();
-        $o1->delete();
-        $o2->delete();
-        $ba->delete();
-        $this->assertTrue($geo->lat==$lat);
-        $this->assertTrue($geo->lon==$lon);
-    }
+//    public function testOrderGeoSameAddressAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $o1->lat = $lat;
+//        $o1->lon = $lon;
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $o2->save();
+//        $geo = $o2->getGeo();
+//        $o1->delete();
+//        $o2->delete();
+//        $this->assertTrue($geo->lat==$lat);
+//        $this->assertTrue($geo->lon==$lon);
+//    }
+//
+//    public function testOrderGeoBadAddressAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $lat2 = 35.0;
+//        $lon2 = -119.5;
+//        $o1->lat = $lat;
+//        $o1->lon = $lon;
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+//        $o2->save();
+//        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user->address)));
+//        $ba = $this->defaultOLBA($this->community, strtolower($use_address), $lat2, $lon2);
+//        $ba->save();
+//        $geo = $o2->getGeo();
+//        $o1->delete();
+//        $o2->delete();
+//        $ba->delete();
+//        $this->assertTrue($geo->lat==$lat2);
+//        $this->assertTrue($geo->lon==$lon2);
+//    }
 
 
-    public function testOrderGeoCommunityGeoAvailable()
-    {
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $useDate1 = $now->format('Y-m-d H:i:s');
+//    public function testOrderGoogleGeoAvailable()
+//    {
+//
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community2);
+//        $lat = 34.0303058;
+//        $lon = -118.2860374;
+//        $lat2 = 35.0;
+//        $lon2 = -119.5;
+//        $o1->lat = $lat2;
+//        $o1->lon = $lon2;
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $o2->save();
+//        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user2->address)));
+//        $ba = $this->defaultOLBA($this->community2, strtolower($use_address), $lat2, $lon2);
+//        $ba->save();
+//        $geo = $o2->getGeo();
+//        $o1->delete();
+//        $o2->delete();
+//        $ba->delete();
+//        $this->assertTrue($geo->lat==$lat);
+//        $this->assertTrue($geo->lon==$lon);
+//    }
 
-        $r1Id = $this->restaurant1->id_restaurant;
 
-        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
-        $lat = 34.0303;
-        $lon = -118.286;
-        $lat2 = 35.0;
-        $lon2 = -119.5;
-        $lat3 = $this->community2->loc_lat;
-        $lon3 = $this->community2->loc_lon;
-        $o1->lat = $lat;
-        $o1->lon = $lon;
-        $o1->save();
-        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community2);
-        $o2->save();
-        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user->address)));
-        $ba = $this->defaultOLBA($this->community, strtolower($use_address), $lat2, $lon2);
-        $ba->save();
-        $geo = $o2->getGeo();
-        $o1->delete();
-        $o2->delete();
-        $ba->delete();
-        $this->assertTrue($geo->lat==$lat3);
-        $this->assertTrue($geo->lon==$lon3);
-    }
+//    public function testOrderGeoCommunityGeoAvailable()
+//    {
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $r1Id = $this->restaurant1->id_restaurant;
+//
+//        $o1 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+//        $lat = 34.0303;
+//        $lon = -118.286;
+//        $lat2 = 35.0;
+//        $lon2 = -119.5;
+//        $lat3 = $this->community2->loc_lat;
+//        $lon3 = $this->community2->loc_lon;
+//        $o1->lat = $lat;
+//        $o1->lon = $lon;
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community2);
+//        $o2->save();
+//        $use_address = preg_replace('/\s+/', ' ', trim(strtolower($this->user->address)));
+//        $ba = $this->defaultOLBA($this->community, strtolower($use_address), $lat2, $lon2);
+//        $ba->save();
+//        $geo = $o2->getGeo();
+//        $o1->delete();
+//        $o2->delete();
+//        $ba->delete();
+//        $this->assertTrue($geo->lat==$lat3);
+//        $this->assertTrue($geo->lon==$lon3);
+//    }
 //
 //    public function testAdminScore()
 //    {
@@ -796,7 +810,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        $olc->save();
 //        $cluster = $this->restaurant1->cluster('00:03:00', 0);
 //        $olc->delete();
-//        $this->assertTrue($cluster==$fakeClusterId);
+//        $this->assertTrue($cluster->id_restaurant_cluster==$fakeClusterId);
 //    }
 //
 //    public function testRestaurantClusterWrongTime()
@@ -813,7 +827,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //            [$this->restaurant1->id_restaurant]);
 //        $count = $cl->count();
 //        $cl->delete();
-//        $this->assertTrue($cluster==$this->restaurant1->id_restaurant);
+//        $this->assertTrue($cluster->id_restaurant_cluster==$this->restaurant1->id_restaurant);
 //        $this->assertTrue($count==1);
 //    }
 //
@@ -942,11 +956,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        $this->assertTrue($result->numBadTimes==0);
 //    }
 
-
-//    // One other new order in the system within the last n minutes, given to driver 1.
-//    //  New order from same restaurant.
-//    //  Should assign to driver 1.
-//    public function testLogisticsTwoOrdersSameRestaurant()
+//    public function testActiveDrivers()
 //    {
 //        $seconds = 50;
 //        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -965,54 +975,381 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        $later->modify('+ ' . $seconds . ' seconds');
 //        $laterDate = $later->format('Y-m-d H:i:s');
 //
-//
 //        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
 //        $o1->save();
-//
-//        $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
-//            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
-//            0, $laterDate);
-//        $pR1D1->save();
-//
-//        $pR1D2 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
-//            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
-//            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
-//        $pR1D2->save();
-//
-//        $pR1D3 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver3,
-//            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
-//            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
-//
-//        $pR1D3->save();
-//
-//        $pR1D4 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver4,
-//            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
-//            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
-//        $pR1D4->save();
-//
-//        $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
-//        $o2->save();
-//
-//
-//        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
-//
-//        $pR1D1->delete();
-//        $pR1D2->delete();
-//        $pR1D3->delete();
-//        $pR1D4->delete();
-//        $o1->delete();
-//        $o2->delete();
-//        foreach ($ol->drivers() as $driver) {
-////            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-//            if ($driver->id_admin == $this->driver1->id_admin) {
-//                $this->assertTrue($driver->__seconds == 0);
-//            } else {
-//                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
-//            }
-//        }
+//        $drivers = $o1->getDriversToNotify();
+//        $this->assertTrue($drivers->count()==3);
 //    }
 //
 //
+//    public function testInactiveDriver()
+//    {
+//        $seconds = 50;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//
+//        $seconds = 20;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate2 = $now->format('Y-m-d H:i:s');
+//
+//        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+//        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+//        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $later->modify('+ ' . $seconds . ' seconds');
+//        $laterDate = $later->format('Y-m-d H:i:s');
+//
+//        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+//        $o1->save();
+//        $this->driver1->active = false;
+//        $this->driver1->save();
+//
+//        $drivers = $o1->getDriversToNotify();
+//        $this->driver1->active = true;
+//        $this->driver1->save();
+//        $this->assertTrue($drivers->count()==2);
+//    }
+
+
+//    public function testRestaurantsWithGeo()
+//    {
+//        $rs = Restaurant::getDeliveryRestaurantsWithGeoByIdCommunity($this->community->id_community);
+//        $this->assertTrue($rs->count()==4);
+//    }
+
+
+//// Missing info - no one should get priority
+//    public function testLogisticsFirstorderMissingInfo()
+//    {
+//        $seconds = 50;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $seconds = 120;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate2 = $now->format('Y-m-d H:i:s');
+//
+//        // Only want 2 drivers for now
+//        $this->driver3->active = false;
+//        $this->driver3->save();
+//
+//        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc1->save();
+//        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc2->save();
+//
+//        // Chipotle
+//        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+//        $o1->loc = 34.0284;
+//        $o1->lat = -118.287;
+//        $o1->save();
+//
+//        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+//
+//        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+//
+//        $this->driver3->active = true;
+//        $this->driver3->save();
+//
+//        $o1->delete();
+//        $driverLoc1->delete();
+//        $driverLoc2->delete();
+//        foreach ($ol->drivers() as $driver) {
+//            $this->assertTrue($driver->__seconds == 0);
+//        }
+//        $this->assertTrue($ops->count() == 2);
+//        foreach ($ops as $op) {
+//            $this->assertTrue($op->priority_given == Crunchbutton_Order_Priority::PRIORITY_NO_ONE);
+//        }
+//    }
+
+// Missing fake community fake customers - no priority
+//    public function testLogisticsMissingCommunityFakeCustomers()
+//    {
+//        $seconds = 50;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $seconds = 120;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate2 = $now->format('Y-m-d H:i:s');
+//        $dow = $now->format('w');
+//
+//        // Only want 2 drivers for now
+//        $this->driver3->active = false;
+//        $this->driver3->save();
+//
+//        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc1->save();
+//        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc2->save();
+//
+//        // Chipotle
+//        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+//        $o1->loc = 34.0284;
+//        $o1->lat = -118.287;
+//        $o1->save();
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = '24:00:00';
+//        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+//        $olp1->save();
+//
+//        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+//        $olot1->save();
+//
+//        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+//        $olcs1->save();
+//
+//        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+//        $olc->save();
+//
+//        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+//
+//        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+//
+//        $this->driver3->active = true;
+//        $this->driver3->save();
+//        $o1->delete();
+//        $driverLoc1->delete();
+//        $driverLoc2->delete();
+//        $olp1->delete();
+//        $olot1->delete();
+//        $olcs1->delete();
+////        $olc->delete();
+//        foreach ($ol->drivers() as $driver) {
+//            $this->assertTrue($driver->__seconds == 0);
+//        }
+//        $this->assertTrue($ops->count() == 2);
+//        foreach ($ops as $op) {
+//            $this->assertTrue($op->priority_given == Crunchbutton_Order_Priority::PRIORITY_NO_ONE);
+//        }
+//    }
+
+
+//    // Two drivers - no orders - same location
+//    //  First order comes in - neither should get priority.
+//    public function testLogisticsFirstorderSameLocation()
+//    {
+//        $seconds = 50;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $seconds = 120;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate2 = $now->format('Y-m-d H:i:s');
+//        $dow = $now->format('w');
+//
+//        // Only want 2 drivers for now
+//        $this->driver3->active = false;
+//        $this->driver3->save();
+//
+//        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc1->save();
+//        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc2->save();
+//
+//        // Chipotle
+//        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+//        $o1->loc = 34.0284;
+//        $o1->lat = -118.287;
+//        $o1->save();
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = '24:00:00';
+//        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+//        $olp1->save();
+//
+//        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+//        $olot1->save();
+//
+//        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+//        $olcs1->save();
+//
+//        $fc_lat = 34.0312;
+//        $fc_lon = -118.286;
+//        $fc1 = $this->createFakecustomer($this->community, $fc_lat, $fc_lon);
+//        $fc1->save();
+//
+//        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+//        $olc->save();
+//
+//        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+//
+//        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+//
+//        $this->driver3->active = true;
+//        $this->driver3->save();
+//        $o1->delete();
+//        $driverLoc1->delete();
+//        $driverLoc2->delete();
+//        $olp1->delete();
+//        $olot1->delete();
+//        $olcs1->delete();
+//        $fc1->delete();
+//        $olc->delete();
+//        foreach ($ol->drivers() as $driver) {
+//            $this->assertTrue($driver->__seconds == 0);
+//        }
+//        $this->assertTrue($ops->count() == 2);
+//        foreach ($ops as $op) {
+//            $this->assertTrue($op->priority_given == Crunchbutton_Order_Priority::PRIORITY_HIGH);
+//        }
+//    }
+
+//    // Two drivers - no orders - different locations, but still close
+//    //  First order comes in - closer will not get priority because of wait time
+//    public function testLogisticsFirstorderDifferentLocationWithLongWait()
+//    {
+//        $seconds = 50;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $seconds = 120;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate2 = $now->format('Y-m-d H:i:s');
+//        $dow = $now->format('w');
+//
+//        // Only want 2 drivers for now
+//        $this->driver3->active = false;
+//        $this->driver3->save();
+//
+//        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc1->save();
+//        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.018, -118.281, $useDate2);
+//        $driverLoc2->save();
+//
+//        // Chipotle
+//        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+//        $o1->loc = 34.0284;
+//        $o1->lat = -118.287;
+//        $o1->save();
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = '24:00:00';
+//        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+//        $olp1->save();
+//
+//        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+//        $olot1->save();
+//
+//        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+//        $olcs1->save();
+//
+//        $fc_lat = 34.0312;
+//        $fc_lon = -118.286;
+//        $fc1 = $this->createFakecustomer($this->community, $fc_lat, $fc_lon);
+//        $fc1->save();
+//
+//        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+//        $olc->save();
+//
+//        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+//
+//        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+//
+//        $this->driver3->active = true;
+//        $this->driver3->save();
+//        $o1->delete();
+//        $driverLoc1->delete();
+//        $driverLoc2->delete();
+//        $olp1->delete();
+//        $olot1->delete();
+//        $olcs1->delete();
+//        $fc1->delete();
+//        $olc->delete();
+//        foreach ($ol->drivers() as $driver) {
+//            $this->assertTrue($driver->__seconds == 0);
+//        }
+//        $this->assertTrue($ops->count() == 2);
+//        foreach ($ops as $op) {
+//            $this->assertTrue($op->priority_given == Crunchbutton_Order_Priority::PRIORITY_HIGH);
+//        }
+//    }
+
+//    // Two drivers - no orders - different locations, but still close
+//    //  First order comes in - closer should get priority because of no waiting time.
+//    public function testLogisticsFirstorderDifferentLocationNoWait()
+//    {
+//        $seconds = 50;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate1 = $now->format('Y-m-d H:i:s');
+//
+//        $seconds = 120;
+//        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+//        $now->modify('- ' . $seconds . ' seconds');
+//        $useDate2 = $now->format('Y-m-d H:i:s');
+//        $dow = $now->format('w');
+//
+//        // Only want 2 drivers for now
+//        $this->driver3->active = false;
+//        $this->driver3->save();
+//
+//        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
+//        $driverLoc1->save();
+//        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.018, -118.281, $useDate2);
+//        $driverLoc2->save();
+//
+//        // Chipotle
+//        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+//        $o1->loc = 34.0284;
+//        $o1->lat = -118.287;
+//        $o1->save();
+//
+//        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+//        $end = '24:00:00';
+//        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+//        $olp1->save();
+//
+//        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+//        $olot1->save();
+//
+//        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+//        $olcs1->save();
+//
+//        $fc_lat = 34.0312;
+//        $fc_lon = -118.286;
+//        $fc1 = $this->createFakecustomer($this->community, $fc_lat, $fc_lon);
+//        $fc1->save();
+//
+//        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+//        $olc->save();
+//
+//        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+//
+//        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+//
+//        $this->driver3->active = true;
+//        $this->driver3->save();
+//        $o1->delete();
+//        $driverLoc1->delete();
+//        $driverLoc2->delete();
+//        $olp1->delete();
+//        $olot1->delete();
+//        $olcs1->delete();
+//        $fc1->delete();
+//        $olc->delete();
+//        foreach ($ol->drivers() as $driver) {
+//            $this->assertTrue($driver->__seconds == 0);
+//        }
+//        $this->assertTrue($ops->count() == 2);
+//        foreach ($ops as $op) {
+//            $this->assertTrue($op->priority_given == Crunchbutton_Order_Priority::PRIORITY_HIGH);
+//        }
+//    }
+
+
 //    // One other new order in the system within the last n minutes, given to driver 1.
 //    //  New order from different restaurant.
 //    //  Should assign to no one.
@@ -2271,6 +2608,30 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function defaultOrderWithLoc($user, $restaurantId, $date, $community, $loc, $lat) {
+        return new Order([
+            'name' => $user->name,
+            'address' => $user->address,
+            'phone' => $user->phone,
+            'price' => '10',
+            'price_plus_delivery_markup' => '10',
+            'final_price' => '12.8',
+            'final_price_plus_delivery_markup' => '12.8',
+            'pay_type' => 'cash',
+            'delivery_type' => 'delivery',
+            'delivery_service' => true,
+            'id_user' => $user->id_user,
+            'date' => $date,
+            'id_community' => $community->id_community,
+            'id_restaurant' => $restaurantId,
+            'active' => 1,
+            'loc' => $loc,
+            'lat' => $lat
+        ]);
+
+    }
+
+
     public function defaultOrderPriority($order, $restaurant, $driver,
                                          $priorityTime, $priority, $delay, $expiration) {
         return new Crunchbutton_Order_Priority([
@@ -2365,6 +2726,24 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         return new Crunchbutton_Order_Logistics_Destination([
             'id' => $id,
             'type' => Crunchbutton_Order_Logistics_Destination::TYPE_CUSTOMER
+        ]);
+    }
+
+    public function createAdminLocation($id_admin, $lat, $lon, $date) {
+        return new Cockpit_Admin_Location([
+            'id_admin' => $id_admin,
+            'lat' => $lat,
+            'lon' => $lon,
+            'accuracy' => 50,
+            'date' => $date
+        ]);
+    }
+
+    public function createFakecustomer($community, $lat, $lon) {
+        return new Crunchbutton_Order_Logistics_Fakecustomer([
+            'id_community' => $community->id_community,
+            'lat' => $lat,
+            'lon' => $lon
         ]);
     }
 
