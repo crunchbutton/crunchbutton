@@ -62,22 +62,22 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 		$name = get_called_class();
 
-		Restaurant::q('select * from restaurant where name="'.$name.'"')->delete();
-		User::q('select * from user where name="'.$name.'"')->delete();
+		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
+		User::q('select * from `user` where name=?', [$name])->delete();
 
 		Order_Dish::q('
 			select order_dish.* from order_dish
 			left join `order` using(id_order)
-			where `order`.name="'.$name.'"
-		')->delete();
-		Order::q('select * from `order` where name="'.$name.'"')->delete();
-		Dish::q('select * from dish where name="'.$name.'"')->delete();
+			where `order`.name=?
+		',[$name])->delete();
+		Order::q('select * from `order` where name=?', [$name])->delete();
+		Dish::q('select * from dish where name=?', [$name])->delete();
 	}
 
 	public function setUp() {
 		$name = get_called_class();
-		$this->order = Order::q('select * from `order` where name="'.$name.'"limit 1')->get(0);
-		$this->order = Order::q('select * from `order` where name="'.$name.'"limit 1')->get(0);
+		$this->order = Order::q('select * from `order` where name=? limit 1', [$name])->get(0);
+		$this->order = Order::q('select * from `order` where name=? limit 1', [$name])->get(0);
 	}
 
 	public function testFaxNotification() {
@@ -90,9 +90,8 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 			'active' => 1,
 			'type' => 'fax'
 		]);
-		
+
 		$status = $n->send($this->order);
-	
 	
 /*
 $temp = tempnam('/tmp','fax');

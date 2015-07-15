@@ -65,6 +65,13 @@
 			</div>
 		</div>
 	</div>
+	<div ng-if="oc.order.status.status == 'canceled'">
+		<div class="box-content-nav-box dialog-message dialog-message-error">
+			<div class="message">
+				<div class=""><b>THIS ORDER HAS BEEN CANCELED.</b></div>
+			</div>
+		</div>
+	</div>
 	<div ng-if="oc.order.status.status == 'pickedup' && oc.order.status.driver.id_admin != account.user.id_admin">
 		<div class="box-content-nav-box dialog-message dialog-message-error">
 			<div class="message">

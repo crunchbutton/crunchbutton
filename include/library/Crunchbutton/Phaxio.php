@@ -26,7 +26,7 @@ class Crunchbutton_Phaxio {
 			'type' => 'notification'
 		]);
 
-		exec($cmd, $return);
+		exec($cmd.' 2> /dev/null ', $return);
 
 		$return = json_decode(trim(join('',$return)));
 

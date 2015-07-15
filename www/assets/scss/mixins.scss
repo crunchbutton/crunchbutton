@@ -1,5 +1,14 @@
 $engines: (-webkit-, -moz-, -ms-, -o-, '');
 
+@mixin flex($direction, $flow, $justify) {
+	@each $engine in $engines {
+		display: #{$engine}flex;
+		#{$engine}flex-direction: $direction;
+		#{$engine}flex-flow: $flow;
+		#{$engine}justify-content: $justify;
+	}
+}
+
 @mixin transform($val) {
 	@each $engine in $engines {
 		#{$engine}transform: $val;

@@ -246,15 +246,8 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		sms : ReferralService.sms()
 	}
 
-	ReferralService.getStatus();
-
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
-	}
-
-	// Load the invite_url
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
 	}
 
 	$scope.$on( 'referralStatusLoaded', function( e, data ) {
@@ -266,7 +259,6 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		$scope.referral.invite_code = ReferralService.invite_code;
 		$scope.referral.sms = ReferralService.sms();
 	});
-
 
 	$scope.isMobile = App.isMobile();
 
@@ -1306,7 +1298,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
+NGApp.controller('OrderCtrl', function ($interval, $scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1341,7 +1333,11 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.referral = {
 		invite_url : ReferralService.invite_url,
 		value : ReferralService.value,
-		enabled : ReferralService.enabled
+		limit : ReferralService.limit,
+		invites : ReferralService.invites,
+		enabled : ReferralService.enabled,
+		invite_code: ReferralService.invite_code,
+		sms: ReferralService.sms()
 	}
 
 	$scope.referral.facebook = function(){
@@ -1369,11 +1365,6 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		}
 
 		$scope.$safeApply();
-	}
-
-	// Load the invite_url
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
 	}
 
 	$scope.$on( 'orderSharedFacebook', function(e, data) {
@@ -1411,6 +1402,14 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 			App.busy.unBusy();
 		}, 500 );
 	}
+	
+	var timer = $interval(function() {
+		OrderViewService.load(true);
+	}, 30000);
+	
+	$scope.$on('$destroy', function(event) {
+		$interval.cancel(timer);
+	});
 
 });
 
@@ -1430,8 +1429,6 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 	if( !AccountService.user.invite_code ){
 		ReferralService.getInviteCode();
 	}
-
-	ReferralService.getStatus();
 
 	$scope.account = AccountService;
 
@@ -1465,7 +1462,8 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
 		enabled : ReferralService.enabled,
-		invite_code: ReferralService.invite_code
+		invite_code: ReferralService.invite_code,
+		sms: ReferralService.sms()
 	}
 
 	$scope.referral.cleaned_url = function(){
@@ -1646,14 +1644,14 @@ NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
 			$scope.restaurant = r;
 			$scope.closedMessage = r.closedMessage();
 			$scope.active = ( r.inactive ? false : true );
-			$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
+			$scope.acceptingOrders = r.open_for_business;
 			App.dialog.show('.restaurant-closed-container');
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.restaurant = r;
 				scope.closedMessage = r.closedMessage();
 				$scope.active = ( r.inactive ? false : true );
-				$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
+				$scope.acceptingOrders = r.open_for_business;
 				App.dialog.show('.restaurant-closed-container');
 			});
 		}
@@ -1703,4 +1701,3 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$.cookie( 'referral', $routeParams.id );
 	$location.path( '/' );
 });
-

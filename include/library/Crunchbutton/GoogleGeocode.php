@@ -51,6 +51,7 @@ class Crunchbutton_GoogleGeocode
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         $data = curl_exec($ch);
+
         //getinfo gets the data for the request
         $info = curl_getinfo($ch);
         //output the data to get more information.
@@ -60,4 +61,3 @@ class Crunchbutton_GoogleGeocode
     }
 
 }
-

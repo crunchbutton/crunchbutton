@@ -75,7 +75,7 @@
 				<ul class="nav pull-right">
 					<li class="active"><a href="http://beta.crunchr.co" target="_blank"><i class="icon-home"></i> Beta</a></li>
 					<li class="active"><a href="http://staging.crunchr.co" target="_blank"><i class="icon-home"></i> Staging</a></li>
-					<li class="active"><a href="http://crunchr.co" target="_blank"><i class="icon-home"></i> Live</a></li>
+					<li class="active"><a href="https://crunchbutton.com" target="_blank"><i class="icon-home"></i> Live</a></li>
 					<li class="active">
 						<a href="/support/" title="tickets waiting for an anwser">
 							<i class="icon-comments"></i> Support
@@ -266,41 +266,6 @@
 
 		<? } ?>
 
-		<? if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page', 'logs', 'rules', 'invite-promo', 'permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view', 'settlement'] ) ) { ?>
-
-		<li class="dark-nav">
-			<span class="glow"></span>
-
-			<a class="accordion-toggle collapsed" href="#admin-nav-tools" data-toggle="collapse" >
-				<i class="icon-wrench icon-2x"></i>
-				<span>Tools <i class="icon-caret-down"></i></span>
-			</a>
-			<ul id="admin-nav-tools" class="collapse">
-				<? if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'] ) ) { ?>
-					<li class="">
-						<a href="/restaurants/weight">
-							<i class="icon-female"></i> Weight adjustment
-						</a>
-					</li>
-				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) { ?>
-					<li class="">
-						<a href="/referral">
-							<i class="icon-bullhorn"></i> Invite promo
-						</a>
-					</li>
-				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view'] ) ) { ?>
-					<li class="">
-						<a href="/permissions">
-							<i class="icon-unlock"></i> User / Permissions
-						</a>
-					</li>
-				<? } ?>
-
-			</ul>
-		</li>
-		<?php } ?>
 	</ul>
 
 	<? /*

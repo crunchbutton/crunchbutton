@@ -43,7 +43,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'save':
 				$shifts = $this->request()[ 'shifts' ];
 				foreach ( $shifts as $shift => $ranking ) {
-					$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $shift . '" AND id_admin = "' . $id_admin . '"' );
+					$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ? AND id_admin = ?', [$shift, $id_admin]);
 					if( !$preference->id_community_shift ){
 						$preference = new Crunchbutton_Admin_Shift_Preference;
 						$preference->id_community_shift = $shift;
@@ -81,9 +81,9 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'rankingChange':
 				$id_community_shift = $this->request()[ 'id_community_shift' ];
 				$id_community_shift_change = $this->request()[ 'id_community_shift_change' ];
-				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift . '" AND id_admin = "' . $id_admin . '"' );
+				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ? AND id_admin = ?', [$id_community_shift, $id_admin]);
 				if( $preference->id_community_shift ){
-					$change = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift_change . '" AND id_admin = "' . $id_admin . '"' );
+					$change = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ? AND id_admin = ?', [$id_community_shift_change, $id_admin]);
 					if( $change->id_community_shift ){
 						$change_ranking = $change->ranking;
 						$change->ranking = $preference->ranking;
@@ -101,7 +101,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'wantToWork':
 				$id_community_shift = $this->request()[ 'id_community_shift' ];
 				$ranking = $this->request()[ 'ranking' ];
-				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift . '" AND id_admin = "' . $id_admin . '"' );
+				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ? AND id_admin = ?', [$id_community_shift, $id_admin]);
 				if( !$preference->id_community_shift ){
 					$preference = new Crunchbutton_Admin_Shift_Preference;
 					$preference->id_community_shift = $id_community_shift;
@@ -115,7 +115,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 			case 'dontWantToWork':
 				$id_community_shift = $this->request()[ 'id_community_shift' ];
-				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift . '" AND id_admin = "' . $id_admin . '"' );
+				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ? AND id_admin = ?', [$id_community_shift, $id_admin]);
 				if( !$preference->id_community_shift ){
 					$preference = new Crunchbutton_Admin_Shift_Preference;
 					$preference->id_community_shift = $id_community_shift;

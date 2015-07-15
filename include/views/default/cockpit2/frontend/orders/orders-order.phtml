@@ -155,6 +155,7 @@
 						<td class="fooditem dish-name tb-small tb-v-center" nowrap="nowrap">
 							<span class="tag tag-red no-wrap" ng-if="action.type == 'delivery-text-5min'">Texted 5 min away</span>
 							<span class="tag tag-red no-wrap" ng-if="action.type == 'delivery-rejected'">Rejected</span>
+							<span class="tag tag-black no-wrap" ng-if="action.type == 'delivery-canceled'">Canceled</span>
 							<span class="tag tag-green no-wrap" ng-if="action.type == 'delivery-accepted'">Accepted</span>
 							<span class="tag tag-blue no-wrap" ng-if="action.type == 'delivery-pickedup'">Pickedup</span>
 							<span class="tag tag-purple no-wrap" ng-if="action.type == 'delivery-delivered'">Delivered</span>
@@ -216,7 +217,10 @@
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Service Fee:</td><td nowrap class="dish-price">${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Delivery Fee:</td><td nowrap class="dish-price">${{order.delivery_fee || 0 | number:2}}</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tax:</td><td nowrap class="dish-price">${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order._tip || 0 | number:2}} ({{order._tip/order.price*100}}%)</td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order._tip || 0 | number:2}}
+							<span ng-if="order.tip_type == 'percent'">({{order.tip}}%)</span>
+							<span ng-if="order.tip_type != 'percent'">({{ order._tip/order.price*100  | number:2 }}%)</span>
+						</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Gift Card (Credit):</td><td nowrap class="dish-price">${{order.credit || 0 | number:2}} </td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 				</table>

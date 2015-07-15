@@ -255,7 +255,7 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 			total += delivery;
 			var fee = _fee( total );
 			total += fee;
-			if( parseInt( restaurant.delivery_service ) ==  0 ){
+			if(restaurant.delivery_service){
 				totalWithoutMarkup += delivery;
 			}
 			total += _tax( totalWithoutMarkup );

@@ -317,65 +317,66 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         // Admin_Shift_Assign records need to be deleted because it is set null instead of cascade
         $name = get_called_class();
 
-        $community = Community::q('select * from community where name ="' . $name . ' - ONE"')->get(0);
+        $community = Community::q('select * from community where name =?', [$name . ' - ONE'])->get(0);
         $communityId = $community->id_community;
-        $cs = Crunchbutton_Community_Shift::q('select * from community_shift where id_community=' . $communityId)->get(0);
+        $cs = Crunchbutton_Community_Shift::q('select * from community_shift where id_community=?', [$communityId])->get(0);
         $csId = $cs->id_community_shift;
 
-        $community2 = Community::q('select * from community where name ="' . $name . ' - TWO"')->get(0);
+        $community2 = Community::q('select * from community where name =?', [$name . ' - TWO'])->get(0);
         $communityId2 = $community2->id_community;
 
-        Crunchbutton_Admin_Shift_Assign::q('select * from admin_shift_assign where id_community_shift=' . $csId)->delete();
+        Crunchbutton_Admin_Shift_Assign::q('select * from admin_shift_assign where id_community_shift=?', [$csId])->delete();
         $cs->delete();
         $community->delete();
         $community2->delete();
-
-        Restaurant::q('select * from restaurant where name = "' . $name . ' - ONE"')->delete();
-        Restaurant::q('select * from restaurant where name = "' . $name . ' - TWO"')->delete();
-        Restaurant::q('select * from restaurant where name = "' . $name . ' - THREE"')->delete();
-        Restaurant::q('select * from restaurant where name = "' . $name . ' - FOUR"')->delete();
-        Restaurant::q('select * from restaurant where name = "' . $name . ' - FIVE"')->delete();
-        Admin::q('select * from admin where name="' . $name . ' - ONE"')->delete();
-        Admin::q('select * from admin where name="' . $name . ' - TWO"')->delete();
-        Admin::q('select * from admin where name="' . $name . ' - THREE"')->delete();
-        User::q('select * from user where name="' . $name . ' - ONE"')->delete();
-        User::q('select * from user where name="' . $name . ' - TWO"')->delete();
-        Dish::q('select * from dish where name="' . $name . '"')->delete();
+		
+        Restaurant::q('select * from restaurant where name = ?', [$name . ' - ONE'])->delete();
+        Restaurant::q('select * from restaurant where name = ?', [$name . ' - TWO'])->delete();
+        Restaurant::q('select * from restaurant where name = ?', [$name . ' - THREE'])->delete();
+        Restaurant::q('select * from restaurant where name = ?', [$name . ' - FOUR'])->delete();
+		Restaurant::q('select * from restaurant where name = ?', [$name . ' - FIVE'])->delete();
+        Admin::q('select * from admin where name=?', [$name . ' - ONE'])->delete();
+        Admin::q('select * from admin where name=?', [$name . ' - TWO'])->delete();
+        Admin::q('select * from admin where name=?', [$name . ' - THREE'])->delete();
+        User::q('select * from `user` where name=?', [$name . ' - ONE'])->delete();
+		User::q('select * from `user` where name=?', [$name . ' - TWO'])->delete();
+        Dish::q('select * from dish where name=?', [$name])->delete();
 
     }
-
+	
     public function setUp()
     {
         $name = get_called_class();
-        $this->restaurant1 = Restaurant::q('select * from restaurant where name="' . $name . ' - ONE" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant2 = Restaurant::q('select * from restaurant where name="' . $name . ' - TWO" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant3 = Restaurant::q('select * from restaurant where name="' . $name . ' - THREE" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant4 = Restaurant::q('select * from restaurant where name="' . $name . ' - FOUR" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant5 = Restaurant::q('select * from restaurant where name="' . $name . ' - FIVE" order by id_restaurant desc limit 1')->get(0);
-        $this->driver1 = Admin::q('select * from admin where name="' . $name . ' - ONE" order by id_admin desc limit 1')->get(0);
-        $this->driver2 = Admin::q('select * from admin where name="' . $name . ' - TWO" order by id_admin desc limit 1')->get(0);
-        $this->driver3 = Admin::q('select * from admin where name="' . $name . ' - THREE" order by id_admin desc limit 1')->get(0);
-        $this->user = User::q('select * from user where name="' .  $name . ' - ONE" order by id_user desc limit 1')->get(0);
-        $this->user2 = User::q('select * from user where name="' .  $name . ' - TWO" order by id_user desc limit 1')->get(0);
-        $this->community = Community::q('select * from community where name="' . $name . ' - ONE"  order by id_community desc limit 1')->get(0);
-        $this->community2 = Community::q('select * from community where name="' . $name . ' - TWO" order by id_community desc limit 1')->get(0);
+        $this->restaurant1 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - ONE'])->get(0);
+        $this->restaurant2 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - TWO'])->get(0);
+        $this->restaurant3 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - THREE'])->get(0);
+        $this->restaurant4 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FOUR'])->get(0);
+		$this->restaurant5 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FIVE'])->get(0);
+        $this->driver1 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name . ' - ONE'])->get(0);
+        $this->driver2 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name . ' - TWO'])->get(0);
+        $this->driver3 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name . ' - THREE'])->get(0);
+        $this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - ONE'])->get(0);
+		$this->user2 = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - TWO'])->get(0);
+        $this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - ONE'])->get(0);
+		$this->community2 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
     }
-
-    public function tearDown()
+	
+	public function tearDown()
     {
         $name = get_called_class();
-        $this->restaurant1 = Restaurant::q('select * from restaurant where name="' . $name . ' - ONE" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant2 = Restaurant::q('select * from restaurant where name="' . $name . ' - TWO" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant3 = Restaurant::q('select * from restaurant where name="' . $name . ' - THREE" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant4 = Restaurant::q('select * from restaurant where name="' . $name . ' - FOUR" order by id_restaurant desc limit 1')->get(0);
-        $this->restaurant5 = Restaurant::q('select * from restaurant where name="' . $name . ' - FIVE" order by id_restaurant desc limit 1')->get(0);
+        $this->restaurant1 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - ONE'])->get(0);
+        $this->restaurant2 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - TWO'])->get(0);
+        $this->restaurant3 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - THREE'])->get(0);
+        $this->restaurant4 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FOUR'])->get(0);
+		$this->restaurant5 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FIVE'])->get(0);
 
-        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant1->id_restaurant)->delete();
-        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant2->id_restaurant)->delete();
-        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant3->id_restaurant)->delete();
-        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant4->id_restaurant)->delete();
-        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ' . $this->restaurant5->id_restaurant)->delete();
+        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant1->id_restaurant])->delete();
+        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant2->id_restaurant])->delete();
+        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant3->id_restaurant])->delete();
+        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant4->id_restaurant])->delete();
+		Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant5->id_restaurant])->delete();
     }
+
 
 //    public function testMisc()
 //    {
@@ -718,6 +719,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        $this->assertTrue($geo->lat==$lat2);
 //        $this->assertTrue($geo->lon==$lon2);
 //    }
+
 
 
 //    public function testOrderGoogleGeoAvailable()

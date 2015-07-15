@@ -33,7 +33,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		if ( preg_match('/\s/',$invite_code) ){
 			$this->_error( 'please remove white spaces from invite code' );
 		} else {
-			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = "' . $invite_code . '"' );
+			$admin = Admin::q( 'SELECT * FROM admin WHERE invite_code = ?', [$invite_code]);
 			if( $admin->count() == 0 ){
 				$driver->invite_code = $invite_code;
 			} else {
@@ -64,7 +64,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		// Double check unique login
 		$login = trim( $this->request()[ 'login' ] );
-		$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $login . '"' );
+		$admin = Admin::q( 'SELECT * FROM admin WHERE login = ?', [$login]);
 		if( $admin->count() == 0 && !$driver->id_admin ){
 			$driver->login = $login;
 		}

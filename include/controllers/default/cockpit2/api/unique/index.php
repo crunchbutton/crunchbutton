@@ -19,20 +19,20 @@ class Controller_api_unique extends Crunchbutton_Controller_Rest {
 				} else {
 					switch ( c::getPagePiece( 2 ) ) {
 						case 'email':
-							$admin = Admin::q( 'SELECT * FROM admin WHERE email = "' . $value . '" AND active = true' );
+							$admin = Admin::q( 'SELECT * FROM admin WHERE email = ? AND active = true', [$value]);
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;
 							break;
 
 						case 'phone':
 							$value = preg_replace( '/[^0-9]/i', '', $value );
-							$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $value . '" AND id_admin != "' . $id_admin . '" AND active = true' );
+							$admin = Admin::q( 'SELECT * FROM admin WHERE phone = ? AND id_admin != ? AND active = true', [$value, $id_admin]);
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;
 							break;
 
 						case 'login':
-							$admin = Admin::q( 'SELECT * FROM admin WHERE login = "' . $value . '" AND id_admin != "' . $id_admin . '" AND active = true' );
+							$admin = Admin::q( 'SELECT * FROM admin WHERE login = ? AND id_admin != ? AND active = true', [$value, $id_admin]);
 							echo json_encode( [ 'canIUse' => ( $admin->count() == 0 ) ] );
 							exit;
 							break;

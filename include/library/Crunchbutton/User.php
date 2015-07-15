@@ -49,7 +49,7 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function byPhone($phone, $limit = true) {
 		$phone = Phone::clean( $phone );
-		$user = User::q('select * from user INNER JOIN phone p using(id_phone) WHERE p.phone = ? order by id_user desc'. ($limit ? ' limit 1' : ''), [$phone]);
+		$user = User::q('select * from `user` INNER JOIN phone p using(id_phone) WHERE p.phone = ? order by id_user desc'. ($limit ? ' limit 1' : ''), [$phone]);
 		if( $limit ){
 			$user = $user->get( 0 );
 		}
@@ -107,7 +107,7 @@ class Crunchbutton_User extends Cana_Table {
 			left join user_auth using(id_user)
 			where
 				user_auth.auth=?
-				and user_auth.`type`="facebook"
+				and user_auth.`type`=\'facebook\'
 				and user.active=true
 				and user_auth.active=true
 			',[$id])->get(0);
@@ -348,7 +348,7 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public static function byInviteCode( $code ){
-		return Crunchbutton_User::q( 'SELECT * FROM user WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
+		return Crunchbutton_User::q( 'SELECT * FROM `user` WHERE UPPER( invite_code ) = UPPER(?)', [$code]);
 	}
 
 	public function credits(){
@@ -382,7 +382,7 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public static function uuid($uuid) {
-		return self::q('select * from `user` where uuid="'.$uuid.'"')->get(0);
+		return self::q('select * from `user` where uuid=?', [$uuid])->get(0);
 	}
 
 
