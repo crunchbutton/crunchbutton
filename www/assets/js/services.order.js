@@ -1159,7 +1159,7 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 	service.facebook = FacebookService;
 
 
-	service.load = function(){
+	service.load = function(refresh){
 		var url = App.service + 'order/' + $routeParams.id;
 
 		var error = function(){
@@ -1169,9 +1169,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 		$http( {
 			method: 'GET',
 			url: url,
-			cache: true
+			cache: !refresh
 		}).success( function( data ) {
 			service.order = data;
+
 			if (service.order.uuid) {
 				service.order._final_price = parseFloat(service.order.final_price).toFixed(2);
 
