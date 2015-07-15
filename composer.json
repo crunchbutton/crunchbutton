@@ -1,7 +1,7 @@
 {
 	"require": {
 		"ext-mbstring": "*",
-		"php": "~7.0@beta",
+		"php": "7.0.0beta1",
 		"ext-mcrypt": "*"
 	},
 	"require-dev": {
