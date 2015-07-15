@@ -69,7 +69,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	// check when told to
 	$rootScope.$on('updateHeartbeat', service.check);
 
-	// check every 30 seconds
+	// check every 20 seconds
 	service.repeat = $interval(service.check, service.every);
 
 	return service;

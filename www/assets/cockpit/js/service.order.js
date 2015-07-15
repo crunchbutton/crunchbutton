@@ -239,6 +239,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 	statuses.push( { value: 'pickedup', label: 'Pickedup' } );
 	statuses.push( { value: 'delivered', label: 'Delivered' } );
 	statuses.push( { value: 'rejected', label: 'Rejected' } );
+	statuses.push( { value: 'canceled', label: 'Canceled' } );
 
 	service.statuses = statuses;
 

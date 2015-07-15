@@ -187,11 +187,17 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'status-change':
 
-				$id_admin = $this->request()[ 'id_admin' ];
-				$new_status = $this->request()[ 'status' ];
-				$notify_customer = intval( $this->request()[ 'notify_customer' ] ) == 1 ? true : false ;
 
-				$admin = Admin::o( $id_admin );
+				$new_status = $this->request()[ 'status' ];
+
+				if( $new_status == 'canceled' ){
+					$admin = Admin::o( c::user()->id_admin );
+					$notify_customer = false;
+				} else {
+					$id_admin = $this->request()[ 'id_admin' ];
+					$notify_customer = intval( $this->request()[ 'notify_customer' ] ) == 1 ? true : false;
+					$admin = Admin::o( $id_admin );
+				}
 
 				if( !$admin->id_admin || trim( $new_status ) == '' ){
 					$this->error( 404 );
@@ -232,6 +238,10 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 						case 'rejected':
 							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, $notify_customer, $admin, $note, true );
+							break;
+
+						case 'canceled':
+							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, $notify_customer, $admin, $note, true );
 							break;
 					}
 				}
