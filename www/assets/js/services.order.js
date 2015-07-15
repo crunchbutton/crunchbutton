@@ -78,11 +78,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		service.form.pay_type = (service.account.user && service.account.user.pay_type) ? service.account.user.pay_type : 'card';
 		// If the restaurant does not accept card
-		if( service.restaurant.credit != 1 && service.form.pay_type == 'card' ){
+		if( !service.restaurant.credit && service.form.pay_type == 'card' ){
 			service.form.pay_type = 'cash';
 		}
 		// If the restaurant does not accept cash
-		if( service.restaurant.cash != 1 && service.form.pay_type == 'cash' ){
+		if( !service.restaurant.cash && service.form.pay_type == 'cash' ){
 			service.form.pay_type = 'card';
 		}
 
@@ -90,16 +90,16 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.form.delivery_type = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].delivery_type : 'delivery';
 
 		// If the restaurant does not delivery
-		if( service.restaurant.delivery != 1 ){
+		if( !service.restaurant.delivery ){
 			service.form.delivery_type = 'takeout';
 		}
 		// If the restaurant does not takeout
-		if( parseInt( service.restaurant.takeout ) != 1 && service.form.delivery_type == 'takeout' ){
+		if(!service.restaurant.takeout && service.form.delivery_type == 'takeout' ){
 			service.form.delivery_type = 'delivery';
 		}
 
 		// Force the takeout verification
-		if( parseInt( service.restaurant.takeout ) != 1 ){
+		if(!service.restaurant.takeout){
 			service.form.delivery_type = 'delivery';
 		}
 
@@ -168,16 +168,16 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 
 		// If the restaurant does not delivery
-		if( service.restaurant.delivery != 1 ){
+		if(!service.restaurant.delivery){
 			service.form.delivery_type = 'takeout';
 		}
 		// If the restaurant does not takeout
-		if( parseInt( service.restaurant.takeout ) != 1 && service.form.delivery_type == 'takeout' ){
+		if(!service.restaurant.takeout && service.form.delivery_type == 'takeout' ){
 			service.form.delivery_type = 'delivery';
 		}
 
 		// Force the takeout verification
-		if( parseInt( service.restaurant.takeout ) != 1 ){
+		if(! service.restaurant.takeout){
 			service.form.delivery_type = 'delivery';
 		}
 
@@ -405,7 +405,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				- see #2236 and #2248 */
 
 		// Check if the restaurant uses 3rd party delivery if it not, add the delivery fee
-		if( parseInt( service.restaurant.delivery_service ) ==  0 ){
+		if(service.restaurant.delivery_service){
 			totalWithoutMarkup += elements[ 'delivery' ];
 		}
 		// Caculate the tax using the total without the marked up prices
@@ -1159,7 +1159,7 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 	service.facebook = FacebookService;
 
 
-	service.load = function(){
+	service.load = function(refresh){
 		var url = App.service + 'order/' + $routeParams.id;
 
 		var error = function(){
@@ -1169,9 +1169,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 		$http( {
 			method: 'GET',
 			url: url,
-			cache: true
+			cache: !refresh
 		}).success( function( data ) {
 			service.order = data;
+
 			if (service.order.uuid) {
 				service.order._final_price = parseFloat(service.order.final_price).toFixed(2);
 

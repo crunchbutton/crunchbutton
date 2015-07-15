@@ -197,7 +197,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
 												c.name AS `Group`
 								FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
+								 INNER JOIN `user` u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'

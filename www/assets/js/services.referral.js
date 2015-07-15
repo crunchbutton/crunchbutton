@@ -65,6 +65,7 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 	}
 
 	service.getStatus = function(){
+
 		var url = App.service + 'referral/status';
 		$http( {
 				url: url,

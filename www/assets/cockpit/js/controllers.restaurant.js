@@ -217,6 +217,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		$scope.restaurant.stripeAccount.routing_number = '111000025';
 		$scope.restaurant.stripeAccount.account_number = '000123456789';
 		$scope.restaurant.stripeAccount.account_type = 'individual';
+		$scope.restaurant.payment_type.tax_id = '000000000';
 		$scope.restaurant.payment_type.check_address = '4690 Eldarado Parkway';
 		$scope.restaurant.payment_type.check_address_city = 'McKinney';
 		$scope.restaurant.payment_type.check_address_state = 'TX';
@@ -225,7 +226,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 	}
 
 	$scope.saveStripeAccount = function(){
-//
+
 		if( $scope.formStripeAccount.$invalid ){
 			App.alert( 'Please fill in all required fields' );
 			$scope.stripeAccountSubmitted = true;
@@ -246,7 +247,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 				};
 
 				if (token) {
-					params.token = params;
+					params.token = token;
 				}
 
 				RestaurantService.stripe( params, function( d ){

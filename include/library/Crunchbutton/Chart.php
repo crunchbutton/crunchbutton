@@ -247,7 +247,7 @@ class Crunchbutton_Chart extends Cana_Model {
 								          o.date,
 								          u.id_user
 								   FROM `order` o
-								   INNER JOIN user u ON u.id_user = o.id_user
+								   INNER JOIN `user` u ON u.id_user = o.id_user
 								   WHERE o.date >= NOW() - INTERVAL {$lastDays} DAY
 								    	{$this->queryExcludeUsers}
 								   GROUP BY u.phone) active";

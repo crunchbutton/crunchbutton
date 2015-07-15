@@ -9,7 +9,7 @@ class Controller_Api_Script_DriversPaymentsFix extends Crunchbutton_Controller_R
 		$type = Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT;
 		$type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
 		// AND id_payment_schedule = 2019
-		$schedules = Cockpit_Payment_Schedule::q("SELECT * FROM payment_schedule WHERE amount IS NULL AND pay_type = '" . $type . "' AND id_admin IS NULL AND status = '" . Cockpit_Payment_Schedule::STATUS_DONE . "' ORDER BY id_payment_schedule ASC");
+		$schedules = Cockpit_Payment_Schedule::q('SELECT * FROM payment_schedule WHERE amount IS NULL AND pay_type = ? AND id_admin IS NULL AND status = ? ORDER BY id_payment_schedule ASC', [$type, Cockpit_Payment_Schedule::STATUS_DONE]);
 		// $schedules = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment_schedule IN( 2096 )' );
 		echo 'ID Admin,ID Payment schedule,Name,Payment Date,Period,Orders,Tip,CB Fee,Amount,URL';
 		foreach( $schedules as $schedule ){

@@ -85,11 +85,11 @@ class Crunchbutton_Call extends Cana_Table {
 	public function associateForeignKeys() {
 		if ($this->direction == 'outbound') {
 			$this->id_admin_to = Admin::q('select * from admin where active=true and phone="'.$this->to.'" limit 1')->get(0)->id_admin;
-			$this->id_user_to = Admin::q('select * from user where active=true and phone="'.$this->to.'" order by id_user desc limit 1')->get(0)->id_user;
+			$this->id_user_to = Admin::q('select * from `user` where active=true and phone="'.$this->to.'" order by id_user desc limit 1')->get(0)->id_user;
 
 		} elseif ($this->direction == 'inbound') {
 			$this->id_admin_from = Admin::q('select * from admin where active=true and phone="'.$this->from.'" limit 1')->get(0)->id_admin;
-			$this->id_user_from = Admin::q('select * from user where active=true and phone="'.$this->from.'" order by id_user desc limit 1')->get(0)->id_user;
+			$this->id_user_from = Admin::q('select * from `user` where active=true and phone="'.$this->from.'" order by id_user desc limit 1')->get(0)->id_user;
 
 			$this->id_support = Admin::q('
 				select support.* from support

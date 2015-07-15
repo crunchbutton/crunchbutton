@@ -315,12 +315,15 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 	}
 
 	var processOptions = function(){
-		$scope.notify_customer = ( id_driver != $scope.status.driver.id_admin );
+		$scope.notify_customer = ( $scope.status && $scope.status.driver && id_driver != $scope.status.driver.id_admin );
 		$scope.statuses = [];
 		angular.forEach( OrderService.statuses, function( value, key ) {
 			var add = true;
-			if( ( value.value == 'rejected' && id_driver != $scope.status.driver.id_admin ) ){
+			if( ( value.value == 'rejected' && $scope.status && $scope.status.driver && id_driver != $scope.status.driver.id_admin ) ){
 				add = false;
+			}
+			if( value.value == 'canceled' ){
+				add = true;
 			}
 			if( add ){
 				$scope.statuses.push( value );

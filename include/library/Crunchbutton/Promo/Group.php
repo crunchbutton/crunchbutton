@@ -127,7 +127,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 	}
 
 	public function unique_users(){
-		$query = "SELECT COUNT( DISTINCT( o.phone ) ) AS total FROM promo_group_promo pgp INNER JOIN credit c ON c.id_promo = pgp.id_promo INNER JOIN user u ON u.id_user = c.id_user INNER JOIN `order` o ON o.id_user = u.id_user WHERE pgp.id_promo_group = {$this->id_promo_group}";
+		$query = "SELECT COUNT( DISTINCT( o.phone ) ) AS total FROM promo_group_promo pgp INNER JOIN credit c ON c.id_promo = pgp.id_promo INNER JOIN `user` u ON u.id_user = c.id_user INNER JOIN `order` o ON o.id_user = u.id_user WHERE pgp.id_promo_group = {$this->id_promo_group}";
 		$total = c::db()->get( $query );
 		return $total->_items[0]->total;
 	}
@@ -157,7 +157,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 								(SELECT o.phone, MAX(o.date) as last
 								 FROM promo_group_promo pgp
 								 INNER JOIN credit c ON c.id_promo = pgp.id_promo
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 INNER JOIN `order` o ON o.id_user = u.id_user
 								 WHERE pgp.id_promo_group = {$this->id_promo_group}
 								 GROUP BY o.phone) orders
@@ -173,7 +173,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 												MIN(o.date) as first
 								 FROM promo_group_promo pgp
 								 INNER JOIN credit c ON c.id_promo = pgp.id_promo
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 INNER JOIN `order` o ON o.id_user = u.id_user
 								 WHERE pgp.id_promo_group = {$this->id_promo_group}
 								 GROUP BY o.phone) orders
@@ -194,7 +194,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 												COUNT(*) total
 								 FROM promo_group_promo pgp
 								 INNER JOIN credit c ON c.id_promo = pgp.id_promo
-								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `user` u ON u.id_user = c.id_user
 								 INNER JOIN `order` o ON o.id_user = u.id_user
 								 WHERE pgp.id_promo_group = {$this->id_promo_group}
 								 GROUP BY o.phone HAVING total > 1) orders

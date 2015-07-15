@@ -22,7 +22,13 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		$tickets = null;
 
 		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
-			$q = "SELECT COUNT( DISTINCT( s.id_support ) ) AS c FROM support s INNER JOIN support_message sm ON s.id_support = sm.id_support WHERE s.status = 'open' ";
+			// Only tickets that haven't been responded to should cause an increase in the number over the chat bubble - #5929
+			$q = "SELECT COUNT( DISTINCT( sm.id_support ) ) AS c FROM support_message sm
+					INNER JOIN (
+							SELECT MAX( sm.id_support_message ) AS id_support_message FROM support s
+								INNER JOIN support_message sm ON sm.id_support = s.id_support
+								WHERE s.status = 'open' GROUP BY sm.id_support ) last_message_from_opened_tickets ON last_message_from_opened_tickets.id_support_message = sm.id_support_message AND sm.from = 'client'";
+
 			$q = c::db()->get($q);
 			$tickets = $q->get(0)->c;
 

@@ -179,8 +179,8 @@ class Crunchbutton_Reward_Retroactively extends Cana_Table{
 		$totalPointsRecalculated = 0;
 
 		// select all the users
-		// $users = Crunchbutton_User::q( 'SELECT DISTINCT( u.id_user ), u.* FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user ORDER BY id_user DESC LIMIT ' . $startingAt . ',' . $limit );
-		$users = Crunchbutton_User::q( 'SELECT DISTINCT( u.id_user ), u.* FROM user u
+		// $users = Crunchbutton_User::q( 'SELECT DISTINCT( u.id_user ), u.* FROM `user` u INNER JOIN user_auth ua ON ua.id_user = u.id_user ORDER BY id_user DESC LIMIT ' . $startingAt . ',' . $limit );
+		$users = Crunchbutton_User::q( 'SELECT DISTINCT( u.id_user ), u.* FROM `user` u
   INNER JOIN user_auth ua ON ua.id_user = u.id_user
   INNER JOIN `order` o ON o.id_user = u.id_user AND date > DATE_SUB(NOW(), INTERVAL 1 WEEK )
   ORDER BY id_user ' );

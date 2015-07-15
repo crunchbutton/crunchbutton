@@ -9,7 +9,10 @@ class Crunchbutton_Dish extends Cana_Table_Trackchange {
 			if( floatval( $option->price ) > 0 ){
 				$out['changeable_price'] = true;
 			}
-			$out['_options'][] = $option->exports();
+			
+			$opts = $option->exports();
+			$opts['default'] = $opts['default'] ? true : false;
+			$out['_options'][] = $opts;
 		}
 		return $out;
 	}

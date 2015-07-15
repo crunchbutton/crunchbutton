@@ -31,22 +31,27 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 	// get number of orders of a given status for last 7 days
 	public function numberOfOrdersByStatus( $status ){
+		$keys = [];
 		$interval = 'AND o.date BETWEEN NOW() - INTERVAL 7 DAY AND NOW()';
 		// orders with no status
 		if( !$status ){
-			$query = 'SELECT COUNT(*) AS total
-									FROM `order` o
-									WHERE o.id_restaurant = "' . $this->id_restaurant . '"
-										' . $interval . '
-										AND o.id_order NOT IN(	SELECT DISTINCT(o.id_order) id
-																							FROM `order` o
-																							INNER JOIN order_action oa ON oa.id_order = o.id_order
-																							WHERE o.id_restaurant = "' . $this->id_restaurant . '" ' . $interval . ' )';
+			$query = '
+				SELECT COUNT(*) AS total
+				FROM `order` o
+				WHERE o.id_restaurant = ?
+					' . $interval . '
+					AND o.id_order NOT IN(	SELECT DISTINCT(o.id_order) id
+						FROM `order` o
+						INNER JOIN order_action oa ON oa.id_order = o.id_order
+						WHERE o.id_restaurant = ? ' . $interval . ' )';
+			$keys[] = $this->id_restaurant;
+			$keys[] = $this->id_restaurant;
+		
 		} else {
 			$query = 'SELECT COUNT(*) AS total
 								FROM `order` o
 								INNER JOIN order_action oa ON oa.id_order = o.id_order
-								AND oa.type = "' . $status . '"
+								AND oa.type = ?
 								INNER JOIN
 								  (SELECT MAX(oa.id_order_action) AS id_order_action,
 								          type,
@@ -55,9 +60,12 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 								   GROUP BY oa.id_order
 								   ORDER BY oa.id_order_action) actions ON actions.id_order = o.id_order
 								AND actions.id_order_action = oa.id_order_action
-								WHERE o.id_restaurant = "' . $this->id_restaurant . '" ' . $interval;
+								WHERE o.id_restaurant = ? ' . $interval;
+			
+			$keys[] = $status;
+			$keys[] = $this->id_restaurant;
 		}
-		$data = c::db()->get( $query )->get( 0 );
+		$data = c::db()->get( $query, $keys)->get( 0 );
 		return $data->total;
 	}
 
@@ -69,7 +77,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 							WHERE id_restaurant=?
 								AND date >= ?
 								AND date <= ?
-								AND NAME NOT LIKE "%test%"
+								AND NAME NOT LIKE \'%test%\'
 							ORDER BY `pay_type` ASC, `date` ASC ';
 			$start = (new DateTime($filters['start']))->format('Y-m-d') . ' 00:00:00' ;
 			$end = (new DateTime($filters['end']))->format('Y-m-d') . ' 23:59:59' ;
