@@ -32,11 +32,12 @@
 
 				<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.status.status">
 					<div ng-class="{'notMyOrder': order.status.driver.id_admin !== account.user.id_admin, 'myOrder': order.status.driver.id_admin == account.user.id_admin}">
-						<h6 class="row-status" ng-if="order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new'">
+						<h6 class="row-status" ng-if="order.status.status == 'canceled' || ( order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new' )">
 							<span ng-switch="order.status.status">
 								<span ng-switch-when="delivered">Delivered</span>
 								<span ng-switch-when="pickedup">Picked up</span>
 								<span ng-switch-when="accepted">Accepted</span>
+								<span ng-switch-when="canceled">Canceled</span>
 								<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.date_timestamp | tsToHour}}</span>
 							</span>
 						</h6>
@@ -113,4 +114,3 @@
 	</div>
 
 </div>
-

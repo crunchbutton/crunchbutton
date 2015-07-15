@@ -10,7 +10,7 @@
 
 			<ul ng-class="{'submitted':formDeliveryStatusSubmitted}" class="ul-inputs">
 
-				<li class="li-input">
+				<li class="li-input" ng-if="status.status != 'canceled'">
 					<div class="label">Driver</div>
 					<div class="input">
 						<select ng-model="status.driver.id_admin" ng-change="driverChanged()" name="driver" ng-options="driver.id_admin as driver.name for driver in drivers"></select>
@@ -30,15 +30,15 @@
 					</div>
 				</li>
 
-				<li class="li-input divider-line">
+				<li class="li-input divider-line" ng-if="status.status != 'canceled'">
 					<label class="switch-wrap">
 						<input type="checkbox" class="switch" ng-model="notify_customer"/><div></div>
 					</label>
 					<div class="label">Notify customer about new driver</div>
 				</li>
-				
+
 				<div ng-class="{'double-cols': showText5MinAwayButton}">
-					<button class="button button-empty button-border button-orange button-full" ng-click="text5MinAway();">
+					<button class="button button-empty button-border button-orange button-full" ng-click="text5MinAway();" ng-if="status.status != 'canceled'">
 						<span ng-show="text5MinAwaySending"><i class="fa fa-spinner fa-spin"></i>&nbsp;&nbsp;Sending</span>
 						<span ng-show="!text5MinAwaySending"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;5 Min Away</span>
 					</button>

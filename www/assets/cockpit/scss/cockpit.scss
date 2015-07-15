@@ -1886,6 +1886,14 @@ h4.title{
 	border-style: none;
 }
 
+.drivers-order-list .canceled{
+	background-color: #CCC;
+	color: #999;
+	border-style: none;
+}
+	.drivers-order-list .canceled .vert-divider{
+		background-color: #999;
+	}
 .drivers-order-list .pickedup{
 	background-color: #444c57;
 	color: #fff;
@@ -4040,6 +4048,9 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 }
 .tag.tag-purple {
 	background: #c855b6;
+}
+.tag.tag-black {
+	background: #000;
 }
 
 
