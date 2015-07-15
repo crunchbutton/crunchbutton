@@ -1642,11 +1642,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE community = ? '.$where.' ORDER BY name ASC', [$community]);
 	}
 
-	public static function getRestaurantsWithGeoByCommunity( $community, $inactive = false ){
-		if( !$inactive ){
-			$where = 'AND active = true';
+	public static function getDeliveryRestaurantsWithGeoByIdCommunity( $id_community, $inactive = false ){
+		if($inactive){
+			return Crunchbutton_Restaurant::q('select a.* from restaurant as a inner join restaurant_community as b using (id_restaurant) inner join community as c using (id_community) where id_community = ?  and a.delivery_service=1', [$id_community]);
 		}
-		return Crunchbutton_Restaurant::q('SELECT * FROM restaurant WHERE loc_lat IS NOT NULL AND loc_long IS NOT NULL AND community = ? '.$where.' ORDER BY name ASC', [$community]);
+		else{
+			return Crunchbutton_Restaurant::q('select a.* from restaurant as a inner join restaurant_community as b using (id_restaurant) inner join community as c using (id_community) where id_community = ?  and a.delivery_service=1 and a.active = true;', [$id_community]);
+		}
 	}
 
 	public function restaurantsUserHasPermission(){
@@ -2242,9 +2244,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
                 'day_of_week' => $dow
             ]);
             $olc->save();
-            return $olc->id_restaurant_cluster;
+            return $olc;
         } else{
-            return $olc->get(0)->id_restaurant_cluster;
+            return $olc->get(0);
         }
     }
 
