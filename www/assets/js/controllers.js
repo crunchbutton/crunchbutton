@@ -260,7 +260,6 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		$scope.referral.sms = ReferralService.sms();
 	});
 
-
 	$scope.isMobile = App.isMobile();
 
 	$scope.referral.facebook = function(){
@@ -1334,7 +1333,11 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.referral = {
 		invite_url : ReferralService.invite_url,
 		value : ReferralService.value,
-		enabled : ReferralService.enabled
+		limit : ReferralService.limit,
+		invites : ReferralService.invites,
+		enabled : ReferralService.enabled,
+		invite_code: ReferralService.invite_code,
+		sms: ReferralService.sms()
 	}
 
 	$scope.referral.facebook = function(){
@@ -1451,7 +1454,8 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
 		enabled : ReferralService.enabled,
-		invite_code: ReferralService.invite_code
+		invite_code: ReferralService.invite_code,
+		sms: ReferralService.sms()
 	}
 
 	$scope.referral.cleaned_url = function(){
