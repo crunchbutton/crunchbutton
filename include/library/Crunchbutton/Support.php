@@ -817,6 +817,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		if( $admin->id_admin && !$out[ 'user' ] ){
 			$out[ 'staff' ] = $admin->exports();
+			$out[ 'staff' ][ 'is_driver' ] = $admin->isDriver();
+			$out[ 'staff' ][ 'is_marketing_rep' ] = $admin->isMarketingRep();
+			$out[ 'staff' ][ 'is_campus_manager' ] = $admin->isCampusManager();
+			$out[ 'staff' ][ 'is_support' ] = $admin->isSupport();
+			$out[ 'staff' ][ 'is_working' ] = $admin->isWorking();
 		}
 
 		$load_messages = true;
