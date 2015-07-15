@@ -201,10 +201,11 @@
 							<span class="tag tag-green">Yes</span>
 						</div>
 					</div>
-					<div class="field-row" ng-if="ticket.staff.is_working">
+					<div class="field-row">
 						<div class="field-key">Is Working</div>
 						<div class="field-value">
-							<span class="tag tag-green">Yes</span>
+							<span ng-if="ticket.staff.is_working" class="tag tag-green">Yes</span>
+							<span ng-if="!ticket.staff.is_working" class="tag tag-red">No</span>
 						</div>
 					</div>
 				</div>
