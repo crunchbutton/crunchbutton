@@ -412,10 +412,6 @@ class Crunchbutton_App extends Cana_App {
 		return $this;
 	}
 
-	public function revision() {
-		return isset($this->_revision) ? $this->_revision : Crunchbutton_Util::revision();
-	}
-
 	public function appDb() {
 		return $this->_appDb;
 	}
