@@ -1,7 +1,8 @@
 {
 	"require": {
 		"ext-mbstring": "*",
-		"php": "~7.0@beta"
+		"php": "~7.0@beta",
+		"ext-mcrypt": "*"
 	},
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master"
