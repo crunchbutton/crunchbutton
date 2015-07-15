@@ -95,7 +95,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function getByTransactionId( $transactionId ){
-		return Crunchbutton_Pexcard_Transaction::q( 'SELECT * FROM pexcard_transaction WHERE transactionId = "' . $transactionId . '"' )->get( 0 );
+		return Crunchbutton_Pexcard_Transaction::q( 'SELECT * FROM pexcard_transaction WHERE transactionId = ?', [$transactionId])->get( 0 );
 	}
 
 	public function loadTransactions(){
@@ -174,11 +174,11 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$query = 'SELECT *
 								FROM pexcard_transaction
 									WHERE
-										transactionTime_pst BETWEEN "' . $start . '" AND "' . $end . '"
+										transactionTime_pst BETWEEN ? AND ?
 										AND transactionType != "Transfer"
-										AND acctId = "' . $acctId . '"
+										AND acctId = ?
 								ORDER BY transactionTime ASC, isPending DESC';
-		$expenses = c::db()->get( $query );
+		$expenses = c::db()->get( $query, [$start, $end, $acctId]);
 		return $expenses;
 	}
 
@@ -195,15 +195,14 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 											INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = false
 											WHERE
 												apt.using_pex = true
-											AND o.refunded = 0
+												AND o.refunded = false
 											AND
-												oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
-											' . $where . '
+												oa.type = ?
 											AND
-											o.date BETWEEN "' . $start . '" AND "' . $end . '"
-											AND a.id_admin = "' . $id_admin . '"
+											o.date BETWEEN ? AND ?
+											AND a.id_admin = ?
 											ORDER BY o.pay_type DESC, o.date ASC';
-		return Crunchbutton_Order::q( $query );
+		return Crunchbutton_Order::q( $query, [Crunchbutton_Order_Action::DELIVERY_ACCEPTED, $start, $end, $id_admin]);
 	}
 
 	public function processExpenses( $start, $end ){

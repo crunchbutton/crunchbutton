@@ -237,7 +237,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function getByPexcard( $id_pexcard ){
-		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_pexcard = "' . $id_pexcard . '" LIMIT 1' );
+		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_pexcard = ? LIMIT 1', [$id_pexcard]);
 		if( $admin_pexcard->id_admin_pexcard ){
 			return $admin_pexcard;
 		} else {
@@ -258,7 +258,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function getByCardSerial( $card_serial ){
-		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE card_serial = "' . $card_serial . '" LIMIT 1' );
+		$admin_pexcard = Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE card_serial = ? LIMIT 1', [$card_serial]);
 		if( $admin_pexcard->id_admin_pexcard ){
 			return $admin_pexcard;
 		}
@@ -267,7 +267,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function businessCardList(){
 		$cards = [];
-		$configs = Crunchbutton_Config::q( "SELECT * FROM config c INNER JOIN admin_pexcard ap ON c.value = ap.card_serial WHERE c.`key` = '" . Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD . "'" );
+		$configs = Crunchbutton_Config::q( "SELECT * FROM config c INNER JOIN admin_pexcard ap ON c.value = ap.card_serial WHERE c.`key` = ?", [Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD]);
 		foreach ( $configs as $config ) {
 			$cards[] = intval( $config->value );
 		}
@@ -276,7 +276,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function testCardList(){
 		$cards = [];
-		$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '" . Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD . "'" );
+		$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = ?" ,[Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD]);
 		foreach ( $configs as $config ) {
 			$cards[] = intval( $config->value );
 		}

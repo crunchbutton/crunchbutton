@@ -65,13 +65,13 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 
 		// See: #3392
 		if ( strpos( strtolower( $name ), '[test]' ) === false ) {
-			$admin = Admin::q( 'SELECT * FROM admin WHERE phone = "' . $phone . '"' );
+			$admin = Admin::q( 'SELECT * FROM admin WHERE phone = ?', [$phone]);
 			if( $admin->count() != 0 ){
 				$this->_error( 'This phone is already registred!' );
 			}
 
 			if( trim( $email ) ){
-				$admin = Admin::q( 'SELECT * FROM admin WHERE email = "' . $email . '"' );
+				$admin = Admin::q( 'SELECT * FROM admin WHERE email = ?', [$email]);
 				if( $admin->count() != 0 ){
 					$this->_error( 'This email is already registred!' );
 				}

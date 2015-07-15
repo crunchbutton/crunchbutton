@@ -1,35 +1,43 @@
 <?php
 
 class StripeTest extends PHPUnit_Framework_TestCase {
+	protected static $restaurant;
+	protected static $order;
+	protected static $user;
+
 	public static function setUpBeforeClass() {
 
 		$name = get_called_class();
 
-		(new Restaurant([
+		self::$restaurant = new Restaurant([
 			'name' => $name,
 			'active' => 1
-		]))->save();
+		]);
+		self::$restaurant->save();
 	
-		(new User([
+		self::$user = new User([
 			'name' => $name,
 			'active' => 1
-		]))->save();
+		]);
+		self::$user->save();
 	}
 	
 	public static function tearDownAfterClass() {
-		$name = get_called_class();
-		Restaurant::q('select * from restaurant where name=?', [$name])->delete();
-		User::q('select * from `user` where name=?',[$name])->delete();
-	}
-	
-	public function setUp() {
-		$name = get_called_class();
-		$this->restaurant = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name])->get(0);
-		$this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name])->get(0);
+		if (self::$restaurant)
+			self::$restaurant->delete();
+		if (self::$user)
+			self::$user->delete();
+		if (self::$order)
+			self::$order->delete();
 	}
 
 	public function testChargeNewCard() {
 		$name = get_called_class();
+		
+		if (!self::$restaurant) {
+			$this->markTestSkipped('Restaurant was not created.');
+			return;
+		}
 
 		$customer = \Stripe\Customer::create([
 			'description' => $name,
@@ -42,6 +50,9 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 			]
 		]);
 		
+		self::$user->stripe_id = $customer->id;
+		self::$user->save();
+		
 		$cards = $customer->sources->all(['object' => 'card'])->data;
 		foreach ($cards as $card) {
 			break;
@@ -49,18 +60,17 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 
 		$charge = new Charge_Stripe(['customer_id' => $customer->id, 'card_id' => $card->id]);
 
-
 		$r = $charge->charge([
 			'amount' => '1.25',
-			'name' => $this->user->name,
+			'name' => self::$user->name,
 			'address' => '123 UNIT TEST',
 			'phone' => '234-567-8901',
-			'restaurant' => $this->restaurant
+			'restaurant' => self::$restaurant
 		]);
 
 		if ($r['status']) {
 			(new User_Payment_Type([
-				'id_user' => $this->user->id_user,
+				'id_user' => self::$user->id_user,
 				'stripe_id' => $card['id'],
 				'card' => '************1111',
 				'card_type' => $card['card_type'],
@@ -70,39 +80,54 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 				'active' => 1
 			]))->save();
 			
-			(new Order([
-				'name' => $this->user->name,
+			self::$order = new Order([
+				'name' => self::$user->name,
 				'address' => '123 UNIT TEST',
 				'phone' => '234-567-8901',
 				'txn' => $r['txn'],
-				'id_user' => $this->user->id_user,
-				'restaurant' => $this->restaurant->id_restaurant
-			]))->save();
+				'id_user' => self::$user->id_user,
+				'restaurant' => self::$restaurant->id_restaurant
+			]);
+			self::$order->save();
 		}
 		
 		$this->assertTrue($r['status'] ? true : $r['errors'][0]);
 	}
-/*
+
 	public function testChargeStoredCard() {
-		$this->paymentType = $this->user->payment_type();
-		
-		if (!$this->paymentType) {
-			$this->assertTrue('testChargeNewCard is required and has failed.');
+		if (! self::$user) {
+			$this->markTestSkipped('User was not created.');
 			return;
 		}
-
-		$charge = new Charge_Balanced([
-			'customer_id' => $this->user->balanced_id,
-			'card_id' => $this->paymentType->balanced_id
-		]);
 		
+		$paymentType = self::$user->payment_type();
+		
+		if (!self::$restaurant) {
+			$this->markTestSkipped('Restaurant was not created.');
+			return;
+		}
+		
+		if (!$paymentType) {
+			$this->markTestSkipped('User payment type required to refund.');
+			return;
+		}
+		
+		if (!$paymentType->stripe_id) {
+			$this->assertTrue('Missing stripe id');
+			return;
+		}
+		
+		$charge = new Charge_Stripe([
+			'card_id' => $paymentType->stripe_id,
+			'customer_id' => self::$user->stripe_id
+		]);
+
 		$r = $charge->charge([
-			'amount' => '1.25',
-			'name' => $this->user->name,
+			'amount' => '1.26',
+			'name' => self::$user->name,
 			'address' => '123 UNIT TEST',
 			'phone' => '234-567-8901',
-			'user' => $this->user,
-			'restaurant' => $this->restaurant
+			'restaurant' => self::$restaurant
 		]);
 
 		$this->assertTrue($r['status'] ? true : $r['errors'][0]);
@@ -110,18 +135,17 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	public function testRefund() {
-		$order = Order::q('select * from `order` where id_user="'.$this->user->id_user.'" order by date desc limit 1')->get(0);
-
-		if (!$order->id_order) {
-			$this->assertTrue('testChargeNewCard is required and has failed most likly.');
+		if (!self::$order) {
+			$this->markTestSkipped('No order to refund.');
 			return;
 		}
-		
-		$res = $order->refund();
-		$this->assertTrue($res->status);
+
+		$status = self::$order->refund();
+
+		$this->assertTrue($status->status);
 	}
 	
-	
+	/*
 	public function testCreateMerchant() {
 		$merchant = c::balanced()->createMerchant(
 			'restaurant-'.$this->id_restaurant.'@_DOMAIN_',

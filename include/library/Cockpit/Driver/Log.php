@@ -48,7 +48,7 @@ class Cockpit_Driver_Log extends Cana_Table {
 	public function AllByDriver( $id_admin ){
 		$logs = [];
 		if( $id_admin ){
-			$_logs = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log dl WHERE dl.id_admin = "' . $id_admin . '" ORDER BY dl.id_driver_log ASC' );
+			$_logs = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log dl WHERE dl.id_admin = ? ORDER BY dl.id_driver_log ASC', [$id_admin]);
 			foreach( $_logs as $log ){
 				$logs[] = $log->exports();
 			}
@@ -60,8 +60,8 @@ class Cockpit_Driver_Log extends Cana_Table {
 		$logs = [];
 		if( $id_admin ){
 			$_logs = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log dl
-																						INNER JOIN ( SELECT MAX(id_driver_log) AS id_driver_log FROM driver_log WHERE id_admin = "' . $id_admin . '" GROUP BY action ) filter ON filter.id_driver_log = dl.id_driver_log
-																						ORDER BY dl.id_driver_log DESC' );
+																						INNER JOIN ( SELECT MAX(id_driver_log) AS id_driver_log FROM driver_log WHERE id_admin = ? GROUP BY action ) filter ON filter.id_driver_log = dl.id_driver_log
+																						ORDER BY dl.id_driver_log DESC', [$id_admin]);
 			foreach( $_logs as $log ){
 				$logs[] = $log->exports();
 			}

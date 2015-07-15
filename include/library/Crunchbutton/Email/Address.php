@@ -22,7 +22,7 @@ class Crunchbutton_Email_Address extends Cana_Table{
 		if ( !$email ) {
 			return null;
 		}
-		$_email = Crunchbutton_Email_Address::q( 'SELECT * FROM email_address WHERE email = "' . $email . '" ' );
+		$_email = Crunchbutton_Email_Address::q( 'SELECT * FROM email_address WHERE email = ? ', [$email]);
 		if ( !$_email->id_email_address ) {
 			$_email = new Crunchbutton_Email_Address();
 			$_email->email = $email;
