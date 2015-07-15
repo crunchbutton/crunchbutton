@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Order_Logistics_FakeOrder{
+class Crunchbutton_Order_Logistics_FakeOrder {
 
     // Lazy fake order creator
     private $fakeRestaurants;
@@ -17,7 +17,7 @@ class Crunchbutton_Order_Logistics_FakeOrder{
     public function __construct($dummyStart, $community, $orderTime, $earlyWindow, $midWindow, $lateWindow, $restaurantParkingTime) {
         $this->fakeRestaurants = null;
         $this->fakeCustomers = null;
-        $this->fakeOrdersPairs = null;
+        $this->fakeOrderPairs = null;
         $this->_dummyClusterCounter = $dummyStart;
         $this->community = $community;
         $this->orderTime = $orderTime;
@@ -36,11 +36,11 @@ class Crunchbutton_Order_Logistics_FakeOrder{
         // Only handle one fake restaurant for now
         if (is_null($this->fakeRestaurants) || count($this->fakeRestaurants)==0) {
             // Randomly choose a restaurant from the community list
-            $rs = Restaurant::getRestaurantsWithGeoByCommunity($this->community);
+            $rs = Restaurant::getDeliveryRestaurantsWithGeoByIdCommunity($this->community->id_community);
             $rcount = $rs->count();
             if ($rcount > 0) {
-                $select = rand($rcount - 1);
-                $this->fakeRestaurants[] = $rs[$select];
+                $select = rand(0, $rcount - 1);
+                $this->fakeRestaurants[] = $rs->get($select);
             }
             else{
                 return null;
@@ -55,7 +55,7 @@ class Crunchbutton_Order_Logistics_FakeOrder{
             // Randomly choose a fake customer from the community list
             $fcs = $this->community->fakecustomers();
             if (!is_null($fcs) && $fcs->count() > 0) {
-                $select = rand($fcs->count() - 1);
+                $select = rand(0, $fcs->count() - 1);
                 $this->fakeCustomers[] = $fcs->get($select);
             }
             else{
@@ -106,7 +106,7 @@ class Crunchbutton_Order_Logistics_FakeOrder{
 
                 $fop["restaurant"] = $restaurantDestination;
                 $fop["customer"] = $customerDestination;
-                $this->fakeOrdersPairs = $fop;
+                $this->fakeOrderPairs = [$fop];
             }
 
         }

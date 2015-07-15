@@ -1,6 +1,7 @@
 <?php
 
-class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
+class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
+{
 
     public $distanceType;
     public $driverMph;
@@ -43,7 +44,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
     private $oldClusters;
     private $newClusters;
 
-    public function __construct($distanceType) {
+    public function __construct($distanceType)
+    {
         $this->id_old_counter = -1;
         $this->id_new_counter = -1;
         $this->old_parking_clusters = [];
@@ -55,18 +57,19 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
     }
 
     // This is the driver location and needs to be first
-    public function addDriverDestination($destination){
+    public function addDriverDestination($destination)
+    {
         $this->id_old_counter = 0;
         $this->id_new_counter = 0;
         $this->newDestinations = [$destination];
 
         // Two versions because we run the optimizations twice, once without and once with the new order
 
-        $this->oldFirstCoords = [$destination->geo->lat];
-        $this->newFirstCoords = [$destination->geo->lat];
+        $this->oldFirstCoords = [floatval($destination->geo->lat)];
+        $this->newFirstCoords = [floatval($destination->geo->lat)];
 
-        $this->oldSecondCoords = [$destination->geo->lon];
-        $this->newSecondCoords = [$destination->geo->lon];
+        $this->oldSecondCoords = [floatval($destination->geo->lon)];
+        $this->newSecondCoords = [floatval($destination->geo->lon)];
 
         $this->oldNodeTypes = [Crunchbutton_Optimizer_Input::TYPE_DRIVER];
         $this->newNodeTypes = [Crunchbutton_Optimizer_Input::TYPE_DRIVER];
@@ -94,14 +97,15 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
 
     }
 
-    private function addRestaurantDestinationInfo($destination, $isNewOrder, $matchingOldCustomerId, $matchingNewCustomerId){
+    private function addRestaurantDestinationInfo($destination, $isNewOrder, $matchingOldCustomerId, $matchingNewCustomerId)
+    {
         // Warning: Don't access id_old_counter or id_new_counter here
 
 
         // Two versions because we run the optimizations twice, once without and once with the new order
         if (!$isNewOrder) {
-            $this->oldFirstCoords[] = $destination->geo->lat;
-            $this->oldSecondCoords[] = $destination->geo->lon;
+            $this->oldFirstCoords[] = floatval($destination->geo->lat);
+            $this->oldSecondCoords[] = floatval($destination->geo->lon);
             $this->oldNodeTypes[] = Crunchbutton_Optimizer_Input::TYPE_RESTAURANT;
             $this->oldOrderTimes[] = $destination->orderTime;
             $this->oldEarlyWindows[] = $destination->earlyWindow;
@@ -111,8 +115,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
             $this->oldDeliveryIdxs[] = $matchingOldCustomerId;
             $this->oldRestaurantParkingTimes[] = $destination->restaurantParkingTime;
         }
-        $this->newFirstCoords[] = $destination->geo->lat;
-        $this->newSecondCoords[] = $destination->geo->lon;
+        $this->newFirstCoords[] = floatval($destination->geo->lat);
+        $this->newSecondCoords[] = floatval($destination->geo->lon);
         $this->newNodeTypes[] = Crunchbutton_Optimizer_Input::TYPE_RESTAURANT;
         $this->newOrderTimes[] = $destination->orderTime;
         $this->newEarlyWindows[] = $destination->earlyWindow;
@@ -124,13 +128,14 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
 
     }
 
-    private function addCustomerDestinationInfo($destination, $isNewOrder, $matchingOldRestaurantId, $matchingNewRestaurantId){
+    private function addCustomerDestinationInfo($destination, $isNewOrder, $matchingOldRestaurantId, $matchingNewRestaurantId)
+    {
         // Warning: Don't access id_old_counter or id_new_counter here
 
         // Two versions because we run the optimizations twice, once without and once with the new order
         if (!$isNewOrder) {
-            $this->oldFirstCoords[] = $destination->geo->lat;
-            $this->oldSecondCoords[] = $destination->geo->lon;
+            $this->oldFirstCoords[] = floatval($destination->geo->lat);
+            $this->oldSecondCoords[] = floatval($destination->geo->lon);
             $this->oldNodeTypes[] = Crunchbutton_Optimizer_Input::TYPE_CUSTOMER;
             $this->oldOrderTimes[] = $destination->orderTime;
             $this->oldEarlyWindows[] = $destination->earlyWindow;
@@ -140,8 +145,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
             $this->oldDeliveryIdxs[] = 0;
             $this->oldRestaurantParkingTimes[] = 0;
         }
-        $this->newFirstCoords[] = $destination->geo->lat;
-        $this->newSecondCoords[] = $destination->geo->lon;
+        $this->newFirstCoords[] = floatval($destination->geo->lat);
+        $this->newSecondCoords[] = floatval($destination->geo->lon);
         $this->newNodeTypes[] = Crunchbutton_Optimizer_Input::TYPE_CUSTOMER;
         $this->newOrderTimes[] = $destination->orderTime;
         $this->newEarlyWindows[] = $destination->earlyWindow;
@@ -155,13 +160,16 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
 
 
     // Non-driver destination
-	public function addDestinationPair($restaurantDestination, $customerDestination, $isNewOrder) {
+    public function addDestinationPair($restaurantDestination, $customerDestination, $isNewOrder)
+    {
+//        print "Adding destination pair\n";
 
-		if (!is_null($restaurantDestination)  || !is_null($customerDestination) ||
-             $restaurantDestination->type != Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT ||
-             $customerDestination->type != Crunchbutton_Order_Logistics_Destination::TYPE_CUSTOMER) {
-			return false;
-		}
+        if (is_null($restaurantDestination) || is_null($customerDestination) ||
+            $restaurantDestination->type != Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT ||
+            $customerDestination->type != Crunchbutton_Order_Logistics_Destination::TYPE_CUSTOMER
+        ) {
+            return false;
+        }
 
         // All orders are added to the "new" optimization list
         $newRestaurantId = $this->id_new_counter + 1;
@@ -184,31 +192,35 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
         $this->addRestaurantDestinationInfo($restaurantDestination, $isNewOrder, $oldCustomerId, $newCustomerId);
         $this->addCustomerDestinationInfo($customerDestination, $isNewOrder, $oldRestaurantId, $newRestaurantId);
         $this->new_parking_clusters[$restaurantDestination->cluster][] = $newRestaurantId;
-		return true;
-	}
+        return true;
+    }
 
-	
-	public function destinations() {
-		return $this->newDestinations;
-	}
 
-    public function fakeOrderIds() {
+    public function destinations()
+    {
+        return $this->newDestinations;
+    }
+
+    public function fakeOrderIds()
+    {
         return $this->newFakeOrderIds;
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->newDestinations);
     }
 
     // TODO: $withFakes operational only for situations with 1 new order for now
-    public function appendFakeOrderPairs($input, $fakeOrderPairs, $fakeRestaurantIds, $fakeCustomerIds) {
+    public function appendFakeOrderPairs($input, $fakeOrderPairs, $fakeRestaurantIds, $fakeCustomerIds)
+    {
         $fop = $fakeOrderPairs[0];
         $rid = $fakeRestaurantIds[0];
         $cid = $fakeCustomerIds[0];
         $restaurantDestination = $fop["restaurant"];
         $customerDestination = $fop["customer"];
-        $input->firstCoords[] = $restaurantDestination->geo->lat;
-        $input->secondCoords[] = $restaurantDestination->geo->lon;
+        $input->firstCoords[] = floatval($restaurantDestination->geo->lat);
+        $input->secondCoords[] = floatval($restaurantDestination->geo->lon);
         $input->nodeTypes[] = Crunchbutton_Optimizer_Input::TYPE_RESTAURANT;
         $input->orderTimes[] = $restaurantDestination->orderTime;
         $input->earlyWindows[] = $restaurantDestination->earlyWindow;
@@ -218,8 +230,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
         $input->deliveryIdxs[] = $cid;
         $input->restaurantParkingTimes[] = $restaurantDestination->restaurantParkingTime;
 
-        $input->firstCoords[] = $customerDestination->geo->lat;
-        $input->secondCoords[] = $customerDestination->geo->lon;
+        $input->firstCoords[] = floatval($customerDestination->geo->lat);
+        $input->secondCoords[] = floatval($customerDestination->geo->lon);
         $input->nodeTypes[] = Crunchbutton_Optimizer_Input::TYPE_CUSTOMER;
         $input->orderTimes[] = $customerDestination->orderTime;
         $input->earlyWindows[] = $customerDestination->earlyWindow;
@@ -235,75 +247,79 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
     }
 
 
-    // TODO: $withFakes operational only for situations with 1 new order for now
+    // TODO: $doCreateFakeOrders operational only for situations with 1 new order for now
     // Could a imagine a situation down the line where this isn't the case, when projected orders are taken into account
     // Only a single fake is allowed as well.
-    public function createOptimizerInputs($fakeOrder)
+    public function createOptimizerInputs($fakeOrder, $doCreateFakeOrders)
     {
-        $optInputsList = ['old' => null, 'new' => null, 'hasFakeOrder'=> false];
+        $optInputsList = ['old' => null, 'new' => null, 'hasFakeOrder' => false];
         $numOldNodes = $this->id_old_counter + 1;
         $numNewNodes = $this->id_new_counter + 1;
+//        print "Num new nodes: $numNewNodes\n";
 
-        $fakeOrderPairs = null;
-        if (!is_null($fakeOrder)) {
-            $fakeOrderPairs = $fakeOrder->getFakeOrderPairs();
-        }
+        if ($numNewNodes == 3) {
+//            print "Has only new order\n";
+            $fakeOrderPairs = null;
+            if ($doCreateFakeOrders && !is_null($fakeOrder)) {
+                $fakeOrderPairs = $fakeOrder->getFakeOrderPairs();
+//                print "Got fake order pairs\n";
+            }
+            if ($doCreateFakeOrders && !is_null($fakeOrderPairs) && count($fakeOrderPairs) == 1) {
+                $totalOldNodes = $numOldNodes + 2;
+                $totalNewNodes = $numNewNodes + 2;
 
-        if ($numNewNodes > 0 ) {
-            if ($this->hasOnlyNewOrder()){
-                if (!is_null($fakeOrderPairs) && count($fakeOrderPairs) == 1) {
-                    $totalOldNodes = $numOldNodes + 1;
-                    $totalNewNodes = $numNewNodes + 1;
-
-                    $this->computeClusters($totalOldNodes, $totalNewNodes);
-
-                    $old = $this->createBaseInput();
-                    $old->numNodes = $totalOldNodes;
-                    $this->copyOldArraysToOptimizerInput($old);
-                    $this->appendFakeOrderPairs($old, $fakeOrderPairs, [$this->id_old_counter + 1],
-                        [$this->id_old_counter + 2]);
-                    $optInputsList['old'] = $old;
-                    $this->oldFakeOrderIds = [$this->id_old_counter + 1, $this->id_old_counter + 2];
-
-                    $new = $this->createBaseInput();
-                    $new->numNodes = $totalNewNodes;
-                    $this->copyNewArraysToOptimizerInput($new);
-                    $this->appendFakeOrderPairs($new, $fakeOrderPairs, [$this->id_new_counter + 1],
-                        [$this->id_new_counter + 2]);
-                    $optInputsList['new'] = $new;
-                    $this->newFakeOrderIds = [$this->id_new_counter + 1, $this->id_new_counter + 2];
-                    $optInputsList['hasFakeOrder'] = true;
-                } else{
-                    // Only do the new optimization
-                    $this->computeClusters(0, $numNewNodes);
-
-                    $new = $this->createBaseInput();
-                    $new->numNodes = 3;
-                    $this->copyNewArraysToOptimizerInput($new);
-                    $optInputsList['new'] = $new;
-                }
-
-            } else{
-                $this->computeClusters($numOldNodes, $numNewNodes);
+                $this->computeClusters($totalOldNodes, $totalNewNodes);
 
                 $old = $this->createBaseInput();
-                $old->numNodes = $numOldNodes;
+                $old->numNodes = $totalOldNodes;
                 $this->copyOldArraysToOptimizerInput($old);
+                $this->appendFakeOrderPairs($old, $fakeOrderPairs, [$this->id_old_counter + 1],
+                    [$this->id_old_counter + 2]);
                 $optInputsList['old'] = $old;
+                $this->oldFakeOrderIds = [$this->id_old_counter + 1, $this->id_old_counter + 2];
 
                 $new = $this->createBaseInput();
-                $new->numNodes = $numNewNodes;
+                $new->numNodes = $totalNewNodes;
+                $this->copyNewArraysToOptimizerInput($new);
+                $this->appendFakeOrderPairs($new, $fakeOrderPairs, [$this->id_new_counter + 1],
+                    [$this->id_new_counter + 2]);
+                $optInputsList['new'] = $new;
+                $this->newFakeOrderIds = [$this->id_new_counter + 1, $this->id_new_counter + 2];
+                $optInputsList['hasFakeOrder'] = true;
+            } else if (!$doCreateFakeOrders) {
+                // Only do the new optimization
+//                print "Only doing the new optimization\n";
+                $this->computeClusters(0, $numNewNodes);
+
+                $new = $this->createBaseInput();
+                $new->numNodes = 3;
                 $this->copyNewArraysToOptimizerInput($new);
                 $optInputsList['new'] = $new;
-
-
             }
-        }
 
+        } else if ($numNewNodes > 3) {
+//            print "Has more than the new order\n";
+            $this->computeClusters($numOldNodes, $numNewNodes);
+
+            $old = $this->createBaseInput();
+            $old->numNodes = $numOldNodes;
+            $this->copyOldArraysToOptimizerInput($old);
+            $optInputsList['old'] = $old;
+
+            $new = $this->createBaseInput();
+            $new->numNodes = $numNewNodes;
+            $this->copyNewArraysToOptimizerInput($new);
+            $optInputsList['new'] = $new;
+
+
+        }
+//        print "Dumping $optInputsList:\n";
+//        var_dump($optInputsList);
         return $optInputsList;
     }
 
-    public function copyNewArraysToOptimizerInput($input){
+    public function copyNewArraysToOptimizerInput($input)
+    {
         // TODO: Maybe switch to references, instead of doing all these copies
         $input->firstCoords = $this->newFirstCoords;
         $input->secondCoords = $this->newSecondCoords;
@@ -318,7 +334,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
         $input->clusters = $this->newClusters;
     }
 
-    public function copyOldArraysToOptimizerInput($input){
+    public function copyOldArraysToOptimizerInput($input)
+    {
         // TODO: Maybe switch to references, instead of doing all these copies
         $input->firstCoords = $this->oldFirstCoords;
         $input->secondCoords = $this->oldSecondCoords;
@@ -334,7 +351,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
     }
 
 
-    public function createBaseInput() {
+    public function createBaseInput()
+    {
         $input = new Crunchbutton_Optimizer_Input();
         $input->driverMph = $this->driverMph;
         $input->penaltyCoefficient = Crunchbutton_Order_Logistics::LC_PENALTY_COEFFICIENT;
@@ -349,13 +367,17 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model {
     }
 
 
-    public function hasOnlyNewOrder(){
+    public function hasOnlyNewOrder()
+    {
+//        print "The id_new_counter is: $this->id_new_counter\n";
         return $this->id_new_counter == 2; // Driver location + restaurant + customer, numbered starting at 0
     }
 
     // This will include fake orders too, so $numNewNodes is not necessarily the same as the id_new_counter + 1
     //  Same for $numOldNodes.
-    private function computeClusters($numOldNodes, $numNewNodes) {
+    private function computeClusters($numOldNodes, $numNewNodes)
+    {
+//        print "Compute clusters: $numOldNodes, $numNewNodes\n";
         $this->oldClusters = [];
         if ($numOldNodes > 0) {
             $this->oldClusters = array_fill(0, $numOldNodes, []);
