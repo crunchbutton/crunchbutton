@@ -1,4 +1,3 @@
-
 <?php
 /*
 class SayTest extends PHPUnit_Framework_TestCase { //ExampleTest
