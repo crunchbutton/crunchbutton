@@ -1298,7 +1298,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
+NGApp.controller('OrderCtrl', function ($interval, $scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1402,6 +1402,14 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 			App.busy.unBusy();
 		}, 500 );
 	}
+	
+	var timer = $interval(function() {
+		OrderViewService.load(true);
+	}, 30000);
+	
+	$scope.$on('$destroy', function(event) {
+		$interval.cancel(timer);
+	});
 
 });
 
