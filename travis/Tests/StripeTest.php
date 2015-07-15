@@ -67,8 +67,6 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 			'phone' => '234-567-8901',
 			'restaurant' => self::$restaurant
 		]);
-		
-		print_r($card);
 
 		if ($r['status']) {
 			(new User_Payment_Type([
