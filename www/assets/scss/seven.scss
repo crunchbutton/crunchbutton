@@ -1906,6 +1906,7 @@ a.button{
 	}
 	.cart-items {
 		background: $bgPaymentColor;
+		border-top-right-radius: 6px;
 	}
 	.restaurant-items-list {
 		padding-top: 0;
@@ -4113,6 +4114,7 @@ font-familt: "Museo Slab";
 		box-sizing: border-box;
 		background: $bodyBgColor;
 		background-size: 333px 100%;
+		border-radius: 6px;
 	}
 	.restaurant-content-body-background {
 		background: none;
