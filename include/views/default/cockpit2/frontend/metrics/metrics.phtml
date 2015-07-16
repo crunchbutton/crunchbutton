@@ -1,56 +1,105 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-bar-chart"></i>Metrics<div class="title-loader" ng-if="loading"></h1>
-	<div class="box-content2">
-		<form>
-			<div class="ul-inputs">
-			<div style="font-size:1.4em">
-				<span class="label"><strong>Start: </strong></span><span class="input"><input type='date' style="font-size:1.2em;border-width:thin;border-style:solid;" ng-model='settings.start'></span>
-				<span class="label"><strong>End: </strong></span><span class="input"><input type='date' style="font-size:1.2em;border-width:thin;border-style:solid;" ng-model='settings.end'></span>
-				<button name='refresh' ng-click='refreshData("user requested refresh")'><i class="fa fa-refresh fa-2x"></i></button>
-			</div>
-			<div class="label">Communities:</div>
-				
-			<ui-select multiple ng-model="multiSelectCommunities" theme="select2" close-on-select="true" title="Select a community">
-				<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
-				<ui-select-choices repeat="community.id_community as community in allowedCommunities | propsFilter: {name: $select.search}">
-					{{community.name}}
-				</ui-select-choices>
-			</ui-select>
 
-			<div class="label">Period</div><div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
-			<div class="label">Manage Charts</div>
-			<button name='addChart' ng-click='addChart()'>Add Chart&nbsp;<i class="fa fa-lg fa-plus"></i></button>
-			<table>
-				<thead>
-					<tr>
-						<th></th><th></th><th>Data</th><th colspan=2>Sort</th><th ng-show='!settings.combineCharts'>Scale</th><th>Type</th><th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr style="padding-top:1px;padding-bottom:1px;" ng-repeat='chartOption in settings.charts'>
-						<td style="padding-left:3px;padding-right:3px"><i class="fa fa-lg fa-times" ng-click='removeChartOption(chartOption)'></i></td>
-						<td style="padding-left:3px;padding-right:3px"><i class="fa fa-lg fa-{{chartOption.format || 'line'}}-chart"></i></td>
-						<td><select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select></td>
-						<td><select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select></td>
-						<td><select ng-options='item.kind as item.description for item in sortDirections' ng-model='chartOption.orderDirection' ng-change='updateChartOrders(chartOption, true)'></select></td>
-						<td ng-show='!settings.combineCharts'><select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select></td>
-						<td><select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select></td>
-						<td style="padding-left:2px;padding-right:2px"></td>
-						<td><a download="metrics-{{chartOption.type}}.csv" href="#" id='metrics-export-{{chartOption.type}}' ng-click="exportDataToCSV($event, chartOption)"><i class="fa fa-lg fa-download"></i>Export</a></td>
-					</tr>
-				</tbody>
-			</table>
-			<div><input type='checkbox' ng-model='settings.combineCharts' ng-change='calculateCombinedData()'>Combine Charts</input></div>
-			<? /* i dont know why even want this option
-			<div><input type='checkbox' ng-model='settings.showEmpty' ng-change='showEmptyChanged()'>Show Empty Charts</input></div>
-			*/ ?>
+	<h1 class="title"><i class="fa fa-bar-chart"></i>Metrics<div class="title-loader" ng-if="loading"></h1>
+
+	<div class="support-box-wrap box-content2">
+		<form>
+			<div class="support-box-wrap-header">
+				<h1>Settings</h1>
+				<div class="divider"></div>
 			</div>
+
+			<div class="no-box-content-color">
+				<ul class="ul-inputs">
+					<li class="li-input">
+						<div class="label">Start:</div>
+						<div class="input"><input type="date" name="staffName" ng-model="settings.start" ></div>
+					</li>
+					<li class="li-input">
+						<div class="label">End:</div>
+						<div class="input"><input type="date" name="staffName" ng-model="settings.end" ></div>
+					</li>
+					<li class="li-input">
+						<div class="label">Communities:</div>
+						<div class="input">
+							<ui-select multiple ng-model="multiSelectCommunities" theme="select2" close-on-select="true" title="Select a community">
+								<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+								<ui-select-choices repeat="community.id_community as community in allowedCommunities | propsFilter: {name: $select.search}">
+									{{community.name}}
+								</ui-select-choices>
+							</ui-select>
+						</div>
+					</li>
+					<li class="li-input">
+						<div class="label">Period:</div>
+						<div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
+					</li>
+					<li>
+						<label class="switch-wrap">
+							<input type="checkbox" ng-model='settings.combineCharts' ng-change='calculateCombinedData()' class="switch"/><div></div>
+						</label>
+						<div class="label">Combine Charts</div>
+					</li>
+					<li class="li-input">
+						<br><br>
+						<div class="input">
+							<button name='refresh' ng-click='refreshData("user requested refresh")' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Refresh</button>
+							<button name='addChart' ng-click="addChart();" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Chart</button>
+							<button ng-click="resetSettings();" class="button button-small button-empty button-border button-orange"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Reset to default settings</button>
+						</div>
+					</li>
+				</ul>
+			</div>
+
 		</form>
 	</div>
-	
-<div class="support-boxes metrics-boxes">
+
+	<div class="support-boxes">
+		<div class="support-box-wrap box-content2 support-box-wrap" ng-repeat='chartOption in settings.charts'>
+			<div class="no-box-content-color">
+
+				<div class="support-box-wrap-header">
+					<h1><i class="fa fa-lg fa-{{chartOption.format || 'line'}}-chart"></i> Chart</h1>
+					<div class="divider"></div>
+				</div>
+				<div class="no-box-content-color">
+					<ul class="ul-inputs">
+						<li class="li-input">
+							<div class="label">Data:</div>
+							<div class="input"><select ng-options='chart.type as chart.description for (t, chart) in availableCharts' ng-model='chartOption.type' ng-change='updateChartOption(chartOption)'></select></div>
+						</li>
+						<li class="li-input">
+							<div class="label">Sort:</div>
+							<div class="input"><select ng-options='item.kind as item.description for item in sortMethods' ng-model='chartOption.orderMethod' ng-change='updateChartOrders(chartOption, true)'></select></div>
+						</li>
+						<li class="li-input" ng-show='!settings.combineCharts'>
+							<div class="label">Scale:</div>
+							<div class="input"><select ng-options='item.kind as item.description for item in setScales' ng-model='chartOption.uniformScale' ng-change='updateChartOption(chartOption)'></select></div>
+						</li>
+						<li class="li-input">
+							<div class="label">Type:</div>
+							<div class="input"><select ng-options='item.kind as item.description for item in chartFormats' ng-model='chartOption.format' ng-change='persistOptions()'></select></div>
+						</li>
+						<li class="li-input">
+							<div class="input">
+								<button class="button button-small button-empty button-border button-orange" ng-click="removeChartOption(chartOption)"><i class="fa fa-times"></i>&nbsp;&nbsp;Remove</button>
+								<a class="button-small button button-empty button-border button-green no-underline" download="metrics-{{chartOption.type}}.csv" href="#" id='metrics-export-{{chartOption.type}}' ng-click="exportDataToCSV($event, chartOption)"><i class="fa fa-download"></i>&nbsp;&nbsp;Export</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="divider"></div>
+
+	<h1 class="title"><i class="fa fa-bar-chart"></i>Charts</h1>
+
+	<div class="divider"></div>
+
+	<div class="support-boxes metrics-boxes">
 	<div ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities' class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
 			<h1>{{community.name}}</h1>
@@ -90,5 +139,3 @@
 		</div>
 	</div>
 </div>
-<!--<small>persistence: {{serializedSettings}}. round tripped: {{roundTrippedSerialized}}</small>-->
-<div><small><button ng-click='resetSettings()'>Reset To Default Settings</button></small></div>
