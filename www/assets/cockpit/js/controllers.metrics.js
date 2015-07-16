@@ -49,6 +49,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	];
 	function defaultSettings () {
 		return {
+			communities: [],
 			combineCharts: false,
 			showEmpty: false,
 			maxCombinedCommunities: 5,
@@ -75,14 +76,14 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	* visiting a metrics page does not overwrite your last view.
 	 **/
 	$scope.persistSettings = function (skipStorage) {
-		$scope.serializedSettings = MetricsService.serializeSettings($scope.settings, $scope.multiSelectCommunities, $scope.allowedCommunities);
+		$scope.serializedSettings = MetricsService.serializeSettings($scope.settings, $scope.settings.communities);
 		// $scope.roundTrippedSerialized = MetricsService.serializeSettings(MetricsService.deserializeSettings($scope.serializedSettings, $scope.allowedCommunities), $scope.multiSelectCommunities, $scope.allowedCommunities);
 		Object.keys($scope.serializedSettings).map(function (k) {
 			var data = $scope.serializedSettings[k];
 			if (typeof data === 'string' || typeof data === 'boolean' || typeof data === 'number') {
 				$location.search(k, data);
 			} else {
-				console.warn('invalid data in persistence string (expecting only strings)', data);
+				// console.warn('invalid data in persistence string (expecting only strings)', data);
 			}
 		});
 		if (!skipStorage) {
@@ -103,7 +104,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		timer = $timeout(function () { $scope.refreshData('timed ' + reason); }, 1000);
 	};
 	$scope.unselectAllCommunities = function () {
-		console.log('unselect ALL communities');
+		// console.log('unselect ALL communities');
 		// multiselect MUST reference the same objects as allowed comunities
 		Object.keys($scope.allowedCommunities).forEach(function (k) { if ($scope.allowedCommunities[k]) { $scope.allowedCommunities[k].selected = false; }});
 		$scope.orderSelectedCommunities();
@@ -111,7 +112,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	// TODO: Figure out how to avoid the multiple refreshes here!
 	resetData();
 	$scope.refreshData = function (reason) {
-		console.info('REFRESH DATA BECAUSE OF: ', reason);
+		// console.info('REFRESH DATA BECAUSE OF: ', reason);
 		resetData();
 		// make sure we don't double refresh
 		$timeout.cancel(timer);
@@ -126,16 +127,16 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.updateChartOption = function (chartOption, changed) {
 		var type = chartOption.type;
 		if (!type) {
-			console.debug('not loading chart data - no type selected');
+			// console.debug('not loading chart data - no type selected');
 			return;
 		}
 		// only reference current loaded array, in case data gets reset before the load is finished.
 		var loaded = $scope.loadedChartTypes;
 		var chartData = $scope.chartData;
 		function finalCallback() {
-			console.log('chartdata pre-change: ', chartData);
+			// console.log('chartdata pre-change: ', chartData);
 			if ($scope.chartData !== chartData) {
-				console.info('chart data has changed since callback, not updating');
+				// console.info('chart data has changed since callback, not updating');
 				return;
 			}
 			// grab current chart option (so we don't overwrite any sorts on a late call)
@@ -156,8 +157,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 					break;
 				}
 			}
-			console.log('chartData post-change: ', chartData);
-			// console.debug('ChartData after callback finished: ', $scope.chartData);
+			// console.log('chartData post-change: ', chartData);
+			// // console.debug('ChartData after callback finished: ', $scope.chartData);
 			if (!$scope.orderedCommunities) {
 				$scope.orderSelectedCommunities();
 			}
@@ -170,7 +171,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		}
 		MetricsService.getChartData(type, chartData, $scope.settings).then(function (result) {
 			if ($scope.chartData !== chartData) {
-				console.debug('chart data changed since load. Not processing further.');
+				// console.debug('chart data changed since load. Not processing further.');
 				return;
 			}
 			// fill if we have no sort order yet
@@ -232,7 +233,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	};
 
 	$scope.updateSelected = function () {
-		console.log($scope.multiSelectCommunities);
+		// console.log($scope.multiSelectCommunities);
 		$scope.orderSelectedCommunities();
 		$scope.persistSettings();
 	};
@@ -241,9 +242,9 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.orderSelectedCommunities = function () {
 		var communityOrdering = $scope.communityOrdering;
 		if (!communityOrdering) {
-			console.info('no ordering yet, cannot order anything (just picking selected)');
+			// console.info('no ordering yet, cannot order anything (just picking selected)');
 			if (!$scope.allowedCommunities) {
-				console.warn('no communities, cannot do anything');
+				// console.warn('no communities, cannot do anything');
 				return
 			}
 			// default to everything if we don't have communities, so we only display selected
@@ -254,13 +255,16 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		for (var i = 0; i < communityOrdering.length; i++) {
 			cID = communityOrdering[i];
 			if (!cID) {
-				console.error('found invalid community ID!', comm);
+				// console.error('found invalid community ID!', comm);
 				continue;
 			}
-			comm = $scope.allowedCommunities[cID];
-			if (comm.selected) {
-				ordered.push(comm);
+			if( $scope.allowedCommunities[cID] ){
+				comm = $scope.allowedCommunities[cID];
+				if (comm.selected) {
+					ordered.push(comm);
+				}
 			}
+
 		}
 		$scope.orderedCommunities = ordered;
 		// If we change the selected communities or community order, need to recalculate combined Charts
@@ -278,17 +282,17 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		// We *assume* communities are already ordered by this point!
 		maxSize = maxSize || 5;
 		if (!$scope.orderedCommunities || !$scope.chartData) {
-			console.log('not all data prepped - not calculating combined data');
+			// console.log('not all data prepped - not calculating combined data');
 			return;
 		}
-		console.log('calculating combined data');
+		// console.log('calculating combined data');
 		var selectedCommunities = $scope.orderedCommunities;
 		var selectedCommunityIDs = selectedCommunities.map(function (c) { return c.id_community; });
 		var combinedChartData = MetricsService.combineChartData(selectedCommunityIDs, $scope.chartData);
 		if (Object.keys(combinedChartData).length === 0) {
-			console.warn('got no combined chart data back from metrics service!');
+			// console.warn('got no combined chart data back from metrics service!');
 		} else {
-			console.log('setting types for combinedChartData', combinedChartData);
+			// console.log('setting types for combinedChartData', combinedChartData);
 		}
 		var labels, keys, series, comm;
 		var allowedCommunities = $scope.allowedCommunities;
@@ -309,17 +313,22 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		});
 		$scope.combinedChartData = combinedChartData;
 	};
+
 	$http.get(App.service + 'metrics/permissions').success(function (data) {
-		console.debug('got allowed communities');
+		// console.debug('got allowed communities');
 		var allowedCommunities = {};
 		var comm;
 		for (var i = 0; i < data.length; i++) {
 			comm = data[i];
 			comm.selected = +comm.active === 1 || comm.active === true;
-			allowedCommunities[comm.id_community] = comm;
+			// allowedCommunities[comm.id_community] = comm;
 		}
+
+		$scope.communities = data;
+
 		// {cID : {community: XYZ, id_community:XYZ}}
 		$scope.allowedCommunities = allowedCommunities;
+		// console.log($scope.allowedCommunities);
 		// this is just allowedCommunities values
 		// [{community: XYZ, id_community: XYZ}, ...]
 		$scope.multiSelectCommunities = data;
@@ -329,23 +338,23 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		addQueryDataToSettings(initialQueryData);
 		$scope.persistSettings(true);
 		if ($scope.availableCharts) {
-			$scope.refreshData('allowed communities');
+			// $scope.refreshData('allowed communities');
 		}
-		// console.debug('allowedCommunities: ', $scope.allowedCommunities);
+		// // console.debug('allowedCommunities: ', $scope.allowedCommunities);
 	}).error(function (err) {
 		$scope.allowedCommunities = {};
-		console.error('ERROR getting community metrics permissions', err);
+		// console.error('ERROR getting community metrics permissions', err);
 	});
 	$http.get(App.service + 'metrics/available').success(function (data) {
 		$scope.availableCharts = {};
 		data.map(function (e) { $scope.availableCharts[e.type] = e; });
-		// console.log('got available charts: ', data);
+		// // console.log('got available charts: ', data);
 		if ($scope.orderedCommunities) {
 			$scope.refreshData('got available charts');
 		}
 	}).error(function (err) {
 		$scope.availableCharts = {};
-		console.error('ERROR getting available charts', err);
+		// console.error('ERROR getting available charts', err);
 	});
 	var dataKey = 'crunchbutton-metrics-preferences';
 	function mergeSettings (settings) {
@@ -356,12 +365,12 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		var communities = settings.communities;
 		delete(settings.communities);
 		if(communities && communities.length) {
-			console.log('settings stuff by community: ', communities);
+			// console.log('settings stuff by community: ', communities);
 			// force selections to just those communities that are available
 			var communityMap = {};
 			communities.forEach(function (cID) { communityMap[cID] = true; });
 			Object.keys($scope.allowedCommunities).forEach(function (cID) { if ($scope.allowedCommunities[cID]) { $scope.allowedCommunities[cID].selected = !!communityMap[cID]; }});
-			console.log('communities found: ', communities.map(function (cID) { return $scope.allowedCommunities[cID]; }));
+			// console.log('communities found: ', communities.map(function (cID) { return $scope.allowedCommunities[cID]; }));
 			$scope.updateSelected();
 		}
 		for (var k in settings) {
@@ -379,7 +388,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			try {
 				storedData = JSON.parse(storedData);
 			} catch (e) {
-				console.error('EXCEPTION parsing stored settings data', e);
+				// console.error('EXCEPTION parsing stored settings data', e);
 				return;
 			}
 		}
@@ -387,9 +396,34 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			try {
 				return mergeSettings(MetricsService.deserializeSettings(storedData, $scope.allowedCommunities));
 			} catch (e) {
-				console.error('could not deserialize settings from local storage :-(', e);
+				// console.error('could not deserialize settings from local storage :-(', e);
 			}
 		}
+	}
+
+	$scope.selectNoneCommunity = function(){
+		$scope.settings.communities = [];
+		$scope.communityChanged();
+	}
+
+	$scope.selectAllCommunities = function(){
+		var communities = [];
+		for( x in $scope.communities ){
+			communities.push( $scope.communities[ x ] );
+		}
+		$scope.settings.communities = communities;
+		$scope.communityChanged();
+	}
+
+	$scope.communityChanged = function(){
+		var allowedCommunities = {};
+		for( x in $scope.settings.communities ){
+			var community = $scope.settings.communities[x];
+			community.selected = true;
+			allowedCommunities[community.id_community] = community;
+			$scope.allowedCommunities = allowedCommunities;
+		}
+		$scope.refreshData();
 	}
 
 	function addQueryDataToSettings(data) {
@@ -399,7 +433,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		try {
 			return mergeSettings(MetricsService.deserializeSettings(data, $scope.allowedCommunities));
 		} catch (e) {
-			console.error('EXCEPTION loading query data', e);
+			// console.error('EXCEPTION loading query data', e);
 			throw e;
 		}
 	}
@@ -428,7 +462,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 						communities.push(community);
 					}
 				} else {
-					console.error('got non numeric community id: ', id_community);
+					// console.error('got non numeric community id: ', id_community);
 				}
 			}
 		}
@@ -492,7 +526,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	}
 	$scope.exportDataToCSV = function ($event, chart) {
 		var i, j, comm, data, k;
-		console.log('starting export');
+		// console.log('starting export');
 		var exportData = [];
 		// these are arrays because most of the helper code can handle multiple
 		// chart types / complex arrays, however joining up labels is
@@ -515,7 +549,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			var columns = chartTypes.map(function (type) { return chartTypeData[type] && chartTypeData[type].data && chartTypeData[type].data[0]; });
 			var rows = columnsToRows(columns);
 			if (rows.length === 0) {
-				console.log('no data to export for community ', community);
+				// console.log('no data to export for community ', community);
 				labels.forEach(function (label) {
 					exportData.push([name, label].concat(emptyRowData));
 				});
