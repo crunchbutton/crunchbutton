@@ -826,7 +826,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$date_start = $nextShift->dateStart( $this->timezone );
 					$date_end = $nextShift->dateEnd( $this->timezone );
 
-					$message = 'Next Open ';
+					$message = 'Next open ';
 					$message .= $date_start->format( 'g' );
 					if( $date_start->format( 'i' ) != '00' ){
 						$message .= ':' . $date_start->format( 'i' );
@@ -839,7 +839,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					}
 					$message .= $date_end->format( 'A' );
 					$message .= ' ';
-					$message .= $date_start->format( 'l' );
+					$message .= $date_start->format( 'D' );
 					$message .= '!';
 				} else {
 					$message = 'Temporarily closed!';
