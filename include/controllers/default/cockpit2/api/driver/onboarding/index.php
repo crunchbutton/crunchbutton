@@ -27,7 +27,7 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 					$out[ 'other' ] = Cockpit_Driver_Info::carrierTypeOther();
 					echo json_encode( $out );exit();
 					break;
-                case 'tshirt_sizes':
+				case 'tshirt_sizes':
 					$out = [];
 					$out[ 'tshirt_options' ] = Cockpit_Driver_Info::tshirtSizes();
 					echo json_encode( $out );exit();
