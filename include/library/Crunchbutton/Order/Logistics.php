@@ -416,7 +416,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                     $driver->dlist = $dlist;
 
-
                 }
                 if ($driverOrderCount <=1){
                     $driversWithNoOrdersCount++;
@@ -430,6 +429,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 }
 
                 foreach ($this->drivers() as $driver) {
+
                     $dlist = $driver->dlist;
 //                    print "Now run the optimizations\n";
                     // Run the optimization for each driver here
@@ -448,7 +448,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                     if (!is_null($dNew)) {
 
-                        if ($dlist->hasOnlyNewOrder()) {
+                        if (!$hasFakeOrder && $dlist->hasOnlyNewOrder()) {
                             // Nothing to optimize in the original, so we create a dummy result
                             $resultOld = (object)['resultType' => Crunchbutton_Optimizer_Result::RTYPE_OK, 'score' => 0];
                         } else {
@@ -464,7 +464,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                             ($resultNew->resultType == Crunchbutton_Optimizer_Result::RTYPE_OK) &&
                             !is_null($resultOld->score) && !is_null($resultNew->score)
                         ) {
-
                             $numGoodOptimizations += 1;
                             $driver->_opt_status = self::DRIVER_OPT_SUCCESS;
                             $scoreChange = $resultNew->score - $resultOld->score;
@@ -478,10 +477,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                         }
                     }
+                    else{
+                        $skipFlag = true;
+                    }
                 }
-//                    else{
-//                        // Potentially set some error flags here
-//                    }
             }
 
 
