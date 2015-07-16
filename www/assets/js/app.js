@@ -764,6 +764,10 @@ App.track = function() {
 	}
 
 	if (arguments[0] == 'Ordered') {
+		if (window._fbq) {
+			window._fbq.push(['track', '6025866422535', {'value':arguments[1].total,'currency':'USD'}]);
+		}
+
 		if (typeof( ga ) == 'function') {
 			var trans = {
 				id: arguments[1].id,
