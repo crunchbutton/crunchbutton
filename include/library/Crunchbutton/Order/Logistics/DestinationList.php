@@ -311,10 +311,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
             $this->copyNewArraysToOptimizerInput($new);
             $optInputsList['new'] = $new;
 
-
         }
-//        print "Dumping $optInputsList:\n";
-//        var_dump($optInputsList);
+
         return $optInputsList;
     }
 
@@ -377,14 +375,15 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
     //  Same for $numOldNodes.
     private function computeClusters($numOldNodes, $numNewNodes)
     {
-//        print "Compute clusters: $numOldNodes, $numNewNodes\n";
         $this->oldClusters = [];
         if ($numOldNodes > 0) {
             $this->oldClusters = array_fill(0, $numOldNodes, []);
-            foreach ($this->old_parking_clusters as $key => $id) {
-                foreach ($this->old_parking_clusters as $key2 => $id2) {
-                    if ($id != $id2) {
-                        $this->oldClusters[$id][] = $id2;
+            foreach ($this->old_parking_clusters as $key => $ids) {
+                foreach ($ids as $id) {
+                    foreach ($ids as $id2) {
+                        if ($id != $id2) {
+                            $this->oldClusters[$id][] = $id2;
+                        }
                     }
                 }
             }
@@ -393,15 +392,18 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->newClusters = [];
         if ($numNewNodes > 0) {
             $this->newClusters = array_fill(0, $numNewNodes, []);
-            foreach ($this->new_parking_clusters as $key => $id) {
-                foreach ($this->new_parking_clusters as $key2 => $id2) {
-                    if ($id != $id2) {
-                        $this->newClusters[$id][] = $id2;
+            foreach ($this->new_parking_clusters as $key => $ids) {
+                foreach ($ids as $id) {
+                    foreach ($ids as $id2) {
+                        if ($id != $id2) {
+                            $this->newClusters[$id][] = $id2;
+                        }
                     }
                 }
             }
 
         }
     }
+
 
 }
