@@ -176,6 +176,38 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="field-row" ng-if="ticket.staff.is_driver">
+						<div class="field-key">Driver</div>
+						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="ticket.staff.is_marketing_rep">
+						<div class="field-key">Marketing Rep</div>
+						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="ticket.staff.is_campus_manager">
+						<div class="field-key">Campus Manager</div>
+						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="ticket.staff.is_support">
+						<div class="field-key">Customer Service</div>
+						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Is Working</div>
+						<div class="field-value">
+							<span ng-if="ticket.staff.is_working" class="tag tag-green">Yes</span>
+							<span ng-if="!ticket.staff.is_working" class="tag tag-red">No</span>
+						</div>
+					</div>
 				</div>
 				<br>
 			</div>
