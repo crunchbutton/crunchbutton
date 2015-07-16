@@ -643,7 +643,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		},1200);
 
 		history.go(-1);
-    	navigator.app.backHistory();
+		if( navigator && navigator.app && navigator.app.backHistory ){
+			navigator.app.backHistory();
+		} else if( window.navigator && window.navigator.app && window.navigator.app.backHistory ){
+			window.navigator.app.backHistory();
+		}
+
 	};
 
 	$rootScope.closePopup = function() {
