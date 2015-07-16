@@ -433,6 +433,7 @@
 				</div>
 			&nbsp;
 			<span ng-show="order.form.pay_type=='card'">by card</span>
+			<span ng-show="order.form.pay_type=='cash' && !credit.hasValue">by cash</span>
 		</div>
 
 		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
