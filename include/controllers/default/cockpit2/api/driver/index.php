@@ -4,12 +4,16 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		if( c::getPagePiece(2) == 'referral' ){
+			$this->_referral();
+		}
+
 		if (preg_replace('/[^a-z0-9]/i','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2) && c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] )) {
 			$driver = Admin::o((int)c::getPagePiece(2) );
 			if (!$driver->id_admin) {
 				$driver = Admin::login(c::getPagePiece(2), true);
 			}
-			
+
 			if (!$driver) {
 				$this->error(404);
 			}
@@ -96,10 +100,7 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'referral':
-				$name = strtolower( trim( $this->request()[ 'name' ] ) );
-				$phone = Crunchbutton_Phone::clean( $this->request()[ 'phone' ] );
-				$code = Crunchbutton_Reward::createUniqueCode( $name, $phone );
-				echo json_encode( [ 'code' => $code ] );exit;
+				$this->_referral();
 				break;
 			default:
 				if ($this->method() == 'post') {
@@ -144,4 +145,12 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 
 
 	}
+
+	private function _referral(){
+		$name = strtolower( trim( $this->request()[ 'name' ] ) );
+		$phone = Crunchbutton_Phone::clean( $this->request()[ 'phone' ] );
+		$code = Crunchbutton_Reward::createUniqueCode( $name, $phone );
+		echo json_encode( [ 'code' => $code ] );exit;
+	}
+
 }
