@@ -42,7 +42,7 @@ NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewLis
 	});
 } );
 
-NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, ResourceService, CommunityService ) {
+NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, $location, ResourceService, CommunityService ) {
 
 	$scope.resource = { communities: [] };
 
@@ -73,8 +73,10 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 			} else {
 				if( $routeParams.id ){
 					App.alert( 'Resource saved!' );
+					load();
+				} else {
+					$location.path( '/community/resource/' + json.id_resource );
 				}
-				load();
 			}
 		} );
 	}
