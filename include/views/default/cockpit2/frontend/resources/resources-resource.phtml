@@ -1,0 +1,125 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-files-o"></i><span>Resource</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>File</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<li class="li-input" ng-class="{'error':form.name.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="name" ng-model="resource.name" required placeholder="Name" ng-minlength="2" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.name.$error.required">Required.</small>
+							<small ng-show="form.name.$error.minlength">Name is too short. Name is required to be at least 2 characters.</small>
+							<small ng-show="form.name.$error.maxlength">Name cannot be longer than 255 characters.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':form.file.$invalid}">
+						<div class="label">File:</div>
+						<div class="input">
+							<div class="input"><input type="text" name="file" readonly="readonly" ng-model="resource.temp_name" required placeholder="File"></div>
+						</div>
+						<div>
+							<br>
+							<div class="upbutton" resource-upload>
+								<button class="save button upload">FILE</button>
+								<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden">
+							</div>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.file.$error.required">Required.</small>
+						</div>
+						<br>
+						<br>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Visible</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.all"/><div></div>
+						</label>
+						<div class="label">Show it to all communities:</div>
+					</li>
+
+					<li class="li-input" ng-show="!resource.all">
+						<div class="label">Communities:</div>
+						<div class="input">
+
+							<ui-select multiple ng-model="resource.communities" theme="select2" close-on-select="true" title="Select a community">
+								<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+								<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+									{{community.name}}
+								</ui-select-choices>
+							</ui-select>
+
+						</div>
+					</li>
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.order_page"/><div></div>
+						</label>
+						<div class="label">Show at order page (for drivers):</div>
+					</li>
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.page"/><div></div>
+						</label>
+						<div class="label">Show at resource page:</div>
+					</li>
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.side"/><div></div>
+						</label>
+						<div class="label">Show at side menu:</div>
+					</li>
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="resource.active"/><div></div>
+						</label>
+						<div class="label">Active:</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSaving">
+						<button ng-click="save();" class="ladda-button button save save-upload" data-color="mint" data-style="zoom-in">
+							<span class="ladda-label"><strong>Save</strong></span>
+						</button>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

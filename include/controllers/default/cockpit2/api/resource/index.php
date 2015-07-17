@@ -1,10 +1,10 @@
 <?php
 
-class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
+class Controller_api_resource extends Crunchbutton_Controller_Rest {
 
 	public function init() {
 
-		if( c::getPagePiece( 3 ) == 'upload' ){
+		if( c::getPagePiece( 2 ) == 'upload' ){
 			$this->_upload();
 		}
 
@@ -27,7 +27,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 
 	private function _get(){
 
-		switch ( c::getPagePiece( 3 ) ) {
+		switch ( c::getPagePiece( 2 ) ) {
 
 			case 'list':
 				$this->_permission();
@@ -41,30 +41,30 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 			case 'download':
 				$this->_download();
 				break;
-			
+
 			case 's3':
 				$this->_permission();
 				$this->_s3();
 				break;
-			
+
 			case 's3all':
 				$this->_permission();
 				$this->_s3all();
 				break;
 
 			default:
-				$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 3 ) );
-				if( $resource->id_community_resource ){
+				$resource = Crunchbutton_Resource::o( c::getPagePiece( 2 ) );
+				if( $resource->id_resource ){
 					echo $resource->json(); exit();
 				}
 				$this->_error();
 				break;
 		}
 	}
-	
+
 	private function _s3all() {
-		$resources = Crunchbutton_Community_Resource::q('
-			select * from community_resource where `file` is not null
+		$resources = Crunchbutton_Resource::q('
+			select * from resource where `file` is not null
 		');
 		foreach ($resources as $resource) {
 			if ($resource->file != $resource->s3base()) {
@@ -75,16 +75,16 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 			}
 		}
 	}
-	
+
 	private function _s3() {
-		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 4 ) );
+		$resource = Crunchbutton_Resource::o( c::getPagePiece( 4 ) );
 		$s = $resource->localToS3();
 	}
 
 	private function _driver(){
 		$resources = [];
 
-		$_resources = Crunchbutton_Community_Resource::byCommunity( 'all' );
+		$_resources = Crunchbutton_Resource::byCommunity( 'all' );
 		if( $_resources ){
 			foreach( $_resources as $resource ){
 				if( !$resources[ $community->id_community ] ){
@@ -98,7 +98,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		$groups = $driver->groups();
 		foreach ( $groups as $group ) {
 			if( $group->type == Crunchbutton_Group::TYPE_DRIVER ){
-				$_resources = Crunchbutton_Community_Resource::byCommunity( $group->id_community );
+				$_resources = Crunchbutton_Resource::byCommunity( $group->id_community );
 				if( $_resources ){
 					foreach( $_resources as $resource ){
 						if( !$resources[ $community->id_community ] ){
@@ -120,8 +120,8 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 	}
 
 	private function _download(){
-		$resource = Crunchbutton_Community_Resource::o( c::getPagePiece( 4 ) );
-		if ($resource->id_community_resource) {
+		$resource = Crunchbutton_Resource::o( c::getPagePiece( 4 ) );
+		if ($resource->id_resource) {
 			header('Location: https://'.$resource->s3File());
 		}
 		$this->_error();
@@ -138,9 +138,9 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 				$name = Util::slugify( $random . '-' . $name );
 				$name = substr( $name, 0, 40 ) . '.'. $ext;
 				$file = $_FILES['file']['tmp_name'];
-				
-				$r = Crunchbutton_Community_Resource::toS3($file, $name);
-				
+
+				$r = Crunchbutton_Resource::toS3($file, $name);
+
 				if ($r) {
 					echo json_encode( [ 'success' => $name ] );
 					exit;
@@ -162,15 +162,15 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 
 	private function _save(){
 
-		if( $this->request()[ 'id_community_resource' ] ){
-			$resource = Crunchbutton_Community_Resource::o( $this->request()[ 'id_community_resource' ] );
+		if( $this->request()[ 'id_resource' ] ){
+			$resource = Crunchbutton_Resource::o( $this->request()[ 'id_resource' ] );
 		}
-		if( !$resource->id_community_resource ){
-			$resource = new Crunchbutton_Community_Resource;
+		if( !$resource->id_resource ){
+			$resource = new Crunchbutton_Resource;
 		}
-		
+
 		// name is changing. rename on s3
-		if (($resource->id_community_resource && ($resource->name != $this->request()[ 'name' ] || $resource->file != $this->request()[ 'file' ])) || !$resource->id_community_resource) {
+		if (($resource->id_resource && ($resource->name != $this->request()[ 'name' ] || $resource->file != $this->request()[ 'file' ])) || !$resource->id_resource) {
 			$s3save = true;
 		}
 
@@ -193,19 +193,19 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 			}
 		}
 
-		Crunchbutton_Community_Resource_Community::removeByResource( $resource->id_community_resource );
+		Crunchbutton_Resource_Community::removeByResource( $resource->id_resource );
 
 		if( !$resource->all ){
 			$communities = $this->request()[ 'communities' ];
 			foreach( $communities as $id_community ){
-				$community = new Crunchbutton_Community_Resource_Community();
-				$community->id_community_resource = $resource->id_community_resource;
+				$community = new Crunchbutton_Resource_Community();
+				$community->id_resource = $resource->id_resource;
 				$community->id_community = $id_community;
 				$community->save();
 			}
 		}
 
-		echo json_encode( [ 'id_resource' => $resource->id_community_resource ] );
+		echo json_encode( [ 'id_resource' => $resource->id_resource ] );
 		exit;
 	}
 
@@ -229,11 +229,11 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		$q = '
 			SELECT
 				-WILD-
-			FROM community_resource cr
+			FROM resource cr
 		';
 		if ($community) {
 			$q .= '
-				LEFT JOIN community_resource_community crc ON cr.id_community_resource=crc.id_community_resource
+				LEFT JOIN resource_community crc ON cr.id_resource=crc.id_resource
 			';
 		}
 		$q .='
@@ -283,7 +283,7 @@ class Controller_api_community_resource extends Crunchbutton_Controller_Rest {
 		', $q), $keys);
 
 		while ($s = $r->fetch()) {
-			$resource = Crunchbutton_Community_Resource::o($s);
+			$resource = Crunchbutton_Resource::o($s);
 			$out = $resource->exports();
 			$out['communities'] = [];
 			foreach ($resource->communities( true ) as $community) {

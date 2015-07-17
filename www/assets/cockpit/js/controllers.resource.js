@@ -3,17 +3,17 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/community/resources', {
 			action: 'resources',
 			controller: 'CommunityResourcesCtrl',
-			templateUrl: 'assets/view/communities-resources.html',
+			templateUrl: 'assets/view/resources.html',
 			reloadOnSearch: false
 		})
 		.when('/community/resource/:id?', {
 			action: 'resources',
 			controller: 'CommunityResourceCtrl',
-			templateUrl: 'assets/view/communities-resource.html'
+			templateUrl: 'assets/view/resources-resource.html'
 		});
 }]);
 
-NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewListService, CommunityResourceService, CommunityService ) {
+NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewListService, ResourceService, CommunityService ) {
 
 	$rootScope.title = 'Resources';
 
@@ -34,7 +34,7 @@ NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewLis
 			community: 'all'
 		},
 		update: function() {
-			CommunityResourceService.list( $scope.query, function(d) {
+			ResourceService.list( $scope.query, function(d) {
 				$scope.resources = d.results;
 				$scope.complete(d);
 			});
@@ -42,7 +42,7 @@ NGApp.controller('CommunityResourcesCtrl', function ($rootScope, $scope, ViewLis
 	});
 } );
 
-NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, CommunityResourceService, CommunityService ) {
+NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $rootScope, ResourceService, CommunityService ) {
 
 	$scope.resource = { communities: [] };
 
@@ -65,7 +65,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 
 	var save = function(){
 		$scope.isSaving = true;
-		CommunityResourceService.save( $scope.resource, function( json ){
+		ResourceService.save( $scope.resource, function( json ){
 			$scope.isUploading = false;
 			$scope.isSaving = false;
 			if( json.error ){
@@ -94,7 +94,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 	}
 
 	var load = function(){
-		CommunityResourceService.get( $routeParams.id, function( json ){
+		ResourceService.get( $routeParams.id, function( json ){
 			$scope.resource = json;
 			$scope.resource.temp_name = $scope.resource.file;
 			communities();

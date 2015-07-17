@@ -8,8 +8,8 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		})
 }]);
 
-NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, CommunityResourceService ) {
-	CommunityResourceService.driver(function(data) {
+NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, ResourceService ) {
+	ResourceService.driver(function(data) {
 		$scope.communities = data;
 		console.log('$scope.communities',$scope.communities);
 	});
