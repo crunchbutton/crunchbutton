@@ -256,6 +256,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out['driver'] = $driver->exports();
 		}
 		$out['hasCustomerBeenTexted5Minutes'] = $this->hasCustomerBeenTexted5Minutes();
+
+		// remove
+		$out[ '_restaurant_address' ] = Crunchbutton_Util::removeNewLine( $out[ '_restaurant_address' ] );
+		$out[ 'address' ] = Crunchbutton_Util::removeNewLine( $out[ 'address' ] );
+
 		return $out;
 	}
 

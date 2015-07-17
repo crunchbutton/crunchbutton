@@ -40,12 +40,12 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 		var communityArray = communities.split(/,/);
 		if (communityArray.length === 0) {
-			console.warn('no communities selected');
+			// console.warn('no communities selected');
 			return false;
 		}
 		for (var i = 0; i < communityArray.length; i++) {
 			if (!parseInt(communityArray[i], 10)) {
-				console.warn('non-integer community', communityArray[i]);
+				// console.warn('non-integer community', communityArray[i]);
 				return false;
 			}
 		}
@@ -97,7 +97,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		}
 		// default to descending
 		var sign = direction === 'asc' ? 1 : -1;
-		console.log('sign is ', sign, 'with direction: ', direction);
+		// console.log('sign is ', sign, 'with direction: ', direction);
 		var sortData = [];
 		// need to convert to an array of data (vs. object) so we can sort it
 		eachKV(data, function (k, v) { if (v[on] && v[on].data) { sortData.push({'key': k, 'data': v[on].data[0]}); } });
@@ -155,10 +155,10 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		});
 		var scaleStepWidth = Math.max(Math.ceil((globalMax - globalMin) / steps), 1);
 		if (isNaN(scaleStepWidth)) {
-			console.error('could not set scale for globalMax', globalMax, 'globalMin', globalMin, 'steps', steps);
+			// console.error('could not set scale for globalMax', globalMax, 'globalMin', globalMin, 'steps', steps);
 			return;
 		} else {
-			console.log('scale start', globalMin, 'scale end', globalMax, 'steps', steps, 'scale step width', scaleStepWidth);
+			// console.log('scale start', globalMin, 'scale end', globalMax, 'steps', steps, 'scale step width', scaleStepWidth);
 		}
 		eachKV(data, function (k, v) {
 			if (!v[type]) {
@@ -224,7 +224,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 				if (key) {
 					obj[key] = pair[1];
 				} else {
-					console.warn('not keeping key (keyMap was falsey) ', key);
+					// console.warn('not keeping key (keyMap was falsey) ', key);
 				}
 			}
 			out.push(obj);
@@ -255,12 +255,12 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		});
 		return deserialized;
 	};
-	
+
 	// overwrite default options
 	function defaultChartJSOptions() {
 		return {
 			tooltipTemplate: "<%= value %>"
-			//multiTooltipTemplate 
+			//multiTooltipTemplate
 		};
 	}
 	/**
@@ -280,7 +280,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		// add dates to URL
 		['start', 'end'].forEach(function (k) { if (settings[k]) { url = url + '&' + k + '=' + moment(settings[k]).format(service.DATE_FORMAT); } });
 		$http.get(url).success(function (resp) {
-			console.log('successful getting data from url: ' + url);
+			// console.log('successful getting data from url: ' + url);
 			var data = resp.data;
 			var labels = resp.meta.labels;
 			// TODO: Display that start and end dates are different (if they are)
@@ -303,7 +303,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			}
 			deferred.resolve(data);
 		}).error(function (err) {
-			console.error('COULD NOT GET DATA from URL: ' + url, err);
+			// console.error('COULD NOT GET DATA from URL: ' + url, err);
 			deferred.reject(err);
 		});
 		return deferred.promise;
@@ -396,7 +396,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 				return date.endOf(momentNames[period]).toDate();
 			}
 		} else {
-			console.log('Did NOT match relative format', s);
+			// console.log('Did NOT match relative format', s);
 			var dt = moment(s);
 			if (!dt || isNaN(dt.toDate())) {
 				throw new Error('could not process date string: ' + s);
@@ -404,7 +404,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			return dt.toDate();
 		}
 	};
-	service.serializeSettings = function (settings, multiSelectCommunities, availableCommunities) {
+	service.serializeSettings = function (settings, multiSelectCommunities) {
 
 
 		var serializable = {};
@@ -415,25 +415,19 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 			serializable.start = service.serializeDate(settings.start, true);
 			serializable.end = endDelta;
 		} else {
-			console.log('endDelta was: ', endDelta);
+			// console.log('endDelta was: ', endDelta);
 			serializable.start = service.serializeDate(settings.start, false);
 			serializable.end = service.serializeDate(settings.end, false);
 		}
 		// force bools to be actual true or false
 		['combineCharts', 'showEmpty'].forEach(function (k) { serializable[k] = !!settings[k]; });
 		['period'].forEach(function (k) { serializable[k] = settings[k]; });
-		
+
 		for (var x in multiSelectCommunities) {
 			 communities.push(multiSelectCommunities[x].id_community);
 		}
 
-		
-		// if they haven't explicitly chosen communities, we want to make sure that new communities get added in each time
-		if (availableCommunities && communities.length === availableCommunities.length) {
-			serializable.communities = ALL_COMMUNITIES_SELECTED;
-		} else {
-			serializable.communities = communities.join(',');
-		}
+		serializable.communities = communities.join(',');
 
 		return serializable;
 	};
@@ -445,7 +439,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		['combineCharts', 'showEmpty'].forEach(function (k) { if (serialized[k]) { out[k] = (serialized[k] === "true" || serialized[k] === true); } });
 		out.charts = service.deserializeChartOptions(serialized.charts) || [];
 		if (serialized.communities === ALL_COMMUNITIES_SELECTED) {
-			console.log(availableCommunities);
+			// console.log(availableCommunities);
 			out.communities = Object.keys(availableCommunities);
 		} else if (serialized.communities) {
 			out.communities = serialized.communities.split(/,/g);

@@ -1241,7 +1241,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		unset($out[ 'balanced_id' ]);
 		unset($out[ 'balanced_bank' ]);
-		
+
 
 		if (!$ignore['notifications']) {
 			$where = [];
@@ -1305,7 +1305,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// get the legacy data
 		if( !$isCockpit ){
 			// @performance: slowing shit down
-			//$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
+			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
 		if( $isCockpit ){
@@ -1908,6 +1908,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function hours( $gmt = false ) {
 
 		$isCockpit = Crunchbutton_Util::isCockpit();
+
 		if( !$isCockpit ){
 			// check if the community is closed #2988
 			$community = $this->community()->get(0);
@@ -2043,6 +2044,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out[] = [ 'from' => $start, 'to' => $end, 'status' => 'open' ];
 				return $out;
 			} else {
+				// check if the community is forced closed or auto closed
+				$community = $this->community()->get(0);
+				if( $community->id_community ){
+					if( $community->allRestaurantsClosed() ){
+						return [];
+					}
+					if( $this->delivery_service && $community->allThirdPartyDeliveryRestaurantsClosed() ){
+						return [];
+					}
+				}
 				return Hour::getByRestaurantNext24Hours( $this, $gmt );
 			}
 

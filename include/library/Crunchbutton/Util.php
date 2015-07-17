@@ -25,6 +25,10 @@ class Crunchbutton_Util extends Cana_Model {
 		return ( strtolower( c::db()->driver() ) == 'mysql' );
 	}
 
+	public static function removeNewLine( $string ){
+		return trim(preg_replace( '/\s+/', ' ', $string ) );
+	}
+
 	// https://gist.github.com/maggiben/9457434
 	public static function humanReadableNumbers( $number ){
 		if( $number < 1000 ){
