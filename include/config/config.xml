@@ -287,7 +287,7 @@
 	</google>
 	<optimizer>
 		<live>
-			<url>http://ec2-52-27-228-198.us-west-2.compute.amazonaws.com/optimizer</url>
+			<url>***REMOVED***</url>
 		</live>
 		<dev>
 			<url>http://192.168.56.101:5001/optimizer</url>
