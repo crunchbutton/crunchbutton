@@ -335,7 +335,7 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 			});
 
 			scope.uploader = new FileUploader({
-				url: '/api/community/resource/upload/',
+				url: '/api/resource/upload/',
 				autoUpload: false
 			});
 

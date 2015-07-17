@@ -1,11 +1,11 @@
 <?php
 
-class Crunchbutton_Community_Resource extends Cana_Table {
+class Crunchbutton_Resource extends Cana_Table {
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
-			->table('community_resource')
-			->idVar('id_community_resource')
+			->table('resource')
+			->idVar('id_resource')
 			->load($id);
 	}
 	public function www(){
@@ -15,7 +15,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	// shouldnt need this in the future once we only allow uploads after the resource is in the db
 	public static function toS3($path, $name) {
 
-		$res = new Crunchbutton_Community_Resource;
+		$res = new Crunchbutton_Resource;
 		$r = $res->localToS3($path, $name);
 
 		return $r;
@@ -73,14 +73,14 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 			$name = $this->name;
 		}
 		$pos = strrpos($file, '.');
-        $ext = substr($file, $pos+1);
+		$ext = substr($file, $pos+1);
 
 		$name = strtolower($name);
 		$name = preg_replace('/[^a-z0-9]/i','-',$name);
 		$name = preg_replace('/\-{2,}/','-', $name);
 		$name = trim($name, '-');
 
-		return $this->id_community_resource.'-'.$name.'.'.$ext;
+		return $this->id_resource.'-'.$name.'.'.$ext;
 	}
 
 	public function s3File() {
@@ -88,7 +88,7 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 	}
 
 	public function download_url(){
-		return Util::url() . '/api/community/resource/download/' . $this->id_community_resource . '/'.$this->file;
+		return Util::url() . '/api/resource/download/' . $this->id_resource . '/'.$this->file;
 	}
 
 	public function path(){
@@ -116,9 +116,9 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 
 	public function communities( $name = false ){
 		if( $name ){
-			return Crunchbutton_Community::q( 'SELECT community.name, community.id_community FROM community_resource_community INNER JOIN community ON community.id_community = community_resource_community.id_community WHERE id_community_resource = ?', [$this->id_community_resource]);
+			return Crunchbutton_Community::q( 'SELECT community.name, community.id_community FROM resource_community INNER JOIN community ON community.id_community = resource_community.id_community WHERE id_resource = ?', [$this->id_resource]);
 		} else {
-			return Crunchbutton_Community_Resource_Community::q( 'SELECT * FROM community_resource_community WHERE id_community_resource = ?', [$this->id_community_resource]);
+			return Crunchbutton_Resource_Community::q( 'SELECT * FROM resource_community WHERE id_resource = ?', [$this->id_resource]);
 		}
 	}
 
@@ -127,9 +127,9 @@ class Crunchbutton_Community_Resource extends Cana_Table {
 		$type = ( $type ) ? ' AND ' . $type . ' = true' : '';
 
 		if( $id_community == 'all' ){
-			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr WHERE cr.all = true AND active = true ' . $type );
+			return Crunchbutton_Resource::q( 'SELECT cr.* FROM resource cr WHERE cr.all = true AND active = true ' . $type );
 		} else {
-			return Crunchbutton_Community_Resource::q( 'SELECT cr.* FROM community_resource cr INNER JOIN community_resource_community crc ON cr.id_community_resource = crc.id_community_resource AND crc.id_community = ?  AND active = true ' . $type, [$id_community]);
+			return Crunchbutton_Resource::q( 'SELECT cr.* FROM resource cr INNER JOIN resource_community crc ON cr.id_resource = crc.id_resource AND crc.id_community = ?  AND active = true ' . $type, [$id_community]);
 		}
 	}
 

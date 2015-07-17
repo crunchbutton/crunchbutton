@@ -9,7 +9,7 @@
 			<th nowrap="tb-center">Active</th>
 			<th class="tb-small"></th>
 		</tr>
-		<tr ng-repeat="resource in resources track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_community_resource}}">
+		<tr ng-repeat="resource in resources track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_resource}}">
 			<td class="tb-v-center">
 				<span class="listview-bold">{{resource.name}}</span>
 				<br><a target="_system" href="{{resource.path}}">{{resource.file}}</a>
@@ -39,7 +39,7 @@
 				<span class="tag tag-red" ng-if="!resource.active">Inactive</span>
 			</td>
 			<td nowrap class="tb-v-center">
-				<a href="/community/resource/{{resource.id_community_resource}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+				<a href="/community/resource/{{resource.id_resource}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 			</td>
 		</tr>
 	</table>

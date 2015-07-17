@@ -1,7 +1,7 @@
-NGApp.factory( 'CommunityResourceService', function( $rootScope, $resource, ResourceFactory ) {
+NGApp.factory( 'ResourceService', function( $rootScope, $resource, ResourceFactory ) {
 
 	// Create a private resource 'drivers'
-	var resource = $resource( App.service + 'community/resource/:action/:id_resource', { id_admin: '@id_admin', action: '@action' }, {
+	var resource = $resource( App.service + 'resource/:action/:id_resource', { id_admin: '@id_admin', action: '@action' }, {
 				'save' : { 'method': 'POST', params : { action: 'save' } },
 				'get' : { 'method': 'GET', params : { } },
 				'list' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true },
@@ -10,7 +10,7 @@ NGApp.factory( 'CommunityResourceService', function( $rootScope, $resource, Reso
 		);
 
 
-	var resources = ResourceFactory.createResource(App.service + 'community/resource/list', {}, {
+	var resources = ResourceFactory.createResource(App.service + 'resource/list', {}, {
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -19,8 +19,8 @@ NGApp.factory( 'CommunityResourceService', function( $rootScope, $resource, Reso
 
 	var service = {}
 
-	service.get = function( id_community_resource, callback ){
-		resource.get( { 'id_resource': id_community_resource }, function( json ){
+	service.get = function( id_resource, callback ){
+		resource.get( { 'id_resource': id_resource }, function( json ){
 			callback( json );
 		} );
 	}

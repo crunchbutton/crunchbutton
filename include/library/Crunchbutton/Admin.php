@@ -1108,7 +1108,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function hasResource( $type = 'page' ){
-		$_resources = Crunchbutton_Community_Resource::byCommunity( 'all' );
+		$_resources = Crunchbutton_Resource::byCommunity( 'all' );
 		if( $_resources ){
 			foreach( $_resources as $resource ){
 				return true;
@@ -1122,7 +1122,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if ($groups) {
 			foreach ( $groups as $group ) {
 				if( $group->id_community ){
-					$_resources = Crunchbutton_Community_Resource::byCommunity( $group->id_community );
+					$_resources = Crunchbutton_Resource::byCommunity( $group->id_community );
 					if( $_resources ){
 						foreach( $_resources as $resource ){
 							if( $resource->active ){

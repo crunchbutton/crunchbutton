@@ -42,7 +42,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['agent'] = $agent->os.' '.$agent->browser;
 
 		// resources
-		$resources = Crunchbutton_Community_Resource::byCommunity( $this->id_community, 'order_page' );
+		$resources = Crunchbutton_Resource::byCommunity( $this->id_community, 'order_page' );
 		if( $resources ){
 			$out['resources'] = [];
 			foreach( $resources as $resource ){
