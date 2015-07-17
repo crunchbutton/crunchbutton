@@ -440,18 +440,6 @@
 										</span>
 									</li>
 									<li class="input">
-										<span>Pay Another Restaurant</span>
-										<span class="pull-right span9">
-											<select class="chzn-select" name="id_restaurant_pay_another_restaurant" id="id_restaurant_pay_another_restaurant">
-												<option value="" selected>Choose...</option>
-												<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) :
-													$selected = ( $restaurant->id_restaurant == $this->payment->id_restaurant_pay_another_restaurant ) ? 'selected="selected"' : ''; ?>
-												<option <?=$selected?> value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-												<? endforeach ; ?>
-											</select>
-										</span>
-									</li>
-									<li class="input">
 										<button type="button" class="btn btn-blue payment-info-button"><i class="icon-money"></i>  Save Payment changes</button>
 										<span class="pull-right">
 											<div class="alert-payment-info" style="display:none">
@@ -529,7 +517,6 @@
 
 			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/paymentinfo', {
 				payment_method : ( $( '#payment_method' ).val() ),
-				id_restaurant_pay_another_restaurant : ( $( '#id_restaurant_pay_another_restaurant' ).val() ),
 				check_address : ( $( '#check_address' ).val() ),
 				check_address_city : ( $( '#check_address_city' ).val() ),
 				check_address_state : ( $( '#check_address_state' ).val() ),

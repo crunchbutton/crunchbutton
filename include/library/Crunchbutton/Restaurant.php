@@ -1149,7 +1149,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
-			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','id_restaurant_pay_another_restaurant','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
+			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
