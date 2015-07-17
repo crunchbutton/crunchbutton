@@ -304,8 +304,11 @@
 						<div class="field-value"><a href ng-click="callText(ticket.order.driver.phone)">{{ticket.order.driver.phone | formatPhone}}</a></div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Deliveries</div>
-						<div class="field-value">&nbsp;{{ticket.order.driver.deliveries.length}}</div>
+						<div class="field-key">Delivering</div>
+						<div class="field-value">
+							&nbsp;<span ng-if="ticket.order.driver.deliveries.length">{{ticket.order.driver.deliveries.length}}</span>
+							&nbsp;<span ng-if="!ticket.order.driver.deliveries.length">0</span>
+						</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Shift ends in</div>
