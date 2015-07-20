@@ -180,8 +180,12 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 
 	$scope.isMobile = App.isMobile();
 
-	$scope.id_admin = parseInt( $scope.account.user.id_admin );
-	if( $scope.account.isAdmin ){
+	if( $scope.account && $scope.account.user && $scope.account.user.id_admin ){
+		$scope.id_admin = parseInt( $scope.account.user.id_admin );
+	}
+
+
+	if( $scope.account && $scope.account.isAdmin ){
 		if( $routeParams.id ){
 			$scope.id_admin = parseInt( $routeParams.id );
 		}
