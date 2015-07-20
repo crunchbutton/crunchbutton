@@ -87,7 +87,20 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	public function exports($guid = null) {
 		// @todo: #5734
 		$out = $this->properties();
-		$out['name'] = Phone::name($this);
+
+		 $info = Phone::name( $this, true );
+
+		 $out['name'] = $info[ 'name' ];
+
+		 if( !$out[ 'id_admin' ] && $info[ 'id_admin' ] ){
+			 $out[ 'id_admin' ] = $info[ 'id_admin' ];
+			 $this->id_admin = $info[ 'id_admin' ];
+		 }
+
+		 if( !$out[ 'id_user' ] && $info[ 'id_user' ] ){
+			 $out[ 'id_user' ] = $info[ 'id_user' ];
+		 }
+
 		$out['first_name'] = explode(' ',$out['name'])[0];
 		$out['timestamp'] = strtotime($this->date);
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
