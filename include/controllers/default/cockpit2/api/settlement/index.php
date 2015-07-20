@@ -385,7 +385,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	private function _restaurantSendSummary(){
 		$id_payment = c::getPagePiece( 4 );
-		$id_payment = 1474;
 		$settlement = new Settlement;
 		if( $settlement->sendRestaurantPaymentNotification( $id_payment ) ){
 			echo json_encode( [ 'success' => true ] );
