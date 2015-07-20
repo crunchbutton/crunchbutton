@@ -56,6 +56,18 @@ class Crunchbutton_Referral extends Cana_Table{
 		setcookie( 'referral', '', time() -3600, '/' );
 	}
 
+	public static function isCodeAlreadyInUse( $code ){
+		$user = Crunchbutton_User::byInviteCode( $code )->get( 0 );
+		if( $user->id_user ){
+			return true;
+		}
+		$admin = Crunchbutton_Admin::byInviteCode( $code );
+		if( $admin->id_user ){
+			return true;
+		}
+		return false;
+	}
+
 	public function validCode( $code ){
 		$user = Crunchbutton_User::byInviteCode( $code );
 		if( $user->id_user ){
