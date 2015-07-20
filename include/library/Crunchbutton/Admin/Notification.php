@@ -12,6 +12,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const TYPE_PUSH_ANDROID = 'push-android';
 	const REPS_COCKPIT = 'https://cockpit.la/';
 
+	const PRIORITY_MESSAGES_INDEX = 0;
+
 	const IS_ENABLE_KEY = 'notification-admin-is-enable';
 	const IS_ENABLE_TO_TAKEOUT_KEY = 'notification-admin-is-enable-takeout';
 
@@ -185,17 +187,34 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	}
 
+	public function sendPriority( Crunchbutton_Order $order ){
+
+		switch ( $this->type ) {
+
+			case Crunchbutton_Admin_Notification::TYPE_SMS:
+				$res = $this->sendSms( $order, $this->getSmsMessage($order, static::PRIORITY_MESSAGES_INDEX, 'sms'));
+				break;
+
+			case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS:
+				$res = $this->sendPushIos( $order, $this->getSmsMessage($order, static::PRIORITY_MESSAGES_INDEX, 'push'));
+				break;
+
+			case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID:
+				$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, static::PRIORITY_MESSAGES_INDEX, 'push'));
+				break;
+		}
+	}
+
 	public function send( Crunchbutton_Order $order ) {
 
 		$env = c::getEnv();
 
 		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $order->id_order );
-/*
+
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
 			return;
 		}
-*/
 
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
 		if( !$is_enable ){
@@ -214,31 +233,31 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		if( $attempts == 0 ){
 			switch ( $this->type ) {
 				case Crunchbutton_Admin_Notification::TYPE_FAX :
-					$res =$this->sendFax( $order );
+					$res = $this->sendFax( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_SMS :
-					$res =$this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
+					$res = $this->sendSms( $order, $this->getSmsMessage($order, 1, 'sms'));
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS :
-					$res =$this->sendDumbSms( $order );
+					$res = $this->sendDumbSms( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PHONE :
-					$res =$this->phoneCall( $order );
+					$res = $this->phoneCall( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_EMAIL :
-					$res =$this->sendEmail( $order );
+					$res = $this->sendEmail( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
-					$res =$this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
+					$res = $this->sendPushIos( $order, $this->getSmsMessage($order, 1, 'push'));
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID :
-					$res =$this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
+					$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, 1, 'push'));
 					break;
 			}
 		} else if( $attempts >= 1 ){
@@ -530,7 +549,25 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function getSmsMessage($order, $count = 1, $type = 'push') {
+
 		switch ($count) {
+
+			// priority messages
+			case static::PRIORITY_MESSAGES_INDEX:
+				switch ($type) {
+					case 'push':
+						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
+						$message .= " Sent to YOU 1st. Accept ASAP before others see it!";
+						break;
+					case 'sms':
+						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
+						$message .= static::REPS_COCKPIT . $order->id_order . "\n";
+						$message .= "#: " . $order->phone . "\n";
+						$message .= $order->address . "\n";
+						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
+					break;
+				}
+				break;
 			default:
 			case 1:
 				switch ($type) {
@@ -539,7 +576,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
 						$message .= static::REPS_COCKPIT . $order->id_order . "\n";
 						$message .= $order->message( 'sms-admin' );
-
 						break;
 					case 'push':
 						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
