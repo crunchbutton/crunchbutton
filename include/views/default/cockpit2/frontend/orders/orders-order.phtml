@@ -132,6 +132,18 @@
 			</div>
 		</div>
 
+		<div class="support-box-wrap box-content2" ng-if="order.notes">
+			<div class="support-box-wrap-header">
+				<h1>Notes</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<br>
+				<p>{{order.notes}}</p>
+			</div>
+		</div>
+
+
 		<? /* delivery status */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.status && order.delivery_service">
 			<div class="support-box-wrap-header">
