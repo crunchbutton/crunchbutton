@@ -2,27 +2,29 @@
 
 class Crunchbutton_Queue extends Cana_Table {
 
-	const TYPE_CLASS_ORDER										= 'Crunchbutton_Queue_Order';
-	const TYPE_CLASS_ORDER_RECEIPT						= 'Crunchbutton_Queue_Order_Receipt';
-	const TYPE_CLASS_ORDER_CONFIRM						= 'Crunchbutton_Queue_Order_Confirm';
+	const TYPE_CLASS_ORDER							= 'Crunchbutton_Queue_Order';
+	const TYPE_CLASS_ORDER_RECEIPT					= 'Crunchbutton_Queue_Order_Receipt';
+	const TYPE_CLASS_ORDER_CONFIRM					= 'Crunchbutton_Queue_Order_Confirm';
 	const TYPE_CLASS_ORDER_PEXCARD_FUNDS			= 'Crunchbutton_Queue_Order_PexCard_Funds';
 	const TYPE_CLASS_NOTIFICATION_DRIVER			= 'Crunchbutton_Queue_Driver';
-	const TYPE_CLASS_NOTIFICATION_YOUR_DRIVER	= 'Crunchbutton_Queue_Notification_Your_Driver';
-	const TYPE_CLASS_NOTIFICATION_MINUTES_WAY	= 'Crunchbutton_Queue_Notification_Minutes_Way';
+	const TYPE_CLASS_NOTIFICATION_DRIVER_PRIORITY	= 'Crunchbutton_Queue_Notification_Driver_Priority';
+	const TYPE_CLASS_NOTIFICATION_YOUR_DRIVER		= 'Crunchbutton_Queue_Notification_Your_Driver';
+	const TYPE_CLASS_NOTIFICATION_MINUTES_WAY		= 'Crunchbutton_Queue_Notification_Minutes_Way';
 
-	const TYPE_ORDER											= 'order';
-	const TYPE_ORDER_RECEIPT							= 'order-receipt';
-	const TYPE_ORDER_CONFIRM							= 'order-confirm';
-	const TYPE_ORDER_PEXCARD_FUNDS				= 'order-pexcard-funds';
-	const TYPE_NOTIFICATION_DRIVER				= 'notification-driver';
+	const TYPE_ORDER						= 'order';
+	const TYPE_ORDER_RECEIPT				= 'order-receipt';
+	const TYPE_ORDER_CONFIRM				= 'order-confirm';
+	const TYPE_ORDER_PEXCARD_FUNDS			= 'order-pexcard-funds';
+	const TYPE_NOTIFICATION_DRIVER			= 'notification-driver';
+	const TYPE_NOTIFICATION_DRIVER_PRIORITY = 'notification-driver-priority';
 	const TYPE_NOTIFICATION_YOUR_DRIVER		= 'notification-your-driver';
 	const TYPE_NOTIFICATION_MINUTES_WAY		= 'notification-minutes-way';
 
-	const STATUS_NEW								= 'new';
-	const STATUS_SUCCESS						= 'success';
-	const STATUS_FAILED							= 'failed';
-	const STATUS_RUNNING						= 'running';
-	const STATUS_STOPPED						= 'stopped';
+	const STATUS_NEW		= 'new';
+	const STATUS_SUCCESS	= 'success';
+	const STATUS_FAILED		= 'failed';
+	const STATUS_RUNNING	= 'running';
+	const STATUS_STOPPED	= 'stopped';
 
 	public static function process($all = false) {
 
@@ -31,6 +33,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		}
 
 		$queue = self::q('select * from queue where status=?'.$allQuery, [self::STATUS_NEW]);
+		$queue = self::q('select * from queue where id_queue = 100473');
 		foreach ($queue as $q) {
 			echo 'Starting #'.$q->id_queue. '...';
 
