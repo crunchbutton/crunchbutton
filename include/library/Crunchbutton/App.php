@@ -49,15 +49,14 @@ class Crunchbutton_App extends Cana_App {
 				$_SERVER['SERVER_NAME'] = 'heroku.crunchr.co';
 			}
 		}
-
 		// db by hostname
 		// travis
 		if (getenv('TRAVISPOSTGRES')) {
 			$db = 'travispostgres';
 		} elseif (getenv('TRAVIS')) {
 			$db = 'travis';
-		// anything local
-		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$/',$_SERVER['SERVER_NAME'])) {
+		// anything local or dev
+		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
 		// anything by heroku use its own db
 		} elseif (preg_match('/^heroku.*$/',$_SERVER['SERVER_NAME'])) {
