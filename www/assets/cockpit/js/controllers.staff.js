@@ -96,6 +96,12 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		load();
 	});
 
+	$scope.change_status = function(){
+		var params = { id_admin: $scope.staff.id_admin, active: $scope.staff.active };
+		StaffService.change_status( params, function(){
+			load();
+		} );
+	}
 
 	var load = function(){
 		StaffService.get($routeParams.id, function(staff) {

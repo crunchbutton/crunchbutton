@@ -36,6 +36,14 @@
 						<div class="field-key">Timezone</div>
 						<div class="field-value">{{staff.timezone}}</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Ative</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-change="change_status();" class="switch" ng-model="staff.active"/><div></div>
+							</label>
+						</div>
+					</div>
 					<div class="field-row" ng-if="staff.date_terminated_formatted">
 						<div class="field-key">Inactive since</div>
 						<div class="field-value">{{staff.date_terminated_formatted}}</div>

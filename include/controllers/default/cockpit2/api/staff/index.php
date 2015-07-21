@@ -30,6 +30,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_status($staff);
 					break;
 
+				case 'change-status':
+					$this->_change_status($staff);
+					break;
+
+
 				case 'group':
 					$this->_permissionDenied();
 					$this->_isPost();
@@ -125,6 +130,21 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$text = $this->request()[ 'text' ];
 			$staff->addNote( $text );
 			$this->_openLastNote( $staff );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
+	private function _change_status( $staff ){
+		if( $staff->id_admin ){
+			$staff->active = ( boolval( $this->request()[ "active" ] ) ? 1 : 0 );
+			if( !$staff->active ){
+				$staff->date_terminated = date( 'Y-m-d' );
+			} else {
+				$staff->date_terminated = null;
+			}
+			$staff->save();
+			echo json_encode( [ 'success' => 'true' ] );
 		} else {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 		}
@@ -348,7 +368,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			';
 			$keys[] = $pexcard == 'yes' ? true : false;
 		}
-		
+
 
 		if ($type == 'driver') {
 			if( $send_text != 'all' ){
