@@ -244,6 +244,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 
 	$scope.refund = function(){
 		OrderService.askRefund( $routeParams.id, function(){
+			$rootScope.closePopup();
 			$rootScope.reload();
 		} );
 	}

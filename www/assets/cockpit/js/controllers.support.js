@@ -121,9 +121,11 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	var socketStuff = function(){
 		SocketService.listen('ticket.' + id_support, TicketViewService.scope ).on('message', function(d) {
-			for ( var x in TicketViewService.sideInfo.data.messages ) {
-				if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
-					return;
+			if( d.guid ){
+				for ( var x in TicketViewService.sideInfo.data.messages ) {
+					if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
+						return;
+					}
 				}
 			}
 			TicketViewService.sideInfo.add_message( d );
