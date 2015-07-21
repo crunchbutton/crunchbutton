@@ -64,6 +64,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			url: App.service + 'staff/:id_admin/community',
 			method: 'POST',
 			params : {}
+		},
+		'change_status' : {
+			url: App.service + 'staff/:id_admin/change-status',
+			method: 'POST',
+			params : {}
 		}
 	});
 
@@ -99,6 +104,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.save_note = function(params, callback) {
 		staff.save_note( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.change_status = function(params, callback) {
+		staff.change_status( params, function(data) {
 			callback(data);
 		});
 	}
