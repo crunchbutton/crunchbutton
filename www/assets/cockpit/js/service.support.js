@@ -141,7 +141,12 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.scope.ticket = ticket;
 
 		if (service.scope.viewTicket) {
-			service.socket.emit('event.subscribe', 'ticket.' + service.scope.viewTicket);
+			if( typeof service.scope.viewTicket == 'object' ){
+				var id_support = service.scope.viewTicket.id_support
+			} else {
+				var id_support = service.scope.viewTicket;
+			}
+			service.socket.emit('event.subscribe', 'ticket.' + id_support);
 		}
 	});
 
