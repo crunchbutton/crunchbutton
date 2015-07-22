@@ -133,6 +133,10 @@ class Crunchbutton_Queue extends Cana_Table {
 
 		$params['status'] = self::STATUS_NEW;
 
+		if( $params[ 'id_order' ] && $params[ 'id_order' ] == 171288 ){
+			return;
+		}
+
 		$q = new Crunchbutton_Queue($params);
 		$q->save();
 
