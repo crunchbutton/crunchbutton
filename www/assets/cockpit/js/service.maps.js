@@ -305,6 +305,10 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		if (params.driver && params.driver.location) {
 			var driver = new google.maps.LatLng(parseFloat(params.driver.location.lat), parseFloat(params.driver.location.lon));
 		}
+
+		params.restaurant.loc_lat = ( params.restaurant.loc_lat ? params.restaurant.loc_lat : params.restaurant.location_lat );
+		params.restaurant.loc_long = ( params.restaurant.loc_long ? params.restaurant.loc_long : params.restaurant.location_lon );
+
 		var restaurant = new google.maps.LatLng(parseFloat(params.restaurant.loc_lat), parseFloat(params.restaurant.loc_long));
 
 		if (!maps[params.id]) {
@@ -330,8 +334,8 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 				map.setCenter(restaurant);
 			} else {
 				return;
-			}
 
+			}
 			var directionsService = new google.maps.DirectionsService();
 			maps[params.id].markers.directions = new google.maps.DirectionsRenderer({suppressMarkers: true});
 			maps[params.id].markers.directions.setMap(map);
@@ -415,7 +419,6 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 				}
 			});
 		}
-
 	};
 
 	return service;

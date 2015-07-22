@@ -41,10 +41,6 @@
 				<h1>New User or Driver</h1>
 				<div class="divider"></div>
 			</div>
-
-			<map ng-if="ticket.order.driver && ticket.order.driver.location" center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-
-			</map>
 		</div>
 
 		<div class="support-box-wrap box-content2" ng-if="ticket.order.id_order">
@@ -264,23 +260,6 @@
 			</div>
 		</div>
 
-
-		<div class="support-box-wrap box-content2" class="support-box-wrap" ng-if="ticket.order.driver">
-			<div class="support-box-wrap-header">
-				<h1>Location</h1>
-				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
-						<span class="tag tag-red">BETA</span>
-					</div>
-				</div>
-				<div class="divider"></div>
-			</div>
-
-			<map ng-if="ticket.order.driver && ticket.order.driver.location" center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-
-			</map>
-		</div>
-
 		<div class="support-box-wrap box-content2" ng-if="ticket.order.driver.id_admin" class="support-box-wrap">
 			<div class="support-box-wrap-header">
 				<h1>Driver #{{ticket.order.driver.id_admin}}</h1>
@@ -373,7 +352,17 @@
 			</div>
 
 		</div>
-
 	</div>
-
+	<div class="support-box-wrap box-content2" class="support-box-wrap" ng-if="ticket.order.driver && ticket.order.driver.location">
+		<div class="support-box-wrap-header">
+			<h1>Location</h1>
+			<div class="support-box-header-actions-wrap">
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+		<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+	</div>
 </div>
