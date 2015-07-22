@@ -53,6 +53,38 @@
 							<span class="tag tag-lightgrey" ng-if="community.type == 'takeout'">Takeout</span>
 						</div>
 					</div>
+
+					<div class="field-row">
+						<div class="field-key">Timezone</div>
+						<div class="field-value">{{community.timezone}}</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Status</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/community/edit/{{community.permalink}}"><button class="button button-small button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+
+					<div class="field-row">
+						<div class="field-key">Autoclose</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
+							<span class="tag tag-red" ng-if="!community.auto_close">Disabled</span>
+						</div>
+					</div>
+
 					<div class="field-row">
 						<div class="field-key">Is Auto Closed</div>
 						<div class="field-value">
@@ -104,38 +136,28 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2">
-			<div class="support-box-wrap-header">
-				<h1>Location</h1>
-				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
-						<span class="tag tag-red">BETA</span>
-					</div>
+	</div>
+
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>Location</h1>
+			<div class="support-box-header-actions-wrap">
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
 				</div>
-				<div class="divider"></div>
 			</div>
-
-			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
-
-			<div class="no-box-content-color">
-
-				<div class="field-container">
-
-					<div class="field-row">
-						<div class="field-key">Latitude, Longitude</div>
-						<div class="field-value">{{community.loc_lat}}, {{community.loc_lon}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Timezone</div>
-						<div class="field-value">{{community.timezone}}</div>
-					</div>
-
-				</div>
-
-
-			</div>
+			<div class="divider"></div>
 		</div>
 
+		<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+		<div class="no-box-content-color">
+			<div class="field-container">
+				<div class="field-row">
+					<div class="field-key">Latitude, Longitude</div>
+					<div class="field-value">{{community.loc_lat}}, {{community.loc_lon}}</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="divider"></div>

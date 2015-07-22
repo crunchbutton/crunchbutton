@@ -345,23 +345,21 @@
 			</div>
 		</div>
 
+	</div>
 
-		<? /* location */ ?>
-		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
-			<div class="support-box-wrap-header">
-				<h1>Location</h1>
-				<div class="support-box-header-actions">
-					<span class="tag tag-red">BETA</span>
-				</div>
-				<div class="divider"></div>
+	<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
+		<div class="support-box-wrap-header">
+			<h1>Location</h1>
+			<div class="support-box-header-actions">
+				<span class="tag tag-red">BETA</span>
 			</div>
-
-			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-				<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
-			</map>
 			<div class="divider"></div>
-
 		</div>
+
+		<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+			<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
+		</map>
+		<div class="divider"></div>
 
 	</div>
 

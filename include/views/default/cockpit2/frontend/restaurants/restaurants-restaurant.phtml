@@ -4,31 +4,63 @@
 
 
 	<div class="support-boxes">
-		
-		
+
+
 		<div class="support-box-wrap box-content2">
 			<br>
 			<div class="no-box-content-color customer-content-box">
 				<div class="restaurant-image-button-wrap">
-					<? /* commenting out until we push code 
+					<? /* commenting out until we push code
 					<div class="restaurant-image-upload-button" restaurant-image-upload id_restaurant="{{id_restaurant}}">
 						<button class="ladda-button ladda-button-nohover button button-empty button-small button-green" data-color="" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-image"></i>&nbsp;&nbsp;Upload Image</span></button>
 						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden">
 					</div>
 					*/ ?>
 				</div>
-				
+
 				<a href="{{restaurant.images.original}}" target="_blank">
 					<div class="customer-image-crop customer-image-crop-large customer-image-updater restaurant-image-updater">
 						<img ng-if="restaurant.image" class="customer-image-large" src="{{restaurant.images.thumb}}" id="restaurant-image-thumb"></img>
 						<div ng-if="!restaurant.image" class="customer-image-large restaurant-image-null"></div>
 					</div>
 				</a>
-			
+
 				<h1 class="customer-name-large">{{restaurant.name}}</h1>
 			</div>
 		</div>
 
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Payment Info</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/restaurant/payment-info/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Balanced</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.payment_type.balanced_bank && restaurant.payment_type.balanced_id">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.payment_type.balanced_bank || !restaurant.payment_type.balanced_id">No</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Stripe</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id">Yes</span>
+							<span class="tag tag-red" ng-if="!restaurant.payment_type.stripe_id || !restaurant.payment_type.stripe_account_id">No</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br><br>
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
@@ -71,7 +103,7 @@
 						</div>
 					</div>
 
-					
+
 					<div class="field-row">
 						<div class="field-key">Type</div>
 						<div class="field-value">
@@ -104,54 +136,23 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="support-box-wrap box-content2">
-			<div class="support-box-wrap-header">
-				<h1>Payment Info</h1>
-				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
-						<a href="/restaurant/payment-info/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-					</div>
-				</div>
-				<div class="divider"></div>
-			</div>
-
-			<div class="no-box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key">Balanced</div>
-						<div class="field-value">
-							<span class="tag tag-green" ng-if="restaurant.payment_type.balanced_bank && restaurant.payment_type.balanced_id">Yes</span>
-							<span class="tag tag-red" ng-if="!restaurant.payment_type.balanced_bank || !restaurant.payment_type.balanced_id">No</span>
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Stripe</div>
-						<div class="field-value">
-							<span class="tag tag-green" ng-if="restaurant.payment_type.stripe_id && restaurant.payment_type.stripe_account_id">Yes</span>
-							<span class="tag tag-red" ng-if="!restaurant.payment_type.stripe_id || !restaurant.payment_type.stripe_account_id">No</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-		<div class="support-box-wrap box-content2">
-			<div class="support-box-wrap-header">
-				<h1>Location</h1>
-				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
-						<span class="tag tag-red">BETA</span>
-					</div>
-				</div>
-				<div class="divider"></div>
-			</div>
-
-			<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
-		</div>
-
 	</div>
+
+
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>Location</h1>
+			<div class="support-box-header-actions-wrap">
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+
+		<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+	</div>
+
 	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
 
 	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
@@ -196,4 +197,3 @@
 
 
 </div>
-
