@@ -344,7 +344,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
 
 		// Make these notifications pop up on support on cockpit #3008
-		// Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 
 		// Crunchbutton_Message_Sms::send([
 		// 	'to' => Crunchbutton_Support::getUsers(),
