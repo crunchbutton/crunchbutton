@@ -33,7 +33,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		}
 
 		$queue = self::q('select * from queue where status=?'.$allQuery, [self::STATUS_NEW]);
-		$queue = self::q('select * from queue where id_queue = 100473');
+
 		foreach ($queue as $q) {
 			echo 'Starting #'.$q->id_queue. '...';
 
@@ -132,10 +132,6 @@ class Crunchbutton_Queue extends Cana_Table {
 		}
 
 		$params['status'] = self::STATUS_NEW;
-
-		if( $params[ 'id_order' ] && $params[ 'id_order' ] == 171288 ){
-			return;
-		}
 
 		$q = new Crunchbutton_Queue($params);
 		$q->save();
