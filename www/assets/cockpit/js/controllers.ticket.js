@@ -125,6 +125,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	var cleanup;
 
 	var draw = function() {
+
 		if (!$scope.map || !$scope.ticket) {
 			return;
 		}

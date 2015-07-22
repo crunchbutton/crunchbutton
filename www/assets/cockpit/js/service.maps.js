@@ -52,7 +52,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 	};
 
 	service.style = function(map) {
-		map.setOptions({styles: service.styles.cockpit});
+		map.setOptions({styles: service.styles.cockpit, scrollwheel: false});
 	};
 
 	var maps = {};
