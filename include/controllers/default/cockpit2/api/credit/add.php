@@ -45,6 +45,7 @@ class Controller_api_credit_add extends Crunchbutton_Controller_RestAccount {
 		$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 		$giftcard->active = 1;
 		$giftcard->id_admin = c::user()->id_admin;
+		$giftcard->paid_by = 'crunchbutton';
 		$giftcard->date = date('Y-m-d H:i:s');
 		$giftcard->code = $giftcard->promoCodeGeneratorUseChars( Crunchbutton_Promo::CHARS, 10, '', '.la.' );
 		$giftcard->issued = Crunchbutton_Promo::ISSUED_CREDIT;
