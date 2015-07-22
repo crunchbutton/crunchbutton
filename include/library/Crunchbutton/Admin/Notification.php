@@ -331,6 +331,16 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			return;
 		}
 
+		//spam bug - let it here for while @pererinha
+		if( $order->status() && $order->status()->last() ){
+			$status = $order->status()->last()[ 'status' ];
+			if( $status != 'new' ){
+				Log::debug( [ 'order' => $order->id_order, 'status'=> $status, 'action' => 'warningAboutNoRepsWorking odd spamming bug - not sent','type' => 'watching' ]);
+				return;
+			}
+		}
+
+
 		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
 		$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
@@ -346,11 +356,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		// Make these notifications pop up on support on cockpit #3008
 		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 
-		// Crunchbutton_Message_Sms::send([
-		// 	'to' => Crunchbutton_Support::getUsers(),
-		// 	'message' => $message,
-		// 	'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
-		// ]);
+		Crunchbutton_Message_Sms::send([
+			'to' => Crunchbutton_Support::getUsers(),
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
+		]);
 	}
 
 	public function host_callback(){
