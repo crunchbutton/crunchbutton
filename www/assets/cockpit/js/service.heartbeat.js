@@ -26,6 +26,13 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 		// Just run if the user is loggedin
 		if (AccountService.isLoggedIn()) {
 
+			// Register push service - Android
+			if( App.isPhoneGap && AccountService && AccountService.user && AccountService.user.android_push ){
+				if( !PushService.registered ){
+					PushService.register( function(){ console.log("push registered"); });
+				}
+			}
+
 			// reboot the interval
 			$interval.cancel(service.repeat);
 			service.repeat = $interval(service.check, service.every);

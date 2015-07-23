@@ -1,8 +1,9 @@
-NGApp.factory('PushService', function($http, MainNavigationService, DriverOrdersService) {
+NGApp.factory('PushService', function($http, $location, $timeout, MainNavigationService, DriverOrdersService, $rootScope) {
 
 	var service = {
 		id: null,
-		badges: 0
+		badges: 0,
+		registered: false
 	};
 
 	if (!App.isPhoneGap) {
@@ -95,6 +96,7 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 		parent.plugins.pushNotification.register(
 			function(id) {
 				service.id = id;
+				service.registered = true;
 				console.debug('Push id: ' + id);
 
 				if (id == 'OK') {
@@ -114,7 +116,6 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 
 
 	service.receive = function(msg) {
-		console.debug('Notification: ', msg);
 
 		var complete = function() {
 
@@ -141,6 +142,29 @@ NGApp.factory('PushService', function($http, MainNavigationService, DriverOrders
 				MainNavigationService.link('/drivers/order/' + order);
 				return;
 				break;
+		}
+
+		// Android
+		switch ( msg.event ) {
+			case 'message':
+				// If the driver has the app opened it does not do nothing
+				if( !msg.foreground ){
+					if( msg.payload && msg.payload.message && msg.payload.title == 'Cockpit New Order' ){
+						var order = msg.payload.id.replace( /^\D+/g, '');
+						if( order ){
+							if( $location.path() !== '/drivers/orders' ){
+								$rootScope.makeBusy();
+								$timeout( function(){
+									MainNavigationService.link( '/drivers/orders' );
+								}, 400 );
+								return;
+							}
+						}
+					}
+				}
+
+				break;
+
 		}
 
 		// iOS

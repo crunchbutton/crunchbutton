@@ -39,7 +39,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function ssn( $ssn = false ){
 		return $this->social_security_number( $ssn );
 	}
-	
+
 	public function hasSSN() {
 		if (!$this->id_admin) {
 			return false;
@@ -845,6 +845,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		foreach( $remove as $rem ){
 			unset( $ex[ $rem ] );
 		}
+
+		// export info is the user has notification auth
+		$ex[ 'android_push' ] = Crunchbutton_Admin_Notification::adminHasNotification( $this->id_admin, Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID );
 
 		$community_delivery = $this->communityDriverDelivery();
 		if( $community_delivery->id_community ){
