@@ -399,14 +399,14 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversHelpCtrl',
 			templateUrl: 'assets/view/drivers-help.html',
 			back: false,
-            reloadOnSearch: false
+			reloadOnSearch: false
 		})
 		.when('/drivers/feedback', {
 			action: 'drivers-feedback',
 			controller: 'DriversFeedbackCtrl',
 			templateUrl: 'assets/view/drivers-feedback.html',
 			back: false,
-            reloadOnSearch: false
+			reloadOnSearch: false
 		})
 		.when('/invite', {
 			action: 'drivers-invite',
@@ -719,6 +719,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	} );
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+
+		$rootScope.unBusy();
+
 		$rootScope.navTitle = '';
 		// Store the actual page
 
