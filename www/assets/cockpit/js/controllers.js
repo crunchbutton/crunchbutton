@@ -165,6 +165,62 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	});
 });
 
+NGApp.controller( 'NotificationConfirmCtrl', function ($scope, $rootScope ) {
+	$rootScope.$on('notificationConfirm', function(e, title, message, success, fail, buttons) {
+
+		$(':focus').blur();
+
+		var complete = function() {
+			$rootScope.closePopup();
+			if (typeof success === 'function') {
+				success();
+			}
+		};
+
+		var cancel = function() {
+			$rootScope.closePopup();
+			if (typeof fail === 'function') {
+				fail();
+			}
+		};
+
+		if ($scope.$$phase) {
+			$scope.alertTitle = title;
+			$scope.message = message;
+			$scope.complete = complete;
+			$scope.cancel = cancel;
+			$scope.buttonOk = 'Ok';
+			$scope.buttonCancel = 'Cancel';
+			if( buttons ){
+				buttons = buttons.split(',');
+				if( buttons.length == 2 ){
+					$scope.buttonOk = buttons[0];
+					$scope.buttonCancel = buttons[1];
+				}
+			}
+			App.dialog.show('.notification-confirm-container');
+
+		} else {
+			$rootScope.$apply(function(scope) {
+				scope.alertTitle = title;
+				scope.message = message;
+				scope.complete = complete;
+				scope.cancel = cancel;
+				scope.buttonOk = 'Ok';
+				scope.buttonCancel = 'Cancel';
+				if( buttons ){
+					buttons = buttons.split(',');
+					if( buttons.length == 2 ){
+						scope.buttonOk = buttons[0];
+						scope.buttonCancel = buttons[1];
+					}
+				}
+				App.dialog.show('.notification-confirm-container');
+			});
+		}
+	});
+});
+
 NGApp.controller( 'CallText', function ($scope, $rootScope) {
 
 	$rootScope.$on('callText', function(e, num) {

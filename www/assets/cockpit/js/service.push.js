@@ -25,7 +25,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 
 	var saveToken = function(id, complete) {
 		service.id = id;
-		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
+		if ( window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
 			var key = 'push-android';
 		} else {
 			var key = 'push-ios';
@@ -41,7 +41,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 
 	service.register = function(complete) {
 
-		if (window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos') {
+		if ( window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
 			var params = {
 				'senderID': '1029345412368',
 				'ecb': 'pushnotification'
@@ -117,9 +117,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 
 	service.receive = function(msg) {
 
-		var complete = function() {
-
-		};
+		var complete = function() {};
 
 		if (msg.event == 'registered' && msg.regid) {
 			saveToken(msg.regid, complete);
@@ -144,42 +142,53 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 				break;
 		}
 
+		var newOrder = function( id_order ){
+			var open = function(){
+				if( $location.path() !== '/drivers/order/' + id_order ){
+					$rootScope.makeBusy();
+					$timeout( function(){
+						MainNavigationService.link( '/drivers/order/' + id_order );
+					}, 400 );
+					return;
+				}
+			}
+			var cancel = function(){};
+			var message = 'Open the new order #' + id_order +' ?';
+			var title = 'New Order';
+			App.confirm( message, title, open, cancel, 'Open,Cancel')
+		}
+
 		// Android
-		switch ( msg.event ) {
-			case 'message':
-				// If the driver has the app opened it does not do nothing
-				if( !msg.foreground ){
+		if( window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' ) ){
+			switch ( msg.event ) {
+				case 'message':
 					if( msg.payload && msg.payload.message && msg.payload.title == 'Cockpit New Order' ){
-						var order = msg.payload.id.replace( /^\D+/g, '');
-						if( order ){
-							if( $location.path() !== '/drivers/orders' ){
-								$rootScope.makeBusy();
-								$timeout( function(){
-									MainNavigationService.link( '/drivers/orders' );
-								}, 400 );
-								return;
-							}
+						var id_order = msg.payload.id.replace( /^\D+/g, '');
+						if( id_order ){
+							newOrder( id_order );
+							return;
 						}
 					}
-				}
-
-				break;
-
+					break;
+			}
 		}
 
 		// iOS
-		if (msg.alert) {
-			App.alert(msg.alert);
-		}
-
-		if (msg.badge) {
-			service.badge++;
-			parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
-		}
-
-		if (msg.sound) {
-			var snd = new parent.Media(msg.sound.replace('www/',''));
-			snd.play();
+		if ( window.parent && window.parent.device.platform && window.parent.device.model && window.parent.device.platform == 'iOS') {
+			if( msg.alert ){
+				switch ( true ) {
+					case ( msg.alert.search( 'New order' ) >= 0 ):
+						var id_order = msg.alert.replace( /^\D+/g, '');
+						if( id_order ){
+							newOrder( id_order );
+						}
+						break;
+				}
+			}
+			if( parseInt( msg.foreground ) == 1 && msg.badge ){
+				service.badge++;
+				parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
+			}
 		}
 	}
 

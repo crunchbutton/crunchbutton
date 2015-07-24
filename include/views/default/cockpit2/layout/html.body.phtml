@@ -498,6 +498,20 @@
 		<button ng-click="complete()" class="button green">OK</button>
 	</div>
 
+
+	<!-- Notification -->
+	<div class="notification-confirm-container zoom-anim-dialog mfp-hide dialog" ng-controller="NotificationConfirmCtrl">
+		<h1 ng-bind="alertTitle" ng-show="alertTitle"></h1>
+		<p ng-bind-html-unsafe="message" class="small-message"></p>
+		<div class="double-cols">
+			<button ng-click="complete()" class="button green">{{buttonOk}}</button>
+			<button ng-click="cancel()" class="button orange">{{buttonCancel}}</button>
+			<br>
+		</div>
+		<div class="divider"></div>
+	</div>
+
+
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
 
