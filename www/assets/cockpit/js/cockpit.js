@@ -812,9 +812,13 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 	});
 };
 
+
+
 App.confirm = function(txt, title, success, fail, buttons) {
 	if (App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
-		return parent.window.navigator.notification.confirm(txt, success, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
+		setTimeout(function() {
+			App.rootScope.$broadcast('notificationConfirm', title || '', txt, success, fail, buttons);
+		});
 	} else {
 		if (confirm(txt)) {
 			success();

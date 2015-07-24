@@ -154,7 +154,6 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				'update' => $order->stati[count($order->stati)-1]['timestamp']
 			];
 		}
-
 		return $out;
 	}
 

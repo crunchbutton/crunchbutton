@@ -27,9 +27,19 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 		if (AccountService.isLoggedIn()) {
 
 			// Register push service - Android
-			if( App.isPhoneGap && AccountService && AccountService.user && AccountService.user.android_push ){
-				if( !PushService.registered ){
-					PushService.register( function(){ console.log("push registered"); });
+
+			if( App.isPhoneGap && AccountService && AccountService.user ){
+				if ( AccountService.user.android_push && window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
+					if( !PushService.registered ){
+						PushService.register( function(){ console.log("push registered"); });
+						service.registered = true;
+					}
+				}
+				if ( AccountService.user.ios_push && window.parent && window.parent.device.platform && window.parent.device.model && window.parent.device.platform == 'iOS') {
+					if( !PushService.registered ){
+						PushService.register( function(){ console.log("push registered"); });
+						service.registered = true;
+					}
 				}
 			}
 

@@ -848,6 +848,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 		// export info is the user has notification auth
 		$ex[ 'android_push' ] = Crunchbutton_Admin_Notification::adminHasNotification( $this->id_admin, Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID );
+		$ex[ 'ios_push' ] = Crunchbutton_Admin_Notification::adminHasNotification( $this->id_admin, Crunchbutton_Admin_Notification::TYPE_PUSH_IOS );
 
 		$community_delivery = $this->communityDriverDelivery();
 		if( $community_delivery->id_community ){
