@@ -130,6 +130,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					$this->error(401);
 				}
 				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? false : true );
+				$order->do_not_reimburse_driver = $order->do_not_pay_driver;
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
 				break;
