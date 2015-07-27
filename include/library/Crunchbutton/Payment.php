@@ -39,6 +39,10 @@ class Crunchbutton_Payment extends Cana_Table {
 
 		$payment->env = c::getEnv(false);
 		$payment->id_admin = c::user()->id_admin;
+		$payment->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_PENDING;
+		$payment->type = Crunchbutton_Payment::PAY_TYPE_PAYMENT;
+		$payment->payment_date_checked = null;
+		$payment->payment_failure_reason = null;
 		$payment->save();
 
 		if( $payment->stripe_id ){
