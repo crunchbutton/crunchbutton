@@ -80,7 +80,7 @@
 				<tr ng-if="result.balanced_id">
 					<td>Balanced</td>
 					<td>
-						<a href="https://dashboard.balancedpayments.com/#/marketplaces/	***REMOVED***/credits/{{result.balanced_id}}">
+						<a href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/credits/{{result.balanced_id}}">
 							{{result.balanced_id}}
 						</a>
 					</td>
@@ -106,7 +106,9 @@
 				</tr>
 				<tr ng-if="result.stripe_id">
 					<td>Stripe</td>
-					<td>{{result.stripe_id}}</td>
+					<td>
+						<a target="_blank" href="https://dashboard.stripe.com/transfers/{{result.stripe_id}}">{{result.stripe_id}}</a>
+					</td>
 				</tr>
 				<tr ng-if="result.hourly" positive-or-negative-color="{{result.shifts_hours_amount}}">
 					<td>Worked hours</td>

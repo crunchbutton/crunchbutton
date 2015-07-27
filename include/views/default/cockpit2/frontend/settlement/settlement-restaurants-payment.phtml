@@ -41,9 +41,7 @@
 					<td class="orange">
 						{{result.log}}
 						<br />
-						<a href="http://cockpit.crunchbutton.com/restaurants/{{result.id_restaurant}}/pay" target="_blank">
-								Edit payment method
-						</a>
+						<a href="/restaurant/payment-info/{{result.id_restaurant}}/pay">Edit payment method</a>
 					</td>
 				</tr>
 				<tr ng-if="result.status == 'error' && result.status_date">
@@ -94,7 +92,9 @@
 				</tr>
 				<tr ng-if="result.stripe_id">
 					<td>Stripe</td>
-					<td>{{result.stripe_id}}</td>
+					<td>
+						<a target="_blank" href="https://dashboard.stripe.com/transfers/{{result.stripe_id}}">{{result.stripe_id}}</a>
+					</td>
 				</tr>
 				<tr ng-if="result.check_id">
 					<td>Lob (Check)</td>
