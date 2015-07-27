@@ -2,6 +2,72 @@ NGApp.controller( 'SettlementCtrl', function ( $scope ) {
 
 } );
 
+NGApp.controller( 'SettlementRestaurantsPaymentArbitraryCtrl', function ( $scope, $rootScope, $routeParams, SettlementService, RestaurantService) {
+
+	$scope.ready = false;
+	$scope.id_restaurant = 0;
+
+	var drivers = function(){
+		if( $routeParams.id_restaurant ){
+			RestaurantService.get( $routeParams.id_restaurant, function(restaurant) {
+				$scope.restaurant = restaurant;
+				$scope.payment = { id_restaurant: $scope.restaurant.id_restaurant };
+				$scope.ready = true;
+			});
+		} else {
+			RestaurantService.shortlist( function( data ){
+				var restaurants = [];
+				$scope.restaurants = data;
+				$scope.ready = true;
+			} );
+		}
+	}
+
+	var payments_type = function(){
+		$scope.payments_type = [ { 'pay_type': 'payment', 'name': 'Payment'  }, { 'pay_type': 'reimbursement', 'name': 'Reimbursement'  } ];
+	}
+
+	var load = function(){
+		$scope.payment = { 'pay_type': 'payment' };
+		drivers();
+		payments_type();
+	}
+
+	$scope.open = function( id_payment ){
+		$scope.navigation.link( '/settlement/restaurant/payment/' + id_payment );
+	}
+
+	$scope.pay = function(){
+
+		if( $scope.isPaying ){
+			return;
+		}
+
+		if( !$scope.payment.id_restaurant ){
+			App.alert( 'Select a restaurant!' );
+			return;
+		}
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			$scope.isPaying = false;
+			return;
+		}
+		$scope.isPaying = true;
+		SettlementService.restaurants.schedule_arbitrary_payment( $scope.payment.id_restaurant, $scope.payment.amount, $scope.payment.pay_type, $scope.payment.notes,
+			function( json ){
+				id_schedule = json.success;
+				var url = '/settlement/restaurants/scheduled/' + id_schedule;
+				$scope.navigation.link( url );
+			}
+		);
+	}
+
+
+	load();
+
+});
+
 NGApp.controller( 'SettlementRestaurantsNoPaymentCtrl', function ( $scope, RestaurantService ) {
 	$scope.result = [];
 	RestaurantService.no_payment_method( function( json ){
@@ -333,6 +399,20 @@ NGApp.controller( 'SettlementRestaurantsScheduledViewCtrl', function ( $scope, $
 		} );
 	}
 
+	$scope.payment_status = function(){
+		if( $scope.result.id_payment ){
+			$scope.makeBusy();
+			SettlementService.restaurants.payment_status( $scope.result.id_payment, function( json ){
+				if( json.error ){
+					App.alert( 'Oops, something bad happened: ' + json.error );
+				} else {
+					load();
+				}
+				$scope.unBusy();
+			} );
+		}
+	}
+
 	$scope.view_payment = function( id_payment ){
 		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
 	}
@@ -361,6 +441,20 @@ NGApp.controller( 'SettlementRestaurantsPaymentCtrl', function ( $scope, $routeP
 
 	$scope.download_summary = function(){
 		SettlementService.restaurants.download_summary( $routeParams.id );
+	}
+
+	$scope.payment_status = function(){
+		if( $scope.result.id_payment ){
+			$scope.makeBusy();
+			SettlementService.restaurants.payment_status( $scope.result.id_payment, function( json ){
+				if( json.error ){
+					App.alert( 'Oops, something bad happened: ' + json.error );
+				} else {
+					load();
+				}
+				$scope.unBusy();
+			} );
+		}
 	}
 
 	$scope.send_summary = function(){

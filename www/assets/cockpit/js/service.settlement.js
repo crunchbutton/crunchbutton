@@ -31,10 +31,12 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
+		'schedule_arbitrary_payment' : { 'method': 'POST', params : { action: 'schedule-arbitrary-payment' } },
 		'reimburse_cash_order' : { 'method': 'POST', params : { action: 'reimburse-cash-order' } },
 		'do_not_pay_restaurant' : { 'method': 'POST', params : { action: 'do-not-pay-restaurant' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
-		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } }
+		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } },
+		'payment_status' : { 'method': 'POST', params : { action: 'payment-status' } },
 	}	);
 
 	settlement.drivers = ResourceFactory.createResource( App.service + 'settlement/drivers/:action/:id_payment_schedule/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
@@ -121,6 +123,12 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 			} );
 	}
 
+	service.restaurants.payment_status = function( id_payment, callback ){
+		settlement.restaurants.payment_status( { 'id_payment' : id_payment }, function( json ){
+			callback( json );
+		} );
+	}
+
 	service.restaurants.payments = function( params, callback ){
 		settlement.restaurants.payments( { 'page' : params.page, 'id_restaurant' : params.id_restaurant }, function( json ){
 			callback( json );
@@ -141,6 +149,12 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 
 	service.restaurants.do_not_pay_restaurant = function( params, callback ){
 		settlement.restaurants.do_not_pay_restaurant( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.schedule_arbitrary_payment = function( id_restaurant, amount, pay_type, notes, callback ){
+		settlement.restaurants.schedule_arbitrary_payment( { 'id_restaurant': id_restaurant, 'amount': amount, 'pay_type': pay_type, 'notes': notes }, function( json ){
 			callback( json );
 		} );
 	}

@@ -6,7 +6,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$this->resultsPerPage = 20;
 
-
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -46,6 +45,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				switch ( c::getPagePiece( 2 ) ) {
 					case 'restaurants':
 						switch ( c::getPagePiece( 3 ) ) {
+							case 'payment-status':
+								$this->_restaurantCheckPaymentStatus();
+								break;
 							case 'begin':
 								$this->_restaurantBegin();
 								break;
@@ -84,6 +86,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 								break;
 							case 'scheduled':
 								$this->_restaurantScheduled();
+								break;
+							case 'schedule-arbitrary-payment':
+								$this->_restaurantScheduleArbitraryPayment();
 								break;
 							default:
 								$this->_error();
@@ -434,6 +439,22 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
+	private function _restaurantScheduleArbitraryPayment(){
+
+		$id_restaurant = $this->request()['id_restaurant'];
+		$amount = $this->request()['amount'];
+		$pay_type = $this->request()['pay_type'];
+		$notes = $this->request()['notes'];
+
+		$settlement = new Settlement;
+		$id_payment_schedule = $settlement->scheduleRestaurantArbitraryPayment( $id_restaurant, $amount, $pay_type, $notes );
+		if( $id_payment_schedule ){
+			echo json_encode( [ 'success' => $id_payment_schedule ] );exit();
+		} else {
+			echo json_encode( [ 'error' => true ] );exit();
+		}
+	}
+
 	public function _restaurantDownloadSummary(){
 		$id_payment =  c::getPagePiece( 4 );
 		$settlement = new Crunchbutton_Settlement;
@@ -457,6 +478,17 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 		echo $mail->message();
+	}
+
+	private function _restaurantCheckPaymentStatus(){
+		$id_payment = $this->request()['id_payment'];
+		$payment = Crunchbutton_Payment::o( $id_payment );
+		if( $payment->id_payment ){
+			$status = $payment->checkPaymentStatus();
+			echo json_encode( [ 'success' => $status ] );
+		} else {
+			echo json_encode( [ 'error' => 'Payment not found!' ] );
+		}
 	}
 
 	private function _driverCheckPaymentStatus(){

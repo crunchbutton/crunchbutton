@@ -9,7 +9,7 @@
 
 	<div class="divider"></div>
 
-	<h2 class="title">{{result.restaurant}}</h2>
+	<h2 class="title">#{{result.id_restaurant}} - {{result.restaurant}}</h2>
 
 		<table class="tb-grid tb-zebra">
 			<tbody>
@@ -67,6 +67,7 @@
 						<span ng-if="!result.summary_sent_date"><i>Summary not sent</i></span>
 					</td>
 				</tr>
+				<!--
 				<tr ng-if="result.payment_date && payment">
 					<td>
 						<span class="no-underline link orange" ng-click="view_summary()"><i class="fa fa-eye"></i> View Summary</span>
@@ -85,7 +86,7 @@
 					</td>
 					<td></td>
 				</tr>
-
+				-->
 				<tr class="transparent"><td></td><td></td></tr>
 				<tr ng-if="result.balanced_id">
 					<td>Balanced Reference</td>
@@ -99,53 +100,76 @@
 					<td>Lob (Check)</td>
 					<td>{{result.check_id}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.credit_charge}}">
+				<tr positive-or-negative-color="{{result.calcs.credit_charge}}" ng-if="result.calcs.credit_charge">
 					<td>Credit Card Charge</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.tax}}">
+				<tr positive-or-negative-color="{{result.calcs.tax}}" ng-if="result.calcs.tax">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.delivery_fee}}">
+				<tr positive-or-negative-color="{{result.calcs.delivery_fee}}" ng-if="result.calcs.delivery_fee">
 					<td>Delivery Fee</td>
 					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.tip}}">
+				<tr positive-or-negative-color="{{result.calcs.tip}}" ng-if="result.calcs.tip">
 					<td>Tip</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.promo_gift_card}}">
+				<tr positive-or-negative-color="{{result.calcs.promo_gift_card}}" ng-if="result.calcs.promo_gift_card">
 					<td>Promo Gift Card</td>
 					<td>$ {{result.calcs.promo_gift_card | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.apology_gift_card}}">
+				<tr positive-or-negative-color="{{result.calcs.apology_gift_card}}" ng-if="result.calcs.apology_gift_card">
 					<td>Apology Gift Card</td>
 					<td>$ {{result.calcs.apology_gift_card | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.card_subtotal}}">
+				<tr positive-or-negative-color="{{result.calcs.card_subtotal}}" ng-if="result.calcs.card_subtotal">
 					<td>Credit Card Subtotal</td>
 					<td>$ {{result.calcs.card_subtotal | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.cash_reimburse}}">
+				<tr positive-or-negative-color="{{result.calcs.cash_reimburse}}" ng-if="result.calcs.cash_reimburse">
 					<td>Cash Reimburse</td>
 					<td>$ {{result.calcs.cash_reimburse | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.cash_subtotal}}">
+				<tr positive-or-negative-color="{{result.calcs.cash_subtotal}}" ng-if="result.calcs.cash_subtotal">
 					<td>Cash Subtotal</td>
 					<td>$ {{result.calcs.cash_subtotal | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.adjustment}}">
+				<tr positive-or-negative-color="{{result.adjustment}}" ng-if="result.adjustment">
 					<td>Adjustment</td>
 					<td>$ {{result.adjustment | formatPrice}}</td>
 				</tr>
-				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_due}}">
+				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_due}}" ng-if="result.calcs.total_due">
 					<td class="td-medium">Total due</td>
 					<td class="td-medium">$ {{result.calcs.total_due | formatPrice}}</td>
+				</tr>
+				<tr class="total-due" positive-or-negative-color="{{result.amount}}">
+					<td class="td-medium">Amount</td>
+					<td class="td-medium">${{result.amount | formatPrice}}</td>
 				</tr>
 				<tr>
 					<td>Payment Notes</td>
 					<td>{{result.note}}</td>
+				</tr>
+				<tr ng-if="result.id_payment">
+					<td><strong>Payment Status</strong></td>
+					<td ng-class="result.payment_status">
+						{{result.payment_status}}
+						<span title="Re-check balanced status" class="link no-underline" ng-click="payment_status();"> <i class="fa fa-refresh"></i> </span>
+					</td>
+				</tr>
+				<tr ng-if="result.payment_date_checked">
+					<td><strong>Payment Status Checked</strong></td>
+					<td ng-class="result.payment_status">
+						{{result.payment_date_checked}}
+					</td>
+				</tr>
+				<tr ng-if="result.payment_failure_reason">
+					<td><strong>Payment Failure Reason</strong></td>
+					<td ng-class="result.payment_status">
+						{{result.payment_failure_reason}}
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -153,14 +177,14 @@
 		<br/>
 
 		<table class="tb-grid tb-zebra">
-			<thead>
+			<thead ng-if="result.orders_card">
 				<tr>
 					<td colspan="5" class="title">Card Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders_card">
 				<td>
-					<td>-</td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -187,19 +211,19 @@
 			</tbody>
 
 			<tbody>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="result.calcs.order_paymen">
 					<td></td>
 					<td>Subtotal</td>
 					<td>$ {{result.calcs.order_payment | formatPrice}}</td>
 					<td></td>
 				</tr>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="result.calcs.tip">
 					<td></td>
 					<td>Tips by Card</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 					<td></td>
 				</tr>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="result.calcs.credit_charge">
 					<td></td>
 					<td>Visa/Mastercard/Amex Charges</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
@@ -208,14 +232,14 @@
 				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
 			</tbody>
 
-			<thead>
+			<thead ng-if="result.orders_cash">
 				<tr>
 					<td colspan="5" class="title">Cash Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders_cash">
 				<td>
-					<td>-</td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -242,13 +266,13 @@
 			</tbody>
 
 			<tbody>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="result.calcs.cash_subtotal">
 					<td></td>
 					<td>Subtotal</td>
 					<td>$ {{result.calcs.cash_subtotal | formatPrice}}</td>
 					<td></td>
 				</tr>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="result.calcs.restaurant_fee">
 					<td></td>
 					<td>Fees</td>
 					<td>$ {{result.calcs.restaurant_fee | formatPrice}}</td>
@@ -260,7 +284,7 @@
 					<td>$ {{result.adjustment | formatPrice}}</td>
 					<td></td>
 				</tr>
-				<tr class="transparent">
+				<tr class="transparent" ng-if="result.calcs.total_due">
 					<td></td>
 					<td><strong>Total Payment (minus fees)</strong></td>
 					<td><strong>$ {{result.calcs.total_due | formatPrice}}</strong></td>

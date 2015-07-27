@@ -154,7 +154,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 					$scope.restaurant.stripeAccount.formStripe = true;
 					$scope.restaurant.stripeAccount.formStripeMigrate = false;
 
-					if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.stripe_account_id ){
+					if( $scope.restaurant.payment_type.stripe_id && $scope.restaurant.payment_type.stripe_id ){
 						$scope.restaurant.stripeAccount.formStripe = false;
 					}
 

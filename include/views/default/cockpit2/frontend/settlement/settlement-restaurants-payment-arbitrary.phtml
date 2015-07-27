@@ -1,0 +1,64 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Arbitrary Payment - Restaurant</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" ng-show="restaurants || restaurant">
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content2">
+
+			<li class="li-input" ng-class="{'error':form.paymentDriver.$invalid}" ng-if="!staff.id_admin">
+				<div class="label">Select a restaurant:</div>
+				<div class="input">
+					<ui-select ng-model="payment.id_restaurant" theme="select2" ng-disabled="disabled" style="width: 90%;" title="Select a restaurant">
+						<ui-select-match placeholder="Select a restaurant">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="restaurant.id_restaurant as restaurant in restaurants | propsFilter: {name: $select.search}">
+							{{restaurant.name}}
+						</ui-select-choices>
+					</ui-select>
+				</div>
+				<div class="box-error">
+					<small ng-show="form.paymentDriver.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-if="restaurant.id_restaurant">
+				<div class="label">Restaurant:</div>
+				<div class="input">{{restaurant.name}}</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.paymentAmount.$invalid}">
+				<div class="label">Amount:</div>
+				<div class="input"><input step="any" type="number" name="paymentAmount" ng-model="payment.amount" required ignore-mouse-wheel placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.paymentAmount.$error.required">Required.</small>
+				</div>
+			</li>
+			<li class="li-input" ng-class="{'error':form.paymentType.$invalid}">
+				<div class="label">Payment type: <strong>{{payment.pay_type}}</strong></div>
+			</li>
+			<li class="li-input" ng-class="{'error':form.paymentNotes.$invalid}">
+				<div class="label">Message displayed to driver in payment summary and automated email that gets sent right now:</div>
+				<div class="input"><input type="text" name="paymentNotes" ng-model="payment.notes" required maxlength="255" placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.paymentNotes.$error.required">Required.</small>
+				</div>
+			</li>
+		</ul>
+
+		<ul class="ul-inputs">
+			<li class="li-input" ng-show="!isPaying">
+				<button class="button save" ng-click="pay();">Pay Restaurant</button>
+			</li>
+			<li class="li-input" ng-show="isPaying">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+		</ul>
+
+	</form>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

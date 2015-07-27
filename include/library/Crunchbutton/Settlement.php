@@ -821,28 +821,34 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 		$settlement = new Crunchbutton_Settlement( $this->filters );
 		Cana::timeout(function() use( $settlement ) {
-			$settlement->doRestaurantPayments();
+			// $settlement->doRestaurantPayments();
 		} );
 	}
 
 
 	public function scheduleRestaurantArbitraryPayment( $id_restaurant, $amount, $pay_type, $notes ){
 
+		$this->log( 'scheduleRestaurantArbitraryPayment: start', [ $id_restaurant, $amount, $type, $notes ] );
+
 		$schedule = new Cockpit_Payment_Schedule;
 		$schedule->id_restaurant = $id_restaurant;
 		$schedule->date = date( 'Y-m-d H:i:s' );
-		$schedule->amount = $amount;
+		$schedule->pay_type = $pay_type;
+		$schedule->amount = max( $amount, 0 );
 		$schedule->adjustment = 0;
+		$schedule->arbritary = 1;
+		$schedule->note = $notes;
 		$schedule->processor = Crunchbutton_Payment::processor();
-		$schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
+		$schedule->id_admin = c::user()->id_admin;
 		$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 		$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
-		$schedule->note = $notes;
-		$schedule->id_admin = c::user()->id_admin;
 		$schedule->save();
+
 		$id_payment_schedule = $schedule->id_payment_schedule;
 
-		return $this->payRestaurant( $id_payment_schedule );
+		$this->log( 'scheduleRestaurantArbitraryPayment: end', $schedule->properties() );
+
+		return $id_payment_schedule;
 
 	}
 
@@ -1034,6 +1040,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
+	public function doRestaurantsPayments(){
+		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_RESTAURANT . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" AND ( log = "Schedule created" OR log IS NULL ) ORDER BY id_payment_schedule DESC LIMIT 50';
+		$scheduled_payments = Cockpit_Payment_Schedule::q( $query );
+		$settlement = new Crunchbutton_Settlement;
+		foreach( $scheduled_payments as $scheduled ){
+			$settlement->payRestaurant( $scheduled->id_payment_schedule );
+		}
+	}
+
 	public function doRestaurantPayments( $id_payment_schedule = false ){
 		if( $id_payment_schedule ){
 			return $this->payRestaurant( $id_payment_schedule );
@@ -1057,10 +1072,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function restaurantSummary( $id_payment_schedule ){
+
+		$date_format = Settlement::date_format();
+
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_RESTAURANT ){
 			$settlement = new Settlement;
 			$summary = $schedule->exports();
+			$summary[ 'amount' ] = floatval( $summary[ 'amount' ] );
 			$summary[ 'restaurant' ] = $schedule->restaurant()->name;
 			$summary[ 'summary_method' ] = $schedule->restaurant()->payment_type()->summary_method;
 			$summary[ 'summary_email' ] = $schedule->restaurant()->payment_type()->summary_email;
@@ -1069,6 +1088,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
+				$summary[ 'payment_status' ] = $payment->payment_status;
+				$summary[ 'payment_failure_reason' ] = $payment->payment_failure_reason;
+				$payment_date_checked = $payment->payment_date_checked();
+				if( $payment_date_checked ){
+					$summary[ 'payment_date_checked' ] = $payment_date_checked->format( $date_format );
+				}
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
 				$summary[ 'check_id' ] = $payment->check_id;
@@ -1155,10 +1180,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 					if( $amount > 0 ){
 						try {
+
+							$processor = $schedule->processor;
+							if( !$processor ){
+								$processor = Payment::processor();
+							}
+
 							$p = Payment::credit( [ 'id_restaurant' => $schedule->id_restaurant,
-																			'amount' => $amount,
-																			'note' => $schedule->note,
-																			'type' => 'balanced' ] );
+													'amount' => $amount,
+													'note' => $schedule->note,
+													'type' => $processor ] );
 						} catch ( Exception $e ) {
 							$schedule->log = $e->getMessage();
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
@@ -1175,10 +1206,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment->env = c::getEnv();
 						$payment->id_admin = c::user()->id_admin;
 						$payment->amount = 0;
+						$payment->pay_type = $schedule->pay_type;
 						$payment->adjustment = $schedule->adjustment;
 						$payment->save();
 
 						$p = $payment->id_payment;
+
 					}
 
 					if( $p ){
@@ -1249,8 +1282,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$error = true;
 					}
 					if( !$contact_name ){
-						$schedule->log .= 'Contact name is missing.';
-						$error = true;
+						// $schedule->log .= 'Contact name is missing.';
+						// $error = true;
 					}
 					if( $error ){
 						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
@@ -1450,7 +1483,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment->id_admin = ( c::user()->id_admin ? c::user()->id_admin : $schedule->id_driver );
 						$payment->amount = 0;
 						$payment->pay_type = $schedule->pay_type;
-						$payment->adjustment = $schedule->adjustment;
 						$payment->save();
 
 						$schedule->id_payment = $payment->id_payment;

@@ -66,7 +66,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function hasPaymentType(){
 		$paymentType = $this->paymentType();
-		if( $paymentType->stripe_id && $paymentType->stripe_account_id ){
+		if( $paymentType->stripe_id  ){
 			return true;
 		} else {
 			return false;

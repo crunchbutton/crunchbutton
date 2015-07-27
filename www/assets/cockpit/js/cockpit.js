@@ -152,6 +152,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementRestaurantsScheduledCtrl',
 			templateUrl: 'assets/view/settlement-restaurants-scheduled.html'
 		})
+		.when('/settlement/restaurants/payment/arbitrary/:id_restaurant?', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsPaymentArbitraryCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment-arbitrary.html'
+		})
 		.when('/settlement/restaurants/scheduled/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsScheduledViewCtrl',
