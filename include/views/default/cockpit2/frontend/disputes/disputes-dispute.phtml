@@ -1,0 +1,119 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="left title"><i class="fa fa-exchange"></i>Dispute</h1>
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2" ng-if="dispute.id_stripe_dispute">
+			<div class="support-box-wrap-header">
+				<h1>Dispute #{{dispute.id_stripe_dispute}}</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Reason</div>
+						<div class="field-value">{{dispute.reason}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Date</div>
+						<div class="field-value">
+							{{dispute.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{dispute.date | convertimeformat:account.user.timezone:'z'}}</span>)
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">{{dispute.status}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Submission Count</div>
+						<div class="field-value">{{dispute.submission_count}}</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<? /* order */ ?>
+		<div class="support-box-wrap box-content2" ng-if="dispute.order.id_order">
+			<div class="support-box-wrap-header">
+				<h1>Order #{{dispute.order.id_order}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/order/{{dispute.order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Placed At</div>
+						<div class="field-value">
+							{{dispute.order.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{dispute.order.date | convertimeformat:account.user.timezone:'z'}}</span>)
+						</div>
+					</div>
+					<div class="field-row" ng-if="dispute.order.pay_type == 'card'">
+						<div class="field-key">{{dispute.order.processor == 'stripe' ? 'Stripe' : 'Balanced'}}</div>
+						<div class="field-value">
+							<a ng-if="dispute.order.processor == 'balanced'" href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/debits/{{dispute.order.txn}}" target="_blank">{{dispute.order.txn}}</a>
+							<a ng-if="dispute.order.processor == 'stripe'" href="https://dashboard.stripe.com/payments/{{dispute.order.txn}}" target="_blank">{{dispute.order.txn}}</a>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">User Agent</div>
+						<div class="field-value">
+							{{dispute.order.agent}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="dispute.order.refunded">
+						<div class="field-key">Refunded</div>
+						<div class="field-value">
+							<span class="tag tag-green">Yes</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<? /* customer */ ?>
+		<div class="support-box-wrap box-content2" ng-if="dispute.user.id_user">
+			<div class="support-box-wrap-header">
+				<h1>Customer #{{dispute.user.id_user}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/customer/{{dispute.user.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{dispute.user.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(dispute.user.phone)">{{dispute.user.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(dispute.user.address)">{{dispute.user.address}}</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+</div>
