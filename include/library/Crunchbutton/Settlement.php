@@ -1786,6 +1786,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
  	public function sendRestaurantPaymentNotification( $id_payment ){
+		// back-processing settlement: no summaries #6109
+		return false;
 
 		$summary = $this->restaurantSummaryByIdPayment( $id_payment );
 
