@@ -157,7 +157,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function currentAssignedShiftByCommunity( $id_community ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 			$community = Crunchbutton_Community::o( $id_community );
-			$now->setTimezone( new DateTimeZone( $community->timezone ) );
+			$timezone = ( $community->timezone ) ? $community->timezone : c::config()->timezone;
+			$now->setTimezone( new DateTimeZone( $timezone ) );
 			$now_formated = $now->format( 'Y-m-d H:i:s' );
 			$query = 'SELECT cs.* FROM community_shift cs
 									INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
@@ -1106,7 +1107,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 				$start = $shift->dateStart();
 				$end = $shift->dateEnd();
-				
+
 				if (!$start || !$end) {
 					continue;
 				}
