@@ -88,20 +88,10 @@
 							<span class="tag tag-green">Yes</span>
 						</div>
 					</div>
-					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline">
-						<div class="field-key">
-							Do Not Reimburse Driver?
-						</div>
-						<div class="field-value">
-							<label class="switch-wrap">
-								<input type="checkbox" ng-click="do_not_reimburse_driver()" class="switch" ng-model="order.do_not_reimburse_driver"/><div></div>
-							</label>
-						</div>
-					</div>
 
 					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline">
 						<div class="field-key">
-							Do Not Pay Driver?
+							Do Not Pay Driver Anything
 						</div>
 						<div class="field-value">
 							<label class="switch-wrap">
