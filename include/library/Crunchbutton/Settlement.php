@@ -1097,7 +1097,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
 				$summary[ 'check_id' ] = $payment->check_id;
-				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
+				if( $payment->summary_sent_date ){
+					$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
+				}
+
 				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
 			}
 			if( $schedule->status_date ){
