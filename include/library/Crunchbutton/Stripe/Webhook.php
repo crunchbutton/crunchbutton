@@ -21,15 +21,30 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 		}
 		$webhook->id_stripe_webhook_type = $type->id_stripe_webhook_type;
 		$webhook->save();
-
 		switch ( $type->type ) {
 			case Crunchbutton_Stripe_Webhook_Type::TYPE_DISPUTE_CREATED:
+				// create dispute
 				Crunchbutton_Stripe_Dispute::create( $webhook->id_stripe_webhook );
 				break;
+			case Crunchbutton_Stripe_Webhook_Type::TYPE_DISPUTE_UPDATED:
+				$charge_id = $webhook->charge_id();
+				if( $charge_id ){
+					$dispute = Crunchbutton_Stripe_Dispute::getDisputeByChargeId( $charge_id );
+					if( $dispute->id_stripe_dispute ){
+						// update dispute log
+						Crunchbutton_Stripe_Dispute_Log::create( [ 'id_stripe_dispute' => $dispute->id_stripe_dispute, 'id_stripe_webhook' => $webhook->id_stripe_webhook ] );
+					}
+				}
+				break;
 		}
-
-
 		return $webhook;
+	}
+
+	public function charge_id(){
+		$details = $this->data();
+		if( $details->data && $details->data->object && $details->data->object->charge ){
+			return $details->data->object->charge;
+		}
 	}
 
 	public function data(){
@@ -37,6 +52,13 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 			$this->_data = json_decode( $this->data );
 		}
 		return $this->_data;
+	}
+
+	public function date(){
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+		}
+		return $this->_date;
 	}
 
 	public function webhookType(){

@@ -385,5 +385,9 @@ class Cockpit_Order extends Crunchbutton_Order {
         }
     }
 
+	public function ip(){
+		$ip = c::db()->get( 'SELECT * FROM session WHERE id_session=? AND ip IS NOT NULL ORDER BY session.date_activity DESC LIMIT 1', [ $this->id_session ] )->get( 0 )->ip;
+		return $ip;
+	}
 
 }

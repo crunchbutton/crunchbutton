@@ -55,7 +55,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 			App.alert( 'Please fill all the required fields!' );
 			return;
 		}
-		if( $scope.resource.temp_name == $scope.resource.file ){
+		if( $scope.resource.temp_name == $scope.resource.receipt ){
 			save();
 		} else {
 			$rootScope.$broadcast( 'triggerStartUpload' );
@@ -89,7 +89,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 			$scope.communities = [];
 			angular.forEach( json, function( community, key ) {
 				var ticked = ( $scope.resource.communities.indexOf( community.id_community ) >= 0 );
-	  		this.push( { 'name': community.name, 'id_community': community.id_community, 'ticked': ticked} );
+				this.push( { 'name': community.name, 'id_community': community.id_community, 'ticked': ticked} );
 			}, $scope.communities );
 			$scope.ready = true;
 		} );
@@ -125,10 +125,10 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 
 	// this is a listener to upload success
 	$scope.$on( 'resourceUpload', function(e, data) {
-		var id_driver_document = data.id_driver_document;
 		var response = data.response;
 		if( response.success ){
-			$scope.resource.file = response.success;
+			$scope.evidence.receipt = response.success.id;
+			console.log($scope.evidence.receipt);
 			save();
 		} else {
 			App.alert( 'File not saved! ');

@@ -7,10 +7,14 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="support-boxes">
-
 		<div class="support-box-wrap box-content2" ng-if="dispute.id_stripe_dispute">
 			<div class="support-box-wrap-header">
 				<h1>Dispute #{{dispute.id_stripe_dispute}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="https://dashboard.stripe.com/payments/{{dispute.charge_id}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View on Stripe</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
 			</div>
 
@@ -28,15 +32,70 @@
 						</div>
 					</div>
 					<div class="field-row">
+						<div class="field-key">Due to</div>
+						<div class="field-value">
+							{{dispute.due_to | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{dispute.due_to | convertimeformat:account.user.timezone:'z'}}</span>)
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Amount</div>
+						<div class="field-value">${{dispute.charged}}</div>
+					</div>
+					<div class="field-row">
 						<div class="field-key">Status</div>
-						<div class="field-value">{{dispute.status}}</div>
+						<div class="field-value">
+							<div ng-switch="dispute.status">
+								<span class="tag tag-red no-wrap" ng-switch-when="needs_response">Needs Response</span>
+								<span class="tag tag-blue no-wrap" ng-switch-when="under_review">Under Review</span>
+								<span class="tag tag-black no-wrap" ng-switch-when="lost">Lost</span>
+								<span class="tag tag-green no-wrap" ng-switch-when="won">Won</span>
+								<span ng-switch-default class="tag tag-purple no-wrap">{{dispute.status}}</span>
+							</div>
+						</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Submission Count</div>
-						<div class="field-value">{{dispute.submission_count}}</div>
+						<div class="field-value">{{dispute.submission_count}}/{{evidence_send_limit}}</div>
 					</div>
 
 				</div>
+			</div>
+		</div>
+
+		<? /* log */ ?>
+		<div class="support-box-wrap box-content2" ng-if="dispute.log">
+			<div class="support-box-wrap-header">
+				<h1>Log</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color" ng-if="dispute.log.length">
+				<table align="right" class="basic-table detail">
+					<tr>
+						<td class="topitem itemprice tb-small">Status</td>
+						<td class="topitem order-contents-item-qty">Date</td>
+						<td class="topitem order-contents-item-qty">&nbsp;</td>
+					</tr>
+					<tr ng-repeat="log in dispute.log">
+						<td class="fooditem dish-name tb-small tb-v-center" nowrap="nowrap">
+							<div ng-switch="log.type">
+								<span class="tag tag-red no-wrap" ng-switch-when="charge.dispute.created">Dispute Created</span>
+								<span class="tag tag-green no-wrap" ng-switch-when="charge.dispute.updated">Dispute Updated</span>
+								<span class="tag tag-blue no-wrap" ng-switch-when="evidence">Evidence Sent</span>
+								<span ng-switch-default class="tag tag-purple no-wrap">{{log.type}}</span>
+							</div>
+						</td>
+						<td class="fooditem dish-name" nowrap="nowrap">
+							{{log.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{log.date | convertimeformat:account.user.timezone:'z'}}</span>)
+						</td>
+						<td class="fooditem dish-name" nowrap="nowrap">
+							<a ng-if="log.id_stripe_dispute_evidence" href="/dispute/evidence/{{log.id_stripe_dispute_evidence}}">View Evidence</a>
+						</td>
+					</tr>
+					<tr><td></td><td></td><td></td></tr>
+				</table>
 			</div>
 		</div>
 
@@ -114,6 +173,171 @@
 				</div>
 			</div>
 		</div>
+	</div>
 
+	<div class="divider"></div>
+	<br><br>
+
+	<div ng-show="evidence">
+
+		<h1 class="left title"><i class="fa fa-info">
+		</i>Evidence</h1>
+		<div class="divider"></div>
+
+		<div class="support-boxes">
+
+			<form name="form" novalidate>
+
+				<div class="support-box-wrap box-content2">
+
+					<div class="support-box-wrap-header">
+						<h1>Basic Info</h1>
+						<div class="divider"></div>
+					</div>
+
+					<div class="no-box-content-color">
+
+						<div class="field-container">
+							<div class="field-row">
+								<div class="field-key">Status:</div>
+								<div class="field-value">
+									<span ng-if="evidence.status == 'sent'" class="tag tag-green no-wrap">
+										Last Sent Evidence
+									</span>
+									<span ng-if="evidence.status == 'draft'" class="tag tag-grey no-wrap">
+										Draft
+									</span>
+								</div>
+							</div>
+							<div class="field-row">
+								<div class="field-key">Customer Purchase IP:</div>
+								<div class="field-value">{{evidence.customer_purchase_ip}}</div>
+							</div>
+							<div class="field-row">
+								<div class="field-key">Service Date:</div>
+								<div class="field-value">{{evidence.service_date}}</div>
+							</div>
+							<div class="field-row">
+								<div class="field-key">Shipping Date:</div>
+								<div class="field-value">{{evidence.shipping_date}}</div>
+							</div>
+
+						</div>
+
+						<br>
+
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+							<li class="li-input" ng-class="{'error':form.customerName.$invalid}">
+								<div class="label">Customer Name:</div>
+								<div class="input"><input type="text" maxlengh="250" required name="customerName" maxlength="250" ng-model="evidence.customer_name"></div>
+								<div class="box-error">
+									<small ng-show="form.customerName.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input">
+								<div class="label">Customer Email:</div>
+								<div class="input"><input type="text" maxlengh="250" name="customerEmailAddress" maxlength="250" ng-model="evidence.customer_email_address"></div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.productDescription.$invalid}">
+								<div class="label">Product Description:</div>
+								<div class="input"><textarea required name="productDescription" ng-model="evidence.product_description"></textarea></div>
+								<div class="box-error">
+									<small ng-show="form.productDescription.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.shippingAddress.$invalid}">
+								<div class="label">Shipping Address:</div>
+								<div class="input"><textarea required name="shippingAddress" ng-model="evidence.shipping_address"></textarea></div>
+								<div class="box-error">
+									<small ng-show="form.productDescription.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.uncategorizedText.$invalid}">
+								<div class="label">Additional Info:</div>
+								<div class="input"><textarea name="uncategorizedText" ng-model="evidence.uncategorized_text"></textarea></div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.accessActivityLog.$invalid}">
+								<div class="label">Access Activity Log:</div>
+								<div class="input"><textarea name="accessActivityLog" ng-model="evidence.access_activity_log"></textarea></div>
+							</li>
+
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="support-box-wrap box-content2">
+
+					<div class="support-box-wrap-header">
+						<h1>More Info</h1>
+						<div class="divider"></div>
+					</div>
+
+					<div class="no-box-content-color">
+
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+							<li class="li-input" ng-class="{'error':form.billingAddress.$invalid}">
+								<div class="label">Billing Address:</div>
+								<div class="input"><textarea name="billingAddress" ng-model="evidence.billing_address"></textarea></div>
+								<div class="box-error">
+									<small ng-show="form.billingAddress.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.shippingCarrier.$invalid}">
+								<div class="label">Shipping Carrier:</div>
+								<div class="input"><textarea name="shippingCarrier" ng-model="evidence.shipping_carrier"></textarea></div>
+								<div class="box-error">
+									<small ng-show="form.shippingCarrier.$error.required">Required.</small>
+								</div>
+							</li>
+							<li class="li-input">
+								<div class="label">Receipt Image:</div>
+								<div class="input">
+									<div class="input">
+										<input type="text" name="file" readonly="readonly" ng-model="evidence.temp_name" placeholder="File">
+										<div ng-show="evidence.receipt_url">
+											<br>
+											<br>
+											<a href="{{evidence.receipt_url}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View image</button></a>
+										</div>
+
+									</div>
+								</div>
+								<div>
+									<div class="upbutton" resource-upload path="/api/stripe/dispute/upload">
+										<button class="save button upload">FILE</button>
+										<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden">
+									</div>
+								</div>
+								<br>
+								<br>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+
+				<ul class="ul-inputs">
+					<li class="li-input" ng-show="!isSaving && !isUploading">
+						<button ng-click="evidence_save()" class="button button-empty button-border button-orange" ><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save</button>
+						<button ng-click="evidence_save( true );" class="button button-empty button-border button-green"><i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Save & Send</button>
+					</li>
+					<li class="li-input" ng-show="isSaving || isUploading">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</form>
+
+		</div>
+	</div>
 
 </div>

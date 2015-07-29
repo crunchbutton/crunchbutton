@@ -330,12 +330,14 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 
 			var l = null;
 
+			var path = attrs.path ? attrs.path : '/api/resource/upload/';
+
 			angular.element(upload_button).on('click', function() {
 				angular.element(elem.find('input')[0]).click();
 			});
 
 			scope.uploader = new FileUploader({
-				url: '/api/resource/upload/',
+				url: path,
 				autoUpload: false
 			});
 
