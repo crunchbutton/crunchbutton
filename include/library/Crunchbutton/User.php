@@ -264,6 +264,10 @@ class Crunchbutton_User extends Cana_Table {
 
 		$out['image'] = $this->image(false);
 
+		// blocked
+		$out['blocked'] = Crunchbutton_Blocked::isUserBlocked( $this->id_user );
+		$out['phone_blocked'] = Crunchbutton_Blocked::isPhoneBlocked( $this->id_phone );
+
 		return $out;
 	}
 

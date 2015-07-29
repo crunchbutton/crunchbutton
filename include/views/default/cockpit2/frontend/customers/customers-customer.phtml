@@ -24,6 +24,30 @@
 						<div class="field-key">Address</div>
 						<div class="field-value"><a href ng-click="routeAddress(customer.address)"><span ng-bind-html-unsafe="customer.address | nl2br"></span></a></div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">
+							Customer
+							<span class="tag tag-green no-wrap" ng-if="!customer.blocked">is NOT blocked</span>
+							<span class="tag tag-red no-wrap" ng-if="customer.blocked">IS blocked</span>
+						</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" class="switch" ng-change="blockUser( customer.id_user );" ng-model="customer.blocked"/><div></div>
+							</label>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">
+							Phone
+							<span class="tag tag-green no-wrap" ng-if="!customer.phone_blocked">is NOT blocked</span>
+							<span class="tag tag-red no-wrap" ng-if="customer.phone_blocked">IS blocked</span>
+						</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" class="switch" ng-change="blockPhone( customer.id_phone );" ng-model="customer.phone_blocked"/><div></div>
+							</label>
+						</div>
+					</div>
 				</div>
 				<br><br>
 				<div class="double-cols">
@@ -98,4 +122,3 @@
 	</ui-tabs>
 
 </div>
-

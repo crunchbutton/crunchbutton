@@ -1,10 +1,10 @@
 <?php
 
-class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount {
+class Controller_Api_Blockeds extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check( [ 'global', 'disputes-all' ] ) ) {
+		if (!c::admin()->permission()->check(['global', 'customer-all', 'customer-block' ])) {
 			$this->error(401);
 		}
 
@@ -23,9 +23,10 @@ class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount
 		$q = '
 			SELECT
 				-WILD-
-			FROM stripe_dispute sd
-			LEFT JOIN `order` o ON o.id_order=sd.id_order
-			LEFT JOIN user u ON u.id_user=o.id_user
+			FROM blocked b
+			LEFT JOIN phone p ON p.id_phone = b.id_phone
+			LEFT JOIN user u ON u.id_user = b.id_user
+			INNER JOIN admin a ON a.id_admin = b.id_admin
 			WHERE 1=1
 			';
 
@@ -33,14 +34,8 @@ class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
-					'sd.reason' => 'like',
-					'o.id_order' => 'like',
 					'u.name' => 'like',
-					'u.phone' => 'like',
-					'u.address' => 'like',
-					'o.name' => 'like',
-					'o.phone' => 'like',
-					'o.address' => 'like'
+					'p.phone' => 'like'
 				]
 			]);
 			$q .= $s['query'];
@@ -52,14 +47,14 @@ class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount
 
 		// get the count
 		if ($getCount) {
-			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `s`.id_stripe_dispute) as c', $q), $keys);
+			$r = c::db()->query(str_replace('-WILD-','COUNT(DISTINCT `p`.id_blocked) as c', $q), $keys);
 			while ($c = $r->fetch()) {
 				$count = $c->c;
 			}
 		}
 //			#, sm.id_support_message
 		$q .= '
-			ORDER BY sd.id_stripe_dispute DESC
+			ORDER BY b.id_blocked DESC
 			LIMIT ?
 			OFFSET ?
 		';
@@ -69,16 +64,13 @@ class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount
 		// do the query
 		$d = [];
 		$query = str_replace('-WILD-','
-			sd.id_order,
-			sd.id_stripe_dispute,
-			sd.status,
-			sd.reason,
-			sd.datetime,
-			sd.due_to,
-			sd.submission_count,
-			o.name,
-			o.phone,
-			o.id_user
+			b.id_blocked,
+			a.id_admin,
+			b.id_user,
+			a.name AS admin,
+			u.name AS customer,
+			p.phone,
+			b.date
 		', $q);
 
 		$r = c::db()->query($query, $keys);
@@ -86,15 +78,20 @@ class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount
 		$i = 1;
 		$more = false;
 
-		while ($dispute = $r->fetch()) {
+		while ($blocked = $r->fetch()) {
 			if (!$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
 			}
-			$order = Order::o( $dispute->id_order );
-			$dispute->reason = ucfirst( $dispute->reason );
-			$dispute->charged = $order->charged();
-			$d[] = $dispute;
+			if( $blocked->id_user ){
+				$blocked->type = Crunchbutton_Blocked::TYPE_USER;
+			} else {
+				$user = User::byPhone( $blocked->phone );
+				$blocked->type = Crunchbutton_Blocked::TYPE_PHONE;
+				$blocked->customer = $user->name;
+				$blocked->id_user = $user->id_user;
+			}
+			$d[] = $blocked;
 			$i++;
 		}
 

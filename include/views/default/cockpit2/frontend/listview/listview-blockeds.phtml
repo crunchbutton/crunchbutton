@@ -1,0 +1,39 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Customer</th>
+			<th>Phone</th>
+			<th class="tb-small tb-center">Type</th>
+			<th>Blocked by</th>
+			<th>Blocked at</th>
+			<th class="tb-small tb-center"></th>
+		</tr>
+
+		<tr ng-repeat="blocked in blockeds">
+			<td nowrap>
+				<a href="/customer/{{blocked.id_user}}">{{blocked.customer}}</a>
+			</td>
+			<td>
+				<a href ng-click="callText(blocked.phone)" class="listview-smaller">{{blocked.phone | formatPhone}}</a>
+			</td>
+			<td>
+				<div ng-switch="blocked.type">
+					<span class="tag tag-purple no-wrap" ng-switch-when="phone">Phone</span>
+					<span class="tag tag-blue no-wrap" ng-switch-when="user">Customer</span>
+				</div>
+			</td>
+			<td>
+				{{blocked.admin}}
+			</td>
+			<td>
+				{{blocked.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+				&nbsp;(<span class="listview-bold">{{blocked.date | convertimeformat:account.user.timezone:'z'}}</span>)
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="/customer/{{blocked.id_user}}"><button class="button button-small button-empty button-green">
+				<i class="fa fa-eye"></i>
+				&nbsp;&nbsp;View</button></a>
+			</td>
+		</tr>
+	</table>
+</div>

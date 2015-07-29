@@ -1,0 +1,47 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="left title"><i class="fa fa-pause"></i>Blocked Settings</h1>
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="divider"></div>
+	<div class="support-boxes">
+
+		<form name="form" novalidate>
+
+			<div class="support-box-wrap box-content2">
+
+				<div class="support-box-wrap-header">
+					<h1>Settings</h1>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color">
+
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+						<li class="li-input" ng-class="{'error':form.message.$invalid}">
+							<div class="label">Message:</div>
+							<div class="input"><input type="text" maxlengh="250" required name="message" maxlength="250" ng-model="message"></div>
+							<div class="box-error">
+								<small ng-show="form.message.$error.required">Required.</small>
+							</div>
+						</li>
+						<ul ng-class="{'submitted':submitted}" class="box-content2">
+							<li class="li-input">
+								<button class="button green" ng-click="save();">Save</button>
+							</li>
+						</ul>
+
+					</ul>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

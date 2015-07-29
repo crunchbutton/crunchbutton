@@ -258,6 +258,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
+		// Block orders from this "customer" #6136
+		if( c::user()->id_user ){
+			if( Crunchbutton_Blocked::isUserBlocked( c::user()->id_user ) ){
+				$errors['error'] = Crunchbutton_Blocked::getMessage();
+			}
+		}
+		if( $this->phone ){
+			if( Crunchbutton_Blocked::isPhoneNumberBlocked( $this->phone ) ){
+				$errors['error'] = Crunchbutton_Blocked::getMessage();
+			}
+		}
+
+
 		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
 
