@@ -5,28 +5,37 @@ class Crunchbutton_Stripe_Dispute_Log extends Cana_Table {
 	public function create( $params ){
 		$log = new Crunchbutton_Stripe_Dispute_Log;
 		$log->id_stripe_dispute = $params[ 'id_stripe_dispute' ];
-		$log->id_stripe_webhook = $params[ 'id_stripe_webhook' ];
-		if( $params[ 'id_admin' ] ){
-			$log->id_admin = $params[ 'id_admin' ];
+		if( $params[ 'id_stripe_webhook' ] ){
+			$log->id_stripe_webhook = $params[ 'id_stripe_webhook' ];
+		} else if( $params[ 'id_stripe_dispute_evidence' ] ){
+			$log->id_stripe_dispute_evidence = $params[ 'id_stripe_dispute_evidence' ];
 		}
 		$log->datetime = date( 'Y-m-d H:i:s' );
 		$log->save();
 
-		$log->updateDisputeStatus();
+		if( $log->id_stripe_webhook ){
+			$log->updateDisputeStatus();
+		}
 	}
 
 	public function exports(){
 		$out = $this->properties();
-		$out[ 'data' ] = $this->webhookData();
+		if( $this->webhook() ){
+			$webhook = $this->webhook();
+			$out[ 'data' ] = $webhook->data();
+			$out[ 'date' ] = $webhook->date()->format( 'c' );
+		} else if( $this->evidence() ){
+			$evidence = $this->evidence();
+			$out[ 'data' ] = $evidence->exportsEvidence();
+			$out[ 'date' ] = $evidence->date()->format( 'c' );
+
+		}
+		$out[ 'type' ] = $this->type();
 		return $out;
 	}
 
 	public function updateDisputeStatus(){
 		$this->dispute()->setStatus( $this->status() );
-	}
-
-	public function updateSubmissionCount(){
-		$this->dispute()->setSubmissionCount( $this->submissionCount() );
 	}
 
 	public function dispute(){
@@ -37,7 +46,7 @@ class Crunchbutton_Stripe_Dispute_Log extends Cana_Table {
 	}
 
 	public function webhook(){
-		if( !$this->_webook ){
+		if( $this->id_stripe_webhook && !$this->_webook ){
 			$this->_webook = Crunchbutton_Stripe_Webhook::o( $this->id_stripe_webhook );
 		}
 		return $this->_webook;
@@ -54,10 +63,19 @@ class Crunchbutton_Stripe_Dispute_Log extends Cana_Table {
 	}
 
 	public function status(){
-		if( !$this->_status ){
+		if( $this->webhook() ){
 			$this->_status = $this->webhookData()->data->object->status;
+		} else if( $this->evidence() ){
+			$this->_status = $this->evidence()->status;
 		}
 		return $this->_status;
+	}
+
+	public function evidence(){
+		if( $this->id_stripe_dispute_evidence && !$this->_evidence ){
+			$this->_evidence = Crunchbutton_Stripe_Dispute_Evidence::o( $this->id_stripe_dispute_evidence );
+		}
+		return $this->_evidence;
 	}
 
 	public function submissionCount(){
@@ -72,7 +90,11 @@ class Crunchbutton_Stripe_Dispute_Log extends Cana_Table {
 	}
 
 	public function type(){
-		return $this->webhookType();
+		if( $this->webhook() ){
+			return $this->webhookType();
+		} else if( $this->evidence() ){
+			return 'evidence';
+		}
 	}
 
 	public function date() {

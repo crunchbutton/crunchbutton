@@ -1,6 +1,7 @@
 <?php
 
 class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
+
 	public function run() {
 
 		// send customer a receipt in 30 seconds

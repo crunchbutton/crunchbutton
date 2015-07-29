@@ -11,17 +11,58 @@ CREATE TABLE `stripe_dispute` (
   CONSTRAINT `stripe_dispute_ibfk1` FOREIGN KEY (`id_order`) REFERENCES `order` (`id_order`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `stripe_dispute_evidence` (
+  `id_stripe_dispute_evidence` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_stripe_dispute` int(11) unsigned DEFAULT NULL,
+  `id_admin` int(11) unsigned DEFAULT NULL,
+  `status` enum('draft','sent') DEFAULT 'draft',
+  `datetime` datetime DEFAULT NULL,
+  `product_description` TEXT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `customer_email_address` varchar(255) DEFAULT NULL,
+  `customer_purchase_ip` varchar(15) DEFAULT NULL,
+  `customer_signature` varchar(255) DEFAULT NULL,
+  `billing_address` TEXT NULL,
+  `receipt` varchar(255) DEFAULT NULL,
+  `receipt_url` TEXT NULL,
+  `shipping_address` TEXT NULL,
+  `shipping_date` datetime DEFAULT NULL,
+  `shipping_carrier` varchar(255) DEFAULT NULL,
+  `shipping_tracking_number` varchar(255) DEFAULT NULL,
+  `shipping_documentation` TEXT NULL,
+  `access_activity_log` TEXT NULL,
+  `service_date` datetime DEFAULT NULL,
+  `service_documentation` TEXT NULL,
+  `duplicate_charge_id` datetime DEFAULT NULL,
+  `duplicate_charge_explanation` TEXT NULL,
+  `duplicate_charge_documentation` varchar(255) DEFAULT NULL,
+  `refund_policy` TEXT NULL,
+  `refund_policy_disclosure` TEXT NULL,
+  `refund_refusal_explanation` TEXT NULL,
+  `cancellation_policy` TEXT NULL,
+  `cancellation_policy_disclosure` TEXT NULL,
+  `cancellation_rebuttal` TEXT NULL,
+  `customer_communication` TEXT NULL,
+  `uncategorized_text` TEXT NULL,
+  `uncategorized_file` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id_stripe_dispute_evidence`),
+  KEY `stripe_dispute_evidence_ibfk1` (`id_stripe_dispute`),
+  KEY `stripe_dispute_evidence_ibfk2` (`id_admin`),
+  CONSTRAINT `stripe_dispute_evidence_ibfk1` FOREIGN KEY (`id_stripe_dispute`) REFERENCES `stripe_dispute` (`id_stripe_dispute`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `stripe_dispute_evidence_ibfk2` FOREIGN KEY (`id_admin`) REFERENCES `admin` (`id_admin`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 CREATE TABLE `stripe_dispute_log` (
   `id_stripe_dispute_log` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_stripe_dispute` int(11) unsigned DEFAULT NULL,
   `id_stripe_webhook` int(11) unsigned DEFAULT NULL,
-  `id_admin` int(11) unsigned DEFAULT NULL,
+  `id_stripe_dispute_evidence` int(11) unsigned DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id_stripe_dispute_log`),
   KEY `stripe_dispute_log_ibfk1` (`id_stripe_dispute`),
   KEY `stripe_dispute_log_ibfk2` (`id_stripe_webhook`),
-  KEY `stripe_dispute_log_ibfk3` (`id_admin`),
+  KEY `stripe_dispute_log_ibfk3` (`id_stripe_dispute_evidence`),
   CONSTRAINT `stripe_dispute_log_ibfk1` FOREIGN KEY (`id_stripe_dispute`) REFERENCES `stripe_dispute` (`id_stripe_dispute`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `stripe_dispute_log_ibfk2` FOREIGN KEY (`id_stripe_webhook`) REFERENCES `stripe_webhook` (`id_stripe_webhook`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `stripe_dispute_log_ibfk3` FOREIGN KEY (`id_admin`) REFERENCES `admin` (`id_admin`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `stripe_dispute_log_ibfk3` FOREIGN KEY (`id_stripe_dispute_evidence`) REFERENCES `stripe_dispute_evidence` (`id_stripe_dispute_evidence`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

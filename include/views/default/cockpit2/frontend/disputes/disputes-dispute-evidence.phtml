@@ -1,0 +1,120 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="left title"><i class="fa fa-info"></i>Evidence</h1>
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="divider"></div>
+
+	<div class="support-boxes">
+		<div class="support-box-wrap box-content2" ng-if="evidence.id_stripe_dispute_evidence">
+			<div class="support-box-wrap-header">
+				<h1>Basic Info</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Dispute #{{evidence.id_stripe_dispute}}</div>
+						<div class="field-value">
+							<a href="/dispute/{{evidence.id_stripe_dispute}}">#{{evidence.id_stripe_dispute}}</a>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Status:</div>
+						<div class="field-value">
+							<span ng-if="evidence.status == 'sent'" class="tag tag-green no-wrap">
+								Sent
+							</span>
+							<span ng-if="evidence.status == 'draft'" class="tag tag-grey no-wrap">
+								Draft
+							</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="evidence.sent_date">
+						<div class="field-key">Sent at:</div>
+						<div class="field-value">
+							{{evidence.sent_date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{evidence.sent_date | convertimeformat:account.user.timezone:'z'}}</span>)
+						</div>
+					</div>
+					<div class="field-row" ng-if="evidence.send_by">
+						<div class="field-key">Sent by:</div>
+						<div class="field-value">
+							{{evidence.send_by}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="evidence.customer_purchase_ip">
+						<div class="field-key">Customer Purchase IP:</div>
+						<div class="field-value">{{evidence.customer_purchase_ip}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.service_date">
+						<div class="field-key">Service Date:</div>
+						<div class="field-value">{{evidence.service_date}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.shipping_date">
+						<div class="field-key">Shipping Date:</div>
+						<div class="field-value">{{evidence.shipping_date}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.customer_name">
+						<div class="field-key">Customer Name:</div>
+						<div class="field-value">{{evidence.customer_name}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.customer_email_address">
+						<div class="field-key">Customer Email:</div>
+						<div class="field-value">{{evidence.customer_email_address}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.product_description">
+						<div class="field-key">Product Description:</div>
+						<div class="field-value">{{evidence.product_description}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.shipping_address">
+						<div class="field-key">Shipping Address:</div>
+						<div class="field-value">{{evidence.shipping_address}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.uncategorized_text">
+						<div class="field-key">Additional Info:</div>
+						<div class="field-value">{{evidence.uncategorized_text}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.access_activity_log">
+						<div class="field-key">Access Activity Log:</div>
+						<div class="field-value">{{evidence.access_activity_log}}</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="support-box-wrap box-content2" ng-if="evidence.id_stripe_dispute_evidence">
+
+			<div class="support-box-wrap-header">
+				<h1>More Info</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row" ng-if="evidence.billing_address">
+						<div class="field-key">Billing Address:</div>
+						<div class="field-value">{{evidence.billing_address}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.shipping_carrier">
+						<div class="field-key">Shipping Carrier:</div>
+						<div class="field-value">{{evidence.shipping_carrier}}</div>
+					</div>
+					<div class="field-row" ng-if="evidence.receipt">
+						<div class="field-key">Receipt Image:</div>
+						<div class="field-value">
+							<a href="{{evidence.receipt_url}}" target="_blank">
+								{{evidence.receipt}}
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
