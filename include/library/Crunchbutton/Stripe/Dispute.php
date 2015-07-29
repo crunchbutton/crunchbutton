@@ -56,7 +56,7 @@ class Crunchbutton_Stripe_Dispute extends Cana_Table {
 	}
 
 	public function canSendMoreEvidences(){
-		return ( $this->submission_count < Crunchbutton_Stripe_Dispute::EVIDENCES_SEND_LIMIT && $this->status != Crunchbutton_Stripe_Dispute::STATUS_LOST  && $this->status != Crunchbutton_Stripe_Dispute::STATUS_WON );
+		return ( $this->submission_count < self::EVIDENCES_SEND_LIMIT && $this->status != self::STATUS_LOST  && $this->status != self::STATUS_WON );
 	}
 
 	public function getDisputeByChargeId( $charge_id ){
