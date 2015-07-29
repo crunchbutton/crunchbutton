@@ -26,9 +26,6 @@ CREATE TABLE `resource_community` (
   CONSTRAINT `resource_community_ibfk_2` FOREIGN KEY (`id_resource`) REFERENCES `resource` (`id_resource`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO resource ( `id_resource`, `id_admin`, `name`, `file`, `all`, `page`, `side`, `date`, `active`, `order_page`, `url` ) SELECT `id_community_resource`, `id_admin`, `name`, `file`, `all`, `page`, `side`, `date`, `active`, `order_page`, `url` FROM community_resource;
-
-INSERT INTO resource_community ( `id_resource_community`, `id_community`, `id_resource` ) SELECT `id_community_resource_community`, `id_community`, `id_community_resource` FROM community_resource_community;
 
 DROP TABLE community_resource_community;
 
