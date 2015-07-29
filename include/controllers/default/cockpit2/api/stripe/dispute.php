@@ -142,7 +142,7 @@ class Controller_Api_Stripe_Dispute extends Crunchbutton_Controller_Rest {
 	}
 
 	private function _permissionDenied(){
-		if (!c::admin()->permission()->check( [ 'global' ] ) ) {
+		if (!c::admin()->permission()->check( [ 'global', 'disputes-all' ] ) ) {
 			$this->error(401);
 		}
 	}

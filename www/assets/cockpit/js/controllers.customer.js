@@ -61,7 +61,7 @@ NGApp.controller('CustomerCreditCtrl', function ($rootScope, $routeParams, $scop
 	});
 });
 
-NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService, CreditService, $rootScope) {
+NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService, CreditService, BlockedService, $rootScope) {
 
 	$scope.loading = true;
 
@@ -76,6 +76,18 @@ NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, Cust
 
 		$scope.loading = false;
 	});
+
+	$scope.blockUser = function( id_user ){
+		BlockedService.user( id_user, function( status ){
+			console.log(status);
+		} );
+	}
+
+	$scope.blockPhone = function( id_phone ){
+		BlockedService.phone( id_phone, function( status ){
+			console.log(status);
+		} );
+	}
 
 	var credits = function(){
 		CreditService.status( $routeParams.id, function( d ){

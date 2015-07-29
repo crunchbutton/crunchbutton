@@ -1,0 +1,21 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-pause"></i>Blocked Customers</h1>
+	</div>
+	<div class="divider"></div>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-blockeds.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+
+</div>
