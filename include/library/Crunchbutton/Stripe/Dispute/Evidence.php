@@ -12,7 +12,7 @@ class Crunchbutton_Stripe_Dispute_Evidence extends Cana_Table {
 		}
 		$evidence->id_stripe_dispute = $params[ 'id_stripe_dispute' ];
 		$evidence->datetime = date( 'Y-m-d H:i:s' );
-		$evidence->status = Crunchbutton_Stripe_Dispute_Evidence::STATUS_DRAFT;
+		$evidence->status = self::STATUS_DRAFT;
 		$evidence->save();
 		return $evidence;
 	}
@@ -20,7 +20,7 @@ class Crunchbutton_Stripe_Dispute_Evidence extends Cana_Table {
 	public function exports(){
 		$out = $this->properties();
 
-		if( $this->status == Crunchbutton_Stripe_Dispute_Evidence::STATUS_SENT ){
+		if( $this->status == self::STATUS_SENT ){
 			$log = $this->log();
 			if( $log ){
 				$out[ 'sent_date' ] = $log->date()->format( 'c' );
