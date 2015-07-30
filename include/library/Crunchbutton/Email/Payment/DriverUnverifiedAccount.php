@@ -6,8 +6,7 @@ class Crunchbutton_Email_Payment_DriverUnverifiedAccount extends Crunchbutton_Em
 
 	public function __construct( $data ) {
 
-		// $params['to'] = 'payments@_DOMAIN_';
-		$params['to'] = '_EMAIL';
+		$params['to'] = 'payments@_DOMAIN_';
 		$params['subject'] = 'Unverified account: ' . $data[ 'driver' ];
 		$params['from'] = 'Crunchbutton<support@_DOMAIN_>';
 		$params['reply'] = 'Crunchbutton<no-reply@_DOMAIN_>';
