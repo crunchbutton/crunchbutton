@@ -693,7 +693,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		foreach( $communities as $community ){
 			$community->reopenAutoClosedCommunity();
 		}
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin != "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin != "' . $id_admin . '"' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants = 1 OR close_3rd_party_delivery_restaurants = 1' );
 		foreach( $communities as $community ){
 			$community->checkIfClosedCommunityHasDrivers();
 		}
@@ -707,7 +707,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$id_admin = $admin->id_admin;
 
 			if( $this->close_all_restaurants_id_admin != $id_admin && $this->close_3rd_party_delivery_restaurants_id_admin != $id_admin ){
-
 				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 				if( $nextShift->id_community_shift ){
 					$createTicket = true;
