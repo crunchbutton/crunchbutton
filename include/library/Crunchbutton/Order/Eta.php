@@ -3,6 +3,7 @@
 class Crunchbutton_Order_Eta extends Cana_Table {
 
 	const METHOD_SMART_ETA = 'smart-eta';
+	const METHOD_INFORMED_ETA = 'informed-eta';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -140,6 +141,15 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 		$eta = Crunchbutton_Order_Eta::q( $query )->get( 0 );
 		if( $eta->id_order_eta ){
 			return true;
+		}
+		return false;
+	}
+
+	public function informedEtaByOrder( $id_order ){
+		$query = 'SELECT * FROM order_eta WHERE id_order = "' . $id_order . '" AND method = "' . Crunchbutton_Order_Eta::METHOD_INFORMED_ETA . '"';
+		$eta = Crunchbutton_Order_Eta::q( $query )->get( 0 );
+		if( $eta->time ){
+			return intval( $eta->time );
 		}
 		return false;
 	}

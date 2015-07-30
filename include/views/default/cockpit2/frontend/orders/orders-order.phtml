@@ -76,6 +76,13 @@
 							{{order.agent}}
 						</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Informed ETA</div>
+						<div class="field-value">
+							{{order.informed_eta}}
+						</div>
+					</div>
+
 					<div class="field-row" ng-if="order.status.status != 'delivered' && eta.time">
 						<div class="field-key">ETA</div>
 						<div class="field-value">
