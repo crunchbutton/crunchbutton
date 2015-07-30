@@ -11,7 +11,7 @@ class Crunchbutton_Cron_Job_VerifyDriverAccount extends Crunchbutton_Cron_Log {
 		}
 
 		// it always must call finished method at the end
-		// $this->finished();
+		$this->finished();
 	}
 
 	public function verify( $driver ){
