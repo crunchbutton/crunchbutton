@@ -661,7 +661,24 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$phone = Crunchbutton_Phone::byPhone( $this->phone );
 		$this->id_phone = $phone->id_phone;
 
+		// Get the informed eta before save the order
+		if( $this->restaurant() ){
+			$informed_eta = $this->restaurant()->smartETA();
+		}
+
 		$this->save();
+
+		// register informed eta
+		if( $informed_eta ){
+			$eta = new Order_Eta([
+				'id_order' => $this->id_order,
+				'time' => $informed_eta,
+				'distance' => null,
+				'date' => date('Y-m-d h:i:s'),
+				'method' => Crunchbutton_Order_Eta::METHOD_INFORMED_ETA
+			]);
+			$eta->save();
+		}
 
 		Log::debug( [ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ] );
 

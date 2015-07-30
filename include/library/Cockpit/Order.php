@@ -261,6 +261,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out[ '_restaurant_address' ] = Crunchbutton_Util::removeNewLine( $out[ '_restaurant_address' ] );
 		$out[ 'address' ] = Crunchbutton_Util::removeNewLine( $out[ 'address' ] );
 
+		// informed eta
+		$out[ 'informed_eta' ] = Crunchbutton_Order_Eta::informedEtaByOrder( $this->id_order );
+
 		return $out;
 	}
 
