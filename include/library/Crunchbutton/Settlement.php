@@ -1649,7 +1649,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
 				$summary[ 'check_id' ] = $payment->check_id;
-				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( $date_format );
+				if( $payment->summary_sent_date ){
+					$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( $date_format );
+				}
 				$summary[ 'payment_date' ] = $payment->date()->format( $date_format );
 				$status = Cockpit_Payment_Schedule::statusToDriver( $schedule, false );
 				$summary[ 'expected_date' ] = $status[ 'paid_date' ];
