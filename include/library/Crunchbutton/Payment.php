@@ -201,7 +201,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		return Restaurant::o($this->id_restaurant);
 	}
 
-	public function listPayments( $search = [] ){
+	public function listPayments( $search = [], $count = false ){
 		$query = '';
 		$where = ' WHERE 1=1 ';
 		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
@@ -236,11 +236,21 @@ class Crunchbutton_Payment extends Cana_Table {
 					$where .= " AND p.payment_status = '" . $search[ 'payment_status' ] . "'";
 				}
 
-				$query = 'SELECT p.*, a.name AS driver, ps.id_payment_schedule FROM payment p
-								LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
-								INNER JOIN admin a ON a.id_admin = p.id_driver
-								' . $where . '
-								ORDER BY p.id_payment DESC ' . $limit;
+				if( $count ){
+					$query = 'SELECT count(*) AS count FROM payment p
+									LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
+									INNER JOIN admin a ON a.id_admin = p.id_driver
+									' . $where . '
+									ORDER BY p.id_payment DESC ' . $limit;
+					$total = c::db()->get( $query )->get( 0 );
+					return intval( $total->count );
+				} else {
+					$query = 'SELECT p.*, a.name AS driver, ps.id_payment_schedule FROM payment p
+									LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
+									INNER JOIN admin a ON a.id_admin = p.id_driver
+									' . $where . '
+									ORDER BY p.id_payment DESC ' . $limit;
+				}
 			}
 		}
 
