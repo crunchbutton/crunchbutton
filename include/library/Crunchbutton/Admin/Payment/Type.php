@@ -191,5 +191,4 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		}
 		return $this->_using_pex_date;
 	}
-
 }

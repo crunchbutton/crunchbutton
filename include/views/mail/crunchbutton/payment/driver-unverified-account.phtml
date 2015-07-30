@@ -1,0 +1,33 @@
+The Stripe account of the <strong><a href="https://cockpit.la/staff/<?php echo $params[ 'login' ]; ?>"><?php echo $params[ 'driver' ]; ?></a></strong> could not be verified.
+<br>
+Community: <?php echo $params[ 'community' ]; ?>
+<br>
+Account Status: <strong>unverified</strong>
+<br><br>
+<?php if( count( $params[ 'payments' ] ) ) { ?>
+<strong>Pending Payments:</strong>
+<br>
+<br>
+<table border="1">
+	<tr>
+		<td>#</td>
+		<td>Date</td>
+		<td>Status</td>
+		<td>Log</td>
+	</tr>
+	<?php foreach( $params[ 'payments' ] as $payment ) { ?>
+		<tr>
+			<td>
+				<a href="https://cockpit.la/settlement/drivers/scheduled/<?php echo $payment[ 'id_payment_schedule' ]; ?>">
+				<?php echo $payment[ 'id_payment_schedule' ]; ?>
+			</a>
+		</td>
+			<td><?php echo $payment[ 'date' ]; ?></td>
+			<td><?php echo $payment[ 'status' ]; ?></td>
+			<td><?php echo $payment[ 'log' ]; ?></td>
+		</tr>
+	<?php } ?>
+</table>
+<?php } else { ?>
+	<i>No Pending Payments</i>
+<?php } ?>
