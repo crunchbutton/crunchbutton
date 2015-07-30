@@ -32,8 +32,6 @@ class Crunchbutton_Cron_Job_VerifyDriverAccount extends Crunchbutton_Cron_Log {
 
 			$mail = new Crunchbutton_Email_Payment_DriverUnverifiedAccount( $params );
 			$mail->send();
-			echo $mail->message();
-
 		}
 	}
 }
