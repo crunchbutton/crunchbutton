@@ -1,5 +1,4 @@
 <?php
-
 class Cockpit_Payment_Schedule extends Cana_Table {
 
 	const TYPE_RESTAURANT = 'restaurant';
@@ -25,7 +24,6 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		$result = c::db()->get( $query );
 		return $result->_items[0]->date;
 	}
-
 
 	public function checkPaymentStatus(){
 		$payment = $this->payment();
