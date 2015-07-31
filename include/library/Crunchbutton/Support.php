@@ -822,11 +822,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$out[ 'staff' ][ 'is_campus_manager' ] = $admin->isCampusManager();
 			$out[ 'staff' ][ 'is_support' ] = $admin->isSupport();
 			$out[ 'staff' ][ 'is_working' ] = $admin->isWorking();
-		}
 
-		// Check if the driver is delivering any order
-		if( $admin->isDriver() ){
-			$out[ 'staff' ][ 'delivering' ] = $admin->publicExports();
+			// Check if the driver is delivering any order
+			if( $admin->isDriver() ){
+				$out[ 'staff' ][ 'delivering' ] = $admin->publicExports();
+			}
 		}
 
 
