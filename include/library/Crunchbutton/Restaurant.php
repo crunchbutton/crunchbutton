@@ -1332,6 +1332,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'loc_long' ] = $community->loc_lon;
 		}
 
+		$out[ '_open' ] = $this->open();
+
 		return $out;
 	}
 
