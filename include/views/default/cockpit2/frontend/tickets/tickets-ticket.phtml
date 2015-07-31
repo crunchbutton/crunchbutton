@@ -218,6 +218,39 @@
 			</div>
 		</div>
 
+		<div class="support-box-wrap box-content2" ng-if="ticket.staff.delivering" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Delivering</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<table align="right" class="basic-table detail">
+					<tr>
+						<td class="topitem itemname">Order</td>
+						<td class="topitem itemprice tb-small">Status</td>
+						<td class="topitem order-contents-item-qty">Time</td>
+					</tr>
+					<tr ng-repeat="order in ticket.staff.delivering.deliveries">
+						<td class="fooditem dish-name">
+							<a href="/order/{{order.id_order}}">#{{order.id_order}}</a><br>
+						</td>
+						<td class="fooditem dish-name tb-small tb-v-center" nowrap="nowrap">
+							<span class="tag tag-red no-wrap" ng-if="order.status == 'delivery-rejected'">Rejected</span>
+							<span class="tag tag-black no-wrap" ng-if="order.status == 'delivery-canceled'">Canceled</span>
+							<span class="tag tag-green no-wrap" ng-if="order.status == 'delivery-accepted'">Accepted</span>
+							<span class="tag tag-blue no-wrap" ng-if="order.status == 'delivery-pickedup'">Pickedup</span>
+							<span class="tag tag-purple no-wrap" ng-if="order.status == 'delivery-delivered'">Delivered</span>
+						</td>
+						<td class="fooditem dish-name" nowrap="nowrap">
+								{{order.update | convertimeformat:account.user.timezone:'h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{order.update | convertimeformat:account.user.timezone:'z'}}</span>)
+						</td>
+					</tr>
+					<tr><td>	</td></tr>
+				</table>
+			</div>
+		</div>
 
 		<div class="support-box-wrap box-content2" ng-if="ticket.restaurant.id_restaurant" class="support-box-wrap">
 			<div class="support-box-wrap-header">
