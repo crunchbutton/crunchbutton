@@ -155,11 +155,11 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getByPhone( $phone, $activeOnly = false){
-		return Crunchbutton_Admin::q( "SELECT * FROM admin a INNER JOIN phone p ON a.id_phone = p.id_phone AND p.phone = ? ".($activeOnly ? 'WHERE a.active=true ' : '')." ORDER BY id_admin DESC LIMIT 1", [ Phone::clean( $phone ) ] )->get( 0 );
+		return Admin::q( "SELECT * FROM admin a INNER JOIN phone p ON a.id_phone = p.id_phone AND p.phone = ? ".($activeOnly ? 'WHERE a.active=true ' : '')." ORDER BY id_admin DESC LIMIT 1", [ Phone::clean( $phone ) ] )->get( 0 );
 	}
 
 	public function getByPhoneSetup( $phone ){
-		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE a.phone = '{$phone}' AND ( a.pass IS NULL OR a.pass = '' ) ORDER BY id_admin DESC LIMIT 1 " );
+		return Admin::q( "SELECT * FROM admin a WHERE a.phone = '{$phone}' AND ( a.pass IS NULL OR a.pass = '' ) ORDER BY id_admin DESC LIMIT 1 " );
 	}
 
 	public function getCSAdminByPhone( $phone ){

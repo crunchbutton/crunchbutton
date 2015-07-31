@@ -815,7 +815,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
-		if( $admin->id_admin && !$out[ 'user' ] ){
+		if( $admin->id_admin ){
 			$out[ 'staff' ] = $admin->exports();
 			$out[ 'staff' ][ 'is_driver' ] = $admin->isDriver();
 			$out[ 'staff' ][ 'is_marketing_rep' ] = $admin->isMarketingRep();
@@ -823,6 +823,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$out[ 'staff' ][ 'is_support' ] = $admin->isSupport();
 			$out[ 'staff' ][ 'is_working' ] = $admin->isWorking();
 		}
+
+		// Check if the driver is delivering any order
+		if( $admin->isDriver() ){
+			$out[ 'staff' ][ 'delivering' ] = $admin->publicExports();
+		}
+
 
 		$load_messages = true;
 
