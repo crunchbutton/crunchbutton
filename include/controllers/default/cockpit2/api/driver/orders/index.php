@@ -107,7 +107,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			$exports = [];
 
 			// @demo
-			$orders = Order::deliveryOrders( $lastHours );
+			$orders = Order::deliveryOrdersForAdminOnly($lastHours, c::admin());
 
 			foreach ( $orders as $order ) {
 				$restaurant = $order->restaurant();

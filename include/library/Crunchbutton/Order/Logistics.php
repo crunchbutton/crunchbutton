@@ -336,7 +336,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $driver_mph = $cs->mph;
                     $dlist = new Crunchbutton_Order_Logistics_DestinationList($distanceType);
                     $dlist->driverMph = $driver_mph;
-
+                    $dlist->orderId = $new_id_order;
+                    $dlist->driverId = $driver->id_admin;
                     $driver_destination = new Crunchbutton_Order_Logistics_Destination([
                         'objectId' => $driver->id_admin,
                         'type' => Crunchbutton_Order_Logistics_Destination::TYPE_DRIVER,
@@ -524,6 +525,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         // If there are a large amount of drivers, it's more efficient to
         //  restructure all of this with a single loop instead of a loop + second array search.
         // Either use $drivers or a hash table lookup instead.
+
+        // IMPORTANT: The code in Crunchbutton_Order::deliveryOrdersForAdminOnly assumes that the priority
+        //  expiration for a particular order is the same for drivers.
         foreach ($this->drivers() as $driver) {
             if ($skipFlag) {
                 $driver->__seconds = 0;

@@ -6,6 +6,9 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
     public $distanceType;
     public $driverMph;
 
+    public $driverId;
+    public $orderId;
+
     private $oldFakeOrderIds;
     private $newFakeOrderIds;
 
@@ -54,7 +57,16 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
 
         $this->oldFakeOrderIds = []; // We'll need this later to remove from the output route.
         $this->newFakeOrderIds = []; // We'll need this later to remove from the output route.
+
+        $this->driverId = "0";
+        $this->orderId = "0";
     }
+
+    public function getId($suffix)
+    {
+        return $this->driverId."_".$this->orderId."_".$suffix;
+    }
+
 
     // This is the driver location and needs to be first
     public function addDriverDestination($destination)
@@ -311,6 +323,13 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
             $this->copyNewArraysToOptimizerInput($new);
             $optInputsList['new'] = $new;
 
+        }
+
+        if (!is_null($optInputsList['old'])){
+            $optInputsList['old']->uuid = $this->getId('old');
+        }
+        if (!is_null($optInputsList['new'])){
+            $optInputsList['new']->uuid = $this->getId('new');
         }
 
         return $optInputsList;
