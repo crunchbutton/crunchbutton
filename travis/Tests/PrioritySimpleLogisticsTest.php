@@ -747,8 +747,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1);
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
-
+        $this->assertEquals($ol->numDriversWithPriority, 0);
         $o1->delete();
     }
 
@@ -815,10 +816,14 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             if ($driver->id_admin == $this->driver1->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+
     }
 
 
@@ -881,7 +886,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // One other new order in the system past the last n minutes, given to driver 1, but not accepted, and
@@ -945,7 +952,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // Many new orders in the system within the last n minutes, given to driver 1, and should not assign to any driver
@@ -1010,7 +1019,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // One delivered order in the system within the last n minutes, delivered by driver 1
@@ -1082,7 +1093,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // One picked-up order in the system within the last n minutes, by driver 1
@@ -1155,7 +1168,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
 
@@ -1232,10 +1247,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
     // One order accepted in the system outside the last n minutes by driver 2
@@ -1310,7 +1328,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // One order accepted in the system outside the last n minutes by driver 2
@@ -1439,7 +1459,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // N -1 orders accepted in the system inside the last n minutes by driver 2
@@ -1525,10 +1547,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
     // N orders accepted in the system inside the last n minutes by driver 2
@@ -1614,7 +1639,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // N -1 orders accepted in the system inside the last n minutes by driver 2
@@ -1732,7 +1759,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // N -1 orders accepted in the system inside the last n minutes by driver 2
@@ -1850,10 +1879,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
     // 2 orders accepted in the system inside the last n minutes by driver 1
@@ -1944,10 +1976,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
     // 2 orders accepted in the system inside the last n minutes by driver 1
@@ -2052,10 +2087,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
 

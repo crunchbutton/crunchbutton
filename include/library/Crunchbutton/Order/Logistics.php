@@ -35,7 +35,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
     public function __construct($delivery_logistics, $order, $drivers = null, $distanceType=Crunchbutton_Optimizer_Input::DISTANCE_LATLON)
     {
-
+        $this->numDriversWithPriority = -1;
         $this->_order = $order;
         if (is_null($drivers)) {
             $this->_drivers = $order->getDriversToNotify();
@@ -495,11 +495,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             } else if (!$skipFlag){
                 // Look for the best driver
                 foreach ($this->drivers() as $driver) {
-                    $driver->_priority = false;
+                    $driver->__priority = false;
                     if ($driver->_opt_status = self::DRIVER_OPT_SUCCESS) {
                         // Get the score
                         if ($driver->_scoreChange == $bestScoreChange) {
-                            $driver->_priority = true;
+                            $driver->__priority = true;
                             $numSelectedDrivers += 1;
                         }
                     };
@@ -528,16 +528,18 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
         // IMPORTANT: The code in Crunchbutton_Order::deliveryOrdersForAdminOnly assumes that the priority
         //  expiration for a particular order is the same for drivers.
+        $this->numDriversWithPriority = $numSelectedDrivers;
         foreach ($this->drivers() as $driver) {
             if ($skipFlag) {
                 $driver->__seconds = 0;
+                $driver->__priority = false;
                 $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_ONE;
                 $seconds_delay = 0;
                 $priority_expiration = $nowDate2;
             } else {
 //            print "Cur order:".$cur_id_order."\n";
                 if ($numSelectedDrivers > 0) {
-                    if ($driver->_priority) {
+                    if ($driver->__priority) {
                         $driver->__seconds = 0;
                         $priority_given = Crunchbutton_Order_Priority::PRIORITY_HIGH;
                         $seconds_delay = 0;
@@ -550,6 +552,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     }
                 } else {
                     $driver->__seconds = 0;
+                    $driver->__priority = false;
                     $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_ONE;
                     $seconds_delay = 0;
                     $priority_expiration = $nowDate2;
@@ -682,22 +685,26 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         // If there are a large amount of drivers, it's more efficient to
         //  restructure all of this with a single loop instead of a loop + second array search.
         // Either use $drivers or a hash table lookup instead.
+        $this->numDriversWithPriority = count($selectedDriverIds);
         foreach ($this->drivers() as $driver) {
 //            print "Cur order:".$cur_id_order."\n";
-            if (count($selectedDriverIds)) {
+            if ($this->numDriversWithPriority > 0) {
                 if (in_array($driver->id_admin, $selectedDriverIds)) {
                     $driver->__seconds = 0;
+                    $driver->__priority = true;
                     $priority_given = Crunchbutton_Order_Priority::PRIORITY_HIGH;
                     $seconds_delay = 0;
                     $priority_expiration = $laterDate;
                 } else {
                     $driver->__seconds = self::TIME_MAX_DELAY;
+                    $driver->__priority = false;
                     $priority_given = Crunchbutton_Order_Priority::PRIORITY_LOW;
                     $seconds_delay = self::TIME_MAX_DELAY;
                     $priority_expiration = $laterDate;
                 }
             } else {
                 $driver->__seconds = 0;
+                $driver->__priority = false;
                 $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_ONE;
                 $seconds_delay = 0;
                 $priority_expiration = $nowDate2;
