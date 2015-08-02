@@ -993,11 +993,13 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $driverLoc2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_NO_ONE);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
     // Missing fake community fake customers - OK - high priority for all drivers because only one order
@@ -1058,11 +1060,13 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olc->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
         }
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // Missing fake community fake customers - no priority
@@ -1139,11 +1143,13 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olc->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
         }
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_NO_ONE);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
 
@@ -1212,11 +1218,13 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olc->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
         }
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // Two drivers - no orders - different locations, but still close
@@ -1284,11 +1292,13 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olc->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
         }
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
         }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // Two drivers - no orders - different locations, but still close
@@ -1357,9 +1367,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             }
             else{
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
         $this->assertEquals($ops->count(), 2);
@@ -1371,6 +1383,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
 
@@ -1458,9 +1471,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver1->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             }
             else{
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
         $this->assertEquals($ops->count(), 2);
@@ -1472,6 +1487,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
     // Two drivers - driver 1 has an unaccepted priority order from Chipotle (with no waiting time).
@@ -1573,9 +1589,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver1->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             }
             else{
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
         $this->assertEquals($ops2->count(), 2);
@@ -1587,7 +1605,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
         }
-
+        $this->assertEquals($ol->numDriversWithPriority, 1);
 
     }
 
@@ -1690,13 +1708,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
         }
         $this->assertEquals($ops2->count(), 2);
 
         foreach ($ops2 as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
         }
-
+        $this->assertEquals($ol->numDriversWithPriority, 2);
 
     }
     //  Three drivers, none with orders
@@ -1779,8 +1798,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
         $this->assertEquals($ops2->count(), 3);
@@ -1792,6 +1813,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
     // Three drivers - driver 1 has an unaccepted, unexpired priority order from Chipotle (with no waiting time).
     //  All three drivers are at the same location
@@ -1890,8 +1912,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver1->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
             } else {
                 $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
             }
         }
         $this->assertEquals($ops2->count(), 3);
@@ -1903,6 +1927,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
         }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
 

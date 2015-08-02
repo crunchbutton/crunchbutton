@@ -656,7 +656,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         }
 
     }
-    
+
 
     // All drivers should see the order if the order has an expired high priority.
     public function testDriverOrdersWithExpiredPriority()
