@@ -29,6 +29,7 @@ class Crunchbutton_Optimizer_Input extends Cana_Model {
     public $deliveryIdxs;
     public $clusters;
     public $restaurantParkingTimes;
+    public $uuid;
 
 	public function __construct($params = []) {
 		foreach ($params as $key => $param) {
@@ -59,6 +60,7 @@ class Crunchbutton_Optimizer_Input extends Cana_Model {
         $d["deliveryIdxs"] = $this->deliveryIdxs;
         $d["clusters"] = $this->clusters;
         $d["restaurantParkingTimes"] = $this->restaurantParkingTimes;
+        $d["uuid"] = $this->uuid;
         return $d;
     }
 

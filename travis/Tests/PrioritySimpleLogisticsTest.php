@@ -457,17 +457,17 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $o1->delete();
         $pR1D1->delete();
-        $this->assertFalse(is_null($retrievePriorities));
-        $this->assertTrue($retrievePriorities->count() == 1);
+        $this->assertNotNull($retrievePriorities);
+        $this->assertEquals($retrievePriorities->count(), 1);
         $retrievePriority = $retrievePriorities->get(0);
-        $this->assertTrue($retrievePriority->id_order == $pR1D1->id_order);
-        $this->assertTrue($retrievePriority->id_restaurant == $pR1D1->id_restaurant);
-        $this->assertTrue($retrievePriority->id_admin == $pR1D1->id_admin);
-        $this->assertTrue($retrievePriority->priority_time == $pR1D1->priority_time);
-        $this->assertTrue($retrievePriority->priority_algo_version == $pR1D1->priority_algo_version);
-        $this->assertTrue($retrievePriority->priority_given == $pR1D1->priority_given);
-        $this->assertTrue($retrievePriority->seconds_delay == $pR1D1->seconds_delay);
-        $this->assertTrue($retrievePriority->priority_expiration == $pR1D1->priority_expiration);
+        $this->assertEquals($retrievePriority->id_order, $pR1D1->id_order);
+        $this->assertEquals($retrievePriority->id_restaurant, $pR1D1->id_restaurant);
+        $this->assertEquals($retrievePriority->id_admin, $pR1D1->id_admin);
+        $this->assertEquals($retrievePriority->priority_time, $pR1D1->priority_time);
+        $this->assertEquals($retrievePriority->priority_algo_version, $pR1D1->priority_algo_version);
+        $this->assertEquals($retrievePriority->priority_given, $pR1D1->priority_given);
+        $this->assertEquals($retrievePriority->seconds_delay, $pR1D1->seconds_delay);
+        $this->assertEquals($retrievePriority->priority_expiration, $pR1D1->priority_expiration);
     }
 
     // Make sure we're saving to the db as expected
@@ -495,17 +495,17 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $o1->delete();
         $pR1D1->delete();
-        $this->assertFalse(is_null($retrievePriorities));
-        $this->assertTrue($retrievePriorities->count() == 1);
+        $this->assertNotNull($retrievePriorities);
+        $this->assertEquals($retrievePriorities->count(), 1);
         $retrievePriority = $retrievePriorities->get(0);
-        $this->assertTrue($retrievePriority->id_order == $pR1D1->id_order);
-        $this->assertTrue($retrievePriority->id_restaurant == $pR1D1->id_restaurant);
-        $this->assertTrue($retrievePriority->id_admin == $pR1D1->id_admin);
-        $this->assertTrue($retrievePriority->priority_time == $pR1D1->priority_time);
-        $this->assertTrue($retrievePriority->priority_algo_version == $pR1D1->priority_algo_version);
-        $this->assertTrue($retrievePriority->priority_given == $pR1D1->priority_given);
-        $this->assertTrue($retrievePriority->seconds_delay == $pR1D1->seconds_delay);
-        $this->assertTrue($retrievePriority->priority_expiration == $pR1D1->priority_expiration);
+        $this->assertEquals($retrievePriority->id_order, $pR1D1->id_order);
+        $this->assertEquals($retrievePriority->id_restaurant, $pR1D1->id_restaurant);
+        $this->assertEquals($retrievePriority->id_admin, $pR1D1->id_admin);
+        $this->assertEquals($retrievePriority->priority_time, $pR1D1->priority_time);
+        $this->assertEquals($retrievePriority->priority_algo_version, $pR1D1->priority_algo_version);
+        $this->assertEquals($retrievePriority->priority_given, $pR1D1->priority_given);
+        $this->assertEquals($retrievePriority->seconds_delay, $pR1D1->seconds_delay);
+        $this->assertEquals($retrievePriority->priority_expiration, $pR1D1->priority_expiration);
     }
 
 
@@ -537,7 +537,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $ps = Crunchbutton_Order_Priority::priorityOrders(60, $this->driver1->id_admin, $r1Id);
 
-        $this->assertTrue($ps->count() == 1);
+        $this->assertEquals($ps->count(), 1);
         $pR1D1->delete();
         $o1->delete();
 
@@ -552,7 +552,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(200 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(200, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 200 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -570,7 +570,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $ps = Crunchbutton_Order_Priority::priorityOrders(60, $this->driver1->id_admin, $r1Id);
 
-        $this->assertFalse($ps->count() == 1);
+        $this->assertNotEquals($ps->count(), 1);
         $pR1D1->delete();
         $o1->delete();
 
@@ -642,7 +642,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $ps = Crunchbutton_Order_Priority::priorityOrders(60, $this->driver1->id_admin, $r1Id);
 
-        $this->assertTrue($ps->count() == 3);
+        $this->assertEquals($ps->count(), 3);
         $pR1D1a->delete();
         $pR1D1b->delete();
         $pR1D1c->delete();
@@ -662,7 +662,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->save();
 
         $drivers = $o1->getDriversToNotify();
-        $this->assertTrue($drivers->count() == 3);
+        $this->assertEquals($drivers->count(), 3);
         $o1->delete();
     }
 
@@ -670,14 +670,14 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
     public function testRestaurantsHeDeliveryFor()
     {
         $d = $this->driver1->restaurantsHeDeliveryFor();
-        $this->assertTrue($d->count() == 4);
+        $this->assertEquals($d->count(), 4);
     }
 
     // This test isn't for the logistics code per se
     public function testAllPlacesHeDeliveryFor()
     {
         $d = $this->driver1->allPlacesHeDeliveryFor();
-        $this->assertTrue(count($d) == 4);
+        $this->assertEquals(count($d), 4);
     }
 
 
@@ -708,7 +708,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         $o3->delete();
-        $this->assertTrue($ordersUnfiltered->count() == 2);
+        $this->assertEquals($ordersUnfiltered->count(), 2);
 
     }
 
@@ -728,7 +728,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $lastStatus = $o1->status()->last()['status'];
         $o1->delete();
-        $this->assertTrue($lastStatus == "new");
+        $this->assertEquals($lastStatus, "new");
     }
 
     // No other orders in the system, no priority
@@ -746,7 +746,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1);
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
 
         $o1->delete();
@@ -768,7 +768,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -814,9 +814,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             if ($driver->id_admin == $this->driver1->id_admin) {
-                $this->assertTrue($driver->__seconds == 0);
+                $this->assertEquals($driver->__seconds, 0);
             } else {
-                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
             }
         }
     }
@@ -838,7 +838,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -880,7 +880,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -902,7 +902,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $r1Id = $this->restaurant1->id_restaurant;
 
-        $this->assertTrue(500 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(500, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 500 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -944,7 +944,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -962,7 +962,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -1009,7 +1009,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         }
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1029,7 +1029,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -1081,7 +1081,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1100,7 +1100,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -1154,7 +1154,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1175,7 +1175,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(50 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -1231,9 +1231,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             if ($driver->id_admin == $this->driver2->id_admin) {
-                $this->assertTrue($driver->__seconds == 0);
+                $this->assertEquals($driver->__seconds, 0);
             } else {
-                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
             }
         }
     }
@@ -1254,7 +1254,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(1000 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(1000, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 1000 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -1309,7 +1309,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1325,7 +1325,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate1 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(1000 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(1000, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 1000 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -1336,7 +1336,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(300 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -1438,7 +1438,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->delete();
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1457,7 +1457,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(300 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -1524,9 +1524,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             if ($driver->id_admin == $this->driver2->id_admin) {
-                $this->assertTrue($driver->__seconds == 0);
+                $this->assertEquals($driver->__seconds, 0);
             } else {
-                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
             }
         }
     }
@@ -1546,7 +1546,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(300 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -1613,7 +1613,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1633,13 +1633,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(300 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
         $laterDate = $later->format('Y-m-d H:i:s');
 
-        $this->assertTrue(20 < Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertGreaterThan(20, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 20;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -1731,7 +1731,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         $o3->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertTrue($driver->__seconds == 0);
+            $this->assertEquals($driver->__seconds, 0);
         }
     }
 
@@ -1751,13 +1751,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(500 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(500, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 500 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
         $laterDate = $later->format('Y-m-d H:i:s');
 
-        $this->assertTrue(400 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(400, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 400 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('+ ' . $seconds . ' seconds');
@@ -1849,9 +1849,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->delete();
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
-                $this->assertTrue($driver->__seconds == 0);
+                $this->assertEquals($driver->__seconds, 0);
             } else {
-                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
             }
         }
     }
@@ -1872,7 +1872,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(300 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -1943,9 +1943,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
-                $this->assertTrue($driver->__seconds == 0);
+                $this->assertEquals($driver->__seconds, 0);
             } else {
-                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
             }
         }
     }
@@ -1966,7 +1966,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $now->modify('- ' . $seconds . ' seconds');
         $useDate2 = $now->format('Y-m-d H:i:s');
 
-        $this->assertTrue(300 > Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
         $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $later->modify('- ' . $seconds . ' seconds');
@@ -2051,9 +2051,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
-                $this->assertTrue($driver->__seconds == 0);
+                $this->assertEquals($driver->__seconds, 0);
             } else {
-                $this->assertTrue($driver->__seconds == Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
             }
         }
     }
