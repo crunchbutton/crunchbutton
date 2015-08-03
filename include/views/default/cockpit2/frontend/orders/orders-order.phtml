@@ -254,7 +254,10 @@
 				<div class="field-container">
 					<div class="field-row">
 						<div class="field-key">Name</div>
-						<div class="field-value">{{order.user.name}}</div>
+						<div class="field-value">
+							{{order.user.name}}
+							<span ng-if="order.user.name != order.name">( ordered as <i>{{order.name}}</i> )</span>
+						</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Phone</div>
