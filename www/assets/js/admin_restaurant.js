@@ -1247,12 +1247,6 @@ var ADMIN = {
 			return;
 		}
 
-		if( first_save ){
-			alert( 'Please make sure that the fields "3rd Party Delivery" and "Formal Relationship" have the correct values.' );
-			first_save = false;
-			return;
-		}
-
 		if( $('#restaurant-id-community').val() == '' ){
 			alert( 'Please select a community.' );
 			$('#restaurant-id-community').focus();
