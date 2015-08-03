@@ -39,7 +39,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 									AND
 								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
 									AND
-									o.name not like '%test%'
+									 o.name not like '%test%'
 
 							ORDER BY o.id_order ASC";
 
@@ -55,7 +55,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 			foreach ( $orders as $order ) {
 
-				if( !$order->wasAcceptedByRep() ){
+				if( !$order->wasAcceptedByRep() && !$order->wasCanceled() ){
 
 					$hasDriversWorking = false;
 
@@ -105,7 +105,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					}
 
 				} else {
-					$message = '#'.$order->id_order.' was accepted';
+					$message = '#'.$order->id_order.' was accepted or canceled';
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 					echo $message."\n";
 				}

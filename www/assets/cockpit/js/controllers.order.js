@@ -379,10 +379,16 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 
 		$scope.isSaving = true;
 
+		var id_admin = null;
+
+		if( $scope.status && $scope.status.driver && $scope.status.driver.id_admin ){
+			id_admin = $scope.status.driver.id_admin;
+		}
+
 		var params = { 	id_order: id_order,
 										notify_customer: $scope.notify_customer,
 										status: $scope.status.status,
-										id_admin: $scope.status.driver.id_admin };
+										id_admin: id_admin };
 
 		OrderService.change_delivery_status( params, function( json ){
 			$scope.isSaving = false;

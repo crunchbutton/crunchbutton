@@ -2849,6 +2849,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return false;
 	}
 
+	public function wasCanceled(){
+		$lastStatus = $this->status()->last();
+		if( $lastStatus && $lastStatus[ 'status' ] && $lastStatus[ 'status' ] == 'canceled' ){
+			return true;
+		}
+		return false;
+	}
+
 	public function textCustomerAboutDriver(){
 
 		$order = Crunchbutton_Order::o( $this->id_order );

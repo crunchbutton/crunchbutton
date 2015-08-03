@@ -42,6 +42,9 @@
 						<span ng-show="text5MinAwaySending"><i class="fa fa-spinner fa-spin"></i>&nbsp;&nbsp;Sending</span>
 						<span ng-show="!text5MinAwaySending"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;5 Min Away</span>
 					</button>
+					<div ng-if="status.status != 'canceled'">
+						<br>
+					</div>
 					<button class="button button-empty button-border button-green button-full" ng-click="formDeliveryStatusSave();"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
 				</div>
 				<br><br>
