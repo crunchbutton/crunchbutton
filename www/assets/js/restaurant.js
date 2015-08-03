@@ -111,6 +111,9 @@ var Restaurant = function(id) {
 					self._nextOpenTag();
 				} else {
 					self._tag = 'closed';
+					if( !self.hours || self.hours.length == 0 ){
+						self._tag = 'force_close';
+					}
 					self._nextOpenTag();
 				}
 			} else {
@@ -191,7 +194,7 @@ var Restaurant = function(id) {
 		// loop to verify if it is open
 		self._open = false;
 
-		if( self.hours ){
+		if( self.hours && self.hours.length > 0 ){
 			for( x in self.hours ){
 				self._hasHours = true;
 				if( now_time >= self.hours[ x ]._from_time && now_time <= self.hours[ x ]._to_time ){
