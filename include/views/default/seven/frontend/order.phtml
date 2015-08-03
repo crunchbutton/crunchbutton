@@ -8,14 +8,14 @@
 </div>
 
 <div ng-if="order.id">
-	
+
 	<div class="content-padding">
 		<div ng-if="order.delivery_service && order.status.status != 'delivered'">
 			<div class="order-status-loader-labels">
 				<div class="order-status-loader-label">{{order._time}}</div>
 				<div class="order-status-loader-label"></div>
 				<div class="order-status-loader-label"></div>
-				<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA: 
+				<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA:
 					<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
 					<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
 				</div>
@@ -40,7 +40,7 @@
 		</div>
 		<div class="divider"></div>
 	</div>
-	
+
 	<div class="divider dots spacer-one-two" ng-if="order.delivery_service && order.status.status != 'delivered'"></div>
 
 	<div class="content-padding-desktop">
@@ -113,7 +113,7 @@
 
 		</div>
 	</div>
-	
+
 	<div class="divider dots"></div>
 	<br><br>
 
@@ -145,11 +145,11 @@
 			</div>
 			<div class="divider"></div>
 		</div>
-		
+
 		<div class="divider dots spacer-two-two hide-desktop"></div>
 
 		<div class="content-padding-mobile two-col">
-			
+
 			<div class="order-icon">
 				<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
 				<div ng-hide="(order.delivery_type == 'delivery')" class="icon-takeout"></div>
@@ -168,7 +168,10 @@
 			</div>
 			<div class="order-info order-info-oneline">
 				<p>
-					<span ng-show="(order.pay_type == 'card')">Paid <b>$<span ng-bind-html-unsafe="order.charged | formatPrice"></span></b> by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b></span></span>
+					<span ng-show="(order.pay_type == 'card')">
+						Paid <b>$<span ng-bind-html-unsafe="order.charged | formatPrice"></span></b> by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b></span>
+						<div class="credit" ng-show="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._credit}} credit )</div>
+					</span>
 					<span ng-hide="(order.pay_type == 'card')">Pay <b>$<span ng-bind-html-unsafe="order.charged | formatPrice"></span></b> <span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
 				</p>
 			</div>
@@ -204,7 +207,7 @@
 			</div>
 
 		</div>
-		
+
 	</div>
 
 	<div class="divider dots spacer-one-two"></div>
@@ -216,5 +219,5 @@
 		<a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_system" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
 	</div>
 
-	
+
 </div>
