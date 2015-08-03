@@ -1132,7 +1132,15 @@ var WIDGET = {
 		};
 		this.val = function(arg) {
 			if(arg!==undefined) {
-				parseInt(arg) ? this.set_active() : this.set_inactive();
+				if( typeof arg == 'boolean' ){
+					if( arg ){
+						this.set_active();
+					} else {
+						this.set_inactive();
+					}
+				} else {
+					parseInt(arg) ? this.set_active() : this.set_inactive();
+				}
 			}
 			else {
 				return $(self.dom).hasClass('admin-toggle-active') ? '1':'0';
