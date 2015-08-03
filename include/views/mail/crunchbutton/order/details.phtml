@@ -279,7 +279,12 @@ if( $version == 'customer' ){
 			if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
 				echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
 			} else {
-				echo number_format( $order->final_price, 2 );
+				if( intval( $delivery_service_markup ) > 0 ){
+					echo number_format( $order->final_price, 2 );
+				} else {
+					echo number_format( $order->final_price_plus_delivery_markup, 2 );
+				}
+
 			}
 		} else {
 			if( $order->final_price_plus_delivery_markup ){
