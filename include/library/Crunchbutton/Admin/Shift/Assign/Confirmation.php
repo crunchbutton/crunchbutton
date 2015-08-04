@@ -144,7 +144,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 				$message = self::message( $assignment, self::TYPE_TICKET );
 
-				Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $message, 'phone' => $num ] );
+				Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $message ] );
 
 				self::create( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'type' => self::TYPE_TICKET ] );
 
