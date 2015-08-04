@@ -1,12 +1,10 @@
 <?php
 
 class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
+
 	public function __construct($id = null) {
 		parent::__construct();
-		$this
-			->table('admin_shift_assign')
-			->idVar('id_admin_shift_assign')
-			->load($id);
+		$this->table('admin_shift_assign')->idVar('id_admin_shift_assign')->load($id);
 	}
 
 	public function admin(){
@@ -14,6 +12,10 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 			$this->_admin = Admin::o( $this->id_admin );
 		}
 		return $this->_admin;
+	}
+
+	public function isConfirmed(){
+		return intval( $this->confirmed ) > 0;
 	}
 
 	public function isFirstWeek( $id_admin, $date ){
@@ -78,12 +80,27 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		return true;
 	}
 
+	public function community(){
+		return $this->shift()->community();
+	}
+
 	public function adminHasShift( $id_admin, $id_community_shift ){
 		$shift = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" );
 		if( $shift->id_admin_shift_assign ){
 			return true;
 		}
 		return false;
+	}
+
+	public function timesDriverWasAskedToConfirm(){
+		return Crunchbutton_Admin_Shift_Assign_Confirmation::timesDriverWasAskedToConfirm( $this->id_admin_shift_assign );
+	}
+
+	public function date(){
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+		}
+		return $this->_date;
 	}
 
 }
