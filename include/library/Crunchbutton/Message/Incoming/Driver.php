@@ -1,5 +1,5 @@
 <?php
-	
+
 class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 	const ACTION_ACCEPT = 'accept';
@@ -7,10 +7,13 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 	const ACTION_DELIVERED = 'delivered';
 	const ACTION_DETAILS = 'details';
 	const ACTION_HELP = 'help';
+	const ACTION_SHIFT_CONFIRMATION = 'shift-confirmation';
+	const ACTION_SHIFT_CONFIRMATION_HELP = 'shift-confirmation-help';
 
 	public function __construct($params) {
 
-		$parsed = $this->parseBody($params['body']);
+		$parsed = $this->parseBody($params['body'], $params[ 'admin' ]);
+
 		$action = $parsed['verb'];
 
 		$order = Order::o(intval($parsed['order']));
@@ -44,13 +47,22 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 		} elseif ($action == self::ACTION_HELP) {
 			$response = ['msg' => $this->help(), 'stop' => false];
+
+		} elseif ($action == self::ACTION_SHIFT_CONFIRMATION ){
+			if( $parsed[ 'id_admin_shift_assign' ] ){
+				$message = Crunchbutton_Admin_Shift_Assign_Confirmation::confirmShiftBySMS( $parsed[ 'id_admin_shift_assign' ] );
+				$response = ['msg' => $message, 'stop' => true ];
+			}
+
+		} elseif ($action == self::ACTION_SHIFT_CONFIRMATION_HELP ){
+			// if the driver has a shift to confirm but didn't confirm it - it automaticaly creates a ticket
 		}
 
-		$this->response = (object)$response;
+		$this->response = (object) $response;
 	}
 
 	public function help($order = null) {
-		$response = 
+		$response =
 			"Driver command usage: ".($order ? $order->id_order : 'order')." command\n".
 			"Commands: \n".
 			"    accept (or a)\n".
@@ -102,7 +114,8 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 		return $response;
 	}
 
-	public function parseBody($body) {
+	public function parseBody($body, $admin = false ) {
+
 		$body = strtolower($body);
 
 		$verbs = [
@@ -110,9 +123,22 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			self::ACTION_PICKEDUP => [ 'picked up', 'picked', 'pick', 'got', 'up', 'p' ],
 			self::ACTION_DELIVERED => [ 'delivered', 'd' ],
 			self::ACTION_DETAILS => [ 'details' ],
+			self::ACTION_SHIFT_CONFIRMATION => [ '"yes"!','"yes!','yes"!','yes','yes!','"yes!"' ],
 			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support']
 		];
-		
+
+		// check if the admin has a shift to confirm - #5321
+		if( $admin ){
+			$shift = Crunchbutton_Admin_Shift_Assign_Confirmation::checkIfAdminHasShiftToConfirm( $admin->id_admin );
+			if( $shift ){
+				foreach ($verbs[self::ACTION_SHIFT_CONFIRMATION] as $k => $verb) {
+					if ( $body == $verb ) {
+						return ['verb' => self::ACTION_SHIFT_CONFIRMATION, 'id_admin_shift_assign' => $shift->id_admin_shift_assign ];
+					}
+				}
+				return ['verb' => self::ACTION_SHIFT_CONFIRMATION_HELP, 'id_admin_shift_assign' => $shift->id_admin_shift_assign ];
+			}
+		}
 
 		foreach ($verbs[self::ACTION_HELP] as $k => $verb) {
 			$help .= ($help ? '$|^' : '').'\/?'.$verb;

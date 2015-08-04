@@ -56,7 +56,7 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 
 	public function date(){
 		if (!isset($this->_date)) {
-			$this->_date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+			$this->_date = new DateTime( $this->datetime, new DateTimeZone( c::config()->timezone ) );
 		}
 		return $this->_date;
 	}
