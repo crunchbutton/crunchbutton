@@ -1157,7 +1157,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function warningDriversBeforeTheirShift(){
 		// deprecated! - See #3572
 		// new method: Crunchbutton_Admin_Shift_Assign_Confirmation::warningDriversBeforeTheirShift();
-		return;
+		// return;
 
 		$env = c::getEnv();
 
