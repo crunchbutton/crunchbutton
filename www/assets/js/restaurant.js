@@ -149,7 +149,7 @@ var Restaurant = function(id) {
 	}
 
 	self._nextOpenTag = function(){
-		if( self.next_open_time_message && self.next_open_time_message.message ){
+		if( self.next_open_time_message && self.next_open_time_message.message && self._opensIn_formatted == '' ){
 			self._tag = 'next_open';
 		}
 	}
@@ -181,7 +181,7 @@ var Restaurant = function(id) {
 	self.open = function( now, ignoreOpensClosesInCalc ) {
 
 		if( !ignoreOpensClosesInCalc ){
-			self.tagfy( 'opening' );
+			self.tagfy( 'opening', true );
 		}
 
 		// if the restaurant has no hours it probably will not be opened for the next 24 hours
@@ -266,15 +266,19 @@ var Restaurant = function(id) {
 			if( self.hours[ x ].status == 'open' ){
 				if( now_time <= self.hours[ x ]._from_time ){
 					self._opensIn = timestampDiff( self.hours[ x ]._from_time, now_time );
-					self._opensIn_formatted = formatTime( self._opensIn );
-					return;
+					if( self._opensIn <= 60 * 60 ){
+						self._opensIn_formatted = formatTime( self._opensIn );
+						return;
+					}
 				}
 			}
 		}
 		// it means the restaurant will not be opened for the next 24 hours
 		if( self.next_open_time ){
-				self._opensIn = timestampDiff( Date.parse( self.next_open_time ), now_time );
+			self._opensIn = timestampDiff( Date.parse( self.next_open_time ), now_time );
+			if( self._opensIn <= 60 * 60 ){
 				self._opensIn_formatted = formatTime( self._opensIn, self.next_open_time_message );
+			}
 		}
 	}
 
