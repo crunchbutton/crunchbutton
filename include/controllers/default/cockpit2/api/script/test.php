@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Api_Script_Sandbox extends Crunchbutton_Controller_RestAccount {
+class Controller_Api_Script_Test extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 		// 52813 live
