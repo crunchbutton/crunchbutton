@@ -17,10 +17,15 @@
 						<strong>Make a call</strong>
 					</li>
 
-					<li class="li-input" ng-show="!isModal">
+					<li class="li-input" ng-if="!isModal">
 						<div class="label">Choose an admin/driver:</div>
 						<div class="input">
-							<select name="staff" ng-model="call.staff" ng-required="!isModal" ng-options="opt.phone as opt.name for opt in staff"></select>
+							<ui-select ng-model="call.staff" theme="select2" ng-disabled="disabled" style="width: 90%;" title="Choose an admin/driver:">
+								<ui-select-match placeholder="Choose an admin/driver:">{{$select.selected.name}}</ui-select-match>
+								<ui-select-choices repeat="opt in staff | propsFilter: {name: $select.search}">
+									{{opt.name}}: {{opt.phone}}
+								</ui-select-choices>
+							</ui-select>
 						</div>
 					</li>
 
@@ -41,16 +46,16 @@
 							<small ng-show="formCall.to.$error.required">Required.</small>
 						</div>
 					</li>
-					
+
 					<div ng-show="!isModal"><br></div>
 
-					
+
 					<div class="double-cols" ng-show="!formCallSending">
 						<button class="button button-empty button-border button-green ng-scope button-full" ng-click="call.make()"><i class="fa fa-mobile"></i>&nbsp;&nbsp;Cell</button>
 						<button class="button button-empty button-border button-green ng-scope button-full" ng-click="call.voip()"><i class="fa fa-phone"></i>&nbsp;&nbsp;VOIP</button>
 					</div>
 					<div class="divider"></div>
-					
+
 					<li class="li-input" ng-show="formCallSending">
 						<i class="fa fa-circle-o-notch fa-spin"></i>
 					</li>
@@ -74,10 +79,15 @@
 						<strong>Send SMS</strong>
 					</li>
 
-					<li class="li-input" ng-show="!isModal">
+					<li class="li-input" ng-if="!isModal">
 						<div class="label">Choose an admin/driver:</div>
 						<div class="input">
-							<select name="staff" ng-model="sms.staff" ng-required="!isModal" ng-options="( opt.phone + '##' + opt.name ) as opt.name for opt in staff"></select>
+							<ui-select ng-model="sms.staff" theme="select2" ng-disabled="disabled" style="width: 90%;" title="Choose an admin/driver:">
+								<ui-select-match placeholder="Choose an admin/driver:">{{$select.selected.name}}</ui-select-match>
+								<ui-select-choices repeat="opt in staff | propsFilter: {name: $select.search}">
+									{{opt.name}}: {{opt.phone}}
+								</ui-select-choices>
+							</ui-select>
 						</div>
 					</li>
 

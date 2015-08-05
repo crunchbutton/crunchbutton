@@ -209,13 +209,12 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to() };
 
 	$scope.$watch( 'call.staff', function( newValue, oldValue, scope ) {
-		$scope.call.phone = newValue;
+		$scope.call.phone = newValue.phone;
 	}	);
 
 	$scope.$watch( 'sms.staff', function( newValue, oldValue, scope ) {
-		var values = newValue.split( '##' );
-		$scope.sms.phone = values[0];
-		$scope.sms.name = values[1];
+		$scope.sms.phone = newValue.phone;
+		$scope.sms.name = newValue.name;
 	}	);
 
 	StaffService.phones( function( response ){
