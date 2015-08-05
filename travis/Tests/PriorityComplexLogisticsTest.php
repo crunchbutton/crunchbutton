@@ -970,11 +970,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc2->save();
-
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
         $o1->lat = 34.0284;
@@ -989,8 +986,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->save();
 
         $o1->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
             $this->assertEquals($driver->__priority, false);
@@ -1020,10 +1021,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -1052,8 +1051,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = true;
         $this->driver3->save();
         $o1->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1087,10 +1090,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -1135,8 +1136,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $oa2->delete();
         $o1->delete();
         $o2->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1172,10 +1177,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -1209,8 +1212,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = true;
         $this->driver3->save();
         $o1->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1246,10 +1253,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.018, -118.281, $useDate2);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -1283,8 +1288,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = true;
         $this->driver3->save();
         $o1->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1320,10 +1329,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.018, -118.281, $useDate2);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -1357,8 +1364,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = true;
         $this->driver3->save();
         $o1->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1407,10 +1418,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $useDate2);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -1461,8 +1470,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         $oa1->delete();
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1522,10 +1535,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $earlier120, 10);
 
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
@@ -1577,8 +1588,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($orders as $o) {
             $o->delete();
         }
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1627,7 +1642,6 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $seconds = 120;
         $earlier120 = clone $now;
         $earlier120->modify('- ' . $seconds . ' seconds');
-        $earlier120String = $earlier120->format('Y-m-d H:i:s');
 
         $dow = $now->format('w');
 
@@ -1642,10 +1656,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc2->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $earlier120, 10);
 
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
@@ -1697,8 +1709,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($orders as $o) {
             $o->delete();
         }
-        $driverLoc1->delete();
-        $driverLoc2->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1744,12 +1760,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
         $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.018, -118.281, $earlier120String);
-        $driverLoc2->save();
-        $driverLoc3 = $this->createAdminLocation($this->driver2->id_admin, 34.0, -118.27, $earlier120String);
-        $driverLoc3->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.27, $earlier120, 10);
 
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
@@ -1785,9 +1798,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
 
-        $driverLoc1->delete();
-        $driverLoc2->delete();
-        $driverLoc3->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -1843,12 +1862,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
         $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
 
-        $driverLoc1 = $this->createAdminLocation($this->driver1->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc1->save();
-        $driverLoc2 = $this->createAdminLocation($this->driver2->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc2->save();
-        $driverLoc3 = $this->createAdminLocation($this->driver3->id_admin, 34.0302, -118.273, $earlier120String);
-        $driverLoc3->save();
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0302, -118.273, $earlier120, 10);
 
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
@@ -1899,9 +1915,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($orders as $o) {
             $o->delete();
         }
-        $driverLoc1->delete();
-        $driverLoc2->delete();
-        $driverLoc3->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
         $olp1->delete();
         $olot1->delete();
         $olcs1->delete();
@@ -2143,6 +2165,28 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'date' => $date
         ]);
     }
+
+    // Locations are created every second from 0 to $window
+    public function createAndSaveAdminLocations($id_admin, $lat, $lon, $dt, $window) {
+
+        $locs = [];
+        for ($i = 0; $i < $window; $i++) {
+            $dt->modify('- ' . 1 . ' seconds');
+            $date = $dt->format('Y-m-d H:i:s');
+
+            $loc =  new Cockpit_Admin_Location([
+                'id_admin' => $id_admin,
+                'lat' => $lat,
+                'lon' => $lon,
+                'accuracy' => 50,
+                'date' => $date
+            ]);
+            $loc->save();
+            $locs[] = $loc;
+        }
+        return $locs;
+    }
+
 
     public function createFakecustomer($community, $lat, $lon) {
         return new Crunchbutton_Order_Logistics_Fakecustomer([

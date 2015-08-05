@@ -31,8 +31,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     const LC_DUMMY_CLUSTER_START = 0;
     const LC_DUMMY_FAKE_CLUSTER_START = -1000; // Should be very different from LC_DUMMY_CLUSTER_START
 
-    const LC_MAX_DRIVER_NO_LOC = 2400; // seconds = 40 minutes * 60
-
     public function __construct($delivery_logistics, $order, $drivers = null, $distanceType=Crunchbutton_Optimizer_Input::DISTANCE_LATLON)
     {
         $this->numDriversWithPriority = -1;
@@ -70,28 +68,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         return $this->_dummyClusterCounter;
     }
 
-    public function getDriverLocation($driver, $serverDT, $maxDiff, $communityCenter)
-    {
-        // TODO: Last location isn't necessarily good.  Nor does it necessarily exist.
-        // TODO: Use location of last action
-        // Use last location if known for now
-        // Otherwise community center to simplify things
-        $location = $driver->location();
-        if (!is_null($location) && !is_null($location->date) && !is_null($location->lat) &&
-            !is_null($location->lon)){
-            $driverDT = new DateTime($location->date, new DateTimeZone(c::config()->timezone));
-            $diff = $serverDT->getTimestamp() - $driverDT->getTimestamp();
-            if ($diff < $maxDiff){
-                $returnLoc = new Crunchbutton_Order_Location($location->lat, $location->lon);
-                $returnLoc->dt = $driverDT;
-                return $returnLoc;
-            }
-
-        }
-        // Otherwise community center
-        return $communityCenter;
-
-    }
 
     public function getRestaurantGeo($order) {
         $r_geo = null;
@@ -325,10 +301,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                 $driverOrderCount = 0;
                 if (!$skipFlag) {
-                    $driver->_opt_status = self::DRIVER_OPT_FAILED;
+                    $driver->__driverLocation = new Crunchbutton_Order_Logistics_DriverLocation($communityCenter);
+                    $driver->__opt_status = self::DRIVER_OPT_FAILED;
                     // Get orders in the last two hours for this driver
                     $ordersUnfiltered = Order::deliveryOrders(2, false, $driver);
-                    $driver_geo = $this->getDriverLocation($driver, $server_dt, self::LC_MAX_DRIVER_NO_LOC, $communityCenter);
+                    $driver_geo = $communityCenter; // Default for the initial setup
 //                    var_dump($driver_geo);
 
 //                    $driver_score = $driver->score();
@@ -392,10 +369,20 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 //                                        print "Found picked-up order\n";
                                         $isPickedUpOrder = true;
                                         $addOrder = true;
+                                        $driver->__driverLocation->addPickedUpOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
+                                            $order->lat, $order->lon);
                                     }
                                     else if ($lastStatus == 'accepted') {
 //                                        print "Found accepted order\n";
                                         $addOrder = true;
+                                        $driver->__driverLocation->addAcceptedOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
+                                            $this->getRestaurantGeo($order));
+                                    }
+                                    else if ($lastStatus == 'delivered') {
+//                                        print "Found delivered order\n";
+                                        $addOrder = false;
+                                        $driver->__driverLocation->addDeliveredOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
+                                            $order->lat, $order->lon, $this->getRestaurantGeo($order));
                                     }
                                 }
                                 else if ($lastStatus == 'new' && Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
@@ -414,8 +401,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         }
 
                     }
-
-                    $driver->dlist = $dlist;
+                    if (!$skipFlag) {
+                        $driver->__driverLocation->determineDriverGeo($driver, $server_dt);
+                        $tmpLat = $driver->__driverLocation->lat;
+                        $tmpLon = $driver->__driverLocation->lon;
+                        $dlist->updateDriverDestinationGeo($driver->__driverLocation);
+                        $driver->__dlist = $dlist;
+                    }
 
                 }
                 if ($driverOrderCount <=1){
@@ -431,7 +423,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                 foreach ($this->drivers() as $driver) {
 
-                    $dlist = $driver->dlist;
+                    $dlist = $driver->__dlist;
 //                    print "Now run the optimizations\n";
                     // Run the optimization for each driver here
                     // Run once without the new order, if needed
@@ -466,9 +458,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                             !is_null($resultOld->score) && !is_null($resultNew->score)
                         ) {
                             $numGoodOptimizations += 1;
-                            $driver->_opt_status = self::DRIVER_OPT_SUCCESS;
+                            $driver->__opt_status = self::DRIVER_OPT_SUCCESS;
                             $scoreChange = $resultNew->score - $resultOld->score;
-                            $driver->_scoreChange = $scoreChange;
+                            $driver->__scoreChange = $scoreChange;
                             if ($scoreChange > $bestScoreChange) {
                                 $bestScoreChange = $scoreChange;
                             }
@@ -496,9 +488,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 // Look for the best driver
                 foreach ($this->drivers() as $driver) {
                     $driver->__priority = false;
-                    if ($driver->_opt_status = self::DRIVER_OPT_SUCCESS) {
+                    if ($driver->__opt_status = self::DRIVER_OPT_SUCCESS) {
                         // Get the score
-                        if ($driver->_scoreChange == $bestScoreChange) {
+                        if ($driver->__scoreChange == $bestScoreChange) {
                             $driver->__priority = true;
                             $numSelectedDrivers += 1;
                         }
