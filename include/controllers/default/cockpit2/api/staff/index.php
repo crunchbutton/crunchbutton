@@ -266,7 +266,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _phones(){
 		$out = [];
-		$staffs = Admin::q( 'SELECT * FROM admin WHERE active = true AND phone IS NOT NULL ORDER BY name ASC' );
+		$staffs = Admin::q( 'SELECT * FROM admin WHERE active = true AND phone IS NOT NULL AND name IS NOT NULL AND name != "" AND active = 1 ORDER BY name ASC' );
 		foreach( $staffs as $staff ){
 			$out[] = [ 'phone' => $staff->phone, 'name' => $staff->name ];
 		}
