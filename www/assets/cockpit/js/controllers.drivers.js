@@ -69,8 +69,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 		watching = $rootScope.$on('userAuth', load);
 	}
 
-	$scope.randomFooter = Math.floor( ( Math.random() * 2 ) + 1 );
-	console.log('$scope.randomFooter',$scope.randomFooter);
+	$scope.randomFooter = ( $routeParams.id % 2 );
 
 	load();
 	setTimeout(function() {
