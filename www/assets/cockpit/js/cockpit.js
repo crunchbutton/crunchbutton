@@ -438,6 +438,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/general-profile.html',
 			back: false
 		})
+		.when('/profile/password', {
+			action: 'profile',
+			controller: 'ProfilePasswordCtrl',
+			templateUrl: 'assets/view/general-profile-password.html',
+			back: false
+		})
 		/* Driver onBoarding Routes */
 		.when('/drivers/onboarding', {
 			action: 'drivers-onboarding',

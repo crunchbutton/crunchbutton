@@ -134,7 +134,32 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 
 });
 
-NGApp.controller( 'ProfileCtrl', function ($scope) {
+NGApp.controller( 'ProfileCtrl', function ($scope) {});
+
+NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
+
+	$scope.password = {};
+
+	$scope.isSaving = false;
+
+	$scope.save = function(){
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			$scope.isSaving = false;
+			return;
+		}
+
+		ProfileService.change_password( $scope.password, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error , 'error' );
+			} else {
+				App.alert( 'Your password was changed!' );
+				$scope.submitted = false;
+				$scope.isSaving = false;
+				$scope.password = {};
+			}
+		} );
+	}
 });
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {

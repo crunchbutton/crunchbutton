@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	
+
 	<div class="support-boxes">
 
 		<div class="support-box-wrap box-content2">
@@ -35,6 +35,10 @@
 					</li>
 				</ul>
 
+				<a href="/profile/password">
+					<button class="button button-green button-empty button-border">change your password</button>
+				</a>
+
 			</div>
 		</div>
 
@@ -51,12 +55,10 @@
 		</div>
 
 		<div ng-if="account.isDriver" class="hide-desktop">
-
 			<a href="/drivers/welcome"><button class="button button-small-green">Run setup</button></a>
-
 		</div>
-		
-		
+
+
 		<button ng-click="account.logout()" class="button button-orange button-empty button-border">Logout</button>
 
 
