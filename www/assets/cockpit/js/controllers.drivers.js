@@ -183,7 +183,6 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 		$scope.id_admin = parseInt( $scope.account.user.id_admin );
 	}
 
-
 	if( $scope.account && $scope.account.isAdmin ){
 		if( $routeParams.id ){
 			$scope.id_admin = parseInt( $routeParams.id );
@@ -193,9 +192,6 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 		scope: $scope,
 		watch: { type: 'all' },
 		update: function() {
-	// 		var data = {};
-	// angular.extend( data, query );
-	// data.id_admin = id_admin;
 			$scope.query.id_admin = $scope.id_admin;
 			DriverService.summary( $scope.query, function( data ){
 				$scope.summary = data;
