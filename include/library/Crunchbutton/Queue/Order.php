@@ -39,14 +39,14 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 								'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_PRIORITY,
 								'id_order' => $this->order()->id_order,
 								'id_admin' => $driver->id_admin,
-								'seconds' => $driver->_seconds ? intval($driver->_seconds) : 0
+								'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
 							]);
 						} else {
 							$q = Queue::create([
 								'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
 								'id_order' => $this->order()->id_order,
 								'id_admin' => $driver->id_admin,
-								'seconds' => $driver->_seconds ? intval($driver->_seconds) : 0
+								'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
 							]);
 						}
 					}
@@ -60,7 +60,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 							'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
 							'id_order' => $this->order()->id_order,
 							'id_admin' => $driver->id_admin,
-							'seconds' => $driver->_seconds ? intval($driver->_seconds) : 0
+							'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
 						]);
 					}
 				}

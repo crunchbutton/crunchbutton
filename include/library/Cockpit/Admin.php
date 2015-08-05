@@ -199,6 +199,26 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_location;
 	}
 
+	public function locationWithMaxTime($maxDT) {
+		$location = null;
+		if (!isset($this->_location) && $this->id_admin) {
+			$location = Admin_Location::q('SELECT * FROM admin_location WHERE id_admin=? and date > ? and date is not null and lat is not null and lon is not null ORDER BY date DESC LIMIT 1',
+				[$this->id_admin, $maxDT->format('Y-m-d H:i:s')])->get(0);
+		}
+		return $location;
+	}
+
+	public function locationsWithMaxTime($maxDT) {
+		$locations = null;
+		if (!isset($this->_location) && $this->id_admin) {
+			// TODO: POSTGRES - will need to modify unix_timestamp function to work for postgres.
+			$locations = Admin_Location::q('SELECT *, unix_timestamp(date) as ts FROM admin_location WHERE id_admin=? and date > ? and date is not null and lat is not null and lon is not null group by date ORDER BY date desc',
+				[$this->id_admin, $maxDT->format('Y-m-d H:i:s')]);
+		}
+		return $locations;
+	}
+
+
 	// return the restaurant the admin could order from #3350
 	public function restaurantOrderPlacement(){
 		$permission_prefix = 'restaurant-order-placement-';
