@@ -664,7 +664,6 @@ NGApp.directive('equals', function() {
 	}
 });
 
-
 NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 	return {
 			restrict: 'A',
@@ -887,3 +886,75 @@ NGApp.directive( 'twitterButton', function( AccountService ) {
 			}
 		}
 } );
+
+NGApp.directive('passwordStrength', function() {
+	return {
+		restrict: 'A',
+		require: '?ngModel',
+		link: function(scope, elem, attrs, ngModel) {
+
+			if(!ngModel) return; // do nothing if no ng-model
+
+			elem.bind( 'blur', function ( evt ) {
+				scope.$apply( function () {
+					validate();
+				} );
+			} );
+
+			elem.bind( 'change', function ( evt ) {
+				scope.$apply( function () {
+					validate();
+				} );
+			} );
+
+			// watch own value and re-validate on change
+			scope.$watch(attrs.ngModel, function() {
+				validate();
+			});
+
+			scope.password_strength = 0;;
+
+			var validate = function() {
+				var score = 0;
+				var pass = ngModel.$viewValue;
+				if ( pass ){
+					// award every unique letter until 5 repetitions
+					var letters = new Object();
+					for (var i=0; i<pass.length; i++) {
+							letters[pass[i]] = (letters[pass[i]] || 0) + 1;
+							score += 5.0 / letters[pass[i]];
+					}
+
+					// bonus points for mixing it up
+					var variations = {
+							digits: /\d/.test(pass),
+							lower: /[a-z]/.test(pass),
+							upper: /[A-Z]/.test(pass),
+							nonWords: /\W/.test(pass),
+					}
+
+					variationCount = 0;
+					for (var check in variations) {
+							variationCount += (variations[check] == true) ? 1 : 0;
+					}
+					score += (variationCount - 1) * 10;
+				}
+
+				scope.password_strength = parseInt(score);
+
+				if ( scope.password_strength > 80){
+					scope.password_strength_message = "strong";
+				} else
+				if ( scope.password_strength >= 60){
+					scope.password_strength_message = "good";
+				} else
+				if ( scope.password_strength >= 30){
+					scope.password_strength_message = "weak";
+				}
+				if( score ){
+					ngModel.$setValidity( 'passwordStrength', parseInt( score ) >= 60 );
+				}
+			};
+		}
+	}
+});
