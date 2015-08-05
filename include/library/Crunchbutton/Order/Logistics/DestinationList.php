@@ -109,6 +109,16 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
 
     }
 
+    public function updateDriverDestinationGeo($driverLocation) {
+        // Driver destination should always be first
+        if (!is_null($this->oldFirstCoords) && count($this->oldFirstCoords) > 0) {
+            $this->oldFirstCoords[0] = floatval($driverLocation->lat);
+            $this->oldSecondCoords[0] = floatval($driverLocation->lon);
+            $this->newFirstCoords[0] = floatval($driverLocation->lat);
+            $this->newSecondCoords[0] = floatval($driverLocation->lon);
+        }
+    }
+
     private function addRestaurantDestinationInfo($destination, $isNewOrder, $matchingOldCustomerId, $matchingNewCustomerId)
     {
         // Warning: Don't access id_old_counter or id_new_counter here
