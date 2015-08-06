@@ -25,8 +25,7 @@ cache:
 before_script:
   - composer self-update
   - mkdir build
-  - composer install --no-interaction
-  # - composer install --dev --no-interaction
+  - composer install --dev --no-interaction
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
