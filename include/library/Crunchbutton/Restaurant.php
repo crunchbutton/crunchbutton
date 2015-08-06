@@ -2216,7 +2216,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
     public function parking($time, $dow) {
-        $qString = "SELECT * FROM `order_logistics_parking` WHERE id_restaurant= ? and "
+        $qString = "SELECT * FROM order_logistics_parking WHERE id_restaurant= ? and "
             ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
         $parking = Crunchbutton_Order_Logistics_Parking::q($qString, [$this->id_restaurant, $time, $time, $dow]);
         if (is_null($parking) || $parking->count()==0){
@@ -2227,7 +2227,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
     }
 
     public function ordertime($time, $dow) {
-        $qString = "SELECT * FROM `order_logistics_ordertime` WHERE id_restaurant= ? and "
+        $qString = "SELECT * FROM order_logistics_ordertime WHERE id_restaurant= ? and "
             ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
         $ot = Crunchbutton_Order_Logistics_Ordertime::q($qString, [$this->id_restaurant, $time, $time, $dow]);
         if (is_null($ot) || $ot->count()==0){
@@ -2238,7 +2238,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
     }
 
     public function cluster($time, $dow) {
-        $qString = "SELECT * FROM `order_logistics_cluster` WHERE id_restaurant= ? and "
+        $qString = "SELECT * FROM order_logistics_cluster WHERE id_restaurant= ? and "
             ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
         $olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $time, $time, $dow]);
         // Clear out the cluster that day just in case
