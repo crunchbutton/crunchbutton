@@ -145,7 +145,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 		return false;
 	}
 
-	public function informedEtaByOrder( $id_order ){
+	public static function informedEtaByOrder( $id_order ){
 		$query = 'SELECT * FROM order_eta WHERE id_order = "' . $id_order . '" AND method = "' . Crunchbutton_Order_Eta::METHOD_INFORMED_ETA . '"';
 		$eta = Crunchbutton_Order_Eta::q( $query )->get( 0 );
 		if( $eta->time ){
