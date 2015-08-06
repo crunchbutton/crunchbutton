@@ -688,6 +688,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 
     public function testTimeZone()
     {
+        $stat = c::db()->query("SHOW VARIABLES LIKE '%version%';")->fetchAll();
+        var_dump($stat);
         $tz = c::config()->timezone;
 //        print "The timezone $tz\n";
         $this->assertEquals($tz, "America/Los_Angeles");
