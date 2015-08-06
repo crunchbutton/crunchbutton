@@ -6,7 +6,7 @@
 
 	<div class="divider"></div>
 
-	<h1 class="title">{{period}}</h1>
+	<h1 class="title">Driver Week: <strong>{{period}}</strong></h1>
 
 	<div class="divider"></div>
 
@@ -20,12 +20,16 @@
 			<b><i class="fa fa-hand-o-right"></i> Don't forget: You must save your changes below!</b>
 		</div>
 
-
 			<div>
 				<ul class="ul-inputs box-content2">
 					<li class="li-input">
 						<div class="label">How many shifts would you like to work?</div>
-						<select name="shiftsAvailableToWork" ng-model="shiftsAvailableToWork" ng-change="updateShiftsAvailable(this.shiftsAvailableToWork)" ng-options="shift as shift for shift in availableToWork"></select>
+							<ui-select ng-model="shiftsAvailableToWork" on-select="updateShiftsAvailable($item)" theme="select2" style="width: 90%;" title="Select">
+								<ui-select-match placeholder="Select">{{$select.selected.option}}</ui-select-match>
+								<ui-select-choices repeat="opt in availableToWork | propsFilter: {option: $select.search}">
+									{{opt.option}}
+								</ui-select-choices>
+							</ui-select>
 					</li>
 				</ul>
 			</div>

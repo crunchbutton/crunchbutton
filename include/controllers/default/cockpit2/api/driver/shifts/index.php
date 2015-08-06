@@ -149,10 +149,9 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		$week = $thursday->format( 'W' );
 
 		$firstDay = $thursday;
-		// Driver Week: Thurs June 26-Wed July 2
-		$shifts_period = 'Driver Week: ' . $firstDay->format( 'D F d' );
+		$shifts_period = $firstDay->format( 'l m/d' );
 		$firstDay->modify( '+ 6 days' );
-		$shifts_period .= '-' . $firstDay->format( 'D F d' );
+		$shifts_period .= '-' . $firstDay->format( 'l m/d' );
 
 		$firstDay->modify( '- 6 days' );
 
