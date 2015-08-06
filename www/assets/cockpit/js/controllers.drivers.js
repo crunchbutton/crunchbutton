@@ -378,15 +378,21 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		} );
 	}
 
-	$scope.shiftsAvailableToWork = 0;
-	$scope.availableToWork = [ 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ];
+	$scope.availableToWork = [];
+	for (var i = 12; i >= 1; i--) {
+		$scope.availableToWork.push( { 'option': i } );
+	}
+
 
 	var process = function( data ){
 		$scope.available = 0;
 		$scope.yes = 0;
 		$scope.not = 0;
 		$scope.period = data.info.period;
-		$scope.shiftsAvailableToWork = parseInt( data.shifts );
+		if( data.shifts ){
+			$scope.shiftsAvailableToWork = { option: parseInt( data.shifts ) };
+		}
+
 		$scope.shifts = data.results;
 		count();
 	}
@@ -461,10 +467,9 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		} );
 	}
 
-	$scope.updateShiftsAvailable = function( shifts ){
-
-		$scope.shiftsAvailableToWork = shifts;
-		DriverShiftScheduleService.shiftsAvailableToWork( shifts, function( data ){
+	$scope.updateShiftsAvailable = function( option ){
+		$scope.shiftsAvailableToWork = option.option;
+		DriverShiftScheduleService.shiftsAvailableToWork( $scope.shiftsAvailableToWork, function( data ){
 			process( data );
 		} );
 	}
