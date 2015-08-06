@@ -34,38 +34,9 @@
 				</ul>
 			</div>
 
-			<div ng-if="available > 0" class="shifts-available">
+			<div class="shifts-available">
 
 				<h2 class="title">All shifts</h2>
-
-				<div class="box-content2">
-					<table class="tb-grid">
-						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
-							<td>
-								<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
-								<div class="schedule-period">
-									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
-								</div>
-							</td>
-							<td class="td-large schedule-buttons">
-								<button class="button schedule-action-yes" ng-if="!shift.assigned" ng-click="wantToWork( shift.id_community_shift )">
-									<i class="fa fa-thumbs-o-up"></i>
-								</button>
-								<button class="button schedule-action-not" ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">
-									<i class="fa fa-thumbs-o-down"></i>
-								</button>
-							</td>
-						</tr>
-					</table>
-
-				</div>
-
-			</div>
-
-			<div ng-if="yes > 0" class="shifts-yes">
-
-				<h2 class="title">Shifts you could work</h2>
-				<h3 class="title">Ranked from most to least preferred</h3>
 
 				<div class="box-content2">
 
@@ -73,10 +44,16 @@
 						<tbody ng-repeat="shift in shifts" ng-if="shift.ranking > 0" >
 							<tr>
 								<td>
+									<div>
+										<strong>Ranking #{{shift.ranking}}</strong>
+									</div>
 									<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
 									<div class="schedule-period">
 										{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 									</div>
+									<label ng-if="!shift.assigned">
+										<input type="checkbox" ng-click="dontWantToWork( shift.id_community_shift )"> Definitely Unavailable
+									</label>
 								</td>
 								<td class="td-larger schedule-buttons">
 									<button class="button schedule-action-down" ng-if="shift.ranking_next" ng-click="rankingChange( shift.id_community_shift,  shift.ranking_next )">
@@ -85,9 +62,6 @@
 									<button class="button schedule-action-up" ng-if="shift.ranking_prev" ng-click="rankingChange( shift.id_community_shift, shift.ranking_prev )">
 										<i class="fa fa-sort-asc"></i>
 									</button>
-									<button class="button schedule-action-not" ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">
-										<i class="fa fa-thumbs-o-down"></i>
-									</button>
 									<button class="button schedule-action-lock" ng-if="shift.assigned">
 										<i class="fa fa-lock"></i>
 									</button>
@@ -95,17 +69,25 @@
 							</tr>
 						</tbody>
 					</table>
-					<div class="divider"></div>
-				</div>
 
-			</div>
-
-
-			<div ng-if="not > 0" class="shifts-not">
-
-				<h2 class="title">Shifts you CANNOT work</h2>
-
-				<div class="box-content2">
+					<table class="tb-grid">
+						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
+							<td>
+								<div class="schedule-day">{{shift.day}} - {{shift.community}}</div>
+								<div class="schedule-period">
+									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
+								</div>
+								<label ng-if="!shift.assigned">
+									<input type="checkbox" ng-click="dontWantToWork( shift.id_community_shift )"> Definitely Unavailable
+								</label>
+							</td>
+							<td class="td-large schedule-buttons">
+								<button class="button schedule-action-yes" ng-if="!shift.assigned" ng-click="wantToWork( shift.id_community_shift )">
+									<i class="fa fa-thumbs-o-up"></i>
+								</button>
+							</td>
+						</tr>
+					</table>
 
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">
@@ -114,17 +96,14 @@
 								<div class="schedule-period">
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
-							</td>
-							<td class="td-large schedule-buttons">
-								<button class="button schedule-action-yes" ng-click="wantToWork( shift.id_community_shift )">
-									<i class="fa fa-thumbs-o-up"></i>
-								</button>
+								<label>
+									<input type="checkbox" checked="checked" ng-click="wantToWork( shift.id_community_shift )"> Definitely Unavailable
+								</label>
 							</td>
 						</tr>
 					</table>
-					<div class="divider"></div>
+
 				</div>
-			</div>
 
 			</div>
 

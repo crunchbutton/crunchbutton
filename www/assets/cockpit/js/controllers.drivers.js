@@ -383,7 +383,6 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		$scope.availableToWork.push( { 'option': i } );
 	}
 
-
 	var process = function( data ){
 		$scope.available = 0;
 		$scope.yes = 0;
@@ -493,8 +492,6 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 				actual = $scope.shifts[ shift ];
 				$scope.shifts[ shift ] = $scope.shifts[ change ];
 				$scope.shifts[ change ] = actual;
-				// console.log('$scope.shifts[ shift ]',$scope.shifts[ shift ]);
-				// console.log('$scope.shifts[ change ]',$scope.shifts[ change ]);
 			}
 		}
 		count();
