@@ -11,7 +11,7 @@ php:
 env:
   - TRAVIS=1
   - TRAVIS=1 TRAVISPOSTGRES=1
-  
+
 cache:
   apt: true
   bundler: true
@@ -19,13 +19,14 @@ cache:
     - node_modules
     - vendor
     - $HOME/.composer/cache
-  
+
 # install:
 
 before_script:
   - composer self-update
   - mkdir build
-  - composer install --dev --no-interaction
+  - composer install --no-interaction
+  # - composer install --dev --no-interaction
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
@@ -43,7 +44,7 @@ before_script:
   - echo 'export APACHE_ARGUMENTS="-D TRAVIS"' | sudo tee -a /etc/apache2/envvars > /dev/null
   - sudo service apache2 restart
   - npm install assert chai phantom path util events
-  
+
 #  - "export DISPLAY=:99.0"
 #  - "sh -e /etc/init.d/xvfb start"
 #  - sleep 3
@@ -54,7 +55,7 @@ before_script:
 script:
   - phpunit --configuration travis/phpunit.xml
   - phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
-  
+
 notifications:
   webhooks: https://cockpit.la/api/travisci/build
 
