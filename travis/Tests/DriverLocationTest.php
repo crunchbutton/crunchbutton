@@ -678,10 +678,19 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+        $this->assertEquals($ts, 1435713205);
+
         $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 5), $predLat);
         $this->assertEquals(round($dl->lon, 2), $predLon);
 
+    }
+
+    public function testTimeZone()
+    {
+        $tz = c::config()->timezone;
+        print "The timezone $tz\n";
+        $this->assertEquals($tz, "America/Los_Angeles");
     }
 
     // Moving driver - less than 4 points - only take the average
@@ -713,6 +722,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+
+        $this->assertEquals($ts, 1435713205);
         $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 5), $predLat);
         $this->assertEquals(round($dl->lon, 4), $predLon);
@@ -754,6 +765,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+        $this->assertEquals($ts, 1435713205);
         $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 4), $predLat);
         $this->assertEquals(round($dl->lon, 4), $predLon);
