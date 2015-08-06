@@ -7,7 +7,7 @@ class Crunchbutton_Blocked extends Cana_Table {
 
 	const MESSAGE_CONFIG_KEY = 'blocked-customer-message';
 
-	public function blockUser( $id_user, $comment = null ){
+	public static function blockUser( $id_user, $comment = null ){
 		if( self::isUserBlocked( $id_user ) ){
 			return;
 		}
@@ -20,14 +20,14 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return $block;
 	}
 
-	public function blockPhoneNumber( $phone, $comment = null ){
+	public static function blockPhoneNumber( $phone, $comment = null ){
 		$phone = Crunchbutton_Phone::byPhone($phone);
 		if( $phone->id_phone ){
 			return self::blockPhone( $phone->id_phone, $comment );
 		}
 	}
 
-	public function blockPhone( $id_phone, $comment = null ){
+	public static function blockPhone( $id_phone, $comment = null ){
 		if( self::isPhoneBlocked( $id_phone ) ){
 			return;
 		}
@@ -40,7 +40,7 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return $block;
 	}
 
-	public function isPhoneBlocked( $id_phone ){
+	public static function isPhoneBlocked( $id_phone ){
 		$blocked = Crunchbutton_Blocked::q( 'SELECT * FROM blocked WHERE id_phone = ? ', [ $id_phone ] )->get( 0 );
 		if( $blocked->id_blocked ){
 			return true;
@@ -48,7 +48,7 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return false;
 	}
 
-	public function isPhoneNumberBlocked( $phone ){
+	public static function isPhoneNumberBlocked( $phone ){
 		$phone = Crunchbutton_Phone::byPhone($phone);
 		if( $phone->id_phone ){
 			return self::isPhoneBlocked( $phone->id_phone );
@@ -56,7 +56,7 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return false;
 	}
 
-	public function isUserBlocked( $id_user ){
+	public static function isUserBlocked( $id_user ){
 		$blocked = Crunchbutton_Blocked::q( 'SELECT * FROM blocked WHERE id_user = ? ', [ $id_user ] )->get( 0 );
 		if( $blocked->id_blocked ){
 			return true;
@@ -64,15 +64,15 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return false;
 	}
 
-	public function unBlockUser( $id_user ){
+	public static function unBlockUser( $id_user ){
 		Cana::db()->query('DELETE FROM blocked WHERE id_user = ?' , [ $id_user ] );
 	}
 
-	public function unBlockPhone( $id_phone ){
+	public static function unBlockPhone( $id_phone ){
 		Cana::db()->query('DELETE FROM blocked WHERE id_phone = ?' , [ $id_phone ] );
 	}
 
-	public function unBlockPhoneNumer( $phone ){
+	public static function unBlockPhoneNumer( $phone ){
 		$phone = Crunchbutton_Phone::byPhone($phone);
 		if( $phone->id_phone ){
 			Cana::db()->query('DELETE FROM blocked WHERE id_phone = ?' , [ $phone->id_phone ] );
@@ -130,12 +130,12 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return false;
 	}
 
-	public function getMessage(){
+	public static function getMessage(){
 		$config = Crunchbutton_Config::getConfigByKey( self::MESSAGE_CONFIG_KEY );
 		return $config->value;
 	}
 
-	public function updateMessage( $message ){
+	public static function updateMessage( $message ){
 		$config = Crunchbutton_Config::getConfigByKey( self::MESSAGE_CONFIG_KEY );
 		$config->value = $message;
 		$config->save();
