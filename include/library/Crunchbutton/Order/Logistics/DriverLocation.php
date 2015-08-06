@@ -142,6 +142,7 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             $sumTimeLat += $time * $lat;
             $sumTimeLon += $time * $lon;
         }
+        print "$n $timeSum $latSum $lonSum, $sumTime2, $sumTimeLat, $sumTimeLon\n";
         $timeMean = $timeSum / $n;
         $latMean = $latSum / $n;
         $lonMean = $lonSum / $n;
