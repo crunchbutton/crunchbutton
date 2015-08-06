@@ -141,8 +141,9 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             $sumTime2 += pow($time, 2);
             $sumTimeLat += $time * $lat;
             $sumTimeLon += $time * $lon;
+            $tmp = $locs->get($i)->ts;
+            print "$tmp, $newTime\n";
         }
-        print "$n $timeSum $latSum $lonSum, $sumTime2, $sumTimeLat, $sumTimeLon\n";
         $timeMean = $timeSum / $n;
         $latMean = $latSum / $n;
         $lonMean = $lonSum / $n;
