@@ -646,6 +646,9 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     // Moving driver - take only 15 points - assume assorted by time descending
     public function testMovingDriverRegression()
     {
+
+        c::db()->query('delete from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
         $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
@@ -665,12 +668,17 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
             1435713097, 1435713096, 1435713095, 1435713087, 1435713067, 1435713065, 1435713064, 1435713063, 1435713047,
             1435713044, 1435713027, 1435713007, 1435712996, 1435712995, 1435712987];
         $driverLocs1 = $this->createAndSaveAdminLocationsFromArrays($this->driver1->id_admin, $lats, $lons, $tss);
+        $numLocs = count($lats);
+        $als = Cockpit_Admin_Location::q('select * from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
+        $count = $als->count();
         $cc = new Crunchbutton_Order_Location($lat, $lon);
         $dl = new Crunchbutton_Order_Logistics_DriverLocation($cc);
         $dl->determineDriverGeo($this->driver1, $now);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+        $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 5), $predLat);
         $this->assertEquals(round($dl->lon, 2), $predLon);
 
@@ -679,6 +687,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     // Moving driver - less than 4 points - only take the average
     public function testMovingDriverAverage()
     {
+        c::db()->query('delete from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
         $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
@@ -693,12 +703,17 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $lons = [-118.27, -118.27, -118.27, -118.272];
         $tss = [1435713194, 1435713193, 1435713192, 1435713174];
         $driverLocs1 = $this->createAndSaveAdminLocationsFromArrays($this->driver1->id_admin, $lats, $lons, $tss);
+        $numLocs = count($lats);
+        $als = Cockpit_Admin_Location::q('select * from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
+        $count = $als->count();
         $cc = new Crunchbutton_Order_Location($lat, $lon);
         $dl = new Crunchbutton_Order_Logistics_DriverLocation($cc);
         $dl->determineDriverGeo($this->driver1, $now);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+        $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 5), $predLat);
         $this->assertEquals(round($dl->lon, 4), $predLon);
 
@@ -708,6 +723,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     //  Driver is moving ~ 200 mph, so the regression should limit this
     public function testSuperFastDriverRegression()
     {
+        c::db()->query('delete from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
         $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
@@ -727,12 +744,17 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
             1435713097, 1435713096, 1435713095, 1435713087, 1435713067, 1435713065, 1435713064, 1435713063, 1435713047,
             1435713044, 1435713027, 1435713007, 1435712996, 1435712995, 1435712987];
         $driverLocs1 = $this->createAndSaveAdminLocationsFromArrays($this->driver1->id_admin, $lats, $lons, $tss);
+        $numLocs = count($lats);
+        $als = Cockpit_Admin_Location::q('select * from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
+        $count = $als->count();
         $cc = new Crunchbutton_Order_Location($lat, $lon);
         $dl = new Crunchbutton_Order_Logistics_DriverLocation($cc);
         $dl->determineDriverGeo($this->driver1, $now);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+        $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 4), $predLat);
         $this->assertEquals(round($dl->lon, 4), $predLon);
 
@@ -743,6 +765,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     //  This tests that the "negative" velocities are also limited
     public function testSuperFastDriverRegression2()
     {
+        c::db()->query('delete from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
         $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
@@ -762,12 +786,17 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
             1435713097, 1435713096, 1435713095, 1435713087, 1435713067, 1435713065, 1435713064, 1435713063, 1435713047,
             1435713044, 1435713027, 1435713007, 1435712996, 1435712995, 1435712987];
         $driverLocs1 = $this->createAndSaveAdminLocationsFromArrays($this->driver1->id_admin, $lats, $lons, $tss);
+        $numLocs = count($lats);
+        $als = Cockpit_Admin_Location::q('select * from admin_location where id_admin = ?',
+            [$this->driver1->id_admin]);
+        $count = $als->count();
         $cc = new Crunchbutton_Order_Location($lat, $lon);
         $dl = new Crunchbutton_Order_Logistics_DriverLocation($cc);
         $dl->determineDriverGeo($this->driver1, $now);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
+        $this->assertEquals($count, $numLocs);
         $this->assertEquals(round($dl->lat, 4), $predLat);
         $this->assertEquals(round($dl->lon, 4), $predLon);
 

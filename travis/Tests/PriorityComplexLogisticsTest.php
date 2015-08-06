@@ -810,6 +810,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testRestaurantClusterExist()
     {
+        c::db()->query('delete from order_logistics_cluster where id_restaurant = ?',
+            [$this->restaurant1->id_restaurant]);
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $useDate1 = $now->format('Y-m-d H:i:s');
 
@@ -817,13 +819,19 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olc = $this->defaultOLC($this->restaurant1, 0, '00:00:00', '01:00:00', $fakeClusterId);
         $olc->save();
         sleep(2);
+        $clChk = Crunchbutton_Order_Logistics_Cluster::q('select * from order_logistics_cluster where id_restaurant= ? and id_restaurant_cluster = ?',
+            [$this->restaurant1->id_restaurant, $fakeClusterId]);
+        $countChk = $clChk->count();
         $cluster = $this->restaurant1->cluster('00:03:00', 0);
         $olc->delete();
+        $this->assertEquals($countChk, 1);
         $this->assertEquals($cluster->id_restaurant_cluster, $fakeClusterId);
     }
 
     public function testRestaurantClusterWrongTime()
     {
+        c::db()->query('delete from order_logistics_cluster where id_restaurant = ?',
+            [$this->restaurant1->id_restaurant]);
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $useDate1 = $now->format('Y-m-d H:i:s');
 
@@ -831,12 +839,21 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olc = $this->defaultOLC($this->restaurant1, 0, '00:00:00', '01:00:00', $fakeClusterId);
         $olc->save();
         sleep(2);
+        $clChk = Crunchbutton_Order_Logistics_Cluster::q('select * from order_logistics_cluster where id_restaurant= ? and id_restaurant_cluster = ?',
+            [$this->restaurant1->id_restaurant, $fakeClusterId]);
+        $countChk = $clChk->count();
         $cluster = $this->restaurant1->cluster('02:00:00', 0);
         $olc->delete();
+        $clChk2= Crunchbutton_Order_Logistics_Cluster::q('select * from order_logistics_cluster where id_restaurant= ? and id_restaurant_cluster = ?',
+            [$this->restaurant1->id_restaurant, $fakeClusterId]);
+        $countChk2 = $clChk2->count();
+        $cluster = $this->restaurant1->cluster('02:00:00', 0);
         $cl = Crunchbutton_Order_Logistics_Cluster::q('select * from order_logistics_cluster where id_restaurant= ?',
             [$this->restaurant1->id_restaurant]);
         $count = $cl->count();
         $cl->delete();
+        $this->assertEquals($countChk, 1);
+        $this->assertEquals($countChk2, 0);
         $this->assertEquals($cluster->id_restaurant_cluster, $this->restaurant1->id_restaurant);
         $this->assertEquals($count, 1);
     }
