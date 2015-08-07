@@ -23,8 +23,12 @@ cache:
 # install:
 
 before_install:
+  - echo 'America/Los_Angeles' | sudo tee /etc/timezone
+  - sudo dpkg-reconfigure --frontend noninteractive tzdata
+  - date
   - export TZ=America/Los_Angeles
   - date
+  - cat /etc/timezone
   - sudo service mysql restart
 
 before_script:
