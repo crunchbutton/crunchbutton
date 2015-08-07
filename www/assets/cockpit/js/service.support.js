@@ -26,7 +26,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	}
 
 	service.sideInfo.scroll = function( action ){
-
 		var container = $('.support-chat-contents-scroll');
 		switch( action ){
 			case 'begin':
@@ -58,7 +57,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.sideInfo.data.messages.push( message );
 		service.sideInfo.data.total++;
 		service.sideInfo.data.loaded++;
-		service.sideInfo.update_controller();
 		service.sideInfo.scroll( 'begin' );
 	}
 
