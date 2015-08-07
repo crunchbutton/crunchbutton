@@ -19,10 +19,9 @@ class Crunchbutton_GoogleGeocode
             . $address
             . $extra_api_text
             . c::config()->google->{$env}->key;
-        print "$url\n";
         $return = Crunchbutton_GoogleGeocode::get_data($url);
         print "$return\n";
-		$return = json_decode($return, true);
+		$return = json_decode($return);
 
 //        $cmd = 'curl '
 //            . $rootUrl
@@ -32,18 +31,18 @@ class Crunchbutton_GoogleGeocode
         //		exec($cmd, $return);
 //		$return = json_decode(trim(join('', $return)));
 //        print "$url\n";
-        if (array_key_exists('results', $return)){
-            $count = count($return['results']);
+        if (isset($return->results)){
+            $count = count($return->results);
             print "Number of results from Google geocode is $count\n";
         } else{
             print "No results from Google geocode\n";
         }
-		if ($return && array_key_exists('results', $return) && count($return['results']) == 1 && array_key_exists('geometry', $return['results'][0])) {
-            $geometry = $return['results'][0]['geometry'];
+		if ($return && isset($return->results) && count($return->results) == 1 && isset($return->results[0]->geometry)) {
+            $geometry = $return->results[0]->geometry;
 //            print_r( $geometry );
-            if (array_key_exists('location', $geometry) && array_key_exists('lat', $geometry['location']) && array_key_exists('lng', $geometry['location'])) {
-                $lat = $geometry['location']['lat'];
-                $lon = $geometry['location']['lng'];
+            if (isset($geometry->location) && isset($geometry->location->lat) && isset($geometry->location->lng)) {
+                $lat = $geometry->location->lat;
+                $lon = $geometry->location->lng;
                 $out = new Crunchbutton_Order_Location($lat, $lon);
             }
         }
@@ -57,6 +56,7 @@ class Crunchbutton_GoogleGeocode
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_REFERER, "cockpit.la");
         $data = curl_exec($ch);
 
         //getinfo gets the data for the request
