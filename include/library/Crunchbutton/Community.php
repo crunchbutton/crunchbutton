@@ -161,9 +161,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 		if( $out[ 'dont_warn_till' ] ){
 			$out[ 'dont_warn_till' ] = [ 	'y' => $this->dontWarnTill()->format( 'Y' ), 'm' => $this->dontWarnTill()->format( 'm' ), 'd' => $this->dontWarnTill()->format( 'd' ), 'h' => $this->dontWarnTill()->format( 'H' ), 'i' => $this->dontWarnTill()->format( 'i' ) ];
+			$out[ 'dont_warn_till_formated' ] = $this->dontWarnTill()->format( 'M jS Y g:i:s A T' );
 		} else {
 			$out[ 'dont_warn_till' ] = null;
 		}
+
 
 		$out[ 'driver_group' ] = $this->driver_group()->name;
 
