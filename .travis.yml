@@ -22,9 +22,12 @@ cache:
 
 # install:
 
-before_script:
+before_install:
   - export TZ=America/Los_Angeles
   - date
+  - sudo service mysql restart
+
+before_script:
   - composer self-update
   - mkdir build
   - composer install --dev --no-interaction
