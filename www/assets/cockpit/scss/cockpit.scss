@@ -2484,6 +2484,12 @@ b, strong{ font-weight: bold; }
 		width: 100%;
 	}
 }
+@media(max-width:600px) {
+	.mobile-anchor{
+		margin-top:-60px;
+		position:absolute;
+	}
+}
 @media(min-width:600px) {
 	.support-box-wrap {
 		display: inline-block;
