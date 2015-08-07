@@ -31,7 +31,7 @@ class Crunchbutton_GoogleGeocode
         //		exec($cmd, $return);
 //		$return = json_decode(trim(join('', $return)));
 //        print "$url\n";
-
+print_r($return->results);
 		if ($return && isset($return->results) && count($return->results) == 1 && isset($return->results[0]->geometry)) {
             $geometry = $return->results[0]->geometry;
             print_r( $geometry );
