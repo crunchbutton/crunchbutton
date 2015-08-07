@@ -25,6 +25,7 @@ cache:
 before_install:
   - export TZ=America/Los_Angeles
   - date
+  - cat /etc/timezone
   - sudo service mysql restart
 
 before_script:
