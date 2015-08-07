@@ -23,6 +23,8 @@ cache:
 # install:
 
 before_script:
+  - export TZ=America/Los_Angeles
+  - date
   - composer self-update
   - mkdir build
   - composer install --dev --no-interaction
