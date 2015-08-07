@@ -55,7 +55,7 @@ class Crunchbutton_GoogleGeocode
         //getinfo gets the data for the request
         $info = curl_getinfo($ch);
         //output the data to get more information.
-//        print_r($info);
+       print_r($info);
         curl_close($ch);
         return $data;
     }
