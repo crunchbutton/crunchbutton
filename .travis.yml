@@ -60,6 +60,7 @@ before_script:
 
 
 script:
+  - curl -v https://maps.googleapis.com/maps/api/geocode/json?address=311+Highland+Lake+Circle+Decatur,+GA,+30033&key=_KEY_
   - phpunit --configuration travis/phpunit.xml
   - phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
 
