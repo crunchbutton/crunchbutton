@@ -22,7 +22,7 @@ NGApp.directive('ticketMessagesScroll', function( $rootScope ) {
 			elem.on( 'scroll', function(){
 				var distance = 100;
 				if( elem[0].scrollTop <= distance ){
-					$rootScope.$broadcast( 'loadMoreMessages' );
+					// $rootScope.$broadcast( 'loadMoreMessages' );
 				}
 			} );
 		}
