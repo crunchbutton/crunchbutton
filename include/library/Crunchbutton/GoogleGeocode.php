@@ -34,6 +34,7 @@ class Crunchbutton_GoogleGeocode
 
 		if ($return && isset($return->results) && count($return->results) == 1 && isset($return->results[0]->geometry)) {
             $geometry = $return->results[0]->geometry;
+            print_r( $geometry );
             if (isset($geometry->location) && isset($geometry->location->lat) && isset($geometry->location->lng)) {
                 $lat = $geometry->location->lat;
                 $lon = $geometry->location->lng;
@@ -55,7 +56,7 @@ class Crunchbutton_GoogleGeocode
         //getinfo gets the data for the request
         $info = curl_getinfo($ch);
         //output the data to get more information.
-       print_r($info);
+//        print_r($info);
         curl_close($ch);
         return $data;
     }
