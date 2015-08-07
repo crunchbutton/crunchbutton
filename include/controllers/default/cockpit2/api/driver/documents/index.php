@@ -107,11 +107,12 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 							$docStatus->datetime = date('Y-m-d H:i:s');
 							$docStatus->save();
 
-							$docStatus->file = $docStatus->s3Base();
+							$file = $_FILES['file']['tmp_name'];
+							$file_name = $_FILES['file']['name'];
+
+							$docStatus->file = $docStatus->s3Base( $file_name . '.' . $ext );
 							// $docStatus->id_driver_document_status . '.'. $ext;
 							$docStatus->save();
-
-							$file = $_FILES['file']['tmp_name'];
 
 							$r = Cockpit_Driver_Document_Status::toS3($file, $docStatus->file);
 
