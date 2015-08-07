@@ -20,7 +20,7 @@ class Crunchbutton_GoogleGeocode
             . $extra_api_text
             . c::config()->google->{$env}->key;
         $return = Crunchbutton_GoogleGeocode::get_data($url);
-        print "$return\n";
+//        print "$return\n";
 		$return = json_decode($return);
 
 //        $cmd = 'curl '
@@ -31,12 +31,12 @@ class Crunchbutton_GoogleGeocode
         //		exec($cmd, $return);
 //		$return = json_decode(trim(join('', $return)));
 //        print "$url\n";
-        if (isset($return->results)){
-            $count = count($return->results);
-            print "Number of results from Google geocode is $count\n";
-        } else{
-            print "No results from Google geocode\n";
-        }
+//        if (isset($return->results)){
+//            $count = count($return->results);
+//            print "Number of results from Google geocode is $count\n";
+//        } else{
+//            print "No results from Google geocode\n";
+//        }
 		if ($return && isset($return->results) && count($return->results) == 1 && isset($return->results[0]->geometry)) {
             $geometry = $return->results[0]->geometry;
 //            print_r( $geometry );
