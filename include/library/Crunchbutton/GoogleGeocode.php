@@ -19,8 +19,8 @@ class Crunchbutton_GoogleGeocode
             . $address
             . $extra_api_text
             . c::config()->google->{$env}->key;
-        print "$url\n";
         $return = Crunchbutton_GoogleGeocode::get_data($url);
+        print "$return\n";
 		$return = json_decode($return);
 
 //        $cmd = 'curl '
@@ -56,6 +56,7 @@ class Crunchbutton_GoogleGeocode
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_REFERER, "cockpit.la");
         $data = curl_exec($ch);
 
         //getinfo gets the data for the request
