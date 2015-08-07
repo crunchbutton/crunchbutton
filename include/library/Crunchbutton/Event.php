@@ -6,11 +6,11 @@ class Crunchbutton_Event {
 		if (!c::config()->site->config('chat-server')->val()) {
 			throw new Exception('No chat server defined. (chat-server)');
 		}
-		
+
 		if (!c::config()->site->config('chat-server-key')->val()) {
 			throw new Exception('No chat server security key defined. (chat-server-key)');
 		}
-		
+
 		if (!c::config()->site->config('chat-server-port')->val()) {
 			throw new Exception('No chat server port defined. (chat-server-port)');
 		}
@@ -35,15 +35,15 @@ class Crunchbutton_Event {
 		$res = curl_exec($ch);
 		curl_close($ch);
 
-		return $res;	
+		return $res;
 	}
-	
+
 	public static function emit($to, $event, $payload = [], $async = true) {
 
 		$work = new Event_Payload($to, $event, $payload);
 
-		c::timeout(function() use($work) {
-			Event::q($work);
-		},0,$async);
+		// c::timeout(function() use($work) {
+		Event::q($work);
+		// },0,$async);
 	}
 }
