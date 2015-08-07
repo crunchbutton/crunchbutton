@@ -5,9 +5,11 @@ NGApp.directive('chatSend', function(TicketViewService) {
 		link: function(scope, element, attrs) {
 			element.bind('keydown keypress', function (e) {
 				if (e.which == 13) {
-					TicketViewService.send(element.val());
-					e.preventDefault();
-					element.val('');
+					if( element.val() != '' ){
+						TicketViewService.send(element.val());
+						e.preventDefault();
+						element.val('');
+					}
 				} else {
 					//TicketViewService.typing(element.val());
 				}

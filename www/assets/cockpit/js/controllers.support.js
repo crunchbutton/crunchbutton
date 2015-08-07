@@ -92,7 +92,6 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	var loadData = function(){
 		if( TicketViewService.sideInfo.load() ){
 			$scope.isLoading = true;
-			$scope.ticket = null;
 		}
 	}
 
@@ -111,9 +110,12 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	}
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
+		if( !$scope.ticket || !$scope.ticket.messages ){
+			$scope.ticket = data;
+		}
 		$scope.isLoading = false;
-		$scope.ticket = data;
 	} );
+
 
 	$rootScope.$on( 'loadMoreMessages', function(e, data) {
 		$scope.loadMoreMessages();
@@ -121,9 +123,11 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	var socketStuff = function(){
 		SocketService.listen('ticket.' + id_support, TicketViewService.scope ).on('message', function(d) {
+			console.log('d',d);
 			if( d.guid ){
 				for ( var x in TicketViewService.sideInfo.data.messages ) {
 					if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
+						console.log('message already added!');
 						return;
 					}
 				}
