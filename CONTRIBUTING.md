@@ -2,7 +2,7 @@
 
 To report development issues, please make sure you provide as much information as possible to help identify the problem.
 
-**If an issue is blocking orders being fullfilled, ie, order notifications not going out, drivers cant accept orders, users cant place orders, add the label BLOCKING**
+**If an issue is blocking orders being fullfilled, ie, order notifications not going out, drivers can't accept orders, users can't place orders, add the label BLOCKING**
 
 #### For user/Crunchbutton related issues
 
