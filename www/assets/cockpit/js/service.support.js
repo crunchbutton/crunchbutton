@@ -226,7 +226,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			guid: guid,
 			note: add_as_note
 		}, function(d) {
+			console.log('message added:::');
+			console.log('d',d);
 			for ( var x in service.sideInfo.data.messages ) {
+				console.log('service.sideInfo.data.messages[x].guid',service.sideInfo.data.messages[x].guid);
 				if ( service.sideInfo.data.messages[x].guid == guid ) {
 					d.guid = guid;
 					service.sideInfo.data.messages[x] = d;
@@ -235,7 +238,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				}
 			}
 		});
-
 		if( callback ){
 			callback()
 		} else {

@@ -127,6 +127,10 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 			if( d.guid ){
 				for ( var x in TicketViewService.sideInfo.data.messages ) {
 					if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
+						if( TicketViewService.sideInfo.data.messages[x].sending ){
+							TicketViewService.sideInfo.data.messages[x] = d;
+							console.log('updated status');
+						}
 						console.log('message already added!');
 						return;
 					}
