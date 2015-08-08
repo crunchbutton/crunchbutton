@@ -112,14 +112,24 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
 		console.log('$scope.ticket',$scope.ticket);
 		console.log('data',data);
-		$scope.ticket = data;
-		$scope.isLoading = false;
-		if( !$rootScope.supportToggled ){
+		if( $scope.ticket.id_support != data.id_support ){
+			$scope.ticket = data;
+		} else {
+			console.log('update messages');
+			$scope.ticket.messages = data.messages;
 			$timeout( function(){
-					$rootScope.supportToggled = true;
-				}, 300 );
+				$scope.ticket.has_more = data.has_more;
+				$scope.ticket.loaded = data.loaded;
+				$scope.ticket.page = data.page;
+				$scope.ticket.total = data.total;
+				console.log('update everything else');
+			 }, 300 );
 		}
 
+		$scope.isLoading = false;
+		if( !$rootScope.supportToggled ){
+			$timeout( function(){ $rootScope.supportToggled = true; }, 300 );
+		}
 	} );
 
 
