@@ -336,9 +336,9 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         $communityId2 = $community2->id_community;
 
         Crunchbutton_Admin_Shift_Assign::q('select * from admin_shift_assign where id_community_shift=?', [$csId])->delete();
-        if( $cs ){ $cs->delete(); }
-        if( $community ){ $community->delete(); }
-        if( $community2 ){ $community2->delete(); }
+        if( $cs && $cs->id_community ){ $cs->delete(); }
+        if( $community && $community->id_community ){ $community->delete(); }
+        if( $community2 && $community2->id_community ){ $community2->delete(); }
 
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - ONE'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - TWO'])->delete();
