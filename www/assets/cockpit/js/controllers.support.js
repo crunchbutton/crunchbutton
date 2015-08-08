@@ -117,6 +117,11 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	} );
 
 
+	$rootScope.$on( 'triggerTicketMessageAdded', function(e, data) {
+		console.log('triggerTicketMessageAdded');
+		$scope.ticket.messages = TicketViewService.sideInfo.data.messages;
+	});
+
 	$rootScope.$on( 'loadMoreMessages', function(e, data) {
 		$scope.loadMoreMessages();
 	} );
