@@ -336,10 +336,10 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         $communityId2 = $community2->id_community;
 
         Crunchbutton_Admin_Shift_Assign::q('select * from admin_shift_assign where id_community_shift=?', [$csId])->delete();
-        $cs->delete();
-        $community->delete();
-        $community2->delete();
-		
+        if( $cs ){ $cs->delete(); }
+        if( $community ){ $community->delete(); }
+        if( $community2 ){ $community2->delete(); }
+
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - ONE'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - TWO'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - THREE'])->delete();
@@ -354,7 +354,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         Dish::q('select * from dish where name=?', [$name])->delete();
 
     }
-	
+
     public function setUp()
     {
         $name = get_called_class();
@@ -372,7 +372,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         $this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - ONE'])->get(0);
 		$this->community2 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
     }
-	
+
 	public function tearDown()
     {
         $name = get_called_class();
