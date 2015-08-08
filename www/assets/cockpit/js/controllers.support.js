@@ -118,8 +118,11 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 				$scope.ticket = data;
 			} else {
 				if( !angular.equals( $scope.ticket.messages, data.messages ) ){
+					if( data.messages.length > 0 ){
+						$scope.ticket.messages = data.messages;
+					}
 					// if( !$scope.ticket.messages || ( $scope.ticket.messages && $scope.ticket.messages.length < data.messages.length ) ){
-					$scope.ticket.messages = data.messages;
+
 					// }
 
 					console.log('!=!=!=!=!=');
