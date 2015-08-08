@@ -22,6 +22,13 @@ class Crunchbutton_Event {
 			'_key' => c::config()->site->config('chat-server-key')->val()
 		]);
 
+		Log::debug( [
+			'to' => $payload->to,
+			'event' => $payload->event,
+			'payload' => $payload->payload,
+			'type' => 'chat'
+		] );
+
 		$ch = curl_init(c::config()->site->config('chat-server')->val());
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -34,6 +41,8 @@ class Crunchbutton_Event {
 
 		$res = curl_exec($ch);
 		curl_close($ch);
+
+		Log::debug( [ 'return' => $res, 'type' => 'chat' ] );
 
 		return $res;
 	}
