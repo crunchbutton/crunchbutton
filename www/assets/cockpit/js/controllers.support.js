@@ -110,17 +110,12 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	}
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
-		if( !$scope.ticket || !$scope.ticket.messages ){
+		// if( !$scope.ticket || !$scope.ticket.messages ){
 			$scope.ticket = data;
-		}
+		// }
 		$scope.isLoading = false;
 	} );
 
-
-	$rootScope.$on( 'triggerTicketMessageAdded', function(e, data) {
-		console.log('triggerTicketMessageAdded');
-		$scope.ticket.messages = TicketViewService.sideInfo.data.messages;
-	});
 
 	$rootScope.$on( 'loadMoreMessages', function(e, data) {
 		$scope.loadMoreMessages();
