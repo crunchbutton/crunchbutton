@@ -110,31 +110,34 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	}
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
-		console.log('$scope.ticket',$scope.ticket);
-		console.log('data',data);
-		if( $scope.ticket.id_support != data.id_support ){
-			$scope.ticket = data;
-		} else {
-			if( !angular.equals( $scope.ticket.messages, data.messages ) ){
-				if( !$scope.ticket.messages || ( $scope.ticket.messages && $scope.ticket.messages.length < data.messages.length ) ){
-					$scope.ticket.messages = data.messages;
+
+		$rootScope.$safeApply( function(){
+			console.log('$scope.ticket',$scope.ticket);
+			console.log('data',data);
+			if( $scope.ticket.id_support != data.id_support ){
+				$scope.ticket = data;
+			} else {
+				if( !angular.equals( $scope.ticket.messages, data.messages ) ){
+					if( !$scope.ticket.messages || ( $scope.ticket.messages && $scope.ticket.messages.length < data.messages.length ) ){
+						$scope.ticket.messages = data.messages;
+					}
+
+					console.log('!=!=!=!=!=');
+				} else {
+					console.log('=====');
 				}
 
-				console.log('!=!=!=!=!=');
-			} else {
-				console.log('=====');
+				if( $scope.ticket.total != data.total ){
+					$timeout( function(){
+						$scope.ticket.has_more = data.has_more;
+						$scope.ticket.loaded = data.loaded;
+						$scope.ticket.page = data.page;
+						$scope.ticket.total = data.total;
+						console.log('update everything else');
+					 }, 300 );
+				}
 			}
-
-			if( $scope.ticket.total != data.total ){
-				$timeout( function(){
-					$scope.ticket.has_more = data.has_more;
-					$scope.ticket.loaded = data.loaded;
-					$scope.ticket.page = data.page;
-					$scope.ticket.total = data.total;
-					console.log('update everything else');
-				 }, 300 );
-			}
-		}
+		} );
 
 		$scope.isLoading = false;
 		if( !$rootScope.supportToggled ){
