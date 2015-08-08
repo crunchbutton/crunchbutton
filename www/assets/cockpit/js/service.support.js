@@ -58,7 +58,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.sideInfo.data.total++;
 		service.sideInfo.data.loaded++;
 		service.sideInfo.scroll( 'begin' );
-		$rootScope.$broadcast( 'triggerTicketMessageAdded' );
+		service.sideInfo.update_controller();
 	}
 
 	service.sideInfo.load_ticket_page = function(){
