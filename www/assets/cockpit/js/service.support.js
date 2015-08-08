@@ -58,6 +58,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.sideInfo.data.total++;
 		service.sideInfo.data.loaded++;
 		service.sideInfo.scroll( 'begin' );
+		$rootScope.$broadcast( 'triggerTicketMessageAdded' );
 	}
 
 	service.sideInfo.load_ticket_page = function(){
@@ -229,7 +230,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			console.log('message added:::');
 			console.log('d',d);
 			for ( var x in service.sideInfo.data.messages ) {
-				console.log('service.sideInfo.data.messages[x].guid',service.sideInfo.data.messages[x].guid);
 				if ( service.sideInfo.data.messages[x].guid == guid ) {
 					d.guid = guid;
 					service.sideInfo.data.messages[x] = d;
