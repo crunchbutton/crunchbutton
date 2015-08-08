@@ -95,13 +95,13 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 		}
 	}
 
-	$scope.$watchCollection( 'ticket', function( newValue, oldValue ) {
-		if( newValue && newValue.total && !$rootScope.supportToggled ){
-			$timeout( function(){
-				$rootScope.supportToggled = true;
-			}, 300 );
-		}
-	} );
+	// $scope.$watchCollection( 'ticket', function( newValue, oldValue ) {
+	// 	if( newValue && newValue.total && !$rootScope.supportToggled ){
+	// 		$timeout( function(){
+	// 			$rootScope.supportToggled = true;
+	// 		}, 300 );
+	// 	}
+	// } );
 
 	$scope.isLoading = false;
 
@@ -110,10 +110,16 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 	}
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
-		// if( !$scope.ticket || !$scope.ticket.messages ){
-			$scope.ticket = data;
-		// }
+		console.log('$scope.ticket',$scope.ticket);
+		console.log('data',data);
+		$scope.ticket = data;
 		$scope.isLoading = false;
+		if( !$rootScope.supportToggled ){
+			$timeout( function(){
+					$rootScope.supportToggled = true;
+				}, 300 );
+		}
+
 	} );
 
 
@@ -123,7 +129,6 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	var socketStuff = function(){
 		SocketService.listen('ticket.' + id_support, TicketViewService.scope ).on('message', function(d) {
-			console.log('d',d);
 			if( d.guid ){
 				for ( var x in TicketViewService.sideInfo.data.messages ) {
 					if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
