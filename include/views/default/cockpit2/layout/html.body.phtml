@@ -12,7 +12,7 @@
 					<i class="fa fa-male"></i>
 				</div>
 
-				<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
+				<div class="menu-tab" ng-if="account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
 					<i class="fa fa-dashboard"></i>
 				</div>
 			</div>
