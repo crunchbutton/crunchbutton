@@ -52,7 +52,7 @@
 										{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 									</div>
 									<label ng-if="!shift.assigned">
-										<input type="checkbox" ng-click="dontWantToWork( shift.id_community_shift )"> Definitely Unavailable
+										<input type="checkbox" ng-click="dontWantToWork( shift.id_community_shift )"> Mark as Definitely Unavailable
 									</label>
 								</td>
 								<td class="td-larger schedule-buttons">
@@ -78,7 +78,7 @@
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
 								<label ng-if="!shift.assigned">
-									<input type="checkbox" ng-click="dontWantToWork( shift.id_community_shift )"> Definitely Unavailable
+									<input type="checkbox" ng-click="dontWantToWork( shift.id_community_shift )"> Mark as Definitely Unavailable
 								</label>
 							</td>
 							<td class="td-large schedule-buttons">
@@ -97,7 +97,7 @@
 									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
 								</div>
 								<label>
-									<input type="checkbox" checked="checked" ng-click="wantToWork( shift.id_community_shift )"> Definitely Unavailable
+									<input type="checkbox" checked="checked" ng-click="wantToWork( shift.id_community_shift )"> Mark as Definitely Unavailable
 								</label>
 							</td>
 						</tr>
