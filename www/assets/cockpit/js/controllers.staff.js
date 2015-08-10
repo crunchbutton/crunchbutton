@@ -72,8 +72,6 @@ NGApp.controller('StaffMarketingFaqCtrl',function( $scope ){
 
 NGApp.controller( 'StaffMarketingRequestMaterialsCtrl', function(  $scope, StaffService ){});
 
-
-
 NGApp.controller('StaffMarketingActivationsCtrl',function( $scope, StaffService ){
 
 	$scope.loading = true;
@@ -85,7 +83,7 @@ NGApp.controller('StaffMarketingActivationsCtrl',function( $scope, StaffService 
 });
 
 
-NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $location, StaffService, MapService) {
+NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $location, StaffService, MapService, DriverShiftsService) {
 
 	$scope.staff = null;
 	$scope.map = null;
@@ -168,6 +166,21 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		MapService.style(map);
 		//update();
 	});
+
+	$scope.shift_checkin = function( id_admin_shift_assign ){
+		var success = function(){
+			DriverShiftsService.shift_checkin( id_admin_shift_assign, function( json ){
+				if( json.success ){
+					load();
+				} else {
+					App.alert( 'Error!' );
+				}
+			} );
+		}
+		var fail = function(){}
+		App.confirm( 'Confirm checkin?' , 'Checking', success, fail, null, true);
+	}
+
 });
 
 NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {

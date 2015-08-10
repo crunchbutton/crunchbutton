@@ -70,7 +70,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function nextShiftsByAdmin( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$query = '
-			SELECT cs.* FROM admin_shift_assign ass
+			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
 			INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
 			WHERE
 				ass.id_admin = ?

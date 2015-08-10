@@ -332,9 +332,11 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 			if ($next) {
 
-				foreach ($next as $shift) {
+				foreach ($next as $s) {
 
-					$shift = $shift->exports();
+					$shift = $s->exports();
+
+					$shift[ 'confirmed' ] = intval( $s->confirmed );
 
 					$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
 					$start = $date->getTimestamp();
@@ -351,7 +353,6 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 						$diff = $now->diff( $date );
 						$shift['current'] = true;
 						$out['working'] = true;
-
 						$out['shift_ends'] = $diff->h;
 						$out['shift_ends_formatted'] = $diff->h;
 						if( $diff->i ){
@@ -365,6 +366,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					} else {
 						$shift['current'] = false;
 					}
+
 					$out['shifts'][] = $shift;
 				}
 			}

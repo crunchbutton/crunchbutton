@@ -9,6 +9,11 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				$this->_schedule();
 				break;
 
+			case 'checkin':
+				$this->_checkin();
+				break;
+
+
 			default:
 				$this->_list();
 				break;
@@ -22,6 +27,16 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			$_communities[] = $community->id_community;
 		}
 		return $_communities;
+	}
+
+	private function _checkin(){
+		$id_admin_shift_assign = $this->request()[ 'id_admin_shift_assign' ];
+		if( $id_admin_shift_assign ){
+			$assignment = Crunchbutton_Admin_Shift_Assign::o( $id_admin_shift_assign );
+			Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment );
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+		echo json_encode( [ 'error' => true ] );exit;
 	}
 
 	private function _schedule(){

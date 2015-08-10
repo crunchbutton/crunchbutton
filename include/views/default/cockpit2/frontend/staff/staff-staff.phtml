@@ -319,6 +319,7 @@
 					<tr>
 						<th>Time</th>
 						<th>Community</th>
+						<th>Confirmed</th>
 						<th class="tb-small"></th>
 					</tr>
 					<tr ng-repeat="shift in staff.shifts">
@@ -330,13 +331,16 @@
 						</td>
 						<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
 						<td>
-							<span class="tag tag-green" ng-if="shift.current">Now</span>
+							<span class="tag tag-red link no-underline" ng-if="!shift.confirmed" ng-click="shift_checkin( shift.id_admin_shift_assign )">Not confirmed</span>
+							<span class="tag tag-green" ng-if="shift.confirmed">Checked in</span>
+						</td>
+						<td>
+							<span class="tag tag-blue" ng-if="shift.current">Now</span>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
-
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
