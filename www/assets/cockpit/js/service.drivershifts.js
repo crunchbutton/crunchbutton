@@ -39,6 +39,16 @@ NGApp.factory( 'DriverShiftsService', function( $rootScope, $resource ) {
 		callback( sorted );
 	}
 
+	var shift = $resource( App.service + 'driver/shifts/checkin', {}, {
+		'checkin' : { 'method': 'POST', params : {} },
+	}	);
+
+	service.shift_checkin = function( id_admin_shift_assign, callback ){
+		shift.checkin( { 'id_admin_shift_assign' : id_admin_shift_assign }, function( json ){
+				callback( json );
+			} );
+	};
+
 	return service;
 } );
 

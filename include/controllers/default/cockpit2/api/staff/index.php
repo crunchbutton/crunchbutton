@@ -198,6 +198,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _view($staff) {
+
 		$out = $staff->exports();
 		$cards = Cockpit_Admin_Pexcard::getByAdmin( $staff->id_admin )->get( 0 );
 
