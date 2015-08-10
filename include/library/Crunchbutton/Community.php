@@ -744,7 +744,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 			if( $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin || $this->isAutoClosed() ){
 
-				$nextShift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community )->get( 0 );
+				$nextShift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+				if( $nextShift ){
+					$nextShift = $nextShift->get( 0 );
+				}
 
 				if( $nextShift->id_community_shift && ( $this->driver_checkin && $nextShift->isConfirmed() || !$this->driver_checkin ) ){
 
