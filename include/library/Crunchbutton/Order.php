@@ -3096,14 +3096,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function ticketsForNotGeomatchedOrders(){
-
-		// it should start runing just after we push code - #5488
-		// the lines bellow are going to check if the code was already pushed
-		$order = Order::q( 'SELECT * FROM `order` WHERE geomatched IS NOT NULL ORDER by id_order DESC LIMIT 1' );
-		if( !$order->id_order ){
-			return;
-		}
-
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
