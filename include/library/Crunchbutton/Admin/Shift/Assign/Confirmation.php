@@ -26,7 +26,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 	public function checkIfAdminHasShiftToConfirm( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$today = $now->format( 'Y-m-d 23:59:59' );
-		$confirmation = Crunchbutton_Admin_Shift_Assign_Confirmation::q( 'SELECT * FROM admin_shift_assign_confirmation WHERE datetime <= ? ORDER BY id_admin_shift_assign_confirmation DESC LIMIT 1', [ $today ] )->get( 0 );
+		$confirmation = Crunchbutton_Admin_Shift_Assign_Confirmation::q( 'SELECT * FROM admin_shift_assign_confirmation asac INNER JOIN admin_shift_assign asa ON asa.id_admin_shift_assign = asac.id_admin_shift_assign WHERE asac.datetime <= ? ORDER BY asac.id_admin_shift_assign_confirmation AND asa.id_admin = ? DESC LIMIT 1', [ $today, $id_admin ] )->get( 0 );
 		if( $confirmation->id_admin_shift_assign_confirmation ){
 			$assignment = Crunchbutton_Admin_Shift_Assign::o( $confirmation->id_admin_shift_assign );
 			if( !$assignment->isConfirmed() ){
@@ -86,7 +86,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		if( !$automatically ){
 			$admin = $assignment->admin();
 			$num = $admin->phone;
-			Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => 'Shift confirmed by driver!', 'phone' => $num ] );
+			Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => 'Shift confirmed by driver!', 'phone' => $num, 'bubble' => true ] );
 		}
 		return true;
 	}
@@ -137,18 +137,12 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		if( $lastTry->id_admin_shift_assign_confirmation ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$interval = $now->diff( $lastTry->date() );
-
-			if( Util::intervalToSeconds( $interval ) > ( 5 * 60 ) ){
-
+			if( Util::intervalToSeconds( $interval ) >= ( 5 * 60 ) ){
 				$admin = $assignment->admin();
 				$num = $admin->phone;
-
 				$message = self::message( $assignment, self::TYPE_TICKET );
-
 				Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $message ] );
-
 				self::create( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'type' => self::TYPE_TICKET ] );
-
 			}
 		}
 	}
@@ -159,13 +153,13 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$interval = $now->diff( $lastTry->date() );
 
-			if( Util::intervalToSeconds( $interval ) > ( 5 * 60 ) ){
+			if( Util::intervalToSeconds( $interval ) >= ( 5 * 60 ) ){
 
 				$admin = $assignment->admin();
 
 				$env = c::getEnv();
 				$num = $admin->phone;
-				$host_callback = Crunchbutton_Admin_Notification::host_callback();
+				$host_callback = self::host_callback();
 
 				$url = 'http://'.$host_callback.'/api/shift/'.$assignment->id_admin_shift_assign.'/first-call';
 
@@ -178,6 +172,18 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 				$call = $twilio->account->calls->create( c::config()->twilio->{$env}->outgoingDriver, '+1'.$num, $url, [ 'IfMachine' => 'Hangup' ] );
 			}
 		}
+	}
+
+	public function host_callback(){
+		if( c::getEnv() == 'live' ){
+			return 'staging.crunchr.co';
+		} else if( c::getEnv() == 'dev' ){
+			return 'pererinha.dyndns-web.com';
+		} else {
+			return $_SERVER['HTTP_HOST'];
+		}
+
+		return c::config()->host_callback;
 	}
 
 	public function askWithTextMessage( $assignment ){
@@ -248,7 +254,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != ? AND c.driver_checkin = 1 ORDER BY c.name', [ Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY ] );
 
 		foreach( $communities as $community ){
 

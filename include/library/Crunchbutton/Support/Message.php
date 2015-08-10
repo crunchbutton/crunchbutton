@@ -4,6 +4,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 	const TYPE_SMS = 'sms';
 	const TYPE_NOTE = 'note';
+	const TYPE_WARNING = 'warning';
 	const TYPE_AUTO_REPLY = 'auto-reply';
 	const TYPE_FROM_CLIENT = 'client';
 	const TYPE_FROM_REP = 'rep';

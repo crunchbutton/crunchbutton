@@ -744,9 +744,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 			if( $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin || $this->isAutoClosed() ){
 
-				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+				$nextShift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community )->get( 0 );
 
-				if( $nextShift->id_community_shift ){
+				if( $nextShift->id_community_shift && ( $this->driver_checkin && $nextShift->isConfirmed() || !$this->driver_checkin ) ){
 
 					$date_start = $nextShift->dateStart( $this->timezone );
 					$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
@@ -757,11 +757,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 					if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
 
+						$ticket = 'The community ' . $this->name . ' was auto reopened.';
+
 						// Open the community
 						$this->is_auto_closed = 0;
 						$this->save();
 
-						$ticket = 'The community ' . $this->name . ' was auto reopened.';
 						Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
 						Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
 					}
@@ -774,8 +775,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$totalDrivers = 0;
 		$drivers = $this->getDriversOfCommunity();
 		$hasDriverWorking = false;
+		// check if the drivers should checkin the shift, if it does, return just the driver that had checked in
+		$checkedIn_confirm = intval( $this->driver_checkin ) > 0 ? true : false;
 		foreach( $drivers as $driver ){
-			if( $driver->isWorking( $dt, $this->id_community ) ){
+			if( $driver->isWorking( $dt, $this->id_community, $checkedIn_confirm ) ){
 				$totalDrivers++;
 			}
 		}
@@ -843,6 +846,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= $date_start->format( 'D' );
 					$message .= '!';
 				} else {
+					$message = 'Temporarily closed!';
+				}
+
+				// if the community needs checkin drivers we dont know when it will be opened
+				if( $this->driver_checkin ){
 					$message = 'Temporarily closed!';
 				}
 

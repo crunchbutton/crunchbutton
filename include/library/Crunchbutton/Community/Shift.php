@@ -81,6 +81,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 
+	public function isConfirmed(){
+		$assignment = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign WHERE id_community_shift = ? AND confirmed = 1 ORDER BY id_admin_shift_assign DESC LIMIT 1', [ $this->id_community_shift ])->get(0);
+		if( $assignment->id_admin_shift_assign ){
+			return true;
+		}
+		return false;
+	}
+
 	public function nextShiftsByCommunities( $communities ){
 		if( count( $communities ) > 0 ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
@@ -236,7 +244,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q($query, $params);
 	}
 
-	public static function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null) {
+	public static function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null, $checkIfTheyCheckedIn = false) {
 		$admin = Admin::o($id_admin);
 
 		// start using community's timezone - #4965
@@ -257,7 +265,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$params = [$id_admin, $nowFormat, $nowFormat];
 
 			$query = '
-				SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+				SELECT cs.*, asa.id_admin_shift_assign, asa.confirmed FROM community_shift cs
 				INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 				WHERE asa.id_admin = ?
 					AND cs.active = true
@@ -272,7 +280,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	 		$shift = Crunchbutton_Community_Shift::q($query, $params);
 	 		if ($shift->id_admin_shift_assign) {
-	 			return $shift;
+	 			if( $checkIfTheyCheckedIn ){
+	 				if( $shift->confirmed ){
+	 					return $shift;
+	 				}
+	 			} else {
+	 				return $shift;
+	 			}
+
 	 		}
 		}
 
@@ -1162,7 +1177,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != "?" AND ( c.driver_checkin IS NULL OR c.driver_checkin = 0 ) ORDER BY c.name', [ Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY ] );
 
 		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us back!';
 

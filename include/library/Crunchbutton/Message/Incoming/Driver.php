@@ -116,7 +116,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 	public function parseBody($body, $admin = false ) {
 
-		$body = strtolower($body);
+		$body = strtolower( $body );
 
 		$verbs = [
 			self::ACTION_ACCEPT => [ 'accept', 'acept', 'a' ],

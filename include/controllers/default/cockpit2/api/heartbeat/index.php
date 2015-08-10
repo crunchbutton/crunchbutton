@@ -27,8 +27,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 					INNER JOIN (
 							SELECT MAX( sm.id_support_message ) AS id_support_message FROM support s
 								INNER JOIN support_message sm ON sm.id_support = s.id_support
-								WHERE s.status = 'open' GROUP BY sm.id_support ) last_message_from_opened_tickets ON last_message_from_opened_tickets.id_support_message = sm.id_support_message AND sm.from = 'client'";
-
+								WHERE s.status = 'open' GROUP BY sm.id_support ) last_message_from_opened_tickets ON last_message_from_opened_tickets.id_support_message = sm.id_support_message AND ( sm.from = 'client' OR sm.type = 'warning' )";
 			$q = c::db()->get($q);
 			$tickets = $q->get(0)->c;
 
