@@ -584,6 +584,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( $hour > 12 ){
 			$hour -= 12;
 			$ampm = 'pm';
+		} else if( $hour == 12 ){
+			$ampm = 'pm';
 		}
 		if( $hour == 0 ){
 			$hour = 12;
