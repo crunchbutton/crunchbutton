@@ -333,7 +333,7 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 				$scope.payments = [];
 				$scope.payments.push( { 'label': 'Check', 'value': 'check' } );
 				$scope.payments.push( { 'label': 'Deposit', 'value': 'deposit' } );
-				$scope.payments.push( { 'label': 'No payment', 'value': 'no payment' } );
+				$scope.payments.push( { 'label': 'Does Not Need Payment', 'value': 'no payment' } );
 				$scope.payments.push( { 'label': 'Empty', 'value': 'empty' } );
 			}
 		}
