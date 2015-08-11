@@ -60,7 +60,7 @@
 			<td class="tb-center tb-v-center" nowrap="nowrap">
 				<span class="tag tag-orange" ng-if="restaurant.payment_method && restaurant.payment_method == 'check'">Check</span>
 				<span class="tag tag-purple" ng-if="restaurant.payment_method && restaurant.payment_method == 'deposit'">Deposit</span>
-				<span class="tag tag-blue" ng-if="restaurant.payment_method && restaurant.payment_method == 'no payment'">No Payment</span>
+				<span class="tag tag-blue" ng-if="restaurant.payment_method && restaurant.payment_method == 'no payment'">Does Not Need Payment</span>
 				<span class="tag tag-black" ng-if="!restaurant.payment_method || restaurant.payment_method == ''">Empty</span>
 			</td>
 			<td ng-if="current_page == 'community'" class="tb-small">
