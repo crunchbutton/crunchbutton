@@ -143,7 +143,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		var methods = [];
 		methods.push( { value: 'fax', label: 'Fax' } );
 		methods.push( { value: 'email', label: 'Email' } );
-		methods.push( { value: 'no summary', label: 'No Summary' } );
+		methods.push( { value: 'no summary', label: 'Does Not Need Summary' } );
 		return methods;
 	}
 
@@ -151,7 +151,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		var methods = [];
 		methods.push( { value: 'check', label: 'Check' } );
 		methods.push( { value: 'deposit', label: 'Deposit' } );
-		methods.push( { value: 'no payment', label: 'No Payment' } );
+		methods.push( { value: 'no payment', label: 'Does Not Need Payment' } );
 		return methods;
 	}
 
