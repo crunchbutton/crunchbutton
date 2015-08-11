@@ -8,9 +8,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		switch (c::getPagePiece(2)) {
 			// list of restaurants that were already paid
 			case 'paid-list':
-				$restaurants = Crunchbutton_Restaurant::q( 'SELECT DISTINCT(r.id_restaurant) AS id_restaurant, r.name  FROM restaurant r
-																			INNER JOIN payment p ON p.id_restaurant = r.id_restaurant
-																		ORDER BY r.name ASC' );
+				$restaurants = Crunchbutton_Restaurant::q( 'SELECT DISTINCT(r.id_restaurant) AS id_restaurant, r.name  FROM restaurant r INNER JOIN payment p ON p.id_restaurant = r.id_restaurant ORDER BY r.name ASC' );
 				$export = [];
 				$export[] = array( 'id_restaurant' => 0, 'name' => 'All' );
 				foreach( $restaurants as $restaurant ){
@@ -20,11 +18,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'eta':
-
 				$out = [];
 				$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant WHERE active = true AND delivery_service = true ORDER BY name ' );
 				$communities = [];
-
 				foreach( $restaurants as $restaurant ){
 					if( $restaurant->open() ){
 						$community = $restaurant->community()->get( 0 );
@@ -137,6 +133,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$status = $this->request()['status'] ? $this->request()['status'] : 'all';
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
+		$payment_method = $this->request()['payment_method'] ? $this->request()['payment_method'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
@@ -157,6 +154,21 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				LEFT JOIN restaurant_community ON restaurant.id_restaurant=restaurant_community.id_restaurant
 			';
 		}
+
+		if( $payment_method ){
+			if( $payment_method == 'empty' ){
+				$q .= '
+						INNER JOIN restaurant_payment_type ON restaurant.id_restaurant=restaurant_payment_type.id_restaurant AND ( restaurant_payment_type.payment_method = "" OR restaurant_payment_type.payment_method IS NULL )
+					';
+			} else {
+				$q .= '
+						INNER JOIN restaurant_payment_type ON restaurant.id_restaurant=restaurant_payment_type.id_restaurant AND restaurant_payment_type.payment_method = ?
+					';
+				$keys[] = $payment_method;
+			}
+		}
+
+
 		$q .='
 			WHERE
 				restaurant.name IS NOT NULL
@@ -250,6 +262,12 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			$out->delivery = $out->delivery ? true : false;
 			$out->takeout = $out->takeout ? true : false;
 			$out->images = $restaurant->getImages('name');
+
+			$paymentType = $restaurant->paymentType();
+			if( $paymentType ){
+				$out->payment_method = $paymentType->payment_method;
+				$out->summary_method = $paymentType->summary_method;
+			}
 
 
 /*

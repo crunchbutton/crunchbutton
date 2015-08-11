@@ -9,6 +9,7 @@
 			<th class="tb-small">Active</th>
 			<th class="tb-small">Open</th>
 			<th class="tb-small">Delivery</th>
+			<th class="tb-small">Payment Method</th>
 			<th ng-if="current_page == 'community'">Notes to Drivers</th>
 			<th class="tb-small"></th>
 		</tr>
@@ -55,6 +56,12 @@
 				<span class="tag tag-blue" ng-if="restaurant.delivery && !restaurant.delivery_service">1st</span>
 				<span class="tag tag-lightgrey" ng-if="restaurant.takeout && !restaurant.delivery">Takeout</span>
 				<span class="tag tag-lightgrey" ng-if="!restaurant.takeout && !restaurant.delivery">None</span>
+			</td>
+			<td class="tb-center tb-v-center" nowrap="nowrap">
+				<span class="tag tag-orange" ng-if="restaurant.payment_method && restaurant.payment_method == 'check'">Check</span>
+				<span class="tag tag-purple" ng-if="restaurant.payment_method && restaurant.payment_method == 'deposit'">Deposit</span>
+				<span class="tag tag-blue" ng-if="restaurant.payment_method && restaurant.payment_method == 'no payment'">No Payment</span>
+				<span class="tag tag-black" ng-if="!restaurant.payment_method || restaurant.payment_method == ''">Empty</span>
 			</td>
 			<td ng-if="current_page == 'community'" class="tb-small">
 				<div class="listview-text-block" ng-if="restaurant.notes_to_driver">

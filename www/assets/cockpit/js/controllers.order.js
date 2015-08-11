@@ -60,7 +60,6 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 	}
 
 	$scope.$on('mapInitialized', function(event, map) {
-		console.log('INIT');
 		$scope.map = map;
 		MapService.style(map);
 		draw();
