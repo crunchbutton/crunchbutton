@@ -191,6 +191,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
+
 		$id_restaurant = $this->request()['id_restaurant'];
 		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
 
@@ -209,12 +210,12 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$payment_type = $_restaurant->payment_type();
 			$summary_error = false;
 			switch ( $payment_type->summary_method ) {
-				case 'email':
+				case Crunchbutton_Restaurant_Payment_Type::SUMMARY_METHOD_EMAIL:
 						if( !$payment_type->summary_email ){
 							$summary_error = 'Summary email missing';
 						}
 					break;
-				case 'fax':
+				case Crunchbutton_Restaurant_Payment_Type::SUMMARY_METHOD_FAX:
 						if( !$payment_type->summary_fax ){
 							$summary_error = 'Summary fax missing';
 						}
@@ -234,7 +235,29 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 			$restaurant[ 'summary_error' ] = $summary_error;
 			$restaurant[ 'name' ] = $_restaurant->name;
+			$restaurant[ 'permalink' ] = $_restaurant->permalink;
 			$restaurant[ 'has_payment_type' ] = $_restaurant->hasPaymentType();
+
+			$payment_type = $_restaurant->paymentType();
+
+			$restaurant[ 'payment_method' ] = false;
+
+			switch ( $payment_type->payment_method ) {
+				case Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT:
+					$restaurant[ 'payment_method' ] = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_DEPOSIT;
+					break;
+
+				case Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_CHECK:
+					$restaurant[ 'payment_method' ] = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_CHECK;
+					break;
+
+				case Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_NO_PAYMENT:
+					$restaurant[ 'payment_method' ] = Crunchbutton_Restaurant_Payment_Type::PAYMENT_METHOD_NO_PAYMENT;
+					break;
+			}
+
+			$restaurant[ 'has_payment_type' ] = $_restaurant->hasPaymentType();
+
 			$restaurant[ 'id_restaurant' ] = $_restaurant->id_restaurant;
 			$restaurant[ 'not_included' ] = 0;
 			$restaurant[ 'orders_count' ] = 0;
