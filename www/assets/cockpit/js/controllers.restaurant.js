@@ -311,8 +311,34 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 } );
 
-NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService) {
+NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService, CommunityService) {
 	$rootScope.title = 'Restaurants';
+
+	$scope.show_more_options = false;
+
+	$scope.moreOptions = function(){
+
+		$scope.show_more_options = !$scope.show_more_options;
+
+		if( $scope.show_more_options ){
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
+		}
+
+		if( $scope.show_more_options ){
+			if( !$scope.payments ){
+				$scope.payments = [];
+				$scope.payments.push( { 'label': 'Check', 'value': 'check' } );
+				$scope.payments.push( { 'label': 'Deposit', 'value': 'deposit' } );
+				$scope.payments.push( { 'label': 'No payment', 'value': 'no payment' } );
+				$scope.payments.push( { 'label': 'Empty', 'value': 'empty' } );
+			}
+		}
+
+	}
 
 	angular.extend($scope, ViewListService);
 
@@ -321,12 +347,18 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 		watch: {
 			search: '',
 			community: '',
+			payment_method: '',
 			fullcount: false
 		},
 		update: function() {
-			RestaurantService.list($scope.query, function(d) {
+			RestaurantService.list( $scope.query, function(d) {
 				$scope.restaurants = d.results;
 				$scope.complete(d);
+
+					if( ( $scope.query.community || $scope.query.payment_method ) && !$scope.show_more_options ){
+						$scope.moreOptions();
+					}
+
 			});
 		}
 	});
