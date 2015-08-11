@@ -170,16 +170,19 @@
 					<td>{{restaurant.name}}</td>
 					<td>$ {{restaurant.total_due | formatPrice}}</td>
 					<td>
-						<a class="no-underline" href="http://cockpit.crunchbutton.com/restaurants/{{restaurant.id_restaurant}}/pay" target="_blank">
-							<span ng-if="!restaurant.has_payment_type" class="sp-label sp-label-danger">
-								Restaurant With No Payment Method
-							</span>
-							<span ng-if="!restaurant.has_payment_type && restaurant.summary_error">
-								&nbsp;
-							</span>
-							<span ng-if="restaurant.summary_error" class="sp-label sp-label-danger">
-								{{restaurant.summary_error}}
-							</span>
+						<a class="no-underline" href="/restaurant/payment-info/{{restaurant.permalink}}">
+
+								<span class="tag tag-orange" ng-if="restaurant.payment_method && restaurant.payment_method == 'check'">Check</span>
+								<span class="tag tag-purple" ng-if="restaurant.has_payment_type && restaurant.payment_method && restaurant.payment_method == 'deposit'">Deposit</span>
+								<span class="tag tag-blue" ng-if="restaurant.has_payment_type && restaurant.payment_method && restaurant.payment_method == 'no payment'">Does Not Need Payment</span>
+								<span class="tag tag-black" ng-if="( !restaurant.has_payment_type || !restaurant.payment_method || restaurant.payment_method == '' ) && restaurant.payment_method != 'check'">Restaurant With No Payment Method</span>
+
+								<span ng-if="!restaurant.has_payment_type && restaurant.summary_error">
+									&nbsp;
+								</span>
+								<span ng-if="restaurant.summary_error" class="sp-label sp-label-danger">
+									{{restaurant.summary_error}}
+								</span>
 						</a>
 					</td>
 				</tr>
