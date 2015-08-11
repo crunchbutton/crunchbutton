@@ -70,6 +70,16 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 			if( $permanently ){
 				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );
 			}
+
+			// if the shift has started automaticaly checkin the driver
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->modify( '+ 15 minutes' );
+			$shift = $assignment->shift();
+			$startAt = $shift->dateStart( c::config()->timezone );
+			if( $now > $startAt ){
+				Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment, true );
+			}
+
 		} else {
 			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
 			if( $permanently ){
