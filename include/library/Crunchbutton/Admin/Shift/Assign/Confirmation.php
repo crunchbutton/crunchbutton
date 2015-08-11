@@ -25,8 +25,8 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 	public function checkIfAdminHasShiftToConfirm( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$today = $now->format( 'Y-m-d 23:59:59' );
-		$confirmation = Crunchbutton_Admin_Shift_Assign_Confirmation::q( 'SELECT * FROM admin_shift_assign_confirmation asac INNER JOIN admin_shift_assign asa ON asa.id_admin_shift_assign = asac.id_admin_shift_assign WHERE asac.datetime <= ? ORDER BY asac.id_admin_shift_assign_confirmation AND asa.id_admin = ? DESC LIMIT 1', [ $today, $id_admin ] )->get( 0 );
+		$today = $now->format( 'Y-m-d' );
+		$confirmation = Crunchbutton_Admin_Shift_Assign_Confirmation::q( 'SELECT * FROM admin_shift_assign_confirmation asac INNER JOIN admin_shift_assign asa ON asa.id_admin_shift_assign = asac.id_admin_shift_assign WHERE asac.datetime > ? AND asa.id_admin = ? ORDER BY asac.id_admin_shift_assign_confirmation DESC LIMIT 1', [ $today, $id_admin ] )->get( 0 );
 		if( $confirmation->id_admin_shift_assign_confirmation ){
 			$assignment = Crunchbutton_Admin_Shift_Assign::o( $confirmation->id_admin_shift_assign );
 			if( !$assignment->isConfirmed() ){
@@ -35,6 +35,21 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		}
 		return false;
 	}
+
+	public function checkIfPhoneHasShiftToConfirm( $phone ){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$today = $now->format( 'Y-m-d' );
+		$confirmation = Crunchbutton_Admin_Shift_Assign_Confirmation::q( 'SELECT * FROM admin_shift_assign_confirmation asac INNER JOIN admin_shift_assign asa ON asa.id_admin_shift_assign = asac.id_admin_shift_assign INNER JOIN admin a ON a.id_admin = asa.id_admin INNER JOIN phone p ON p.id_phone = a.id_phone AND p.phone = ? WHERE asac.datetime > ? ORDER BY asac.id_admin_shift_assign_confirmation DESC LIMIT 1', [ $phone, $today ] )->get( 0 );
+		if( $confirmation->id_admin_shift_assign_confirmation ){
+			$assignment = Crunchbutton_Admin_Shift_Assign::o( $confirmation->id_admin_shift_assign );
+			if( !$assignment->isConfirmed() ){
+				return $confirmation;
+			}
+		}
+		return false;
+	}
+
+
 
 	public function confirmShiftBySMS( $id_admin_shift_assign ){
 		$assignment = Crunchbutton_Admin_Shift_Assign::o( $id_admin_shift_assign );
