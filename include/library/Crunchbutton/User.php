@@ -316,18 +316,33 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public function inviteCode(){
-		if( !$this->invite_code || $this->invite_code == '' ){
-			$this->invite_code = Crunchbutton_User::inviteCodeGenerator();
+		if( !$this->invite_code_updated ){
+			$new_code = $this->inviteCodeNameBased();
+			$this->invite_code_updated = 1;
+			$this->invite_code = $new_code;
 			$this->save();
 		}
 		return $this->invite_code;
 	}
 
+	public function inviteCodeNameBased(){
+		$name = preg_replace('/[^A-Za-z0-9 ]/', '', $this->name );
+		$options = explode( ' ', $name );
+		$phone = Phone::clean( $this->phone );
+		$name = '';
+		foreach( $options as $option ){
+			$name .= $option;
+			$code = strtoupper( $name . $phone );
+			if( !Crunchbutton_Referral::isCodeAlreadyInUse( $code ) ){
+				return $code;
+			}
+		}
+		return self::inviteCodeGenerator();
+	}
+
 	public static function inviteCodeGenerator(){
 		$random_id_length = 9;
-
 		$rnd_id = self::_inviteCodePartGenerator('a-z', 3).self::_inviteCodePartGenerator('0-9', 3).self::_inviteCodePartGenerator('a-z', 3);
-
 		// make sure the code do not exist
 		$user = Crunchbutton_User::byInviteCode( $rnd_id );
 		$admin = Crunchbutton_Admin::byInviteCode( $rnd_id );
