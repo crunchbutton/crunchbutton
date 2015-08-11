@@ -12,7 +12,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 	public function __construct($params) {
 
-		$parsed = $this->parseBody($params['body'], $params[ 'admin' ]);
+		$parsed = $this->parseBody($params['body'], $params[ 'from' ]);
 
 		$action = $parsed['verb'];
 
@@ -114,7 +114,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 		return $response;
 	}
 
-	public function parseBody($body, $admin = false ) {
+	public function parseBody($body, $phone = false ) {
 
 		$body = strtolower( $body );
 
@@ -128,8 +128,8 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 		];
 
 		// check if the admin has a shift to confirm - #5321
-		if( $admin ){
-			$shift = Crunchbutton_Admin_Shift_Assign_Confirmation::checkIfAdminHasShiftToConfirm( $admin->id_admin );
+		if( $phone ){
+			$shift = Crunchbutton_Admin_Shift_Assign_Confirmation::checkIfPhoneHasShiftToConfirm( $phone );
 			if( $shift ){
 				foreach ($verbs[self::ACTION_SHIFT_CONFIRMATION] as $k => $verb) {
 					if ( $body == $verb ) {
