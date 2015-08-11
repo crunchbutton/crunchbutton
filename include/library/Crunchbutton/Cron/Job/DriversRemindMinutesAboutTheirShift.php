@@ -6,7 +6,7 @@ class Crunchbutton_Cron_Job_DriversRemindMinutesAboutTheirShift extends Crunchbu
 
 		Crunchbutton_Community_Shift::warningDriversBeforeTheirShift();
 
-		// Crunchbutton_Admin_Shift_Assign_Confirmation::warningDriversBeforeTheirShift();
+		Crunchbutton_Admin_Shift_Assign_Confirmation::warningDriversBeforeTheirShift();
 
 		// it always must call finished method at the end
 		$this->finished();
