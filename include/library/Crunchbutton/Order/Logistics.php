@@ -249,7 +249,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     public function complexLogistics($distanceType = Crunchbutton_Optimizer_Input::DISTANCE_LATLON)
     {
         $newOrder = $this->order();
-
+        $debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $debugDtString = $debug_dt->format('Y-m-d H:i:s');
+        Log::debug(['id_order'=> $newOrder->id_order, 'time' => $debugDtString, 'stage' => 'start',
+        'type' => 'complexLogistics']);
         $curCommunity = $newOrder->community();
         $communityCenter = $curCommunity->communityCenter();
         $doCreateFakeOrders = $curCommunity->doCreateFakeOrders();
@@ -521,6 +524,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         // IMPORTANT: The code in Crunchbutton_Order::deliveryOrdersForAdminOnly assumes that the priority
         //  expiration for a particular order is the same for drivers.
         $this->numDriversWithPriority = $numSelectedDrivers;
+        Log::debug(['id_order'=> $newOrder->id_order, 'time' => $nowDate, 'stage' => 'before_op_create',
+            'type' => 'complexLogistics']);
         foreach ($this->drivers() as $driver) {
             if ($skipFlag) {
                 $driver->__seconds = 0;
@@ -563,6 +568,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             ]);
             $priority->save();
         }
+        $debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $debugDtString = $debug_dt->format('Y-m-d H:i:s');
+        Log::debug(['id_order'=> $newOrder->id_order, 'time' => $debugDtString, 'stage' => 'after_op_create',
+            'type' => 'complexLogistics']);
     }
 
     public function simpleLogistics()
