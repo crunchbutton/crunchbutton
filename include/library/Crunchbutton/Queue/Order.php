@@ -15,14 +15,24 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		$this->order()->notifyRestaurants();
 
 		if ($this->order()->restaurant()->delivery_service){
+			$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
+			$debugDtString = $debug_dt->format('Y-m-d H:i:s');
 
 			// get active community drivers
 			$drivers = $this->order()->getDriversToNotify();
 
+			$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
+			$debugDtString2 = $debug_dt->format('Y-m-d H:i:s');
+
             $dl = $this->order()->community()->delivery_logistics;
 			// perform delivery logistics only if there are multiple drivers and it is enabled
 			if ($dl && $drivers->count() > 1) {
-
+				if ($dl == Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX) {
+					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString, 'stage' => 'before_get_drivers',
+						'type' => 'complexLogistics']);
+					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString2, 'stage' => 'after_get_drivers',
+						'type' => 'complexLogistics']);
+				}
 				$l = new Order_Logistics($dl, $this->order(), $drivers);
                 // TODO: Add logic here to check for current minimum ETA
                 // TODO: If ETA is too large, notify customer service
