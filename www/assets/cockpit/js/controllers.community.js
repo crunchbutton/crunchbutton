@@ -139,7 +139,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 				load();
 			});
 		} else {
-			$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0 };
+			$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0, 'driver_checkin': 1 };
 			load();
 		}
 	}
