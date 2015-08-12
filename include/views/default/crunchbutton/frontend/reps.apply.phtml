@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 <div class="content-padding drivers-apply">
 	<div class="apply-item-title text-your-order" name="userForm">
-		Marketing Rep Application
+		Brand Representative Application
 	</div>
 	<p>
 		<br>
@@ -23,7 +23,7 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> Last Name:</h4>
-			
+
 			<div class="textbox">
 				<div ng-if="errors.lastName">Please enter your last name:</div>
 				<input type="text" ng-model="apply.lastName" name="lastName" class="form-control form-control-large" >
@@ -32,7 +32,7 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> Email:</h4>
-			
+
 			<div class="textbox">
 				<div ng-if="errors.email">Please enter your email:</div>
 				<input type="text" class="form-control form-control-large" ng-model="apply.email" name="email" >
@@ -41,11 +41,11 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> What school are you near?</h4>
-			
+
 			<div class="textbox">
 				<div ng-if="errors.university || errors.otherUniversity">Please enter your nearest school:</div>
 				<select class="form-control form-control-large form-control form-control-select" ng-model="apply.university" name="university" >
-					<option></option> 
+					<option></option>
 					<option ng-repeat="community in communities | orderBy: 'name'" value="{{community.name}}">{{community.name}}</option>
 					<option ng-model="apply.university" value="Other">Other</option>
 					<input ng-click="apply.source='otherU'" ng-if="apply.university=='Other'" class="form-control form-control-small" type="text" ng-model="apply.otherUniversity" name="otherUniversity">
@@ -62,7 +62,7 @@
 				<input type="tel" class="form-control form-control-large" ng-model="apply.number" name="number" >
 			</div>
 		</div>
-		
+
 		<div class="form-group"></div>
 
 
@@ -96,8 +96,8 @@
 			</div>
 		</div>
 
-		
+
 		<button class="button lightorange button-bottom " ng-click="post()">Submit</button>
-		
+
 	</form>
 </div>

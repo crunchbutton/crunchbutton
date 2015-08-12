@@ -451,7 +451,7 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 				$scope.isSaving = false;
 
 			} else {
-				App.alert( 'Marketing rep not saved: ' + json.error , 'error' );
+				App.alert( 'Brand Representative not saved: ' + json.error , 'error' );
 				$scope.isSaving = false;
 			}
 		} );

@@ -155,11 +155,11 @@
 		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver">
 			<div class="support-box-wrap-header">
 				<h1 ng-if="staff.isDriver">Driver Info</h1>
-				<h1 ng-if="staff.isMarketingRep">Marketing Rep Info</h1>
+				<h1 ng-if="staff.isMarketingRep">Brand Representative</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
 						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-automobile"></i>&nbsp;&nbsp;Edit Driver</button></a>
-						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-paper-plane-o"></i></i>&nbsp;&nbsp;Edit Mkt Rep</button></a>
+						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-paper-plane-o"></i></i>&nbsp;&nbsp;Edit Brand Representative</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -185,7 +185,7 @@
 						</div>
 					</div>
 					<div class="field-row">
-						<div class="field-key">Is Campus Manager</div>
+						<div class="field-key">Is Community Manager</div>
 						<div class="field-value">
 							<span class="tag tag-green" ng-if="staff.isCampusManager">Yes</span>
 							<span class="tag tag-red" ng-if="!staff.isCampusManager">No</span>
