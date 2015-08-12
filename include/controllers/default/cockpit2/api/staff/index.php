@@ -308,6 +308,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
+			INNER JOIN phone p ON admin.id_phone = p.id_phone
 		';
 
 		if( $group ){
@@ -395,6 +396,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					'admin.phone' => 'like',
 					'admin.login' => 'like',
 					'admin.email' => 'like',
+					'p.phone' => 'like',
 					'admin.id_admin' => 'inteq',
 					'admin.invite_code' => 'eq',
 					'apt.stripe_id' => 'eq',
