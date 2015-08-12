@@ -146,8 +146,8 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			callback({status:false});
 		};
 
-		if (o.status.status != 'new' || o.status.status != 'rejected') {
-			$rootScope.flash.setMessage('Order has already been accepted.');
+		if (o.status.status == 'pickedup' || o.status.status == 'accepted' || o.status.status == 'delivered' || o.status.status == 'transfered'  ) {
+			App.alert('Order has already been accepted.');
 			fail();
 			return;
 		}
@@ -157,15 +157,15 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		var success = function() {
 			order.resend_notification_drivers( { id_order: o.id_order }, function( result ) {
 				if (!result || result.status != 'success') {
-					$rootScope.flash.setMessage('Error!');
+					App.alert('Error!');
 				} else {
-					$rootScope.flash.setMessage('Notifications sent');
+					App.alert('Notifications sent');
 				}
 				callback(result);
 			});
 		};
 
-		App.confirm(question, 'Renotify #' + o.id_order, success, fail);
+		App.confirm(question, 'Renotify #' + o.id_order, success, fail, null, true);
 	}
 
 	service.resend_notification = function( o, callback ){
@@ -174,7 +174,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		};
 
 		if (o.confirmed) {
-			$rootScope.flash.setMessage('Order has already been confirmed.');
+			App.alert('Order has already been confirmed.');
 			fail();
 			return;
 		}
@@ -183,14 +183,14 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		var success = function() {
 			order.resend_notification( { id_order: o.id_order }, function( result ) {
 				if (!result || result.status != 'success') {
-					$rootScope.flash.setMessage('Error!');
+					App.alert('Error!');
 				} else {
-					$rootScope.flash.setMessage('Notifications sent');
+					App.alert('Notifications sent');
 				}
 				callback(result);
 			});
 		};
-		App.confirm(question, 'Renotify #' + o.id_order, success, fail);
+		App.confirm(question, 'Renotify #' + o.id_order, success, fail, null, true);
 	}
 
 	service.saveeta = function(params, callback) {
