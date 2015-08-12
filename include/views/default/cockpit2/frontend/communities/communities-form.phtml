@@ -6,118 +6,150 @@
 
 	<div class="divider"></div>
 
-	<h2 class="title">
-		<span ng-if="!community.id_community">Add community</span>
-		<span ng-if="community.id_community">Edit community</span>
-	</h2>
 
 	<form name="form" novalidate>
 
-		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+	<div class="support-boxes">
 
-			<li class="li-input" ng-class="{'error':form.communityName.$invalid}">
-				<div class="label">Name:</div>
-				<div class="input"><input type="text" name="communityName" ng-model="community.name" required placeholder="Name" ng-minlength="2" ng-maxlength="255" ></div>
-				<div class="box-error">
-					<small ng-show="form.communityName.$error.required">Required.</small>
-					<small ng-show="form.communityName.$error.minlength">Name is too short. Name is required to be at least 2 characters.</small>
-					<small ng-show="form.communityName.$error.maxlength">Name cannot be longer than 255 characters.</small>
-				</div>
-			</li>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Basic Info</h1>
+				<div class="divider"></div>
+			</div>
 
-			<li class="li-input" ng-class="{'error':form.communityPermalink.$invalid}">
-				<div class="label">Permalink (must be lowercase):</div>
-				<div class="input"><input type="text" name="communityPermalink" ng-model="community.permalink" required placeholder="Permalink" ng-minlength="2" ng-maxlength="255" ></div>
-				<div class="box-error">
-					<small ng-show="form.communityPermalink.$error.required">Required.</small>
-					<small ng-show="form.communityPermalink.$error.minlength">Permalink is too short. Permalink is required to be at least 2 characters.</small>
-					<small ng-show="form.communityPermalink.$error.maxlength">Permalink cannot be longer than 40 characters.</small>
-				</div>
-			</li>
+			<div class="no-box-content-color">
 
-			<li class="li-input" ng-class="{'error':form.communityActive.$invalid}">
-				<div class="label">Active:</div>
-				<div class="input">
-					<select name="communityActive" required ng-model="community.active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-			</li>
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-			<li class="li-input" ng-class="{'error':form.communityAutoClose.$invalid}">
-				<div class="label">Enable Auto Close:</div>
-				<div class="input">
-					<select name="communityAutoClose" required ng-model="community.auto_close" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-			</li>
+					<li class="li-input" ng-class="{'error':form.communityName.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="communityName" ng-model="community.name" required placeholder="Name" ng-minlength="2" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+							<small ng-show="form.communityName.$error.minlength">Name is too short. Name is required to be at least 2 characters.</small>
+							<small ng-show="form.communityName.$error.maxlength">Name cannot be longer than 255 characters.</small>
+						</div>
+					</li>
 
-			<li class="li-input" ng-class="{'error':form.communityImage.$invalid}">
-				<div class="label">Custom image:</div>
-				<div class="input">
-					<select name="communityImage" required ng-model="community.image" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-				</div>
-			</li>
+					<li class="li-input" ng-class="{'error':form.communityPermalink.$invalid}">
+						<div class="label">Permalink (must be lowercase):</div>
+						<div class="input"><input type="text" name="communityPermalink" ng-model="community.permalink" required placeholder="Permalink" ng-minlength="2" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityPermalink.$error.required">Required.</small>
+							<small ng-show="form.communityPermalink.$error.minlength">Permalink is too short. Permalink is required to be at least 2 characters.</small>
+							<small ng-show="form.communityPermalink.$error.maxlength">Permalink cannot be longer than 40 characters.</small>
+						</div>
+					</li>
 
-		</ul>
+					<li class="li-input" ng-class="{'error':form.communityActive.$invalid}">
+						<div class="label">Active:</div>
+						<div class="input">
+							<select name="communityActive" required ng-model="community.active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
-		<br/><br/><br/>
+					<li class="li-input" ng-class="{'error':form.driverCheckin.$invalid}">
+						<div class="label">Ask drivers to check in:</div>
+						<div class="input">
+							<select name="communityActive" required ng-model="community.driver_checkin" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
-		<h2 class="title">Delivery info</h2>
+					<li class="li-input" ng-class="{'error':form.communityAutoClose.$invalid}">
+						<div class="label">Enable Auto Close:</div>
+						<div class="input">
+							<select name="communityAutoClose" required ng-model="community.auto_close" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
-		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<li class="li-input" ng-class="{'error':form.communityImage.$invalid}">
+						<div class="label">Custom image:</div>
+						<div class="input">
+							<select name="communityImage" required ng-model="community.image" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
-			<li class="li-input" ng-class="{'error':form.communityDriverRestaurant.$invalid}">
-				<div class="label">Driver restaurant:</div>
-				<div class="input">
-					<select name="communityDriverRestaurant" ng-model="community.id_driver_restaurant" ng-options="opt.id_restaurant as opt.name for opt in restaurants" ></select>
-				</div>
-			</li>
+				</ul>
 
-			<li class="li-input" ng-show="community.driver_group">
-				<div class="label">Driver group name:</div>
-				<div class="input">{{community.driver_group}}</div>
-			</li>
+			</div>
 
-			<li class="li-input" ng-class="{'error':form.communityTimezone.$invalid}">
-				<div class="label">Timezone:</div>
-				<div class="input">
-				<select name="communityTimezone" required ng-model="community.timezone" ng-options="opt.value as opt.label for opt in timezones" ></select>
+		</div>
 
-				</div>
-			</li>
 
-			<li class="li-input">
-				<div class="label">Address:</div>
-				<div class="input">
-					<textarea ng-model="community.address"></textarea>
-				</div>
-			</li>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Delivery info</h1>
+				<div class="divider"></div>
+			</div>
 
-			<li class="li-input" ng-class="{'error':form.communityLocLat.$invalid}">
-				<div class="label">Latitude (automagically calculated):</div>
-				<div class="input"><input type="text" name="communityLocLat" ng-model="community.loc_lat" required placeholder="Latitude"></div>
-				<div class="box-error">
-					<small ng-show="form.communityLocLat.$error.required">Required.</small>
-				</div>
-			</li>
+			<div class="no-box-content-color">
 
-			<li class="li-input" ng-class="{'error':form.communityLocLong.$invalid}">
-				<div class="label">Longitude (automagically calculated):</div>
-				<div class="input"><input type="text" name="communityLocLong" ng-model="community.loc_lon" required placeholder="Longitude"></div>
-				<div class="box-error">
-					<small ng-show="form.communityLocLong.$error.required">Required.</small>
-				</div>
-			</li>
+			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-			<li class="li-input" ng-class="{'error':form.communityRange.$invalid}">
-				<div class="label">Range:</div>
-				<div class="input"><input type="text" name="communityRange" ng-model="community.range" required placeholder="Range"></div>
-				<div class="box-error">
-					<small ng-show="form.communityRange.$error.required">Required.</small>
-				</div>
-			</li>
+				<li class="li-input" ng-class="{'error':form.communityDriverRestaurant.$invalid}">
+					<div class="label">Driver restaurant:</div>
+					<div class="input">
+						<select name="communityDriverRestaurant" ng-model="community.id_driver_restaurant" ng-options="opt.id_restaurant as opt.name for opt in restaurants" ></select>
+					</div>
+				</li>
 
-		</ul>
+				<li class="li-input" ng-show="community.driver_group">
+					<div class="label">Driver group name:</div>
+					<div class="input">{{community.driver_group}}</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.communityTimezone.$invalid}">
+					<div class="label">Timezone:</div>
+					<div class="input">
+					<select name="communityTimezone" required ng-model="community.timezone" ng-options="opt.value as opt.label for opt in timezones" ></select>
+
+					</div>
+				</li>
+
+				<li class="li-input">
+					<div class="label">Address:</div>
+					<div class="input">
+						<textarea ng-model="community.address"></textarea>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.communityLocLat.$invalid}">
+					<div class="label">Latitude (automagically calculated):</div>
+					<div class="input"><input type="text" name="communityLocLat" ng-model="community.loc_lat" required placeholder="Latitude"></div>
+					<div class="box-error">
+						<small ng-show="form.communityLocLat.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.communityLocLong.$invalid}">
+					<div class="label">Longitude (automagically calculated):</div>
+					<div class="input"><input type="text" name="communityLocLong" ng-model="community.loc_lon" required placeholder="Longitude"></div>
+					<div class="box-error">
+						<small ng-show="form.communityLocLong.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.communityRange.$invalid}">
+					<div class="label">Range:</div>
+					<div class="input"><input type="text" name="communityRange" ng-model="community.range" required placeholder="Range"></div>
+					<div class="box-error">
+						<small ng-show="form.communityRange.$error.required">Required.</small>
+					</div>
+				</li>
+
+			</ul>
+
+			</div>
+		</div>
 
 	</form>
+
+
+
+		<div class="support-box-wrap box-content2">
+
+
+			<div class="no-box-content-color">
 
 	<ul class="ul-inputs">
 		<li class="li-input" ng-show="!isSaving">
@@ -128,13 +160,8 @@
 			<i class="fa fa-circle-o-notch fa-spin"></i>
 		</li>
 	</ul>
-
-	<br><br><br>
-
-
+</div>
+		</div>
 
 </div>
 
-
-<spinner-loading></spinner-loading>
-<hack-expand-content></hack-expand-content>

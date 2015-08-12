@@ -44,6 +44,13 @@
 						</div>
 					</div>
 					<div class="field-row">
+						<div class="field-key">Ask drivers to check in</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="community.driver_checkin">Yes</span>
+							<span class="tag tag-red" ng-if="!community.driver_checkin">No</span>
+						</div>
+					</div>
+					<div class="field-row">
 						<div class="field-key">Type</div>
 						<div class="field-value">
 							<span class="tag tag-orange" ng-if="community.type == '3rd'">3rd</span>
