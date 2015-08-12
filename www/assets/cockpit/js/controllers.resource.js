@@ -55,7 +55,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 			App.alert( 'Please fill all the required fields!' );
 			return;
 		}
-		if( $scope.resource.temp_name == $scope.resource.receipt ){
+		if( $scope.resource.temp_name == $scope.resource.file ){
 			save();
 		} else {
 			$rootScope.$broadcast( 'triggerStartUpload' );
@@ -127,8 +127,7 @@ NGApp.controller( 'CommunityResourceCtrl', function ($scope, $routeParams, $root
 	$scope.$on( 'resourceUpload', function(e, data) {
 		var response = data.response;
 		if( response.success ){
-			$scope.evidence.receipt = response.success.id;
-			console.log($scope.evidence.receipt);
+			$scope.resource.file = response.success;
 			save();
 		} else {
 			App.alert( 'File not saved! ');
