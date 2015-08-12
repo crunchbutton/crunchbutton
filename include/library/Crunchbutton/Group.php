@@ -80,7 +80,7 @@ class Crunchbutton_Group extends Cana_Table {
 		$community = Crunchbutton_Community::o( $id_community );
 		if( $community->id_community ){
 			$name = $community->marketingRepGroup();
-			$description = $community->name . ' mkt rep group';
+			$description = $community->name . ' brand rep group';
 
 			$group = new Crunchbutton_Group();
 			$group->name = $name;

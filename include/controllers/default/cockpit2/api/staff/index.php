@@ -342,8 +342,20 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
 				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = ?
 			';
-			$keys[] = Crunchbutton_Group::TYPE_DRIVER;
+			$keys[] = Crunchbutton_Group::TYPE_MARKETING_REP;
 		}
+
+		if( $type == 'community-manager'  ){
+			$q .= '
+				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
+				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name = ?
+			';
+			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
+		}
+
+
+		//
+
 
 		$q .='
 			WHERE 1=1
@@ -499,6 +511,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$staff[ 'isMarketingRep' ] = $admin->isMarketingRep();
+			$staff[ 'isCampusManager' ] = $admin->isCampusManager();
 			$staff[ 'isSupport' ] = $admin->isSupport();
 			$staff[ 'isDriver' ] = $admin->isDriver();
 
@@ -519,7 +532,15 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				if( $staff[ 'type' ] ){
 					$commas = ', ';
 				}
-				$staff[ 'type' ] .= $commas . 'Marketing Rep';
+				$staff[ 'type' ] .= $commas . 'Brand Representative';
+			}
+
+			if( $staff[ 'isCampusManager' ] ){
+				$commas = '';
+				if( $staff[ 'type' ] ){
+					$commas = ', ';
+				}
+				$staff[ 'type' ] .= $commas . 'Community Manager';
 			}
 
 
