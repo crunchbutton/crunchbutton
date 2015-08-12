@@ -257,7 +257,7 @@ var WIDGET = {
 
 			if(!option.name) UTIL.focus_input(option_dom);
 			$(option_dom).find('.admin-menu-option-default')
-					.prop('checked', parseInt(option['default']));
+					.prop('checked', (option['default']));
 			$(option_dom).find('.delete-option').click(function() {
 				$(option_dom).slideUp(100, function(){$(option_dom).remove();});
 			});
@@ -742,11 +742,12 @@ var WIDGET = {
 				field = fields[i];
 				$(dish_dom).find('.admin-menu-dish-' + field).val(dish[field]);
 			}
+
 			$(dish_dom).find('.admin-menu-dish-expand-view')
-					.prop('checked', parseInt(dish['expand_view']));
+					.prop('checked', (dish['expand_view']));
 
 			$(dish_dom).find('.admin-menu-dish-top-item')
-					.prop('checked', parseInt(dish['top']));
+					.prop('checked', (dish['top']));
 
 			if(!dish.name) UTIL.focus_input(dish_dom);
 
