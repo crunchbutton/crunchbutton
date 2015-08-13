@@ -335,6 +335,18 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					LEFT JOIN admin_config ac ON ac.id_admin = admin.id_admin AND ac.key = ?
 			';
 			$keys[] = Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING;
+		} else {
+			if ($community) {
+
+				$q .= '
+					INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
+					INNER JOIN `group` g ON g.id_group=ag.id_group
+				';
+
+				$q .= '
+					LEFT JOIN community ON community.id_community=g.id_community
+				';
+			}
 		}
 
 		if( $type == 'marketing-rep'  ){

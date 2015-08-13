@@ -183,7 +183,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 
 });
 
-NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
+NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService, CommunityService) {
 
 	angular.extend( $scope, ViewListService );
 
@@ -195,6 +195,7 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 			status: 'active',
 			working: 'all',
 			pexcard: 'all',
+			community: '',
 			fullcount: true
 		},
 		update: function() {
@@ -204,6 +205,22 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService) {
 			});
 		}
 	});
+
+	$scope.show_more_options = false;
+
+	$scope.moreOptions = function(){
+		$scope.show_more_options = !$scope.show_more_options;
+
+		if( $scope.show_more_options) {
+
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
+		}
+	}
+
 });
 
 
