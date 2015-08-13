@@ -1,0 +1,1 @@
+ALTER TABLE `restaurant` ADD `order_ahead_time` INT NOT NULL DEFAULT  '15';
