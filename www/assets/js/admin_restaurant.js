@@ -1383,6 +1383,7 @@ var DOM_MAP = {
 				'input#restaurant-force-close-tagline' : ['force_close_tagline'],
 				'input#restaurant-message' : ['message'],
 				'input#restaurant-phone' : ['phone'],
+				'input#restaurant-order_ahead_time' : ['order_ahead_time'],
 				'input#restaurant-email' : ['email'],
 				'textarea#restaurant-address' : ['address'],
 				'textarea#restaurant-notes' : ['notes'],
