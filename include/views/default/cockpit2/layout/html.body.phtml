@@ -142,6 +142,15 @@
 					</table>
 				</a>
 
+				<a href="/invite" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-invite')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
+							<td class="side-menu-label">Earn More Money</a></td>
+				</tr>
+				</table>
+				</a>
+
 				<a href="/drivers/docs" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -198,16 +207,6 @@
 						</tr>
 					</table>
 				</a>
-
-				<a href="/invite" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-invite')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
-							<td class="side-menu-label">Earn More Money</a></td>
-				</tr>
-				</table>
-				</a>
-
 
 				<a href="/resources/" class="menu-link" ng-if="account.user.permissions.GLOBAL && account.isDriver && menu.toggle=='driver' && account.user.has_resource" ng-class="{'nav-active': (navigation.page == 'community-resources')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
