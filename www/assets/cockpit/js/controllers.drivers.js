@@ -639,6 +639,7 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 	$scope.limits = limits;
 
 	var statuses = [];
+	statuses.push( { value: 'all', label: 'All' } );
 	statuses.push( { value: 'active', label: 'Active' } );
 	statuses.push( { value: 'inactive', label: 'Inactive' } );
 	$scope.statuses = statuses;
