@@ -709,24 +709,29 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$id_admin = $admin->id_admin;
 
 			if( $this->close_all_restaurants_id_admin != $id_admin && $this->close_3rd_party_delivery_restaurants_id_admin != $id_admin ){
-				$nextShift =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
-				if( $nextShift->id_community_shift ){
-					$createTicket = true;
-					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-					$dont_warn_till = $this->dontWarnTill();
-					if( $dont_warn_till && $dont_warn_till->format( 'YmdHis' ) >= $now->format( 'YmdHis' ) ){
-						if( $createTicket ){
-							$createTicket = false;
+
+				$nextShifts =Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+
+				foreach( $nextShifts as $nextShift ){
+					if( $nextShift->id_community_shift ){
+						$createTicket = true;
+						$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+						$dont_warn_till = $this->dontWarnTill();
+						if( $dont_warn_till && $dont_warn_till->format( 'YmdHis' ) >= $now->format( 'YmdHis' ) ){
+							if( $createTicket ){
+								$createTicket = false;
+							}
 						}
-					}
-					$date_start = $nextShift->dateStart( $this->timezone );
-					$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
-					$date_end = $nextShift->dateEnd( $this->timezone );
-					$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
-					if( $createTicket && $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
-						$ticket = 'Hey! You should probably reopen ' . $this->name . ', which is currently closed, because there\'s a driver scheduled for right now!! But please double check to make sure this wasn\'t done on purpose. If it was done on purpose because the community is overwhelmed, then hustle to get us an additional driver! Do whatever it takes!';
-						Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+						$date_start = $nextShift->dateStart( $this->timezone );
+						$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
+						$date_end = $nextShift->dateEnd( $this->timezone );
+						$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
+						if( $createTicket && $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
+							$ticket = 'Hey! You should probably reopen ' . $this->name . ', which is currently closed, because there\'s a driver scheduled for right now!! But please double check to make sure this wasn\'t done on purpose. If it was done on purpose because the community is overwhelmed, then hustle to get us an additional driver! Do whatever it takes!';
+							echo $ticket;
+							Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
+							Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+						}
 					}
 				}
 			}
@@ -744,38 +749,46 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 			if( $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin || $this->isAutoClosed() ){
 
-				$nextShift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
-				if( $nextShift ){
-					$nextShift = $nextShift->get( 0 );
+				$reopen = false;
+
+				$nextShifts = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+
+				if( $nextShifts ){
+
+					 foreach ( $nextShifts as $nextShift ) {
+
+							if( $nextShift->id_community_shift && ( $this->driver_checkin && $nextShift->isConfirmed() || !$this->driver_checkin ) ){
+
+									$date_start = $nextShift->dateStart( $this->timezone );
+									$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
+									$date_end = $nextShift->dateEnd( $this->timezone );
+									$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
+
+									$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+									if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
+
+										$ticket = 'The community ' . $this->name . ' was auto reopened.';
+
+										// Open the community
+										$this->is_auto_closed = 0;
+										$this->save();
+
+										Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
+										Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+									}
+								}
+							}
+					 }
 				}
 
-				if( $nextShift->id_community_shift && ( $this->driver_checkin && $nextShift->isConfirmed() || !$this->driver_checkin ) ){
 
-					$date_start = $nextShift->dateStart( $this->timezone );
-					$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
-					$date_end = $nextShift->dateEnd( $this->timezone );
-					$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
-
-					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-
-					if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
-
-						$ticket = 'The community ' . $this->name . ' was auto reopened.';
-
-						// Open the community
-						$this->is_auto_closed = 0;
-						$this->save();
-
-						Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
-					}
-				}
-			}
 		}
 	}
 
 	public function activeDrivers( $dt = null ){
 		$totalDrivers = 0;
+
 		$drivers = $this->getDriversOfCommunity();
 		$hasDriverWorking = false;
 		// check if the drivers should checkin the shift, if it does, return just the driver that had checked in
@@ -857,6 +870,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message = 'Temporarily closed!';
 				}
 
+				if( $this->driver_checkin ){
+					$message = 'Temporarily closed!';
+				}
+
 				echo $message;
 				echo "\n";
 
@@ -867,10 +884,15 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 				$ticket = 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";
 				$ticket .= 'The community message was set to: "' . $message . '"' . "\n";
-				if( $nextShift->id_community ){
-					$ticket .= 'that is when the next shift will start.';
+
+				if( $this->driver_checkin ){
+					$ticket .= 'Because this community needs the driver to check in.';
 				} else {
-					$ticket .= 'Because it has no next shift with drivers.';
+					if( $nextShift->id_community ){
+						$ticket .= 'that is when the next shift will start.';
+					} else {
+						$ticket .= 'Because it has no next shift with drivers.';
+					}
 				}
 
 				echo $ticket;
