@@ -176,7 +176,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 									AND cs.date_start <= "' . $now_formated . '"
 									AND cs.date_end >= "' . $now_formated . '"
 									AND cs.active = true
-								ORDER BY cs.date_start ASC LIMIT 1';
+								ORDER BY cs.date_start';
 			$shift = Crunchbutton_Community_Shift::q( $query );
 			if( $shift->id_community ){
 				return $shift;
@@ -245,6 +245,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public static function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null, $checkIfTheyCheckedIn = false) {
+
 		$admin = Admin::o($id_admin);
 
 		// start using community's timezone - #4965
