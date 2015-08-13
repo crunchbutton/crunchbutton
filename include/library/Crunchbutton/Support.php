@@ -51,7 +51,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		if( $forceAll ){
 			if( $group->id_group ){
-				$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = ?", [$group->id_group]);
+				$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = ? AND a.active = 1", [$group->id_group]);
 				if ( $users->count() > 0 ) {
 					foreach ( $users as $user ) {
 						if( $user->name && ( $user->phone || $user->txt ) ){
