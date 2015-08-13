@@ -132,13 +132,12 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$send_to = array();
 
 		// Notify custom service
-		//
 		$group_name = $this->getSetting( $rule[ 'settings' ][ 'warning-group' ] );
 		if( $group_name ){
 			$admins = $this->getUsersByRuleGroup( $group_name );
 			if( $admins && $admins->count() > 0 ){
 				foreach ( $admins as $admin ) {
-					if( $admin->txt ){
+					if( $admin->isWorking() && $admin->txt ){
 						$send_to[ $admin->txt ] = $message;
 					}
 				}
@@ -151,10 +150,17 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 			$admins = $order->restaurant()->adminWithSupportAccess();
 			if( $admins && $admins->count() > 0 ){
 				foreach ( $admins as $admin ) {
-					if( $admin->txt ){
+					if( $admin->isWorking() && $admin->txt ){
 						$send_to[ $phone ] = $message;
 					}
 				}
+			}
+		}
+
+		if( !count( $send_to ) ){
+			$customerService = Crunchbutton_Support::getUsers( true );
+			foreach( $customerService as $name => $phone ){
+				$send_to[ $phone ] = $message;
 			}
 		}
 
