@@ -18,7 +18,7 @@
 			</td>
 			<td>
 				<?php /* Date */ ?>
-				{{order.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}
+				{{order.date | localtime | timestamp | date:'MM/dd @ h:mm a'}}
 				<?php /* Date */ ?>
 			</td>
 			<td ng-if="!restaurant">
