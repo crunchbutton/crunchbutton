@@ -329,11 +329,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 		$support->save();
-		$show_bubble = false;
 		if( $params[ 'bubble' ] ){
-			$show_bubble = true;
+			$support->addSystemMessage( $params[ 'body' ], true );
+		} else {
+			$support->addSystemMessage( $params[ 'body' ] );
 		}
-		$support->addSystemMessage( $params[ 'body' ], $show_bubble );
+
 		return Crunchbutton_Support::o( $support->id_support );
 	}
 
@@ -512,9 +513,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	public function addSystemMessage( $body, $bubble = false ) {
 		$messageParams[ 'id_admin' ] = null;
 		if( $bubble ){
-			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_NOTE;
-		} else {
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_WARNING;
+		} else {
+			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_NOTE;
 		}
 		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
 		$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL;
