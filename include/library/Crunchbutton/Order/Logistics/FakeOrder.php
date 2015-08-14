@@ -13,8 +13,9 @@ class Crunchbutton_Order_Logistics_FakeOrder {
     private $midWindow;
     private $lateWindow;
     private $restaurantParkingTime;
+    private $restaurantServiceTime;
 
-    public function __construct($dummyStart, $community, $orderTime, $earlyWindow, $midWindow, $lateWindow, $restaurantParkingTime) {
+    public function __construct($dummyStart, $community, $orderTime, $earlyWindow, $midWindow, $lateWindow, $restaurantParkingTime, $restaurantServiceTime) {
         $this->fakeRestaurants = null;
         $this->fakeCustomers = null;
         $this->fakeOrderPairs = null;
@@ -25,6 +26,7 @@ class Crunchbutton_Order_Logistics_FakeOrder {
         $this->midWindow = $midWindow;
         $this->lateWindow = $lateWindow;
         $this->restaurantParkingTime = $restaurantParkingTime;
+        $this->restaurantServiceTime = $restaurantServiceTime;
     }
 
     private function getNextDummyClusterNumber() {
@@ -74,7 +76,7 @@ class Crunchbutton_Order_Logistics_FakeOrder {
             $fakeRestaurant = $this->getFakeRestaurant();
             if (!is_null($fakeCustomer) && !is_null($fakeRestaurant) && !is_null($this->orderTime) &&
                 !is_null($this->earlyWindow) && !is_null($this->midWindow) && !is_null($this->lateWindow) &&
-                !is_null($this->restaurantParkingTime)) {
+                !is_null($this->restaurantParkingTime) && !is_null($this->restaurantServiceTime)) {
 
                 $customer_geo = new Crunchbutton_Order_Location($fakeCustomer->lat, $fakeCustomer->lon);
                 $r_geo = new Crunchbutton_Order_Location($fakeRestaurant->loc_lat, $fakeRestaurant->loc_long);
@@ -89,6 +91,7 @@ class Crunchbutton_Order_Logistics_FakeOrder {
                     'midWindow' => Crunchbutton_Order_Logistics::LC_HORIZON,
                     'lateWindow' => $this->lateWindow,
                     'restaurantParkingTime' => $this->restaurantParkingTime,
+                    'restaurantServiceTime' => $this->restaurantServiceTime,
                     'cluster' => $dcn,
                     'isFake' => true
                 ]);

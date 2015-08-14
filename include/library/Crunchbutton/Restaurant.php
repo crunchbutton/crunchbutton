@@ -2226,6 +2226,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
         }
     }
 
+	public function service($time, $dow) {
+		$qString = "SELECT * FROM order_logistics_service WHERE id_restaurant= ? and "
+			."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+		$parking = Crunchbutton_Order_Logistics_Service::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+		if (is_null($parking) || $parking->count()==0){
+			return null;
+		} else{
+			return $parking->get(0);
+		}
+	}
+
     public function ordertime($time, $dow) {
         $qString = "SELECT * FROM order_logistics_ordertime WHERE id_restaurant= ? and "
             ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
