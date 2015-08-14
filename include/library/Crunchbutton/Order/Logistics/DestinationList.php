@@ -44,15 +44,23 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
     private $oldRestaurantParkingTimes;
     private $newRestaurantParkingTimes;
 
-    private $oldClusters;
-    private $newClusters;
+    private $oldRestaurantServiceTimes;
+    private $newRestaurantServiceTimes;
+
+    private $oldParkingClusters;
+    private $newParkingClusters;
+
+    private $oldServiceClusters;
+    private $newServiceClusters;
 
     public function __construct($distanceType)
     {
         $this->id_old_counter = -1;
         $this->id_new_counter = -1;
-        $this->old_parking_clusters = [];
-        $this->new_parking_clusters = [];
+        $this->old_tmp_parking_clusters = [];
+        $this->new_tmp_parking_clusters = [];
+        $this->old_tmp_service_clusters = [];
+        $this->new_tmp_service_clusters = [];
         $this->distanceType = $distanceType;
 
         $this->oldFakeOrderIds = []; // We'll need this later to remove from the output route.
@@ -107,6 +115,9 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->oldRestaurantParkingTimes = [0];
         $this->newRestaurantParkingTimes = [0];
 
+        $this->oldRestaurantServiceTimes = [0];
+        $this->newRestaurantServiceTimes = [0];
+
     }
 
     public function updateDriverDestinationGeo($driverLocation) {
@@ -136,6 +147,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
             $this->oldPickupIdxs[] = 0;
             $this->oldDeliveryIdxs[] = $matchingOldCustomerId;
             $this->oldRestaurantParkingTimes[] = $destination->restaurantParkingTime;
+            $this->oldRestaurantServiceTimes[] = $destination->restaurantServiceTime;
         }
         $this->newFirstCoords[] = floatval($destination->geo->lat);
         $this->newSecondCoords[] = floatval($destination->geo->lon);
@@ -147,6 +159,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->newPickupIdxs[] = 0;
         $this->newDeliveryIdxs[] = $matchingNewCustomerId;
         $this->newRestaurantParkingTimes[] = $destination->restaurantParkingTime;
+        $this->newRestaurantServiceTimes[] = $destination->restaurantServiceTime;
 
     }
 
@@ -166,6 +179,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
             $this->oldPickupIdxs[] = $matchingOldRestaurantId;
             $this->oldDeliveryIdxs[] = 0;
             $this->oldRestaurantParkingTimes[] = 0;
+            $this->oldRestaurantServiceTimes[] = 0;
         }
         $this->newFirstCoords[] = floatval($destination->geo->lat);
         $this->newSecondCoords[] = floatval($destination->geo->lon);
@@ -177,6 +191,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->newPickupIdxs[] = $matchingNewRestaurantId;
         $this->newDeliveryIdxs[] = 0;
         $this->newRestaurantParkingTimes[] = 0;
+        $this->newRestaurantServiceTimes[] = 0;
 
     }
 
@@ -205,7 +220,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
             // This might be a bit confusing: new orders are not included in the "old" optimization list
             $oldRestaurantId = $this->id_old_counter + 1;
             $oldCustomerId = $this->id_old_counter + 2;
-            $this->old_parking_clusters[$restaurantDestination->cluster][] = $oldRestaurantId;
+            $this->old_tmp_parking_clusters[$restaurantDestination->cluster][] = $oldRestaurantId;
+            $this->old_tmp_service_clusters[$restaurantDestination->objectId][] = $oldRestaurantId;
             $this->id_old_counter += 2;
         }
 
@@ -213,7 +229,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->newDestinations[] = $customerDestination;
         $this->addRestaurantDestinationInfo($restaurantDestination, $isNewOrder, $oldCustomerId, $newCustomerId);
         $this->addCustomerDestinationInfo($customerDestination, $isNewOrder, $oldRestaurantId, $newRestaurantId);
-        $this->new_parking_clusters[$restaurantDestination->cluster][] = $newRestaurantId;
+        $this->new_tmp_parking_clusters[$restaurantDestination->cluster][] = $newRestaurantId;
+        $this->new_tmp_service_clusters[$restaurantDestination->objectId][] = $newRestaurantId;
         return true;
     }
 
@@ -251,6 +268,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $input->pickupIdxs[] = 0;
         $input->deliveryIdxs[] = $cid;
         $input->restaurantParkingTimes[] = $restaurantDestination->restaurantParkingTime;
+        $input->restaurantServiceTimes[] = $restaurantDestination->restaurantServiceTime;
 
         $input->firstCoords[] = floatval($customerDestination->geo->lat);
         $input->secondCoords[] = floatval($customerDestination->geo->lon);
@@ -262,6 +280,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $input->pickupIdxs[] = $rid;
         $input->deliveryIdxs[] = 0;
         $input->restaurantParkingTimes[] = 0;
+        $input->restaurantServiceTimes[] = 0;
 
         // Not clustering the fake order so, don't care about the cluster array.
         // As long as computeClusters gets the right number of nodes, including the fake order nodes,
@@ -358,7 +377,9 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $input->pickupIdxs = $this->newPickupIdxs;
         $input->deliveryIdxs = $this->newDeliveryIdxs;
         $input->restaurantParkingTimes = $this->newRestaurantParkingTimes;
-        $input->clusters = $this->newClusters;
+        $input->restaurantServiceTimes = $this->newRestaurantServiceTimes;
+        $input->clustersParking = $this->newParkingClusters;
+        $input->clustersService = $this->newServiceClusters;
     }
 
     public function copyOldArraysToOptimizerInput($input)
@@ -374,7 +395,9 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $input->pickupIdxs = $this->oldPickupIdxs;
         $input->deliveryIdxs = $this->oldDeliveryIdxs;
         $input->restaurantParkingTimes = $this->oldRestaurantParkingTimes;
-        $input->clusters = $this->oldClusters;
+        $input->restaurantServiceTimes = $this->oldRestaurantServiceTimes;
+        $input->clustersParking = $this->oldParkingClusters;
+        $input->clustersService = $this->oldServiceClusters;
     }
 
 
@@ -404,34 +427,65 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
     //  Same for $numOldNodes.
     private function computeClusters($numOldNodes, $numNewNodes)
     {
-        $this->oldClusters = [];
+        $this->oldParkingClusters = [];
         if ($numOldNodes > 0) {
-            $this->oldClusters = array_fill(0, $numOldNodes, []);
-            foreach ($this->old_parking_clusters as $key => $ids) {
+            $this->oldParkingClusters = array_fill(0, $numOldNodes, []);
+            foreach ($this->old_tmp_parking_clusters as $key => $ids) {
                 foreach ($ids as $id) {
                     foreach ($ids as $id2) {
                         if ($id != $id2) {
-                            $this->oldClusters[$id][] = $id2;
+                            $this->oldParkingClusters[$id][] = $id2;
                         }
                     }
                 }
             }
 
         }
-        $this->newClusters = [];
+        $this->newParkingClusters = [];
         if ($numNewNodes > 0) {
-            $this->newClusters = array_fill(0, $numNewNodes, []);
-            foreach ($this->new_parking_clusters as $key => $ids) {
+            $this->newParkingClusters = array_fill(0, $numNewNodes, []);
+            foreach ($this->new_tmp_parking_clusters as $key => $ids) {
                 foreach ($ids as $id) {
                     foreach ($ids as $id2) {
                         if ($id != $id2) {
-                            $this->newClusters[$id][] = $id2;
+                            $this->newParkingClusters[$id][] = $id2;
                         }
                     }
                 }
             }
 
         }
+
+        $this->oldServiceClusters = [];
+        if ($numOldNodes > 0) {
+            $this->oldServiceClusters = array_fill(0, $numOldNodes, []);
+            foreach ($this->old_tmp_service_clusters as $key => $ids) {
+                foreach ($ids as $id) {
+                    foreach ($ids as $id2) {
+                        if ($id != $id2) {
+                            $this->oldServiceClusters[$id][] = $id2;
+                        }
+                    }
+                }
+            }
+
+        }
+        $this->newServiceClusters = [];
+        if ($numNewNodes > 0) {
+            $this->newServiceClusters = array_fill(0, $numNewNodes, []);
+            foreach ($this->new_tmp_service_clusters as $key => $ids) {
+                foreach ($ids as $id) {
+                    foreach ($ids as $id2) {
+                        if ($id != $id2) {
+                            $this->newServiceClusters[$id][] = $id2;
+                        }
+                    }
+                }
+            }
+
+        }
+
+
     }
 
 

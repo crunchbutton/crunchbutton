@@ -3,6 +3,8 @@
 class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 
 	public function run() {
+		$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
+		$debugDtString0 = $debug_dt->format('Y-m-d H:i:s');
 
 		// send customer a receipt in 30 seconds
 		$q = Queue::create([
@@ -16,7 +18,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 
 		if ($this->order()->restaurant()->delivery_service){
 			$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
-			$debugDtString = $debug_dt->format('Y-m-d H:i:s');
+			$debugDtString1 = $debug_dt->format('Y-m-d H:i:s');
 
 			// get active community drivers
 			$drivers = $this->order()->getDriversToNotify();
@@ -28,7 +30,9 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			// perform delivery logistics only if there are multiple drivers and it is enabled
 			if ($dl && $drivers->count() > 1) {
 				if ($dl == Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX) {
-					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString, 'stage' => 'before_get_drivers',
+					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString0, 'stage' => 'start_queue_run',
+						'type' => 'complexLogistics']);
+					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString1, 'stage' => 'before_get_drivers',
 						'type' => 'complexLogistics']);
 					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString2, 'stage' => 'after_get_drivers',
 						'type' => 'complexLogistics']);

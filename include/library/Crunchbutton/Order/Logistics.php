@@ -48,6 +48,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             $this->_delivery_logistics = $delivery_logistics;
             $this->restaurantGeoCache = [];
             $this->restaurantParkingCache = [];
+            $this->restaurantServiceCache = [];
             $this->restaurantOrderTimeCache = [];
             $this->restaurantClusterCache = [];
             $this->fakeOrder = null;
@@ -58,6 +59,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             $this->newOrderMidWindow = null;
             $this->newOrderLateWindow = null;
             $this->newOrderParkingTime = null;
+            $this->newOrderServiceTime = null;
         }
         $this->process();
     }
@@ -102,6 +104,23 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         return $r_pt;
     }
 
+    public function getRestaurantServiceTime($order, $communityTime, $dow) {
+        $r_st = null;
+        if (array_key_exists($order->id_restaurant, $this->restaurantServiceCache)) {
+            $r_st = $this->restaurantServiceCache[$order->id_restaurant];
+        }
+        else{
+            $r = $order->restaurant();
+            $service = $r->service($communityTime, $dow);
+            if (!is_null($service) && !is_null($service->service_duration)) {
+                $r_st = $service->service_duration;
+                $this->restaurantServiceCache[$order->id_restaurant] = $r_st;
+            }
+        }
+        return $r_st;
+    }
+
+
     public function getRestaurantOrderTime($order, $communityTime, $dow) {
         $r_ot = null;
         if (array_key_exists($order->id_restaurant, $this->restaurantOrderTimeCache)) {
@@ -142,6 +161,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         $customer_geo = $order->getGeo();
         $r_geo = null;
         $r_pt = null;
+        $r_st = null;
         $r_ordertime = null;
         $r_cluster = null;
         if (!is_null($customer_geo)) {
@@ -168,6 +188,12 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         if (is_null($r_cluster)){
 //                            print "Failed here 4\n";
                             $keepFlag = false;
+                        } else {
+                            $r_st = $this->getRestaurantServiceTime($order, $communityTime, $dow);
+                            if (is_null($r_st)){
+//                    print "Failed here 5\n";
+                                $keepFlag = false;
+                            }
                         }
 
                     }
@@ -195,6 +221,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $this->newOrderMidWindow =  $midWindow;
                     $this->newOrderLateWindow = $lateWindow;
                     $this->newOrderParkingTime = $r_pt;
+                    $this->newOrderServiceTime = $r_st;
                 }
             }
         }
@@ -203,7 +230,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 // Dummy restaurant destination = customer location
                 $dummyClusterNumber = $this->getNextDummyClusterNumber();
                 $restaurant_destination = new Crunchbutton_Order_Logistics_Destination([
-                    'objectId' => 0,
+                    'objectId' => $dummyClusterNumber,
                     'type' => Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT,
                     'geo' => $customer_geo,
                     'orderTime' => $orderTime,
@@ -211,6 +238,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     'midWindow' => Crunchbutton_Order_Logistics::LC_HORIZON,
                     'lateWindow' => $lateWindow,
                     'restaurantParkingTime' => 0,
+                    'restaurantServiceTime' => 0,
                     'cluster' => $dummyClusterNumber,
                     'isFake' => true
                 ]);
@@ -225,6 +253,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     'midWindow' => Crunchbutton_Order_Logistics::LC_HORIZON,
                     'lateWindow' => $lateWindow,
                     'restaurantParkingTime' => $r_pt,
+                    'restaurantServiceTime' => $r_st,
                     'cluster' => $r_cluster,
                     'isFake' => false
                 ]);
@@ -289,8 +318,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             $cs = $curCommunity->communityspeed($curCommunityTime, $dow);
             if (is_null($cs)){
 //                print "Need to get community speed\n";
-                $cs = Crunchbutton_Order_Logistics_Communityspeed::DEFAULT_MPH;
+                $cs_mph = Crunchbutton_Order_Logistics_Communityspeed::DEFAULT_MPH;
+            } else{
+                $cs_mph = $cs->mph;
             }
+
 
             // Get this order info:
             // Note: Moved out of here because the driver node needs to go first.
@@ -313,7 +345,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
 //                    $driver_score = $driver->score();
                     //  TODO: Adjust mph to adjust for distances not being quite straight line.
-                    $driver_mph = $cs->mph;
+                    $driver_mph = $cs_mph;
                     $dlist = new Crunchbutton_Order_Logistics_DestinationList($distanceType);
                     $dlist->driverMph = $driver_mph;
                     $dlist->orderId = $new_id_order;
@@ -372,7 +404,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 //                                        print "Found picked-up order\n";
                                         $isPickedUpOrder = true;
                                         $addOrder = true;
-                                        $driver->__driverLocation->addPickedUpOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
+                                        $driver->__driverLocation->addPickedUpOrder($lastStatusTimestamp, $server_dt->getTimestamp(), $this->getRestaurantGeo($order),
                                             $order->lat, $order->lon);
                                     }
                                     else if ($lastStatus == 'accepted') {
@@ -388,7 +420,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                             $order->lat, $order->lon, $this->getRestaurantGeo($order));
                                     }
                                 }
-                                else if ($lastStatus == 'new' && Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
+                                else if ($lastStatus == 'new' && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
 //                                    print "Found new priority order\n";
                                     $addOrder = true;
                                 }
@@ -434,7 +466,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         if (is_null($this->fakeOrder)) {
                             $this->fakeOrder = new Crunchbutton_Order_Logistics_FakeOrder(self::LC_DUMMY_FAKE_CLUSTER_START,
                                 $curCommunity, $this->newOrderOrderTime, $this->newOrderEarlyWindow,
-                                $this->newOrderMidWindow, $this->newOrderLateWindow, $this->newOrderParkingTime);
+                                $this->newOrderMidWindow, $this->newOrderLateWindow, $this->newOrderParkingTime, $this->newOrderServiceTime);
                         }
                     }
                     $dicts = $dlist->createOptimizerInputs($this->fakeOrder, $doCreateFakeOrders);
@@ -641,7 +673,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         //  Assumption is he's got the food and bundling doesn't help him.
                         $tooEarlyFlag = true;
                     }
-                } else if ($lastStatus == 'new' && Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
+                } else if ($lastStatus == 'new' && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
                     // Interested in new orders if they show up in the priority list with the top priority
                     //  and these haven't expired yet.
                     // This won't work properly if the earlier filters for restaurant and such are not implemented

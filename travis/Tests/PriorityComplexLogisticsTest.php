@@ -458,6 +458,56 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($parking->parking_duration, 20);
     }
 
+    public function testOLSTZConversionLosAngeles()
+    {
+
+        $useDate = '2015-07-01 05:00:00';
+        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $dow = $useDT->format('w');
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+
+        $ols1 = $this->defaultOLS($this->restaurant1, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant1, $end, $end2, 10, $dow);
+        $ols1->save();
+        $ols2->save();
+        $newTZ = $this->restaurant1->community()->timezone;
+        $useDT->setTimezone(new DateTimeZone($newTZ));
+        $service = $this->restaurant1->service($useDT->format('H:i:s'), $dow);
+        $ols1->delete();
+        $ols2->delete();
+        $this->assertEquals($service->service_duration, 5);
+    }
+
+    public function testOLSTZConversionNewYork()
+    {
+
+        $useDate = '2015-07-01 05:00:00';
+        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        var_dump($useDT);
+        $dow = $useDT->format('w');
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
+        $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
+
+        $ols1 = $this->defaultOLS($this->restaurant5, $start, $end, 15, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant5, $end, $end2, 20, $dow);
+        $ols1->save();
+        $ols2->save();
+        $newTZ = $this->restaurant5->community()->timezone;
+        $useDT->setTimezone(new DateTimeZone($newTZ));
+        $service = $this->restaurant5->service($useDT->format('H:i:s'), $dow);
+//        var_dump($useDT);
+//        print $useDT->format('H:i:s')."\n";
+        $ols1->delete();
+        $ols2->delete();
+        $this->assertEquals($service->service_duration, 20);
+    }
+
+
     public function testOLOTTZConversionLosAngeles()
     {
 
@@ -897,16 +947,92 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $i->pickupIdxs = [0, 3, 4, 0, 0, 6, 0, 8, 0];
         $i->deliveryIdxs = [0, 0, 0, 1, 2, 0, 5, 0, 7];
         $i->restaurantParkingTimes = [0, 0, 0, 5, 5, 0, 5, 0, 5];
-        $i->clusters = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
+        $i->restaurantServiceTimes = [0, 0, 0, 5, 5, 0, 5, 0, 5];
+        $i->clustersParking = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
+        $i->clustersService = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
         $d = $i->exports();
         $r = Crunchbutton_Optimizer::optimize($d);
         $this->assertNotNull($r);
         $result = new Crunchbutton_Optimizer_Result($r);
         $this->assertEquals($result->resultType, Crunchbutton_Optimizer_Result::RTYPE_OK);
         $this->assertNotNull($result->score);
-        $this->assertEquals($result->score, 17.8);
+        $this->assertEquals(round($result->score,1), 17.0);
+        $this->assertEquals($result->numBadTimes, 1);
+    }
+
+    public function testOptimizerAPI2()
+    {
+        //opt.OptInput(nNodes, 1, 1.0, 5, 5, 120, 240, 5000)
+        $i = new Crunchbutton_Optimizer_Input();
+        $i->numNodes = 9;
+        $i->driverMph = 1;
+        $i->penaltyCoefficient = 1.0;
+        $i->customerDropoffTime = 5;
+        $i->restaurantPickupTime = 5;
+        $i->slackMaxTime = 120;
+        $i->horizon = 240;
+        $i->maxRunTime = 5000;
+        $i->distanceType = Crunchbutton_Optimizer_Input::DISTANCE_XY;
+        $i->firstCoords = [40, 45, 45, 35, 40, 45, 40, 40, 40];
+        $i->secondCoords = [50, 68, 70, 69, 69, 55, 69, 55, 69];
+        $i->nodeTypes = [1, 3, 3, 2, 2, 3, 2, 3, 2];
+        $i->orderTimes = [0, 50, 20, 50, 20, 15, 15, 60, 60];
+        $i->earlyWindows = [0, 50, 20, 50, 20, 15, 15, 70, 70];
+        $i->midWindows = [240, 90, 60, 240, 240, 55, 240, 100, 240];
+        $i->lateWindows = [240, 170, 140, 170, 140, 135, 135, 180, 180];
+        $i->pickupIdxs = [0, 3, 4, 0, 0, 6, 0, 8, 0];
+        $i->deliveryIdxs = [0, 0, 0, 1, 2, 0, 5, 0, 7];
+        $i->restaurantParkingTimes = [0, 0, 0, 5, 5, 0, 5, 0, 5];
+        $i->restaurantServiceTimes = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $i->clustersParking = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
+        $i->clustersService = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
+        $d = $i->exports();
+        $r = Crunchbutton_Optimizer::optimize($d);
+        $this->assertNotNull($r);
+        $result = new Crunchbutton_Optimizer_Result($r);
+        $this->assertEquals($result->resultType, Crunchbutton_Optimizer_Result::RTYPE_OK);
+        $this->assertNotNull($result->score);
+        $this->assertEquals(round($result->score,1), 17.8);
         $this->assertEquals($result->numBadTimes, 0);
     }
+
+    public function testOptimizerAPI3()
+    {
+        //opt.OptInput(nNodes, 1, 1.0, 5, 5, 120, 240, 5000)
+        $i = new Crunchbutton_Optimizer_Input();
+        $i->numNodes = 9;
+        $i->driverMph = 1;
+        $i->penaltyCoefficient = 1.0;
+        $i->customerDropoffTime = 5;
+        $i->restaurantPickupTime = 5;
+        $i->slackMaxTime = 120;
+        $i->horizon = 240;
+        $i->maxRunTime = 5000;
+        $i->distanceType = Crunchbutton_Optimizer_Input::DISTANCE_XY;
+        $i->firstCoords = [40, 45, 45, 35, 40, 45, 40, 40, 40];
+        $i->secondCoords = [50, 68, 70, 69, 69, 55, 69, 55, 69];
+        $i->nodeTypes = [1, 3, 3, 2, 2, 3, 2, 3, 2];
+        $i->orderTimes = [0, 50, 20, 50, 20, 15, 15, 60, 60];
+        $i->earlyWindows = [0, 50, 20, 50, 20, 15, 15, 70, 70];
+        $i->midWindows = [240, 90, 60, 240, 240, 55, 240, 100, 240];
+        $i->lateWindows = [240, 170, 140, 170, 140, 135, 135, 180, 180];
+        $i->pickupIdxs = [0, 3, 4, 0, 0, 6, 0, 8, 0];
+        $i->deliveryIdxs = [0, 0, 0, 1, 2, 0, 5, 0, 7];
+        $i->restaurantParkingTimes = [0, 0, 0, 5, 5, 0, 5, 0, 5];
+        $i->restaurantServiceTimes = [0, 0, 0, 5, 5, 0, 5, 0, 5];
+        $i->clustersParking = [[], [], [], [], [8, 6], [], [8, 4], [], [4,6]];
+        $i->clustersService = [[], [], [], [], [], [], [8], [], [6]];
+        $d = $i->exports();
+        $r = Crunchbutton_Optimizer::optimize($d);
+        $this->assertNotNull($r);
+        $result = new Crunchbutton_Optimizer_Result($r);
+        $this->assertEquals($result->resultType, Crunchbutton_Optimizer_Result::RTYPE_OK);
+        $this->assertNotNull($result->score);
+        $this->assertEquals(round($result->score,1), 17.0);
+        $this->assertEquals($result->numBadTimes, 1);
+    }
+
+
 
     public function testActiveDrivers()
     {
@@ -1054,6 +1180,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
         $olot1->save();
 
@@ -1077,6 +1206,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $olc->delete();
@@ -1137,6 +1267,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
         $olot1->save();
 
@@ -1162,6 +1295,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $olc->delete();
@@ -1210,6 +1344,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
         $olot1->save();
 
@@ -1238,6 +1375,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1286,6 +1424,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
         $olot1->save();
 
@@ -1314,6 +1455,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1362,6 +1504,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
         $olot1->save();
 
@@ -1390,6 +1535,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1457,6 +1603,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
         $olot1->save();
 
@@ -1496,6 +1645,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1580,6 +1730,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
         $olot1->save();
 
@@ -1614,6 +1767,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1701,6 +1855,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
         $olot1->save();
 
@@ -1735,6 +1892,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1798,6 +1956,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
         $olot1->save();
 
@@ -1827,6 +1988,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -1909,6 +2071,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
         $olp1->save();
 
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
         $olot1->save();
 
@@ -1944,6 +2109,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $l->delete();
         }
         $olp1->delete();
+        $ols1->delete();
         $olot1->delete();
         $olcs1->delete();
         $fc1->delete();
@@ -2102,6 +2268,17 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'parking_duration' => $duration
         ]);
     }
+
+    public function defaultOLS($restaurant, $start, $end, $duration=5, $dow=0) {
+        return new Crunchbutton_Order_Logistics_Service([
+            'id_restaurant' => $restaurant->id_restaurant,
+            'time_start_community' => $start,
+            'time_end_community' => $end,
+            'day_of_week' => $dow,
+            'service_duration' => $duration
+        ]);
+    }
+
 
     public function defaultOLOT($restaurant, $start, $end, $otime=15, $factor=1, $dow=0) {
         return new Crunchbutton_Order_Logistics_Ordertime([
