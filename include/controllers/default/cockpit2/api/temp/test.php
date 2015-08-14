@@ -2,12 +2,17 @@
 
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
-			$r = Crunchbutton_Message_Push_Ios::send([
-			'to' => 'e95396adea2d968bfdcad91ace0acb2ff2e6e06daf1b5e41405440012067ada3',
-			'message' => 'test',
-			'count' => 1,
-			'id' => 'order-1',
-			'category' => 'order-new-test'
-		]);
+
+		Crunchbutton_Admin_Shift_Assign_Confirmation::warningDriversBeforeTheirShift();
+		echo '<pre>';var_dump( 1 );exit();
+
+		// $community = Community::o( 67 );
+		// echo '<pre>';var_dump( $community->assignedShiftHours() );exit();
+		// echo '<pre>';var_dump( $community->deliveryHours() );exit();;
+
+			// $r = Restaurant::o( 3756 );
+			// echo '<pre>';var_dump( $r->delivery_service );exit();
+			// echo $r->closed_message();
+			// exit;
 	}
 }
