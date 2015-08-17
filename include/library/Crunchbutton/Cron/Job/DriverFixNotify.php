@@ -9,7 +9,7 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		left join restaurant using (id_restaurant)
 		left join admin_notification_log using (id_order)
 		where restaurant.delivery_service=1 and restaurant.active=true and admin_notification_log.id_admin_notification_log is null
-		and `order`.date > date_sub(now(), interval 10 minute)
+		and `order`.date > date_sub(now(), interval 10 minute) and `order`.date < date_sub(now(), interval 1 minute)
 		order by `order`.id_order desc
 		';
 		$orders = Order::q($q);
@@ -25,3 +25,4 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		$this->finished();
 	}
 }
+
