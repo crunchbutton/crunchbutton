@@ -505,11 +505,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/general-home.html',
 			back: false
 		})
-		.when('/delivery-signup', {
-			action: 'delivery-signup',
-			controller: 'DeliverySignUpCtrl',
-			templateUrl: 'assets/view/delivery-signup-form.html'
-		})
 		.otherwise({
 			action: 'default',
 			controller: 'DefaultCtrl',

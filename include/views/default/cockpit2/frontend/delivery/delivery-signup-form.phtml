@@ -7,8 +7,6 @@
 		<div ng-show="finished">
 			<div class="dialog-message dialog-message-success">
 				Thank you we will contact you soon.
-				<br/>
-				Your login is {{login}}.
 			</div>
 		</div>
 
@@ -16,27 +14,16 @@
 			{{error}}
 		</div>
 
-
-		<?php /* Form validation stuff */?>
 		<div class="dialog-message dialog-message-error" ng-show="( submitted && form.$invalid ) && !finished">
 			<div class="error">
-
 				<div class="error" ng-show="form.deliveryName.$error.required">Enter your name.</div>
 				<div class="error" ng-show="form.deliveryName.$error.minlength">Name is too short.</div>
 				<div class="error" ng-show="form.deliveryName.$error.maxlength">Name cannot be longer than 40 characters.</div>
-
 				<div class="error" ng-show="form.deliveryEmail.$error.required">Enter your email.</div>
-				<div class="error" ng-show="form.driverEmail.$invalid && !form.driverEmail.$error.isUnique">Enter a valid email.</div>
-
-
 				<div class="error" ng-show="form.deliveryState.$error.required">Enter your state.</div>
 				<div class="error" ng-show="form.deliveryCity.$error.required">Enter your city.</div>
-
 				<div class="error" ng-show="form.deliveryOtherRestaurant.$error.required">Enter the restaurant's name.</div>
-
-
 			</div>
-
 		</div>
 
 		<form name="form" ng-show="!finished" novalidate>
@@ -49,17 +36,17 @@
 
 			<div class="input-wrap">
 				<span class="label">Email:</span>
-				<span class="field"><input type="phone" name="deliveryEmail" required ng-model="delivery.email"></span>
+				<span class="field"><input type="email" name="deliveryEmail" required ng-model="delivery.email"></span>
 			</div>
 
 			<div class="input-wrap">
 				<span class="label">State:</span>
-				<span class="field"><input type="email" name="deliveryState" required ng-model="delivery.state"></span>
+				<span class="field"><input type="text" name="deliveryState" required ng-model="delivery.state"></span>
 			</div>
 
 			<div class="input-wrap">
 				<span class="label">City:</span>
-				<span class="field"><input type="text" name="deliveryCity" required ng-model="delivery.state"></span>
+				<span class="field"><input type="text" name="deliveryCity" required ng-model="delivery.city"></span>
 			</div>
 
 			<div class="input-wrap">
