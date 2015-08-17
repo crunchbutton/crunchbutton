@@ -49,6 +49,7 @@ class Crunchbutton_App extends Cana_App {
 				$_SERVER['SERVER_NAME'] = 'heroku.crunchr.co';
 			}
 		}
+
 		// db by hostname
 		// travis
 		if (getenv('TRAVISPOSTGRES')) {
@@ -56,7 +57,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (getenv('TRAVIS')) {
 			$db = 'travis';
 		// anything local or dev
-		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
 		// anything by heroku use its own db
 		} elseif (preg_match('/^heroku.*$/',$_SERVER['SERVER_NAME'])) {
@@ -74,9 +75,6 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$db = 'fail';
 		}
-
-		echo $db;
-		exit;
 
 		// overwrite if we specify the db
 		if ($cliEnv) {
