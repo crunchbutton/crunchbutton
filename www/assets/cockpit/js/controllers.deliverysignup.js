@@ -73,14 +73,6 @@ NGApp.controller( 'DeliverySignUpCtrl', function( $scope, DeliverySignUpService 
 	$scope.restaurants[ 'In-N-Out' ] = { 'name': 'In-N-Out', 'checked': false };
 	$scope.restaurants[ 'Other' ] = { 'name': 'Other', 'checked': false };
 
-	$scope.delivery.name = 'daniel';
-	$scope.delivery.email = 'pererinha@gmail.com';
-	$scope.delivery.state = 'SC';
-	$scope.delivery.city = 'Joinville';
-	$scope.delivery.university = 'PUC';
-	$scope.restaurants[ 'McDonalds' ].checked = true;
-
-
 	$scope.save = function(){
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
