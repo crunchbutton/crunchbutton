@@ -10,7 +10,7 @@ Email: <?php if( $user->email ){ echo $user->email; } else { echo '-'; }  ?> <br
 $support = Support::getSupportForOrder( $order->id );
 if($support) {
 	?>
-	<b>Support: <a href="http://cockpit.crunchbutton.com/support/<?php echo $support->id; ?>">#<?php echo $support->id; ?></a><br /><br /></b>
+	<b>Support: <a href="http://old.cockpit.crunchbutton.com/support/<?php echo $support->id; ?>">#<?php echo $support->id; ?></a><br /><br /></b>
 	<?php
 }
 ?>
