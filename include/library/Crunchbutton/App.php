@@ -75,6 +75,9 @@ class Crunchbutton_App extends Cana_App {
 			$db = 'fail';
 		}
 
+		echo $db;
+		exit;
+
 		// overwrite if we specify the db
 		if ($cliEnv) {
 			$db = $cliEnv;
@@ -96,7 +99,7 @@ class Crunchbutton_App extends Cana_App {
 				exit;
 			}
 		}
-		
+
 		if (preg_match('/^old.cockpit._DOMAIN_$/',$_SERVER['SERVER_NAME']) && $_SERVER['HTTPS'] == 'on') {
 			die('dont use https');
 			header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -606,7 +609,7 @@ class Crunchbutton_App extends Cana_App {
 		//exit;
 		return $this->_metricsDB;
 	}
-	
+
 	public function s3() {
 		new Crunchbutton_S3;
 		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
