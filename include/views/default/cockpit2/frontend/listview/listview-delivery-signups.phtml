@@ -1,0 +1,36 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Name / Email</th>
+			<th>City/State</th>
+			<th>University</th>
+			<th>Restaurants</th>
+			<th>Date</th>
+			<th class="tb-small tb-center">Status</th>
+			<th></th>
+		</tr>
+		<tr ng-repeat="delivery in deliveries">
+			<td nowrap>{{delivery.name}}<br>{{delivery.email}}</td>
+			<td>{{delivery.city}}/{{delivery.state}}</td>
+			<td>{{delivery.university}}</td>
+			<td>{{delivery.restaurants}}</td>
+			<td>
+				{{delivery.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+				&nbsp;(<span class="listview-bold">{{delivery.date | convertimeformat:account.user.timezone:'z'}}</span>)
+			</td>
+			<td class="tb-v-center tb-center">
+				<div ng-switch="delivery.status">
+					<span class="tag tag-red no-wrap" ng-switch-when="new">New</span>
+					<span class="tag tag-blue no-wrap" ng-switch-when="archived">Archived</span>
+					<span class="tag tag-green no-wrap" ng-switch-when="review">Review</span>
+					<span class="tag tag-black no-wrap" ng-switch-when="deleted">Deleted</span>
+				</div>
+			</td>
+			<td nowrap="nowrap">
+				<button ng-show="delivery.status != 'archived'" title="Archive" ng-click="archive( delivery.id_delivery_signup )" class="button button-small button-empty button-green"><i class="fa fa-archive"></i></button>
+				<button ng-show="delivery.status != 'review'" title="Needs to Review" ng-click="review( delivery.id_delivery_signup )" class="button button-small button-empty button-green"><i class="fa fa-clock-o"></i></button>
+				<button ng-show="delivery.status != 'deleted'" title="Delete" ng-click="delete( delivery.id_delivery_signup )" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+			</td>
+		</tr>
+	</table>
+</div>

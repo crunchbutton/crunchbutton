@@ -7,7 +7,7 @@ class Controller_api_delivery_signup_save extends Crunchbutton_Controller_Rest {
 		$name = $this->request()[ 'name' ];
 		$email = $this->request()[ 'email' ];
 		$university = $this->request()[ 'university' ];
-		$town = $this->request()[ 'town' ];
+		$city = $this->request()[ 'city' ];
 		$state = $this->request()[ 'state' ];
 		$restaurants = $this->request()[ 'restaurants' ];
 
@@ -19,15 +19,19 @@ class Controller_api_delivery_signup_save extends Crunchbutton_Controller_Rest {
 		if( !$email ){
 			$error['required'][] = 'email';
 		}
-		if( !$town ){
+		if( !$city ){
 			$error['required'][] = 'town';
 		}
 		if( !$state ){
 			$error['required'][] = 'state';
 		}
 
+		if( $restaurants ){
+			$restaurants = join( ', ', $restaurants );
+		}
+
 		if( count( $error['required'] ) ){
-			echo json_encode( [ 'error' => join( ', ', $error['required'] ) ] );exit;;
+			echo json_encode( [ 'error' => 'Required fields: ' . join( ', ', $error['required'] ) ] );exit;;
 			exit;
 		}
 
@@ -35,7 +39,7 @@ class Controller_api_delivery_signup_save extends Crunchbutton_Controller_Rest {
 		$signup->name = $name;
 		$signup->email = $email;
 		$signup->university = $university;
-		$signup->town = $town;
+		$signup->city = $city;
 		$signup->state = $state;
 		$signup->restaurants = $restaurants;
 		$signup->status = Crunchbutton_Delivery_Signup::STATUS_NEW;

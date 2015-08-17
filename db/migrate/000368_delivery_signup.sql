@@ -3,7 +3,7 @@ CREATE TABLE `delivery_signup` (
   `name` varchar(40) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `university` varchar(255) DEFAULT NULL,
-  `town` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
   `state` varchar(2) DEFAULT NULL,
   `comment` TEXT DEFAULT NULL,
   `restaurants` TEXT DEFAULT NULL,
