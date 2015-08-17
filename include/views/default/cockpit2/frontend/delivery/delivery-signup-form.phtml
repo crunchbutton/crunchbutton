@@ -1,0 +1,94 @@
+<div class="top-pad"></div>
+<div class="">
+
+	<div class="content-padding hide-before-init">
+		<h1 class="title driver-title"><i class="fa fa-truck"></i></h1>
+
+		<div ng-show="finished">
+			<div class="dialog-message dialog-message-success">
+				Thank you we will contact you soon.
+				<br/>
+				Your login is {{login}}.
+			</div>
+		</div>
+
+		<div class="dialog-message dialog-message-error" ng-show="error && !finished">
+			{{error}}
+		</div>
+
+
+		<?php /* Form validation stuff */?>
+		<div class="dialog-message dialog-message-error" ng-show="( submitted && form.$invalid ) && !finished">
+			<div class="error">
+
+				<div class="error" ng-show="form.deliveryName.$error.required">Enter your name.</div>
+				<div class="error" ng-show="form.deliveryName.$error.minlength">Name is too short.</div>
+				<div class="error" ng-show="form.deliveryName.$error.maxlength">Name cannot be longer than 40 characters.</div>
+
+				<div class="error" ng-show="form.deliveryEmail.$error.required">Enter your email.</div>
+				<div class="error" ng-show="form.driverEmail.$invalid && !form.driverEmail.$error.isUnique">Enter a valid email.</div>
+
+
+				<div class="error" ng-show="form.deliveryState.$error.required">Enter your state.</div>
+				<div class="error" ng-show="form.deliveryCity.$error.required">Enter your city.</div>
+
+				<div class="error" ng-show="form.deliveryOtherRestaurant.$error.required">Enter the restaurant's name.</div>
+
+
+			</div>
+
+		</div>
+
+		<form name="form" ng-show="!finished" novalidate>
+			<h4>Delivery Sign Up</h4><br><br>
+
+			<div class="input-wrap">
+				<span class="label">Name:</span>
+				<span class="field"><input type="text" name="deliveryName" ng-model="delivery.name" required ng-minlength="5" ng-maxlength="40" autofocus="autofocus"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Email:</span>
+				<span class="field"><input type="phone" name="deliveryEmail" required ng-model="delivery.email"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">State:</span>
+				<span class="field"><input type="email" name="deliveryState" required ng-model="delivery.state"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">City:</span>
+				<span class="field"><input type="text" name="deliveryCity" required ng-model="delivery.state"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">University:</span>
+				<span class="field"><input type="text" name="deliveryUniversity" ng-model="delivery.university"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Restaurants:</span>
+				<span class="field">
+
+					<label ng-repeat="restaurant in restaurants">
+						<input type="checkbox" value="{{restaurant.name}}" ng-model="restaurant.checked" name="checkboxRestaurant{{restaurant.name}}">{{restaurant.name}}
+					</label>
+				</span>
+			</div>
+
+			<div class="input-wrap" ng-show="restaurants.Other.checked">
+				<span class="label">Other:</span>
+				<span class="field"><input type="text" ng-required="restaurants.Other.checked" name="deliveryOtherRestaurant" ng-model="delivery.otherRestaurant"></span>
+			</div>
+
+			<br>
+
+			<button class="button orange" ng-click="save()" ng-show="!sending">Save</button>
+			<button class="button" ng-show="sending"><span><i class="fa fa-spinner fa-spin"></i> Please wait</span></button>
+
+		</form>
+
+
+	</div>
+</div>
