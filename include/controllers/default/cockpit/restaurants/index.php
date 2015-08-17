@@ -196,7 +196,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 						}
 
 						if( $remove_old_image ){
-							if ( file_exists( $current_image ) ){
+							if ( file_exists( $current_image ) && ! is_dir ($current_image) ){
 								unlink( $current_image );
 							}
 						}
