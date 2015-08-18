@@ -30,9 +30,9 @@
 
 						<li class="li-input" ng-class="{'error':form.basicSocialSecurityNumber.$invalid}">
 							<div class="label">Social Security Number:</div>
-							<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" placeholder="Social Security Number"  social-security-number-validate ng-maxlength="250"></div>
+							<div class="input"><input type="tel" name="basicSocialSecurityNumber" ng-model="payInfo.social_security_number" placeholder="000-00-0000"  social-security-number-validate ng-maxlength="250"></div>
 							<div class="box-error">
-								<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Social Security Number. Please use the format: XXX-XX-XXXX.</small>
+								<small ng-show="formBasic.basicSocialSecurityNumber.$error.socialSecurityNumberValidate">Invalid Number. Please use the format: 000-00-0000.</small>
 							</div>
 						</li>
 

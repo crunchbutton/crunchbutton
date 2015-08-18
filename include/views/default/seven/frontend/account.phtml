@@ -3,7 +3,7 @@
 
 	<div ng-controller="AccountSevenCtrl" modal-reset="resetModal()">
 
-		<div ng-show="tab == 'facebook'" class="dialog-padding account-modal">
+		<div ng-if="tab == 'facebook'" class="dialog-padding account-modal">
 			<p ng-show="account.user">
 				We got your account right here! Link your account with facebook here so you never have to enter your info again!
 			</p>
@@ -28,7 +28,7 @@
 		</div>
 
 
-		<div ng-show="tab == 'form'">
+		<div ng-if="tab == 'form'">
 			<div class="dialog-padding account-modal">
 				<span ng-click="changeTab( 'facebook' )" class="back-link cursor"><span>&laquo;</span> BACK</span>
 				<p>Not a fan of facebook? Don’t worry. We won't tell anyone. <b>Log in</b> or <b>sign up</b> below.</p>
@@ -59,7 +59,7 @@
 		</div>
 
 
-		<div ng-show="tab == 'reset'">
+		<div ng-if="tab == 'reset'">
 			<div class="dialog-padding account-modal">
 				<span ng-click="changeTab('form')" class="back-link cursor"><span>&laquo;</span> BACK</span>
 
