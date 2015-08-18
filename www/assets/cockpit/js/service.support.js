@@ -73,6 +73,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 	service.sideInfo.load = function(){
 
+		console.log('service.sideInfo.load');
+
 		if( service.sideInfo.id_support ){
 
 			if( !service._private.could_load ){
@@ -169,14 +171,18 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						console.debug('Recieved chat message: ', d);
 
 						if (notified.indexOf(d.id_support_message) > -1) {
+							console.log('already notified ', d.id_support_message);
 							return;
 						}
 
 						notified.push(d.id_support_message);
 
 						// update the chat room
-						if( service.sideInfo.id_support && d.id_support ){
-							service.sideInfo.force_first_page();
+						console.log('service.sideInfo.id_support',service.sideInfo.id_support);
+						console.log('d.id_support',d.id_support);
+						if( service.sideInfo.id_support && d.id_support && service.sideInfo.id_support != d.id_support ){
+							console.log('force_first_page??');
+							// service.sideInfo.force_first_page();
 						}
 
 						if (d.id_admin == AccountService.user.id_admin) {
@@ -218,6 +224,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.send = function(message, add_as_note, callback) {
 		var add_as_note = ( add_as_note ? true : false );
 		var guid = App.guid();
+		console.log('guid',guid);
 		if( !service.sideInfo.id_support ){
 			return;
 		}
@@ -226,7 +233,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			body: message,
 			guid: guid,
 			note: add_as_note
-		}, function(d) {
+		},
+		// callback
+		function(d) {
 			console.log('message added:::');
 			console.log('d',d);
 			for ( var x in service.sideInfo.data.messages ) {
@@ -239,9 +248,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			}
 		});
 		if( callback ){
+			console.log('callback:::: ',callback);
 			callback()
 		} else {
 			service.scope.$apply(function() {
+				console.log('no callback');
 				service.sideInfo.add_message( { body: message, name: AccountService.user.firstName, timestamp: new Date().getTime(), sending: true, guid: guid } );
 			});
 		}
