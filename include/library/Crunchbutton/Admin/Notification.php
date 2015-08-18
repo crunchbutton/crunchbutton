@@ -535,9 +535,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function sendPushIos($order, $message) {
-		// pererinha disabled it for while -
-		return;
-
+		
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
 			'message' => $message,
