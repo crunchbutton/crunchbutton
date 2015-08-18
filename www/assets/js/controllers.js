@@ -694,6 +694,11 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
+		
+		if (App.isUI2()) {
+			App.go( '/location/unavailable');
+		}
+
 		$scope.loadingLocation = true;
 		var pos = PositionsService.pos();
 		if( pos.type() == 'user' ){
