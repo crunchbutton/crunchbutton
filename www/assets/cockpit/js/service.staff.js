@@ -219,8 +219,8 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.yesNo = function(){
 		var options = [];
-		options.push( { value: '0', label: 'No' } );
-		options.push( { value: '1', label: 'Yes' } );
+		options.push( { value: false, label: 'No' } );
+		options.push( { value: true, label: 'Yes' } );
 		return options;
 	}
 
@@ -294,8 +294,8 @@ NGApp.factory( 'StaffPayInfoService', function( $resource, $routeParams, ConfigS
 
 	service.typesUsingPex = function(){
 		var methods = [];
-		methods.push( { value: 0, label: 'No' } );
-		methods.push( { value: 1, label: 'Yes' } );
+		methods.push( { value: false, label: 'No' } );
+		methods.push( { value: true, label: 'Yes' } );
 		return methods;
 	}
 

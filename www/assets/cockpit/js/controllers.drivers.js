@@ -646,8 +646,8 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 
 	var send_text_options = [];
 	send_text_options.push( { value: 'all', label: 'All' } );
-	send_text_options.push( { value: '1', label: 'Yes' } );
-	send_text_options.push( { value: '0', label: 'No' } );
+	send_text_options.push( { value: true, label: 'Yes' } );
+	send_text_options.push( { value: false, label: 'No' } );
 	$scope.send_text_options = send_text_options;
 
 	$scope.send_text_about_schedule = function( id_admin, value ){

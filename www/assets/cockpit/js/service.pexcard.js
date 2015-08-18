@@ -147,8 +147,8 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 
 	service.yesNo = function(){
 		var methods = [];
-		methods.push( { value: 0, label: 'No' } );
-		methods.push( { value: 1, label: 'Yes' } );
+		methods.push( { value: false, label: 'No' } );
+		methods.push( { value: true, label: 'Yes' } );
 		return methods;
 	}
 

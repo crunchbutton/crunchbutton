@@ -135,7 +135,7 @@ class Cana_Table extends Cana_Model { //
 
 				$row->null = $row->null == 'YES' ? true : false;
 				if ( strpos($row->type, 'enum') === false && strpos($row->type, 'int') !== false) {
-					if ($row->type == 'tinyint(1)') {
+					if ($row->type == 'tinyint(1)' || $row->type == 'tinyint(1) unsigned') {
 						$row->type = 'boolean';
 					} else {
 						$row->type = 'int';
