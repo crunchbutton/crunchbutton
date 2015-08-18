@@ -49,19 +49,24 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 		if ($env == 'live') {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
-				$certs.'aps_production_com.crunchbutton.cockpit.pem'
+				$certs.'2015.aps_production_com.crunchbutton.cockpit.pem'
 			);
 		} else {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
-				$certs.'aps_development_com.crunchbutton.cockpit.pem'
+				$certs.'2015.aps_development_com.crunchbutton.cockpit.pem'
 			);
 		}
 		
 		ob_start();
 
 		$push->setRootCertificationAuthority($certs.'entrust_root_certification_authority.pem');
-		$push->connect();
+		
+		try {
+			$push->connect();
+		} catch (Exception $e) {
+			$error = $e->getMessage();
+		}
 
 		foreach ($to as $t) {
 		
@@ -84,15 +89,22 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 	
 			$push->add($msg);
 		}
-
-		$push->send();
-		$push->disconnect();
+		
+		try {
+			$push->send();
+			$push->disconnect();
+		} catch (Exception $e) {
+			$error = $e->getMessage();
+		}
 		
 		$res = ob_get_contents();
 		ob_end_clean();
 
 		$aErrorQueue = $push->getErrors();
+		if ($error) {
+			$aErrorQueue = array_merge([$error], $aErrorQueue);
+		}
 
-		return ['res' => $res, 'status' => $aErrorQueue ? $aErrorQueue : true, 'errors' => $aErrorQueue];
+		return ['res' => $res, 'status' => $aErrorQueue ? false : true, 'errors' => $aErrorQueue];
 	}
 }
