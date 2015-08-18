@@ -180,7 +180,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						// update the chat room
 						console.log('service.sideInfo.id_support',service.sideInfo.id_support);
 						console.log('d.id_support',d.id_support);
-						if( service.sideInfo.id_support && d.id_support ){
+						if( service.sideInfo.id_support && d.id_support && service.sideInfo.id_support != d.id_support ){
 							service.sideInfo.force_first_page();
 						}
 
