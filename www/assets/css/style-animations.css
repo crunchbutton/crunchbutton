@@ -44,11 +44,15 @@
 .animation-push.ng-enter {
 	-webkit-animation: 0.31s animation-push-enter cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .animation-push.ng-leave {
 	-webkit-animation: 0.31s animation-push-leave cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 @-webkit-keyframes animation-push-enter {
@@ -77,11 +81,15 @@
 .animation-pop.ng-enter {
 	-webkit-animation: 0.31s animation-pop-enter cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .animation-pop.ng-leave {
 	-webkit-animation: 0.31s animation-pop-leave cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
+	width: 100%;
+	box-sizing: border-box;
 }
 @-webkit-keyframes animation-pop-enter {
 	from {
