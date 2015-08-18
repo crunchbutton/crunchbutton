@@ -398,7 +398,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 							WHERE p.phone = ?
 							AND sm.type = ?
 							ORDER BY id_support_message DESC LIMIT 1';
-		$support_message = Crunchbutton_Support_Message::sq( $query, [$phone, Crunchbutton_Support_Message::TYPE_AUTO_REPLY])->get( 0 );
+		$support_message = Crunchbutton_Support_Message::q( $query, [$phone, Crunchbutton_Support_Message::TYPE_AUTO_REPLY])->get( 0 );
 		if( $support_message->id_support_message ){
 			return $support_message;
 		}
