@@ -114,7 +114,7 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 		$rootScope.$safeApply( function(){
 			console.log('$scope.ticket',$scope.ticket);
 			console.log('data',data);
-			if( $scope.ticket.id_support != data.id_support ){
+			if( !$scope.ticket || $scope.ticket.id_support != data.id_support ){
 				$scope.ticket = data;
 			} else {
 				if( !angular.equals( $scope.ticket.messages, data.messages ) ){
