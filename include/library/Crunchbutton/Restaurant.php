@@ -1359,10 +1359,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $price;
 	}
 
-	public function assignedShiftHours(){
+	public function assignedShiftHours( $allDay = false ){
 		$community = $this->community()->get( 0 );
 		if( $community->id_community ){
-			return $community->assignedShiftHours();
+			return $community->assignedShiftHours( $allDay );
 		}
 		return false;
 	}

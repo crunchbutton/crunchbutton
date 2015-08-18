@@ -192,6 +192,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND id_community = ? ORDER BY cs.date_start ASC', [$id_community]);
 	}
 
+	public function assignedShiftsByCommunityPeriod( $id_community, $from, $to ){
+		return Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ), cs.* FROM community_shift cs  INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND id_community = ? ORDER BY cs.date_start ASC', [$id_community]);
+	}
+
 	public function shiftsByDriverByPeriod( $id_admin, $from, $to ){
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND asa.id_admin = ? ORDER BY cs.date_start ASC', [$id_admin]);
 	}
@@ -1096,7 +1100,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	// Return the assigned shifts for the next week
-	public function assignedShiftHours( $id_community ){
+	public function assignedShiftHours( $id_community, $allDay = false ){
 
 		$hours = [];
 
@@ -1106,7 +1110,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
 			$now->modify( '+ 15 min' );
-			$from = $now->format( 'Y-m-d H:i' );
+			if( $allDay ){
+				$from = $now->format( 'Y-m-d' );
+			} else {
+				$from = $now->format( 'Y-m-d H:i' );
+			}
 			$now->modify( '+ 7 days' );
 			$to = $now->format( 'Y-m-d H:i' );
 
@@ -1117,6 +1125,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					cs.date_start >= ?
 					AND cs.date_start <= ?
 					AND cs.id_community = ?
+					ORDER BY cs.date_start ASC
 			';
 
 			$nextShifts = Crunchbutton_Community_Shift::q($query, [$from, $to, $community->id_community]);
