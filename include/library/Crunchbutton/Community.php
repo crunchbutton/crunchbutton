@@ -128,13 +128,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$out = $this->properties();
 		$out[ 'name_alt' ] = $this->name_alt();
 		$out[ 'prep' ] = $this->prep();
-		$out[ 'active' ] = intval( $out[ 'active' ] );
-		$out[ 'private' ] = intval( $out[ 'private' ] );
-		$out[ 'image' ] = intval( $out[ 'image' ] );
-		$out[ 'close_all_restaurants' ] = intval( $out[ 'close_all_restaurants' ] );
-		$out[ 'close_3rd_party_delivery_restaurants' ] = intval( $out[ 'close_3rd_party_delivery_restaurants' ] );
-		$out[ 'auto_close' ] = intval( $out[ 'auto_close' ] );
-		$out[ 'is_auto_closed' ] = intval( $out[ 'is_auto_closed' ] );
 		$out['type'] = $this->type();
 
 		if( $out[ 'close_all_restaurants_id_admin' ] ){
@@ -805,7 +798,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function isAutoClosed(){
-		return ( intval( $this->is_auto_closed ) > 0 );
+		return $this->is_auto_closed ? true : false;
 	}
 
 	public function shutDownCommunity( $dt = null ){

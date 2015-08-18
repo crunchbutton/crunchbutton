@@ -610,7 +610,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 		StaffPayInfoService.load( function( json ){
 			if( json.id_admin ){
 				$scope.payInfo = json;
-				$scope.payInfo.using_pex = parseInt( $scope.payInfo.using_pex );
+				$scope.payInfo.using_pex = $scope.payInfo.using_pex;
 				$scope.ready = true;
 				$scope.payment = {};
 				if( json.using_pex_date ){
@@ -635,7 +635,7 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 	var using_pex_date = null;
 
 	$scope.$watch( 'payInfo.using_pex', function( newValue, oldValue, scope ) {
-		if( parseInt( $scope.payInfo.using_pex ) == 0 ){
+		if(!$scope.payInfo.using_pex){
 			using_pex_date = $scope.payInfo.using_pex_date;
 			//
 			$scope.payInfo.using_pex_date = '';

@@ -8,6 +8,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	const CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH = 'pex_card_funds_order_enable_for_cash';
 	const CONFIG_KEY_PEX_BUSINESS_CARD = 'pex_business_card';
 	const CONFIG_KEY_PEX_TEST_CARD = 'pex_test_card';
+	const CONFIG_KEY_PEX_ACTIVE = 'pex-card-active';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -284,7 +285,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function isPexCardFundsActive(){
-		return intval( Crunchbutton_Config::getVal( 'pex-card-active' ) );
+		return Crunchbutton_Config::getVal(self::CONFIG_KEY_PEX_ACTIVE) ? true : false;
 	}
 
 	public function loadSettings(){
@@ -292,20 +293,28 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'pex_%' ORDER BY value ASC" );
 			$this->_config = [ 'cards' => [ 'business' => [], 'test' => [] ] ];
 			foreach ( $configs as $config ) {
-				if( $config->key == Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD ){
-					$this->_config[ 'cards' ][ 'business' ][] = [ 'id_config' => intval( $config->id_config ), 'value' => intval( $config->value ) ];
+
+				switch ($config->key) {
+					case self::CONFIG_KEY_PEX_SHIFT_ENABLE:
+					case self::CONFIG_KEY_PEX_ORDER_ENABLE:
+					case self::CONFIG_KEY_PEX_ORDER_ENABLE_FOR_CASH:
+					case self::CONFIG_KEY_PEX_ACTIVE:
+						$config->value = $config->value ? true : false;
+						break;
+					case self::CONFIG_KEY_PEX_BUSINESS_CARD:
+						$this->_config[ 'cards' ][ 'business' ][] = [ 'id_config' => intval( $config->id_config ), 'value' => intval( $config->value ) ];
+						break;
+					case self::CONFIG_KEY_PEX_TEST_CARD:
+						$this->_config[ 'cards' ][ 'test' ][] = [ 'id_config' => intval( $config->id_config ), 'value' => intval( $config->value ) ];
+						break;
 				}
-				$this->_config[ $config->key ] = $config->value;
-			}
-			foreach ( $configs as $config ) {
-				if( $config->key == Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD ){
-					$this->_config[ 'cards' ][ 'test' ][] = [ 'id_config' => intval( $config->id_config ), 'value' => intval( $config->value ) ];
-				}
+
 				$this->_config[ $config->key ] = $config->value;
 			}
 			unset( $this->_config[ Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD ] );
 			unset( $this->_config[ Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD ] );
 		}
+
 		return $this->_config;
 	}
 

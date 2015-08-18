@@ -76,8 +76,8 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 
 	service.yesNo = function(){
 		var options = [];
-		options.push( { value: '0', label: 'No' } );
-		options.push( { value: '1', label: 'Yes' } );
+		options.push( { value: false, label: 'No' } );
+		options.push( { value: true, label: 'Yes' } );
 		return options;
 	}
 

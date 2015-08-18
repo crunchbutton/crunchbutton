@@ -122,6 +122,7 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 		foreach( $settings as $key => $value ){
 			if( is_numeric( $value ) ){
 				$value = floatval( $value );
+			} else if (is_bool($value)) {
 			} else {
 				$value = 0;
 			}

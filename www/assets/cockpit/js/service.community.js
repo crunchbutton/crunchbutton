@@ -129,8 +129,8 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 
 	service.yesNo = function(){
 		var methods = [];
-		methods.push( { value: 0, label: 'No' } );
-		methods.push( { value: 1, label: 'Yes' } );
+		methods.push( { value: false, label: 'No' } );
+		methods.push( { value: true, label: 'Yes' } );
 		return methods;
 	}
 
@@ -139,6 +139,7 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		timezones.push( { value: 'America/New_York', label: 'Eastern' } );
 		timezones.push( { value: 'America/Chicago', label: 'Central' } );
 		timezones.push( { value: 'America/Denver', label: 'Mountain' } );
+		timezones.push( { value: 'America/Phoenix', label: 'Arizona (no DST)' } );
 		timezones.push( { value: 'America/Los_Angeles', label: 'Pacific' } );
 		return timezones;
 	}

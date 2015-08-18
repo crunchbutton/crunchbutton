@@ -101,14 +101,14 @@ NGApp.controller( 'PromoDiscountCodeCtrl', function ($scope, $routeParams, $filt
 			}
 
 			if( !$scope.promo.id_community && $scope.promo.id_community != '' ){
-				$scope.promo.all = 1;
+				$scope.promo.all = true;
 			} else {
-				$scope.promo.all = 0;
+				$scope.promo.all = false;
 			}
 			communities();
 		} )
 	} else {
-		$scope.promo = { 'paid_by': 'CRUNCHBUTTON', 'delivery_fee': 0, 'active': 1, 'usable_by': 'anyone', 'all': 1 };
+		$scope.promo = { 'paid_by': 'CRUNCHBUTTON', 'delivery_fee': 0, 'active': true, 'usable_by': 'anyone', 'all': true };
 		communities();
 	}
 });
