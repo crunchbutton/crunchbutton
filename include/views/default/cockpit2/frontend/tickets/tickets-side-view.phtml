@@ -99,6 +99,7 @@
 							&nbsp;&nbsp;Messages {{ticket.loaded}} of {{ticket.total}}.
 						<br><br>
 					</div>
+
 					<div bindonce ng-repeat="message in ticket.messages" class="support-chat-contents-message" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 					'support-chat-contents-message-support': message.is_support,
 					'support-chat-contents-message-driver': message.is_driver,
