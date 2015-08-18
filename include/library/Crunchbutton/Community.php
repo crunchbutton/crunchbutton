@@ -691,7 +691,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function reopenAutoClosedCommunities(){
 		$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 		$id_admin = $admin->id_admin;
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = true' );
+		$communities = Crunchbutton_Community::sq( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = true' );
 		foreach( $communities as $community ){
 			$community->reopenAutoClosedCommunity();
 		}
@@ -1008,9 +1008,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return Crunchbutton_Community_Shift::currentShiftByCommunity( $this->id_community )->get( 0 );
 	}
 
-	public function assignedShiftHours(){
+	public function assignedShiftHours( $allDay = false ){
 		if( !$this->_assigned_shift_hours ){
-			$this->_assigned_shift_hours = Crunchbutton_Community_Shift::assignedShiftHours( $this->id_community );
+			$this->_assigned_shift_hours = Crunchbutton_Community_Shift::assignedShiftHours( $this->id_community, $allDay );
 		}
 		return $this->_assigned_shift_hours;
 	}
@@ -1052,6 +1052,33 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		} else{
 			return $fcs;
 		}
+	}
+
+	public function deliveryHours( $currentDay = false ){
+		$hours = [];
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$from = $now->format( 'Y-m-d' );
+		$now->modify( '+ 6 days' );
+		$to = $now->format( 'Y-m-d' );
+		$shifts = Crunchbutton_Community_Shift::assignedShiftsByCommunityPeriod( $this->id_community, $from, $to );
+		foreach( $shifts as $shift ){
+			$start = $shift->dateStart()->format( 'H:i' );
+			$end = $shift->dateEnd()->format( 'H:i' );
+			$weekday = strtolower( $shift->dateEnd()->format( 'D' ) );
+			if( !$hours[ $weekday ] ){
+				$hours[ $weekday ] = [];
+			}
+			$hours[ $weekday ] = [ $start, $end ];
+		}
+		uksort( $hours,
+		function( $a, $b ) {
+			$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+			return( $weekdays[ $a ] > $weekdays[ $b ] );
+		} );
+		if( $currentDay ){
+			return $hours[ strtolower( $now->format( 'D' ) ) ];
+		}
+		return $hours;
 	}
 
     public function communityCenter() {

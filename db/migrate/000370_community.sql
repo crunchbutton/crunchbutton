@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `combine_restaurant_driver_hours` tinyint(1) unsigned NOT NULL DEFAULT 0;
