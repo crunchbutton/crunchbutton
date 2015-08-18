@@ -691,7 +691,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function reopenAutoClosedCommunities(){
 		$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 		$id_admin = $admin->id_admin;
-		$communities = Crunchbutton_Community::sq( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = true' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = true' );
 		foreach( $communities as $community ){
 			$community->reopenAutoClosedCommunity();
 		}
