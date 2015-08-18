@@ -100,8 +100,11 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		}
 		if( !$automatically ){
 			$admin = $assignment->admin();
+			$period = $assignment->shift()->startEndToString();
+			$community = $assignment->community()->name;
 			$num = $admin->phone;
-			Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => 'Shift confirmed by driver!', 'phone' => $num, 'bubble' => true ] );
+			$message = 'Shift confirmed by ' .  $community . ' driver ' . $admin->name . '!';
+			Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => $message, 'phone' => $num, 'bubble' => true ] );
 		}
 		return true;
 	}
