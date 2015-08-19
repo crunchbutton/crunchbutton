@@ -44,7 +44,9 @@ class Crunchbutton_Order_Logistics_DriverLocation {
 
     public $hasGeo;
 
-	public function __construct($communityCenter) {
+    public $debug;
+
+	public function __construct($communityCenter, $debug=false) {
 		$this->communityCenter = $communityCenter;
 		$this->lat = $communityCenter->lat;
 		$this->lon = $communityCenter->lon;
@@ -61,6 +63,7 @@ class Crunchbutton_Order_Logistics_DriverLocation {
 
         $this->latestActionTS = null;
         $this->hasGeo = false;
+        $this->debug = $debug;
 	}
 
     public function getTravelTime($beginType, $endType) {
@@ -103,11 +106,39 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             if ($beginTS + $travelTime > $curTS) {
                 $endWeight = $curTS - $beginTS;
                 $beginWeight = $beginTS + $travelTime - $curTS;
+                if ($this->debug) {
+                    print "Calculate current location using interpolation\n";
+                    print "Begin type: ".$this->beginType."\n";
+                    print "End type: ".$this->endType."\n";
+                    print "Begin TS: ".$beginTS."\n";
+                    print "Travel time: ".$travelTime."\n";
+                    print "Cur TS: ".$curTS."\n";
+                    print "Begin weight:".$beginWeight."\n";
+                    print "End weight:".$endWeight."\n";
+                    print "Begin lat:".$this->beginLat."\n";
+                    print "End lat:".$this->endLat."\n";
+                    print "Begin lon:".$this->beginLon."\n";
+                    print "End lon:".$this->endLon."\n";
+                }
                 $this->lat = $this->wavg($this->beginLat, $this->endLat, $beginWeight, $endWeight);
                 $this->lon = $this->wavg($this->beginLon, $this->endLon, $beginWeight, $endWeight);
             } else {
                 $endWeight = self::DEFAULT_FACTOR;
                 $beginWeight = 1 - $endWeight;
+                if ($this->debug) {
+                    print "Calculate current location using 90 percent interpolation\n";
+                    print "Begin type: ".$this->beginType."\n";
+                    print "End type: ".$this->endType."\n";
+                    print "Begin TS: ".$beginTS."\n";
+                    print "Travel time: ".$travelTime."\n";
+                    print "Cur TS: ".$curTS."\n";
+                    print "Begin weight:".$beginWeight."\n";
+                    print "End weight:".$endWeight."\n";
+                    print "Begin lat:".$this->beginLat."\n";
+                    print "End lat:".$this->endLat."\n";
+                    print "Begin lon:".$this->beginLon."\n";
+                    print "End lon:".$this->endLon."\n";
+                }
                 $this->lat = $this->wavg($this->beginLat, $this->endLat, $beginWeight, $endWeight);
                 $this->lon = $this->wavg($this->beginLon, $this->endLon, $beginWeight, $endWeight);
             }
@@ -251,6 +282,16 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             $this->numPickedUpOrders++;
             $isChanged = false;
 
+            if ($this->debug) {
+                $tmpdate = new DateTime();
+                $tmpdate->setTimestamp($actionTimestamp);
+                $tmpdate->setTimezone(new DateTimeZone(c::config()->timezone));
+                $tmpdateString = $tmpdate->format('Y-m-d H:i:s');
+                print "Adding picked up order: \n";
+                print "Picked up timestamp: ".$actionTimestamp."\n";
+                print "Picked up time: ".$tmpdateString."\n";
+            }
+
             if (is_null($this->latestActionTS) || $actionTimestamp > $this->latestActionTS) {
                 $this->latestActionTS = $actionTimestamp;
                 $this->beginTS = $actionTimestamp;
@@ -280,6 +321,16 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             $this->numAcceptedOrders++;
 
             $isChanged = false;
+
+            if ($this->debug) {
+                $tmpdate = new DateTime();
+                $tmpdate->setTimestamp($actionTimestamp);
+                $tmpdate->setTimezone(new DateTimeZone(c::config()->timezone));
+                $tmpdateString = $tmpdate->format('Y-m-d H:i:s');
+                print "Adding accepted order: \n";
+                print "Accepted timestamp: ".$actionTimestamp."\n";
+                print "Accepted time: ".$tmpdateString."\n";
+            }
 
             if ($this->numPickedUpOrders == 0 && $this->numDeliveredOrders == 0) {
                 if ($this->numAcceptedOrders == 1 || $actionTimestamp < $this->earliestAcceptedTS) {
@@ -315,6 +366,17 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             !is_null($orderLat) && !is_null($orderLon)) {
 
             $isChanged = false;
+            if ($this->debug) {
+                $tmpdate = new DateTime();
+                $tmpdate->setTimestamp($actionTimestamp);
+                $tmpdate->setTimezone(new DateTimeZone(c::config()->timezone));
+                $tmpdateString = $tmpdate->format('Y-m-d H:i:s');
+                print "Adding delivered order: \n";
+                print "Delivery timestamp: ".$actionTimestamp."\n";
+                print "Delivery time: ".$tmpdateString."\n";
+                print "DEFAULT_TIME: ".self::DEFAULT_TIME."\n";
+                print "Cur timestamp: ".$curTimestamp."\n";
+            }
             if (($actionTimestamp + self::DEFAULT_TIME) > $curTimestamp) {
 
                 $this->numDeliveredOrders++;
