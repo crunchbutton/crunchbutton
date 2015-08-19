@@ -23,4 +23,4 @@ CREATE TABLE `custom_query_version` (
 
 ALTER TABLE `community` ADD COLUMN `top` TINYINT(4) unsigned NOT NULL DEFAULT 0;
 
-INSERT INTO `cron_log` ( `description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`) VALUES ( 'Smart population of "our most popular locations"', 'Crunchbutton_Cron_SmartCommunitySortPopulation', '2015-08-19 10:00:00', 'day', 1, 'idle', null, null, 0 );
+INSERT INTO `cron_log` ( `description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`) VALUES ( 'Smart population of "our most popular locations"', 'Crunchbutton_Cron_Job_SmartCommunitySortPopulation', '2015-08-19 10:00:00', 'day', 1, 'idle', null, null, 0 );
