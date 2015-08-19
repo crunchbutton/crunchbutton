@@ -2145,7 +2145,6 @@ select.form-input {
 .cart-item-customize-item select {
 	border-color: #f77748;
 	background: #FFF;
-	padding-right: 3em;
 	margin-left: 0;
 	margin-bottom: .8em;
 	box-sizing: border-box;
@@ -2183,6 +2182,9 @@ select.form-input {
 	padding-top: .3em;
 	pointer-events:none;
 }
+	.form-input-select select::-ms-expand {
+	 	display: none;
+	}
 .payment-form-select-year {
 	margin-left: 1.2em;
 }
