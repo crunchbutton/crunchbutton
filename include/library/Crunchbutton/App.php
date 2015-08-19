@@ -462,11 +462,11 @@ class Crunchbutton_App extends Cana_App {
 			}
 
 			$config['topCommunities'] = [];
-			foreach (Community_Alias::q('select * from community_alias where top=true order by `sort`') as $community_alias) {
-				$config['topCommunities'][] = [
-					'alias' => $community_alias->alias,
-					'name' => $community_alias->name_alt
-				];
+			foreach (Community::q('SELECT * FROM community c WHERE c.top IS NOT NULL AND c.top >= 1 ORDER BY c.top ASC') as $community) {
+				$community_alias = Community_Alias::q( 'SELECT * FROM community_alias WHERE id_community = ? ORDER BY id_community_alias DESC LIMIT 1', [ $community->id_community ] )->get( 0 );
+				if ( $community_alias->id_community_alias ){
+					$config['topCommunities'][] = [ 'alias' => $community_alias->alias, 'name' => $community->name ];
+				}
 			}
 		}
 
