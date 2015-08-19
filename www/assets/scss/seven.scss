@@ -2131,7 +2131,7 @@ select.form-input {
 	padding-right: 3em;
 }
 .cart-item-customize-item-select{
-	
+
 }
 .cart-item-customize-select-name {
 	font-size: 1.2em;
@@ -4115,6 +4115,7 @@ font-familt: "Museo Slab";
 		background: $bodyBgColor;
 		background-size: 333px 100%;
 		border-radius: 6px;
+		position:relative;
 	}
 	.restaurant-content-body-background {
 		background: none;
@@ -4135,7 +4136,6 @@ font-familt: "Museo Slab";
 		float: right;
 		width: 40%;
 	}
-
 }
 @media screen and (max-width: 1024px) {
 	.hide-mobile {
