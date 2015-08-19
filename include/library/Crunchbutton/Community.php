@@ -1091,5 +1091,25 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return true;
 	}
 
+	// Smart population of "our most popular locations" on UI2 #6056
+	public static function smartSortPopulation(){
+		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();
+		if( $query ){
+			$results = $query->run();
+			if( $results ){
+				c::db()->query( 'UPDATE community SET top = 0' );
+				$position = 1;
+				foreach( $results as $result ){
+					$community = Crunchbutton_Community::o( $result->id_community );
+					if( $community->id_community ){
+						$community->top = $position;
+						$community->save();
+						$position++;
+					}
+				}
+			}
+		}
+	}
+
 
 }
