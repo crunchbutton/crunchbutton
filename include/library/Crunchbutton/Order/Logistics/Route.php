@@ -33,4 +33,18 @@ class Crunchbutton_Order_Logistics_Route extends Cana_Table
         }
     }
 
+    static public function defaultOrderLogisticsRoute($id_order, $id_admin, $seq, $node_type, $leavingTime, $lat, $lon, $isFake=false) {
+        return new Crunchbutton_Order_Logistics_Route([
+            'id_order' => $id_order,
+            'id_admin' => $id_admin,
+            'seq' => $seq,
+            'node_type' => $node_type,
+            'lat' => $lat,
+            'lon' => $lon,
+            'leaving_time' => $leavingTime,
+            'is_fake' => $isFake
+        ]);
+    }
+
+
 }

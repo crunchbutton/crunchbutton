@@ -1,0 +1,1 @@
+ALTER TABLE `order_logistics_route` ADD COLUMN `is_fake` TINYINT(1) NULL DEFAULT '0';
