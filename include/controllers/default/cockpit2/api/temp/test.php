@@ -3,7 +3,9 @@
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
-		Crunchbutton_Community::smartSortPopulation();
+		$j = new Crunchbutton_Cron_Job_SmartCommunitySortPopulation;
+		$j->run();
+		// Crunchbutton_Community::smartSortPopulation();
 
 
 
