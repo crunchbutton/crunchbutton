@@ -377,6 +377,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                 $driverOrderCount++;
                             }
                             else {
+                                $isRefunded = $order->refunded;
                                 $isPickedUpOrder = false;
                                 $addOrder = false;
                                 $lastStatus = NULL;
@@ -400,14 +401,14 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                                 // We care if either an undelivered order belongs to the driver, or is a priority order
                                 if ($lastStatusAdmin && $lastStatusAdmin == $driver->id_admin) {
-                                    if ($lastStatus == 'pickedup') {
+                                    if ($lastStatus == 'pickedup' && !$isRefunded) {
 //                                        print "Found picked-up order\n";
                                         $isPickedUpOrder = true;
                                         $addOrder = true;
                                         $driver->__driverLocation->addPickedUpOrder($lastStatusTimestamp, $server_dt->getTimestamp(), $this->getRestaurantGeo($order),
                                             $order->lat, $order->lon);
                                     }
-                                    else if ($lastStatus == 'accepted') {
+                                    else if ($lastStatus == 'accepted' && !$isRefunded) {
 //                                        print "Found accepted order\n";
                                         $addOrder = true;
                                         $driver->__driverLocation->addAcceptedOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
@@ -420,7 +421,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                             $order->lat, $order->lon, $this->getRestaurantGeo($order));
                                     }
                                 }
-                                else if ($lastStatus == 'new' && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
+                                else if ($lastStatus == 'new' && !$isRefunded && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
 //                                    print "Found new priority order\n";
                                     $addOrder = true;
                                 }
@@ -636,7 +637,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 if ($order->id_order == $cur_id_order || $order->id_restaurant != $cur_id_restaurant) {
                     continue;
                 }
-
+                $isRefunded = $order->refunded;
                 $lastStatus = NULL;
                 $lastStatusDriver = NULL;
                 $lastStatusTimestamp = NULL;
@@ -662,7 +663,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     continue;
                 }
 
-                if ($lastStatus == 'accepted') {
+                if ($lastStatus == 'accepted' && !$isRefunded) {
                     // Count accepted orders that have happened in the last n minutes
                     // This won't work properly if the earlier filters for restaurant and such are not implemented
 
@@ -673,7 +674,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         //  Assumption is he's got the food and bundling doesn't help him.
                         $tooEarlyFlag = true;
                     }
-                } else if ($lastStatus == 'new' && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
+                } else if ($lastStatus == 'new'  && !$isRefunded && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
                     // Interested in new orders if they show up in the priority list with the top priority
                     //  and these haven't expired yet.
                     // This won't work properly if the earlier filters for restaurant and such are not implemented
