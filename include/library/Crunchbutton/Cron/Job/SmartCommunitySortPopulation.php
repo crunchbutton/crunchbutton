@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Cron_SmartCommunitySortPopulation extends Crunchbutton_Cron_Log {
+class Crunchbutton_Cron_Job_SmartCommunitySortPopulation extends Crunchbutton_Cron_Log {
 
 	public function run(){
 
