@@ -306,7 +306,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         $numDriversWithGoodTimes = 0;  // Number of drivers who don't have orders that are late by more than n minutes.
 
         if (!$skipFlag) {
-            $new_id_restaurant = $newOrder->id_restaurant;
             $new_id_order = $newOrder->id_order;
             $curCommunityTz = $curCommunity->timezone;
 
@@ -378,6 +377,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                             }
                             else {
                                 $isRefunded = $order->refunded;
+                                $doNotReimburseDriver = $order->do_not_reimburse_driver;
                                 $isPickedUpOrder = false;
                                 $addOrder = false;
                                 $lastStatus = NULL;
@@ -401,14 +401,14 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                                 // We care if either an undelivered order belongs to the driver, or is a priority order
                                 if ($lastStatusAdmin && $lastStatusAdmin == $driver->id_admin) {
-                                    if ($lastStatus == 'pickedup' && !$isRefunded) {
+                                    if ($lastStatus == 'pickedup' && (!$isRefunded || !$doNotReimburseDriver)) {
 //                                        print "Found picked-up order\n";
                                         $isPickedUpOrder = true;
                                         $addOrder = true;
                                         $driver->__driverLocation->addPickedUpOrder($lastStatusTimestamp, $server_dt->getTimestamp(), $this->getRestaurantGeo($order),
                                             $order->lat, $order->lon);
                                     }
-                                    else if ($lastStatus == 'accepted' && !$isRefunded) {
+                                    else if ($lastStatus == 'accepted' && (!$isRefunded || !$doNotReimburseDriver)) {
 //                                        print "Found accepted order\n";
                                         $addOrder = true;
                                         $driver->__driverLocation->addAcceptedOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
@@ -421,7 +421,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                             $order->lat, $order->lon, $this->getRestaurantGeo($order));
                                     }
                                 }
-                                else if ($lastStatus == 'new' && !$isRefunded && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
+                                else if ($lastStatus == 'new' && (!$isRefunded || !$doNotReimburseDriver) && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
 //                                    print "Found new priority order\n";
                                     $addOrder = true;
                                 }
@@ -439,8 +439,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     }
                     if (!$skipFlag) {
                         $driver->__driverLocation->determineDriverGeo($driver, $server_dt);
-                        $tmpLat = $driver->__driverLocation->lat;
-                        $tmpLon = $driver->__driverLocation->lon;
                         $dlist->updateDriverDestinationGeo($driver->__driverLocation);
                         $driver->__dlist = $dlist;
                     }
@@ -473,10 +471,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $dicts = $dlist->createOptimizerInputs($this->fakeOrder, $doCreateFakeOrders);
                     $dOld = $dicts['old']; // without new order
                     $dNew = $dicts['new']; // with new order
+                    $dNewFakes = $dicts['newFakes'];
                     $hasFakeOrder = $dicts['hasFakeOrder'];
 
                     if (!is_null($dNew)) {
-
                         if (!$hasFakeOrder && $dlist->hasOnlyNewOrder()) {
                             // Nothing to optimize in the original, so we create a dummy result
                             $resultOld = (object)['resultType' => Crunchbutton_Optimizer_Result::RTYPE_OK, 'score' => 0];
@@ -504,14 +502,23 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                 $numDriversWithGoodTimes += 1;
                             }
 
+                            $resultNew->saveRouteToDb($resultNew->resultType, $new_id_order, $driver->id_admin, $server_dt,
+                                $dNew, $dNewFakes);
+
+                        } else {
+                            $resultNew->saveRouteToDb($resultNew->resultType, $new_id_order, $driver->id_admin, $server_dt, $dNew);
                         }
                     }
                     else{
                         $skipFlag = true;
                     }
                 }
+                if ($skipFlag) {
+                    // Remove routes
+                    print "Skipped\n";
+                    Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ?', [$new_id_order])->delete();
+                }
             }
-
 
             if ($this->_status == self::STATUS_OK && $numDriversWithGoodTimes == 0) {
                 $this->_status = self::STATUS_ALL_DRIVERS_LATE;
@@ -638,6 +645,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     continue;
                 }
                 $isRefunded = $order->refunded;
+                $doNotReimburseDriver = $order->do_not_reimburse_driver;
                 $lastStatus = NULL;
                 $lastStatusDriver = NULL;
                 $lastStatusTimestamp = NULL;
@@ -663,7 +671,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     continue;
                 }
 
-                if ($lastStatus == 'accepted' && !$isRefunded) {
+                if ($lastStatus == 'accepted' && (!$isRefunded || !$doNotReimburseDriver)) {
                     // Count accepted orders that have happened in the last n minutes
                     // This won't work properly if the earlier filters for restaurant and such are not implemented
 
@@ -674,7 +682,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         //  Assumption is he's got the food and bundling doesn't help him.
                         $tooEarlyFlag = true;
                     }
-                } else if ($lastStatus == 'new'  && !$isRefunded && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
+                } else if ($lastStatus == 'new'  && (!$isRefunded || !$doNotReimburseDriver) && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)){
                     // Interested in new orders if they show up in the priority list with the top priority
                     //  and these haven't expired yet.
                     // This won't work properly if the earlier filters for restaurant and such are not implemented

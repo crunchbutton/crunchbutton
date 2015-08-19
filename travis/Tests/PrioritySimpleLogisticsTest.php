@@ -826,10 +826,10 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
     }
 
-    // One other new order in the system within the last n minutes, given to driver 1, but refunded.
+    // One other new order in the system within the last n minutes, given to driver 1, but refunded and do_not_reimburse_driver = true.
     //  New order from same restaurant.
     //  Should assign to neither driver.
-    public function testLogisticsTwoOrdersSameRestaurantWithRefund()
+    public function testLogisticsTwoOrdersSameRestaurantWithRefundA()
     {
         $seconds = 50;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -851,6 +851,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o1->refunded = true;
+        $o1->do_not_reimburse_driver = true;
         $o1->save();
 
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
@@ -894,6 +895,80 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ol->numDriversWithPriority, 0);
     }
 
+
+    // One other new order in the system within the last n minutes, given to driver 1, but refunded and do_not_reimburse_driver = false.
+    //  New order from same restaurant.
+    //  Should assign to driver 1.
+    public function testLogisticsTwoOrdersSameRestaurantWithRefundB()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('+ ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+
+        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->refunded = true;
+        $o1->do_not_reimburse_driver = false;
+        $o1->save();
+
+        $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
+            0, $laterDate);
+        $pR1D1->save();
+
+        $pR1D2 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D2->save();
+
+        $pR1D3 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver3,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+
+        $pR1D3->save();
+
+        $pR1D4 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver4,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D4->save();
+
+        $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
+        $o2->save();
+
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+
+        $pR1D1->delete();
+        $pR1D2->delete();
+        $pR1D3->delete();
+        $pR1D4->delete();
+        $o1->delete();
+        $o2->delete();
+        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
 
 
     // One other new order in the system within the last n minutes, given to driver 1.
@@ -1325,11 +1400,11 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
-    // One order accepted in the system within the last n minutes by driver 2.  However, order is refunded.
+    // One order accepted in the system within the last n minutes by driver 2.  However, order is refunded and do_not_reimburse_driver = true
     //  New order from same restaurant
     //  Should assign priority to no driver.
     // Also give a high priority to driver 1 for prev order, just to make sure the code doesn't screw up there
-    public function testLogisticsAcceptedOrderWithRefund()
+    public function testLogisticsAcceptedOrderWithRefundA()
     {
         $seconds = 50;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -1351,6 +1426,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o1->refunded = true;
+        $o1->do_not_reimburse_driver = true;
         $o1->save();
 
         $oa1 = new Order_Action([
@@ -1400,6 +1476,90 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             $this->assertEquals($driver->__priority, false);
         }
         $this->assertEquals($ol->numDriversWithPriority, 0);
+    }
+
+    // One order accepted in the system within the last n minutes by driver 2.  However, order is refunded and do_not_reimburse_driver = false
+    //  New order from same restaurant
+    //  Should assign to driver 2
+    // Also give a high priority to driver 1 for prev order, just to make sure the code doesn't screw up there
+    public function testLogisticsAcceptedOrderWithRefundB()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('+ ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+
+        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->refunded = true;
+        $o1->do_not_reimburse_driver = false;
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
+            0, $laterDate);
+        $pR1D1->save();
+
+        $pR1D2 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D2->save();
+
+        $pR1D3 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver3,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+
+        $pR1D3->save();
+
+        $pR1D4 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver4,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D4->save();
+
+        $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
+        $o2->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+
+        $pR1D1->delete();
+        $pR1D2->delete();
+        $pR1D3->delete();
+        $pR1D4->delete();
+        $oa1->delete();
+        $o1->delete();
+        $o2->delete();
+        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
     }
 
 

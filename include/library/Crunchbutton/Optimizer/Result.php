@@ -8,6 +8,8 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
     const RTYPE_DROPPED_ORDERS = 3;
     const RTYPE_OK = 4;
 
+    const SEQ_FOR_BAD_ROUTE = -99;
+
     public $hasDroppedNodes;
     public $numNodes;
     public $resultType;
@@ -54,9 +56,32 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
         $this->numBadTimes = $numBadTimes;
     }
 
-    public function getRoute($fakeOrderIds) {
-        // Need a list of $fakeOrderIds to remove from the route
+    public function saveRouteToDb($status, $id_order, $id_admin, $curTime, $input, $fakeIndicators=null) {
+        if ($status == Crunchbutton_Optimizer_Result::RTYPE_OK) {
+            if ($this->numNodes == $input->numNodes) {
+                for ($i = 0; $i < $this->numNodes; $i++) {
+                    $inputNodeIndex = $this->nodes[$i];
+                    $leavingTime = clone $curTime;
+                    $leavingTime->modify('+ ' . $this->absFinishedTimes[$i] . ' minutes');
+                    $leavingTime = $leavingTime->format('Y-m-d H:i:s');
+                    $olr = Crunchbutton_Order_Logistics_Route::defaultOrderLogisticsRoute($id_order, $id_admin, $i,
+                        $input->nodeTypes[$inputNodeIndex], $leavingTime,
+                        $input->firstCoords[$inputNodeIndex], $input->secondCoords[$inputNodeIndex],
+                        $fakeIndicators[$inputNodeIndex]);
+                    $olr->save();
+                }
+            }
+        } else{
+            if ($input->numNodes > 0) {
+                $leaving_time = $curTime->format('Y-m-d H:i:s');
+                $olr = Crunchbutton_Order_Logistics_Route::defaultOrderLogisticsRoute($id_order, $id_admin,
+                    self::SEQ_FOR_BAD_ROUTE, $status, $leaving_time,
+                    $input->firstCoords[0], $input->secondCoords[0], false);
+                $olr->save();
+            }
+        }
         return null;
     }
+
 
 }

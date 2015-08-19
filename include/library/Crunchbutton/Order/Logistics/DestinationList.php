@@ -319,6 +319,11 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
                 $optInputsList['old'] = $old;
                 $this->oldFakeOrderIds = [$this->id_old_counter + 1, $this->id_old_counter + 2];
 
+//                $oldFakeIndicators = array_fill(0, $totalOldNodes, 0);
+//                $oldFakeIndicators[$numOldNodes] = 1;
+//                $oldFakeIndicators[$numOldNodes+1] = 1;
+//                $optInputsList['oldFakes'] = $oldFakeIndicators;
+
                 $new = $this->createBaseInput();
                 $new->numNodes = $totalNewNodes;
                 $this->copyNewArraysToOptimizerInput($new);
@@ -326,6 +331,12 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
                     [$this->id_new_counter + 2]);
                 $optInputsList['new'] = $new;
                 $this->newFakeOrderIds = [$this->id_new_counter + 1, $this->id_new_counter + 2];
+
+                $newFakeIndicators = array_fill(0, $totalNewNodes, 0);
+                $newFakeIndicators[$numNewNodes] = 1;
+                $newFakeIndicators[$numNewNodes+1] = 1;
+                $optInputsList['newFakes'] = $newFakeIndicators;
+
                 $optInputsList['hasFakeOrder'] = true;
             } else if (!$doCreateFakeOrders) {
                 // Only do the new optimization
@@ -336,6 +347,9 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
                 $new->numNodes = 3;
                 $this->copyNewArraysToOptimizerInput($new);
                 $optInputsList['new'] = $new;
+
+                $newFakeIndicators = array_fill(0, $numNewNodes, 0);
+                $optInputsList['newFakes'] = $newFakeIndicators;
             }
 
         } else if ($numNewNodes > 3) {
@@ -347,10 +361,16 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
             $this->copyOldArraysToOptimizerInput($old);
             $optInputsList['old'] = $old;
 
+//            $oldFakeIndicators = array_fill(0, $numOldNodes, 0);
+//            $optInputsList['oldFakes'] = $oldFakeIndicators;
+
             $new = $this->createBaseInput();
             $new->numNodes = $numNewNodes;
             $this->copyNewArraysToOptimizerInput($new);
             $optInputsList['new'] = $new;
+
+            $newFakeIndicators = array_fill(0, $numNewNodes, 0);
+            $optInputsList['newFakes'] = $newFakeIndicators;
 
         }
 

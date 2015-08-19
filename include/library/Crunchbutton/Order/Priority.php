@@ -25,7 +25,7 @@ class Crunchbutton_Order_Priority extends Cana_Table
         if (is_null($id_restaurant)) {
             $where = 'WHERE p.id_admin=? ';
             $where .= ' AND p.priority_time >= "' . $interval . '" ';
-            $query = 'SELECT p.* FROM order_priority p  ' . $where;
+            $query = 'SELECT p.* FROM order_priority p ' . $where;
             return Crunchbutton_Order_Priority::q($query, [$id_admin]);
         }
         else {
