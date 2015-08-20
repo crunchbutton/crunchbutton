@@ -1218,9 +1218,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment->pay_type = $schedule->pay_type;
 						$payment->adjustment = $schedule->adjustment;
 						$payment->save();
-
 						$p = $payment->id_payment;
-
 					}
 
 					if( $p ){
@@ -1291,9 +1289,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$error = true;
 					}
 					if( !$contact_name ){
-						// $schedule->log .= 'Contact name is missing.';
-						// $error = true;
+						$schedule->log .= 'Contact name is missing.';
+						$error = true;
 					}
+
 					if( $error ){
 						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
 						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;

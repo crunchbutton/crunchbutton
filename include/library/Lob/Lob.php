@@ -15,6 +15,20 @@ class Lob {
 		return $this->_checks;
 	}
 
+	public function addresses() {
+		if (!$this->_addresses) {
+			$this->_addresses = new Addresses($this);
+		}
+		return $this->_addresses;
+	}
+
+	public function bankAccounts(){
+		if (!$this->_bank_accounts) {
+			$this->_bank_accounts = new BankAccounts($this);
+		}
+		return $this->_bank_accounts;
+	}
+
 	public function key() {
 		return $this->_key;
 	}

@@ -10,6 +10,8 @@
 	<div class="divider"></div>
 
 	<h2 class="title">#{{result.id_restaurant}} - {{result.restaurant}}</h2>
+	<a href="/restaurant/payment-info/{{result.id_restaurant}}">Edit payment info</a>
+	<br/><br/>
 
 		<table class="tb-grid tb-zebra">
 			<tbody>
@@ -98,7 +100,9 @@
 				</tr>
 				<tr ng-if="result.check_id">
 					<td>Lob (Check)</td>
-					<td>{{result.check_id}}</td>
+					<td>
+						<a target="_blank" href="https://dashboard.lob.com/#/checks/{{result.check_id}}">{{result.check_id}}</a>
+					</td>
 				</tr>
 				<tr positive-or-negative-color="{{result.calcs.credit_charge}}" ng-if="result.calcs.credit_charge">
 					<td>Credit Card Charge</td>
@@ -152,7 +156,7 @@
 					<td>Payment Notes</td>
 					<td>{{result.note}}</td>
 				</tr>
-				<tr ng-if="result.id_payment">
+				<tr ng-if="result.id_payment && !result.check_id">
 					<td><strong>Payment Status</strong></td>
 					<td ng-class="result.payment_status">
 						{{result.payment_status}}
