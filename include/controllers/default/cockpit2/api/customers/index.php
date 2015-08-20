@@ -53,10 +53,10 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 				'search' => stripslashes($search),
 				'fields' => [
 					'`user`.name' => 'like',
-					'`user`.phone' => 'like',
+					'`user`.phone' => 'likephone',
 					'`user`.address' => 'like',
 					'`order`.name' => 'like',
-					'`order`.phone' => 'like',
+					'`order`.phone' => 'likephone',
 					'`order`.address' => 'like',
 					'restaurant.name' => 'like',
 					'community.name' => 'like',
