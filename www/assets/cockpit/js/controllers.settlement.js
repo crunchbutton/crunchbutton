@@ -15,33 +15,67 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 			fullcount: false
 		},
 		update: function() {
-			$scope.ready = false;
-			SettlementService.list({
-				'page': $scope.query.page,
-				'search': $scope.query.search,
-				'id_driver': $scope.query.driver,
-				'payment_type': $scope.query.payment_type,
-				'type': $scope.query.type,
-				'status': $scope.query.status,
-				'date': $scope.query.date
-			}, function( data ){
-				$scope.payments = data.results;
-				$scope.pages = data.pages;
-				$scope.complete(data);
-			});
+			update();
 		}
 	});
 
-	$scope.show_more_options = true;
+	var update = function(){
+		$scope.ready = false;
+		SettlementService.list({
+			'page': $scope.query.page,
+			'search': $scope.query.search,
+			'id_driver': $scope.query.driver,
+			'payment_type': $scope.query.payment_type,
+			'type': $scope.query.type,
+			'status': $scope.query.status,
+			'date': $scope.query.date
+		}, function( data ){
+			$scope.payments = data.results;
+			$scope.pages = data.pages;
+			$scope.complete(data);
+		});
+	}
 
-	$scope.query.status = 0;
-	$scope.query.payment_type = '0';
-	$scope.query.type = '0';
+	$scope.show_more_options = false;
 
 	$scope.types = SettlementService.types();
 	$scope.pay_types = SettlementService.pay_types();
 	$scope.payment_statuses = SettlementService.scheduled_statuses();
 	$scope.update();
+
+	$scope.$watch( 'query.type', function( newValue, oldValue, scope ) {
+		if( newValue == 'restaurant' ){
+			$scope.query.payment_type = 'payment';
+		}
+	});
+
+	$scope.delete = function( id_payment_schedule ){
+		App.confirm ( 'Confirm delete payment ' + id_payment_schedule + '?', 'Confirm', function(){
+			SettlementService.drivers.delete( id_payment_schedule, function(){
+				update();
+			} );
+		}, function(){}, null, true );
+	}
+
+	$scope.payment_status = function( id_payment ){
+		$scope.balancedRefresh = id_payment;
+		SettlementService.drivers.payment_status( id_payment, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+			} else {
+				update();
+			}
+			$scope.balancedRefresh = null;
+		} );
+	}
+
+	$scope.archive = function( id_payment_schedule ){
+		App.confirm ( 'Confirm archive payment ' + id_payment_schedule + '?', 'Confirm', function(){
+			SettlementService.drivers.archive( id_payment_schedule, function(){
+				update();
+			} );
+		}, function(){}, null, true );
+	}
 
 });
 
