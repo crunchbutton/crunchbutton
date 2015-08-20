@@ -33,7 +33,7 @@
  */
 class ApnsPHP_Message
 {
-	const PAYLOAD_MAXIMUM_SIZE = 256; /**< @type integer The maximum size allowed for a notification payload. */
+	const PAYLOAD_MAXIMUM_SIZE = 2048; /**< @type integer The maximum size allowed for a notification payload. */
 	const APPLE_RESERVED_NAMESPACE = 'aps'; /**< @type string The Apple-reserved aps namespace. */
 
 	protected $_bAutoAdjustLongPayload = true; /**< @type boolean If the JSON payload is longer than maximum allowed size, shorts message text. */
@@ -245,7 +245,7 @@ class ApnsPHP_Message
 	 */
 	public function setCustomProperty($sName, $mValue)
 	{
-		if ($sName == self::APPLE_RESERVED_NAMESPACE) {
+		if (trim($sName) == self::APPLE_RESERVED_NAMESPACE) {
 			throw new ApnsPHP_Message_Exception(
 				"Property name '" . self::APPLE_RESERVED_NAMESPACE . "' can not be used for custom property."
 			);

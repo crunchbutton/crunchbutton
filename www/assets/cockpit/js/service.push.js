@@ -3,28 +3,18 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 	var service = {
 		id: null,
 		badges: 0,
-		registered: false
+		registered: false,
+		plugin: null
 	};
 
-	if (!App.isPhoneGap) {
+	if (!App.isPhoneGap || !window.parent.PushNotification) {
 		return service;
 	}
 
-	document.addEventListener('pushnotification', function(e) {
-		service.receive(e.msg);
-	}, false);
-
-	window.parent.pushnotification = function( e ) {
-		if( e.msg ){
-			service.receive(e.msg);
-		} else {
-			service.receive(e);
-		}
-
-	};
-
 	var saveToken = function(id, complete) {
-		service.id = id;
+		service.id = data.registrationId;
+		console.debug('Push id: ' + data.registrationId);
+
 		if ( window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
 			var key = 'push-android';
 		} else {
@@ -36,22 +26,29 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 			url: App.service + 'config',
 			data: {key: key, value: service.id}
 		});
+
 		complete();
 	};
 
 	service.register = function(complete) {
+		
+		service.plugin = window.parent.PushNotification.init({'android': {'senderID': '1029345412368'}, 'ios': {}, 'windows': {} } );
 
-		if ( window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
-			var params = {
-				'senderID': '1029345412368',
-				'ecb': 'pushnotification'
-			};
-		} else {
-			var params = {
-				'badge': 'true',
-				'sound': 'true',
-				'alert': 'true',
-				'ecb': 'pushnotification',
+		service.plugin.on('registration', function(data) {
+			saveToken(data, complete);
+		});
+
+		service.plugin.on('error', function(data) {
+			console.error('Failed registering push notifications', data);
+			App.alert('Failed to enable Push notifications. Please go to your push notification settings on your device and enable them for Cockpit.');
+			complete();
+		});
+
+		service.plugin.on('notification', function(data) {
+			service.receive(data);
+		});
+
+			/*
 				'categories': [
 					{
 						'identifier': 'order-new-test',
@@ -92,37 +89,16 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 				]
 			};
 		}
+		*/
 
-		parent.plugins.pushNotification.register(
-			function(id) {
-				service.id = id;
-				service.registered = true;
-				console.debug('Push id: ' + id);
-
-				if (id == 'OK') {
-					complete();
-					return;
-				}
-
-				saveToken(id, complete);
-			},
-			function() {
-				console.error('Failed registering push notifications', arguments);
-				App.alert('Failed to enable Push notifications. Please go to your push notification settings on your device and enable them for Cockpit.');
-				complete();
-			},params
-		);
 	};
 
 
 	service.receive = function(msg) {
+		
+		console.debug(msg);
 
-		var complete = function() {};
-
-		if (msg.event == 'registered' && msg.regid) {
-			saveToken(msg.regid, complete);
-		}
-
+		/*
 		switch (msg.identifier) {
 			case 'i11': // accept an order
 				var order = msg.alert.replace(/^#([0-9]+).*$/,'$1');
@@ -141,6 +117,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 				return;
 				break;
 		}
+		*/
 
 		var newOrder = function( id_order ){
 			var open = function(){
@@ -187,7 +164,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 			}
 			if( parseInt( msg.foreground ) == 1 && msg.badge ){
 				service.badge++;
-				parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
+				service.plugin.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
 			}
 		}
 	}

@@ -30,7 +30,6 @@
  * @throws Exception if class name is empty, the current path is empty or class
  *         file does not exists or file was loaded but class name was not found.
  */
- /*
 function ApnsPHP_Autoload($sClassName)
 {
 	if (empty($sClassName)) {
@@ -46,14 +45,8 @@ function ApnsPHP_Autoload($sClassName)
 		$sPath, DIRECTORY_SEPARATOR,
 		str_replace('_', DIRECTORY_SEPARATOR, $sClassName)
 	);
-	if (!is_file($sFile) || !is_readable($sFile)) {
-		throw new Exception("Class file '{$sFile}' does not exists");
-	}
-
-	require_once $sFile;
-
-	if (!class_exists($sClassName, false) && !interface_exists($sClassName, false)) {
-		throw new Exception("File '{$sFile}' was loaded but class '{$sClassName}' was not found in file");
+	if (is_file($sFile) && is_readable($sFile)) {
+		require_once $sFile;
 	}
 }
 
@@ -63,4 +56,3 @@ if (function_exists('__autoload')) {
 	spl_autoload_register('__autoload');
 }
 spl_autoload_register('ApnsPHP_Autoload');
-*/
