@@ -1032,8 +1032,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function doDriverPayments(){
-		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_DRIVER . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" AND ( log = "Schedule created" OR log IS NULL ) ORDER BY id_payment_schedule DESC LIMIT 50';
-		$scheduled_payments = Cockpit_Payment_Schedule::q( $query );
+		$query = 'SELECT * FROM payment_schedule WHERE type = ? AND status = ? AND ( log = "Schedule created" OR log IS NULL ) AND date > ? ORDER BY id_payment_schedule ASC';
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '-30 days' );
+		$period = $now->format( 'Y-m-d' );
+		$scheduled_payments = Cockpit_Payment_Schedule::q( $query, [ Cockpit_Payment_Schedule::TYPE_DRIVER, Cockpit_Payment_Schedule::STATUS_SCHEDULED, $period ] );
 		$settlement = new Crunchbutton_Settlement;
 		foreach( $scheduled_payments as $scheduled ){
 			$settlement->payDriver( $scheduled->id_payment_schedule );
@@ -1041,8 +1044,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function doRestaurantsPayments(){
-		$query = 'SELECT * FROM payment_schedule WHERE type="' . Cockpit_Payment_Schedule::TYPE_RESTAURANT . '" AND status = "' . Cockpit_Payment_Schedule::STATUS_SCHEDULED . '" AND ( log = "Schedule created" OR log IS NULL ) ORDER BY id_payment_schedule DESC LIMIT 50';
-		$scheduled_payments = Cockpit_Payment_Schedule::q( $query );
+		$query = 'SELECT * FROM payment_schedule WHERE type = ? AND status = ? AND ( log = "Schedule created" OR log IS NULL ) AND date > ? ORDER BY id_payment_schedule ASC';
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '-30 days' );
+		$period = $now->format( 'Y-m-d' );
+		$scheduled_payments = Cockpit_Payment_Schedule::q( $query, [ Cockpit_Payment_Schedule::TYPE_RESTAURANT, Cockpit_Payment_Schedule::STATUS_SCHEDULED, $period ] );
 		$settlement = new Crunchbutton_Settlement;
 		foreach( $scheduled_payments as $scheduled ){
 			$settlement->payRestaurant( $scheduled->id_payment_schedule );
