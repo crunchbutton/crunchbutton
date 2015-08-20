@@ -11,7 +11,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		return service;
 	}
 
-	var saveToken = function(id, complete) {
+	var saveToken = function(data, complete) {
 		service.id = data.registrationId;
 		console.debug('Push id: ' + data.registrationId);
 
