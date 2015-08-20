@@ -406,6 +406,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function shoudAutoReply(){
+		return false;
 		$last = $this->lastAutoReplyByPhone( $this->phone );
 		if( !$last ){
 			return true;
