@@ -36,6 +36,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 								break;
 						}
 						break;
+					case 'list':
+						$this->_paymentList();
+						break;
 					default:
 						$this->_error();
 						break;
@@ -962,4 +965,162 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( [ 'error' => $error ] );
 		exit();
 	}
+
+	private function _paymentList(){
+
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : $this->resultsPerPage;
+		$limit = intval( $limit );
+		$search = $this->request()['search'] ? $this->request()['search'] : null;
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$payment_type = ( $this->request()['payment_type'] && $this->request()['payment_type'] != '0' ) ? $this->request()['payment_type'] : null;
+		$status = ( $this->request()['status'] && $this->request()['status'] != '0' ) ? $this->request()['status'] : null;
+		$date = ( $this->request()['date'] && $this->request()['date'] != '0' ) ? $this->request()['date'] : null;
+		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
+		$page = max( $this->request()['page'], 1 );
+		$search = $this->request()['search'];
+		$type = $this->request()['type'];
+		$date = $this->request()['date'];
+		$payment_type = $this->request()['payment_type'];
+		$status = $this->request()['status'];
+		$start = ( ( $page - 1 ) * $resultsPerPage );
+
+		if ($page == 1) {
+			$offset = 0;
+		} else {
+			$offset = intval( ($page-1) * $limit );
+		}
+
+		$q = '
+					SELECT -WILD- FROM payment_schedule ps
+				';
+		$keys = [];
+
+		switch ( $type ) {
+			case 'restaurant':
+				$q .= '
+								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
+						';
+				break;
+
+			case 'driver':
+				$q .= '
+								INNER JOIN admin d ON d.id_admin = ps.id_driver
+						';
+				break;
+
+			default:
+				$q .= '
+								LEFT JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
+								LEFT JOIN admin d ON d.id_admin = ps.id_driver
+						';
+				break;
+		}
+
+		$q .= ' WHERE 1 = 1 ';
+
+
+		if( $payment_type ){
+			$q .= ' AND ps.pay_type = ? ';
+			$keys[] = $payment_type;
+		}
+
+		if( $status ){
+			$q .= ' AND ps.status = ? ';
+			$keys[] = $status;
+		}
+
+		if ($date) {
+			$date = explode( 'T', $date );
+			$date = $date[ 0 ];
+			$q .= '
+				AND ps.date > ? AND ps.date <= ?
+			';
+			$keys[] = $date;
+			$keys[] = $date . ' 23:59:59';
+		}
+
+		if( $search ){
+			switch ( $type ) {
+				case 'restaurant':
+					$s = Crunchbutton_Query::search([
+						'search' => stripslashes( $search ),
+						'fields' => [ 'r.name' => 'like' ]
+					]);
+					break;
+				case 'driver':
+					$s = Crunchbutton_Query::search([
+						'search' => stripslashes( $search ),
+						'fields' => [ 'd.name' => 'like' ]
+					]);
+					break;
+				default:
+					$s = Crunchbutton_Query::search([
+						'search' => stripslashes($search),
+						'fields' => [ 'r.name' => 'like', 'd.name' => 'like' ]
+					]);
+					break;
+			}
+			$q .= $s[ 'query' ];
+			$keys = array_merge( $keys, $s[ 'keys' ] );
+		}
+
+		$count = 0;
+
+		$r = c::db()->query(str_replace( '-WILD-','COUNT(*) as c', $q), $keys);
+		while ($c = $r->fetch()) {
+			$count = intval( $c->c );
+		}
+
+		$q .= ' ORDER BY id_payment_schedule DESC ';
+
+		$q .= ' LIMIT ? OFFSET ? ';
+		$keys[] = $limit;
+		$keys[] = $offset;
+
+		// do the query
+		$data = [];
+
+		switch ( $type ) {
+			case 'restaurant':
+				$query = str_replace( '-WILD-',' ps.*, r.name AS restaurant ', $q );
+				break;
+
+			case 'driver':
+				$query = str_replace( '-WILD-',' ps.*, d.name AS driver ', $q );
+				break;
+
+			default:
+				$query = str_replace( '-WILD-',' ps.*, r.name AS restaurant, d.name AS driver ', $q );
+				break;
+		}
+
+		$r = c::db()->query($query, $keys);
+
+		$i = 1;
+
+		while ( $p = $r->fetch() ) {
+			if( $p->type == Cockpit_Payment_Schedule::TYPE_RESTAURANT ){
+				$p->name = $p->restaurant;
+			}
+			if( $p->type == Cockpit_Payment_Schedule::TYPE_DRIVER ){
+				$p->name = $p->driver;
+			}
+
+			$p->amount = floatval( $p->amount );
+
+			$data[] = $p;
+		}
+
+		$pages = ceil($count / $limit);
+		echo json_encode([
+			'more' => ( $pages > $page ),
+			'count' => intval( $count ),
+			'pages' => $pages,
+			'page' => intval($page),
+			'results' => $data
+		], JSON_PRETTY_PRINT);
+
+	}
+
 }

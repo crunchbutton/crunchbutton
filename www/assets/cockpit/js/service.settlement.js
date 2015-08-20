@@ -21,6 +21,10 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 	service.pay_type_options = [ { 'name': 'All', 'value' : 'all' }, { 'name': 'Check', 'value' : 'check' }, { 'name': 'Deposit', 'value' : 'deposit' } ];
 	service.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
+	settlement.list = $resource( App.service + 'settlement/list', {}, {
+		'list' : { 'method': 'GET', params : { action: 'list' } },
+	}	);
+
 	settlement.restaurants = $resource( App.service + 'settlement/restaurants/:action/:id_payment_schedule/:page/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } },
@@ -59,6 +63,12 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 		'payment_status' : { 'method': 'POST', params : { action: 'payment-status' } },
 		'change_status' : { 'method': 'POST', params : { action: 'change-status' } }
 	}	);
+
+	service.list = function( params, callback ){
+		settlement.list.list( params, function( json ){
+			callback( json );
+		} );
+	}
 
 	service.restaurants.begin = function( params, callback ){
 		settlement.restaurants.begin( params, function( json ){
@@ -282,6 +292,14 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 			error( function(data, status, headers, config ) {
 				callback( false );
 		} );
+	}
+
+	service.types = function(){
+		var types = [];
+		types.push( { type: '0', label: 'All' } );
+		types.push( { type: 'driver', label: 'Driver' } );
+		types.push( { type: 'restaurant', label: 'Restaurant' } );
+		return types;
 	}
 
 	service.pay_types = function(){

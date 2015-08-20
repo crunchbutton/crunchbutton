@@ -8,8 +8,11 @@
 		<table>
 			<tr>
 				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input ng-disabled="query.id_driver!=0" type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td>
+					<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="show_more_options=!show_more_options"></i></td>
+				</td>
 			</tr>
-			<tr>
+			<tr ng-if="show_more_options">
 				<th>Type</th>
 				<td>
 					<select ng-model="query.type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
@@ -18,6 +21,7 @@
 				<td>
 					<select ng-model="query.status" ng-options="opt.type as opt.label for opt in payment_statuses" class="cart-customize-select"></select>
 				</td>
+				<td></td>
 			</tr>
 		</table>
 	</div>
