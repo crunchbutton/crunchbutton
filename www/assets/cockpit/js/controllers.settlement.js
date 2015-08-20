@@ -1,6 +1,49 @@
-NGApp.controller( 'SettlementCtrl', function ( $scope ) {
+NGApp.controller( 'SettlementCtrl', function ( $scope ) {} );
 
-} );
+NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementService, ViewListService ) {
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: '0',
+			status: 0,
+			payment_type: '0',
+			date: '',
+			fullcount: false
+		},
+		update: function() {
+			$scope.ready = false;
+			SettlementService.list({
+				'page': $scope.query.page,
+				'search': $scope.query.search,
+				'id_driver': $scope.query.driver,
+				'payment_type': $scope.query.payment_type,
+				'type': $scope.query.type,
+				'status': $scope.query.status,
+				'date': $scope.query.date
+			}, function( data ){
+				$scope.payments = data.results;
+				$scope.pages = data.pages;
+				$scope.complete(data);
+			});
+		}
+	});
+
+	$scope.show_more_options = true;
+
+	$scope.query.status = 0;
+	$scope.query.payment_type = '0';
+	$scope.query.type = '0';
+
+	$scope.types = SettlementService.types();
+	$scope.pay_types = SettlementService.pay_types();
+	$scope.payment_statuses = SettlementService.scheduled_statuses();
+	$scope.update();
+
+});
 
 NGApp.controller( 'SettlementRestaurantsPaymentArbitraryCtrl', function ( $scope, $rootScope, $routeParams, SettlementService, RestaurantService) {
 

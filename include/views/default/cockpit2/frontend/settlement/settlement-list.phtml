@@ -1,0 +1,108 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-bank"></i>Settlement<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="8"><i class="fa fa-search"></i>&nbsp;&nbsp;<input  type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td>
+					<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="show_more_options=!show_more_options"></i></td>
+				</td>
+			</tr>
+			<tr ng-if="show_more_options">
+				<th>Date</th>
+				<td>
+					<input type="date" ng-model="query.date" tabindex="2">
+				</td>
+				<th>Type</th>
+				<td>
+					<select ng-model="query.type" ng-options="opt.type as opt.label for opt in types" class="cart-customize-select"></select>
+				</td>
+				<th>Payment Type</th>
+				<td>
+					<select ng-model="query.payment_type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
+				</td>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" ng-options="opt.type as opt.label for opt in payment_statuses" class="cart-customize-select"></select>
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+
+	<div ng-if="count">
+
+		<div class="box-content2 box-content-table">
+			<table class="tb-zebra">
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Status</th>
+					<th>Notes / Log</th>
+					<th>Amount</th>
+					<th>Date</th>
+				</tr>
+
+				<tr ng-repeat="payment in payments">
+					<td>
+						<a ng-if="payment.id_driver" href="/settlement/drivers/scheduled/{{payment.id_payment_schedule}}">
+							{{payment.id_payment_schedule}}
+						</span>
+						<a ng-if="payment.id_restaurant" href="/settlement/restaurants/scheduled/{{payment.id_payment_schedule}}">
+							{{payment.id_payment_schedule}}
+						</span>
+					</td>
+
+					<td>
+						{{payment.name}}
+						<div>
+							<span class="tag tag-blue" ng-if="payment.type == 'driver'">Driver</span>
+							<span class="tag tag-purple" ng-if="payment.type == 'restaurant'">Restaurant</span>
+							<span ng-if="payment.type == 'driver'">
+								<span class="tag tag-green" ng-if="payment.pay_type == 'payment'">Payment</span>
+								<span class="tag tag-orange" ng-if="payment.pay_type == 'reimbursement'">Reimbursement</span>
+							</span>
+						</div>
+					</td>
+					<td ng-class="payment.status">
+							<span class="tag tag-red" ng-if="payment.status == 'scheduled'">Scheduled</span>
+							<span class="tag tag-red" ng-if="payment.status == 'processing'">Processing</span>
+							<span class="tag tag-green" ng-if="payment.status == 'done'">Done</span>
+							<span class="tag tag-black" ng-if="payment.status == 'error'">Error</span>
+							<span class="tag tag-blue" ng-if="payment.status == 'deleted'">Deleted</span>
+							<span class="tag tag-blue" ng-if="payment.status == 'archived'">Archived</span>
+					</td>
+					<td>
+						<span class="listview-smaller">{{payment.note}}</span>
+						<div ng-if="payment.status != 'done' && payment.log">
+							<span class="tag tag-lightgrey">{{payment.log}}</span>
+						</div>
+					</td>
+					<td>$ {{payment.amount | formatPrice}}</td>
+					<td nowrap="nowrap">
+						<span class="listview-smaller">
+							{{payment.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+						</span>
+					</td>
+				</tr>
+
+			</table>
+		</div>
+
+		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+		<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+
+		<div class="divider"></div>
+
+	</div>
+
+
+
+</div>
