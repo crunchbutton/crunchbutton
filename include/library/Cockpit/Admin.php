@@ -396,5 +396,13 @@ class Cockpit_Admin extends Crunchbutton_Admin {
             return $s->get(0)->score;
         }
     }
+	
+	public function __construct($id = null) {
+		$this->_changeSetName = 'Cockpit_Admin';
+		$this->changeOptions([
+			'created' => true
+		]);
 
+		parent::__construct($id);
+	}
 }
