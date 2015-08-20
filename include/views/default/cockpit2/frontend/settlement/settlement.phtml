@@ -14,7 +14,7 @@
 
 			<div class="box-content-table">
 				<table>
-					<tr><td><a href="/settlement/list">Payments</a></td></tr>
+					<tr><td><a href="/settlement/list">All Payments</a></td></tr>
 				</table>
 			</div>
 		</div>
@@ -28,9 +28,8 @@
 			<div class="box-content-table">
 				<table>
 					<tr><td><a href="/settlement/restaurants">New Payment</a></td></tr>
-					<tr><td><a href="/settlement/restaurants/payment/arbitrary">Arbitrary Payment</a></td></tr>
-					<tr><td><a href="/settlement/restaurants/payments">Payments list</a></td></tr>
-					<tr><td><a href="/settlement/restaurants/scheduled">Scheduled Payments</a> (<i>not finished or error</i>)</td></tr>
+					<tr><td><a href="/settlement/restaurants/payment/arbitrary">New Arbitrary Payment</a></td></tr>
+					<tr><td><a href="/settlement/list?limit=20&page=1&fullcount=false&search=&type=restaurant&status=0&payment_type=0&date=">Payments list</a></td></tr>
 					<tr><td><a href="/settlement/restaurants/no-payment-method">Restaurants with no payment method</a></td></tr>
 				</table>
 			</div>
@@ -61,12 +60,9 @@
 			<div class="box-content-table">
 				<table>
 					<tr><td><a href="/settlement/drivers">New Payment</a></td></tr>
-					<tr><td><a href="/settlement/drivers/payments">Payments list</a></td></tr>
-					<tr><td><a href="/settlement/drivers/scheduled">Scheduled Payments</a> (<i>not finished or error</i>)</td></tr>
-					<tr><td><a href="/settlement/drivers/payment/arbitrary">Arbitrary Payment</a></td></tr>
+					<tr><td><a href="/settlement/drivers/payment/arbitrary">New Arbitrary Payment</a></td></tr>
+					<tr><td><a href="/settlement/list?limit=20&page=1&fullcount=false&search=a&type=driver&status=0&payment_type=0&date=">Payments list</a></td></tr>
 					<tr><td><a href="/staff?type=driver&status=active&limit=25&page=1">Edit driver's payment info</a></td></tr>
-					<tr><td><a href="/settlement/drivers/archived">Archived Payments</a></td></tr>
-					<tr><td><a href="/settlement/drivers/deleted">Deleted Payments</a></td></tr>
 				</table>
 			</div>
 		</div>

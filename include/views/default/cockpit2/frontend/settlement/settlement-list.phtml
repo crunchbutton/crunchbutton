@@ -23,7 +23,7 @@
 				</td>
 				<th>Payment Type</th>
 				<td>
-					<select ng-model="query.payment_type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
+					<select ng-disabled="query.type == 'restaurant'" ng-model="query.payment_type" ng-options="opt.type as opt.label for opt in pay_types" class="cart-customize-select"></select>
 				</td>
 				<th>Status</th>
 				<td>

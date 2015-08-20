@@ -36,16 +36,18 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 		});
 	}
 
-	$scope.show_more_options = true;
-
-	$scope.query.status = 0;
-	$scope.query.payment_type = '0';
-	$scope.query.type = '0';
+	$scope.show_more_options = false;
 
 	$scope.types = SettlementService.types();
 	$scope.pay_types = SettlementService.pay_types();
 	$scope.payment_statuses = SettlementService.scheduled_statuses();
 	$scope.update();
+
+	$scope.$watch( 'query.type', function( newValue, oldValue, scope ) {
+		if( newValue == 'restaurant' ){
+			$scope.query.payment_type = 'payment';
+		}
+	});
 
 	$scope.delete = function( id_payment_schedule ){
 		App.confirm ( 'Confirm delete payment ' + id_payment_schedule + '?', 'Confirm', function(){
