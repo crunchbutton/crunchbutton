@@ -21,9 +21,12 @@ class Crunchbutton_Email_Payment_Summary extends Crunchbutton_Email {
 			} else {
 				$params['messageHtml'] = $this->view()->render( 'payment/summary-driver',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
 			}
-
 		} else {
-			$params['messageHtml'] = $this->view()->render( 'payment/summary-restaurant',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
+			if( $params[ 'summary' ][ 'arbritary' ] ){
+				$params['messageHtml'] = $this->view()->render( 'payment/summary-restaurant-arbritary',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
+			} else {
+				$params['messageHtml'] = $this->view()->render( 'payment/summary-restaurant',[ 'display' => true, 'set' => [ 'summary' => $params['summary'] ] ] );
+			}
 		}
 		parent::__construct($params);
 	}

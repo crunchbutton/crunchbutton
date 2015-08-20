@@ -41,7 +41,7 @@
 				<div class="label">Payment type: <strong>{{payment.pay_type}}</strong></div>
 			</li>
 			<li class="li-input" ng-class="{'error':form.paymentNotes.$invalid}">
-				<div class="label">Message displayed to driver in payment summary and automated email that gets sent right now:</div>
+				<div class="label">Message displayed to restaurant in payment summary and automated email that gets sent right now:</div>
 				<div class="input"><input type="text" name="paymentNotes" ng-model="payment.notes" required maxlength="255" placeholder=""></div>
 				<div class="box-error">
 					<small ng-show="form.paymentNotes.$error.required">Required.</small>

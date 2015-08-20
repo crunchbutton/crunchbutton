@@ -146,6 +146,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 			$scope.restaurant.stripeAccount = {};
 
 			RestaurantService.payment_method( $routeParams.id, function( d ){
+
 				if( !d.id_restaurant ){
 					App.alert( 'Error loading payment method: ' + json.error );
 				} else {
@@ -171,24 +172,31 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 						$scope.restaurant.payment_type.legal_name_payment = $scope.restaurant.payment_type.legal_name_payment || $scope.restaurant.name;
 						//$scope.restaurant.stripeAccount.account_type = 'corporate';
 
-						var geocoder = new google.maps.Geocoder();
-						geocoder.geocode({address:$scope.restaurant.address}, function(results, status) {
+						if( !$scope.restaurant.payment_type.check_address ||
+								!$scope.restaurant.payment_type.check_address_city ||
+								!$scope.restaurant.payment_type.check_address_state ||
+								!$scope.restaurant.payment_type.check_address_zip ||
+								!$scope.restaurant.payment_type.check_address_country ){
 
-							if (status == google.maps.GeocoderStatus.OK) {
-								var parts = [];
-								for (var x in results[0].address_components) {
-									parts[results[0].address_components[x].types[0]] = results[0].address_components[x].short_name;
+							var geocoder = new google.maps.Geocoder();
+							geocoder.geocode({ address:$scope.restaurant.address }, function(results, status) {
+
+								if (status == google.maps.GeocoderStatus.OK) {
+									var parts = [];
+									for (var x in results[0].address_components) {
+										parts[results[0].address_components[x].types[0]] = results[0].address_components[x].short_name;
+									}
+
+									$scope.$apply(function() {
+										$scope.restaurant.payment_type.check_address = parts.street_number + ' ' + parts.route;
+										$scope.restaurant.payment_type.check_address_city = parts.locality;
+										$scope.restaurant.payment_type.check_address_state = parts.administrative_area_level_1;
+										$scope.restaurant.payment_type.check_address_zip = parts.postal_code;
+										$scope.restaurant.payment_type.check_address_country = parts.country;
+									});
 								}
-
-								$scope.$apply(function() {
-									$scope.restaurant.payment_type.check_address = parts.street_number + ' ' + parts.route;
-									$scope.restaurant.payment_type.check_address_city = parts.locality;
-									$scope.restaurant.payment_type.check_address_state = parts.administrative_area_level_1;
-									$scope.restaurant.payment_type.check_address_zip = parts.postal_code;
-									$scope.restaurant.payment_type.check_address_country = parts.country;
-								});
-							}
-						});
+							});
+						}
 					}
 
 				}
