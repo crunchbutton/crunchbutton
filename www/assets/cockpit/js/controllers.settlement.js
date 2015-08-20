@@ -55,6 +55,18 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 		}, function(){}, null, true );
 	}
 
+	$scope.payment_status = function( id_payment ){
+		$scope.balancedRefresh = id_payment;
+		SettlementService.drivers.payment_status( id_payment, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+			} else {
+				update();
+			}
+			$scope.balancedRefresh = null;
+		} );
+	}
+
 	$scope.archive = function( id_payment_schedule ){
 		App.confirm ( 'Confirm archive payment ' + id_payment_schedule + '?', 'Confirm', function(){
 			SettlementService.drivers.archive( id_payment_schedule, function(){
