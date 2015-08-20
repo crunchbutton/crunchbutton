@@ -15,22 +15,26 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 			fullcount: false
 		},
 		update: function() {
-			$scope.ready = false;
-			SettlementService.list({
-				'page': $scope.query.page,
-				'search': $scope.query.search,
-				'id_driver': $scope.query.driver,
-				'payment_type': $scope.query.payment_type,
-				'type': $scope.query.type,
-				'status': $scope.query.status,
-				'date': $scope.query.date
-			}, function( data ){
-				$scope.payments = data.results;
-				$scope.pages = data.pages;
-				$scope.complete(data);
-			});
+			update();
 		}
 	});
+
+	var update = function(){
+		$scope.ready = false;
+		SettlementService.list({
+			'page': $scope.query.page,
+			'search': $scope.query.search,
+			'id_driver': $scope.query.driver,
+			'payment_type': $scope.query.payment_type,
+			'type': $scope.query.type,
+			'status': $scope.query.status,
+			'date': $scope.query.date
+		}, function( data ){
+			$scope.payments = data.results;
+			$scope.pages = data.pages;
+			$scope.complete(data);
+		});
+	}
 
 	$scope.show_more_options = true;
 
@@ -42,6 +46,22 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 	$scope.pay_types = SettlementService.pay_types();
 	$scope.payment_statuses = SettlementService.scheduled_statuses();
 	$scope.update();
+
+	$scope.delete = function( id_payment_schedule ){
+		App.confirm ( 'Confirm delete payment ' + id_payment_schedule + '?', 'Confirm', function(){
+			SettlementService.drivers.delete( id_payment_schedule, function(){
+				update();
+			} );
+		}, function(){}, null, true );
+	}
+
+	$scope.archive = function( id_payment_schedule ){
+		App.confirm ( 'Confirm archive payment ' + id_payment_schedule + '?', 'Confirm', function(){
+			SettlementService.drivers.archive( id_payment_schedule, function(){
+				update();
+			} );
+		}, function(){}, null, true );
+	}
 
 });
 

@@ -993,6 +993,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$q = '
 					SELECT -WILD- FROM payment_schedule ps
+					LEFT JOIN payment p ON p.id_payment = ps.id_payment
 				';
 		$keys = [];
 
@@ -1083,15 +1084,15 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		switch ( $type ) {
 			case 'restaurant':
-				$query = str_replace( '-WILD-',' ps.*, r.name AS restaurant ', $q );
+				$query = str_replace( '-WILD-',' ps.*, p.id_payment, p.payment_status, r.name AS restaurant ', $q );
 				break;
 
 			case 'driver':
-				$query = str_replace( '-WILD-',' ps.*, d.name AS driver ', $q );
+				$query = str_replace( '-WILD-','  ps.*, p.id_payment, p.payment_status, d.name AS driver ', $q );
 				break;
 
 			default:
-				$query = str_replace( '-WILD-',' ps.*, r.name AS restaurant, d.name AS driver ', $q );
+				$query = str_replace( '-WILD-','  ps.*, p.id_payment, p.payment_status, r.name AS restaurant, d.name AS driver ', $q );
 				break;
 		}
 
