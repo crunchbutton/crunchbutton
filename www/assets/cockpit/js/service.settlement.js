@@ -322,6 +322,7 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 	service.scheduled_statuses = function(){
 		var types = [];
 		types.push( { type: 0, label: 'All' } );
+		types.push( { type: service.PAYMENT_STATUS_DONE, label: 'Done' } );
 		types.push( { type: service.PAYMENT_STATUS_SCHEDULED, label: 'Scheduled' } );
 		types.push( { type: service.PAYMENT_STATUS_PROCESSING, label: 'Processing' } );
 		types.push( { type: service.PAYMENT_STATUS_DELETED, label: 'Deleted' } );
