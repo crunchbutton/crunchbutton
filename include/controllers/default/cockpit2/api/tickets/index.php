@@ -78,10 +78,10 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				'search' => stripslashes($search),
 				'fields' => [
 					'u.name' => 'like',
-					'u.phone' => 'like',
+					'u.phone' => 'likephone',
 					'u.address' => 'like',
 					'o.name' => 'like',
-					'o.phone' => 'like',
+					'o.phone' => 'likephone',
 					'o.address' => 'like',
 					's.id_support' => 'inteq'
 				]

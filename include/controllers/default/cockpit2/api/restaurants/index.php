@@ -194,7 +194,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				'fields' => [
 					'restaurant.name' => 'like',
 					'restaurant.address' => 'like',
-					'restaurant.phone' => 'like',
+					'restaurant.phone' => 'likephone',
 					'restaurant.community' => 'like',
 					'restaurant.permalink' => 'like',
 					'restaurant.id_restaurant' => 'inteq'

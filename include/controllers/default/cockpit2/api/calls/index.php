@@ -74,11 +74,11 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 					'uf.name' => 'like',
 					'uf.phone' => 'like',
 					'ut.name' => 'like',
-					'ut.phone' => 'like',
+					'ut.phone' => 'likephone',
 					'af.name' => 'like',
 					'af.phone' => 'like',
 					'at.name' => 'like',
-					'at.phone' => 'like',
+					'at.phone' => 'likephone',
 					'c.id_call' => 'inteq'
 				]
 			]);

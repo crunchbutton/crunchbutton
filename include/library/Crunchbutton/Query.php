@@ -31,6 +31,16 @@ class Crunchbutton_Query extends Cana_Model {
 				}
 				
 				foreach ($params['fields'] as $key => $type) {
+					
+					if ($type == 'likephone') {
+						$word = preg_replace('/[^0-9]+/','',$word);
+						$type = 'like';
+					}
+					
+					if (!$word){
+						continue;
+					}
+					
 					$w = null;
 					$sqq .= $sqq ? ' '.($match ? 'OR' : 'AND').' ' : '';
 

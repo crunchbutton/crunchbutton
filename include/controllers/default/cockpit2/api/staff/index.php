@@ -420,7 +420,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					'admin.phone' => 'like',
 					'admin.login' => 'like',
 					'admin.email' => 'like',
-					'p.phone' => 'like',
+					'p.phone' => 'likephone',
 					'admin.id_admin' => 'inteq',
 					'admin.invite_code' => 'eq',
 					'apt.stripe_id' => 'eq',
