@@ -244,7 +244,7 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		enabled : ReferralService.enabled,
 		invite_code : ReferralService.invite_code,
 		sms : ReferralService.sms(),
-		text : 'Get food delivery from places that don\'t. Check out here!'
+		text : "Get food delivery from places that don't. Check out "
 	}
 
 	$scope.referral.cleaned_url = function(){
