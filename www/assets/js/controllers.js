@@ -243,7 +243,8 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		invites : ReferralService.invites,
 		enabled : ReferralService.enabled,
 		invite_code : ReferralService.invite_code,
-		sms : ReferralService.sms()
+		sms : ReferralService.sms(),
+		text : 'Get food delivery from places that don\'t. Check out here!'
 	}
 
 	$scope.referral.cleaned_url = function(){
@@ -267,7 +268,7 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 	}
 
 	$scope.referral.twitter = function(){
-		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + $scope.referral.text ,'_system');
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + $scope.referral.text + '&hashtags=Crunchbutton' ,'_system');
 	}
 
 });
@@ -694,7 +695,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
-		
+
 		if (App.isUI2()) {
 			App.go( '/location/unavailable');
 		}
@@ -1407,11 +1408,11 @@ NGApp.controller('OrderCtrl', function ($interval, $scope, $http, $location, $ro
 			App.busy.unBusy();
 		}, 500 );
 	}
-	
+
 	var timer = $interval(function() {
 		OrderViewService.load(true);
 	}, 30000);
-	
+
 	$scope.$on('$destroy', function(event) {
 		$interval.cancel(timer);
 	});
