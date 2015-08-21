@@ -435,6 +435,10 @@ class Crunchbutton_User extends Cana_Table {
 	
 
 	public function setPush($id, $os = 'ios') {
+		if (!$this->id_user) {
+			return false;
+		}
+		
 		$os = $os == 'ios' ? Crunchbutton_User_Notification::TYPE_PUSH_IOS : Crunchbutton_User_Notification::TYPE_PUSH_ANDROID;
 
 		$notifications = User_Notification::q('
