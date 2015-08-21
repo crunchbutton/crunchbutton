@@ -42,9 +42,9 @@ NGApp.directive('supportChatContents', function( $window, $rootScope ) {
 
 			var fixHeight = function(){
 				var height = $window.innerHeight + 8;
-				var heightLeft = height - parseInt( $('.nav-top').height() ) -
-																	parseInt( $('.support-chat-header').height() ) -
-																	parseInt( $('.support-side-chat-row').height() );
+				var heightLeft = height - parseInt( angular.element('.nav-top').height() ) -
+																	parseInt( angular.element('.support-chat-header').height() ) -
+																	parseInt( angular.element('.support-side-chat-row').height() );
 				$( '.support-chat-contents' ).height( heightLeft );
 			}
 
