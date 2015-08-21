@@ -70,7 +70,7 @@ var Restaurant = function(id) {
 			if( self._closedDueTo != '' ){
 				return self._closedDueTo;
 			}
-			return 'Temporarily closed';
+			return 'Temporarily Unavailable';
 		}
 
 	}
