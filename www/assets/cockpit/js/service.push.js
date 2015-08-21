@@ -33,8 +33,10 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 	service.register = function(complete) {
 		
 		service.plugin = window.parent.PushNotification.init({'android': {'senderID': '1029345412368'}, 'ios': {}, 'windows': {} } );
+		console.debug('register push');
 
 		service.plugin.on('registration', function(data) {
+			console.debug('resgistration callback');
 			saveToken(data, complete);
 		});
 
