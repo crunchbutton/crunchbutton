@@ -951,8 +951,9 @@ NGApp.directive('passwordStrength', function() {
 				if ( scope.password_strength >= 30){
 					scope.password_strength_message = "weak";
 				}
+				console.log('scope.password_strength',scope.password_strength);
 				if( score ){
-					ngModel.$setValidity( 'passwordStrength', parseInt( score ) >= 60 );
+					ngModel.$setValidity( 'passwordStrength', ( parseInt( score ) >= 45 || ( pass.length >= 7 ) ) );
 				}
 			};
 		}
