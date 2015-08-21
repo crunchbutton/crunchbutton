@@ -16,10 +16,12 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 		
 		$cockpit = ['bda4c763f2e2f2ec8b123a960fd2e9ecba591cf4a310253708156eed658a4bb2','b85dc7710abcd6a18aa6ff91ca165aa97fa02df23323d49c689a7d50fd47e800'];
 		$crunchbutton = ['addc8d82f9faf739a5c47d10e21041176bd5ba8695bce9e36c6eae47e37c4aac','a9245362e4a008eba8f701c4d6fb698f7a0c6232c89e689a67ca033f82e40166','b9229ae5121244b9af4309699e878ee615e9f230eb7fd789e22958f89b7ea2ca'];
+		$crunchbutton = ['addc8d82f9faf739a5c47d10e21041176bd5ba8695bce9e36c6eae47e37c4aac'];
 
 		$certs = c::config()->dirs->root.'ssl/';
 		//$env = 'live';
-
+		$env = 'beta';
+/*
 		if ($env == 'live') {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
@@ -54,7 +56,7 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 		$push->disconnect();
 		
 		
-		
+		*/
 		
 		
 		if ($env == 'live') {
@@ -74,6 +76,7 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 		
 		foreach ($crunchbutton as $t) {
 			$msg = new ApnsPHP_Message($t);
+			$msg->setCustomIdentifier(rand(1,1000000));
 			$msg->setText('please slack me if you recieve this');
 			$push->add($msg);
 		}
