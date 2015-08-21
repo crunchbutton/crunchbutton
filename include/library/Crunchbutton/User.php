@@ -420,4 +420,47 @@ class Crunchbutton_User extends Cana_Table {
 			->idVar('id_user')
 			->load($id);
 	}
+	
+	public function notifications() {
+		if (!$this->id_user) {
+			return false;
+		}
+
+		if (!isset($this->_notifications)) {
+			$this->_notifications = User_Notification::q('select * from user_notification where id_user=? and active=true', [$this->id_user]);
+		}
+		
+		return $this->_notifications;
+	}
+	
+
+	public function setPush($id, $os = 'ios') {
+		$os = $os == 'ios' ? Crunchbutton_User_Notification::TYPE_PUSH_IOS : Crunchbutton_User_Notification::TYPE_PUSH_ANDROID;
+
+		$notifications = User_Notification::q('
+			SELECT * FROM user_notification
+			WHERE
+				id_user=?
+				AND `type`=?
+		', [$this->id_user, $os]);
+		foreach($notifications as $n) {
+			if ($n->value == $id) {
+				$exists = true;
+				if (!$n->active) {
+					$n->active = 1;
+					$n->save();
+				}
+			}
+		}
+		if (!$exists) {
+			$n = new User_Notification([
+				'active' => 1,
+				'value' => $id,
+				'type' => $os,
+				'id_user' => $this->id_user
+			]);
+			$n->save();
+		}
+	}
+	
 }
