@@ -66,7 +66,7 @@
 				<th class="tb-small"> </th>
 			</tr>
 			<tr ng-repeat="driver in drivers" ng-attr-tabindex="{{$index+1}}" tab-select="/drivers/onboarding/{{driver.id_admin}}">
-				<td nowrap="nowrap">
+				<td>
 					<span class="listview-bold">{{driver.name}}</span>
 					<br><span class="listview-smaller">{{driver.login}}</span>
 					<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
@@ -128,9 +128,15 @@
 					<span class="tag tag-red" ng-if="!driver.sent_all_docs">Missing</span>
 				</td>
 				<td nowrap class="tb-v-center">
-					<a href="/staff/{{driver.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>
-					<a href="/drivers/onboarding/{{driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver</button></a>
-					<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					<div>
+						<a href="/staff/{{driver.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>
+					</div>
+					<div style="margin:2px;">
+						<a href="/drivers/onboarding/{{driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver</button></a>
+					</div>
+					<div>
+						<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
 				</td>
 			</tr>
 		</table>
