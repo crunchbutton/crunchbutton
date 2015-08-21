@@ -13,7 +13,7 @@
 			<th class="tb-small"></th>
 		</tr>
 		<tr ng-repeat="community in communities track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}">
-			<td nowrap>
+			<td>
 				<span class="listview-bold">{{community.name}}</span>
 				<br><span class="listview-smaller listview-light">{{community.timezone}}</span>
 			</td>
