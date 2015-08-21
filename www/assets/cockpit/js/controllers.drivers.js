@@ -984,6 +984,8 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $rootScope, DriverOnb
 		} );
 	}
 
+	$scope.isMobile = App.isMobile();
+
 	$scope.setDocument = function( id_driver_document ){
 		$scope.doc_uploaded = id_driver_document
 	}

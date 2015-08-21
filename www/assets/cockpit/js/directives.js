@@ -259,7 +259,10 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 		replace: false,
 		scope: true,
 		link: function ( scope, elem, attrs, ctrl ) {
+
 			var button = elem.find('button')[0];
+
+			var message = elem.find( 'div' );
 
 			scope.init = true;
 
@@ -280,6 +283,9 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 
 			scope.uploader.onBeforeUploadItem = function() {
 				l.start();
+				if( App.isMobile() ){
+					message.html( '<i class="fa fa-refresh fa-spin"></i> Uploading' );
+				}
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
@@ -288,6 +294,7 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 				} else {
 					$rootScope.$broadcast( 'driverDocsUploaded', { error: true } );
 				}
+				message.html( '' );
 				scope.uploader.clearQueue();
 				l.stop();
 			};
@@ -295,21 +302,19 @@ NGApp.directive( 'driverDocsUpload', function ($rootScope, FileUploader) {
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'driverDocsUploadedError', {} );
 				scope.uploader.clearQueue();
+				message.html( '' );
 				l.stop();
 			};
 
-			return;
-
-
 			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
-				return;
-				console.log(newValue);
-				if( !isNaN( uploader.progress ) ){
-					var progress = ( uploader.progress / 100 );
-					l.setProgress( progress );
+				if( App.isMobile() && newValue ){
+					message.html( 'Uploading ' +  newValue + '%' );
+					if( newValue >= 100 ){
+						message.html( '<i class="fa fa-refresh fa-spin"></i> Processing' );
+					}
 				}
+
 			});
-			$timeout(l.stop, 100);
 		}
 	}
 });
