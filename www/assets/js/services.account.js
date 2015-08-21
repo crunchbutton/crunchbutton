@@ -37,6 +37,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	service.checkUser = function(){
 		if( service.isLogged() ){
 			service.user = App.config.user;
+			$rootScope.$broadcast( 'haveUser', service.user );
 			$rootScope.$safeApply();
 		} else {
 			service.updateInfo();
