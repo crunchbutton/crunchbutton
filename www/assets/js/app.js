@@ -358,11 +358,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, PhoneGapService ) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, PhoneGapService, PushService) {
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
 	App.http = $http;
+	App.push = PushService;
 	$rootScope.hasFacebook = App.hasFacebook;
 	$rootScope.topCommunities = App.topCommunities;
 	var hello = 'moc.nottubhcnurc@olleh'.split('').reverse().join('');
