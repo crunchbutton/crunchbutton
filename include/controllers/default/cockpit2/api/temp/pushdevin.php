@@ -54,10 +54,7 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 		
 		$push->send();
 		$push->disconnect();
-		
-		
-		*/
-		
+*/
 		
 		if ($env == 'live') {
 			$push = new ApnsPHP_Push(
@@ -76,8 +73,11 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 		
 		foreach ($crunchbutton as $t) {
 			$msg = new ApnsPHP_Message($t);
-			$msg->setCustomIdentifier(rand(1,1000000));
+			$msg->setCustomIdentifier('order-1');
 			$msg->setText('please slack me if you recieve this');
+			$msg->setCustomProperty('link', '/work');
+			$msg->setCustomProperty('showInForeground', true);
+			
 			$push->add($msg);
 		}
 		
