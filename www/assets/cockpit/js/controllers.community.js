@@ -332,7 +332,8 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	load();
 
 	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
-		$scope.logs();
+		load();
+		$scope.loadLogs();
 		$scope.community = data;
 	});
 
