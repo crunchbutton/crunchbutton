@@ -858,16 +858,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= $date_start->format( 'D' );
 					$message .= '!';
 				} else {
-					$message = 'Temporarily closed!';
+					$message = 'Temporarily Unavailable!';
 				}
 
 				// if the community needs checkin drivers we dont know when it will be opened
 				if( $this->driver_checkin ){
-					$message = 'Temporarily closed!';
+					$message = 'Temporarily Unavailable!';
 				}
 
 				if( $this->driver_checkin ){
-					$message = 'Temporarily closed!';
+					$message = 'Temporarily Unavailable!';
 				}
 
 				echo $message;
@@ -1026,7 +1026,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $this->is_auto_closed && $this->driver_restaurant_name ){
 			return $this->driver_restaurant_name;
 		}
-		return 'Temporarily closed';
+		return 'Temporarily Unavailable';
 	}
 
     public function communityspeed($time, $dow) {
