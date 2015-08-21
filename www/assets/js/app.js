@@ -435,6 +435,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$.cookie('_viewmobile2', true, { expires: 1 });
 		App.go('/location');
 	};
+	
+	$rootScope.$on('haveUser', function(e, data) {
+		App.push.register();
+	});
 
 	$rootScope.$on('userAuth', function(e, data) {
 
@@ -444,8 +448,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			// @todo: remove double data
 			if (data) {
 				$rootScope.account.user = data;
+				$rootScope.$broadcast( 'haveUser', $rootScope.account.user );
 				App.config.user = data;
-				App.push.register();
 			}
 			// If the user logged out clean the cart!
 			if( !App.config.user.id_user ){
