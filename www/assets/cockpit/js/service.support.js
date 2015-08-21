@@ -120,6 +120,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 					service.sideInfo.scroll( 'begin' );
 					service._private.first_load = false;
 					service.sideInfo.load_ticket_page();
+					$rootScope.$broadcast( 'triggerSideViewTicket', {} );
 				} else {
 					service.sideInfo.scroll();
 				}
