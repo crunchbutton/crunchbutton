@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Admin_Notification extends Cana_Table {
+class Crunchbutton_User_Notification extends Cana_Table {
 
 	const TYPE_SMS = 'sms';
 	//const TYPE_EMAIL = 'email';
