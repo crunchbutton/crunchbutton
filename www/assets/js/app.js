@@ -445,6 +445,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			if (data) {
 				$rootScope.account.user = data;
 				App.config.user = data;
+				App.push.register();
 			}
 			// If the user logged out clean the cart!
 			if( !App.config.user.id_user ){
