@@ -6,6 +6,15 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 			case 'post':
 				if ($this->request()['ab']) {
 					c::auth()->set('ab', json_encode($this->request()['ab']));
+				} else {
+					$key = strtolower($this->request()['key']);
+					$value = $this->request()['value'];
+					switch ($key) {
+						case 'user-push-ios':
+						case 'user-push-android':
+							c::user()->setPush($value, $key == 'user-push-ios' ? 'ios' : 'android');
+							break;
+					}
 				}
 				break;
 
