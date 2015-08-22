@@ -40,7 +40,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		console.debug('register push');
 
 		service.plugin.on('registration', function(data) {
-			console.debug('resgistration callback');
+			console.debug('resgistration callback', data);
 			saveToken(data, complete);
 		});
 
