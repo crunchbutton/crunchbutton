@@ -238,6 +238,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 			// community hours with driver
 			$community_hrs = $restaurant->assignedShiftHours( true );
+			// echo '<pre>';var_dump( $community_hrs );exit();
 
 			// empty array to store the merged hours
 			$_community_hours = [];
@@ -260,7 +261,8 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				foreach( $_community_hours as $day => $hours ){
 
 					// just merge to the current day
-					if( $day == strtolower( date( 'D' ) ) ){
+					if( true ){
+					// if( $day == strtolower( date( 'D' ) ) ){
 
 						$open = null;
 						$close = null;
@@ -273,8 +275,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 							$community_open = intval( str_replace( ':' , '', $community_segment[ 0 ] ) );
 							$community_close = intval( str_replace( ':' , '', $community_segment[ 1 ] ) );
-							$restaurant_segments = $_hours[ $day ];
+							if( $community_close == 0 && $community_segment[ 1 ] == '00:00' ){
+								$community_close = 2400;
+							}
 
+							$restaurant_segments = $_hours[ $day ];
 							if( $restaurant_segments ){
 
 								foreach( $restaurant_segments as $restaurant_segment ){
