@@ -31,6 +31,27 @@ NGApp.directive('ticketMessagesScroll', function( $rootScope ) {
   };
 } );
 
+NGApp.directive('supportChatContents', function( $window, $rootScope ) {
+	return {
+		link: function( scope, elem, attrs ) {
+			$rootScope.$on( 'triggerSideViewTicket', function(e, data) {
+				if( App.isMobile() ){
+					setTimeout( function(){ fixHeight() }, 500 );
+				}
+			});
+
+			var fixHeight = function(){
+				var height = $window.innerHeight + 8;
+				var heightLeft = height - parseInt( angular.element('.nav-top').height() ) -
+																	parseInt( angular.element('.support-chat-header').height() ) -
+																	parseInt( angular.element('.support-side-chat-row').height() );
+				$( '.support-chat-contents' ).height( heightLeft );
+			}
+
+		}
+  };
+} );
+
 NGApp.directive('fitHeight', function() {
 	return {
 		restrict: 'A',
