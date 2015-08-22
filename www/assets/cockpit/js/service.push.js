@@ -99,6 +99,26 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 	service.receive = function(msg) {
 		
 		console.debug(msg);
+		
+		var gotoLink = function() {
+			$rootScope.$safeApply(function() {
+				MainNavigationService.link(msg.additionalData.link);
+			});
+		};
+		
+		// if the user clicked on the notification
+		if (msg.additionalData && msg.additionalData.link && !msg.additionalData.foreground) {
+			gotoLink();
+		}
+		
+		// if we are in the foreground and we are forcing showing in foreground
+		if (msg.additionalData && msg.additionalData.foreground && msg.additionalData.showInForeground) {
+			var fn = function(){ };
+			if (msg.additionalData.link) {
+				fn = gotoLink;
+			}
+			App.alert(msg.message, 'remote-notification', false, fn);
+		}
 
 		/*
 		switch (msg.identifier) {
