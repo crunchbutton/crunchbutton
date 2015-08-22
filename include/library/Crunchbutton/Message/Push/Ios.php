@@ -1,37 +1,38 @@
 <?
 
 class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
-	public static function send($to, $message = null, $id = null, $count = null) {
+	const SOUND_NEW_ORDER = 'www/new-order.wav';
+	
+	public static function send($data) {
 
-		$sound = 'www/new-order.wav';
 		$count = 1;
 		$id = 'push';
-		$category = '';
 
-		if (is_array($to)) {
+		$message = $data['message'];
 
-			$message = $to['message'];
-
-			if (isset($to['count'])) {
-				$count = $to['count'];
-			}
-			
-			if (isset($to['sound'])) {
-				$sound = $to['sound'];
-			}
-			
-			if (isset($to['id'])) {
-				$id = $to['id'];
-			}
-			
-			if (isset($to['category'])) {
-				$category = $to['category'];
-			}
-			
-			$env = $to['env'] ? $to['env'] : c::getEnv();
-			
-			$to = $to['to'];
+		if (isset($data['count'])) {
+			$count = $data['count'];
 		}
+			
+		if (isset($data['sound'])) {
+			$sound = $data['sound'];
+		} else {
+			$sound = 'default';
+		}
+			
+		if (isset($data['id'])) {
+			$id = $data['id'];
+		}
+			
+		if (isset($data['category'])) {
+			$category = $data['category'];
+		}
+		
+		$app = $data['app'] == 'cockpit' ? 'cockpit' : 'crunchbutton';
+			
+		$env = $data['env'] ? $data['env'] : c::getEnv();
+			
+		$to = $data['to'];
 
 		if (!$to || !$message) {
 			return false;
@@ -44,17 +45,17 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 		$message = trim($message);
 
 		$certs = c::config()->dirs->root.'ssl/';
+		$certname = $app == 'crunchbutton' ? 'com.crunchbutton' : 'com.crunchbutton.cockpit';
 
-		// @todo: change this after aproved
 		if ($env == 'live') {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_PRODUCTION,
-				$certs.'2015.aps_production_com.crunchbutton.cockpit.pem'
+				$certs.'2015.aps_production_'.$certname.'.pem'
 			);
 		} else {
 			$push = new ApnsPHP_Push(
 				ApnsPHP_Abstract::ENVIRONMENT_SANDBOX,
-				$certs.'2015.aps_development_com.crunchbutton.cockpit.pem'
+				$certs.'2015.aps_development_'.$certname.'.pem'
 			);
 		}
 		
@@ -79,13 +80,11 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 			$msg->setText($message);
 			$msg->setSound($sound);
 			$msg->setExpiry(30);
-	
 			$msg->setBadge($count);
 			
 			if ($category) {
 				$msg->setCategory($category);
 			}
-
 	
 			$push->add($msg);
 		}
