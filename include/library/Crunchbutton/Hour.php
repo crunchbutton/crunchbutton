@@ -132,7 +132,15 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 
 			if ( $today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp() ) {
-				return true;
+				$community = $restaurant->community();
+				if( $restaurant->delivery_service && $community->combine_restaurant_driver_hours ){
+					$drivers = $community->activeDrivers()->get( 0 );
+					if( $drivers > 0 ){
+						return true;
+					}
+				} else {
+					return true;
+				}
 			}
 		}
 
