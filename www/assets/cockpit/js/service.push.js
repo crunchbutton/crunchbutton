@@ -4,7 +4,12 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		id: null,
 		badges: 0,
 		registered: false,
-		plugin: null
+		plugin: null,
+		register: function(callback) {
+			if (callback) {
+				callback();
+			}
+		}
 	};
 
 	if (!App.isPhoneGap || !window.parent.PushNotification) {
@@ -115,9 +120,19 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		if (msg.additionalData && msg.additionalData.foreground && msg.additionalData.showInForeground) {
 			var fn = function(){ };
 			if (msg.additionalData.link) {
-				fn = gotoLink;
+				App.confirm( msg.message, msg.message.search( 'New order' ) >= 0 ? 'New Order' : ' ', gotoLink, fn, 'Open,Cancel');
+			} else {
+				App.alert(msg.message, ' ', false, fn);
 			}
-			App.alert(msg.message, 'remote-notification', false, fn);
+		}
+		
+
+		// iOS
+		if ( window.parent && window.parent.device.platform && window.parent.device.model && window.parent.device.platform == 'iOS') {
+			if( parseInt( msg.additionalData.foreground ) == 1 && msg.badge ){
+				service.badge++;
+				service.plugin.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
+			}
 		}
 
 		/*
@@ -141,54 +156,8 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		}
 		*/
 
-		var newOrder = function( id_order ){
-			var open = function(){
-				if( $location.path() !== '/drivers/order/' + id_order ){
-					$rootScope.makeBusy();
-					$timeout( function(){
-						MainNavigationService.link( '/drivers/order/' + id_order );
-					}, 400 );
-					return;
-				}
-			}
-			var cancel = function(){};
-			var message = 'Open the new order #' + id_order +' ?';
-			var title = 'New Order';
-			App.confirm( message, title, open, cancel, 'Open,Cancel')
-		}
 
-		// Android
-		if( window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' ) ){
-			switch ( msg.event ) {
-				case 'message':
-					if( msg.payload && msg.payload.message && msg.payload.title == 'Cockpit New Order' ){
-						var id_order = msg.payload.id.replace( /^\D+/g, '');
-						if( id_order ){
-							newOrder( id_order );
-							return;
-						}
-					}
-					break;
-			}
-		}
 
-		// iOS
-		if ( window.parent && window.parent.device.platform && window.parent.device.model && window.parent.device.platform == 'iOS') {
-			if( msg.alert ){
-				switch ( true ) {
-					case ( msg.alert.search( 'New order' ) >= 0 ):
-						var id_order = msg.alert.replace( /^\D+/g, '');
-						if( id_order ){
-							newOrder( id_order );
-						}
-						break;
-				}
-			}
-			if( parseInt( msg.foreground ) == 1 && msg.badge ){
-				service.badge++;
-				service.plugin.pushNotification.setApplicationIconBadgeNumber(complete, complete, service.badge);
-			}
-		}
 	}
 
 	return service;
