@@ -240,7 +240,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     'restaurantParkingTime' => 0,
                     'restaurantServiceTime' => 0,
                     'cluster' => $dummyClusterNumber,
-                    'isFake' => true
+                    'isFake' => true,
+                    'idOrder' => null
                 ]);
             }
             else{
@@ -255,7 +256,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     'restaurantParkingTime' => $r_pt,
                     'restaurantServiceTime' => $r_st,
                     'cluster' => $r_cluster,
-                    'isFake' => false
+                    'isFake' => false,
+                    'idOrder' => $order->id_order
+
                 ]);
             }
 
@@ -267,7 +270,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 'earlyWindow' => $earlyWindow,
                 'midWindow' => $midWindow,
                 'lateWindow' => $lateWindow,
-                'isFake' => false
+                'isFake' => false,
+                'idOrder' => $order->id_order
             ]);
             $dlist->addDestinationPair($restaurant_destination, $customer_destination, $isNewOrder);
         }
@@ -352,7 +356,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $driver_destination = new Crunchbutton_Order_Logistics_Destination([
                         'objectId' => $driver->id_admin,
                         'type' => Crunchbutton_Order_Logistics_Destination::TYPE_DRIVER,
-                        'geo' => $driver_geo
+                        'geo' => $driver_geo,
+                        'idOrder' => null
                     ]);
 
                     $dlist->addDriverDestination($driver_destination);
@@ -471,6 +476,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $dicts = $dlist->createOptimizerInputs($this->fakeOrder, $doCreateFakeOrders);
                     $dOld = $dicts['old']; // without new order
                     $dNew = $dicts['new']; // with new order
+                    $dNewNodeOrderIds = $dicts['newNodeOrderIds'];
                     $dNewFakes = $dicts['newFakes'];
                     $hasFakeOrder = $dicts['hasFakeOrder'];
 
@@ -503,7 +509,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                             }
 
                             $resultNew->saveRouteToDb($resultNew->resultType, $new_id_order, $driver->id_admin, $server_dt,
-                                $dNew, $dNewFakes);
+                                $dNew, $dNewNodeOrderIds, $dNewFakes);
 
                         } else {
                             $resultNew->saveRouteToDb($resultNew->resultType, $new_id_order, $driver->id_admin, $server_dt, $dNew);

@@ -56,7 +56,7 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
         $this->numBadTimes = $numBadTimes;
     }
 
-    public function saveRouteToDb($status, $id_order, $id_admin, $curTime, $input, $fakeIndicators=null) {
+    public function saveRouteToDb($status, $id_order, $id_admin, $curTime, $input, $nodeOrderIds=null, $fakeIndicators=null) {
         if ($status == Crunchbutton_Optimizer_Result::RTYPE_OK) {
             if ($this->numNodes == $input->numNodes) {
                 for ($i = 0; $i < $this->numNodes; $i++) {
@@ -64,7 +64,9 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
                     $leavingTime = clone $curTime;
                     $leavingTime->modify('+ ' . $this->absFinishedTimes[$i] . ' minutes');
                     $leavingTime = $leavingTime->format('Y-m-d H:i:s');
-                    $olr = Crunchbutton_Order_Logistics_Route::defaultOrderLogisticsRoute($id_order, $id_admin, $i,
+                    $olr = Crunchbutton_Order_Logistics_Route::defaultOrderLogisticsRoute($id_order,
+                        $nodeOrderIds[$inputNodeIndex],
+                        $id_admin, $i,
                         $input->nodeTypes[$inputNodeIndex], $leavingTime,
                         $input->firstCoords[$inputNodeIndex], $input->secondCoords[$inputNodeIndex],
                         $fakeIndicators[$inputNodeIndex]);
@@ -74,7 +76,7 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
         } else{
             if ($input->numNodes > 0) {
                 $leaving_time = $curTime->format('Y-m-d H:i:s');
-                $olr = Crunchbutton_Order_Logistics_Route::defaultOrderLogisticsRoute($id_order, $id_admin,
+                $olr = Crunchbutton_Order_Logistics_Route::defaultOrderLogisticsRoute($id_order, null, $id_admin,
                     self::SEQ_FOR_BAD_ROUTE, $status, $leaving_time,
                     $input->firstCoords[0], $input->secondCoords[0], false);
                 $olr->save();

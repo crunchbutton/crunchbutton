@@ -340,7 +340,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $cs->delete();
         $community->delete();
         $community2->delete();
-		
+
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - ONE'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - TWO'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - THREE'])->delete();
@@ -612,13 +612,19 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->save();
         $id_order = $o1->id_order;
 
-        $olr1 = $this->defaultOLR($o1, $this->driver1, 0, 0, $useDate, $lat, $lon);
+        $o2 = $this->defaultOrder($this->user1, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o2->save();
+
+        $node_id_order = $o2->id_order;
+
+        $olr1 = $this->defaultOLR($o1, $node_id_order, $this->driver1, 0, 0, $useDate, $lat, $lon);
         $olr1->save();
         $route1 = Crunchbutton_Order_Logistics_Route::routesByOrder($o1->id_order);
         $count = $route1->count();
 
         $olr1->delete();
         $o1->delete();
+        $o2->delete();
         $this->assertEquals($count, 1);
         $this->assertEquals($route1->id_admin, $this->driver1->id_admin);
         $this->assertEquals($route1->id_order, $id_order);
@@ -627,6 +633,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($route1->leaving_time, $useDate);
         $this->assertEquals($route1->lat, $lat);
         $this->assertEquals($route1->lon, $lon);
+        // Technically, for seq 0, there is no node_id_order, but it doesn't matter for this test.
+        $this->assertEquals($route1->node_id_order, $node_id_order);
     }
 
     public function testOLRTZConversionNewYork()
@@ -2746,7 +2754,6 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $fc1->delete();
         $olc->delete();
 
-
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver1->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
@@ -2964,9 +2971,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function defaultOLR($order, $driver, $seq, $node_type, $leaving_time, $lat, $lon, $isFake=false) {
+    public function defaultOLR($order, $node_id_order, $driver, $seq, $node_type, $leaving_time, $lat, $lon, $isFake=false) {
         return new Crunchbutton_Order_Logistics_Route([
             'id_order' => $order->id_order,
+            'node_id_order' => $node_id_order,
             'id_admin' => $driver->id_admin,
             'seq' => $seq,
             'node_type' => $node_type,

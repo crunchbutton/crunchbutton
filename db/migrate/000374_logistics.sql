@@ -1,0 +1,2 @@
+ALTER TABLE `order_logistics_route` ADD COLUMN `node_id_order` int(11) unsigned DEFAULT NULL after id_order;
+ALTER TABLE `order_logistics_route` ADD CONSTRAINT `order_logistics_route_ibfk_3` FOREIGN KEY (`node_id_order`) REFERENCES `order` (`id_order`) ON DELETE SET NULL ON UPDATE CASCADE;
