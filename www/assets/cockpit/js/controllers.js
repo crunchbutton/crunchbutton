@@ -249,16 +249,40 @@ NGApp.controller( 'NotificationConfirmCtrl', function ($scope, $rootScope ) {
 NGApp.controller( 'CallText', function ($scope, $rootScope) {
 
 	$rootScope.$on('callText', function(e, num) {
+		openModal( num );
+	});
+
+	$rootScope.$on('textNumer', function(e, num) {
+		openModal( num );
+		$scope.hideSMSBox = false;
+		$scope.complete = function( json ){
+			if( json.success ){
+				setTimeout(function() { App.alert( 'Text messages sent!' ); }, 10 );
+			} else {
+				if( json.error ){
+					setTimeout(function() { App.alert( json.error ); }, 10 );
+				}
+			}
+		};
+	});
+
+	var openModal = function( num ){
 
 		$(':focus').blur();
+
+		if( angular.isArray( num ) ){
+			$scope.listOfNumbers = true;
+		} else {
+			$scope.listOfNumbers = false;
+		}
+
 		$scope.number = num;
 		$scope.complete = $rootScope.closePopup;
 		App.dialog.show('.notification-call-text-container');
 
 		$scope.hideCallBox = true;
 		$scope.hideSMSBox = true;
-
-	});
+	}
 
 	// variables to controll the template 'assets/view/support-phone.html'
 	// when it is called by a modal

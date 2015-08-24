@@ -18,6 +18,11 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 			exit();
 		}
 
+		if( c::getPagePiece(2) == 'send-sms-list' ){
+			$this->_sendSMSList();
+			exit();
+		}
+
 		$call = Call::o(c::getPagePiece(2));
 
 		if (!$call->id_call) {
@@ -32,6 +37,26 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 			case 'post':
 				// do nothing for now
 				break;
+		}
+	}
+
+	private function _sendSMSList(){
+		$message = $this->request()[ 'message' ];
+		if( trim( $message ) != '' ){
+			$numbers = $this->request()[ 'phone' ];
+			foreach( $numbers as $number ){
+				if( trim( $number ) != '' ){
+					Crunchbutton_Message_Sms::send([
+							'from' => 'driver',
+							'to' => $number,
+							'message' => $message,
+							'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
+						] );
+				}
+			}
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => 'Error sending text message! Please enter a text!' ] );
 		}
 	}
 

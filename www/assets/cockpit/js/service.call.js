@@ -24,6 +24,11 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 			method: 'POST',
 			params : {}
 		},
+		'send_sms_list' : {
+			url: App.service + 'call/send-sms-list',
+			method: 'POST',
+			params : {}
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -50,6 +55,12 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 
 	service.send_sms = function( params, callback ){
 		call.send_sms(params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.send_sms_list = function( params, callback ){
+		call.send_sms_list(params, function(data) {
 			callback(data);
 		});
 	}
