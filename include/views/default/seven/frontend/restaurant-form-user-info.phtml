@@ -129,19 +129,15 @@
 					<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
 					<div class="divider"></div>
 				</div>
-				
+
 				<div class="divider spacer-two-two"></div>
-				
+
 
 				<div ng-if="config.driver_change_amount && order.form.pay_type == 'cash'">
 					<p class="delivery-free restaurant-delivery-free">
 						<i>Drivers only carry ${{config.driver_change_amount}} in change.</i><br><br>
 					</p>
 				</div>
-
-
-
-				
 
 				<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
@@ -159,6 +155,12 @@
 					<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
 					<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
 				</div>
+			</div>
+
+			<div class="divider spacer-two-two"></div>
+
+			<div class="payment-form-group form-group">
+				<ng-include src="'assets/view/restaurant-place-order-button.html'"></ng-include>
 			</div>
 
 		</div>
