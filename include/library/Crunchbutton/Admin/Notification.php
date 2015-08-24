@@ -542,7 +542,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			'count' => 1,
 			'id' => 'order-'.$order->id,
 			'category' => 'order-new-test',
-			'sound' => Crunchbutton_Message_Push_Ios::SOUND_NEW_ORDER
+			'sound' => Crunchbutton_Message_Push_Ios::SOUND_NEW_ORDER,
+			'showInForeground' => true,
+			'link' => '/drivers/order/'.$order->id,
+			'app' => 'cockpit'
 		]);
 
 		return $r;
@@ -556,7 +559,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			'title' => 'Cockpit New Order',
 			'count' => 1,
 			'id' => 'order-'.$order->id,
-			'sound' => Crunchbutton_Message_Push_Ios::SOUND_NEW_ORDER
+			'sound' => Crunchbutton_Message_Push_Ios::SOUND_NEW_ORDER,
+			'showInForeground' => true,
+			'link' => '/drivers/order/'.$order->id,
+			'app' => 'cockpit'
 		]);
 
 		return $r;
