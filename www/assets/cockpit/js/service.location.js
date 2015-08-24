@@ -163,7 +163,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	$rootScope.$watch('account.user.working', function(value) {
 		console.debug('Got a change in user working:', arguments);
 
-		if (value && AccountService.isDriver) {
+		if (value && AccountService.isDriver && App.isMobile()) {
 			console.debug('Starting tracking because user is working and a driver.');
 			startWatch();
 		} else {
