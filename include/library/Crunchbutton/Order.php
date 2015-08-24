@@ -1111,7 +1111,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	Logic to make sure that admin doesn't see orders :
 
 	1. Order action has been taken.
-	2. Order is not in the priority list.
+	2. Order is not in the priority list and the community has the logistics system activated and it's been more
+	    than a minute
 	3. Order is in the priority list and priority has expired.
 	    IMPORTANT: This logic here does not screen by admin, and so the priority expiration must be the same for all
 	     drivers.  Otherwise this code will break.
@@ -1141,6 +1142,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$nowString = $now->format( 'Y-m-d H:i:s' );
 			$now->modify( '- ' . $hours . ' hours' );
 			$interval = $now->format( 'Y-m-d H:i:s' );
+			$now->modify( '+ ' . $hours . ' hours' );
+			// TODO: Hardwired constant here - not ideal
+			$now->modify( '- 1 minutes' );
+			$interval1Min = $now->format( 'Y-m-d H:i:s' );
+
 
 			if (!$admin) {
 				$admin = c::admin();
@@ -1152,15 +1158,18 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$where = 'o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
 
 			$query = 'SELECT DISTINCT(o.id_order) as id, o.* FROM `order` as o ' .
+				'inner join community as c using (id_community) ' .
 				'left outer join order_action as oa using (id_order) ' .
 				'left outer join order_priority as op using (id_order) where (oa.id_order is not null or ' .
-				'op.id_order is null or (op.id_order is not null and op.priority_expiration < ?) ' .
+				'(op.id_order is null and ((c.delivery_logistics is null) or (o.date < ? and ' .
+				'c.delivery_logistics is not null)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.
-				'and op.priority_given != ?)) and o.delivery_service=true and '.
-				'o.date > ? and '.$where . ' ORDER BY o.id_order';
+				'and op.priority_given != ?)) and o.delivery_service=true and o.date > ? '.
+				'and ' . $where . ' ORDER BY o.id_order';
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
-			return Order::q($query, [$nowString, $nowString, $admin->id_admin, Crunchbutton_Order_Priority::PRIORITY_LOW, $interval]);
+			return Order::q($query, [$interval1Min, $nowString, $nowString, $admin->id_admin,
+				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval]);
 		}
 
 	}
