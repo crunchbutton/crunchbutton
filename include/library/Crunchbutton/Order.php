@@ -1476,6 +1476,42 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function checkBeforeNotifications($drivers){
+
+		if( $this->ignoreDrivers ){
+			return null;
+		}
+
+		$retVal = ['needDrivers' => false, 'hasDriversWorking' => false];
+
+		// check if the restaurant is using our delivery system
+		if($this->restaurant()->delivery_service){
+			$retVal['needDrivers'] = true;
+		}
+
+		if( $drivers ){
+			foreach( $drivers as $driver ){
+				if ($driver->activeNotifications()->count() > 0){
+					$retVal['hasDriversWorking'] = true;
+					break;
+				}
+			}
+		}
+		return $retVal;
+
+	}
+
+	public function checkAfterNotifications($needDrivers, $hasDriversWorking){
+
+		Crunchbutton_Admin_Notification_Log::register($this->id_order);
+
+		if( $needDrivers && !$hasDriversWorking ){
+			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking($this);
+		}
+	}
+
+
+
 	public function driver(){
 		if( !$this->_driver && $this->id_order ){
 			$this->_driver = Admin::q('SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = ? AND type != "delivery-rejected" ORDER BY id_order_action DESC LIMIT 1', [$this->id_order]);
