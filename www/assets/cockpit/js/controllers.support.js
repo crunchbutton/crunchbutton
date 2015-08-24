@@ -269,27 +269,40 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.sms.message = '';
 	}
 
-
 	$scope.sms.send = function(){
-
 		if( $scope.formSMS.$invalid ){
 			$scope.formSMSSubmitted = true;
 			return;
 		}
-
-		$scope.formSMSSending = true;
-		CallService.send_sms( $scope.sms, function( json ){
-			$scope.formSMSSending = false;
-			if( json.success ){
-				MainNavigationService.link( '/ticket/' + json.success);
-				if( $scope.complete ){
-					$scope.complete();
+		if( $scope.sms.phone && angular.isArray( $scope.sms.phone ) ){
+			$scope.formSMSSending = true;
+			CallService.send_sms_list( $scope.sms, function( json ){
+				$scope.formSMSSending = false;
+				if( json.success ){
+					if( $scope.complete ){
+						$scope.complete( json );
+					}
+					$scope.reset();
+				} else {
+					setTimeout(function() { App.alert( json.error ); }, 100);
 				}
-				$scope.reset();
-			} else {
-				App.alert( json.error );
-			}
-		} );
+			} );
+
+		} else {
+			$scope.formSMSSending = true;
+			CallService.send_sms( $scope.sms, function( json ){
+				$scope.formSMSSending = false;
+				if( json.success ){
+					MainNavigationService.link( '/ticket/' + json.success);
+					if( $scope.complete ){
+						$scope.complete();
+					}
+					$scope.reset();
+				} else {
+					App.alert( json.error );
+				}
+			} );
+		}
 	}
 
 	$scope.call.make = function(){
@@ -320,6 +333,12 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.call.phone = num;
 		$scope.sms.phone = num;
 	} );
+	$rootScope.$on('textNumer', function(e, num) {
+		$scope.reset();
+		$scope.sms.phone = num;
+	} );
+
+
 
 } );
 

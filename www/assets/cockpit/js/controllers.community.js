@@ -261,6 +261,52 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} } );
 	}
 
+	$scope.sendSms = {
+		unSelectAll: function(){
+			angular.forEach($scope.staff, function(staff, key) {
+				staff.send = false;
+			});
+		},
+		selectAll: function(){
+			$scope.sendSms.unSelectAll();
+			angular.forEach($scope.staff, function(staff, key) {
+				if( staff.phone && staff.active ){
+					staff.send = true;
+				}
+			});
+		},
+		selectAllWorkingToday: function(){
+			$scope.sendSms.unSelectAll();
+			angular.forEach($scope.staff, function(staff, key) {
+				if( staff.phone && staff.active && staff.working_today ){
+					staff.send = true;
+				}
+			});
+		},
+		selectAllWorking: function(){
+			$scope.sendSms.unSelectAll();
+			angular.forEach($scope.staff, function(staff, key) {
+				if( staff.phone && staff.active && staff.working_today ){
+					staff.send = true;
+				}
+			});
+		},
+		send: function(){
+			var phones = [];
+			angular.forEach($scope.staff, function(staff, key) {
+				if( staff.send ){
+					phones.push( staff.phone );
+				}
+			} );
+			if( phones.length ){
+				$rootScope.$broadcast( 'textNumer', phones );
+			} else {
+				App.alert( 'Select at least one driver.' );
+			}
+
+		}
+	}
+
 	$scope.openClosingTimeContainer = function(){
 		$rootScope.$broadcast( 'openClosingTimeContainer' );
 	}

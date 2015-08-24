@@ -777,14 +777,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 							}
 					 }
 				}
-
-
 		}
 	}
 
 	public function activeDrivers( $dt = null ){
 		$totalDrivers = 0;
-
 		$drivers = $this->getDriversOfCommunity();
 		$hasDriverWorking = false;
 		// check if the drivers should checkin the shift, if it does, return just the driver that had checked in

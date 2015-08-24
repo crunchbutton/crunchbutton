@@ -1,0 +1,52 @@
+
+<div class="support-box-wrap box-content2">
+	<div class="support-box-wrap-header">
+		<h1>Select driver</h1>
+		<div class="divider"></div>
+	</div>
+
+	<div class="no-box-content-color">
+		<div class="field-container">
+			<div class="field-row">
+				<div class="field-key">
+					<a ng-click="sendSms.selectAll();">Select all active drivers</a>
+				</div>
+			</div>
+			<div class="field-row">
+				<div class="field-key">
+					<a ng-click="sendSms.selectAllWorking();">Select all drivers that are working now</a>
+				</div>
+			</div>
+			<div class="field-row">
+				<div class="field-key">
+					<a ng-click="sendSms.selectAllWorkingToday();">Select all drivers that are working today</a>
+				</div>
+			</div>
+			<div class="field-row">
+				<div class="field-key">
+					<button class="button save" ng-click="sendSms.send();">Send Text Message</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Driver</th>
+			<th>Phone</th>
+			<th class="tb-small"> </th>
+		</tr>
+		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}" ng-if="s.active">
+			<td><span>{{s.name}}</span></td>
+			<td><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a></td>
+			<td>
+				<label class="switch-wrap" ng-if="s.phone">
+					<input type="checkbox" class="switch" ng-model="s.send"/><div></div>
+				</label>
+			</td>
+		</tr>
+	</table>
+	<!-- <button ng-click="sendSms()">sendSms</button> -->
+</div>
