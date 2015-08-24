@@ -4055,7 +4055,7 @@ font-familt: "Museo Slab";
 		content: "   ❯";
 	}
 	.hide-desktop {
-		display: none;
+		display: none !important;
 	}
 	.payment-form-toggle {
 		background: transparent;
