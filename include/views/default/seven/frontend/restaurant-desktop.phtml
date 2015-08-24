@@ -1,7 +1,7 @@
 <div class="restaurant-right-bar">
-	
+
 	<div restaurant-is-closed></div>
-	
+
 	<div ng-show="!order.cart.hasItems() && open" class="restaurant-box hide-mobile">
 		<div class="restaurant-box-inner">
 			<span class="restaurant-box-icon">
@@ -26,8 +26,9 @@
 			</div>
 
 			<!-- place order button -->
-			<div class="button-pushable" ng-show="order.form.name || order.form.phone"><button class="button orange get-food ani-all" ng-click="order.submit();"><div>Place Order</div></button></div>
-			<div class="button-pushable" ng-show="!order.form.name && !order.form.phone"><button class="button orange get-food ani-all" ng-click="order.checkout();"><div>Checkout</div></button></div>
+			<div ng-if="!order.showForm">
+				<ng-include src="'assets/view/restaurant-place-order-button.html'"></ng-include>
+			</div>
 
 		</div>
 
