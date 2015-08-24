@@ -278,7 +278,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		selectAllWorkingToday: function(){
 			$scope.sendSms.unSelectAll();
 			angular.forEach($scope.staff, function(staff, key) {
-				if( staff.phone && staff.active && staff.working_today ){
+				if( staff.phone && staff.active && ( staff.working_today || staff.working ) ){
 					staff.send = true;
 				}
 			});
@@ -286,7 +286,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		selectAllWorking: function(){
 			$scope.sendSms.unSelectAll();
 			angular.forEach($scope.staff, function(staff, key) {
-				if( staff.phone && staff.active && staff.working_today ){
+				if( staff.phone && staff.active && staff.working ){
 					staff.send = true;
 				}
 			});
