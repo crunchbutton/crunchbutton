@@ -1,0 +1,39 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title"><i class="fa fa-angellist"></i>Live</h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+		<div class="ul-inputs">
+			<p><strong>Menu</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':form.labelItem1.$invalid}">
+					<div class="label">First Item: Label</div>
+					<div class="input">
+						<input type="text" name="labelItem1" ng-model="config.menu_item_1_label" required>
+					</div>
+				</li>
+				<li class="li-input" ng-class="{'error':form.urlItem1.$invalid}">
+					<div class="label">First Item: URL</div>
+					<div class="input">
+						<input type="text" name="urlItem1" ng-model="config.menu_item_1_url" required>
+					</div>
+				</li>
+			</ul>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+		</div>
+
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

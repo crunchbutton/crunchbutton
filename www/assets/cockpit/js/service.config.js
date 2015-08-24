@@ -146,3 +146,29 @@ NGApp.factory( 'ConfigAutoReplyService', function( $rootScope, $resource, $route
 	return service;
 
 } );
+
+NGApp.factory( 'ConfigLiveMenuService', function( $rootScope, $resource, $routeParams ) {
+
+	var service = {};
+
+	var settings = $resource( App.service + 'config/menu/:action', { action: '@action' }, {
+				// list methods
+				'load' : { 'method': 'GET', params : { 'action' : 'load' } },
+				'save' : { 'method': 'POST', params : { 'action' : 'save' } },
+			}
+		);
+
+	service.load = function( callback ){
+			settings.load( function( data ){
+				callback( data );
+			} );
+		};
+
+	service.save = function( params, callback ){
+			settings.save( params, function( data ){
+				callback( data );
+			} );
+		};
+	return service;
+
+} );

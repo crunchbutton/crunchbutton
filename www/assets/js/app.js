@@ -435,9 +435,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$.cookie('_viewmobile2', true, { expires: 1 });
 		App.go('/location');
 	};
-	
+
 	$rootScope.$on('haveUser', function(e, data) {
-		App.push.register();
+		if( App.push && App.push.register ){
+			App.push.register();
+		}
 	});
 
 	$rootScope.$on('userAuth', function(e, data) {
