@@ -61,7 +61,17 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		
 		var gotoLink = function() {
 			$rootScope.$safeApply(function() {
-				MainNavigationService.link(msg.additionalData.link);
+				switch (msg.additionalData.linkTarget) {
+					case '_blank':
+						window.open(msg.additionalData.link, '_blank');
+						break;
+					case '_system':
+						window.open(msg.additionalData.link, '_system');
+						break;
+					default:
+						MainNavigationService.link(msg.additionalData.link);
+						break;		
+				}
 			});
 		};
 		
@@ -72,11 +82,11 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		
 		// if we are in the foreground and we are forcing showing in foreground
 		if (msg.additionalData && msg.additionalData.foreground && msg.additionalData.showInForeground) {
-			var fn = function(){ };
+			var fn = null;
 			if (msg.additionalData.link) {
 				fn = gotoLink;
 			}
-			App.alert(msg.message, 'remote-notification', false, fn);
+			App.remoteNotification(msg.message, '', fn);
 		}
 	}
 

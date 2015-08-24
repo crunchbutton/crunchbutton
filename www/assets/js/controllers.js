@@ -1692,7 +1692,29 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 			scope.complete = complete;
 			App.dialog.show('.notification-alert-container');
 		});
+	});
+});
+NGApp.controller( 'NotificationRemoteCtrl', function ($scope, $rootScope ) {
+	$rootScope.$on('notificationRemote', function(e, title, message, fn) {
+		var complete = function() {
+			$rootScope.closePopup();
 
+			if (typeof fn === 'function') {
+				fn();
+			}
+		};
+		var cancel = function() {
+			$rootScope.closePopup();
+		};
+
+		$rootScope.$safeApply(function(scope) {
+			scope.title = title;
+			scope.message = message;
+			scope.complete = complete;
+			scope.cancel = cancel;
+			scope.hasFn = typeof fn === 'function';
+			App.dialog.show('.notification-remote-container');
+		});
 	});
 });
 
