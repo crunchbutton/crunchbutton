@@ -656,6 +656,11 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 		}
 	});
 };
+App.remoteNotification = function(txt, title, fn) {
+	setTimeout(function() {
+		App.rootScope.$broadcast('notificationRemote', title || '', txt, fn);
+	});
+};
 
 App.confirm = function(txt, title, fn, buttons) {
 	if (App.useNativeConfirm && App.isPhoneGap) {

@@ -4280,3 +4280,12 @@ font-familt: "Museo Slab";
 .hide-location-detect {
 	display: none;
 }
+
+.button-remote-fn {
+	width: 47%;
+	box-sizing: border-box;
+	float: left;
+}
+.button-remote-fn:nth-child(2) {
+	float: right;
+}
