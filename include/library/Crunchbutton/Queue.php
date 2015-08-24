@@ -29,7 +29,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	public static function process($all = false) {
 
 		if (!$all) {
-			$allQuery = ' and date_start<now()';
+			$allQuery = ' and date_run<now()';
 		}
 
 		$queue = self::q('select * from queue where status=?'.$allQuery, [self::STATUS_NEW]);
@@ -48,6 +48,7 @@ class Crunchbutton_Queue extends Cana_Table {
 			});
 
 			$q->status = self::STATUS_RUNNING;
+			$q->date_start = date('Y-m-d H:i:s');
 			$q->save();
 
 			$queue_type = $q->queue_type()->type;
@@ -114,8 +115,14 @@ class Crunchbutton_Queue extends Cana_Table {
 	}
 
 	public static function create($params = []) {
-		if (!$params['date_start']) {
-			$params['date_start'] = date('Y-m-d H:i:s');
+		
+		// backwards compatable so i dont break things
+		if ($params['date_start']) {
+			$params['date_run'] = $params['date_start'];
+			unset($params['date_start']);
+		}
+		if (!$params['date_run']) {
+			$params['date_run'] = date('Y-m-d H:i:s');
 		}
 
 		$type = Crunchbutton_Queue_Type::byType( $params[ 'type' ] );
@@ -127,7 +134,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		$params['id_queue_type'] = $type->id_queue_type;
 
 		if ($params['seconds']) {
-			$params['date_start'] = date('Y-m-d H:i:s', time() + $params['seconds']);
+			$params['date_run'] = date('Y-m-d H:i:s', time() + $params['seconds']);
 			unset($params['seconds']);
 		}
 
