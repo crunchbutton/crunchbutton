@@ -20,17 +20,23 @@
 			<div ng-if="restaurant.eta && restaurant._open" class="restaurant-message">Delivery estimate: {{restaurant.eta}} minutes</div>
 
 			<!-- desktop version -->
-			<ng-include ng-if="!isMobileWidth" src="'assets/view/restaurant-desktop.html'"></ng-include>
+			<span class="hide-mobile">
+				<ng-include src="'assets/view/restaurant-desktop.html'"></ng-include>
+			</span>
 
 			<!-- mobile version -->
-			<ng-include ng-if="isMobileWidth" src="'assets/view/restaurant-mobile.html'"></ng-include>
+			<span class="hide-desktop">
+				<ng-include  src="'assets/view/restaurant-mobile.html'"></ng-include>
+			</span>
 
 		</div>
 
 	</div>
 
 	<!-- total breakdown - mobile only -->
-	<ng-include ng-if="isMobileWidth" src="'assets/view/restaurant-breakdown.html'"></ng-include>
+	<span class="hide-desktop">
+		<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+	</span>
 
 	<div class="divider bottom-spacer"></div>
 
