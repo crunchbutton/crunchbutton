@@ -1296,6 +1296,9 @@ NGApp.controller('DriversWelcomePushCtrl', function($rootScope, $location, PushS
 		$rootScope.$safeApply();
 	};
 	$scope.pushit = function() {
+		// temp fix #6378
+		complete();
+		return;
 		if (App.isPhoneGap && PushService.register) {
 			PushService.register(complete);
 		} else {
