@@ -53,6 +53,10 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
     private $oldServiceClusters;
     private $newServiceClusters;
 
+    private $oldNodeOrderIds;
+    private $newNodeOrderIds;
+
+
     public function __construct($distanceType)
     {
         $this->id_old_counter = -1;
@@ -117,6 +121,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
 
         $this->oldRestaurantServiceTimes = [0];
         $this->newRestaurantServiceTimes = [0];
+        $this->newNodeOrderIds= [null];
 
     }
 
@@ -160,6 +165,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->newDeliveryIdxs[] = $matchingNewCustomerId;
         $this->newRestaurantParkingTimes[] = $destination->restaurantParkingTime;
         $this->newRestaurantServiceTimes[] = $destination->restaurantServiceTime;
+        $this->newNodeOrderIds[] = $destination->idOrder;
 
     }
 
@@ -192,6 +198,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $this->newDeliveryIdxs[] = 0;
         $this->newRestaurantParkingTimes[] = 0;
         $this->newRestaurantServiceTimes[] = 0;
+        $this->newNodeOrderIds[] = $destination->idOrder;
 
     }
 
@@ -336,7 +343,8 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
                 $newFakeIndicators[$numNewNodes] = 1;
                 $newFakeIndicators[$numNewNodes+1] = 1;
                 $optInputsList['newFakes'] = $newFakeIndicators;
-
+                $optInputsList['newNodeOrderIds'] = $this->newNodeOrderIds;
+                array_push($optInputsList['newNodeOrderIds'], null, null);
                 $optInputsList['hasFakeOrder'] = true;
             } else if (!$doCreateFakeOrders) {
                 // Only do the new optimization
@@ -350,6 +358,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
 
                 $newFakeIndicators = array_fill(0, $numNewNodes, 0);
                 $optInputsList['newFakes'] = $newFakeIndicators;
+                $optInputsList['newNodeOrderIds'] = $this->newNodeOrderIds;
             }
 
         } else if ($numNewNodes > 3) {
@@ -371,6 +380,7 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
 
             $newFakeIndicators = array_fill(0, $numNewNodes, 0);
             $optInputsList['newFakes'] = $newFakeIndicators;
+            $optInputsList['newNodeOrderIds'] = $this->newNodeOrderIds;
 
         }
 
