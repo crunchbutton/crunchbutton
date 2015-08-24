@@ -127,8 +127,8 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
             'private' => 1,
             'loc_lat' => 34.023281,
             'loc_lon' => -118.2881961,
-            'delivery_logistics' => 2
-        ]);
+            'delivery_logistics' => null
+            ]);
         $c2->save();
 
         $r1c = new Restaurant_Community([
@@ -391,7 +391,8 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
 
     // All drivers should see the order if an order action has been taken
-    public function testDriverOrdersWithOrderAction()
+    //  and delivery logistics = 2 and order was placed more than a minute ago
+    public function testDriverOrdersWithOrderActionOlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -434,8 +435,148 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         }
     }
 
+
+    // All drivers should see the order if an order action has been taken
+    //  and delivery logistics = null and order was placed more than a minute ago
+    public function testDriverOrdersWithOrderActionOlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+        $oa = $og['oa'];
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+
+
+        $oa->delete();
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+    }
+
+    // All drivers should see the order if an order action has been taken
+    //  and delivery logistics = 2 and order was placed less than a minute ago
+    public function testDriverOrdersWithOrderActionNewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+        $oa = $og['oa'];
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+
+
+        $oa->delete();
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+    }
+
+
+    // All drivers should see the order if an order action has been taken
+    //  and delivery logistics = null and order was placed less than a minute ago
+    public function testDriverOrdersWithOrderActionNewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+        $oa = $og['oa'];
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+
+
+        $oa->delete();
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+    }
+
+
+
     // All drivers should see the order if the order has no associated priorities or order actions
-    public function testDriverOrdersWithNoPrioritiesOrOrderActions()
+    //  and there is delivery logistics, when order was placed more than a minute ago.
+    public function testDriverOrdersWithNoPrioritiesOrOrderActionsOlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -474,10 +615,132 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
     }
 
+    // All drivers should see the order if the order has no associated priorities or order actions
+    //  and there is no delivery logistics, when order was placed more than a minute ago.
+    public function testDriverOrdersWithNoPrioritiesOrOrderActionsOlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [], 30);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should not see the order if the order has no associated priorities or order actions
+    //  and there is delivery logistics, when order was placed less than a minute ago.
+    public function testDriverOrdersWithNoPrioritiesOrOrderActionsNewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [], 30);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 0);
+        }
+
+    }
+
+    // All drivers should see the order if the order has no associated priorities or order actions
+    //  and there is no delivery logistics, when order was placed less than a minute ago.
+    public function testDriverOrdersWithNoPrioritiesOrOrderActionsNewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [], 30);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
 
     // All drivers assigned PRIORITY_NO_ONE.
     // All drivers should see the order.
-    public function testDriverOrdersWithPriorityNoOne()
+    public function testDriverOrdersWithPriorityNoOneOlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -518,11 +781,141 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
     }
 
+    // All drivers assigned PRIORITY_NO_ONE.
+    // All drivers should see the order.
+    public function testDriverOrdersWithPriorityNoOneOlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_NO_ONE, Crunchbutton_Order_Priority::PRIORITY_NO_ONE,
+                Crunchbutton_Order_Priority::PRIORITY_NO_ONE]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+
+    // All drivers assigned PRIORITY_NO_ONE.
+    // All drivers should see the order.
+    public function testDriverOrdersWithPriorityNoOneNewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_NO_ONE, Crunchbutton_Order_Priority::PRIORITY_NO_ONE,
+                Crunchbutton_Order_Priority::PRIORITY_NO_ONE]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers assigned PRIORITY_NO_ONE.
+    // All drivers should see the order.
+    public function testDriverOrdersWithPriorityNoOneNewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_NO_ONE, Crunchbutton_Order_Priority::PRIORITY_NO_ONE,
+                Crunchbutton_Order_Priority::PRIORITY_NO_ONE]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
 
     // Only driver with high priority should see the order if the order has an unexpired high priority.
     //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
     //  Only driver 1 should see the order.
-    public function testDriverOrdersWithUnexpiredPriority()
+    public function testDriverOrdersWithUnexpiredPriorityOlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -567,10 +960,155 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
     }
 
-    // All drivers should see the order if the order has an unexpired high priority, but an order action.
+    // Only driver with high priority should see the order if the order has an unexpired high priority.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Only driver 1 should see the order.
+    public function testDriverOrdersWithUnexpiredPriorityOlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+                $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+            } else {
+                $this->assertEquals($dos[$driver->id_admin]->count(), 0);
+            }
+        }
+
+    }
+
+    // Only driver with high priority should see the order if the order has an unexpired high priority.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Only driver 1 should see the order.
+    public function testDriverOrdersWithUnexpiredPriorityNewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+                $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+            } else {
+                $this->assertEquals($dos[$driver->id_admin]->count(), 0);
+            }
+        }
+
+    }
+
+    // Only driver with high priority should see the order if the order has an unexpired high priority.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Only driver 1 should see the order.
+    public function testDriverOrdersWithUnexpiredPriorityNewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+                $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+            } else {
+                $this->assertEquals($dos[$driver->id_admin]->count(), 0);
+            }
+        }
+
+    }
+
+
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
     //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
     //  Driver 1 accepted.  Therefore, all drivers should see the order.
-    public function testDriverOrdersWithOrderActionAndUnexpiredPriority()
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriorityOlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -612,10 +1150,146 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
     }
 
-    // All drivers should see the order if the order has an unexpired high priority, but an order action.
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Driver 1 accepted.  Therefore, all drivers should see the order.
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriorityOlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Driver 1 accepted.  Therefore, all drivers should see the order.
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriorityNewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Driver 1 accepted.  Therefore, all drivers should see the order.
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriorityNewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community2, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
     //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
     //  Driver 2 accepted.  Therefore, all drivers should see the order.
-    public function testDriverOrdersWithOrderActionAndUnexpiredPriority2()
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriority2OlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -657,9 +1331,144 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
     }
 
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Driver 2 accepted.  Therefore, all drivers should see the order.
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriority2OlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver2->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Driver 2 accepted.  Therefore, all drivers should see the order.
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriority2NewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver2->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should see the order if the order has an unexpired high priority and an order action.
+    //  In this test, driver 1 has high priority, and drivers 2 and 3 have low priority.
+    //  Driver 2 accepted.  Therefore, all drivers should see the order.
+    public function testDriverOrdersWithOrderActionAndUnexpiredPriority2NewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver2->id_admin,
+            "delivery-accepted");
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
 
     // All drivers should see the order if the order has an expired high priority.
-    public function testDriverOrdersWithExpiredPriority()
+    public function testDriverOrdersWithExpiredPriorityOlderDL2()
     {
         $orders = [];
         $allops = [];
@@ -704,6 +1513,143 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
     }
 
+    // All drivers should see the order if the order has an expired high priority.
+    public function testDriverOrdersWithExpiredPriorityOlderNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $earlier120, 70,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should see the order if the order has an expired high priority.
+    public function testDriverOrdersWithExpiredPriorityNewerDL2()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $earlier120, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
+
+    // All drivers should see the order if the order has an expired high priority.
+    public function testDriverOrdersWithExpiredPriorityNewerNoDL()
+    {
+        $orders = [];
+        $allops = [];
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        $ds = [$this->driver1, $this->driver2, $this->driver3];
+
+        // Chipotle
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $earlier120, 30,
+            $this->community, $chipotle_lat, $chipotle_lon, $ds,
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
+                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+        $orders[] = $og['o'];
+        $allops = array_merge($allops, $og['ops']);
+
+        $dos = [];
+        foreach ($ds as $driver) {
+            $os = Crunchbutton_Order::deliveryOrdersForAdminOnly(1, $driver);
+            $dos[$driver->id_admin] = $os;
+        }
+
+        foreach ($allops as $op) {
+//            print "Order priority: $op->id_order_priority\n";
+            $op->delete();
+        }
+        foreach ($orders as $o) {
+//            print "Order: $op->id_order\n";
+            $o->delete();
+        }
+
+        foreach ($ds as $driver) {
+            $this->assertEquals($dos[$driver->id_admin]->count(), 1);
+            $this->assertEquals($dos[$driver->id_admin]->get(0)->id_order, $orders[0]->id_order);
+        }
+
+    }
 
     public function defaultOrder($user, $restaurantId, $date, $community) {
        return new Order([
