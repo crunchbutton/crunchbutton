@@ -7,6 +7,7 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 
 		$count = 1;
 		$id = 'push';
+		$showInForeground = false;
 
 		$message = $data['message'];
 
@@ -22,6 +23,14 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 			
 		if (isset($data['id'])) {
 			$id = $data['id'];
+		}
+		
+		if (isset($data['link'])) {
+			$link = $data['link'];
+		}
+		
+		if (isset($data['showInForeground'])) {
+			$showInForeground = $data['showInForeground'];
 		}
 			
 		if (isset($data['category'])) {
@@ -81,6 +90,13 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 			$msg->setSound($sound);
 			$msg->setExpiry(30);
 			$msg->setBadge($count);
+			
+			if ($link) {
+				// @todo add some sort of cleaning to the url so we cant have multiple //
+				$msg->setCustomProperty('link', $link);
+			}
+
+			$msg->setCustomProperty('showInForeground', $showInForeground);
 			
 			if ($category) {
 				$msg->setCategory($category);

@@ -3,7 +3,7 @@
 class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 		//$c = Crunchbutton_Admin_Notification::q('select * from admin_notification where id_admin=1 and active=true and type=?', [Crunchbutton_Admin_Notification::TYPE_PUSH_IOS])->get(0);
-
+/*
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => 'addc8d82f9faf739a5c47d10e21041176bd5ba8695bce9e36c6eae47e37c4aac',
 			'message' => 'well hello there',
@@ -14,7 +14,9 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 		]);
 		
 		var_dump($r);
+		*/
 		
+		/*
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => 'b85dc7710abcd6a18aa6ff91ca165aa97fa02df23323d49c689a7d50fd47e800',
 			'message' => 'well hello there',
@@ -22,6 +24,22 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 			'id' => 'new-message',
 			'env' => c::getEnv(),
 			'app' => 'cockpit'
+		]);
+		*/
+
+		$order = Order::o(1);
+		$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
+
+		$r = Crunchbutton_Message_Push_Ios::send([
+			'to' => '8d9b2a99aa4754686eb76ff3a20c007c808470a7327107e786f6cf0e1696f7ac',
+			'message' => $message,
+			'count' => 1,
+			'id' => 'order-'.$order->id,
+			'sound' => Crunchbutton_Message_Push_Ios::SOUND_NEW_ORDER,
+			'showInForeground' => true,
+			'link' => '/drivers/order/'.$order->id,
+			'app' => 'cockpit',
+			'env' => 'live'
 		]);
 		
 		var_dump($r);
