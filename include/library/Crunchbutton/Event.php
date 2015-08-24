@@ -51,8 +51,8 @@ class Crunchbutton_Event {
 
 		$work = new Event_Payload($to, $event, $payload);
 
-		// c::timeout(function() use($work) {
+		c::timeout(function() use($work) {
 		Event::q($work);
-		// },0,$async);
+		},0,$async);
 	}
 }
