@@ -48,6 +48,7 @@ class Crunchbutton_Queue extends Cana_Table {
 			});
 
 			$q->status = self::STATUS_RUNNING;
+			$q->date_start = date('Y-m-d H:i:s');
 			$q->save();
 
 			$queue_type = $q->queue_type()->type;
