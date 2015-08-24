@@ -10,6 +10,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'ConfigRewardsCtrl',
 			templateUrl: 'assets/view/config-rewards.html'
 		})
+		.when('/config/live', {
+			action: 'tools',
+			controller: 'ConfigLiveCtrl',
+			templateUrl: 'assets/view/config-live.html'
+		})
 		.when('/config/rules', {
 			action: 'tools',
 			controller: 'ConfigRulesCtrl',
@@ -102,6 +107,40 @@ NGApp.controller('ConfigRulesCtrl', function( $scope, RulesService ) {
 	load();
 
 });
+
+NGApp.controller('ConfigLiveCtrl', function( $scope, ConfigLiveMenuService ) {
+
+	var load = function(){
+		ConfigLiveMenuService.load( function( json ){
+			if( !json.error ){
+				$scope.config = json;
+				$scope.ready = true;
+			}
+		} )
+	}
+
+	$scope.save = function(){
+		$scope.isSaving = true;
+		ConfigLiveMenuService.save( $scope.config, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.basicInfo = data;
+				$scope.saved = true;
+				$scope.flash.setMessage( 'Information saved!' );
+				setTimeout( function() { $scope.saved = false; }, 1500 );
+			}
+		} );
+	}
+
+	load();
+
+} );
+
+
+
 NGApp.controller('ConfigRewardsCtrl', function( $scope, CustomerRewardService ) {
 
 	var load = function(){
