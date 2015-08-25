@@ -5,7 +5,7 @@ class Crunchbutton_Queue_Notification_Driver extends Crunchbutton_Queue {
 		$status = $this->order()->status()->last();
 		
 		// dont send a notification if its already accepted
-		if ($status->status != 'new') {
+		if ($status['status'] != 'new') {
 			return self::STATUS_STOPPED;
 		}
 		
