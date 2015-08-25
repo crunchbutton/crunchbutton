@@ -3,14 +3,15 @@
 class Cana_Db_MySQL_Db extends Cana_Db_Base {
 	public function connect($args = null) {
 		$options = [];
-		
+
 		if ($args->url) {
-			preg_match('/^(mysql:\/\/)(.*):(.*)@(.*):([0-9]+)\/(.*)$/u', $args->url, $matches);
+			preg_match('/^(mysql:\/\/)(.*):(.*)@(.*):([0-9]+)\/([a-z0-9\._]+)(\?sslca=(.*))?$/u', $args->url, $matches);
 			$args->user = $matches[2];
 			$args->pass = $matches[3];
 			$args->host = $matches[4];
 			$args->port = $matches[5];
 			$args->db = $matches[6];
+			$args->sslca = $matches[8];
 		}
 
 		if (!$args->dsn) {
@@ -19,6 +20,10 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 
 		if ($args->persistent) {
 			$options[PDO::ATTR_PERSISTENT] = true;
+		}
+		
+		if ($args->sslca) {
+			$options[PDO::MYSQL_ATTR_SSL_CA] = $args->sslca;
 		}
 
 		$db = new \PDO($args->dsn, $args->user, $args->pass, $options);
