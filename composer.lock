@@ -23,7 +23,7 @@
             },
             "require": {
                 "ext-curl": "*",
-                "php": ">=5.3.3",
+                "php": "~7.0@beta",
                 "symfony/event-dispatcher": "~2.1"
             },
             "replace": {
