@@ -294,14 +294,25 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Support::o( $support->id_support );
 	}
 
+	// Creates a ticket and related it to a driver
+	public function createNewWarningStaffTicket( $params = [] ){
+		$params[ 'staff' ] = true;
+		return self::createNewWarning( $params );
+	}
+
 	public function createNewWarning( $params = [] ){
 		$support = false;
-		if( $params[ 'id_order' ] ){
-			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_order = ? AND type = ? ORDER BY id_support DESC LIMIT 1', [$params[ 'id_order' ], Crunchbutton_Support::TYPE_WARNING]);
-		}
 
-		if( !$support->id_support && $params[ 'phone' ] ){
-			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE phone = ? ORDER BY id_support DESC LIMIT 1', [$params[ 'phone' ]]);
+		if( $params[ 'staff' ] && $params[ 'phone' ] ){
+			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE phone = ? AND type != ? ORDER BY id_support DESC LIMIT 1', [$params[ 'phone' ], Crunchbutton_Support::TYPE_WARNING]);
+		} else {
+			if( $params[ 'id_order' ] ){
+				$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_order = ? AND type = ? ORDER BY id_support DESC LIMIT 1', [$params[ 'id_order' ], Crunchbutton_Support::TYPE_WARNING]);
+			}
+
+			if( !$support->id_support && $params[ 'phone' ] ){
+				$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE phone = ? ORDER BY id_support DESC LIMIT 1', [$params[ 'phone' ]]);
+			}
 		}
 
 		if( $support && $support->id_support ){
@@ -311,7 +322,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		} else {
 			$support = new Crunchbutton_Support();
-			$support->type = Crunchbutton_Support::TYPE_WARNING;
+			if( $params[ 'staff' ] ){
+				$support->type = Crunchbutton_Support::TYPE_TICKET;
+			} else {
+				$support->type = Crunchbutton_Support::TYPE_WARNING;
+			}
 			$open = isset( $params[ 'dont_open_ticket' ] ) ? false : true;
 			if( $open ){
 				$support->status = Crunchbutton_Support::STATUS_OPEN;
@@ -339,9 +354,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		} else {
 			$support->addSystemMessage( $params[ 'body' ] );
 		}
-
 		return Crunchbutton_Support::o( $support->id_support );
 	}
+
 
 	public function addCustomerMessage( $params = [] ){
 
