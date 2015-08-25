@@ -858,15 +858,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message = 'Temporarily Unavailable!';
 				}
 
-				// if the community needs checkin drivers we dont know when it will be opened
-				if( $this->driver_checkin ){
-					$message = 'Temporarily Unavailable!';
-				}
-
-				if( $this->driver_checkin ){
-					$message = 'Temporarily Unavailable!';
-				}
-
 				echo $message;
 				echo "\n";
 
