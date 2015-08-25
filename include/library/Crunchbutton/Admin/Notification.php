@@ -209,7 +209,18 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$env = c::getEnv();
 
-		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $order->id_order );
+		$curCommunity = $order->community();
+		if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics)) {
+			$attemptsAllDrivers = Crunchbutton_Queue::notificationAttempts($order->id_order, null);
+			if ($attemptsAllDrivers == 0) {
+				// Something late/wrong with queue system so use the notification record
+				$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
+			} else{
+				$attempts = Crunchbutton_Queue::notificationAttempts($order->id_order, $this->id_admin);
+			}
+		} else {
+			$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
+		}
 
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
