@@ -743,9 +743,9 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		$scope.ready = true;
 	} );
 
-	var docs = function(){
+	var docs = function( id_admin ){
 		// Load the docs
-		DriverOnboardingService.docs.list( $routeParams.id, function( data ){
+		DriverOnboardingService.docs.list( id_admin, function( data ){
 			$scope.documents = data;
 		} );
 		docsPendency();
@@ -796,7 +796,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 				$scope.driver.vehicle = vehicle_default
 			}
 
-			docs();
+			docs( driver.id_admin );
 		} );
 
 		DriverOnboardingService.phone_types( function( json ){
