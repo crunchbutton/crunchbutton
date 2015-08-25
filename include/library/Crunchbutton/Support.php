@@ -312,7 +312,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		} else {
 			$support = new Crunchbutton_Support();
 			$support->type = Crunchbutton_Support::TYPE_WARNING;
-			$support->status = Crunchbutton_Support::STATUS_OPEN;
+			$open = isset( $params[ 'dont_open_ticket' ] ) ? false : true;
+			if( $open ){
+				$support->status = Crunchbutton_Support::STATUS_OPEN;
+			} else {
+				$support->status = Crunchbutton_Support::STATUS_CLOSED;
+			}
 			$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
 			$support->id_session_twilio = null;
 			$support->date = date( 'Y-m-d H:i:s' );
