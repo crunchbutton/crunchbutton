@@ -64,8 +64,11 @@
 				<div class="order-buttons">
 					<p>
 						Create an account and earn {{order.reward.points}} points towards a <b>free delivery</b> and reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our&nbsp;
-						<a ng-show="!isAndroid" data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>
-						<a ng-show="isAndroid" data-ng-href="https://play.google.com/store/apps/details?id=com.crunchbutton">Android App</a>
+						<span ng-if="!isMobile"><a href="/download">mobile apps</a>.</span>
+						<span ng-if="isMobile">
+							<span ng-if="!isAndroid"><a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>.</span>
+							<span ng-if="isAndroid"><a data-ng-href="https://play.google.com/store/apps/details?id=com.crunchbutton">Android App</a>.</span>
+						</span>
 					</p>
 
 					<br>
