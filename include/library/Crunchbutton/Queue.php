@@ -29,7 +29,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	public static function process($all = false) {
 
 		if (!$all) {
-			$allQuery = ' and date_run<now()';
+			$allQuery = ' and (date_run<now() or date_run is null)';
 		}
 
 		$queue = self::q('select * from queue where status=?'.$allQuery, [self::STATUS_NEW]);
