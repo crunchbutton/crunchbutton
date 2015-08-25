@@ -45,8 +45,6 @@ workflow*
 !db/dump.sql
 !.htaccess
 
-
-composer.lock
 vendor/*
 
 npm-debug.log
