@@ -1039,7 +1039,18 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 							$message = sprintf( $template, $driver->firstName(), $shift->community()->name );
 						}
 						$message .= $commas;
-						$message .= $shift->dateStart()->format( 'D ga' ) . '-' . $shift->dateEnd()->format( 'ga T' );
+
+						if( intval( $shift->dateStart()->format( 'i' ) ) > 0 ){
+							$message .= $shift->dateStart()->format( 'D g:ia' );
+						} else {
+							$message .= $shift->dateStart()->format( 'D ga' );
+						}
+						$message .= '-';
+						if( intval( $shift->dateEnd()->format( 'i' ) ) > 0 ){
+							$message .= $shift->dateEnd()->format( 'g:ia T' );
+						} else {
+							$message .= $shift->dateEnd()->format( 'ga T' );
+						}
 						$commas = ', ';
 					}
 
