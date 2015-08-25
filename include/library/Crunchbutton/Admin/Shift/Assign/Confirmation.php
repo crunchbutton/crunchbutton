@@ -143,11 +143,9 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 			case self::TYPE_TICKET:
 				$messagePattern = 'IMMEDIATE ACTION NEEDED: Independent Contractor %s ( community %s ) has not indicated he is ready to pick up deliveries today. ' .
-													'Please call him immediately at %s and prepare to find a replacement NOW and close the community if no drivers have checked into their shifts.' ;
-													// 'Note: the community will be auto-closed if there\'s no other driver scheduled now--until %s ' .
-													// 'indicates he\'s ready to deliver orders, or until you add a new driver to the schedule.';
+													'Please call him immediately at %s and prepare to find a replacement NOW and the community will be AUTO-CLOSED at %s if he doesn\'t check in or if no replacement is found.';
 				// return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $admin->name );
-				return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ) );
+				return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $shift->dateStart()->format( 'g:ia' ) );
 				break;
 		}
 	}
