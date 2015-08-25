@@ -322,6 +322,15 @@
 					</table>
 				</a>
 
+				<a href="/shifts" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'settlement')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
+							<td class="side-menu-label">Shifts</a></td>
+						</tr>
+					</table>
+				</a>
+
 				<a href="/staff" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'staff')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
