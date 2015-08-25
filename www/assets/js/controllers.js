@@ -181,8 +181,12 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
  * work page
  */
 NGApp.controller('WorkCtrl', function ($scope) {
-	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+
+	var reps = 'moc.nottubhcnurc@gnitekram'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
+	var recruiting = 'moc.nottubhcnurc@gnitiurcer'.split('').reverse().join('');
+
+	$scope.recruiting = recruiting;
 	$scope.reps = reps;
 	$scope.devs = devs;
 });
@@ -191,7 +195,7 @@ NGApp.controller('WorkCtrl', function ($scope) {
  * thank you page
  */
 NGApp.controller('ThankyouCtrl', function ($scope) {
-	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var reps = 'moc.nottubhcnurc@gnitekram'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
 	$scope.devs = devs;
@@ -600,7 +604,7 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
  */
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
 
-	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var reps = 'moc.nottubhcnurc@gnitekram'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	$scope.reps = reps;
 	$scope.devs = devs;
