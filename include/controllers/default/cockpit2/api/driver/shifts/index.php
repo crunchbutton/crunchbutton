@@ -33,7 +33,8 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		$id_admin_shift_assign = $this->request()[ 'id_admin_shift_assign' ];
 		if( $id_admin_shift_assign ){
 			$assignment = Crunchbutton_Admin_Shift_Assign::o( $id_admin_shift_assign );
-			Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment );
+			$id_admin = c::user()->id_admin;
+			Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment, false, $id_admin );
 			echo json_encode( [ 'success' => true ] );exit;
 		}
 		echo json_encode( [ 'error' => true ] );exit;

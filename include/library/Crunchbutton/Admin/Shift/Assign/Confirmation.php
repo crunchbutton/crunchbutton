@@ -89,7 +89,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		}
 	}
 
-	public function confirm( $assignment, $automatically = false ){
+	public function confirm( $assignment, $automatically = false, $id_admin = null ){
 		$assignment->confirmed = 1;
 		$assignment->save();
 		$nextShift = self::checkIfThereIsASecondShift( $assignment );
@@ -103,8 +103,10 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 			$period = $assignment->shift()->startEndToString();
 			$community = $assignment->community()->name;
 			$num = $admin->phone;
-			$message = 'Shift confirmed by ' .  $community . ' driver ' . $admin->name . '!';
-			Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => $message, 'phone' => $num, 'bubble' => true ] );
+			if( !$id_admin ){
+				$message = 'Shift confirmed by ' .  $community . ' driver ' . $admin->name . '!';
+				Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => $message, 'phone' => $num, 'bubble' => true ] );
+			}
 		}
 		return true;
 	}
@@ -141,11 +143,9 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 			case self::TYPE_TICKET:
 				$messagePattern = 'IMMEDIATE ACTION NEEDED: Independent Contractor %s ( community %s ) has not indicated he is ready to pick up deliveries today. ' .
-													'Please call him immediately at %s and prepare to find a replacement NOW and close the community if no drivers have checked into their shifts.' ;
-													// 'Note: the community will be auto-closed if there\'s no other driver scheduled now--until %s ' .
-													// 'indicates he\'s ready to deliver orders, or until you add a new driver to the schedule.';
+													'Please call him immediately at %s and prepare to find a replacement NOW and the community will be AUTO-CLOSED at %s if he doesn\'t check in or if no replacement is found.';
 				// return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $admin->name );
-				return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ) );
+				return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $shift->dateStart()->format( 'g:ia' ) );
 				break;
 		}
 	}
@@ -221,7 +221,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		self::create( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'type' => self::TYPE_TEXT ] );
 
-		Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => false, 'body' => $message, 'phone' => $num ] );
+		Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $message, 'phone' => $num ] );
 
 		foreach ($rets as $ret) {
 			if (!$ret->sid) {
