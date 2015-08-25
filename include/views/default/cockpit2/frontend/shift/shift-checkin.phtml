@@ -1,0 +1,29 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-calendar"></i>Check In Status - Next 48 hours</h1>
+	</div>
+	<div class="divider"></div>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<th>Status</th>
+				<td>
+					<select ng-model="query.status" name="searchType" tabindex="2">
+						<option value="all">All</option>
+						<option value="confirmed">Confirmed</option>
+						<option value="not-confirmed">Not Confirmed</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-shift-checkin.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+</div>
