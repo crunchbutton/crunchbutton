@@ -27,6 +27,15 @@ class Cana_Db extends Cana_Model {
 		return (new ReflectionMethod($this->dbo(), $name))->invokeArgs($this->dbo(), $arguments);
 	}
 	
+	public static function typeByUrl($url) {
+		if (strpos($url,'postgres') === 0) {
+			return 'PostgreSQL';
+		} elseif (strpos($url,'mysql') === 0) {
+			return 'MySQL';
+		}
+		return false;
+	}
+	
 	public function dbo() {
 		return $this->_dbo;
 	}
