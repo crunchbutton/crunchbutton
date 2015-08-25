@@ -32,7 +32,7 @@ class Crunchbutton_Queue extends Cana_Table {
 			$allQuery = ' and (date_run<now() or date_run is null)';
 		}
 
-		$queue = self::q('select * from queue where status=?'.$allQuery, [self::STATUS_NEW]);
+		$queue = self::q('select * from queue where status=?'.$allQuery.' order by date_run asc', [self::STATUS_NEW]);
 
 		foreach ($queue as $q) {
 			echo 'Starting #'.$q->id_queue. '...';
