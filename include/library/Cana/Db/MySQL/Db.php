@@ -3,6 +3,15 @@
 class Cana_Db_MySQL_Db extends Cana_Db_Base {
 	public function connect($args = null) {
 		$options = [];
+		
+		if ($args->url) {
+			preg_match('/^(mysql:\/\/)(.*):(.*)@(.*):([0-9]+)\/(.*)$/u', $args->url, $matches);
+			$args->user = $matches[2];
+			$args->pass = $matches[3];
+			$args->host = $matches[4];
+			$args->port = $matches[5];
+			$args->db = $matches[6];
+		}
 
 		if (!$args->dsn) {
 			$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8';
