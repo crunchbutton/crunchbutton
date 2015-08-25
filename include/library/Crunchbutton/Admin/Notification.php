@@ -213,8 +213,20 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics)) {
 			$attemptsAllDrivers = Crunchbutton_Queue::notificationAttempts($order->id_order, null);
 			if ($attemptsAllDrivers == 0) {
+				$nowDT = new DateTime(now(), new DateTimeZone(c::config()->timezone)); // Should be PST
+				$nowDate = $nowDT->format('Y-m-d H:i:s');
 				// Something late/wrong with queue system so use the notification record
-				$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
+				$useDT = new DateTime($order->date, new DateTimeZone(c::config()->timezone)); // Should be PST
+				$diffSeconds = $nowDT->getTimestamp() - $useDT->getTimestamp();
+				if ($diffSeconds <= 60) {
+					Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'stage' => 'no drivers notified yet no attempts',
+						'type' => 'complexLogistics']);
+					$attempts = 0;
+				} else{
+					$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
+					Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'stage' => 'no drivers notified yet',
+						'type' => 'complexLogistics', 'attempts' => $attempts]);
+				}
 			} else{
 				$attempts = Crunchbutton_Queue::notificationAttempts($order->id_order, $this->id_admin);
 			}

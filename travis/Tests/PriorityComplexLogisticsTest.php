@@ -409,6 +409,17 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        var_dump($now2->getTimestamp());
 //    }
 //
+    public function testMisc()
+    {
+        $useDate2 = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate2, $this->community2);
+        $o1->save();
+        $useDT = new DateTime($o1->date, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT->modify('+ 1 minutes');
+        $useDate = $useDT->format('Y-m-d H:i:s');
+        var_dump($useDate);
+        $o1->delete();
+            }
 
     public function testQueue1()
     {

@@ -8,6 +8,13 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		return intval( $result->_items[0]->Total ); 
 	}
 
+	public static function attemptsWithBuffer( $id_order, $useTime ){
+		$query = 'SELECT COUNT(*) AS Total FROM `admin_notification_log` a WHERE id_order = ? and date > ?';
+		$result = c::db()->get( $query, [$id_order, $useTime]);
+		return intval( $result->_items[0]->Total );
+	}
+
+
 	public function byOrder( $id_order ){
 		$query = 'SELECT * FROM admin_notification_log a WHERE a.id_order = ? ORDER BY id_admin_notification_log ASC';
 		return Crunchbutton_Admin_Notification_Log::q( $query, [$id_order]);
