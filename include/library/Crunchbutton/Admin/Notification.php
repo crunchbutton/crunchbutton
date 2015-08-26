@@ -213,7 +213,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics)) {
 			$attemptsAllDrivers = Crunchbutton_Queue::notificationAttempts($order->id_order, null);
 			if ($attemptsAllDrivers == 0) {
-				$nowDT = new DateTime(now(), new DateTimeZone(c::config()->timezone)); // Should be PST
+				$nowDT = new DateTime('now', new DateTimeZone(c::config()->timezone)); // Should be PST
 				$nowDate = $nowDT->format('Y-m-d H:i:s');
 				// Something late/wrong with queue system so use the notification record
 				$useDT = new DateTime($order->date, new DateTimeZone(c::config()->timezone)); // Should be PST
