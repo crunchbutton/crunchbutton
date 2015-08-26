@@ -32,6 +32,11 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 		if (isset($data['showInForeground'])) {
 			$showInForeground = $data['showInForeground'];
 		}
+		
+		// system, blank, or default
+		if (isset($data['linkTarget'])) {
+			$linkTarget = $data['linkTarget'];
+		}
 			
 		if (isset($data['category'])) {
 			$category = $data['category'];
@@ -94,6 +99,9 @@ class Crunchbutton_Message_Push_Ios extends Crunchbutton_Message {
 			if ($link) {
 				// @todo add some sort of cleaning to the url so we cant have multiple //
 				$msg->setCustomProperty('link', $link);
+				if ($linkTarget) {
+					$msg->setCustomProperty('linkTarget', $linkTarget);
+				}
 			}
 
 			$msg->setCustomProperty('showInForeground', $showInForeground);
