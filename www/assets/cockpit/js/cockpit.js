@@ -20,6 +20,7 @@ var App = {
 	useNativeAlert: true,
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
+	version: null
 };
 
 // enable localstorage on phonegap
@@ -46,6 +47,7 @@ NGApp.constant('angularMomentConfig', {
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
+
 
 NGApp.factory('errorInterceptor', function($q) {
 	var errorFromResponse = function(response) {
@@ -527,6 +529,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor, TwilioService) {
+	
+	if (App.isPhoneGap) {
+		$http.defaults.headers.common['app-version'] = App.version;
+	}
 
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
@@ -1267,3 +1273,11 @@ NGApp.filter('propsFilter', function() {
     return out;
   };
 });
+
+
+		
+if (parent.window.getAppVersion) {
+	parent.window.getAppVersion(function(v) {
+		App.version = v;
+	});
+}
