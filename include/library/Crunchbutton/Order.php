@@ -2146,15 +2146,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$msg .= $this->address . $spacer;
 					}
 
-					$msg .= $this->restaurant()->name . $spacer ;
+					$msg .= $this->restaurant()->name ;
 
 					// Payment is card and user tipped
 					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
-						$msg .= 'TIP ' . $this->tip();
+						// Tip should not be in text to drivers #6351
+						// $msg .= 'TIP ' . $this->tip();
 					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
-						$msg .= 'TIP BY CASH';
+						$msg .= $spacer . 'TIP BY CASH';
 					} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
-						$msg .= 'TOTAL ' . $this->final_price_plus_delivery_markup;
+						$msg .= $spacer . 'TOTAL ' . $this->final_price_plus_delivery_markup;
 					}
 
 					$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
