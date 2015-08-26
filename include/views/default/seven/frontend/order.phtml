@@ -15,7 +15,7 @@
 				<div class="order-status-loader-label">{{order._time}}</div>
 				<div class="order-status-loader-label"></div>
 				<div class="order-status-loader-label"></div>
-				<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA:
+				<div class="order-status-loader-label" ng-if="order.status.status != 'delivered'">ETA:&nbsp;
 					<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
 					<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
 				</div>
