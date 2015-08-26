@@ -6,7 +6,11 @@
 
 		<div class="divider"></div>
 
-		<ng-form name="formOpenClose">
+		<span ng-if="loading"><br></span>
+
+		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+		<ng-form name="formOpenClose" ng-show="!loading">
 
 			<div class="ul-inputs">
 

@@ -153,13 +153,13 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService ) {
 
 	$rootScope.$on( 'openClosingTimeContainer', function(e, data) {
+
+		$scope.loading = true;
+		$scope.community = null;
 		App.dialog.show('.open-close-community-dialog-container');
 		CommunityService.get( $routeParams.id, function( d ) {
+			$scope.loading = false;
 				$scope.community = d;
-				$scope.community.is_auto_closed = parseInt( $scope.community.is_auto_closed ) == 1 ? true : false;
-				$scope.community.close_all_restaurants = parseInt( $scope.community.close_all_restaurants ) == 1 ? true : false;
-				$scope.community.close_3rd_party_delivery_restaurants = parseInt( $scope.community.close_3rd_party_delivery_restaurants ) == 1 ? true : false;
-				$scope.community.dont_warn_till_enabled = parseInt( $scope.community.dont_warn_till_enabled ) == 1 ? true : false;
 			});
 
 			$scope.isSaving = false;
