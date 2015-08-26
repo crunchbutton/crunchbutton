@@ -75,7 +75,7 @@ NGApp.filter( 'callPhone', function() {
 			if( App.isMobile() ){
 				return '<a href="tel:' + App.phone.format( input ).replace( /\-/g, '' ) + '">' + input + '</a>';
 			} else {
-				return '<a href="tel:' + App.phone.format( input ).replace( /\-/g, '' ) + '">' + input + '</a>';
+				// return '<a href="tel:' + App.phone.format( input ).replace( /\-/g, '' ) + '">' + input + '</a>';
 				// return '<span class="link" ng-click="callText(\'' + input.replace( /\-/g, '' ) + '\')">' + input + '</span>';
 			}
 		}
