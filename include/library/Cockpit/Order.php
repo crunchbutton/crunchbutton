@@ -215,15 +215,23 @@ class Cockpit_Order extends Crunchbutton_Order {
 		ksort( $_dishes );
 
 		// kept the _dishes for legacy reasons (native app and other places where it is used)
-		$out[ '_dishes_qty' ] = [];
+		$_dishes_qty = [];
 		foreach( $_dishes as $_dish ){
 			$dish = array_merge( $_dish[ 'dish' ], [ 'quantity' => $_dish[ 'quantity' ] ] );
 			$dish[ 'price' ][ 'regular_unity' ] = floatval( $dish[ 'price' ][ 'regular' ] );
 			$dish[ 'price' ][ 'marked_up_unity' ] = floatval( $dish[ 'price' ][ 'marked_up' ] );
 			$dish[ 'price' ][ 'regular' ] = ( $dish[ 'price' ][ 'regular_unity' ] * $dish[ 'quantity' ] );
 			$dish[ 'price' ][ 'marked_up' ] = ( $dish[ 'price' ][ 'marked_up_unity' ] * $dish[ 'quantity' ] );
-			$out[ '_dishes_qty' ][] = $dish;
+			$_dishes_qty[] = $dish;
 		}
+
+		usort( $_dishes_qty, function( $a, $b ){
+			$a_price = $a[ 'price' ][ 'regular_unity' ];
+			$b_price = $b[ 'price' ][ 'regular_unity' ];
+			return floatval( $a_price ) < floatval( $b_price );
+		} );
+
+		$out[ '_dishes_qty' ] = $_dishes_qty;
 
 		$status = $this->status()->last();
 		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
