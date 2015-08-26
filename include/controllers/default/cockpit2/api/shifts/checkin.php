@@ -111,11 +111,16 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 
 			$s->confirmed = intval( $s->confirmed ) > 0 ? true : false;
 			$s->date = $shift->dateStart()->format( 'M jS Y' );
-			$s->period = $shift->startEndToString();
+			$s->period_sort = intval( $shift->dateStart( c::config()->timezone )->format( 'YmdHis' ) );
+			$s->period = $shift->startEndToString() ;
+			$s->community_tz = $shift->dateStart()->format( '  T' );
+			$s->period_pst = $shift->startEndToString( c::config()->timezone );
 
 			$data[] = $s;
 			$i++;
 		}
+
+		usort( $data, function( $a, $b ){ return ( $a->period_sort > $b->period_sort ); } );
 
 		echo json_encode([
 			'more' => $getCount ? $pages > $page : $more,
