@@ -158,7 +158,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		]);
 
 		echo $sms_message."\n";
-		Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
+//		Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
 
 
 		/*
@@ -205,36 +205,38 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 	}
 
+	public function calculateAttempts($order) {
+		// We don't need logic to check if something is wrong with the queue system, since this won't
+		//  even run if there are issues with the queue system
+		$curCommunity = $order->community();
+		if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics) && ($curCommunity->delivery_logistics != 0)) {
+			// Need to deal with this on a per-admin basis due to priority system
+			$nowDT = new DateTime('now', new DateTimeZone(c::config()->timezone)); // Should be PST
+			$nowDate = $nowDT->format('Y-m-d H:i:s');
+			$attemptsViaQueue = Crunchbutton_Queue::notificationAttempts($order->id_order, $this->id_admin);
+			if ($attemptsViaQueue >= 1) {
+				$attempts = $attemptsViaQueue - 1;
+				Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'attempts' => $attempts, 'stage' => 'registered attempts',
+					'type' => 'complexLogistics']);
+			} else{
+				// This shouldn't happen.
+				Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'stage' => 'registered 0 attempts',
+					'type' => 'complexLogistics']);
+				$attempts = 0;
+			}
+		} else {
+			$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
+		}
+		return $attempts;
+	}
+
+
 	public function send( Crunchbutton_Order $order ) {
 
 		$env = c::getEnv();
 
-		$curCommunity = $order->community();
-//		if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics) && ($curCommunity->delivery_logistics != 0)) {
-//			$attemptsAllDrivers = Crunchbutton_Queue::notificationAttempts($order->id_order, null);
-//			if ($attemptsAllDrivers == 0) {
-//				$curCommunityId = $curCommunity->id_community;
-//				$nowDT = new DateTime('now', new DateTimeZone(c::config()->timezone)); // Should be PST
-//				$nowDate = $nowDT->format('Y-m-d H:i:s');
-//				// Something late/wrong with queue system so use the notification record
-//				$useDT = new DateTime($order->date, new DateTimeZone(c::config()->timezone)); // Should be PST
-//				$diffSeconds = $nowDT->getTimestamp() - $useDT->getTimestamp();
-//				if ($diffSeconds <= 60) {
-//					Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'stage' => 'no drivers notified yet no attempts',
-//						'type' => 'complexLogistics', 'community' => $curCommunityId]);
-//					$attempts = 0;
-//				} else{
-//					$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
-//					Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'stage' => 'no drivers notified yet',
-//						'type' => 'complexLogistics', 'attempts' => $attempts, 'community' => $curCommunityId]);
-//				}
-//			} else{
-//				$attempts = Crunchbutton_Queue::notificationAttempts($order->id_order, $this->id_admin);
-//			}
-//		} else {
-//			$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
-//		}
-		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $order->id_order );
+
+		$attempts = $this->calculateAttempts($order);
 
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);

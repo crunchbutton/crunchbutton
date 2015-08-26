@@ -32,12 +32,12 @@ class Crunchbutton_Queue extends Cana_Table {
 			if (is_null($id_admin)){
 				$query = 'SELECT COUNT(*) AS Total FROM `queue` a WHERE id_order = ? AND ' .
 					'id_admin IS NOT NULL AND type IN ("notification-driver", "notification-driver-priority") AND ' .
-					'status IN ("new", "running")';
+					'status IN ("success", "new", "running")';
 				$result = c::db()->get($query, [$id_order]);
 			} else {
 				$query = 'SELECT COUNT(*) AS Total FROM `queue` a WHERE id_order = ? AND ' .
 					'id_admin = ? AND id_admin IS NOT NULL AND type IN ("notification-driver", "notification-driver-priority") AND ' .
-					'status IN ("new", "running")';
+					'status IN ("success", "new", "running")';
 				$result = c::db()->get($query, [$id_order, $id_admin]);
 			}
 
