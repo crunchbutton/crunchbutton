@@ -639,7 +639,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$output = false;
 				} else {
 					if( !$this->$force_close->field ){
-						$output[ 'how_long' ] = 'No records, probably variable was changed directly at database.';
+						$output[ 'how_long' ] = 'No records, probably variable was changed directly at database or it is still closed.';
 					} else {
 						$output[ 'how_long' ] = 'It is still closed!';
 					}
