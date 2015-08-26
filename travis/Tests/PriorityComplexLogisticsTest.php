@@ -440,37 +440,324 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //            }
 
 
-    public function testMisc2()
+//    public function testMisc2()
+//    {
+//
+//        $useDate = '2015-07-01 05:00:00';
+//        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
+//        $o1->save();
+//        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+//        $o2->save();
+//        $qs = [];
+//        $curCommunity = $o2->community();
+//        var_dump($curCommunity);
+//        $dl1 = $community1->delivery_logistics;
+//        $dl2 = $community2->delivery_logistics;
+//        $dl3 = $community3->delivery_logistics;
+//
+//        if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics)) {
+//           print "Check here \n";
+//        } else {
+//            print "Check here 2\n";
+//
+//        }
+//
+//            foreach ($qs as $q) {
+//                $q->delete();
+//            }
+//        $o1->delete();
+//        $o2->delete();
+//
+////        $this->assertEquals($dl1, 2);
+////        $this->assertEquals($dl2, 2);
+//        $this->assertEquals($dl3, 2);
+//    }
+
+    // No delivery logistics
+    public function testNotificationAttempts1a()
     {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 0);
+    }
+
+    // No delivery logistics, attempt logged
+    public function testNotificationAttempts1b()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $nl1 = $this->createDefaultAdminNotificationLog($o1->id_order, "First attempt", $useDate);
+        $nl1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $nl1->delete();
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 1);
+    }
+
+    // No delivery logistics, two attempts logged
+    public function testNotificationAttempts1c()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $nl1 = $this->createDefaultAdminNotificationLog($o1->id_order, "First attempt", $useDate);
+        $nl1->save();
+
+        $nl2 = $this->createDefaultAdminNotificationLog($o1->id_order, "Second attempt", $useDate);
+        $nl2->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $nl1->delete();
+        $nl2->delete();
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 2);
+    }
+
+    // No delivery logistics, two attempts logged, 1 for a different order
+    public function testNotificationAttempts1d()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+        $o1->save();
+
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+        $o2->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $nl1 = $this->createDefaultAdminNotificationLog($o1->id_order, "First attempt", $useDate);
+        $nl1->save();
+
+        $nl2 = $this->createDefaultAdminNotificationLog($o2->id_order, "First attempt", $useDate);
+        $nl2->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $nl1->delete();
+        $nl2->delete();
+        $o1->delete();
+        $o2->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 1);
+    }
+
+
+    public function testNotificationAttempts2a()
+    {
+        $qs = [];
 
         $useDate = '2015-07-01 05:00:00';
         $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
         $o1->save();
-        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
-        $o2->save();
-        $qs = [];
-        $curCommunity = $o2->community();
-        var_dump($curCommunity);
-        $dl1 = $community1->delivery_logistics;
-        $dl2 = $community2->delivery_logistics;
-        $dl3 = $community3->delivery_logistics;
 
-        if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics) && ($curCommunity->delivery_logistics != 0)) {
-           print "Check here \n";
-        } else {
-            print "Check here 2\n";
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
 
-        }
+        $numAttempts = $n1->calculateAttempts($o1);
 
-            foreach ($qs as $q) {
-                $q->delete();
-            }
         $o1->delete();
-        $o2->delete();
+        $n1->delete();
 
-//        $this->assertEquals($dl1, 2);
-//        $this->assertEquals($dl2, 2);
-        $this->assertEquals($dl3, 2);
+        $this->assertEquals($numAttempts, 0);
+    }
+
+    public function testNotificationAttempts2b()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 0);
+    }
+
+    public function testNotificationAttempts2c()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver2->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 0);
+    }
+
+
+    public function testNotificationAttempts2d()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'success', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $q2 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q2->save();
+        $qs[] = $q2;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 1);
+    }
+
+    public function testNotificationAttempts2e()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver2->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'success', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $q2 = $this->createDefaultQ($o1->id_order, $this->driver2->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q2->save();
+        $qs[] = $q2;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 0);
+    }
+
+
+    public function testNotificationAttempts2f()
+    {
+        $qs = [];
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        $q1 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'success', 5);
+        $q1->save();
+        $qs[] = $q1;
+        $q2 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'success', 5);
+        $q2->save();
+        $qs[] = $q2;
+        $q3 = $this->createDefaultQ($o1->id_order, $this->driver1->id_admin, 'notification-driver', $useDate, $useDate, $useDate, 'running', 5);
+        $q3->save();
+        $qs[] = $q3;
+        $numAttempts = $n1->calculateAttempts($o1);
+
+        foreach ($qs as $q) {
+            $q->delete();
+        }
+        $o1->delete();
+        $n1->delete();
+
+        $this->assertEquals($numAttempts, 2);
     }
 
 
@@ -3448,6 +3735,27 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                 'status' => $status,
                 'id_queue_type' => $id_queue_type
 
+            ]
+        );
+    }
+
+    public function createDefaultAdminNotification($id_admin, $type, $value, $active) {
+        return new Crunchbutton_Admin_Notification(
+            [
+                'id_admin' => $id_admin,
+                'type' => $type,
+                'value' => $value,
+                'active' => $active
+            ]
+        );
+    }
+
+    public function createDefaultAdminNotificationLog($id_order, $description, $date) {
+        return new Crunchbutton_Admin_Notification_Log(
+            [
+                'id_order' => $id_order,
+                'description' => $description,
+                'date' => $date
             ]
         );
     }
