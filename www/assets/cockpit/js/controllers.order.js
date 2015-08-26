@@ -155,7 +155,7 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 
 	var refundMessage = function(){
 		App.dialog.show('.refund-order-container');
-		OrderService.get(id_order, function(d) {
+		OrderService.get( id_order, function(d) {
 			$scope.order = d;
 			$scope.refund = {};
 			$scope.refund.id_order = d.id_order;
@@ -259,6 +259,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	$scope.refund = function(){
 		OrderService.askRefund( $routeParams.id, $scope.order.delivery_service, function(){
 			$rootScope.closePopup();
+			setTimeout( function(){ App.alert( 'Order refunded' ); }, 300 );
 			$rootScope.reload();
 		} );
 	}
