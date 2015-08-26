@@ -783,18 +783,15 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 						service.account.updateInfo();
 
-						var orderCached = false;
+						var orderCached = false;	
 
 						var cacheOrder = function(){
-							
-							var completed = false;
 
 							App.cache('Order', json.uuid, function () {
 								
-								if (completed) {
+								if (orderCached) {
 									return;
 								}
-								completed = true;
 
 								orderCached = true;
 								App.track('Ordered', {
