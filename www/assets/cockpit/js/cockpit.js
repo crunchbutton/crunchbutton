@@ -36,7 +36,7 @@ if ( navigator.appVersion.indexOf( 'Win' ) !=-1 ){
 
 console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
 
-var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select','pasvaz.bindonce'], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select','pasvaz.bindonce' , 'ngSanitize'], function( $httpProvider ) {
 
 });
 
@@ -529,7 +529,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor, TwilioService) {
-	
+
 	if (App.isPhoneGap) {
 		$http.defaults.headers.common['app-version'] = App.version;
 	}
@@ -731,7 +731,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.isLive = ( App.config.env == 'live' );
 		$rootScope.isBeta = !$rootScope.isLive;
 		$rootScope.config = App.config.site;
-		
+
 		// display update page
 		if (App.config.site['cockpit-min-app-version'] && App.version) {
 			if (App.config.site['cockpit-min-app-version'] > App.version) {
@@ -1285,7 +1285,7 @@ NGApp.filter('propsFilter', function() {
 });
 
 
-		
+
 if (parent.window.getAppVersion) {
 	parent.window.getAppVersion(function(v) {
 		App.version = v;

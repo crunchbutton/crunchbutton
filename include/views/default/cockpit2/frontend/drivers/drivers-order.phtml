@@ -122,7 +122,7 @@
 			<div class="order-item-block-big">
 				<div class="order-icon2"><i class="fa fa-exclamation"></i></div>
 				<div class="order-info2 order-info-small">
-					{{oc.order.notes_to_driver}}
+					<span ng-bind-html="oc.order.notes_to_driver | linky:'_system'"></span>
 				</div>
 			</div>
 		</span>

@@ -15,14 +15,17 @@ NGApp.factory('DateTimeService', function(AccountService) {
 		server: function(date) {
 			return service.convert(date, service.tzServer);
 		},
-		
+
 		// convert a date to any timezone
 		convert: function(date, zone) {
 			return moment(date).tz(zone);
 		},
-		
+
 		convertformat: function(date, zone, format) {
-			return moment(date).tz(zone).format(format || 'ha z');
+			if( moment(date).tz(zone) ){
+				return moment(date).tz(zone).format(format || 'ha z');
+			}
+			return null;
 		}
 	};
 	return service;
