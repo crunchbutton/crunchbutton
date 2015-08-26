@@ -731,6 +731,16 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.isLive = ( App.config.env == 'live' );
 		$rootScope.isBeta = !$rootScope.isLive;
 		$rootScope.config = App.config.site;
+		
+		// display update page
+		if (App.config.site['cockpit-min-app-version'] && App.version) {
+			if (App.config.site['cockpit-min-app-version'] > App.version) {
+				setTimeout(function(){
+					MainNavigationService.link('/update');
+					$rootScope.$apply();
+				},100);
+			}
+		}
 
 		$rootScope.account.checkUser();
 

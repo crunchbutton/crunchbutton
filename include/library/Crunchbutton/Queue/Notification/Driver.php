@@ -13,7 +13,7 @@ class Crunchbutton_Queue_Notification_Driver extends Crunchbutton_Queue {
 		foreach($this->driver()->activeNotifications() as $notification) {
 			$notification->send($this->order());
 			Log::debug([
-				'order' => $order->id_order,
+				'order' => $this->order()->id_order,
 				'action' =>  '#'.$this->order()->id_order.' sending ** QUEUE ** notification to ' . $this->driver()->name . ' # ' . $notification->value,
 				'type' => 'delivery-driver'
 			]);
