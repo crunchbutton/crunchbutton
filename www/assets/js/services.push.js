@@ -62,10 +62,10 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		var gotoLink = function() {
 			$rootScope.$safeApply(function() {
 				switch (msg.additionalData.linkTarget) {
-					case '_blank':
+					case 'blank':
 						window.open(msg.additionalData.link, '_blank');
 						break;
-					case '_system':
+					case 'system':
 						window.open(msg.additionalData.link, '_system');
 						break;
 					default:
