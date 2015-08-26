@@ -132,6 +132,19 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         ]);
         $c2->save();
 
+        $c3 = new Community([
+            'name' => $name . ' - THREE',
+            'active' => 1,
+            'timezone' => 'America/New_York',
+            'driver-group' => 'drivers-testlogistics',
+            'range' => 2,
+            'private' => 1,
+            'loc_lat' => 34.023281,
+            'loc_lon' => -118.2881961,
+            'delivery_logistics' => null
+        ]);
+        $c3->save();
+
         $r1c = new Restaurant_Community([
             'id_restaurant' => $r1->id_restaurant,
             'id_community' => $c->id_community
@@ -336,6 +349,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $community2 = Community::q('select * from community where name =?', [$name . ' - TWO'])->get(0);
         $communityId2 = $community2->id_community;
 
+
+        $community3 = Community::q('select * from community where name =?', [$name . ' - THREE'])->get(0);
+        $communityId3 = $community3->id_community;
+
         Crunchbutton_Admin_Shift_Assign::q('select * from admin_shift_assign where id_community_shift=?', [$csId])->delete();
         $cs->delete();
         $community->delete();
@@ -372,6 +389,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->user3 = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - THREE'])->get(0);
         $this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - ONE'])->get(0);
 		$this->community2 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
+        $this->community3 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - THREE'])->get(0);
     }
 	
 	public function tearDown()
@@ -409,17 +427,52 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        var_dump($now2->getTimestamp());
 //    }
 //
-    public function testMisc()
+//    public function testMisc()
+//    {
+//        $useDate2 = '2015-07-01 05:00:00';
+//        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate2, $this->community2);
+//        $o1->save();
+//        $useDT = new DateTime($o1->date, new DateTimeZone(c::config()->timezone)); // Should be PST
+//        $useDT->modify('+ 1 minutes');
+//        $useDate = $useDT->format('Y-m-d H:i:s');
+//        var_dump($useDate);
+//        $o1->delete();
+//            }
+
+
+    public function testMisc2()
     {
-        $useDate2 = '2015-07-01 05:00:00';
-        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate2, $this->community2);
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community2);
         $o1->save();
-        $useDT = new DateTime($o1->date, new DateTimeZone(c::config()->timezone)); // Should be PST
-        $useDT->modify('+ 1 minutes');
-        $useDate = $useDT->format('Y-m-d H:i:s');
-        var_dump($useDate);
-        $o1->delete();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community3);
+        $o2->save();
+        $qs = [];
+        $curCommunity = $o2->community();
+        var_dump($curCommunity);
+        $dl1 = $community1->delivery_logistics;
+        $dl2 = $community2->delivery_logistics;
+        $dl3 = $community3->delivery_logistics;
+
+        if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics) && ($curCommunity->delivery_logistics != 0)) {
+           print "Check here \n";
+        } else {
+            print "Check here 2\n";
+
+        }
+
+            foreach ($qs as $q) {
+                $q->delete();
             }
+        $o1->delete();
+        $o2->delete();
+
+//        $this->assertEquals($dl1, 2);
+//        $this->assertEquals($dl2, 2);
+        $this->assertEquals($dl3, 2);
+    }
+
 
     public function testQueue1()
     {
