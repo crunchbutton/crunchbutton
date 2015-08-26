@@ -120,7 +120,17 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 			$i++;
 		}
 
-		usort( $data, function( $a, $b ){ return ( $a->period_sort > $b->period_sort ); } );
+		usort( $data, function( $a, $b ){
+			if( $a->period_sort > $b->period_sort ){
+				return 1;
+			}
+			if( $a->period_sort == $b->period_sort ){
+				return $a->community > $b->community;
+			}
+			if( $a->period_sort < $b->period_sort ){
+				return -1;
+			}
+			; } );
 
 		echo json_encode([
 			'more' => $getCount ? $pages > $page : $more,
