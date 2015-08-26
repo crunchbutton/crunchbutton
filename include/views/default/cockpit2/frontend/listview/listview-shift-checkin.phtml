@@ -2,7 +2,9 @@
 	<table class="tb-zebra">
 		<tr>
 			<th>Community</th>
-			<th>Period</th>
+			<th>Day</th>
+			<th>Period (Pacific Time)</th>
+			<th>Period (Community TZ)</th>
 			<th>Driver</th>
 			<th class="tb-small tb-center">Texted</th>
 			<th class="tb-small tb-center">Called</th>
@@ -13,8 +15,12 @@
 				<a href="/community/{{s.community_permalink}}"><span class="listview-bold">{{s.community}}</span></a>
 			</td>
 			<td>
-				<span class="listview-bold">{{s.date}}</span><br><span class="listview-bold">{{s.period}}</span>
+				<span class="listview-bold">{{s.date}}</span>
 			</td>
+			<td>
+				<span class="listview-bold">{{s.period_pst}} (PDT)</span>
+			</td>
+			<td>{{s.period}} ({{s.community_tz}})</td>
 			<td>
 				<a href="/staff/{{s.login}}">{{s.driver}}</a>
 				<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
