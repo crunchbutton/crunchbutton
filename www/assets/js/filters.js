@@ -73,7 +73,10 @@ NGApp.filter( 'callPhone', function() {
 	return function( input ) {
 		if( input != null ){
 			if( App.isMobile() ){
-				return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>';
+				return '<a href="tel:' + App.phone.format( input ).replace( /\-/g, '' ) + '">' + input + '</a>';
+			} else {
+				return '<a href="tel:' + App.phone.format( input ).replace( /\-/g, '' ) + '">' + input + '</a>';
+				// return '<span class="link" ng-click="callText(\'' + input.replace( /\-/g, '' ) + '\')">' + input + '</span>';
 			}
 		}
 		return input;
@@ -96,3 +99,23 @@ NGApp.filter( 'tsToHour', function( $filter ){
 		return input;
 	};
 } );
+
+NGApp.filter( 'linkfy', function( $filter ){
+	return function( input ) {
+		if( input != null ){
+			var text = $filter( 'linky' )( input, '_system' );
+			PHONE_REGEXP = /[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}/i;
+			match = text.match(PHONE_REGEXP);
+			if( match ){
+				var phone = $filter( 'callPhone' )( match[ 0 ] );
+				if( phone ){
+					text = text.replace(match[ 0 ], phone );
+				}
+			}
+			console.log('text',text);
+			return text;
+		}
+		return input;
+	};
+} );
+
