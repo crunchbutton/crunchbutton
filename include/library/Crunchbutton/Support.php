@@ -828,6 +828,21 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
 
+		// try to find the user based on the phone
+		if( !$out['user'] && $this->id_phone ){
+			$user = User::q( 'SELECT * FROM user WHERE id_phone = ? ORDER BY id_user DESC LIMIT 1', [ $this->id_phone ] )->get( 0 );
+			if( $user->id_user ){
+				$out['user'] = $user->exports();
+			}
+		}
+
+		if( !$out['order'] && $out['user'] ){
+			$order = Order::q( 'SELECT * FROM `order` WHERE id_user = ? ORDER BY id_order DESC LIMIT 1', [ $out['user'][ 'id_user' ] ] )->get( 0 );
+			if( $order->id_order ){
+				$out['order'] = $order->exports();
+			}
+		}
+
 		// Export the comments
 		$out[ 'comments' ] = [];
 		$comments = $this->comments();
