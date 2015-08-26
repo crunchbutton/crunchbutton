@@ -258,8 +258,10 @@
 				</div>
 			</div>
 			<div class="customer-total-block total-block" ng-show="oc.order.pay_type=='cash'">
-				<span class="order-total-price"><span class="tip-total-price-dollar">$</span>{{oc.order.final_price_plus_delivery_markup | formatPrice}}</span></br></br>
-				<span class="order-total-block-text">Customer total</span>
+				<span class="order-total-price">
+					<div class="order-total-block-tip-title">Customer Owes</div>
+					<span class="tip-total-price-dollar">$</span>{{oc.order.final_price_plus_delivery_markup | formatPrice}}
+				</span>
 				</br>
 			</div>
 			<? /*
@@ -271,11 +273,17 @@
 			</div>
 			*/ ?>
 			<div class="tip-total-block total-block" ng-if="account.user.show_credit_card_tips || ( oc.order._tip_with_cash || oc.order._tip == '0.00' )">
-				<span class="order-total-price">
+
+				<div ng-if="oc.order.pay_type=='cash' && ( oc.order._tip_with_cash || oc.order._tip == 0 )" class="order-total-block-tip">
+					For bigger tips, we suggest saying when the customer asks how much it is, <br>"${{oc.order.final_price_plus_delivery_markup | formatPrice}}, not including tip."
+				</div>
+
+				<span class="order-total-price" ng-if="oc.order.pay_type=='card'">
 					<span ng-if="oc.order._tip_with_cash || oc.order._tip == 0">CASH</span>
 					<span ng-if="!oc.order._tip_with_cash && oc.order._tip != 0"><span class="tip-total-price-dollar">$</span>{{oc.order._tip | formatPrice}}</span>
-				</span></br></br>
-				<span class="order-total-block-text">Tip</span>
+				</span>
+				<span ng-if="oc.order.pay_type=='card'"></br></br></span>
+				<span class="order-total-block-text" ng-if="oc.order.pay_type=='card'">Tip</span>
 				</br>
 			</div>
 			<div class="divider"></div><br><br><br>
