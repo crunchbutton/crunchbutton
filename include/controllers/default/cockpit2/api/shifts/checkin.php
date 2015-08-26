@@ -4,7 +4,7 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
-		$limit = $this->request()['limit'] ?$this->request()['limit'] : 50;
+		$limit = 100;
 		$search = $this->request()['search'] ?$this->request()['search'] : '';
 		$page = $this->request()['page'] ?$this->request()['page'] : 1;
 		$status = $this->request()['status'] ?$this->request()['status'] : 'all';
@@ -113,7 +113,7 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 			$s->date = $shift->dateStart()->format( 'M jS Y' );
 			$s->period_sort = intval( $shift->dateStart( c::config()->timezone )->format( 'YmdHis' ) );
 			$s->period = $shift->startEndToString() ;
-			$s->community_tz = $shift->dateStart()->format( '  T' );
+			$s->community_tz = $shift->dateStart()->format( 'T' );
 			$s->period_pst = $shift->startEndToString( c::config()->timezone );
 
 			$data[] = $s;
