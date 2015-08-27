@@ -8,6 +8,11 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
 		
+		if (getenv('HEROKU')) {
+			$this->user($this->userObject());
+			return;
+		}
+		
 		$this->init();
 
 		// here we need to check for a token
