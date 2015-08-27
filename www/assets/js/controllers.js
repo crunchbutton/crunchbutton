@@ -870,12 +870,12 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
 	$scope.recommend = RecommendRestaurantService;
-
 	$scope.notifyMe = function() {
 		$scope.loadingNotifyme = true;
-		RecommendRestaurantService.notify();
-		$scope.loadingNotifyme = false;
-		$scope.complete = true;
+		RecommendRestaurantService.notify( function(){
+			$scope.loadingNotifyme = false;
+			$scope.complete = true;
+		} );
 	};
 });
 

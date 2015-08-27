@@ -141,7 +141,6 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 			$rootScope.title = d.name + ' | Payment type';
 			$scope.restaurant = d;
-
 			$scope.ready = true;
 
 			$scope.restaurant.stripeAccount = {};
