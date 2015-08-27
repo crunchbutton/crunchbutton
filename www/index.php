@@ -57,20 +57,9 @@ Cana::app()->displayPage();
 		
 if (getenv('HEROKU')) {
 	register_shutdown_function(function() {
-		
-		$query = 'SHOW PROCESSLIST -- ' . uniqid('pdo_mysql_close ', 1);
-		$list  = c::db()->query($query)->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($list as $thread) {
-			if ($thread['Info'] === $query) {
-				return c::db()->query('KILL ' . $thread['Id']);
-			}
-		}
-		return false;
-		
+
 		error_log('<< PAGE FINISHED << '.$_SERVER['REQUEST_URI']);
-		
-		
-		
+
 	});
 }
 exit;
