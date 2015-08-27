@@ -170,14 +170,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function allRestaurantsClosed(){
-		if( $this->close_all_restaurants > 0 ){
-			return $this->close_all_restaurants;
-		}
-		return false;
+		return $this->close_all_restaurants;
 	}
 
 	public function allThirdPartyDeliveryRestaurantsClosed(){
-		if( $this->close_3rd_party_delivery_restaurants > 0 ){
+		if( $this->close_3rd_party_delivery_restaurants ){
 			return $this->close_3rd_party_delivery_restaurants;
 		}
 		return $this->isAutoClosed();
@@ -712,7 +709,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 							$createTicket = true;
 							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 							$dont_warn_till = $this->dontWarnTill();
-							if( $dont_warn_till && $dont_warn_till->format( 'YmdHis' ) >= $now->format( 'YmdHis' ) ){
+							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) <= intval( $now->format( 'YmdHis' ) ) ){
 								if( $createTicket ){
 									$createTicket = false;
 								}
@@ -725,7 +722,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 								$ticket = 'Hey! You should probably reopen ' . $this->name . ', which is currently closed, because there\'s a driver scheduled for right now!! But please double check to make sure this wasn\'t done on purpose. If it was done on purpose because the community is overwhelmed, then hustle to get us an additional driver! Do whatever it takes!';
 								echo $ticket;
 								Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
-								Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket ] );
+								Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket, 'bubble' => true ] );
 							}
 						}
 					}
