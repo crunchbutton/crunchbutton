@@ -341,8 +341,11 @@ class Cana_App extends Cana_Model {
 		return $this->_extended[$class][$name];
 	}
 	
-	public function dbWrite() {
-		return $this->db();
+	public function dbWrite($write = null) {
+		if (!is_null($write)) {
+			$this->_dbWrite = $write;
+		}
+		return $this->_dbWrite ? $this->_dbWrite : $this->db();
 	}	
 	
 	public function cache() {
