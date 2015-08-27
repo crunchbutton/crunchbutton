@@ -132,6 +132,17 @@ class Crunchbutton_App extends Cana_App {
 				error_log('>> Finished init');
 			}
 			
+			
+		
+		
+		
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			die('exit');
+		}
+			
+			
 			if (getenv('DATABASE_URL_WRITE')) {
 				$params['config']->db->herokuWrite = (object)[
 					'url' => getenv('DATABASE_URL_WRITE'),
@@ -187,14 +198,6 @@ class Crunchbutton_App extends Cana_App {
 		if ($_REQUEST['_bundle']) {
 			$config->bundle = true;
 			$config->viewExport = true;
-		}
-		
-		
-		
-		
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			die('exit');
 		}
 
 		$this
