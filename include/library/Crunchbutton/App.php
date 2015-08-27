@@ -15,6 +15,7 @@ class Crunchbutton_App extends Cana_App {
 		set_exception_handler([$this, 'exception']);
 		new Crunchbutton_Headers;
 
+
 		if (!$_SERVER['SERVER_NAME']) {
 			putenv('CLI=true');
 			$cli = true;
@@ -112,6 +113,7 @@ class Crunchbutton_App extends Cana_App {
 				'url' => getenv('DATABASE_URL'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
 			];
+			
 			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
 
 			if (getenv('REDIS_URL')) {
@@ -120,6 +122,15 @@ class Crunchbutton_App extends Cana_App {
 			}
 
 			parent::init($params);
+			
+			if (getenv('DATABASE_URL_WRITE')) {
+				$params['config']->db->herokuWrite = (object)[
+					'url' => getenv('DATABASE_URL_WRITE'),
+					'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL_WRITE'))
+				];
+				$write = $this->buildDb('herokuWrite');
+				$this->dbWrite($write);
+			}
 
 		} else {
 			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
