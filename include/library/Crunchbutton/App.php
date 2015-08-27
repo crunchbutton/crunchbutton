@@ -201,13 +201,7 @@ class Crunchbutton_App extends Cana_App {
 			->postInit($params);
 		
 	
-		
-		
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			die('exit');
-		}
-
+	
 
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
