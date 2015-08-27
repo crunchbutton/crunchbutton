@@ -326,6 +326,22 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public function inviteCodeNameBased(){
+		// changed to be the first name and a four digits number
+		$name = preg_replace('/[^A-Za-z0-9 ]/', '', $this->name );
+		$options = explode( ' ', $name );
+		$name = $options[ 0 ];
+		if( trim( $name ) != '' ){
+			$code = strtoupper( $name );
+			$code .= self::_inviteCodePartGenerator( '0-9', 4 );
+			if( !Crunchbutton_Referral::isCodeAlreadyInUse( $code ) ){
+				return $code;
+			}
+			return $this->inviteCodeNameBased();
+		} else {
+			return self::inviteCodeGenerator();
+		}
+		/*
+		old method - Make customer referral code name+number #5321
 		$name = preg_replace('/[^A-Za-z0-9 ]/', '', $this->name );
 		$options = explode( ' ', $name );
 		$phone = Phone::clean( $this->phone );
@@ -338,6 +354,7 @@ class Crunchbutton_User extends Cana_Table {
 			}
 		}
 		return self::inviteCodeGenerator();
+		*/
 	}
 
 	public static function inviteCodeGenerator(){
@@ -420,7 +437,7 @@ class Crunchbutton_User extends Cana_Table {
 			->idVar('id_user')
 			->load($id);
 	}
-	
+
 	public function notifications() {
 		if (!$this->id_user) {
 			return false;
@@ -429,16 +446,16 @@ class Crunchbutton_User extends Cana_Table {
 		if (!isset($this->_notifications)) {
 			$this->_notifications = User_Notification::q('select * from user_notification where id_user=? and active=true', [$this->id_user]);
 		}
-		
+
 		return $this->_notifications;
 	}
-	
+
 
 	public function setPush($id, $os = 'ios') {
 		if (!$this->id_user) {
 			return false;
 		}
-		
+
 		$os = $os == 'ios' ? Crunchbutton_User_Notification::TYPE_PUSH_IOS : Crunchbutton_User_Notification::TYPE_PUSH_ANDROID;
 
 		$notifications = User_Notification::q('
@@ -466,5 +483,5 @@ class Crunchbutton_User extends Cana_Table {
 			$n->save();
 		}
 	}
-	
+
 }
