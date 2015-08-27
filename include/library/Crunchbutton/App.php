@@ -121,8 +121,16 @@ class Crunchbutton_App extends Cana_App {
 				$params['config']->cache->default = $params['config']->cache->redis;
 				$params['config']->cache->default->url = getenv('REDIS_URL');
 			}
+			
+			if (getenv('HEROKU')) {
+				error_log('>> INITING...');
+			}
 
 			parent::init($params);
+			
+			if (getenv('HEROKU')) {
+				error_log('>> Finished init');
+			}
 			
 			if (getenv('DATABASE_URL_WRITE')) {
 				$params['config']->db->herokuWrite = (object)[
