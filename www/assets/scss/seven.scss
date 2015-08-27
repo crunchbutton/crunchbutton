@@ -2223,7 +2223,10 @@ select.form-input {
 	height: 70px;
 }
 
-
+.notes-text-area{
+	height: 31px;
+	width: 90%;
+}
 
 .restaurant-payment-item {
 	display: block;
@@ -2435,6 +2438,11 @@ sup {
 	z-index: 6;
 	position: relative;
 	display: none;
+}
+
+.giftcard-info{
+	white-space: normal !important;
+	line-height: 1.5em;
 }
 
 .restaurants-more {
