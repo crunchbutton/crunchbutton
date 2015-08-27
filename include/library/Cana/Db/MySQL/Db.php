@@ -24,6 +24,8 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		
 		if ($args->sslca) {
 			$options[PDO::MYSQL_ATTR_SSL_CA] = $args->sslca;
+			$options[PDO::ATTR_TIMEOUT] = 4;
+			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		}
 
 		$db = new \PDO($args->dsn, $args->user, $args->pass, $options);
