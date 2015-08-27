@@ -13,6 +13,7 @@ class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
+
 		new Crunchbutton_Headers;
 
 
@@ -120,8 +121,17 @@ class Crunchbutton_App extends Cana_App {
 				$params['config']->cache->default = $params['config']->cache->redis;
 				$params['config']->cache->default->url = getenv('REDIS_URL');
 			}
+			
+			if (getenv('HEROKU')) {
+				error_log('>> INITING...');
+			}
 
 			parent::init($params);
+			
+			if (getenv('HEROKU')) {
+				error_log('>> Finished init');
+			}
+			
 			
 			if (getenv('DATABASE_URL_WRITE')) {
 				$params['config']->db->herokuWrite = (object)[
@@ -153,7 +163,7 @@ class Crunchbutton_App extends Cana_App {
 		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
-
+		
 
 
 		// set host callback by hostname
@@ -166,8 +176,22 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		$this->config($config);
+		
+		
 
 		$this->buildAuth($this->db());
+		
+
+				
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			//die((string)rand(1,999999));
+		}
+
+
+
+
+	
 
 		// set bundle on everything except tests
 		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
@@ -179,10 +203,17 @@ class Crunchbutton_App extends Cana_App {
 			$config->bundle = true;
 			$config->viewExport = true;
 		}
+		
+		
+			
+			
+		
+	
 
 		$this
 			->config($config)
 			->postInit($params);
+	
 
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
@@ -301,6 +332,11 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$pageName = $page;
 		}
+		
+		if (getenv('HEROKU')) {
+			error_log('>> DISPLAYING PAGE: '.$pageName);
+		}
+		
 		try {
 			parent::displayPage($pageName == 'error' ? 'home' : $pageName);
 		} catch (Exception $e) {

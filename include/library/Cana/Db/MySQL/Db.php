@@ -24,6 +24,12 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		
 		if ($args->sslca) {
 			$options[PDO::MYSQL_ATTR_SSL_CA] = $args->sslca;
+			$options[PDO::ATTR_TIMEOUT] = 4;
+			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+		}
+		
+		if (getenv('HEROKU')) {
+			error_log('>> CONNECTING TO DATABASE...');
 		}
 
 		$db = new \PDO($args->dsn, $args->user, $args->pass, $options);
@@ -33,6 +39,10 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 		$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
+		
+		if (getenv('HEROKU')) {
+			error_log('>> CONNECTED!!');
+		}
 
 		return $db;
 	}
@@ -50,6 +60,7 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 			unset($row->Extra);
 			$columns[] = $row;
 		}
+		$res->closeCursor();
 
 		return $columns;
 	}

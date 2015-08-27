@@ -80,6 +80,10 @@ class Cana_Db_Base {
 		try {
 			$stmt->execute($args);
 		} catch (Exception $e) {
+			if (getenv('HEROKU')) {
+				echo $e->getMessage();
+				die(c::env());
+			}
 			throw new Exception((c::env() == 'live' ? '' : $query."\n".print_r($args,1)."\n").$e->getMessage());
 		}
 
@@ -96,6 +100,10 @@ class Cana_Db_Base {
 			$this->_db = $db;
 		}
 		return $this->_db;
+	}
+	
+	public function close() {
+		$this->_db = null;
 	}
 
 	public function fields($table, $fields = null) {

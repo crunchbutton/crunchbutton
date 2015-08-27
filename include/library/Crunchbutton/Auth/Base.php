@@ -8,6 +8,11 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
 		
+		if (getenv('HEROKU')) {
+			$this->user($this->userObject());
+			return;
+		}
+		
 		$this->init();
 
 		// here we need to check for a token
@@ -126,7 +131,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 
 	public function destroy() {
 		$this->_session = session_id();
-		Caffeine::db()->query('UPDATE session SET active=false WHERE session="'.$this->id().'"');
+		Caffeine::db()->query('UPDATE session SET active=false WHERE session=?', [$this->id()]);
 		session_regenerate_id();
 		$this->_session = session_id();
 		$this->_user = new Crunchbutton_User;

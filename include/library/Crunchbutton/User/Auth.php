@@ -65,6 +65,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		while ($row = $res->fetch()) {
 			$auths[$row->id_user_auth] = new Crunchbutton_User_Auth($row);
 		}
+		$res->closeCursor();
 		return $auths;
 	}
 
@@ -105,9 +106,9 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			SELECT *
 			FROM user_auth
 			WHERE
-				email="' . $email . '"
+				email=?
 				AND active=true
-		');
+		', [$email]);
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return  new Crunchbutton_User_Auth($row);;
