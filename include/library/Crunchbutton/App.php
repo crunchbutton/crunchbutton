@@ -124,6 +124,7 @@ class Crunchbutton_App extends Cana_App {
 			
 			if (getenv('HEROKU')) {
 				error_log('>> INITING...');
+				exit;
 			}
 
 			parent::init($params);
