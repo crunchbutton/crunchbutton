@@ -50,4 +50,15 @@ $stmt = $db->prepare($query);
 $stmt->execute($args);
 
 
+$query = 'select * from site';
+$stmt = $db->prepare($query);
+$stmt->execute($args);
+
+while ($o = $stmt->fetch()) {
+	print_r($o);
+	exit;
+	
+}
+
+
 die('done');
