@@ -199,8 +199,6 @@ class Crunchbutton_App extends Cana_App {
 		$this
 			->config($config)
 			->postInit($params);
-		
-	
 	
 
 		switch ($_SERVER['SERVER_NAME']) {

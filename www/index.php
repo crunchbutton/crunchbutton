@@ -53,6 +53,14 @@ if (getenv('HEROKU')) {
 	error_log('>> DISPLAYING PAGE...');
 }
 
+	
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			die('exit');
+		}
+
+
 Cana::app()->displayPage();
 		
 if (getenv('HEROKU')) {
