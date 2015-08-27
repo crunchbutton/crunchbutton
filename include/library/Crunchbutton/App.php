@@ -225,12 +225,6 @@ class Crunchbutton_App extends Cana_App {
 
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
-		
-		
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			exit;
-		}
 
 	}
 
@@ -300,6 +294,14 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function displayPage($page = null) {
+		
+		
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			die('exit');
+		}
+
 
 		if (is_null($page)) {
 			$page = $this->pages();
