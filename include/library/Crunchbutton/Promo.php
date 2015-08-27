@@ -609,7 +609,8 @@ class Crunchbutton_Promo extends Cana_Table
 							if( !$value ){
 								$value = 3;
 							}
-							$out[ 'success' ][ 'message' ] = 'You have a $' . $value . ' gift card for a free delivery.';
+							$out[ 'success' ][ 'message' ] = 'Congrats, your delivery fee is on us!';
+							// $out[ 'success' ][ 'message' ] = 'You have a $' . $value . ' gift card for a free delivery.';
 							$out[ 'success' ][ 'value'] = $value;
 						} else {
 							$out[ 'success' ][ 'value'] = $this->value;
