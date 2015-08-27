@@ -213,6 +213,11 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 				$payment = new Crunchbutton_Restaurant_Payment_Type();
 				$payment->id_restaurant = $id_restaurant;
 				$payment->formal_relationship = 1;
+				$payment->charge_credit_fee = 1;
+				$payment->waive_fee_first_month = 0;
+				$payment->pay_apology_credits = 1;
+				$payment->max_apology_credit = 5;
+				$payment->max_pay_promotion = 3;
 				$payment->save();
 				return $payment;
 			}
