@@ -13,12 +13,6 @@ class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
-		
-		if (getenv('HEROKU')) {
-			register_shutdown_function(function() {
-				error_log('page finished loading');
-			});
-		}
 
 		new Crunchbutton_Headers;
 
