@@ -187,6 +187,10 @@ class Cana_App extends Cana_Model {
 		$this->includeFile($pageClass);
 		$pageClass = explode('/',$pageClass);
 		
+		if (getenv('HEROKU')) {
+			error_log('>> DISPLAYING CLASS:'.$pageClass);
+		}
+		
 		foreach ($pageClass as $posiblePage) {
 			$posiblePages[] = 'Controller'.$fullPageNext.'_'.str_replace('.','_',$posiblePage);
 			$fullPageNext .= '_'.$posiblePage;

@@ -310,6 +310,11 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$pageName = $page;
 		}
+		
+		if (getenv('HEROKU')) {
+			error_log('>> DISPLAYING PAGE: '.$pageName);
+		}
+		
 		try {
 			parent::displayPage($pageName == 'error' ? 'home' : $pageName);
 		} catch (Exception $e) {
