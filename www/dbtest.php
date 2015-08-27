@@ -52,7 +52,7 @@ $stmt->execute($args);
 
 $query = 'select * from site';
 $stmt = $db->prepare($query);
-$stmt->execute($args);
+$stmt->execute();
 
 while ($o = $stmt->fetch()) {
 	print_r($o);
