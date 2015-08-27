@@ -176,11 +176,8 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		$this->config($config);
-
-		$this->buildAuth($this->db());
 		
-
-	
+		
 		
 		if (getenv('HEROKU')) {
 			error_log('>> EXITING >>>>>>>>>');
@@ -189,6 +186,11 @@ class Crunchbutton_App extends Cana_App {
 
 
 
+
+		$this->buildAuth($this->db());
+		
+
+	
 
 		// set bundle on everything except tests
 		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
