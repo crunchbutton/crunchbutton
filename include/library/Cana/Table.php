@@ -535,6 +535,7 @@ class Cana_Table extends Cana_Model { //
 		while ($row = $res->fetch()) {
 			$items[] = new $classname($row);
 		}
+		$res->closeCursor();
 		return new Cana_Iterator($items);
 	}
 
