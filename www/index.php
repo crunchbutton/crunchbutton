@@ -43,11 +43,15 @@ if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 	exit;
 }
 
+if (getenv('HEROKU')) {
+	error_log('>> PAGE START >> '.$_SERVER['REQUEST_URI']);
+}
+
 require_once '../include/crunchbutton.php';
 Cana::app()->displayPage();
 		
 if (getenv('HEROKU')) {
 	register_shutdown_function(function() {
-		error_log('page finished loading');
+		error_log('<< PAGE FINISHED << '.$_SERVER['REQUEST_URI']);
 	});
 }
