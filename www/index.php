@@ -48,6 +48,11 @@ if (getenv('HEROKU')) {
 }
 
 require_once '../include/crunchbutton.php';
+
+if (getenv('HEROKU')) {
+	error_log('>> DISPLAYING PAGE...');
+}
+
 Cana::app()->displayPage();
 		
 if (getenv('HEROKU')) {
