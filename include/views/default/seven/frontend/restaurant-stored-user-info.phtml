@@ -1,12 +1,8 @@
 <div class="delivery-payment-info restaurant-side-bar restaurant-side-user-info" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
 
-	<div class="divider dots spacer-one-one"></div>
+	<div class="divider dots"></div>
 
 	<div class="content-padding">
-
-		<p>We’ve saved your payment and delivery info for one click reordering.</p>
-
-		<div class="divider spacer-one-one"></div>
 
 		<div class="order-icon"><div class="icon-phone"></div></div>
 		<div class="order-info order-info-oneline">
@@ -60,16 +56,10 @@
 
 		<div class="divider"></div>
 
-<?php /*
-		<div class="order-icon"><div class="icon-notes" ng-show="order.form.notes"></div></div>
-		<div class="order-info">
-			<p ng-bind-html-unsafe="order.form.notes | nl2br" class="restaurant-info-address"></p>
-		</div>
-*/  ?>
 				<div class="payment-form-group form-group">
 
 					<i class="fa fa-bullhorn payment-form-icon form-icon form-field"></i>
-					<textarea ng-focus="softKeyboard($event);" ng-autosize name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6" class="payment-form-input form-input form-field" placeholder="notes"></textarea>
+					<textarea ng-focus="softKeyboard($event);" ng-autosize name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6" class="payment-form-input form-input form-field notes-text-area" placeholder="notes"></textarea>
 
 					<!-- Gift card messages -->
 					<div class="giftcard-info">
@@ -125,9 +115,13 @@
 						</span>
 					</div>
 				</div>
-
+		</div>
 
 		<div class="divider"></div>
+
+		<div class="divider spacer-one-two"></div>
+
+		<p>We’ve saved your payment and delivery info for one click reordering.</p>
 
 		<div class="divider spacer-one-two"></div>
 
