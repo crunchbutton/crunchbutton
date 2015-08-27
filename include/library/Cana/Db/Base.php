@@ -97,6 +97,10 @@ class Cana_Db_Base {
 		}
 		return $this->_db;
 	}
+	
+	public function close() {
+		$this->_db = null;
+	}
 
 	public function fields($table, $fields = null) {
 		if ($table && $fields) {
