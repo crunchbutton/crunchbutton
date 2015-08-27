@@ -155,6 +155,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $out[ 'dont_warn_till' ] ){
 			$out[ 'dont_warn_till' ] = [ 	'y' => $this->dontWarnTill()->format( 'Y' ), 'm' => $this->dontWarnTill()->format( 'm' ), 'd' => $this->dontWarnTill()->format( 'd' ), 'h' => $this->dontWarnTill()->format( 'H' ), 'i' => $this->dontWarnTill()->format( 'i' ) ];
 			$out[ 'dont_warn_till_formated' ] = $this->dontWarnTill()->format( 'M jS Y g:i:s A T' );
+			$out[ 'dont_warn_till_enabled' ] = true;
 		} else {
 			$out[ 'dont_warn_till' ] = null;
 		}
@@ -709,7 +710,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 							$createTicket = true;
 							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 							$dont_warn_till = $this->dontWarnTill();
-							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) <= intval( $now->format( 'YmdHis' ) ) ){
+							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) > intval( $now->format( 'YmdHis' ) ) ){
 								if( $createTicket ){
 									$createTicket = false;
 								}

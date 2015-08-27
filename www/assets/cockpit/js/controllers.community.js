@@ -160,6 +160,16 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		CommunityService.get( $routeParams.id, function( d ) {
 			$scope.loading = false;
 				$scope.community = d;
+				if( $scope.community.dont_warn_till ){
+					var dont_warn_till = new Date( 	$scope.community.dont_warn_till.y,
+																	( $scope.community.dont_warn_till.m -1 ),
+																	$scope.community.dont_warn_till.d,
+																	$scope.community.dont_warn_till.h,
+																	$scope.community.dont_warn_till.i );
+					$scope.community.dont_warn_till = dont_warn_till;
+				}
+
+
 			});
 
 			$scope.isSaving = false;
@@ -175,8 +185,6 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			$scope.formOpenCloseSubmitted = true;
 			return;
 		}
-
-		$scope.isSaving = true;
 
 		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
 			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
