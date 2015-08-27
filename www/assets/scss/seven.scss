@@ -2517,10 +2517,10 @@ sup {
 }
 
 .icon-map-home {
-	background: url(../images/micro/icon-map-home.svg) no-repeat;
-	background-position: top center;
 	width: 1.6em;
 	height: 2.4em;
+	background: url(../images/micro/icon-map-home.svg) no-repeat;
+	background-position: top center;
 	background-size: 100%;
 }
 
@@ -2533,10 +2533,10 @@ sup {
 }
 
 .icon-cash {
-	background: url(../images/micro/icon-cash.svg) no-repeat;
-	background-position: top center;
 	width: 2.1em;
 	height: 1.6em;
+	background: url(../images/micro/icon-cash.svg) no-repeat;
+	background-position: top center;
 	background-size: 100%;
 }
 
@@ -2549,12 +2549,12 @@ sup {
 }
 
 .icon-phone {
-	background: url(../images/micro/icon-phone.svg) no-repeat;
-	background-position: top center;
 	width: 1.4em;
 	height: 1.4em;
-	background-size: 100%;
 	margin-top: .2em;
+	background: url(../images/micro/icon-phone.svg) no-repeat;
+	background-position: top center;
+	background-size: 100%;
 }
 
 .icon-notes {
@@ -4305,4 +4305,60 @@ textarea {
 	font-size: 1em;
 	color: #666;
 	text-align: center;
+}
+
+.form-icon, .fa.form-icon {
+	width: 22px;
+	padding-right: 5px;
+}
+@media screen and (min-width: 1025px) {
+	/*
+	.button.green.button-empty {
+		border: 1px solid #00bea0;
+		font-weight: bold;
+		background: none;
+		color: inherit;
+	}
+	.button.green, .button.green.button-empty:hover {
+		background: #00bea0;
+		font-weight: bold;
+		color: #fff;
+	}
+	*/
+	.form-input {
+		
+	}
+	.delivery-payment-info .form-input[name="notes"] {
+		background: #333;
+		color: #fff;
+	}
+	.payment-form-toggle, .payment-form-toggle.toggle-active, .form-input, .form-input-select:after {
+		border-width: 1px;
+	}
+	.pay-title-label {
+		font-size: 1.2em;
+	}
+	.form-input-select:after {
+		height: 1.22em;
+		margin-top: 0;
+	}
+	.order-icon svg {
+		fill: currentColor ;
+		color: red;
+	}
+	.form-icon, .fa.form-icon {
+		color: #00bea0;
+	}
+	.form-icon, .fa.form-icon {
+		width: 26px;
+		padding-right: 10px;
+	}
+}
+
+.form-field.fa.fa-phone {
+	padding-top: .15em;
+}
+.form-field.fa.fa-map-marker {
+	font-size: 2.5em;
+	padding-top: .15em;
 }
