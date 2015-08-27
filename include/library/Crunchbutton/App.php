@@ -179,13 +179,15 @@ class Crunchbutton_App extends Cana_App {
 		
 		
 
-		$this->buildAuth($this->db());
+		
 		
 
 				
 		if (getenv('HEROKU')) {
 			error_log('>> EXITING >>>>>>>>>');
-			die((string)rand(1,999999));
+			//die((string)rand(1,999999));
+		} else {
+			$this->buildAuth($this->db());
 		}
 
 
