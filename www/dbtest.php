@@ -35,8 +35,6 @@ if (getenv('HEROKU')) {
 
 $db = new \PDO($args->dsn, $args->user, $args->pass, $options);
 
-$this->database($args->db);
-
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 $db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
@@ -45,8 +43,11 @@ if (getenv('HEROKU')) {
 	error_log('>> CONNECTED');
 }
 
+$query = 'update session set token=? where id_session=?';
+$args = [rand(1,99999), '2jvvbkeh0k4bvb38or2lo4m1s7'];
 
 $stmt = $db->prepare($query);
 $stmt->execute($args);
+
 
 die('done');
