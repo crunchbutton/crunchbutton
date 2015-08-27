@@ -27,6 +27,10 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 			$options[PDO::ATTR_TIMEOUT] = 4;
 			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		}
+		
+		if (getenv('HEROKU')) {
+			error_log('>> CONNECTING TO DATABASE...');
+		}
 
 		$db = new \PDO($args->dsn, $args->user, $args->pass, $options);
 		$this->driver($db->getAttribute(\PDO::ATTR_DRIVER_NAME));
@@ -35,6 +39,10 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 		$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
+		
+		if (getenv('HEROKU')) {
+			error_log('>> CONNECTED!!');
+		}
 
 		return $db;
 	}
