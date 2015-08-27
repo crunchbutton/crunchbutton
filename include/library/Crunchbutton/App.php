@@ -163,6 +163,15 @@ class Crunchbutton_App extends Cana_App {
 		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
+		
+
+	
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			die(rand(1,999999));
+		}
+
 
 
 
