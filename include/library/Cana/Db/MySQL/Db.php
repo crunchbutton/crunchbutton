@@ -18,9 +18,9 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 			$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8';
 		}
 
-		//if ($args->persistent) {
+		if ($args->persistent) {
 			$options[PDO::ATTR_PERSISTENT] = true;
-		//}
+		}
 		
 		if ($args->sslca) {
 			$options[PDO::MYSQL_ATTR_SSL_CA] = $args->sslca;
