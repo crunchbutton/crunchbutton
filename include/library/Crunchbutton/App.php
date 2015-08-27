@@ -188,6 +188,14 @@ class Crunchbutton_App extends Cana_App {
 			$config->bundle = true;
 			$config->viewExport = true;
 		}
+		
+		
+		
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			die('exit');
+		}
 
 		$this
 			->config($config)
@@ -294,14 +302,6 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function displayPage($page = null) {
-		
-		
-		
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			die('exit');
-		}
-
 
 		if (is_null($page)) {
 			$page = $this->pages();
