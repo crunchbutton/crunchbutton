@@ -165,15 +165,6 @@ class Crunchbutton_App extends Cana_App {
 		}
 		
 
-	
-		
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			die(rand(1,999999));
-		}
-
-
-
 
 		// set host callback by hostname
 		$config->host_callback = ($db == 'local' || $db == 'travis' || $db == 'travispostgres' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
@@ -187,6 +178,17 @@ class Crunchbutton_App extends Cana_App {
 		$this->config($config);
 
 		$this->buildAuth($this->db());
+		
+
+	
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			die((string)rand(1,999999));
+		}
+
+
+
 
 		// set bundle on everything except tests
 		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
