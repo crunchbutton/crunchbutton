@@ -73,3 +73,4 @@ if (getenv('HEROKU')) {
 		
 	});
 }
+exit;
