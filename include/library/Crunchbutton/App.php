@@ -192,12 +192,6 @@ class Crunchbutton_App extends Cana_App {
 		$this
 			->config($config)
 			->postInit($params);
-		
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			exit;
-		}
-
 
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
@@ -231,6 +225,12 @@ class Crunchbutton_App extends Cana_App {
 
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
+		
+		
+		if (getenv('HEROKU')) {
+			error_log('>> EXITING >>>>>>>>>');
+			exit;
+		}
 
 	}
 
