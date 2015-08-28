@@ -9,6 +9,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			->load($id);
 	}
 
+	public static function minutesBuffer(){
+		return 30;
+	}
+
 	public function restaurantNextCloseTime( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
@@ -183,6 +187,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public static function hoursByRestaurant( $restaurant, $gmt = false ){
+
+		if( $restaurant->_hoursByRestaurant ){
+			return $restaurant->_hoursByRestaurant;
+		}
+
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
 			$hours = Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
 			if ( $gmt ) {
@@ -192,14 +201,87 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					$open = new DateTime( 'next '.$hour->day. ' ' .$hour->time_open, new DateTimeZone( $restaurant->timezone ) );
 					$open->setTimezone( new DateTimeZone( 'UTC' ) );
 					$close = new DateTime( 'next '.$hour->day. ' ' .$hour->time_close, new DateTimeZone( $restaurant->timezone ) );
-					$close->setTimezone( new DateTimeZone('UTC' ) );
+					$close->setTimezone( new DateTimeZone( 'UTC' ) );
 					$hour->time_open = $open->format( 'Y-m-d H:i' );
 					$hour->time_close = $close->format( 'Y-m-d H:i' );
 				}
 			}
 			$restaurant->_hours[ $gmt ] = $hours;
 		}
-		return $restaurant->_hours[ $gmt ] ;
+
+		// Add restaurant buffer time for 3rd party delivery restaurants #6332
+		if( $restaurant->force_buffer && $restaurant->delivery_service  && self::minutesBuffer() ){
+
+			// this flash is needed because this method is called recursivelly
+			$_hours_utc_buffered = [];
+
+			// So, if a restaurant closes less than 30 minutes after the shifts close, we want a 30 minute buffer to kick in
+			$community_hrs = $restaurant->assignedShiftHours( true );
+
+			// empty array to store the merged hours
+			$_community_hours = [];
+
+			// Convert the hours to a simple array
+			if( $community_hrs && count( $community_hrs ) ){
+				foreach ( $community_hrs as $hour ) {
+					if( !isset( $_community_hours[ trim( $hour->day ) ] ) ){
+						$_community_hours[ trim( $hour->day ) ] = [];
+					}
+					$_community_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
+				}
+
+				uksort( $_community_hours,
+				function( $a, $b ) {
+					$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+					return( $weekdays[ $a ] > $weekdays[ $b ] );
+				} );
+			}
+
+			$community_closes = [];
+
+			foreach ( $_community_hours as $day => $hours ) {
+				if( !$community_closes[ $day ] ){
+					$community_closes[ $day ] = 0;
+				}
+				foreach( $hours as $hour ){
+					$close_at = intval( str_replace( ':', '', $hour[ 1 ] ) );
+					if( $close_at == 0 ){
+						$close_at = 2400;
+					}
+					$community_closes[ $day ] = ( $community_closes[ $day ] > $close_at ) ? $community_closes[ $day ] : $close_at;
+				}
+			}
+
+			foreach ( $restaurant->_hours[ $gmt ] as $hour ) {
+
+				$buffer_minutes = self::minutesBuffer();
+
+				if( strtolower( date( 'D' ) ) == $hour->day ){
+					$day = date( 'Y-m-d' );
+				} else {
+					$day = date('Y-m-d', strtotime("next " . $hour->day ) );
+				}
+
+				$close_time = intval( str_replace( ':', '', $hour->time_close ) );
+
+				if( $community_closes[ $hour->day ] && $hour->day == 'sat' ){
+
+					if( ( $community_closes[ $hour->day ] - $buffer_minutes ) > $close_time  ){
+						$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
+						$close->modify( '- ' . $buffer_minutes . ' minutes' );
+						$hour->time_close = $close->format( 'H:i' );
+					} else if( $community_closes[ $hour->day ] < $close_time ){
+						$close_time = $community_closes[ $hour->day ];
+						// add commas
+						$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
+						$hour->time_close = $close_time;
+					}
+				}
+			}
+		}
+		// cache the results
+		$restaurant->_hoursByRestaurant = $restaurant->_hours[ $gmt ];
+		return $restaurant->_hoursByRestaurant;
 	}
 
 	public static function getByRestaurantWeek( $restaurant, $utc = true){
@@ -238,7 +320,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				return( $weekdays[ $a ] > $weekdays[ $b ] );
 		} );
 
-
 		$community = $restaurant->community();
 
 		// Fix Restaurant Hours Displayed #5920: https://github.com/crunchbutton/crunchbutton/issues/5920#issuecomment-119308322
@@ -246,7 +327,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 			// community hours with driver
 			$community_hrs = $restaurant->assignedShiftHours( true );
-			// echo '<pre>';var_dump( $community_hrs );exit();
 
 			// empty array to store the merged hours
 			$_community_hours = [];
@@ -269,52 +349,48 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				foreach( $_community_hours as $day => $hours ){
 
 					// just merge to the current day
-					if( true ){
-					// if( $day == strtolower( date( 'D' ) ) ){
+					$open = null;
+					$close = null;
 
-						$open = null;
-						$close = null;
+					$_segments_day = [];
 
-						$_segments_day = [];
+					foreach( $hours as $hour ){
 
-						foreach( $hours as $hour ){
+						$community_segment = $hour;
 
-							$community_segment = $hour;
+						$community_open = intval( str_replace( ':' , '', $community_segment[ 0 ] ) );
+						$community_close = intval( str_replace( ':' , '', $community_segment[ 1 ] ) );
+						if( $community_close == 0 && $community_segment[ 1 ] == '00:00' ){
+							$community_close = 2400;
+						}
 
-							$community_open = intval( str_replace( ':' , '', $community_segment[ 0 ] ) );
-							$community_close = intval( str_replace( ':' , '', $community_segment[ 1 ] ) );
-							if( $community_close == 0 && $community_segment[ 1 ] == '00:00' ){
-								$community_close = 2400;
-							}
+						$restaurant_segments = $_hours[ $day ];
+						if( $restaurant_segments ){
 
-							$restaurant_segments = $_hours[ $day ];
-							if( $restaurant_segments ){
+							foreach( $restaurant_segments as $restaurant_segment ){
 
-								foreach( $restaurant_segments as $restaurant_segment ){
+								$restaurant_open = intval( str_replace( ':' , '', $restaurant_segment[ 0 ] ) );
+								$restaurant_close = intval( str_replace( ':' , '', $restaurant_segment[ 1 ] ) );
 
-									$restaurant_open = intval( str_replace( ':' , '', $restaurant_segment[ 0 ] ) );
-									$restaurant_close = intval( str_replace( ':' , '', $restaurant_segment[ 1 ] ) );
+								if( $community_open > $restaurant_open ){
+									$open = $community_segment[ 0 ];
+								} else if( $community_open <= $restaurant_open ){
+									$open = $restaurant_segment[ 0 ];
+								}
 
-									if( $community_open > $restaurant_open ){
-										$open = $community_segment[ 0 ];
-									} else if( $community_open <= $restaurant_open ){
-										$open = $restaurant_segment[ 0 ];
-									}
+								if( $community_close < $restaurant_close ){
+									$close = $community_segment[ 1 ];
+								} else if( $community_close >= $restaurant_close ){
+									$close = $restaurant_segment[ 1 ];
+								}
 
-									if( $community_close < $restaurant_close ){
-										$close = $community_segment[ 1 ];
-									} else if( $community_close >= $restaurant_close ){
-										$close = $restaurant_segment[ 1 ];
-									}
-
-									if( $open && $close && intval( str_replace( ':' , '', $open ) ) < intval( str_replace( ':' , '', $close ) ) ){
-										$_segments_day[] = [ $open, $close ];
-									}
+								if( $open && $close && intval( str_replace( ':' , '', $open ) ) < intval( str_replace( ':' , '', $close ) ) ){
+									$_segments_day[] = [ $open, $close ];
 								}
 							}
 						}
-						$_hours[ $day ] = $_segments_day;
 					}
+					$_hours[ $day ] = $_segments_day;
 				}
 			}
 		}
@@ -334,7 +410,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 		$getDay = clone $sd;
 
-
 		// step back two days
 		$getDay->modify( '-2 day' );
 
@@ -351,7 +426,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				if( $day != $actualDay ){ continue; }
 
 				// loop to get all the segments
-
 				foreach( $segments as $times ){
 					// create a Datetime to the start time
 					$start = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'from' ], new DateTimeZone( $restaurant->timezone ) );
@@ -374,7 +448,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$seconds = $diff_before - $diff_after;
 						$end->modify( '-' . $seconds . ' seconds' );
 					}
-
 
 					// it means it ends in another day, so add the needed days
 					if( $times[ 'to_days' ] ){
@@ -755,6 +828,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Convert all we have to regular hours again -- 234 will became 2014-01-06 02:24
 		$hours = [];
 		$atSundayItWillClose = 0;
+
 		foreach( $_hours as $key => $val ){
 			$to_days = 0;
 			$from = $_hours[ $key ][ 'from' ];
@@ -786,7 +860,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 			$hours[ $weekday ][] = $data;
 		}
-
 		return $hours;
 	}
 
@@ -952,7 +1025,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 			$_partial[ $day ] = join( ', ', $segments );
 		}
-
 		return Hour::closedMessage( $_partial );
 	}
 }
