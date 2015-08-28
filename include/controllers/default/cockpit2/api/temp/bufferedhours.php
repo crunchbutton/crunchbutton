@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_temp_testhours extends Crunchbutton_Controller_Account {
+class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account {
 	public function init() {
 
 		$community = Community::o( c::getPagePiece( 3 ) );
