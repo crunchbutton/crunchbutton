@@ -54,7 +54,8 @@ var App = {
 	enableSplash: true,
 	useTransform: true,
 	minimalMode: false,
-	hasFacebook: false
+	hasFacebook: false,
+	hasApplePay: false
 };
 
 App.useTransform = true;
@@ -1356,6 +1357,15 @@ App.phoneGapListener = {
 	},
 	deviceready : function(){
 		// deviceready
+		
+		if (App.iOS() && window.ApplePay) {
+			ApplePay.getAllowsApplePay(function(){
+				App.hasApplePay = true;
+			}, function(){
+				App.hasApplePay = false;
+			})
+		}
+		
 	},
 	resume : function(){
 		dateTime.restart();

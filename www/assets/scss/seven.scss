@@ -2066,14 +2066,17 @@ a.button{
 	padding: .3em .8em .3em .8em;
 	border-radius: 4px;
 	font-weight: bold;
-	width: 48%;
+	width: 100%;
+	margin: 0 .4em 0 .4em;
 }
+
 .payment-form-toggle:first-child {
-	float: left;
+	margin-left: 0;
 }
-.payment-form-toggle:nth-child(2) {
-	float: right;
+.payment-form-toggle:last-child {
+	margin-right: 0;
 }
+
 .payment-form-toggle.toggle-active {
 	background: #00bea0;
 	border: 2px solid #00bea0;
@@ -2110,6 +2113,12 @@ a.button{
 .toggle-wrapper {
 	width: 100%;
 	box-sizing: border-box;
+	display: flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	align-items: flex-start;
+	-webkit-align-items: flex-start;
+	-ms-align-items: flex-start;
 }
 
 /* global form styles */
