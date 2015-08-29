@@ -685,17 +685,17 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$driver[ 'pay_type' ] = [ 'payment_type' => '-' ];
 			}
 
-			// if( $id_driver ){
-			if( true ){
+			if( $id_driver ){
+			// if( true ){
 				// if( $id_driver == $driver[ 'id_admin' ] ){
-				if(
-						$driver[ 'id_admin' ] ==  12196 ||
-						$driver[ 'id_admin' ] ==  12202 ||
-						$driver[ 'id_admin' ] ==  12199 ||
-						$driver[ 'id_admin' ] ==  12205
-					){
+				// if(
+						// $driver[ 'id_admin' ] ==  12196 ||
+						// $driver[ 'id_admin' ] ==  12202 ||
+						// $driver[ 'id_admin' ] ==  12199 ||
+						// $driver[ 'id_admin' ] ==  12205
+					// ){
 					$out[ 'drivers' ][] = $driver;
-				}
+				// }
 			} else {
 				$out[ 'drivers' ][] = $driver;
 			}
