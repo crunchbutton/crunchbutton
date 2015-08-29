@@ -160,6 +160,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
+
 		return Order::q( $query );
 	}
 
@@ -295,6 +296,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'cash' ] = $order[ 'cash' ];
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
+				$order[ 'pay_info' ][ 'pay_credit_card_tip' ] = $order[ 'pay_credit_card_tips' ];
 				$order[ 'pay_info' ][ 'delivery_fee' ] = $this->orderDeliveryFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'delivery_fee_collected' ] = $this->orderDeliveryFeeDriverCollected( $order );
 				$order[ 'pay_info' ][ 'tip' ] = $this->orderTipDriverPay( $order );
@@ -377,8 +379,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 
 		foreach( $pay as $id_driver => $driver ){
-			$pay_type = Admin::o( $id_driver )->payment_type();
-			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+			$admin = Admin::o( $id_driver );
+			$pay_type = $admin->payment_type();
+			$pay[ $id_driver ][ 'salary_type' ] = $pay_type->payment_type;
+			$pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
+			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ||
+					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ||
+					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
 				$shifts = $this->workedShiftsByPeriod( $id_driver, $this->filters );
 				$worked_shifts = [];
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS;
@@ -399,12 +406,21 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$tip = 0;
 				foreach( $pay[ $id_driver ][ 'orders' ] as $id_order => $order ){
 					if( !$order[ 'driver_paid' ] || $recalculatePaidOrders ){
-						$tip += $order[ 'pay_info' ][ 'tip' ];
+						$tip += ( $order[ 'pay_info' ][ 'tip' ] * $order[ 'pay_info' ][ 'pay_credit_card_tip' ] );
 					}
 				}
-				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
-				$pay[ $id_driver ][ 'total_payment' ] = max( ( $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $tip + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] + $pay[ $id_driver ][ 'customer_fee_collected' ] ), 0 );
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
+				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
+				$payment_by_shift = $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] + $pay[ $id_driver ][ 'customer_fee_collected' ];
+				if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+					$pay[ $id_driver ][ 'total_payment_by_order' ] = $pay[ $id_driver ][ 'total_payment' ];
+					$pay[ $id_driver ][ 'total_payment_by_hour' ] = max( $payment_by_shift, 0 );
+					$pay[ $id_driver ][ 'total_payment' ] = max( $pay[ $id_driver ][ 'total_payment_by_order' ], $pay[ $id_driver ][ 'total_payment_by_hour' ] );
+				} else {
+					$pay[ $id_driver ][ 'total_payment' ] = ( $payment_by_shift + $tip );
+				}
+				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
+
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 				$pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
@@ -601,7 +617,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// We need to make this change: add the $3 delivery fee to the amount being subtracted for cash orders from payment for hourly drivers.
 	public function orderDeliveryFeeDriverCollected( $arr ){
-		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] );
+		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] ) * ( 1 - $arr[ 'pay_type_order' ] );
 	}
 
 	// Drivers must pay us back our markup they collected in cash.
@@ -687,8 +703,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'delivery_service_markup' ] = $order->delivery_service_markup;
 		$values[ 'delivery_service_markup_value' ] = $order->delivery_service_markup_value;
 
-		$values[ 'id_admin' ] = $order->getDeliveryDriver()->id_admin; // driver
-		$payment_type = Admin::o( $values[ 'id_admin' ] )->payment_type();
+		$admin = Admin::o( $order->getDeliveryDriver()->id_admin );
+
+		$values[ 'id_admin' ] = $admin->id_admin; // driver
+		$payment_type = $admin->payment_type();
 		$payment_type = $payment_type->payment_type;
 		$values[ 'pay_type_hour' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? 1 : 0;
 		$values[ 'pay_type_order' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ) ? 1 : 0;
@@ -719,6 +737,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'do_not_reimburse_driver' ] = ( $order->do_not_reimburse_driver > 0 ) ? 1: 0;
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
+
+		$values[ 'pay_type_hours_without_tips' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ) ? 1 : 0;
+		$values[ 'pay_type_making_whole' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ) ? 1 : 0;
+		$values[ 'pay_delivery_fee' ] = ( $admin->showDeliveryFees() ) ? 1 : 0;
+		$values[ 'pay_credit_card_tips' ] = ( $admin->showCreditCardTips() ) ? 1 : 0;
 
 		// convert all to float -> mysql returns some values as string
 		foreach( $values as $key => $val ){
@@ -1743,7 +1766,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total_payment' => $_total_payment
 																									];
 					if( $variables[ 'cash' ] ){
-						// aqui aqui
 						// Hourly drivers are ALSO collecting the $3 delivery fee for all cash orders, and keeping it. They shouldn't be! #5053
 						$summary[ 'collected_in_cash' ] += $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ];
 
@@ -2012,7 +2034,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = "SELECT DISTINCT(asa.id_admin), a.name, apt.using_pex, apt.using_pex_date
 								FROM community_shift cs
 								INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
-								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND apt.payment_type = 'hours'
+								INNER JOIN admin_payment_type apt ON apt.id_admin = asa.id_admin AND
+								( apt.payment_type = '" . Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS . "' OR
+										apt.payment_type = '" . Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS . "' OR
+										apt.payment_type = '" . Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE . "'  )
+
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								WHERE
 									cs.date_start >= '" . ( new DateTime($this->filters['start']) )->format('Y-m-d') . "'
