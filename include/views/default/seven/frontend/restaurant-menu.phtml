@@ -1,5 +1,5 @@
 
-<div ng-show="!order.cart.hasItems() && open" class="restaurant-box hide-desktop">
+<div ng-if="!order.cart.hasItems() && open" class="restaurant-box hide-desktop">
 	<div class="restaurant-box-inner">
 		<span class="restaurant-box-icon">
 			<i class="fa fa-arrow-down"></i>
@@ -12,7 +12,7 @@
 
 <div class="restaurant-items restaurant-items-list">
 
-	<div ng-show="fullmenu">
+	<div ng-if="fullmenu">
 		<div ng-bind-once class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">
 
 			<div class="restaurant-title-wrap restaurant-category">
@@ -34,7 +34,7 @@
 
 	</div>
 
-	<div ng-show="!fullmenu">
+	<div ng-if="!fullmenu">
 
 		<div class="restaurant-title-wrap">
 			<div class="restaurant-title">The Highlights</div>
@@ -43,7 +43,7 @@
 		<div ng-repeat="category in restaurant.categories()">
 			<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
 				<li ng-repeat="dish in category.dishes() | filter: {top: true}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
-					<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
+					<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span><br />
 					<span class="dish-item-description">{{dish.description}}</span>
 				</li>
 			</ul>
