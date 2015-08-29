@@ -383,6 +383,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
 		}
 	}
+	
+	$rootScope.softKeyboardExit = function() {
+		$('.nav-top').removeClass('at-top');
+	};
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908 - input at modals
 	$rootScope.softKeyboardModal = function( e ){
