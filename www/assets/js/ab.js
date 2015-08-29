@@ -17,7 +17,7 @@ App.AB = {
 		slogan: [
 			{
 				name: 'slogan-push-food',
-				slogan: 'Push a button. Get Delivery.'
+				slogan: 'Push a button. Get delivery.'
 			}
 		],
 		nothingInTheCartMobile: [
