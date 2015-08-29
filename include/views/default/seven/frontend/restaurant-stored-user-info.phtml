@@ -9,23 +9,23 @@
 		</div>
 		<div class="order-info order-info-oneline">
 			<p>
-				<span ng-show="user.phone">{{ user.phone | formatPhone }}</span>
-				<span ng-show="!user.phone">no phone # provided</span>
+				<span ng-if="user.phone">{{ user.phone | formatPhone }}</span>
+				<span ng-if="!user.phone">no phone # provided</span>
 			</p>
 		</div>
 		<div class="divider"></div>
 		<div class="order-icon">
-			<i class="fa fa-birthday-cake payment-form-icon form-icon form-field" ng-show="order.form.pay_type=='card' && order.total() <= credit.number"></i>	
-			<i class="fa fa-credit-card payment-form-icon form-icon form-field" ng-show="order.form.pay_type=='card' && order.total() > credit.number"></i>	
-			<i class="fa fa-money payment-form-icon form-icon form-field" ng-show="order.form.pay_type=='cash'"></i>
+			<i class="fa fa-birthday-cake payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='card' && order.total() <= credit.number"></i>	
+			<i class="fa fa-credit-card payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='card' && order.total() > credit.number"></i>	
+			<i class="fa fa-money payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='cash'"></i>
 		</div>
 		<div class="order-info order-info-oneline">
 
 			<p>
-				<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
-				<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
-				<span ng-show="order.form.pay_type=='card' && !credit.number">Card ending in {{user.card_ending}}</span>
-				<span ng-show="order.form.pay_type=='cash'">Pay and tip with <b>cash</b>
+				<span ng-if="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
+				<span ng-if="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
+				<span ng-if="order.form.pay_type=='card' && !credit.number">Card ending in {{user.card_ending}}</span>
+				<span ng-if="order.form.pay_type=='cash'">Pay and tip with <b>cash</b>
 					<span ng-if="config.driver_change_amount">
 						<br><i>Drivers only carry ${{config.driver_change_amount}} in change</i>
 					</span>
@@ -38,7 +38,7 @@
 		<div class="order-icon">
 			<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
 		</div>
-		<div class="order-info" ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+		<div class="order-info" ng-if="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
 			<p>
 				Delivered to:<br />
 			</p>
@@ -47,7 +47,7 @@
 				<i ng-hide="order.form.address">no address provided</i>
 			</p>
 		</div>
-		<div class="order-info" ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
+		<div class="order-info" ng-if="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
 			<p class="restaurant-info-address">
 				Pick up from:<br />
 				<span ng-bind-html-unsafe="restaurant.address | nl2br"></span>
@@ -89,10 +89,10 @@
 						<!-- Gift card success -->
 						<div ng-repeat="success in giftcard.giftcards.success">
 							<div ng-if="!success.delivery_free && !success.message">
-								<div ng-show="!success.error">
+								<div ng-if="!success.error">
 									Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
 								</div>
-								<div ng-show="success.error == 'other restaurant'">
+								<div ng-if="success.error == 'other restaurant'">
 									The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
 								</div>
 							</div>
