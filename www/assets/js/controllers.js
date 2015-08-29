@@ -892,6 +892,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.open = false;
 
 	$scope.isIOs = App.iOS();
+	
+	if ($rootScope.config['apple-pay'] == '1' && App.hasApplePay) {
+		$scope.applePay = true;
+	} else {
+		$scope.applePay = false;
+	}
 
 	$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
 
