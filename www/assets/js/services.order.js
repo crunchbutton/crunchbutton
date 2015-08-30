@@ -488,7 +488,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			geomatched : service.geomatched
 		};
 
-		if (order.pay_type == 'card') {
+		if (order.pay_type == 'card' || order.pay_type == 'applepay') {
 			order.tip = service.form.tip;
 			order.autotip_value = service.form.autotip;
 		}
@@ -851,6 +851,21 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				expiration_year: service.form.cardYear,
 				security_code: null
 			}, processOrder);
+		} else if (order.pay_type == 'applepay') {
+			ApplePay.getStripeToken(function(response) {
+				processOrder({
+					id : response.card.id,
+					uri: response.id,
+					lastfour: response.card.last4,
+					card_type: response.card.brand.toLowerCase(),
+					month: response.card.exp_month,
+					year: response.card.exp_year,
+					status : true
+				});
+				
+			}, function(){
+				App.busy.unBusy();
+			}, service.info.totalText.replace('$',''), 'Crunchbutton', 'USD');
 		} else {
 			order.card = {};
 			processOrder(false);
