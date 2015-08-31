@@ -67,7 +67,7 @@
 			*/?>
 		</div>
 
-		<div ng-show="image" class="community-image"></div>
+		<div ng-if="image" class="community-image"></div>
 
 
 		<div class="divider"></div>
@@ -126,7 +126,7 @@
 		</span>
 		<div class="divider"></div>
 
-		<button class="button green restaurants-more" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
+		<button class="button green restaurants-more" ng-if="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
 			More awesome Restaurants
 		</button>
 
