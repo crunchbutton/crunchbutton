@@ -54,7 +54,8 @@ var App = {
 	enableSplash: true,
 	useTransform: true,
 	minimalMode: false,
-	hasFacebook: false
+	hasFacebook: false,
+	hasApplePay: false
 };
 
 App.useTransform = true;
@@ -382,6 +383,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
 		}
 	}
+	
+	$rootScope.softKeyboardExit = function() {
+		$('.nav-top').removeClass('at-top');
+	};
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908 - input at modals
 	$rootScope.softKeyboardModal = function( e ){
@@ -1356,6 +1361,15 @@ App.phoneGapListener = {
 	},
 	deviceready : function(){
 		// deviceready
+		
+		if (App.iOS() && window.ApplePay) {
+			ApplePay.getAllowsApplePay(function(){
+				App.hasApplePay = true;
+			}, function(){
+				App.hasApplePay = false;
+			})
+		}
+		
 	},
 	resume : function(){
 		dateTime.restart();

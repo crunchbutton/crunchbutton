@@ -14,6 +14,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	const PAY_TYPE_CASH        = 'cash';
 	const PAY_TYPE_CREDIT_CARD = 'card';
+	const PAY_TYPE_APPLE_PAY	 = 'applepay';
 	const SHIPPING_DELIVERY    = 'delivery';
 	const SHIPPING_TAKEOUT     = 'takeout';
 	const TIP_PERCENT 				 = 'percent';
@@ -71,6 +72,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'type'         => 'wrong delivery type',
 				'order_params' => $params,
 			]);
+		}
+		
+		if ($params['pay_type'] == self::PAY_TYPE_CREDIT_CARD) {
+			$params['pay_type'] = self::PAY_TYPE_APPLE_PAY;
 		}
 
 		$this->id_restaurant = $params['restaurant'];
