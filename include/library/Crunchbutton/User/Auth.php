@@ -65,7 +65,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		while ($row = $res->fetch()) {
 			$auths[$row->id_user_auth] = new Crunchbutton_User_Auth($row);
 		}
-		$res->closeCursor();
+		//$res->closeCursor();
 		return $auths;
 	}
 

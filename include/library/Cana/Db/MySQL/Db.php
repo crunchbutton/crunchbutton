@@ -60,7 +60,7 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 			unset($row->Extra);
 			$columns[] = $row;
 		}
-		$res->closeCursor();
+		//$res->closeCursor();
 
 		return $columns;
 	}
