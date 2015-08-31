@@ -21,7 +21,7 @@ class Controller_Api_Script_ReferralCodeChanges extends Crunchbutton_Controller_
 
 		if( $_GET[ 'step' ] == '2' ){
 
-			$query = "SELECT * FROM user u WHERE u.name IS NOT NULL AND u.phone IS NOT NULL AND ( u.invite_code_updated IS NULL OR invite_code_updated = 0 ) ORDER BY id_user DESC LIMIT 1000";
+			$query = "SELECT * FROM user u WHERE u.name IS NOT NULL AND ( u.invite_code_updated IS NULL OR invite_code_updated = 0 ) ORDER BY id_user DESC LIMIT 3000";
 			$users = Crunchbutton_User::q( $query );
 			foreach( $users as $user ){
 				$new_code = $user->inviteCodeNameBased();
@@ -30,9 +30,12 @@ class Controller_Api_Script_ReferralCodeChanges extends Crunchbutton_Controller_
 					$user->invite_code_bkp = $user->invite_code;
 				}
 				$user->invite_code = $new_code;
+				echo $new_code;
+				echo "<br>\n";
 				$user->save();
-				echo '<pre>';var_dump( $user->id_user );exit();
+				// echo '<pre>';var_dump( $user->id_user );exit();
 			}
+			echo 1;
 		}
 
 	}
