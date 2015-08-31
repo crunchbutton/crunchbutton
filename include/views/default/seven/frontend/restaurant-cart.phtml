@@ -1,10 +1,10 @@
-<div ng-show="restaurant._open">
+<div ng-if="restaurant._open">
 
-	<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="dialog-message dialog-message-error delivery-minimum-error">
+	<div ng-if="order.info.deliveryMinDiff && order.cart.hasItems()" class="dialog-message dialog-message-error delivery-minimum-error">
 		Add <sup>$</sup><span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> more to meet the delivery min
 	</div>
 
-	<div ng-show="order.cart.hasItems()">
+	<div ng-if="order.cart.hasItems()">
 		<div class="restaurant-title-wrap">
 			<div class="restaurant-title">The Order</div>
 		</div>
@@ -28,7 +28,7 @@
 		</div>
 
 		<!-- Customizable options -->
-		<div class="cart-customize-options" ng-show="item.details.customization.customizable && item.details.customization.expanded">
+		<div class="cart-customize-options" ng-if="item.details.customization.customizable && item.details.customization.expanded">
 
 			<div ng-repeat="option in item.details.customization.options">
 
@@ -44,7 +44,6 @@
 									<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
 								</div>
 							</div>
-							<div class="divider"></div>
 						</div>
 
 						<!-- Customizable - checkbox -->
@@ -65,7 +64,7 @@
 
 </div>
 
-<div class="default-order-check" ng-show="order.info.totalItems && restaurant._open">
+<div class="default-order-check" ng-if="order.info.totalItems && restaurant._open">
 	<input custom-checkbox type="checkbox" ng-model="order.form.make_default">
 	<a ng-click="order.form.make_default = !order.form.make_default;">Save this order for next time</a>
 	<div class="divider"></div>

@@ -1,9 +1,9 @@
 <div class="bg">
-	<div ng-show="!order.loaded">
+	<div ng-if="!order.loaded">
 		<? /* THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. */ ?>
 	</div>
 
-	<div ng-show="restaurant">
+	<div ng-if="restaurant">
 
 		<div class="restaurant-pad"></div>
 

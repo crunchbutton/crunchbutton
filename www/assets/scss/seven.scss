@@ -40,7 +40,7 @@ a:active {
 	color: #ef8b70;
 }
 
-input[type="text"], input[type="tel"], input[type="password"], textarea, select {
+input[type="text"], input[type="tel"], input[type="password"], input[type="email"], textarea, select {
 	@include appearance(none);
 }
 
@@ -2066,14 +2066,17 @@ a.button{
 	padding: .3em .8em .3em .8em;
 	border-radius: 4px;
 	font-weight: bold;
-	width: 48%;
+	width: 100%;
+	margin: 0 .4em 0 .4em;
 }
+
 .payment-form-toggle:first-child {
-	float: left;
+	margin-left: 0;
 }
-.payment-form-toggle:nth-child(2) {
-	float: right;
+.payment-form-toggle:last-child {
+	margin-right: 0;
 }
+
 .payment-form-toggle.toggle-active {
 	background: #00bea0;
 	border: 2px solid #00bea0;
@@ -2110,6 +2113,12 @@ a.button{
 .toggle-wrapper {
 	width: 100%;
 	box-sizing: border-box;
+	display: flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	align-items: flex-start;
+	-webkit-align-items: flex-start;
+	-ms-align-items: flex-start;
 }
 
 /* global form styles */
@@ -2131,7 +2140,8 @@ select.form-input {
 	padding-right: 3em;
 }
 .cart-item-customize-item-select{
-
+	display: table;
+	width: 100%;
 }
 .cart-item-customize-select-name {
 	font-size: 1.2em;
@@ -2140,7 +2150,7 @@ select.form-input {
 	margin-bottom: .4em;
 	white-space: nowrap;
 	padding-right:.3em;
-	float: left;
+	display: table-cell;
 }
 .cart-item-customize-item select {
 	border-color: #f77748;
@@ -2148,23 +2158,31 @@ select.form-input {
 	margin-left: 0;
 	margin-bottom: .8em;
 	box-sizing: border-box;
-	float: right;
+	width: 90%;
 	-webkit-appearance: menulist;
 }
-
+.cart-item-customize-select-input {
+	display: table-cell;
+	text-align: right;
+}
 .cart-item-customize-item-select-input-container:after {
 	font-family: FontAwesome;
 	font-size: 1.7em;
 	color: #f77748;
-	height: 1.1em;
-	width: 1.4em;
+	height: 1em;
+	width: 1em;
 	border-left: 2px solid #f77748;
 	content: '\f0d7';
-	margin-left: 2.8em;
-	padding-left: .37em;
+	margin-left: 2.9em;
 	padding-top: .3em;
 	pointer-events:none;
 	float: right;
+	margin-top: -1.95em;
+	background: #fff;
+	margin-right: .2em;
+    padding-right: .3em;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 	display: none;
 }
 .form-input-select:after {
@@ -4311,6 +4329,13 @@ textarea {
 	width: 22px;
 	padding-right: 5px;
 }
+@media screen and (max-width: 1024px) {
+	.pay-title-label {
+		font-size: 1.4em;
+		display: block;
+		margin-top: .3em;
+	}
+}
 @media screen and (min-width: 1025px) {
 	/*
 	.button.green.button-empty {
@@ -4352,6 +4377,9 @@ textarea {
 	.form-icon, .fa.form-icon {
 		width: 26px;
 		padding-right: 10px;
+	}
+	.cart-item-customize-item select {
+		border-width: 1px;
 	}
 }
 
