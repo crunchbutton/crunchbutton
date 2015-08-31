@@ -40,17 +40,16 @@ $getDb = function($args) {
 	$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 	$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 	$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
-	
+
 	return $db;
 };
-
 
 
 $dbRead = $getDb((object)['url' => getenv('DATABASE_URL_READER')]);
 $dbWrite = $getDb((object)['url' => getenv('DATABASE_URL_WRITER')]);
 
 
-		
+
 if (getenv('HEROKU')) {
 	error_log('>> CONNECTED');
 }
@@ -67,9 +66,9 @@ $stmt = $dbRead->prepare($query);
 $stmt->execute();
 
 while ($o = $stmt->fetch()) {
-	
+
 	print_r($o);
-	
+
 }
 
 
