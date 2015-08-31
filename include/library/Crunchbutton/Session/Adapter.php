@@ -81,7 +81,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		if (!$token) return false;
 		$res = Cana::db()->query('select * from session where token=?', [$token]);
 		$session = $res->fetch();
-		$session->closeCursor();
+		//$session->closeCursor();
 
 		if ($session->id_session) {
 			return $session;
