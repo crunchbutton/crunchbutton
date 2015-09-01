@@ -267,18 +267,18 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 					$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
 					$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
-
 					$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
 					$close_time_minutes = ( intval( substr( $close_time, 0, $substr ) ) * 60 ) + substr( $close_time, -2 );
-					if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
-						$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
-						$close->modify( '- ' . $buffer_minutes . ' minutes' );
-						$hour->time_close = $close->format( 'H:i' );
-					} else if( $community_closes[ $hour->day ] < $close_time ){
+					if( $community_closes[ $hour->day ] < $close_time ){
 						$close_time = $community_closes[ $hour->day ];
 						// add commas
 						$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
 						$hour->time_close = $close_time;
+					}
+					else if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
+						$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
+						$close->modify( '- ' . $buffer_minutes . ' minutes' );
+						$hour->time_close = $close->format( 'H:i' );
 					}
 				} else {
 					// if the community doent have shift remove the ours
