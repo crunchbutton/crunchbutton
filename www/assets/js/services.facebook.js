@@ -57,12 +57,14 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.postInvite = function(url, code) {
-		var text = App.AB.get('share-text-twitter').replace('%c', code);
+		var description = App.AB.get('share-facebook-description').replace('%c', code);
+		var title = App.AB.get('share-facebook-title');
+		var url = ( App.AB.get('share-facebook-url') != '' ) ? App.AB.get('share-facebook-url') : url;
 		App.share({
 			url: url,
-			name: 'Noms',
+			name: title,
 			caption: ' ',
-			description: text
+			description: description
 		});
 	}
 

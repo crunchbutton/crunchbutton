@@ -240,6 +240,8 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 
 	$scope.account = AccountService;
 
+	var twitter_text = App.AB.get('share-twitter-text');
+
 	$scope.referral = {
 		invite_url : ReferralService.invite_url,
 		value : ReferralService.value,
@@ -248,7 +250,7 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		enabled : ReferralService.enabled,
 		invite_code : ReferralService.invite_code,
 		sms : ReferralService.sms(),
-		text : "Get food delivery from places that don't. Check out "
+		text : twitter_text
 	}
 
 	$scope.referral.cleaned_url = function(){

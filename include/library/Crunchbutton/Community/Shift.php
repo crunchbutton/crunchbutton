@@ -67,6 +67,21 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $out;
 	}
 
+	public function lastShiftsByAdmin( $id_admin, $limit = 10 ){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$now->modify( '+ 1 day' );
+		$query = '
+			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
+			INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
+			WHERE
+				ass.id_admin = ?
+				AND cs.date_start <= ?
+			ORDER BY cs.date_start DESC
+			LIMIT ?
+		';
+		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' ), $limit]);
+	}
+
 	public function nextShiftsByAdmin( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$query = '
@@ -1151,6 +1166,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 
 				$day = strtolower( $start->format( 'D' ) );
+				$full = $start->format( 'D: m/d/Y' );
 				$time_open = $start->format( 'H:i' );
 				$time_close = $end->format( 'H:i' );
 
@@ -1164,11 +1180,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 
 				$hours[] = ( object )[ 	'day' => $day,
+																'full' => $full,
 																'time_open' => $time_open,
 																'time_close' => $time_close ];
 
 				if( $new_day ){
 					$hours[] = ( object )[ 	'day' => strtolower( $end->format( 'D' ) ),
+																	'full' => $full,
 																	'time_open' => $new_day_time_open,
 																	'time_close' => $new_day_time_close ];
 				}
