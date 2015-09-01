@@ -91,12 +91,16 @@ NGApp.controller('LegalCtrl', function ($scope) {
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 
+	$rootScope.hasBack = false;
+
 	$scope.loggingIn = false;
+
 	var l;
 	setTimeout(function(){
 		l = Ladda.create($('.button-login .ladda-button').get(0));
 	},700);
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
+
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
