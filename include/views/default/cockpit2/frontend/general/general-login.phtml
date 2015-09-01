@@ -20,7 +20,7 @@
 		<div class="dialog-message dialog-message-error" ng-show="error && !loggingIn">
 			Invalid username or password
 		</div>
-	
+
 		<form ng-submit="login()">
 			<label for="login-username">
 				<div class="input-wrap">
@@ -28,31 +28,25 @@
 					<span class="field"><input id="login-username" type="text" name="username" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
 				</div>
 			</label>
-			
+
 			<label for="login-password">
 				<div class="input-wrap">
 					<span class="label">Password:</span>
 					<span class="field"><input id="login-password" type="password" name="password" ng-model="password" autocorrect="off" autocapitalize="off"></span>
 				</div>
 			</label>
-			
+
 			<div class="find-restaurants button-login">
 				<button class="ladda-button button orange" data-color="orange" data-style="zoom-in">
 					<span class="ladda-label">Sign In</span>
 				</button>
 			</div>
 		</form>
-		
+
 		<div class="info">
 
 
-			<a href="/info">
-				<div class="login-option login-option-user">
-					<div class="circle"><i class="fa fa-truck"></i></div>
-					<br>
-					Cockpit Information
-				</div>
-			</a>
+			<a href="/info"><div class="login-option login-option-user"><div class="circle"><i class="fa fa-truck"></i></div><br>Cockpit Information</div></a>
 			<? if (c::config()->bundle) : ?>
 				<? if (c::app()->detect()->match('android')) : ?>
 					<a href="https://play.google.com/store/apps/details?id=com.crunchbutton" target="_system">
