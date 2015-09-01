@@ -524,12 +524,14 @@ class Crunchbutton_App extends Cana_App {
 				'line' => 'Hey, get food delivered at _DOMAIN_/app and get your first delivery free if you enter %c in the Notes section of your order (i get free food too)'
 			]
 		];
+
 		$config['site']['ab']['share-facebook-title'] = [
 			[
 				'name' => 'share-facebook-title',
 				'line' => 'Crunchbutton - Food delivered from places that don\'t'
 			]
 		];
+
 		$config['site']['ab']['share-facebook-description'] = [
 			[
 				'name' => 'share-facebook-description',
@@ -543,12 +545,22 @@ class Crunchbutton_App extends Cana_App {
 			]
 		];
 
+		$config['site']['ab']['share-twitter-text'] = [
+			[
+				'name' => 'share-twitter-text',
+				'line' => 'Get food delivery from places that don\'t deliver. Check out '
+			]
+		];
+
 		$config['site']['ab']['share-text-twitter'] = [
 			[
 				'name' => 'twitter-love-notes',
 				'line' => 'i love @crunchbutton delivery :) use my code %c in the Notes section for free delivery!'
 			]
 		];
+
+
+
 		$config['site']['ab']['share-order-text-twitter'] = [
 			[
 				'name' => 'twitter-order-url',
