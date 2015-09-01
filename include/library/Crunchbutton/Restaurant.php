@@ -2058,7 +2058,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 				return Hour::getByRestaurantNext24Hours( $this, $gmt );
 			}
-
 		}
 		return false;
 	}

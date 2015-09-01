@@ -21,10 +21,10 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 		// Convert the hours to a simple array
 		if( $community_hrs && count( $community_hrs ) ){
 			foreach ( $community_hrs as $hour ) {
-				if( !isset( $_community_hours[ trim( $hour->day ) ] ) ){
-					$_community_hours[ trim( $hour->day ) ] = [];
+				if( !isset( $_community_hours[ trim( $hour->full ) ] ) ){
+					$_community_hours[ trim( $hour->full ) ] = [];
 				}
-				$_community_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
+				$_community_hours[ trim( $hour->full ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
 			}
 
 			uksort( $_community_hours,
@@ -87,6 +87,7 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 					echo "<td>{$restaurant->closed_message()}</td>";
 					$restaurant->force_buffer = true;
 					$restaurant->_hoursByRestaurant = null;
+					$restaurant->_hours = null;
 					echo "<td>{$restaurant->closed_message()}</td>";
 				echo "</tr>";
 			}

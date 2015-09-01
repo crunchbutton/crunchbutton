@@ -1166,6 +1166,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 
 				$day = strtolower( $start->format( 'D' ) );
+				$full = $start->format( 'D: m/d/Y' );
 				$time_open = $start->format( 'H:i' );
 				$time_close = $end->format( 'H:i' );
 
@@ -1179,11 +1180,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 
 				$hours[] = ( object )[ 	'day' => $day,
+																'full' => $full,
 																'time_open' => $time_open,
 																'time_close' => $time_close ];
 
 				if( $new_day ){
 					$hours[] = ( object )[ 	'day' => strtolower( $end->format( 'D' ) ),
+																	'full' => $full,
 																	'time_open' => $new_day_time_open,
 																	'time_close' => $new_day_time_close ];
 				}
