@@ -121,6 +121,9 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 				MainNavigationService.link( '/' );
 			} else {
 				$scope.error = true;
+				if (!App.isPhoneGap) {
+					$rootScope.focus('[name="username"]');
+				}
 			}
 			$scope.loggingIn = false;
 			l.stop();
@@ -164,7 +167,10 @@ NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
-		$(':focus').blur();
+
+		if (!App.isPhoneGap) {
+			$(':focus').blur();
+		}
 
 		var complete = function() {
 			$rootScope.closePopup();
