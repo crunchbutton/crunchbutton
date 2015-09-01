@@ -1276,6 +1276,44 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($cs->mph, 20);
     }
 
+
+    public function testBadRoute()
+    {
+
+        $useDate = '2015-07-01 05:00:00';
+
+        $lat = 34.0303;
+        $lon = -118.286;
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o1->save();
+        $id_order = $o1->id_order;
+
+        $o2 = $this->defaultOrder($this->user1, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o2->save();
+
+        $node_id_order = $o2->id_order;
+
+        $olr1 = $this->defaultOLR($o1, $node_id_order, $this->driver1, -99, 0, $useDate, $lat, $lon);
+        $olr1->save();
+        $route1 = Crunchbutton_Order_Logistics_Route::routesByOrder($o1->id_order);
+        $count = $route1->count();
+
+        $olr1->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($count, 1);
+        $this->assertEquals($route1->id_admin, $this->driver1->id_admin);
+        $this->assertEquals($route1->id_order, $id_order);
+        $this->assertEquals($route1->seq, -99);
+        $this->assertEquals($route1->node_type, 0);
+        $this->assertEquals($route1->leaving_time, $useDate);
+        $this->assertEquals($route1->lat, $lat);
+        $this->assertEquals($route1->lon, $lon);
+        // Technically, for seq 0, there is no node_id_order, but it doesn't matter for this test.
+        $this->assertEquals($route1->node_id_order, $node_id_order);
+    }
+
     public function testRoutesByOrder()
     {
 
