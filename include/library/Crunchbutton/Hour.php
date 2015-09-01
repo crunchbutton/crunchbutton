@@ -208,13 +208,16 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Add restaurant buffer time for 3rd party delivery restaurants #6332
 		if( !$restaurant->buffered && $restaurant->force_buffer && $restaurant->delivery_service  && self::minutesBuffer() ){
 
+			$community = $restaurant->community();
+
 			$restaurant->buffered = true;
 
 			// this flash is needed because this method is called recursivelly
 			$_hours_utc_buffered = [];
 
 			// So, if a restaurant closes less than 30 minutes after the shifts close, we want a 30 minute buffer to kick in
-			$community_hrs = $restaurant->assignedShiftHours( true );
+			$community_hrs = $community->shiftsForNextWeek( true );
+			$community_hrs = $community_hrs->get( 0 );
 
 			// empty array to store the merged hours
 			$_community_hours = [];
