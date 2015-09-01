@@ -526,8 +526,20 @@ NGApp.directive( 'geoComplete', function() {
 				 google.maps.event.addListener( autoComplete, 'place_changed', function() {
 					$('body').scrollTop(0);
 					var place = autoComplete.getPlace();
+					var part = place.name.split( ',' )[0].toLowerCase();
+					var val = '';
+					if (App && App.aliases && App.aliases[part]) {
+						val = App.aliases[part].name_alt;
+					} else if (App && App.communities && App.communities[part.replace(/ /g, '-')]) {
+						val = App.communities[part.replace(/ /g, '-')].name;
+					} else {
+						val = el.value;
+					}
+					 
+					val = val.replace(/, United States/,'');
+
 					scope.$apply( function() {
-						scope.ngModel = el.value;
+						scope.ngModel = val;
 						// we need to give some time to scope
 						setTimeout( function(){
 							scope.geoCompleteEnter();
