@@ -1166,6 +1166,69 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 
 				$day = strtolower( $start->format( 'D' ) );
+				$time_open = $start->format( 'H:i' );
+				$time_close = $end->format( 'H:i' );
+
+				$new_day = false;
+
+				if( $start->format( 'Ymd' ) < $end->format( 'Ymd' ) && $end->format( 'Hi' ) != '0000' ){
+					$new_day = true;
+					$new_day_time_open = '00:01';
+					$new_day_time_close = $time_close;
+					$time_close = '23:59';
+				}
+
+				$hours[] = ( object )[ 	'day' => $day,
+																'time_open' => $time_open,
+																'time_close' => $time_close ];
+
+				if( $new_day ){
+					$hours[] = ( object )[ 	'day' => strtolower( $end->format( 'D' ) ),
+																	'time_open' => $new_day_time_open,
+																	'time_close' => $new_day_time_close ];
+				}
+
+			}
+		}
+		return $hours;
+	}
+
+	// Return the shifts for the next week
+	public function shiftsForNextWeek( $id_community, $todayAssigned = false ){
+
+		$hours = [];
+
+		$community = Crunchbutton_Community::o( $id_community );
+
+		if( $community->id_community ){
+
+			$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
+			$from = $now->format( 'Y-m-d' );
+			$now->modify( '+ 7 days' );
+			$to = $now->format( 'Y-m-d' );
+
+			$now->modify( '- 7 days' );
+
+			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
+									LEFT JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+									WHERE cs.date_start >= ? AND cs.date_start <= ? AND cs.id_community = ? ORDER BY cs.date_start ASC';
+
+			$nextShifts = Crunchbutton_Community_Shift::q($query, [$from, $to, $community->id_community]);
+
+			foreach( $nextShifts as $shift ){
+
+				$start = $shift->dateStart();
+				$end = $shift->dateEnd();
+
+				if (!$start || !$end) {
+					continue;
+				}
+
+				if( $todayAssigned && $start->format( 'Ymd' ) == $now->format( 'Ymd' ) && !$shift->id_admin_shift_assign ){
+					continue;
+				}
+
+				$day = strtolower( $start->format( 'D' ) );
 				$full = $start->format( 'D: m/d/Y' );
 				$time_open = $start->format( 'H:i' );
 				$time_close = $end->format( 'H:i' );

@@ -11,9 +11,9 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 
 		echo "<h1>{$community->name}</h1>";
 
-		echo "<h2>Assigned Shifts</h2>";
+		echo "<h2>Shifts</h2>";
 
-		$community_hrs = $community->assignedShiftHours( true );
+		$community_hrs = $community->shiftsForNextWeek( true );
 
 		// empty array to store the merged hours
 		$_community_hours = [];
