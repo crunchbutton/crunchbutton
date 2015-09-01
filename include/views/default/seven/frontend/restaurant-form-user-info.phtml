@@ -33,23 +33,23 @@
 			<div class="personal-info field-container">
 				<div class="payment-form-group form-group">
 					<i class="fa fa-user payment-form-icon form-icon form-field"></i>
-					<input focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="text" name="pay-name" tabindex="2" ng-model="order.form.name" class="payment-form-input form-input form-field" placeholder="name">
+					<input focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="text" name="pay-name" tabindex="2" ng-model="order.form.name" class="payment-form-input form-input form-field" placeholder="name" autocomplete="name" x-autocompletetype="full-name">
 				</div>
 
 				<div class="payment-form-group form-group">
 					<i class="fa fa-envelope-o payment-form-icon form-icon form-field"></i>
-					<input ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="email" name="pay-email" tabindex="3" ng-model="order.form.email" class="payment-form-input form-input form-field" placeholder="email">
+					<input ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="email" name="pay-email" tabindex="3" ng-model="order.form.email" class="payment-form-input form-input form-field" placeholder="email" autocomplete="email" x-autocompletetype="email">
 				</div>
 
 				<div class="payment-form-group form-group">
 					<i class="fa fa-phone payment-form-icon form-icon form-field"></i>
-					<input ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="tel" name="pay-phone" tabindex="4" ng-format-phone ng-model="order.form.phone" class="payment-form-input form-input form-field" placeholder="phone number">
+					<input ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="tel" name="pay-phone" tabindex="4" ng-format-phone ng-model="order.form.phone" class="payment-form-input form-input form-field" placeholder="phone number" autocomplete="tel" x-autocompletetype="phone-full">
 				</div>
 
 				<div class="payment-form-group form-group">
 					<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
 					<p class="pickup-info" ng-if="order.form.delivery_type!='delivery'">Pickup from:<br><span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
-					<textarea ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" ng-autosize ng-if="order.form.delivery_type=='delivery'" class="payment-form-input form-input form-field" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
+					<textarea ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" ng-autosize ng-if="order.form.delivery_type=='delivery'" class="payment-form-input form-input form-field" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address" autocomplete="street-sddress" x-autocompletetype="street-address"></textarea>
 				</div>
 
 				<div class="payment-form-group form-group">
@@ -146,13 +146,13 @@
 
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">
 					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
-					<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber">
+					<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber" autocomplete="cc-number" x-autocompletetype="cc-number" pattern="\d*">
 				</div>
 
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">
 					<i class="fa payment-form-icon form-icon form-field"></i>
-					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select></div>
-					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year"></select></div>
+					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months" tabindex="7" class="payment-form-select payment-form-input form-input form-field" id="cardExpirationMonth" autocomplete="cc-exp-month" x-autocompletetype="cc-exp-month">{{order.form.card.month}}</select></div>
+					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year" id="cardExpirationYear" autocomplete="cc-exp-year" x-autocompletetype="cc-exp-year"></select></div>
 				</div>
 
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">

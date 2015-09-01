@@ -35,7 +35,7 @@ class Crunchbutton_Acl_Base extends Cana_Model {
 			while($row = $res->fetch()) {
 				$this->_permissions[$row->id_group][strtoupper($row->permission)][] = $row->allow ? true : false;
 			}
-			$res->closeCursor();
+			//$res->closeCursor();
 		}
 		
 		return $this;

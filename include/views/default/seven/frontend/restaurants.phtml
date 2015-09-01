@@ -67,7 +67,7 @@
 			*/?>
 		</div>
 
-		<div ng-show="image" class="community-image"></div>
+		<div ng-if="image" class="community-image"></div>
 
 
 		<div class="divider"></div>
@@ -107,7 +107,7 @@
 
 							<div ng-switch on="restaurant._tag">
 								<div class="meal-item-tag about-to-open" ng-switch-when="closed">Available {{restaurant._opensIn_formatted}}</div>
-								<div class="meal-item-tag about-to-open" ng-switch-when="force_close">Temporarily closed {{restaurant._closedDueTo}}</div>
+								<div class="meal-item-tag about-to-open" ng-switch-when="force_close"><span ng-if="restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span><span ng-if="!restaurant._opensIn_formatted">Temporarily closed {{restaurant._closedDueTo}}</span></div>
 								<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 								<div class="meal-item-tag" ng-switch-when="next_open">{{restaurant.next_open_time_message.message}}</div>
 								<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
@@ -126,7 +126,7 @@
 		</span>
 		<div class="divider"></div>
 
-		<button class="button green restaurants-more" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
+		<button class="button green restaurants-more" ng-if="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
 			More awesome Restaurants
 		</button>
 
