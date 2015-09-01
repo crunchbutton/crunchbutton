@@ -1,0 +1,1 @@
+ALTER TABLE `admin_payment_type` ADD `profit_percent` INT(11)  NOT NULL  DEFAULT 0;

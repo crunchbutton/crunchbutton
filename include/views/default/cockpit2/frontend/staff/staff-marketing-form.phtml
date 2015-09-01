@@ -80,6 +80,11 @@
 
 						</li>
 
+						<li class="li-input" ng-show="staff.isCampusManager">
+							<div class="label">Profit %:</div>
+							<div class="input"><input type="number" ng-required="staff.isCampusManager" ignore-mouse-wheel ng-model="staff.profit_percent" placeholder=""></div>
+						</li>
+
 						<li class="li-input" ng-class="{'error':form.staffEmail.$invalid}">
 							<div class="label">Email:</div>
 							<div class="input"><input type="email" name="staffEmail" ng-model="staff.email" placeholder="Email"></div>
