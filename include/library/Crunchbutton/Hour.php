@@ -188,10 +188,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public static function hoursByRestaurant( $restaurant, $gmt = false ){
 
-		if( $restaurant->_hoursByRestaurant ){
-			return $restaurant->_hoursByRestaurant;
-		}
-
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
 			$hours = Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
 			if ( $gmt ) {
@@ -210,7 +206,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		}
 
 		// Add restaurant buffer time for 3rd party delivery restaurants #6332
-		if( $restaurant->force_buffer && $restaurant->delivery_service  && self::minutesBuffer() ){
+		if( !$restaurant->buffered && $restaurant->force_buffer && $restaurant->delivery_service  && self::minutesBuffer() ){
+
+			$restaurant->buffered = true;
 
 			// this flash is needed because this method is called recursivelly
 			$_hours_utc_buffered = [];
@@ -252,6 +250,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				}
 			}
 
+
 			foreach ( $restaurant->_hours[ $gmt ] as $hour ) {
 
 				$buffer_minutes = self::minutesBuffer();
@@ -264,9 +263,14 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 				$close_time = intval( str_replace( ':', '', $hour->time_close ) );
 
-				if( $community_closes[ $hour->day ] && $hour->day == 'sat' ){
+				if( $community_closes[ $hour->day ] ){
 
-					if( ( $community_closes[ $hour->day ] - $buffer_minutes ) > $close_time  ){
+					$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
+					$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
+
+					$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
+					$close_time_minutes = ( intval( substr( $close_time, 0, $substr ) ) * 60 ) + substr( $close_time, -2 );
+					if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
 						$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
 						$close->modify( '- ' . $buffer_minutes . ' minutes' );
 						$hour->time_close = $close->format( 'H:i' );
@@ -276,12 +280,15 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
 						$hour->time_close = $close_time;
 					}
+				} else {
+					// if the community doent have shift remove the ours
+					$hour->day = null;
+					$hour->time_open = null;
+					$hour->time_close = null;
 				}
 			}
 		}
-		// cache the results
-		$restaurant->_hoursByRestaurant = $restaurant->_hours[ $gmt ];
-		return $restaurant->_hoursByRestaurant;
+		return $restaurant->_hours[ $gmt ];
 	}
 
 	public static function getByRestaurantWeek( $restaurant, $utc = true){
@@ -973,6 +980,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		foreach ( $_hours as $day => $hours ) {
 			foreach( $hours as $key => $hour ){
 				if( $_hours[ $day ][ $key ][ 'status' ] != 'open' ){
+					unset( $_hours[ $day ][ $key ] );
+				}
+				if( $_hours[ $day ][ $key ][ 'from' ] === $_hours[ $day ][ $key ][ 'to' ] ){
 					unset( $_hours[ $day ][ $key ] );
 				}
 			}
