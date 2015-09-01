@@ -1517,3 +1517,17 @@ $(function() {
 		App.loadConfig();
 	}
 });
+
+
+
+var selScrollable = '.snap-content-inner, .snap-drawer';
+
+// Uses body because jQuery on events are called off of the element they are
+// added to, so bubbling would not work if we used document instead.
+$('body').on('touchstart', selScrollable, function(e) {
+  if (e.currentTarget.scrollTop === 0) {
+    e.currentTarget.scrollTop = 1;
+  } else if (e.currentTarget.scrollHeight === e.currentTarget.scrollTop + e.currentTarget.offsetHeight) {
+    e.currentTarget.scrollTop -= 1;
+  }
+});

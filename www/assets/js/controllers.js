@@ -898,7 +898,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	};
 
 	$scope.isIOs = App.iOS();
-	
+
 	if ($rootScope.config['apple-pay'] == '1' && App.hasApplePay) {
 		$scope.applePay = true;
 	} else {
