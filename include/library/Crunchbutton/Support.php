@@ -824,7 +824,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		$out = $this->properties();
 		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
-		$out['driver'] = ( $this->order()->id_order && $this->order()->driver()->id_admin ) ? $this->order()->driver()->exports() : null;
+		$out['driver'] = ( $this->order()->id_order && $this->order()->driver()->id_admin ) ? $this->order()->driver()->exports( [ 'last-checkins' => true ] ) : null;
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
 
@@ -861,7 +861,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 
 		if( $admin->id_admin ){
-			$out[ 'staff' ] = $admin->exports();
+			$out[ 'staff' ] = $admin->exports(  [ 'last-checkins' => true ]  );
 			$out[ 'staff' ][ 'is_driver' ] = $admin->isDriver();
 			$out[ 'staff' ][ 'is_marketing_rep' ] = $admin->isMarketingRep();
 			$out[ 'staff' ][ 'is_campus_manager' ] = $admin->isCampusManager();

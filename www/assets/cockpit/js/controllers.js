@@ -91,12 +91,16 @@ NGApp.controller('LegalCtrl', function ($scope) {
 
 NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainNavigationService) {
 
+	$rootScope.hasBack = false;
+
 	$scope.loggingIn = false;
+
 	var l;
 	setTimeout(function(){
 		l = Ladda.create($('.button-login .ladda-button').get(0));
 	},700);
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
+
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
@@ -121,6 +125,9 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 				MainNavigationService.link( '/' );
 			} else {
 				$scope.error = true;
+				if (!App.isPhoneGap) {
+					$rootScope.focus('[name="username"]');
+				}
 			}
 			$scope.loggingIn = false;
 			l.stop();
@@ -164,7 +171,10 @@ NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
-		$(':focus').blur();
+
+		if (!App.isPhoneGap) {
+			$(':focus').blur();
+		}
 
 		var complete = function() {
 			$rootScope.closePopup();

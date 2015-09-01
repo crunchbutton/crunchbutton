@@ -1,0 +1,1 @@
+ALTER TABLE `order_logistics_route` MODIFY COLUMN `seq` TINYINT(11) NOT NULL DEFAULT 0;
