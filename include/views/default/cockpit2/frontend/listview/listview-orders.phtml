@@ -16,9 +16,9 @@
 					<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
 				<?php /* Info */ ?>
 			</td>
-			<td>
+			<td nowrap="">
 				<?php /* Date */ ?>
-				{{order.date | localtime | timestamp | date:'MM/dd @ h:mm a'}}
+				{{order.date | timestamp | date:'MM/dd @ h:mm a'}}
 				<?php /* Date */ ?>
 			</td>
 			<td ng-if="!restaurant">
