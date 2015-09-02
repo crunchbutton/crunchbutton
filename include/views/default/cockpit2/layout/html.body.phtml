@@ -523,9 +523,9 @@
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
 
-		<h1 class="dialog-call-number" ng-if="!listOfNumbers">{{number | formatPhone}}</h1>
+		<h1 class="dialog-call-number" ng-if="!staffList">{{number | formatPhone}}</h1>
 
-		<h1 class="dialog-call-number" ng-if="listOfNumbers">
+		<h1 class="dialog-call-number" ng-if="staffList">
 			{{number.length}}
 			<span ng-if="number.length > 1">Phone numbers</span>
 			<span ng-if="number.length == 1">Phone</span>

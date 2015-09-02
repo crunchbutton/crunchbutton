@@ -281,9 +281,9 @@ NGApp.controller( 'CallText', function ($scope, $rootScope) {
 		$(':focus').blur();
 
 		if( angular.isArray( num ) ){
-			$scope.listOfNumbers = true;
+			$scope.staffList = true;
 		} else {
-			$scope.listOfNumbers = false;
+			$scope.staffList = false;
 		}
 
 		$scope.number = num;
