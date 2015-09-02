@@ -15,6 +15,9 @@ class Crunchbutton_Order_Logistics_FakeOrder {
     private $restaurantParkingTime;
     private $restaurantServiceTime;
 
+    public $fakeRestaurantGeo;
+    public $fakeCustomerGeo;
+
     public function __construct($dummyStart, $community, $orderTime, $earlyWindow, $midWindow, $lateWindow, $restaurantParkingTime, $restaurantServiceTime) {
         $this->fakeRestaurants = null;
         $this->fakeCustomers = null;
@@ -27,6 +30,9 @@ class Crunchbutton_Order_Logistics_FakeOrder {
         $this->lateWindow = $lateWindow;
         $this->restaurantParkingTime = $restaurantParkingTime;
         $this->restaurantServiceTime = $restaurantServiceTime;
+        $this->fakeResturantGeo = null;
+        $this->fakeCustomerGeo = null;
+
     }
 
     private function getNextDummyClusterNumber() {
@@ -34,11 +40,12 @@ class Crunchbutton_Order_Logistics_FakeOrder {
         return $this->_dummyClusterCounter;
     }
 
+
     private function getFakeRestaurant() {
         // Only handle one fake restaurant for now
         if (is_null($this->fakeRestaurants) || count($this->fakeRestaurants)==0) {
             // Randomly choose a restaurant from the community list
-            $rs = Restaurant::getDeliveryRestaurantsWithGeoByIdCommunity($this->community->id_community);
+            $rs = Crunchbutton_Restaurant::getDeliveryRestaurantsWithGeoByIdCommunity($this->community->id_community);
             $rcount = $rs->count();
             if ($rcount > 0) {
                 $select = rand(0, $rcount - 1);
@@ -61,7 +68,10 @@ class Crunchbutton_Order_Logistics_FakeOrder {
                 $this->fakeCustomers[] = $fcs->get($select);
             }
             else{
-                return null;
+                $c_geo =  $this->community->communityCenter();
+                if (!is_null($c_geo)){
+                    $this->fakeCustomers[] = $c_geo;
+                }
             }
         }
         return $this->fakeCustomers[0];
@@ -74,13 +84,22 @@ class Crunchbutton_Order_Logistics_FakeOrder {
 
             $fakeCustomer = $this->getFakeCustomer();
             $fakeRestaurant = $this->getFakeRestaurant();
-            if (!is_null($fakeCustomer) && !is_null($fakeRestaurant) && !is_null($this->orderTime) &&
+            if ((!is_null($fakeCustomer) || !is_null($this->fakeCustomerGeo)) &&
+                (!is_null($fakeRestaurant) || !is_null($this->fakeRestaurantGeo)) &&
+                !is_null($this->orderTime) &&
                 !is_null($this->earlyWindow) && !is_null($this->midWindow) && !is_null($this->lateWindow) &&
                 !is_null($this->restaurantParkingTime) && !is_null($this->restaurantServiceTime)) {
 
-                $customer_geo = new Crunchbutton_Order_Location($fakeCustomer->lat, $fakeCustomer->lon);
-                $r_geo = new Crunchbutton_Order_Location($fakeRestaurant->loc_lat, $fakeRestaurant->loc_long);
-
+                if (!is_null($this->fakeCustomerGeo)){
+                    $customer_geo = $this->fakeCustomerGeo;
+                } else {
+                    $customer_geo = new Crunchbutton_Order_Location($fakeCustomer->lat, $fakeCustomer->lon);
+                }
+                if (!is_null($this->fakeRestaurantGeo)){
+                    $r_geo = $this->fakeRestaurantGeo;
+                } else {
+                    $r_geo = new Crunchbutton_Order_Location($fakeRestaurant->loc_lat, $fakeRestaurant->loc_long);
+                }
                 $dcn = $this->getNextDummyClusterNumber();
                 $restaurantDestination = new Crunchbutton_Order_Logistics_Destination([
                     'objectId' => $dcn,
