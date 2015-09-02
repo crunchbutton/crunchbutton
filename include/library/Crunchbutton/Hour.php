@@ -210,84 +210,88 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 			$community = $restaurant->community();
 
-			$restaurant->buffered = true;
+			// if the restaurant doesn't belongs to a community, just ignore it
+			if( $community->id_community ){
 
-			// this flash is needed because this method is called recursivelly
-			$_hours_utc_buffered = [];
+				$restaurant->buffered = true;
 
-			// So, if a restaurant closes less than 30 minutes after the shifts close, we want a 30 minute buffer to kick in
-			$community_hrs = $community->shiftsForNextWeek( true );
-			$community_hrs = $community_hrs->get( 0 );
+				// this flash is needed because this method is called recursivelly
+				$_hours_utc_buffered = [];
 
-			// empty array to store the merged hours
-			$_community_hours = [];
+				// So, if a restaurant closes less than 30 minutes after the shifts close, we want a 30 minute buffer to kick in
+				$community_hrs = $community->shiftsForNextWeek( true );
+				$community_hrs = $community_hrs->get( 0 );
 
-			// Convert the hours to a simple array
-			if( $community_hrs && count( $community_hrs ) ){
-				foreach ( $community_hrs as $hour ) {
-					if( !isset( $_community_hours[ trim( $hour->day ) ] ) ){
-						$_community_hours[ trim( $hour->day ) ] = [];
+				// empty array to store the merged hours
+				$_community_hours = [];
+
+				// Convert the hours to a simple array
+				if( $community_hrs && count( $community_hrs ) ){
+					foreach ( $community_hrs as $hour ) {
+						if( !isset( $_community_hours[ trim( $hour->day ) ] ) ){
+							$_community_hours[ trim( $hour->day ) ] = [];
+						}
+						$_community_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
 					}
-					$_community_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
+
+					uksort( $_community_hours,
+					function( $a, $b ) {
+						$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+						return( $weekdays[ $a ] > $weekdays[ $b ] );
+					} );
 				}
 
-				uksort( $_community_hours,
-				function( $a, $b ) {
-					$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
-					return( $weekdays[ $a ] > $weekdays[ $b ] );
-				} );
-			}
+				$community_closes = [];
 
-			$community_closes = [];
-
-			foreach ( $_community_hours as $day => $hours ) {
-				if( !$community_closes[ $day ] ){
-					$community_closes[ $day ] = 0;
-				}
-				foreach( $hours as $hour ){
-					$close_at = intval( str_replace( ':', '', $hour[ 1 ] ) );
-					if( $close_at == 0 ){
-						$close_at = 2400;
+				foreach ( $_community_hours as $day => $hours ) {
+					if( !$community_closes[ $day ] ){
+						$community_closes[ $day ] = 0;
 					}
-					$community_closes[ $day ] = ( $community_closes[ $day ] > $close_at ) ? $community_closes[ $day ] : $close_at;
-				}
-			}
-
-
-			foreach ( $restaurant->_hours[ $gmt ] as $hour ) {
-
-				$buffer_minutes = self::minutesBuffer();
-
-				if( strtolower( date( 'D' ) ) == $hour->day ){
-					$day = date( 'Y-m-d' );
-				} else {
-					$day = date('Y-m-d', strtotime("next " . $hour->day ) );
+					foreach( $hours as $hour ){
+						$close_at = intval( str_replace( ':', '', $hour[ 1 ] ) );
+						if( $close_at == 0 ){
+							$close_at = 2400;
+						}
+						$community_closes[ $day ] = ( $community_closes[ $day ] > $close_at ) ? $community_closes[ $day ] : $close_at;
+					}
 				}
 
-				$close_time = intval( str_replace( ':', '', $hour->time_close ) );
 
-				if( $community_closes[ $hour->day ] ){
+				foreach ( $restaurant->_hours[ $gmt ] as $hour ) {
 
-					$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
-					$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
-					$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
-					$close_time_minutes = ( intval( substr( $close_time, 0, $substr ) ) * 60 ) + substr( $close_time, -2 );
-					if( $community_closes[ $hour->day ] < $close_time ){
-						$close_time = $community_closes[ $hour->day ];
-						// add commas
-						$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
-						$hour->time_close = $close_time;
+					$buffer_minutes = self::minutesBuffer();
+
+					if( strtolower( date( 'D' ) ) == $hour->day ){
+						$day = date( 'Y-m-d' );
+					} else {
+						$day = date('Y-m-d', strtotime("next " . $hour->day ) );
 					}
-					else if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
-						$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
-						$close->modify( '- ' . $buffer_minutes . ' minutes' );
-						$hour->time_close = $close->format( 'H:i' );
+
+					$close_time = intval( str_replace( ':', '', $hour->time_close ) );
+
+					if( $community_closes[ $hour->day ] ){
+
+						$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
+						$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
+						$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
+						$close_time_minutes = ( intval( substr( $close_time, 0, $substr ) ) * 60 ) + substr( $close_time, -2 );
+						if( $community_closes[ $hour->day ] < $close_time ){
+							$close_time = $community_closes[ $hour->day ];
+							// add commas
+							$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
+							$hour->time_close = $close_time;
+						}
+						else if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
+							$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
+							$close->modify( '- ' . $buffer_minutes . ' minutes' );
+							$hour->time_close = $close->format( 'H:i' );
+						}
+					} else {
+						// if the community doent have shift remove the ours
+						$hour->day = null;
+						$hour->time_open = null;
+						$hour->time_close = null;
 					}
-				} else {
-					// if the community doent have shift remove the ours
-					$hour->day = null;
-					$hour->time_open = null;
-					$hour->time_close = null;
 				}
 			}
 		}
