@@ -16,7 +16,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	public function restaurantNextCloseTime( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
-		$hours = Hour::getByRestaurantWeek( $restaurant, false );
+		$hours = self::getByRestaurantWeek( $restaurant, false );
 		foreach( $hours as $hour ){
 			if( $hour->status == 'close' ){
 				$open = new DateTime( $hour->from, new DateTimeZone( $restaurant->timezone ) );
@@ -29,7 +29,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public function restaurantNextOpenTimeMessage( $restaurant, $utc = false ){
-		$nexOpen = Hour::restaurantNextOpenTime( $restaurant, $utc = false );
+		$nexOpen = self::restaurantNextOpenTime( $restaurant, $utc = false );
 		$day = new DateTime( 'now', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
 
 		$tomorrow = new DateTime( $day->format( 'Y-m-d' ) . '23:59:59', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
@@ -65,7 +65,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	public function restaurantNextOpenTime( $restaurant, $utc = false ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
-		$hours = Hour::getByRestaurantWeek( $restaurant, false );
+		$hours = self::getByRestaurantWeek( $restaurant, false );
 		foreach( $hours as $hour ){
 			if( $hour->status == 'open' ){
 				$open = new DateTime( $hour->from, new DateTimeZone( $restaurant->timezone ) );
@@ -82,7 +82,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public function restaurantClosesIn( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
-		$close = Hour::restaurantNextCloseTime( $restaurant );
+		$close = self::restaurantNextCloseTime( $restaurant );
 		if( $close ){
 			$interval = $today->diff( $close );
 			$minutes = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
@@ -95,7 +95,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public function restaurantOpensIn( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
-		$open = Hour::restaurantNextOpenTime( $restaurant );
+		$open = self::restaurantNextOpenTime( $restaurant );
 		if( $open ){
 			$interval = $today->diff( $open );
 			$minutes = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
@@ -155,7 +155,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 		$hours_opened = [];
 
-		$hours = Hour::getByRestaurantWeek( $restaurant, false );
+		$hours = self::getByRestaurantWeek( $restaurant, false );
 		$day = new DateTime( $day, new DateTimeZone( $restaurant->timezone ) );
 
 		foreach ( $hours as $hour ) {
@@ -189,7 +189,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	public static function hoursByRestaurant( $restaurant, $gmt = false ){
 
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
-			$hours = Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
+			$hours = self::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
 			if ( $gmt ) {
 				$timezone = new DateTime( 'now ', new DateTimeZone( $restaurant->timezone ) );
 				$timezone = $timezone->format( 'O' );
@@ -295,11 +295,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public static function getByRestaurantWeek( $restaurant, $utc = true){
-		return Hour::getByRestaurantToExport( $restaurant, $utc);
+		return self::getByRestaurantToExport( $restaurant, $utc);
 	}
 
 	public static function getByRestaurantNext24Hours( $restaurant, $utc = true, $sd = null){
-		return Hour::getByRestaurantToExport( $restaurant, $utc, true, $sd);
+		return self::getByRestaurantToExport( $restaurant, $utc, true, $sd);
 	}
 
 	public static function getRestaurantRegularPlusHolidayHours( $restaurant ){
@@ -405,12 +405,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 		}
 		// Merge the restaurant hours with the holidays
-		return Hour::mergeHolidays( $_hours, $restaurant );
+		return self::mergeHolidays( $_hours, $restaurant );
 	}
 
 	public static function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false , $sd = null){
 
-		$hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
+		$hours = self::getRestaurantRegularPlusHolidayHours( $restaurant );
 
 		if( count( $hours ) == 0 ){
 			return $hours;
@@ -977,7 +977,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public static function restaurantClosedMessage( $restaurant ){
 
-		$_hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
+		$_hours = self::getRestaurantRegularPlusHolidayHours( $restaurant );
 
 		// Remove the closes status
 		foreach ( $_hours as $day => $hours ) {
@@ -1032,12 +1032,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		foreach ( $_hours as $day => $hours ) {
 			$segments = [];
 			foreach( $hours as $key => $hour ){
-				$from = Hour::formatTime( $_hours[ $day ][ $key ][ 'from' ] );
-				$to = Hour::formatTime( $_hours[ $day ][ $key ][ 'to' ] );
+				$from = self::formatTime( $_hours[ $day ][ $key ][ 'from' ] );
+				$to = self::formatTime( $_hours[ $day ][ $key ][ 'to' ] );
 				$segments[] = $from . ' - ' . $to;
 			}
 			$_partial[ $day ] = join( ', ', $segments );
 		}
-		return Hour::closedMessage( $_partial );
+		return self::closedMessage( $_partial );
 	}
 }
