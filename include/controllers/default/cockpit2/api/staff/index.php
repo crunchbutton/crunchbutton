@@ -4,7 +4,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (c::getPagePiece(2)) {
+		if (c::getPagePiece(2) && c::getPagePiece(2) != 'support' ) {
 
 			if( c::getPagePiece(2) == 'phones' ){
 				$this->_phones();
@@ -33,7 +33,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				case 'change-status':
 					$this->_change_status($staff);
 					break;
-
 
 				case 'group':
 					$this->_permissionDenied();
@@ -72,6 +71,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_reverify($staff);
 					break;
 
+				case 'support':
+					$this->_listSupport();
+					break;
+
 				default:
 					$this->_permissionDenied();
 					$this->_view($staff);
@@ -79,9 +82,22 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 
 		} else {
-			$this->_list();
-		}
 
+			if( c::getPagePiece(2) == 'support' ){
+				$this->_listSupport();
+			} else {
+				$this->_list();
+			}
+		}
+	}
+
+	private function _listSupport(){
+		$out = [];
+		$admins = Admin::q( 'SELECT DISTINCT(a.id_admin), a.name FROM support s INNER JOIN admin a ON a.id_admin = s.id_admin ORDER BY a.name' );
+		foreach( $admins as $admin ){
+			$out[] = [ 'id_admin' => $admin->id_admin, 'name' => $admin->name ];
+		}
+		echo json_encode( $out );exit;
 	}
 
 	private function _permissionDenied(){

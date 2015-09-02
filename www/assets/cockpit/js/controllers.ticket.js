@@ -13,7 +13,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		});
 }]);
 
-NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketService, TicketViewService, ViewListService) {
+NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketService, TicketViewService, ViewListService, StaffService) {
 
 	$rootScope.title = 'Tickets';
 
@@ -26,6 +26,7 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 			type: 'all',
 			status: 'all',
 			admin: 'all',
+			admin: '',
 			fullcount: false
 		},
 		update: function() {
@@ -42,6 +43,20 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 
 	$scope.closeTicket = function( id_support ){
 		TicketService.openClose( id_support, function() { update(); } );
+	}
+
+
+	$scope.show_more_options = false;
+
+	$scope.moreOptions = function(){
+		$scope.show_more_options = !$scope.show_more_options;
+		if( $scope.show_more_options) {
+			if( !$scope.communities ){
+				StaffService.support_list( function( json ){
+					$scope.staff = json;
+				} );
+			}
+		}
 	}
 
 });

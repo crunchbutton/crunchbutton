@@ -328,7 +328,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		if( $params[ 'last-checkins' ] ){
 
-			$next = Community_Shift::lastShiftsByAdmin($this->id_admin);
+			$next = Community_Shift::lastShiftsByAdmin($this->id_admin, 5);
 
 			if ($next) {
 

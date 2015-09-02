@@ -63,7 +63,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$q .= '
 				AND s.id_admin=?
 			';
-			$keys['admin'] = $admin;
+			$keys[] = $admin;
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
@@ -132,6 +132,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			max(u.id_user) as id_user,
 			s.status
 		', $q);
+
 
 		$r = c::db()->query($query, $keys);
 
