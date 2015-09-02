@@ -26,7 +26,6 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 			type: 'all',
 			status: 'all',
 			admin: 'all',
-			admin: '',
 			fullcount: false
 		},
 		update: function() {
@@ -45,8 +44,19 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 		TicketService.openClose( id_support, function() { update(); } );
 	}
 
-
 	$scope.show_more_options = false;
+
+	$scope.$watch( 'query.admin', function( newValue, oldValue, scope ) {
+		if( newValue != '' && newValue != 'all' ){
+			$scope.query.search = '';
+		}
+	});
+
+	$scope.$watch( 'query.search', function( newValue, oldValue, scope ) {
+		if( newValue != '' ){
+			$scope.query.admin = null;
+		}
+	});
 
 	$scope.moreOptions = function(){
 		$scope.show_more_options = !$scope.show_more_options;
