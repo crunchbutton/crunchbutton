@@ -149,7 +149,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 
 		// Reps failed to pickup order texts changes #2802
-		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message ] );
+		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message, 'bubble' => true ] );
 
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
@@ -562,7 +562,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function sendPushIos($order, $message) {
-		
+
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
 			'message' => $message,
