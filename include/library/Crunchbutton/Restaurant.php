@@ -2273,4 +2273,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
         }
     }
 
+	public static function selectFakeRestaurant($id_community) {
+		$fr = null;
+		// Randomly choose a restaurant from the community list
+		$rs = Crunchbutton_Restaurant::getDeliveryRestaurantsWithGeoByIdCommunity($id_community);
+		$rcount = $rs->count();
+		if ($rcount > 0) {
+			$select = rand(0, $rcount - 1);
+			$fr = $rs->get($select);
+		}
+		return $fr;
+	}
+
 }
