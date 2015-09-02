@@ -907,6 +907,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		foreach( $adminsWithShifts as $admin ){
 
+			if( !$admin->active ){
+				continue;
+			}
+
 			$id_admin = $admin->id_admin;
 			$admin = Admin::o( $id_admin );
 
@@ -1036,6 +1040,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		echo '<pre>';
 		foreach( $drivers as $driver ){
+
+			if( !$driver->active ){
+				continue;
+			}
 
 			$communities = $driver->communitiesHeDeliveriesFor();
 
