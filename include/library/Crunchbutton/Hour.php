@@ -13,7 +13,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return 30;
 	}
 
-	public function restaurantNextCloseTime( $restaurant ){
+	public static function restaurantNextCloseTime( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$hours = self::getByRestaurantWeek( $restaurant, false );
@@ -28,7 +28,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function restaurantNextOpenTimeMessage( $restaurant, $utc = false ){
+	public static function restaurantNextOpenTimeMessage( $restaurant, $utc = false ){
 		$nexOpen = self::restaurantNextOpenTime( $restaurant, $utc = false );
 		$day = new DateTime( 'now', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
 
@@ -62,7 +62,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $result;
 	}
 
-	public function restaurantNextOpenTime( $restaurant, $utc = false ){
+	public static function restaurantNextOpenTime( $restaurant, $utc = false ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$hours = self::getByRestaurantWeek( $restaurant, false );
@@ -80,7 +80,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function restaurantClosesIn( $restaurant ){
+	public static function restaurantClosesIn( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$close = self::restaurantNextCloseTime( $restaurant );
 		if( $close ){
@@ -93,7 +93,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function restaurantOpensIn( $restaurant ){
+	public static function restaurantOpensIn( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$open = self::restaurantNextOpenTime( $restaurant );
 		if( $open ){
@@ -151,7 +151,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function hoursOpenedByRestaurantWeekDay( $restaurant, $day ){
+	public static function hoursOpenedByRestaurantWeekDay( $restaurant, $day ){
 
 		$hours_opened = [];
 
@@ -536,7 +536,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	// Legacy method
-	public function hoursStartingMondayUTC( $hours ){
+	public static function hoursStartingMondayUTC( $hours ){
 
 		if( count( $hours ) == 0 ){
 			return $hours;
@@ -874,7 +874,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	// Convert hours to PM/AM
-	public function formatTime( $time ){
+	public static function formatTime( $time ){
 		$time = explode( ':', $time );
 		$hour = intval( $time[ 0 ] );
 		$minute = intval( $time[ 1 ] );
