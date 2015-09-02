@@ -435,10 +435,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 		$valid = $reward->validateInviteCode( $code );
 		$isInvite = $valid;
 
-		if( $reward->checkIfItIsEligibleForFirstTimeOrder() && $valid ){
+		if( $reward->checkIfItIsEligibleForFirstTimeOrder( $phone ) && $valid ){
 			$value = $reward->getReferredDiscountAmount();
 			if( $value ){
-				return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'Congrats, your delivery fee is on us!' ] ] );
+				return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'Congrats, your delivery fee is on us! (for first time users only)' ] ] );
 				// return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . '  gift card for a free delivery.' ] ] );
 			}
 		}
