@@ -22,8 +22,8 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 			'enter-email-phone': 'Please enter a valid email or phone.',
 			'enter-password': 'Please enter your password.',
 			'login-incorrect': 'Your log in information was incorrect.',
-			'already-registred': 'It seems that the email is already registered!',
-			'not-registred': 'Sorry, that email/phone is not registered with us.',
+			'already-registered': 'It seems that the email is already registered!',
+			'not-registered': 'Sorry, that email/phone is not registered with us.',
 			'enter-code':'Please enter the reset code.',
 			'code-invalid':'Sorry, this code is invalid.',
 			'code-expired':'Sorry, this code is expired.'
@@ -186,7 +186,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 			if (data.error) {
 				if( data.error == 'user exists' ){
-					service.errors.push( service.errorsList[ 'already-registred' ] );
+					service.errors.push( service.errorsList[ 'already-registered' ] );
 				}
 				App.log.account( { 'error' : data.error, 'login' : service.form.email } , 'sign up error' );
 			} else {
@@ -326,8 +326,8 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
-						if( data.error == 'user is not registred' ){
-							service.errors.push( AccountService.errorsList[ 'not-registred' ] );
+						if( data.error == 'user is not registered' ){
+							service.errors.push( AccountService.errorsList[ 'not-registered' ] );
 							$rootScope.focus( '.help-email' );
 						}
 					} else {
