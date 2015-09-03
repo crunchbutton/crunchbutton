@@ -1202,7 +1202,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	// Return the shifts for the next week
-	public function shiftsForNextWeek( $id_community, $todayAssigned = false ){
+	public static function shiftsForNextWeek( $id_community, $todayAssigned = false ){
 
 		$hours = [];
 
