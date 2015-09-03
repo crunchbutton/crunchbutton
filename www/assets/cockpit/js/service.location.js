@@ -96,7 +96,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	}
 
 	service.locationPermitted = function(){
-		locationService.requested( { 'permitted': true }, function(){} );
+		// locationService.requested( { 'permitted': true }, function(){} );
 	}
 
 	service.locationDenied = function(){
@@ -127,14 +127,10 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		var webLocationTrack = function(pos) {
 			var trackedPos = pos.coords;
 			trackedPos.timestamp = pos.timestamp;
-
 			console.debug('Got foreground drivers location: ', trackedPos, Math.random());
 			$rootScope.$broadcast('location', trackedPos);
-
 			track(trackedPos, false);
-
 			service.locationPermitted();
-
 		};
 
 		if (!bgGeo && parent.window.navigator.geolocation) {
