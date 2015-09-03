@@ -157,6 +157,7 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			]))->save();
 		}
 		echo json_encode( ['success' => true] );
+		exit;
 	}
 
 	private function _referral(){
