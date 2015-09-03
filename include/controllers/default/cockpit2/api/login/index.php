@@ -15,7 +15,6 @@ class Controller_api_login extends Crunchbutton_Controller_Rest {
 		if( c::user()->id_admin ){
 			$user[ 'invite_code' ] = c::user()->inviteCode();
 			$user['working'] = c::user()->isWorking();
-			$user['isMarketingRep'] = c::user()->isMarketingRep();
 		}
 
 		$reward = new Crunchbutton_Reward();
@@ -24,6 +23,7 @@ class Controller_api_login extends Crunchbutton_Controller_Rest {
 		$user['referral_customer_credit'] = ( c::user()->referral_customer_credit ? c::user()->referral_customer_credit : $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ] );
 		$user['referral_admin_credit'] = ( c::user()->referral_admin_credit ? c::user()->referral_admin_credit : $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
 		$user['isMarketingRep'] = c::user()->isMarketingRep();
+		$user['isCampusManager'] = c::user()->isCampusManager();
 
 		$payment_type = c::user()->payment_type();
 		if( $payment_type->using_pex ){

@@ -200,7 +200,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$email = $_POST[ 'email' ];
 						$user_auth = User_Auth::checkEmailExists( $email );
 						if( !$user_auth ){
-							echo json_encode(['error' => 'user is not registred']);
+							echo json_encode(['error' => 'user is not registered']);
 							exit;
 						}
 						$code = User_Auth::resetCodeGenerator();
