@@ -1436,8 +1436,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			foreach($category['_dishes'] as &$dish) {
 				$dish['optionGroups'] = [];
 				if(!intval($dish['id_category'])) {
-					$sql = "SELECT * FROM category WHERE name = '". $category['name']. "' AND id_restaurant = '" . $restaurant[ 'id_restaurant'] . "'  ORDER BY sort ASC LIMIT 1";
-					$c = Crunchbutton_Category::q($sql);
+					$sql = 'SELECT * FROM category WHERE name = ? AND id_restaurant = ? ORDER BY sort ASC LIMIT 1';
+					$c = Crunchbutton_Category::q($sql, [$category['name'], $restaurant[ 'id_restaurant']]);
 					$dish['id_category'] = $c->id_category;
 				}
 				if(!array_key_exists('_options', $dish)) {
