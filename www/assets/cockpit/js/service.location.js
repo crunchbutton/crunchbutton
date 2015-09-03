@@ -82,11 +82,9 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	};
 
 	var watcher = null;
-	
-
 
 	service.testLocation = function(){
-		parent.window.navigator.geolocation.getCurrentPosition( 
+		parent.window.navigator.geolocation.getCurrentPosition(
 		function(p){console.log( 'ok', p );service.locationPermitted()},
 		function(p){console.log( 'np', p );service.locationDenied()},
 		{
@@ -94,9 +92,8 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 					timeout: 5000,
 					maximumAge: 3600000
 				}
-		 )	
+		 )
 	}
-
 
 	service.locationPermitted = function(){
 		locationService.requested( { 'permitted': true }, function(){} );
@@ -135,11 +132,15 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			$rootScope.$broadcast('location', trackedPos);
 
 			track(trackedPos, false);
+
+			service.locationPermitted();
+
 		};
 
 		if (!bgGeo && parent.window.navigator.geolocation) {
-			watcher = parent.window.navigator.geolocation.watchPosition(webLocationTrack, function() {
+			watcher = parent.window.navigator.geolocation.watchPosition( webLocationTrack, function() {
 				//alert('Your location services are off, or you declined location permissions. Please enable this.');
+				service.locationDenied()
 			}, { enableHighAccuracy: true });
 		}
 		if (App.isPhoneGap && bgGeo) {
