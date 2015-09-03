@@ -8,6 +8,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	const VEHICLE_BIKE = 'bike';
 	const VEHICLE_CAR = 'car';
+	const VEHICLE_ROLLERBLADES = 'rollerblades';
+	const VEHICLE_RICKSHAW = 'rickshaw';
+	const VEHICLE_SKATEBOARD = 'skateboard';
 
 	public function inviteCode(){
 		if( $this->id_admin && ( !$this->invite_code || $this->invite_code == '' ) ){
@@ -69,7 +72,11 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function vehicleOptions(){
-		return [ Cockpit_Admin::VEHICLE_CAR, Cockpit_Admin::VEHICLE_BIKE ];
+		return [ 	Cockpit_Admin::VEHICLE_CAR, 
+					Cockpit_Admin::VEHICLE_BIKE,
+					Cockpit_Admin::VEHICLE_ROLLERBLADES,
+					Cockpit_Admin::VEHICLE_RICKSHAW,
+					Cockpit_Admin::VEHICLE_SKATEBOARD ];
 	}
 
 	public function saveVehicle( $vehicle ){
