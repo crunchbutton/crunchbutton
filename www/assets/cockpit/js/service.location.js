@@ -48,8 +48,8 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			return;
 		}
 
-		// if it is a restaurant account, dont track
-		if ($rootScope.account.restaurant) {
+		// just track drivers
+		if (!$rootScope.account.isDriver) {
 			return;
 		}
 
@@ -104,7 +104,6 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	}
 
 	service.register = function(complete) {
-
 		parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 			complete();
 			service.locationPermitted();

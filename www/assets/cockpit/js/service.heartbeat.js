@@ -12,8 +12,11 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	});
 
 	service.load = function(callback) {
-		if (LocationService.location && LocationService.location.latitude && LocationService.location.longitude) {
-			params = LocationService.location;
+		if (LocationService.location && ( LocationService.location.latitude && LocationService.location.longitude ) ) {
+			params = { 	latitude: LocationService.location.latitude,
+									longitude: LocationService.location.longitude,
+									accuracy: LocationService.location.accuracy,
+									timestamp: LocationService.location.timestamp };
 		} else {
 			params = {};
 		}
@@ -25,9 +28,7 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	service.check = function() {
 		// Just run if the user is loggedin
 		if (AccountService.isLoggedIn()) {
-
-			// Register push service - Android
-
+			// Register push service -Android
 			if( App.isPhoneGap && AccountService && AccountService.user ){
 				if ( AccountService.user.android_push && window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
 					if( !PushService.registered ){
