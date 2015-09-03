@@ -87,7 +87,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 			complete();
 		}, function() {
-			App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services</b>. Your location will only be tracked while you are on shift.')
+			App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services &gt; Cockpit</b>. Your location will only be tracked while you are on shift.')
 			complete();
 		}, {
 			enableHighAccuracy: false,
