@@ -37,7 +37,8 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	}
 
 	var locationService = $resource( App.service + 'driver/:action', { action: '@action' }, {
-			'track' : { 'method': 'POST', params : { 'action' : 'location' } }
+			'track' : { 'method': 'POST', params : { 'action' : 'location' } },
+			'requested' : { 'method': 'POST', params : { 'action' : 'requested' } }
 		}
 	);
 
@@ -81,14 +82,39 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	};
 
 	var watcher = null;
+	
+
+
+	service.testLocation = function(){
+		parent.window.navigator.geolocation.getCurrentPosition( 
+		function(p){console.log( 'ok', p );service.locationPermitted()},
+		function(p){console.log( 'np', p );service.locationDenied()},
+		{
+					enableHighAccuracy: false,
+					timeout: 5000,
+					maximumAge: 3600000
+				}
+		 )	
+	}
+
+
+	service.locationPermitted = function(){
+		locationService.requested( { 'permitted': true }, function(){} );
+	}
+
+	service.locationDenied = function(){
+		locationService.requested( { 'permitted': false }, function(){} );
+	}
 
 	service.register = function(complete) {
 
 		parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 			complete();
+			service.locationPermitted();
 		}, function() {
 			App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services &gt; Cockpit</b>. Your location will only be tracked while you are on shift.')
 			complete();
+			service.locationDenied();
 		}, {
 			enableHighAccuracy: false,
 			timeout: 5000,
@@ -121,8 +147,10 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 				webLocationTrack(pos);
 				bgGeo.start();
+				service.locationPermitted();
 			}, function() {
 				App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services</b>. Your location will only be tracked while you are on shift.')
+				service.locationDenied();
 			});
 
 		}
