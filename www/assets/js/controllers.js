@@ -27,11 +27,10 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 
 	$scope.communities = [];
 
-	for (var iiii in App.communities) {
-		if (!App.communities[iiii].name.match(/driver|duplication|test|five minute|apply|5-dollar|marina del rey/i)) {
-			$scope.communities.push(App.communities[iiii]);
-		}
-	}
+	ApplyService.communities( function( data ){
+		$scope.communities = data;
+	} );
+
 
 	$scope.apply = {};
 	$scope.errors = {};
