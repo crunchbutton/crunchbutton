@@ -8,6 +8,10 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			$this->_referral();
 		}
 
+		if( c::getPagePiece(2) == 'requested' ){
+			$this->_requested();
+		}
+
 		if (preg_replace('/[^a-z0-9]/i','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2) && c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] )) {
 			$driver = Admin::o((int)c::getPagePiece(2) );
 			if (!$driver->id_admin) {
@@ -143,11 +147,22 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 
 	}
 
+	private function _requested(){
+		if ($this->method() == 'post') {
+			$status = ( $this->request()['permitted'] ) ? Cockpit_Admin_Location_Requested::STATUS_PERMITTED : Cockpit_Admin_Location_Requested::STATUS_DENIED;
+			(new Cockpit_Admin_Location_Requested([
+				'id_admin' => c::user()->id_admin,
+				'date' => date('Y-m-d H:i:s'),
+				'status' => $status
+			]))->save();
+		}
+		echo json_encode( ['success' => true] );
+	}
+
 	private function _referral(){
 		$name = strtolower( trim( $this->request()[ 'name' ] ) );
 		$phone = Crunchbutton_Phone::clean( $this->request()[ 'phone' ] );
 		$code = Crunchbutton_Reward::createUniqueCode( $name, $phone );
 		echo json_encode( [ 'code' => $code ] );exit;
 	}
-
 }
