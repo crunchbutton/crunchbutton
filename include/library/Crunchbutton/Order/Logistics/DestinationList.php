@@ -289,6 +289,12 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
         $input->restaurantParkingTimes[] = 0;
         $input->restaurantServiceTimes[] = 0;
 
+        // Update the driver location so that he or she's at the restaurant.
+
+        $input->firstCoords[0] = floatval($restaurantDestination->geo->lat);
+        $input->secondCoords[0] = floatval($restaurantDestination->geo->lon);
+
+
         // Not clustering the fake order so, don't care about the cluster array.
         // As long as computeClusters gets the right number of nodes, including the fake order nodes,
         //  empty clusters will be created for the fake orders.

@@ -2248,8 +2248,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     }
 
     // Two drivers - no orders - different locations, but still close
-    //  First order comes in - both get high priority because of wait time
-    public function testLogisticsFirstorderDifferentLocationWithLongWait()
+    //  First order comes in - first driver gets high priority because wait time < service + parking + travel time
+    //   for the other driver.  About 6 minutes travel time + 5 min service + 5 min parking > 15 min
+    public function testLogisticsFirstorderDifferentLocationWithLongWait1()
     {
         $seconds = 50;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2284,6 +2285,106 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $fc_lat = 34.0312;
+        $fc_lon = -118.286;
+        $fc1 = $this->createFakecustomer($this->community, $fc_lat, $fc_lon);
+        $fc1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $fc1->delete();
+        $olc->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            }
+            else{
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else{
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+
+    // Two drivers - no orders - different locations, but still close
+    //  First order comes in - both driver gets high priority because wait time > service + parking + travel time
+    //   for the other driver
+    public function testLogisticsFirstorderDifferentLocationWithLongWait2()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
         $olot1->save();
 
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);

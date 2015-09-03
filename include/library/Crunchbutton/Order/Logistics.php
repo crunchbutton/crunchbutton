@@ -219,7 +219,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $keepFlag = false;
             } else {
                 $orderDT = new DateTime($order->date, new DateTimeZone(c::config()->timezone));
-                $orderTime = round(($serverDT->getTimestamp() - $orderDT->getTimestamp()) / 60.0);
+                $orderTime = round(($orderDT->getTimestamp() - $serverDT->getTimestamp() ) / 60.0);
                 $earlyWindow = max(0, $orderTime + $r_ordertime);
                 $midWindow = $orderTime + Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD;
                 // TODO: Not sure we want to use the slack max time here.  Doesn't matter for now
