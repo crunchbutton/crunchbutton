@@ -130,7 +130,8 @@
 							<span ng-if="!message.sending" am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span>
 							<span ng-if="message.sending">sending...</span>
 						</div>
-						<div class="support-chat-contents-message-body">{{message.body}}
+						<div class="support-chat-contents-message-body">
+							<span ng-bind-html="message.body | linkfy: true"></span>
 							<div ng-repeat="image in message.media">
 								<img class="support-side-image" src="{{image}}">
 							</div>
