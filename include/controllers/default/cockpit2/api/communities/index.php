@@ -12,7 +12,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 
 		$keys = [];
-		
+
 		if ($limit == 'none') {
 			$page = 1;
 		}
@@ -32,17 +32,17 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			LEFT JOIN restaurant ON restaurant_community.id_restaurant=restaurant.id_restaurant
 			LEFT JOIN `order` ON restaurant.id_restaurant=`order`.id_order
 
-			WHERE 
+			WHERE
 				community.name IS NOT NULL
 		';
-		
+
 		if ($status != 'all') {
 			$q .= '
 				AND community.active=?
 			';
 			$keys[] = $status == 'active' ? true : false;
 		}
-		
+
 		if ($open == 'open') {
 			$q .= '
 				AND (
@@ -60,7 +60,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 				)
 			';
 		}
-		
+
 		if ($search) {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
@@ -74,11 +74,11 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			$q .= $s['query'];
 			$keys = array_merge($keys, $s['keys']);
 		}
-		
+
 		$q .= '
 			GROUP BY community.id_community
 		';
-		
+
 		$count = 0;
 
 		// get the count
@@ -100,7 +100,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			$keys[] = $getCount ? $limit : $limit+1;
 			$keys[] = $offset;
 		}
-		
+
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
@@ -108,14 +108,14 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			(SELECT `order`.date FROM `order` WHERE `order`.id_community = community.id_community order by `order`.date desc limit 1) as _order_date,
 			COUNT(`restaurant`.id_restaurant) restaurants
 		', $q), $keys);
-		
+
 
 		$i = 1;
 		$more = false;
 
 		while ($s = $r->fetch()) {
-			
-			if (!$getCount && $i == $limit + 1) {
+
+			if ($limit != 'none' && !$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
 			}
@@ -128,18 +128,18 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 				$out->communities[] = $community->properties();
 			}
 			*/
-			
+
 			// get whether its 3rd or not
 			$community = Community::o($s);
 			$s->type = $community->type();
-			
+
 			// ensure boolean values
 			$s->close_3rd_party_delivery_restaurants = $s->close_3rd_party_delivery_restaurants ? true : false;
 			$s->is_auto_closed = $s->is_auto_closed ? true : false;
 			$s->auto_close = $s->auto_close ? true : false;
 			$s->close_all_restaurants = $s->close_all_restaurants ? true : false;
 			$s->active = $s->active ? true : false;
-			
+
 			// pull up community closed log
 			// @todo seems to take a little longer. need to clean this up
 			$s->closedLog = $community->closedSince()[0];
