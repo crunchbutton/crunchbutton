@@ -45,13 +45,13 @@ class Crunchbutton_Reward extends Cana_Table{
 			$code = trim( $code );
 			// at first check if it belongs to an admin
 			$admin = Crunchbutton_Admin::byInviteCode( $code );
-			if( $admin->id_admin ){
+			if( $admin->id_admin && $admin->active ){
 				$this->code = $code;
 				return [ 'id_admin' => $admin->id_admin ];
 			}
 			// second check if it belongs to an user
 			$user = Crunchbutton_User::byInviteCode( $code );
-			if( $user->id_user ){
+			if( $user->id_user && $user->active ){
 				$this->code = $code;
 				return [ 'id_user' => $user->id_user ];
 			}
