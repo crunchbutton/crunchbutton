@@ -11,9 +11,9 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 
 		echo "<h1>{$community->name}</h1>";
 
-		echo "<h2>Assigned Shifts</h2>";
+		echo "<h2>Shifts</h2>";
 
-		$community_hrs = $community->assignedShiftHours( true );
+		$community_hrs = $community->shiftsForNextWeek( true );
 
 		// empty array to store the merged hours
 		$_community_hours = [];
@@ -21,10 +21,10 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 		// Convert the hours to a simple array
 		if( $community_hrs && count( $community_hrs ) ){
 			foreach ( $community_hrs as $hour ) {
-				if( !isset( $_community_hours[ trim( $hour->day ) ] ) ){
-					$_community_hours[ trim( $hour->day ) ] = [];
+				if( !isset( $_community_hours[ trim( $hour->full ) ] ) ){
+					$_community_hours[ trim( $hour->full ) ] = [];
 				}
-				$_community_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
+				$_community_hours[ trim( $hour->full ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
 			}
 
 			uksort( $_community_hours,
@@ -81,12 +81,14 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 			echo "</tr>";
 		$restaurants = $community->restaurants();
 		foreach( $restaurants as $restaurant ){
+
 			if( $restaurant->delivery_service ){
 				echo "<tr>";
 					echo "<td>{$restaurant->name}</td>";
 					echo "<td>{$restaurant->closed_message()}</td>";
 					$restaurant->force_buffer = true;
 					$restaurant->_hoursByRestaurant = null;
+					$restaurant->_hours = null;
 					echo "<td>{$restaurant->closed_message()}</td>";
 				echo "</tr>";
 			}

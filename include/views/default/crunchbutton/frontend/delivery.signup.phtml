@@ -1,0 +1,88 @@
+<div class="top-pad"></div>
+<div class="content-padding drivers-apply">
+
+	<div ng-show="sent">
+
+		<h4>Thanks!</h4>
+		<p>Your data has been submitted. We will get back to you soon. Feel free to admire this pink gorillia for now.</p>
+		<br><br>
+
+		<div class="location-gorillia animated-resize shake"></div>
+
+		<br><br>
+		<button class="button green" ng-click="navigation.link('/location','push')">get me out of here</button>
+
+	</div>
+
+	<div ng-show="!sent">
+
+		<div class="apply-item-title text-your-order" name="userForm">
+			Delivery Sign Up
+		</div>
+		<p>&nbsp;</p>
+
+		<form name="form" novalidate>
+
+			<div class="form-group">
+				<h4><span class="form-required">*</span> Name:</h4>
+				<div class="textbox">
+					<div ng-if="submitted && form.deliveryName.$invalid">Please enter your name:</div>
+					<input type="text" name="deliveryName" required ng-model="delivery.name" class="form-control form-control-large" >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<h4><span class="form-required">*</span> Email:</h4>
+				<div class="textbox">
+					<div ng-if="submitted && form.deliveryEmail.$invalid">Please enter your email:</div>
+					<input type="email" name="deliveryEmail" required ng-model="delivery.email" class="form-control form-control-large" >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<h4><span class="form-required">*</span> State:</h4>
+				<div class="textbox">
+					<div ng-if="submitted && form.deliveryState.$invalid">Please the state:</div>
+					<input type="text" name="deliveryState" required ng-model="delivery.state" class="form-control form-control-large" >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<h4><span class="form-required">*</span> City:</h4>
+				<div class="textbox">
+					<div ng-if="submitted && form.deliveryCity.$invalid">Please the city:</div>
+					<input type="text" name="deliveryCity" required ng-model="delivery.city" class="form-control form-control-large" >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<h4><span class="form-required">*</span> University:</h4>
+				<div class="textbox">
+					<div ng-if="submitted && form.deliveryUniversity.$invalid">Please the university:</div>
+					<input type="text" name="deliveryUniversity" required ng-model="delivery.university" class="form-control form-control-large" >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<h4><span class="form-required">*</span> Restaurants</h4>
+				<div class="textbox">
+					<label ng-repeat="restaurant in restaurants">
+						<input type="checkbox" value="{{restaurant.name}}" ng-model="restaurant.checked" name="checkboxRestaurant{{restaurant.name}}">{{restaurant.name}}
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group" ng-show="restaurants.Other.checked">
+				<h4><span class="form-required">*</span> Other:</h4>
+				<div class="textbox">
+					<div ng-if="submitted && form.deliveryOtherRestaurant.$invalid">Please enter the restaurant:</div>
+					<input type="text" ng-required="restaurants.Other.checked" name="deliveryOtherRestaurant" ng-model="delivery.otherRestaurant" class="form-control form-control-large">
+				</div>
+			</div>
+
+			<button class="button lightorange button-bottom" ng-show="!sending" ng-click="save()">Submit</button>
+			<!-- <button class="button lightorange button-bottom" ng-show="sending"><i class="fa fa-spinner fa-spin"></i> Please wait</button> -->
+
+		</form>
+	</div>
+</div>

@@ -1,5 +1,10 @@
+<div ng-if="loadingStaff">
+	<br><br><br><br>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loadingStaff}"></div>
+</div>
 
-<div class="support-box-wrap box-content2">
+
+<div class="support-box-wrap box-content2" ng-show="!loadingStaff">
 	<div class="support-box-wrap-header">
 		<h1>Select driver</h1>
 		<div class="divider"></div>
@@ -31,7 +36,7 @@
 	</div>
 </div>
 
-<div class="box-content2 box-content-table">
+<div class="box-content2 box-content-table" ng-show="!loadingStaff">
 	<table class="tb-zebra">
 		<tr>
 			<th>Driver</th>

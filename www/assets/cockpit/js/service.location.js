@@ -37,7 +37,8 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	}
 
 	var locationService = $resource( App.service + 'driver/:action', { action: '@action' }, {
-			'track' : { 'method': 'POST', params : { 'action' : 'location' } }
+			'track' : { 'method': 'POST', params : { 'action' : 'location' } },
+			'requested' : { 'method': 'POST', params : { 'action' : 'requested' } }
 		}
 	);
 
@@ -47,8 +48,8 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			return;
 		}
 
-		// if it is a restaurant account, dont track
-		if ($rootScope.account.restaurant) {
+		// just track drivers
+		if (!$rootScope.account.isDriver) {
 			return;
 		}
 
@@ -82,13 +83,34 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 
 	var watcher = null;
 
-	service.register = function(complete) {
+	service.testLocation = function(){
+		parent.window.navigator.geolocation.getCurrentPosition(
+		function(p){console.log( 'ok', p );service.locationPermitted()},
+		function(p){console.log( 'np', p );service.locationDenied()},
+		{
+					enableHighAccuracy: false,
+					timeout: 5000,
+					maximumAge: 3600000
+				}
+		 )
+	}
 
+	service.locationPermitted = function(){
+		// locationService.requested( { 'permitted': true }, function(){} );
+	}
+
+	service.locationDenied = function(){
+		locationService.requested( { 'permitted': false }, function(){} );
+	}
+
+	service.register = function(complete) {
 		parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 			complete();
+			service.locationPermitted();
 		}, function() {
-			App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services</b>. Your location will only be tracked while you are on shift.')
+			App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services &gt; Cockpit</b>. Your location will only be tracked while you are on shift.')
 			complete();
+			service.locationDenied();
 		}, {
 			enableHighAccuracy: false,
 			timeout: 5000,
@@ -104,16 +126,16 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		var webLocationTrack = function(pos) {
 			var trackedPos = pos.coords;
 			trackedPos.timestamp = pos.timestamp;
-
 			console.debug('Got foreground drivers location: ', trackedPos, Math.random());
 			$rootScope.$broadcast('location', trackedPos);
-
 			track(trackedPos, false);
+			service.locationPermitted();
 		};
 
 		if (!bgGeo && parent.window.navigator.geolocation) {
-			watcher = parent.window.navigator.geolocation.watchPosition(webLocationTrack, function() {
+			watcher = parent.window.navigator.geolocation.watchPosition( webLocationTrack, function() {
 				//alert('Your location services are off, or you declined location permissions. Please enable this.');
+				service.locationDenied()
 			}, { enableHighAccuracy: true });
 		}
 		if (App.isPhoneGap && bgGeo) {
@@ -121,8 +143,10 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 			parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 				webLocationTrack(pos);
 				bgGeo.start();
+				service.locationPermitted();
 			}, function() {
 				App.alert('Please enable location services for Cockpit in <b>Settings &gt; Privacy &gt; Location Services</b>. Your location will only be tracked while you are on shift.')
+				service.locationDenied();
 			});
 
 		}
@@ -163,7 +187,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	$rootScope.$watch('account.user.working', function(value) {
 		console.debug('Got a change in user working:', arguments);
 
-		if (value && AccountService.isDriver) {
+		if (value && AccountService.isDriver && App.isMobile()) {
 			console.debug('Starting tracking because user is working and a driver.');
 			startWatch();
 		} else {

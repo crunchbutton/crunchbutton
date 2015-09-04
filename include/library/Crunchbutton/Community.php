@@ -725,6 +725,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 								Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
 								Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket, 'bubble' => true ] );
 							}
+							return;
 						}
 					}
 				}
@@ -995,6 +996,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$this->_assigned_shift_hours = Crunchbutton_Community_Shift::assignedShiftHours( $this->id_community, $allDay );
 		}
 		return $this->_assigned_shift_hours;
+	}
+
+	public function shiftsForNextWeek( $todayAssigned = false ){
+		if( !$this->_next_week_shifts ){
+			$this->_next_week_shifts = Crunchbutton_Community_Shift::shiftsForNextWeek( $this->id_community, $todayAssigned );
+		}
+		return $this->_next_week_shifts;
 	}
 
 	// should return a smart value based on what time it is. for now just return db value

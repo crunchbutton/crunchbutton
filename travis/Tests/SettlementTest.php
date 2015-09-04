@@ -118,37 +118,37 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$d2_asa2->save();
 
 		// hourly driver accepts orders
-		$d1_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
-		$d1_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
+		// $d1_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
+		// $d1_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
 		$d1_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d1);
 
-		$d1_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
-		$d1_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
+		// $d1_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
+		// $d1_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
 		$d1_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d1);
 
-		$d1_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
-		$d1_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
+		// $d1_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
+		// $d1_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
 		$d1_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d1);
 
-		$d1_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
-		$d1_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
+		// $d1_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d1);
+		// $d1_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d1);
 		$d1_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d1);
 
 		// commissioned driver accepts orders
-		$d2_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
-		$d2_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
+		// $d2_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
+		// $d2_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
 		$d2_o1->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d2);
 
-		$d2_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
-		$d2_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
+		// $d2_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
+		// $d2_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
 		$d2_o2->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d2);
 
-		$d2_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
-		$d2_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
+		// $d2_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
+		// $d2_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
 		$d2_o3->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d2);
 
-		$d2_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
-		$d2_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
+		// $d2_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_ACCEPTED, false, $d2);
+		// $d2_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_PICKEDUP, false, $d2);
 		$d2_o4->setStatus( Crunchbutton_Order_Action::DELIVERY_DELIVERED, false, $d2);
 
 	}

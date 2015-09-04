@@ -30,6 +30,10 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 					$out = $staff->exports();
 					$out[ 'id_community' ] = $staff->getMarketingRepGroups();
 					$out[ 'isCampusManager' ] = $staff->isCampusManager();
+
+					$paymentType = $staff->paymentType();
+					$out[ 'profit_percent' ] = $paymentType->profit_percent;
+
 					echo json_encode( $out );exit;
 					exit();
 				}
@@ -176,6 +180,11 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 				$staff->removeGroup( $campusManagerGroup->id_group );
 			}
 		}
+
+		$paymentType = $staff->paymentType();
+		$paymentType->profit_percent = $this->request()[ 'profit_percent' ];
+		$paymentType->save();
+
 
 		echo json_encode( [ 'success' => $staff->exports() ] );
 

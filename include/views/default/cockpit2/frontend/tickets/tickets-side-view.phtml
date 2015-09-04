@@ -18,11 +18,13 @@
 				<div class="support-chat-header-details">
 
 					<div ng-if="ticket.restaurant">{{ticket.restaurant.name}} / {{ticket.restaurant.community}}</div>
-					<div ng-if="ticket.order">
-						{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} /
+					<div>
+						<span ng-if="ticket.order.pay_type && ticket.order.delivery_type">
+							{{ticket.order.pay_type | capitalize}} / {{ticket.order.delivery_type | capitalize}} /
+						</span>
 						<span ng-if="order.status"><b>{{order.status.status}}</b> <span am-time-ago="order.status.timestamp*1000"></span></span>
-						<span ng-if="!order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
-						<br>ETA: {{ticket.order.eta.time}} minutes
+						<span ng-if="order && !order.status">{{order.confirmed ? 'Confirmed' : 'Placed'}}</span>
+						<span ng-if="ticket.order.eta.time"><br>ETA: {{ticket.order.eta.time}} minutes</span>
 					</div>
 
 					<div ng-if="ticket.pexcard" ng-controller="SideSupportPexCardCtrl">
@@ -128,7 +130,8 @@
 							<span ng-if="!message.sending" am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span>
 							<span ng-if="message.sending">sending...</span>
 						</div>
-						<div class="support-chat-contents-message-body">{{message.body}}
+						<div class="support-chat-contents-message-body">
+							<span ng-bind-html="message.body | linkfy: true"></span>
 							<div ng-repeat="image in message.media">
 								<img class="support-side-image" src="{{image}}">
 							</div>
