@@ -1,10 +1,5 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
-		.when('/delivery-signup', {
-			action: '',
-			controller: 'DeliverySignUpCtrl',
-			templateUrl: 'assets/view/delivery-signup-form.html'
-		})
 		.when('/delivery-signups', {
 			action: 'tools',
 			controller: 'DeliverySignUpsCtrl',
@@ -56,50 +51,3 @@ NGApp.controller('DeliverySignUpsCtrl', function ($rootScope, $scope, $timeout, 
 	}
 
 });
-
-NGApp.controller( 'DeliverySignUpCtrl', function( $scope, DeliverySignUpService ) {
-
-	$scope.ready = false;
-	$scope.submitted = false;
-
-	$scope.delivery = {};
-
-	$scope.sending = false;
-
-	$scope.restaurants = {};
-	$scope.restaurants[ 'Taco Bell' ] = { 'name': 'Taco Bell', 'checked': false };
-	$scope.restaurants[ 'McDonalds' ] = { 'name': 'McDonalds', 'checked': false };
-	$scope.restaurants[ 'Burger King' ] = { 'name': 'Burger King', 'checked': false };
-	$scope.restaurants[ 'In-N-Out' ] = { 'name': 'In-N-Out', 'checked': false };
-	$scope.restaurants[ 'Other' ] = { 'name': 'Other', 'checked': false };
-
-	$scope.save = function(){
-		if( $scope.form.$invalid ){
-			$scope.submitted = true;
-			return;
-		}
-
-		$scope.sending = true;
-
-		$scope.delivery.restaurants = [];
-
-		angular.forEach( $scope.restaurants, function(value, key) {
-			if( value.checked ){
-				$scope.delivery.restaurants.push( value.name );
-			}
-		} );
-
-		if( $scope.delivery.otherRestaurant ){
-			$scope.delivery.restaurants.push( $scope.delivery.otherRestaurant );
-		}
-
-		DeliverySignUpService.save( $scope.delivery, function( json ){
-			if( json.success ){
-				$scope.finished = true;
-			} else {
-				$scope.sending = false;
-				$scope.error = json.error;
-			}
-		} );
-	}
-} );
