@@ -143,8 +143,6 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( $json );exit();
 				break;
 		}
-
-
 	}
 
 	private function _requested(){

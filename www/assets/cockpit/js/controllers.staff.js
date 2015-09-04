@@ -6,6 +6,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
+		.when('/staff/activations', {
+			action: 'activations',
+			controller: 'StaffActivationsCtrl',
+			templateUrl: 'assets/view/staff-activations.html'
+		})
 		.when('/staff/marketing/:id', {
 			action: 'staff',
 			controller: 'StaffMarketingFormCtrl',
@@ -41,11 +46,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffMarketingRequestMaterialsCtrl',
 			templateUrl: 'assets/view/staff-marketing-rep-request-materials.html'
 		})
-		.when('/staff/marketing-rep/activations', {
-			action: 'marketing-rep-activations',
-			controller: 'StaffMarketingActivationsCtrl',
-			templateUrl: 'assets/view/staff-marketing-rep-activations.html'
-		})
 		.when('/staff/marketing-rep/docs', {
 			action: 'marketing-rep-docs',
 			controller: 'StaffMarketingDocsCtrl',
@@ -74,7 +74,7 @@ NGApp.controller('StaffMarketingFaqCtrl',function( $scope ){
 
 NGApp.controller( 'StaffMarketingRequestMaterialsCtrl', function(  $scope, StaffService ){});
 
-NGApp.controller('StaffMarketingActivationsCtrl',function( $scope, StaffService ){
+NGApp.controller('StaffActivationsCtrl',function( $scope, StaffService ){
 
 	$scope.loading = true;
 
@@ -506,7 +506,7 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 
 		var id_driver_document = data.id_driver_document;
 		var response = data.response;
-		
+
 		if( response.success ){
 			var doc = { id_admin : $scope.staff.id_admin, id_driver_document : id_driver_document, file : response.success };
 			StaffService.marketing.docs.save( doc, function( json ){
