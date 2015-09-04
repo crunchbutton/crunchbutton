@@ -725,6 +725,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 								Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
 								Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket, 'bubble' => true ] );
 							}
+							return;
 						}
 					}
 				}
