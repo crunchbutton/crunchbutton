@@ -1735,6 +1735,51 @@ NGApp.controller( 'NotificationRemoteCtrl', function ($scope, $rootScope ) {
 	});
 });
 
+NGApp.controller( 'DeliverySignUpCtrl', function( $scope, $location, DeliverySignUpService ) {
+
+	$scope.ready = false;
+	$scope.submitted = false;
+
+	$scope.delivery = {};
+
+	$scope.sending = false;
+
+	DeliverySignUpService.restaurants( function( data ){
+		$scope.restaurants = data;
+	} );
+
+	$scope.save = function(){
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.sending = true;
+
+		$scope.delivery.restaurants = [];
+
+		angular.forEach( $scope.restaurants, function(value, key) {
+			if( value.checked ){
+				$scope.delivery.restaurants.push( value.name );
+			}
+		} );
+
+		if( $scope.delivery.otherRestaurant ){
+			$scope.delivery.restaurants.push( $scope.delivery.otherRestaurant );
+		}
+
+		DeliverySignUpService.save( $scope.delivery, function( json ){
+			if( json.success ){
+				$scope.sent = true;
+			} else {
+				App.alert( json.error );
+			}
+			$scope.sending = false;
+		} );
+	}
+} );
+
 NGApp.controller( 'InviteCtrl', function ( $scope, $routeParams, $location, ReferralService ) {
 	// Just store the cookie, it will be used later
 	$.cookie( 'referral', $routeParams.id );

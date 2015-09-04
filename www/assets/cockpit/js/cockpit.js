@@ -799,7 +799,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			if( $rootScope.configLoaded ){
 				if (!$rootScope.account.isLoggedIn()) {
 					var isAllowed = false;
-					angular.forEach( [ '/login', '/setup', '/onboarding', '/info', '/delivery-signup' ], function( allowed ){
+					angular.forEach( [ '/login', '/setup', '/onboarding', '/info' ], function( allowed ){
 					 if( $location.url().indexOf( allowed ) >= 0 ){
 						isAllowed = true;
 					 }
