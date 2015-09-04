@@ -128,9 +128,9 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 	public function notify( $order, $rule, $message ){
 
+		/*
 		// To avoid send same sms twice
 		$send_to = array();
-
 		// Notify custom service
 		$group_name = $this->getSetting( $rule[ 'settings' ][ 'warning-group' ] );
 		if( $group_name ){
@@ -156,12 +156,13 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 				}
 			}
 		}
+		*/
 
-		if( !count( $send_to ) ){
-			$customerService = Crunchbutton_Support::getUsers( true );
-			foreach( $customerService as $name => $phone ){
-				$send_to[ $phone ] = $message;
-			}
+		$send_to = array();
+
+		$customerService = Crunchbutton_Support::getUsers( true );
+		foreach( $customerService as $name => $phone ){
+			$send_to[ $phone ] = $message;
 		}
 
 		foreach( $send_to as $phone => $message ){

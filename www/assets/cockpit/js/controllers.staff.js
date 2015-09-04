@@ -6,6 +6,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
+		.when('/staff/activations', {
+			action: 'activations',
+			controller: 'StaffActivationsCtrl',
+			templateUrl: 'assets/view/staff-activations.html'
+		})
 		.when('/staff/marketing/:id', {
 			action: 'staff',
 			controller: 'StaffMarketingFormCtrl',
@@ -41,11 +46,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffMarketingRequestMaterialsCtrl',
 			templateUrl: 'assets/view/staff-marketing-rep-request-materials.html'
 		})
-		.when('/staff/marketing-rep/activations', {
-			action: 'marketing-rep-activations',
-			controller: 'StaffMarketingActivationsCtrl',
-			templateUrl: 'assets/view/staff-marketing-rep-activations.html'
-		})
 		.when('/staff/marketing-rep/docs', {
 			action: 'marketing-rep-docs',
 			controller: 'StaffMarketingDocsCtrl',
@@ -65,6 +65,8 @@ NGApp.controller('StaffMarketingFaqCtrl',function( $scope ){
 		if( $scope.account.user ){
 			$scope.referral_customer_credit = $scope.account.user.referral_customer_credit;
 			$scope.referral_admin_credit = $scope.account.user.referral_admin_credit;
+			$scope.is_campus_manager = $scope.account.user.isCampusManager;
+			$scope.profit_percent = $scope.account.user.profit_percent;
 		}
 	}, true);
 });
@@ -72,7 +74,7 @@ NGApp.controller('StaffMarketingFaqCtrl',function( $scope ){
 
 NGApp.controller( 'StaffMarketingRequestMaterialsCtrl', function(  $scope, StaffService ){});
 
-NGApp.controller('StaffMarketingActivationsCtrl',function( $scope, StaffService ){
+NGApp.controller('StaffActivationsCtrl',function( $scope, StaffService ){
 
 	$scope.loading = true;
 
@@ -486,8 +488,25 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 
 	// this is a listener to upload success
 	$scope.$on( 'driverDocsUploaded', function(e, data) {
+		if( data.success ){
+			App.alert( 'File saved!' );
+			docs();
+		} else {
+			App.alert( 'Upload error, please try again or send us a message.' );
+		}
+	});
+/*
+	// this is a listener to upload success
+	$scope.$on( 'driverDocsUploaded', function(e, data) {
+
+		if( data.error ){
+			App.alert( 'File not saved! ');
+			return;
+		}
+
 		var id_driver_document = data.id_driver_document;
 		var response = data.response;
+
 		if( response.success ){
 			var doc = { id_admin : $scope.staff.id_admin, id_driver_document : id_driver_document, file : response.success };
 			StaffService.marketing.docs.save( doc, function( json ){
@@ -502,7 +521,7 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 			App.alert( 'File not saved! ');
 		}
 	});
-
+*/
 
 	// Upload control stuff
 	$scope.doc_uploaded = 0;

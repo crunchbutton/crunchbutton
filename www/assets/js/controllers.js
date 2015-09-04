@@ -27,11 +27,10 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
 
 	$scope.communities = [];
 
-	for (var iiii in App.communities) {
-		if (!App.communities[iiii].name.match(/driver|duplication|test|five minute|apply|5-dollar|marina del rey/i)) {
-			$scope.communities.push(App.communities[iiii]);
-		}
-	}
+	ApplyService.communities( function( data ){
+		$scope.communities = data;
+	} );
+
 
 	$scope.apply = {};
 	$scope.errors = {};
@@ -240,6 +239,8 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 
 	$scope.account = AccountService;
 
+	var twitter_text = App.AB.get('share-twitter-text');
+
 	$scope.referral = {
 		invite_url : ReferralService.invite_url,
 		value : ReferralService.value,
@@ -248,7 +249,7 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
 		enabled : ReferralService.enabled,
 		invite_code : ReferralService.invite_code,
 		sms : ReferralService.sms(),
-		text : "Get food delivery from places that don't. Check out "
+		text : twitter_text
 	}
 
 	$scope.referral.cleaned_url = function(){
@@ -1733,6 +1734,51 @@ NGApp.controller( 'NotificationRemoteCtrl', function ($scope, $rootScope ) {
 		});
 	});
 });
+
+NGApp.controller( 'DeliverySignUpCtrl', function( $scope, $location, DeliverySignUpService ) {
+
+	$scope.ready = false;
+	$scope.submitted = false;
+
+	$scope.delivery = {};
+
+	$scope.sending = false;
+
+	DeliverySignUpService.restaurants( function( data ){
+		$scope.restaurants = data;
+	} );
+
+	$scope.save = function(){
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.sending = true;
+
+		$scope.delivery.restaurants = [];
+
+		angular.forEach( $scope.restaurants, function(value, key) {
+			if( value.checked ){
+				$scope.delivery.restaurants.push( value.name );
+			}
+		} );
+
+		if( $scope.delivery.otherRestaurant ){
+			$scope.delivery.restaurants.push( $scope.delivery.otherRestaurant );
+		}
+
+		DeliverySignUpService.save( $scope.delivery, function( json ){
+			if( json.success ){
+				$scope.sent = true;
+			} else {
+				App.alert( json.error );
+			}
+			$scope.sending = false;
+		} );
+	}
+} );
 
 NGApp.controller( 'InviteCtrl', function ( $scope, $routeParams, $location, ReferralService ) {
 	// Just store the cookie, it will be used later

@@ -55,7 +55,7 @@
 				<div class="payment-form-group form-group">
 
 					<i class="fa fa-bullhorn payment-form-icon form-icon form-field"></i>
-					<textarea ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" ng-autosize name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6" class="payment-form-input form-input form-field" placeholder="notes"></textarea>
+					<textarea ng-focus="softKeyboard($event);" ng-blur="checkGiftCard();softKeyboardExit()" ng-autosize name="notes" ng-blur="" ng-model="order.form.notes" tabindex="6" class="payment-form-input form-input form-field" placeholder="notes"></textarea>
 
 					<!-- Gift card messages -->
 					<div class="giftcard-info">
@@ -137,7 +137,7 @@
 						<i>Drivers only carry ${{config.driver_change_amount}} in change.</i><br><br>
 					</p>
 				</div>
-				
+
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='applepay'">
 					<p class="delivery-free restaurant-delivery-free" ng-click="">
 						<i>After pressing <b>Place Order</b>,<br>select your card from Apple Pay,<br>then pay using your Touch ID.</i><br><br>

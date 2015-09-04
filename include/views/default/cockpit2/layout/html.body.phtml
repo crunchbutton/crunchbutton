@@ -75,7 +75,7 @@
 					</table>
 				</a>
 
-				<a href="/staff/marketing-rep/activations" class="menu-link" ng-if="account.isMarketingRep && menu.toggle=='marketing-rep'" ng-class="{'nav-active': (navigation.page == 'marketing-rep-activations')}">
+				<a href="/staff/activations" class="menu-link" ng-if="account.isMarketingRep && menu.toggle=='marketing-rep' && !account.isCampusManager" ng-class="{'nav-active': (navigation.page == 'marketing-rep-activations')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-trophy"></i></td>
@@ -149,6 +149,14 @@
 							<td class="side-menu-label">Earn More Money</a></td>
 				</tr>
 				</table>
+				</a>
+				<a href="/staff/activations" class="menu-link" ng-class="{'nav-active': (navigation.page == 'activations')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-trophy"></i></td>
+							<td class="side-menu-label">Your Activations</a></td>
+						</tr>
+					</table>
 				</a>
 
 				<a href="/drivers/docs" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-documents')}">
@@ -523,9 +531,9 @@
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">
 
-		<h1 class="dialog-call-number" ng-if="!listOfNumbers">{{number | formatPhone}}</h1>
+		<h1 class="dialog-call-number" ng-if="!staffList">{{number | formatPhone}}</h1>
 
-		<h1 class="dialog-call-number" ng-if="listOfNumbers">
+		<h1 class="dialog-call-number" ng-if="staffList">
 			{{number.length}}
 			<span ng-if="number.length > 1">Phone numbers</span>
 			<span ng-if="number.length == 1">Phone</span>

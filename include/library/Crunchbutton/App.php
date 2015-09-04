@@ -114,25 +114,25 @@ class Crunchbutton_App extends Cana_App {
 				'url' => getenv('DATABASE_URL'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
 			];
-			
+
 			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
 
 			if (getenv('REDIS_URL')) {
 				$params['config']->cache->default = $params['config']->cache->redis;
 				$params['config']->cache->default->url = getenv('REDIS_URL');
 			}
-			
+
 			if (getenv('HEROKU')) {
 				error_log('>> INITING...');
 			}
 
 			parent::init($params);
-			
+
 			if (getenv('HEROKU')) {
 				error_log('>> Finished init');
 			}
-			
-			
+
+
 			if (getenv('DATABASE_URL_WRITE')) {
 				$params['config']->db->herokuWrite = (object)[
 					'url' => getenv('DATABASE_URL_WRITE'),
@@ -163,7 +163,7 @@ class Crunchbutton_App extends Cana_App {
 		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
-		
+
 
 
 		// set host callback by hostname
@@ -176,13 +176,13 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		$this->config($config);
-		
-		
+
+
 
 		$this->buildAuth($this->db());
-		
 
-				
+
+
 		if (getenv('HEROKU')) {
 			error_log('>> EXITING >>>>>>>>>');
 			//die((string)rand(1,999999));
@@ -191,7 +191,7 @@ class Crunchbutton_App extends Cana_App {
 
 
 
-	
+
 
 		// set bundle on everything except tests
 		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
@@ -203,17 +203,17 @@ class Crunchbutton_App extends Cana_App {
 			$config->bundle = true;
 			$config->viewExport = true;
 		}
-		
-		
-			
-			
-		
-	
+
+
+
+
+
+
 
 		$this
 			->config($config)
 			->postInit($params);
-	
+
 
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
@@ -332,11 +332,11 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$pageName = $page;
 		}
-		
+
 		if (getenv('HEROKU')) {
 			error_log('>> DISPLAYING PAGE: '.$pageName);
 		}
-		
+
 		try {
 			parent::displayPage($pageName == 'error' ? 'home' : $pageName);
 		} catch (Exception $e) {
@@ -524,12 +524,43 @@ class Crunchbutton_App extends Cana_App {
 				'line' => 'Hey, get food delivered at _DOMAIN_/app and get your first delivery free if you enter %c in the Notes section of your order (i get free food too)'
 			]
 		];
+
+		$config['site']['ab']['share-facebook-title'] = [
+			[
+				'name' => 'share-facebook-title',
+				'line' => 'Crunchbutton - Food delivered from places that don\'t'
+			]
+		];
+
+		$config['site']['ab']['share-facebook-description'] = [
+			[
+				'name' => 'share-facebook-description',
+				'line' => 'Order your favorite food, with a click, even if they don\'t deliver. Check out Crunchbutton today!'
+			]
+		];
+		$config['site']['ab']['share-facebook-url'] = [
+			[
+				'name' => 'share-facebook-url',
+				'line' => 'http://_DOMAIN_/'
+			]
+		];
+
+		$config['site']['ab']['share-twitter-text'] = [
+			[
+				'name' => 'share-twitter-text',
+				'line' => 'Get food delivery from places that don\'t deliver. Check out '
+			]
+		];
+
 		$config['site']['ab']['share-text-twitter'] = [
 			[
 				'name' => 'twitter-love-notes',
 				'line' => 'i love @crunchbutton delivery :) use my code %c in the Notes section for free delivery!'
 			]
 		];
+
+
+
 		$config['site']['ab']['share-order-text-twitter'] = [
 			[
 				'name' => 'twitter-order-url',

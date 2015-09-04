@@ -12,6 +12,7 @@ Account Status: <strong>unverified</strong>
 	<tr>
 		<td>#</td>
 		<td>Date</td>
+		<td>Amount</td>
 		<td>Status</td>
 		<td>Log</td>
 	</tr>
@@ -23,7 +24,8 @@ Account Status: <strong>unverified</strong>
 			</a>
 		</td>
 			<td><?php echo $payment[ 'date' ]; ?></td>
-			<td><?php echo $payment[ 'status' ]; ?></td>
+			<td>$ <?php echo number_format( $payment[ 'amount' ], 2 ); ?></td>
+			<td><?php echo $payment[ 'log' ]; ?></td>
 			<td><?php echo $payment[ 'log' ]; ?></td>
 		</tr>
 	<?php } ?>

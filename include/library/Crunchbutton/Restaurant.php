@@ -1436,8 +1436,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			foreach($category['_dishes'] as &$dish) {
 				$dish['optionGroups'] = [];
 				if(!intval($dish['id_category'])) {
-					$sql = "SELECT * FROM category WHERE name = '". $category['name']. "' AND id_restaurant = '" . $restaurant[ 'id_restaurant'] . "'  ORDER BY sort ASC LIMIT 1";
-					$c = Crunchbutton_Category::q($sql);
+					$sql = 'SELECT * FROM category WHERE name = ? AND id_restaurant = ? ORDER BY sort ASC LIMIT 1';
+					$c = Crunchbutton_Category::q($sql, [$category['name'], $restaurant[ 'id_restaurant']]);
 					$dish['id_category'] = $c->id_category;
 				}
 				if(!array_key_exists('_options', $dish)) {
@@ -2058,7 +2058,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 				return Hour::getByRestaurantNext24Hours( $this, $gmt );
 			}
-
 		}
 		return false;
 	}
@@ -2273,5 +2272,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
             return $olc->get(0);
         }
     }
+
+	public static function selectFakeRestaurant($id_community) {
+		$fr = null;
+		// Randomly choose a restaurant from the community list
+		$rs = Crunchbutton_Restaurant::getDeliveryRestaurantsWithGeoByIdCommunity($id_community);
+		$rcount = $rs->count();
+		if ($rcount > 0) {
+			$select = rand(0, $rcount - 1);
+			$fr = $rs->get($select);
+		}
+		return $fr;
+	}
 
 }

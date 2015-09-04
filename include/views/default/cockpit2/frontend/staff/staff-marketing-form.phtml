@@ -80,6 +80,11 @@
 
 						</li>
 
+						<li class="li-input" ng-show="staff.isCampusManager">
+							<div class="label">Profit %:</div>
+							<div class="input"><input type="number" ng-required="staff.isCampusManager" ignore-mouse-wheel ng-model="staff.profit_percent" placeholder=""></div>
+						</li>
+
 						<li class="li-input" ng-class="{'error':form.staffEmail.$invalid}">
 							<div class="label">Email:</div>
 							<div class="input"><input type="email" name="staffEmail" ng-model="staff.email" placeholder="Email"></div>
@@ -171,11 +176,11 @@
 
 				</td>
 				<td class="td-download">
-					<!-- upload directive -->
-					<div class="upbutton" driver-docs-upload>
-						<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
-						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document}]}">
-					</div>
+				<!-- upload directive -->
+				<div class="upbutton" driver-docs-upload>
+					<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
+					<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document, id_admin: staff.id_admin}]}">
+				</div>
 				</td>
 			</tr>
 		</table>

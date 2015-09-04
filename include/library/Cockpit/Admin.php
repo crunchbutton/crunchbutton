@@ -38,7 +38,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out = [];
 		$payments = Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_driver = ? AND ( status = ? OR status = ? ) ORDER BY id_payment_schedule DESC', [ $this->id_admin, Cockpit_Payment_Schedule::STATUS_SCHEDULED, Cockpit_Payment_Schedule::STATUS_ERROR ] );
 		foreach( $payments as $payment ){
-			$out[] = [ 'id_payment_schedule' => $payment->id_payment_schedule, 'log' => strip_tags( $payment->log ), 'status' => $payment->status, 'date' => $payment->date()->format( 'M jS Y g:i:s A' )  ];
+			$out[] = [ 'id_payment_schedule' => $payment->id_payment_schedule, 'log' => strip_tags( $payment->log ), 'status' => $payment->status, 'amount' => $payment->amount, 'date' => $payment->date()->format( 'M jS Y g:i:s A' )  ];
 		}
 		return $out;
 	}
@@ -326,6 +326,52 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			$out['location'] = $this->location()->exports();
 		}
 
+		if( $params[ 'last-checkins' ] ){
+
+			$next = Community_Shift::lastShiftsByAdmin($this->id_admin, 5);
+
+			if ($next) {
+
+				foreach ($next as $s) {
+
+					$shift = $s->exports();
+
+					$shift[ 'confirmed' ] = intval( $s->confirmed );
+
+					$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));
+					$start = $date->getTimestamp();
+
+					$today = new DateTime( 'now' , new DateTimeZone( $this->timezone ) );
+
+					if( $date->format( 'Ymd' ) == $today->format( 'Ymd' ) ){
+						$out['working_today'] = true;
+					}
+
+					if ($start <= time() ) {
+						$now = new DateTime( 'now' , new DateTimeZone($this->timezone));
+						$date = new DateTime($shift['date_end'], new DateTimeZone($this->timezone));
+						$diff = $now->diff( $date );
+						$shift['current'] = true;
+						$out['working'] = true;
+						$out['shift_ends'] = $diff->h;
+						$out['shift_ends_formatted'] = $diff->h;
+						if( $diff->i ){
+							$out['shift_ends'] .= '' . str_replace(  '0.', '.', strval( number_format( $diff->i / 60, 2 ) ) );
+							if( $diff->h ){
+								$out['shift_ends_formatted'] .= ' hour' . ( ( $diff->h > 1 ) ? 's' : '' );
+								$out['shift_ends_formatted'] .= ' and ';
+							}
+							 $out['shift_ends_formatted'] .= str_pad( $diff->i, '0', 2 ) . ' minute' . ( $diff->i > 1 ? 's' : '' ) ;
+						}
+					} else {
+						$shift['current'] = false;
+					}
+
+					$out['last_checkins'][] = $shift;
+				}
+			}
+		}
+
 		if ($params['working'] !== false) {
 
 			$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
@@ -396,7 +442,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
             return $s->get(0)->score;
         }
     }
-	
+
 	public function __construct($id = null) {
 		$this->_changeSetName = 'Cockpit_Admin';
 		$this->changeOptions([

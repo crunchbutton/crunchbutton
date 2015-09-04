@@ -208,6 +208,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'LocationCtrl',
 			templateUrl: 'assets/view/location.html'
 		})
+		.when('/delivery-signup', {
+			action: 'delivery-signup',
+			controller: 'DeliverySignUpCtrl',
+			templateUrl: 'assets/view/delivery.signup.html'
+		})
 		.when('/location/unavailable', {
 			action: 'location',
 			controller: 'LocationUnavailableCtrl',
@@ -383,7 +388,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
 		}
 	}
-	
+
 	$rootScope.softKeyboardExit = function() {
 		$('.nav-top').removeClass('at-top');
 	};
@@ -1361,7 +1366,7 @@ App.phoneGapListener = {
 	},
 	deviceready : function(){
 		// deviceready
-		
+
 		if (App.iOS() && window.ApplePay) {
 			ApplePay.getAllowsApplePay(function(){
 				App.hasApplePay = true;
@@ -1369,7 +1374,7 @@ App.phoneGapListener = {
 				App.hasApplePay = false;
 			})
 		}
-		
+
 	},
 	resume : function(){
 		dateTime.restart();

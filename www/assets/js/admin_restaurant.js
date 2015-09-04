@@ -1460,8 +1460,8 @@ var DOM_MAP = {
 							for(i in hours[day]) {
 								segment = hours[day][i];
 								m0 = /(\d+):(\d+)/.exec(segment[0]);
-								m1 = /(\d+):(\d+)/.exec(segment[1]);
 								b = (dayhours + parseInt(m0[1], 10) * 100 + parseInt(m0[2], 10));
+								m1 = /(\d+):(\d+)/.exec(segment[1]);
 								e = (dayhours + parseInt(m1[1], 10) * 100 + parseInt(m1[2], 10));
 								hfmmm.push({b : b, e : e});
 							}

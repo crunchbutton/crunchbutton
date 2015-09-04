@@ -105,7 +105,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 			$num = $admin->phone;
 			if( !$id_admin ){
 				$message = 'Shift confirmed by ' .  $community . ' driver ' . $admin->name . '!';
-				Crunchbutton_Support::createNewWarningStaffTicket(  [ 'dont_open_ticket' => false, 'body' => $message, 'phone' => $num, 'bubble' => true ] );
+				Crunchbutton_Support::createNewWarningStaffTicket(  [ 'dont_open_ticket' => false, 'body' => $message, 'phone' => $num ] );
 			}
 		}
 		return true;
@@ -159,7 +159,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 				$admin = $assignment->admin();
 				$num = $admin->phone;
 				$message = self::message( $assignment, self::TYPE_TICKET );
-				Crunchbutton_Support::createNewWarningStaffTicket(  [ 'body' => $message, 'phone' => $num ] );
+				Crunchbutton_Support::createNewWarningStaffTicket(  [ 'body' => $message, 'phone' => $num, 'bubble' => true ] );
 				self::create( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'type' => self::TYPE_TICKET ] );
 			}
 		}

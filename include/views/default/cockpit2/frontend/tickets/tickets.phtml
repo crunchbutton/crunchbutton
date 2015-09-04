@@ -6,11 +6,22 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="4">
+				<td colspan="6">
 					<i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1">
+					<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="moreOptions()"></i></td>
 				</td>
 			</tr>
-			<tr>
+			<tr ng-if="show_more_options">
+				<th>Staff</th>
+					<td nowrap="nowrap">
+						<ui-select ng-model="query.admin" theme="select2" close-on-select="true" style="width:200px;" title="Select a staff">
+							<ui-select-match placeholder="Select a staff">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices repeat="admin.id_admin as admin in staff | propsFilter: {name: $select.search}">
+								{{admin.name}}
+							</ui-select-choices>
+						</ui-select>
+						<a ng-show="query.admin" ng-click="query.admin=null" href=""><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i></button></a>
+				</td>
 				<th>Status</th>
 				<td>
 					<select ng-model="query.status" name="searchType" tabindex="3">

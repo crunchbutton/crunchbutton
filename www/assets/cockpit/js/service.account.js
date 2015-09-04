@@ -17,6 +17,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		isSupport: false,
 		isAdmin: false,
 		isMarketingRep: false,
+		isCampusManager: false,
 		restaurants: [],
 		init: false
 	};
@@ -106,6 +107,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 			}
 
 			service.isMarketingRep = service.user.isMarketingRep;
+			service.isCampusManager = service.user.isCampusManager;
 
 			if (data && data.id_admin) {
 				var name = service.user.name.split(' ');

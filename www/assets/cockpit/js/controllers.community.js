@@ -311,7 +311,6 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 			} else {
 				App.alert( 'Select at least one driver.' );
 			}
-
 		}
 	}
 

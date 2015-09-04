@@ -101,7 +101,7 @@ NGApp.filter( 'tsToHour', function( $filter ){
 } );
 
 NGApp.filter( 'linkfy', function( $filter ){
-	return function( input ) {
+	return function( input, short ) {
 		if( input != null ){
 			var text = $filter( 'linky' )( input, '_system' );
 			PHONE_REGEXP = /[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}/i;
@@ -112,7 +112,17 @@ NGApp.filter( 'linkfy', function( $filter ){
 					text = text.replace(match[ 0 ], phone );
 				}
 			}
-			console.log('text',text);
+			if( short ){
+				var match = text.match( /(<a(.*)>)(.*)(<\/a>)/i );
+				if( match ){
+					var content = match[ 3 ];
+					if( content.length > 40 ){
+						content = content.slice( 0, 35 ) + '...';
+					}
+					var newlink = match[ 1 ] + content + match[ 4 ];
+					text = text.replace( match[ 0 ], newlink );
+				}
+			}
 			return text;
 		}
 		return input;

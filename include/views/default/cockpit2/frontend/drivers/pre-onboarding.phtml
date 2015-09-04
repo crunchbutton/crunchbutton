@@ -27,17 +27,17 @@
 
 				<div class="error" ng-show="form.driverPhone.$error.required">Enter your phone.</div>
 				<div class="error" ng-show="form.driverPhone.$error.phoneValidate">Enter a valid phone.</div>
-				<div class="error" ng-show="form.driverPhone.$error.isUnique">This phone is already registred!</div>
+				<div class="error" ng-show="form.driverPhone.$error.isUnique">This phone is already registered!</div>
 
 				<div class="error" ng-show="form.driverEmail.$invalid && !form.driverEmail.$error.isUnique">Enter a valid email.</div>
-				<div class="error" ng-show="form.driverEmail.$error.isUnique">This email is already registred!</div>
+				<div class="error" ng-show="form.driverEmail.$error.isUnique">This email is already registered!</div>
 
 			</div>
 
 		</div>
 
 		<form name="form" ng-show="ready && !finished" novalidate>
-			<h4>Driver Application</h4><br><br>
+			<h4>Application</h4><br><br>
 
 			<div class="input-wrap">
 				<span class="label">Name:</span>

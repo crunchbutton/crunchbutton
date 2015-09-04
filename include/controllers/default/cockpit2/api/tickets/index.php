@@ -63,7 +63,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$q .= '
 				AND s.id_admin=?
 			';
-			$keys['admin'] = $admin;
+			$keys[] = $admin;
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
@@ -133,6 +133,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			s.status
 		', $q);
 
+
 		$r = c::db()->query($query, $keys);
 
 		$i = 1;
@@ -153,6 +154,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$support = Support::o( $o->id_support );
 			$lastReplyFrom = $support->lastMessage();
 			$o->last_reply = $lastReplyFrom->from;
+			$o->last_reply_type = $lastReplyFrom->type;
 			/*
 			$support = Support::o( $o->id_support );
 			$message = $support->lastMessage();

@@ -23,10 +23,15 @@ class Crunchbutton_Reward extends Cana_Table{
 	const CONFIG_KEY_ORDER_2_DAYS_IN_A_ROW_OPERATION = 'reward_points_order_2_days_row_operation';
 	const CONFIG_KEY_MAX_CAP_POINTS = 'reward_points_max_cap_points';
 
-	public function checkIfItIsEligibleForFirstTimeOrder(){
+	public function checkIfItIsEligibleForFirstTimeOrder( $phone = false ){
 		$user = c::user();
 		if( $user->phone ){
 			$orders = Order::totalOrdersByPhone( $user->phone );
+			if( $orders > 0 ){
+				return false;
+			}
+		} else if( $phone ) {
+			$orders = Order::totalOrdersByPhone( $phone );
 			if( $orders > 0 ){
 				return false;
 			}
@@ -40,13 +45,13 @@ class Crunchbutton_Reward extends Cana_Table{
 			$code = trim( $code );
 			// at first check if it belongs to an admin
 			$admin = Crunchbutton_Admin::byInviteCode( $code );
-			if( $admin->id_admin ){
+			if( $admin->id_admin && $admin->active ){
 				$this->code = $code;
 				return [ 'id_admin' => $admin->id_admin ];
 			}
 			// second check if it belongs to an user
 			$user = Crunchbutton_User::byInviteCode( $code );
-			if( $user->id_user ){
+			if( $user->id_user && $user->active ){
 				$this->code = $code;
 				return [ 'id_user' => $user->id_user ];
 			}
