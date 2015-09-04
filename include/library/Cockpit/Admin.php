@@ -38,7 +38,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out = [];
 		$payments = Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_driver = ? AND ( status = ? OR status = ? ) ORDER BY id_payment_schedule DESC', [ $this->id_admin, Cockpit_Payment_Schedule::STATUS_SCHEDULED, Cockpit_Payment_Schedule::STATUS_ERROR ] );
 		foreach( $payments as $payment ){
-			$out[] = [ 'id_payment_schedule' => $payment->id_payment_schedule, 'log' => strip_tags( $payment->log ), 'status' => $payment->status, 'date' => $payment->date()->format( 'M jS Y g:i:s A' )  ];
+			$out[] = [ 'id_payment_schedule' => $payment->id_payment_schedule, 'log' => strip_tags( $payment->log ), 'status' => $payment->status, 'amount' => $payment->amount, 'date' => $payment->date()->format( 'M jS Y g:i:s A' )  ];
 		}
 		return $out;
 	}
