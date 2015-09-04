@@ -40,8 +40,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     const LC_MAX_FAKE_ORDER_PARKING_TIME = 5; // minutes
     const LC_MAX_FAKE_ORDER_SERVICE_TIME = 5; // minutes
 
-    public function __construct($delivery_logistics, $order, $drivers = null, $distanceType=Crunchbutton_Optimizer_Input::DISTANCE_LATLON,
-                                $fakeRestaurantGeo=null, $fakeCustomerGeo=null)
+    public function __construct($delivery_logistics, $order, $drivers = null,
+                                $distanceType=Crunchbutton_Optimizer_Input::DISTANCE_LATLON,
+                                $fakeRestaurantGeo=null, $fakeCustomerGeo=null, $fakeMinAgo=null)
     {
         $this->numDriversWithPriority = -1;
         $this->_order = $order;
@@ -74,6 +75,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
             $this->fakeRestaurantGeo = $fakeRestaurantGeo;
             $this->fakeCustomerGeo = $fakeCustomerGeo;
+            if (is_null($fakeMinAgo)){
+                $this->fakeMinAgo = self::LC_FAKE_ORDER_MIN_AGO;
+            } else{
+                $this->fakeMinAgo = $fakeMinAgo;
+            }
         }
         $this->process();
     }
@@ -225,8 +231,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 // TODO: Not sure we want to use the slack max time here.  Doesn't matter for now
                 $lateWindow = $orderTime + Crunchbutton_Order_Logistics::LC_SLACK_MAX_TIME;
 
-                $fakeOrderTime = (- self::LC_FAKE_ORDER_MIN_AGO);
-                $fakeOrderAheadTime = max($r_ordertime, self::LC_MAX_FAKE_ORDER_AHEAD_TIME);
+                $fakeOrderTime = (- $this->fakeMinAgo);
+                $fakeOrderAheadTime = min($r_ordertime, self::LC_MAX_FAKE_ORDER_AHEAD_TIME);
                 $fakeEarlyWindow = max(0, $fakeOrderTime + $fakeOrderAheadTime);
                 $fakeMidWindow = $fakeOrderTime + Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD;
                 $fakeLateWindow = $fakeOrderTime + Crunchbutton_Order_Logistics::LC_SLACK_MAX_TIME;
@@ -236,8 +242,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $this->newOrderEarlyWindow = $fakeEarlyWindow;
                     $this->newOrderMidWindow =  $fakeMidWindow;
                     $this->newOrderLateWindow = $fakeLateWindow;
-                    $this->newOrderParkingTime = max($r_pt, self::LC_MAX_FAKE_ORDER_PARKING_TIME);
-                    $this->newOrderServiceTime = max($r_st, self::LC_MAX_FAKE_ORDER_SERVICE_TIME);
+                    $this->newOrderParkingTime = min($r_pt, self::LC_MAX_FAKE_ORDER_PARKING_TIME);
+                    $this->newOrderServiceTime = min($r_st, self::LC_MAX_FAKE_ORDER_SERVICE_TIME);
                 }
             }
         }
@@ -315,7 +321,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             $skipFlag = true;
         } else{
             // Do this computation only if necessary
-//            print "Found community center\n";
             $cur_geo = $newOrder->getGeo();
             if (is_null($cur_geo)){
                 $skipFlag = true;
@@ -385,6 +390,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     //  n seconds
                     $priorityOrders = Crunchbutton_Order_Priority::priorityOrders(self::TIME_MAX_DELAY + self::TIME_BUFFER,
                         $driver->id_admin, null);
+
                     foreach ($ordersUnfiltered as $order) {
                         if (!$skipFlag) {
 
@@ -477,7 +483,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 }
 
                 foreach ($this->drivers() as $driver) {
-
                     $dlist = $driver->__dlist;
 //                    print "Now run the optimizations\n";
                     // Run the optimization for each driver here
@@ -543,7 +548,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 }
                 if ($skipFlag) {
                     // Remove routes
-                    print "Skipped\n";
                     Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ?', [$new_id_order])->delete();
                 }
             }
