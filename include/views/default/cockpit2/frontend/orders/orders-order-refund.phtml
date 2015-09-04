@@ -34,6 +34,14 @@
 				<li ng-if="order.credit">
 					<div class="label">A gift card was used at this order the refund value will be ${{order.charged}} ${{order.credit}} as gift card.</div>
 				</li>
+
+
+				<li class="li-input divider-line" ng-if="order.status.status == 'accepted' || order.status.status == 'pickedup' || order.status.status == 'transfered'">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="refund.tell_driver"/><div></div>
+					</label>
+					<div class="label">Tell driver to not delivery the order because it was cancelled?</div>
+				</li>
 				<li class="li-input" ng-show="!isRefunding">
 					<button class="button save" ng-click="refund_order();">Refund</button>
 				</li>

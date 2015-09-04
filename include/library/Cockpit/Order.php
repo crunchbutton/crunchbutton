@@ -101,6 +101,13 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$out[ 'refunded' ] = intval( $out[ 'refunded' ] );
 
+		if( $out[ 'refunded' ] ){
+			 $transaction = $this->refundedReason();
+			 if( $transaction ){
+				$out[ 'refunded_reason' ] = $transaction->note;
+			 }
+		}
+
 		$out[ '_dishes' ] = [];
 
 		$delivery_service_markup = ( $this->delivery_service_markup ) ? $this->delivery_service_markup : 0;
