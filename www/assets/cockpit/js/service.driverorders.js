@@ -141,7 +141,6 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	};
 
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		console.log(service.order);
 		service.order = null;
 	});
 
@@ -229,6 +228,10 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 		$rootScope.makeBusy();
 		DriverOrdersService.reject( service.order.id_order, service.load );
 	};
+
+	service.close_banner = function(){
+		service.order = null;
+	}
 
 	return service;
 } );
