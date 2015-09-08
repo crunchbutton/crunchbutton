@@ -783,12 +783,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 						service.account.updateInfo();
 
-						var orderCached = false;	
+						var orderCached = false;
 
 						var cacheOrder = function(){
 
 							App.cache('Order', json.uuid, function () {
-								
+
 								if (orderCached) {
 									return;
 								}
@@ -862,7 +862,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					year: response.card.exp_year,
 					status : true
 				});
-				
+
 			}, function(){
 				App.busy.unBusy();
 			}, service.info.totalText.replace('$',''), 'Crunchbutton', 'USD');
@@ -1016,11 +1016,27 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			value: 0,
 			label: 'Tip with cash'
 		});
+
+		var subtotal = service.totalbreakdown().subtotal;
 		var _tips = [15, 18, 20, 25, 30, 35, 40, 45, 50];
+
 		for (var x in _tips) {
+
+			if( subtotal ){
+				var tip = ( subtotal * _tips[x] / 100 );
+				if( !isNaN( tip ) ){
+					tip = tip.toFixed( 2 );
+				}
+			}
+			if( tip ){
+				tip = ' (' + service.info.dollarSign + tip + ')';
+			} else {
+				tip = '';
+			}
+
 			tips.push({
 				value: _tips[x],
-				label: 'tip ' + _tips[x] + ' %'
+				label: 'tip ' + _tips[x] + ' %' + tip
 			});
 		}
 		return tips;
@@ -1201,7 +1217,7 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 				var arr = data.date.split(/[- :]/);
 				service.order._date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
-				
+
 				service.order._time = service.order.date_formated.split(',').shift();
 
 				var order_address = ( service.order.address ) ? service.order.address.replace(/\r|\n/g,' ') : '';
