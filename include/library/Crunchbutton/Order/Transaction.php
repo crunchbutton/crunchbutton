@@ -42,6 +42,15 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 		return false;
 	}
 
+	public static function getRefundedReason( $id_order ){
+		$query = 'SELECT * FROM order_transaction ot WHERE type = ? AND id_order = ? ORDER BY id_order_transaction DESC LIMIT 1';
+		$transaction = Crunchbutton_Order_Transaction::q( $query, [Crunchbutton_Order_Transaction::TYPE_REFUNDED, $id_order])->get( 0 );
+		if( $transaction->id_order_transaction ){
+			return $transaction;
+		}
+		return false;
+	}
+
 	public static function orderReimbursementInfoDriver( $id_order ){
 		$query = 'SELECT p.* FROM order_transaction ot
 								INNER JOIN payment_order_transaction pot ON pot.id_order_transaction = ot.id_order_transaction

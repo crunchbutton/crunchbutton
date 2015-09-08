@@ -102,12 +102,13 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				}
 
 				$reason = $this->request()[ 'reason' ];
+				$tell_driver = $this->request()[ 'tell_driver' ];
 
 				if( $this->request()[ 'reason_other' ] && $reason == 'Other' ){
 					$reason = $this->request()[ 'reason_other' ];
 				}
 
-				$status = $order->refund( null, $reason );
+				$status = $order->refund( null, $reason, $tell_driver );
 
 				if( $status ){
 					echo json_encode( [ 'success' => true ] );

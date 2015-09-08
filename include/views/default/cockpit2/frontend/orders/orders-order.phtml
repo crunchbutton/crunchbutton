@@ -94,6 +94,13 @@
 						</div>
 					</div>
 
+					<div class="field-row" ng-if="order.refunded">
+						<div class="field-key">Refunded Reason</div>
+						<div class="field-value">
+							{{order.refunded_reason}}
+						</div>
+					</div>
+
 					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline">
 						<div class="field-key">
 							Do Not Pay Driver Anything
