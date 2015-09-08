@@ -79,6 +79,16 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'text-customer-5-min-away':
+								$note = 'Text sent by ' . c::user()->name . ' (' . c::user()->login . ')';
+								// register the action
+								(new Order_Action([
+									'id_order' => $order->id_order,
+									'id_admin' => c::user()->id_admin,
+									'timestamp' => date('Y-m-d H:i:s'),
+									'note' => $note,
+									'type' => Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN
+								]))->save();
+
 								$q = Queue::create([
 									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_MINUTES_WAY,
 									'id_order' => $order->id_order,
