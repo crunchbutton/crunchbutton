@@ -3,7 +3,7 @@
 class Crunchbutton_Optimizer
 {
 
-    static public function optimize($input)
+    public static function optimize($input)
     {
         $out = null;
         $env = c::getEnv();
