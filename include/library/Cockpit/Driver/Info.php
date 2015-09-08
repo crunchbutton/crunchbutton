@@ -82,6 +82,7 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 								'Samsung Galaxy S4',
 								'Samsung Galaxy Note3',
 								'Samsung Galaxy S5',
+								'Samsung Galaxy S6',
 								'Motorola Moto G',
 								'Samsung Galaxy Tab3 7.0',
 								'Samsung Galaxy S3 Mini',
