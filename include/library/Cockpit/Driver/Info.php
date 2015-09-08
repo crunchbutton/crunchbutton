@@ -1,6 +1,6 @@
 <?php
 
-class Cockpit_Driver_Info extends Cana_Table {
+class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 
 	const PHONE_TYPE_IPHONE = 'iPhone';
 	const PHONE_TYPE_ANDROID = 'Android';
