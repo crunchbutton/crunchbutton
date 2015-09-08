@@ -141,7 +141,6 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	};
 
 	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		console.log(service.order);
 		service.order = null;
 	});
 
@@ -163,28 +162,33 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	service.text_customer_5_min_away_sending = null;
 
 	service.text_customer_5_min_away = function(){
-		if( confirm( 'Confirm send message to customer?' ) ){
 
-				service.text_customer_5_min_away_sending = true;
+		var success = function(){
+			service.text_customer_5_min_away_sending = true;
 
-				if( service && service.textLoader && service.textLoader.start ){
-					service.textLoader.start();
-				}
+			if( service && service.textLoader && service.textLoader.start ){
+				service.textLoader.start();
+			}
 
-				DriverOrdersService.text_customer_5_min_away(service.order.id_order,
-					 function( json ){
-							if (json.status) {
-								 service.load();
-							} else {
-								 App.alert('Message failed to send. Please try again.');
-							}
-							if( service && service.textLoader && service.textLoader.start ){
-								service.textLoader.stop();
-							}
-							service.text_customer_5_min_away_sending = false;
-					 }
-				);
+			DriverOrdersService.text_customer_5_min_away(service.order.id_order,
+				 function( json ){
+						if (json.status) {
+							 service.load();
+						} else {
+							 App.alert('Message failed to send. Please try again.');
+						}
+						if( service && service.textLoader && service.textLoader.start ){
+							service.textLoader.stop();
+						}
+						service.text_customer_5_min_away_sending = false;
+				 }
+			);
 		}
+
+		var fail = function(){};
+
+		App.confirm( 'Confirm send message to customer?' , 'Confirm', success, fail, null, true);
+
 	}
 
 	service.accept = function() {
@@ -224,6 +228,10 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 		$rootScope.makeBusy();
 		DriverOrdersService.reject( service.order.id_order, service.load );
 	};
+
+	service.close_banner = function(){
+		service.order = null;
+	}
 
 	return service;
 } );
