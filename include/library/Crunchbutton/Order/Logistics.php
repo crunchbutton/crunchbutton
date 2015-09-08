@@ -5,7 +5,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     const TIME_MAX_DELAY = 120; // seconds
     const TIME_BUNDLE = 600; // seconds
     const TIME_BUFFER = 2; // seconds
-    const MAX_BUNDLE_SIZE = 5;
+    const MAX_BUNDLE_SIZE = 3;
     const LOGISTICS_SIMPLE = 1;
     const LOGISTICS_COMPLEX = 2;
     const LOGISTICS_SIMPLE_ALGO_VERSION = 1;
