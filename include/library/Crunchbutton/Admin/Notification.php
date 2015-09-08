@@ -656,7 +656,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return parent::save();
 	}
 
-	public function adminHasNotification( $id_admin, $type ){
+	public static function adminHasNotification( $id_admin, $type ){
 		if( $id_admin && $type ){
 			$notification = Crunchbutton_Admin_Notification::q( 'SELECT * FROM admin_notification WHERE id_admin = ? AND type = ? AND active = 1 LIMIT 1', [ $id_admin, $type ] )->get( 0 );
 			if( $notification->id_admin_notification ){

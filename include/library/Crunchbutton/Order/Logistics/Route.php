@@ -11,7 +11,7 @@ class Crunchbutton_Order_Logistics_Route extends Cana_Table
             ->load($id);
     }
 
-    static public function routesByOrder($id_order)
+    public static function routesByOrder($id_order)
     {
         $qString = "SELECT * FROM `order_logistics_route` WHERE id_order= ?";
         $rbo = Crunchbutton_Order_Logistics_Route::q($qString, [$id_order]);
@@ -22,7 +22,7 @@ class Crunchbutton_Order_Logistics_Route extends Cana_Table
         }
     }
 
-    static public function routesByOrderAndDriver($id_order, $id_admin)
+    public static function routesByOrderAndDriver($id_order, $id_admin)
     {
         $qString = "SELECT * FROM `order_logistics_route` WHERE id_order = ? and id_admin = ?";
         $rbod = Crunchbutton_Order_Logistics_Route::q($qString, [$id_order, $id_admin]);
@@ -33,7 +33,7 @@ class Crunchbutton_Order_Logistics_Route extends Cana_Table
         }
     }
 
-    static public function defaultOrderLogisticsRoute($id_order, $node_id_order, $id_admin, $seq, $node_type, $leavingTime, $lat, $lon, $isFake=false) {
+    public static function defaultOrderLogisticsRoute($id_order, $node_id_order, $id_admin, $seq, $node_type, $leavingTime, $lat, $lon, $isFake=false) {
         return new Crunchbutton_Order_Logistics_Route([
             'id_order' => $id_order,
             'node_id_order' => $node_id_order,

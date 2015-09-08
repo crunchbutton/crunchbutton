@@ -5,12 +5,12 @@ class Crunchbutton_GoogleGeocode
 
     const r_Earth_miles = 3958.754641; // 6371000 * 0.000621371;
 
-    static public function toRadians($deg)
+    public static function toRadians($deg)
     {
         return $deg * M_PI / 180.0;
     }
 
-    static public function latlonDistanceInMiles($lat1, $lon1, $lat2, $lon2) {
+    public static function latlonDistanceInMiles($lat1, $lon1, $lat2, $lon2) {
         $phi1 = self::toRadians($lat1);
         $phi2 = self::toRadians($lat2);
         $dPhi = self::toRadians($lat2 - $lat1);
@@ -22,7 +22,7 @@ class Crunchbutton_GoogleGeocode
         return self::r_Earth_miles * $c;
     }
 
-    static public function geocode($address)
+    public static function geocode($address)
     {
         $out = null;
         $env = c::getEnv();
@@ -69,7 +69,7 @@ class Crunchbutton_GoogleGeocode
         return $out;
     }
 
-    static public function get_data($url)
+    public static function get_data($url)
     {
         $ch = curl_init();
         $timeout = 15;
