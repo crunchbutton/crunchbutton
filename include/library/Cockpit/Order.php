@@ -299,18 +299,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 				$driver = $this->driver();
 				if( $driver->id_admin ){
 
-					if( $driver->id_admin != c::user()->id_admin ){
-						$note = 'Text sent by ' . c::user()->name . ' (' . c::user()->login . ')';
-					}
-
 					$message = sprintf( $pattern, $driver->firstName() );
-					(new Order_Action([
-						'id_order' => $this->id_order,
-						'id_admin' => $driver->id_admin,
-						'timestamp' => date('Y-m-d H:i:s'),
-						'note' => $note,
-						'type' => Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN
-					]))->save();
 
 					Crunchbutton_Message_Sms::send( [
 						'to' => $this->phone,

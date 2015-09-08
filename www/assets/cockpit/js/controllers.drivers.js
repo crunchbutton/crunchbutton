@@ -45,7 +45,6 @@ NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrd
 });
 
 NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
-
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
 	$scope.oc = DriverOrdersViewService;
