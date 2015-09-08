@@ -349,15 +349,30 @@ class Cockpit_Order extends Crunchbutton_Order {
 						$loc = $this->findGeoMatchFromBadAddresses();
 						if (is_null($loc)) {
 							$loc = Crunchbutton_GoogleGeocode::geocode($this->address);
-							if (is_null($loc)) {
+							$community = $this->community();
+							$community_lat = $community->loc_lat;
+							$community_lon = $community->loc_lon;
+							if (!is_null($loc)){
+								if (!is_null($community_lat) && !is_null($community_lon)){
+									$distance = Crunchbutton_GoogleGeocode::latlonDistanceInMiles($community_lat, $community_lon, $loc->lat, $loc->lon);
+									if ($distance > 10){
+										$loc = new Crunchbutton_Order_Location($community_lat, $community_lon);
+									} else{
+										$loc = new Crunchbutton_Order_Location($loc->lat, $loc->lon);
+									}
+								} else{
+									$this->_geo = null;
+									return $this->_geo;
+								}
+							}
+							else{
 								// Use community
-								$community = $this->community();
-								$lat = $community->loc_lat;
-								$lon = $community->loc_lon;
-								if (!is_null($lat) && !is_null($lon)) {
-									$loc = new Crunchbutton_Order_Location($lat, $lon);
+
+								if (!is_null($community_lat) && !is_null($community_lon)) {
+									$loc = new Crunchbutton_Order_Location($community_lat, $community_lon);
 								} else {
 									$this->_geo = null;
+									return $this->_geo;
 								}
 							}
 						}
