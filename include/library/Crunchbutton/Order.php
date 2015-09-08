@@ -73,7 +73,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'order_params' => $params,
 			]);
 		}
-		
+
 		if ($params['pay_type'] == self::PAY_TYPE_CREDIT_CARD) {
 			$params['pay_type'] = self::PAY_TYPE_APPLE_PAY;
 		}
@@ -2291,7 +2291,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $credit->type != Crunchbutton_Credit::TYPE_DEBIT ){
 						continue;
 					}
-
 					// Creates a new credit to the user
 					$creditRefounded = new Crunchbutton_Credit();
 					$creditRefounded->id_user = $credit->id_user;
@@ -2345,11 +2344,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund($amt = null, $note = null) {
+	public function refund($amt = null, $note = null, $tell_driver = false) {
 
 		if (!$this->refunded){
 
-			$this->tellDriverTheOrderWasCanceled();
+			if( $tell_driver ){
+				$this->tellDriverTheOrderWasCanceled();
+			}
 
 			// Refund the gift
 			$this->refundGiftFromOrder();
@@ -2487,6 +2488,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 		return $support;
+	}
+
+	public function refundedReason(){
+		if( $this->refunded ){
+			$transaction = Crunchbutton_Order_Transaction::getRefundedReason( $this->id_order );
+			if( $transaction->id_order_transaction ){
+				return $transaction;
+			}
+		}
+		return false;
 	}
 
 	public function phone() {

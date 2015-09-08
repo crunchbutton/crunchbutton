@@ -90,6 +90,9 @@ class Crunchbutton_Blast extends Cana_Table {
 			$phone = $user->phone;
 			$message = $user->message();
 
+			// #6162
+			$message . "\n'STOP' to unsub";
+
 			$status = Crunchbutton_Message_Sms::send([
 				'to' => $phone,
 				'message' => $message,
