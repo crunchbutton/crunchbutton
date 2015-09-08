@@ -83,7 +83,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'driver-group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
-            'delivery_logistics' => true
+            'loc_lat' => 34.023281,
+            'loc_lon' => -118.2881961,
+            'delivery_logistics' => 1
         ]);
         $c->save();
 
@@ -147,7 +149,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $a1 = new Admin([
             'name' => $name . ' - ONE',
             'login' => null,
-            'active' => 1
+            'active' => 1,
+            'timezone' => 'America/Los_Angeles'
         ]);
         $a1->save();
         $drivers[] = $a1;
@@ -163,7 +166,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $a2 = new Admin([
             'name' => $name . ' - TWO',
             'login' => null,
-            'active' => 1
+            'active' => 1,
+            'timezone' => 'America/Los_Angeles'
         ]);
         $a2->save();
         $drivers[] = $a2;
@@ -179,7 +183,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $a3 = new Admin([
             'name' => $name . ' - THREE',
             'login' => null,
-            'active' => 1
+            'active' => 1,
+            'timezone' => 'America/Los_Angeles'
         ]);
         $a3->save();
         $drivers[] = $a3;
@@ -825,6 +830,156 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ol->numDriversWithPriority, 1);
 
     }
+
+    // One other new order in the system within the last n minutes, given to driver 1.
+    //  New order from same restaurant and customer 2 is in a similar location
+    //  Should assign to driver 1.
+    public function testLogisticsTwoOrdersSameRestaurantWithGeo1()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('+ ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+
+        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
+            0, $laterDate);
+        $pR1D1->save();
+
+        $pR1D2 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D2->save();
+
+        $pR1D3 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver3,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+
+        $pR1D3->save();
+
+        $pR1D4 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver4,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D4->save();
+
+        $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
+        $o2->lat = 34.0284;
+        $o2->lon = -118.287;
+        $o2->save();
+
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+
+        $pR1D1->delete();
+        $pR1D2->delete();
+        $pR1D3->delete();
+        $pR1D4->delete();
+        $o1->delete();
+        $o2->delete();
+        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+
+    }
+
+    // One other new order in the system within the last n minutes, given to driver 1.
+    //  New order from same restaurant and customer 2 is in a different location
+    //  Should assign to neither driver.
+    public function testLogisticsTwoOrdersSameRestaurantWithGeo2()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('+ ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+
+        $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
+            0, $laterDate);
+        $pR1D1->save();
+
+        $pR1D2 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D2->save();
+
+        $pR1D3 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver3,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+
+        $pR1D3->save();
+
+        $pR1D4 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver4,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW,
+            Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDate);
+        $pR1D4->save();
+
+        $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
+        $o2->lat = 35.0284;
+        $o2->lon = -120.287;
+        $o2->save();
+
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+
+        $pR1D1->delete();
+        $pR1D2->delete();
+        $pR1D3->delete();
+        $pR1D4->delete();
+        $o1->delete();
+        $o2->delete();
+        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, false);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 0);
+
+    }
+
 
     // One other new order in the system within the last n minutes, given to driver 1, but refunded and do_not_reimburse_driver = true.
     //  New order from same restaurant.
@@ -2439,4 +2594,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         ]);
 
     }
+
+
+
 }

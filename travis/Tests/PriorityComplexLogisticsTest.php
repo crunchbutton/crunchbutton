@@ -357,6 +357,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         ]);
         $u3->save();
 
+        $u4 = new User([
+            'name' => $name . ' - FOUR',
+            'phone' => '_PHONE_',
+            'address' => '517 Pier Ave, Hermosa Beach, CA 90254',
+            'active' => 1
+        ]);
+        $u4->save();
+
         $d = new Dish([
             'name' => $name,
             'price' => '10',
@@ -417,6 +425,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         User::q('select * from `user` where name=?', [$name . ' - ONE'])->delete();
 		User::q('select * from `user` where name=?', [$name . ' - TWO'])->delete();
         User::q('select * from `user` where name=?', [$name . ' - THREE'])->delete();
+        User::q('select * from `user` where name=?', [$name . ' - FOUR'])->delete();
         Dish::q('select * from dish where name=?', [$name])->delete();
 
     }
@@ -436,6 +445,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - ONE'])->get(0);
 		$this->user2 = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - TWO'])->get(0);
         $this->user3 = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - THREE'])->get(0);
+        $this->user4 = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name . ' - FOUR'])->get(0);
         $this->community = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - ONE'])->get(0);
 		$this->community2 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
         $this->community3 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - THREE'])->get(0);
@@ -1424,8 +1434,27 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     }
 
 
+    public function testDistance1()
+    {
+        $lat1 = 33.9873;
+        $lon1 = -118.446;
+        $lat2 = 33.175101;
+        $lon2 = -96.67781;
+        $distance = Crunchbutton_GoogleGeocode::latlonDistanceInMiles($lat1, $lon1, $lat2, $lon2);
+        $this->assertEquals(round($distance, 3), 1251.923);
+    }
 
-    public function testGoogleGeocode()
+    public function testDistance2()
+    {
+        $lat1 = 34.0986;
+        $lon1 = -118.35;
+        $lat2 = 33.966309;
+        $lon2 = -118.4229655;
+        $distance = Crunchbutton_GoogleGeocode::latlonDistanceInMiles($lat1, $lon1, $lat2, $lon2);
+        $this->assertEquals(round($distance, 3), 10.050);
+    }
+
+    public function testGoogleGeocode1()
     {
         $address = "311 Highland Lake Circle Decatur, GA, 30033";
         $location = Crunchbutton_GoogleGeocode::geocode($address);
@@ -1435,6 +1464,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($lon, -84.31);
     }
 
+    public function testGoogleGeocode2()
+    {
+        $address = "1157 W 27th St APT 2 - 90007";
+        $location = Crunchbutton_GoogleGeocode::geocode($address);
+        $lat = round($location->lat, 2);
+        $lon = round($location->lon, 2);
+        $this->assertEquals($lat, 34.03);
+        $this->assertEquals($lon, -118.29);
+    }
 
     public function testAdminLocationMissing()
     {
@@ -1599,6 +1637,51 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($geo->lon, $lon2);
     }
 
+    public function testOrderGeoNotTooFar()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $lat = 35.0;
+        $lon = -119.5;
+        $lat2 = 34.03;
+        $lon2 = -118.29;
+        $o1->lat = $lat;
+        $o1->lon = $lon;
+        $o1->save();
+        $o2 = $this->defaultOrder($this->user2, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $geo = $o2->getGeo();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals(round($geo->lat, 2), $lat2);
+        $this->assertEquals(round($geo->lon, 2), $lon2);
+    }
+
+    public function testOrderGeoTooFar()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $lat = 35.0;
+        $lon = -119.5;
+        $o1->lat = $lat;
+        $o1->lon = $lon;
+        $o1->save();
+        $o2 = $this->defaultOrder($this->user4, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $geo = $o2->getGeo();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($geo->lat, $this->community->loc_lat);
+        $this->assertEquals($geo->lon, $this->community->loc_lon);
+    }
 
 
     public function testOrderGoogleGeoAvailable()

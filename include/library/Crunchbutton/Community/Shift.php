@@ -67,7 +67,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $out;
 	}
 
-	public function lastShiftsByAdmin( $id_admin, $limit = 10 ){
+	public static function lastShiftsByAdmin( $id_admin, $limit = 10 ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$now->modify( '+ 1 day' );
 		$query = '
@@ -82,7 +82,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' ), $limit]);
 	}
 
-	public function nextShiftsByAdmin( $id_admin ){
+	public static function nextShiftsByAdmin( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$query = '
 			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
@@ -104,7 +104,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return false;
 	}
 
-	public function nextShiftsByCommunities( $communities ){
+	public static function nextShiftsByCommunities( $communities ){
 		if( count( $communities ) > 0 ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 			$now_formated = $now->format( 'Y-m-d' );
