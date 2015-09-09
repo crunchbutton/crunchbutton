@@ -739,7 +739,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 if ($lastStatusAdmin && ($lastStatusAdmin != $driver->id_admin ||
                         $lastStatus == 'delivered' || $lastStatus == 'pickedup')
                 ) {
-                    Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                    Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate,
+                        'last_driver_with_action'=> $lastStatusAdmin,
+                        'last_status' => $lastStatus, 'driver' => $driver->id_admin,
                         'stage' => 'ignored_order', 'order_check'=>$order->id_order,
                         'type' => 'simpleLogistics']);
                     continue;
