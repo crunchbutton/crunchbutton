@@ -75,6 +75,35 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $r4->save();
         $restaurants[] = $r4;
 
+        $r5 = new Restaurant([
+            'name' => $name . ' - FIVE',
+            'active' => 1,
+            'delivery' => 1,
+            'credit' => 1,
+            'delivery_fee' => '1.5',
+            'confirmation' => 0,
+            'community' => 'test',
+            'timezone' => 'America/Los_Angeles',
+            'open_for_business' => true,
+            'delivery_service' => true
+        ]);
+        $r5->save();
+        $restaurants[] = $r5;
+
+        $r6 = new Restaurant([
+            'name' => $name . ' - SIX',
+            'active' => 1,
+            'delivery' => 1,
+            'credit' => 1,
+            'delivery_fee' => '1.5',
+            'confirmation' => 0,
+            'community' => 'test',
+            'timezone' => 'America/Los_Angeles',
+            'open_for_business' => true,
+            'delivery_service' => true
+        ]);
+        $r6->save();
+        $restaurants[] = $r6;
 
         $c = new Community([
             'name' => $name,
@@ -112,6 +141,18 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'id_community' => $c->id_community
         ]);
         $r4c->save();
+
+        $r5c = new Restaurant_Community([
+            'id_restaurant' => $r5->id_restaurant,
+            'id_community' => $c->id_community
+        ]);
+        $r5c->save();
+
+        $r6c = new Restaurant_Community([
+            'id_restaurant' => $r6->id_restaurant,
+            'id_community' => $c->id_community
+        ]);
+        $r6c->save();
 
         $cs = new Community_Shift([
             'id_community' => $c->id_community,
@@ -276,6 +317,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - TWO'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - THREE'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - FOUR'])->delete();
+        Restaurant::q('select * from restaurant where name = ?', [$name . ' - FIVE'])->delete();
+        Restaurant::q('select * from restaurant where name = ?', [$name . ' - SIX'])->delete();
         Admin::q('select * from admin where name=?', [$name . ' - ONE'])->delete();
         Admin::q('select * from admin where name=?', [$name . ' - TWO'])->delete();
         Admin::q('select * from admin where name=?', [$name . ' - THREE'])->delete();
@@ -291,6 +334,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $this->restaurant2 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - TWO'])->get(0);
         $this->restaurant3 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - THREE'])->get(0);
         $this->restaurant4 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FOUR'])->get(0);
+        $this->restaurant5 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FIVE'])->get(0);
+        $this->restaurant6 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - SIX'])->get(0);
         $this->driver1 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name . ' - ONE'])->get(0);
         $this->driver2 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name . ' - TWO'])->get(0);
         $this->driver3 = Admin::q('select * from admin where name=? order by id_admin desc limit 1', [$name . ' - THREE'])->get(0);
@@ -305,11 +350,15 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $this->restaurant2 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - TWO'])->get(0);
         $this->restaurant3 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - THREE'])->get(0);
         $this->restaurant4 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FOUR'])->get(0);
+        $this->restaurant5 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - FIVE'])->get(0);
+        $this->restaurant6 = Restaurant::q('select * from restaurant where name=? order by id_restaurant desc limit 1', [$name . ' - SIX'])->get(0);
 
         Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant1->id_restaurant])->delete();
         Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant2->id_restaurant])->delete();
         Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant3->id_restaurant])->delete();
         Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant4->id_restaurant])->delete();
+        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant5->id_restaurant])->delete();
+        Crunchbutton_Order_Priority::q('select * from order_priority where id_restaurant = ?', [$this->restaurant6->id_restaurant])->delete();
     }
 
 
@@ -675,14 +724,14 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
     public function testRestaurantsHeDeliveryFor()
     {
         $d = $this->driver1->restaurantsHeDeliveryFor();
-        $this->assertEquals($d->count(), 4);
+        $this->assertEquals($d->count(), 6);
     }
 
     // This test isn't for the logistics code per se
     public function testAllPlacesHeDeliveryFor()
     {
         $d = $this->driver1->allPlacesHeDeliveryFor();
-        $this->assertEquals(count($d), 4);
+        $this->assertEquals(count($d), 6);
     }
 
 
@@ -752,9 +801,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1);
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
         $o1->delete();
     }
 
@@ -974,9 +1023,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
 
     }
 
@@ -1045,9 +1094,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
     }
 
 
@@ -1185,9 +1234,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
     }
 
     // One other new order in the system past the last n minutes, given to driver 1, but not accepted, and
@@ -1251,9 +1300,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
     }
 
     // Many new orders in the system within the last n minutes, given to driver 1, and should not assign to any driver
@@ -1318,9 +1367,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
     }
 
     // One delivered order in the system within the last n minutes, delivered by driver 1
@@ -1392,14 +1441,14 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
     }
 
     // One picked-up order in the system within the last n minutes, by driver 1
     //  New order from same restaurant
-    //  Should assign to no one
+    //  Should assign to drivers 2 or 3
     public function testLogisticsPickedupOrder()
     {
         $seconds = 50;
@@ -1466,10 +1515,16 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->delete();
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+            if ($driver->id_admin != $this->driver1->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
 
@@ -1628,9 +1683,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            $this->assertEquals($driver->__priority, true);
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 3);
     }
 
     // One order accepted in the system within the last n minutes by driver 2.  However, order is refunded and do_not_reimburse_driver = false
@@ -1720,7 +1775,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
     // One order accepted in the system outside the last n minutes by driver 2
     //  New order from same restaurant
-    //  No priority given to any driver
+    //  Priority given to drivers 1 and 3
     // Also give a high priority to driver 1 for prev order, just to make sure the code doesn't screw up there
     public function testLogisticsAcceptedOldOrder()
     {
@@ -1789,16 +1844,21 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-            $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            if ($driver->id_admin != $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // One order accepted in the system outside the last n minutes by driver 2
     //   One order accepted in the system inside of the last n minutes by driver 2
     //  New order from same restaurant
-    //  No priority given to any driver
+    //  Priority given to drivers 1 and 3
     // Also give a high priority to driver 1 for prev order, just to make sure the code doesn't screw up there
     public function testLogisticsAcceptedTwoOrdersOutsideAndInside()
     {
@@ -1920,10 +1980,15 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->delete();
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-            $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            if ($driver->id_admin != $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // N -1 orders accepted in the system inside the last n minutes by driver 2
@@ -2020,7 +2085,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
     // N orders accepted in the system inside the last n minutes by driver 2
     //  New order from same restaurant
-    //  No priority given to any driver
+    //  Priority given to drivers 1 and 3
     public function testLogisticsTooManyAcceptedOrders()
     {
         $seconds = 300;
@@ -2100,16 +2165,21 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         foreach ($ol->drivers() as $driver) {
 //            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
-            $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+            if ($driver->id_admin != $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // N -1 orders accepted in the system inside the last n minutes by driver 2
     // One new order given to driver 2 but not accepted yet
     //  New order from same restaurant
-    //  No priority given to any driver
+    //  Priority given to drivers 1 and 3
     public function testLogisticsMaxAcceptedPlusOneNewOrders()
     {
         $seconds = 300;
@@ -2220,16 +2290,22 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->delete();
         $o3->delete();
         foreach ($ol->drivers() as $driver) {
-            $this->assertEquals($driver->__seconds, 0);
-            $this->assertEquals($driver->__priority, false);
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+            if ($driver->id_admin != $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
         }
-        $this->assertEquals($ol->numDriversWithPriority, 0);
+        $this->assertEquals($ol->numDriversWithPriority, 2);
     }
 
     // N -1 orders accepted in the system inside the last n minutes by driver 2
     // One new order given to driver 2 but not accepted yet, but priority is expired
     //  New order from same restaurant
-    //  No priority given to any driver
+    //  Priority given to driver 2
     public function testLogisticsMaxAcceptedPlusOneNewExpiredOrders()
     {
         $seconds = 500;
@@ -2559,6 +2635,2120 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
     }
 
 
+
+
+    // 2 orders accepted in the system inside the last n minutes by driver 1
+    // 2 order accepted in the system inside the last n minutes by driver 2
+    //  New order from different restaurant
+    //  Priority given to driver 3
+    public function testLogisticsGiveToFreeDriver1()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o5 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o5->save();
+        $orders[] = $o5;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+    // 2 orders accepted in the system inside the last n minutes by driver 1 for r1
+    // 2 order accepted in the system inside the last n minutes by driver 2 for r2
+    //  New order from r3
+    //  Priority given to driver 3
+    public function testLogisticsGiveToFreeDriver2()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o5 = $this->defaultOrder($this->user, $r3Id, $useDate2, $this->community);
+        $o5->save();
+        $orders[] = $o5;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2, r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2, r3, r4, r5
+    //  New order from r6
+    //  Priority given to driver 3
+    public function testLogisticsGiveToFreeDriver3()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o6 = $this->defaultOrder($this->user, $r6Id, $useDate2, $this->community);
+        $o6->save();
+        $orders[] = $o6;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2, r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2, r3, r4, r5
+    //  New order from r1
+    //  Priority given to driver 1
+    public function testLogisticsGiveToFreeDriver4()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o1b = $this->defaultOrder($this->user, $r1Id, $useDate2, $this->community);
+        $o1b->save();
+        $orders[] = $o1b;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1b);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin || $driver->id_admin == $this->driver3->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(pickedup), r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2(accepted), r3, r4, r5
+    //  New order from r2
+    //  Priority given to driver 2
+    public function testLogisticsGiveToFreeDriver5()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2c);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver3->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(accepted), r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2(accepted), r3, r4, r5
+    //  New order from r2
+    //  Priority given to drivers 1 and 2
+    public function testLogisticsGiveToFreeDriver6()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2c);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
+    }
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(pickedup), r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2(pickedup), r3, r4, r5
+    //  New order from r2
+    //  Priority given to driver 3
+    public function testLogisticsGiveToFreeDriver7()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2c);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 2 orders pickedup in the system inside the last n minutes by driver 1 for r1
+    // 2 order pickedup in the system inside the last n minutes by driver 2 for r2
+    //  New order from r3
+    //  Priority given to driver 3
+    public function testLogisticsGiveToFreeDriver8()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o5 = $this->defaultOrder($this->user, $r3Id, $useDate2, $this->community);
+        $o5->save();
+        $orders[] = $o5;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 2 orders pickedup in the system inside the last n minutes by driver 1 for r1
+    // 1 order pickedup in the system inside the last n minutes by driver 2 for r2
+    //  New order from r3
+    //  Priority given to driver 3
+    public function testLogisticsGiveToFreeDriver9()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o5 = $this->defaultOrder($this->user, $r3Id, $useDate2, $this->community);
+        $o5->save();
+        $orders[] = $o5;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(pickedup), r3, r4
+    // 3 orders accepted in the system inside the last n minutes by driver 2 for r2(pickedup), r3, r4
+    // 2 orders accepted in the system inside the last n minutes by driver 3 for r2(pickedup), r3
+    //  New order from r6
+    //  Priority given to all
+    public function testLogisticsGiveToFreeDriver10()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $oa2c = new Order_Action([
+            'id_order' => $o2c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2c->save();
+        $oas[] = $oa2c;
+
+        $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3c->save();
+        $orders[] = $o3c;
+
+        $oa3c = new Order_Action([
+            'id_order' => $o3c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3c->save();
+        $oas[] = $oa3c;
+
+        $o6 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o6->save();
+        $orders[] = $o6;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+
+    // 3 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(pickedup), r3
+    // 3 orders accepted in the system inside the last n minutes by driver 2 for r2(pickedup), r3, r4
+    // 2 orders accepted in the system inside the last n minutes by driver 3 for r2(pickedup), r3
+    //  New order from r6
+    //  Priority given to all
+    public function testLogisticsGiveToFreeDriver11()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $oa2c = new Order_Action([
+            'id_order' => $o2c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2c->save();
+        $oas[] = $oa2c;
+
+        $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3c->save();
+        $orders[] = $o3c;
+
+        $oa3c = new Order_Action([
+            'id_order' => $o3c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3c->save();
+        $oas[] = $oa3c;
+
+        $o6 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o6->save();
+        $orders[] = $o6;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin || $driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            } else {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+    }
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(pickedup), r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2(pickedup), r3, r4, r5
+    // 4 orders accepted in the system inside the last n minutes by driver 3 for r2(pickedup), r3, r4, r5
+    //  New order from r2
+    //  Priority given to all
+    public function testLogisticsAllBusy()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $oa2c = new Order_Action([
+            'id_order' => $o2c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2c->save();
+        $oas[] = $oa2c;
+
+        $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3c->save();
+        $orders[] = $o3c;
+
+        $oa3c = new Order_Action([
+            'id_order' => $o3c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3c->save();
+        $oas[] = $oa3c;
+
+        $o4c = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4c->save();
+        $orders[] = $o4c;
+
+        $oa4c = new Order_Action([
+            'id_order' => $o4c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4c->save();
+        $oas[] = $oa4c;
+
+        $o5c = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5c->save();
+        $orders[] = $o5c;
+
+        $oa5c = new Order_Action([
+            'id_order' => $o5c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5c->save();
+        $oas[] = $oa5c;
+
+        $o2d = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o2d->save();
+        $orders[] = $o2d;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2d);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 3);
+    }
+
+    // 4 orders accepted/picked-up in the system inside the last n minutes by driver 1 for r1, r2(pickedup), r3, r4
+    // 4 orders accepted in the system inside the last n minutes by driver 2 for r2(pickedup), r3, r4, r5
+    // 4 orders accepted in the system inside the last n minutes by driver 3 for r2(pickedup), r3, r4, r5
+    //  New order from r6
+    //  Priority given to all
+    public function testLogisticsAllBusy2()
+    {
+        $seconds = 300;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 20;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $this->assertLessThan(300, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = 300 - Crunchbutton_Order_Logistics::TIME_MAX_DELAY;
+        $later = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $later->modify('- ' . $seconds . ' seconds');
+        $laterDate = $later->format('Y-m-d H:i:s');
+
+        $r1Id = $this->restaurant1->id_restaurant;
+        $r2Id = $this->restaurant2->id_restaurant;
+        $r3Id = $this->restaurant3->id_restaurant;
+        $r4Id = $this->restaurant4->id_restaurant;
+        $r5Id = $this->restaurant5->id_restaurant;
+        $r6Id = $this->restaurant6->id_restaurant;
+        $orders = [];
+        $oas = [];
+
+        $o1 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
+        $o1->save();
+        $orders[] = $o1;
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+        $oas[] = $oa1;
+
+
+        $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2->save();
+        $orders[] = $o2;
+
+        $oa2 = new Order_Action([
+            'id_order' => $o2->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+        $oas[] = $oa2;
+
+        $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3->save();
+        $orders[] = $o3;
+
+        $oa3 = new Order_Action([
+            'id_order' => $o3->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3->save();
+        $oas[] = $oa3;
+
+        $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4->save();
+        $orders[] = $o4;
+
+        $oa4 = new Order_Action([
+            'id_order' => $o4->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa4->save();
+        $oas[] = $oa4;
+
+        $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2b->save();
+        $orders[] = $o2b;
+
+        $oa2b = new Order_Action([
+            'id_order' => $o2b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2b->save();
+        $oas[] = $oa2b;
+
+        $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3b->save();
+        $orders[] = $o3b;
+
+        $oa3b = new Order_Action([
+            'id_order' => $o3b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3b->save();
+        $oas[] = $oa3b;
+
+        $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4b->save();
+        $orders[] = $o4b;
+
+        $oa4b = new Order_Action([
+            'id_order' => $o4b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4b->save();
+        $oas[] = $oa4b;
+
+        $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5b->save();
+        $orders[] = $o5b;
+
+        $oa5b = new Order_Action([
+            'id_order' => $o5b->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5b->save();
+        $oas[] = $oa5b;
+
+        $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
+        $o2c->save();
+        $orders[] = $o2c;
+
+        $oa2c = new Order_Action([
+            'id_order' => $o2c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2c->save();
+        $oas[] = $oa2c;
+
+        $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
+        $o3c->save();
+        $orders[] = $o3c;
+
+        $oa3c = new Order_Action([
+            'id_order' => $o3c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa3c->save();
+        $oas[] = $oa3c;
+
+        $o4c = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
+        $o4c->save();
+        $orders[] = $o4c;
+
+        $oa4c = new Order_Action([
+            'id_order' => $o4c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa4c->save();
+        $oas[] = $oa4c;
+
+        $o5c = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
+        $o5c->save();
+        $orders[] = $o5c;
+
+        $oa5c = new Order_Action([
+            'id_order' => $o5c->id_order,
+            'id_admin' => $this->driver3->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa5c->save();
+        $oas[] = $oa5c;
+
+        $o6 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
+        $o6->save();
+        $orders[] = $o6;
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        foreach ($orders as $order) {
+            $order->delete();
+        }
+        foreach ($oas as $oa) {
+            $oa->delete();
+        }
+//        foreach ($ol->drivers() as $driver) {
+//            print "Driver seconds: ".$driver->id_admin." ".$driver->__seconds."\n";
+//        }
+
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 3);
+    }
+
+
     public function defaultOrder($user, $restaurantId, $date, $community) {
        return new Order([
             'name' => $user->name,
@@ -2580,6 +4770,29 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function defaultOrderWithLoc($user, $restaurantId, $date, $community, $lat, $lon) {
+        return new Order([
+            'name' => $user->name,
+            'address' => $user->address,
+            'phone' => $user->phone,
+            'price' => '10',
+            'price_plus_delivery_markup' => '10',
+            'final_price' => '12.8',
+            'final_price_plus_delivery_markup' => '12.8',
+            'pay_type' => 'cash',
+            'delivery_type' => 'delivery',
+            'delivery_service' => true,
+            'id_user' => $user->id_user,
+            'date' => $date,
+            'id_community' => $community->id_community,
+            'id_restaurant' => $restaurantId,
+            'active' => 1,
+            'lat' => $lat,
+            'lon' => $lon
+        ]);
+
+    }
+
     public function defaultOrderPriority($order, $restaurant, $driver,
                                          $priorityTime, $priority, $delay, $expiration) {
         return new Crunchbutton_Order_Priority([
@@ -2595,6 +4808,64 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function createOrderGroupAndSave($user, $restaurant, $nowdt, $earlierSeconds, $community, $lat, $lon, $drivers,
+                                            $priorities, $lastActionEarlierSeconds=null,
+                                            $actionDriverId = null, $actionString=null) {
+        $og = [];
+        $ops = [];
+        $oa = null;
 
+        $usedt = clone $nowdt;
+        $usedt->modify('- ' . $earlierSeconds . ' seconds');
+        $useDateString = $usedt->format('Y-m-d H:i:s');
+
+        $laterdt = clone $usedt;
+        $laterdt->modify('+ ' . Crunchbutton_Order_Logistics::TIME_MAX_DELAY . ' seconds');
+        $laterDateString = $laterdt->format('Y-m-d H:i:s');
+
+        if (!is_null($lastActionEarlierSeconds)) {
+            $actiondt = clone $nowdt;
+            $actiondt->modify('- ' . $lastActionEarlierSeconds . ' seconds');
+            $actionTimeString = $actiondt->format('Y-m-d H:i:s');
+        }
+        $o = $this->defaultOrderWithLoc($user, $restaurant->id_restaurant, $useDateString, $community, $lat, $lon);
+        $o->save();
+        $numDrivers = count($drivers);
+        for ($i = 0; $i < $numDrivers; $i++) {
+            $driver = $drivers[$i];
+            $priority = $priorities[$i];
+            if (!is_null($priority)){
+                if ($priority == Crunchbutton_Order_Priority::PRIORITY_HIGH) {
+                    $op = $this->defaultOrderPriority($o, $restaurant, $driver,
+                        $useDateString, $priority, 0, $laterDateString);
+                } else if ($priority == Crunchbutton_Order_Priority::PRIORITY_LOW) {
+                    $op = $this->defaultOrderPriority($o, $restaurant, $driver,
+                        $useDateString, $priority, Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDateString);
+                } else if ($priority == Crunchbutton_Order_Priority::PRIORITY_NO_ONE) {
+                    $op = $this->defaultOrderPriority($o, $restaurant, $driver,
+                        $useDateString, $priority, 0, $useDateString);
+                } else {
+                    $op = $this->defaultOrderPriority($o, $restaurant, $driver,
+                        $useDateString, $priority, 0, $useDateString);
+                }
+                $op->save();
+                $ops[] = $op;
+            }
+            if (!is_null($actionDriverId) && $actionDriverId == $driver->id_admin && !is_null($actionString)) {
+                $oa = new Order_Action([
+                    'id_order' => $o->id_order,
+                    'id_admin' => $driver->id_admin,
+                    'timestamp' => $actionTimeString,
+                    'type' => $actionString,
+                    'note' => ''
+                ]);
+                $oa->save();
+            }
+        }
+        $og['o'] = $o;
+        $og['ops'] = $ops;
+        $og['oa'] = $oa;
+        return $og;
+    }
 
 }
