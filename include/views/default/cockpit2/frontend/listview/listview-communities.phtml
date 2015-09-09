@@ -62,8 +62,15 @@
 				<span class="tag tag-lightgrey" ng-if="community.type == 'takeout'">Takeout</span>
 			</td>
 			<td nowrap class="tb-v-center">
-				<a href="/community/edit/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-				<a href="/community/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+				<div>
+					<a href="/community/edit/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					<a href="/community/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+				</div>
+				<br>
+				<div>
+					<a href="/api/temp/bufferedhours/{{community.id_community}}" target="_blank"><button class="button button-small button-empty button-green">Buffer Hours</button></a>
+
+				</div>
 			</td>
 		</tr>
 	</table>
