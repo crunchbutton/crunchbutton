@@ -316,8 +316,16 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 							$close->modify( '- ' . $buffer_minutes . ' minutes' );
 							$hour->time_close = $close->format( 'H:i' );
 						}
+
 					} else {
 						// if the community doent have shift remove the ours
+						$hour->day = null;
+						$hour->time_open = null;
+						$hour->time_close = null;
+					}
+					$_opens_time = str_replace( substr( $opens_time, -2 ), ':' . substr( $opens_time, -2 ), $opens_time );
+					$_close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
+					if( $_opens_time > $_close_time ){
 						$hour->day = null;
 						$hour->time_open = null;
 						$hour->time_close = null;
@@ -1062,6 +1070,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				}
 			}
 		}
+
 		// Convert the hours to format am/pm and merge the segments
 		$_partial = [];
 		foreach ( $_hours as $day => $hours ) {
