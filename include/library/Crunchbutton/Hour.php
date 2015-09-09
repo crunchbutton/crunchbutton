@@ -194,7 +194,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 	public static function hoursByRestaurant( $restaurant, $gmt = false ){
 
-		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
+		// if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
 			$hours = self::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
 			if ( $gmt ) {
 				$timezone = new DateTime( 'now ', new DateTimeZone( $restaurant->timezone ) );
@@ -209,7 +209,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				}
 			}
 			$restaurant->_hours[ $gmt ] = $hours;
-		}
+		// }
 
 		if( Crunchbutton_Util::isCockpit() && !$restaurant->force_buffer ){
 			return $restaurant->_hours[ $gmt ];
