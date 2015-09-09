@@ -2,12 +2,7 @@
 
 class Controller_api_config extends Crunchbutton_Controller_Rest {
 	public function init() {
-		
-		if (getenv('HEROKU')) {
-			exit;
-			error_log('>> DISPLAYING CONFIG...');
-		}
-		
+
 		switch ($this->method()) {
 			case 'post':
 				if ($this->request()['ab']) {
