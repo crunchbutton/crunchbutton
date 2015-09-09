@@ -211,7 +211,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$restaurant->_hours[ $gmt ] = $hours;
 		}
 
-		if( ( Crunchbutton_Util::isCockpit() ) && !$restaurant->force_buffer ){
+		if( Crunchbutton_Util::isCockpit() && !$restaurant->force_buffer ){
 			return $restaurant->_hours[ $gmt ];
 		}
 
