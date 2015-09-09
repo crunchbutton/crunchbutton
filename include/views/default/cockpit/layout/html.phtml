@@ -32,8 +32,8 @@ var _gmtServer = '<?php echo $utc_str;?>';
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 
 
-<? if ( c::config()->bundle) : ?>
-	<script src="/assets/js/bundle.js?v=<?=Deploy_Server::currentVersion()?>&s=admin"></script>
+<? if ( c::config()->bundle) : /* partial 6537 */ ?>
+	<script src="https://cockpit.la/assets/js/bundle.js?v=<?=Deploy_Server::currentVersion()?>&s=admin"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin','chosen.jquery','highcharts.src']]])?>
 <? endif ; ?>
