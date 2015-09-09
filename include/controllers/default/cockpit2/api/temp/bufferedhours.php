@@ -85,6 +85,7 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 			echo "</tr>";
 		$restaurants = $community->restaurants();
 		foreach( $restaurants as $restaurant ){
+			$restaurant = Restaurant::o( 2897 );
 			if( $restaurant->delivery_service ){
 				echo "<tr title={{$restaurant->id_restaurant}}>";
 					echo "<td>{$restaurant->name}</td>";
@@ -96,6 +97,7 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 					echo "<td>{$restaurant->open()}</td>";
 				echo "</tr>";
 			}
+			exit;
 		}
 		echo "</table>";
 	}
