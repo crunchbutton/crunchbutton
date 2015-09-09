@@ -1217,6 +1217,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$now->modify( '- 7 days' );
 
+			$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
 			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 									LEFT JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 									WHERE cs.date_start >= ? AND cs.date_start <= ? AND cs.id_community = ? ORDER BY cs.date_start ASC';
@@ -1232,7 +1234,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					continue;
 				}
 
-				if( $todayAssigned && $start->format( 'Ymd' ) == $now->format( 'Ymd' ) && !$shift->id_admin_shift_assign ){
+				if( $todayAssigned && $start->format( 'Ymd' ) == $today->format( 'Ymd' ) && !$shift->id_admin_shift_assign ){
 					continue;
 				}
 
