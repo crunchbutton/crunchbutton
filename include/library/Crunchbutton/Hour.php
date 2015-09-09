@@ -212,7 +212,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// }
 
 		if( Crunchbutton_Util::isCockpit() && !$restaurant->force_buffer ){
-			return $restaurant->_hours[ $gmt ];
+			// return $restaurant->_hours[ $gmt ];
 		}
 
 		// Add restaurant buffer time for 3rd party delivery restaurants #6332
