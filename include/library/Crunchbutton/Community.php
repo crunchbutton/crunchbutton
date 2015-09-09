@@ -677,7 +677,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		// Call the method that reopen auto closed communities with drivers
 		Crunchbutton_Community::reopenAutoClosedCommunities();
-		echo 'done';
 	}
 
 	public function reopenAutoClosedCommunities(){
