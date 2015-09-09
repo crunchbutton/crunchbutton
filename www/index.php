@@ -10,9 +10,6 @@
  *
  */
 
-timecop_freeze( mktime( 15, 7, 9, 9, 9, 2015) ); // hora, min, sec, mes, dia, ano
-
-
 error_reporting(E_ALL ^ ( E_NOTICE | E_STRICT | E_DEPRECATED ) );
 ini_set('display_errors',true);
 set_time_limit(100);
