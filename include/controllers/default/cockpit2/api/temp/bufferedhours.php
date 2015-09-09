@@ -9,8 +9,11 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 			return;
 		}
 
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->setTimeZone( new DateTimeZone( $community->timezone ) );
 		echo "<h1>{$community->name}</h1>";
 
+		echo "<h2>Now {$now->format( 'Y-m-d H:i:s' )}</h2>";
 		echo "<h2>Shifts</h2>";
 
 		$community_hrs = $community->shiftsForNextWeek( true );
@@ -78,6 +81,7 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 				echo "<th>Restaurant</th>";
 				echo "<th>Regular Hours</th>";
 				echo "<th>Buffered Hours</th>";
+				echo "<th>Open</th>";
 			echo "</tr>";
 		$restaurants = $community->restaurants();
 		foreach( $restaurants as $restaurant ){
@@ -89,6 +93,7 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 					$restaurant->_hoursByRestaurant = null;
 					$restaurant->_hours = null;
 					echo "<td>{$restaurant->closed_message()}</td>";
+					echo "<td>{$restaurant->open()}</td>";
 				echo "</tr>";
 			}
 		}
