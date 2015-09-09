@@ -692,6 +692,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         } else {
             $cs_mph = $cs->mph;
         }
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $nowDate = $now->format('Y-m-d H:i:s');
 
         foreach ($this->drivers() as $driver) {
             // Get orders in the last two hours for this driver
@@ -737,10 +739,16 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 if ($lastStatusAdmin && ($lastStatusAdmin != $driver->id_admin ||
                         $lastStatus == 'delivered' || $lastStatus == 'pickedup')
                 ) {
+                    Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                        'stage' => 'ignored_order', 'order_check'=>$order->id_order,
+                        'type' => 'simpleLogistics']);
                     continue;
                 }
 
                 if ($lastStatus == 'accepted' && (!$isRefunded || !$doNotReimburseDriver)) {
+                    Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                        'stage' => 'accepted_order', 'order_check'=>$order->id_order,
+                        'type' => 'simpleLogistics']);
                     // Count accepted orders that have happened in the last n minutes
                     // This won't work properly if the earlier filters for restaurant and such are not implemented
 
@@ -748,11 +756,17 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                         $traveltime = $this->getTravelTime($order, $cs_mph);
                         if (is_null($traveltime) || $traveltime < self::LS_MAX_BUNDLE_TRAVEL_TIME) {
                             $acceptCount++;
+                            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                                'stage' => 'accepted_order_counted', 'order_check'=>$order->id_order,
+                                'type' => 'simpleLogistics']);
                         }
                     } else {
                         // The driver accepted an order from the restaurant earlier than the time window.
                         //  Assumption is he's got the food and bundling doesn't help him.
                         $tooEarlyFlag = true;
+                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                            'stage' => 'too early flag', 'order_check'=>$order->id_order,
+                            'type' => 'simpleLogistics']);
                     }
                 } else if ($lastStatus == 'new' && (!$isRefunded || !$doNotReimburseDriver) && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)) {
                     // Interested in new orders if they show up in the priority list with the top priority
@@ -761,6 +775,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $traveltime = $this->getTravelTime($order, $cs_mph);
                     if (is_null($traveltime) || $traveltime < self::LS_MAX_BUNDLE_TRAVEL_TIME) {
                         $acceptCount++;
+                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                            'stage' => 'new_order_counted', 'order_check'=>$order->id_order,
+                            'type' => 'simpleLogistics']);
+                    } else{
+                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
+                            'stage' => 'new_order_not_counted', 'order_check'=>$order->id_order,
+                            'type' => 'simpleLogistics']);
                     }
                 }
 
@@ -778,6 +799,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         }
         // Use an array here in the case of ties
         $selectedDriverIds = [];
+
 
         foreach ($driverOrderCounts as $idAdmin => $orderCount) {
             if ($orderCount == $minAcceptCount) {
