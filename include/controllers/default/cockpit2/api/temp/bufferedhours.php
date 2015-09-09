@@ -81,9 +81,8 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 			echo "</tr>";
 		$restaurants = $community->restaurants();
 		foreach( $restaurants as $restaurant ){
-
 			if( $restaurant->delivery_service ){
-				echo "<tr>";
+				echo "<tr title={{$restaurant->id_restaurant}}>";
 					echo "<td>{$restaurant->name}</td>";
 					echo "<td>{$restaurant->closed_message()}</td>";
 					$restaurant->force_buffer = true;
