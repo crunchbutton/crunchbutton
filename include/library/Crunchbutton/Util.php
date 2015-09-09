@@ -9,6 +9,10 @@ class Crunchbutton_Util extends Cana_Model {
 						( strpos( $_SERVER['HTTP_HOST'], 'dev.pit' ) !== false ) ) ? true : false;
 	}
 
+	public static function isCLI(){
+		return getenv('CLI');
+	}
+
 	public static function dateToUnixTimestamp( $dateTime ){
 		if ( is_a( $dateTime , 'DateTime' ) ) {
 			$tz = $dateTime->getTimestamp();
