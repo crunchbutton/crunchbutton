@@ -211,7 +211,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$restaurant->_hours[ $gmt ] = $hours;
 		// }
 
-		if( Crunchbutton_Util::isCockpit() ){
+		if( Crunchbutton_Util::isCockpit() && !$restaurant->force_buffer ){
 			return $restaurant->_hours[ $gmt ];
 		}
 
@@ -252,17 +252,23 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				}
 
 				$community_closes = [];
+				$community_opens = [];
 
 				foreach ( $_community_hours as $day => $hours ) {
 					if( !$community_closes[ $day ] ){
 						$community_closes[ $day ] = 0;
 					}
+					if( !$community_opens[ $day ] ){
+						$community_opens[ $day ] = 2400;
+					}
 					foreach( $hours as $hour ){
 						$close_at = intval( str_replace( ':', '', $hour[ 1 ] ) );
+						$opens_at = intval( str_replace( ':', '', $hour[ 0 ] ) );
 						if( $close_at == 0 ){
 							$close_at = 2400;
 						}
 						$community_closes[ $day ] = ( $community_closes[ $day ] > $close_at ) ? $community_closes[ $day ] : $close_at;
+						$community_opens[ $day ] = ( $community_opens[ $day ] < $opens_at ) ? $community_opens[ $day ] : $opens_at;
 					}
 				}
 
@@ -277,9 +283,22 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					}
 
 					$close_time = intval( str_replace( ':', '', $hour->time_close ) );
+					$opens_time = intval( str_replace( ':', '', $hour->time_open ) );
+
+					if( $community_opens[ $hour->day ] ){
+						$substr = ( strlen( $community_opens[ $hour->day ] ) == 4 ) ? 2 : 1;
+						$minutes = ( intval( substr( $community_opens[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_opens[ $hour->day ], -2 );
+						$substr = ( strlen( $opens_time ) == 4 ) ? 2 : 1;
+						$opens_time_minutes = ( intval( substr( $opens_time, 0, $substr ) ) * 60 ) + substr( $opens_time, -2 );
+						if( $community_opens[ $hour->day ] > $opens_time ){
+							$opens_time = $community_opens[ $hour->day ];
+							// add commas
+							$opens_time = str_replace( substr( $opens_time, -2 ), ':' . substr( $opens_time, -2 ), $opens_time );
+							$hour->time_open = $opens_time;
+						}
+					}
 
 					if( $community_closes[ $hour->day ] ){
-
 						$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
 						$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
 						$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
