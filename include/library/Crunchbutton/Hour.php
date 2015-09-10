@@ -193,7 +193,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 	}
 
 	public static function firstHourNextDay( $hours, $current ){
-// aqui
 		$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
 		$next_key = 0;
 		foreach( $weekdays as $key => $val ){
@@ -210,23 +209,19 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				$next_week = $key;
 			}
 		}
-		// echo 'current: ' . $current;
-		// echo '<br>';
+
 		$next_hours = false;
+		$_hour = null;
 		foreach( $hours as $hour ){
 			if( trim( $hour->day ) == trim( $next_week ) ){
 				$_hours_to_int = intval( str_replace( ':' , '', $hour->time_open ) );
-				// echo $hour->day . ' : ' . $_hours_to_int;
-				// echo '<br>';
-				// echo '<br>';
 				if( $next_hours === false || $next_hours !== false && $next_hours > $_hours_to_int ){
 					$next_hours = $_hours_to_int;
+					$_hour = $hour;
 				}
 			}
 		}
-		// echo $next_hours;
-		// echo '<hr>';
-		return $next_hours;
+		return $_hour;
 	}
 
 	public static function hoursByRestaurant( $restaurant, $gmt = false ){
@@ -358,13 +353,22 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						else { //if( ( $minutes - $buffer_minutes ) <= $close_time_minutes ){
 
 							$add_buffer = false;
+							$_close = null;
 							if( $close_time_minutes < ( 24 * 60 ) ){
 								$add_buffer = true;
 							}
 							if( $close_time_minutes == $minutes ){
 								if( $close_time_minutes == ( 24 * 60 ) ){
 									$next_day_hours = self::firstHourNextDay( $restaurant___hours_, $hour->day );
-									if( intval( $next_day_hours ) != 0 ){
+									$int_open = intval( str_replace( ':' , '', $next_day_hours->time_open ) );
+									if( $int_open == 0 ){
+										$int_close = intval( str_replace( ':' , '', $next_day_hours->time_close ) );
+										if( $int_close < $buffer_minutes ){
+											$close = new DateTime( $day . ' ' . $next_day_hours->time_close,  new DateTimeZone( 'UTC' ) );
+											$close->modify( '- ' . $buffer_minutes . ' minutes' );
+											$_close = $close->format( 'H:i' );
+										}
+									} else {
 										$add_buffer = true;
 									}
 								} else {
@@ -376,8 +380,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 							if( $add_buffer ){
 								$close->modify( '- ' . $buffer_minutes . ' minutes' );
 							}
-
 							$hour->time_close = $close->format( 'H:i' );
+							if( $_close ){
+								$hour->time_close = $_close;
+								$_close = null;
+							}
 						}
 
 					} else {
