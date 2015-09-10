@@ -24,7 +24,7 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 		}
 
 		$request = $this->request();
-		// Call::logFromTwilio($request);
+		Call::logFromTwilio($request);
 
 		exit;
 	}
