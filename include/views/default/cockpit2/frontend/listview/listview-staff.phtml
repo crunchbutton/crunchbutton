@@ -19,8 +19,14 @@
 				<span class="listview-bold">{{s.type}}</span>
 				<span ng-if="!community"><br>
 					<span>
-					<span class="staff-community-repeat listview-smaller" ng-repeat="community in s.communities">
-						{{community}}
+						<span class="staff-community-repeat listview-smaller" ng-repeat="community in s.communities">
+							{{community}}
+						</span>
+						<span class="staff-community-repeat listview-smaller" ng-repeat="g in s.brand_representative_groups">
+							{{g}}
+					</span>
+					<span class="staff-community-repeat listview-smaller" ng-repeat="g in s.community_manager_groups">
+							{{g}}
 					</span>
 					</span>
 				</span>

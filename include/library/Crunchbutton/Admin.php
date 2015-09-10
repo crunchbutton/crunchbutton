@@ -72,7 +72,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function vehicleOptions(){
-		return [ 	Cockpit_Admin::VEHICLE_CAR, 
+		return [ 	Cockpit_Admin::VEHICLE_CAR,
 					Cockpit_Admin::VEHICLE_BIKE,
 					Cockpit_Admin::VEHICLE_ROLLERBLADES,
 					Cockpit_Admin::VEHICLE_RICKSHAW,
@@ -380,7 +380,27 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_isCampusManager;
 	}
 
+	public function marketingGroups(){
+		$mkt = [];
+		$groups = $this->groups();
+		foreach( $groups as $group ){
+			if( $group->type == Crunchbutton_Group::MARKETING_REP_GROUP ){
+				$mkt[ $group->name ] = $group->description;
+			}
+		}
+		return $mkt;
+	}
 
+	public function campusManagerGroups(){
+		$cm = [];
+		$groups = $this->groups();
+		foreach( $groups as $group ){
+			if( $group->type == Crunchbutton_Group::CAMPUS_MANAGER_GROUP ){
+				$cm[ $group->name ] = $group->description;
+			}
+		}
+		return $cm;
+	}
 
 	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {
 		if ( !isset( $this->_isSupport ) ) {

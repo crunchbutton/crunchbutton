@@ -571,6 +571,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$staff[ 'type' ] .= $commas . 'Community Manager';
 			}
 
+			$staff[ 'brand_representative_groups' ] = $admin->marketingGroups();
+			$staff[ 'community_manager_groups' ] = $admin->campusManagerGroups();
 
 			if ($type == 'driver') {
 

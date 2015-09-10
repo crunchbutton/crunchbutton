@@ -721,6 +721,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 							if( $createTicket && $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
 								$ticket = 'Hey! You should probably reopen ' . $this->name . ', which is currently closed, because there\'s a driver scheduled for right now!! But please double check to make sure this wasn\'t done on purpose. If it was done on purpose because the community is overwhelmed, then hustle to get us an additional driver! Do whatever it takes!';
 								echo $ticket;
+								echo "\n\n";
 								Log::debug( [ 'id_community' => $this->id_community, 'nextShift' => $nextShift->id_community_shift, 'message' => $ticket, 'type' => 'community-auto-reopened' ] );
 								Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket, 'bubble' => true ] );
 							}
@@ -743,8 +744,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 			if( $this->close_3rd_party_delivery_restaurants_id_admin == $id_admin || $this->isAutoClosed() ){
 
-				$reopen = false;
-
 				$nextShifts = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 
 				if( $nextShifts && $nextShifts->count() ){
@@ -763,6 +762,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 									if( $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
 
 										$ticket = 'The community ' . $this->name . ' was auto reopened.';
+
+										echo $ticket . "\n";
 
 										// Open the community
 										$this->is_auto_closed = 0;
