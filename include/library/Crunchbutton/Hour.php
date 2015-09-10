@@ -126,11 +126,18 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				$open  = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_open,  new DateTimeZone( $restaurant->timezone ) );
 				$close = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );
 			} else {
+
 				$time_open = explode( ':' , $hour->time_open );
-				$hour->time_open = $time_open[ 0 ] . ':' . substr( $time_open[ 1 ], 0, 2 );
+				$hr = $time_open[ 0 ] ? $time_open[ 0 ] : '0';
+				$min = substr( $time_open[ 1 ], 0, 2 );
+				$min = $min ? $min : '00';
+				$hour->time_open =  $hr . ':' . $min;
 
 				$time_close = explode( ':' , $hour->time_close );
-				$hour->time_close = $time_close[ 0 ] . ':' . substr( $time_close[ 1 ], 0, 2 );
+				$hr = $time_close[ 0 ] ? $time_close[ 0 ] : '0';
+				$min = substr( $time_close[ 1 ], 0, 2 );
+				$min = $min ? $min : '00';
+				$hour->time_close =  $hr . ':' . $min;
 
 				$open  = new DateTime( 'today ' . $hour->time_open,  new DateTimeZone( $restaurant->timezone ) );
 				$close = new DateTime( 'today ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );
