@@ -192,6 +192,43 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $hours_opened;
 	}
 
+	public static function firstHourNextDay( $hours, $current ){
+// aqui
+		$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+		$next_key = 0;
+		foreach( $weekdays as $key => $val ){
+			if( $current == $key ){
+				$next_key = $val + 1;
+				if( $next_key == 7 ){
+					$next_key = 0;
+				}
+			}
+		}
+		$next_week = null;
+		foreach( $weekdays as $key => $val ){
+			if( $val == $next_key ){
+				$next_week = $key;
+			}
+		}
+		// echo 'current: ' . $current;
+		// echo '<br>';
+		$next_hours = false;
+		foreach( $hours as $hour ){
+			if( trim( $hour->day ) == trim( $next_week ) ){
+				$_hours_to_int = intval( str_replace( ':' , '', $hour->time_open ) );
+				// echo $hour->day . ' : ' . $_hours_to_int;
+				// echo '<br>';
+				// echo '<br>';
+				if( $next_hours === false || $next_hours !== false && $next_hours > $_hours_to_int ){
+					$next_hours = $_hours_to_int;
+				}
+			}
+		}
+		// echo $next_hours;
+		// echo '<hr>';
+		return $next_hours;
+	}
+
 	public static function hoursByRestaurant( $restaurant, $gmt = false ){
 
 		$hours = self::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
@@ -271,6 +308,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 				$buffer_minutes = self::minutesBuffer();
 
+				$restaurant___hours_ = [];
+
+				foreach ( $restaurant->_hours_ as $hour ) {
+					$restaurant___hours_[] = clone $hour;
+				}
+
 				foreach ( $restaurant->_hours_ as $hour ) {
 
 					if( $hour->buffered ){
@@ -302,6 +345,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 					// closes
 					if( $community_closes[ $hour->day ] ){
+
 						$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
 						$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
 						$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
@@ -311,10 +355,28 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 							$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
 							$hour->time_close = $close_time;
 						}
-						// else if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
-						else {
+						else { //if( ( $minutes - $buffer_minutes ) <= $close_time_minutes ){
+
+							$add_buffer = false;
+							if( $close_time_minutes < ( 24 * 60 ) ){
+								$add_buffer = true;
+							}
+							if( $close_time_minutes == $minutes ){
+								if( $close_time_minutes == ( 24 * 60 ) ){
+									$next_day_hours = self::firstHourNextDay( $restaurant___hours_, $hour->day );
+									if( intval( $next_day_hours ) != 0 ){
+										$add_buffer = true;
+									}
+								} else {
+									$add_buffer = true;
+								}
+							}
+
 							$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
-							$close->modify( '- ' . $buffer_minutes . ' minutes' );
+							if( $add_buffer ){
+								$close->modify( '- ' . $buffer_minutes . ' minutes' );
+							}
+
 							$hour->time_close = $close->format( 'H:i' );
 						}
 
@@ -324,8 +386,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$hour->time_open = null;
 						$hour->time_close = null;
 					}
-					$_opens_time = str_replace( substr( $opens_time, -2 ), ':' . substr( $opens_time, -2 ), $opens_time );
-					$_close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
+
+					$_opens_time = intval( str_replace( ':' , '', $opens_time ) );
+					$_close_time = intval( str_replace( ':' , '', $close_time ) );
+
 					if( $_opens_time > $_close_time ){
 						$hour->day = null;
 						$hour->time_open = null;
