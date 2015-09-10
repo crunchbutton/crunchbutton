@@ -2,7 +2,7 @@
 
 class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 	public function init() {
-		
+
 		// @todo: move this method to /communities and pass it params
 
 		switch ( $this->method() ) {
@@ -18,9 +18,11 @@ class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 						$communities = Crunchbutton_Community::active();
 						$export = [];
 						foreach( $communities as $community ){
-							$export[] = array( 'id_community' => $community->id_community, 'name' => $community->name );
-						}				
-						echo json_encode( $export );		
+							if( $community->name ){
+								$export[] = array( 'id_community' => $community->id_community, 'name' => $community->name );
+							}
+						}
+						echo json_encode( $export );
 						break;
 				}
 
@@ -30,6 +32,6 @@ class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 				echo json_encode( [ 'error' => 'invalid object' ] );
 			break;
 		}
-	
+
 	}
 }

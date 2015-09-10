@@ -365,7 +365,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-		if( $type == 'marketing-rep'  ){
+		if( !$community && $type == 'marketing-rep'  ){
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
 				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = ?
@@ -373,17 +373,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$keys[] = Crunchbutton_Group::TYPE_MARKETING_REP;
 		}
 
-		if( $type == 'community-manager'  ){
+		if( !$community && $type == 'community-manager'  ){
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
 				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name = ?
 			';
 			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
 		}
-
-
-		//
-
 
 		$q .='
 			WHERE 1=1
@@ -509,6 +505,20 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$admin = Admin::o( $s );
+
+			if( $community && $type == 'marketing-rep' ){
+				if( !$admin->isMarketingRep() ){
+					$count--;
+					continue;
+				}
+			}
+
+			if( $community && $type == 'community-manager' ){
+				if( !$admin->isCampusManager() ){
+					$count--;
+					continue;
+				}
+			}
 
 			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
 
