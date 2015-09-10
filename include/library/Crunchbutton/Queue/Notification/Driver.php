@@ -10,7 +10,16 @@ class Crunchbutton_Queue_Notification_Driver extends Crunchbutton_Queue {
 		}
 		$hostname = gethostname();
 		$pid = getmypid();
-		$ppid =  posix_getppid();
+		$ppid = posix_getppid();
+		if (is_null($hostname)){
+			$hostname="NA";
+		}
+		if (is_null($pid)){
+			$pid="NA";
+		}
+		if (is_null($ppid)){
+			$ppid="NA";
+		}
 
 		// notify driver of order
 		foreach($this->driver()->activeNotifications() as $notification) {
