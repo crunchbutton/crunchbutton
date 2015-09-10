@@ -8,14 +8,17 @@ class Crunchbutton_Queue_Notification_Driver extends Crunchbutton_Queue {
 		if ($status['status'] != 'new') {
 			return self::STATUS_STOPPED;
 		}
-		
+		$hostname = gethostname();
+		$pid = getmypid();
+		$ppid =  posix_getppid();
+
 		// notify driver of order
 		foreach($this->driver()->activeNotifications() as $notification) {
 			$notification->send($this->order());
 			Log::debug([
 				'order' => $this->order()->id_order,
 				'action' =>  '#'.$this->order()->id_order.' sending ** QUEUE ** notification to ' . $this->driver()->name . ' # ' . $notification->value,
-				'type' => 'delivery-driver'
+				'type' => 'delivery-driver', 'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid
 			]);
 		}
 
