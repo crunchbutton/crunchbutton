@@ -311,7 +311,8 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 							$close_time = str_replace( substr( $close_time, -2 ), ':' . substr( $close_time, -2 ), $close_time );
 							$hour->time_close = $close_time;
 						}
-						else if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
+						// else if( ( $minutes - $buffer_minutes ) <= $close_time_minutes  ){
+						else {
 							$close = new DateTime( $day . ' ' . $hour->time_close,  new DateTimeZone( 'UTC' ) );
 							$close->modify( '- ' . $buffer_minutes . ' minutes' );
 							$hour->time_close = $close->format( 'H:i' );
