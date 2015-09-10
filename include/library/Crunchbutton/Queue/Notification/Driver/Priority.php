@@ -9,7 +9,8 @@ class Crunchbutton_Queue_Notification_Driver_Priority extends Crunchbutton_Queue
 		if( $order->id_order && $driver->id_admin ){
 			$hostname = gethostname();
 			$pid = getmypid();
-			$ppid = posix_getppid();
+			$ppid = NULL;
+//			$ppid = posix_getppid();
 			if (is_null($hostname)){
 				$hostname="NA";
 			}
