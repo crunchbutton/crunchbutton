@@ -412,6 +412,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $cs->delete();
         $community->delete();
         $community2->delete();
+        $community3->delete();
 
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - ONE'])->delete();
         Restaurant::q('select * from restaurant where name = ?', [$name . ' - TWO'])->delete();
