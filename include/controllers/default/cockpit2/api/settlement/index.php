@@ -972,11 +972,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$limit = intval( $limit );
 		$search = $this->request()['search'] ? $this->request()['search'] : null;
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$id_driver = ( $this->request()['id_driver'] ) ? $this->request()['id_driver'] : null;
 		$payment_type = ( $this->request()['payment_type'] && $this->request()['payment_type'] != '0' ) ? $this->request()['payment_type'] : null;
 		$status = ( $this->request()['status'] && $this->request()['status'] != '0' ) ? $this->request()['status'] : null;
 		$date = ( $this->request()['date'] && $this->request()['date'] != '0' ) ? $this->request()['date'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
-
 		$page = max( $this->request()['page'], 1 );
 		$search = $this->request()['search'];
 		$type = $this->request()['type'];
@@ -1008,6 +1008,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$q .= '
 								INNER JOIN admin d ON d.id_admin = ps.id_driver
 						';
+				if( $id_driver ){
+					$q .= ' AND d.id_admin = ?';
+					$keys = [ $id_driver ];
+				}
 				break;
 
 			default:

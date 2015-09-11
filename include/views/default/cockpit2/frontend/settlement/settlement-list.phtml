@@ -7,7 +7,8 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="8"><i class="fa fa-search"></i>&nbsp;&nbsp;<input  type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="8">
+					<i class="fa fa-search"></i>&nbsp;&nbsp;<input ng-readonly="query.id_driver" type="text" ng-model="query.search" id="search" tabindex="1"></td>
 				<td>
 					<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="show_more_options=!show_more_options"></i></td>
 				</td>
@@ -19,7 +20,12 @@
 				</td>
 				<th>Type</th>
 				<td>
-					<select ng-model="query.type" ng-options="opt.type as opt.label for opt in types" class="cart-customize-select"></select>
+					<span ng-show="query.id_driver">
+						Driver
+					</span>
+					<span ng-show="!query.id_driver">
+						<select ng-model="query.type" ng-readonly="query.id_driver" ng-options="opt.type as opt.label for opt in types" class="cart-customize-select"></select>
+					</span>
 				</td>
 				<th>Payment Type</th>
 				<td>
