@@ -57,10 +57,10 @@
 				<div class="divider"></div>
 				<div class="info-address"><p class="order-info-address">
 					<div ng-click="openMap( 'query', oc.order.address );" ng-if="iOS">
-						<span>{{oc.order.address}}</span>
+						{{oc.order.address}}
 					</div>
 					<a href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_system">
-						<span>{{oc.order.address}}</span>
+						{{oc.order.address}}
 					</a>
 				</div>
 			</div>
