@@ -1589,7 +1589,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$query .= " ORDER BY _weight DESC; ";
 
-		$restaurants = self::q($query);
+		$restaurants = self::sq($query);
 		foreach ($restaurants as $restaurant) {
 			$sum += $restaurant->_weight;
 		}
