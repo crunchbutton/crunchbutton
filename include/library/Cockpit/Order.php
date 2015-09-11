@@ -268,8 +268,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
-		$out[ 'actions_today' ] = $status_date->format( 'Ymd' ) == $now->format( 'Ymd' );
-
+		if( $status_date ){
+			$out[ 'actions_today' ] = $status_date->format( 'Ymd' ) == $now->format( 'Ymd' );
+		}
 
 		if( $driver ){
 			$out['driver'] = $driver->exports();
