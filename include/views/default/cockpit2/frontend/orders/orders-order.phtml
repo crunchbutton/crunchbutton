@@ -193,7 +193,6 @@
 							<a href ng-click="callText(action.admin.phone)" class="listview-smaller">{{action.admin.phone | formatPhone}}</a>
 						</td>
 						<td class="fooditem dish-name" nowrap="nowrap" ng-if="!order.actions_today">
-							<span ng-if="order.restaurant.timezone != account.user.timezone">
 								{{action.date | convertimeformat:order.restaurant.timezone:'MMMM Do YYYY'}}
 						</td>
 						<td class="fooditem dish-name" nowrap="nowrap">
