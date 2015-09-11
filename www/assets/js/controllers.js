@@ -1791,3 +1791,12 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$.cookie( 'referral', $routeParams.id );
 	$location.path( '/' );
 });
+
+NGApp.controller( 'QuoteCtrl', function ( $scope ) {
+	$scope.quote = {
+		name: 'Devin Smith',
+		title: 'CTO & co-founder',
+		image: 'https://graph.facebook.com/659828729/picture?width=120&height=120',
+		quote: 'Here is something funny written by someone else.',
+	}
+});

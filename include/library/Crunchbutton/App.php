@@ -572,6 +572,9 @@ class Crunchbutton_App extends Cana_App {
 			]
 		];
 
+		// quotes
+		$config[ 'site' ][ 'quotes' ] = Crunchbutton_Quote::publicExports();
+
 		return $config;
 	}
 

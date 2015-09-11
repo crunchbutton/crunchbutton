@@ -48,7 +48,25 @@ class Crunchbutton_Quote extends Cana_Table {
 		$out[ 'active' ] = intval( $out[ 'active' ] ) == 0 ? false: true;
 		$out[ 'pages' ] = intval( $out[ 'pages' ] ) == 0 ? false: true;
 		if( $out[ 'facebook_id' ] ){
-			$out[ 'image' ] = 'http://graph.facebook.com/' . $out[ 'facebook_id' ] . '/picture?type=square';
+			$out[ 'image' ] = 'http://graph.facebook.com/' . $out[ 'facebook_id' ] . '/picture?width=120&height=120';
+		}
+		return $out;
+	}
+
+	public static function publicExports(){
+		$out = [];
+		$quotes = Crunchbutton_Quote::q( 'SELECT * FROM quote WHERE active =  true' );
+		foreach( $quotes as $quote ){
+			$q = $quote->exports();
+			unset( $q[ 'id' ] );
+			unset( $q[ 'id_quote' ] );
+			unset( $q[ 'facebook_id' ] );
+			unset( $q[ 'active' ] );
+			unset( $q[ 'id_admin' ] );
+			if( $q[ 'all' ] ){
+				unset( $q[ 'communities' ] );
+			}
+			$out[] = $q;
 		}
 		return $out;
 	}
