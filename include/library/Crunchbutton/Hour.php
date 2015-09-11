@@ -538,6 +538,38 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			return $hours;
 		}
 
+		$_hours = [];
+
+		// fix hours
+		foreach( $hours as $day => $segments ){
+			if( !$_hours[ $day ] ){
+				$_hours[ $day ] = [];
+			}
+			$next_is_zero = false;
+			foreach( $segments as $segment ){
+				$_from = intval( str_replace( ':' , '', $segment[ 'from' ] ) );
+				$_to = intval( str_replace( ':' , '', $segment[ 'to' ] ) );
+				$save = false;
+				if( $_from != $_to ){
+					$save = true;
+				}
+				if( $_from > $_to && $_to == 1200 ){
+					$segment[ 'to' ] = '24:00';
+					$save = true;
+					$next_is_zero = true;
+				}
+				if( $_from == 1201 && $next_is_zero ){
+					$segment[ 'from' ] = '0:01';
+					$next_is_zero = false;
+				}
+				if( $save ){
+					$_hours[ $day ][] = $segment;
+				}
+			}
+		}
+
+		$hours = $_hours;
+
 		$sd = is_null($sd) ? new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) ) : $sd;
 
 		$getDay = clone $sd;
@@ -613,40 +645,43 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$now_plus_24 = clone $sd;
 			$now_plus_24->modify( '+1 day' );
 			$now_plus_24->modify( '-5 minutes' );
+			$now = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
 
-			foreach ( $_hours_utc as $hour ) {
+			if( $_hours_utc ){
 
-				$data = false;
+				foreach ( $_hours_utc as $hour ) {
 
-				$from = new DateTime( $hour->from, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
-				$to = new DateTime( $hour->to, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+					$data = false;
 
-				// case 1
-				if( $from <= $now && $to <= $now_plus_24 && $to > $now ){
-					$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $hour->to );
-				}
-				// case 2
-				else if( $from <= $now && $to >= $now_plus_24 ){
-					$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
-				}
-				// case 3
-				else if( $from >= $now && $to >= $now_plus_24 && $from < $now_plus_24 ){
-					$data = array( 'from' => $hour->from, 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
-				}
-				// case 4
-				else if( $from >= $now && $to <= $now_plus_24  ){
-					$data = array( 'from' => $hour->from, 'to' => $hour->to );
-				}
+					$from = new DateTime( $hour->from, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+					$to = new DateTime( $hour->to, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
 
-				if( $data ){
-					$data[ 'status' ] = $hour->status;
-					if( $hour->notes ){
-						$data[ 'notes' ] = $hour->notes;
+					// case 1
+					if( $from <= $now && $to <= $now_plus_24 && $to > $now ){
+						$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $hour->to );
 					}
-					$_hours[] = ( object ) $data;
+					// case 2
+					else if( $from <= $now && $to >= $now_plus_24 ){
+						$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
+					}
+					// case 3
+					else if( $from >= $now && $to >= $now_plus_24 && $from < $now_plus_24 ){
+						$data = array( 'from' => $hour->from, 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
+					}
+					// case 4
+					else if( $from >= $now && $to <= $now_plus_24  ){
+						$data = array( 'from' => $hour->from, 'to' => $hour->to );
+					}
+
+					if( $data ){
+						$data[ 'status' ] = $hour->status;
+						if( $hour->notes ){
+							$data[ 'notes' ] = $hour->notes;
+						}
+						$_hours[] = ( object ) $data;
+					}
 				}
 			}
-
 			// return the last 24 hours
 			return $_hours;
 
