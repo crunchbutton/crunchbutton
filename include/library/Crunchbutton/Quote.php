@@ -47,6 +47,9 @@ class Crunchbutton_Quote extends Cana_Table {
 		$out[ 'all' ] = intval( count( $out[ 'communities' ] ) ) == 0 ? true : false;
 		$out[ 'active' ] = intval( $out[ 'active' ] ) == 0 ? false: true;
 		$out[ 'pages' ] = intval( $out[ 'pages' ] ) == 0 ? false: true;
+		if( $out[ 'facebook_id' ] ){
+			$out[ 'image' ] = 'http://graph.facebook.com/' . $out[ 'facebook_id' ] . '/picture?type=square';
+		}
 		return $out;
 	}
 
