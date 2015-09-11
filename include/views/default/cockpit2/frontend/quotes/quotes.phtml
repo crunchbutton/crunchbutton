@@ -1,0 +1,36 @@
+<div class="top-pad"></div>
+
+
+
+<div class="content-padding">
+
+	<div class="page-title-wrap">
+		<h1 class="title left"><i class="fa fa-files-o"></i><span>Quotes</span></h1>
+		<div class="page-title-nav">
+			<a href="/quote/"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Quote</span></button></a>
+		</div>
+	</div>
+	<div class="divider"></div>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="2"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="moreOptions()"></i></td>
+			</tr>
+
+			<tr ng-if="show_more_options">
+				<th>Community</th>
+				<td>
+					<select ng-model="query.community" name="searchCommunity" tabindex="2" ng-options="opt.id_community as opt.name for opt in communities"></select>
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-quotes.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+</div>
