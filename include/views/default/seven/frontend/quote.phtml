@@ -1,0 +1,17 @@
+<div class="footer-column-quote">
+	<span ng-controller="QuoteCtrl">
+		<div class="quote-wrap"><p>
+			<sup class="fa fa-quote-left"></sup>
+			<i>{{quote.quote}}</i>
+			<sub class="fa fa-quote-right"></sub>
+		</p></div>
+		<div class="quote-author">
+			<div class="quote-author-image" style="background-image: url({{quote.image}})"></div>
+			<div class="quote-author-info">
+				<p>
+					<b>{{quote.name}}</b><br>{{quote.title}}
+				</p>
+			</div>
+		</div>
+	</span>
+</div>
