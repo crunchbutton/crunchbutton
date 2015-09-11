@@ -28,8 +28,10 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 
 				if( $staff->id_admin ){
 					$out = $staff->exports();
+
 					$out[ 'id_community' ] = $staff->getMarketingRepGroups();
 					$out[ 'isCampusManager' ] = $staff->isCampusManager();
+					$out[ 'address' ] = $staff->driver_info()->address;
 
 					$paymentType = $staff->paymentType();
 					$out[ 'profit_percent' ] = $paymentType->profit_percent;
@@ -138,6 +140,11 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 			$staff->login = $staff->createLogin();
 			$staff->save();
 		}
+
+		// save the address
+		$driverInfo = $staff->driver_info();
+		$driverInfo->address = $this->request()[ 'address' ];
+		$driverInfo->save();
 
 		// add the community
 		$id_community = $this->request()[ 'id_community' ];

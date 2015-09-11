@@ -226,6 +226,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$out[ 'isSupport' ] = $staff->isSupport();
 		$out[ 'isDriver' ] = $staff->isDriver();
 		$out[ 'isCampusManager' ] = $staff->isCampusManager();
+		$out[ 'address' ] = $staff->address;
 
 		$driver_info = $staff->driver_info()->exports();
 
