@@ -1515,9 +1515,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function checkAfterNotifications($needDrivers, $hasDriversWorking){
+	public function registerAfterNotifications($id_admin, $seconds){
 
-		Crunchbutton_Admin_Notification_Log::register($this->id_order);
+		Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($this->id_order, $id_admin, $seconds);
+
+	}
+
+
+	public function checkForNoRepsNotifications($needDrivers, $hasDriversWorking){
 
 		if( $needDrivers && !$hasDriversWorking ){
 			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking($this);

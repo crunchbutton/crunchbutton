@@ -212,7 +212,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $this->txt ){
 			return $this->txt;
 		}
-		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = ? AND active = true", [$this->id_admin] );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_SMS ){
 				return $notification->value;
@@ -225,7 +225,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $this->id_phone ){
 			return $this->phone();
 		}
-		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = ? AND active = true", [$this->id_admin] );
 		foreach( $notifications as $notification ){
 			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_PHONE ){
 				return $notification->value;
@@ -241,14 +241,14 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function activeNotifications(){
 		if( !$this->_activeNotifications ){
 			if( $this->id_admin ){
-				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = true" );
+				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = ? AND active = true", [$this->id_admin] );
 			}
 		}
 		return $this->_activeNotifications;
 	}
 
 	public function restaurantsHeDeliveryFor(){
-		return Restaurant::q("SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = '" . Crunchbutton_Notification::TYPE_ADMIN . "' AND n.active = true AND r.active = true AND n.id_admin = ?", [$this->id_admin]);
+		return Restaurant::q("SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = ? AND n.active = true AND r.active = true AND n.id_admin = ?", [Crunchbutton_Notification::TYPE_ADMIN, $this->id_admin]);
 	}
 
 	public function driversList( $search = '' ){
