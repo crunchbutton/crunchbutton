@@ -311,12 +311,19 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
+		$brandreps = $this->request()['brandreps'] ? $this->request()['brandreps'] : false;
+
+		if( ( !c::admin()->permission()->check(['global']) && c::admin()->isCampusManager() ) || $brandreps ){
+			$brandreps = true;
+			$type = 'marketing-rep';
+			$community = c::user()->getMarketingRepGroups();
+		}
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
 			$offset = ($page-1) * $limit;
 		}
-
 
 		$q = '
 			SELECT -WILD- FROM admin
@@ -624,6 +631,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$staff[ 'sent_all_docs' ] = $sentAllDocs;
 			}
 
+			$staff[ 'email' ] = $admin->email;
 
 			$data[] = $staff;
 			$i++;
@@ -635,12 +643,17 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$pages = 1;
 		}
 
-		echo json_encode([
-			'more' => $getCount ? $pages > $page : $more,
-			'count' => intval($count),
-			'pages' => $pages,
-			'page' => intval($page),
-			'results' => $data
-		], JSON_NUMERIC_CHECK);
+		$out = [ 	'more' => $getCount ? $pages > $page : $more,
+							'count' => intval($count),
+							'pages' => $pages,
+							'page' => intval($page),
+							'results' => $data ];
+
+		if( $brandreps ){
+			$community = Community::o( c::user()->getMarketingRepGroups() );
+			$out[ 'community' ] = $community->name;
+		}
+
+		echo json_encode( $out, JSON_NUMERIC_CHECK);
 	}
 }
