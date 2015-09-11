@@ -1,0 +1,34 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Quote</th>
+			<th>Name / Title</th>
+			<th>Communities</th>
+			<th class="tb-center">Active</th>
+			<th class="tb-small"></th>
+		</tr>
+		<tr ng-repeat="quote in quotes track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/quote/{{quote.id_quote}}">
+			<td class="tb-v-center">
+				<span class="listview-bold">{{quote.quote}}</span>
+			</td>
+			<td>
+				<strong>{{quote.name}}</strong><br>{{quote.title}}
+			</td>
+			<td class="tb-v-center">
+				<span class="tag tag-red" ng-if="quote.all">All</span>
+				<span class="listview-smaller" ng-if="!quote.all">
+					<span ng-repeat="community in quote.communities" class="staff-community-repeat">
+						<a href="/community/{{community.id_community}}">{{community.name}}</a>
+					</span>
+				</span>
+			</td>
+			<td nowrap class="tb-center tb-v-center">
+				<span class="tag tag-green" ng-if="quote.active">Active</span>
+				<span class="tag tag-red" ng-if="!quote.active">Inactive</span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<a href="/quote/{{quote.id_quote}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+			</td>
+		</tr>
+	</table>
+</div>
