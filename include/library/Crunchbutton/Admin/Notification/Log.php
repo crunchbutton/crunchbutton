@@ -2,6 +2,28 @@
 
 class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 
+	public static function attemptsWithNoAdmin( $id_order ){
+		$query = 'SELECT COUNT(*) AS Total FROM `admin_notification_log` a WHERE id_order = ? and id_admin is null';
+		$result = c::db()->get( $query, [$id_order]);
+		return intval( $result->_items[0]->Total );
+	}
+
+	public static function attemptsWithAdminAndCutoff( $id_order, $id_admin ){
+		$nowDt = new DateTime('now', new DateTimeZone(c::config()->timezone));
+		$nowString = $nowDt->format('Y-m-d H:i:s');
+		$query = 'SELECT COUNT(*) AS Total FROM `admin_notification_log` a WHERE id_order = ? and id_admin = ? ' .
+			'and date <= ?';
+		$result = c::db()->get( $query, [$id_order, $id_admin, $nowString]);
+		return intval( $result->_items[0]->Total );
+	}
+
+
+	public static function sortedAttemptsWithAdmin( $id_order, $id_admin ){
+		$query = 'SELECT * FROM `admin_notification_log` a WHERE id_order = ? and id_admin = ? ' .
+			'order by date desc';
+		return Crunchbutton_Admin_Notification_Log::q($query, [$id_order, $id_admin]);
+	}
+
 	public static function attempts( $id_order ){
 		$query = 'SELECT COUNT(*) AS Total FROM `admin_notification_log` a WHERE id_order = ?';
 		$result = c::db()->get( $query, [$id_order]);
@@ -44,8 +66,8 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		return $date;
 	}
 
-	public function register( $id_order ){
-		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $id_order );
+	public static function register( $id_order ){
+		$attempts = self::attemptsWithNoAdmin( $id_order );
 		$log = new Crunchbutton_Admin_Notification_Log();
 
 		$description = 'Notification #' . ( $attempts + 1 );
@@ -70,6 +92,43 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		$log->id_order = $id_order;
 		$log->description = $description;
 		$log->date = date('Y-m-d H:i:s');
+		$log->id_admin = null;
+		$log->save();
+	}
+
+	public static function registerWithAdminAndDelayAndAttempts($id_order, $id_admin, $seconds, $attempts=null){
+		$now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+		$now->modify('+ ' . $seconds . ' seconds');
+		$nowString = $now->format('Y-m-d H:i:s');
+
+		if (is_null($attempts)) {
+			$attempts = self::attemptsWithAdminAndCutoff($id_order, $id_admin);
+		}
+		$log = new Crunchbutton_Admin_Notification_Log();
+
+		$description = 'Notification #' . ( $attempts + 1 );
+
+		if( $attempts == 0 ){
+			$description .= ' First txt message';
+		}
+
+		if( $attempts == 1 ){
+			// Change 1st driver phone call to a text message #2812
+			$description .= ' Second txt message';
+		}
+
+		if( $attempts == 2 ){
+			$description .= ' Phone call';
+		}
+
+		if( $attempts == 3 ){
+			$description .= ' Alert to CS';
+		}
+
+		$log->id_order = $id_order;
+		$log->description = $description;
+		$log->date = $nowString;
+		$log->id_admin = $id_admin;
 		$log->save();
 	}
 

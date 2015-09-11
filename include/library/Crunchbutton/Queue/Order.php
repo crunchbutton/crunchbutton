@@ -48,6 +48,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 					$retval = $this->order()->checkBeforeNotifications($drivers);
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
+							$seconds = $driver->__seconds ? intval($driver->__seconds) : 0;
 							if ($driver->__priority) {
 								// The seconds for the driver with priority should be 0, but I'm leaving the code for setting
 								//  seconds as is.
@@ -55,19 +56,21 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_PRIORITY,
 									'id_order' => $this->order()->id_order,
 									'id_admin' => $driver->id_admin,
-									'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
+									'seconds' => $seconds
 								]);
 							} else {
 								$q = Queue::create([
 									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
 									'id_order' => $this->order()->id_order,
 									'id_admin' => $driver->id_admin,
-									'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
+									'seconds' => $seconds
 								]);
 							}
+							$this->order()->registerAfterNotifications($driver->id_admin, $seconds);
+
 						}
 
-						$this->order()->checkAfterNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
+						$this->order()->checkForNoRepsNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
 
 					}
 				} else {
@@ -78,14 +81,17 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 					$retval = $this->order()->checkBeforeNotifications($drivers);
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
+							$seconds = $driver->__seconds ? intval($driver->__seconds) : 0;
 							$q = Queue::create([
 								'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
 								'id_order' => $this->order()->id_order,
 								'id_admin' => $driver->id_admin,
-								'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
+								'seconds' => $seconds
 							]);
+							$this->order()->registerAfterNotifications($driver->id_admin, $seconds);
 						}
-						$this->order()->checkAfterNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
+						$this->order()->checkForNoRepsNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
+
 					}
 				}
 			} else {
