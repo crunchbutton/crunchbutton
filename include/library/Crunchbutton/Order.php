@@ -1517,7 +1517,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function registerAfterNotifications($id_admin, $seconds){
 
-		Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($this->id_order, $id_admin, $seconds);
+		Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($this->id_order, $id_admin, $seconds, 0);
 
 	}
 
