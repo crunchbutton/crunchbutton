@@ -131,7 +131,6 @@ NGApp.run(function() {
 	FastClick.attach(document.body);
 } );
 
-
 // This config will intercept all the ajax requests and take care of the errors
 NGApp.config( function( $provide, $httpProvider ) {
 	$provide.factory( 'httpInterceptor', function( $q ) {
