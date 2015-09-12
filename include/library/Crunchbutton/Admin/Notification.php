@@ -161,6 +161,19 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function resendNotification(){
 		// This operates like a static function.  No order or admin associated with it.
 
+        $hostname = gethostname();
+        $pid = getmypid();
+        $ppid = NULL;
+//			$ppid = posix_getppid();
+        if (is_null($hostname)) {
+            $hostname = "NA";
+        }
+        if (is_null($pid)) {
+            $pid = "NA";
+        }
+        if (is_null($ppid)) {
+            $ppid = "NA";
+        }
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
 		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
@@ -192,6 +205,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 			foreach ( $orders as $order ) {
 				if( !$order->wasAcceptedByRep() && !$order->wasCanceled() ) {
+                    Log::debug(['order' => $order->id_order, 'action' => "Resend start", 'type' => 'delivery-driver',
+                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 
 					$hasDriversWorking = false;
 
@@ -200,8 +215,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 						$attempts = intval(Crunchbutton_Admin_Notification_Log::attempts($order->id_order));
 
+
 						$message = '#' . $order->id_order . ' was not accepted - attempts ' . $attempts;
-						Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
+						Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver',
+                            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 						echo $message . "\n";
 
 						if ($attempts > 3) {
