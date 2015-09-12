@@ -1269,7 +1269,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $hours;
 	}
 
-	public function currentDriverShift( $id_admin ){
+	public static function currentDriverShift( $id_admin ){
 		$admin = Admin::o( $id_admin );
 		$now = new DateTime( 'now', $admin->timezone() );
 		$now = $now->format( 'Y-m-d H:i:s' );

@@ -3,6 +3,11 @@
 class PriorityNotificationTest extends PHPUnit_Framework_TestCase
 {
 
+    const FIRST_MSG = "Notification #1 First txt message";
+    const SECOND_MSG = "Notification #2 Second txt message";
+    const THIRD_MSG = "Notification #3 Phone call";
+    const FOURTH_MSG = "Notification #4 Alert to CS";
+
     // TODO: Test that this works correctly for different time zones
     public static function setUpBeforeClass()
     {
@@ -622,7 +627,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
         $n1->save();
 
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver1->id_admin, 30, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver1->id_admin, 30, 0);
         $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
         $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
         $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
@@ -632,6 +637,10 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
         $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
         $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
+
         $o1->delete();
         $n1->delete();
         $amls1->delete();
@@ -646,6 +655,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sortedAttemptsWithAdmin1->count(), 1);
         $this->assertEquals($sortedAttemptsWithAdmin2->count(), 0);
         $this->assertEquals($numAttemptsCheck, 0);
+        $this->assertEquals($hasUnexpired1, true);
+        $this->assertEquals($hasUnexpired2, false);
+        $this->assertEquals($hasUnexpired3, false);
     }
 
     public function testRegisterWithAdmin1b() {
@@ -657,7 +669,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
         $n1->save();
 
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver1->id_admin, -30, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver1->id_admin, -30, 0);
         $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
         $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
         $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
@@ -667,6 +679,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
         $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
         $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
 
         $o1->delete();
         $n1->delete();
@@ -682,7 +697,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sortedAttemptsWithAdmin1->count(), 1);
         $this->assertEquals($sortedAttemptsWithAdmin2->count(), 0);
         $this->assertEquals($numAttemptsCheck, 1);
-
+        $this->assertEquals($hasUnexpired1, false);
+        $this->assertEquals($hasUnexpired2, false);
+        $this->assertEquals($hasUnexpired3, false);
     }
 
     public function testRegisterWithAdmin2a() {
@@ -694,7 +711,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $n1 = $this->createDefaultAdminNotification($this->driver2->id_admin, 'sms', '5555555555', true);
         $n1->save();
 
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, 30, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, 30, 0);
         $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
         $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
         $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
@@ -704,6 +721,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
         $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
         $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
 
         $o1->delete();
         $n1->delete();
@@ -719,7 +739,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sortedAttemptsWithAdmin1->count(), 0);
         $this->assertEquals($sortedAttemptsWithAdmin2->count(), 1);
         $this->assertEquals($numAttemptsCheck, 0);
-
+        $this->assertEquals($hasUnexpired1, false);
+        $this->assertEquals($hasUnexpired2, true);
+        $this->assertEquals($hasUnexpired3, false);
     }
 
     public function testRegisterWithAdmin3a() {
@@ -731,8 +753,8 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $n1 = $this->createDefaultAdminNotification($this->driver2->id_admin, 'sms', '5555555555', true);
         $n1->save();
 
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, -60, 0);
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, -30, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -60, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -30, 1);
         $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
         $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
         $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
@@ -742,6 +764,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
         $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
         $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
 
         $o1->delete();
         $n1->delete();
@@ -757,6 +782,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sortedAttemptsWithAdmin1->count(), 0);
         $this->assertEquals($sortedAttemptsWithAdmin2->count(), 2);
         $this->assertEquals($numAttemptsCheck, 2);
+        $this->assertEquals($hasUnexpired1, false);
+        $this->assertEquals($hasUnexpired2, false);
+        $this->assertEquals($hasUnexpired3, false);
     }
 
     public function testRegisterWithAdmin3b() {
@@ -768,8 +796,8 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $n1 = $this->createDefaultAdminNotification($this->driver2->id_admin, 'sms', '5555555555', true);
         $n1->save();
 
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, -60, 0);
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, 30, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -60, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, 30, 1);
         $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
         $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
         $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
@@ -779,6 +807,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
         $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
         $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
 
         $o1->delete();
         $n1->delete();
@@ -794,6 +825,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sortedAttemptsWithAdmin1->count(), 0);
         $this->assertEquals($sortedAttemptsWithAdmin2->count(), 2);
         $this->assertEquals($numAttemptsCheck, 1);
+        $this->assertEquals($hasUnexpired1, false);
+        $this->assertEquals($hasUnexpired2, true);
+        $this->assertEquals($hasUnexpired3, false);
 
     }
 
@@ -806,9 +840,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $n1 = $this->createDefaultAdminNotification($this->driver2->id_admin, 'sms', '5555555555', true);
         $n1->save();
 
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, -60, 0);
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, -30, 0);
-        Crunchbutton_Admin_Notification_Log::registerWithAdminAndDelayAndAttempts($o1->id_order, $this->driver2->id_admin, 30, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -60, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -30, 1);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, 30, 2);
         $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
         $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
         $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
@@ -818,6 +852,9 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
         $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
         $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
 
         $o1->delete();
         $n1->delete();
@@ -832,9 +869,194 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($numAttemptsAdmin2, 2);
         $this->assertEquals($sortedAttemptsWithAdmin1->count(), 0);
         $this->assertEquals($sortedAttemptsWithAdmin2->count(), 3);
-        $this->assertEquals($numAttemptsCheck, 2);
+        $counter = 0;
+        foreach ($sortedAttemptsWithAdmin2 as $a) {
+            if ($counter==0) {
+                $this->assertEquals($a->description, self::THIRD_MSG);
+            } else if ($counter == 1) {
+                $this->assertEquals($a->description, self::SECOND_MSG);
+            }
+            else if ($counter == 2) {
+                $this->assertEquals($a->description, self::FIRST_MSG);
+            }
+            $counter++;
+        }
 
+        $this->assertEquals($numAttemptsCheck, 2);
+        $this->assertEquals($hasUnexpired1, false);
+        $this->assertEquals($hasUnexpired2, true);
+        $this->assertEquals($hasUnexpired3, false);
     }
+
+    public function testRegisterWithAdmin3d() {
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver2->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -60, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -30, 1);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, 30, 2);
+        $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+        $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
+        $numAttemptsNoAdmin = Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($o1->id_order);
+        $numAttemptsAdmin1 = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($o1->id_order, $this->driver1->id_admin);
+        $numAttemptsAdmin2 = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($o1->id_order, $this->driver2->id_admin);
+        $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
+        $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
+        $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
+
+        $o1->delete();
+        $n1->delete();
+        $amls1->delete();
+        $amls2->delete();
+        $amls3->delete();
+        $this->assertEquals($amls1->count(), 0);
+        $this->assertEquals($amls2->count(), 3);
+        $this->assertEquals($amls3->count(), 0);
+        $this->assertEquals($numAttemptsNoAdmin, 0);
+        $this->assertEquals($numAttemptsAdmin1, 0);
+        $this->assertEquals($numAttemptsAdmin2, 2);
+        $this->assertEquals($sortedAttemptsWithAdmin1->count(), 0);
+        $this->assertEquals($sortedAttemptsWithAdmin2->count(), 3);
+        $counter = 0;
+        foreach ($sortedAttemptsWithAdmin2 as $a) {
+            if ($counter==0) {
+                $this->assertEquals($a->description, self::THIRD_MSG);
+            } else if ($counter == 1) {
+                $this->assertEquals($a->description, self::SECOND_MSG);
+            }
+            else if ($counter == 2) {
+                $this->assertEquals($a->description, self::FIRST_MSG);
+            }
+            $counter++;
+        }
+
+        $this->assertEquals($numAttemptsCheck, 2);
+        $this->assertEquals($hasUnexpired1, false);
+        $this->assertEquals($hasUnexpired2, true);
+        $this->assertEquals($hasUnexpired3, false);
+    }
+
+
+    public function testRegisterAllPriority1() {
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver2->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -60, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver2->id_admin, -30, 1);
+        Crunchbutton_Admin_Notification::sendAndRegisterAllPriorityNotifications($this->driver1, $o1, 3);
+        $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+        $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
+        $numAttemptsNoAdmin = Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($o1->id_order);
+        $numAttemptsAdmin1 = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($o1->id_order, $this->driver1->id_admin);
+        $numAttemptsAdmin2 = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($o1->id_order, $this->driver2->id_admin);
+        $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
+        $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
+        $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
+
+
+        $o1->delete();
+        $n1->delete();
+        $amls1->delete();
+        $amls2->delete();
+        $amls3->delete();
+        $this->assertEquals($amls1->count(), 1);
+        $this->assertEquals($amls2->count(), 2);
+        $this->assertEquals($amls3->count(), 0);
+        $this->assertEquals($numAttemptsNoAdmin, 0);
+        $this->assertEquals($numAttemptsAdmin1, 0);
+        $this->assertEquals($numAttemptsAdmin2, 2);
+        $this->assertEquals($sortedAttemptsWithAdmin1->count(), 1);
+        $this->assertEquals($sortedAttemptsWithAdmin2->count(), 2);
+        $counter = 0;
+        foreach ($sortedAttemptsWithAdmin2 as $a) {
+            if ($counter==0) {
+                $this->assertEquals($a->description, self::SECOND_MSG);
+            } else if ($counter == 1) {
+                $this->assertEquals($a->description, self::FIRST_MSG);
+            }
+            $counter++;
+        }
+
+        $this->assertEquals($numAttemptsCheck, 2);
+        $this->assertEquals($hasUnexpired1, true);
+        $this->assertEquals($hasUnexpired2, false);
+        $this->assertEquals($hasUnexpired3, false);
+    }
+
+    public function testRegisterAllPriority2() {
+
+        $useDate = '2015-07-01 05:00:00';
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate, $this->community);
+        $o1->save();
+
+        $n1 = $this->createDefaultAdminNotification($this->driver1->id_admin, 'sms', '5555555555', true);
+        $n1->save();
+
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver1->id_admin, -60, 0);
+        Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($o1->id_order, $this->driver1->id_admin, 30, 1);
+        Crunchbutton_Admin_Notification::sendAndRegisterAllPriorityNotifications($this->driver1, $o1, 3);
+        $amls1 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $amls2 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+        $amls3 = Crunchbutton_Admin_Notification_Log::q('select * from admin_notification_log where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver3->id_admin]);
+        $numAttemptsNoAdmin = Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($o1->id_order);
+        $numAttemptsAdmin1 = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($o1->id_order, $this->driver1->id_admin);
+        $numAttemptsAdmin2 = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($o1->id_order, $this->driver2->id_admin);
+        $sortedAttemptsWithAdmin1 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver1->id_admin);
+        $sortedAttemptsWithAdmin2 = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($o1->id_order, $this->driver2->id_admin);
+        $numAttemptsCheck = $n1->calculateAttempts($o1);
+        $hasUnexpired1 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver1->id_admin);
+        $hasUnexpired2 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver2->id_admin);
+        $hasUnexpired3 = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($o1->id_order, $this->driver3->id_admin);
+
+
+        $o1->delete();
+        $n1->delete();
+        $amls1->delete();
+        $amls2->delete();
+        $amls3->delete();
+        $this->assertEquals($amls1->count(), 2);
+        $this->assertEquals($amls2->count(), 0);
+        $this->assertEquals($amls3->count(), 0);
+        $this->assertEquals($numAttemptsNoAdmin, 0);
+        $this->assertEquals($numAttemptsAdmin1, 1);
+        $this->assertEquals($numAttemptsAdmin2, 0);
+        $this->assertEquals($sortedAttemptsWithAdmin1->count(), 2);
+        $this->assertEquals($sortedAttemptsWithAdmin2->count(), 0);
+        $counter = 0;
+        foreach ($sortedAttemptsWithAdmin2 as $a) {
+            if ($counter==0) {
+                $this->assertEquals($a->description, self::SECOND_MSG);
+            } else if ($counter == 1) {
+                $this->assertEquals($a->description, self::FIRST_MSG);
+            }
+            $counter++;
+        }
+
+        $this->assertEquals($numAttemptsCheck, 1);
+        $this->assertEquals($hasUnexpired1, true);
+        $this->assertEquals($hasUnexpired2, false);
+        $this->assertEquals($hasUnexpired3, false);
+    }
+
+
 
     public function testOrderedOrderPriority1() {
 
