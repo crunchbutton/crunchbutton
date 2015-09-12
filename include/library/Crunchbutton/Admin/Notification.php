@@ -149,8 +149,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				}
 
 			}
+            Log::debug(['order' => $order->id_order, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+                'minAttemptsForLowestPriority' => $minAttemptsForLowestPriority]);
 			if ($minAttemptsForLowestPriority == 3) {
-				$this->alertDispatchFor($order, $drivers);
+				$this->alertDispatch($order, $drivers);
 			}
 		} else{
 			$restaurant = $order->restaurant()->name;
