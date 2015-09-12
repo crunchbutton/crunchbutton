@@ -177,6 +177,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
 		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
+        Log::debug(['action' => "AdminNotification::resendNotification", 'type' => 'delivery-driver',
+            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 
 		$query = "SELECT * FROM
 								`order` o
@@ -211,6 +213,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					$hasDriversWorking = false;
 
 					$order_priorities = Crunchbutton_Order_Priority::getOrderedOrderPriorities($order->id_order);
+                    $order_priorities_count = $order_priorities->count();
+                    Log::debug(['order' => $order->id_order, 'action' => "Number of order priorities", 'type' => 'delivery-driver',
+                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'numOP' =>$order_priorities_count]);
 					if ($order_priorities->count() == 0) {
 
 						$attempts = intval(Crunchbutton_Admin_Notification_Log::attempts($order->id_order));
@@ -260,6 +265,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						}
 					} else{
+                        Log::debug(['order' => $order->id_order, 'action' => "Handling priority logistics", 'type' => 'delivery-driver',
+                            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 						$this->handlePriorityLogisticsNotification($order, $order_priorities);
 					}
 

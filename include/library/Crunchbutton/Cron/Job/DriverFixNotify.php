@@ -4,6 +4,20 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 
 	public function run(){
 
+		$hostname = gethostname();
+		$pid = getmypid();
+		$ppid = NULL;
+//			$ppid = posix_getppid();
+		if (is_null($hostname)) {
+			$hostname = "NA";
+		}
+		if (is_null($pid)) {
+			$pid = "NA";
+		}
+		if (is_null($ppid)) {
+			$ppid = "NA";
+		}
+
 		$q = '
 		select `order`.* from `order`
 		left join restaurant using (id_restaurant)
@@ -20,7 +34,8 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		}
 
 		echo 'done notifying drivers';
-
+		Log::debug(['action' => "Run cron job DriverFixNotify", 'type' => 'delivery-driver',
+			'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 		// it always must call finished method at the end
 		$this->finished();
 	}
