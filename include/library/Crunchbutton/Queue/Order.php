@@ -50,7 +50,9 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 						foreach ($l->drivers() as $driver) {
 							$hasUnexpired = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($this->order()->id_order, $driver->id_admin);
 							// This is in case things run late and there is a notification already
-							if (!hasUnexpired) {
+							if (!$hasUnexpired) {
+								Log::debug(['id_order' => $this->order()->id_order, 'id_admin' => $driver->id_admin, 'stage' => 'Does not have unexpired notification',
+									'type' => 'logistics']);
 								$seconds = $driver->__seconds ? intval($driver->__seconds) : 0;
 								if ($driver->__priority) {
 									// The seconds for the driver with priority should be 0, but I'm leaving the code for setting
@@ -71,6 +73,10 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 								}
 								$totalSeconds = $seconds + Crunchbutton_Admin_Notification::FIRST_DELAY;
 								$this->order()->registerAfterNotifications($driver->id_admin, $totalSeconds);
+							} else{
+								Log::debug(['id_order' => $this->order()->id_order, 'id_admin' => $driver->id_admin, 'stage' => 'Has unexpired notification',
+									'type' => 'logistics']);
+
 							}
 
 						}
@@ -87,7 +93,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
 							$hasUnexpired = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($this->order()->id_order, $driver->id_admin);
-							if (!hasUnexpired) {
+							if (!$hasUnexpired) {
 								$seconds = $driver->__seconds ? intval($driver->__seconds) : 0;
 								$q = Queue::create([
 									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
