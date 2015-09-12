@@ -1794,7 +1794,12 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 
 NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 	var quote = function(){
-		if( App.quotes.length ){
+		if( App.quotes && App.quotes.length ){
+
+			if( !processed ){
+				quoteProcess();
+			}
+
 			var sorted = parseInt( Math.random() * ( App.quotes.length - 0 ) + 0 );
 			$scope.quote = App.quotes[ sorted ];
 		} else {
@@ -1807,6 +1812,18 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 		}
 	}
 
-	quote();
+	var processed = false;
+
+	var quoteProcess = function(){
+		log
+	}
+
+	$scope.$on( '$routeChangeSuccess', function (event, next, current) {
+		if( next.action ){
+			quote( next.action );
+		} else {
+			quote();
+		}
+	} );
 
 });
