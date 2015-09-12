@@ -1793,10 +1793,20 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 });
 
 NGApp.controller( 'QuoteCtrl', function ( $scope ) {
-	$scope.quote = {
-		name: 'Devin Smith',
-		title: 'CTO & co-founder',
-		image: 'https://graph.facebook.com/659828729/picture?width=120&height=120',
-		quote: 'Here is something funny written by someone else.',
+	var quote = function(){
+		if( App.quotes.length ){
+			var sorted = parseInt( Math.random() * ( App.quotes.length - 0 ) + 0 );
+			$scope.quote = App.quotes[ sorted ];
+		} else {
+			$scope.quote = {
+				name: 'Devin Smith',
+				title: 'CTO & co-founder',
+				image: 'https://graph.facebook.com/659828729/picture?width=120&height=120',
+				quote: 'Here is something funny written by someone else.',
+			}
+		}
 	}
+
+	quote();
+
 });
