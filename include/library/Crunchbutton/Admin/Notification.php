@@ -75,7 +75,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		// In case drivers bailed out after priorities were handed out
 		$drivers = $order->getDriversToNotify();
-
+        $numDrivers = $drivers->count();
+        Log::debug(['order' => $order->id_order, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+            'numDriversToNotify' => $numDrivers]);
 		if ($drivers) {
 			$driverDict = [];
 			foreach ($drivers as $driver) {
@@ -86,15 +88,18 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			foreach ($sorted_order_priorities as $op) {
 				$id_admin = $op->id_admin;
 				if (array_key_exists($id_admin, $driverDict)) {
+                    $driver = $driverDict[$id_admin];
 					$secondsDelay = $op->seconds_delay;
 
-					$attempts = intval(Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($order->id_order, $id_admin));
+					$attempts = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($order->id_order, $id_admin);
 					if ($attempts->count() == 0) {
 						$orderTS = strtotime($order->date);
 						$nowTS = time();
 						// This is in case things get messed-up/super-delayed in the system somehow
 						// Just send immediately
-						$maxTime = self::WAIT_BUFFER + $orderTS;
+                        Log::debug(['order' => $order->id_order, 'id_admin' => $id_admin, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+                            'stage' => "Messed up - super delayed"]);
+                        $maxTime = self::WAIT_BUFFER + $orderTS;
 						if ($nowTS > $maxTime) {
 							// Send 1st notification
 							self::sendAndRegisterAllPriorityNotifications($driver, $order, 0);
@@ -118,6 +123,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 
 						}
+                        Log::debug(['order' => $order->id_order, 'id_admin' => $id_admin, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+                            'numPriorAttempts' => $numPriorAttempts]);
 						if (is_null($secondsDelayForLowestPriority)) {
 							$secondsDelayForLowestPriority = $secondsDelay;
 							$minAttemptsForLowestPriority = $numPriorAttempts;
@@ -304,6 +311,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
 		}
 
+        $driversToNotify = [];
 		if( $drivers ){
 			foreach( $drivers as $driver ){
 				foreach( $driver->activeNotifications() as $adminNotification ){
