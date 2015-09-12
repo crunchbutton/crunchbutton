@@ -23,12 +23,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const REPS_NONE_WORKING_GROUP_NAME_KEY = 'reps-none-working-group-name';
 
 	const WAIT_BUFFER = 300; // seconds
+	const FIRST_DELAY = 300; //seconds
+	const SUBSEQUENT_DELAY = 180; //seconds
 
 	public static function getSecondsDelayFromAttemptCount($numAttempts){
 		if ($numAttempts == 0) {
-			$retval = 300;
+			$retval = self::FIRST_DELAY;
 		} else{
-			$retval = 180;
+			$retval = self::SUBSEQUENT_DELAY;
 		}
 		return $retval;
 	}

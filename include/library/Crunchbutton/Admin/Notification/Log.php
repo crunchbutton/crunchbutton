@@ -17,7 +17,6 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		return intval( $result->_items[0]->Total );
 	}
 
-
 	public static function sortedAttemptsWithAdmin( $id_order, $id_admin ){
 		$query = 'SELECT * FROM `admin_notification_log` a WHERE id_order = ? and id_admin = ? ' .
 			'order by date desc';
@@ -98,7 +97,11 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 
 	public static function registerWithAdminAndDelayAndAttempts($id_order, $id_admin, $seconds, $attempts=null){
 		$now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-		$now->modify('+ ' . $seconds . ' seconds');
+		if ($seconds < 0) {
+			$now->modify('- ' . abs($seconds) . ' seconds');
+		} else {
+			$now->modify('+ ' . $seconds . ' seconds');
+		}
 		$nowString = $now->format('Y-m-d H:i:s');
 
 		if (is_null($attempts)) {
