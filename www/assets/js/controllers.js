@@ -1818,7 +1818,6 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 	}
 
 	var pickAQuote = function( where ){
-		console.log('where',where);
 		var avaiable = [];
 		switch( where ){
 			case 'pages':
@@ -1830,7 +1829,6 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 					avaiable = ( quotes.communities[ where ] ) ? quotes.communities[ where ] : quotes.communities[ 'all' ];
 				}
 		}
-		console.log('avaiable',where, avaiable);
 		if( avaiable && avaiable.length ){
 			var sorted = Math.floor( Math.random() * avaiable.length );
 			$scope.quote = avaiable[ sorted ];
@@ -1840,7 +1838,6 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 	}
 
 	var writeQuote = function( action ){
-		console.log('action',action);
 		if( processed ){
 			switch( action ){
 				case 'restaurants':
