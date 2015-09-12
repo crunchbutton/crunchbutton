@@ -63,7 +63,7 @@ class Crunchbutton_Order_Priority extends Cana_Table
     public static function getDeliveryLogisticsByOrder($id_order) {
         $query = 'SELECT p.* FROM order_priority p where id_order = ?';
         $ops = Crunchbutton_Order_Priority::q($query, [$id_order]);
-        if ($ops->count() > 0) {
+        if ($ops->count() == 0) {
             return 0;
         } else{
             $op = $ops->get(0);
