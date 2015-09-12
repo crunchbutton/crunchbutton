@@ -204,7 +204,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 									AND
 								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
 									AND
-								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE) 
+								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
 							ORDER BY o.id_order ASC";
 
 		$orders = Crunchbutton_Order::q($query);
@@ -230,8 +230,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
                         'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'numOP' =>$order_priorities_count]);
 					if ($order_priorities->count() == 0) {
 
-						$attempts = intval(Crunchbutton_Admin_Notification_Log::attempts($order->id_order));
-
+						$attempts = intval(Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order));
 
 						$message = '#' . $order->id_order . ' was not accepted - attempts ' . $attempts;
 						Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver',
@@ -250,18 +249,18 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							continue;
 						} else {
 
-							Crunchbutton_Admin_Notification_Log::register($order->id_order);
 							$drivers = $order->getDriversToNotify();
 							if ($drivers) {
 								foreach ($drivers as $driver) {
 									foreach ($driver->activeNotifications() as $adminNotification) {
-										$adminNotification->send($order);
+										$adminNotification->send($order, $attempts);
 										$hasDriversWorking = true;
 										$message = '#' . $order->id_order . ' attempts: ' . $attempts . ' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
 										Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
 										echo $message . "\n";
 									}
 								}
+                                Crunchbutton_Admin_Notification_Log::register($order->id_order);
 							}
 
 							if (!$hasDriversWorking) {
