@@ -1,0 +1,28 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-users"></i>Brand Reps</h1>
+	</div>
+	<div class="divider"></div>
+	<div class="support-box-wrap box-content2" ng-show="community">
+		<div class="box-content-table">
+			<p>
+				These are the brand reps at {{community}}. They get paid for every new user that places their first order using the brand rep's code. You should work with them & motivate them as much as possible to drive orders. Marketing in groups is a pretty fun thing to do, so enjoy it!
+			</p>
+		</div>
+	</div>
+
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="10"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-include src="'assets/view/listview-brand-reps.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+</div>

@@ -10,6 +10,8 @@ class Crunchbutton_Order_Priority extends Cana_Table
     const PRIORITY_LOW = 3;
     const PRIORITY_SKIP_NO_GEO = 4;
 
+    const COMPLEX_CUTOFF = 10000;
+
     /**
      * @param $seconds
      * @param $id_admin
@@ -57,6 +59,27 @@ class Crunchbutton_Order_Priority extends Cana_Table
         }
         return false;
     }
+
+    public static function getDeliveryLogisticsByOrder($id_order) {
+        $query = 'SELECT p.* FROM order_priority p where id_order = ?';
+        $ops = Crunchbutton_Order_Priority::q($query, [$id_order]);
+        if ($ops->count() == 0) {
+            return 0;
+        } else{
+            $op = $ops->get(0);
+            if ($op->priority_algo_version >= self::COMPLEX_CUTOFF ) {
+                return Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX;
+            } else{
+                return Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE;
+            }
+        }
+    }
+
+    public static function getOrderedOrderPriorities($id_order) {
+        $query = 'SELECT p.* FROM order_priority p where id_order = ? order by seconds_delay desc';
+        return Crunchbutton_Order_Priority::q($query, [$id_order]);
+    }
+
 
     public function __construct($id = null)
     {

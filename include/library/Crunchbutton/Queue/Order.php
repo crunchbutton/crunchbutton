@@ -48,26 +48,40 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 					$retval = $this->order()->checkBeforeNotifications($drivers);
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
-							if ($driver->__priority) {
-								// The seconds for the driver with priority should be 0, but I'm leaving the code for setting
-								//  seconds as is.
-								$q = Queue::create([
-									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_PRIORITY,
-									'id_order' => $this->order()->id_order,
-									'id_admin' => $driver->id_admin,
-									'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
-								]);
-							} else {
-								$q = Queue::create([
-									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
-									'id_order' => $this->order()->id_order,
-									'id_admin' => $driver->id_admin,
-									'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
-								]);
+							$hasUnexpired = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($this->order()->id_order, $driver->id_admin);
+							// This is in case things run late and there is a notification already
+							if (!$hasUnexpired) {
+								Log::debug(['id_order' => $this->order()->id_order, 'id_admin' => $driver->id_admin, 'stage' => 'Does not have unexpired notification',
+									'type' => 'logistics']);
+								$seconds = $driver->__seconds ? intval($driver->__seconds) : 0;
+								if ($driver->__priority) {
+									// The seconds for the driver with priority should be 0, but I'm leaving the code for setting
+									//  seconds as is.
+									$q = Queue::create([
+										'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_PRIORITY,
+										'id_order' => $this->order()->id_order,
+										'id_admin' => $driver->id_admin,
+										'seconds' => $seconds
+									]);
+								} else {
+									$q = Queue::create([
+										'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
+										'id_order' => $this->order()->id_order,
+										'id_admin' => $driver->id_admin,
+										'seconds' => $seconds
+									]);
+								}
+								$totalSeconds = $seconds + Crunchbutton_Admin_Notification::FIRST_DELAY;
+								$this->order()->registerAfterNotifications($driver->id_admin, $totalSeconds);
+							} else{
+								Log::debug(['id_order' => $this->order()->id_order, 'id_admin' => $driver->id_admin, 'stage' => 'Has unexpired notification',
+									'type' => 'logistics']);
+
 							}
+
 						}
 
-						$this->order()->checkAfterNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
+						$this->order()->checkForNoRepsNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
 
 					}
 				} else {
@@ -78,14 +92,21 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 					$retval = $this->order()->checkBeforeNotifications($drivers);
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
-							$q = Queue::create([
-								'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
-								'id_order' => $this->order()->id_order,
-								'id_admin' => $driver->id_admin,
-								'seconds' => $driver->__seconds ? intval($driver->__seconds) : 0
-							]);
+							$hasUnexpired = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($this->order()->id_order, $driver->id_admin);
+							if (!$hasUnexpired) {
+								$seconds = $driver->__seconds ? intval($driver->__seconds) : 0;
+								$q = Queue::create([
+									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER,
+									'id_order' => $this->order()->id_order,
+									'id_admin' => $driver->id_admin,
+									'seconds' => $seconds
+								]);
+								$totalSeconds = $seconds + Crunchbutton_Admin_Notification::FIRST_DELAY;
+								$this->order()->registerAfterNotifications($driver->id_admin, $totalSeconds);
+							}
 						}
-						$this->order()->checkAfterNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
+						$this->order()->checkForNoRepsNotifications($retval['needDrivers'], $retval['hasDriversWorking']);
+
 					}
 				}
 			} else {

@@ -1058,6 +1058,11 @@ App.init = function(config) {
 			parent.navigator.splashscreen.hide();
 		}
 	}
+
+	// preload loader image
+	var image = new Image();
+	image.src = '/assets/images/ajax_loader_orange_512.gif';
+
 };
 
 /**

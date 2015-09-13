@@ -27,26 +27,6 @@ class Crunchbutton_Queue extends Cana_Table {
 	const STATUS_STOPPED	= 'stopped';
 
 
-	public static function notificationAttempts($id_order, $id_admin=null) {
-		if (!is_null($id_order)) {
-			if (is_null($id_admin)){
-				$query = 'SELECT COUNT(*) AS Total FROM `queue` a WHERE id_order = ? AND ' .
-					'id_admin IS NOT NULL AND type IN ("notification-driver", "notification-driver-priority") AND ' .
-					'status IN ("success", "new", "running")';
-				$result = c::db()->get($query, [$id_order]);
-			} else {
-				$query = 'SELECT COUNT(*) AS Total FROM `queue` a WHERE id_order = ? AND ' .
-					'id_admin = ? AND id_admin IS NOT NULL AND type IN ("notification-driver", "notification-driver-priority") AND ' .
-					'status IN ("success", "new", "running")';
-				$result = c::db()->get($query, [$id_order, $id_admin]);
-			}
-
-			return intval($result->_items[0]->Total);
-		} else {
-			return 0;
-		}
-	}
-
 	public static function process($all = false) {
 
 		if (!$all) {

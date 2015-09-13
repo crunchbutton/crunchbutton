@@ -31,6 +31,7 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
 		$date_start = $now->format( 'Y-m-d' );
 		$now->modify( '+1 day' );
 		$date_end = $now->format( 'Y-m-d' ) . ' 23:59:59';

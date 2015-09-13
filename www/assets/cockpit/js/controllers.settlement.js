@@ -12,6 +12,7 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 			status: 0,
 			payment_type: '0',
 			date: '',
+			id_driver: null,
 			fullcount: false
 		},
 		update: function() {
@@ -28,7 +29,8 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 			'payment_type': $scope.query.payment_type,
 			'type': $scope.query.type,
 			'status': $scope.query.status,
-			'date': $scope.query.date
+			'date': $scope.query.date,
+			'id_driver': $scope.query.id_driver
 		}, function( data ){
 			$scope.payments = data.results;
 			$scope.pages = data.pages;

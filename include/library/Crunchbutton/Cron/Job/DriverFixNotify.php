@@ -4,6 +4,20 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 
 	public function run(){
 
+		$hostname = gethostname();
+		$pid = getmypid();
+		$ppid = NULL;
+//			$ppid = posix_getppid();
+		if (is_null($hostname)) {
+			$hostname = "NA";
+		}
+		if (is_null($pid)) {
+			$pid = "NA";
+		}
+		if (is_null($ppid)) {
+			$ppid = "NA";
+		}
+
 		$q = '
 		select `order`.* from `order`
 		left join restaurant using (id_restaurant)
@@ -16,6 +30,9 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 
 		foreach ($orders as $order) {
 			echo 'sending notifications for order '.$order->id_order."\n";
+			$id_order = $order->id_order;
+			Log::debug(['order' => $id_order, 'action' => "Run cron job DriverFixNotify", 'type' => 'delivery-driver',
+				'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 			$order->notifyDrivers();
 		}
 

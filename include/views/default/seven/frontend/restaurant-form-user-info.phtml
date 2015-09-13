@@ -146,7 +146,7 @@
 
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">
 					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
-					<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber" autocomplete="cc-number" x-autocompletetype="cc-number" pattern="\d*">
+					<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber" autocomplete="cc-number" x-autocompletetype="cc-number">
 				</div>
 
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">

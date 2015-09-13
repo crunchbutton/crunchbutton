@@ -43,7 +43,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 
-	public function getUsers( $forceAll = false ){
+	public static function getUsers( $forceAll = false ){
 
 		$support = array();
 
@@ -295,7 +295,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	// Creates a ticket and related it to a driver
-	public function createNewWarningStaffTicket( $params = [] ){
+	public static function createNewWarningStaffTicket( $params = [] ){
 		$params[ 'staff' ] = true;
 		return self::createNewWarning( $params );
 	}

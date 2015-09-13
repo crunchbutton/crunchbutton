@@ -3,7 +3,26 @@
 class Crunchbutton_GoogleGeocode
 {
 
-    static public function geocode($address)
+    const r_Earth_miles = 3958.754641; // 6371000 * 0.000621371;
+
+    public static function toRadians($deg)
+    {
+        return $deg * M_PI / 180.0;
+    }
+
+    public static function latlonDistanceInMiles($lat1, $lon1, $lat2, $lon2) {
+        $phi1 = self::toRadians($lat1);
+        $phi2 = self::toRadians($lat2);
+        $dPhi = self::toRadians($lat2 - $lat1);
+        $dLambda = self::toRadians($lon2 - $lon1);
+
+        $a = (sin($dPhi / 2.0) * sin($dPhi / 2.0)) +
+            (cos($phi1) * cos($phi2) * sin($dLambda / 2.0) * sin($dLambda / 2.0));
+        $c = 2.0 * atan2(sqrt($a), sqrt(1.0 - $a));
+        return self::r_Earth_miles * $c;
+    }
+
+    public static function geocode($address)
     {
         $out = null;
         $env = c::getEnv();
@@ -21,7 +40,7 @@ class Crunchbutton_GoogleGeocode
             . c::config()->google->{$env}->key;
         $return = Crunchbutton_GoogleGeocode::get_data($url);
 //        print "$return\n";
-		$return = json_decode($return);
+        $return = json_decode($return);
 
 //        $cmd = 'curl '
 //            . $rootUrl
@@ -37,7 +56,7 @@ class Crunchbutton_GoogleGeocode
 //        } else{
 //            print "No results from Google geocode\n";
 //        }
-		if ($return && isset($return->results) && count($return->results) == 1 && isset($return->results[0]->geometry)) {
+        if ($return && isset($return->results) && count($return->results) == 1 && isset($return->results[0]->geometry)) {
             $geometry = $return->results[0]->geometry;
 //            print_r( $geometry );
             if (isset($geometry->location) && isset($geometry->location->lat) && isset($geometry->location->lng)) {
@@ -47,10 +66,11 @@ class Crunchbutton_GoogleGeocode
             }
         }
 
-		return $out;
-	}
+        return $out;
+    }
 
-    static public function get_data($url) {
+    public static function get_data($url)
+    {
         $ch = curl_init();
         $timeout = 15;
         curl_setopt($ch, CURLOPT_URL, $url);

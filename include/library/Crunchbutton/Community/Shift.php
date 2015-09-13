@@ -67,7 +67,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $out;
 	}
 
-	public function lastShiftsByAdmin( $id_admin, $limit = 10 ){
+	public static function lastShiftsByAdmin( $id_admin, $limit = 10 ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$now->modify( '+ 1 day' );
 		$query = '
@@ -82,7 +82,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' ), $limit]);
 	}
 
-	public function nextShiftsByAdmin( $id_admin ){
+	public static function nextShiftsByAdmin( $id_admin ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$query = '
 			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
@@ -104,7 +104,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return false;
 	}
 
-	public function nextShiftsByCommunities( $communities ){
+	public static function nextShiftsByCommunities( $communities ){
 		if( count( $communities ) > 0 ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 			$now_formated = $now->format( 'Y-m-d' );
@@ -1217,6 +1217,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			$now->modify( '- 7 days' );
 
+			$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
 			$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 									LEFT JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 									WHERE cs.date_start >= ? AND cs.date_start <= ? AND cs.id_community = ? ORDER BY cs.date_start ASC';
@@ -1232,7 +1234,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					continue;
 				}
 
-				if( $todayAssigned && $start->format( 'Ymd' ) == $now->format( 'Ymd' ) && !$shift->id_admin_shift_assign ){
+				if( $todayAssigned && $start->format( 'Ymd' ) == $today->format( 'Ymd' ) && !$shift->id_admin_shift_assign ){
 					continue;
 				}
 
@@ -1267,7 +1269,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $hours;
 	}
 
-	public function currentDriverShift( $id_admin ){
+	public static function currentDriverShift( $id_admin ){
 		$admin = Admin::o( $id_admin );
 		$now = new DateTime( 'now', $admin->timezone() );
 		$now = $now->format( 'Y-m-d H:i:s' );
