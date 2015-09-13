@@ -52,7 +52,7 @@
 
 				<br><br>
 				<div class="double-cols">
-					<a href="/settlement/drivers/payments?limit=20&page=1&fullcount&search={{staff.name}}&type=0&status=0&id_driver={{staff.id_admin}}"><button class="button button-empty button-border button-orange"><i class="fa fa-university"></i>&nbsp;&nbsp;Payment List</button></a>
+					<a href="/settlement/list?limit=20&page=1&fullcount=false&search=&type=driver&status=0&payment_type=0&date=&id_driver={{staff.id_admin}}"><button class="button button-empty button-border button-orange"><i class="fa fa-university"></i>&nbsp;&nbsp;Payment List</button></a>
 
 					<a href="/settlement/drivers/payment/arbitrary/{{staff.id_admin}}"><button class="button button-empty button-border button-green"><i class="fa fa-money"></i>&nbsp;&nbsp;Arbitrary Payment</button></a>
 				</div>
@@ -131,27 +131,6 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="support-box-wrap box-content2">
-			<div class="support-box-wrap-header">
-				<h1>Tools</h1>
-				<div class="divider"></div>
-			</div>
-
-			<div class="no-box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key"><a href="/settlement/drivers/payments?driver={{staff.id_admin}}">Settlement</a></div>
-						<div class="field-value"></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key"><a href="/drivers/summary/{{staff.id_admin}}">Payments</a></div>
-						<div class="field-value"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver">
 			<div class="support-box-wrap-header">
 				<h1 ng-if="staff.isDriver">Driver Info</h1>
@@ -216,6 +195,12 @@
 						<div class="field-key">Credit amount to customer</div>
 						<div class="field-value">
 							{{staff.referral_customer_credit}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value">
+							{{staff.address}}
 						</div>
 					</div>
 				</div>

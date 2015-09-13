@@ -525,6 +525,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}, 25000 );
 	}
 
+	var id_community = null;
+
 	restaurants.list(
 		// Success
 		function(){
@@ -546,12 +548,18 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			$scope.restaurants = restaurants.sort();
 			checkOpen();
 
+			var id_community = null;
+
 			var restaurantsToShow = 0;
 			for ( var x in $scope.restaurants ) {
+				id_community = $scope.restaurants[ x ].id_community;
 				if( $scope.restaurants[ x ]._maximized ){
 					restaurantsToShow++;
 				}
 			}
+
+			$rootScope.$broadcast( 'updateQuote', id_community );
+
 			var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
 			$scope.showSmallClosures = App.isMobile() ? true : false;
 
@@ -1195,6 +1203,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		$scope.restaurant = data.restaurant;
 
+		$rootScope.$broadcast( 'updateQuote', $scope.restaurant.id_community );
+
 		order.restaurant = $scope.restaurant;
 
 		MainNavigationService.restaurant = $scope.restaurant;
@@ -1790,4 +1800,100 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	// Just store the cookie, it will be used later
 	$.cookie( 'referral', $routeParams.id );
 	$location.path( '/' );
+});
+
+// aqui
+NGApp.controller( 'QuoteCtrl', function ( $scope ) {
+
+	var quotes = { pages: [], communities: { all: [] } };
+	var processed = false;
+
+	var defaultQuote = function(){
+		$scope.quote = {
+				name: 'Devin Smith',
+				title: 'CTO & co-founder',
+				image: 'https://graph.facebook.com/659828729/picture?width=120&height=120',
+				quote: 'Here is something funny written by someone else.',
+			}
+	}
+
+	var pickAQuote = function( where ){
+		var avaiable = [];
+		switch( where ){
+			case 'pages':
+				avaiable = quotes.pages;
+				break;
+			// default is community
+			default:
+				if( where ){
+					avaiable = ( quotes.communities[ where ] ) ? quotes.communities[ where ] : quotes.communities[ 'all' ];
+				}
+		}
+		if( avaiable && avaiable.length ){
+			var sorted = Math.floor( Math.random() * avaiable.length );
+			$scope.quote = avaiable[ sorted ];
+		} else {
+			defaultQuote();
+		}
+	}
+
+	var writeQuote = function( action ){
+		if( processed ){
+			switch( action ){
+				case 'restaurants':
+				case 'restaurant':
+					return;
+					break;
+				default:
+					pickAQuote( 'pages' );
+					break;
+			}
+		} else {
+			quoteProcess();
+			defaultQuote();
+		}
+	}
+
+	var quoteProcess = function(){
+		if( App.quotes.length ){
+			for( x in App.quotes ){
+				var quote = App.quotes[ x ];
+				if( quote.pages ){
+					quotes.pages.push( quote );
+				}
+				if( quote.all ){
+					quotes.communities.all.push( quote );
+				}
+				if( quote.communities ){
+					for( y in quote.communities ){
+						var community = quote.communities[ y ];
+						if( !quotes.communities[ community ] ){
+							quotes.communities[ community ] = [];
+						}
+						quotes.communities[ community ].push( quote );
+					}
+				}
+			}
+			processed = true;
+		}
+	}
+
+	$scope.$on( 'updateQuote', function(e, id_community) {
+		pickAQuote( id_community );
+	});
+
+	$scope.$on( '$routeChangeSuccess', function ( event, next, current ) {
+		if( next.action ){
+			writeQuote( next.action );
+		} else {
+			writeQuote();
+		}
+	} );
+
+	if( !processed ){
+		quoteProcess();
+	}
+
+	defaultQuote();
+
 });

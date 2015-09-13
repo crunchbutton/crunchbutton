@@ -43,7 +43,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		return Crunchbutton_Pexcard_Action::actionsByCard( $this->id_admin_pexcard );
 	}
 
-	public function getByAdmin( $id_admin = null ){
+	public static function getByAdmin( $id_admin = null ){
 		if (!$id_admin) {
 			return false;
 		}

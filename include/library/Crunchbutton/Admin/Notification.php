@@ -2,6 +2,9 @@
 
 class Crunchbutton_Admin_Notification extends Cana_Table {
 
+    // For logistics: the mechanisms for the first message are different from those of subsequent messages
+    //  so one needs to be careful.
+
 	const TYPE_SMS = 'sms';
 	const TYPE_DUMB_SMS = 'sms-dumb';
 	const TYPE_EMAIL = 'email';
@@ -22,13 +25,186 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	const REPS_NONE_WORKING_GROUP_NAME_KEY = 'reps-none-working-group-name';
 
-	public function resendNotification(){
+	const WAIT_BUFFER = 300; // seconds
+	const FIRST_DELAY = 300; //seconds
+	const SUBSEQUENT_DELAY = 180; //seconds
 
+	public static function getSecondsDelayFromAttemptCount($numAttempts){
+		if ($numAttempts == 0) {
+			$retval = self::FIRST_DELAY;
+		} else{
+			$retval = self::SUBSEQUENT_DELAY;
+		}
+		return $retval;
+	}
+
+	public static function sendAndRegisterAllPriorityNotifications($driver, $order, $numAttempts) {
+		$id_admin = $driver->id_admin;
+        $hasUnexpired = Crunchbutton_Admin_Notification_Log::adminHasUnexpiredNotification($order->id_order, $id_admin);
+
+        if (!$hasUnexpired) {
+            $hostname = gethostname();
+            $pid = getmypid();
+            $ppid = NULL;
+//			$ppid = posix_getppid();
+            if (is_null($hostname)) {
+                $hostname = "NA";
+            }
+            if (is_null($pid)) {
+                $pid = "NA";
+            }
+            if (is_null($ppid)) {
+                $ppid = "NA";
+            }
+            foreach ($driver->activeNotifications() as $adminNotification) {
+                print "Check here";
+                $adminNotification->send($order, $numAttempts);
+                $message = '#' . $order->id_order . ' attempts: ' . $numAttempts . ' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
+                Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver2',
+                    'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
+            }
+            $seconds = self::getSecondsDelayFromAttemptCount($numAttempts);
+            // Note that the send happens before the register for counting purposes
+            Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($order->id_order, $id_admin, $seconds, $numAttempts);
+        }
+	}
+
+
+	public function handlePriorityLogisticsNotification($order, $sorted_order_priorities) {
+		// Order priorities should be sorted by seconds delay descending∂
+
+		// In case drivers bailed out after priorities were handed out
+		$drivers = $order->getDriversToNotify();
+        $numDrivers = $drivers->count();
+        Log::debug(['order' => $order->id_order, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+            'numDriversToNotify' => $numDrivers]);
+		if ($drivers) {
+			$driverDict = [];
+			foreach ($drivers as $driver) {
+				$driverDict[$driver->id_admin] = $driver;
+			}
+			$minAttemptsForLowestPriority = null;
+			$secondsDelayForLowestPriority = null;
+			foreach ($sorted_order_priorities as $op) {
+				$id_admin = $op->id_admin;
+				if (array_key_exists($id_admin, $driverDict)) {
+                    $driver = $driverDict[$id_admin];
+					$secondsDelay = $op->seconds_delay;
+
+					$attempts = Crunchbutton_Admin_Notification_Log::sortedAttemptsWithAdmin($order->id_order, $id_admin);
+					if ($attempts->count() == 0) {
+						$orderTS = strtotime($order->date);
+						$nowTS = time();
+						// This is in case things get messed-up/super-delayed in the system somehow
+						// Just send immediately
+                        Log::debug(['order' => $order->id_order, 'id_admin' => $id_admin, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+                            'stage' => "Messed up - super delayed"]);
+                        $maxTime = self::WAIT_BUFFER + $orderTS;
+						if ($nowTS > $maxTime) {
+							// Send 1st notification
+							self::sendAndRegisterAllPriorityNotifications($driver, $order, 0);
+						}
+					} else {
+						$numPriorAttempts = 0;
+						$gotFirst = false;
+						$expired = false;
+						foreach ($attempts as $attempt) {
+							if (!$gotFirst) {
+								// Get the info from the last attempt;
+								$gotFirst = true;
+								$attemptTS = strtotime($attempt->date);
+								$nowTS = time();
+								if ($attemptTS <= $nowTS) {
+									$numPriorAttempts++;
+									$expired = true;
+								}
+							} else {
+								$numPriorAttempts++;
+							}
+
+						}
+                        Log::debug(['order' => $order->id_order, 'id_admin' => $id_admin, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+                            'numPriorAttempts' => $numPriorAttempts]);
+						if (is_null($secondsDelayForLowestPriority)) {
+							$secondsDelayForLowestPriority = $secondsDelay;
+							$minAttemptsForLowestPriority = $numPriorAttempts;
+
+						} else if ($secondsDelayForLowestPriority==$secondsDelay) {
+							if ($numPriorAttempts < $minAttemptsForLowestPriority) {
+								$minAttemptsForLowestPriority = $numPriorAttempts;
+							}
+						}
+						$driver = $driverDict[$id_admin];
+
+						if (is_null($minAttemptsForLowestPriority) || $numPriorAttempts < $minAttemptsForLowestPriority) {
+							$minAttemptsForLowestPriority = $numPriorAttempts;
+						}
+						if ($expired && $numPriorAttempts < 3) {
+							self::sendAndRegisterAllPriorityNotifications($driver, $order, $numPriorAttempts);
+						} else if ($expired && $numPriorAttempts == 3) {
+                            // We only register after this
+							Crunchbutton_Admin_Notification_Log::registerWithAdminForLogistics($order->id_order, $driver->id_admin, 0, $numPriorAttempts);
+						}
+					}
+				}
+
+			}
+            Log::debug(['order' => $order->id_order, 'action' => "handlePriorityLogisticsNotification", 'type' => 'delivery-driver2',
+                'minAttemptsForLowestPriority' => $minAttemptsForLowestPriority]);
+			if ($minAttemptsForLowestPriority == 3) {
+				$this->alertDispatch($order, $drivers);
+			}
+		} else{
+			$restaurant = $order->restaurant()->name;
+			$community = $order->restaurant()->communityNames();
+			if ($community != '') {
+				$restaurant .= ' (' . $order->restaurant()->community . ')';
+			}
+			$message = '#' . $order->id_order . ' there is no drivers to get the order - ' . $restaurant;
+			Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver2']);
+			echo $message . "\n";
+			// Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
+		}
+	}
+
+	public function resendNotification(){
+		// This operates like a static function.  No order or admin associated with it.
+
+        $hostname = gethostname();
+        $pid = getmypid();
+        $ppid = NULL;
+//			$ppid = posix_getppid();
+        if (is_null($hostname)) {
+            $hostname = "NA";
+        }
+        if (is_null($pid)) {
+            $pid = "NA";
+        }
+        if (is_null($ppid)) {
+            $ppid = "NA";
+        }
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
 		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
+        Log::debug(['action' => "AdminNotification::resendNotification", 'type' => 'delivery-driver',
+            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 
-		$query = "SELECT * FROM
+//		$query = "SELECT * FROM
+//								`order` o
+//							WHERE
+//								o.delivery_type = '{$type_delivery}'
+//									AND
+//								o.delivery_service = true
+//									AND
+//								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
+//									AND
+//								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+//									AND
+//									 o.name not like '%test%'
+//
+//							ORDER BY o.id_order ASC";
+
+        $query = "SELECT * FROM
 								`order` o
 							WHERE
 								o.delivery_type = '{$type_delivery}'
@@ -38,9 +214,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
 									AND
 								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-									AND
-									 o.name not like '%test%'
-
 							ORDER BY o.id_order ASC";
 
 		$orders = Crunchbutton_Order::q($query);
@@ -54,73 +227,93 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		if ( $orders->count() > 0 ) {
 
 			foreach ( $orders as $order ) {
-
-				if( !$order->wasAcceptedByRep() && !$order->wasCanceled() ){
+				if( !$order->wasAcceptedByRep() && !$order->wasCanceled() ) {
+                    Log::debug(['order' => $order->id_order, 'action' => "Resend start", 'type' => 'delivery-driver',
+                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 
 					$hasDriversWorking = false;
 
-					$attempts = intval( Crunchbutton_Admin_Notification_Log::attempts( $order->id_order ) );
+					$order_priorities = Crunchbutton_Order_Priority::getOrderedOrderPriorities($order->id_order);
+                    $order_priorities_count = $order_priorities->count();
+                    Log::debug(['order' => $order->id_order, 'action' => "Number of order priorities", 'type' => 'delivery-driver',
+                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'numOP' =>$order_priorities_count]);
+					if ($order_priorities->count() == 0) {
 
-					$message = '#'.$order->id_order.' was not accepted - attempts ' . $attempts;
-					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-					echo $message."\n";
+						$attempts = intval(Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order));
 
-					if( $attempts > 3 ){
-						$message = '#'.$order->id_order.' CS was already texted about it - attempts ' . $attempts;
-						Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-						echo $message."\n";
-						continue;
-					} else if( $attempts == 3 ){
-						// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
-						$this->alertDispatch( $order );
-						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
-						continue;
-					} else {
+						$message = '#' . $order->id_order . ' was not accepted - attempts ' . $attempts;
+						Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver',
+                            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
+						echo $message . "\n";
 
-						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
-						$drivers = $order->getDriversToNotify();
-						if( $drivers ){
-							foreach( $drivers as $driver ){
-								foreach( $driver->activeNotifications() as $adminNotification ){
-									$adminNotification->send( $order );
-									$hasDriversWorking = true;
-									$message = '#'.$order->id_order.' attempts: ' . $attempts . ' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
-									Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-									echo $message ."\n";
+						if ($attempts > 3) {
+							$message = '#' . $order->id_order . ' CS was already texted about it - attempts ' . $attempts;
+							Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
+							echo $message . "\n";
+							continue;
+						} else if ($attempts == 3) {
+							// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
+							$this->alertDispatch($order);
+							Crunchbutton_Admin_Notification_Log::register($order->id_order);
+							continue;
+						} else {
+
+							$drivers = $order->getDriversToNotify();
+							if ($drivers) {
+								foreach ($drivers as $driver) {
+									foreach ($driver->activeNotifications() as $adminNotification) {
+										$adminNotification->send($order, $attempts);
+										$hasDriversWorking = true;
+										$message = '#' . $order->id_order . ' attempts: ' . $attempts . ' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
+										Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
+										echo $message . "\n";
+									}
 								}
+                                Crunchbutton_Admin_Notification_Log::register($order->id_order);
 							}
-						}
 
-						if( !$hasDriversWorking ){
-							$restaurant = $order->restaurant()->name;
-							$community = $order->restaurant()->communityNames();
-							if( $community != '' ){
-								$restaurant .= ' (' . $order->restaurant()->community . ')';
+							if (!$hasDriversWorking) {
+								$restaurant = $order->restaurant()->name;
+								$community = $order->restaurant()->communityNames();
+								if ($community != '') {
+									$restaurant .= ' (' . $order->restaurant()->community . ')';
+								}
+								$message = '#' . $order->id_order . ' there is no drivers to get the order - ' . $restaurant;
+								Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
+								echo $message . "\n";
+								// Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 							}
-							$message = '#'.$order->id_order.' there is no drivers to get the order - ' . $restaurant;
-							Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-							echo $message."\n";
-							// Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 						}
+					} else{
+                        Log::debug(['order' => $order->id_order, 'action' => "Handling priority logistics", 'type' => 'delivery-driver',
+                            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
+						$this->handlePriorityLogisticsNotification($order, $order_priorities);
 					}
 
 				} else {
-					$message = '#'.$order->id_order.' was accepted or canceled';
-					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-					echo $message."\n";
+					$message = '#' . $order->id_order . ' was accepted or canceled';
+					Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
+					echo $message . "\n";
 				}
+
 			}
 		}
 	}
 
-	public function alertDispatch( Crunchbutton_Order $order ) {
+
+	public function alertDispatch( Crunchbutton_Order $order, $drivers=null) {
 
 		$env = c::getEnv();
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
 
 		// Get drivers name
-		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+		// Get drivers name
+		if(is_null($drivers) ){
+			$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+		}
+
+        $driversToNotify = [];
 		if( $drivers ){
 			foreach( $drivers as $driver ){
 				foreach( $driver->activeNotifications() as $adminNotification ){
@@ -192,15 +385,15 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		switch ( $this->type ) {
 
 			case Crunchbutton_Admin_Notification::TYPE_SMS:
-				$res = $this->sendSms( $order, $this->getSmsMessage($order, static::PRIORITY_MESSAGES_INDEX, 'sms'));
+				$res = $this->sendSms( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'sms'));
 				break;
 
 			case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS:
-				$res = $this->sendPushIos( $order, $this->getSmsMessage($order, static::PRIORITY_MESSAGES_INDEX, 'push'));
+				$res = $this->sendPushIos( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'push'));
 				break;
 
 			case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID:
-				$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, static::PRIORITY_MESSAGES_INDEX, 'push'));
+				$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'push'));
 				break;
 		}
 	}
@@ -210,34 +403,28 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		//  even run if there are issues with the queue system
 		$curCommunity = $order->community();
 		if (!is_null($curCommunity) && !is_null($curCommunity->delivery_logistics) && ($curCommunity->delivery_logistics != 0)) {
-			// Need to deal with this on a per-admin basis due to priority system
-			$nowDT = new DateTime('now', new DateTimeZone(c::config()->timezone)); // Should be PST
-			$nowDate = $nowDT->format('Y-m-d H:i:s');
-			$attemptsViaQueue = Crunchbutton_Queue::notificationAttempts($order->id_order, $this->id_admin);
-			if ($attemptsViaQueue >= 1) {
-				$attempts = $attemptsViaQueue - 1;
-				Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'attempts' => $attempts, 'stage' => 'registered attempts',
-					'type' => 'complexLogistics']);
-			} else{
-				// This shouldn't happen.
-				Log::debug(['id_order'=> $order->id_order, 'time' => $nowDate, 'stage' => 'registered 0 attempts',
-					'type' => 'complexLogistics']);
-				$attempts = 0;
+			$admin = $this->admin();
+			if (is_null($admin)){
+				$attempts = Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order);
+			} else {
+                // We need the cutoff here because for the original message that is sent, there can be a delay due to the queue
+                //  running after message is registered
+				$attempts = Crunchbutton_Admin_Notification_Log::attemptsWithAdminAndCutoff($order->id_order, $admin->id_admin);
 			}
 		} else {
-			$attempts = Crunchbutton_Admin_Notification_Log::attempts($order->id_order);
+			$attempts = Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order);
 		}
 		return $attempts;
 	}
 
 
-	public function send( Crunchbutton_Order $order ) {
+	public function send( Crunchbutton_Order $order, $attempts=null ) {
 
 		$env = c::getEnv();
 
-
-		$attempts = $this->calculateAttempts($order);
-
+		if (is_null($attempts)) {
+			$attempts = $this->calculateAttempts($order);
+		}
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
 			// return;
@@ -246,13 +433,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
 		if( !$is_enable ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
-			return;
+			return null;
 		}
 
 		$is_enable_takeout = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_DEFAULT );
 		if( $order->delivery_type == Crunchbutton_Order::SHIPPING_TAKEOUT && $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) != '1' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin to TAKEOUT is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
-			return;
+			return null;
 		}
 
 		Log::debug( [ 'order' => $order->id_order, 'attempts' => $attempts, 'action' => 'notification to admin starting', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
@@ -408,7 +595,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$env = c::getEnv();
 		$fax = $this->value;
-		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
+		$cockpit_url = self::REPS_COCKPIT . $order->id_order;
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => $this->host_callback(), 'type' => 'admin_notification' ]);
 
@@ -493,7 +680,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$mail = $this->value;
 		$admin = $this->admin();
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
-		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
+		$cockpit_url = self::REPS_COCKPIT . $order->id_order;
 
 		$mail = new Email_Order( [	'order' => $order,
 																'email' => $mail,
@@ -600,7 +787,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		switch ($count) {
 
 			// priority messages
-			case static::PRIORITY_MESSAGES_INDEX:
+			case self::PRIORITY_MESSAGES_INDEX:
 				switch ($type) {
 					case 'push':
 						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
@@ -608,7 +795,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						break;
 					case 'sms':
 						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
-						$message .= static::REPS_COCKPIT . $order->id_order . "\n";
+						$message .= self::REPS_COCKPIT . $order->id_order . "\n";
 						$message .= "#: " . $order->phone . "\n";
 						$message .= $order->address . "\n";
 						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
@@ -621,7 +808,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					default:
 					case 'sms':
 						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
-						$message .= static::REPS_COCKPIT . $order->id_order . "\n";
+						$message .= self::REPS_COCKPIT . $order->id_order . "\n";
 						$message .= $order->message( 'sms-admin' );
 						break;
 					case 'push':
@@ -656,7 +843,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return parent::save();
 	}
 
-	public function adminHasNotification( $id_admin, $type ){
+	public static function adminHasNotification( $id_admin, $type ){
 		if( $id_admin && $type ){
 			$notification = Crunchbutton_Admin_Notification::q( 'SELECT * FROM admin_notification WHERE id_admin = ? AND type = ? AND active = 1 LIMIT 1', [ $id_admin, $type ] )->get( 0 );
 			if( $notification->id_admin_notification ){

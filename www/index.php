@@ -55,7 +55,7 @@ if (getenv('HEROKU')) {
 
 
 Cana::app()->displayPage();
-		
+
 if (getenv('HEROKU')) {
 	register_shutdown_function(function() {
 

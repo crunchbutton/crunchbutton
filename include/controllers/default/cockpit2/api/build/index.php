@@ -2,7 +2,7 @@
 
 class Controller_api_build extends Crunchbutton_Controller_Rest {
 	public function init() {
-	
+
 		// generate a list of assets to be used for the app
 		$files = [];
 
@@ -18,7 +18,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$path = c::config()->dirs->www.'assets/cockpit/images';
 		$dir  = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
 		$fs = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::SELF_FIRST);
-		
+
 		foreach ($fs as $fileInfo) {
 			if ($fileInfo->getBasename() == '.DS_Store') {
 				continue;
@@ -37,13 +37,13 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 				$files[] = 'fonts/'.$fileInfo->getBasename();
 			}
 		}
-		
+
 		// css
 		$files[] = 'css/bundle.css?s=cockpit&_export=1&v='.Deploy_Server::currentVersion();
-		
+
 		// javascript
 		$files[] = 'js/bundle.js?s=cockpit&v='.Deploy_Server::currentVersion();
-		
+
 		echo json_encode([
 			'version' => Deploy_Server::currentVersion(),
 			'files' => $files,

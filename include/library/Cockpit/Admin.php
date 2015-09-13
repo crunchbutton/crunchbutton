@@ -425,6 +425,14 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		$out['status'] = $this->status();
 
+		foreach ($this->deliveries() as $order) {
+			$out['deliveries'][] = [
+				'id_order' => $order->id_order,
+				'status' => $order->stati[count($order->stati)-1]['status'],
+				'update' => $order->stati[count($order->stati)-1]['timestamp']
+			];
+		}
+
 		return $out;
 	}
 

@@ -1,0 +1,115 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-files-o"></i><span>Quote</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>File</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<li class="li-input" ng-class="{'error':form.name.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="name" ng-model="quote.name" required placeholder="Name"></div>
+						<div class="box-error">
+							<small ng-show="form.name.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':form.title.$invalid}">
+						<div class="label">Title:</div>
+						<div class="input"><input type="text" name="title" ng-model="quote.title" required placeholder="Tile"></div>
+						<div class="box-error">
+							<small ng-show="form.title.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':form.facebook_id.$invalid}">
+						<div class="label">Facebook ID:</div>
+						<div class="input"><input type="text" name="facebook_id" ng-model="quote.facebook_id" required placeholder="Facebook ID"></div>
+						<div class="box-error">
+							<small ng-show="form.facebook_id.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':form.quote.$invalid}">
+						<div class="label">Quote:</div>
+						<div class="input">
+							<textarea name="quote" ng-model="quote.quote" required placeholder="Quote"></textarea>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.quote.$error.required">Required.</small>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Visible</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="quote.all"/><div></div>
+						</label>
+						<div class="label">Show it to all communities:</div>
+					</li>
+
+					<li class="li-input" ng-show="!quote.all">
+						<div class="label">Communities:</div>
+						<div class="input">
+
+							<ui-select multiple ng-model="quote.communities" theme="select2" close-on-select="true" title="Select a community">
+								<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+								<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+									{{community.name}}
+								</ui-select-choices>
+							</ui-select>
+
+						</div>
+					</li>
+
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="quote.pages"/><div></div>
+						</label>
+						<div class="label">Show at pages (random):</div>
+					</li>
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="quote.active"/><div></div>
+						</label>
+						<div class="label">Active:</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSaving">
+						<button ng-click="save();" class="ladda-button button save save-upload" data-color="mint" data-style="zoom-in">
+							<span class="ladda-label"><strong>Save</strong></span>
+						</button>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

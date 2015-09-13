@@ -39,7 +39,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'id_user' => $u->id_user,
 			'date' => date('Y-m-d H:i:s'),
 			'id_community' => '',
-			'id_restaurat' => $r->id_restaurant,
+			'id_restaurant' => $r->id_restaurant,
 			'active' => 1
 		]);
 		$o->save();

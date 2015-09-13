@@ -176,6 +176,7 @@
 					<tr>
 						<td class="topitem itemprice tb-small">Status</td>
 						<td class="topitem itemname">Driver</td>
+						<td class="topitem itemname" ng-if="!order.actions_today">Date</td>
 						<td class="topitem order-contents-item-qty">Time</td>
 					</tr>
 					<tr ng-repeat="action in order.actions" title="{{action.note}}">
@@ -190,6 +191,9 @@
 						<td class="fooditem dish-name">
 							<a href="/staff/{{action.admin.login}}">{{action.admin.name}}</a><br>
 							<a href ng-click="callText(action.admin.phone)" class="listview-smaller">{{action.admin.phone | formatPhone}}</a>
+						</td>
+						<td class="fooditem dish-name" nowrap="nowrap" ng-if="!order.actions_today">
+								{{action.date | convertimeformat:order.restaurant.timezone:'MMMM Do YYYY'}}
 						</td>
 						<td class="fooditem dish-name" nowrap="nowrap">
 							<span ng-if="order.restaurant.timezone != account.user.timezone">

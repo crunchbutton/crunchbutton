@@ -131,7 +131,6 @@ NGApp.run(function() {
 	FastClick.attach(document.body);
 } );
 
-
 // This config will intercept all the ajax requests and take care of the errors
 NGApp.config( function( $provide, $httpProvider ) {
 	$provide.factory( 'httpInterceptor', function( $q ) {
@@ -1504,6 +1503,7 @@ App.isUI2 = function() {
 
 App.loadConfig = function() {
 	App.request(App.service + 'config/extended', function(r) {
+		App.quotes = r.site.quotes;
 		var extract = ['aliases','locations','facebookScope','communities','topCommunities'];
 		for (var x in extract) {
 			App[extract[x]] = r[extract[x]];
