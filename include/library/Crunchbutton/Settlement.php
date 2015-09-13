@@ -160,6 +160,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
+		// @remove -- remove it before commit
+		$query = 'SELECT o.* FROM `order` o
+									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+									WHERE o.date >= "' . $start->format('Y-m-d') . '"
+										AND o.date <= "' . $end->format('Y-m-d H:i:s') . '"
+										-- AND id_order = 184535
+									ORDER BY o.date ASC';
 
 		return Order::q( $query );
 	}
@@ -309,6 +316,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'standard_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
+				if( $order[ 'pay_type_hours_without_tips' ] && $order[ 'pay_info' ][ 'total_payment' ] > 0 ){
+					$order[ 'pay_info' ][ 'total_payment' ] = 0;
+				}
 				$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
 				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
 				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
@@ -360,7 +370,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
 			}
 		}
-
 		// Get all the shifts between the dates
 		if( $process_shifts ){
 			$shifts = $this->shifts( $id_driver );
@@ -498,11 +507,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( $pay[ 'cash' ] ){
 			$total_due += $pay[ 'customer_fee_collected' ];
 			$total_due += $pay[ 'markup' ];
+			$total_due += $pay[ 'delivery_fee_collected' ];
 		}
 
-		if( $pay_by_order == 0 && $pay[ 'cash' ] ){
-			$total_due + $pay[ 'delivery_fee_collected' ];
-		}
 		return $total_due;
 	}
 
@@ -612,12 +619,17 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// Drivers are paid the whole delivery fee from credit orders.
 	public function orderDeliveryFeeDriverPay( $arr ){
+		// https://github.com/crunchbutton/crunchbutton/issues/5582#issuecomment-135964449
+		// we should do the calculation as paying them for ALL delivery fees (cash + credit) and then subtracting the cash delivery fees.
+		if( $arr[ 'pay_type_order' ] ){
+			return $arr[ 'delivery_fee' ] * $arr[ 'delivery_service' ];
+		}
 		return $arr[ 'delivery_fee' ] * $arr[ 'credit' ] * $arr[ 'delivery_service' ];
 	}
 
 	// We need to make this change: add the $3 delivery fee to the amount being subtracted for cash orders from payment for hourly drivers.
 	public function orderDeliveryFeeDriverCollected( $arr ){
-		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] ) * ( 1 - $arr[ 'pay_type_order' ] );
+		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] );
 	}
 
 	// Drivers must pay us back our markup they collected in cash.
