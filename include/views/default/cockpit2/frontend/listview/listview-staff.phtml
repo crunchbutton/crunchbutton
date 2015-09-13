@@ -3,7 +3,7 @@
 		<tr>
 			<th>Name</th>
 			<th ng-if="!community">Info</th>
-			<th class="tb-small tb-center">Active</th>
+			<th class="tb-small tb-center">Payment</th>
 			<th class="tb-small tb-center" ng-if="query.working != 'all'">Working</th>
 			<th class="tb-small tb-center">Vehicle</th>
 			<th class="tb-small tb-center">Pex</th>
@@ -30,10 +30,14 @@
 					</span>
 					</span>
 				</span>
+				<div>
+					<span class="tag tag-green" ng-if="s.active">Active</span>
+					<span class="tag tag-red" ng-if="!s.active">Inactive</span>
+				</div>
 			</td>
 			<td nowrap class="tb-center tb-v-center">
-				<span class="tag tag-green" ng-if="s.active">Active</span>
-				<span class="tag tag-red" ng-if="!s.active">Inactive</span>
+				<span class="tag tag-green" ng-if="s.verified">Verified</span>
+				<span class="tag tag-red" ng-if="!s.verified">Non-verified</span>
 			</td>
 			<td nowrap class="tb-center tb-v-center" ng-if="query.working != 'all'">
 				<span class="tag tag-purple" ng-if="s.working_today && !s.working">Today</span>
