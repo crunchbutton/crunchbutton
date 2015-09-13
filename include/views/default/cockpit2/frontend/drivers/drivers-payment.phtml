@@ -234,6 +234,7 @@
 					<td>
 						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Delivery Fee</span>
 					</td>
+					<td><span ng-if="salary_type == 'orders'">Delivery Fee Collected</span></td>
 					<td ng-if="pay_type_reimbursement">Reimburse</td>
 					<td>
 						<span ng-if="pay_type_payment && !result.hourly">Earnings</span>
@@ -251,6 +252,7 @@
 					<td>{{order.date}}</td>
 					<td><span ng-if="pay_type_payment && result.show_credit_card_tips">${{order.tip | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">${{order.delivery_fee | formatPrice}}</span></td>
+					<td><span ng-if="salary_type == 'orders'">${{order.delivery_fee_collected | formatPrice}}</span></td>
 					<td ng-if="pay_type_reimbursement">${{order.total_reimburse | formatPrice}}</td>
 					<td ng-if="pay_type_payment">
 						<span ng-if="!result.hourly">
