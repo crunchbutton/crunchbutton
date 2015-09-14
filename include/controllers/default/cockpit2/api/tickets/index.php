@@ -72,16 +72,19 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$q .= ' AND s.phone=?';
 			$keys['phone'] = $phone;
 		}
-
+// Sarah Donnelly
 		if ($search) {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
+					's.name' => 'like',
+					'o.name' => 'like',
 					'u.name' => 'like',
 					'sm.body' => 'like',
+
 					'u.phone' => 'likephone',
 					'u.address' => 'like',
-					'o.name' => 'like',
+
 					'o.phone' => 'likephone',
 					'o.address' => 'like',
 					's.id_support' => 'inteq'
