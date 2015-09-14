@@ -881,7 +881,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$load_messages = false;
 		}
 		if( $load_messages ){
-			if( $this->type == Crunchbutton_Support::TYPE_WARNING ){
+			if( $this->type == Crunchbutton_Support::TYPE_WARNING && !$this->id_user ){
 				$messages = $this->messages();
 				$out[ 'total_messages' ] = $messages->count();
 			} else {
