@@ -8,7 +8,7 @@
 </div>
 
 <div ng-if="order.id">
-
+	<?php /*
 	<div class="content-padding">
 		<div ng-if="order.delivery_service && order.status.status != 'delivered'">
 			<div class="order-status-loader-labels">
@@ -20,7 +20,6 @@
 					<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
 				</div>
 				<div class="order-status-loader-label" ng-if="order.status.status == 'delivered' && 1==2">
-					<? /* needs to be formatted */?>
 					{{order.status.date}}
 				</div>
 
@@ -40,6 +39,7 @@
 		</div>
 		<div class="divider"></div>
 	</div>
+	*/?>
 
 	<div class="divider dots spacer-one-two" ng-if="order.delivery_service && order.status.status != 'delivered'"></div>
 
