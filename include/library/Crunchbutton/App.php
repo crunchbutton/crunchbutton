@@ -108,14 +108,20 @@ class Crunchbutton_App extends Cana_App {
 
 		$params['postInitSkip'] = true;
 		$params['env'] = $db;
-
-		if (getenv('HEROKU')) {
+		
+		if (getenv('DATABASE_URL')) {
 			$params['config']->db->heroku = (object)[
 				'url' => getenv('DATABASE_URL'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
 			];
 
-			$params['env'] = $db = $cli ? getenv('HEROKU_CLI_DB') : getenv('HEROKU_DB');
+			$params['env'] = $db = 'heroku';
+		}
+
+		if (getenv('HEROKU')) {
+
+
+			
 
 			if (getenv('REDIS_URL')) {
 				$params['config']->cache->default = $params['config']->cache->redis;
