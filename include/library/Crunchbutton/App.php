@@ -108,7 +108,7 @@ class Crunchbutton_App extends Cana_App {
 
 		$params['postInitSkip'] = true;
 		$params['env'] = $db;
-		
+
 		if (getenv('DATABASE_URL')) {
 			$params['config']->db->heroku = (object)[
 				'url' => getenv('DATABASE_URL'),
@@ -121,7 +121,7 @@ class Crunchbutton_App extends Cana_App {
 		if (getenv('HEROKU')) {
 
 
-			
+
 
 			if (getenv('REDIS_URL')) {
 				$params['config']->cache->default = $params['config']->cache->redis;
@@ -527,7 +527,7 @@ class Crunchbutton_App extends Cana_App {
 		$config['site']['ab']['share-text-referral'] = [
 			[
 				'name' => 'referral-hey',
-				'line' => 'Hey, get food delivered at _DOMAIN_/app and get your first delivery free if you enter %c in the Notes section of your order (i get free food too)'
+				'line' => 'Enter my invite code %c in the Notes Section of your order, and get a food delivery free. '
 			]
 		];
 
