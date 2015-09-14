@@ -4,14 +4,14 @@
 		<div class="dialog-egg animated-resize"></div>
 			<span ng-if="active">
 				<p>
-					
+
 					<span ng-if="!acceptingOrders">
 						<span ng-if="restaurant.delivery">is temporarily unavailable for delivery, but is usually available during the following hours</span>
-						<span ng-if="!restaurant.delivery">is temporarily closed but is usually available during the following hours</span>
+						<span ng-if="!restaurant.delivery">is temporarily unavailable but is usually available during the following hours</span>
 					</span>
 					<span ng-if="acceptingOrders">
 						<span ng-if="restaurant.delivery">is currently unavailable for delivery. Delivery will be available:</span>
-						<span ng-if="!restaurant.delivery">is currently closed. It will be open during the following hours</span>
+						<span ng-if="!restaurant.delivery">is currently unavailable. It will be open during the following hours</span>
 					</span>
 
 <!--					&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):--><br /><br />
