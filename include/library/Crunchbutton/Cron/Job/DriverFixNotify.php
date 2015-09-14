@@ -37,7 +37,8 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		}
 
 		echo 'done notifying drivers';
-
+		Log::debug(['action' => "Run cron job DriverFixNotify finished", 'type' => 'delivery-driver',
+			'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 		// it always must call finished method at the end
 		$this->finished();
 	}
