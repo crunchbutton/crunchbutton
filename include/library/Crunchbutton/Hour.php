@@ -647,7 +647,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$now_plus_24->modify( '-5 minutes' );
 			$now = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
 			$now->modify( '-5 minutes' );
-// echo '<pre>';var_dump( $_hours_utc );exit();
+
 			if( $_hours_utc ){
 
 				foreach ( $_hours_utc as $hour ) {
