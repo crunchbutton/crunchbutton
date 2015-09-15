@@ -143,6 +143,11 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 		} else {
 			$out[ 'carrier_type' ] = $out[ 'cell_carrier' ];
 		}
+		if( !$out[ 'down_to_help_out' ] ){
+			$out[ 'down_to_help_out' ] = false;
+		} else {
+			$out[ 'down_to_help_out' ] = true;
+		}
 		return $out;
 	}
 
