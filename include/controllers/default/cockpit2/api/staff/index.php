@@ -93,7 +93,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _listSupport(){
 		$out = [];
-		$admins = Admin::q( 'SELECT DISTINCT(a.id_admin), a.name FROM support s INNER JOIN admin a ON a.id_admin = s.id_admin ORDER BY a.name' );
+		$admins = Admin::q( "SELECT a.id_admin, a.name FROM admin a
+													INNER JOIN ( SELECT DISTINCT( phone ) FROM support WHERE id_user IS NULL AND phone IS NOT NULL ) phones ON phones.phone = a.phone
+													WHERE a.name IS NOT NULL AND a.name != ''" );
 		foreach( $admins as $admin ){
 			$out[] = [ 'id_admin' => $admin->id_admin, 'name' => $admin->name ];
 		}
