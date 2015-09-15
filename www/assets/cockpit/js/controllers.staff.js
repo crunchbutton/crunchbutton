@@ -340,23 +340,14 @@ NGApp.controller( 'StaffMarketingDocsCtrl', function ( $scope, $routeParams, $fi
 	$scope.$on( 'driverDocsUploadedError', function(e, data) {
 		App.alert( 'Upload error, please try again or send us a message.' );
 	} );
-
+// aqui
 	// this is a listener to upload success
 	$scope.$on( 'driverDocsUploaded', function(e, data) {
-		var id_driver_document = data.id_driver_document;
-		var response = data.response;
-		if( response.success ){
-			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : id_driver_document, file : response.success };
-			StaffService.marketing.docs.save( doc, function( json ){
-				if( json.success ){
-					App.alert( 'File saved!' );
-					docs();
-				} else {
-					App.alert( 'File not saved: ' + json.error );
-				}
-			} );
+		if( data.success ){
+			App.alert( 'File saved!' );
+			docs();
 		} else {
-			App.alert( 'File not saved! ');
+			App.alert( 'Upload error, please try again or send us a message.' );
 		}
 	});
 
