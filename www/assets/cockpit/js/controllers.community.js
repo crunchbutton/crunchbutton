@@ -17,6 +17,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'CommunityFormCtrl',
 			templateUrl: 'assets/view/communities-form.html'
 		})
+		.when('/communities/closed', {
+			action: 'community',
+			controller: 'CommunitiesClosedCtrl',
+			templateUrl: 'assets/view/communities-closed.html'
+		})
 		.when('/community/:id/:tab?', {
 			action: 'community',
 			controller: 'CommunityCtrl',
@@ -47,11 +52,39 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 		}
 	});
 
-/*
- 	CommunityService.closed( function( json ){
- 		$scope.closed_communities = json;
-	} )
-*/
+
+});
+
+NGApp.controller('CommunitiesClosedCtrl', function ($scope, CommunityService) {
+
+	var communities = [];
+
+	$scope.loading = true;
+
+	CommunityService.closed( function( json ){
+ 		communities = json;
+ 		filter();
+ 		$scope.loading = false;
+	} );
+
+	$scope.closed = 'all';
+
+	$scope.$watch( 'closed', function( newValue, oldValue, scope ) {
+		filter();
+	});
+
+	var filter = function(){
+		if( $scope.closed == 'all' ){
+			$scope.communities = communities;
+		} else {
+			$scope.communities = [];
+			for( x in communities ){
+				if( communities[x][$scope.closed] ){
+					$scope.communities.push( communities[x] );
+				}
+			}
+		}
+	}
 
 });
 
