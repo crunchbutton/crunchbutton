@@ -416,11 +416,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		return elements;
 	}
 
-	service.submit = function( forceAddressOk ){
+	service.submit = function( forceAddressOk, geomatchedError ){
 		if( forceAddressOk ){
 			service._deliveryAddressOk = true;
 		} else {
 			service._deliveryAddressOk = false;
+		}
+		if( geomatchedError ){
+			service.geomatched = null;
 		}
 		service.processOrder();
 	}
