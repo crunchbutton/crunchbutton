@@ -61,7 +61,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		if ($admin != 'all') {
 			$q .= '
-				AND s.id_admin=? OR ( s.phone = a.phone )
+				AND s.id_admin=?
 			';
 			$keys[] = $admin;
 		}
