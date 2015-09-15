@@ -500,7 +500,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'restaurant' 		=> $params['restaurant'],
 				'notes' 				=> $params['notes'],
 				'errors' 				=> $res['errors'],
-				'geomatched' 					=> $params['geomatched'],
+				'geomatched' 		=> $params['geomatched'],
 				'cart' 					=> $params['cart'],
 				'type' 					=> 'order-log'
 			] );
