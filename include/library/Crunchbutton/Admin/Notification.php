@@ -792,13 +792,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				switch ($type) {
 					case 'push':
 						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
-						$message .= " Sent to YOU 1st. Accept ASAP before others see it!";
+						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
 						break;
 					case 'sms':
 						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
 						$message .= self::REPS_COCKPIT . $order->id_order . "\n";
-						$message .= "#: " . $order->phone . "\n";
-						$message .= $order->address . "\n";
+						$message .= $order->message( 'sms-driver-priority' ) . "\n";
 						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
 					break;
 				}
