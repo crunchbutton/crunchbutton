@@ -94,9 +94,17 @@
 		<div>
 			<div class="divider"></div><br/><br/>
 			<h1 class="title" ><i class="fa fa-credit-card"></i><span>Pex Card</span></h1>
-			<h2 class="title driver-docs-text">
-				<a href="/drivers/docs/pexcard">Activate your Pex Card</a>.
-			</h2>
+			<div class="support-box-wrap box-content2">
+				<div class="box-content-table">
+					<p ng-show="account.user.has_pexcard">
+						Your PEX card is active and will be loaded with money to spend at restaurants when orders come in.
+					</p>
+					<p ng-show="!account.user.has_pexcard">
+						<a href="/drivers/docs/pexcard">Activate your Pex Card</a>.
+					</p>
+				</div>
+			</div>
+
 		</div>
 
 	</div>

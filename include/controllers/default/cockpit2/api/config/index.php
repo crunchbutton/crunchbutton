@@ -23,7 +23,6 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$payment_type = c::user()->payment_type();
 
 				if( c::user()->isCampusManager() ){
-					$payment_type = 
 					$user['profit_percent'] = $payment_type->profit_percent;
 				}
 
