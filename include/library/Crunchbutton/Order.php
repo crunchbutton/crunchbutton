@@ -2066,7 +2066,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			case 'sms-driver-priority':
 					$spacer = '/';
-					$msg = strtoupper( $this->pay_type ) . $spacer . $this->restaurant()->name . $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
+					$msg = $this->user()->nameAbbr() . "\n" . strtoupper( $this->pay_type ) . $spacer . $this->restaurant()->name . $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 				break;
 
 			case 'sms-driver':
