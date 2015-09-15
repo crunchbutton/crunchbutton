@@ -67,7 +67,7 @@ NGApp.controller('CommunitiesClosedCtrl', function ($scope, CommunityService) {
  		$scope.loading = false;
 	} );
 
-	$scope.closed = 'all';
+	$scope.closed = 'close_3rd_party_delivery_restaurants';
 
 	$scope.$watch( 'closed', function( newValue, oldValue, scope ) {
 		filter();
