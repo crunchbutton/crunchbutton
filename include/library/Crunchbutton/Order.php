@@ -2943,7 +2943,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			// Check if the order was rejected and change the message
 			$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE type = ? AND id_order = ?', [Crunchbutton_Order_Action::DELIVERY_REJECTED, $this->id_order]);
 			if( $action->count() > 0 ){
-				$message = $firstName . "Sorry, your updated driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
+				$message = $firstName . "You've got a new driver! For order updates, text {$driver->nameAbbr()} at {$driver->phone}";
 			} else {
 				$message = $firstName . "Your driver today is {$driver->nameAbbr()}. For order updates, text {$driver->firstName()} at {$driver->phone}";
 			}
