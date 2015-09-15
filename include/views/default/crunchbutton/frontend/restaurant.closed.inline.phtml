@@ -5,14 +5,14 @@
 	<div class="restaurant-closed-content">
 		<span class="restaurant-closed-title">
 			<span class="restaurant-closed-name">{{restaurant.name}}&nbsp;
-				
+
 				<span ng-if="restaurant.open_for_business == '0'">
 					<span ng-if="restaurant.delivery">is temporarily unavailable for delivery.</span>
-					<span ng-if="!restaurant.delivery">is temporarily closed.</span>
+					<span ng-if="!restaurant.delivery">is temporarily unavailable.</span>
 				</span>
 				<span ng-if="restaurant.open_for_business != '0'">
 					<span ng-if="restaurant.delivery">is currently unavailable for delivery.</span>
-					<span ng-if="!restaurant.delivery">is currently closed.</span>
+					<span ng-if="!restaurant.delivery">is currently unavailable.</span>
 				</span>
 			</span>
 			<span class="restaurant-closed-generic">Currently not available!</span>

@@ -17,7 +17,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.sideInfo.reset = function(){
 		service.sideInfo.data = { id_support: service.sideInfo.id_support, messages: [], page: 0, loaded: 0, total: null, has_more: false };
 		service._private = { first_load: true, current_scroll: 0, could_load: true };
-		service.sideInfo.update_controller()
+		service.sideInfo.update_controller();
 	};
 
 	service.sideInfo.force_first_page = function(){
@@ -136,6 +136,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	};
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
+
+		if( service.scope.viewTicket && service.scope.ticket && service.scope.viewTicket.id_support == ticket.id_support && service.scope.ticket.id_support == ticket.id_support ){
+			service.sideInfo.force_first_page();
+			return;
+		}
 
 		NotificationService.check();
 

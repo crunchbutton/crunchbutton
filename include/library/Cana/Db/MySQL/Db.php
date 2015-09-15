@@ -16,6 +16,9 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 
 		if (!$args->dsn) {
 			$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8';
+			if ($args->port) {
+				$args->dsn .= ';port='.$args->port;
+			}
 		}
 
 		if ($args->persistent) {

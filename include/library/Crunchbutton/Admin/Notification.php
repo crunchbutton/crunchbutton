@@ -189,22 +189,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
         Log::debug(['action' => "AdminNotification::resendNotification", 'type' => 'delivery-driver',
             'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 
-//		$query = "SELECT * FROM
-//								`order` o
-//							WHERE
-//								o.delivery_type = '{$type_delivery}'
-//									AND
-//								o.delivery_service = true
-//									AND
-//								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
-//									AND
-//								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-//									AND
-//									 o.name not like '%test%'
-//
-//							ORDER BY o.id_order ASC";
-
-        $query = "SELECT * FROM
+		$query = "SELECT * FROM
 								`order` o
 							WHERE
 								o.delivery_type = '{$type_delivery}'
@@ -214,7 +199,22 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
 									AND
 								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+									AND
+									 o.name not like '%test%'
+
 							ORDER BY o.id_order ASC";
+// Uncomment this and comment out above if you want test community to be able to deal with follow-up driver notifications
+//        $query = "SELECT * FROM
+//								`order` o
+//							WHERE
+//								o.delivery_type = '{$type_delivery}'
+//									AND
+//								o.delivery_service = true
+//									AND
+//								o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} )
+//									AND
+//								o.date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+//							ORDER BY o.id_order ASC";
 
 		$orders = Crunchbutton_Order::q($query);
 
@@ -235,8 +235,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 					$order_priorities = Crunchbutton_Order_Priority::getOrderedOrderPriorities($order->id_order);
                     $order_priorities_count = $order_priorities->count();
-                    Log::debug(['order' => $order->id_order, 'action' => "Number of order priorities", 'type' => 'delivery-driver',
-                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'numOP' =>$order_priorities_count]);
+//                    Log::debug(['order' => $order->id_order, 'action' => "Number of order priorities", 'type' => 'delivery-driver',
+//                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'numOP' =>$order_priorities_count]);
 					if ($order_priorities->count() == 0) {
 
 						$attempts = intval(Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order));
@@ -285,12 +285,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						}
 					} else{
-                        Log::debug(['order' => $order->id_order, 'action' => "Handling priority logistics", 'type' => 'delivery-driver',
-                            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
+//                        Log::debug(['order' => $order->id_order, 'action' => "Handling priority logistics", 'type' => 'delivery-driver',
+//                            'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 						$this->handlePriorityLogisticsNotification($order, $order_priorities);
 					}
 
-				} else {
+				}
+                else {
 					$message = '#' . $order->id_order . ' was accepted or canceled';
 					Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
 					echo $message . "\n";
@@ -791,13 +792,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				switch ($type) {
 					case 'push':
 						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
-						$message .= " Sent to YOU 1st. Accept ASAP before others see it!";
+						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
 						break;
 					case 'sms':
 						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
 						$message .= self::REPS_COCKPIT . $order->id_order . "\n";
-						$message .= "#: " . $order->phone . "\n";
-						$message .= $order->address . "\n";
+						$message .= $order->message( 'sms-driver-priority' ) . "\n";
 						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
 					break;
 				}

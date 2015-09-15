@@ -1,0 +1,24 @@
+
+*.pdf
+*.psd
+*.zip
+*.DS_Store
+
+cache/*
+logs/*
+www/cache/*
+
+# files in build
+www/build/*
+www/assets/css/bundle.css
+www/assets/cockpit/css/bundle.css
+www/assets/js/bundle.js
+www/assets/cockpit/js/bundle.js
+build/*
+
+www/upload/*
+
+vendor/*
+
+.git/*
+.gitignore/*

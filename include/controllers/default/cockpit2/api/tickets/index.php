@@ -72,15 +72,19 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$q .= ' AND s.phone=?';
 			$keys['phone'] = $phone;
 		}
-
+// Sarah Donnelly
 		if ($search) {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
+					's.name' => 'like',
+					'o.name' => 'like',
 					'u.name' => 'like',
+					'sm.body' => 'like',
+
 					'u.phone' => 'likephone',
 					'u.address' => 'like',
-					'o.name' => 'like',
+
 					'o.phone' => 'likephone',
 					'o.address' => 'like',
 					's.id_support' => 'inteq'
@@ -151,10 +155,36 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				$o->id_admin_from = $n['id_admin'];
 			}
 
+			if( !$o->id_admin_from ){
+				$phone = Phone::byPhone( $o->phone );
+				$admin = Admin::q( 'SELECT * FROM admin WHERE id_phone = ? ORDER BY id_admin DESC LIMIT 1', [ $phone->id_phone ] )->get( 0 );
+				if( $admin->id_admin ){
+					$o->id_admin_from = $admin->id_admin;
+				}
+			}
+
+			if( !$o->id_admin_from && !$o->id_user ){
+				if( !$phone->id_phone ){
+					$phone = Phone::byPhone( $o->phone );
+				}
+				$order = Order::q( 'SELECT * FROM `order` WHERE id_phone = ? ORDER BY id_order DESC LIMIT 1', [ $phone->id_phone ] )->get( 0 );
+				if( $order->id_user ){
+					$o->id_user = $order->id_user;
+				}
+			}
+
 			$support = Support::o( $o->id_support );
 			$lastReplyFrom = $support->lastMessage();
 			$o->last_reply = $lastReplyFrom->from;
 			$o->last_reply_type = $lastReplyFrom->type;
+
+			if( $o->status == Crunchbutton_Support::STATUS_CLOSED ){
+				$messageBeforeLast = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND id_support_message < ? ORDER BY id_support_message DESC LIMIT 1', [ $o->id_support, $lastReplyFrom->id_support_message ] )->get( 0 );
+				if( $messageBeforeLast->id_support_message ){
+					$o->message_client = $messageBeforeLast->body . "<br><i>{$o->message_client}</i>" ;
+				}
+			}
+
 			/*
 			$support = Support::o( $o->id_support );
 			$message = $support->lastMessage();
