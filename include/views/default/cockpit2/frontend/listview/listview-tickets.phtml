@@ -27,7 +27,9 @@
 					<i ng-if="ticket.timestamp_client" am-time-ago="ticket.timestamp_client*1000"></i>
 					<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
 					<br>
-					<span ng-class="{ 'text-danger': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }" >{{ticket.message_client}}</span>
+					<span ng-class="{ 'text-danger': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }" >
+						<span ng-bind-html="ticket.message_client"></span>
+					</span>
 				</span>
 			</td>
 			<td class="tb-v-center tb-center">
@@ -38,7 +40,7 @@
 				<span class="tag tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
 				<span ng-if="ticket.type != 'WARNING'">
 					<span class="tag tag-blue" ng-if="ticket.id_user">Customer</span>
-					<span class="tag tag-orange" ng-if="!ticket.id_user && ticket.id_admin_from">Driver</span>
+					<span class="tag tag-orange" ng-if="ticket.id_admin_from">Driver</span>
 					<span class="tag tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
 				</span>
 			</td>

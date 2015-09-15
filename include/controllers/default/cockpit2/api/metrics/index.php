@@ -187,6 +187,21 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+	public function _buildThirdPartyOrdersQuery() {
+		$periodFormat = self::_getPeriodFormat($this->period);
+		$q = '
+			SELECT
+				id_community,
+				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				COUNT(*) count
+			FROM `order`
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
+				AND ' . self::_buildThirdPartyOrderFilter('`order`') . '
+			GROUP BY id_community, date_group
+			';
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
+	}
 	public static function _getMySQLQuery($query) {
 		// TODO: Secure this with admin only
 		if ($_REQUEST['showSQL']) {
@@ -364,6 +379,15 @@ class _Community_Metric_Container {
             case 'orders':
                 return $this->_buildOrdersQuery();
                 break;
+			case 'third-party-delivery-orders-by-hour':
+				return $this->_thirdPartyOrdersByHourQuery();
+				break;
+			case 'third-party-delivery-orders-by-day-of-week':
+				return $this->_thirdPartyOrdersByDayOfWeekQuery();
+				break;
+			case 'third-party-delivery-orders':
+				return $this->_buildThirdPartyOrdersQuery();
+				break;
             case 'refunded':
                 return $this->_refundedOrdersQuery();
                 break;
@@ -398,6 +422,11 @@ class _Community_Metric_Container {
 	public static function _buildOrderFilter($table) {
 		$out = '(' . $table . '.likely_test = FALSE OR ' . $table . '.likely_test IS NULL)';
 		$out = $out . ' AND (' . $table . '.refunded IS NULL OR ' . $table . '.refunded = FALSE)';
+		return '(' . $out . ')';
+	}
+	public static function _buildThirdPartyOrderFilter($table) {
+		$out = '(' . $table . '.likely_test = FALSE OR ' . $table . '.likely_test IS NULL)';
+		$out = $out . ' AND ' . $table . '.delivery_service=TRUE AND .' . $table. '.delivery_type="delivery" AND ' . '(' . $table . '.refunded IS NULL OR ' . $table . '.refunded = FALSE)';
 		return '(' . $out . ')';
 	}
 	public function _uniqueUsersQuery() {
@@ -603,6 +632,48 @@ class _Community_Metric_Container {
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
+			GROUP BY id_community, day_of_week
+			';
+		$resp = self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'day_of_week', 'count', true, 0, [1, 2, 3, 4, 5, 6, 7]);
+		// replace labels that we already know are ordered here
+		$resp['meta']['labels'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		return $resp;
+
+		$this->error(404);
+
+	}
+
+	public function _thirdPartyOrdersByHourQuery() {
+		$q = '
+			SELECT
+				id_community,
+				DATE_FORMAT(`order`.date, "%Hh") hour_of_day,
+				MIN(date) start_date,
+				COUNT(*) count
+			FROM `order`
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
+				AND ' . self::_buildThirdPartyOrderFilter('`order`') . '
+			GROUP BY id_community, hour_of_day
+			';
+		$hourLabels = [];
+		for($i = 0; $i < 24; $i++) {
+			$hourLabels[] = sprintf("%02d", $i)  . 'h';
+		}
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'hour_of_day', 'count', true, 0, $hourLabels);
+	}
+
+	public function _thirdPartyOrdersByDayOfWeekQuery() {
+		$q = '
+			SELECT
+				id_community,
+				DAYOFWEEK(`order`.date) day_of_week,
+				MIN(date) start_date,
+				COUNT(*) count
+			FROM `order`
+			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
+				AND ' . self::_buildThirdPartyOrderFilter('`order`') . '
 			GROUP BY id_community, day_of_week
 			';
 		$resp = self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'day_of_week', 'count', true, 0, [1, 2, 3, 4, 5, 6, 7]);

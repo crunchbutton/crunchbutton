@@ -33,7 +33,7 @@
 					</div>
 				</li>
 				<li class="li-input" ng-class="{'error':formBasic.driverDob.$invalid}">
-					<div class="label">Date of Birth:</div>
+					<div class="label">Date of Birth (YYYY-MM-DD):</div>
 					<div class="input"><input type="text" name="driverDob" required ng-pattern="/[0-9]{4}-[0-9]{2}-[0-9]{2}/" ng-model="basicInfo.dob"></div>
 					<div class="box-error">
 						<small ng-show="formBasic.driverDob.$invalid">Enter a valid format (YYYY-MM-DD)</small>

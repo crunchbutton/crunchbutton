@@ -76,10 +76,8 @@
 							<div class="label">Timezone:</div>
 							<div class="input">
 							<select name="driverTimezone" required ng-model="driver.timezone" ng-options="opt.value as opt.label for opt in timezones" ></select>
-
 							</div>
 						</li>
-
 
 						<li class="li-input" ng-class="{'error':form.driverEmail.$invalid}">
 							<div class="label">Email:</div>
@@ -261,19 +259,25 @@
 							</div>
 						</li>
 
-
-
 						<li class="li-input">
 							<div class="label">Desired Weekly Hours:</div>
 							<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.weekly_hours" placeholder=""></div>
 						</li>
 
 						<li class="li-input">
+							<div class="label">Any Relevant Driver Notes to Display Next to Driver Name?</div>
+							<div class="input">
+							<textarea name="driverNotesToDriver" ng-model="driver.notes_to_driver"></textarea>
+						</li>
+
+						<li class="li-input">
+
 							<div class="label">Sometimes order volume is really high and we reach out to drivers who aren't scheduled to help out and deliver more food so we don't have to shut down the community.
 							<br>
-							How down would you be to help out in a scenario like that?</div>
+							Would you be down to help out in a scenario like that?</div>
 							<div class="input">
-							<textarea name="driverDownToHelpOut" ng-model="driver.down_to_help_out"></textarea>
+								<select ng-model="driver.down_to_help_out" required name="driverDownToHelpOut" ng-options="type.value as type.label for type in _yesNo"></select>
+							</div>
 						</li>
 
 					</ul>

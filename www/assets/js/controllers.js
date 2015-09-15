@@ -1048,14 +1048,15 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	}
 	$scope.addressPlaceAnyway = function(){
 		$rootScope.closePopup();
+		order.geomatched = 0;
 		// Give time to close the modal.
-		setTimeout( function(){ order.submit( true );;	}, 300 );
+		setTimeout( function(){ order.submit( true, true );;	}, 300 );
 	}
 	$scope.addressOutOfRangePlaceAnyway = function(){
 		$rootScope.closePopup();
 		// Give time to close the modal.
 		order.geomatched = 0;
-		setTimeout( function(){ order.submit( true );;	}, 300 );
+		setTimeout( function(){ order.submit( true, true );;	}, 300 );
 	}
 
 	$scope.giftCardCreditPayment = function(){
