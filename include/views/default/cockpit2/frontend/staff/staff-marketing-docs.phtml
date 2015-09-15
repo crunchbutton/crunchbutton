@@ -40,7 +40,8 @@
 					<!-- upload directive -->
 					<div class="upbutton" driver-docs-upload>
 						<button class="ladda-button upload" data-color="mint" data-style="zoom-in"><span class="ladda-label"><b>UPLOAD</b></span></button>
-						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden" options="{ formData: [{id_driver_document: doc.id_driver_document}]}">
+						<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file file-hidden"
+						options="{ formData: [{id_driver_document: doc.id_driver_document, id_admin: account.user.id_admin}]}">
 					</div>
 				</td>
 			</tr>
