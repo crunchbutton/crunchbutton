@@ -1,0 +1,25 @@
+FROM php:5.6-apache
+
+ENV DOCKER=1
+ENV DATABASE_URL=mysql://root:root@192.168.0.7:8889/crunchbutton
+ENV HEROKU=1
+
+
+RUN apt-get update && apt-get install -y \
+        libmcrypt-dev \
+        php-pear \
+        curl \
+        git \
+    && docker-php-ext-install iconv mcrypt \
+	&& docker-php-ext-install mysql pdo_mysql
+
+
+
+ADD conf/apache2.docker.conf /etc/apache2/sites-enabled/000-default.conf
+
+ADD ./ /var/www/
+RUN mkdir /var/www/logs
+RUN chmod -R 0777 /var/www/cache
+
+RUN a2enmod rewrite
+RUN a2enmod headers
