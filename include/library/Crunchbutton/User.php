@@ -289,6 +289,17 @@ class Crunchbutton_User extends Cana_Table {
 		return false;
 	}
 
+	public function nameAbbr(){
+		$name = explode( ' ', $this->name );
+		$lastName = $name[ count( $name ) - 1 ];
+		if( trim( $lastName ) != '' ){
+			$lastName = ' ' . $lastName[0];
+		} else {
+			$lastName = '';
+		}
+		return $this->firstName() . $lastName;
+	}
+
 	public function firstName(){
 		$name = explode( ' ', $this->name );
 		if( trim( $name[ 0 ] ) != '' ){
