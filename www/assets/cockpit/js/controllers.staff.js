@@ -126,7 +126,14 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 	$scope.reverify = function( callback ) {
 		StaffService.reverify( $scope.staff.id_admin, function( data ) {
 			if (data.status.status == 'unverified') {
-				App.alert('Could not finish verification. Missing fields: ' + data.status.fields.join(','));
+				var error = 'Could not finish verification. ';
+				if (!data.status.ssn) {
+					error += 'Missing SSN. ';
+				}
+				if (data.status.fields) {
+					error += 'Missing fields: ' + data.status.fields.join(',');
+				}
+				App.alert(error);
 			} else {
 				App.alert('Looks like it might have reverified successfully.');
 				load();

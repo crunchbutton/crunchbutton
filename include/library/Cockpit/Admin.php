@@ -5,11 +5,13 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	public function stripeVerificationStatus() {
 		if (!isset($this->_stripeVerificationStatus)) {
 			$stripeAccount = $this->stripeAccount();
+			$ssn = $paymentType->social_security_number($this->id_admin);
 			$data = [
 				'status' => $stripeAccount->legal_entity->verification->status,
 				'fields' => $stripeAccount->verification->fields_needed,
 				'due_by' => $stripeAccount->verification->due_by,
-				'contacted' => trim($stripeAccount->verification->contacted) ? true : false
+				'contacted' => trim($stripeAccount->verification->contacted) ? true : false,
+				'ssn' => $ssn ? true : false
 			];
 
 			$this->_stripeVerificationStatus = $data;
