@@ -33,6 +33,7 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		}
 		
 		if (getenv('HEROKU')) {
+			print_r($args);
 			error_log('>> CONNECTING TO DATABASE...');
 		}
 
