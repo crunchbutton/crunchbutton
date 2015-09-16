@@ -5,6 +5,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	public function stripeVerificationStatus() {
 		if (!isset($this->_stripeVerificationStatus)) {
 			$stripeAccount = $this->stripeAccount();
+			$paymentType = $this->payment_type();
 			$ssn = $paymentType->social_security_number($this->id_admin);
 			$data = [
 				'status' => $stripeAccount->legal_entity->verification->status,
