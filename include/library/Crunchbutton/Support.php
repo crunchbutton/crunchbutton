@@ -661,7 +661,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Admin::o($this->id_admin);
 	}
 
-	public function save() {
+	public function save($new = false) {
 		$initial_save = false;
 		if(!Support::o($this->id_support)->id_support) {
 			$initial_save = true;

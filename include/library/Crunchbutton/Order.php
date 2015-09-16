@@ -3196,7 +3196,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return false;
 	}
 
-	public function save() {
+	public function save($new = false) {
 
 		$new = $this->id_order ? false : true;
 

@@ -1,7 +1,7 @@
 <?php
 
 class Crunchbutton_Community_Trackchange extends Cana_Table {
-	public function save() {
+	public function save($new = false) {
 		if ($this->{$this->idVar()}) {
 
 			if( !c::admin()->id_admin ){
