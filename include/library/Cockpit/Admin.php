@@ -59,7 +59,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$address = Util::addressParts($formattedAddress);
 
 		// make sure we can verify it
-		if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
+		// ref #6702 sometimes it says they are verified but still wants info
+		//if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
+		if (!$status['contacted'] && ($force || $status['due_by'])) {
 			$saving = 0;
 
 			if (!$force) {
