@@ -61,7 +61,7 @@ class Crunchbutton_Blast extends Cana_Table {
 		}
 	}
 
-	public function save() {
+	public function save($new = false) {
 		$new = $this->id_blast ? false : true;
 
 		parent::save();

@@ -20,7 +20,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			->load($id);
 	}
 
-	public function save() {
+	public function save($new = false) {
 		$this->phone = Phone::clean($this->phone);
 		$guid = $this->guid;
 		$new = $this->id_support_message ? false : true;

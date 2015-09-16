@@ -1081,7 +1081,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_author;
 	}
 
-	public function save() {
+	public function save($new = false) {
 
 		if( $this->phone ){
 			$this->phone = Phone::clean($this->phone);

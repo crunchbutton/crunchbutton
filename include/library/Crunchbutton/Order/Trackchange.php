@@ -1,7 +1,7 @@
 <?php
 
 class Crunchbutton_Order_Trackchange extends Cana_Table {
-	public function save() {
+	public function save($new = false) {
 		if ($this->{$this->idVar()}) {
 			$this->_changeSet = new Crunchbutton_Order_Changeset(Cana_Changeset::save($this));
 		}
