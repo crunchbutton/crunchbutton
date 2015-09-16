@@ -31,7 +31,7 @@ before_install:
   #- sudo service mysql restart
 
 before_script:
-  - composer self-update
+  #- composer self-update
   - mkdir build
   - composer install --dev --no-interaction
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
