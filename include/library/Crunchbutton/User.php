@@ -433,7 +433,7 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 
-	public function save(){
+	public function save($new = false){
 		if( !$this->id_phone ){
 			$phone = Phone::byPhone( $this->phone );
 			$this->id_phone = $phone->id_phone;
