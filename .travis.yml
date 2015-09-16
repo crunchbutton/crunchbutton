@@ -38,6 +38,7 @@ before_script:
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
   - php travis/dbmigrate.php
+  - cd www && nohup php -S localhost:80 -c ../travis/php.ini index.php > /dev/null 2>&1 &
   #- sudo apt-get clean
   #- sudo apt-get update
   #- sudo apt-get install apache2
