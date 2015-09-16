@@ -1,3 +1,6 @@
+sudo:
+  - false
+
 language:
   - php
 
@@ -21,12 +24,12 @@ cache:
 # install:
 
 before_install:
-  - echo 'America/Los_Angeles' | sudo tee /etc/timezone
-  - sudo dpkg-reconfigure --frontend noninteractive tzdata
+  #- echo 'America/Los_Angeles' | sudo tee /etc/timezone
+  #- sudo dpkg-reconfigure --frontend noninteractive tzdata
   - export TZ=America/Los_Angeles
   - date
-  - cat /etc/timezone
-  - sudo service mysql restart
+  #- cat /etc/timezone
+  #- sudo service mysql restart
 
 before_script:
   - composer self-update
@@ -36,19 +39,19 @@ before_script:
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
   - php travis/dbmigrate.php
-  - sudo apt-get clean
-  - sudo apt-get update
-  - sudo apt-get install apache2
-  - sudo a2enmod actions
-  - sudo a2enmod rewrite
-  - travis/mysql-to-postgres.sh
-  - chmod -R 0777 ./*
-  - echo "export PATH=/home/travis/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
-  - cat travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-  - cat travis/sites.conf | sed -e "s,PATH,`pwd`/www,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
-  - echo 'export APACHE_ARGUMENTS="-D TRAVIS"' | sudo tee -a /etc/apache2/envvars > /dev/null
-  - sudo service apache2 restart
-  - npm install assert chai phantom path util events
+  #- sudo apt-get clean
+  #- sudo apt-get update
+  #- sudo apt-get install apache2
+  #- sudo a2enmod actions
+  #- sudo a2enmod rewrite
+  #- travis/mysql-to-postgres.sh
+  #- chmod -R 0777 ./*
+  #- echo "export PATH=/home/travis/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
+  #- cat travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
+  #- cat travis/sites.conf | sed -e "s,PATH,`pwd`/www,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  #- echo 'export APACHE_ARGUMENTS="-D TRAVIS"' | sudo tee -a /etc/apache2/envvars > /dev/null
+  #- sudo service apache2 restart
+  #- npm install assert chai phantom path util events
 
 #  - "export DISPLAY=:99.0"
 #  - "sh -e /etc/init.d/xvfb start"
@@ -59,17 +62,16 @@ before_script:
 
 script:
   - phpunit --configuration travis/phpunit.xml
-  - phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
+  #- phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
 
 notifications:
   webhooks: https://cockpit.la/api/travisci/build
 
 addons:
-  postgresql: "9.3"
-#  apt:
-#    packages:
-#    - cmake
-#    - time
+  apt:
+    packages:
+    - cmake
+    - time
 #  sauce_connect:
 #  username: "Your Sauce Labs username"
 #  access_key: "Your Sauce Labs access key"
