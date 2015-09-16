@@ -20,7 +20,7 @@
 				<a href="/community/{{customer._id_community}}">{{customer._community_name}}</a>
 				<br><span class="listview-smaller">{{customer.address}}</span>
 			</td>
-			<td><span ng-if="customer._order_date"><span am-time-ago="customer._order_date"></span></span></td>
+			<td><span ng-if="customer._order_date">{{order.date | timestamp | date:'EEE MM/dd @ h:mm a'}}</span></td>
 			<td nowrap class="tb-center tb-v-center">
 				<span class="tag tag-green" ng-if="customer._stripe_id">Yes</span>
 				<span class="tag tag-red" ng-if="!customer._stripe_id">No</span>
