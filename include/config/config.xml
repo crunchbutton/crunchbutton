@@ -11,6 +11,7 @@
 		<file>
 			<dir>data</dir>
 			<expire>216000</expire>
+			<adapter>file</adapter>
 		</file>
 	</cache>
 	<imgCache>http://i._DOMAIN_/cache/</imgCache>
