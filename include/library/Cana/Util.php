@@ -62,7 +62,7 @@ class Cana_Util extends Cana_Model {
 		return $h . $mintute_formated;
 	}
 
-	function static sort_col($table, $colname) {
+	public static function sort_col($table, $colname) {
 		$tn = $ts = $temp_num = $temp_str = array();
 		foreach ($table as $key => $row) {
 			if(is_numeric(substr($row[$colname], 0, 1))) {
