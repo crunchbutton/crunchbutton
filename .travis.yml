@@ -41,7 +41,7 @@ before_script:
   - phpenv config-add travis/php.ini
   - php travis/dbmigrate.php
   - php travis/phpunit.setup.php
-  - cd www && nohup php -S localhost:80 -c ../travis/php.ini index.php > /dev/null 2>&1 &
+  - cd www && nohup php -S localhost:8000 -c ../travis/php.ini index.php > /dev/null 2>&1 &
   #- sudo apt-get clean
   #- sudo apt-get update
   #- sudo apt-get install apache2
