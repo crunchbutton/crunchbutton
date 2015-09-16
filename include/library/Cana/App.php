@@ -187,7 +187,7 @@ class Cana_App extends Cana_Model {
 		$this->includeFile($pageClass);
 		$pageClass = explode('/',$pageClass);
 
-		if (getenv('HEROKU')) {
+		if (getenv('DEBUG')) {
 			error_log('>> DISPLAYING CLASS:'.$pageClass);
 		}
 
