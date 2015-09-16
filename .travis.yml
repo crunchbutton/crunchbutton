@@ -66,11 +66,11 @@ script:
 notifications:
   webhooks: https://cockpit.la/api/travisci/build
 
-addons:
-  apt:
-    packages:
-    - cmake
-    - time
+#addons:
+#  apt:
+#    packages:
+#    - cmake
+#    - time
 #  sauce_connect:
 #  username: "Your Sauce Labs username"
 #  access_key: "Your Sauce Labs access key"
