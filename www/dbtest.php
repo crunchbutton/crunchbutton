@@ -8,14 +8,15 @@ $getDb = function($args) {
 	$args->url = getenv('DATABASE_URL');
 
 	if ($args->url) {
-		preg_match('/^(mysql:\/\/)(.*):(.*)@(.*):([0-9]+)\/([a-z0-9\._]+)(\?sslca=(.*))?$/u', $args->url, $matches);
+		preg_match('/^(mysql:\/\/)(.*):(.*)@([a-z0-9_\-\.]+)(:([0-9]+))?\/([a-z0-9\._]+)(\?sslca=(.*))?$/ui', $args->url, $matches);
 		$args->user = $matches[2];
 		$args->pass = $matches[3];
 		$args->host = $matches[4];
-		$args->port = $matches[5];
-		$args->db = $matches[6];
-		$args->sslca = $matches[8];
+		$args->port = $matches[6];
+		$args->db = $matches[7];
+		$args->sslca = $matches[9];
 	}
+	print_r($args);
 
 	if (!$args->dsn) {
 		$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8';
