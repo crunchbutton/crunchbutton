@@ -1,7 +1,7 @@
 FROM php:7.0-fpm
 
 ENV DOCKER=1
-ENV HEROKU=1
+ENV DEBUG=1
 
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
