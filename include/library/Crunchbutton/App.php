@@ -82,6 +82,10 @@ class Crunchbutton_App extends Cana_App {
 		if ($cliEnv) {
 			$db = $cliEnv;
 		}
+		
+		if ($db == 'local' && function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
+			$params['config']->db->local->host = '127.0.0.1';
+		}
 
 		// redirect bad urls
 		if ($db == 'fail' || $_SERVER['SERVER_NAME'] == 'crunchr.co') {
