@@ -1782,7 +1782,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_payment_type;
 	}
 
-	public function save() {
+	public function save($new = false) {
 		if (!$this->timezone) {
 			$this->timezone = c::config()->timezone;
 		}
@@ -1790,7 +1790,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return parent::save();
 	}
 
-	public function load($stuff) {
+	public function load($stuff = null) {
 		parent::load($stuff);
 		if (!$this->timezone) {
 			$this->timezone = c::config()->timezone;
