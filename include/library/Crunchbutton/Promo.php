@@ -537,8 +537,8 @@ class Crunchbutton_Promo extends Cana_Table
 						$community = $this->community();
 						if( $id_restaurant ){
 							$restaurant = Crunchbutton_Restaurant::o( $id_restaurant );
-							$community = $restaurant->community();
-							if( $community->id_community != $this->id_community ){
+							$restaurant_community = $restaurant->community();
+							if( $restaurant_community->id_community != $this->id_community ){
 								$out[ 'error' ] = true;
 								$out[ 'warning' ] = 'Sorry, this code is valid just for the restaurants of the community ' . $community->name;
 							}

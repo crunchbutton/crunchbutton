@@ -39,6 +39,9 @@ class Controller_api_promo_discountcode extends Crunchbutton_Controller_RestAcco
 					if( $date_start ){
 						$out[ 'date_start' ] = $date_start->format( 'Y,m,d' );
 					}
+					if( !$promo->id_community ){
+						$out[ 'all' ] = true;
+					}
 					$date_end = $promo->dateEnd();
 					if( $date_end ){
 						$out[ 'date_end' ] = $date_end->format( 'Y,m,d' );
@@ -94,6 +97,10 @@ class Controller_api_promo_discountcode extends Crunchbutton_Controller_RestAcco
 		$promo->date_end = $this->request()[ 'date_end' ];
 		$promo->usable_by = $this->request()[ 'usable_by' ];
 		$promo->id_community = $this->request()[ 'id_community' ];
+		if( $this->request()[ 'all' ] ){
+			$promo->id_community = null;
+		}
+
 		$promo->paid_by = strtoupper( $this->request()[ 'paid_by' ] );
 		$promo->delivery_fee = ( $this->request()[ 'delivery_fee' ] ? 1 : 0 );
 		$promo->value = $this->request()[ 'value' ];
@@ -177,7 +184,7 @@ class Controller_api_promo_discountcode extends Crunchbutton_Controller_RestAcco
 
 			$promo = Crunchbutton_Promo::o($s);
 			$out = $promo->exports();
-			if( $promo->community() ){
+			if( $promo->id_community ){
 				$out['community'] = $promo->community()->name;
 			} else {
 				$out['all'] = true;
