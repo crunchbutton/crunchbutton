@@ -130,6 +130,9 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 				if (!data.status.ssn) {
 					error += 'Missing SSN. ';
 				}
+				if (data.status.contacted) {
+					error += 'Contacted. Requires manual fix. Check email. ';
+				}
 				if (data.status.fields) {
 					error += 'Missing fields: ' + data.status.fields.join(',');
 				}

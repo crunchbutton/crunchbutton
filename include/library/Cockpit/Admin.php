@@ -3,7 +3,7 @@
 class Cockpit_Admin extends Crunchbutton_Admin {
 
 	public function stripeVerificationStatus() {
-		if (!isset($this->_stripeVerificationStatus)) {
+		//if (!isset($this->_stripeVerificationStatus)) {
 			$stripeAccount = $this->stripeAccount();
 			$paymentType = $this->payment_type();
 			$ssn = $paymentType->social_security_number($this->id_admin);
@@ -16,7 +16,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			];
 
 			$this->_stripeVerificationStatus = $data;
-		}
+		//}
 		return $this->_stripeVerificationStatus;
 	}
 
@@ -66,7 +66,17 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		// ref #6702 sometimes it says they are verified but still wants info
 		// also we cant force update when its verified or it will error out
 		//if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
-		if (!$status['contacted'] && ($force || $status['due_by'])) {
+		if ($status['contacted']) {
+
+			if ($status['status'] != 'verified') {
+				if ($paymentType->verified) {
+					$paymentType->verified = false;
+					$paymentType->save();
+				}
+			}
+			return false;
+			
+		} elseif ($status['fields'] || $force || $status['due_by']) {
 			$saving = 0;
 
 			if (!$force) {
