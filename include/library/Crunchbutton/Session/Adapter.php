@@ -17,7 +17,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		$_SESSION[$var] = $value;
 		return $this;
 	}
-	public function get($var) {
+	public function get($var = null) {
 		return $_SESSION[$var];
 	}
 	
