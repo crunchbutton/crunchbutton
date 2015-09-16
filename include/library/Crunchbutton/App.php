@@ -106,51 +106,41 @@ class Crunchbutton_App extends Cana_App {
 			exit;
 		}
 
-		$params['postInitSkip'] = true;
-		$params['env'] = $db;
-
 		if (getenv('DATABASE_URL')) {
-			$params['config']->db->heroku = (object)[
+			$params['config']->db->readDB = (object)[
 				'url' => getenv('DATABASE_URL'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
 			];
-
-			$params['env'] = $db = 'heroku';
+			$db = 'readDB';
 		}
-
-		if (getenv('HEROKU')) {
-
-
-
-
-			if (getenv('REDIS_URL')) {
-				$params['config']->cache->default = $params['config']->cache->redis;
-				$params['config']->cache->default->url = getenv('REDIS_URL');
-			}
-
-			if (getenv('HEROKU')) {
-				error_log('>> INITING...');
-			}
-
-			parent::init($params);
-
-			if (getenv('HEROKU')) {
-				error_log('>> Finished init');
-			}
-
-
-			if (getenv('DATABASE_URL_WRITE')) {
-				$params['config']->db->herokuWrite = (object)[
-					'url' => getenv('DATABASE_URL_WRITE'),
-					'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL_WRITE'))
-				];
-				$write = $this->buildDb('herokuWrite');
-				$this->dbWrite($write);
-			}
-
+		
+		if (getenv('REDIS_URL')) {
+			$params['config']->cache->default = $params['config']->cache->redis;
+			$params['config']->cache->default->url = getenv('REDIS_URL');
 		} else {
 			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
+		}
+		
+		if (getenv('DATABASE_URL_WRITE')) {
+			$params['config']->db->writeDB = (object)[
+				'url' => getenv('DATABASE_URL_WRITE'),
+				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL_WRITE'))
+			];
+			$write = $this->buildDb('writeDB');
+			$this->dbWrite($write);
+		}
 
+		$params['postInitSkip'] = true;
+		$params['env'] = $db;
+
+		if (getenv('DEBUG')) {
+
+			error_log('>> INITING...');
+			parent::init($params);
+			error_log('>> Finished init');
+
+		} else {
+			// show the server-vacation page when we cant connect to the database on production
 			try {
 				parent::init($params);
 			} catch (Exception $e) {
@@ -170,8 +160,6 @@ class Crunchbutton_App extends Cana_App {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 
-
-
 		// set host callback by hostname
 		$config->host_callback = ($db == 'local' || $db == 'travis' || $db == 'travispostgres' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
 
@@ -183,21 +171,7 @@ class Crunchbutton_App extends Cana_App {
 
 		$this->config($config);
 
-
-
 		$this->buildAuth($this->db());
-
-
-
-		if (getenv('HEROKU')) {
-			error_log('>> EXITING >>>>>>>>>');
-			//die((string)rand(1,999999));
-		}
-
-
-
-
-
 
 		// set bundle on everything except tests
 		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
@@ -209,12 +183,6 @@ class Crunchbutton_App extends Cana_App {
 			$config->bundle = true;
 			$config->viewExport = true;
 		}
-
-
-
-
-
-
 
 		$this
 			->config($config)
@@ -339,7 +307,7 @@ class Crunchbutton_App extends Cana_App {
 			$pageName = $page;
 		}
 
-		if (getenv('HEROKU')) {
+		if (getenv('DEBUG')) {
 			error_log('>> DISPLAYING PAGE: '.$pageName);
 		}
 
