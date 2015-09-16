@@ -168,7 +168,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 	}
 
 	public function stripeVerify(){
-		$this->admin()->autoStripeVerify( true );
+		$this->admin()->autoStripeVerify( false );
 	}
 
 	public function testAccount(){
