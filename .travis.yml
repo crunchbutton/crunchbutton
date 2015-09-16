@@ -34,6 +34,7 @@ before_script:
   #- composer self-update
   - mkdir build
   - composer install --dev --no-interaction
+  - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -uroot mysql
   - mysql -e "SET GLOBAL time_zone = 'America/Los_Angeles';" -uroot;
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
