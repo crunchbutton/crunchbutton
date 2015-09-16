@@ -194,6 +194,8 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 
 	service.notes_field.start = function( phone, id_restaurant ){
 
+		service.notes_field.giftcards.error = [];
+
 		service.notes_field.hasGiftCards = false;
 		service.notes_field.giftcards.success = [];
 
