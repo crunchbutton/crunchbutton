@@ -111,7 +111,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _reverify($staff) {
 		$status = $staff->stripeVerificationStatus();
-		$reverify = $staff->autoStripeVerify(true);
+		$reverify = $staff->autoStripeVerify(false);
 		echo json_encode(['stripe_id' => $staff->payment_type()->stripe_id, 'reverify' => $reverify, 'status' => $status]);
 	}
 

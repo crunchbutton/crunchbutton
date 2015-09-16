@@ -48,7 +48,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
-		$ssn = substr($paymentType->social_security_number($this->id_admin), -4);
+		$ssn = $paymentType->social_security_number($this->id_admin);
+		$ssn4 = substr($paymentType->social_security_number($this->id_admin), -4);
 
 		$formattedAddress = Util::formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
@@ -60,6 +61,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		// make sure we can verify it
 		// ref #6702 sometimes it says they are verified but still wants info
+		// also we cant force update when its verified or it will error out
 		//if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
 		if (!$status['contacted'] && ($force || $status['due_by'])) {
 			$saving = 0;
@@ -104,8 +106,14 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 							}
 							break;
 						case 'legal_entity.ssn_last_4':
-							if (!$stripeAccount->legal_entity->ssn_last_4 && $ssn) {
-								$stripeAccount->legal_entity->ssn_last_4 = $ssn;
+							if (!$stripeAccount->legal_entity->ssn_last_4 && $ssn4) {
+								$stripeAccount->legal_entity->ssn_last_4 = $ssn4;
+								$saving++;
+							}
+							break;
+						case 'legal_entity.personal_id_number':
+							if (!$stripeAccount->legal_entity->personal_id_number && $ssn) {
+								$stripeAccount->legal_entity->personal_id_number = $ssn;
 								$saving++;
 							}
 							break;
@@ -118,10 +126,13 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$stripeAccount->legal_entity->address->city = $address['city'];
 				$stripeAccount->legal_entity->address->state = $address['state'];
 				$stripeAccount->legal_entity->address->postal_code = $address['zip'];
-				if ($ssn) {
-					$stripeAccount->legal_entity->ssn_last_4 = $ssn;
-				}
 				$saving = 6;
+				if ($ssn) {
+					$stripeAccount->legal_entity->ssn_last_4 = $ssn4;
+					$stripeAccount->legal_entity->personal_id_number = $ssn;
+					$saving+=2;
+				}
+				
 			}
 
 			if ($saving) {
