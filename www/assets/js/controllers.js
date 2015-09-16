@@ -531,12 +531,17 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		// Success
 		function(){
 
+			$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
+
 			try {
 				var slogan = App.slogan.slogan;
-				var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
-				sloganReplace = $.trim(sloganReplace);
-				var tagline = App.tagline.tagline.replace('%s', sloganReplace);
-				slogan = slogan.replace('%s', sloganReplace);
+				var tagline = '';
+				if( RestaurantsService.community && RestaurantsService.community.tagline1 ){
+					tagline = RestaurantsService.community.tagline1;
+				}
+				if( RestaurantsService.community && RestaurantsService.community.tagline2 ){
+					tagline += '<br>' + RestaurantsService.community.tagline2;
+				}
 			} catch (e) {
 				console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
 				var slogan = '';
@@ -552,13 +557,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 			var restaurantsToShow = 0;
 			for ( var x in $scope.restaurants ) {
-				id_community = $scope.restaurants[ x ].id_community;
 				if( $scope.restaurants[ x ]._maximized ){
 					restaurantsToShow++;
 				}
 			}
-
-			$rootScope.$broadcast( 'updateQuote', id_community );
 
 			var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
 			$scope.showSmallClosures = App.isMobile() ? true : false;

@@ -87,6 +87,32 @@
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
+				<h1>Front end</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.communityTagline1.$invalid}">
+						<div class="label">Tagline 1:</div>
+						<div class="input"><input type="text" name="communityTagline1" ng-model="community.tagline1" placeholder="Order the top food for {{community.name}}" maxlength="100" ></div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.communityTagline2.$invalid}">
+						<div class="label">Tagline 2:</div>
+						<div class="input"><input type="text" name="communityTagline2" ng-model="community.tagline2" required placeholder="After you order, everything is saved for future 1 click ordering" maxlength="100" ></div>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Delivery info</h1>
 				<div class="divider"></div>
 			</div>

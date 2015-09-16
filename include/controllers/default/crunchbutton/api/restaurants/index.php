@@ -83,6 +83,12 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				$config[ 'community_closed' ] = $closed_message;
 			}
 		}
-		echo json_encode($config);
+
+
+		if( $community ){
+			$config[ 'community' ] = [ 'id_community' => $community->id_community, 'tagline1' => $community->tagline1, 'tagline2' => $community->tagline2 ];
+		}
+
+		echo json_encode( $config );
 	}
 }
