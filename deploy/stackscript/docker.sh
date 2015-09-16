@@ -41,9 +41,13 @@ sed -i 's/^#PermitRootLogin .*$/PermitRootLogin no/' /etc/ssh/sshd_config
 
 useradd $ROOTUSR
 echo "$ROOTUSR:$ROOTPASS"|chpasswd
-sudo adduser $ROOTUSR sudo
 echo "AllowUsers $ROOTUSR" >> /etc/ssh/sshd_config
 
+if [ -f /etc/apt/sources.list ]; then
+	usermod -aG sudo $ROOTUSR
+elif [ -f /etc/yum.conf ]; then
+	usermod -aG wheel $ROOTUSR
+fi
 
 # install keys n stuff from included file
 setup_github
