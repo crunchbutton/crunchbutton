@@ -27,7 +27,7 @@ class Crunchbutton_Analytics_Event extends Cana_Table {
 			$me->user_agent = $headers['User-Agent'];
 		}
 		if($headers['REMOTE_ADDR']) {
-			$me->ip = $headers['REMOTE_ADDR'];
+			$me->ip = c::getIp();
 		}
 		return $me;
 	}
