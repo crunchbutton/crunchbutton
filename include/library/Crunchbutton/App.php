@@ -141,6 +141,14 @@ class Crunchbutton_App extends Cana_App {
 
 			error_log('>> INITING...');
 			parent::init($params);
+			try {
+				parent::init($params);
+			} catch (Exception $e) {
+				print_r($db);
+				print_r($_SERVER['SERVER_NAME'].$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+				print_r($e->getMessage());
+				
+			}
 			error_log('>> Finished init');
 
 		} else {
