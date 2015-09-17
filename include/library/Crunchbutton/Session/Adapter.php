@@ -45,7 +45,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 			$this->active = 1;
 			$this->id_user = $this->get('id_user');
 			$this->idadmin = $this->get('id_admin');
-			$this->ip = $_SERVER['REMOTE_ADDR'];
+			$this->ip = c::getIp();
 			$this->id_session = $id;
 		}
 

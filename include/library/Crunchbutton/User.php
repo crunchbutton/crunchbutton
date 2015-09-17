@@ -246,7 +246,7 @@ class Crunchbutton_User extends Cana_Table {
 		}
 
 
-		$out['ip'] = $_SERVER['REMOTE_ADDR'];
+		$out['ip'] = c::getIp();
 		$out['email'] = $this->email ? $this->email : $this->email();
 
 

@@ -11,7 +11,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	const TITLE_CLOSE_AUTO_CLOSED = 'Auto Closed';
 
 	public static function all($force = null) {
-		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
+		$ip = preg_replace('/[^0-9\.]+/','',c::getIp());
 		$force = preg_replace('/[^a-z\-]+/','',$force);
 		$keys = ['ip' => $ip];
 

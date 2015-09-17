@@ -91,7 +91,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 				'bank_account' => $params[ 'bank_account' ],
 				'tos_acceptance' => [
 					'date' => time(),
-					'ip' => $_SERVER['REMOTE_ADDR']
+					'ip' => c::getIp()
 				],
 				'legal_entity' => [
 					'type' => 'individual',
