@@ -143,7 +143,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				$stripeAccount->legal_entity->address->state = $address['state'];
 				$stripeAccount->legal_entity->address->postal_code = $address['zip'];
 				$saving = 6;
-				if ($ssn) {
+				if ($ssn && trim($status['status']) != 'verified') {
 					$stripeAccount->legal_entity->ssn_last_4 = $ssn4;
 					$stripeAccount->legal_entity->personal_id_number = $ssn;
 					$saving+=2;
