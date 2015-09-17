@@ -143,8 +143,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 		});
 	}
 
-	service.reverify = function(id_admin, callback) {
-		staff.reverify({id_admin: id_admin}, function(data) {
+	service.reverify = function(id_admin, force, callback) {
+		var params = {id_admin: id_admin};
+		if (force) {
+			params.force = true;
+		}
+		staff.reverify(params, function(data) {
 			callback(data);
 		});
 	}
