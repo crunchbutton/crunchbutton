@@ -305,7 +305,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') {
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
-		if( service.form.pay_type == 'card' && service && service.account && service.account.user.points && service.account.user.points && service.account.user.points.free_delivery_message && service.restaurant.delivery_service ){
+
+		if( service.form.pay_type == 'card' &&
+				service && service.account &&
+				service.account.user.points &&
+				service.account.user.points.free_delivery_message &&
+				service.restaurant.delivery_service ){
 			delivery = 0;
 		}
 		delivery = App.ceil(delivery);
@@ -335,6 +340,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			fee = (feeTotal * (parseFloat(service.restaurant.fee_customer) / 100));
 		}
 		fee = App.ceil(fee);
+		// Issue - #5671
+		if( service.form.pay_type == 'card' &&
+			service && service.account &&
+			service.account.user.points &&
+			service.account.user.points.free_delivery_message ){
+			fee = 0;
+		}
 		return fee;
 	}
 	service._breackDownTaxes = function (feeTotal) {
