@@ -251,7 +251,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$support->type = Crunchbutton_Support::TYPE_BOX_NEED_HELP;
 		$support->phone = $params[ 'phone' ];
 		$support->status = Crunchbutton_Support::STATUS_OPEN;
-		$support->ip = c::getIp()];
+		$support->ip = c::getIp();
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];
 		$support->date = date( 'Y-m-d H:i:s' );
 		if( c::user()->id_user ){
