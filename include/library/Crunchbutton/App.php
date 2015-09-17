@@ -140,7 +140,7 @@ class Crunchbutton_App extends Cana_App {
 		if (getenv('DEBUG')) {
 
 			error_log('>> INITING...');
-			parent::init($params);
+
 			try {
 				parent::init($params);
 			} catch (Exception $e) {
