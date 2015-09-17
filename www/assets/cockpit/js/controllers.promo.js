@@ -100,15 +100,10 @@ NGApp.controller( 'PromoDiscountCodeCtrl', function ($scope, $routeParams, $filt
 				$scope.date_end = new Date( json.date_end );
 			}
 
-			if( !$scope.promo.id_community && $scope.promo.id_community != '' ){
-				$scope.promo.all = true;
-			} else {
-				$scope.promo.all = false;
-			}
 			communities();
 		} )
 	} else {
-		$scope.promo = { 'paid_by': 'CRUNCHBUTTON', 'delivery_fee': 0, 'active': true, 'usable_by': 'anyone', 'all': true };
+		$scope.promo = { 'paid_by': 'CRUNCHBUTTON', 'delivery_fee': false, 'active': true, 'usable_by': 'anyone', 'all': true };
 		communities();
 	}
 });

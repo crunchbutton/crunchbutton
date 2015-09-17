@@ -80,7 +80,7 @@ class Cana_Db_Base {
 		try {
 			$stmt->execute($args);
 		} catch (Exception $e) {
-			if (getenv('HEROKU')) {
+			if (getenv('DEBUG')) {
 				echo $e->getMessage();
 				die(c::env());
 			}
