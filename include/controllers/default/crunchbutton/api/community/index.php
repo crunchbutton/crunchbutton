@@ -7,7 +7,7 @@ class Controller_api_community extends Crunchbutton_Controller_Rest {
 
 				if( c::getPagePiece(2) == 'apply-list' ){
 
-					$communities = Crunchbutton_Community::q( "SELECT c.name, c.permalink, c.id_community FROM community c where c.name NOT LIKE "%test%" and c.name != "customer service" and c.name NOT LIKE '%duplication%' and c.active = 1 order by name asc" );
+					$communities = Crunchbutton_Community::q( "SELECT c.name, c.permalink, c.id_community FROM community c where c.name NOT LIKE '%test%' and c.name != 'customer service' and c.name NOT LIKE '%duplication%' and c.active = 1 order by name asc" );
 					$out = [];
 					foreach( $communities as $community ){
 						$community->name = ucwords( $community->name );
