@@ -31,6 +31,10 @@ $GLOBALS['config'] = [
 	'alias'					=> []
 ];
 
+if (getenv('DOCKER')) {
+	$GLOBALS['config']['dirs']['cache'] = '/tmp/';
+}
+
 
 if (!isset($_SERVER['HTTP_HOST'])) {
 	$_SERVER['HTTP_HOST'] = '';

@@ -1,5 +1,7 @@
 FROM php:7.0-apache
 
+ENV DOCKER=1
+
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
         php-pear \
@@ -11,7 +13,8 @@ RUN apt-get update && apt-get install -y \
 
 ADD conf/apache2.docker.conf /etc/apache2/sites-enabled/000-default.conf
 
-ADD ./ /var/www/
+#ADD ./ /var/www/
+RUN ln -s /opt/www /var/www/app
 RUN mkdir /var/www/logs
 RUN chmod -R 0777 /var/www/cache
 

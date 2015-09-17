@@ -52,7 +52,7 @@ fi
 # install keys n stuff from included file
 setup_github
 
-git clone git@github.com:crunchbutton/crunchbutton.git /home/docked
+git clone --depth 1 git@github.com:crunchbutton/crunchbutton.git /home/docked
 cd /home/docked
 docker build -f deploy/docker/$DOCKERFILE -t docked .
 rm -Rf /home/docked

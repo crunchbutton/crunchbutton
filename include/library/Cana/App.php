@@ -187,7 +187,7 @@ class Cana_App extends Cana_Model {
 		$this->includeFile($pageClass);
 		$pageClass = explode('/',$pageClass);
 
-		if (getenv('HEROKU')) {
+		if (getenv('DEBUG')) {
 			error_log('>> DISPLAYING CLASS:'.$pageClass);
 		}
 
@@ -354,7 +354,7 @@ class Cana_App extends Cana_Model {
 
 	public function cache() {
 		if (!isset($this->_cache)) {
-			$this->_cache = new Cache($this->config()->cache);
+			$this->_cache = new Cache( $this->config()->cache->default );
 		}
 		return $this->_cache;
 	}
