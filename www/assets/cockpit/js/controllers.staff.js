@@ -123,8 +123,8 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		$rootScope.$broadcast( 'CommunitiesAssign', { 'communities': $scope.staff.communities } );
 	}
 
-	$scope.reverify = function( callback ) {
-		StaffService.reverify( $scope.staff.id_admin, function( data ) {
+	$scope.reverify = function( callback, e) {
+		StaffService.reverify( $scope.staff.id_admin, e.altKey ? true : false, function( data ) {
 			if (data.status.status == 'unverified') {
 				var error = 'Could not finish verification. ';
 				if (!data.status.ssn) {

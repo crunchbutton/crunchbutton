@@ -567,7 +567,7 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 			isRunning: '@',
 			method:'&action'
     },
-		template: '<a href ng-click="run()">' +
+		template: '<a href ng-click="run($event)">' +
 								'<button class="button button-small button-empty" ng-class="{\'button-green\':!isRunning}" >' +
 									'<i class="fa fa-check" ng-if="!isRunning"></i><i class="fa fa-spinner fa-spin" ng-if="isRunning"></i>&nbsp;&nbsp;{{buttonTitle}}' +
 								'</button>' +
@@ -576,10 +576,10 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 			scope.title = attrs.title;
 			scope.isRunning = false;
 			var expressionHandler = scope.method();
-			scope.run = function(){
+			scope.run = function(e){
 				if( !scope.isRunning ){
 					scope.isRunning = true;
-					expressionHandler( function(){ scope.isRunning = false; } );
+					expressionHandler( function(){ scope.isRunning = false; }, e);
 				}
 			}
 		}
