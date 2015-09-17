@@ -133,8 +133,11 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					}
 				}
 			} else {
-				$stripeAccount->legal_entity->first_name = array_shift($name);
-				$stripeAccount->legal_entity->last_name = implode(' ',$name);
+				$stripeAccount->legal_entity->type = 'individual';
+				if (trim($status['status']) != 'verified') {
+					$stripeAccount->legal_entity->first_name = array_shift($name);
+					$stripeAccount->legal_entity->last_name = implode(' ',$name);
+				}
 				$stripeAccount->legal_entity->address->line1 = $address['address'];
 				$stripeAccount->legal_entity->address->city = $address['city'];
 				$stripeAccount->legal_entity->address->state = $address['state'];
