@@ -51,6 +51,10 @@ class Crunchbutton_App extends Cana_App {
 				$_SERVER['SERVER_NAME'] = 'heroku.crunchr.co';
 			}
 		}
+		
+		if (getenv('DOCKER')) {
+			$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
+		}
 
 		// db by hostname
 		// travis
