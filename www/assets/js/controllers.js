@@ -826,6 +826,20 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 			$scope.isProcessing = true;
 
+			if( $scope.location.form.address ){
+				var parts = $scope.location.form.address.toLowerCase().split( ',' );
+				if( App && App.aliases ){
+					for( x in parts ){
+						if( parts[ x ] != '' ){
+							if( App.aliases[parts[x]] ){
+								$scope.location.form.address = parts[x];
+								break;
+							}
+						}
+					}
+				}
+			}
+
 			$scope.location.addVerify( $scope.location.form.address,
 				// Address ok
 				function() {
