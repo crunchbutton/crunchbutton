@@ -376,6 +376,7 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 			$scope.text5MinAwaySending = true;
 			OrderService.text_5_min_away( id_order, function( json ){
 				if( json.success ){
+					App.alert( 'Message sent!');
 					$rootScope.$broadcast( 'orderDeliveryStatusChanged', json );
 				} else {
 					App.alert( 'Error saving: ' + json.error );
