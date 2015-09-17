@@ -14,6 +14,9 @@ class Cana_Cache_File extends Cana_Model {
 		}
 
 		$this->dir = c::config()->dirs->cache.$params->dir.'/';
+		if (!file_exists($this->dir)) {
+			mkdir($this->dir, 0777);
+		}
 
 		if (isset($params->expire)) {
 			$this->expire = $params->expire;
