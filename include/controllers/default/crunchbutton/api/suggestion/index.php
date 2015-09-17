@@ -23,7 +23,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->type = 'dish';
 					$suggesion->id_restaurant = $restaurant->id_restaurant;
 					$suggesion->name = $this->request()['name'];
-					$suggesion->ip = $_SERVER['REMOTE_ADDR'];
+					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');
 					$suggesion->save();
 					
@@ -43,7 +43,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->type = 'restaurant';
 					$suggesion->name = $this->request()['name'];
 					$suggesion->content = $this->request()['content'];
-					$suggesion->ip = $_SERVER['REMOTE_ADDR'];
+					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');
 					$suggesion->save();
 					
@@ -77,7 +77,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->type = 'email';
 					$suggesion->name = $this->request()['name'];
 					$suggesion->content = $this->request()['content'];
-					$suggesion->ip = $_SERVER['REMOTE_ADDR'];
+					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');
 					$suggesion->save();
 					

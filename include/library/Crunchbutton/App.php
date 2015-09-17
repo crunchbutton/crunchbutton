@@ -471,7 +471,7 @@ class Crunchbutton_App extends Cana_App {
 					'adapter' => 'Geoip_Binary',
 					'file' => c::config()->dirs->root.'db/GeoLiteCity.dat'
 				]);
-				$geo->setIp($_SERVER['REMOTE_ADDR'])->populateByIp();
+				$geo->setIp(c::getIp())->populateByIp();
 				$this->auth()->set('loc_lat', $geo->getLatitude());
 				$this->auth()->set('loc_lon', $geo->getLongitude());
 				$this->auth()->set('city', $geo->getCity());
@@ -682,5 +682,16 @@ class Crunchbutton_App extends Cana_App {
 	public function s3() {
 		new Crunchbutton_S3;
 		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
+	}
+	
+	public function getIp() {
+		if (!isset($this->_ip)) {
+			if ($_SERVER['HTTP_X_FORWARDED_FOR'] && strpos($_SERVER['REMOTE_ADDR'], '192.168.') === 0 ) {
+				$this->_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			} else {
+				$this->_ip = $_SERVER['REMOTE_ADDR'];
+			}
+		}
+		return $this->_ip;
 	}
 }

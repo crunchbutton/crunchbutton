@@ -15,7 +15,7 @@ class Controller_Api_Loc_Log extends Crunchbutton_Controller_Rest {
 					$loc->region = $this->request()['region'];
 					$loc->lat = $this->request()['lat'];
 					$loc->long = $this->request()['lon'];
-					$loc->ip = $_SERVER['REMOTE_ADDR'];
+					$loc->ip = c::getIp();
 					$loc->date = date('Y-m-d H:i:s');
 					$loc->save();
 					echo $loc->json();
