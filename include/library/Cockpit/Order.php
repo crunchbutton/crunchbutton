@@ -302,6 +302,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
 				$driver = $this->driver();
+
 				if( $driver->id_admin ){
 
 					$message = sprintf( $pattern, $driver->firstName() );
@@ -311,6 +312,14 @@ class Cockpit_Order extends Crunchbutton_Order {
 						'message' => $message,
 						'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_NOTIFIES_CUSTOMER
 					] );
+
+					(new Order_Action([
+						'id_order' => $this->id_order,
+						'id_admin' => c::user()->id_admin,
+						'timestamp' => date('Y-m-d H:i:s'),
+						'note' => $note,
+						'type' => Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN
+					]))->save();
 
 				}
 				break;
