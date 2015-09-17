@@ -40,9 +40,58 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 				$this->_exports();
 			break;
 
+			case 'stripe-status':
+				$this->_stripeStatus();
+			break;
+
+			case 'stripe-send-verification-info':
+				$this->_stripeSendVerificationInfo();
+			break;
+
 			default:
 			$this->_error();
 			break;
+		}
+	}
+
+	private function _stripeSendVerificationInfo(){
+		$restaurant = $this->_restaurant();
+		$paymentType = $restaurant->payment_type();
+		$stripe = $paymentType->setStripeRep();
+		if( $stripe->id ){
+			echo json_encode( [ 'status' => 'success' ] );exit;
+		} else {
+			echo json_encode( [ 'status' => 'error' ] );exit;
+		}
+	}
+
+	private function _stripeStatus(){
+
+		$restaurant = $this->_restaurant();
+		$paymentType = $restaurant->payment_type();
+		$stripe = $paymentType->getAndMakeStripe();
+		if ( $stripe->legal_entity->verification->status == 'verified' ) {
+			echo json_encode( [ 'status' => 'success' ] );exit;
+		} else {
+			if( $stripe->verification ){
+				$msg = [];
+				if( $stripe->verification->fields_needed ){
+					$fields = [];
+					foreach( $stripe->verification->fields_needed as $field ){
+						$fields[] = $field;
+					}
+					if( count( $fields ) > 0 ){
+						$msg[] = 'Fields needed: ' . join( $fields, ', ' );
+					}
+				}
+				if( $stripe->verification->disabled_reason ){
+					$msg[] = 'Disabled reason: ' . $stripe->verification->disabled_reason;
+				}
+				if( count( $msg ) ){
+					echo json_encode( [ 'status' => join( $msg, '. ' ) ] );exit;
+				}
+				echo json_encode( [ 'status' => 'Unable to get the status' ] );exit;
+			}
 		}
 	}
 

@@ -295,6 +295,44 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		} );
 	}
 
+	$scope.stripe_processing = false;
+
+	$scope.verifyAccount = function(){
+		var success = function(){
+			$scope.stripe_processing = true;
+			RestaurantService.send_verification_info( $scope.restaurant.id_restaurant, function( json ){
+				if( json.status ){
+					if( json.status == 'success' ){
+						App.alert( 'Ok, info sent to stripe.' );
+					} else {
+						App.alert( 'Error sending info to stripe.' );
+					}
+				} else {
+					App.alert( 'Ops, there is something wrong here!' );
+				}
+				$scope.stripe_processing = false;
+			});
+		}
+		var fail = function(){};
+		App.confirm( 'This action will send David \'s personal information to get restaurants paid! ', 'Send info?', success, fail, null, true) ;
+	}
+
+	$scope.verifyStatus = function(){
+		$scope.stripe_processing = true;
+		RestaurantService.stripe_status( $scope.restaurant.id_restaurant, function( json ){
+			if( json.status ){
+				if( json.status == 'success' ){
+					App.alert( 'Account already verified!' );
+				} else {
+					App.alert( json.status );
+				}
+			} else {
+				App.alert( 'Ops, there is something wrong here!' );
+			}
+			$scope.stripe_processing = false;
+		} );
+	}
+
 	$scope.save = function(){
 
 		if( $scope.formBasic.$invalid ){

@@ -108,6 +108,41 @@
 
 	</div>
 
+	<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Verification</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul class="ul-inputs">
+
+					<li class="li-input">
+						<div class="label" ng-if="restaurant.payment_type.verified">
+							<i class="fa fa-smile-o"></i>&nbsp;&nbsp;This account is verified!
+						</div>
+						<div class="label" ng-if="!restaurant.payment_type.verified">
+							<i class="fa fa-meh-o"></i>&nbsp;&nbsp;This account is not verified!
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="!stripe_processing">
+						<button ng-click="verifyStatus();" class="button button-empty button-border button-blue"><i class="fa fa-cc-stripe"></i>&nbsp;&nbsp;Get Stripe Status</button>
+						<button ng-show="!restaurant.payment_type.verified" ng-click="verifyAccount();" class="button button-empty button-border button-green"><i class="fa fa fa-check-circle-o"></i>&nbsp;&nbsp;Send Verification Info</button>
+					</li>
+
+					<li class="li-input" ng-show="stripe_processing">
+						<i class="fa fa-spinner fa-spin"></i> Working!
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
 	<form name="formBasic" novalidate>
 
 		<div class="support-box-wrap box-content2">
