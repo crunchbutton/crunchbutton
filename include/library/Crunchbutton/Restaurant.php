@@ -1148,17 +1148,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// method ByRand doesnt need all the properties
 		if( $this->byrange ){
-			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'loc_lat', 'weight_adj', 'pay_promotions', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'active_restaurant_order_placement', 'notes_to_driver', 'delivery_radius_type', 'timezone', 'image', 'delivery_area_notes', 'message', 'balanced_id', 'balanced_bank', 'notifications', 'notes_owner', 'notes', 'email' ];
+			$_ignore = [ 'type', 'credit','address','max_items','tax','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'loc_lat', 'weight_adj', 'pay_promotions', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'notes_to_driver', 'delivery_radius_type', 'timezone', 'image', 'delivery_area_notes', 'message', 'balanced_id', 'balanced_bank', 'notifications', 'notes_owner', 'notes', 'email' ];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
 		}
 
-
 		// front end restaurant's page
 		if( $this->restaurant_page ){
-			$_ignore = [ 'id', 'image', 'notes_todo', 'notes_owner', 'confirmation', 'zip', 'customer_receipt', 'email', 'notes', 'balanced_id', 'balanced_bank', 'weight_adj', 'message', 'fee_on_subtotal', 'charge_credit_fee', 'waive_fee_first_month', 'pay_promotions', 'pay_apology_credits', 'check_address', 'contact_name', 'summary_fax', 'summary_email', 'summary_frequency', 'legal_name_payment', 'tax_id', 'open_holidays', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'active_restaurant_order_placement', 'notes_to_driver', 'show_when_closed', 'order_ahead_time', '_weight', 'notifications', 'notes_owner', 'notes', 'email' ];
-			$_ignore = [];
+			$_ignore = [ 'notes_todo', 'notes_owner', 'confirmation', 'zip', 'customer_receipt', 'email', 'notes', 'balanced_id', 'balanced_bank', 'weight_adj', 'message', 'waive_fee_first_month', 'pay_promotions', 'pay_apology_credits', 'check_address', 'contact_name', 'summary_fax', 'summary_email', 'summary_frequency', 'legal_name_payment', 'tax_id', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'notes_to_driver', 'order_ahead_time', 'notifications', 'notes_owner', 'notes', 'email' ];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
@@ -1322,9 +1320,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out[ '_open' ] = $this->open();
 
 		// Remove ignored methods
-		foreach ( $ignore as $property => $val ) {
-			unset( $out[ $property ] );
+		if( count( $ignore ) ){
+			foreach ( $ignore as $property => $val ) {
+				unset( $out[ $property ] );
+			}
 		}
+
 
 		return $out;
 	}
