@@ -111,6 +111,8 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	 */
 	private function _returnRestaurant()
 	{
+
+		$isCockpit = Crunchbutton_Util::isCockpit();
 		$restaurant = Crunchbutton_Restaurant::permalink(c::getPagePiece(2));
 		/* @var $restaurant Crunchbutton_Restaurant */
 		if (!$restaurant->id_restaurant) {
@@ -118,7 +120,6 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		}
 		if ($restaurant->id_restaurant) {
 			$where = [];
-			$isCockpit = Crunchbutton_Util::isCockpit();
 			if ( $isCockpit ) {
 				$where['Dish']['active'] = NULL;
 			}
