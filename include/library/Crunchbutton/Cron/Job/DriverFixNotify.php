@@ -28,6 +28,10 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		';
 		$orders = Order::q($q);
 
+		$action = "Run cron job DriverFixNotify starting" . count( $orders );
+		Log::debug(['action' => $action , 'type' => 'delivery-driver',
+			'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
+
 		foreach ($orders as $order) {
 			echo 'sending notifications for order '.$order->id_order."\n";
 			$id_order = $order->id_order;
