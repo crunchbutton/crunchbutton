@@ -138,8 +138,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
 
 		if( service.scope.viewTicket && service.scope.ticket && service.scope.viewTicket.id_support == ticket.id_support && service.scope.ticket.id_support == ticket.id_support ){
-			service.sideInfo.force_first_page();
-			return;
+			// service.sideInfo.force_first_page();
+			// return;
 		}
 
 		NotificationService.check();
