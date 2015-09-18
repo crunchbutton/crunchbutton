@@ -15,7 +15,7 @@
 				<tbody ng-if="pay_type_payment">
 
 					<tr positive-or-negative-color="{{result.calcs.earnings}}">
-						<td>Total Money Earned This Week</td>
+						<td>Total Money Made This Week</td>
 						<td>${{result.calcs.earnings | formatPrice}}</td>
 					</tr>
 
@@ -236,7 +236,7 @@
 					</td>
 					<td ng-if="pay_type_reimbursement">Reimburse</td>
 					<td>
-						<span ng-if="pay_type_payment && !result.hourly">Earnings</span>
+						<span ng-if="pay_type_payment && !result.hourly">Money Made</span>
 					</td>
 				</tr>
 			</thead>
