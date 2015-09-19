@@ -218,10 +218,15 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 
 		if( $search[ 'type' ] ){
 			if( $search[ 'type' ] == 'driver' ){
-
-				if( $search[ 'search' ] ){
-					$where .= ' AND a.name LIKE ?';
-					$keys = '%'.$search[ 'search' ].'%';
+				if ($search[ 'search' ]) {
+					$s = Crunchbutton_Query::search([
+						'search' => stripslashes($search[ 'search' ]),
+						'fields' => [
+							'a.name' => 'like'
+						]
+					]);
+					$where .= $s['query'];
+					$keys = array_merge($keys, $s['keys']);
 				}
 
 				if( $search[ 'pay_type' ] ){
@@ -249,9 +254,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 			}
 		} else {
 			$query = str_replace('-WILD-','ps.*, a.name AS driver, ps.id_payment_schedule', $query );
-			if( $query != '' ){
-				return Cockpit_Payment_Schedule::q( $query );
-			}
+			return Cockpit_Payment_Schedule::q( $query, $keys );
 		}
 	}
 
