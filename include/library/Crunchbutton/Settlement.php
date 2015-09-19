@@ -160,14 +160,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
-		// @remove -- remove it before commit
-		$query = 'SELECT o.* FROM `order` o
-									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
-									WHERE o.date >= "' . $start->format('Y-m-d') . '"
-										AND o.date <= "' . $end->format('Y-m-d H:i:s') . '"
-										-- AND id_order = 184535
-									ORDER BY o.date ASC';
-
 		return Order::q( $query );
 	}
 
