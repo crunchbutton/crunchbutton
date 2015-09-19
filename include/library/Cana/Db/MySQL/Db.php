@@ -5,20 +5,21 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		$options = [];
 
 		if ($args->url) {
-			preg_match('/^(mysql:\/\/)(.*):(.*)@(.*):([0-9]+)\/([a-z0-9\._]+)(\?sslca=(.*))?$/u', $args->url, $matches);
+			preg_match('/^(mysql:\/\/)(.*):(.*)@([a-z0-9_\-\.]+)(:([0-9]+))?\/([a-z0-9\._]+)(\?sslca=(.*))?$/ui', $args->url, $matches);
 			$args->user = $matches[2];
 			$args->pass = $matches[3];
 			$args->host = $matches[4];
-			$args->port = $matches[5];
-			$args->db = $matches[6];
-			$args->sslca = $matches[8];
+			$args->port = $matches[6];
+			$args->db = $matches[7];
+			$args->sslca = $matches[9];
+		}
+		
+		if (!$args->port) {
+			$args->port = '3306';
 		}
 
 		if (!$args->dsn) {
-			$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8';
-			if ($args->port) {
-				$args->dsn .= ';port='.$args->port;
-			}
+			$args->dsn = 'mysql:host='.$args->host.';dbname='.$args->db.';charset=utf8;port='.$args->port;
 		}
 
 		if ($args->persistent) {
@@ -31,7 +32,7 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		}
 		
-		if (getenv('HEROKU')) {
+		if (getenv('DEBUG')) {
 			error_log('>> CONNECTING TO DATABASE...');
 		}
 
@@ -43,7 +44,7 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 		$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
 		
-		if (getenv('HEROKU')) {
+		if (getenv('DEBUG')) {
 			error_log('>> CONNECTED!!');
 		}
 

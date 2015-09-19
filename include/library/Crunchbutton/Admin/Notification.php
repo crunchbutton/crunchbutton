@@ -836,7 +836,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return $message;
 	}
 
-	public function save() {
+	public function save($new = false) {
 		if ($this->type == 'sms' || $this->type == 'fax') {
 			$this->value = Phone::clean($this->value);
 		}

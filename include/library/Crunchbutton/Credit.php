@@ -316,7 +316,7 @@ class Crunchbutton_Credit extends Cana_Table
 		return Util::humanReadableNumbers( $points );
 	}
 
-	public static function exportPoints($user){
+	public static function exportPoints($user = null){
 		if (!$user) {
 			$user = c::user();
 		}

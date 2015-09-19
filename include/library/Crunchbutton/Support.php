@@ -223,7 +223,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$support->type = Crunchbutton_Support::TYPE_SMS;
 		$support->phone = $params[ 'phone' ];
 		$support->status = Crunchbutton_Support::STATUS_OPEN;
-		$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+		$support->ip = c::getIp();
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];
 		$support->date = date( 'Y-m-d H:i:s' );
 		if( $params[ 'id_order' ] ) {
@@ -251,7 +251,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$support->type = Crunchbutton_Support::TYPE_BOX_NEED_HELP;
 		$support->phone = $params[ 'phone' ];
 		$support->status = Crunchbutton_Support::STATUS_OPEN;
-		$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+		$support->ip = c::getIp();
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];
 		$support->date = date( 'Y-m-d H:i:s' );
 		if( c::user()->id_user ){
@@ -333,7 +333,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			} else {
 				$support->status = Crunchbutton_Support::STATUS_CLOSED;
 			}
-			$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+			$support->ip = c::getIp();
 			$support->id_session_twilio = null;
 			$support->date = date( 'Y-m-d H:i:s' );
 			if( $params[ 'id_order' ] ) {
@@ -661,7 +661,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Admin::o($this->id_admin);
 	}
 
-	public function save() {
+	public function save($new = false) {
 		$initial_save = false;
 		if(!Support::o($this->id_support)->id_support) {
 			$initial_save = true;

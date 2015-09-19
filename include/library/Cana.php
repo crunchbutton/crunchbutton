@@ -146,7 +146,7 @@ class Cana extends Cana_Model {
 		return (new ReflectionMethod(self::app(), 'extend'))->invokeArgs(self::app(), func_get_args());
 	}
 
-	public function timeout($func, $ms = null, $async = true, $forceEnv = false) {
+	public static function timeout($func, $ms = null, $async = true, $forceEnv = false) {
 		$closure = new SuperClosure($func);
 		$encoded = base64_encode(serialize($closure));
 

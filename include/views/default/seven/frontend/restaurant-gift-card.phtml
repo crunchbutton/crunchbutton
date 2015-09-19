@@ -1,0 +1,54 @@
+<!-- Gift card messages -->
+<div class="giftcard-info">
+
+	<div class="warning" ng-if="giftcard.removed" class="giftcard-error">
+		You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.
+	</div>
+
+	<div ng-if="restaurant.giftcard == 0 && giftcard.hasGiftCards" class="giftcard-error">
+		This restaurant does not accept gift card.
+	</div>
+
+	<div ng-if="giftcard.hasValue && order.form.pay_type == 'cash' " class="giftcard-error">
+		Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
+	</div>
+
+<div ng-repeat="success in giftcard.giftcards.success">
+	<div ng-if="success.delivery_free && restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+		<span ng-if="order.form.pay_type == 'card'">{{success.message}}</span>
+		<div class="giftcard-error" ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get your delivery free</div>
+	</div>
+</div>
+
+
+<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
+	<!-- Gift card success -->
+	<div ng-repeat="success in giftcard.giftcards.success">
+		<div ng-if="!success.delivery_free && !success.message">
+			<div ng-if="!success.error">
+				Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.
+			</div>
+			<div ng-if="success.error == 'other restaurant'">
+				The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
+			</div>
+		</div>
+		<div ng-if="success.message">
+			{{success.message}}
+		</div>
+	</div>
+	<!-- Gift card errors -->
+	<div ng-repeat="error in giftcard.giftcards.error" class="giftcard-error">
+		<div ng-switch on="error.error">
+			<div ng-switch-when="gift card already used">
+				The gift card ({{error.giftcard}}) you are trying to use was already redeemed.
+			</div>
+			<div ng-switch-when="custom">
+				{{error.message}}
+			</div>
+		</div>
+	</div>
+	<span ng-if="giftcard.justOneGiftCardError">
+		You can only use one gift card at a time!
+	</span>
+</div>
+</div>

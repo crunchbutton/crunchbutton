@@ -466,13 +466,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				if( $user_points >= intval( $reward[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ] ) ){
 					$delivery_free = true;
 					// Add credit
+
+					$credit_amount = $this->delivery_fee;
+
+					if( $serviceFee ){
+						$credit_amount += $serviceFee;
+					}
+
 					$credit = new Crunchbutton_Credit();
 					$credit->id_user = $this->id_user;
 					$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 					$credit->id_restaurant = $this->id_restaurant;
 					$credit->id_promo = null;
 					$credit->date = date('Y-m-d H:i:s');
-					$credit->value = $this->delivery_fee;
+					$credit->value = $credit_amount;
 					$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 					$credit->paid_by = 'CRUNCHBUTTON';
 					$credit->note = 'Reward: delivery free';
@@ -507,13 +514,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			// Remove the delivery free credit
 			if( $delivery_free ){
+
+				$credits_amount = $this->delivery_fee;
+				if( $serviceFee ){
+					$credits_amount += $serviceFee;
+				}
+
 				$credit = new Crunchbutton_Credit();
 				$credit->id_user = $this->id_user;
 				$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
 				$credit->id_restaurant = $this->id_restaurant;
 				$credit->id_promo = null;
 				$credit->date = date('Y-m-d H:i:s');
-				$credit->value = $this->delivery_fee;
+				$credit->value = $credits_amount;
 				$credit->credit_type = Crunchbutton_Credit::CREDIT_TYPE_CASH;
 				$credit->paid_by = 'CRUNCHBUTTON';
 				$credit->note = 'Reward: removed delivery free cash';
@@ -3196,7 +3209,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return false;
 	}
 
-	public function save() {
+	public function save($new = false) {
 
 		$new = $this->id_order ? false : true;
 

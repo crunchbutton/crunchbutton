@@ -55,7 +55,7 @@ class Crunchbutton_Loc_Log extends Cana_Table {
 		return $this->_date;
 	}
 
-	public function save() {
+	public function save($new = false) {
 		parent::save();
 	}
 }

@@ -3,17 +3,20 @@
 class Cockpit_Admin extends Crunchbutton_Admin {
 
 	public function stripeVerificationStatus() {
-		if (!isset($this->_stripeVerificationStatus)) {
+		//if (!isset($this->_stripeVerificationStatus)) {
 			$stripeAccount = $this->stripeAccount();
+			$paymentType = $this->payment_type();
+			$ssn = $paymentType->social_security_number($this->id_admin);
 			$data = [
 				'status' => $stripeAccount->legal_entity->verification->status,
 				'fields' => $stripeAccount->verification->fields_needed,
 				'due_by' => $stripeAccount->verification->due_by,
-				'contacted' => trim($stripeAccount->verification->contacted) ? true : false
+				'contacted' => trim($stripeAccount->verification->contacted) ? true : false,
+				'ssn' => $ssn ? true : false
 			];
 
 			$this->_stripeVerificationStatus = $data;
-		}
+		//}
 		return $this->_stripeVerificationStatus;
 	}
 
@@ -48,7 +51,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$status = $this->stripeVerificationStatus();
 		$paymentType = $this->payment_type();
 		$name = explode(' ', $paymentType->legal_name_payment);
-		$ssn = substr($paymentType->social_security_number($this->id_admin), -4);
+		$ssn = $paymentType->social_security_number($this->id_admin);
+		$ssn4 = substr($paymentType->social_security_number($this->id_admin), -4);
 
 		$formattedAddress = Util::formatAddress($paymentType->address);
 		if ($formattedAddress != $paymentType->address) {
@@ -59,7 +63,20 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$address = Util::addressParts($formattedAddress);
 
 		// make sure we can verify it
-		if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
+		// ref #6702 sometimes it says they are verified but still wants info
+		// also we cant force update when its verified or it will error out
+		//if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
+		if ($status['contacted']) {
+
+			if ($status['status'] != 'verified') {
+				if ($paymentType->verified) {
+					$paymentType->verified = false;
+					$paymentType->save();
+				}
+			}
+			return false;
+			
+		} elseif ($status['fields'] || $force || $status['due_by']) {
 			$saving = 0;
 
 			if (!$force) {
@@ -102,24 +119,36 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 							}
 							break;
 						case 'legal_entity.ssn_last_4':
-							if (!$stripeAccount->legal_entity->ssn_last_4 && $ssn) {
-								$stripeAccount->legal_entity->ssn_last_4 = $ssn;
+							if (!$stripeAccount->legal_entity->ssn_last_4 && $ssn4) {
+								$stripeAccount->legal_entity->ssn_last_4 = $ssn4;
+								$saving++;
+							}
+							break;
+						case 'legal_entity.personal_id_number':
+							if (!$stripeAccount->legal_entity->personal_id_number && $ssn) {
+								$stripeAccount->legal_entity->personal_id_number = $ssn;
 								$saving++;
 							}
 							break;
 					}
 				}
 			} else {
-				$stripeAccount->legal_entity->first_name = array_shift($name);
-				$stripeAccount->legal_entity->last_name = implode(' ',$name);
+				$stripeAccount->legal_entity->type = 'individual';
+				if (trim($status['status']) != 'verified') {
+					$stripeAccount->legal_entity->first_name = array_shift($name);
+					$stripeAccount->legal_entity->last_name = implode(' ',$name);
+				}
 				$stripeAccount->legal_entity->address->line1 = $address['address'];
 				$stripeAccount->legal_entity->address->city = $address['city'];
 				$stripeAccount->legal_entity->address->state = $address['state'];
 				$stripeAccount->legal_entity->address->postal_code = $address['zip'];
-				if ($ssn) {
-					$stripeAccount->legal_entity->ssn_last_4 = $ssn;
-				}
 				$saving = 6;
+				if ($ssn && trim($status['status']) != 'verified') {
+					$stripeAccount->legal_entity->ssn_last_4 = $ssn4;
+					$stripeAccount->legal_entity->personal_id_number = $ssn;
+					$saving+=2;
+				}
+				
 			}
 
 			if ($saving) {

@@ -4,9 +4,20 @@ class Cana_Cache_File extends Cana_Model {
 	public $suffix = '.cache';
 
 	public function __construct($params) {
-		if (isset($params->dir)) {
-			$this->dir = c::config()->dirs->cache.$params->dir.'/';
+
+		if (!$params) {
+			$params = new Cana_Model;
 		}
+
+		if (!$params->dir) {
+			$params->dir = 'data';
+		}
+
+		$this->dir = c::config()->dirs->cache.$params->dir.'/';
+		if (!file_exists($this->dir)) {
+			mkdir($this->dir, 0777);
+		}
+
 		if (isset($params->expire)) {
 			$this->expire = $params->expire;
 		}

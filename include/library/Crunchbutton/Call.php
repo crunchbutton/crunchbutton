@@ -9,7 +9,7 @@ class Crunchbutton_Call extends Cana_Table {
 			->load($id);
 	}
 
-	public function save() {
+	public function save($new = false) {
 		$new = $this->id_call ? false : true;
 
 		parent::save();

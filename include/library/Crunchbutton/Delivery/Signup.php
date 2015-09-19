@@ -20,7 +20,7 @@ class Crunchbutton_Delivery_Signup extends Cana_Table {
 		return $this->_date;
 	}
 
-	public function save() {
+	public function save($new = false) {
 		parent::save();
 	}
 

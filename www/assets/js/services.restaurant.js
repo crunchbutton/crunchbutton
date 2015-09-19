@@ -242,6 +242,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				// property to control the cache expiration of the list
 				service.cachedAt = ( Math.floor( new Date().getTime() / 1000 ) );
 				service.community_closed = data.community_closed;
+				service.community = data.community;
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {

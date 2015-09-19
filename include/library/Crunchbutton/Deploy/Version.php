@@ -45,7 +45,7 @@ class Crunchbutton_Deploy_Version extends Cana_Table {
 		return $que;
 	}
 	
-	public function save() {
+	public function save($new = false) {
 		$new = $this->id_deploy_version ? false : true;
 
 		parent::save();

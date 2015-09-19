@@ -30,6 +30,8 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 
 	var payinfo = $resource( App.service + 'restaurant/payinfo/:action/:id_restaurant', { action: '@action' }, {
 			'payment_method' : { 'method': 'GET', params : { 'action' : 'payment-method' } },
+			'stripe_status' : { 'method': 'GET', params : { 'action' : 'stripe-status' } },
+			'send_verification_info' : { 'method': 'GET', params : { 'action' : 'stripe-send-verification-info' } },
 			'payment_method_save' : { 'method': 'POST', params : { 'action' : 'payment-method' } },
 			'balanced_to_sprite' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
 			'balanced_to_sprite_account' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
@@ -88,6 +90,18 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 
 	service.payment_method = function( id_restaurant, callback ){
 		payinfo.payment_method( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.stripe_status = function( id_restaurant, callback ){
+		payinfo.stripe_status( { id_restaurant: id_restaurant },  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.send_verification_info = function( id_restaurant, callback ){
+		payinfo.send_verification_info( { id_restaurant: id_restaurant },  function( data ){
 			callback( data );
 		} );
 	}

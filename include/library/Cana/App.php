@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 /**
  * Cana application class
- * 
+ *
  * @author		Devin Smith <devin@cana.la>
  * @date		2009.09.17
- * 
+ *
  *
  * This is the main application that is called by all controllers. The Cana class
  * is accesed staticly and used as a global application object. Upon a request, this
@@ -17,7 +17,7 @@
  */
 
 class Cana_App extends Cana_Model {
-	
+
 	/**
 	 * Private variables all have public accessor methods
 	 */
@@ -32,13 +32,13 @@ class Cana_App extends Cana_Model {
 	private $_acl;
 	private $_browser;
 	private $_extended = array();
-	
+
 	public function init($params = null) {
 
 		if (!is_null($params['config'])) {
 			$this->_config = $params['config'];
 		}
-		
+
 		// no host because its cli
 		if (!isset($_SERVER['HTTP_HOST'])) {
 			$_SERVER['HTTP_HOST'] = 'cli';
@@ -48,7 +48,7 @@ class Cana_App extends Cana_Model {
 
 		// set up default timezone for strict data standards
 		date_default_timezone_set($this->_config->timezone);
-		
+
 		//try {
 			$this->_db = $this->buildDb($this->_env);
 		//} catch (Exception $e) {
@@ -59,7 +59,7 @@ class Cana_App extends Cana_Model {
 			$this->postInit($params);
 		}
 	}
-	
+
 	/**
 	 * Method to build display related config
 	 */
@@ -68,7 +68,7 @@ class Cana_App extends Cana_Model {
 		$this->buildView(array('layout' => $this->_config->defaults->layout));
 		$this->buildPages();
 	}
-		
+
 	/**
 	 * Method to build out the almost useless browser object
 	 */
@@ -76,22 +76,22 @@ class Cana_App extends Cana_Model {
 		$this->_browser = new Cana_Browser;
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Method to build out the view object
 	 */
 	public function buildView($params = array()) {
-	
+
 		$params['base'] = $this->config()->dirs->view;
-		
+
 		$this->view(new Cana_View($params));
 		$this->view()->useFilter($this->_config->viewfilter);
-		
+
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Explode out the request params.
 	 * change this function if modifying the htaccess config for bb
@@ -107,11 +107,11 @@ class Cana_App extends Cana_Model {
 		}
 		$this->view()->pages = $this->pages();
 		$this->config()->controllerStack[] = $this->config()->defaults->version;
-		
+
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Set up the database connection
 	 */
@@ -127,8 +127,8 @@ class Cana_App extends Cana_Model {
 		unset($connect);
 		return $db;
 	}
-	
-	
+
+
 	/**
 	 * Create a new auth object that contains the users auth info
 	 */
@@ -136,7 +136,7 @@ class Cana_App extends Cana_Model {
 		$this->_auth = new Cana_Auth;
 		return $this;
 	}
-	
+
 	/**
 	 * Create a new acl object
 	 */
@@ -144,8 +144,8 @@ class Cana_App extends Cana_Model {
 		$this->_acl = new Cana_Acl;
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Set or return the page (controller/action)
 	 */
@@ -156,8 +156,8 @@ class Cana_App extends Cana_Model {
 		$this->displayPage();
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Display a page
 	 * This is how we parse the request string and determine which filename to include.
@@ -176,7 +176,7 @@ class Cana_App extends Cana_Model {
 			foreach ($this->pages() as $peice) {
 				if (!isset($pageClass)) {
 					$pageClass = $peice;
-				} else { 
+				} else {
 					$pageClass .= ucfirst($peice);
 				}
 			}
@@ -186,15 +186,15 @@ class Cana_App extends Cana_Model {
 		//$this->config()->controllerStack = array_reverse($this->config()->controllerStack);
 		$this->includeFile($pageClass);
 		$pageClass = explode('/',$pageClass);
-		
-		if (getenv('HEROKU')) {
+
+		if (getenv('DEBUG')) {
 			error_log('>> DISPLAYING CLASS:'.$pageClass);
 		}
-		
+
 		foreach ($pageClass as $posiblePage) {
 			$posiblePages[] = 'Controller'.$fullPageNext.'_'.str_replace('.','_',$posiblePage);
 			$fullPageNext .= '_'.$posiblePage;
-		}	
+		}
 		$posiblePages = array_reverse($posiblePages);
 
 		foreach ($posiblePages as $posiblePage) {
@@ -208,7 +208,7 @@ class Cana_App extends Cana_Model {
 
 		return $this;
 	}
-	
+
 	public function includeFileError($pageClass) {
 		$this->view->headers->http[] = array(
 			'value'		=> 'HTTP/1.0 404 Not Found'
@@ -216,7 +216,7 @@ class Cana_App extends Cana_Model {
 		$this->displayPage('error');
 	}
 
-	
+
 	public function includeFile($pageClass) {
 		$pageClass = explode('/',$pageClass);
 
@@ -224,7 +224,7 @@ class Cana_App extends Cana_Model {
 			$posiblePages[] = $fullPageNext.'/'.$posiblePage.'.php';
 			$posiblePages[] = $fullPageNext.'/'.$posiblePage.'/index.php';
 			$fullPageNext .= '/'.$posiblePage;
-		}	
+		}
 		$posiblePages = array_reverse($posiblePages);
 
 		foreach ($this->config()->controllerStack as $controller) {
@@ -245,8 +245,8 @@ class Cana_App extends Cana_Model {
 		}
 		return $this;
 	}
-	
-	
+
+
 	public function crypt($crypt = null) {
 		if (is_null($crypt)) {
 			return $this->_crypt = new Cana_Crypt(mb_convert_encoding($this->config()->crypt->key,'7bit'));
@@ -254,8 +254,8 @@ class Cana_App extends Cana_Model {
 			return $this->_crypt;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Accessor methods
 	 */
@@ -271,7 +271,7 @@ class Cana_App extends Cana_Model {
 			return $this;
 		}
 	}
-	
+
 	public function auth($auth = null) {
 		if (is_null($auth)) {
 			return $this->_auth;
@@ -280,7 +280,7 @@ class Cana_App extends Cana_Model {
 			return $this;
 		}
 	}
-	
+
 	public function view($view = null) {
 		if (is_null($view)) {
 			return $this->_view;
@@ -289,7 +289,7 @@ class Cana_App extends Cana_Model {
 			return $this;
 		}
 	}
-	
+
 	public function config($config = null) {
 		if (is_null($config)) {
 			return $this->_config;
@@ -298,15 +298,15 @@ class Cana_App extends Cana_Model {
 			return $this;
 		}
 	}
-	
+
 	public function env() {
 		return $this->_env;
 	}
-	
+
 	public function browser() {
 		return $this->_browser;
 	}
-	
+
 	public function pages($pages = null) {
 		if (is_null($pages)) {
 			return $this->_pages;
@@ -315,18 +315,18 @@ class Cana_App extends Cana_Model {
 			return $this;
 		}
 	}
-	
+
 	public function controllerStack($value) {
 		$this->_config->controllerStack[] = $value;
 		return $this;
 	}
-	
+
 	public function getApp() {
 	}
-	
+
 	public function getTheme() {
 	}
-	
+
 	public function factoryCount() {
 		return $this->_factory->count();
 	}
@@ -337,24 +337,24 @@ class Cana_App extends Cana_Model {
 		}
 		return $this->_factory->objectMap($a,$b);
 	}
-	
+
 	public function extended($class, $name, $func = null) {
 		if ($func != null) {
 			$this->_extended[$class][$name] = $func;
 		}
 		return $this->_extended[$class][$name];
 	}
-	
+
 	public function dbWrite($write = null) {
 		if (!is_null($write)) {
 			$this->_dbWrite = $write;
 		}
 		return $this->_dbWrite ? $this->_dbWrite : $this->db();
-	}	
-	
+	}
+
 	public function cache() {
 		if (!isset($this->_cache)) {
-			$this->_cache = new Cache($this->config()->cache->default);
+			$this->_cache = new Cache( $this->config()->cache->default );
 		}
 		return $this->_cache;
 	}

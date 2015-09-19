@@ -2462,6 +2462,12 @@ sup {
 	white-space: normal !important;
 	line-height: 1.5em;
 }
+	.giftcard-error{
+		color: #f8885e;
+		font-size:1.3em;
+		font-weight: bold;
+		margin-top:.5em;
+	}
 
 .restaurants-more {
 	margin: 0 auto;
@@ -4351,7 +4357,7 @@ textarea {
 	}
 	*/
 	.form-input {
-		
+
 	}
 	.delivery-payment-info .form-input[name="notes"] {
 		background: #333;

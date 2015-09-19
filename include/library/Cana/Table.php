@@ -567,7 +567,7 @@ class Cana_Table extends Cana_Model { //
 		echo ")\n";
 	}
 
-	public function get() {
+	public function get($id = null) {
 		return $this;
 	}
 

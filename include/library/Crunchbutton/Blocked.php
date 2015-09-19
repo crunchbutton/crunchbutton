@@ -123,7 +123,7 @@ class Crunchbutton_Blocked extends Cana_Table {
 		return $this->_date;
 	}
 
-	public function save(){
+	public function save($new = false){
 		if( $this->id_phone || $this->id_user ){
 			parent::save();
 		}

@@ -5,6 +5,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		if ($this->id_session) {
 			$this->delete();
 		}
+		return true;
 	}
 	
 	public function save($newItem = 0) {
@@ -17,7 +18,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		$_SESSION[$var] = $value;
 		return $this;
 	}
-	public function get($var) {
+	public function get($var = null) {
 		return $_SESSION[$var];
 	}
 	
@@ -44,7 +45,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 			$this->active = 1;
 			$this->id_user = $this->get('id_user');
 			$this->idadmin = $this->get('id_admin');
-			$this->ip = $_SERVER['REMOTE_ADDR'];
+			$this->ip = c::getIp();
 			$this->id_session = $id;
 		}
 
@@ -62,11 +63,13 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 			}
 
 		} catch (Exception $e) {}
+		return true;
 	}
 
 	public function gc($maxlifetime) {
 		// only delete if there is no token
 		//Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
+		return true;
 	}
 	
 	public function generateAndSaveToken() {

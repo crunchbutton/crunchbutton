@@ -12,7 +12,7 @@
 			<th>Active</th>
 			<th class="tb-small"></th>
 		</tr>
-		<tr ng-repeat="promo in promos track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/promo/{{promo.id_promo}}">
+		<tr ng-repeat="promo in promos track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/promo/discount-code/{{promo.id_promo}}">
 			<td>#{{promo.id_promo}}</td>
 			<td>{{promo.code}}</td>
 			<td>
@@ -32,7 +32,7 @@
 				<span class="tag tag-red" ng-if="!promo.active">Inactive</span>
 			</td>
 			<td nowrap class="tb-v-center">
-				<a href="/promo/discount-code/{{promo.id_promo}}"><button class="button button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+				<a href="/promo/discount-code/{{promo.id_promo}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 			</td>
 		</tr>
 	</table>
