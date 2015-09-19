@@ -881,28 +881,34 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$load_messages = false;
 		}
 		if( $load_messages ){
-			if( $this->type == Crunchbutton_Support::TYPE_WARNING && !$this->id_user ){
-				$messages = $this->messages();
-				$out[ 'total_messages' ] = $messages->count();
-			} else {
-				$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
-				if( $params[ 'messages_page' ] ){
-					$page = $params[ 'messages_page' ];
-					$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 15 );
-					$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support, $page, $limit );
-				} else {
-					$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
-				}
-			}
-			if( $messages ){
-				foreach ( $messages as $message ) {
-					$out['messages'][] = $message->exports();
-				}
-			} else {
-				$out['messages'] = [];
-			}
+			$out = array_merge( $out, $this->exportMessages() );
 		}
 
+		return $out;
+	}
+
+	public function exportMessages( $params = [] ){
+		$out = [];
+		if( $this->type == Crunchbutton_Support::TYPE_WARNING && !$this->id_user ){
+			$messages = $this->messages();
+			$out[ 'total_messages' ] = $messages->count();
+		} else {
+			$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
+			if( $params[ 'messages_page' ] ){
+				$page = $params[ 'messages_page' ];
+				$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 15 );
+				$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support, $page, $limit );
+			} else {
+				$messages = Crunchbutton_Support_Message::byPhone( $this->phone, $this->id_support );
+			}
+		}
+		if( $messages ){
+			foreach ( $messages as $message ) {
+				$out['messages'][] = $message->exports();
+			}
+		} else {
+			$out['messages'] = [];
+		}
 		return $out;
 	}
 
