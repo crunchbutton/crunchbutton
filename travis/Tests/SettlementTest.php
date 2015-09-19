@@ -192,7 +192,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->commissioned_payment_info[ 'orders' ] ), 4 );
 		$this->assertEquals( $this->commissioned_payment_info[ 'salary_type' ], 'orders' );
 		$this->assertEquals( $this->commissioned_payment_info[ 'tip' ], 4 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee' ], 3 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee' ], 6 );
 		$this->assertEquals( $this->commissioned_payment_info[ 'total_spent' ], 20 );
 		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee_collected' ], -3 );
 		$this->assertEquals( $this->commissioned_payment_info[ 'standard_reimburse' ], 10 );
@@ -213,7 +213,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->hourly_payment_info[ 'total_spent' ], 20 );
 		$this->assertEquals( $this->hourly_payment_info[ 'delivery_fee_collected' ], -3 );
 		$this->assertEquals( $this->hourly_payment_info[ 'standard_reimburse' ], 10 );
-		$this->assertEquals( $this->hourly_payment_info[ 'total_payment_per_order' ], 7 );
+		$this->assertEquals( $this->hourly_payment_info[ 'total_payment_per_order' ], 0 );
 		$this->assertEquals( $this->hourly_payment_info[ 'total_payment' ], 41 );
 	}
 
