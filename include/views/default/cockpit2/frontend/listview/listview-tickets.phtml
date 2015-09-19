@@ -24,7 +24,8 @@
 			</td>
 			<td>
 				<span class="listview-smaller">
-					<i ng-if="ticket.timestamp_client" am-time-ago="ticket.timestamp_client*1000"></i>
+
+					<i ng-if="ticket.timestamp_client">{{ticket.timestamp_client * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
 					<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
 					<br>
 					<span ng-class="{ 'text-danger': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }" >

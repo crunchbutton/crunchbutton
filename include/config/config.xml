@@ -11,6 +11,7 @@
 		<file>
 			<dir>data</dir>
 			<expire>216000</expire>
+			<adapter>file</adapter>
 		</file>
 	</cache>
 	<imgCache>http://i._DOMAIN_/cache/</imgCache>
@@ -76,14 +77,6 @@
 			<dsn>pgsql:host=localhost;dbname=crunchbutton_travis;user=postgres</dsn>
 			<type>PostgreSQL</type>
 		</travispostgres>
-		<metrics>
-			<!-- THIS DB NO LONGER EXISTS. if postgres is needed, we can use our heroku hosting. - devin -->
-			<type>postgresql</type>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
-			<db>crunchbutton</db>
-			<host>***REMOVED***</host>
-		</metrics>
 	</db>
 	<defaults>
 		<page>home</page>

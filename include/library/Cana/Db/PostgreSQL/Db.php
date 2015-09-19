@@ -3,12 +3,12 @@
 class Cana_Db_PostgreSQL_Db extends Cana_Db_Base {
 	public function connect($args = null) {
 		if ($args->url) {
-			preg_match('/^(postgres:\/\/)(.*):(.*)@(.*):([0-9]+)\/(.*)$/u', $args->url, $matches);
+			preg_match('/^(postgres:\/\/)(.*):(.*)@(.*)(:)?([0-9]+)\/(.*)$/u', $args->url, $matches);
 			$args->user = $matches[2];
 			$args->pass = $matches[3];
 			$args->host = $matches[4];
-			$args->port = $matches[5];
-			$args->db = $matches[6];
+			$args->port = $matches[6];
+			$args->db = $matches[7];
 		}
 
 		if (!$args->dsn) {

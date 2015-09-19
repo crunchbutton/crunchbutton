@@ -217,18 +217,18 @@
 								How much do I get paid?
 							</b><br>
 						<span ng-switch-when="orders">
-								You get paid a delivery fee on each order, which is usually $3, but can be more. You also get paid any tips, which are on average $2-3, but sometimes much higher. The more orders you deliver, the more money you make. You'll get an advance when customers pay you in cash, and you can keep any tips they give you.
+								As an independent contractor, you will receive a delivery fee on each order, which is usually $3, but can be more in some circumstances. You also keep any tips received, which are on average $2-3, but can be much higher. The more orders you deliver, the higher the payment you will receive. You'll get an advance when customers pay you in cash, and you can keep any tips received.
 						</span>
 						<span ng-switch-when="hours">
-								You get ${{account.user.hour_rate}}/hour plus tips. You'll get an advance towards this when customers pay you in cash, and you can keep any tips they give you.
+								As an independent contractor, you will receive ${{account.user.hour_rate}} for each hour of service provided. You also keep all tips. You'll get an advance towards this when customers pay you in cash, and you can keep any tips received.
 						</span>
 						<span ng-switch-when="hours_without_tips">
-							You get paid ${{account.user.hour_rate}}/hour. You'll get an advance towards this when customers pay you in cash, and you can keep any cash tips they give you.
+							As an independent contractor, you will receive get ${{account.user.hour_rate}} for each hour of service provided. You'll get an advance towards this when customers pay you in cash, and you can keep any cash tips received.
 						</span>
 						<span ng-switch-when="making_whole">
-							Regardless of how many orders you receive, you'll get at least ${{account.user.hour_rate}}/hour. You can make more than this, however, when your delivery fees + tips exceed this amount! How that works: You get paid a delivery fee on each order, which is usually $3, but can be more. You also get paid any tips, which are on average $2-3, but sometimes much higher. The more orders you deliver, the more money you make. You'll get an advance when customers pay you in cash, and you can keep any tips they give you.
+							As an independent contractor, you will receive at least ${{account.user.hour_rate}} for each hour of service provided, regardless of how many orders you deliver. You can receive more than this, however, when your delivery fees + tips exceed this amount! How that works: You will receive the delivery fee on each order, which is usually $3, but can be more in some circumstances. You also keep any tips, which are on average $2-3, but sometimes much higher. The more orders you deliver, the more revenue you receive. You'll get an advance when customers pay you in cash, and you can keep any tips received.
 						</span>
-						<a href="#advancedDelivery">See How can I get tipped more on cash orders?</a> to get tipped more! <br><br>
+						<a href="#advancedDelivery">See suggestions on how to maximize tips.</a><br><br>
 					</span>
 
 					<b>
@@ -302,7 +302,8 @@
 					We hate bugs! Email us at <a target="_system" href="mailto:drivers@crunchbutton.com">drivers@crunchbutton.com</a> with the exact details and pics if you can. If you tell us enough info to reproduce and fully fix the problem, we’d really appreciate it!<br><br>
 
 					<b>Can I change my cockpit password?</b><br>
-					Sure, but right now we have to do it for you manually. Text us what you want us to change your password to at <a ng-click="callText('646-783-1444')">646-783-1444</a> .<br><br>
+					Sure, you can do that <a href="/profile/password">here</a>.
+					<br><br>
 
 					<b>How does your insurance work?</b><br>
 					Youbeo, Inc (Crunchbutton's parent company) has an insurance policy that will protect from liability claims arising from a motor vehicle collision during the course of business. The protection is up to $1,000,000 liability insurance policy that protects you against claims to third parties for injuries and property damage. This protection does not cover physical damage to any vehicle being used by a driver associated with Youbeo. Physical damage to any employee or subcontractor’s vehicle must be done through the individual's primary insurance company.<br><br>

@@ -5,7 +5,9 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 	private $_session;
 
 	public function __construct() {
+
 		$this->_session = new Crunchbutton_Session;
+		session_set_save_handler($this->_session, true);
 		session_start();
 
 		$this->init();

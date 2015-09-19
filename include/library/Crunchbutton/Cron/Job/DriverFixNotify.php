@@ -28,16 +28,22 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 		';
 		$orders = Order::q($q);
 
+		$action = "Run cron job DriverFixNotify starting " . $orders->count() . " pid: " . $pid;
+		Log::debug(['action' => $action , 'type' => 'delivery-driver',
+			'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
+
 		foreach ($orders as $order) {
 			echo 'sending notifications for order '.$order->id_order."\n";
 			$id_order = $order->id_order;
-			Log::debug(['order' => $id_order, 'action' => "Run cron job DriverFixNotify", 'type' => 'delivery-driver',
+			$action = 'Run cron job DriverFixNotify: sending notifications for order '.$order->id_order;
+			Log::debug(['order' => $id_order, 'action' => $action , 'type' => 'delivery-driver',
 				'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 			$order->notifyDrivers();
 		}
 
 		echo 'done notifying drivers';
-		Log::debug(['action' => "Run cron job DriverFixNotify finished", 'type' => 'delivery-driver',
+		$action = "Run cron job DriverFixNotify finished pid: " . $pid;
+		Log::debug(['action' => $action, 'type' => 'delivery-driver',
 			'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 		// it always must call finished method at the end
 		$this->finished();

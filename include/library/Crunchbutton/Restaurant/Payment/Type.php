@@ -53,10 +53,10 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 
 	// uses company reps info
 	public function setStripeRep($so = null) {
-		$r = 'everythingisawesome';
-		$a = c::config()->site->config('restaurant-awesome')->value;
-		$b = json_decode(substr(hex2bin(c::crypt()->decrypt($a)), 0, -strlen($r)));
-		$b->d = str_split($b->d, 2);
+		// $r = 'everythingisawesome';
+		// $a = c::config()->site->config('restaurant-awesome')->value;
+		// $b = json_decode(substr(hex2bin(c::crypt()->decrypt($a)), 0, -strlen($r)));
+		// $b->d = str_split($b->d, 2);
 
 		if (is_null($so)) {
 			$stripe = $this->getAndMakeStripe();
@@ -72,14 +72,18 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 			return $stripe;
 		}
 
-		$stripe->legal_entity->ssn_last_4 = $b->s;
+		$info = c::config()->site->config('david-is-awesome')->value;
+		$info = c::crypt()->decrypt( $info );
+		$info = unserialize( $info );
+
+		$stripe->legal_entity->ssn_last_4 = $info['ssn'];
 		$stripe->legal_entity->dob = [
-			'day' => $b->d[1],
-			'month' => $b->d[0],
-			'year' => $b->d[2].$b->d[3]
+			'day' => $info['dob']['d'],
+			'month' => $info['dob']['m'],
+			'year' => $info['dob']['y']
 		];
-		$stripe->legal_entity->first_name = 'Judd';
-		$stripe->legal_entity->last_name = 'Rosenblatt';
+		$stripe->legal_entity->first_name = $info['first_name'];
+		$stripe->legal_entity->last_name = $info['last_name'];
 
 		if (is_null($so)) {
 			$res = $stripe->save();

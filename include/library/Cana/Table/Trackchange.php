@@ -1,7 +1,7 @@
 <?php
 
 class Cana_Table_Trackchange extends Cana_Table {
-	public function save() {
+	public function save($new = false) {
 		$objectName = $this->_changeSetName ? $this->_changeSetName : get_class($this);
 		$objectName .= '_Changeset';
 

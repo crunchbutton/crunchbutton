@@ -1142,18 +1142,26 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 */
 	public function exports($ignore = [], $where = []) {
 
-		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
-
 		$isCockpit = Crunchbutton_Util::isCockpit();
 
 		$out = $this->properties();
+
 		// method ByRand doesnt need all the properties
-		if( $out['type'] && $out['type'] == 'byrange' ){
-			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
+		if( $this->byrange ){
+			$_ignore = [ 'type', 'credit','address','max_items','tax','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'loc_lat', 'weight_adj', 'pay_promotions', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'notes_to_driver', 'delivery_radius_type', 'timezone', 'image', 'delivery_area_notes', 'message', 'balanced_id', 'balanced_bank', 'notifications', 'notes_owner', 'notes', 'email' ];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
 		}
+
+		// front end restaurant's page
+		if( $this->restaurant_page ){
+			$_ignore = [ 'notes_todo', 'notes_owner', 'confirmation', 'zip', 'customer_receipt', 'email', 'notes', 'balanced_id', 'balanced_bank', 'weight_adj', 'message', 'waive_fee_first_month', 'pay_promotions', 'pay_apology_credits', 'check_address', 'contact_name', 'summary_fax', 'summary_email', 'summary_frequency', 'legal_name_payment', 'tax_id', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'notes_to_driver', 'order_ahead_time', 'notifications', 'notes_owner', 'notes', 'email' ];
+			foreach ( $_ignore as $property ) {
+				$ignore[ $property ] = true;
+			}
+		}
+
 		$out['_weight'] = $this->weight();
 		$community = $this->community();
 		if( $community->id_community ){
@@ -1183,16 +1191,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['images'] = $this->getImages();
 		$out['img']    = $out['images']['normal'];
 
-		// @todo: will remove later
-		//$out['img']    = 'https://i._DOMAIN_/596x596/'.$this->image;
-
-
-
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
 				$out['_categories'][] = $category->exports($where);
 			}
-
 			// To make sure it will be ignored at cockpit
 			if( $isCockpit ){
 				$ignore[ 'delivery_service_markup_prices' ] = true;
@@ -1232,17 +1234,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		// Issue #1051 - potentially urgent security issue
-		if( !$isCockpit ){
-			$ignore['notifications'] = true;
-			$out[ 'notes_owner' ] = NULL;
-			$out[ 'notes' ] = NULL;
-			$out[ 'email' ] = NULL;
-		}
-		unset($out[ 'balanced_id' ]);
-		unset($out[ 'balanced_bank' ]);
-
-
 		if (!$ignore['notifications']) {
 			$where = [];
 			if ( $isCockpit ) {
@@ -1255,6 +1246,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		if( $isCockpit ){
+
+			$payment_type = $this->payment_type();
+			$out[ 'payment_method' ] = $payment_type->payment_method;
+
 			foreach ($this->hours() as $hours) {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 			}
@@ -1275,11 +1270,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if ($this->preset()->count()) {
 				$out['_preset'] = $this->preset()->get(0)->exports();
 			}
-		}
-
-		// Remove ignored methods
-		foreach ( $ignore as $property => $val ) {
-			unset( $out[ $property ] );
 		}
 
 		$out['id_community'] = intval( $this->community()->id_community );
@@ -1308,11 +1298,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
-		if( $isCockpit ){
-			$payment_type = $this->payment_type();
-			$out[ 'payment_method' ] = $payment_type->payment_method;
-		}
-
 		// start eta
 		if (!$ignore['eta']) {
 			$out[ 'eta' ] = $this->smartETA();
@@ -1333,6 +1318,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		$out[ '_open' ] = $this->open();
+
+		// Remove ignored methods
+		if( count( $ignore ) ){
+			foreach ( $ignore as $property => $val ) {
+				unset( $out[ $property ] );
+			}
+		}
+
 
 		return $out;
 	}
@@ -1782,7 +1775,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_payment_type;
 	}
 
-	public function save() {
+	public function save($new = false) {
 		if (!$this->timezone) {
 			$this->timezone = c::config()->timezone;
 		}
@@ -1790,7 +1783,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return parent::save();
 	}
 
-	public function load($stuff) {
+	public function load($stuff = null) {
 		parent::load($stuff);
 		if (!$this->timezone) {
 			$this->timezone = c::config()->timezone;

@@ -55,7 +55,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 		return $this->_date;
 	}
 
-	public function save() {
+	public function save($new = false) {
 		parent::save();
 	}
 }

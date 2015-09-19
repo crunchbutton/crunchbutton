@@ -111,6 +111,8 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	 */
 	private function _returnRestaurant()
 	{
+
+		$isCockpit = Crunchbutton_Util::isCockpit();
 		$restaurant = Crunchbutton_Restaurant::permalink(c::getPagePiece(2));
 		/* @var $restaurant Crunchbutton_Restaurant */
 		if (!$restaurant->id_restaurant) {
@@ -118,16 +120,15 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		}
 		if ($restaurant->id_restaurant) {
 			$where = [];
-			if (preg_match('/admin/i',$_SERVER['HTTP_REFERER'])) { // if API is being called by the admin
-				// @todo: refered can be spoofed!!! who put this here?! wtf?!
+			if ( $isCockpit ) {
 				$where['Dish']['active'] = NULL;
 			}
-			$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+
 			if( $isCockpit ){
 				// dont show the price recalculated by delivery_service_markup at cockpit
 				$ignore = array( 'delivery_service_markup_prices' => 1 );
 			} else {
-				$ignore = [];
+				$restaurant->restaurant_page = true;
 			}
 			$json = $restaurant->exports( $ignore, $where);
 		} else {

@@ -118,12 +118,12 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 						'fields' => [
 							'restaurant.name' => 'like',
 							'admin.name' => 'like',
-							'`order`.phone' => 'likephone',
 							'`order`.name' => 'like',
 							'`order`.address' => 'like',
 							'`order`.notes' => 'like',
 							'`order`.id_order' => 'inteq',
-							'`order`.txn' => 'eq'
+							'`order`.txn' => 'eq',
+							'`order`.phone' => 'likephone',
 						]
 					]);
 					$q .= $s['query'];

@@ -1,5 +1,7 @@
 FROM php:5.6-fpm
 
+ENV DOCKER=1
+
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
         php-pear \
@@ -7,7 +9,7 @@ RUN apt-get update && apt-get install -y \
         git \
 		nginx \
     && docker-php-ext-install iconv mcrypt \
-	&& docker-php-ext-install mysql pdo_mysql
+	&& docker-php-ext-install pdo mysql pdo_mysql
 
 
 ADD conf/nginx.docker.conf /etc/nginx/sites-available/default
@@ -16,8 +18,7 @@ RUN echo "cgi.fix_pathinfo = 0;" >> /usr/local/etc/php/conf.d/fix_pathinfo.ini
 RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
 #RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-ADD ./ /var/www/
-RUN mkdir /var/www/logs
-RUN chmod -R 0777 /var/www/cache
+#ADD ./ /var/www/app/
+RUN ln -s /opt/www /var/www/app
 
 CMD nginx && php-fpm
