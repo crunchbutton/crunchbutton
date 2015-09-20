@@ -58,7 +58,7 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 		} elseif (c::config()->site->config('allow-cors')->val()) {
 			header('Access-Control-Allow-Origin: *');
 			header('Access-Control-Allow-Credentials: true');
-			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type');
+			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type, Http-Error');
 			header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		}
 
