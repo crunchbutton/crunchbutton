@@ -58,12 +58,18 @@
 				<button class="button facebook" ng-click="facebook.auth()">
 					<i class="fa fa-facebook-square"></i>&nbsp;
 					<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
-					<span ng-show="facebook.facebook.wait">Just a sec...</span>
+					<span ng-show="facebook.facebook.wait">Just a sec
+						<div id="circleG">
+							<div id="circleG_1" class="circleG"></div>
+							<div id="circleG_2" class="circleG"></div>
+							<div id="circleG_3" class="circleG"></div>
+						</div>
+					</span>
 				</button>
 			</div>
 
 			<p class="center-text">
-				<a href="" class="splash-continue" ng-click="navigation.link('/location','fade')">Continue without logging in</a>
+				<a href="" class="splash-continue" ng-instant="navigation.link('/location','fade')">Continue without logging in</a>
 			</p>
 		</div>
 	</div>
