@@ -32,7 +32,7 @@ var App = {
 	touchY: null,
 	touchOffset: null,
 	localStorage: false,
-	isPhoneGap: document.location.protocol == 'file:',
+	isPhoneGap: (document.location.protocol == 'file:' || document.location.host == 'localhost:12344'),
 	useNativeAlert: false,
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
@@ -359,7 +359,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		})
 	;
 	// only use html5 enabled location stuff if its not in a phonegap container
-	$locationProvider.html5Mode(!App.isPhoneGap);
+	$locationProvider.html5Mode({
+		enabled: true,
+		requireBase: false
+	});
 }]);
 
 // global route change items
@@ -469,11 +472,19 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 			LocationService.init(true);
 			if (App.config.user.id_user && App.config.user.location_lat && ($rootScope.navigation.page == 'location' || $rootScope.navigation.page == 'splash')) {
-				$location.path('/food-delivery');
+				if (App._handOpenUrlNav) {
+					App._handOpenUrlNav = false;
+				} else {
+					$location.path('/food-delivery');
+				}
 			}
 			// Some new users doesn't have lat nor lon - #5442
 			else if (App.config.user.id_user && !App.config.user.location_lat && $rootScope.navigation.page == 'splash') {
-				$location.path('/location');
+				if (App._handOpenUrlNav) {
+					App._handOpenUrlNav = false;
+				} else {
+					$location.path('/location');
+				}
 				AccountService.forceDontReloadAfterAuth = true;
 			}
 
@@ -762,7 +773,7 @@ App.scrollTop = function(top) {
  */
 App.track = function() {
 
-	var event_uri = App.service + '/events?category=app&action=' + encodeURIComponent(arguments[0]);
+	var event_uri = App.logService + 'events?category=app&action=' + encodeURIComponent(arguments[0]);
 	var data = undefined;
 	var future;
 	if(typeof arguments[1] == 'string') {
@@ -1159,7 +1170,9 @@ App.init = function(config) {
 	}
 };
 
-App.handleUrl = function(url) {
+
+
+App.handleOpenURL = function(url) {
 	// only happens if being pased from a url in the native app
 
 	var handler = 'crunchbutton://';
@@ -1173,6 +1186,8 @@ App.handleUrl = function(url) {
 	url = '/' + url;
 	url = url.split('?');
 	url = url[0];
+	
+	App._handOpenUrlNav = url;
 
 	if (App._init) {
 		// already launched. just nav
@@ -1184,6 +1199,8 @@ App.handleUrl = function(url) {
 		});
 	}
 }
+
+var handleOpenURL = App.handleOpenURL;
 
 
 /**
