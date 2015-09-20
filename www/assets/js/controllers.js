@@ -531,9 +531,9 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		// Success
 		function(){
 
-			$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
-
 			try {
+				
+				$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
 
 				var slogan = App.slogan.slogan;
 				var tagline = '';
@@ -1880,7 +1880,7 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 	}
 
 	var quoteProcess = function(){
-		if( App.quotes.length ){
+		if(App.quotes && App.quotes.length ){
 			for( x in App.quotes ){
 				var quote = App.quotes[ x ];
 				if( quote.pages ){
