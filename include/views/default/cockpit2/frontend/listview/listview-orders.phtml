@@ -54,22 +54,7 @@
 				<?php /* Driver */ ?>
 			</td>
 			<td class="tb-v-center">
-				<span ng-if="order.delivery_service">
-					<span class="tag tag-black" ng-if="order.status.status == 'canceled'">Canceled</span>
-					<span class="tag tag-red" ng-if="order.status.status == 'new'">New</span>
-					<span class="tag tag-green" ng-if="order.status.status == 'accepted'">Accepted</span>
-					<span class="tag tag-blue" ng-if="order.status.status == 'pickedup'">Pickedup</span>
-					<span class="tag tag-purple" ng-if="order.status.status == 'delivered'">Delivered</span>
-				</span>
-				<span ng-if="!order.delivery_service && order._restaurant_confirmation">
-					<span class="tag tag-red" ng-if="!order.confirmed">Unconfirmed</span>
-					<span class="tag tag-green" ng-if="order.confirmed">Confirmed</span>
-				</span>
-				<span ng-if="!order.delivery_service && !order._restaurant_confirmation">
-					<span class="tag tag-grey">Placed</span>
-				</span>
-				<br>
-				<span ng-if="order.status" class="listview-smallest"><span am-time-ago="order.status.date_timestamp | timestamp"></span></span>
+				<ng-include src="'assets/view/orders-order-status.html'"></ng-include>
 			</td>
 			<td nowrap class="tb-v-center">
 				<a href="" ng-click="ticket(order.id_order)"><button class="button button-small button-empty button-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
