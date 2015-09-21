@@ -127,8 +127,7 @@
 						</div>
 						</a>
 						<div class="support-chat-contents-message-time">
-							<span ng-if="!message.sending">{{message.timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</span>
-							<!-- <span ng-if="!message.sending" am-time-ago="message.timestamp*1000" title="{{message.timestamp*1000 | date: 'M/d h:mm a'}}"></span> -->
+							<span ng-if="!message.sending">{{message.timestamp * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
 							<span ng-if="message.sending">sending...</span>
 						</div>
 						<div class="support-chat-contents-message-body">
