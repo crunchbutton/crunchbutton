@@ -448,12 +448,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.go('/location');
 	};
 
-	$rootScope.$on('haveUser', function(e, data) {
-		if( App.push && App.push.register ){
-			App.push.register();
-		}
-	});
-
 	$rootScope.$on('userAuth', function(e, data) {
 
 		ReferralService.getStatus();
