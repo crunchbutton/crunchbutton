@@ -178,6 +178,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$o->last_reply = $lastReplyFrom->from;
 			$o->last_reply_type = $lastReplyFrom->type;
 
+			$o->media = $lastReplyFrom->media;
+
 			if( $o->status == Crunchbutton_Support::STATUS_CLOSED ){
 				$messageBeforeLast = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND id_support_message < ? ORDER BY id_support_message DESC LIMIT 1', [ $o->id_support, $lastReplyFrom->id_support_message ] )->get( 0 );
 				if( $messageBeforeLast->id_support_message ){
