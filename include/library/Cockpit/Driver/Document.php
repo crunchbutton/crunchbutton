@@ -48,11 +48,11 @@ class Cockpit_Driver_Document extends Cana_Table {
 	}
 
 	public function driver(){
-		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document WHERE type = ? ORDER BY `order` ASC', [Cockpit_Driver_Document::TYPE_DRIVER]);
+		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document WHERE type = ? AND active = 1 ORDER BY `order` ASC', [Cockpit_Driver_Document::TYPE_DRIVER]);
 	}
 
 	public function marketing_rep(){
-		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document WHERE type = ? ORDER BY `order` ASC', [Cockpit_Driver_Document::TYPE_MARKETING_REP]);
+		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document WHERE type = ? AND active = 1 ORDER BY `order` ASC', [Cockpit_Driver_Document::TYPE_MARKETING_REP]);
 	}
 
 	public function exports(){
