@@ -1,0 +1,51 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Info</th>
+			<th>Date</th>
+			<th>Restaurant</th>
+			<th>Customer</th>
+			<th>Driver</th>
+			<th class="tb-small">Status</th>
+		</tr>
+		<tr ng-repeat="order in orders track by $index" ng-class="{ 'delivery_it_self': order.delivery_it_self }">
+			<td>
+				<?php /* Info */ ?>
+					{{order.id_order}}
+				<?php /* Info */ ?>
+			</td>
+			<td nowrap="">
+				<?php /* Date */ ?>
+				{{order.date | timestamp | date:'MM/dd @ h:mm a'}}
+				<?php /* Date */ ?>
+			</td>
+			<td ng-if="!restaurant">
+				<? /* Restaurant */ ?>
+				<span class="listview-smaller">
+					{{order._restaurant_name}}<br>
+					{{order._community_name}}
+				</span>
+				<? /* Restaurant */ ?>
+			</td>
+			<td>
+				<?php /* Customer */ ?>
+					{{order.name}}
+					<br>
+					<a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</a>
+					<div class="listview-smaller">{{order.address}}</div>
+					<span class="tag tag-green" ng-if="order.new_customer">New Customer</span>
+					<span class="tag tag-blue" ng-if="order.returning_customer">Returning Customer</span>
+				<?php /* Customer */ ?>
+			</td>
+			<td>
+				<?php /* Driver */ ?>
+					{{order.status.driver.name}}<br>
+					<a href ng-click="callText(order.status.driver.phone)" class="listview-smaller">{{order.status.driver.phone | formatPhone}}</a>
+				<?php /* Driver */ ?>
+			</td>
+			<td class="tb-v-center">
+				<ng-include src="'assets/view/orders-order-status.html'"></ng-include>
+			</td>
+		</tr>
+	</table>
+</div>

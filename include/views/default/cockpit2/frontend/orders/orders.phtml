@@ -2,7 +2,7 @@
 
 <div class="content-padding">
 	<h1 class="title left"><i class="fa fa-car"></i>Orders</h1>
-	<div class="box-filter">
+	<div class="box-filter" ng-show="regularList">
 		<button class="button orange" ng-class="{ 'inactive' : query.view=='list' }" ng-click="query.view = 'map'">Map</button>
 		<button class="button orange" ng-class="{ 'inactive' : query.view=='map' }" ng-click="query.view = 'list'">List</button>
 	</div>
@@ -24,8 +24,10 @@
 					<input type="date" ng-model="query.dateend" tabindex="3">
 				</td>
 				<td></td>
+				<td></td>
+				<td></td>
 			</tr>
-			<tr ng-if="show_more_options">
+			<tr ng-if="show_more_options && showSearchByPlaces">
 				<th>Restaurant</th>
 				<td>
 					<ui-select ng-model="query.restaurant" theme="select2" close-on-select="true" style="width: 300px;" title="Select a restaurant">
@@ -59,7 +61,8 @@
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list'"></ng-include>
+	<ng-include src="'assets/view/listview-campus-manager-orders.html'" ng-show="query.view=='list' && campusManagerList"></ng-include>
+	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list' && regularList"></ng-include>
 	<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
 
 	<ng-include src="'assets/view/mapview-orders.html'" ng-show="query.view=='map'"></ng-include>

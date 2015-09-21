@@ -5,15 +5,32 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'OrdersCtrl',
 			templateUrl: 'assets/view/orders.html',
 			reloadOnSearch: false
-
-		}).when('/order/:id', {
+		})
+		.when('/campus-manager/orders', {
+			action: 'orders',
+			controller: 'OrdersCampusManagerCtrl',
+			templateUrl: 'assets/view/orders.html',
+			reloadOnSearch: false
+		}).
+		when('/order/:id', {
 			action: 'order',
 			controller: 'OrderCtrl',
 			templateUrl: 'assets/view/orders-order.html'
 		});
 }]);
 
+NGApp.controller('OrdersCampusManagerCtrl', function($scope, $controller) {
+	angular.extend(this, $controller('OrdersCtrl', {$scope: $scope}));
+	$scope.regularList = false;
+	$scope.campusManagerList = true;
+	$scope.showSearchByPlaces = false;
+});
+
 NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService, CommunityService) {
+
+	$scope.regularList = true;
+	$scope.showSearchByPlaces = true;
+
 	angular.extend($scope, ViewListService);
 
 //	var query = $location.search();
