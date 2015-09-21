@@ -835,6 +835,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 									$rootScope.$broadcast( 'newOrder' );
 									OrderViewService.newOrder = true;
 									App.go( '/order/' + uuid + '/confirm', 'push' );
+
+									if( App.push && App.push.register ){
+										setTimeout(function() {
+											App.push.register();
+										}, 2000);
+									}
+									
 								} );
 
 							} );
