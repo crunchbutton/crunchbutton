@@ -3,6 +3,11 @@
 class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
+
+		if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) ) {
+			$this->error(401);
+		}
+
 		if ($this->method() != 'get') {
 			exit;
 		}
@@ -22,6 +27,13 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
 		$export = $this->request()['export'] ? true : false;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
+		$campusManager = $this->request()['campusManager'] ? $this->request()['campusManager'] : false;
+
+		if ( !c::admin()->permission()->check(['global','orders-all'] ) && c::admin()->isCampusManager() || $campusManager ) {
+			$campusManager = true;
+			$community = c::user()->getMarketingRepGroups();
+		}
 
 		$keys = [];
 
@@ -197,6 +209,12 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 						$o->lon = $user->location_lon;
 						$o->lat = $user->location_lat;
 					}
+				}
+
+				if( $campusManager ){
+					$o->orders_by_phone = Order::totalOrdersByPhone( $o->phone );
+					$o->new_customer = ( $o->orders_by_phone == 1 );
+					$o->returning_customer = ( $o->orders_by_phone > 1 );
 				}
 
 				$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
