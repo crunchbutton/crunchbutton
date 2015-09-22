@@ -13,6 +13,11 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 			exit();
 		}
 
+		if( c::getPagePiece(2) == 'register-voip' ){
+			$this->_registerVoip();
+			exit();
+		}
+
 		if( c::getPagePiece(2) == 'send-sms' ){
 			$this->_sendSMS();
 			exit();
@@ -92,6 +97,13 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
+	private function _registerVoip(){
+		if( $this->method() == 'post' ){
+			Crunchbutton_Phone_Log::log( $this->request()[ 'phone' ], c::config()->twilio->live->outgoingCustomer, 'call', 'outgoing', 'Voip from cockpit' );
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+	}
+
 	private function _makeCall(){
 
 		if( $this->method() == 'post' ){
@@ -119,14 +131,14 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 				'http://'.$host.'/api/twilio/outgoing/'.$this->request()[ 'to' ].'?PhoneNumber='.$this->request()[ 'phone' ]
 			);
 
+			Crunchbutton_Phone_Log::log( $this->request()[ 'phone' ], $num, 'call', 'outgoing', 'Call from cockpit' );
+
 			Log::debug( [ 'from' => $num, 'to' => $this->request()[ 'phone' ], 'caller' => $this->request()[ 'to' ], 'callerId' => $callerId,  'type' => 'connect-call' ] );
 
 			echo json_encode( [ 'success' => 'Pick up your phone...' ] );exit;
 		}
 
 		echo json_encode( [ 'error' => 'Error' ] );exit;
-
-
 
 	}
 

@@ -14,6 +14,11 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 			method: 'POST',
 			params : {}
 		},
+		'register_voip' : {
+			url: App.service + 'call/register-voip',
+			method: 'POST',
+			params : {}
+		},
 		'make_call' : {
 			url: App.service + 'call/make-call',
 			method: 'POST',
@@ -49,6 +54,12 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 
 	service.make_call = function( params, callback ){
 		call.make_call(params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.register_voip = function( params, callback ){
+		call.register_voip(params, function(data) {
 			callback(data);
 		});
 	}
