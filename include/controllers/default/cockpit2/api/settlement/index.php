@@ -236,6 +236,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$_lastPayment[ 'id_payment' ] = $lastPayment->id_payment;
 				$restaurant[ 'last_payment' ] = $_lastPayment;
 			}
+			$restaurant[ 'summary_method' ] = $payment_type->summary_method;
 			$restaurant[ 'summary_error' ] = $summary_error;
 			$restaurant[ 'name' ] = $_restaurant->name;
 			$restaurant[ 'permalink' ] = $_restaurant->permalink;
