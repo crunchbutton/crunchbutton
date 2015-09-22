@@ -277,7 +277,7 @@
 			<div class="tip-total-block total-block" ng-if="account.user.show_credit_card_tips || ( oc.order._tip_with_cash || oc.order._tip == '0.00' )">
 
 				<div ng-if="oc.order.pay_type=='cash' && ( oc.order._tip_with_cash || oc.order._tip == 0 )" class="order-total-block-tip">
-					For bigger tips, we suggest saying when the customer asks how much it is, <br>"${{oc.order.final_price_plus_delivery_markup | formatPrice}}, not including tip."
+					For bigger tips, we suggest saying when the customer asks how much it is, <br>"${{oc.order.final_price_plus_delivery_markup | formatPrice}}, not including tip" and flash them your best smile!
 				</div>
 
 				<span class="order-total-price" ng-if="oc.order.pay_type=='card'">
