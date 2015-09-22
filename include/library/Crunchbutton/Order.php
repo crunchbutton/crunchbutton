@@ -2791,6 +2791,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'seconds' => 0
 		]);
 
+		if( $status == Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+			Order_Action::ticketForRejectedOrder( $this->id_order );
+		}
+
 		return true;
 	}
 
