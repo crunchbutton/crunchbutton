@@ -75,7 +75,7 @@
 					</li>
 
 					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.reason.$invalid}" ng-show="status_changed && ( community.close_all_restaurants || community.close_3rd_party_delivery_restaurants )">
-						<div class="label">Reason:</div>
+						<div class="label">Reason for closing:</div>
 						<div class="input">
 							<select name="reason" ng-model="community.reason" ng-required="status_changed && ( community.close_all_restaurants || community.close_3rd_party_delivery_restaurants )">
 								<option value="driver flaked">Driver flaked</option>
@@ -89,7 +89,7 @@
 					</li>
 
 					<li class="li-input  divider-line" ng-show="community.reason == 'other'" ng-class="{'error':formOpenClose.reasonOther.$invalid}">
-						<div class="label">Reason:</div>
+						<div class="label">Other Reason:</div>
 						<div class="input"><input type="text" name="reasonOther" ng-model="community.reason_other" ng-required="community.reason == 'other'"></div>
 						<div class="box-error">
 							<small ng-show="formOpenClose.autoClosedMessage.$error.required">Required.</small>
