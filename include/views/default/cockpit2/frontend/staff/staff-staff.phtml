@@ -51,10 +51,16 @@
 				</div>
 
 				<br><br>
-				<div class="double-cols">
+				<div class="tripple-cols">
+
 					<a href="/settlement/list?limit=20&page=1&fullcount=false&search=&type=driver&status=0&payment_type=0&date=&id_driver={{staff.id_admin}}"><button class="button button-empty button-border button-orange"><i class="fa fa-university"></i>&nbsp;&nbsp;Payment List</button></a>
 
 					<a href="/settlement/drivers/payment/arbitrary/{{staff.id_admin}}"><button class="button button-empty button-border button-green"><i class="fa fa-money"></i>&nbsp;&nbsp;Arbitrary Payment</button></a>
+
+					<a href ng-click="callText(staff.phone)">
+						<button class="button button-empty button-border button-blue"><i class="fa fa-comment"></i>&nbsp;&nbsp;{{staff.phone | formatPhone}}</button>
+					</a>
+
 				</div>
 			</div>
 
@@ -94,9 +100,9 @@
 						<a href="/staff/{{staff.login}}/pexcard" ng-if="staff.pexcard.active"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add PEX Funds</button></a>
 						<a href="/pexcard/card/driver/{{staff.id_admin}}" ng-if="!staff.pexcard.active"><button class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add PEX Card</button></a>
 						<a href="/staff/{{staff.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-						
+
 						<spinner-action-button button-title="Reverify" icon="check" action="reverify"></spinner-action-button>
-						
+
 					</div>
 				</div>
 				<div class="divider"></div>
