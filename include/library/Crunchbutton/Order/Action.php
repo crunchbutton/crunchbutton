@@ -92,6 +92,14 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		return $date;
 	}
 
+	public static function ticketForRejectedOrder( $id_order ){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $id_order, Crunchbutton_Order_Action::DELIVERY_REJECTED ] )->get( 0 );
+		if( $action->id_admin ){
+			$body = "The order #$id_order was rejected by {$action->admin()->name}.";
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $id_order, 'body' => $body, 'bubble' => true, 'staff' => true, 'phone' => $action->admin()->phone ] );
+		}
+	}
+
 	public function admin(){
 		return Admin::o($this->id_admin);
 	}
