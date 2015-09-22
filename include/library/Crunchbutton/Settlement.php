@@ -846,10 +846,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$this->log( 'scheduleRestaurantPayment', $schedule->properties() );
 			}
 		}
-		$settlement = new Crunchbutton_Settlement( $this->filters );
-		Cana::timeout(function() use( $settlement ) {
-			// $settlement->doRestaurantPayments();
-		} );
 	}
 
 

@@ -180,6 +180,14 @@
 								<span ng-if="!restaurant.has_payment_type && restaurant.summary_error">
 									&nbsp;
 								</span>
+
+
+									<span class="tag tag-black" ng-if="!restaurant.summary_method">Missing Summary</span>
+									<span class="tag tag-blue" ng-if="restaurant.summary_method == 'no summary'">No Summary</span>
+									<span class="tag tag-fax" ng-if="restaurant.summary_method == 'fax'">Fax</span>
+									<span class="tag tag-green" ng-if="restaurant.summary_method == 'email'">Email</span>
+
+
 								<span ng-if="restaurant.summary_error" class="sp-label sp-label-danger">
 									{{restaurant.summary_error}}
 								</span>
