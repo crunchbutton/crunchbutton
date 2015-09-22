@@ -179,10 +179,10 @@ class Cana_Iterator implements Iterator {
 		return true;
 	}
 	
-	public function json() {
+	public function json($args = []) {
 		foreach ($this->_items as $key => $item) {
-			if (is_callable($item, 'exports') || method_exists($item, 'exports')) {
-				$items[$key] = (new ReflectionMethod($item, 'exports'))->invokeArgs($item, []);
+			if (is_callable($item, 'json') || method_exists($item, 'json')) {
+				$items[$key] = (new ReflectionMethod($item, 'json'))->invokeArgs($item, $args);
 			}
 			$items[$key] = $item->exports();
 		}
