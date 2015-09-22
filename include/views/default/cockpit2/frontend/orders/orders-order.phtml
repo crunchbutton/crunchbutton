@@ -243,6 +243,7 @@
 						</td>
 					</tr>
 					<tr><td><br></td></tr>
+
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Subtotal:</td><td nowrap class="dish-price">${{order.price | number:2}}</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Markup:</td><td nowrap class="dish-price">${{order.delivery_service_markup_value || 0 | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Service Fee:</td><td nowrap class="dish-price">${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
@@ -253,6 +254,8 @@
 							<span ng-if="order.tip_type != 'percent'">({{ order._tip/order.price*100  | number:2 }}%)</span>
 						</td></tr>
 					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Gift Card (Credit):</td><td nowrap class="dish-price">${{order.credit || 0 | number:2}} </td></tr>
+					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Total (Charged):</td><td nowrap class="dish-price">${{order.charged || 0 | number:2}} </td></tr>
+
 					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 				</table>
 
