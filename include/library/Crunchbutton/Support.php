@@ -203,7 +203,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			// Create a new sms ticket
 			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone,
 																															'name' => $params[ 'Name' ],
-																															'body' => '(Ticket created at cockpit)',
+																															'body' => Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY,
 																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
 		} else {
 			if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
@@ -628,6 +628,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			"\n\n".
 			$message->body;
 
+		if( $message->body == Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY ){
+			return;
+		}
+
 		// Log
 		$message = '@'.$this->id_session_twilio.' : ' . $message;
 
@@ -994,7 +998,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$_secondMessageDate = null;
 			foreach( $messages as $message ){
 				if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_SYSTEM ||
-					$message->body == '(Ticket created at cockpit)' ){
+					$message->body == Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY ){
 					continue;
 				}
 				$date = $message->date()->format( 'g:i a' );
