@@ -539,8 +539,8 @@ class Cana_Table extends Cana_Model { //
 		return new Cana_Iterator($items);
 	}
 
-	public function json() {
-		return json_encode($this->exports());
+	public function json($params = []) {
+		return json_encode($this->exports($params));
 	}
 
 	public function exports() {
