@@ -41,6 +41,11 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		$this->session()->date_active = date('Y-m-d H:i:s');
 		$this->session()->generateAndSaveToken();
 		setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
+		// app
+		$headers = apache_request_headers();
+		if ($headers['App-Version'] && $this->session()->token) {
+			header('App-Token: '.$this->session()->token);
+		}
 	}
 
 	public function doAuth($type, $id) {
@@ -64,6 +69,11 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 			$this->session()->date_active = date('Y-m-d H:i:s');
 			$this->session()->generateAndSaveToken();
 			setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
+			// app
+			$headers = apache_request_headers();
+			if ($headers['App-Version'] && $this->session()->token) {
+				header('App-Token: '.$this->session()->token);
+			}
 			return true;
 		}
 		return false;
