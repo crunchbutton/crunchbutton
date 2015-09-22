@@ -11,19 +11,22 @@
 			<th>Type</th>
 			<th>Closed at</th>
 			<th>Closed By</th>
-			<th>Closed Notes</th>
+			<th>Closed Notes / Reason</th>
 			<th>How long</th>
 			<th>Opened at</th>
 			<th>Opened by</th>
 		</tr>
 		<tr ng-repeat="c in closelogs">
-			<td>{{c.type}}</td>
-			<td>{{c.closed_at}}</td>
-			<td>{{c.closed_by}}</td>
-			<td>{{c.note}}</td>
-			<td>{{c.how_long}}</td>
-			<td>{{c.opened_at}}</td>
-			<td>{{c.opened_by}}</td>
+			<td><span class="listview-smaller">{{c.type}}</span></td>
+			<td><span class="listview-smaller">{{c.closed_at}}</span></td>
+			<td><span class="listview-smaller">{{c.closed_by}}</span></td>
+			<td>
+				<span class="listview-smaller">{{c.note}}</span>
+				<span ng-if="c.reason" class="listview-smaller"><br>{{c.reason}}</span>
+			</td>
+			<td><span class="listview-smaller">{{c.how_long}}</span></td>
+			<td><span class="listview-smaller">{{c.opened_at}}</span></td>
+			<td><span class="listview-smaller">{{c.opened_by}}</span></td>
 		</tr>
 	</table>
 </div>

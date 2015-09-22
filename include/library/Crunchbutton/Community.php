@@ -643,6 +643,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					}
 				}
 			}
+
+			// Reason
+			$output[ 'reason' ] = Cockpit_Community_Closed_Reason::reasonByCommunityDate( $this->id_community, $force_close->date()->format( 'Y-m-d H:i:s' ) );
+
 			if( $output ){
 				$out[] = $output;
 			}
