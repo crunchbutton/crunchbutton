@@ -7,6 +7,13 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		$this->table('admin_shift_assign')->idVar('id_admin_shift_assign')->load($id);
 	}
 
+	public function save(){
+		if( !$this->id_admin_shift_assign ){
+			Crunchbutton_Admin_Shift_Assign_Log::addAssignment( [ 'id_driver' => $this->id_admin, 'id_community_shift' => $this->id_community_shift ] );
+		}
+		return parent::save();
+	}
+
 	public function admin(){
 		if( !$this->_admin ){
 			$this->_admin = Admin::o( $this->id_admin );
@@ -51,6 +58,11 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		return c::db()->query( "DELETE FROM admin_shift_assign WHERE id_community_shift = " . $id_community_shift );
 	}
 
+	public function delete() {
+		Crunchbutton_Admin_Shift_Assign_Log::removeAssignment( $this->id_admin_shift_assign );
+		parent::delete();
+	}
+
 	public function shiftsByAdminPeriod( $id_admin, $date_start, $date_end ){
 		return Crunchbutton_Community_Shift::q('
 			SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
@@ -79,7 +91,6 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 			if( $now > $startAt ){
 				Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment, true );
 			}
-
 		} else {
 			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
 			if( $permanently ){
