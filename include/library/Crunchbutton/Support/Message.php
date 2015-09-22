@@ -12,6 +12,8 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	const TYPE_VISIBILITY_INTERNAL = 'internal';
 	const TYPE_VISIBILITY_EXTERNAL = 'external';
 
+	const TICKET_CREATED_COCKPIT_BODY = '(Ticket created at cockpit)';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
