@@ -3195,7 +3195,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$action->timestamp = date( 'Y-m-d H:i:s' );
 						$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
 						$action->save();
-						exit();
 				}
 			}
 		}
