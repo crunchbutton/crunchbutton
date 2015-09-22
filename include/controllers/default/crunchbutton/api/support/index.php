@@ -45,23 +45,23 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 
 						if( $createNewTicket ) {
 							// Create a new sms ticket
-							$support = Crunchbutton_Support::createNewBoxTicket(  [ 'phone' => $phone, 
-																																			'name' => $this->request()['name'], 
-																																			'body' => $this->request()['message'], 
+							$support = Crunchbutton_Support::createNewBoxTicket(  [ 'phone' => $phone,
+																																			'name' => $this->request()['name'],
+																																			'body' => $this->request()['message'],
 																																			'id_session_twilio' => $twilio_session->id_session_twilio ] );
 						} else {
 							if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
 								$support->status = Crunchbutton_Support::STATUS_OPEN;
 								$support->addSystemMessage( 'Ticket reopened by customer' );
 							}
-							$support->addCustomerMessage( [ 'name' => $this->request()['name'], 
-																							'phone' => $phone, 
+							$support->addCustomerMessage( [ 'name' => $this->request()['name'],
+																							'phone' => $phone,
 																							'body' => $this->request()['message'] ] );
 							$support->save();
 						}
 
 						echo $support->json();
-						$support->notify();
+						$support->notify( false );
 					break;
 					case 'say':
 						$this->say();
@@ -72,7 +72,7 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 
 			case 'get':
 
-				switch ( c::getPagePiece( 2 ) ) {		
+				switch ( c::getPagePiece( 2 ) ) {
 					case 'say':
 						$this->say();
 						break;
@@ -106,7 +106,7 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 			$message .= ' . Name . ' . $name . ' . ';
 			$message .= ' . Phone . ' . $phone . ' . ';
 			$message .= ' . Message . ' . $support->message . ' . ';
-		} 
+		}
 
 		$supportName = c::getPagePiece( 4 );
 

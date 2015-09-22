@@ -613,12 +613,16 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_session_twilio = ? ' . $where . ' ORDER BY id_support DESC' ,$keys);
 	}
 
-	public function notify() {
+	public function notify( $firstMessage = true ) {
 
 		$support = $this;
 
 		$env = c::getEnv();
-		$message = $this->firstMessage();
+		if( $firstMessage ){
+			$message = $this->firstMessage();
+		} else {
+			$message = $this->lastMessage();
+		}
 
 		$message = "(support-" . $env . "): ".
 			$support->name.
@@ -627,10 +631,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$support->phone.
 			"\n\n".
 			$message->body;
-
-		if( $message->body == Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY ){
-			return;
-		}
 
 		// Log
 		$message = '@'.$this->id_session_twilio.' : ' . $message;
