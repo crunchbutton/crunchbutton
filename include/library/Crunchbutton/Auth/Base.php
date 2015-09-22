@@ -18,7 +18,11 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		
 		// set token for app requests
 		$headers = apache_request_headers();
-		$_COOKIE['token'] = $headers['App-Token'] ? $headers['App-Token'] : $_COOKIE['token'];
+		if ($headers['App-Token']) {
+			$_COOKIE['token'] = $headers['App-Token'];
+		} elseif($_REQUEST['_app-token']) {
+			$_COOKIE['token'] = $_REQUEST['_app-token'];
+		}
 
 		if (!$this->user()->id && $_COOKIE['token'] && !$this->session()->id) {
 			$sess = Session::token($_COOKIE['token']);
