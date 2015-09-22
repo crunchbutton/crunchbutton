@@ -118,11 +118,14 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 					// save close/open
 					case 'save-open-close':
 
+						$status_changed = false;
+
 						$id_community = $this->request()[ 'id_community' ];
 						$community = Crunchbutton_Community::o( $id_community );
 						$community->is_auto_closed = intval( $this->request()[ 'is_auto_closed' ] );
 
 						if( intval( $this->request()[ 'close_all_restaurants' ] ) != intval( $community->close_all_restaurants ) ){
+							$status_changed = true;
 							$community->close_all_restaurants = intval( $this->request()[ 'close_all_restaurants' ] );
 							if( $community->close_all_restaurants ){
 								$community->close_all_restaurants_id_admin = intval( c::admin()->id_admin );
@@ -139,6 +142,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 
 						if( intval( $this->request()[ 'close_3rd_party_delivery_restaurants' ] ) != intval( $community->close_3rd_party_delivery_restaurants ) ){
+							$status_changed = true;
 							$community->close_3rd_party_delivery_restaurants = intval( $this->request()[ 'close_3rd_party_delivery_restaurants' ] );
 							if( $community->close_3rd_party_delivery_restaurants ){
 								$community->close_3rd_party_delivery_restaurants_id_admin = intval( c::admin()->id_admin );
@@ -172,6 +176,29 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						}
 
 						$community->save();
+
+						if( $status_changed && $community->close_3rd_party_delivery_restaurants || $community->close_all_restaurants ){
+							$reason = new Cockpit_Community_Closed_Reason;
+							$reason->id_admin = c::user()->id_admin;
+							$reason->id_community = $community->id_community;
+							switch ( $this->request()[ 'reason' ] ) {
+								case 'driver flaked':
+									$reason->reason = 'driver flaked';
+									$reason->id_driver = $this->request()[ 'reason_driver' ];;
+									break;
+
+								case 'other':
+									$reason->reason = $this->request()[ 'reason_other' ];
+									break;
+
+								default:
+									$reason->reason = $this->request()[ 'reason' ];
+									break;
+							}
+							$reason->type = ( $community->close_all_restaurants ? Cockpit_Community_Closed_Reason::TYPE_ALL_RESTAURANTS : Cockpit_Community_Closed_Reason::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS );
+							$reason->date = date( 'Y-m-d H:i:s' );
+							$reason->save();
+						}
 
 						if( $community->id_community ){
 							echo $community->json();

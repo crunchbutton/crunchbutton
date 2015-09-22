@@ -183,7 +183,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 });
 
 
-NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService ) {
+NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, DriverService ) {
 
 	$rootScope.$on( 'openClosingTimeContainer', function(e, data) {
 
@@ -192,21 +192,49 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		App.dialog.show('.open-close-community-dialog-container');
 		CommunityService.get( $routeParams.id, function( d ) {
 			$scope.loading = false;
-				$scope.community = d;
-				if( $scope.community.dont_warn_till ){
-					var dont_warn_till = new Date( 	$scope.community.dont_warn_till.y,
-																	( $scope.community.dont_warn_till.m -1 ),
-																	$scope.community.dont_warn_till.d,
-																	$scope.community.dont_warn_till.h,
-																	$scope.community.dont_warn_till.i );
-					$scope.community.dont_warn_till = dont_warn_till;
-				}
+			$scope.community = d;
+			if( $scope.community.dont_warn_till ){
+				var dont_warn_till = new Date( 	$scope.community.dont_warn_till.y,
+																( $scope.community.dont_warn_till.m -1 ),
+																$scope.community.dont_warn_till.d,
+																$scope.community.dont_warn_till.h,
+																$scope.community.dont_warn_till.i );
+				$scope.community.dont_warn_till = dont_warn_till;
+			}
 
+			$scope.close_3rd_party_delivery_restaurants_original = d.close_3rd_party_delivery_restaurants;
+			$scope.close_all_restaurants_original = d.close_all_restaurants;
+
+			$scope.status_changed = false;
+
+			DriverService.byCommunity( $scope.community.id_community, function( data ){
+				$scope.drivers = data;
+			} );
 
 			});
 
 			$scope.isSaving = false;
 	});
+
+	$scope.$watch( 'community.close_3rd_party_delivery_restaurants', function( newValue, oldValue, scope ) {
+		verify_status();
+	});
+
+	$scope.$watch( 'community.close_all_restaurants', function( newValue, oldValue, scope ) {
+		verify_status();
+	});
+
+	var verify_status = function(){
+		if( !$scope.community ){
+			return;
+		}
+		if( $scope.close_3rd_party_delivery_restaurants_original != $scope.community.close_3rd_party_delivery_restaurants ||
+			  $scope.close_all_restaurants_original != $scope.community.close_all_restaurants ){
+			$scope.status_changed = true;
+		} else {
+			$scope.status_changed = false;
+		}
+	}
 
 	$scope.formOpenCloseSave = function(){
 
@@ -222,7 +250,6 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
 			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
 		}
-
 		CommunityService.saveOpenClose( $scope.community, function( json ){
 			$scope.isSaving = false;
 			if( json.error ){
