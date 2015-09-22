@@ -20,7 +20,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'points':
 				echo json_encode( Crunchbutton_Credit::exportPoints() );exit;
 				break;
-			// Verify if the login was already taken
+				// Verify if the login was already taken
 			case 'verify':
 				switch ($this->method()) {
 					case 'get':
@@ -34,13 +34,13 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						} else {
 							echo json_encode(['error' => 'invalid request']);
 						}
-					break;
+						break;
 					default:
 						echo json_encode(['error' => 'invalid request']);
-					break;
+						break;
 				}
 				break;
-			// Sign in the user
+				// Sign in the user
 			case 'auth':
 				switch ($this->method()) {
 					case 'post':
@@ -49,7 +49,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$params[ 'password' ] = $_POST[ 'password' ];
 						$user = c::auth()->doAuthByLocalUser( $params );
 						if( $user ){
-							echo c::user()->json();
+							echo c::user()->json(['auth' => true]);
 						} else {
 							echo json_encode(['error' => 'invalid user']);
 						}
@@ -69,9 +69,9 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				$emailExists = User_Auth::checkEmailExists( $_POST[ 'email' ] );
 				// if the email exists do the login
 				if( $emailExists ){
-						$user = c::auth()->doAuthByLocalUser( $params );
+					$user = c::auth()->doAuthByLocalUser( $params );
 					if( $user ){
-						echo c::user()->json();
+						echo c::user()->json(['auth' => true]);
 					} else {
 						echo json_encode(['error' => 'invalid user']);
 					}
@@ -116,7 +116,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 					$user = c::auth()->doAuthByLocalUser( $params );
 
-					echo c::user()->json();
+					echo c::user()->json(['auth' => true]);
 				}
 
 				break;
@@ -134,7 +134,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						exit;
 						break;
 				}
-			// Create a user
+				// Create a user
 			case 'create':
 				switch ($this->method()) {
 					case 'post':
@@ -184,7 +184,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								}
 
 								$user = c::auth()->doAuthByLocalUser( $params );
-								echo c::user()->json();
+								echo c::user()->json(['auth' => true]);
 								break;
 						}
 						break;
@@ -192,8 +192,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						echo json_encode(['error' => 'invalid request']);
 						break;
 				}
-			break;
-			// Reset the user password - create a reset code
+				break;
+				// Reset the user password - create a reset code
 			case 'reset':
 				switch ( $this->method() ) {
 					case 'post':
@@ -242,7 +242,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						exit;
 						break;
 				}
-			// Validate a reset code
+				// Validate a reset code
 			case 'code-validate':
 				switch ( $this->method() ) {
 					case 'post':
@@ -266,7 +266,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						}
 						break;
 				}
-			// Change the user password
+				// Change the user password
 			case 'change-password':
 				switch ( $this->method() ) {
 					case 'post':
@@ -324,21 +324,21 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 					c::auth()->facebook()->check();
 					c::auth()->fbauth();
-					echo c::user()->json();
+					echo c::user()->json(['auth' => true]);
 
 					break;
 				}
-				echo c::user()->json();
+				echo c::user()->json(['auth' => true]);
 				break;
 
-			// Return the user's credit
+				// Return the user's credit
 			case 'credit':
 				if( c::getPagePiece(3) != '' ){
 					$user = c::user();
 					if ( $user->id_user ){
-							$id_restaurant = c::getPagePiece(3);
-							$credit = Crunchbutton_Credit::creditByUserRestaurant( $user->id_user, $id_restaurant );
-							echo json_encode( [ 'credit' => $credit ] );
+						$id_restaurant = c::getPagePiece(3);
+						$credit = Crunchbutton_Credit::creditByUserRestaurant( $user->id_user, $id_restaurant );
+						echo json_encode( [ 'credit' => $credit ] );
 					} else {
 						echo json_encode(['error' => 'invalid request']);
 					}
