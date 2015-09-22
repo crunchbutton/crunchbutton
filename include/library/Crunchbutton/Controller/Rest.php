@@ -61,6 +61,11 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type, Http-Error, App-Token, App-Version');
 			header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		}
+		
+		if ($this->method() == 'options') {
+			http_response_code(200);
+			exit;
+		}
 
 		if (! headers_sent ()) {
 			header('Content-Type: application/json');
