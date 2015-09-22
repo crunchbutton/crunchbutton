@@ -3,22 +3,22 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 
 	var service = {};
 	var resource = $resource(App.service + 'twilio/client');
-	
+
 	service.init = function() {
 		resource.get([], function(res) {
 			service.token = res.token;
 			Twilio.Device.setup(service.token);
 		});
-		
+
 	};
-	
+
 	service.call = function(phone) {
 		$rootScope.$broadcast('twilio-client-call-start');
 		Twilio.Device.connect({
 			'PhoneNumber': phone
 		});
 	};
-	
+
 	service.hangup = function() {
 		Twilio.Device.disconnectAll();
 	};
@@ -59,7 +59,7 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 			console.debug('Twilio user has been disconnected.', pres);
 		}
 	});
-	
+
 	$rootScope.$on('twilio-client-call-connect', function() {
 		$rootScope.callStatus = 'connected';
 	});
@@ -69,8 +69,8 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 	$rootScope.$on('twilio-client-call-start', function() {
 		$rootScope.callStatus = 'connecting';
 	});
-	
-	
+
+
 	var load = function() {
 		if (AccountService.permcheck(['global', 'support-all', 'support-view', 'support-crud'])) {
 			service.init();
