@@ -58,12 +58,13 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 		} elseif (c::config()->site->config('allow-cors')->val()) {
 			header('Access-Control-Allow-Origin: *');
 			header('Access-Control-Allow-Credentials: true');
-			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type, Http-Error, App-Token');
+			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type, Http-Error, App-Token, App-Version');
 			header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		}
 		
 		// app
-		if ($_REQUEST['_v'] && c::auth()->session()->token && !$_REQUEST['App-Token']) {
+		$headers = apache_request_headers();
+		if ($headers['App-Version'] && c::auth()->session()->token && !$headers['App-Token']) {
 			header('App-Token: '.c::auth()->session()->token);
 		}
 
