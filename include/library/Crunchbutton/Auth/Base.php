@@ -15,6 +15,11 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
 		// then if none of thats good just return a blank user object
+		
+		// set token for app requests
+		$headers = apache_request_headers();
+		$_COOKIE['token'] = $headers['App-Token'] ? $headers['App-Token'] : $_COOKIE['token'];
+
 		if (!$this->user()->id && $_COOKIE['token'] && !$this->session()->id) {
 			$sess = Session::token($_COOKIE['token']);
 			$id = $sess->id_user ? $sess->id_user : $sess->id_admin;
