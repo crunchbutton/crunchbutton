@@ -66,6 +66,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$hours = self::getByRestaurantWeek( $restaurant, false );
+		if (!$hours) {
+			return false;
+		}
 		foreach( $hours as $hour ){
 			if( $hour->status == 'open' ){
 				$open = new DateTime( $hour->from, new DateTimeZone( $restaurant->timezone ) );

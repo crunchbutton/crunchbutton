@@ -17,9 +17,10 @@ if (top.frames.length != 0 || window != top || top.location != location) {
 }
 
 var App = {
+	version: 'web',
 	tagline: '',
 	service: '/api/',
-	logService: 'http://log.crunchbutton.com/api/',
+	logService: 'https://log.crunchbutton.com/api/',
 	server: '/',
 	imgServer: '/',
 	cached: {},
@@ -116,15 +117,33 @@ NGApp.factory('errorInterceptor', function($q) {
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
 			} else {
+				var headers = response.headers();
+				if (headers && headers['App-Token']) {
+					$.totalStorage('token', headers['App-Token']);
+				}
+				console.debug('RESPONSE',headers);
 				return response;
 			}
+		},
+		request: function(config) {
+			config.data = config.data || {};
+
+			config.params = config.params || {};
+			if (App.version != 'web' && $.totalStorage('token')) {
+				//config.headers['App-Token'] = $.totalStorage('token');
+			}
+			console.debug('REQUEST',config.headers);
+			return config || $q.when(config);
 		}
 	};
 	return errorInterceptor;
 });
 NGApp.config(['$httpProvider', function($httpProvider) {
-	$httpProvider.defaults.headers.common['Http-Error'] = 1;
+	//$httpProvider.defaults.headers.common['Http-Error'] = 1;
+	//$httpProvider.defaults.headers.common['App-Version'] = App.version;
 	$httpProvider.interceptors.push('errorInterceptor');
+	$httpProvider.defaults.useXDomain = true;
+	//$httpProvider.defaults.withCredentials = true;
 }]);
 
 NGApp.run(function() {
@@ -444,7 +463,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.cancelDownload = function() {
-		$.cookie('_viewmobile2', true, { expires: 1 });
+		$.totalStorage('_viewmobile2', true, { expires: 1 });
 		App.go('/location');
 	};
 
@@ -462,6 +481,13 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			// If the user logged out clean the cart!
 			if( !App.config.user.id_user ){
 				CartService.clean();
+				$.totalStorage('token', null);
+			} else if (App.isPhoneGap && App.config.user.token) {
+				$.totalStorage('token', App.config.user.token);
+			}
+			
+			if (App.setupAjax) {
+				App.setupAjax();
 			}
 
 			LocationService.init(true);
@@ -767,6 +793,11 @@ App.scrollTop = function(top) {
  */
 App.track = function() {
 
+	// return if we arent talking to live
+	if (location.host != 'crunchbutton.com' || (location.host == 'localhost:12344' && App.service != 'https://crunchbutton.com/api/') || App.config.env != 'live') {
+		return;
+	}
+
 	var event_uri = App.logService + 'events?category=app&action=' + encodeURIComponent(arguments[0]);
 	var data = undefined;
 	var future;
@@ -786,9 +817,6 @@ App.track = function() {
 	}
 	future.done(function (resp) { console.log('stored event', resp)})
 		  .fail(function (jqXHR, textStatus, errorThrown) { console.log('ERROR STORING EVENT', errorThrown, textStatus)});
-	if (App.config.env != 'live') {
-		return;
-	}
 
 	if (arguments[0] == 'Ordered') {
 		/*
@@ -1099,8 +1127,8 @@ App.init = function(config) {
 	App.NGinit();
 
 	// Remove the old cookies #1705
-	$.cookie('loc','', { expires : ( new Date(1970,01,01) ) });
-	$.cookie('locv2','', { expires : ( new Date(1970,01,01) ) });
+	$.totalStorage('loc','', { expires : ( new Date(1970,01,01) ) });
+	$.totalStorage('locv2','', { expires : ( new Date(1970,01,01) ) });
 
 	// #1774
 	// @todo: this no longer seems to happen in ui2

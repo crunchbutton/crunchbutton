@@ -789,7 +789,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						MainNavigationService.control();
 
 						if (json.token) {
-							$.cookie( 'token', json.token );
+							$.totalStorage( 'token', json.token );
 						}
 
 						// Clean the user entered info
