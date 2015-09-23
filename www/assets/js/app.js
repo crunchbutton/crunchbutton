@@ -122,6 +122,7 @@ NGApp.factory('errorInterceptor', function($q) {
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
 			} else {
+				/*
 				if (response.headers) {
 					var headers = response.headers();
 					if (headers && headers['App-Token']) {
@@ -131,6 +132,7 @@ NGApp.factory('errorInterceptor', function($q) {
 				} else {
 					console.debug('No headers');
 				}
+				*/
 				return response;
 			}
 		},
@@ -138,11 +140,14 @@ NGApp.factory('errorInterceptor', function($q) {
 			config.data = config.data || {};
 
 			config.params = config.params || {};
+			config.headers['App-Version'] = App.version;
+			/*
 			if (App.version != 'web' && $.totalStorage('token')) {
 				config.headers['App-Token'] = $.totalStorage('token');
 				config.headers['App-Version'] = App.version;
 			}
 			console.debug('REQUEST',config.headers, config.headers['App-Token'], config.headers['App-Version']);
+			*/
 			return config || $q.when(config);
 		}
 	};
@@ -151,6 +156,7 @@ NGApp.factory('errorInterceptor', function($q) {
 NGApp.config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.headers.common['Http-Error'] = 1;
 	$httpProvider.interceptors.push('errorInterceptor');
+	//$httpProvider.defaults.withCredentials = true;
 }]);
 
 NGApp.run(function() {

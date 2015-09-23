@@ -16,10 +16,12 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		// then if none of thats good just return a blank user object
 		
 		// set token for app requests
+		/*
 		$headers = apache_request_headers();
 		if ($headers['App-Token']) {
 			$_COOKIE['token'] = $headers['App-Token'];
 		}
+		*/
 
 		if (!$this->user()->id && $_COOKIE['token'] && !$this->session()->id) {
 			$sess = Session::token($_COOKIE['token']);
@@ -49,7 +51,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				*/
 			} else {
 				// if no id_user in session, delete cookie and session in DB as it's not used, see #624
-				//Session::deleteToken($_COOKIE['token']);
+				Session::deleteToken($_COOKIE['token']);
 				setcookie('token','',0,'/');
 				// app
 				$headers = apache_request_headers();
