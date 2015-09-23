@@ -93,11 +93,11 @@
 						<td>${{result.calcs.tip | formatPrice}}</td>
 					</tr>
 					<tr ng-if="result.calcs.delivery_fee_collected < 0 && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
-						<td>Delivery Fee Already Collected in Cash</td>
+						<td>Earnings Already Collected in Cash</td>
 						<td>${{result.calcs.delivery_fee_collected | formatPrice}}</td>
 					</tr>
 					<tr ng-if="result.calcs.markup < 0 && pay_type_payment" positive-or-negative-color="{{result.calcs.markup}}">
-						<td>Crunchbutton’s Markup Already Collected In Cash</td>
+						<td>Crunchbutton Price Markups Already Collected in Cash</td>
 						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
 
@@ -248,8 +248,8 @@
 					<td>
 						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Delivery Fee</span>
 					</td>
-					<td>Delivery Fee Already Collected in Cash</td>
-					<td>Markup Already Collected in Cash</td>
+					<td>Earnings Already Collected in Cash</td>
+					<td>Crunchbutton Price Markups Already Collected in Cash</td>
 					<td ng-if="pay_type_reimbursement">Reimburse</td>
 					<td>
 						<span ng-if="pay_type_payment && !result.hourly">Money Made</span>
