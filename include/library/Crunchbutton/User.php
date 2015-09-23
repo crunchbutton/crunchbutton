@@ -200,7 +200,7 @@ class Crunchbutton_User extends Cana_Table {
 		return $this->_phone;
 	}
 
-	public function exports() {
+	public function exports($params = []) {
 		$out = $this->properties();
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
 		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' )
@@ -267,6 +267,11 @@ class Crunchbutton_User extends Cana_Table {
 		// blocked
 		$out['blocked'] = Crunchbutton_Blocked::isUserBlocked( $this->id_user );
 		$out['phone_blocked'] = Crunchbutton_Blocked::isPhoneBlocked( $this->id_phone );
+		
+		// return the auth token
+		if ($params['auth']) {
+			$out['token'] = c::auth()->session()->token;
+		}
 
 		return $out;
 	}

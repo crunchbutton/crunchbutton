@@ -20,8 +20,6 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		$headers = apache_request_headers();
 		if ($headers['App-Token']) {
 			$_COOKIE['token'] = $headers['App-Token'];
-		} elseif($_REQUEST['_app-token']) {
-			$_COOKIE['token'] = $_REQUEST['_app-token'];
 		}
 
 		if (!$this->user()->id && $_COOKIE['token'] && !$this->session()->id) {
@@ -49,6 +47,11 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				// if no id_user in session, delete cookie and session in DB as it's not used, see #624
 				Session::deleteToken($_COOKIE['token']);
 				setcookie('token','',0,'/');
+				// app
+				$headers = apache_request_headers();
+				if ($headers['App-Version'] && $this->session()->token) {
+					header('App-Token: ');
+				}
 			}
 		}
 
@@ -97,6 +100,11 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		$this->session()->date_active = date('Y-m-d H:i:s');
 		$this->session()->generateAndSaveToken();
 		setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
+		// app
+		$headers = apache_request_headers();
+		if ($headers['App-Version'] && $this->session()->token) {
+			header('App-Token: '.$this->session()->token);
+		}
 	}
 
 	public function doAuth($type, $id) {

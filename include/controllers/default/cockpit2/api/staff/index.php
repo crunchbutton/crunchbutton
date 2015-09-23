@@ -75,6 +75,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					$this->_listSupport();
 					break;
 
+				case 'chat':
+					$this->_chat($staff);
+					break;
+
 				default:
 					$this->_permissionDenied();
 					$this->_view($staff);
@@ -89,6 +93,25 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$this->_list();
 			}
 		}
+	}
+
+	private function _chat( $staff ){
+		$params = [];
+		$params[ 'Action' ] = 'FakeSMS';
+		$params[ 'Name' ] = $staff->name;
+		$params[ 'Created_By' ] = c::admin()->firstName();
+		$params[ 'Body' ] = null;
+		$params[ 'ignoreFistMessage' ] = true;
+		$params[ 'ignoreReply' ] = true;
+		$params[ 'chatMessage' ] = '(new chat)';
+		$params[ 'From' ] = $staff->phone;
+		$support = Crunchbutton_Support::createNewChat( $params );
+		if( $support->id_support ){
+				echo json_encode( [ 'id_support' => $support->id_support ] );
+		} else {
+			echo json_encode( [ 'error' => 'Error creating new chat' ] );
+		}
+
 	}
 
 	private function _listSupport(){
