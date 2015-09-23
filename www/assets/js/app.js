@@ -791,9 +791,16 @@ App.track = function() {
 	}
 
 	if (arguments[0] == 'Ordered') {
+		/*
 		if (window._fbq) {
 			window._fbq.push(['track', '6025866422535', {'value':arguments[1].total,'currency':'USD'}]);
 		}
+		*/
+		// Testing #6542
+		if( fbq ){
+			fbq( 'track', 'Purchase', { value: arguments[1].total, currency: 'USD' } );
+		}
+
 
 		if (typeof( ga ) == 'function') {
 			var trans = {
@@ -1180,7 +1187,7 @@ App.handleOpenURL = function(url) {
 	url = '/' + url;
 	url = url.split('?');
 	url = url[0];
-	
+
 	App._handOpenUrlNav = url;
 
 	if (App._init) {
