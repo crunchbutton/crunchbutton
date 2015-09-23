@@ -6,7 +6,7 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 	service.check = function(){
 		var param = $location.search();
 		if( param.invite ){
-			$.cookie( 'referral', param.invite );
+			$.totalStorage( 'referral', param.invite );
 			// Remove the invite from url
 			$location.url( $location.path() );
 		}
