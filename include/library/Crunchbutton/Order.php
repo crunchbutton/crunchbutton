@@ -1182,7 +1182,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'(op.id_order is null and ((c.delivery_logistics is null) or (o.date < ? and ' .
 				'c.delivery_logistics is not null)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.
-				'and op.priority_given != ?)) and o.delivery_service=true and o.date > ? '.
+				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and o.date > ? '.
 				'and ' . $where . ' ORDER BY o.id_order';
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
