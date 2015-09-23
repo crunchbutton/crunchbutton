@@ -244,6 +244,8 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			$restaurant[ 'name' ] = $_restaurant->name;
 			$restaurant[ 'permalink' ] = $_restaurant->permalink;
 			$restaurant[ 'has_payment_type' ] = $_restaurant->hasPaymentType();
+			$restaurant[ 'delivery_service' ] = $_restaurant->delivery_service;
+			$restaurant[ 'formal_relationship' ] = intval( $_restaurant->formal_relationship > 0 ) ? true : false;
 
 			$payment_type = $_restaurant->paymentType();
 
