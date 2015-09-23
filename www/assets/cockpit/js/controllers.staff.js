@@ -161,7 +161,6 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 	$scope.chat = function(){
 		StaffService.chat( $routeParams.id, function( json ){
 			if( json.id_support ){
-				/ticket/
 				$scope.navigation.link( '/ticket/' + json.id_support );
 			} else {
 				App.alert( 'Ops, an error has occurred!' );
