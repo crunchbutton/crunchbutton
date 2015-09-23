@@ -158,6 +158,16 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		//update();
 	});
 
+	$scope.chat = function(){
+		StaffService.chat( $routeParams.id, function( json ){
+			if( json.id_support ){
+				$scope.navigation.link( '/ticket/' + json.id_support );
+			} else {
+				App.alert( 'Ops, an error has occurred!' );
+			}
+		} )
+	}
+
 	var update = function() {
 		if (!$scope.map || !$scope.staff || !$scope.locations) {
 			return;
