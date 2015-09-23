@@ -417,6 +417,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $id_driver ][ 'total_payment_by_order' ] = $pay[ $id_driver ][ 'total_payment' ];
 					$pay[ $id_driver ][ 'total_payment_by_hour' ] = max( $payment_by_shift, 0 );
 					$pay[ $id_driver ][ 'total_payment' ] = max( $pay[ $id_driver ][ 'total_payment_by_order' ], $pay[ $id_driver ][ 'total_payment_by_hour' ] );
+					// pay tips for the driver
+					if( floatval( $pay[ $id_driver ][ 'total_payment_by_order' ] ) < floatval( $pay[ $id_driver ][ 'total_payment_by_hour' ] ) ){
+						$pay[ $id_driver ][ 'total_payment' ] += $pay[ $id_driver ][ 'tip' ];
+					}
 				} else {
 					$pay[ $id_driver ][ 'total_payment' ] = ( $payment_by_shift + $tip );
 				}
@@ -952,7 +956,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 			} else {
 				$amount = $_driver[ 'total_payment' ] + $adjustment;
 				$pay_type = Admin::o( $id_driver )->payment_type();
-				if( $pay_type->id_admin_payment_type && $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+				if( $pay_type->id_admin_payment_type && (
+					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ||
+					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ||
+					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ) ){
 					$schedule->driver_payment_hours = 1;
 				} else {
 					$schedule->driver_payment_hours = 0;

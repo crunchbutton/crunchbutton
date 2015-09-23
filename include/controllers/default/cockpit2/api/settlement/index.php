@@ -31,6 +31,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'range':
 								$this->_range();
 								break;
+							case 'view-summary':
+								$this->_driverViewSummary();
+								break;
 							default:
 								$this->_error();
 								break;
@@ -681,6 +684,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$out[ 'drivers' ][] = $driver;
+
 		}
 		echo json_encode( $out );
 	}
@@ -943,8 +947,12 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	public function _driverViewSummary(){
 		$id_payment =  c::getPagePiece( 4 );
 		$settlement = new Crunchbutton_Settlement;
-		$summary = $settlement->driverSummaryByIdPayment( $id_payment );
+		$summary = $settlement->driverSummary( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		header( 'Content-Type: text/html' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
 		echo $mail->message();
 	}
 
