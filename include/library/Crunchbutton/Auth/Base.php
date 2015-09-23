@@ -8,7 +8,6 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 
 		$this->_session = new Crunchbutton_Session;
 		session_set_save_handler($this->_session, true);
-		session_start();
 
 		$this->init();
 
@@ -27,6 +26,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 			$id = $sess->id_user ? $sess->id_user : $sess->id_admin;
 
 			if ($sess->id_user || $sess->id_admin) {
+				session_id($sess->id_session);
 				$token = $_COOKIE['token'];
 				$data = $sess->data;
 				$id_user = $sess->id_user;
@@ -34,6 +34,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 
 				// Issue #973 - if the new id_session is different of the new one it means it is another session
 				// the old session must to be deleted
+				/*
 				$id_session = $sess->id_session;
 				if ($this->session()->id_session != $sess->id_session) {
 					$this->session()->data = $data;
@@ -44,6 +45,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				$this->session()->id_admin = $id_admin;
 				$this->session()->token   = $token;
 				$this->session()->save();
+				*/
 			} else {
 				// if no id_user in session, delete cookie and session in DB as it's not used, see #624
 				//Session::deleteToken($_COOKIE['token']);
@@ -55,6 +57,8 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				}
 			}
 		}
+		
+		session_start();
 
 		// we have a successful user
 		if ($this->session()->id_user || $this->session()->id_admin) {
