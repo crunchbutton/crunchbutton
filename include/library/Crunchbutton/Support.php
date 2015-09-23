@@ -201,17 +201,28 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		if( $createNewTicket ) {
 			// Create a new sms ticket
+			$message = ( $params[ 'chatMessage' ] ? $params[ 'chatMessage' ] : Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY );
 			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone,
 																															'name' => $params[ 'Name' ],
-																															'body' => Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY,
+																															'body' => $message,
 																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
 		} else {
 			if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
 				$support->status = Crunchbutton_Support::STATUS_OPEN;
-				$support->addSystemMessage( 'Ticket reopened at cockpit' );
+				if( !$params[ 'ignoreFistMessage' ] ){
+					$support->addSystemMessage( 'Ticket reopened at cockpit' );
+				}
 			} else {
-				$support->addSystemMessage( 'Chat started by fake sms' );
+				if( !$params[ 'ignoreFistMessage' ] ){
+					$support->addSystemMessage( 'Chat started by fake sms' );
+				}
 			}
+		}
+		if( $params[ 'ignoreReply' ] ){
+			// to prevent the support ticket to open
+			$support->status = self::STATUS_CLOSED;
+			$support->save();
+			return $support;
 		}
 		$support->addAdminReply( $params[ 'Body' ] );
 		return $support;
