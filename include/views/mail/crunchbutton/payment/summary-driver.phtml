@@ -162,8 +162,8 @@
 				<?php if( $summary[ 'show_delivery_fees' ] ) { ?>
 					<td style="width:155px;" class="topitem">Delivery Fee</td>
 				<?php } ?>
-				<td style="width:155px;" class="topitem">Delivery Fee Already Collected in Cash</td>
-				<td style="width:155px;" class="topitem">Markup Already Collected in Cash</td>
+				<td style="width:155px;" class="topitem">Earnings Already Collected in Cash</td>
+				<td style="width:155px;" class="topitem">Crunchbutton Price Markups Already Collected in Cash</td>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td style="width:155px;" class="topitem">Money Made</td>
 				<?php } ?>
@@ -230,11 +230,11 @@
 			</tr>
 		<?php } ?>
 			<tr class="class">
-				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Delivery Fee Already Collected in Cash</td>
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Earnings Already Collected in Cash</td>
 				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee_collected' ], 2 ); ?></td>
 			</tr>
 			<tr class="class">
-				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Crunchbutton’s Markup Already Collected In Cash</td>
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Crunchbutton Price Markups Already Collected in Cash</td>
 				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'markup' ], 2 ); ?></td>
 			</tr>
 		<?php if( floatval( $summary[ 'invites_amount' ] ) > 0 ) { ?>
