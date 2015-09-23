@@ -100,11 +100,16 @@ NGApp.config(function($compileProvider){
 
 NGApp.factory('errorInterceptor', function($q) {
 	var errorFromResponse = function(response) {
-		var headers = response.headers();
+		var headers;
+		if (response.headers) {
+			headers = response.headers();
+		}
 		if (headers && headers['php-fatal-error']) {
 			console.error(headers['php-fatal-error']);
 			App.alert('There was an error connecting to the server. Please try again, or contact support if it continues to be a problem.');
 			return false;
+		} else {
+			console.debug('No headers');
 		}
 		return true;
 	};
@@ -117,11 +122,15 @@ NGApp.factory('errorInterceptor', function($q) {
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
 			} else {
-				var headers = response.headers();
-				if (headers && headers['App-Token']) {
-					$.totalStorage('token', headers['App-Token']);
+				if (response.headers) {
+					var headers = response.headers();
+					if (headers && headers['App-Token']) {
+						$.totalStorage('token', headers['App-Token']);
+					}
+					console.debug('RESPONSE',headers);
+				} else {
+					console.debug('No headers');
 				}
-				console.debug('RESPONSE',headers);
 				return response;
 			}
 		},
@@ -130,20 +139,18 @@ NGApp.factory('errorInterceptor', function($q) {
 
 			config.params = config.params || {};
 			if (App.version != 'web' && $.totalStorage('token')) {
-				//config.headers['App-Token'] = $.totalStorage('token');
+				config.headers['App-Token'] = $.totalStorage('token');
+				config.headers['App-Version'] = App.version;
 			}
-			console.debug('REQUEST',config.headers);
+			console.debug('REQUEST',config.headers, config.headers['App-Token'], config.headers['App-Version']);
 			return config || $q.when(config);
 		}
 	};
 	return errorInterceptor;
 });
 NGApp.config(['$httpProvider', function($httpProvider) {
-	//$httpProvider.defaults.headers.common['Http-Error'] = 1;
-	//$httpProvider.defaults.headers.common['App-Version'] = App.version;
+	$httpProvider.defaults.headers.common['Http-Error'] = 1;
 	$httpProvider.interceptors.push('errorInterceptor');
-	$httpProvider.defaults.useXDomain = true;
-	//$httpProvider.defaults.withCredentials = true;
 }]);
 
 NGApp.run(function() {
@@ -475,19 +482,18 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			// @todo: remove double data
 			if (data) {
 				$rootScope.account.user = data;
+				if (App.isPhoneGap) {
+					$.totalStorage('token', data.token);
+				}
 				$rootScope.$broadcast( 'haveUser', $rootScope.account.user );
 				App.config.user = data;
 			}
 			// If the user logged out clean the cart!
 			if( !App.config.user.id_user ){
+				if (App.isPhoneGap) {
+					$.totalStorage('token', null);
+				}
 				CartService.clean();
-				$.totalStorage('token', null);
-			} else if (App.isPhoneGap && App.config.user.token) {
-				$.totalStorage('token', App.config.user.token);
-			}
-			
-			if (App.setupAjax) {
-				App.setupAjax();
 			}
 
 			LocationService.init(true);
