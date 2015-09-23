@@ -1817,13 +1817,13 @@ NGApp.controller( 'DeliverySignUpCtrl', function( $scope, $location, DeliverySig
 
 NGApp.controller( 'InviteCtrl', function ( $scope, $routeParams, $location, ReferralService ) {
 	// Just store the cookie, it will be used later
-	$.cookie( 'referral', $routeParams.id );
+	$.totalStorage( 'referral', $routeParams.id );
 	$location.path( '/' );
 });
 
 NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	// Just store the cookie, it will be used later
-	$.cookie( 'referral', $routeParams.id );
+	$.totalStorage( 'referral', $routeParams.id );
 	$location.path( '/' );
 });
 
