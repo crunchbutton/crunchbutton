@@ -1,0 +1,1 @@
+ALTER TABLE `driver_info` ADD `weekend_driver` INT(1)  NOT NULL  DEFAULT 0;
