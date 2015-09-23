@@ -148,6 +148,13 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 		} else {
 			$out[ 'down_to_help_out' ] = true;
 		}
+
+		if( !$out[ 'weekend_driver' ] ){
+			$out[ 'weekend_driver' ] = false;
+		} else {
+			$out[ 'weekend_driver' ] = true;
+		}
+
 		return $out;
 	}
 
