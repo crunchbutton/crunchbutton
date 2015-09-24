@@ -36,9 +36,6 @@ class Crunchbutton_Reward extends Cana_Table{
 				return false;
 			}
 		}
-		if( !Crunchbutton_Phone::clean( $phone ) ){
-			return false;
-		}
 		return true;
 	}
 

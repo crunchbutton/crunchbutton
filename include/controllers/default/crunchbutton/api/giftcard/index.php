@@ -398,7 +398,6 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					$words = $this->request()['words'];
 					$phone = $this->request()['phone'];
 					$id_restaurant = $this->request()['id_restaurant'];
-
 					$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $words);
 					$words = explode( ' ', $words );
 
@@ -432,6 +431,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 		// At first check if it is an user's invite code - rewards: two way gift cards #2561
 		$reward = new Crunchbutton_Reward;
+
 		$valid = $reward->validateInviteCode( $code );
 		$isInvite = $valid;
 
@@ -439,8 +439,11 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 			$value = $reward->getReferredDiscountAmount();
 			if( $value ){
 				return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'Congrats, your delivery fee is on us! (for first time users only)' ] ] );
-				// return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'You have a $' . $value . '  gift card for a free delivery.' ] ] );
 			}
+		}
+
+		if( !$reward->checkIfItIsEligibleForFirstTimeOrder( $phone ) && $valid ) {
+			echo json_encode( ['error' => 'custom', 'warning' => 'Sorry, that discount is for first time users only' ] );exit;
 		}
 
 		// Get the giftcard (promo) by code
