@@ -37,7 +37,7 @@ class Crunchbutton_Referral extends Cana_Table{
 			$users = Crunchbutton_User::q( $query, [$id_user]);
 			if( $users->count() ){
 				// Update warned = 1
-				c::db()->query( 'UPDATE referral SET warned = false WHERE id_user_inviter = ? AND warned = false', [$id_user]);
+				c::db()->query( 'UPDATE referral SET warned = true WHERE id_user_inviter = ? AND warned = false', [$id_user]);
 				return $users;
 			}
 		}
