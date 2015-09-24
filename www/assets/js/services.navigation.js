@@ -1,5 +1,5 @@
 // MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService, OrderViewService){
+NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService, LocationService, OrderViewService){
 
 	// This variable will store the animation type.
 	$rootScope.animationClass = '';
@@ -47,7 +47,19 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		if( App.isNarrowScreen() || App.transitionForDesktop ){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 		}
-		$location.path( path || '/' );
+
+		if( path ){
+			$location.path( path );
+		} else {
+			// to prevent the page to go to / and after that /food-delivery
+			// it was reloading some stuff - and throwing facebook pixel error
+			if (LocationService.position.pos().valid('restaurants')) {
+				$location.path('/' + RestaurantsService.permalink);
+			} else {
+				$location.path( '/' );
+			}
+		}
+
 		if (clearstack) {
 			service.navStack = [];
 			service.control();
