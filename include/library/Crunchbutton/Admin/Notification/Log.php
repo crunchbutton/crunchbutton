@@ -10,6 +10,23 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table
         return intval($result->_items[0]->Total);
     }
 
+    public function lastAttemptsWithNoAdmin( $id_order ){
+        $query = 'SELECT * FROM `admin_notification_log` a WHERE id_order = ? AND id_admin IS NULL ORDER BY id_admin_notification_log DESC LIMIT 1';
+        $log = Crunchbutton_Admin_Notification_Log::q( $query, [ $id_order ] )->get( 0 );
+        if( $log->id_admin_notification_log ){
+            return $log;
+        }
+        return;
+    }
+
+    public function secondsSinceLastTry( $id_order ){
+        $lastTry = self::lastAttemptsWithNoAdmin( $id_order );
+        if( $lastTry ){
+            $now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+            return Util::intervalToSeconds( $now->diff( $lastTry->date() ) );
+        }
+    }
+
     public static function attemptsWithAdminAndCutoff($id_order, $id_admin)
     {
         $nowDt = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -91,7 +108,7 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table
         return $date;
     }
 
-    public static function register($id_order)
+    public static function register($id_order, $add = '' )
     {
         $attempts = self::attemptsWithNoAdmin($id_order);
         $log = new Crunchbutton_Admin_Notification_Log();
@@ -108,6 +125,8 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table
         } else if ($attempts == 3) {
             $description .= ' Alert to CS';
         }
+
+        $description .= $add;
 
         $log->id_order = $id_order;
         $log->description = $description;
