@@ -383,7 +383,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$admin = Admin::o( $id_driver );
 			$pay_type = $admin->payment_type();
 			$pay[ $id_driver ][ 'salary_type' ] = $pay_type->payment_type;
-			$pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
+			// $pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
 			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ||
 					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ||
 					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
@@ -428,7 +428,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
-				$pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
+				// $pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
 			}
 		}
 
