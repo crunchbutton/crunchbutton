@@ -81,7 +81,11 @@
 						<small ng-show="formBank.routingNumber.$error.required">Required.</small>
 					</div>
 				</li>
-				<li class="li-input" ng-show="!isTokenizing">
+
+				<li class="li-input" ng-show="!basicInfoOk">
+					<div class="label">You must save the "Basic Information" form before save the Bank Account Information.</div>
+				</li>
+				<li class="li-input" ng-show="!isTokenizing && basicInfoOk">
 					<button class="button green" ng-click="createBankAccount();">Save Bank Information</button>
 					<span class="orange link" ng-show="isBeta" ng-click="bankInfoTest()">Test account</span>
 				</li>
