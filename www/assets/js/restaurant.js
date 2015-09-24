@@ -316,8 +316,7 @@ var Restaurant = function(id) {
 			load = true;
 		} else {
 			var age = Math.floor( now - self.cachedAt ); // age in seconds
-			// if the age is more or equals to 23 hours
-			load = ( age >= ( ( 60 * 60 ) * 23 ) );
+			load = ( age >= ( 60 * 30 ) );
 		}
 		if( load ){
 			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
