@@ -1496,7 +1496,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		Crunchbutton_Admin_Notification_Log::register( $this->id_order );
+		Crunchbutton_Admin_Notification_Log::register( $this->id_order, ' Order::notifyDrivers' );
 
 		if( $needDrivers && !$hasDriversWorking ){
 			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
