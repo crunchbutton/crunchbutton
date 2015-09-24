@@ -161,7 +161,11 @@
 					<td></td>
 					<td class="td-medium">Restaurant</td>
 					<td class="td-medium">Total Due</td>
-					<td></td>
+					<td>Payment</td>
+					<td>Summary</td>
+					<td>Formal Relationship</td>
+					<td>3rd Party Delivery</td>
+
 				</tr>
 			</thead>
 			<tbody>
@@ -182,13 +186,17 @@
 								</span>
 
 
-									<span class="tag tag-black" ng-if="!restaurant.summary_method">Missing Summary Method</span>
+
+						</a>
+					</td>
+					<td>
+															<span class="tag tag-black" ng-if="!restaurant.summary_method">Missing Summary Method</span>
 									<span class="tag tag-blue" ng-if="restaurant.summary_method == 'no summary'">No Summary</span>
 									<span class="tag tag-orange" ng-if="restaurant.summary_method == 'fax'">Fax</span>
 									<span class="tag tag-green" ng-if="restaurant.summary_method == 'email'">Email</span>
 
-									<span class="tag tag-red" ng-if="restaurant.formal_relationship">Formal Relationship</span>
-									<span class="tag tag-yellow" ng-if="restaurant.delivery_service">3rd Party Delivery</span>
+
+
 
 
 
@@ -197,8 +205,10 @@
 								<span ng-if="restaurant.summary_error" class="sp-label sp-label-danger">
 									{{restaurant.summary_error}}
 								</span>
-						</a>
+
 					</td>
+					<td><span class="tag tag-red" ng-if="restaurant.formal_relationship">Formal Relationship</span></td>
+					<td><span class="tag tag-yellow" ng-if="restaurant.delivery_service">3rd Party Delivery</span></td>
 				</tr>
 			</tbody>
 		</table>

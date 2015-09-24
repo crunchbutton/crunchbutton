@@ -1070,13 +1070,16 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 
 	$scope.bank = { 'showForm': true };
 	$scope.basicInfo = {};
-
+	$scope.basicInfoOk = false;
 	var load = function(){
 		StaffPayInfoService.loadById( $scope.account.user.id_admin, function( json ){
 			if( json.id_admin ){
 				$scope.basicInfo = json;
 				if(json.stripe_id && json.stripe_account_id ){
 					$scope.bank.showForm = false;
+				}
+				if( json.legal_name_payment && json.social_security_number && json.address && json.dob ){
+					$scope.basicInfoOk = true;
 				}
 				$scope.ready = true;
 				$scope.payment = {};
@@ -1101,6 +1104,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 			} else {
 				$scope.basicInfo = data;
 				$scope.saved = true;
+				$scope.basicInfoOk = true;
 				App.alert( 'Information saved!' );
 				setTimeout( function() { $scope.saved = false; }, 1500 );
 			}

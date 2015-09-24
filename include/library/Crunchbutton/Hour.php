@@ -639,17 +639,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 			$_hours = [];
 
-			$now = clone $sd;
-
-			// less 5 minutes to compensate the javascript at frontend
-			// without this 5 minutes it could export the hours starting at the minute 8 and at javascript it is at the minute 7:40 - it would show the wrongly closed message
-			$now->modify( '-5 minutes' );
-
 			$now_plus_24 = clone $sd;
 			$now_plus_24->modify( '+1 day' );
 			$now_plus_24->modify( '-5 minutes' );
 			$now = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
-			$now->modify( '-5 minutes' );
+			$now->modify( '-10 minutes' );
 
 			if( $_hours_utc ){
 
