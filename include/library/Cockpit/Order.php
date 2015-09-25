@@ -94,10 +94,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out[ '_instructions_food' ] = $this->driverInstructionsFoodStatus();
 		$out[ '_stealth_notification' ] = $this->restaurant()->hasNotification( 'stealth' );
 
-		// tell drivers in cockpit.la app not to give fax to customer #3879
-		if( $out[ '_stealth_notification' ] ){
-			$out[ '_instructions_fax' ] = 'Remember: do NOT give the fax to the customer';
-		}
+		// Add a line to bottom of Driver Order view #6358 - old #3879
+		$out[ '_instructions_fax' ] = 'Remember: do NOT give the receipt to the customer';
 
 		$out[ 'refunded' ] = intval( $out[ 'refunded' ] );
 
