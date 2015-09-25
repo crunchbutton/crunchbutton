@@ -9,6 +9,11 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			method: 'GET',
 			params : {}
 		},
+		'refund_info' : {
+			url: App.service + 'order/:id_order/refund-info',
+			method: 'GET',
+			params : {}
+		},
 		'put' : {
 			url: App.service + 'order/:id_order',
 			method: 'PUT',
@@ -84,6 +89,12 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 
 	service.get = function(id_order, callback) {
 		order.load({id_order: id_order}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.refund_info = function(id_order, callback) {
+		order.refund_info({id_order: id_order}, function(data) {
 			callback(data);
 		});
 	}
