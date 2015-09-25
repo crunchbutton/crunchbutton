@@ -172,7 +172,7 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 
 	var refundMessage = function(){
 		App.dialog.show('.refund-order-container');
-		OrderService.get( id_order, function(d) {
+		OrderService.refund_info( id_order, function(d) {
 			$scope.order = d;
 			$scope.refund = {};
 			$scope.refund.id_order = d.id_order;

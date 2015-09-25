@@ -96,6 +96,20 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 		switch (c::getPagePiece(3)) {
 
+			case 'refund-info':
+				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+					$this->error(401);
+				}
+
+				$out[ 'id_order' ] = $order->id_order;
+				$out[ 'charged' ] = $order->charged();
+				$out[ 'credit' ] = $order->chargedByCredit();
+				$out[ 'status' ] = $order->status()->last();
+
+				echo json_encode($out);
+
+				break;
+
 			case 'refund':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 					$this->error(401);
@@ -103,6 +117,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 				$reason = $this->request()[ 'reason' ];
 				$tell_driver = $this->request()[ 'tell_driver' ];
+				$cancel_order = $this->request()[ 'cancel_order' ];
 
 				if( $this->request()[ 'reason_other' ] && $reason == 'Other' ){
 					$reason = $this->request()[ 'reason_other' ];
@@ -111,6 +126,11 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$status = $order->refund( null, $reason, $tell_driver );
 
 				if( $status ){
+
+					if( $cancel_order ){
+						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, false );
+					}
+
 					echo json_encode( [ 'success' => true ] );
 				} else {
 					echo json_encode( [ 'error' => true ] );
@@ -214,7 +234,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					if( $status[ 'driver' ][ 'id_admin' ] != $admin->id_admin ){
 						// Set order as rejected
 						$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
-						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, false, $driver, $note );
+						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, false, $driver, $note, false, false );
 						$order->clearStatus();
 						$change = true;
 					}
