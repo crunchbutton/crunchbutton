@@ -1988,7 +1988,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function next_open_time_message( $utc = false ){
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
-			if ( $this->closed() ) {
+			if ( $this->closed() || ( !$this->closed() && $this->closesIn() <= 60 ) ) {
 				return Hour::restaurantNextOpenTimeMessage( $this, $utc );
 			}
 		}
@@ -1999,7 +1999,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function next_open_time( $utc = false ){
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
-			if ( $this->closed() ) {
+			if ( $this->closed() || ( !$this->closed() && $this->closesIn() <= 60 ) ) {
 				return Hour::restaurantNextOpenTime( $this, $utc );
 			}
 		}
