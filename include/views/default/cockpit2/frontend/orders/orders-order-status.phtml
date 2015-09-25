@@ -14,4 +14,4 @@
 </span>
 <br>
 <span ng-if="order.status && !order.minutes_to_delivery" class="listview-smallest"><span am-time-ago="order.status.date_timestamp | timestamp"></span></span>
-<span ng-if="order.status && order.minutes_to_delivery" class="listview-smallest">Delivered in {{order.minutes_to_delivery}} minutes</span>
+<span ng-if="order.status && order.minutes_to_delivery" class="listview-smallest">in {{order.minutes_to_delivery}} minutes</span>
