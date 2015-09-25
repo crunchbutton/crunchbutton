@@ -2752,7 +2752,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 
-	public function setStatus($status, $notify = false, $admin = null, $note = null, $force = false) {
+	public function setStatus($status, $notify = false, $admin = null, $note = null, $force = false, $rejectedTicket = true) {
 		if (!$status) {
 			return false;
 		}
@@ -2791,7 +2791,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'seconds' => 0
 		]);
 
-		if( $status == Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+		if( $status == Crunchbutton_Order_Action::DELIVERY_REJECTED && $rejectedTicket ){
 			Order_Action::ticketForRejectedOrder( $this->id_order );
 		}
 
