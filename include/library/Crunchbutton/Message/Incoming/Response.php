@@ -1,5 +1,5 @@
 <?php
-	
+
 class Crunchbutton_Message_Incoming_Response extends Cana_Model {
 	public static function twilioSms($response, $from) {
 		header('Content-type: text/xml');
@@ -11,7 +11,8 @@ class Crunchbutton_Message_Incoming_Response extends Cana_Model {
 				}
 			}
 		}
-
-		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n" .'<Response>' . $sms . '</Response>';
-	}	
+		if( $sms ){
+			echo '<?xml version="1.0" encoding="UTF-8"?>'."\n" .'<Response>' . $sms . '</Response>';
+		}
+	}
 }

@@ -445,8 +445,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 
 	service.scrollToForm = function() {
-		var walkTo = $('.snap-content-inner').scrollTop() + $('.payment-form').offset().top - 60;
-		$('html, body, .snap-content-inner').animate({scrollTop: walkTo }, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		if( $('.payment-form') && $('.payment-form').offset() ){
+			var walkTo = $('.snap-content-inner').scrollTop() + $('.payment-form').offset().top - 60;
+			$('html, body, .snap-content-inner').animate({scrollTop: walkTo }, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		}
 	}
 
 	service.errors = function(errors) {
@@ -535,6 +537,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 		if ( order.email && !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( order.email ) ){
 			errors['email'] = 'Please enter a valid email.';
+		}
+		if (order.delivery_type != 'delivery' && order.delivery_type != 'takeout') {
+			errors['delivery'] = 'Please select the delivery method.';
 		}
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors['address'] = 'Please enter an address.';
@@ -841,7 +846,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 											App.push.register();
 										}, 2000);
 									}
-									
+
 								} );
 
 							} );

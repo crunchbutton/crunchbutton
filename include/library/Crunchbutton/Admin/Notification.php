@@ -234,9 +234,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					$hasDriversWorking = false;
 
 					$order_priorities = Crunchbutton_Order_Priority::getOrderedOrderPriorities($order->id_order);
-                    $order_priorities_count = $order_priorities->count();
-//                    Log::debug(['order' => $order->id_order, 'action' => "Number of order priorities", 'type' => 'delivery-driver',
-//                        'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'numOP' =>$order_priorities_count]);
+          $order_priorities_count = $order_priorities->count();
 					if ($order_priorities->count() == 0) {
 
 						$attempts = intval(Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order));
@@ -254,7 +252,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						} else if ($attempts == 3) {
 							// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 							$this->alertDispatch($order);
-							Crunchbutton_Admin_Notification_Log::register($order->id_order);
+							Crunchbutton_Admin_Notification_Log::register($order->id_order, ' Notification::resendNotification');
 							continue;
 						} else {
 
@@ -269,7 +267,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 										echo $message . "\n";
 									}
 								}
-                                Crunchbutton_Admin_Notification_Log::register($order->id_order);
+								Crunchbutton_Admin_Notification_Log::register($order->id_order, ' Notification::resendNotification');
 							}
 
 							if (!$hasDriversWorking) {

@@ -193,8 +193,13 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 				callback();
 			}
 		};
+
 		try {
-			FB.logout(complete);
+			if( FB.getUserID() != '' ){
+				FB.logout(complete);
+			} else {
+				complete();
+			}
 		} catch (e) {
 			complete();
 		}

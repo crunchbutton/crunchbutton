@@ -243,6 +243,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 						service.notes_field.giftcards.success = [];
 						service.notes_field.giftcards.error = [];
 						if( data.error && data.warning ){
+							service.notes_field.ignore_removed = true;
 							service.notes_field.giftcards.error.push( { 'error': 'custom', 'message': data.warning } );
 						}
 					}
@@ -275,6 +276,10 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		if( service.notes_field.restaurant_accepts ){
 			service.notes_field.value = App.ceil( values ).toFixed( 2 );
 			credit.setValue( App.ceil( credit.redeemed + values ).toFixed( 2 ) );
+		}
+		if( service.notes_field.ignore_removed ){
+			service.notes_field.removed = false;
+			service.notes_field.ignore_removed = false;
 		}
 		$rootScope.$broadcast( 'creditChanged',  { value : service.value } );
 	}

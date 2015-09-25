@@ -140,6 +140,12 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 					$json[ 'weekly_hours' ] = intval( $json[ 'weekly_hours' ] );
 				}
 
+				// notes
+				$note = $driver->note();
+				if( $note->id_admin_note ){
+					$json[ 'notes_to_driver' ] = $note->text;
+				}
+
 				echo json_encode( $json );exit();
 				break;
 		}

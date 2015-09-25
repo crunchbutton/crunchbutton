@@ -1988,9 +1988,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function next_open_time_message( $utc = false ){
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
-			if ( $this->closed() ) {
+			// if ( $this->closed() || ( !$this->closed() && $this->closesIn() <= 60 ) ) {
 				return Hour::restaurantNextOpenTimeMessage( $this, $utc );
-			}
+			// }
 		}
 		return false;
 	}
@@ -1999,9 +1999,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function next_open_time( $utc = false ){
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
-			if ( $this->closed() ) {
+			// if ( $this->closed() || ( !$this->closed() && $this->closesIn() <= 60 ) ) {
 				return Hour::restaurantNextOpenTime( $this, $utc );
-			}
+			// }
 		}
 		return false;
 	}
@@ -2031,7 +2031,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if( $this->isDriverRestaurant() ){
 				// #5371
 				$now = new DateTime( 'now', new DateTimeZone( ( $gmt ? 'UTC' : $this->timezone ) ) );
-				$now->modify( '- 5 minutes' );
+				$now->modify( '- 10 hours' );
 				$out = [];
 				$start = $now->format( 'Y-m-d H:i' );
 				$now->modify( '+ 1 day' );

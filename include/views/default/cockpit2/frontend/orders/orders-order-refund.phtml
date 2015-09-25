@@ -5,7 +5,7 @@
 		<form name="formRefund" novalidate>
 			<ul ng-class="{'submitted':formRefundSubmitted}" class="ul-inputs">
 				<li class="li-input" ng-class="{'error':formRefund.amount.$invalid}">
-					<div class="label">Amount:</div>
+					<div class="label">Amount to refund card:</div>
 					<div class="input">
 						<div class="input"><input step="any" type="number" name="amount" ng-model="refund.amount" required readonly="readonly" ignore-mouse-wheel placeholder=""></div>
 					</div>
@@ -31,11 +31,19 @@
 						<small ng-show="formRefund.reasonOther.$error.required">Required.</small>
 					</div>
 				</li>
-				<li ng-if="order.credit">
-					<div class="label">A gift card was used at this order the refund value will be ${{order.charged}} ${{order.credit}} as gift card.</div>
+
+				<li class="li-input divider-line">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="refund.cancel_order"/><div></div>
+					</label>
+					<div class="label">Hide this order from drivers</div>
 				</li>
 
-
+				<li ng-if="order.credit != '0.00'">
+					<div class="label">
+						Because a gift card was used for this order, we will refund the card ${{order.charged}} and refund ${{order.credit}} as a gift card on the account.
+					</div>
+				</li>
 				<li class="li-input divider-line" ng-if="order.status.status == 'accepted' || order.status.status == 'pickedup' || order.status.status == 'transfered'">
 					<label class="switch-wrap">
 						<input type="checkbox" class="switch" ng-model="refund.tell_driver"/><div></div>

@@ -171,11 +171,11 @@
 					<td class="td-medium">Drivers</td>
 					<td>Type</td>
 					<td>Reimbursement</td>
-					<td>Total Delivery Fee <br>Collected In Cash</td>
-					<td>Total Customer Fee <br>Collected In Cash</td>
+					<td>Delivery Fee<br>(Cash)</td>
+					<td>Customer Fee<br>(Cash)</td>
 					<td>Payment</td>
-					<td>Total Spent</td>
-					<td>Standard Reimburse</td>
+					<td>Total<br>Spent</td>
+					<td>Standard<br>Reimburse</td>
 					<td>Per-Order Pay</td>
 					<td></td>
 				</tr>
@@ -187,14 +187,20 @@
 					</td>
 					<td>{{driver.id_admin}}</td>
 					<td>{{driver.name}}</td>
-					<td>{{driver.pay_type.payment_type}}</td>
-					<td>$ {{driver.total_reimburse | formatPrice}}</td>
-					<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
-					<td>$ {{driver.customer_fee_collected | formatPrice}}</td>
-					<td>$ {{driver.total_payment | formatPrice}}</td>
-					<td>$ {{driver.total_spent | formatPrice}}</td>
-					<td>$ {{driver.standard_reimburse | formatPrice}}</td>
-					<td>$ {{driver.total_payment_per_order | formatPrice}}</td>
+					<td>
+						<span class="tag tag-blue" ng-if="driver.pay_type.payment_type == 'orders'">Commission</span>
+						<span class="tag tag-purple" ng-if="driver.pay_type.payment_type == 'hours'">Hourly with tips</span>
+						<span class="tag tag-orange" ng-if="driver.pay_type.payment_type == 'hours_without_tips'">Hourly without tips</span>
+						<span class="tag tag-yellow" ng-if="driver.pay_type.payment_type == 'making_whole'">Making whole</span>
+						<span class="tag tag-grey" ng-if="!driver.pay_type || !driver.pay_type.payment_type || driver.pay_type.payment_type == '-' ">Payment Type Missing</span>
+					</td>
+					<td>${{driver.total_reimburse | formatPrice}}</td>
+					<td>${{driver.delivery_fee_collected | formatPrice}}</td>
+					<td>${{driver.customer_fee_collected | formatPrice}}</td>
+					<td>${{driver.total_payment | formatPrice}}</td>
+					<td>${{driver.total_spent | formatPrice}}</td>
+					<td>${{driver.standard_reimburse | formatPrice}}</td>
+					<td>${{driver.total_payment_per_order | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
