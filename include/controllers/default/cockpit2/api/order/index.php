@@ -96,6 +96,18 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 		switch (c::getPagePiece(3)) {
 
+			case 'refund-info':
+				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+					$this->error(401);
+				}
+
+				$out[ 'id_order' ] = $order->id_order;
+				$out[ 'charged' ] = $order->charged();
+
+				echo json_encode($out);
+
+				break;
+
 			case 'refund':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 					$this->error(401);
