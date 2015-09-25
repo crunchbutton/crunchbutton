@@ -214,7 +214,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					if( $status[ 'driver' ][ 'id_admin' ] != $admin->id_admin ){
 						// Set order as rejected
 						$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
-						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, false, $driver, $note );
+						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, false, $driver, $note, false, false );
 						$order->clearStatus();
 						$change = true;
 					}
