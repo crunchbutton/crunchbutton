@@ -445,8 +445,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 
 	service.scrollToForm = function() {
-		var walkTo = $('.snap-content-inner').scrollTop() + $('.payment-form').offset().top - 60;
-		$('html, body, .snap-content-inner').animate({scrollTop: walkTo }, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		if( $('.payment-form') && $('.payment-form').offset() ){
+			var walkTo = $('.snap-content-inner').scrollTop() + $('.payment-form').offset().top - 60;
+			$('html, body, .snap-content-inner').animate({scrollTop: walkTo }, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		}
 	}
 
 	service.errors = function(errors) {
@@ -841,7 +843,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 											App.push.register();
 										}, 2000);
 									}
-									
+
 								} );
 
 							} );
