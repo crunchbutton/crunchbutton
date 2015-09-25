@@ -95,7 +95,13 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 					$restaurant->_hoursByRestaurant = null;
 					$restaurant->_hours = null;
 					echo "<td>{$restaurant->closed_message()}</td>";
-					echo "<td>{$restaurant->open()}</td>";
+					echo "<td>";
+						if( $restaurant->open() ){
+							echo '<font color="green">open</font>';
+						} else {
+							echo '<font color="red">closed</font>';
+						}
+					echo "</td>";
 				echo "</tr>";
 			}
 			// exit;
