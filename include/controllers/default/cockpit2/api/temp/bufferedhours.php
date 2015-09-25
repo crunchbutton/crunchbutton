@@ -13,7 +13,9 @@ class Controller_api_temp_bufferedhours extends Crunchbutton_Controller_Account 
 		$now->setTimeZone( new DateTimeZone( $community->timezone ) );
 		echo "<h1>{$community->name}</h1>";
 
-		echo "<h2>Now {$now->format( 'Y-m-d H:i:s' )}</h2>";
+		$utc = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
+
+		echo "<h2>Now {$now->format( 'Y-m-d H:i:s' )} ({$utc->format( 'Y-m-d H:i:s' )} utc)</h2>";
 		echo "<h2>Shifts</h2>";
 
 		$community_hrs = $community->shiftsForNextWeek( true );
