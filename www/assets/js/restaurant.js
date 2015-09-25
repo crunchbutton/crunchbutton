@@ -103,6 +103,13 @@ var Restaurant = function(id) {
 	}
 
 	self.tagfy = function( tag, force ){
+
+		// driver's restaurant should be always open
+		if( self.driver_restaurant ){
+			self._tag = '';
+			return;
+		}
+
 		if( tag ){
 			self._tag = tag;
 			if( tag == 'opening' ){
