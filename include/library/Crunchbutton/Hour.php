@@ -259,6 +259,55 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		// Add restaurant buffer time for 3rd party delivery restaurants #6332
 		if( $restaurant->delivery_service && self::minutesBuffer() ){
 
+			// Convert the hours to a simple array
+			$_restaurant_hours = [];
+			foreach ( $restaurant->_hours_ as $hour ) {
+				if( !isset( $_restaurant_hours[ trim( $hour->day ) ] ) ){
+					$_restaurant_hours[ trim( $hour->day ) ] = [];
+				}
+				$_restaurant_hours[ trim( $hour->day ) ][] = [ trim( $hour->time_open ), trim( $hour->time_close ) ];
+			}
+
+			uksort( $_restaurant_hours,
+			function( $a, $b ) {
+				$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+				return( $weekdays[ $a ] > $weekdays[ $b ] );
+			} );
+
+			$w_next = [ 'mon' => 'tue', 'tue' => 'wed', 'wed' => 'thu', 'thu' => 'fri', 'fri' => 'sat', 'sat' => 'sun', 'sun' => 'mon' ];
+			foreach( $_restaurant_hours as $day => $segments ){
+				// echo $day;
+			}
+			// die('hard');
+
+			foreach( $_restaurant_hours as $day => $segments ){
+				foreach( $segments as $k1 => $segment ){
+					if( $segment[ 1 ] == '24:00' ){
+						$next_day = $_restaurant_hours[ $w_next[ $day ] ];
+						foreach( $next_day as $k2 => $next_segment ){
+							if( $next_segment[ 0 ] == '0:00' ){
+								$_day_hour = explode( ':', $segment[ 1 ] );
+								$_next_hour = explode( ':', $next_segment[ 1 ] );
+								$_restaurant_hours[ $day ][ $k1 ][ 1 ] = ( $_day_hour[ 0 ] + $_next_hour[ 0 ] ) . ':' . $_next_hour[ 1 ];;
+								unset( $_restaurant_hours[ $w_next[ $day ] ][ $k2 ] );
+							}
+						}
+					}
+				}
+			}
+
+			$_restaurant_hours_objects = [];
+			foreach( $_restaurant_hours as $day => $segments ){
+				foreach( $segments as $segment ){
+					$_hour = new Crunchbutton_Hour;
+					$_hour->day = $day;
+					$_hour->time_open = $segment[ 0 ];
+					$_hour->time_close = $segment[ 1 ];
+					$_restaurant_hours_objects[] = $_hour;
+				}
+			}
+
+
 			$community = $restaurant->community();
 
 			// if the restaurant doesn't belongs to a community, just ignore it
@@ -315,11 +364,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 				$restaurant___hours_ = [];
 
-				foreach ( $restaurant->_hours_ as $hour ) {
+				foreach ( $_restaurant_hours_objects as $hour ) {
 					$restaurant___hours_[] = clone $hour;
 				}
 
-				foreach ( $restaurant->_hours_ as $hour ) {
+				foreach ( $_restaurant_hours_objects as $hour ) {
 
 					if( $hour->buffered ){
 						continue;
@@ -350,7 +399,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 					// closes
 					if( $community_closes[ $hour->day ] ){
-
 						$substr = ( strlen( $community_closes[ $hour->day ] ) == 4 ) ? 2 : 1;
 						$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
 						$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
@@ -416,7 +464,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				}
 			}
 		}
-		return $restaurant->_hours_;
+		return $_restaurant_hours_objects;
 	}
 
 	public static function getByRestaurantWeek( $restaurant, $utc = true){
