@@ -31,11 +31,17 @@
 						<small ng-show="formRefund.reasonOther.$error.required">Required.</small>
 					</div>
 				</li>
-				<li ng-if="order.credit">
-					<div class="label">A gift card was used at this order the refund value will be ${{order.charged}} ${{order.credit}} as gift card.</div>
+
+				<li class="li-input divider-line">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="refund.cancel_order"/><div></div>
+					</label>
+					<div class="label">Hide this order from drivers</div>
 				</li>
 
-
+				<li ng-if="order.credit != '0.00'">
+					<div class="label">A gift card was used at this order the refund amount will be ${{order.charged}} and ${{order.credit}} as gift card.</div>
+				</li>
 				<li class="li-input divider-line" ng-if="order.status.status == 'accepted' || order.status.status == 'pickedup' || order.status.status == 'transfered'">
 					<label class="switch-wrap">
 						<input type="checkbox" class="switch" ng-model="refund.tell_driver"/><div></div>

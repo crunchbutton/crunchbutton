@@ -103,6 +103,8 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 				$out[ 'id_order' ] = $order->id_order;
 				$out[ 'charged' ] = $order->charged();
+				$out[ 'credit' ] = $order->chargedByCredit();
+				$out[ 'status' ] = $order->status()->last();
 
 				echo json_encode($out);
 
@@ -115,6 +117,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 				$reason = $this->request()[ 'reason' ];
 				$tell_driver = $this->request()[ 'tell_driver' ];
+				$cancel_order = $this->request()[ 'cancel_order' ];
 
 				if( $this->request()[ 'reason_other' ] && $reason == 'Other' ){
 					$reason = $this->request()[ 'reason_other' ];
@@ -123,6 +126,11 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$status = $order->refund( null, $reason, $tell_driver );
 
 				if( $status ){
+
+					if( $cancel_order ){
+						$order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, false );
+					}
+
 					echo json_encode( [ 'success' => true ] );
 				} else {
 					echo json_encode( [ 'error' => true ] );
