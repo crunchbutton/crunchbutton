@@ -463,8 +463,9 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					$hour->buffered = true;
 				}
 			}
+			return $_restaurant_hours_objects;
 		}
-		return $_restaurant_hours_objects;
+		return $restaurant->_hours_;
 	}
 
 	public static function getByRestaurantWeek( $restaurant, $utc = true){
