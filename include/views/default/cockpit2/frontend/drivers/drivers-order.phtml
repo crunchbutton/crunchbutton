@@ -161,9 +161,9 @@
 							<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
 							<td class="fooditem dish-name">
 								<b>{{dish.name}}</b>
-								<div>{{dish.options.select_options}}</div>
-								<div>{{dish.options.with_option}}</div>
-								<div>{{dish.options.without_default_options}}</div>
+								<div ng-if="dish.options.select_options">{{dish.options.select_options}}</div>
+								<div ng-if="dish.options.with_option"><i class="fa fa-plus-circle"></i> {{dish.options.with_option}}</div>
+								<div ng-if="dish.options.without_default_options"><i class="fa fa-minus-circle"></i> {{dish.options.without_default_options}}</div>
 							</td>
 							<td class="fooditem dish-price-unity">
 								<span ng-if="dish.quantity > 1">
