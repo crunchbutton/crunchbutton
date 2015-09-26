@@ -41,7 +41,6 @@ class Crunchbutton_Order_Logistics_DriverLocation {
     public $clusterLat;
     public $clusterLon;
 
-
     public $hasGeo;
 
     public $debug;
@@ -74,10 +73,12 @@ class Crunchbutton_Order_Logistics_DriverLocation {
         } else if ($beginType == self::RESTAURANT_LOC && $endType == self::CUSTOMER_LOC) {
             return self::DEFAULT_TIME;
         } else if ($beginType == self::COMMUNITY_CENTER_LOC && $endType == self::RESTAURANT_LOC) {
+            // This is to force 90% interpolation for community_center to restaurant
             return -100000;
         } else if ($beginType == self::CUSTOMER_LOC && $endType == self::COMMUNITY_CENTER_LOC) {
             return self::DEFAULT_HALF_TIME;
         } else if ($beginType == self::COMMUNITY_CENTER_LOC && $endType == self::RESTAURANT_CLUSTER_LOC) {
+            // This is to force 90% interpolation for community_center to restaurant_cluster
             return -100000;
         } else if ($beginType == self::RESTAURANT_LOC && $endType == self::RESTAURANT_LOC) {
             return self::DEFAULT_HALF_TIME;
@@ -237,10 +238,13 @@ class Crunchbutton_Order_Logistics_DriverLocation {
     }
 
     public function determineDriverGeo($driver, $serverDT) {
+        // Action based algo automatically calculates the location as orders are added,
+        //  but geo overrides it if it is available
         $driverGeo = $this->calcDriverGeoFromLocations($driver, $serverDT);
         if (!is_null($driverGeo)) {
-            $tmpLat = $driverGeo->lat;
-            $tmpLon = $driverGeo->lon;
+//            $tmpLat = $driverGeo->lat;
+//            $tmpLon = $driverGeo->lon;
+//            print "$tmpLat $tmpLon\n";
             $this->lat = $driverGeo->lat;
             $this->lon = $driverGeo->lon;
         }

@@ -38,7 +38,9 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 						'type' => 'complexLogistics']);
 				}
 				$l = new Crunchbutton_Order_Logistics($dl, $this->order(), $drivers);
-                // TODO: Add logic here to check for current minimum ETA
+				$l->process();
+
+				// TODO: Add logic here to check for current minimum ETA
                 // TODO: If ETA is too large, notify customer service
 
 				if ($l->numDriversWithPriority < 0) {
