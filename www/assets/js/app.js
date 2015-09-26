@@ -570,6 +570,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				backwards = '/location';
 				break;
 		}
+
 		if (!backwards && MainNavigationService.navStack.length > 1) {
 			MainNavigationService.navStack.pop();
 			backwards = MainNavigationService.navStack.pop();
@@ -579,8 +580,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			console.log('going to', backwards);
 			$rootScope.navigation.link(backwards, 'pop');
 		} else {
-			console.log('going back');
-			history.back();
+			console.log('going back failed');
+			$rootScope.navigation.link('/location', 'pop');
+			//history.back();
 		}
 	};
 
