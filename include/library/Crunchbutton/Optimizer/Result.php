@@ -33,23 +33,29 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
         $score = null;
         $numBadTimes = null;
         if ($this->relFinishedTimes && $this->resultType == self::RTYPE_OK) {
-            $score = 0;
+            $total = 0;
             $numBadTimes = 0;
+            $counter = 0;
             foreach ($this->relFinishedTimes as $ft){
+
                 if ($ft >= 0) {
-                    if ($ft <= 60) {
-                        $score += 5.5 - ($ft/60.0);
-                    }
-                    else if ($ft <= 120) {
-                        $score += 4.5 - ($ft/60.0);
+//                    $node = $this->nodes[$counter];
+//                    print "$node $ft\n";
+//                    $test = Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD;
+                    if ($ft <= Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD) {
+                        $total += $ft;
                     }
                     else {
-                        $score += 1.0;
+                        $total += $ft + Crunchbutton_Order_Logistics::LC_PENALTY_COEFFICIENT * ($ft  - Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD);
                     }
                     if ($ft >= Crunchbutton_Order_Logistics::LC_CUTOFF_BAD_TIME) {
                         $numBadTimes += 1;
                     }
+                    ++$counter;
                 }
+            }
+            if ($counter > 0) {
+                $score = $total;
             }
         }
         $this->score = $score;

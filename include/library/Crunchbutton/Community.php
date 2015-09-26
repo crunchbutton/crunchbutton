@@ -1048,6 +1048,27 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
+	public function logisticsBundleParams($bundleSize) {
+		$qString = "SELECT * FROM `order_logistics_bundleparam` WHERE id_community= ? and "
+			."bundle_size = ?";
+		$bp = Crunchbutton_Order_Logistics_Bundleparam::q($qString, [$this->id_community, $bundleSize]);
+		if (is_null($bp) || $bp->count()==0){
+			return null;
+		} else{
+			return $bp->get(0);
+		}
+	}
+
+	public function logisticsParams($algoVersion) {
+		$qString = "SELECT * FROM `order_logistics_param` WHERE id_community= ? and algo_version = ?";
+		$p = Crunchbutton_Order_Logistics_Param::q($qString, [$this->id_community, $algoVersion]);
+		if (is_null($p) || $p->count()==0){
+			return null;
+		} else{
+			return $p->get(0);
+		}
+	}
+
 	public function deliveryHours( $currentDay = false ){
 		$hours = [];
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );

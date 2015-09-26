@@ -799,6 +799,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o1->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1);
+        $ol->process();
+
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
             $this->assertEquals($driver->__priority, true);
@@ -859,6 +861,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -936,6 +939,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1013,6 +1017,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1084,6 +1089,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1154,6 +1160,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1225,6 +1232,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1291,6 +1299,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1361,6 +1370,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
+
         foreach ($ops as $op) {
             $op->delete();
         }
@@ -1431,6 +1442,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1506,6 +1518,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1589,6 +1602,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1673,6 +1687,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1751,6 +1766,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1834,6 +1850,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
 
         $pR1D1->delete();
         $pR1D2->delete();
@@ -1969,6 +1986,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o3);
+        $ol->process();
 
         foreach ($ops as $op) {
             $op->delete();
@@ -2062,6 +2080,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2155,6 +2175,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o2->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2280,6 +2302,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o3);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2405,6 +2429,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $o3->save();
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o3);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2501,6 +2527,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o4;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o4);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2612,6 +2640,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o5;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2727,6 +2757,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o5;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -2841,6 +2873,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o5;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3014,6 +3048,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o6;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3187,6 +3223,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o1b;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o1b);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3359,6 +3397,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o2c;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2c);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3531,6 +3571,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o2c;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2c);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3702,6 +3744,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o2c;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2c);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3816,6 +3860,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o5;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -3917,6 +3963,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o5;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o5);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -4105,6 +4153,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o6;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -4279,6 +4329,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o6;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -4508,6 +4560,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o2d;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o2d);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
@@ -4731,6 +4785,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $orders[] = $o6;
 
         $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE, $o6);
+        $ol->process();
+
         foreach ($orders as $order) {
             $order->delete();
         }
