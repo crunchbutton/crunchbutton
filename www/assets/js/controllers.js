@@ -345,7 +345,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, $route, PositionsService, RestaurantsService, LocationService, RestaurantService, CommunityAliasService, AccountService ) {
 
 	var error = function(){
-		App.go( '/location' );
+		$rootScope.navigation.link('/location', 'instant' );
 	}
 
 	$scope.restaurants = false;
@@ -470,14 +470,14 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 		var checkHours = function(){
 			if (restaurant.permalink.match(/^(launching|drive|drivers|driving)-.*/)){
-				App.go('/drivers/apply', 'push' );
+				$rootScope.navigation.link('/drivers/apply', 'push' );
 				return;
 			}
 			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
 				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
-				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
-				//$rootScope.navigation.link( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
+
+				$rootScope.navigation.link( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
 			} else {
 				$scope.loadingRestaurant = false;
 				$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
@@ -672,7 +672,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.locationError = false;
 
 	$scope.openCity = function( city ){
-		App.go( '/' + city, 'push' );
+		$rootScope.navigation.link( '/' + city, 'push');
 	}
 
 	$scope.resetFormLocation = function(){
@@ -709,9 +709,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		// Remove the location from cockie
 		PositionsService.removeNotServedLocation();
 
-		if (App.isUI2()) {
-			App.go( '/location/unavailable');
-		}
+		$rootScope.navigation.link('/location/unavailable', 'instant');
 	});
 
 	$rootScope.$on( 'NewLocationAdded', function(e, data) {
@@ -720,9 +718,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	$scope.$on( 'locationNotServed', function(e, data) {
 
-		if (App.isUI2()) {
-			App.go( '/location/unavailable');
-		}
+		$rootScope.navigation.link('/location/unavailable', 'instant');
 
 		$scope.loadingLocation = true;
 		var pos = PositionsService.pos();
@@ -770,8 +766,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	var proceed = function() {
-		//$rootScope.navigation.link( '/' + restaurants.permalink, 'push' );
-		App.go( '/' + restaurants.permalink, 'push' );
+		$rootScope.navigation.link( '/' + restaurants.permalink, 'push' );
+
 		if( AccountService.account && AccountService.account.user ){
 			AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();
 		}
@@ -1358,7 +1354,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($interval, $scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
+NGApp.controller('OrderCtrl', function ($interval, $rootScope, $scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
 	App.busy.unBusy();
@@ -1371,7 +1367,7 @@ NGApp.controller('OrderCtrl', function ($interval, $scope, $http, $location, $ro
 	$scope.confirm = $routeParams.action == 'confirm' ? true : false;
 
 	$scope.receipt = function () {
-		App.go( '/order/' + $scope.order.uuid, 'push' );
+		$rootScope.navigation.link('/order/' + $scope.order.uuid, 'push');
 	};
 
 	AccountService.updatePoints( function( points ){

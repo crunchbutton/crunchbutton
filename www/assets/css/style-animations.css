@@ -22,11 +22,6 @@
 	}
 }
 
-
-.ng-leave {
-	/* opacity: 0; */
-}
-
 /* animation-blink */
 .animation-blink{
 	-webkit-animation: animation-blink 0.5s linear;

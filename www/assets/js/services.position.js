@@ -263,7 +263,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			if ( parseInt( service.position.locs.length ) > 0 ) {
 				service.restaurantsService.list(
 					// success - has restaurants
-					function () { App.go( '/food-delivery'); },
+					function () { $rootScope.navigation.link('/food-delivery', 'instant'); },
 					// no restaurant
 					function () {}
 				);
