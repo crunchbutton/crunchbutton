@@ -202,7 +202,7 @@ html {
 
 	box-sizing: border-box;
 
-	@include gpu();
+	
 	@include transition(all linear 0.08s);
 }
 /* wierd issue with height only on mobile safari */
