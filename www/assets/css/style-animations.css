@@ -42,23 +42,6 @@
 	100% { opacity: 1; }
 }
 
-/* animation-push stuff */
-/*
-.animation-push.ng-enter {
-	-webkit-animation: 0.31s animation-push-enter cubic-bezier(.28,.01,.61,.98);
-	position: absolute;
-	width: 100%;
-	box-sizing: border-box;
-	@include gpu();
-}
-.animation-push.ng-leave {
-	-webkit-animation: 0.31s animation-push-leave cubic-bezier(.28,.01,.61,.98);
-	position: absolute;
-	width: 100%;
-	box-sizing: border-box;
-}
-*/
-
 
 .animation-push.ng-enter, .animation-push.ng-leave, .animation-pop.ng-enter, .animation-pop.ng-leave {
 	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.3s;
@@ -66,6 +49,13 @@
 	position: absolute;
 	width: 100%;
 	box-sizing: border-box;
+}
+
+.animation-instant.ng-enter, .animation-instant.ng-leave {
+	transition: none;
+}
+.animation-instant.ng-leave {
+	display: none;
 }
 
 .animation-push.ng-enter {
@@ -78,45 +68,6 @@
 	-webkit-transform: translate3d(-100%, 0, 0);
 }
 
-@-webkit-keyframes animation-push-enter {
-	from {
-		-webkit-transform: translateX(300px);
-		opacity:0;
-	}
-	to {
-		-webkit-transform: translateX(0);
-		opacity:1;
-	}
-}
-
-@-webkit-keyframes animation-push-leave {
-	from {
-		-webkit-transform: translateX(0);
-		opacity:1;
-	}
-	to {
-		-webkit-transform: translateX(-300px);
-		opacity:0;
-	}
-}
-
-/* animation-pop stuff */
-/*
-.animation-pop.ng-enter {
-	-webkit-animation: 0.31s animation-pop-enter cubic-bezier(.28,.01,.61,.98);
-	position: absolute;
-	width: 100%;
-	box-sizing: border-box;
-	@include gpu();
-}
-
-.animation-pop.ng-leave {
-	-webkit-animation: 0.31s animation-pop-leave cubic-bezier(.28,.01,.61,.98);
-	position: absolute;
-	width: 100%;
-	box-sizing: border-box;
-}
-*/
 .animation-pop.ng-enter {
 	-webkit-transform: translate3d(-100%, 0, 0);
 }
@@ -126,27 +77,6 @@
 .animation-pop.ng-leave.ng-leave-active {
 	-webkit-transform: translate3d(100%, 0, 0);
 }
-@-webkit-keyframes animation-pop-enter {
-	from {
-		-webkit-transform: translateX(-300px);
-		opacity:0;
-	}
-	to {
-		-webkit-transform: translateX(0);
-		opacity:1;
-	}
-}
-@-webkit-keyframes animation-pop-leave {
-	from {
-		-webkit-transform: translateX(0);
-		opacity:1;
-	}
-	to {
-		-webkit-transform: translateX(300px);
-		opacity:0;
-	}
-}
-
 
 
 /* some custom animated per page stuff */
