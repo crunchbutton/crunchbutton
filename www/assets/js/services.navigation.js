@@ -47,23 +47,33 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		if( App.isNarrowScreen() || App.transitionForDesktop ){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 		}
-
-		if( path ){
-			$location.path( path );
-		} else {
-			// to prevent the page to go to / and after that /food-delivery
-			// it was reloading some stuff - and throwing facebook pixel error
-			if (LocationService.position.pos().valid('restaurants')) {
-				$location.path('/' + RestaurantsService.permalink);
+		App.rootScope.$safeApply();
+		
+		setTimeout( function(){
+			
+			if( path ){
+				$location.path( path );
 			} else {
-				$location.path( '/' );
+				// to prevent the page to go to / and after that /food-delivery
+				// it was reloading some stuff - and throwing facebook pixel error
+				if (LocationService.position.pos().valid('restaurants')) {
+					$location.path('/' + RestaurantsService.permalink);
+				} else {
+					$location.path( '/' );
+				}
 			}
-		}
+			
 
-		if (clearstack) {
-			service.navStack = [];
-			service.control();
-		}
+			
+			if (clearstack) {
+				service.navStack = [];
+				service.control();
+			}
+			App.rootScope.$safeApply();
+
+			
+		}, 1 );
+
 		App.snap.close();
 	}
 

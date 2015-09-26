@@ -477,6 +477,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
 				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
+				//$rootScope.navigation.link( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
 			} else {
 				$scope.loadingRestaurant = false;
 				$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
@@ -769,6 +770,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	var proceed = function() {
+		//$rootScope.navigation.link( '/' + restaurants.permalink, 'push' );
 		App.go( '/' + restaurants.permalink, 'push' );
 		if( AccountService.account && AccountService.account.user ){
 			AccountService.account.user.enteredLocation = $scope.location.position.pos().entered();

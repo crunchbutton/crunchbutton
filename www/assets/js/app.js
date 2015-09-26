@@ -729,6 +729,7 @@ App.connectionError = function() {
 };
 
 App.go = function( url, transition ){
+	console.debug('App.go called for ' + url);
 	// Remove the animation from rootScope #2827 before start the new one
 	App.rootScope.animationClass = '';
 	if( !App.transitionAnimationEnabled ){

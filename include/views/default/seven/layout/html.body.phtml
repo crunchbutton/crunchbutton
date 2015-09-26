@@ -4,7 +4,7 @@
 
 		<div class="pushabutton"></div>
 		<ul>
-			<li ng-click="navigation.link('/splash', null, true)" ng-if="!account.user.id_user" ng-class="{'nav-active': (navigation.page == 'splash')}">
+			<li ng-click="navigation.link('/splash', 'instant', true)" ng-if="!account.user.id_user" ng-class="{'nav-active': (navigation.page == 'splash')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-rocket"></i></td>
@@ -12,7 +12,7 @@
 					</tr>
 				</table>
 			</li>
-			<li ng-click="navigation.link('/food-delivery', null, true)" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
+			<li ng-click="navigation.link('/food-delivery', 'instant', true)" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
@@ -20,7 +20,7 @@
 					</tr>
 				</table>
 			</li>
-			<li ng-if="account.user.id_user && account.user.name" ng-click="navigation.link('/orders', null, true)" ng-class="{'nav-active': (navigation.page == 'orders')}">
+			<li ng-if="account.user.id_user && account.user.name" ng-click="navigation.link('/orders', 'instant', true)" ng-class="{'nav-active': (navigation.page == 'orders')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
@@ -28,7 +28,7 @@
 					</tr>
 				</table>
 			</li>
-			<li ng-click="navigation.link('/location', null, true)" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'location')}">
+			<li ng-click="navigation.link('/location', 'instant', true)" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'location')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
@@ -37,7 +37,7 @@
 				</table>
 			</li>
 
-			<li ng-click="navigation.link('/help', null, true)" ng-class="{'nav-active': (navigation.page == 'help')}">
+			<li ng-click="navigation.link('/help', 'instant', true)" ng-class="{'nav-active': (navigation.page == 'help')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
@@ -45,7 +45,7 @@
 					</tr>
 				</table>
 			</li>
-			<li ng-if="account.user.id_user" ng-click="navigation.link('/free-food', null, true)" ng-class="{'nav-active': (navigation.page == 'free-food')}">
+			<li ng-if="account.user.id_user" ng-click="navigation.link('/free-food', 'instant', true)" ng-class="{'nav-active': (navigation.page == 'free-food')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-star"></i></td>
@@ -53,7 +53,7 @@
 					</tr>
 				</table>
 			</li>
-			<li ng-click="navigation.link('/work', null, true)" ng-class="{'nav-active': (navigation.page == 'work')}">
+			<li ng-click="navigation.link('/work', 'instant', true)" ng-class="{'nav-active': (navigation.page == 'work')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
 						<td class="side-menu-icon"><i class="fa fa-briefcase"></i></td>
