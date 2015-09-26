@@ -3917,6 +3917,7 @@ i {
 	height: 100%;
 	width: 100%;
 	background-size: 100%;
+	@include gpu();
 	@include animation(spin 4s linear infinite);
 	background: url(../images/micro/stamp-loader-words.svg);
 }

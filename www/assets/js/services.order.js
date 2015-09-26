@@ -839,7 +839,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 								$rootScope.$safeApply( function(){
 									$rootScope.$broadcast( 'newOrder' );
 									OrderViewService.newOrder = true;
-									App.go( '/order/' + uuid + '/confirm', 'push' );
+
+									$rootScope.navigation.link('/order/' + uuid + '/confirm', 'push');
 
 									if( App.push && App.push.register ){
 										setTimeout(function() {
@@ -1193,11 +1194,11 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 	}
 
 	service.restaurant = function (permalink) {
-		App.go( '/' + restaurants.permalink + '/' + permalink, 'push' );
+		$rootScope.navigation.link('/' + restaurants.permalink + '/' + permalink, 'push');
 	};
 
 	service.receipt = function (id_order) {
-		App.go( '/order/' + id_order, 'push' );
+		$rootScope.navigation.link('/order/' + id_order, 'push');
 	};
 
 	// Reload the orders list

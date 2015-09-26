@@ -42,17 +42,20 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		return service.link( RestaurantsService.permalink );
 	}
 
-	/* the transitions type could be push, fade, pop or none */
+	/* the transitions type could be push, fade, pop or instant */
 	service.link = function( path, transition , clearstack){
-		if( App.isNarrowScreen() || App.transitionForDesktop ){
-			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
-		}
-		App.rootScope.$safeApply();
 		
+		// apply the css attribute first
+		if (App.transitionAnimationEnabled && (App.isNarrowScreen() || App.transitionForDesktop)){
+			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
+			App.rootScope.$safeApply();
+		}
+		
+		// wait for the digest cycle to be complete and transtion the page outside the normal digest
 		setTimeout( function(){
 			
-			if( path ){
-				$location.path( path );
+			if (path) {
+				$location.path(path);
 			} else {
 				// to prevent the page to go to / and after that /food-delivery
 				// it was reloading some stuff - and throwing facebook pixel error
@@ -62,18 +65,17 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 					$location.path( '/' );
 				}
 			}
-			
 
-			
+			// manage back button stack
 			if (clearstack) {
 				service.navStack = [];
 				service.control();
 			}
 			App.rootScope.$safeApply();
-
 			
-		}, 1 );
+		}, 1);
 
+		// close the side bar no matter what
 		App.snap.close();
 	}
 

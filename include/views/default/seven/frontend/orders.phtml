@@ -98,7 +98,7 @@
 	<div ng-show="orders.list && orders.list.length > 0">
 
 		<ul class="orders-list col-box">
-			<li ng-repeat="order in orders.list" class="order-item-wrap" ng-click="orders.receipt(order.id)">
+			<li ng-repeat="order in orders.list" class="order-item-wrap" ng-click="navigation.link('/order/' + order.id, 'push')">
 				<div class="order-item">
 					<div class="order-date">
 						<div class="order-month">{{order._date.getMonthNameShort()}}</div>

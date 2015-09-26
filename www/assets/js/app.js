@@ -108,8 +108,6 @@ NGApp.factory('errorInterceptor', function($q) {
 			console.error(headers['php-fatal-error']);
 			App.alert('There was an error connecting to the server. Please try again, or contact support if it continues to be a problem.');
 			return false;
-		} else {
-			console.debug('No headers');
 		}
 		return true;
 	};
@@ -463,7 +461,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		};
 		if ($rootScope.navigation.page != 'restaurant') {
 			$rootScope.scrollTop = top;
-			App.go('/food-delivery/' + permalink);
+			$rootScope.navigation.link('/food-delivery/' + permalink, 'instant');
 		} else {
 			scroll();
 		}
@@ -477,7 +475,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.cancelDownload = function() {
 		$.totalStorage('_viewmobile2', true, { expires: 1 });
-		App.go('/location');
+		$rootScope.navigation.link('/location', 'instant');
 	};
 
 	$rootScope.$on('userAuth', function(e, data) {
@@ -558,7 +556,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 
 	$rootScope.link = function(link) {
-		App.go.apply(arguments);
+		$rootScope.navigation.link.apply(arguments);
 	};
 
 	$rootScope.back = function() {
@@ -579,7 +577,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 		if (backwards) {
 			console.log('going to', backwards);
-			App.go(backwards, 'pop');
+			$rootScope.navigation.link(backwards, 'pop');
 		} else {
 			console.log('going back');
 			history.back();
@@ -650,8 +648,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 		App.parallax.bg = null;
 
-		App.scrollTop($rootScope.scrollTop);
 		$rootScope.scrollTop = 0;
+		App.scrollTop($rootScope.scrollTop);
+		
 
 	});
 
@@ -729,34 +728,7 @@ App.connectionError = function() {
 };
 
 App.go = function( url, transition ){
-	console.debug('App.go called for ' + url);
-	// Remove the animation from rootScope #2827 before start the new one
-	App.rootScope.animationClass = '';
-	if( !App.transitionAnimationEnabled ){
-			if (url !== false) {
-			App.location.path( url || '/' );
-		}
-		App.rootScope.$safeApply();
-		return;
-	}
-
-	if( App.isNarrowScreen() || App.transitionForDesktop ){
-		setTimeout( function(){
-			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
-			App.rootScope.$safeApply();
-			// @todo: do some tests to figure out if we need this or not
-			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-			if (url !== false) {
-				App.location.path( url || '/' );
-			}
-			App.rootScope.$safeApply();
-		}, 1 );
-	} else {
-		if (url !== false) {
-			App.location.path( url || '/' );
-		}
-		App.rootScope.$safeApply();
-	}
+	App.rootScope.navigation.link(url, transition, false);
 };
 
 App.toggleMenu = function() {
@@ -794,10 +766,10 @@ App.scrollTop = function(top) {
 		if (!top) {
 			setTimeout(function() {
 				$('html, body, .snap-content-inner').scrollTop(0);
-			},10);
+			},0);
 		}
 		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
-	},3);
+	},1);
 };
 
 
@@ -1146,7 +1118,7 @@ App.init = function(config) {
 	// show download page only if its ui2 in an ios browser
 	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile2') && $('.is-ui2').get(0)) {
 		setTimeout(function(){
-			App.go('/download');
+			$rootScope.navigation.link('/download', 'instant');
 		},10);
 	}
 
