@@ -42,7 +42,7 @@ var App = {
 		bg: null,
 		x: 0,
 		y: 0,
-		enabled: true
+		enabled: false
 	},
 	restaurantsPaging: {
 		enabled: true,
