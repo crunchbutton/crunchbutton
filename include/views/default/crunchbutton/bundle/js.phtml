@@ -10,7 +10,9 @@
 <script src="/assets/js/jquery.scrollspy.js"></script>
 <script src="/assets/js/fastclick.js"></script>
 <script src="/assets/js/jquery.autosize-min.js"></script>
-<script src="/assets/js/howler-min.js"></script>
+<? if (!$this->export) : ?>
+	<script src="/assets/js/howler-min.js"></script>
+<? endif; ?>
 <? /* @sky-loader <script src="/assets/js/sky-loader_edgePreload.js"></script> */ ?>
 
 <?

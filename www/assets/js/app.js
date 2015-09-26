@@ -1280,10 +1280,15 @@ App.dialog = {
  * play crunch audio sound
  */
 App.playAudio = function(audio) {
-	var path = (App.isPhoneGap ? '' : '/') + 'assets/audio/';
-	var sound = new Howl({
-		urls: [path + audio + '.mp3', path + audio + '.ogg']
-	}).play();
+	var path = 'assets/audio/';
+	if (App.isPhoneGap) {
+		window.plugins.NativeAudio.play(audio);
+	} else {
+		var sound = new Howl({
+			urls: ['/' + path + audio + '.mp3', path + audio + '.ogg']
+		}).play();
+	}
+
 }
 
 App.vibrate = function() {
