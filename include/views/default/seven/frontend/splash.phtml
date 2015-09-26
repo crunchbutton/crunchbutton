@@ -57,8 +57,8 @@
 			<div class="button-pushable">
 				<button class="button facebook" ng-click="facebook.auth()">
 					<i class="fa fa-facebook-square"></i>&nbsp;
-					<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
-					<span ng-show="facebook.facebook.wait">Just a sec
+					<span ng-if="!facebook.facebook.wait">Log in with Facebook</span>
+					<span ng-if="facebook.facebook.wait">Just a sec
 						<div id="circleG">
 							<div id="circleG_1" class="circleG"></div>
 							<div id="circleG_2" class="circleG"></div>
