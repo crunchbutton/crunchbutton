@@ -22,10 +22,6 @@ App.AB = {
 		],
 		nothingInTheCartMobile: [
 			{
-				name: 'empty-cart-mobile-begin',
-				line: 'Begin by tapping on anything from our curated menu below!'
-			},
-			{
 				name: 'empty-cart-mobile-food',
 				line: 'Choose food below!',
 				disabled: true
