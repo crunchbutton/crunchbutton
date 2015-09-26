@@ -99,7 +99,7 @@
 
 				<div class="restaurants-open" ng-if="!showSmallClosures || (showSmallClosures && restaurant._tag != 'closed' && restaurant._tag != 'force_close')">
 
-					<div ng-spinner="loadingRestaurant[restaurant.id_restaurant]" class="restaurants-item-content" data-spinner-color="#333333" data-spinner-scale=".5">
+					<div class="restaurants-item-content">
 						<div class="ladda-label">
 							<div class="restaurants-pic" style="background-image: url({{restaurant.images.normal || restaurant.img}});"></div>
 							<h2 class="restaurants-name">{{restaurant.name}}</h2>

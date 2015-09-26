@@ -50,7 +50,7 @@
 	transition: none;
 }
 .animation-instant.ng-leave {
-	display: none;
+	visibility: none;
 }
 
 .animation-push.ng-enter {
