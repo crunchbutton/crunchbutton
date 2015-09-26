@@ -1070,14 +1070,6 @@ App.init = function(config) {
 			disable: 'right'
 		});
 
-		App.snap.on( 'end', function(){
-			App.applyIOSPositionFix();
-		});
-
-		App.snap.on( 'start', function(){
-			App.applyIOSPositionFix();
-		});
-
 		var snapperCheck = function() {
 			if ($(window).width() <= 768) {
 				App.snap.enable();
@@ -1297,7 +1289,6 @@ App.dialog = {
 				},
 				close: function() {
 					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');
-					App.applyIOSPositionFix();
 					App.rootScope.$broadcast( 'modalClosed' );
 				}
 			}
@@ -1323,29 +1314,8 @@ App.playAudio = function(audio) {
 App.vibrate = function() {
 	if (App.isPhoneGap) {
 		try {
-			navigator.notification.vibrate(100);
+			navigator.vibrate(100);
 		} catch (e) {}
-	}
-}
-
-// Hack to fix iOS the problem with body position when the keyboard is shown #1774
-App.applyIOSPositionFix = function(){
-	// this seems to do more harm than good with ui2
-	if ($('.is-ui2').get(0)) {
-		return;
-	}
-	if( App.iOS() ){
-		setTimeout( function(){
-			angular.element('body').css('width', '+=1').css('width', '-=1');
-			$('.navs').css('width','+=1').css('width','-=1');
-			$('.navs').css('left', '+=1').css('left', '-=1');
-			// Again to make sure it will really fix it!
-			setTimeout( function(){
-				angular.element('body').css('width', '+=1').css('width', '-=1');
-				$('.navs').css('width','+=1').css('width','-=1');
-				$('.navs').css('left', '+=1').css('left', '-=1');
-			}, 300 );
-		}, 200 );
 	}
 }
 
