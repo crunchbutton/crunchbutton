@@ -3044,7 +3044,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function driverInstructionsFoodStatus(){
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
 		// #emergency #6809
-		if( $this->restaurant()->id_restaurant != 313 && $this->restaurant()->formal_relationship || $this->restaurant()->order_notifications_sent ){
+		if( ( $this->restaurant()->id_restaurant != 313 && $this->restaurant()->id_restaurant != 316 )
+			&& $this->restaurant()->formal_relationship || $this->restaurant()->order_notifications_sent ){
 			return 'Food already prepared';
 		} else {
 			return 'Place the order yourself';
