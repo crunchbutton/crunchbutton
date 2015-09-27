@@ -14,6 +14,14 @@ NGApp.factory( 'SupportService', function( $http, AccountService, $rootScope){
 	service.form.phone = angular.copy( service.account.user.phone );
 	service.form.message = '';
 	
+	$rootScope.$on('userAuth', function(e, data) {
+		if (!data) {
+			return;
+		}
+		service.form.name = angular.copy( data.name );
+		service.form.phone = angular.copy( data.phone );
+	});
+	
 	service.dialog = function() {
 		service.thanks = false;
 		service.form.message = '';
