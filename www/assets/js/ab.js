@@ -92,7 +92,9 @@ App.AB = {
 				}
 			}
 			var opt = opts[Math.floor(Math.random()*opts.length)];
-			App.config.ab[key] = opt.name
+			if (opt && opt.name) {
+				App.config.ab[key] = opt.name;
+			}
 		}
 		App.AB.save();
 	},
@@ -110,7 +112,9 @@ App.AB = {
 				return App.AB.options[option][x];
 			}
 		}
-		return null;
+		for (var x in App.AB.options[option]) {
+			return App.AB.options[option][x];
+		}
 	},
 	get: function(option) {
 		return App.AB.pluck(option, App.config.ab[option]).line;
