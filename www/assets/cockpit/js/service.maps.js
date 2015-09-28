@@ -227,52 +227,18 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			radius: parseInt(params.community.range) * 1609.34
 		});
 
-		google.maps.event.addListenerOnce(map, 'idle', function(){
-    console.log('idle');
-    console.log('idle');
-    console.log('idle');
-    console.log('idle');
-    console.log('idle');
-    console.log('idle');
-    		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-		console.log('resize');
-    google.maps.event.trigger(map, 'resize');
-		});
+		service.fixMapLoading( map );
 
-
-
-
-
-		google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			console.log('tilesloaded');
-			// Recenter the map now that it's been redrawn
-			map.setCenter(myLatlng);
-
-		});
 	};
+
+	service.fixMapLoading = function( map ){
+		google.maps.event.addListenerOnce(map, 'idle', function(){
+    	google.maps.event.trigger(map, 'resize');
+		});
+		google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+			map.setCenter(myLatlng);
+		});
+	}
 
 	service.trackRestaurant	 = function(params) {
 		var map = params.map;
