@@ -1,0 +1,1 @@
+UPDATE `order` o INNER JOIN restaurant_community rc ON rc.id_restaurant = o.id_restaurant SET o.id_community = rc.id_community WHERE o.id_community IS NULL
