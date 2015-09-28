@@ -426,9 +426,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	public function minutesToDelivery(){
 			$ordered_at = $this->date();
+			$ordered_at->setTimeZone( new DateTimeZone( c::config()->timezone ) );
+
 			$status = $this->status()->last();
 			if( $status[ 'status' ] == 'delivered' ){
-				$delivered_at = new DateTime( $status[ 'date' ], new DateTimeZone( c::config()->timezone ) );
+				$delivered_at = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
+				$delivered_at->setTimeZone( new DateTimeZone( c::config()->timezone ) );
 				return ceil( Crunchbutton_Util::intervalToSeconds( $delivered_at->diff( $ordered_at ) ) / 60 );
 			}
 			return null;
