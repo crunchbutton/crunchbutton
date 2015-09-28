@@ -314,7 +314,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 			unset( $this->_config[ Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_BUSINESS_CARD ] );
 			unset( $this->_config[ Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_TEST_CARD ] );
 		}
-
 		return $this->_config;
 	}
 
