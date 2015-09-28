@@ -268,6 +268,8 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			console.log('tilesloaded');
 			console.log('tilesloaded');
 			console.log('tilesloaded');
+			// Recenter the map now that it's been redrawn
+			map.setCenter(myLatlng);
 
 		});
 	};
