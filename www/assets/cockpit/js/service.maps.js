@@ -213,7 +213,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		var myLatlng = new google.maps.LatLng(parseFloat(params.community.loc_lat), parseFloat(params.community.loc_lon));
-console.log('myLatlng',myLatlng);
+		console.log('myLatlng',myLatlng);
 		map.setCenter(myLatlng);
 
 		maps[params.id].markers.current = new google.maps.Circle({
@@ -225,6 +225,29 @@ console.log('myLatlng',myLatlng);
 			map: map,
 			center: myLatlng,
 			radius: parseInt(params.community.range) * 1609.34
+		});
+
+		google.maps.event.addListenerOnce(map, 'idle', function(){
+    console.log('idle');
+    console.log('idle');
+    console.log('idle');
+    console.log('idle');
+    console.log('idle');
+    console.log('idle');
+		});
+		google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+			console.log('tilesloaded');
+
 		});
 	};
 

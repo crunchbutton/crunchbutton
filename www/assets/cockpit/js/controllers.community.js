@@ -430,6 +430,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		console.log('$scope.map',$scope.map);
 		console.log('$scope.community',$scope.community);
 		if ((!$scope.map || !$scope.community) && !force) {
+			setTimeout(function() { update() }, 100);
 			return;
 		}
 		MapService.trackCommunity({
@@ -446,9 +447,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 			$rootScope.title = d.name + ' | Community';
 			$scope.community = d;
 			$scope.loading = false;
-			setTimeout( function(){
-				update();
-			}, 1500 );
+			update();
 		});
 	}
 
