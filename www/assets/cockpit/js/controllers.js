@@ -5,30 +5,30 @@ NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, 
 	var redirect = function() {
 		// redirect to login if there is no user
 		if (!AccountService.user || !AccountService.user.id_admin) {
-			MainNavigationService.link('/login');
+			MainNavigationService.link('/login', 'instant');
 			return;
 		}
 
 		var id_order = $location.path().replace( '/', '' );
 		if( !isNaN( parseInt( id_order ) ) ){
-			MainNavigationService.link('/drivers/order/' + id_order);
+			MainNavigationService.link('/drivers/order/' + id_order, 'instant');
 		} else {
 			if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
 				setTimeout(function(){
-					MainNavigationService.link('/drivers/welcome');
+					MainNavigationService.link('/drivers/welcome', 'instant');
 					$rootScope.$apply();
 				},100);
 				return;
 			}
 
 			if (AccountService.user.permissions.GLOBAL) {
-				MainNavigationService.link('/home');
+				MainNavigationService.link('/home', 'instant');
 			} else if (AccountService.isRestaurant) {
-				MainNavigationService.link('/restaurant/order/placement/dashboard');
+				MainNavigationService.link('/restaurant/order/placement/dashboard', 'instant');
 			} else if (AccountService.isDriver) {
-				MainNavigationService.link('/drivers/orders');
+				MainNavigationService.link('/drivers/orders', 'instant');
 			} else {
-				MainNavigationService.link('/login');
+				MainNavigationService.link('/login', 'instant');
 			}
 		}
 	};
