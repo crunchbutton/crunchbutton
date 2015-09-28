@@ -1,13 +1,6 @@
 <div class="top-pad"></div>
 
-<div ng-if="!order.id">
-	<div class="content-padding">
-		<div class="ajax-loader-teal"></div>
-		<br />
-	</div>
-</div>
-
-<div ng-if="order.id">
+<div>
 	<?php /*
 	<div class="content-padding">
 		<div ng-if="order.delivery_service && order.status.status != 'delivered'">
@@ -39,9 +32,10 @@
 		</div>
 		<div class="divider"></div>
 	</div>
+	<div class="divider dots spacer-one-two" ng-if="order.delivery_service && order.status.status != 'delivered'"></div>
 	*/?>
 
-	<div class="divider dots spacer-one-two" ng-if="order.delivery_service && order.status.status != 'delivered'"></div>
+	
 
 	<div class="content-padding-desktop">
 
@@ -114,11 +108,11 @@
 		</div>
 	</div>
 
-	<div class="divider dots"></div>
+	<div class="divider dots" ng-if="order.id"></div>
 	<br><br>
 
 
-	<div class="order-content col-box content-padding-desktop">
+	<div class="order-content col-box content-padding-desktop" ng-if="order.id">
 
 		<div class="content-padding-mobile two-col">
 
@@ -146,9 +140,9 @@
 			<div class="divider"></div>
 		</div>
 
-		<div class="divider dots spacer-two-two hide-desktop"></div>
+		<div class="divider dots spacer-two-two hide-desktop" ng-if="order.id"></div>
 
-		<div class="content-padding-mobile two-col">
+		<div class="content-padding-mobile two-col" ng-if="order.id">
 
 			<div class="order-icon">
 				<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
@@ -210,9 +204,9 @@
 
 	</div>
 
-	<div class="divider dots spacer-one-two"></div>
+	<div class="divider dots spacer-one-two" ng-if="order.id"></div>
 
-	<div class="content-padding">
+	<div class="content-padding" ng-if="order.id">
 		<? /*
 		<div class="credit" ng-if="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 */ ?>
