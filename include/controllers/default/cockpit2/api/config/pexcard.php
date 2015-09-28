@@ -120,6 +120,13 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 		$pexcard = new Cockpit_Admin_Pexcard;
 		$settings = $pexcard->loadSettings();
 		foreach( $settings as $key => $value ){
+			if( is_numeric( $value ) ){
+				$value = floatval( $value );
+			} else if (is_bool($value)) {
+			} else if (is_array($value)) {
+			} else {
+				$value = 0;
+			}
 			$out[ $key ] = $value;
 		}
 		echo json_encode( $out );
