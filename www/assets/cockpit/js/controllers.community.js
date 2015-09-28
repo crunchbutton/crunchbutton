@@ -438,7 +438,9 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 			$rootScope.title = d.name + ' | Community';
 			$scope.community = d;
 			$scope.loading = false;
-			update();
+			setTimeout( function(){
+				update();
+			}, 500 );
 		});
 	}
 
