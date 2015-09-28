@@ -648,6 +648,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	if (App.isPhoneGap) {
 		$('body').addClass('phonegap');
 	}
+	
+	$rootScope.instant = function() {
+		$('body').addClass('instant');
+		setTimeout(function(){
+			$('body').removeClass('instant');
+			$rootScope.$safeApply();
+		},400);
+	};
 
 	$rootScope.back = function() {
 		$('body').addClass('back');
@@ -659,7 +667,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		setTimeout(function(){
 			$('body').removeClass('back');
 			$rootScope.$safeApply();
-		},1000);
+		},400);
 
 		setTimeout(function(){
 			$rootScope.$safeApply();

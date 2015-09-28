@@ -39,14 +39,36 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		history.go( -1 );
 	}
 
-	/* the transitions type could be push, fade, pop or none */
-	service.link = function( path, transition ){
-		if( App.isNarrowScreen() || App.transitionForDesktop ){
-			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
-		}
+	/* the transitions type could be push, fade, pop or instant */
+	service.link = function( path, transition , clearstack){
 
-		$location.search({});
-		$location.path( path || '/' );
+		
+		// apply the css attribute first
+		if (App.isNarrowScreen() || App.transitionForDesktop){
+			if (transition == 'pop') {
+				$('body').addClass('back');
+				setTimeout(function(){
+					$('body').removeClass('back');
+					$rootScope.$safeApply();
+				},400);
+			} else if (transition == 'instant') {
+				$('body').addClass('instant');
+				setTimeout(function(){
+					$('body').removeClass('instant');
+					$rootScope.$safeApply();
+				},400);
+			}
+			App.rootScope.$safeApply();
+		}
+		
+		// wait for the digest cycle to be complete and transtion the page outside the normal digest
+		setTimeout( function(){
+			$location.search({});
+			$location.path(path || '/');
+			App.rootScope.$safeApply();
+		}, 1);
+
+		// close the side bar no matter what
 		if( App.snap && App.snap.close ){
 			App.snap.close();
 		}
