@@ -235,6 +235,25 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
     console.log('idle');
     console.log('idle');
 		});
+
+
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		console.log('resize');
+		google.maps.event.trigger(map, 'resize');
+
 		google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
 			console.log('tilesloaded');
 			console.log('tilesloaded');
