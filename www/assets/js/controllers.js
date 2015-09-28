@@ -1357,13 +1357,13 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 NGApp.controller('OrderCtrl', function ($interval, $rootScope, $scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService, FacebookService, TwitterService ) {
 
 	// Force unbusy
-	App.busy.unBusy();
+	//App.busy.unBusy();
 
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 	$scope.order = {};
 	$scope.restaurant = {};
-	$scope.width = $(window).width();
+	//$scope.width = $(window).width();
 	$scope.confirm = $routeParams.action == 'confirm' ? true : false;
 
 	$scope.receipt = function () {
@@ -1458,14 +1458,6 @@ NGApp.controller('OrderCtrl', function ($interval, $rootScope, $scope, $http, $l
 			App.busy.unBusy();
 		}, 500 );
 	}
-
-	var timer = $interval(function() {
-		OrderViewService.load(true);
-	}, 30000);
-
-	$scope.$on('$destroy', function(event) {
-		$interval.cancel(timer);
-	});
 
 });
 
