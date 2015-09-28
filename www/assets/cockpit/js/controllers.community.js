@@ -448,7 +448,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 			$scope.loading = false;
 			setTimeout( function(){
 				update();
-			}, 500 );
+			}, 1500 );
 		});
 	}
 
