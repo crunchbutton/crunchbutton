@@ -206,7 +206,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 								if( document.getElementById('support-chat-box') ){
 									document.getElementById('support-chat-box').focus();
 								}
-							}cath(e){}
+							}catch(e){}
 
 						});
 
