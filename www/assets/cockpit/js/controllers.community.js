@@ -270,9 +270,11 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	$scope.isSavingAlias = false;
 
 	$scope.$on('mapInitialized', function(event, map) {
-		$scope.map = map;
-		MapService.style(map);
-		update();
+		setTimeout( function(){
+			$scope.map = map;
+			MapService.style(map);
+				update();
+			}, 500 );
 	});
 
 	// method to load orders - called at ui-tab directive
@@ -410,7 +412,6 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-				update(true);
 				App.dialog.close();
 				console.log('y u no work');
 			}
@@ -421,7 +422,14 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	}
 
 	var update = function(force) {
-		if ((!$scope.map || !$scope.community) &&  !force) {
+		console.log('MAP UPDATE');
+		console.log('MAP UPDATE');
+		console.log('MAP UPDATE');
+		console.log('MAP UPDATE');
+		console.log('MAP UPDATE');
+		console.log('$scope.map',$scope.map);
+		console.log('$scope.community',$scope.community);
+		if ((!$scope.map || !$scope.community) && !force) {
 			return;
 		}
 		MapService.trackCommunity({

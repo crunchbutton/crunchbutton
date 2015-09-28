@@ -213,7 +213,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 		}
 
 		var myLatlng = new google.maps.LatLng(parseFloat(params.community.loc_lat), parseFloat(params.community.loc_lon));
-
+console.log('myLatlng',myLatlng);
 		map.setCenter(myLatlng);
 
 		maps[params.id].markers.current = new google.maps.Circle({
