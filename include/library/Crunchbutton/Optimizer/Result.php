@@ -22,9 +22,11 @@ class Crunchbutton_Optimizer_Result extends Cana_Model {
 	public function __construct($params = []) {
         $this->resultType = self::RTYPE_NOTHING;
         $this->relFinishedTimes = null;
-		foreach ($params as $key => $param) {
-			$this->{$key} = $param;
-		}
+        if (!is_null($params)) {
+            foreach ($params as $key => $param) {
+                $this->{$key} = $param;
+            }
+        }
         $this->calculateScoreAndNumBadTimes();
 
 	}
