@@ -15,7 +15,10 @@
 			</td>
 			<td nowrap="nowrap">{{suggestion.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
 			<td nowrap="nowrap" class="listview-smaller">
-				<div ng-if="suggestion.customer"><i class="fa fa-smile-o"></i> <a href="/customer/{{suggestion.id_user}}">{{suggestion.customer}}</a></div>
+				<div ng-if="suggestion.id_user"><i class="fa fa-smile-o"></i> <a href="/customer/{{suggestion.id_user}}">
+					<span ng-show="!suggestion.customer">Customer</span>
+					<span ng-show="suggestion.customer">{{suggestion.customer}}</span>
+				</a></div>
 				<div ng-if="suggestion.restaurant"><i class="fa fa-coffee"></i> <a href="/restaurant/{{suggestion.id_restaurant}}">{{suggestion.restaurant}}</a></div>
 				<div ng-if="suggestion.community"><i class="fa fa-slideshare"></i> <a href="/community/{{suggestion.id_community}}">{{suggestion.community}}</a></div>
 			</td>
