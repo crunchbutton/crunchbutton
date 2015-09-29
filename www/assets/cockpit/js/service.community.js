@@ -30,6 +30,10 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			method: 'POST',
 			params : { 'action' : 'save-open-close' }
 		},
+		'addNote' : {
+			url: App.service + 'community/note',
+			method: 'POST'
+		},
 		'closed' : {
 			method: 'GET',
 			params : { 'action': 'closed' },
@@ -38,7 +42,6 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 	});
 
 	var aliases = $resource( App.service + 'community/:permalink/aliases/:action', { permalink: '@permalink', action: '@action' }, {
-				// list methods
 				'list' : { 'method': 'GET', params : { 'action' : null }, isArray: true },
 				'add' : { 'method': 'POST', params : { 'action' : 'add' } },
 				'remove' : { 'method': 'POST', params : { 'action' : 'remove' } }
@@ -46,14 +49,26 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		);
 
 	var closelog = $resource( App.service + 'community/:permalink/closelog', { action: '@action' }, {
-				// list methods
 				'list' : { 'method': 'GET', params : { 'action' : null }, isArray: true }
+			}
+		);
+
+	var notes = $resource( App.service + 'community/notes/:permalink', { action: '@action' }, {
+				'list' : { 'method': 'GET', params : { 'action' : null } }
 			}
 		);
 
 	service.closelog = {
 		list: function( permalink, callback ){
 			closelog.list( { permalink: permalink }, function( data ){
+				callback( data );
+			} );
+		}
+	}
+
+	service.notes = {
+		list: function( permalink, callback ){
+			notes.list( { permalink: permalink }, function( data ){
 				callback( data );
 			} );
 		}
@@ -107,6 +122,14 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 		});
 	}
 
+	service.addNote = function(params, callback) {
+		community.addNote(params,  function(data) {
+			callback(data);
+		});
+	}
+
+
+
 	service.listSimple = function( callback ){
 		communities.listSimple( function( data ){
 			callback( data );
@@ -118,8 +141,6 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			callback( data );
 		} );
 	}
-
-
 
 	service.yesNo = function(){
 		var methods = [];

@@ -263,6 +263,39 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 
 } );
 
+
+NGApp.controller('CommunityAddNoteCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, DriverService ) {
+
+	$rootScope.$broadcast( 'openCommunityNoteContainer', 'test' );
+
+	$rootScope.$on( 'openCommunityNoteContainer', function(e, data) {
+		$scope.note = {};
+		$scope.note.community = data;
+		App.dialog.show('.community-add-note-dialog-container');
+		$scope.isSavingNote = false;
+		$scope.formAddNoteSubmitted = false;
+	});
+
+	$scope.formAddNoteSave = function(){
+
+		if( $scope.formAddNote.$invalid ){
+			$scope.formAddNoteSubmitted = true;
+			return;
+		}
+		CommunityService.addNote( $scope.note, function( json ){
+			$scope.isSavingNote = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$rootScope.closePopup();
+				$rootScope.$broadcast( 'communityNoteSaved', json );
+			}
+			$scope.formAddNoteSubmitted = false;
+		} );
+	}
+
+} );
+
 NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
 
 	$scope.loading = true;
@@ -322,6 +355,14 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} );
 	}
 
+	$scope.loadNotes = function(){
+		$scope.loadingNotes = true;
+		CommunityService.notes.list( $routeParams.id, function( json ){
+			$scope.notes = json.results;
+			$scope.loadingNotes = false;
+		} );
+	}
+
 	$scope.notes_to_driver_edit = function( id_restaurant ){
 		$rootScope.$broadcast( 'openEditNotesToDriver', {id_restaurant:id_restaurant, callback: function(){
 			$rootScope.closePopup();
@@ -376,6 +417,10 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 
 	$scope.openClosingTimeContainer = function(){
 		$rootScope.$broadcast( 'openClosingTimeContainer' );
+	}
+
+	$scope.openCommunityNoteContainer = function(){
+		$rootScope.$broadcast( 'openCommunityNoteContainer', $routeParams.id );
 	}
 
 	$scope.aliasDialogContainer = function(){
@@ -443,6 +488,12 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	}
 
 	load();
+
+	$rootScope.$on( 'communityNoteSaved', function(e, data) {
+		$scope.loadNotes();
+	});
+
+
 
 	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
 		load();

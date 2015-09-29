@@ -1,0 +1,31 @@
+<div class="community-add-note-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="CommunityAddNoteCtrl">
+	<h1 class="title"><span>Community Note</span></h1>
+
+	<div class="divider"></div>
+
+	<span ng-if="loading"><br></span>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-form name="formAddNote" ng-show="!loading">
+
+		<ul ng-class="{'submitted':formAddNoteSubmitted}" class="box-content2">
+			<li class="li-input  divider-line" ng-class="{'error':formAddNote.note.$invalid}">
+				<div class="label">Note:</div>
+				<div class="input">
+					<textarea name="note" ng-model="note.note" required></textarea>
+				</div>
+				<div class="box-error">
+					<small ng-show="formAddNote.note.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isSavingNote">
+				<button class="button button-empty button-border button-green button-full" ng-click="formAddNoteSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
+			</li>
+			<li class="li-input" ng-show="isSavingNote">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+		</ul>
+	</ng-form>
+</div>
