@@ -120,7 +120,7 @@ NGApp.factory('errorInterceptor', function($q) {
 			if (!errorFromResponse(response)) {
 				return $q.reject(response);
 			} else {
-				/*
+/*
 				if (response.headers) {
 					var headers = response.headers();
 					if (headers && headers['App-Token']) {
@@ -131,6 +131,7 @@ NGApp.factory('errorInterceptor', function($q) {
 					console.debug('No headers');
 				}
 				*/
+
 				return response;
 			}
 		},
@@ -139,13 +140,12 @@ NGApp.factory('errorInterceptor', function($q) {
 
 			config.params = config.params || {};
 			config.headers['App-Version'] = App.version;
-			/*
+
 			if (App.version != 'web' && $.totalStorage('token')) {
 				config.headers['App-Token'] = $.totalStorage('token');
-				config.headers['App-Version'] = App.version;
 			}
 			console.debug('REQUEST',config.headers, config.headers['App-Token'], config.headers['App-Version']);
-			*/
+
 			return config || $q.when(config);
 		}
 	};
@@ -390,7 +390,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 	;
 	// only use html5 enabled location stuff if its not in a phonegap container
 	$locationProvider.html5Mode({
-		enabled: true,
+		enabled: !App.isPhoneGap,
 		requireBase: false
 	});
 }]);
@@ -652,7 +652,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 		$rootScope.scrollTop = 0;
 		App.scrollTop($rootScope.scrollTop);
-		
+
 
 	});
 
