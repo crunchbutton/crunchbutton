@@ -7,9 +7,12 @@
 			<th>Date</th>
 		</tr>
 		<tr ng-repeat="note in notes">
-			<td>{{note.community}}</td>
+			<td>
+				<a href="/community/{{note.community.permalink}}/">{{note.community.name}}</a>
+			</td>
 			<td><span class="listview-smaller">{{note.text}}</span></td>
-			<td>{{note.added_by}}</td>
+			<td>
+				<a href="/staff/{{note.admin.login}}/">{{note.admin.name}}</a></td>
 			<td>{{note.date}}</td>
 		</tr>
 	</table>

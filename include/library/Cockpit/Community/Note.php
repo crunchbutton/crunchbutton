@@ -31,11 +31,11 @@ class Cockpit_Community_Note extends Cana_Table {
 		$out = [];
 		$out[ 'id_community_note' ] = $this->id_community_note;
 		$out[ 'id_admin' ] = $this->id_admin;
-		$out[ 'community' ] = $this->community()->name;
+		$out[ 'community' ] = [ 'name' => $this->community()->name, 'permalink' => $this->community()->permalink ];
 		$out[ 'date' ] = $this->date()->format( 'M jS Y g:i:s A' );
 		$out[ 'date_utc' ] = Crunchbutton_Util::dateToUnixTimestamp( $this->date() );
 		$out[ 'text' ] = $this->text;
-		$out[ 'added_by' ] = $this->admin()->name;
+		$out[ 'admin' ] = [ 'name' => $this->admin()->name, 'login' => $this->admin()->login ];
 		return $out;
 	}
 
