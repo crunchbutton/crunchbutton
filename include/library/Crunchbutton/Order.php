@@ -1116,14 +1116,21 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$where = 'WHERE 1=1 ';
 			}
 
-			$where .= ' AND o.delivery_service = true ';
-			$where .= ' AND date > ? ';
+			$where .= ' AND o.delivery_service = true AND date > ? ';
 			$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		}
 		return Order::q($query, [$interval]);
 	}
 
+	public static function deliveryOrdersByCommunity($hours, $id_community){
 
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- ' . $hours . ' hours' );
+		$interval = $now->format( 'Y-m-d H:i:s' );
+
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o WHERE o.delivery_service=true and date > ? and id_community = ? ORDER BY o.id_order';
+		return Order::q($query, [$interval, $id_community]);
+	}
 
 	/*
 	Logic to make sure that admin doesn't see orders :

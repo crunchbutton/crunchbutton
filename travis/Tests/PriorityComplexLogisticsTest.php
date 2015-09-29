@@ -385,7 +385,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             }
         }
 
-        $bp = self::defaultOLBP($c->id_community, 7, 0.5, 12, 1, 10);
+        $bp = self::defaultOLBP($c->id_community, 7, 0.5, 10, 1, 10);
         $bp->save();
         $bp = self::defaultOLBP($c->id_community, 15, 0.5, 10, 2, 10);
         $bp->save();
@@ -1249,7 +1249,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertNull($p0);
         $this->assertEquals($cutoff_at_zero1, 7);
         $this->assertEquals($slope_per_minute1, 0.5);
-        $this->assertEquals($max_minutes1, 12);
+        $this->assertEquals($max_minutes1, 10);
         $this->assertEquals($baseline_mph1, 10);
         $this->assertEquals($cutoff_at_zero2, 15);
         $this->assertEquals($slope_per_minute2, 0.5);
