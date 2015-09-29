@@ -7,6 +7,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/communities.html',
 			reloadOnSearch: false
 		})
+		.when('/communities/notes', {
+			action: 'community',
+			controller: 'CommunitiesNotesCtrl',
+			templateUrl: 'assets/view/communities-notes.html'
+		})
 		.when('/community/edit/:id', {
 			action: 'community',
 			controller: 'CommunityFormCtrl',
@@ -52,7 +57,47 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 		}
 	});
 
+});
 
+NGApp.controller('CommunitiesNotesCtrl', function ($scope, $rootScope, ViewListService, CommunityService) {
+
+	$rootScope.title = 'Communities Notes';
+
+	$scope.show_more_options = false;
+
+	$scope.moreOptions = function(){
+
+		$scope.show_more_options = !$scope.show_more_options;
+
+		if( $scope.show_more_options ){
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
+		}
+
+	}
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			community: '',
+			fullcount: false
+		},
+		update: function() {
+			CommunityService.notes.list( $scope.query, function(d) {
+				$scope.notes = d.results;
+				$scope.complete(d);
+					if( ( $scope.query.community ) && !$scope.show_more_options ){
+						$scope.moreOptions();
+					}
+			});
+		}
+	});
 });
 
 NGApp.controller('CommunitiesClosedCtrl', function ($scope, CommunityService) {
@@ -357,7 +402,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 
 	$scope.loadNotes = function(){
 		$scope.loadingNotes = true;
-		CommunityService.notes.list( $routeParams.id, function( json ){
+		CommunityService.notes.list( { community: $scope.community.id_community }, function( json ){
 			$scope.notes = json.results;
 			$scope.loadingNotes = false;
 		} );

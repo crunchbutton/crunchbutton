@@ -27,6 +27,7 @@ class Controller_api_community_notes extends Crunchbutton_Controller_RestAccount
 			SELECT
 				-WILD-
 			FROM community_note cn
+			INNER JOIN admin a ON a.id_admin = cn.id_admin
 		';
 
 		$q .='
@@ -46,7 +47,8 @@ class Controller_api_community_notes extends Crunchbutton_Controller_RestAccount
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
 				'fields' => [
-					'cn.note' => 'like'
+					'cn.text' => 'like',
+					'a.name' => 'like',
 				]
 			]);
 			$q .= $s['query'];

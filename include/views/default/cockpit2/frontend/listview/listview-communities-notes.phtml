@@ -1,0 +1,16 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Community</th>
+			<th>Note</th>
+			<th>Added By</th>
+			<th>Date</th>
+		</tr>
+		<tr ng-repeat="note in notes">
+			<td>{{note.community}}</td>
+			<td><span class="listview-smaller">{{note.text}}</span></td>
+			<td>{{note.added_by}}</td>
+			<td>{{note.date}}</td>
+		</tr>
+	</table>
+</div>

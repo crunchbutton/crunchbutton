@@ -53,7 +53,7 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			}
 		);
 
-	var notes = $resource( App.service + 'community/notes/:permalink', { action: '@action' }, {
+	var notes = $resource( App.service + 'community/notes', { action: '@action' }, {
 				'list' : { 'method': 'GET', params : { 'action' : null } }
 			}
 		);
@@ -67,8 +67,8 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 	}
 
 	service.notes = {
-		list: function( permalink, callback ){
-			notes.list( { permalink: permalink }, function( data ){
+		list: function( params, callback ){
+			notes.list( params, function( data ){
 				callback( data );
 			} );
 		}
