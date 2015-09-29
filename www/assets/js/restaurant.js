@@ -15,7 +15,10 @@ var Restaurant = function(id) {
 	$.extend(self,Orm);
 
 	var complete = arguments[1] || null;
-	self.loadError = arguments[2] || null;
+	self.loadError = function() {
+		console.debug('Restaurant does not exist');
+		App.go('/location');
+	};
 
 	self.categories = function() {
 		return self.loadType('Category','categories');

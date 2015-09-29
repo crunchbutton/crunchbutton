@@ -113,12 +113,24 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	{
 
 		$isCockpit = Crunchbutton_Util::isCockpit();
-		$restaurant = Crunchbutton_Restaurant::permalink(c::getPagePiece(2));
-		/* @var $restaurant Crunchbutton_Restaurant */
-		if (!$restaurant->id_restaurant) {
-			$restaurant = Crunchbutton_Restaurant::o(c::getPagePiece(2));
+		
+		if (!$isCockpit) {
+			$q .= ' and active=true';
 		}
-		if ($restaurant->id_restaurant) {
+		
+		$restaurant = Restaurant::q('select * from restaurant where permalink=?'.$q, [c::getPagePiece(2)])->get(0);
+
+		if (!$restaurant->id_restaurant) {
+			$restaurant = Restaurant::q('select * from restaurant where id_restaurant=?'.$q, [c::getPagePiece(2)])->get(0);
+		}
+		
+		if (!$restaurant || !$restaurant->id_restaurant) {
+			$this->error(404);
+			exit;
+		}
+		
+
+		if ($restaurant && $restaurant->id_restaurant) {
 			$where = [];
 			if ( $isCockpit ) {
 				$where['Dish']['active'] = NULL;
@@ -164,7 +176,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				// @todo: real logins
 				if ($_SESSION['admin'] || c::admin()) {
 					// save the restaurant
-					$r = Restaurant::o(c::getPagePiece(2));
+					$r = Restaurant::q(c::getPagePiece(2));
 					/* @var $r Crunchbutton_Restaurant */
 
 					// Permissions
