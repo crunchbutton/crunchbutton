@@ -29,7 +29,9 @@
 				<ng-include  src="'assets/view/restaurant-mobile.html'"></ng-include>
 			</span>
 
-			<div class="suggestion-text">See an issue with our menu: <span class="link" ng-click="suggestion();">tell us & we'll fix it</span>!</div>
+			<? if (!$this->export) : ?>
+				<div class="suggestion-text">See an issue with our menu: <span class="link" ng-click="suggestion();">tell us & we'll fix it</span>!</div>
+			<? endif ; ?>
 
 		</div>
 

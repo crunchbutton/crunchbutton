@@ -9,22 +9,25 @@ class Crunchbutton_Optimizer
         $env = c::getEnv();
 
         $url = c::config()->optimizer->{$env}->url;
-        $options = array(
-            'http' => array(
-                'header' => 'Content-type: application/json',
-                'method' => 'POST',
-                'content' => json_encode($input)
-            ),
-        );
+        $json = json_encode($input);
+        if ($json !== false) {
 
-        $context = stream_context_create($options);
-        try {
-            $result = file_get_contents($url, false, $context);
-            $out = json_decode($result);
-        } catch (Exception $e) {
-            echo 'Crunchbutton_Optimizer::optimize: Caught exception: ',  $e->getMessage(), "\n";
+            $options = array(
+                'http' => array(
+                    'header' => 'Content-type: application/json',
+                    'method' => 'POST',
+                    'content' => $json
+                ),
+            );
+
+            $context = stream_context_create($options);
+            try {
+                $result = file_get_contents($url, false, $context);
+                $out = json_decode($result);
+            } catch (Exception $e) {
+                echo 'Crunchbutton_Optimizer::optimize: Caught exception: ', $e->getMessage(), "\n";
+            }
         }
-
 		return $out;
 	}
 
