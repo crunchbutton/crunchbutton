@@ -348,6 +348,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$rootScope.navigation.link('/location', 'instant' );
 	}
 
+	$scope.show_suggestions = false;
+
 	$scope.restaurants = false;
 
 	$scope.loadingRestaurant = false;
@@ -601,6 +603,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			$('.content').removeClass('smaller-width');
 
 			listLoaded = true;
+
+			$scope.show_suggestions = true;
 
 		},
 		// Error
@@ -922,6 +926,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	var order = OrderService;
 	order.geomatched = 1;
+
+
+	$scope.show_suggestions = false;
 
 	order.loaded = false;
 	$scope.order = {};
@@ -1245,6 +1252,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
+		$scope.show_suggestions = true;
 
 		var process = function(){
 
