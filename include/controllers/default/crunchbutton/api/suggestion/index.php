@@ -1,17 +1,36 @@
 <?php
 
 class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
+
 	public function init() {
 
 		switch ( $this->method() ) {
 			// Saves a suggestion
 			case 'post':
 
+				if (c::getPagePiece(2) == 'save-suggestion') {
+
+					$suggesion = new Suggestion;
+					$suggesion->status = 'new';
+					$suggesion->type = $this->request()[ 'type' ];
+					$suggesion->id_user = c::user()->id_user ? c::user()->id_user : null;
+					$suggesion->name = c::user()->name ? c::user()->name : null;
+					$suggesion->id_restaurant = $this->request()[ 'id_restaurant' ];
+					$suggesion->id_community = $this->request()[ 'id_community' ];
+					$suggesion->content = $this->request()[ 'content' ];
+					$suggesion->ip = c::getIp();
+					$suggesion->date = date('Y-m-d H:i:s');
+					$suggesion->save();
+					echo $suggesion->json();
+
+					exit();
+				}
+
 				if (c::getPagePiece(2) == 'new') {
-				
+
 					$suggesion = new Suggestion;
 					$restaurant = Restaurant::permalink($this->request()['restaurant']);
-				
+
 					if (!$restaurant->id_restaurant || !$this->request()['name']) {
 						echo json_encode(['status' => false]);
 						exit;
@@ -26,7 +45,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');
 					$suggesion->save();
-					
+
 					$suggesion->queNotify();
 
 					echo $suggesion->json();
@@ -34,7 +53,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 				}
 
 				if (c::getPagePiece(2) == 'restaurant') {
-				
+
 					$suggesion = new Suggestion;
 
 					$suggesion->id_user = c::user()->id_user ? c::user()->id_user : null;
@@ -46,7 +65,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');
 					$suggesion->save();
-					
+
 					echo $suggesion->json();
 					exit;
 				}
@@ -65,7 +84,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					echo json_encode(['error' => 'error']);
 					exit;
 				}
-			
+
 				// notify by email if we are in the area
 				if (c::getPagePiece(2) == 'notify') {
 
@@ -80,7 +99,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');
 					$suggesion->save();
-					
+
 					echo $suggesion->json();
 				}
 
@@ -97,7 +116,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$s->serialize($request);
 					$s->save();
 					echo $s->json();
-				} 
+				}
 			break;
 
 			case 'get':

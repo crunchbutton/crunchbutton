@@ -533,7 +533,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		function(){
 
 			try {
-				
+
 				$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
 
 				var slogan = App.slogan.slogan;
@@ -608,6 +608,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			error();
 		}
 	);
+
+	$scope.suggestion = function(){
+		$rootScope.$broadcast( 'restaurantsSuggestion', RestaurantsService.community.id_community );
+	}
+
 });
 
 
@@ -1217,6 +1222,10 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	var restaurantService = RestaurantService;
 
 
+	$scope.suggestion = function(){
+		$rootScope.$broadcast( 'restaurantSuggestion', $scope.restaurant );
+	}
+
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
@@ -1564,7 +1573,6 @@ NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $rootScope, $http
 	} );
 });
 
-
 NGApp.controller( 'AccountSevenCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService, AccountFacebookService ) {
 	$scope.tab = 'facebook'
 	$scope.account = AccountService;
@@ -1910,5 +1918,99 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 	}
 
 	defaultQuote();
+
+});
+
+NGApp.controller( 'RestaurantSuggestionCtrl', function ( $scope, $rootScope, SuggestionService ) {
+
+	var restaurant = null;
+
+	$rootScope.$on( 'restaurantSuggestion', function(e, data) {
+		reset();
+		restaurant = data;
+		App.dialog.show( '.restaurant-suggestion-container' );
+	});
+
+	var reset = function(){
+		$scope.change_tab( 'suggestion' );
+		$scope.suggestion = { content: '', add_more_content: '',  }
+		$scope.add_more = false;
+	}
+
+	$scope.send_form = function(){
+		var data = {};
+		data.id_restaurant = restaurant.id_restaurant;
+		if( $scope.tab == 'suggestion' ){
+			data.type = 'suggestion';
+			if( $scope.suggestion.content ){
+				data.content = 'Suggestion: ' + $scope.suggestion.content;
+			}
+		} else if( $scope.tab == 'more-stuff' ){
+			data.type = 'dish';
+			if( $scope.suggestion.add_more_content ){
+				data.content = 'Add: ' + $scope.suggestion.add_more_content;
+			} else {
+				data.content = 'Add more stuff!';
+			}
+		}
+		SuggestionService.save( data, function( json ){
+			$scope.change_tab( 'thank-you' );
+		} );
+	}
+
+	$scope.change_tab = function( tab ){
+		$scope.tab = tab;
+	}
+
+	$scope.close = function(){
+		$rootScope.closePopup();
+	}
+
+});
+
+NGApp.controller( 'RestaurantsSuggestionCtrl', function ( $scope, $rootScope, SuggestionService ) {
+
+	var id_community = null;
+
+	$rootScope.$on( 'restaurantsSuggestion', function(e, data) {
+		reset();
+		id_community = data;
+		App.dialog.show( '.restaurants-suggestion-container' );
+	});
+
+	var reset = function(){
+		$scope.change_tab( 'suggestion' );
+		$scope.suggestion = { content: '', add_more_content: '',  }
+		$scope.add_more = false;
+	}
+
+	$scope.send_form = function(){
+		var data = {};
+		data.id_community = id_community;
+		if( $scope.tab == 'suggestion' ){
+			data.type = 'suggestion';
+			if( $scope.suggestion.content ){
+				data.content = 'Suggestion: ' + $scope.suggestion.content;
+			}
+		} else if( $scope.tab == 'more-stuff' ){
+			data.type = 'restaurant';
+			if( $scope.suggestion.add_more_content ){
+				data.content = 'Add: ' + $scope.suggestion.add_more_content;
+			} else {
+				data.content = 'Add more restaurants!';
+			}
+		}
+		SuggestionService.save( data, function( json ){
+			$scope.change_tab( 'thank-you' );
+		} );
+	}
+
+	$scope.change_tab = function( tab ){
+		$scope.tab = tab;
+	}
+
+	$scope.close = function(){
+		$rootScope.closePopup();
+	}
 
 });
