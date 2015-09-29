@@ -27,6 +27,10 @@
 					<span class="listview-bold">{{community.closedLog.closed_by}}</span> @ {{community.closedLog.closed_at}}<br>
 					<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
 				</span>
+				<span class="listview-smaller" ng-if="community.note">
+					Last Note: {{community.note.text}} <br>({{community.note.added_by}})
+				</span>
+
 				<? /*
 				@todo: might be faster?
 				<span ng-if="community.close_all_restaurants">

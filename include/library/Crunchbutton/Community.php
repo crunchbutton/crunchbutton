@@ -167,7 +167,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports(['categories' => true, 'eta' => true]);
 		}
 
+		$note = $this->lastNote();
+		if( $note ){
+			$out[ 'note' ] = $note->exports();
+		}
+
 		return $out;
+	}
+
+	public function lastNote(){
+		return Cockpit_Community_Note::lastNoteByCommunity( $this->id_community );
 	}
 
 	public function allRestaurantsClosed(){

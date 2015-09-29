@@ -69,7 +69,6 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 					$this->error(401);
 				}
 
-
 				switch ( c::getPagePiece(3) ) {
 
 					// save aliases
