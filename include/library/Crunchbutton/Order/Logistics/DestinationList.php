@@ -306,9 +306,10 @@ class Crunchbutton_Order_Logistics_DestinationList extends Cana_Model
     // Only a single fake is allowed as well.
     public function createOptimizerInputs($fakeOrder, $doCreateFakeOrders)
     {
-        $optInputsList = ['old' => null, 'new' => null, 'hasFakeOrder' => false];
         $numOldNodes = $this->id_old_counter + 1;
         $numNewNodes = $this->id_new_counter + 1;
+        $optInputsList = ['old' => null, 'new' => null, 'hasFakeOrder' => false, 'numOldNodes' => $numOldNodes,
+            'numNewNodes' => $numNewNodes];
 //        print "Num new nodes: $numNewNodes\n";
 
         if ($numNewNodes == 3) {
