@@ -144,7 +144,6 @@ NGApp.factory('errorInterceptor', function($q) {
 			if (App.version != 'web' && $.totalStorage('token')) {
 				config.headers['App-Token'] = $.totalStorage('token');
 			}
-			console.debug('REQUEST',config.headers, config.headers['App-Token'], config.headers['App-Version']);
 
 			return config || $q.when(config);
 		}
