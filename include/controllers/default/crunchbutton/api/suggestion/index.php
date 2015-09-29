@@ -16,6 +16,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$suggesion->id_user = c::user()->id_user ? c::user()->id_user : null;
 					$suggesion->name = c::user()->name ? c::user()->name : null;
 					$suggesion->id_restaurant = $this->request()[ 'id_restaurant' ];
+					$suggesion->id_community = $this->request()[ 'id_community' ];
 					$suggesion->content = $this->request()[ 'content' ];
 					$suggesion->ip = c::getIp();
 					$suggesion->date = date('Y-m-d H:i:s');

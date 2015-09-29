@@ -1,6 +1,6 @@
-<div class="restaurant-suggestion-container zoom-anim-dialog mfp-hide dialog mfp-hide">
+<div class="restaurants-suggestion-container zoom-anim-dialog mfp-hide dialog mfp-hide">
 
-	<div ng-controller="RestaurantSuggestionCtrl">
+	<div ng-controller="RestaurantsSuggestionCtrl">
 
 		<div ng-if="tab == 'suggestion'">
 
@@ -25,7 +25,7 @@
 			<div class="dialog-padding">
 				<div class="dialog-divider"></div>
 				<br>
-					<p>See items or options we should add: <a href="" class="cursor" ng-click="change_tab( 'more-stuff' )">yes!</a></p>
+					<p>See more restaurants we should add: <a href="" class="cursor" ng-click="change_tab( 'more-stuff' )">yes!</a></p>
 				<br>
 			</div>
 
@@ -37,7 +37,7 @@
 
 				<span ng-click="change_tab( 'suggestion' )" class="back-link cursor"><span>&laquo;</span> BACK</span>
 
-				<p>Any specific items you'd like to see, enter here, otherwise, just click "Add more stuff!"</p>
+				<p>What restaurants should we add?</p>
 
 				<div class="divider spacer-one-onehalf"></div>
 
@@ -49,7 +49,7 @@
 
 			<div class="dialog-padding dialog-bottom-buttons">
 				<div class="button-pushable">
-					<button class="button green" ng-click="send_form();">Add more stuff!</button>
+					<button class="button green" ng-click="send_form();">Add more restaurants!</button>
 				</div>
 			</div>
 
