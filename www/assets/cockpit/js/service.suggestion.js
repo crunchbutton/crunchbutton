@@ -52,8 +52,10 @@ NGApp.factory('SuggestionService', function(ResourceFactory) {
 	service._types = function(){
 		var methods = [];
 		methods.push( { value: 'all', label: 'All' } );
-		methods.push( { value: 'dish', label: 'Dish' } );
-		methods.push( { value: 'restaurant', label: 'Restaurant' } );
+		methods.push( { value: 'dish', label: 'Add Item' } );
+		methods.push( { value: 'restaurant', label: 'Add Restaurant' } );
+		methods.push( { value: 'suggestion', label: 'Suggestion' } );
+		methods.push( { value: 'email', label: 'Email me' } );
 		return methods;
 	}
 
@@ -61,7 +63,7 @@ NGApp.factory('SuggestionService', function(ResourceFactory) {
 		var methods = [];
 		methods.push( { value: 'all', label: 'All' } );
 		methods.push( { value: 'new', label: 'New' } );
-		methods.push( { value: 'deleted', label: 'Deleted' } );
+		methods.push( { value: 'deleted', label: 'Rejected' } );
 		methods.push( { value: 'applied', label: 'Applied' } );
 		return methods;
 	}

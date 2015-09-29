@@ -1,16 +1,15 @@
 <div class="box-content2 box-content-table">
 	<table class="tb-zebra">
 		<tr>
-			<th>Suggestion</th>
-			<th>Location</th>
+			<th>Content</th>
 			<th>Date</th>
 			<th>Info</th>
+			<th>Name/Email</th>
 			<th>Type</th>
 			<th>Status</th>
 			<th></th>
 		</tr>
 		<tr ng-repeat="suggestion in suggestions track by $index" ng-attr-tabindex="{{$index+1}}">
-			<td>{{suggestion.name}}</td>
 			<td>
 				<span ng-bind-html-unsafe="suggestion.content" class="listview-smaller"></span>
 			</td>
@@ -20,10 +19,12 @@
 				<div ng-if="suggestion.restaurant"><i class="fa fa-coffee"></i> <a href="/restaurant/{{suggestion.id_restaurant}}">{{suggestion.restaurant}}</a></div>
 				<div ng-if="suggestion.community"><i class="fa fa-slideshare"></i> <a href="/community/{{suggestion.id_community}}">{{suggestion.community}}</a></div>
 			</td>
+			<td>{{suggestion.name}}</td>
 			<td>
-				<span class="tag tag-blue" ng-if="suggestion.type == 'dish'">Dish</span>
+				<span class="tag tag-blue" ng-if="suggestion.type == 'dish'">Add item</span>
+				<span class="tag tag-green" ng-if="suggestion.type == 'suggestion'">Suggestion</span>
 				<span class="tag tag-purple" ng-if="suggestion.type == 'restaurant'">Restaurant</span>
-				<span class="tag tag-orange" ng-if="suggestion.type == 'email'">Email</span>
+				<span class="tag tag-orange" ng-if="suggestion.type == 'email'">Email me</span>
 			</td>
 			<td>
 				<span class="tag tag-red" ng-if="suggestion.status == 'new'">New</span>

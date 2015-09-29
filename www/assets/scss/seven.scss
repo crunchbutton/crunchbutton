@@ -202,7 +202,7 @@ html {
 
 	box-sizing: border-box;
 
-	
+
 	@include transition(all linear 0.08s);
 }
 /* wierd issue with height only on mobile safari */
@@ -4517,3 +4517,14 @@ textarea {
 
 	100%{}
 }
+.suggestion-text {
+	font-weight: bold;
+	font-size: 1em;
+	margin-bottom: .5em;
+	margin-top: 1em;
+	float: left;
+}
+	.suggestion-text .link{
+		text-decoration:underline;
+		cursor:pointer;
+	}
