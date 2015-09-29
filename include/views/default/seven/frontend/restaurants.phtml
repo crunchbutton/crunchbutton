@@ -133,7 +133,7 @@
 	</div>
 </div>
 <? if (!$this->export) : ?>
-<div class="content-padding">
+<div class="content-padding" ng-if="config.suggestions">
 	<div class="suggestion-text"><span class="link" ng-click="suggestion();">Want something else delivered?</span></div>
 </div>
 <? endif ; ?>
