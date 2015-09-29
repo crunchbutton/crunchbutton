@@ -1932,7 +1932,7 @@ NGApp.controller( 'RestaurantSuggestionCtrl', function ( $scope, $rootScope, Sug
 	});
 
 	var reset = function(){
-		$scope.change_tab( 'suggestion' );
+		$scope.change_tab( 'form' );
 		$scope.suggestion = { content: '', add_more_content: '',  }
 		$scope.add_more = false;
 	}
@@ -1940,19 +1940,20 @@ NGApp.controller( 'RestaurantSuggestionCtrl', function ( $scope, $rootScope, Sug
 	$scope.send_form = function(){
 		var data = {};
 		data.id_restaurant = restaurant.id_restaurant;
-		if( $scope.tab == 'suggestion' ){
-			data.type = 'suggestion';
-			if( $scope.suggestion.content ){
-				data.content = 'Suggestion: ' + $scope.suggestion.content;
-			}
-		} else if( $scope.tab == 'more-stuff' ){
-			data.type = 'dish';
-			if( $scope.suggestion.add_more_content ){
-				data.content = 'Add: ' + $scope.suggestion.add_more_content;
-			} else {
-				data.content = 'Add more stuff!';
-			}
+		data.type = 'suggestion';
+
+		if( $scope.suggestion.content ){
+			data.content = $scope.suggestion.content;
 		}
+
+		if( $scope.suggestion.add_more_content ){
+			data.type = 'dish';
+			if( data.content ){
+				data.content += "\n";
+			}
+			data.content += $scope.suggestion.add_more_content;
+		}
+
 		SuggestionService.save( data, function( json ){
 			$scope.change_tab( 'thank-you' );
 		} );
@@ -1979,7 +1980,7 @@ NGApp.controller( 'RestaurantsSuggestionCtrl', function ( $scope, $rootScope, Su
 	});
 
 	var reset = function(){
-		$scope.change_tab( 'suggestion' );
+		$scope.change_tab( 'form' );
 		$scope.suggestion = { content: '', add_more_content: '',  }
 		$scope.add_more = false;
 	}
@@ -1987,19 +1988,13 @@ NGApp.controller( 'RestaurantsSuggestionCtrl', function ( $scope, $rootScope, Su
 	$scope.send_form = function(){
 		var data = {};
 		data.id_community = id_community;
-		if( $scope.tab == 'suggestion' ){
-			data.type = 'suggestion';
-			if( $scope.suggestion.content ){
-				data.content = 'Suggestion: ' + $scope.suggestion.content;
-			}
-		} else if( $scope.tab == 'more-stuff' ){
-			data.type = 'restaurant';
-			if( $scope.suggestion.add_more_content ){
-				data.content = 'Add: ' + $scope.suggestion.add_more_content;
-			} else {
-				data.content = 'Add more restaurants!';
-			}
+		data.type = 'restaurant';
+		if( $scope.suggestion.add_more_content ){
+			data.content = 'Add: ' + $scope.suggestion.add_more_content;
+		} else {
+			data.content = 'Add more restaurants!';
 		}
+
 		SuggestionService.save( data, function( json ){
 			$scope.change_tab( 'thank-you' );
 		} );

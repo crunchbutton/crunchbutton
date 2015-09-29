@@ -2,44 +2,11 @@
 
 	<div ng-controller="RestaurantsSuggestionCtrl">
 
-		<div ng-if="tab == 'suggestion'">
-
-			<div class="dialog-padding">
-
-				<p>What's wrong?</p>
-
-				<div class="divider spacer-one-onehalf"></div>
-
-				<div class="support-form-group form-group">
-					<textarea ng-focus="softKeyboardModal($event)" ng-model="suggestion.content" class="form-input form-field"></textarea>
-				</div>
-
-			</div>
-
-			<div class="dialog-padding dialog-bottom-buttons">
-				<div class="button-pushable">
-					<button class="button green" ng-click="send_form()">Submit</button>
-				</div>
-			</div>
-
-			<div class="dialog-padding">
-				<div class="dialog-divider"></div>
-				<br>
-					<p>See more restaurants we should add: <a href="" class="cursor" ng-click="change_tab( 'more-stuff' )">yes!</a></p>
-				<br>
-			</div>
-
-		</div>
-
-		<div ng-if="tab == 'more-stuff'">
+		<div ng-if="tab == 'form'">
 
 			<div class="dialog-padding account-modal">
 
-				<span ng-click="change_tab( 'suggestion' )" class="back-link cursor"><span>&laquo;</span> BACK</span>
-
 				<p>What restaurants should we add?</p>
-
-				<div class="divider spacer-one-onehalf"></div>
 
 				<div class="support-form-group form-group">
 					<textarea ng-focus="softKeyboardModal($event)" ng-model="suggestion.add_more_content" class="form-input form-field"></textarea>
