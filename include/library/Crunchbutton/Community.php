@@ -1110,6 +1110,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return true;
 	}
 
+	public function addNote( $text ){
+		$note = new Cockpit_Community_Note;
+		$note->id_community = $this->id_community;
+		$note->id_admin = c::user()->id_admin;
+		$note->date = date( 'Y-m-d H:i:s' );
+		$note->text = $text;
+		$note->save();
+		return $note;
+	}
+
 	// Smart population of "our most popular locations" on UI2 #6056
 	public static function smartSortPopulation(){
 		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();

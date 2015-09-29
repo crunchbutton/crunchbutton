@@ -1,0 +1,21 @@
+<div class="page-title-wrap">
+	<div class="page-title-nav">
+		<a href ng-click="openCommunityNoteContainer()"><button class="button button-green nav-button-green"><i class="fa fa-file"></i><span>Add Note</span></button></a>
+	</div>
+</div>
+
+<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingNotes}"></div>
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Note</th>
+			<th>Added By</th>
+			<th>Date</th>
+		</tr>
+		<tr ng-repeat="note in notes">
+			<td><span class="listview-smaller">{{note.text}}</span></td>
+			<td>{{note.added_by}}</td>
+			<td>{{note.date}}</td>
+		</tr>
+	</table>
+</div>
