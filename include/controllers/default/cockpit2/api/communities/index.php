@@ -139,6 +139,11 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			$s->auto_close = $s->auto_close ? true : false;
 			$s->close_all_restaurants = $s->close_all_restaurants ? true : false;
 			$s->active = $s->active ? true : false;
+			$note = $community->lastNote();
+			if( $note ){
+				$s->note = $note->exports();
+			}
+
 
 			// pull up community closed log
 			// @todo seems to take a little longer. need to clean this up
